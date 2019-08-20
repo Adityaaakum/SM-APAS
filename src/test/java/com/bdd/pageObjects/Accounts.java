@@ -27,7 +27,7 @@ public class Accounts extends Page {
 	@FindBy(xpath="//div/label/span[contains(text(),'Account Name')]//following::input")
 	private WebElement txtAccountName;
 	
-	@FindBy(xpath="//button[@title='Save']")
+	@FindBy(xpath="//button[@title='submitted']")
 	private WebElement btnSave;
 	
 	
