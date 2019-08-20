@@ -10,3 +10,5 @@ Scenario: Create Test Account
  When  I click the "Accounts.clickLnkNew"
  When  I enter the "Accounts.enterAccountName" as "TestAccount"
  When  I click the "Accounts.clickBtnSave"
+ When  I click the "LoginSFX.clickImgUser"
+ Then  I click the "LoginSFX.clickLnkLogOut" 

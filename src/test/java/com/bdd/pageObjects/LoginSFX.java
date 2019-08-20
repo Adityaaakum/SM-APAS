@@ -26,6 +26,12 @@ public class LoginSFX extends Page {
 	
 	@FindBy(xpath="//input[@id='Login']")
     private WebElement btnSubmit;
+	
+	@FindBy(xpath="//div/span/img[@title='User']")
+	private WebElement imgUser;
+	
+	@FindBy(xpath="//div/a[contains(text(),'Log Out')]")
+	private WebElement lnkLogOut;
     
     
 	public void loginIntoApp(String Username, String Password) throws Exception{
@@ -50,5 +56,15 @@ public class LoginSFX extends Page {
    public void clickBtnSubmit() throws IOException {
 	   
 	   Click(btnSubmit);
+   }
+   
+   public void clickImgUser() throws IOException {
+	   
+	   Click(imgUser);
+   }
+   
+   public void clickLnkLogOut() throws IOException {
+	   
+	   Click(lnkLogOut);
    }
 }
