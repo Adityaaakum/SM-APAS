@@ -1,0 +1,12 @@
+Feature: Test Account Creation
+
+@TestAccountCreation
+Scenario: Create Test Account
+ Given I navigate browser to "TestData.SalesforcelgnURL"
+ When  I enter the "LoginSFX.enterTxtUserName" as "akaila@sapient.com"
+ When  I enter the "LoginSFX.enterTxtPassword" as "Welcome@123"
+ When  I click the "LoginSFX.clickBtnSubmit"
+ When  I click the "Accounts.clickTabAccounts"
+ When  I click the "Accounts.clickLnkNew"
+ When  I enter the "Accounts.enterAccountName" as "TestAccount"
+ When  I click the "Accounts.clickBtnSave"
