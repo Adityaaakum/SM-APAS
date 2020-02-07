@@ -15,7 +15,7 @@ public class EFileImportTransactions extends Page {
 	@FindBy(xpath = "//a[@data-label='Details' and @role='tab']")
 	public WebElement detailsTab;
 	
-	@FindBy(xpath = "//*[@class='slds-form__row']//*[@class='test-id__field-label' and contains(.,'Status')]/../..//*[@data-output-element-id='output-field']]")
+	@FindBy(xpath = "//*[@class='slds-form__row']//*[@class='test-id__field-label' and contains(.,'Status')]/../..//*[@data-output-element-id='output-field']")
 	public WebElement statusLabel;
 	
 }
