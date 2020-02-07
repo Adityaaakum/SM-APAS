@@ -1,5 +1,7 @@
 package com.apas.PageObjects;
 
+import java.io.IOException;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -13,22 +15,22 @@ public class EFileHomePage extends Page {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(id = "input-53")
+	@FindBy(xpath = "//*[@name='docType']")
 	WebElement fileTypedropdown;
 
-	@FindBy(id = "input-57")
+	@FindBy(xpath = "//*[@name='source']")
 	WebElement sourceDropdown;
 
 	@FindBy(xpath = "//button[@title='Next']")
 	public WebElement nextButton;
 
-	@FindBy(id = "input-411")
+	@FindBy(xpath = "//*[@name='freq']")
 	public WebElement periodDropdown;
 
 	@FindBy(xpath = "//button[contains(.,'Confirm')]")
 	public WebElement confirmButton;
 
-	@FindBy(xpath = "//input[@id='input-file-425']")
+	@FindBy(xpath = "//*[@data-key='upload']")
 	public WebElement uploadFilebutton;
 
 	@FindBy(xpath = "//button//span[contains(.,'Done')]")
@@ -52,26 +54,14 @@ public class EFileHomePage extends Page {
 		// driver.findElement(By.xpath("//a[@title='"+appToSearch+"']/span[contains(.,'"+appToSearch+"')]")).click();
 	}
 
-	public void selectFileAndSource(String filetype, String source) throws InterruptedException {
+	public void selectFileAndSource(String filetype, String source) throws InterruptedException, IOException {
 		System.out.println("File type is:" + filetype + " and Source is:" + source);
-		fileTypedropdown.click();
-		driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + filetype + "')]")).click();
+		Click(fileTypedropdown);
 		Thread.sleep(2000);
-		sourceDropdown.click();
-		driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]")).click();
-
-		/*
-		 * nextButton.click();
-		 * 
-		 * periodDropdown.click(); driver.findElement(By.xpath(
-		 * "//span[@class='slds-media__body']/span[contains(.,'"+period+"')]")).
-		 * click();
-		 * 
-		 * confirmButton.click();
-		 * 
-		 * uploadFilebutton.click(); //code for file upload
-		 * 
-		 * doneButton.click();
-		 */
+		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + filetype + "')]")));
+		Thread.sleep(2000);
+		Click(sourceDropdown);
+		Thread.sleep(2000);
+		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]")));
 	}
 }

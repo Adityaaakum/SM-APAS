@@ -21,6 +21,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -41,6 +42,7 @@ public class Page {
 	public WebDriverWait wait;
 
 	public FluentWait<RemoteWebDriver> flwait;
+
 
 	Actions actions;
 
@@ -563,6 +565,20 @@ public class Page {
 		value = ele.getCssValue(property);
 		return value;
 	}
+	
+	/**
+	 * This method Gets the attribute/property value.
+	 *
+	 * @param ele
+	 *            the element
+	 * @return the text value of the web element
+	 */
+	public String getElementText(WebElement ele) {
+		waitForElementToBeVisible(ele, 30);
+		String value;
+		value = ele.getText();
+		return value;
+	}
 
 	/**
 	 * This method Gets the attribute/property value.
@@ -574,6 +590,7 @@ public class Page {
 	 * @return the property value
 	 */
 	public String getAttributeValue(WebElement ele, String property) {
+		waitForElementToBeVisible(ele, 30);
 		String value;
 		value = ele.getAttribute(property);
 		return value;

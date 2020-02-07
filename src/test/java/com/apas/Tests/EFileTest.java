@@ -1,5 +1,6 @@
 package com.apas.Tests;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -65,9 +66,10 @@ public class EFileTest extends TestBase {
 	 * @param period
 	 * @param fileLocation
 	 * @throws InterruptedException
+	 * @throws IOException 
 	 */
 	@Test(description = "To View Import Records from E-File Import Tools screen")
-	public void ViewImportedRecords(String filetype, String source, String period) throws InterruptedException {
+	public void ViewImportedRecords(String filetype, String source, String period) throws InterruptedException, IOException {
 		// TODO Auto-generated method stub
 
 		eFilePageObject.selectFileAndSource(filetype, source);
@@ -149,10 +151,11 @@ public class EFileTest extends TestBase {
 	 * @param period
 	 * @param fileLocation
 	 * @throws InterruptedException
+	 * @throws IOException 
 	 */
 
 	@Test(description = "Uploading an E-File with status New")
-	private void uploadEFileForNewStatus(String filetype, String source, String period) throws InterruptedException {
+	private void uploadEFileForNewStatus(String filetype, String source, String period) throws InterruptedException, IOException {
 		eFilePageObject.selectFileAndSource(filetype, source);
 		// now selecting first record from list with 'Imported' status for the
 		// given period
