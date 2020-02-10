@@ -33,10 +33,10 @@ public class SalsesforceStandardFunctions extends TestBase{
 		eFilePageObject = new EFileHomePage(this.driver);
 	}
 	
-	public void login() throws Exception{					
+	public void login(String userType) throws Exception{					
 		objPage.navigateTo(driver, envURL);
-		objLoginPage.enterLoginUserName(CONFIG.getProperty("username"));
-		objLoginPage.enterLoginPassword(CONFIG.getProperty("password"));
+		objLoginPage.enterLoginUserName(CONFIG.getProperty(userType + "UserName"));
+		objLoginPage.enterLoginPassword(CONFIG.getProperty(userType + "Password"));
 		objLoginPage.clickBtnSubmit();
 		System.out.println("User logged in the application");
 	}
