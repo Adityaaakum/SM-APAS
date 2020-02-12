@@ -42,6 +42,7 @@ public class Page {
 
 	public FluentWait<RemoteWebDriver> flwait;
 
+
 	Actions actions;
 
 	/**
@@ -364,15 +365,9 @@ public class Page {
 	 *            the timeout in seconds
 	 */
 	public WebElement waitForElementToBeVisible(WebElement element, int timeoutInSeconds) {
-
 		try {
-			// Below code is deprecated
-			// wait.withTimeout(timeoutInSeconds,
-			// TimeUnit.SECONDS).until(ExpectedConditions.visibilityOf(element));
 			wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(element));
-			
 		} catch (org.openqa.selenium.StaleElementReferenceException e) {
-
 			e.printStackTrace();
 		}
 		return element;
@@ -381,22 +376,47 @@ public class Page {
 	/**
 	 * Function will wait for an element to be Invisible on the page.
 	 *
-	 * @param by
-	 *            the by
+	 * @param Object (Xpath, By)
 	 * @param timeoutInSeconds
 	 *            the timeout in seconds
 	 */
-	public void waitForElementToBeInVisible(By by, int timeoutInSeconds) {
-
+	public void waitForElementToBeInVisible(Object object, int timeoutInSeconds) {
+		//boolean isElementInvisible;
 		try {
-			wait.withTimeout(timeoutInSeconds, TimeUnit.SECONDS)
-					.until(ExpectedConditions.invisibilityOfElementLocated(by));
+			if(object instanceof String) {
+				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOf(driver.findElement(By.xpath(object.toString()))));
+			} else if (object instanceof By) {
+				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOfElementLocated((By) object));
+			}
 		} catch (org.openqa.selenium.StaleElementReferenceException e) {
-
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Function will wait for an element to be Invisible on the page.
+	 *
+	 * @param Object (Xpath, By)
+	 * @param timeoutInSeconds
+	 *            the timeout in seconds
+	 */
+	public boolean waitForElementToBeVisible(int timeoutInSeconds, Object object) {
+		boolean isElementVisible = false;
+		try {
+			if(object instanceof String) {
+				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(object.toString()))));
+			} else if (object instanceof By) {
+				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOfElementLocated((By) object));
+			} else {
+				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf((WebElement) object));
+			}
+			isElementVisible = true;
+		} catch (Exception ex) {
+			isElementVisible = false;
+		}
+		return isElementVisible;
+	}
+	
 	/**
 	 * this function will click on a Webelement using Javascript click.
 	 *
@@ -563,6 +583,20 @@ public class Page {
 		value = ele.getCssValue(property);
 		return value;
 	}
+	
+	/**
+	 * This method Gets the attribute/property value.
+	 *
+	 * @param ele
+	 *            the element
+	 * @return the text value of the web element
+	 */
+	public String getElementText(WebElement ele) {
+		waitForElementToBeVisible(ele, 30);
+		String value;
+		value = ele.getText();
+		return value;
+	}
 
 	/**
 	 * This method Gets the attribute/property value.
@@ -574,6 +608,7 @@ public class Page {
 	 * @return the property value
 	 */
 	public String getAttributeValue(WebElement ele, String property) {
+		waitForElementToBeVisible(ele, 30);
 		String value;
 		value = ele.getAttribute(property);
 		return value;
@@ -617,4 +652,143 @@ public class Page {
 		return randomNumber;
 	}
 
+	public List <WebElement> waitForAllElementsToBeVisible(Object object) {
+		List <WebElement> elements = null;
+		if(object instanceof String) {
+			String[] arr = object.toString().split("~");
+			if(arr[1].equalsIgnoreCase("ID")) {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.id(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("tagName")) {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.tagName(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("name")) {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.name(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("linkText")) {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.linkText(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("partialLinkText")) {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.partialLinkText(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("className")) {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.className(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("cssSelector")) {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.cssSelector(arr[0]))));	
+			} else {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.xpath(arr[0]))));	
+			}
+		} else if (object instanceof By) {
+			elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy((By) object));
+		} else {
+			elements = wait.until(ExpectedConditions.visibilityOfAllElements((WebElement)object));	
+		}
+		return elements;
+	}
+	
+	public WebElement locateElement(String locatorValue, int timoutCounter) throws Exception {
+		WebElement element = null;
+		boolean elementVisiblityFlag = false;
+		int counter = 0;
+		while (!elementVisiblityFlag || counter < timoutCounter) {
+			try {
+				element = driver.findElement(By.xpath(locatorValue));
+				if (element != null) {
+					elementVisiblityFlag = true;
+				}
+			} catch (Exception ex) {
+				Thread.sleep(250);
+			}
+			counter++;
+		}
+		return element;
+	}
+	
+	public List<WebElement> locateElements(String locatorValue, int timoutCounter) throws Exception {
+		List<WebElement> elements = null;
+		boolean elementsVisiblityFlag = false;
+		int counter = 0;
+		while (!elementsVisiblityFlag || counter < timoutCounter) {
+			try {
+				elements = driver.findElements(By.xpath(locatorValue));
+				if (elements != null) {
+					elementsVisiblityFlag = true;
+				}
+			} catch (Exception ex) {
+				Thread.sleep(250);
+			}
+			counter++;
+		}
+		return elements;
+	}
+	
+	public WebElement waitForElementToBeVisible(Object object, String locatorType) {
+		WebElement element = null;
+		if(object instanceof String) {
+			String[] arr = object.toString().split("~");
+			if(arr[1].equalsIgnoreCase("ID")) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("tagName")) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.tagName(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("name")) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.name(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("linkText")) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.linkText(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("partialLinkText")) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.partialLinkText(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("className")) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.className(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("cssSelector")) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector(arr[0]))));	
+			} else {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(arr[0]))));	
+			}
+		} else if (object instanceof By) {
+			element = wait.until(ExpectedConditions.visibilityOfElementLocated((By) object));
+		} else {
+			element = wait.until(ExpectedConditions.visibilityOf((WebElement)object));
+		}
+		return element;
+	}
+	
+	public WebElement waitForElementToBeVisible(Object object) {
+		WebElement element = null;
+		if(object instanceof String) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(object.toString()))));	
+		} else if (object instanceof By) {
+			element = wait.until(ExpectedConditions.visibilityOfElementLocated((By) object));
+		} else {
+			element = wait.until(ExpectedConditions.visibilityOf((WebElement)object));
+		}
+		return element;
+	}
+	
+	public boolean waitForElementToBeInVisible(Object object) {
+		boolean isElementInvisible = false;
+		if(object instanceof String) {
+			isElementInvisible = wait.until(ExpectedConditions.invisibilityOf(driver.findElement(By.xpath(object.toString()))));	
+		} else if (object instanceof By) {
+			isElementInvisible = wait.until(ExpectedConditions.invisibilityOfElementLocated((By) object));
+		}
+		return isElementInvisible;
+	}
+	
+	public WebElement waitForElementToBeClickable(Object object) {
+		WebElement element = null;
+		if(object instanceof String) {
+				element = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(object.toString()))));	
+		} else if (object instanceof By) {
+			element = wait.until(ExpectedConditions.elementToBeClickable((By) object));
+		} else {
+			element = wait.until(ExpectedConditions.elementToBeClickable((WebElement)object));
+		}
+		return element;
+	}
+	
+	public void clickElementOnVisiblity(Object object) {
+		WebElement element = waitForElementToBeVisible(object);
+		element.click();
+	}
+	
+	public String getCurrentDate(String format) {
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		String formattedDate = sdf.format(date);
+		return formattedDate;
+	}
 }

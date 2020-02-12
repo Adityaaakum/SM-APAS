@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class LoginPage extends Page {
 	Logger logger = Logger.getLogger(LoginPage.class);
@@ -26,6 +27,9 @@ public class LoginPage extends Page {
 	@FindBy(xpath = "//input[@name='Login']")
 	private WebElement btnSubmit;
 
+	@FindBy(xpath = "//h2[text() = 'Verify Your Identity']")
+	private WebElement verificationCode;
+	
 	@FindBy(xpath = "//div/span[@class='uiImage']")
 	private WebElement imgUser;
 

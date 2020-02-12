@@ -1,9 +1,0 @@
-Feature: Salesforce login
-
-Scenario: Login to Salesforce 
- Given I navigate browser to "TestData.SalesforcelgnURL"
-  When  I enter the "LoginSFX.enterTxtUserName" as "akaila@sapient.com"
-  When  I enter the "LoginSFX.enterTxtPassword" as "Welcome@123"
-  When  I click the "LoginSFX.clickBtnSubmit"
-  When  I click the "LoginSFX.clickImgUser"
-  Then  I click the "LoginSFX.clickLnkLogOut" 

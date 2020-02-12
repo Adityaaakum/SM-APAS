@@ -74,7 +74,6 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 			String responseString = response.getBody().asString();
 			JsonPath jsPath = new JsonPath(responseString);
 			List<Object> items = jsPath.getList("items");
-			System.out.println("Test cycle data: " + items);
 			
 			Iterator<Object> itr = items.iterator();
 			while (itr.hasNext()) {

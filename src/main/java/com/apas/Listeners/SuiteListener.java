@@ -70,8 +70,11 @@ public class SuiteListener extends TestBase implements ITestListener {
 		try {
 			String methodName = result.getMethod().getMethodName();
 			String className = result.getMethod().toString();
-
-			upTest = ExtentTestManager.startTest(methodName, "Description: " + result.getMethod().getDescription());
+			String description = "Description: " + result.getMethod().getDescription();
+			System.setProperty("currentMethodName", methodName);
+			System.setProperty("description", description);
+			
+			upTest = ExtentTestManager.startTest(methodName, "Description: " + result.getMethod().getDescription());			
 			String[] arrayClassName = className.split("\\.");
 			String upClassname = arrayClassName[0].replace("Test", "");
 			upTest.assignCategory(upClassname);
@@ -83,9 +86,6 @@ public class SuiteListener extends TestBase implements ITestListener {
 
 	@Override
 	public void onTestSuccess(ITestResult result) {
-		// JiraAdaptavistStatusUpdate.testStatus.put(result.getName().toString(), "Pass");
-		// JiraAdaptavistStatusUpdate.updateTestCaseStatus(result.getName().toString(), "Pass");
-
 		ExtentTestManager.getTest().log(LogStatus.PASS, "Test Case has been PASSED.");
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 		ExtentManager.getExtentInstance().flush();
@@ -94,25 +94,26 @@ public class SuiteListener extends TestBase implements ITestListener {
 	@Override
 	public void onTestFailure(ITestResult result) {
 		try {
-			// JiraAdaptavistStatusUpdate.testStatus.put(result.getName().toString(), "Fail");
-			// JiraAdaptavistStatusUpdate.updateTestCaseStatus(result.getName().toString(), "Fail");
-			RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
-
-			TakesScreenshot ts = (TakesScreenshot) ldriver;
-			File source = ts.getScreenshotAs(OutputType.FILE);
-			Date date = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
-			String upDate = sdf.format(date);
-			String dest = System.getProperty("user.dir") + "//test-output//ErrorScreenshots//"
-					+ result.getMethod().getMethodName() + upDate + ".png";
-			File destination = new File(dest);
-			FileUtils.copyFile(source, destination);
-
-			ExtentTestManager.getTest().log(LogStatus.FAIL, getStackTrace(result.getThrowable()));
-
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot below: " + upTest.addScreenCapture(dest));
-			ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
-			ExtentManager.getExtentInstance().flush();
+			upTest = ExtentTestManager.getUpTestVariable();
+			if(upTest != null) {
+				RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
+	
+				TakesScreenshot ts = (TakesScreenshot) ldriver;
+				File source = ts.getScreenshotAs(OutputType.FILE);
+				Date date = new Date();
+				SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
+				String upDate = sdf.format(date);
+				String dest = System.getProperty("user.dir") + "//test-output//ErrorScreenshots//"
+						+ result.getMethod().getMethodName() + upDate + ".png";
+				File destination = new File(dest);
+				FileUtils.copyFile(source, destination);
+	
+				ExtentTestManager.getTest().log(LogStatus.FAIL, getStackTrace(result.getThrowable()));
+	
+				ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot below: " + upTest.addScreenCapture(dest));
+				ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
+				ExtentManager.getExtentInstance().flush();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

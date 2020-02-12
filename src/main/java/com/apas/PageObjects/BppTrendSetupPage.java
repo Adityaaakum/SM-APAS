@@ -19,7 +19,6 @@ public class BppTrendSetupPage extends Page {
 		PageFactory.initElements(driver, this);
 	}
 
-	// ********* Page objects *********
 	@FindBy(xpath = "//one-app-launcher-header/button[@class = 'slds-button']")
 	private WebElement appLauncher;
 
@@ -56,8 +55,6 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//button[@name='btnGetRollYearData']")
 	private WebElement btnSelectRollYear;
 
-	// -------------------------------------------
-
 	@FindBy(xpath = "//a[contains(text(), '$tableName')]")
 	private WebElement bppTrendTable;
 
@@ -91,8 +88,6 @@ public class BppTrendSetupPage extends Page {
 			// calculate button.
 		}
 	}
-
-	// -------------------------------------------
 
 	// ********* Methods to perform action on page objects *********
 	public void clickAppLauncher() throws Exception {
@@ -175,5 +170,4 @@ public class BppTrendSetupPage extends Page {
 	public void clickBtnRollYearSelect() throws Exception {
 		Click(dropDownBoxRollYear);
 	}
-
 }

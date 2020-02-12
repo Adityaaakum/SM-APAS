@@ -143,6 +143,12 @@
 			<version>4.1.1</version>
 			<scope>compile</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.codoid.products/fillo -->
+		<dependency>
+		    <groupId>com.codoid.products</groupId>
+		    <artifactId>fillo</artifactId>
+		    <version>1.18</version>
+		</dependency>				
 	</dependencies>
 
 	<build>
@@ -164,6 +170,7 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>3.0.0-M3</version>
 					<configuration>
+
 						<testSourceDirectory>${project.build.directory}/src/test/java/</testSourceDirectory>
 						<testSourceDirectory>${project.basedir}/src/main/java/</testSourceDirectory>
 						<testClassesDirectory>${project.build.directory}/test-classes/</testClassesDirectory>
@@ -183,8 +190,8 @@
 						<!-- <forkCount>10</forkCount> <reuseForks>true</reuseForks> -->
 						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
 						<includes>
-							<include>BppTrendTest.java</include>
-							<!--  <include>PocFlowTest.java</include> -->
+							<include>BuildingPermitTest.java</include>
+							<!-- <include>PocFlowTest.java</include> -->
 						</includes>
 						<groups>${groups}</groups>
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
