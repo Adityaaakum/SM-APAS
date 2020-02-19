@@ -21,4 +21,7 @@ public class EFileImportTransactions extends Page {
 	@FindBy(xpath = "//*[@class='slds-form__row']//*[@class='test-id__field-label' and contains(.,'E-File Import Log')]/../..//*[@data-output-element-id='output-field']")
 	public WebElement efileImportLogLabel;
 	
+	@FindBy(xpath = "//a[contains(.,'Import Transaction-00')]")
+	public WebElement importTransactionName;
+	
 }
