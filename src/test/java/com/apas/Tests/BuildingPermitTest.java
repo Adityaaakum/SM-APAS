@@ -1,10 +1,8 @@
 package com.apas.Tests;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -169,7 +167,7 @@ public class BuildingPermitTest extends TestBase implements testdata, apps, user
 		objPage.Click(objEfileHomePage.rowSelectCheckBox);
 		salesforceStandardFunctions.editGridCellValue("PERMITNO", "abc");
 		objPage.Click(objEfileHomePage.retryButton);
-		Thread.sleep(10000);
+		Thread.sleep(15000);
 		objPage.waitForElementToBeVisible(objEfileHomePage.errorRowSection,30);
 		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Validation of error and inported records on Review and Approve Data Screen after retry");

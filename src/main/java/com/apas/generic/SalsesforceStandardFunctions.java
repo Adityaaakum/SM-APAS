@@ -6,18 +6,16 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
-import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.PageObjects.BppTrendPage;
 import com.apas.PageObjects.EFileHomePage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.PasswordUtils;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class SalsesforceStandardFunctions extends TestBase{
@@ -36,12 +34,18 @@ public class SalsesforceStandardFunctions extends TestBase{
 		eFilePageObject = new EFileHomePage(this.driver);
 	}
 	
-	public void login(String userType) throws Exception{		
+	public void login(String userType) throws Exception{
+		String password = CONFIG.getProperty(userType + "Password");
+		if (CONFIG.getProperty("passwordEncryptionFlag").equals("true")){
+			System.out.println("Decrypting the password : " + password);
+			password = PasswordUtils.decrypt(password, "");
+		}
+				
 		ExtentTestManager.getTest().log(LogStatus.INFO, userType + " User is logging in the application");
 		
 		objPage.navigateTo(driver, envURL);
 		objLoginPage.enterLoginUserName(CONFIG.getProperty(userType + "UserName"));
-		objLoginPage.enterLoginPassword(CONFIG.getProperty(userType + "Password"));
+		objLoginPage.enterLoginPassword(password);
 		objLoginPage.clickBtnSubmit();
 		System.out.println("User logged in the application");
 	}
