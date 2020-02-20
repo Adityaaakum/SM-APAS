@@ -1,8 +1,10 @@
 package com.apas.Tests;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -45,6 +47,11 @@ public class BuildingPermitTest extends TestBase implements testdata, apps, user
 		salesforceStandardFunctions = new SalsesforceStandardFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
+	}
+	
+	@AfterMethod
+	public void afterMethod() throws IOException{
+		salesforceStandardFunctions.logout();
 	}
 	
     @DataProvider(name = "loginUsers")
@@ -108,7 +115,6 @@ public class BuildingPermitTest extends TestBase implements testdata, apps, user
 		softAssert.assertEquals(objPage.getAttributeValue(objEfileImportTransactionsPage.detailsTab,"aria-selected"), "true", "SMAB-T430: Validation if Details tab is selected by default after clicking on import transaction link");
 		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.statusLabel), "Imported", "SMAB-T430: Status Validation of the imported file on import transaction tab");
 		softAssert.assertTrue(objPage.getElementText(objEfileImportTransactionsPage.efileImportLogLabel).contains("Atherton Building Permits"), "SMAB-T430: Validation that latest generated transaction log is for Atherton Building Permits");
-		salesforceStandardFunctions.logout();
 		softAssert.assertAll();
 	}
 
@@ -141,7 +147,6 @@ public class BuildingPermitTest extends TestBase implements testdata, apps, user
 		salesforceStandardFunctions.searchApps(EFILE_INTAKE);
 		objEfileHomePage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Reverted", "SMAB-T361: Validation if status of imported file is reverted.");
-		salesforceStandardFunctions.logout();
 		softAssert.assertAll();
 	}
 	
@@ -183,7 +188,6 @@ public class BuildingPermitTest extends TestBase implements testdata, apps, user
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.numberOfTimesTriedRetried), "2", "SMAB-T364: Validation if number of times try/retry count is increased by 1 after retrying the error records");
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsInFile), "10", "SMAB-T364: Validation if total number of records remain same on the table");
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsImportedFile), "2", "SMAB-T364: Validation if total records in file count is increased by 1 after retrying the error records");
-		salesforceStandardFunctions.logout();
 		softAssert.assertAll();
 	}
 	
@@ -222,7 +226,6 @@ public class BuildingPermitTest extends TestBase implements testdata, apps, user
 		softAssert.assertEquals(objPage.getAttributeValue(objEfileImportTransactionsPage.detailsTab,"aria-selected"), "true", "SMAB-T430: Validation if Details tab is selected by default after clicking on import transaction link");
 		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.statusLabel), "Imported", "SMAB-T430: Status Validation of the imported file on import transaction tab");
 		softAssert.assertTrue(objPage.getElementText(objEfileImportTransactionsPage.efileImportLogLabel).contains("San Mateo Building permits"), "SMAB-T430: Validation that latest generated transaction log is for San Mateo Building permits");
-		salesforceStandardFunctions.logout();
 		softAssert.assertAll();
 	}
 
