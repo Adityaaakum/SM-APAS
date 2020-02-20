@@ -53,17 +53,19 @@ public class BppTrendPage extends Page {
 
 	public void clickNavOptionFromDropDown(String navOption) throws Exception {
 		String xpathStr = "//a[contains(@data-label, '" + navOption + "')]//b[text() = '" + navOption + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 100);
+		//WebElement drpDwnOption = locateElement(xpathStr, 100);
+		WebElement drpDwnOption = waitForElementToBeClickable(xpathStr);
 		drpDwnOption.click();
 	}
-
+	
 	public void clickRollYearDropDown() throws Exception {
 		Click(rollYearDropdown);
 	}
 
 	public void clickOnGivenRollYear(String rollYear) throws Exception {
 		String xpathStr = "//div[contains(@id,'dropdown-element')]//span[contains(text(),'" + rollYear + "')]";
-		WebElement element = locateElement(xpathStr, 200);
+		//WebElement element = locateElement(xpathStr, 200);
+		WebElement element = waitForElementToBeClickable(xpathStr);
 		element.click();
 	}
 
@@ -84,16 +86,19 @@ public class BppTrendPage extends Page {
 		} else {
 			xpathStr = "//span[contains(text(), '" + tableName + "')]";
 		}
-		WebElement givenTable = locateElement(xpathStr, 200);
+		//WebElement givenTable = locateElement(xpathStr, 200);
+		WebElement givenTable = waitForElementToBeClickable(xpathStr);
 		givenTable.click();
 	}
 	
 	public String clickCalculateButton(String tableName) throws Exception {
 		String xpathStr = "//lightning-tab[contains(@data-id, '" + tableName + "')]/slot/div";
-		String currentMessage = locateElement(xpathStr, 500).getText();
+		//String currentMessage = locateElement(xpathStr, 500).getText();
+		String currentMessage = waitForElementToBeClickable(xpathStr).getText();
 		if(currentMessage.equalsIgnoreCase("Yet to be calculated")) {
 			Click(calculateButton);	
-			currentMessage = locateElement(xpathStr, 500).getText();
+			//currentMessage = locateElement(xpathStr, 500).getText();
+			currentMessage = waitForElementToBeClickable(xpathStr).getText();
 		}
 		return currentMessage;
 	}

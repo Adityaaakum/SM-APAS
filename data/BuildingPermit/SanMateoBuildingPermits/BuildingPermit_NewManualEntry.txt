@@ -1,2 +1,0 @@
-Parcel,ProcessingStatus,CalculatedProcessingStatus,CountyStratCodeDescription,EstimatedProjectValue,IssueDate,CompletionDate,PermitCityCode,WorkDescription
-000000002,Process,Process,ADDITION,$500.00,01/10/2020,01/15/2020,LM,Testing

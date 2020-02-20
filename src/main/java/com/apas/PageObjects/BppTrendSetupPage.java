@@ -64,56 +64,6 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//li[@class='slds-tabs_scoped__item slds-tabs_scoped__overflow-button']//button[contains(text(),'More')]/following-sibling::div//span[text() = '$tableName']")
 	private WebElement tableName;
 
-	public List<String> tableNamesVisibleOnPage(List<String> listOfTablesToValidate) {
-		List<String> listOfVisibleTablesOnPage = new ArrayList<String>();
-		for (String currentTableName : listOfTablesToValidate) {
-			String a = "";
-		}
-		return listOfVisibleTablesOnPage;
-	}
-
-	public List<String> tableNamesVisibleInMoreDrpDown(List<String> listOfTablesToValidate) {
-		List<String> listOfVisibleTablesInDrpDown = new ArrayList<String>();
-		return listOfVisibleTablesInDrpDown;
-	}
-
-	public void calculateGivenBppTrendTableData(String tableName) {
-		boolean isElemDisplayed = new Page(driver).verifyElementVisible(bppTrendTable);
-		if (isElemDisplayed) {
-			// Click calculate button
-		} else {
-			// Logic to click "More" button. Then retrieve all table names and
-			// inside for each click the one which is given. Then now check this
-			// element on page and then click
-			// calculate button.
-		}
-	}
-
-	// ********* Methods to perform action on page objects *********
-	public void clickAppLauncher() throws Exception {
-		Click(appLauncher);
-	}
-
-	public void searchForApp(String appToSearch) {
-		try {
-			//enter(appLauncherSearchBox, appToSearch);
-			Thread.sleep(5000);
-			appLauncherSearchBox.click();
-			appLauncherSearchBox.clear();
-			appLauncherSearchBox.sendKeys(appToSearch);
-		} catch (Exception ex) {
-
-		}
-	}
-
-	public void clickNavOptionFromDropDown(String navOptionToSelect) throws Exception {
-		try {
-			Click(navDropDownOption);
-		} catch (Exception ex) {
-
-		}
-	}
-
 	public String getSelectedAppText(String selectedNavOption) {
 		String actualAppText = "Bad element requested!! Either it not present or not visible/enabled.";
 		boolean isElementPresent = verifyElementEnabled(textForSelectedNavOption);

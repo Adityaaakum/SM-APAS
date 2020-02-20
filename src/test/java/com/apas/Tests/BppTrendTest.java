@@ -1,5 +1,6 @@
 package com.apas.Tests;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,70 +8,69 @@ import java.util.List;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.apas.Assertions.CustomHardAssert;
-import com.apas.Assertions.CustomSoftAssert;
+import com.apas.Assertions.HardAssertion;
+import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.PageObjects.BppTrendPage;
-import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
-import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
-import com.relevantcodes.extentreports.LogStatus;
+import com.apas.Utils.Util;
+import com.apas.config.apps;
+import com.apas.config.testdata;
+import com.apas.config.users;
+import com.apas.generic.SalsesforceStandardFunctions;
 
-public class BppTrendTest extends TestBase {
+public class BppTrendTest extends TestBase implements testdata, apps, users {
 	private RemoteWebDriver driver;
-	BppTrendPage objBppTrendsPage = null;
-	Page objPage = null;
-	LoginPage objLoginPage = null;
-	List<String> tableNamesOutsideMoreTab = null;
-	List<String> tableNamesUnderMoreTab = null;
-	String rollYear = null;
+	BppTrendPage objBppTrendsPage;
+	Page objPage;
+	SalsesforceStandardFunctions salesforceStandardFunctions;
+	Util objUtil;
+	SoftAssertion softAssert;
+	List<String> tableNamesOutsideMoreTab;
+	List<String> tableNamesUnderMoreTab;
+	String rollYear;
 
-	@Test(description = "SMAB-T190: Log in & navigate to BPP Trend page", priority = 0, alwaysRun = true)
-	public void bppTrendsLoginAndSearchBppTrendInNavApp() throws Exception {
+	@BeforeMethod
+	public void beforeMethod(){
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
+		salesforceStandardFunctions = new SalsesforceStandardFunctions(driver);
+		objBppTrendsPage = new BppTrendPage(driver);
+		objUtil = new Util();
+		softAssert = new SoftAssertion();
+	}
+	
+	@AfterTest
+	public void afterTest() throws IOException{
+		salesforceStandardFunctions.logout();
+		softAssert.assertAll();
+	}
+	
+	@Test(description = "SMAB-T190: Log in & navigate to BPP Trend page", priority = 0, alwaysRun = true)
+	public void bppTrendsLoginAndSearchBppTrendInNavApp() throws Exception {
+		salesforceStandardFunctions.login(BUSINESS_ADMIN);
+		salesforceStandardFunctions.searchApps(BPP_TRENDS);
 		
-		// Creating an instance of BppTrendPage class and initializing all its page objects.
-		objLoginPage = new LoginPage(driver);
-
 		// Fetching data from properties file to instantiate class instance variables.
 		tableNamesOutsideMoreTab = Arrays.asList(CONFIG.getProperty("tableNamesOutsideMoreTab").split(","));
 		tableNamesUnderMoreTab = Arrays.asList(CONFIG.getProperty("tableNamesUnderMoreTab").split(","));
 		rollYear = CONFIG.getProperty("rollYear");
-
-		// Navigating to the salesforce url.
-		objPage.navigateTo(driver, (CONFIG.getProperty("URL_qa")));
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Browser launched & URL opened: " + (CONFIG.getProperty("URL_qa")));
-
-		// Entering username, password & clicking login button.
-		objLoginPage.enterLoginUserName(CONFIG.getProperty("username"));
-		objLoginPage.enterLoginPassword(CONFIG.getProperty("password"));
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Login details are entered for : " + (CONFIG.getProperty("username")));
-		objLoginPage.clickBtnSubmit();
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click the 'Log In to Sandbox' button");
 	
 		// Asserting whether user has landed on E-File import page.
 		String expectedTitle = "E-File Import Tool | Salesforce";
 		objPage.wait.until(ExpectedConditions.titleContains(expectedTitle));
 		String actualTitle = driver.getTitle();
-		CustomHardAssert.assertTrue(actualTitle.equalsIgnoreCase(expectedTitle), "SMAB-T190: Validating user has landed on E-File import page");
+		HardAssertion.assertTrue(actualTitle.equalsIgnoreCase(expectedTitle), "SMAB-T190: Validating user has landed on E-File import page");
 
-		// Creating an instance of BppTrendPage class and initializing all its page objects.
-		objBppTrendsPage = new BppTrendPage(driver);
-		
-		// Clicking app launcer, searching & selecting BPP Trend option.
-		objBppTrendsPage.clickAppLauncher();
-		objBppTrendsPage.searchForApp("BPP Trend");
-		objBppTrendsPage.clickNavOptionFromDropDown("BPP Trend");
-
-		// Asserting whether user has landed on BPP Trend page.
 		expectedTitle = "BPP Trend | Salesforce";
 		objPage.wait.until(ExpectedConditions.titleContains(expectedTitle));
 		actualTitle = driver.getTitle();
-		CustomHardAssert.assertTrue(actualTitle.equalsIgnoreCase(expectedTitle), "SMAB-T190: Validating user has landed on home BPP Trend page");
+		HardAssertion.assertTrue(actualTitle.equalsIgnoreCase(expectedTitle), "SMAB-T190: Validating user has landed on home BPP Trend page");
 	}
 
 	@Test(enabled = true, description = "Selecting Roll Year", dependsOnMethods = {"bppTrendsLoginAndSearchBppTrendInNavApp"}, priority = 1)
@@ -82,11 +82,11 @@ public class BppTrendTest extends TestBase {
 
 	@Test(enabled = true, description = "To check whether given tables are displayed outside more tab not for selected roll year", dependsOnMethods = {"bppTrendsSelectRollYear"}, priority=2)
 	public void bppTrendsValidateTablesGridDisplay() throws Exception {
-		CustomSoftAssert softAssert = new CustomSoftAssert();
+		SoftAssertion softAssert = new SoftAssertion();
 		List<WebElement> tablesVisbibleOnPage = objBppTrendsPage.getVisibleTables();
 		
 		// Assertion to check whether number of tables shown on UI matches the user's expectation
-		CustomHardAssert.assertEquals(tablesVisbibleOnPage.size(), tableNamesOutsideMoreTab.size(), "SMAB-T190: Validating tables are visible outside more tab");
+		HardAssertion.assertEquals(tablesVisbibleOnPage.size(), tableNamesOutsideMoreTab.size(), "SMAB-T190: Validating tables are visible outside more tab");
 
 		// Creating an ArrayList and adding tables names (tables visible outside more tab on UI) to it
 		List<String> tablesNamesFromWebPage = new ArrayList<String>();
@@ -99,12 +99,11 @@ public class BppTrendTest extends TestBase {
 		for(String currentExpTblName : tableNamesOutsideMoreTab) {
 			softAssert.assertTrue(tablesNamesFromWebPage.contains(currentExpTblName), "SMAB-T190: Validating expected table '" + currentExpTblName + "' is visible on webpage (outside more tab)");	
 		}
-		softAssert.assertAll();
 	}
 	
 	@Test(enabled = true, description = "BPP trends method to trigger Table wise calculations", dependsOnMethods = {"bppTrendsValidateTablesGridDisplay"}, priority=3)
 	public void bppTrendsCalculateTableWise() throws Exception {
-		CustomSoftAssert softAssert = new CustomSoftAssert();
+		SoftAssertion softAssert = new SoftAssertion();
 		String txtForCalculationStatus = null;
 		
 		// Iterating on table names list provided by user (tables that are not under more tab)
@@ -128,6 +127,5 @@ public class BppTrendTest extends TestBase {
 			txtForCalculationStatus = objBppTrendsPage.clickCalculateButton(tableNamesUnderMoreTab.get(i));
 			softAssert.assertTrue(txtForCalculationStatus.equalsIgnoreCase("Yet to be submitted for approval"), "SMAB-T190: Is calculation successful for table '" + tableNamesOutsideMoreTab.get(i) + "'");
 		}
-		softAssert.assertAll();
 	}
 }

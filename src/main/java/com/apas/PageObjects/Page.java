@@ -21,7 +21,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -244,15 +243,16 @@ public class Page {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public void Click(WebElement elem) throws IOException {
-
-		waitForElementToBeVisible(elem, 30);
-		// waitForElementToBeClickable(elem, 50);
+		waitForElementToBeVisible(15, elem);
+		waitForElementToBeClickable(15, elem);
 
 		/*
 		 * if (browserName.equalsIgnoreCase("Edge")) { javascriptClick(elem); }
 		 * else if(browserName.equalsIgnoreCase("IE")){
 		 * elem.sendKeys(Keys.ENTER); } else { elem.click(); }
 		 */
+		
+		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", elem);
 		elem.click();
 		waitUntilPageisReady(driver);
 	}
@@ -268,7 +268,8 @@ public class Page {
 	 *             the exception
 	 */
 	public void enter(WebElement elem, String value) throws Exception {
-		waitForElementToBeClickable(elem, 30);
+		waitForElementToBeClickable(15, elem);
+
 		/*
 		 * if (ExcelDriver.getBrowserVal().equalsIgnoreCase("Edge")) {
 		 * actions=new Actions(driver); actions.moveToElement(elem);
@@ -276,9 +277,11 @@ public class Page {
 		 * //actions.sendKeys(Keys.TAB); actions.build().perform();
 		 * Thread.sleep(1000); } else
 		 */
+
+		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", elem);		
 		elem.clear();
 		elem.sendKeys(value);
-		Thread.sleep(3000);
+		Thread.sleep(2000);
 	}
 
 	/**
@@ -333,6 +336,35 @@ public class Page {
 
 		return age;
 	}
+	
+	public String deductDaysToDate(String dateToModify, String expectedFormat, int numberOfDaysToAdd) throws Exception{
+		String dateToModifyFormatted = null;
+		if(expectedFormat.contains("/")) {
+			if(dateToModify.contains("/")) {
+				dateToModifyFormatted = dateToModify;
+			}
+			if (dateToModify.contains("-")) {
+				dateToModifyFormatted = dateToModify.replace("-", "/");
+			}
+		} 
+		if(expectedFormat.contains("-")) {
+			if(dateToModify.contains("-")) {
+				dateToModifyFormatted = dateToModify;
+			} 			
+			if (dateToModify.contains("/")) {
+				dateToModifyFormatted = dateToModify.replace("/", "-");
+			}
+		}
+		
+		Date date = new SimpleDateFormat(expectedFormat).parse(dateToModifyFormatted);
+		
+		SimpleDateFormat sdf = new SimpleDateFormat(expectedFormat);
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		c.add(Calendar.DAY_OF_MONTH, -numberOfDaysToAdd);
+		String newDate = sdf.format(c.getTime());
+		return newDate;
+	}
 
 	/**
 	 * Function will wait for an element to be clicked on the page.
@@ -345,9 +377,6 @@ public class Page {
 	public void waitForElementToBeClickable(WebElement element, int timeoutInSeconds) {
 
 		try {
-			// flwait.withTimeout(timeoutInSeconds,
-			// TimeUnit.SECONDS).pollingEvery(100, TimeUnit.MILLISECONDS) //
-			// This code is deprecated
 			flwait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).ignoring(NoSuchElementException.class)
 					.ignoring(org.openqa.selenium.StaleElementReferenceException.class)
 					.until(ExpectedConditions.elementToBeClickable(element));
@@ -355,6 +384,28 @@ public class Page {
 			e.printStackTrace();
 
 		}
+	}
+	
+	/**
+	 * Function will wait for an element to come in Clickable state on the page.
+	 * @param timeoutInSeconds the timeout in seconds
+	 * @param Object (Xpath, By)
+	 */
+	public boolean waitForElementToBeClickable(int timeoutInSeconds, Object object) {
+		boolean isElementClickable = false;
+		try {
+			if(object instanceof String) {
+				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(object.toString()))));
+			} else if (object instanceof By) {
+				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.elementToBeClickable((By) object));
+			} else {
+				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.elementToBeClickable((WebElement) object));
+			}
+			isElementClickable = true;
+		} catch (Exception ex) {
+			isElementClickable = false;
+		}
+		return isElementClickable;
 	}
 
 	/**
@@ -366,11 +417,12 @@ public class Page {
 	 *            the timeout in seconds
 	 */
 	public WebElement waitForElementToBeVisible(WebElement element, int timeoutInSeconds) {
-		try {
-			wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(element));
-		} catch (org.openqa.selenium.StaleElementReferenceException e) {
-			e.printStackTrace();
-		}
+		//try {
+			//wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(element));
+			wait.until(ExpectedConditions.visibilityOf(element));
+		//} catch (org.openqa.selenium.StaleElementReferenceException e) {
+			//e.printStackTrace();
+		//}
 		return element;
 	}
 
@@ -395,11 +447,9 @@ public class Page {
 	}
 
 	/**
-	 * Function will wait for an element to be Invisible on the page.
-	 *
+	 * Function will wait for an element to be Visible on the page.
+	 * @param timeoutInSeconds the timeout in seconds
 	 * @param Object (Xpath, By)
-	 * @param timeoutInSeconds
-	 *            the timeout in seconds
 	 */
 	public boolean waitForElementToBeVisible(int timeoutInSeconds, Object object) {
 		boolean isElementVisible = false;
@@ -784,12 +834,5 @@ public class Page {
 	public void clickElementOnVisiblity(Object object) {
 		WebElement element = waitForElementToBeVisible(object);
 		element.click();
-	}
-	
-	public String getCurrentDate(String format) {
-		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat(format);
-		String formattedDate = sdf.format(date);
-		return formattedDate;
 	}
 }

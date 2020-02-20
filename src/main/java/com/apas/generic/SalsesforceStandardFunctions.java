@@ -10,7 +10,6 @@ import java.io.IOException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.PageObjects.BppTrendPage;
 import com.apas.PageObjects.EFileHomePage;
 import com.apas.PageObjects.LoginPage;
@@ -38,6 +37,7 @@ public class SalsesforceStandardFunctions extends TestBase{
 		objLoginPage.enterLoginUserName(CONFIG.getProperty(userType + "UserName"));
 		objLoginPage.enterLoginPassword(CONFIG.getProperty(userType + "Password"));
 		objLoginPage.clickBtnSubmit();
+		Thread.sleep(15000);
 		System.out.println("User logged in the application");
 	}
 	
