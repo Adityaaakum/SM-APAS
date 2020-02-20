@@ -425,6 +425,24 @@ public class Page {
 		//}
 		return element;
 	}
+	
+	/**
+	 * Function will wait for an element to be Invisible on the page.
+	 *
+	 * @param element
+	 *            the element
+	 * @param timeoutInSeconds
+	 *            the timeout in seconds
+	 */
+	public WebElement waitForElementToBeInVisible(WebElement element, int timeoutInSeconds) {
+		try {
+			wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOf(element));
+		} catch (org.openqa.selenium.StaleElementReferenceException e) {
+			e.printStackTrace();
+		}
+		return element;
+	}
+
 
 	/**
 	 * Function will wait for an element to be Invisible on the page.
@@ -437,15 +455,33 @@ public class Page {
 		//boolean isElementInvisible;
 		try {
 			if(object instanceof String) {
-				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOf(driver.findElement(By.xpath(object.toString()))));
+				wait.until(ExpectedConditions.invisibilityOf(driver.findElement(By.xpath(object.toString()))));
 			} else if (object instanceof By) {
-				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOfElementLocated((By) object));
+				wait.until(ExpectedConditions.invisibilityOfElementLocated((By) object));
 			}
 		} catch (org.openqa.selenium.StaleElementReferenceException e) {
 			e.printStackTrace();
 		}
 	}
 
+	
+	/**
+	 * Function will wait for an element to attain a value.
+	 *
+	 * @param Object (Xpath, By)
+	 * @param timeoutInSeconds
+	 *            the timeout in seconds
+	 */
+	public void waitForElementTextToBe(WebElement element, String expectedValue, int timeoutInSeconds) {
+		try {
+			wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.textToBePresentInElement(element,expectedValue));
+		} catch (org.openqa.selenium.StaleElementReferenceException e) {
+			e.printStackTrace();
+		}
+	}
+
+	
+	
 	/**
 	 * Function will wait for an element to be Visible on the page.
 	 * @param timeoutInSeconds the timeout in seconds

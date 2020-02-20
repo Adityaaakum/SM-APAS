@@ -38,22 +38,64 @@ public class EFileHomePage extends Page {
 
 	@FindBy(xpath = "//tr[1]/td[5]//div")
 	public WebElement status;
+	
+	@FindBy(xpath = "(//button[@title='Preview'])[1]")
+	public WebElement viewLink;
+	
+	@FindBy(xpath = "//span[contains(@title,'ERROR ROWS')]")
+	public WebElement errorRowSection;
+	
+	@FindBy(xpath = "//span[contains(@title,'IMPORTED ROWS')]")
+	public WebElement importedRowSection;
+	
+	@FindBy(xpath = "(//td[@data-label='Status'])[1]")
+	public WebElement statusImportedFile;	
+	
+	@FindBy(xpath = "(//td[@data-label='Number of Times Tried/Retried'])[1]")
+	public WebElement numberOfTimesTriedRetried;	
+	
+	@FindBy(xpath = "(//td[@data-label='Total Records Imported'])[1]")
+	public WebElement totalRecordsImportedFile;	
+	
+	@FindBy(xpath = "(//td[@data-label='Total Records in File'])[1]")
+	public WebElement totalRecordsInFile;	
+	
+	@FindBy(xpath = "//a[contains(@data-label,'BuildingPermits')]")
+	public WebElement buildingPermitLabel;	
+	
+	@FindBy(xpath = "//input[@class='datatable-select-all'][@type='checkbox']/..//span[@class='slds-checkbox_faux']")
+	public WebElement selectAllCheckBox;	
+	
+	@FindBy(xpath = "//td//span[@class='slds-checkbox_faux']")
+	public WebElement rowSelectCheckBox;	
+	
+	@FindBy(xpath = "//button[text()='Approve']")
+	public WebElement approveButton;	
 
-	@FindBy(xpath = "//button[@class='slds-button']")
-	WebElement appLauncher;
-
-	@FindBy(xpath = "//input[@class='slds-input input']")
-	WebElement searchAppsbox;
-
-	public void searchApps(String appToSearch) throws InterruptedException {
-		appLauncher.click();
-		searchAppsbox.sendKeys(appToSearch);
-		Thread.sleep(3000);
-		driver.findElement(By.xpath("//a[@title='" + appToSearch + "']//span/mark[contains(.,'" + appToSearch + "')]"))
-				.click();
-		// driver.findElement(By.xpath("//a[@title='"+appToSearch+"']/span[contains(.,'"+appToSearch+"')]")).click();
-	}
-
+	@FindBy(xpath = "//button[text()='Discard']")
+	public WebElement discardButton;
+	
+	@FindBy(xpath = "//button[text()='Revert']")
+	public WebElement revertButton;
+	
+	@FindBy(xpath = "//button[text()='Retry']")
+	public WebElement retryButton;
+	
+	@FindBy(xpath = "//*[text()='Thank you! Imported records has been approved successfully.']")
+	public WebElement efileRecordsApproveSuccessMessage;
+	
+	@FindBy(xpath = "//*[text()='Thank you! All records has been reverted successfully.']")
+	public WebElement revertSuccessMessage;
+	
+	@FindBy(xpath = "//span[@title='ERROR_MESSAGE']")
+	public WebElement editErrorMessage;
+	
+	@FindBy(xpath = "//*[@data-label='PERMITNO'][@role='gridcell']//button")
+	public WebElement editButtonValue;
+	
+	@FindBy(xpath = "//input[@class='slds-input']")
+	public WebElement editButtonInput;
+		
 	public void selectFileAndSource(String filetype, String source) throws InterruptedException, IOException {
 		System.out.println("File type is:" + filetype + " and Source is:" + source);
 		Click(fileTypedropdown);
@@ -64,4 +106,5 @@ public class EFileHomePage extends Page {
 		Thread.sleep(2000);
 		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]")));
 	}
+	
 }

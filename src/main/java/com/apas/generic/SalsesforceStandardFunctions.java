@@ -6,15 +6,17 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
 import com.apas.PageObjects.BppTrendPage;
 import com.apas.PageObjects.EFileHomePage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
+import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.PasswordUtils;
+import com.relevantcodes.extentreports.LogStatus;
 
 public class SalsesforceStandardFunctions extends TestBase{
 	
@@ -32,16 +34,25 @@ public class SalsesforceStandardFunctions extends TestBase{
 		eFilePageObject = new EFileHomePage(this.driver);
 	}
 	
-	public void login(String userType) throws Exception{					
+	public void login(String userType) throws Exception{
+		String password = CONFIG.getProperty(userType + "Password");
+		if (CONFIG.getProperty("passwordEncryptionFlag").equals("true")){
+			System.out.println("Decrypting the password : " + password);
+			password = PasswordUtils.decrypt(password, "");
+		}
+				
+		ExtentTestManager.getTest().log(LogStatus.INFO, userType + " User is logging in the application");
+		
 		objPage.navigateTo(driver, envURL);
 		objLoginPage.enterLoginUserName(CONFIG.getProperty(userType + "UserName"));
-		objLoginPage.enterLoginPassword(CONFIG.getProperty(userType + "Password"));
+		objLoginPage.enterLoginPassword(password);
 		objLoginPage.clickBtnSubmit();
 		Thread.sleep(15000);
 		System.out.println("User logged in the application");
 	}
 	
 	public void searchApps(String appToSearch) throws Exception {	
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + appToSearch + " tab");
 		objBppTrendsPage.clickAppLauncher();
 		objBppTrendsPage.searchForApp(appToSearch);
 		objBppTrendsPage.clickNavOptionFromDropDown(appToSearch);
@@ -57,6 +68,7 @@ public class SalsesforceStandardFunctions extends TestBase{
 		objPage.Click(eFilePageObject.confirmButton);
 		objPage.Click(eFilePageObject.uploadFilebutton);
 		Thread.sleep(2000);
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " + fileName + " on Efile Import Tool");
 		uploadFile(fileName);
 		Thread.sleep(5000);
 		objPage.Click(eFilePageObject.doneButton);	
@@ -78,9 +90,23 @@ public class SalsesforceStandardFunctions extends TestBase{
 	}
 	
 	public void logout() throws IOException{	
+		ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");
 		objLoginPage.clickImgUser();
 		objLoginPage.clickLnkLogOut();
-		System.out.println("User logged out of the application");
 	}
 
+	public void editGridCellValue(String columnNameOnGrid, String expectedValue) throws IOException, AWTException, InterruptedException{
+		WebElement webelement = driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button"));
+		objPage.scrollToElement(webelement);
+		objPage.Click(webelement);
+		
+		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
+		webelementInput.clear();
+		webelementInput.sendKeys(expectedValue);
+		Robot robot = new Robot();
+		robot.keyPress(KeyEvent.VK_ENTER);
+    	robot.keyRelease(KeyEvent.VK_ENTER);
+    	Thread.sleep(1000);
+	}
+	
 }
