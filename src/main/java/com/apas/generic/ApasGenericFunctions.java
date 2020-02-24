@@ -6,10 +6,12 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import com.apas.PageObjects.BppTrendPage;
+
+import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.EFileHomePage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
@@ -18,19 +20,19 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.PasswordUtils;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class SalsesforceStandardFunctions extends TestBase{
+public class ApasGenericFunctions extends TestBase{
 	
 	private RemoteWebDriver driver;
 	Page objPage;
 	LoginPage objLoginPage;
 	EFileHomePage eFilePageObject;
-	BppTrendPage objBppTrendsPage;
+	ApasGenericPage objApasGenericPage;
 	
-	public SalsesforceStandardFunctions(RemoteWebDriver driver){
+	public ApasGenericFunctions(RemoteWebDriver driver){
 		this.driver = driver;
 		objPage = new Page(this.driver);
 		objLoginPage = new LoginPage(this.driver);
-		objBppTrendsPage = new BppTrendPage(this.driver);
+		objApasGenericPage = new ApasGenericPage(this.driver);
 		eFilePageObject = new EFileHomePage(this.driver);
 	}
 	
@@ -47,19 +49,19 @@ public class SalsesforceStandardFunctions extends TestBase{
 		objLoginPage.enterLoginUserName(CONFIG.getProperty(userType + "UserName"));
 		objLoginPage.enterLoginPassword(password);
 		objLoginPage.clickBtnSubmit();
-		Thread.sleep(15000);
 		System.out.println("User logged in the application");
 	}
 	
 	public void searchApps(String appToSearch) throws Exception {	
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + appToSearch + " tab");
-		objBppTrendsPage.clickAppLauncher();
-		objBppTrendsPage.searchForApp(appToSearch);
-		objBppTrendsPage.clickNavOptionFromDropDown(appToSearch);
+		objApasGenericPage.clickAppLauncher();
+		objApasGenericPage.searchForApp(appToSearch);
+		objApasGenericPage.clickNavOptionFromDropDown(appToSearch);
 		Thread.sleep(4000);
 	}
 	
 	public void uploadFileOnEfileIntake(String fileType, String source,String period, String fileName) throws Exception{
+		fileName = "\"" + fileName + "\"";
 		eFilePageObject.selectFileAndSource(fileType, source);
 		Thread.sleep(4000);
 		objPage.Click(eFilePageObject.nextButton);

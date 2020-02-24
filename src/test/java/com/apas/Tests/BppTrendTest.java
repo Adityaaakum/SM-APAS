@@ -22,13 +22,13 @@ import com.apas.Utils.Util;
 import com.apas.config.apps;
 import com.apas.config.testdata;
 import com.apas.config.users;
-import com.apas.generic.SalsesforceStandardFunctions;
+import com.apas.generic.ApasGenericFunctions;
 
 public class BppTrendTest extends TestBase implements testdata, apps, users {
 	private RemoteWebDriver driver;
 	BppTrendPage objBppTrendsPage;
 	Page objPage;
-	SalsesforceStandardFunctions salesforceStandardFunctions;
+	ApasGenericFunctions salesforceStandardFunctions;
 	Util objUtil;
 	SoftAssertion softAssert;
 	List<String> tableNamesOutsideMoreTab;
@@ -39,7 +39,7 @@ public class BppTrendTest extends TestBase implements testdata, apps, users {
 	public void beforeMethod(){
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
-		salesforceStandardFunctions = new SalsesforceStandardFunctions(driver);
+		salesforceStandardFunctions = new ApasGenericFunctions(driver);
 		objBppTrendsPage = new BppTrendPage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();

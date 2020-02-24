@@ -31,7 +31,11 @@ public class SoftAssertion {
 	}
 
 	private static void updateTestCaseStatusInMap(String testCaseKey, String testCaseStatus) {
-		JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey, testCaseStatus);
+		String currentStatus = JiraAdaptavistStatusUpdate.testStatus.get(testCaseKey);
+		
+		if(!(currentStatus.equalsIgnoreCase("Fail"))) {
+			JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey, testCaseStatus);
+		}
 	}
 
 	private static void extractTestCaseKey(String message) {

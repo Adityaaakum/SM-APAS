@@ -16,12 +16,6 @@ public class BppTrendPage extends Page {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//one-app-launcher-header/button[@class = 'slds-button']")
-	private WebElement appLauncher;
-
-	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items')]")
-	private WebElement appLauncherSearchBox;
-
 	@FindBy(xpath = "//input[@name='rollyear']")
 	public WebElement rollYearDropdown;
 
@@ -43,20 +37,6 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//button[@name='btnSubApproval' and contains(.,'Submit for Approval')]")
 	public WebElement submitForApprovalButton;
 
-	public void clickAppLauncher() throws Exception {
-		Click(appLauncher);
-	}
-
-	public void searchForApp(String appToSearch) throws Exception {
-		enter(appLauncherSearchBox, appToSearch);
-	}
-
-	public void clickNavOptionFromDropDown(String navOption) throws Exception {
-		String xpathStr = "//a[contains(@data-label, '" + navOption + "')]//b[text() = '" + navOption + "']";
-		//WebElement drpDwnOption = locateElement(xpathStr, 100);
-		WebElement drpDwnOption = waitForElementToBeClickable(xpathStr);
-		drpDwnOption.click();
-	}
 	
 	public void clickRollYearDropDown() throws Exception {
 		Click(rollYearDropdown);
@@ -64,7 +44,6 @@ public class BppTrendPage extends Page {
 
 	public void clickOnGivenRollYear(String rollYear) throws Exception {
 		String xpathStr = "//div[contains(@id,'dropdown-element')]//span[contains(text(),'" + rollYear + "')]";
-		//WebElement element = locateElement(xpathStr, 200);
 		WebElement element = waitForElementToBeClickable(xpathStr);
 		element.click();
 	}
@@ -86,18 +65,15 @@ public class BppTrendPage extends Page {
 		} else {
 			xpathStr = "//span[contains(text(), '" + tableName + "')]";
 		}
-		//WebElement givenTable = locateElement(xpathStr, 200);
 		WebElement givenTable = waitForElementToBeClickable(xpathStr);
 		givenTable.click();
 	}
 	
 	public String clickCalculateButton(String tableName) throws Exception {
 		String xpathStr = "//lightning-tab[contains(@data-id, '" + tableName + "')]/slot/div";
-		//String currentMessage = locateElement(xpathStr, 500).getText();
 		String currentMessage = waitForElementToBeClickable(xpathStr).getText();
 		if(currentMessage.equalsIgnoreCase("Yet to be calculated")) {
 			Click(calculateButton);	
-			//currentMessage = locateElement(xpathStr, 500).getText();
 			currentMessage = waitForElementToBeClickable(xpathStr).getText();
 		}
 		return currentMessage;

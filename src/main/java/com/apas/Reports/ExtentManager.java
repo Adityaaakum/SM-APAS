@@ -21,8 +21,8 @@ public class ExtentManager {
 		if (extent == null) {
 			// String [] strVal=SuiteName.split("_");
 			// String browserName= strVal[1];
-			File outputDirectory = outputDirectory = new File((context).getOutputDirectory());
-			File resultDirectory = resultDirectory = new File(outputDirectory.getParentFile(), "html");
+			File outputDirectory = new File((context).getOutputDirectory());
+			File resultDirectory = new File(outputDirectory.getParentFile(), "html");
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
 			String upDate = sdf.format(date);
@@ -57,5 +57,4 @@ public class ExtentManager {
 	public static void setOutputDirectory(ITestContext context) {
 		ExtentManager.context = context;
 	}
-
 }
