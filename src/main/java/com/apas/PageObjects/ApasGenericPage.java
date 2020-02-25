@@ -15,20 +15,15 @@ public class ApasGenericPage extends Page {
 	}
 
 	@FindBy(xpath = "//one-app-launcher-header/button[@class = 'slds-button']")
-	private WebElement appLauncher;
+	public WebElement appLauncher;
 	
 	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items')]")
-	private WebElement appLauncherSearchBox;
+	public WebElement appLauncherSearchBox;
 	
-	
-	public void clickAppLauncher() throws Exception {
-		Click(appLauncher);
-	}
 
-	public void searchForApp(String appToSearch) throws Exception {
-		enter(appLauncherSearchBox, appToSearch);
-	}
-
+	/**
+	 * Description: This will click on the module name from the drop down
+	 */
 	public void clickNavOptionFromDropDown(String navOption) throws Exception {
 		String xpathStr = "//a[contains(@data-label, '" + navOption + "')]//b[text() = '" + navOption + "']";
 		WebElement drpDwnOption = waitForElementToBeClickable(xpathStr);

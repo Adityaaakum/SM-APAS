@@ -18,10 +18,10 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 	public static HashMap<String, String> testStatus = new HashMap<String, String>();
 
 	/**
-	 * @author yogsingh5 Method : updateJiraTestCaseStatus Params :
-	 *         jiraTestCaseId, testCaseStatus Description : This method makes
-	 *         the API call for updating the test cases status in JIRA
-	 *         Adaptavist
+	 * @author yogsingh5 
+	 * Method : updateJiraTestCaseStatus 
+	 * @Params : jiraTestCaseId, testCaseStatus 
+	 * Description : This method makes the API call for updating the test cases status in JIRA Adaptavist
 	 **/
 	public static void updateJiraTestCaseStatus(String jiraTestCaseId, String testCaseStatus) {
 		try {
@@ -54,7 +54,9 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 	}
 
 	/**
-	 * @author Sikander Bhambhu Method : retrieveJiraTestCases Description :
+	 * @author Sikander Bhambhu 
+	 * Method : retrieveJiraTestCases 
+	 * Description :
 	 *         This method makes the API call for fetching all the test cases
 	 *         from JIRA for given test cycle and created a map with these test
 	 *         cases with null values
@@ -95,7 +97,9 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 	}
 
 	/**
-	 * @author Sikander Bhambhu Method : mapTestCaseStatusToJIRA Description :
+	 * @author Sikander Bhambhu
+	 * Method : mapTestCaseStatusToJIRA 
+	 * Description :
 	 *         This method internally uses testStatus map and calls
 	 *         updateJiraTestCaseStatus
 	 **/

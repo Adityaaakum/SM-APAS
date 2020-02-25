@@ -6,6 +6,10 @@ import com.apas.TestBase.TestBase;
 
 public class TestAnnotationListener extends TestBase implements IClassListener {
 
+	/**
+	 * Description: This method will be used before each test class
+	 * @param testClass: Object of ITestClass
+	 */
 	@Override
 	public void onBeforeClass(ITestClass testClass) {
 		try {
@@ -16,11 +20,15 @@ public class TestAnnotationListener extends TestBase implements IClassListener {
 		}
 	}
 
+	/**
+	 * Description: This method will be used after each test class
+	 * @param testClass: Object of ITestClass
+	 */
 	@Override
 	public void onAfterClass(ITestClass testClass) {
 		try {
 			System.out.println("TearDown step");
-			//TearDown();
+			TearDown();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

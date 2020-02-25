@@ -40,13 +40,16 @@ public class SuiteListener extends TestBase implements ITestListener {
 		return sw.toString();
 	}
 
+	/**
+	 * Description: This method will be executed before the suite starts
+	 * @param context: Object of ITestContext
+	 */
 	@Override
 	public void onStart(ITestContext context) {
 		ExtentManager.setOutputDirectory(context);
 		CONFIG = new Properties();
 		try {
 			TestBase.loadPropertyFiles();
-			// setupTest();
 
 			extent = new ExtentManager().getInstance(context.getSuite().getName());
 			if (flagToUpdateJira && testCycle != null) {
@@ -55,25 +58,35 @@ public class SuiteListener extends TestBase implements ITestListener {
 				JiraAdaptavistStatusUpdate.mapTestCaseStatusToJIRA();
 			}
 			objUtil = new Util();
+			
+			//This will move old report to archive folder
 			objUtil.migrateOldReportsToAcrhive();
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 	}
 
+	/**
+	 * Description: This method will be executed after the suite finished
+	 * @param context: Object of ITestContext
+	 */
 	@Override
 	public void onFinish(ITestContext context) {
-		// TearDown();
-
 		if (flagToUpdateJira && testCycle != null) {
+			//Updating the Jira tickets status at the end of the execution
 			System.out.println("Test cases map on end of execution: " + JiraAdaptavistStatusUpdate.testStatus);
 			JiraAdaptavistStatusUpdate.mapTestCaseStatusToJIRA();
 		}
 	}
 
+	/**
+	 * Description: This method will be executed on the start of test case
+	 * @param result: Object of ITestResult
+	 */
 	@Override
 	public void onTestStart(ITestResult result) {
 		try {
+			//Updating the system properties with test case properties details
 			String methodName = result.getMethod().getMethodName();
 			String className = result.getMethod().toString();
 			String description = "Description: " + result.getMethod().getDescription();
@@ -90,8 +103,13 @@ public class SuiteListener extends TestBase implements ITestListener {
 		}
 	}
 
+	/**
+	 * Description: This method will be executed if the test case is passed
+	 * @param result: Object of ITestResult
+	 */
 	@Override
 	public void onTestSuccess(ITestResult result) {
+		//Updating the extent report with the step that test case is passed.
 		if (SoftAssertion.isSoftAssertionUsedFlag == null || !(SoftAssertion.isSoftAssertionUsedFlag)) {
 			ExtentTestManager.getTest().log(LogStatus.PASS, "Test Case has been PASSED.");
 			ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
@@ -99,12 +117,17 @@ public class SuiteListener extends TestBase implements ITestListener {
 		}
 	}
 
+	/**
+	 * Description: This method will be executed if the test case is Failed
+	 * @param result: Object of ITestResult
+	 */
 	@Override
 	public void onTestFailure(ITestResult result) {
 		try {
 			if (SoftAssertion.isSoftAssertionUsedFlag == null || !(SoftAssertion.isSoftAssertionUsedFlag)) {
 				RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
 
+				//Taking the screenshot as the test case is failed
 				TakesScreenshot ts = (TakesScreenshot) ldriver;
 				File source = ts.getScreenshotAs(OutputType.FILE);
 				Date date = new Date();
@@ -116,7 +139,9 @@ public class SuiteListener extends TestBase implements ITestListener {
 				FileUtils.copyFile(source, destination);
 
 				ExtentTestManager.getTest().log(LogStatus.FAIL, getStackTrace(result.getThrowable()));
+				//Adding the screenshot to the report
 				ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot below: " + upTest.addScreenCapture(dest));
+				//Finishing the test case
 				ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 				ExtentManager.getExtentInstance().flush();
 			}
@@ -125,6 +150,10 @@ public class SuiteListener extends TestBase implements ITestListener {
 		}
 	}
 
+	/**
+	 * Description: This method will be executed if the test case is Skipped
+	 * @param result: Object of ITestResult
+	 */
 	@Override
 	public void onTestSkipped(ITestResult result) {
 		String methodName = result.getMethod().getMethodName();

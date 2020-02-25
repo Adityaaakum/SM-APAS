@@ -17,10 +17,13 @@ public class TestCaseUpdateRequestMainPojo {
 
 	@JsonProperty("status")
 	private String status;
+	
 	@JsonProperty("executedBy")
 	private String executedBy;
+	
 	@JsonProperty("comment")
 	private String comment;
+	
 	@JsonIgnore
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 

@@ -1,9 +1,6 @@
 package com.apas.PageObjects;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -64,6 +61,10 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//li[@class='slds-tabs_scoped__item slds-tabs_scoped__overflow-button']//button[contains(text(),'More')]/following-sibling::div//span[text() = '$tableName']")
 	private WebElement tableName;
 
+	/**
+	 * Description: This will return the text of the selected option
+	 * @return : Text of the app
+	 */
 	public String getSelectedAppText(String selectedNavOption) {
 		String actualAppText = "Bad element requested!! Either it not present or not visible/enabled.";
 		boolean isElementPresent = verifyElementEnabled(textForSelectedNavOption);
@@ -73,8 +74,10 @@ public class BppTrendSetupPage extends Page {
 		return actualAppText;
 	}
 
-	public String clickHeaderOption(String headerOptionToSelect) throws Exception {
-		String headerOptionText = null;
+	/**
+	 * Description: This will click on the header text
+	 */
+	public void clickHeaderOption(String headerOptionToSelect) throws Exception {
 		if (headerOptions.size() == 1) {
 			Click(headerOptions.get(0));
 		} else {
@@ -85,9 +88,12 @@ public class BppTrendSetupPage extends Page {
 				}
 			}
 		}
-		return headerOptionText;
 	}
 
+	/**
+	 * Description: This will return the text of the header
+	 * @return : Text of the header
+	 */
 	public String getSelectedHeaderText(String selectedHeaderOption) {
 		String actualHeaderText = "Bad element requested!! Either it not present or not visible/enabled.";
 		boolean isElementPresent = verifyElementEnabled(textForSelectedHeaderOption);
@@ -97,27 +103,4 @@ public class BppTrendSetupPage extends Page {
 		return actualHeaderText;
 	}
 
-	public void clickListViewDropDown() throws IOException {
-		Click(listViews);
-	}
-
-	public void selectListViewOption(String listViewToSelect) throws IOException {
-		Click(listViewOptions);
-	}
-
-	public void clickPinIcon() throws Exception {
-		Click(pinIcon);
-	}
-
-	public void clickRollYearTxtBox() throws Exception {
-		Click(dropDownBoxRollYear);
-	}
-
-	public void clickRollYearOption(String rollYear) throws Exception {
-		Click(dropDownBoxRollYear);
-	}
-
-	public void clickBtnRollYearSelect() throws Exception {
-		Click(dropDownBoxRollYear);
-	}
 }

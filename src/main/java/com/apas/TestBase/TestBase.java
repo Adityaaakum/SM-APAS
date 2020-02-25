@@ -2,10 +2,7 @@ package com.apas.TestBase;
 
 import java.io.FileInputStream;
 import java.util.Properties;
-import java.util.Set;
-
 import org.openqa.selenium.remote.RemoteWebDriver;
-
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.Reports.ExtentTestManager;
 import com.relevantcodes.extentreports.LogStatus;
@@ -27,20 +24,12 @@ public class TestBase extends BrowserDriver {
 	public final boolean flagToUpdateJira = Boolean.parseBoolean(System.getProperty("flagToUpdateJira"));
 	public static String testCycle = System.getProperty("testCycle");
 
-	/**
-	 * Function Setuptest will execute before every test class.
-	 *
-	 * @param browser
-	 *            the browser
-	 * @return the web driver
-	 * @throws Exception
-	 *             the exception
-	 */
 
-	// public final static String browserName = "chrome";
-	// public final String region = "qa";
 	public static String envURL;
 
+	/**
+	 * Function SetupTest will be executed before every test class.
+	 */
 	public RemoteWebDriver setupTest() throws Exception {
 		RemoteWebDriver ldriver = getDriver(browserName);
 		try {
@@ -49,8 +38,7 @@ public class TestBase extends BrowserDriver {
 
 			if (region.equalsIgnoreCase("dev")) {
 				envURL = CONFIG.getProperty("URL_dev");
-			}
-			if (region.equalsIgnoreCase("qa")) {
+			}else if (region.equalsIgnoreCase("qa")) {
 				envURL = CONFIG.getProperty("URL_qa");
 			} else if (region.equalsIgnoreCase("sit")) {
 				envURL = CONFIG.getProperty("URL_sit");
@@ -70,16 +58,18 @@ public class TestBase extends BrowserDriver {
 	public void TearDown() {
 		RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
 		try {
-			loadPropertyFiles();
 			ldriver.close();
 			Thread.sleep(4000);
 			ldriver.quit();
 		} catch (Exception e) {
-
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * This function will load the properties from the multiple property files in CONFIG
+	 * 
+	 */
 	public static void loadPropertyFiles() throws Exception {
 		fsEnv  = new FileInputStream(System.getProperty("user.dir") + "//src//test//resources//envConfig" + System.getProperty("region").toUpperCase() + ".properties");
 		fsConfig = new FileInputStream(System.getProperty("user.dir") + "//src//test//resources//envConfig.properties");
@@ -89,6 +79,12 @@ public class TestBase extends BrowserDriver {
 		CONFIG.load(fsData);
 	}
 
+	/**
+	 * This function print the message in extent report based on flag
+	 *  @param flag: True/False. Step will be passed or failed based on this flag
+	 *  @param Message: Message to be printed on the extent report
+	 * 
+	 */
 	public static void reportLogger(boolean flag, String Message) {
 		if (flag) {
 			ExtentTestManager.getTest().log(LogStatus.PASS, "Test Step Passed :" + Message);

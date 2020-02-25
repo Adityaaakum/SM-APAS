@@ -5,9 +5,9 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class EFileImportTransactions extends Page {
+public class EFileImportTransactionsPage extends Page {
 
-	public EFileImportTransactions(RemoteWebDriver driver) {
+	public EFileImportTransactionsPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
 	}

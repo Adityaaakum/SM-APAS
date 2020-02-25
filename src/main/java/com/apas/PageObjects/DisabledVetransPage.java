@@ -91,7 +91,4 @@ public class DisabledVetransPage extends Page {
 	@FindBy(xpath = "//span[@data-aura-class='uiPicklistLabel' and contains(.,'Prior Residence State')]/following::div[1]//div/a")
 	public WebElement basisForClaim;
 
-	public void readExemptionData() {
-
-	}
 }

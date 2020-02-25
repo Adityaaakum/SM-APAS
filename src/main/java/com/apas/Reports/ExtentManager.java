@@ -19,8 +19,6 @@ public class ExtentManager {
 
 	public synchronized ExtentReports getInstance(String SuiteName) {
 		if (extent == null) {
-			// String [] strVal=SuiteName.split("_");
-			// String browserName= strVal[1];
 			File outputDirectory = new File((context).getOutputDirectory());
 			File resultDirectory = new File(outputDirectory.getParentFile(), "html");
 			Date date = new Date();
@@ -38,22 +36,31 @@ public class ExtentManager {
 		return extent;
 	}
 
+	/**
+	 * Description: This function will return the extent report instance
+	 * @return : Returns the instance of extent report
+	 */
 	public static ExtentReports getExtentInstance() {
-		// System.out.println(dr.get());
 		return extent;
 	}
 
-	/*
-	 * public void setExtent(ExtentReports Extent) { dr.set(Extent); }
+	/**
+	 * Description: Setting the email directory path
 	 */
 	public void setEmaildirectoryPath(String filepath) {
 		emaildirectoryPath.set(filepath);
 	}
 
+	/**
+	 * Description: This will return the pathe of the email directory
+	 */
 	public String getEmaildirectoryPath() {
 		return emaildirectoryPath.get();
 	}
 
+	/**
+	 * Description: This will set the context of the extent manager
+	 */
 	public static void setOutputDirectory(ITestContext context) {
 		ExtentManager.context = context;
 	}

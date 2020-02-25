@@ -61,20 +61,27 @@ public class Util {
 	 */
 	public static void setValIntoResource(String key, String value, FileType fileType) throws Exception {
 
+		//Getting the url of the file type passed through the parameter
 		URL url = Util.class.getResource(fileType.getFileName());
 		String fileName;
 		try {
 			fileName = url.toURI().getPath();
 
 			String absoultePath = null;
+			
+			//Setting absolute path of the file based on the file name
 			if (fileName.contains("envConfig")) {
 				absoultePath = System.getProperty("user.dir") + "//src//test//resources//envConfig.properties";
 			} else if (fileName.contains("TestData")) {
 				absoultePath = System.getProperty("user.dir") + "//src//test//resources//TestData.properties";
 			}
+			
+			//Loading the properties of the property file
 			PropertiesConfiguration config = new PropertiesConfiguration(absoultePath);
+			//Setting the value of the key in the property file
 			config.setProperty(key, value);
 			config.save();
+			//Reloading the properties after the property update
 			TestBase.loadPropertyFiles();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
@@ -82,9 +89,11 @@ public class Util {
 	}
 
 	/**
-	 * @author Sikander Bhambhu Method : retrieveListOfLinesFromNotepad
+	 * @author Sikander Bhambhu 
 	 *         Description : This method read the diven text file and return a
 	 *         of all the lines (comma seperated) read from it.
+	 *         @param filePath
+	 *         			path of file to be conveted to list
 	 **/
 	public List<List<String>> retrieveListOfLinesFromTxtFile(String filePath) {
 		List<List<String>> allLines = new ArrayList<List<String>>();
@@ -103,7 +112,7 @@ public class Util {
 	}
 
 	/**
-	 * @author Sikander Bhambhu Method : generateMapFromDataFile
+	 * @author Sikander Bhambhu 
 	 * 
 	 *         Description : This method internally uses
 	 *         retrieveListOfLinesFromTxtFile which returns a list all the lines
@@ -111,7 +120,7 @@ public class Util {
 	 *         data map which has various data fields in the application as keys
 	 *         and their values as per provided by user as Strings.
 	 * 
-	 * @param key:
+	 * @param filePath:
 	 *            Path of the file to be read. Example
 	 *            'C:\Users\Administrator\Desktop\DataFile.txt'
 	 **/
@@ -125,7 +134,7 @@ public class Util {
 	}
 
 	/**
-	 * @author Sikander Bhambhu Method : getCurrentDate
+	 * @author Sikander Bhambhu 
 	 * 
 	 * @Description: This method takes an expected format for date and return
 	 *               the current date in the format provided.
@@ -141,7 +150,7 @@ public class Util {
 	}
 
 	/**
-	 * @author Sikander Bhambhu Method : migrateOldReportsToAcrhive
+	 * @author Sikander Bhambhu
 	 * 
 	 * @Description : This method internally collects all the execution reports
 	 *              from AutomationReport folder and moves them to an archive
@@ -155,6 +164,7 @@ public class Util {
 			directory.mkdir();
 		}
 
+		//Fetching all the files ending with .html in the source folder
 		File sourceFiles = new File(sourceDir);
 		String[] fileNames = sourceFiles.list(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
@@ -166,6 +176,7 @@ public class Util {
 			}
 		});
 
+		//Moving all the files identified above from source to destination folder
 		if (fileNames.length > 0) {
 			for (String fileName : fileNames) {
 				String source = sourceDir + "\\" + fileName;

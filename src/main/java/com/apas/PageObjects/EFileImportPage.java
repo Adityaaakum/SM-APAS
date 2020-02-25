@@ -8,9 +8,9 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class EFileHomePage extends Page {
+public class EFileImportPage extends Page {
 
-	public EFileHomePage(RemoteWebDriver driver) {
+	public EFileImportPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
 	}

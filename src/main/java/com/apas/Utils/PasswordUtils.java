@@ -1,5 +1,6 @@
 package com.apas.Utils;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -14,6 +15,12 @@ public class PasswordUtils {
     private static SecretKeySpec secretKey;
     private static byte[] key;
  
+	/**
+	 * This function will set the secret key passed in the variable secretKeyString
+	 * 
+	 * @param myKey
+	 *            the secret key to be set
+	 */
     public static void setKey(String myKey) {
         MessageDigest sha = null;
         try {
@@ -29,6 +36,14 @@ public class PasswordUtils {
         }
     }
  
+	/**
+	 * This function will encrypt he String using the secret key
+	 * 
+	 * @param strToEncrypt
+	 *            String to be encrypted
+	 *            @param secret
+	 *            		secret key to be used to encryp the string
+	 */
     public static String encrypt(String strToEncrypt, String secret) {
     	secret = secretKeyString;
         try{
@@ -43,6 +58,14 @@ public class PasswordUtils {
         return null;
     }
  
+	/**
+	 * This function will decrypt he String using the secret key
+	 * 
+	 * @param strToDecrypt
+	 *            String to be decrypted
+	 *            @param secret
+	 *            		secret key to be used to encryp the string
+	 */
     public static String decrypt(String strToDecrypt, String secret) {
     	secret = secretKeyString;
         try{

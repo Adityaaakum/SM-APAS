@@ -37,27 +37,30 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//button[@name='btnSubApproval' and contains(.,'Submit for Approval')]")
 	public WebElement submitForApprovalButton;
 
-	
-	public void clickRollYearDropDown() throws Exception {
-		Click(rollYearDropdown);
-	}
-
+	/**
+	 * Description: This will select the roll year from the drop down
+	 */
 	public void clickOnGivenRollYear(String rollYear) throws Exception {
 		String xpathStr = "//div[contains(@id,'dropdown-element')]//span[contains(text(),'" + rollYear + "')]";
 		WebElement element = waitForElementToBeClickable(xpathStr);
 		element.click();
 	}
 
-	public void clickBtnSelect() throws Exception {
-		Click(selectRollYearButton);
-	}
-	
+	/**
+	 * Description: This will return the list of table on the screen
+	 * @return : List of visible tables on the screen
+	 */
 	public List<WebElement> getVisibleTables() throws Exception {
 		String xpathStr = "//ul[@role='tablist']//li//a";
 		List<WebElement> visibleTables = locateElements(xpathStr, 500);
 		return visibleTables;
 	}
 	
+	/**
+	 * Description: This will select the table irrespective of hidden or displayed
+	 * @param tableName: Name of the table
+	 * @param isTableOutsideMoreTab: True/False if the table is hidden or not
+	 */
 	public void clickOnGivenTableName(String tableName, boolean isTableOutsideMoreTab) throws Exception {
 		String xpathStr = null;
 		if (isTableOutsideMoreTab) {
@@ -69,6 +72,11 @@ public class BppTrendPage extends Page {
 		givenTable.click();
 	}
 	
+	/**
+	 * Description: This will calculate the index
+	 * @param tableName: Name of the table
+	 * @return : Status of the index data submission
+	 */
 	public String clickCalculateButton(String tableName) throws Exception {
 		String xpathStr = "//lightning-tab[contains(@data-id, '" + tableName + "')]/slot/div";
 		String currentMessage = waitForElementToBeClickable(xpathStr).getText();
@@ -79,7 +87,4 @@ public class BppTrendPage extends Page {
 		return currentMessage;
 	}
 	
-	public void clickMoreTab() throws Exception {
-		Click(moreTabs);
-	}
 }

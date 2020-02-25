@@ -12,7 +12,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.apas.PageObjects.ApasGenericPage;
-import com.apas.PageObjects.EFileHomePage;
+import com.apas.PageObjects.EFileImportPage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
@@ -25,7 +25,7 @@ public class ApasGenericFunctions extends TestBase{
 	private RemoteWebDriver driver;
 	Page objPage;
 	LoginPage objLoginPage;
-	EFileHomePage eFilePageObject;
+	EFileImportPage eFilePageObject;
 	ApasGenericPage objApasGenericPage;
 	
 	public ApasGenericFunctions(RemoteWebDriver driver){
@@ -33,7 +33,7 @@ public class ApasGenericFunctions extends TestBase{
 		objPage = new Page(this.driver);
 		objLoginPage = new LoginPage(this.driver);
 		objApasGenericPage = new ApasGenericPage(this.driver);
-		eFilePageObject = new EFileHomePage(this.driver);
+		eFilePageObject = new EFileImportPage(this.driver);
 	}
 	
 	public void login(String userType) throws Exception{
@@ -46,16 +46,16 @@ public class ApasGenericFunctions extends TestBase{
 		ExtentTestManager.getTest().log(LogStatus.INFO, userType + " User is logging in the application");
 		
 		objPage.navigateTo(driver, envURL);
-		objLoginPage.enterLoginUserName(CONFIG.getProperty(userType + "UserName"));
-		objLoginPage.enterLoginPassword(password);
-		objLoginPage.clickBtnSubmit();
+		objPage.enter(objLoginPage.txtuserName, CONFIG.getProperty(userType + "UserName"));
+		objPage.enter(objLoginPage.txtpassWord,password);
+		objPage.Click(objLoginPage.btnSubmit);
 		System.out.println("User logged in the application");
 	}
 	
 	public void searchApps(String appToSearch) throws Exception {	
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + appToSearch + " tab");
-		objApasGenericPage.clickAppLauncher();
-		objApasGenericPage.searchForApp(appToSearch);
+		objPage.Click(objApasGenericPage.appLauncher);
+		objPage.enter(objApasGenericPage.appLauncherSearchBox, appToSearch);
 		objApasGenericPage.clickNavOptionFromDropDown(appToSearch);
 		Thread.sleep(4000);
 	}
@@ -91,10 +91,13 @@ public class ApasGenericFunctions extends TestBase{
 		 robot.keyRelease(KeyEvent.VK_ENTER);
 	}
 	
-	public void logout() throws IOException{	
+	public void logout() throws IOException, InterruptedException{	
 		ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");
-		objLoginPage.clickImgUser();
-		objLoginPage.clickLnkLogOut();
+		Thread.sleep(10000);
+		objPage.Click(objLoginPage.imgUser);
+		Thread.sleep(10000);
+		objPage.Click(objLoginPage.lnkLogOut);
+		Thread.sleep(10000);
 	}
 
 	public void editGridCellValue(String columnNameOnGrid, String expectedValue) throws IOException, AWTException, InterruptedException{
