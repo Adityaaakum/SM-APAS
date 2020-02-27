@@ -2,15 +2,11 @@ package com.apas.generic;
 
 import java.awt.AWTException;
 import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.EFileImportPage;
 import com.apas.PageObjects.LoginPage;
@@ -36,8 +32,14 @@ public class ApasGenericFunctions extends TestBase{
 		eFilePageObject = new EFileImportPage(this.driver);
 	}
 	
+	/**
+	 * Description: This method will login to the APAS application with the user type passed as parameter
+	 * @param userType : Type of the user e.g. business admin / appraisal support
+	 */
 	public void login(String userType) throws Exception{
 		String password = CONFIG.getProperty(userType + "Password");
+		
+		//Decrypting the password if the encrypted password is saved in envconfig file and passwordEncryptionFlag flag is set to true
 		if (CONFIG.getProperty("passwordEncryptionFlag").equals("true")){
 			System.out.println("Decrypting the password : " + password);
 			password = PasswordUtils.decrypt(password, "");
@@ -52,32 +54,53 @@ public class ApasGenericFunctions extends TestBase{
 		System.out.println("User logged in the application");
 	}
 	
-	public void searchApps(String appToSearch) throws Exception {	
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + appToSearch + " tab");
+	/**
+	 * Description: This method will search the module in APAS based on the parameter passed
+	 * @param moduleToSearch : Module Name to search and open
+	 */
+	public void searchModule(String moduleToSearch) throws Exception {	
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
 		objPage.Click(objApasGenericPage.appLauncher);
-		objPage.enter(objApasGenericPage.appLauncherSearchBox, appToSearch);
-		objApasGenericPage.clickNavOptionFromDropDown(appToSearch);
+		objPage.enter(objApasGenericPage.appLauncherSearchBox, moduleToSearch);
+		objApasGenericPage.clickNavOptionFromDropDown(moduleToSearch);
+		//This static wait statement is added as the module title is different from the module to search 
 		Thread.sleep(4000);
 	}
 	
+	/**
+	 * Description: This method will upload the file on Efile Import module
+	 * @param fileType : Value from File Type Drop Down
+	 * @param source: Value from source drop down
+	 * @param period: Period for which the file needs to be uploaded
+	 * @param fileName: Absoulte Path of the file with the file name
+	 */
 	public void uploadFileOnEfileIntake(String fileType, String source,String period, String fileName) throws Exception{
 		fileName = "\"" + fileName + "\"";
 		eFilePageObject.selectFileAndSource(fileType, source);
-		Thread.sleep(4000);
+		objPage.waitUntilElementDisplayed(eFilePageObject.nextButton, 10);
 		objPage.Click(eFilePageObject.nextButton);
 		objPage.Click(eFilePageObject.periodDropdown);
 		objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
 		objPage.Click(eFilePageObject.confirmButton);
 		objPage.Click(eFilePageObject.uploadFilebutton);
+		//This static wait of 2 second is kept for File Upload window to open
 		Thread.sleep(2000);
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " + fileName + " on Efile Import Tool");
 		uploadFile(fileName);
-		Thread.sleep(5000);
-		objPage.Click(eFilePageObject.doneButton);	
+		objPage.waitForElementToBeClickable(eFilePageObject.doneButton);
+		objPage.Click(eFilePageObject.doneButton);
 		Thread.sleep(3000);
 	}
 	
-	public void uploadFile(String absoulteFilePath) throws AWTException, InterruptedException{
+	/**
+	 * Description: This method will upload the file using AutoIt tool
+	 * @param absoulteFilePath : Absolute path of the file to be uploaded
+	 */
+	public void uploadFile(String absoulteFilePath) throws AWTException, InterruptedException, IOException{
+		Runtime.getRuntime().exec(System.getProperty("user.dir") + "//src//test//resources//AutoIt//FileUpload.exe"+" " + absoulteFilePath);
+		
+		/**
+		 * Below Code is to upload the file using Robot. Using AutoIt as this was not working on Jenkins
 		 StringSelection ss = new StringSelection(absoulteFilePath);
 		 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
 		 
@@ -89,17 +112,25 @@ public class ApasGenericFunctions extends TestBase{
 		 robot.keyRelease(KeyEvent.VK_CONTROL);
 		 robot.keyPress(KeyEvent.VK_ENTER);
 		 robot.keyRelease(KeyEvent.VK_ENTER);
+		 */
 	}
 	
+	/**
+	 * Description: This method will logout the logged in user from APAS application
+	 */
 	public void logout() throws IOException, InterruptedException{	
 		ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");
-		Thread.sleep(10000);
 		objPage.Click(objLoginPage.imgUser);
-		Thread.sleep(10000);
 		objPage.Click(objLoginPage.lnkLogOut);
-		Thread.sleep(10000);
+		objPage.waitForElementToBeVisible(objLoginPage.txtpassWord,30);
 	}
 
+	
+	/**
+	 * Description: This method will Edit a cell on a grid displayed from the first row
+	 * @param columnNameOnGrid: Column name on which the cell needs to be updated
+	 * @param expectedValue: Modified value to be updated in the cell
+	 */
 	public void editGridCellValue(String columnNameOnGrid, String expectedValue) throws IOException, AWTException, InterruptedException{
 		WebElement webelement = driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button"));
 		objPage.scrollToElement(webelement);

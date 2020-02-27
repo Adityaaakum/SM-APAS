@@ -80,7 +80,7 @@ public class BuildingPermitTest extends TestBase {
 		objApasGenericFunctions.login(loginUser);
 		
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchApps(modules.EFILE_INTAKE);
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading the atherton building permit file");
@@ -131,13 +131,13 @@ public class BuildingPermitTest extends TestBase {
 		objPage.waitForElementToBeVisible(objEfileHomePage.efileRecordsApproveSuccessMessage, 20);
 		
 		//Step8: Searching the efile intake module to validate the status of the imported file after approve
-		objApasGenericFunctions.searchApps(modules.EFILE_INTAKE);
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		objEfileHomePage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Approved", "SMAB-T362: Validation if status of imported file is approved.");
 		
 		//Step9: Opening the Efile import transaction module
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Validation of imported file on efile import transaction screen");
-		objApasGenericFunctions.searchApps(modules.EFILE_IMPORT_TRANSACTIONS);
+		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_TRANSACTIONS);
 		objPage.Click(objEfileImportTransactionsPage.importTransactionName);
 		
 		//By default "Details" tab should be opened showing the transaction details of the imported file
@@ -151,7 +151,7 @@ public class BuildingPermitTest extends TestBase {
     /**
 	 Below test case is used to validate the revert functionality on the file having the error records
 	 **/
-	@Test(description = "SMAB-T361,SMAB-T358: Reverting the error records in building permit import", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true, enabled = false)
+	@Test(description = "SMAB-T361,SMAB-T358: Reverting the error records in building permit import", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true, enabled = true)
 	public void revertBuildingPermitImport(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -159,7 +159,7 @@ public class BuildingPermitTest extends TestBase {
 		objApasGenericFunctions.login(loginUser);
 		
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchApps(modules.EFILE_INTAKE);
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading the atherton building permit file");
@@ -189,7 +189,7 @@ public class BuildingPermitTest extends TestBase {
 		
 		//Step7: Validation of the file status after reverting the imported file
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Validation of file import status after revert");
-		objApasGenericFunctions.searchApps(modules.EFILE_INTAKE);
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		objEfileHomePage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		//Status of the imported file should be changed to Reverted as the whole file is reverted for reimport
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Reverted", "SMAB-T361: Validation if status of imported file is reverted.");
@@ -207,7 +207,7 @@ public class BuildingPermitTest extends TestBase {
 		objApasGenericFunctions.login(loginUser);
 		
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchApps(modules.EFILE_INTAKE);
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading the atherton building permit file");
@@ -242,7 +242,7 @@ public class BuildingPermitTest extends TestBase {
 		//Step8: Valiation of import history columns as the value should be updated based on the records retried from error section
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Validation of error and inported records on Import History table after retry");
 		//Opening the Efile intake module
-		objApasGenericFunctions.searchApps(modules.EFILE_INTAKE);
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		objEfileHomePage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.numberOfTimesTriedRetried), "2", "SMAB-T364: Validation if number of times try/retry count is increased by 1 after retrying the error records");
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsInFile), "10", "SMAB-T364: Validation if total number of records remain same on the table");
@@ -253,7 +253,7 @@ public class BuildingPermitTest extends TestBase {
 	/**
 	 Below test case is used to validate status of the imported San Mateo Building Permit file which in XLS format
 	 **/
-	@Test(description = "SMAB-T357,SMAB-T430 Transaction record verification for the imported Building Permit in XLS Format", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 1, alwaysRun = true, enabled = false)
+	@Test(description = "SMAB-T357,SMAB-T430 Transaction record verification for the imported Building Permit in XLS Format", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 1, alwaysRun = true, enabled = true)
 	public void transactionRecordVerificationBuildingPermitXLS(String loginUser) throws Exception {
 			
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)		
@@ -261,7 +261,7 @@ public class BuildingPermitTest extends TestBase {
 		objApasGenericFunctions.login(loginUser);
 		
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchApps(modules.EFILE_INTAKE);
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		
 		//Step3: Uploading the San Mateo Building Permit file having error and success records through Efile Intake Import
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading the San Mateo permit file");
@@ -293,7 +293,7 @@ public class BuildingPermitTest extends TestBase {
 		
 		//Step9: Opening the Efile import transaction module
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Validation of imported file on efile import transaction screen");
-		objApasGenericFunctions.searchApps(modules.EFILE_IMPORT_TRANSACTIONS);
+		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_TRANSACTIONS);
 		objPage.Click(objEfileImportTransactionsPage.importTransactionName);
 		
 		//By default "Details" tab should be opened showing the transaction details of the imported file
@@ -307,14 +307,14 @@ public class BuildingPermitTest extends TestBase {
 	/**
 	 Below test case is used to validate the manual creation of building permit 
 	 **/
-	@Test(description = "Creating manual entry for building permit", groups = {"smoke","regression"}, priority = 2, enabled = false)
+	@Test(description = "Creating manual entry for building permit", groups = {"smoke","regression"}, priority = 2, enabled = true)
 	public void bldngPrmtsCreateManualEntry() throws Exception {
 		
 		//Step1: Login to the APAS application using the business admin user
 		objApasGenericFunctions.login(users.BUSINESS_ADMIN);
 		
 		//Step2: Opening the building permit module
-		objApasGenericFunctions.searchApps(modules.BUILDING_PERMITS);
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
 					
 		//Step3: Enter the data to on manual create building permit screen
 		String newManualEntryData = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_NEW_MANUAL_ENTRY_DATA;

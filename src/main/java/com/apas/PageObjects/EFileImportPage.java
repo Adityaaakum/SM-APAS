@@ -81,6 +81,9 @@ public class EFileImportPage extends Page {
 	@FindBy(xpath = "//button[text()='Retry']")
 	public WebElement retryButton;
 	
+	@FindBy(xpath = "//button[text()='Close']")
+	public WebElement closeButton;
+	
 	@FindBy(xpath = "//*[text()='Thank you! Imported records has been approved successfully.']")
 	public WebElement efileRecordsApproveSuccessMessage;
 	
@@ -99,11 +102,8 @@ public class EFileImportPage extends Page {
 	public void selectFileAndSource(String filetype, String source) throws InterruptedException, IOException {
 		System.out.println("File type is:" + filetype + " and Source is:" + source);
 		Click(fileTypedropdown);
-		Thread.sleep(2000);
 		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + filetype + "')]")));
-		Thread.sleep(2000);
 		Click(sourceDropdown);
-		Thread.sleep(2000);
 		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]")));
 	}
 	

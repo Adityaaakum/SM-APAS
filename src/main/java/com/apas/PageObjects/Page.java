@@ -419,12 +419,53 @@ public class Page {
 	public WebElement waitForElementToBeVisible(WebElement element, int timeoutInSeconds) {
 		//try {
 			//wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(element));
+
 			wait.until(ExpectedConditions.visibilityOf(element));
 		//} catch (org.openqa.selenium.StaleElementReferenceException e) {
 			//e.printStackTrace();
 		//}
 		return element;
 	}
+	
+	public void waitUntilElementDisplayed(WebElement webElement, int timeoutInSeconds) {
+		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+		WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+		ExpectedCondition<Boolean> elementIsDisplayed = new ExpectedCondition<Boolean>() {
+		public Boolean apply(WebDriver arg0) {
+		  try {
+		     webElement.isDisplayed();
+		     return true;
+		  }
+		  catch (NoSuchElementException e ) {
+		    return false;
+		  }
+		  catch (StaleElementReferenceException f) {
+		    return false;
+		  }
+		    }
+		};
+		wait.until(elementIsDisplayed);
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		}
+	
+	public void waitUntilElementNotDisplayed(WebElement webElement, int timeoutInSeconds) {
+		WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+		ExpectedCondition<Boolean> elementIsDisplayed = new ExpectedCondition<Boolean>() {
+		public Boolean apply(WebDriver arg0) {
+		  try {
+		     webElement.isDisplayed();
+		     return false;
+		  }
+		  catch (NoSuchElementException e ) {
+		    return true;
+		  }
+		  catch (StaleElementReferenceException f) {
+		    return true;
+		  }
+		    }
+		};
+		wait.until(elementIsDisplayed);
+		}
 	
 	/**
 	 * Function will wait for an element to be Invisible on the page.

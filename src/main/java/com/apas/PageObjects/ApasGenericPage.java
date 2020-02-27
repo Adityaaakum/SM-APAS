@@ -1,6 +1,7 @@
 package com.apas.PageObjects;
 
 import org.apache.log4j.Logger;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
@@ -20,7 +21,6 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items')]")
 	public WebElement appLauncherSearchBox;
 	
-
 	/**
 	 * Description: This will click on the module name from the drop down
 	 */
@@ -29,4 +29,5 @@ public class ApasGenericPage extends Page {
 		WebElement drpDwnOption = waitForElementToBeClickable(xpathStr);
 		drpDwnOption.click();
 	}
+		
 }

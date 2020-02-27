@@ -1,0 +1,1 @@
+java -Dwebdriver.edge.driver="E:\Webdrivers\MicrosoftWebDriver.exe" -jar selenium-server-standalone-3.6.0.jar -role node -nodeConfig nodeConfigForEdge.json
