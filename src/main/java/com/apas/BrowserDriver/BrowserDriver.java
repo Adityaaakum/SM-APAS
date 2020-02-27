@@ -13,13 +13,19 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariOptions;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import com.apas.Utils.Util;
 
 public class BrowserDriver {
 	public static ThreadLocal<RemoteWebDriver> dr = new ThreadLocal<RemoteWebDriver>();
 
+	/**
+	 * Initializes the RemoteWebDriver and internally calls setWebDriver() method
+	 * 
+	 * @param browser: "Chrome" / "Firefox"
+	 * @return: It returns the the instance of RemoteWebDriver
+	 * @throws Exception
+	 */
 	public RemoteWebDriver getDriver(String browser) throws Exception {
 		URL url = new URL(Util.getValFromResource("grid.hub"));
 		RemoteWebDriver Wdriver = null;
@@ -108,15 +114,30 @@ public class BrowserDriver {
 		return Wdriver;
 	}
 
+	/**
+	 * Internally calls getDriver(browser) method
+	 * 
+	 * @param browser: "Chrome" / "Firefox"
+	 * @return: It returns the the instance of RemoteWebDriver
+	 * @throws Exception
+	 */
 	public RemoteWebDriver getDriverVal(String browser) throws Exception {
 		getDriver(browser);
 		return dr.get();
 	}
 
+	/**
+	 * Sets the value of class variable "dr" of ThreadLocal type
+	 * 
+	 * @param: Accepts argument of RemoteWebDriver type
+	 */
 	public void setWebDriver(RemoteWebDriver driver) {
 		dr.set(driver);
 	}
 
+	/**
+	 * @return: It returns the class variable "dr" of ThreadLocal type 
+	 */
 	public static RemoteWebDriver getBrowserInstance() {
 		return dr.get();
 	}

@@ -25,15 +25,22 @@ public class FailedCasesXmlGenerator {
 
 	private Map<String, List<String>> classesAndMethodsMap = new HashMap<String, List<String>>();
 	private List<String> listeners = new ArrayList<String>();
-	private String fileName = System.getProperty("user.dir") + "/testng.xml";
+	private String fileName = System.getProperty("user.dir") + "/failed-tests.xml";
 
+	/**
+	 * Parameterized class constructor to initialize instance variables
+	 * @param: Takes a map with Keys as class names and values as list of failed method from these classes
+	 */
 	public FailedCasesXmlGenerator(Map<String, List<String>> classesAndMethodsMap) {
 		listeners.add("com.apas.Listeners.SuiteListener");
 		listeners.add("com.apas.Listeners.TestAnnotationListener");
-
 		this.classesAndMethodsMap = classesAndMethodsMap;
 	}
 
+	/**
+	 * Generates an XML file of testng.xml format which contains failed methods (and their respective class)
+	 * that have failed during the execution
+	 */
 	public void generateFailedCasesXml() {
 		DocumentBuilderFactory icFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder icBuilder;
@@ -43,12 +50,9 @@ public class FailedCasesXmlGenerator {
 			Element mainRootElement = doc.createElement("suite");
 			mainRootElement.setAttribute("name", "APAS_Automation_FailedCases_ReExecution");
 			doc.appendChild(mainRootElement);
-
 			mainRootElement.appendChild(addListenersTag(doc, listeners));
-
 			mainRootElement.appendChild(addTestTag(doc, "Failed_Re_Execution"));
 
-			// output DOM XML to console
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			DOMSource source = new DOMSource(doc);
@@ -63,20 +67,39 @@ public class FailedCasesXmlGenerator {
 		}
 	}
 
+	/**
+	 * It appends the listeners tag in XML file. 
+	 * @param doc: Variable of Document type
+	 * @param listenerNames: List of listener names to add in XML file
+	 * @return: Returns Node type variable
+	 */
 	private Node addListenersTag(Document doc, List<String> listenerNames) {
 		Element listeners = doc.createElement("listeners");
 		for (String listenerName : listenerNames) {
-			listeners.appendChild(addListenerElements(doc, listeners, "listener", listenerName));
+			listeners.appendChild(addListenerElements(doc, "listener", listenerName));
 		}
 		return listeners;
 	}
 
-	private Node addListenerElements(Document doc, Element element, String name, String value) {
+	/**
+	 * It appends the listener tag with listener details under listeners tag. 
+	 * @param doc: Variable of Document type
+	 * @param name: Name of the tag to create
+	 * @param listenerName: Name of the listenaer to add in file
+	 * @return: Returns Node type variable
+	 */
+	private Node addListenerElements(Document doc, String name, String listenerName) {
 		Element node = doc.createElement(name);
-		node.setAttribute("class-name", value);
+		node.setAttribute("class-name", listenerName);
 		return node;
 	}
 
+	/**
+	 * It appends the test tag in XML file. 
+	 * @param doc: Variable of Document type
+	 * @param name: Name of the test
+	 * @return: Returns Node type variable
+	 */
 	private Node addTestTag(Document doc, String name) {
 		Element test = doc.createElement("test");
 		test.setAttribute("name", name);
@@ -84,37 +107,63 @@ public class FailedCasesXmlGenerator {
 		return test;
 	}
 
+	/**
+	 * It appends the classes tag in XML file. 
+	 * @param doc: Variable of Document type
+	 * @return: Returns Node type variable
+	 */
 	private Node addClassesTag(Document doc) {
 		Element classes = doc.createElement("classes");
 		Set<String> classNames = classesAndMethodsMap.keySet();
 		for (String className : classNames) {
-			classes.appendChild(addClassTags(doc, classes, "class", className));
+			classes.appendChild(addClassTags(doc, "class", className));
 		}
 		return classes;
 	}
 
-	private Node addClassTags(Document doc, Element element, String name, String className) {
+	/**
+	 * It appends the class tag with class details inside it. 
+	 * @param doc: Variable of Document type
+	 * @param name: Name of the tag to create
+	 * @param className: Name of the class having failed method(s)
+	 * @return: Returns Node type variable
+	 */
+	private Node addClassTags(Document doc, String name, String className) {
 		Element givenClass = doc.createElement(name);
 		givenClass.setAttribute("name", className);
 		givenClass.appendChild(addMethodsTag(doc, className));
 		return givenClass;
 	}
 
+	/**
+	 * It appends the methods tag in XML file. 
+	 * @param doc: Variable of Document type
+	 * @param className: Name of the class whose failed methods are to be added
+	 * @return: Returns Node type variable
+	 */
 	private Node addMethodsTag(Document doc, String className) {
 		Element methods = doc.createElement("methods");
 		List<String> methodNames = classesAndMethodsMap.get(className);
 		for (String methodName : methodNames) {
-			methods.appendChild(includeMethods(doc, methods, "include", methodName));
+			methods.appendChild(includeMethods(doc, "include", methodName));
 		}
 		return methods;
 	}
 
-	private Node includeMethods(Document doc, Element element, String name, String methodName) {
+	/**
+	 * It appends the include tag with method details under methods tag. 
+	 * @param doc: Variable of Document type
+	 * @param name: Name of the node to create
+	 * @param methodName: Name of the failed method to include
+	 * @return: Returns Node type variable
+	 */
+	private Node includeMethods(Document doc, String name, String methodName) {
 		Element node = doc.createElement(name);
 		node.setAttribute("name", methodName);
 		return node;
 	}
 
+	// Executes the given file as TestNG Suite. 
 	public void runFailedTestCasesXml() throws IOException {
 		TestNG runner = new TestNG();
 		List<String> suitefiles = new ArrayList<String>();
@@ -123,6 +172,7 @@ public class FailedCasesXmlGenerator {
 		runner.setTestSuites(suitefiles);
 	}
 
+	// Deletes the existing XML file.
 	public void deleteExistingXml() throws IOException {
 		File file = new File(fileName);
 		if (file.delete()) {

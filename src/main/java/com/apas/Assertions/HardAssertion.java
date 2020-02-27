@@ -22,6 +22,311 @@ public class HardAssertion {
 	protected HardAssertion() {
 
 	}
+	
+	/**
+	 * Asserts that the given object is null, if not null AssertionError is thrown
+	 * Updates the test case status in test case map as pass or fail
+	 * 
+	 * @param object: null
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public static void assertNull(Object object, String message) {
+		extractTestCaseKey(message);
+		String testCaseKey = System.getProperty("testCaseKey");
+		if (object != null) {
+			failNotSame(object, null, message);
+		} else {
+			updateTestCaseStatusInMap(testCaseKey, "Pass");
+		}
+	}
+
+	/**
+	 * Asserts that two objects refer to the same object, if not AssertionError is thrown
+	 * Updates the test case status in test case map as pass or fail
+	 * 
+	 * @param actual: obj1 (TestClass Obj1 = new TestClass())
+	 * @param expected: obj2 (obj2 = obj1)
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public static void assertSame(Object actual, Object expected, String message) {
+		extractTestCaseKey(message);
+		String testCaseKey = System.getProperty("testCaseKey");
+		if (expected == actual) {
+			updateTestCaseStatusInMap(testCaseKey, "Pass");
+			return;
+		}
+		failNotSame(actual, expected, message);
+	}
+
+	/**
+	 * Asserts that given condition is true, if not AssertionError is thrown
+	 * Updates the test case status in test case map as pass or fail
+	 * 
+	 * @param actual: true
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public static void assertTrue(boolean condition, String message) {
+		extractTestCaseKey(message);
+		String testCaseKey = System.getProperty("testCaseKey");
+		if (!condition) {
+			failNotEquals(condition, Boolean.TRUE, message, testCaseKey);
+		} else {
+			updateTestCaseStatusInMap(testCaseKey, "Pass");
+		}
+	}
+
+	/**
+	 * Asserts that given objects are equal (basis on their values)
+	 * If not AssertionError is thrown & updates the test case status in test case map as pass or fail
+	 * 
+	 * @param actual: "Testing" or 2341 or false or 4512.22 or 'C'
+	 * @param expected: "Testing" or 2341 or false or 4512.22 or 'C'
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public static void assertEquals(Object actual, Object expected, String message) {
+		extractTestCaseKey(message);
+		String testCaseKey = System.getProperty("testCaseKey");
+		if (expected != null && expected.getClass().isArray()) {
+			assertArrayEquals(actual, expected, message, testCaseKey);
+			return;
+		}
+		assertEqualsImpl(actual, expected, message, testCaseKey);
+	}
+
+	/**
+	 * Asserts that given array objects are equal (basis on their size, values & order of values)
+	 * If not AssertionError is thrown & updates the test case status in test case map as pass or fail
+	 * 
+	 * @param actual: {1,2,3,4,5} or {"Hello", "Java"} or {true, false, false, true}
+	 * @param expected: {1,2,3,4,5} or {"Hello", "Java"} or {true, false, false, true}
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public static void assertEquals(Object[] actual, Object[] expected, String message) {
+		extractTestCaseKey(message);
+		String testCaseKey = System.getProperty("testCaseKey");
+		if (actual == expected) {
+			updateTestCaseStatusInMap(testCaseKey, "Pass");
+			return;
+		}
+
+		if ((actual == null && expected != null) || (actual != null && expected == null)) {
+			fail(message + "Arrays not equal: " + Arrays.toString(expected) + " and " + Arrays.toString(actual),
+					testCaseKey);
+		}
+		assertEquals(Arrays.asList(actual), Arrays.asList(expected), message);
+	}
+
+	/**
+	 * Asserts that given array objects are equal (basis on their size, values BUT not order of values)
+	 * If not AssertionError is thrown & updates the test case status in test case map as pass or fail
+	 * 
+	 * @param actual: {1,2,3,5,4} or {"Hello", "Java"} or {true, false, true, false}
+	 * @param expected: {1,2,3,4,5} or {"Java", "Hello"} or {false, true, false, true}
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public static void assertEqualsNoOrder(Object[] actual, Object[] expected, String message) {
+		extractTestCaseKey(message);
+		String testCaseKey = System.getProperty("testCaseKey");
+		if (actual == expected) {
+			updateTestCaseStatusInMap(testCaseKey, "Pass");
+			return;
+		}
+
+		if ((actual == null && expected != null) || (actual != null && expected == null)) {
+			failAssertNoEqual(testCaseKey, "Arrays not equal: " + Arrays.toString(expected) + " and " + Arrays.toString(actual), message);
+		}
+
+		if (actual.length != expected.length) {
+			failAssertNoEqual(testCaseKey, "Arrays do not have the same size:" + actual.length + " != " + expected.length, message);
+		}
+
+		List<Object> actualCollection = Lists.newArrayList();
+		for (Object a : actual) {
+			actualCollection.add(a);
+		}
+		for (Object o : expected) {
+			actualCollection.remove(o);
+		}
+		if (actualCollection.size() != 0) {
+			failAssertNoEqual(testCaseKey, "Arrays not equal: " + Arrays.toString(expected) + " and " + Arrays.toString(actual), message);
+		} else {
+			updateTestCaseStatusInMap(testCaseKey, "Pass");
+		}
+	}
+
+	/**
+	 * Asserts that given Collection types are equal, if not AssertionError is thrown
+	 * Updates the test case status in test case map as pass or fail
+	 * 
+	 * @param actual: List Object / Set Object
+	 * @param expected: List Object / Set Object
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public static void assertEquals(Collection<?> actual, Collection<?> expected, String message) {
+		extractTestCaseKey(message);
+		String testCaseKey = System.getProperty("testCaseKey");
+		if (actual == expected) {
+			updateTestCaseStatusInMap(testCaseKey, "Pass");
+			return;
+		}
+
+		if (actual == null || expected == null) {
+			fail(message + "Collections not equal: expected: " + expected + " and actual: " + actual, testCaseKey);
+		}
+
+		assertEquals(actual.size(), expected.size(), message + " :: Validating size of expected & actual objects.");
+
+		Iterator<?> actIt = actual.iterator();
+		Iterator<?> expIt = expected.iterator();
+		int i = -1;
+		while (actIt.hasNext() && expIt.hasNext()) {
+			i++;
+			Object e = expIt.next();
+			Object a = actIt.next();
+			String explanation = "Lists differ at element [" + i + "]: " + e + " != " + a;
+			String errorMessage = message + " :: " + explanation;
+
+			assertEqualsImpl(a, e, errorMessage, testCaseKey);
+		}
+	}
+
+	/**
+	 * Asserts that given Map types are equal, if not AssertionError is thrown
+	 * Updates the test case status in test case map as pass or fail
+	 * 
+	 * @param actual: Map object
+	 * @param expected: Map object
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public static void assertEquals(Map<?, ?> actual, Map<?, ?> expected, String message) {
+		extractTestCaseKey(message);
+		String testCaseKey = System.getProperty("testCaseKey");
+		if (actual == expected) {
+			updateTestCaseStatusInMap(testCaseKey, "Pass");
+			return;
+		}
+
+		if (actual == null || expected == null) {
+			fail(message + ". Maps not equal: expected: " + expected + " and actual: " + actual, testCaseKey);
+		}
+
+		if (actual.size() != expected.size()) {
+			fail(message + ". Maps do not have the same size:" + actual.size() + " != " + expected.size(), testCaseKey);
+		}
+
+		Set<?> entrySet = actual.entrySet();
+		for (Object anEntrySet : entrySet) {
+			Map.Entry<?, ?> entry = (Map.Entry<?, ?>) anEntrySet;
+			Object key = entry.getKey();
+			Object value = entry.getValue();
+			Object expectedValue = expected.get(key);
+			String assertMessage = message != null ? message : "Maps do not match for key:" + key + " actual:" + value + " expected:" + expectedValue;
+			assertEqualsImpl(value, expectedValue, assertMessage, testCaseKey);
+		}
+	}
+	
+	/**
+	 * Asserts that given condition is false, if not AssertionError is thrown
+	 * Updates the test case status in test case map as pass or fail
+	 * 
+	 * @param actual: false
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */	
+	public static void assertFalse(boolean condition, String message) {
+		extractTestCaseKey(message);
+		String testCaseKey = System.getProperty("testCaseKey");
+		if (condition) {
+			failNotEquals(condition, Boolean.TRUE, message, testCaseKey);
+		} else {
+			updateTestCaseStatusInMap(testCaseKey, "Pass");
+		}
+	}
+
+	/**
+	 * Asserts that the given object is not null, if null AssertionError is thrown
+	 * Updates the test case status in test case map as pass or fail
+	 * 
+	 * @param object: Like-> String object ("Hello") or any other runtime generated object
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public static void assertNotNull(Object object, String message) {
+		assertTrue(object != null, message);
+	}
+
+	/**
+	 * Asserts that two objects don't refer to the same object, if they refer AssertionError is thrown
+	 * Updates the test case status in test case map as pass or fail
+	 * 
+	 * @param actual: obj1 (TestClass Obj1 = new TestClass())
+	 * @param expected: obj2 (TestClass Obj2 = new TestClass())
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public static void assertNotSame(Object actual, Object expected, String message) {
+		extractTestCaseKey(message);
+		String testCaseKey = System.getProperty("testCaseKey");
+		if (expected == actual) {
+			failSame(actual, expected, message);
+		} else {
+			updateTestCaseStatusInMap(testCaseKey, "Pass");
+		}
+	}
+
+	/**
+	 * Asserts that given objects are not equal (basis on their values), if equal AssertionError is thrown
+	 * Updates the test case status in test case map as pass or fail
+	 * 
+	 * @param actual: "Testing" or 2341 or false or 4512.22 or 'C'
+	 * @param expected: "Testing Java" or 1239 or true or 12.22 or 'F'
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public static void assertNotEquals(Object actual, Object expected, String message) {
+		extractTestCaseKey(message);
+		String testCaseKey = System.getProperty("testCaseKey");
+		boolean fail;
+		try {
+			assertEquals(actual, expected, message);
+			fail = true;
+		} catch (AssertionError e) {
+			fail = false;
+		}
+
+		if (fail) {
+			fail(message, testCaseKey);
+		} else {
+			updateTestCaseStatusInMap(testCaseKey, "Pass");
+		}
+	}
+
+	/**
+	 * Asserts that given Map types are not equal, if equal AssertionError is thrown
+	 * Updates the test case status in test case map as pass or fail
+	 * 
+	 * @param actual: Map object
+	 * @param expected: Map object
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public static void assertNotEquals(Map<?, ?> actual, Map<?, ?> expected, String message) {
+		extractTestCaseKey(message);
+		String testCaseKey = System.getProperty("testCaseKey");
+		boolean fail;
+		try {
+			assertEquals(actual, expected, message);
+			fail = true;
+		} catch (AssertionError e) {
+			fail = false;
+		}
+
+		if (fail) {
+			fail(message, testCaseKey);
+		} else {
+			updateTestCaseStatusInMap(testCaseKey, "Pass");
+		}
+	}
+
+	
+	/**
+	 * Below methods are for internal calling within the class, hence kept private.
+	 */
 
 	private static void updateTestCaseStatusInMap(String testCaseKey, String testCaseStatus) {
 		JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey, testCaseStatus);
@@ -32,7 +337,7 @@ public class HardAssertion {
 		System.setProperty("testCaseKey", testCaseKey);
 	}
 
-	static String format(Object actual, Object expected, String message) {
+	private static String format(Object actual, Object expected, String message) {
 		String formatted = "";
 		if (null != message) {
 			formatted = message + " ";
@@ -40,12 +345,12 @@ public class HardAssertion {
 		return formatted + ASSERT_LEFT + expected + ASSERT_MIDDLE + actual + ASSERT_RIGHT;
 	}
 
-	static private void fail(String message, String testCaseKey) {
+	private static void fail(String message, String testCaseKey) {
 		updateTestCaseStatusInMap(testCaseKey, "Fail");
 		throw new AssertionError(message);
 	}
 
-	static private void failSame(Object actual, Object expected, String message) {
+	private static void failSame(Object actual, Object expected, String message) {
 		String testCaseKey = System.getProperty("testCaseKey");
 		String formatted = "";
 		if (message != null) {
@@ -54,7 +359,7 @@ public class HardAssertion {
 		fail(formatted + ASSERT_LEFT2 + expected + ASSERT_MIDDLE + actual + ASSERT_RIGHT, testCaseKey);
 	}
 
-	static private void failNotSame(Object actual, Object expected, String message) {
+	private static void failNotSame(Object actual, Object expected, String message) {
 		String testCaseKey = System.getProperty("testCaseKey");
 		String formatted = "";
 		if (message != null) {
@@ -63,62 +368,8 @@ public class HardAssertion {
 		fail(formatted + ASSERT_LEFT + expected + ASSERT_MIDDLE + actual + ASSERT_RIGHT, testCaseKey);
 	}
 
-	static private void failNotEquals(Object actual, Object expected, String message, String testCaseKey) {
+	private static void failNotEquals(Object actual, Object expected, String message, String testCaseKey) {
 		fail(format(actual, expected, message), testCaseKey);
-	}
-
-	static public void assertNotNull(Object object, String message) {
-		assertTrue(object != null, message);
-	}
-
-	static public void assertNull(Object object, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (object != null) {
-			failNotSame(object, null, message);
-		} else {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-		}
-	}
-
-	static public void assertSame(Object actual, Object expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (expected == actual) {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-			return;
-		}
-		failNotSame(actual, expected, message);
-	}
-
-	static public void assertNotSame(Object actual, Object expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (expected == actual) {
-			failSame(actual, expected, message);
-		} else {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-		}
-	}
-
-	static public void assertTrue(boolean condition, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (!condition) {
-			failNotEquals(condition, Boolean.TRUE, message, testCaseKey);
-		} else {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-		}
-	}
-
-	static public void assertFalse(boolean condition, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (condition) {
-			failNotEquals(condition, Boolean.TRUE, message, testCaseKey);
-		} else {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-		}
 	}
 
 	private static void assertArrayEquals(Object actual, Object expected, String message, String testCaseKey) {
@@ -163,7 +414,7 @@ public class HardAssertion {
 			updateTestCaseStatusInMap(testCaseKey, "Pass");
 			return;
 		}
-		if (expected == null ^ actual == null) {
+		if (expected == null || actual == null) {
 			failNotEquals(actual, expected, message, testCaseKey);
 		}
 		if (expected.equals(actual) && actual.equals(expected)) {
@@ -173,501 +424,11 @@ public class HardAssertion {
 		failNotEquals(actual, expected, message, testCaseKey);
 	}
 
-	public static void assertEquals(Object actual, Object expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (expected != null && expected.getClass().isArray()) {
-			assertArrayEquals(actual, expected, message, testCaseKey);
-			return;
-		}
-		assertEqualsImpl(actual, expected, message, testCaseKey);
-	}
-
-	static public void assertEquals(String actual, String expected, String message) {
-		assertEquals((Object) actual, (Object) expected, message);
-	}
-
-	static public void assertEquals(long actual, long expected, String message) {
-		assertEquals(Long.valueOf(actual), Long.valueOf(expected), message);
-	}
-
-	static public void assertEquals(boolean actual, boolean expected, String message) {
-		assertEquals(Boolean.valueOf(actual), Boolean.valueOf(expected), message);
-	}
-
-	static public void assertEquals(byte actual, byte expected, String message) {
-		assertEquals(Byte.valueOf(actual), Byte.valueOf(expected), message);
-	}
-
-	static public void assertEquals(char actual, char expected, String message) {
-		assertEquals(Character.valueOf(actual), Character.valueOf(expected), message);
-	}
-
-	static public void assertEquals(short actual, short expected, String message) {
-		assertEquals(Short.valueOf(actual), Short.valueOf(expected), message);
-	}
-
-	static public void assertEquals(int actual, int expected, String message) {
-		assertEquals(Integer.valueOf(actual), Integer.valueOf(expected), message);
-	}
-
-	static public void assertEquals(double actual, double expected, double delta, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (Double.isInfinite(expected)) {
-			if (!(expected == actual)) {
-				failNotEquals(actual, expected, message, testCaseKey);
-			}
-		} else if (Double.isNaN(expected)) {
-			if (!Double.isNaN(actual)) {
-				failNotEquals(actual, expected, message, testCaseKey);
-			}
-		} else {
-			if ((Math.abs(expected - actual) <= delta)) {
-				updateTestCaseStatusInMap(testCaseKey, "Pass");
-			} else {
-				failNotEquals(actual, expected, message, testCaseKey);
-			}
-		}
-	}
-
-	static public void assertEquals(float actual, float expected, float delta, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (Float.isInfinite(expected)) {
-			if (!(expected == actual)) {
-				failNotEquals(actual, expected, message, testCaseKey);
-			}
-		} else {
-			if ((Math.abs(expected - actual) <= delta)) {
-				updateTestCaseStatusInMap(testCaseKey, "Pass");
-
-			} else {
-				failNotEquals(actual, expected, message, testCaseKey);
-			}
-		}
-	}
-
-	static public void assertEquals(Object[] actual, Object[] expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (actual == expected) {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-			return;
-		}
-
-		if ((actual == null && expected != null) || (actual != null && expected == null)) {
-			fail(message + "Arrays not equal: " + Arrays.toString(expected) + " and " + Arrays.toString(actual),
-					testCaseKey);
-		}
-		assertEquals(Arrays.asList(actual), Arrays.asList(expected), message);
-	}
-
-	static public void assertEquals(Collection<?> actual, Collection<?> expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (actual == expected) {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-			return;
-		}
-
-		if (actual == null || expected == null) {
-			fail(message + "Collections not equal: expected: " + expected + " and actual: " + actual, testCaseKey);
-		}
-
-		assertEquals(actual.size(), expected.size(), message + " :: Validating size of expected & actual objects.");
-
-		Iterator<?> actIt = actual.iterator();
-		Iterator<?> expIt = expected.iterator();
-		int i = -1;
-		while (actIt.hasNext() && expIt.hasNext()) {
-			i++;
-			Object e = expIt.next();
-			Object a = actIt.next();
-			String explanation = "Lists differ at element [" + i + "]: " + e + " != " + a;
-			String errorMessage = message + " :: " + explanation;
-
-			assertEqualsImpl(a, e, errorMessage, testCaseKey);
-		}
-	}
-
-	static public void assertEqualsNoOrder(Object[] actual, Object[] expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (actual == expected) {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-			return;
-		}
-
-		if ((actual == null && expected != null) || (actual != null && expected == null)) {
-			failAssertNoEqual("Arrays not equal: " + Arrays.toString(expected) + " and " + Arrays.toString(actual), message);
-		}
-
-		if (actual.length != expected.length) {
-			failAssertNoEqual("Arrays do not have the same size:" + actual.length + " != " + expected.length, message);
-		}
-
-		List<Object> actualCollection = Lists.newArrayList();
-		for (Object a : actual) {
-			actualCollection.add(a);
-		}
-		for (Object o : expected) {
-			actualCollection.remove(o);
-		}
-		if (actualCollection.size() != 0) {
-			failAssertNoEqual("Arrays not equal: " + Arrays.toString(expected) + " and " + Arrays.toString(actual), message);
-		} else {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-		}
-	}
-
-	private static void failAssertNoEqual(String defaultMessage, String message) {
+	private static void failAssertNoEqual(String testCaseKey, String defaultMessage, String message) {
 		if (message != null) {
-			fail(message);
-		} else {
-			fail(defaultMessage);
-		}
-	}
-
-	// ************************* Modified Recently ****************************
-
-	static public void assertEquals(Iterator<?> actual, Iterator<?> expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (actual == expected) {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-			return;
-		}
-
-		if (actual == null || expected == null) {
-			if (message != null) {
-				fail(message, testCaseKey);
-			} else {
-				fail("Iterators not equal: expected: " + expected + " and actual: " + actual, testCaseKey);
-			}
-		}
-
-		int i = -1;
-		while (actual.hasNext() && expected.hasNext()) {
-			i++;
-			Object e = expected.next();
-			Object a = actual.next();
-			String explanation = "Iterators differ at element [" + i + "]: " + e + " != " + a;
-			String errorMessage = message == null ? explanation : message + ": " + explanation;
-
-			assertEqualsImpl(a, e, errorMessage, testCaseKey);
-		}
-
-		if (actual.hasNext()) {
-			String explanation = "Actual iterator returned more elements than the expected iterator.";
-			String errorMessage = message == null ? explanation : message + ": " + explanation;
-			fail(errorMessage, testCaseKey);
-		} else if (expected.hasNext()) {
-			String explanation = "Expected iterator returned more elements than the actual iterator.";
-			String errorMessage = message == null ? explanation : message + ": " + explanation;
-			fail(errorMessage, testCaseKey);
-		}
-	}
-
-	static public void assertEquals(Iterable<?> actual, Iterable<?> expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (actual == expected) {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-			return;
-		}
-
-		if (actual == null || expected == null) {
-			if (message != null) {
-				fail(message, testCaseKey);
-			} else {
-				fail("Iterables not equal: expected: " + expected + " and actual: " + actual, testCaseKey);
-			}
-		}
-
-		Iterator<?> actIt = actual.iterator();
-		Iterator<?> expIt = expected.iterator();
-		assertEquals(actIt, expIt, message);
-	}
-
-	public static void assertEquals(Set<?> actual, Set<?> expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (actual == expected) {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-			return;
-		}
-
-		if (actual == null || expected == null) {
-			// Keep the back compatible
-			if (message == null) {
-				fail("Sets not equal: expected: " + expected + " and actual: " + actual, testCaseKey);
-			} else {
-				failNotEquals(actual, expected, message, testCaseKey);
-			}
-		}
-
-		if (!actual.equals(expected)) {
-			if (message == null) {
-				fail("Sets differ: expected " + expected + " but got " + actual, testCaseKey);
-			} else {
-				failNotEquals(actual, expected, message, testCaseKey);
-			}
-		}
-	}
-
-	public static void assertEqualsDeep(Set<?> actual, Set<?> expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-
-		if (actual == expected) {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-			return;
-		}
-
-		if (actual == null || expected == null) {
-			// Keep the back compatible
-			if (message == null) {
-				fail("Sets not equal: expected: " + expected + " and actual: " + actual, testCaseKey);
-			} else {
-				failNotEquals(actual, expected, message, testCaseKey);
-			}
-		}
-
-		Iterator<?> actualIterator = actual.iterator();
-		Iterator<?> expectedIterator = expected.iterator();
-		while (expectedIterator.hasNext()) {
-			Object expectedValue = expectedIterator.next();
-			if (!actualIterator.hasNext()) {
-				fail(message + ". Sets not equal: expected: " + expected + " and actual: " + actual, testCaseKey);
-			}
-			Object value = actualIterator.next();
-			if (expectedValue.getClass().isArray()) {
-				assertArrayEquals(value, expectedValue, message, testCaseKey);
-			} else {
-				assertEqualsImpl(value, expectedValue, message, testCaseKey);
-			}
-		}
-	}
-
-	public static void assertEquals(Map<?, ?> actual, Map<?, ?> expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (actual == expected) {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-			return;
-		}
-
-		if (actual == null || expected == null) {
-			fail(message + ". Maps not equal: expected: " + expected + " and actual: " + actual, testCaseKey);
-		}
-
-		if (actual.size() != expected.size()) {
-			fail(message + ". Maps do not have the same size:" + actual.size() + " != " + expected.size(), testCaseKey);
-		}
-
-		Set<?> entrySet = actual.entrySet();
-		for (Object anEntrySet : entrySet) {
-			Map.Entry<?, ?> entry = (Map.Entry<?, ?>) anEntrySet;
-			Object key = entry.getKey();
-			Object value = entry.getValue();
-			Object expectedValue = expected.get(key);
-			String assertMessage = message != null ? message : "Maps do not match for key:" + key + " actual:" + value + " expected:" + expectedValue;
-			assertEqualsImpl(value, expectedValue, assertMessage, testCaseKey);
-		}
-	}
-
-	public static void assertEqualsDeep(Map<?, ?> actual, Map<?, ?> expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		if (actual == expected) {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-			return;
-		}
-
-		if (actual == null || expected == null) {
-			fail(message + ". Maps not equal: expected: " + expected + " and actual: " + actual, testCaseKey);
-		}
-
-		if (actual.size() != expected.size()) {
-			fail(message + ". Maps do not have the same size:" + actual.size() + " != " + expected.size(), testCaseKey);
-		}
-
-		Set<?> entrySet = actual.entrySet();
-		for (Object anEntrySet : entrySet) {
-			Map.Entry<?, ?> entry = (Map.Entry<?, ?>) anEntrySet;
-			Object key = entry.getKey();
-			Object value = entry.getValue();
-			Object expectedValue = expected.get(key);
-			String assertMessage = message != null ? message : "Maps do not match for key:" + key + " actual:" + value + " expected:" + expectedValue;
-			if (expectedValue.getClass().isArray()) {
-				assertArrayEquals(value, expectedValue, assertMessage, testCaseKey);
-			} else {
-				assertEqualsImpl(value, expectedValue, assertMessage, testCaseKey);
-			}
-		}
-	}
-
-	// ********************* Modification Completed *********************
-
-	public static void assertNotEquals(Object actual1, Object actual2, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		boolean fail;
-		try {
-			assertEquals(actual1, actual2, message);
-			fail = true;
-		} catch (AssertionError e) {
-			fail = false;
-		}
-
-		if (fail) {
 			fail(message, testCaseKey);
 		} else {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
+			fail(defaultMessage, testCaseKey);
 		}
-	}
-
-	static void assertNotEquals(String actual1, String actual2, String message) {
-		assertNotEquals((Object) actual1, (Object) actual2, message);
-	}
-
-	static void assertNotEquals(long actual1, long actual2, String message) {
-		assertNotEquals(Long.valueOf(actual1), Long.valueOf(actual2), message);
-	}
-
-	static void assertNotEquals(boolean actual1, boolean actual2, String message) {
-		assertNotEquals(Boolean.valueOf(actual1), Boolean.valueOf(actual2), message);
-	}
-
-	static void assertNotEquals(byte actual1, byte actual2, String message) {
-		assertNotEquals(Byte.valueOf(actual1), Byte.valueOf(actual2), message);
-	}
-
-	static void assertNotEquals(char actual1, char actual2, String message) {
-		assertNotEquals(Character.valueOf(actual1), Character.valueOf(actual2), message);
-	}
-
-	static void assertNotEquals(short actual1, short actual2, String message) {
-		assertNotEquals(Short.valueOf(actual1), Short.valueOf(actual2), message);
-	}
-
-	static void assertNotEquals(int actual1, int actual2, String message) {
-		assertNotEquals(Integer.valueOf(actual1), Integer.valueOf(actual2), message);
-	}
-
-	static public void assertNotEquals(float actual1, float actual2, float delta, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		boolean fail;
-		try {
-			assertEquals(actual1, actual2, delta, message);
-			fail = true;
-		} catch (AssertionError e) {
-			fail = false;
-		}
-
-		if (fail) {
-			fail(message, testCaseKey);
-		} else {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-		}
-	}
-
-	static public void assertNotEquals(double actual1, double actual2, double delta, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		boolean fail;
-		try {
-			assertEquals(actual1, actual2, delta, message);
-			fail = true;
-		} catch (AssertionError e) {
-			fail = false;
-		}
-
-		if (fail) {
-			fail(message, testCaseKey);
-		} else {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-		}
-	}
-
-	public static void assertNotEquals(Set<?> actual, Set<?> expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		boolean fail;
-		try {
-			assertEquals(actual, expected, message);
-			fail = true;
-		} catch (AssertionError e) {
-			fail = false;
-		}
-
-		if (fail) {
-			fail(message, testCaseKey);
-		} else {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-		}
-	}
-
-	public static void assertNotEqualsDeep(Set<?> actual, Set<?> expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		boolean fail;
-		try {
-			assertEqualsDeep(actual, expected, message);
-			fail = true;
-		} catch (AssertionError e) {
-			fail = false;
-		}
-
-		if (fail) {
-			fail(message, testCaseKey);
-		} else {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-		}
-	}
-
-	public static void assertNotEquals(Map<?, ?> actual, Map<?, ?> expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		boolean fail;
-		try {
-			assertEquals(actual, expected, message);
-			fail = true;
-		} catch (AssertionError e) {
-			fail = false;
-		}
-
-		if (fail) {
-			fail(message, testCaseKey);
-		} else {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-		}
-	}
-
-	public static void assertNotEqualsDeep(Map<?, ?> actual, Map<?, ?> expected, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		boolean fail;
-		try {
-			assertEqualsDeep(actual, expected, message);
-			fail = true;
-		} catch (AssertionError e) {
-			fail = false;
-		}
-
-		if (fail) {
-			fail(message, testCaseKey);
-		} else {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-		}
-	}
-
-	static public void fail(String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		updateTestCaseStatusInMap(testCaseKey, "Fail");
-		throw new AssertionError(message);
 	}
 }

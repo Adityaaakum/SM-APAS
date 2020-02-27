@@ -26,23 +26,39 @@ public class SoftAssertion {
 	Boolean testCaseExecutionFailedFlag = false;
 	public static Boolean isSoftAssertionUsedFlag = null;
 
+	/**
+	 * Class constructor to set the isSoftAssertionUsedFlag variable as false
+	 * Initially this variable is null, when class object is created it sets to false
+	 */
 	public SoftAssertion() {
 		isSoftAssertionUsedFlag = false;
 	}
 
+	/**
+	 * Updates the test case map with assertion result
+	 * @param testCaseKey: SMAB-T418
+	 * @param testCaseStatus: Pass / Fail
+	 */
 	private static void updateTestCaseStatusInMap(String testCaseKey, String testCaseStatus) {
 		String currentStatus = JiraAdaptavistStatusUpdate.testStatus.get(testCaseKey);
-		
-		if(!(currentStatus.equalsIgnoreCase("Fail"))) {
-			JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey, testCaseStatus);
+		if((currentStatus == null) || !(currentStatus.equalsIgnoreCase("Fail"))) {
+				JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey, testCaseStatus);
 		}
 	}
 
+	/**
+	 * Extracts the test case key from the argument and sets a system property with it
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
 	private static void extractTestCaseKey(String message) {
 		String testCaseKey = message.substring(0, message.indexOf(":")).trim();
 		System.setProperty("testCaseKey", testCaseKey);
 	}
 
+	/**
+	 * Captures the screen shot on assertion failure and attaches it toExtent report
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
 	public void getScreenShot(String message) {
 		String methodName = System.getProperty("currentMethodName");
 		RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
@@ -64,6 +80,11 @@ public class SoftAssertion {
 		}
 	}
 
+	/**
+	 * Asserts all the asserts used in test method sequentially & flushes the ExtentManager instance
+	 * Sets isSoftAssertionUsedFlag to true to control onTestPassed / onTestFailure in SuiteListener
+	 * Throws AssertionError if testCaseExecutionFailedFlag variable is true
+	 */
 	public void assertAll() {
 		isSoftAssertionUsedFlag = true;
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
@@ -73,6 +94,14 @@ public class SoftAssertion {
 		}
 	}
 
+	/**
+	 * Asserts that given condition is true, if not AssertionError is thrown when assertAll is called
+	 * Updates the test case status in test case map as pass or fail
+	 * Takes screen shot on failure and sets testCaseExecutionFailedFlag variable as true
+	 * 
+	 * @param actual: true
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
 	public void assertTrue(final boolean condition, String message) {
 		String formattedMessage = message + " :: Expected: true" + " || " + "Actual: " + condition;
 		extractTestCaseKey(message);
@@ -88,6 +117,14 @@ public class SoftAssertion {
 		}
 	}
 
+	/**
+	 * Asserts that given condition is false, if not AssertionError is thrown when assertAll is called
+	 * Updates the test case status in test case map as pass or fail
+	 * Takes screen shot on failure and sets testCaseExecutionFailedFlag variable as true
+	 * 
+	 * @param actual: false
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */	
 	public void assertFalse(final boolean condition, String message) {
 		String formattedMessage = message + " :: Expected: false" + " || " + "Actual: " + condition;
 		extractTestCaseKey(message);
@@ -103,6 +140,16 @@ public class SoftAssertion {
 		}
 	}
 
+	/**
+	 * Asserts that given objects are equal (basis on their values)
+	 * If not AssertionError is thrown when assertAll is called
+	 * Updates the test case status in test case map as pass or fail
+	 * Takes screen shot on failure and sets testCaseExecutionFailedFlag variable as true
+	 * 
+	 * @param actual: "Testing" or 2341 or false or 4512.22 or 'C'
+	 * @param expected: "Testing" or 2341 or false or 4512.22 or 'C'
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
 	public void assertEquals(Object actual, Object expected, String message) {
 		extractTestCaseKey(message);
 		String testCaseKey = System.getProperty("testCaseKey");
@@ -130,6 +177,16 @@ public class SoftAssertion {
 		}
 	}
 
+	/**
+	 * Asserts that given objects are not equal (basis on their values)
+	 * If not AssertionError is thrown when assertAll is called
+	 * Updates the test case status in test case map as pass or fail
+	 * Takes screen shot on failure and sets testCaseExecutionFailedFlag variable as true
+	 * 
+	 * @param actual: "Testing" or 2341 or false or 4512.22 or 'C'
+	 * @param expected: "Testing Java" or 1441 or true or 12.22 or 'E'
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
 	public void assertNotEquals(Object actual, Object expected, String message) {
 		extractTestCaseKey(message);
 		String testCaseKey = System.getProperty("testCaseKey");
@@ -159,7 +216,68 @@ public class SoftAssertion {
 		}
 	}
 
-	public boolean compareMaps(Map<String, String> actualMap, Map<String, String> expectedMap) {
+	/**
+	 * Asserts that given Map objects are equal
+	 * If not AssertionError is thrown when assertAll is called
+	 * Updates the test case status in test case map as pass or fail
+	 * Takes screen shot on failure and sets testCaseExecutionFailedFlag variable as true
+	 * 
+	 * @param actual: Map object
+	 * @param expected: Map object
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public void assertEquals(Map<String, String> actualMap, Map<String, String> expectedMap, String message) {
+		extractTestCaseKey(message);
+		String testCaseKey = System.getProperty("testCaseKey");
+		String formattedMessage = message + " :: Expected: " + expectedMap + " || " + "Actual: " + actualMap;
+
+		boolean comparisonStatus = compareMaps(actualMap, expectedMap);
+
+		if (comparisonStatus) {
+			updateTestCaseStatusInMap(testCaseKey, "Pass");
+			ExtentTestManager.getTest().log(LogStatus.PASS, formattedMessage);
+		} else {
+			testCaseExecutionFailedFlag = true;
+			updateTestCaseStatusInMap(testCaseKey, "Fail");
+			getScreenShot(message);
+			ExtentTestManager.getTest().log(LogStatus.FAIL, formattedMessage);
+		}
+	}
+
+	/**
+	 * Asserts that given Map objects are not equal
+	 * If not AssertionError is thrown when assertAll is called
+	 * Updates the test case status in test case map as pass or fail
+	 * Takes screen shot on failure and sets testCaseExecutionFailedFlag variable as true
+	 * 
+	 * @param actual: Map object
+	 * @param expected: Map object
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public void assertNotEquals(Map<String, String> actualMap, Map<String, String> expectedMap, String message) {
+		extractTestCaseKey(message);
+		String testCaseKey = System.getProperty("testCaseKey");
+		String formattedMessage = message + " :: Expected: " + expectedMap + " || " + "Actual: " + actualMap;
+
+		boolean comparisonStatus = compareMaps(actualMap, expectedMap);
+
+		if (comparisonStatus) {
+			testCaseExecutionFailedFlag = true;
+			updateTestCaseStatusInMap(testCaseKey, "Fail");
+			getScreenShot(message);
+			ExtentTestManager.getTest().log(LogStatus.FAIL, formattedMessage);
+		} else {
+			updateTestCaseStatusInMap(testCaseKey, "Pass");
+			ExtentTestManager.getTest().log(LogStatus.PASS, formattedMessage);
+		}
+	}
+	
+	
+	/**
+	 * Below methods are for internal calling within the class, hence kept private.
+	 */
+	
+	private boolean compareMaps(Map<String, String> actualMap, Map<String, String> expectedMap) {
 		boolean comparisonStatus = false;
 		if ((actualMap != null && expectedMap != null) && (actualMap.size() == expectedMap.size())
 				&& (actualMap.keySet().equals(expectedMap.keySet()))) {
@@ -179,41 +297,5 @@ public class SoftAssertion {
 			comparisonStatus = false;
 		}
 		return comparisonStatus;
-	}
-
-	public void assertEquals(Map<String, String> actualMap, Map<String, String> expectedMap, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		String formattedMessage = message + " :: Expected: " + expectedMap + " || " + "Actual: " + actualMap;
-
-		boolean comparisonStatus = compareMaps(actualMap, expectedMap);
-
-		if (comparisonStatus) {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-			ExtentTestManager.getTest().log(LogStatus.PASS, formattedMessage);
-		} else {
-			testCaseExecutionFailedFlag = true;
-			updateTestCaseStatusInMap(testCaseKey, "Fail");
-			getScreenShot(message);
-			ExtentTestManager.getTest().log(LogStatus.FAIL, formattedMessage);
-		}
-	}
-
-	public void assertNotEquals(Map<String, String> actualMap, Map<String, String> expectedMap, String message) {
-		extractTestCaseKey(message);
-		String testCaseKey = System.getProperty("testCaseKey");
-		String formattedMessage = message + " :: Expected: " + expectedMap + " || " + "Actual: " + actualMap;
-
-		boolean comparisonStatus = compareMaps(actualMap, expectedMap);
-
-		if (comparisonStatus) {
-			testCaseExecutionFailedFlag = true;
-			updateTestCaseStatusInMap(testCaseKey, "Fail");
-			getScreenShot(message);
-			ExtentTestManager.getTest().log(LogStatus.FAIL, formattedMessage);
-		} else {
-			updateTestCaseStatusInMap(testCaseKey, "Pass");
-			ExtentTestManager.getTest().log(LogStatus.PASS, formattedMessage);
-		}
 	}
 }
