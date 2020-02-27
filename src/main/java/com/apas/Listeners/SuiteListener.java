@@ -89,11 +89,11 @@ public class SuiteListener extends TestBase implements ITestListener {
 			//Updating the system properties with test case properties details
 			String methodName = result.getMethod().getMethodName();
 			String className = result.getMethod().toString();
-			String description = "Description: " + result.getMethod().getDescription();
+			String description = result.getMethod().getDescription();
 			System.setProperty("currentMethodName", methodName);
 			System.setProperty("description", description);
 
-			upTest = ExtentTestManager.startTest(methodName, "Description: " + result.getMethod().getDescription());
+			upTest = ExtentTestManager.startTest(methodName, "Description: " + description);
 			String[] arrayClassName = className.split("\\.");
 			String upClassname = arrayClassName[0].replace("Test", "");
 			upTest.assignCategory(upClassname);
@@ -119,10 +119,37 @@ public class SuiteListener extends TestBase implements ITestListener {
 
 	/**
 	 * Description: This method will be executed if the test case is Failed
+	 * It would updated the test cases as Fail in test case map
+	 * if any exception other than AssertionError has occurred
+	 * 
+	 * @param result: Object of ITestResult
+	 */
+	private void updateTestCaseMapOnExceptionOtherThanAssertionError(ITestResult result) {
+		String description = System.getProperty("description");			
+		String[] descriptionArr = description.split(":");			
+		String testCaseKey;
+		
+		if(descriptionArr[0].contains(",")) {
+			String[] testCaseIdArr = descriptionArr[0].split(",");			
+			for(int i = 0; i < testCaseIdArr.length; i++) {
+				testCaseKey = testCaseIdArr[i];
+				String currentStatus = JiraAdaptavistStatusUpdate.testStatus.get(testCaseKey);
+				if((currentStatus == null) || !(currentStatus.equalsIgnoreCase("Fail"))) {
+					JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey, "Fail");
+				}	
+			}
+		} else {
+			testCaseKey = descriptionArr[0];
+			JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey, "Fail");
+		}
+	}
+	
+	/**
+	 * Description: This method will be executed if the test case is Failed
 	 * @param result: Object of ITestResult
 	 */
 	@Override
-	public void onTestFailure(ITestResult result) {
+	public void onTestFailure(ITestResult result) {		
 		try {
 			if (SoftAssertion.isSoftAssertionUsedFlag == null || !(SoftAssertion.isSoftAssertionUsedFlag)) {
 				RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
@@ -138,6 +165,10 @@ public class SuiteListener extends TestBase implements ITestListener {
 				File destination = new File(dest);
 				FileUtils.copyFile(source, destination);
 
+				if(!(result.getThrowable() instanceof AssertionError)) {
+					updateTestCaseMapOnExceptionOtherThanAssertionError(result);
+				}
+				
 				ExtentTestManager.getTest().log(LogStatus.FAIL, getStackTrace(result.getThrowable()));
 				//Adding the screenshot to the report
 				ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot below: " + upTest.addScreenCapture(dest));
