@@ -49,8 +49,8 @@ public class SuiteListener extends TestBase implements ITestListener {
 		ExtentManager.setOutputDirectory(context);
 		CONFIG = new Properties();
 		try {
+			
 			TestBase.loadPropertyFiles();
-
 			extent = new ExtentManager().getInstance(context.getSuite().getName());
 			if (flagToUpdateJira && testCycle != null) {
 				System.out.println("Test cases map on start of execution: " + JiraAdaptavistStatusUpdate.testStatus);

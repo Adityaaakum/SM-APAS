@@ -1,5 +1,10 @@
 package com.apas.PageObjects;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import org.openqa.selenium.By;
@@ -8,12 +13,17 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import com.apas.Reports.ExtentTestManager;
+import com.relevantcodes.extentreports.LogStatus;
+
 public class EFileImportPage extends Page {
 
 	public EFileImportPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
 	}
+	
+	Page objPage = new Page(this.driver);
 
 	@FindBy(xpath = "//*[@name='docType']")
 	WebElement fileTypedropdown;
@@ -107,4 +117,55 @@ public class EFileImportPage extends Page {
 		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]")));
 	}
 	
+	/**
+	 * Description: This method will upload the file using AutoIt tool
+	 * @param absoulteFilePath : Absolute path of the file to be uploaded
+	 */
+	
+	public void uploadFile(String absoulteFilePath) throws AWTException, InterruptedException, IOException{
+		Runtime.getRuntime().exec(System.getProperty("user.dir") + "//src//test//resources//AutoIt//FileUpload.exe"+" " + absoulteFilePath);
+		
+		 //Below Code is to upload the file using Robot. Using AutoIt as this was not working on Jenkins
+		 
+		 StringSelection ss = new StringSelection(absoulteFilePath);
+		 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
+		 
+		 Robot robot = new Robot();
+
+		 robot.keyPress(KeyEvent.VK_CONTROL);
+		 robot.keyPress(KeyEvent.VK_V);
+		 robot.keyRelease(KeyEvent.VK_V);
+		 robot.keyRelease(KeyEvent.VK_CONTROL);
+		 robot.keyPress(KeyEvent.VK_ENTER);
+		 robot.keyRelease(KeyEvent.VK_ENTER);
+		
+	}
+	
+	/**
+	 * Description: This method will upload the file on Efile Import module
+	 * @param fileType : Value from File Type Drop Down
+	 * @param source: Value from source drop down
+	 * @param period: Period for which the file needs to be uploaded
+	 * @param fileName: Absoulte Path of the file with the file name
+	 */
+	public void uploadFileOnEfileIntake(String fileType, String source,String period, String fileName) throws Exception{
+		fileName = "\"" + fileName + "\"";
+		selectFileAndSource(fileType, source);
+		objPage.waitUntilElementDisplayed(nextButton, 10);
+		objPage.Click(nextButton);
+		objPage.Click(periodDropdown);
+		objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
+		objPage.Click(confirmButton);
+		objPage.Click(uploadFilebutton);
+		//This static wait of 2 second is kept for File Upload window to open
+		Thread.sleep(2000);
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " + fileName + " on Efile Import Tool");
+		uploadFile(fileName);
+		objPage.waitForElementToBeClickable(doneButton);
+		objPage.Click(doneButton);
+		Thread.sleep(3000);
+	}
+	
+	
+
 }

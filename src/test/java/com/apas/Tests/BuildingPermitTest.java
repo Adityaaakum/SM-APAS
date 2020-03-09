@@ -85,7 +85,7 @@ public class BuildingPermitTest extends TestBase {
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading the atherton building permit file");
 		String athertonBuildingPermitsFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON;
-		objApasGenericFunctions.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", objUtil.getCurrentDate("MMMM YYYY"),athertonBuildingPermitsFile);
+		objEfileHomePage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", objUtil.getCurrentDate("MMMM YYYY"),athertonBuildingPermitsFile);
 		
 		//Step4: Waiting for Status of the imported file to be converted to "Imported"
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
@@ -164,7 +164,7 @@ public class BuildingPermitTest extends TestBase {
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading the atherton building permit file");
 		String athertonBuildingPermitsFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON;
-		objApasGenericFunctions.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", objUtil.getCurrentDate("MMMM YYYY"),athertonBuildingPermitsFile);
+		objEfileHomePage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", objUtil.getCurrentDate("MMMM YYYY"),athertonBuildingPermitsFile);
 		
 		//Step4: Validating that status of the imported file is in progress
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "In Progress", "SMAB-T361: Validation if status of imported file is in progress.");
@@ -212,7 +212,7 @@ public class BuildingPermitTest extends TestBase {
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading the atherton building permit file");
 		String athertonBuildingPermitsFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON;
-		objApasGenericFunctions.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", objUtil.getCurrentDate("MMMM YYYY"),athertonBuildingPermitsFile);
+		objEfileHomePage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", objUtil.getCurrentDate("MMMM YYYY"),athertonBuildingPermitsFile);
 		
 		//Step4: Validating that status of the imported file is in progress
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Retrying Imported Records after error correction on review and approve page");
@@ -266,7 +266,7 @@ public class BuildingPermitTest extends TestBase {
 		//Step3: Uploading the San Mateo Building Permit file having error and success records through Efile Intake Import
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading the San Mateo permit file");
 		String sanMateoBuildingPermitsFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO;
-		objApasGenericFunctions.uploadFileOnEfileIntake("Building Permit", "San Mateo Building permits", objUtil.getCurrentDate("MMMM YYYY"),sanMateoBuildingPermitsFile);
+		objEfileHomePage.uploadFileOnEfileIntake("Building Permit", "San Mateo Building permits", objUtil.getCurrentDate("MMMM YYYY"),sanMateoBuildingPermitsFile);
 		
 		//Step4: Validating that status of the imported file is in progress
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Validation of imported records on Import History table");

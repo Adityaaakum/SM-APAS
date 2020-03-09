@@ -21,7 +21,7 @@ public class ApasGenericFunctions extends TestBase{
 	private RemoteWebDriver driver;
 	Page objPage;
 	LoginPage objLoginPage;
-	EFileImportPage eFilePageObject;
+	//EFileImportPage eFilePageObject;
 	ApasGenericPage objApasGenericPage;
 	
 	public ApasGenericFunctions(RemoteWebDriver driver){
@@ -29,7 +29,7 @@ public class ApasGenericFunctions extends TestBase{
 		objPage = new Page(this.driver);
 		objLoginPage = new LoginPage(this.driver);
 		objApasGenericPage = new ApasGenericPage(this.driver);
-		eFilePageObject = new EFileImportPage(this.driver);
+		//eFilePageObject = new EFileImportPage(this.driver);
 	}
 	
 	/**
@@ -67,54 +67,7 @@ public class ApasGenericFunctions extends TestBase{
 		Thread.sleep(4000);
 	}
 	
-	/**
-	 * Description: This method will upload the file on Efile Import module
-	 * @param fileType : Value from File Type Drop Down
-	 * @param source: Value from source drop down
-	 * @param period: Period for which the file needs to be uploaded
-	 * @param fileName: Absoulte Path of the file with the file name
-	 */
-	public void uploadFileOnEfileIntake(String fileType, String source,String period, String fileName) throws Exception{
-		fileName = "\"" + fileName + "\"";
-		eFilePageObject.selectFileAndSource(fileType, source);
-		objPage.waitUntilElementDisplayed(eFilePageObject.nextButton, 10);
-		objPage.Click(eFilePageObject.nextButton);
-		objPage.Click(eFilePageObject.periodDropdown);
-		objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
-		objPage.Click(eFilePageObject.confirmButton);
-		objPage.Click(eFilePageObject.uploadFilebutton);
-		//This static wait of 2 second is kept for File Upload window to open
-		Thread.sleep(2000);
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " + fileName + " on Efile Import Tool");
-		uploadFile(fileName);
-		objPage.waitForElementToBeClickable(eFilePageObject.doneButton);
-		objPage.Click(eFilePageObject.doneButton);
-		Thread.sleep(3000);
-	}
-	
-	/**
-	 * Description: This method will upload the file using AutoIt tool
-	 * @param absoulteFilePath : Absolute path of the file to be uploaded
-	 */
-	public void uploadFile(String absoulteFilePath) throws AWTException, InterruptedException, IOException{
-		Runtime.getRuntime().exec(System.getProperty("user.dir") + "//src//test//resources//AutoIt//FileUpload.exe"+" " + absoulteFilePath);
 		
-		/**
-		 * Below Code is to upload the file using Robot. Using AutoIt as this was not working on Jenkins
-		 StringSelection ss = new StringSelection(absoulteFilePath);
-		 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
-		 
-		 Robot robot = new Robot();
-
-		 robot.keyPress(KeyEvent.VK_CONTROL);
-		 robot.keyPress(KeyEvent.VK_V);
-		 robot.keyRelease(KeyEvent.VK_V);
-		 robot.keyRelease(KeyEvent.VK_CONTROL);
-		 robot.keyPress(KeyEvent.VK_ENTER);
-		 robot.keyRelease(KeyEvent.VK_ENTER);
-		 */
-	}
-	
 	/**
 	 * Description: This method will logout the logged in user from APAS application
 	 */

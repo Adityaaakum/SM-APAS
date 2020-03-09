@@ -78,7 +78,7 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 			List<Object> items = jsPath.getList("items");
 			
 			Iterator<Object> itr = items.iterator();
-			while (itr.hasNext()) {
+			 while (itr.hasNext()) {
 				int testCaseKeyIndex = -1;
 				List<String> currentIndexValueList = Arrays.asList(itr.next().toString().split(","));
 				for (int i = 0; i < currentIndexValueList.size(); i++) {
