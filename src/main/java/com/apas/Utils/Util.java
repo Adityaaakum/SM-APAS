@@ -16,9 +16,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.apas.BrowserDriver.BrowserDriver;
+import com.apas.Reports.ExtentTestManager;
+import com.relevantcodes.extentreports.LogStatus;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 import com.apas.TestBase.TestBase;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class Util {
 
@@ -139,7 +146,7 @@ public class Util {
 	 * @Description: This method takes an expected format for date and return
 	 *               the current date in the format provided.
 	 * 
-	 * @param key:
+	 * @param format:
 	 *            expected format of date, example 'MM/dd/yyyy'
 	 **/
 	public String getCurrentDate(String format) {
@@ -185,4 +192,30 @@ public class Util {
 			}
 		}
 	}
+
+	/**
+	 * Captures the screen shot on assertion failure and attaches it toExtent report
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public void getScreenShot(String message) {
+		String methodName = System.getProperty("currentMethodName");
+		RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
+		TakesScreenshot ts = (TakesScreenshot) ldriver;
+		File source = ts.getScreenshotAs(OutputType.FILE);
+
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
+		String upDate = sdf.format(date);
+		String dest = System.getProperty("user.dir")+ "//test-output//ErrorScreenshots//" + methodName + upDate +".png";
+
+		File destination = new File(dest);
+		try {
+			FileUtils.copyFile(source, destination);
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot for the failed validation : " + message
+					+ ExtentTestManager.getUpTestVariable().addScreenCapture(dest));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

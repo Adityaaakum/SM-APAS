@@ -8,4 +8,8 @@ public interface modules {
 	public static final String BUILDING_PERMITS = "Building Permits";
 	public static final String BPP_TRENDS = "BPP Trend";
 	public static final String BPP_TRENDS_SETUP = "BPP Trend Setup";
+	public static final String NON_RELEVANT_PERMIT_SETTINGS = "Non Relevant Permit Settings";
+	public static final String CITY_STRAT_CODES = "City Strat Codes";
+	public static final String COUNTY_STRAT_CODES = "County Strat Codes";
+	public static final String REPORTS = "Reports";
 }

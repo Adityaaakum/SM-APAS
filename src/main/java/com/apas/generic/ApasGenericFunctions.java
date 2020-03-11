@@ -3,7 +3,10 @@ package com.apas.generic;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -97,5 +100,37 @@ public class ApasGenericFunctions extends TestBase{
     	robot.keyRelease(KeyEvent.VK_ENTER);
     	Thread.sleep(1000);
 	}
-	
+
+	/**
+	 * Description: This method will display all the records on the grid
+	 */
+	public void displayAllRecords() throws IOException, InterruptedException {
+		objPage.Click(objApasGenericPage.selectListViewButton);
+		objPage.Click(objApasGenericPage.selectListViewOptionAll);
+		Thread.sleep(3000);
+	}
+
+	/**
+	 * Description: This method will filter out the records on the grid based on the search string
+	 */
+	public String searchRecords(String searchString) throws Exception {
+		objPage.enter(objApasGenericPage.searchListEditBox,searchString);
+		objPage.Click(objApasGenericPage.countSortedByFilteredBy);
+		Thread.sleep(3000);
+		return objPage.getElementText(objApasGenericPage.countSortedByFilteredBy);
+	}
+
+	/**
+	 * Description: This method will delete all the files from the folder passed in the parameter folderPath
+	 * @param folderPath: path of the folder
+	 */
+	public void deleteFilesFromFolder(String folderPath){
+		File dir = new File(folderPath);
+		for (File file: Objects.requireNonNull(dir.listFiles())){
+			if (!file.isDirectory())
+				file.delete();
+		}
+	}
+
+
 }
