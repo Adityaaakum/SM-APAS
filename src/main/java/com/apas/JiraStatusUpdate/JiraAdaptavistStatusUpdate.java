@@ -118,4 +118,26 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * Updates the test case map with assertion result
+	 * @param testCaseKey: SMAB-T418
+	 * @param testCaseStatus: Pass / Fail
+	 */
+	public static void updateTestCaseStatusInMap(String testCaseKey, String testCaseStatus) {
+		String currentStatus = JiraAdaptavistStatusUpdate.testStatus.get(testCaseKey);
+		if((currentStatus == null) || !(currentStatus.equalsIgnoreCase("Fail"))) {
+			JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey, testCaseStatus);
+		}
+	}
+
+	/**
+	 * Extracts the test case key from the argument and sets a system property with it
+	 * @param message: "SMAB-T418: <Some validation message>"
+	 */
+	public static String extractTestCaseKey(String message) {
+		String testCaseKey = message.substring(0, message.indexOf(":")).trim();
+		System.setProperty("testCaseKey", testCaseKey);
+		return testCaseKey;
+	}
 }

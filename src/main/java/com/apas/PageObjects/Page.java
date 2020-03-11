@@ -602,8 +602,10 @@ public class Page {
 	 *             the exception
 	 */
 	public boolean Select(WebElement elem, String value) throws Exception {
-		elem.click();
-		new org.openqa.selenium.support.ui.Select(elem).selectByVisibleText(value);
+		Click(elem);
+		Click(driver.findElement(By.xpath("//a[@role = 'menuitemradio'][@title='" + value + "']")));
+//		elem.click();
+//		new org.openqa.selenium.support.ui.Select(elem).selectByVisibleText(value);
 		waitUntilPageisReady(driver);
 		return true;
 	}
