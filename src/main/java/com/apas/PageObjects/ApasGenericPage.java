@@ -33,7 +33,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//a[@role='button'][@title='Select List View']")
 	public WebElement selectListViewButton;
 
-	@FindBy(xpath = "//a[@role='option']//span[text()='All']")
+	@FindBy(xpath = "//a[@role='option']//span[text()='All' or text()='All Active Parcels']")
 	public WebElement selectListViewOptionAll;
 
 	@FindBy(xpath = "//input[@placeholder='Search this list...']")

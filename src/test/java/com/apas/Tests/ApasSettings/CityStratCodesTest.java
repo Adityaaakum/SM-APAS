@@ -92,7 +92,7 @@ public class CityStratCodesTest extends TestBase {
 
 		//Step7: Validation of existence of multiple related City Code records
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Validation of the records existence added in the previous step");
-		objApasGenericFunctions.displayAllRecords();
+		objApasGenericFunctions.displayRecords("All");
 		String expectedValidationMessage = "1 item • Sorted by City Strat Code • Filtered by all city strat codes •";
 
 		countSortedByFilteredBy = objApasGenericFunctions.searchRecords(strCityStratCode1);

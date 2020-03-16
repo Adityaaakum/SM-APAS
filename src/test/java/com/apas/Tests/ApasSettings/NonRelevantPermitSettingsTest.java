@@ -50,8 +50,8 @@ public class NonRelevantPermitSettingsTest extends TestBase {
     public Object[][] dataProviderLoginUserMethod() {
         return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
     }
-	
-    
+
+
     /**
 	 Below test case will validate that user is not allowed to create duplicate Non Relevant Permit Settings
 	 PreCondition: AT City Code with Active status is already added in Non Relevant Permit Settings
