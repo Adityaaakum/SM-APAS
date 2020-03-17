@@ -12,4 +12,5 @@ public interface modules {
 	public static final String CITY_STRAT_CODES = "City Strat Codes";
 	public static final String COUNTY_STRAT_CODES = "County Strat Codes";
 	public static final String REPORTS = "Reports";
+	public static final String PARCELS = "Parcels";
 }

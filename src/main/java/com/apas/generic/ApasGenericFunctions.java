@@ -5,6 +5,9 @@ import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 import org.openqa.selenium.By;
@@ -48,7 +51,7 @@ public class ApasGenericFunctions extends TestBase{
 			password = PasswordUtils.decrypt(password, "");
 		}
 				
-		ExtentTestManager.getTest().log(LogStatus.INFO, userType + " User is logging in the application");
+		ExtentTestManager.getTest().log(LogStatus.INFO, userType + " User is logging in the application with the user : " + userType );
 		
 		objPage.navigateTo(driver, envURL);
 		objPage.enter(objLoginPage.txtuserName, CONFIG.getProperty(userType + "UserName"));
@@ -104,16 +107,21 @@ public class ApasGenericFunctions extends TestBase{
 	/**
 	 * Description: This method will display all the records on the grid
 	 */
-	public void displayAllRecords() throws IOException, InterruptedException {
+	public void displayRecords(String displayOption) throws IOException, InterruptedException {
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Displaying all the records on the grid");
 		objPage.Click(objApasGenericPage.selectListViewButton);
-		objPage.Click(objApasGenericPage.selectListViewOptionAll);
+		Thread.sleep(1000);
+		objPage.Click(driver.findElement(By.xpath("//a[@role='option']//span[text()='" + displayOption + "']")));
 		Thread.sleep(3000);
 	}
+
+
 
 	/**
 	 * Description: This method will filter out the records on the grid based on the search string
 	 */
 	public String searchRecords(String searchString) throws Exception {
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Searching and filtering the data on the grid with the String " + searchString);
 		objPage.enter(objApasGenericPage.searchListEditBox,searchString);
 		objPage.Click(objApasGenericPage.countSortedByFilteredBy);
 		Thread.sleep(3000);
@@ -132,5 +140,71 @@ public class ApasGenericFunctions extends TestBase{
 		}
 	}
 
+	/**
+	 * @description: This method will return the value of the field passed in the parameter from the currently open page
+	 * @param sectionName: name of the section where field is present
+	 * @param fieldName: Name of the field
+	 * @return: Value of the field
+	 */
+	public String getFieldValueFromAPAS(String fieldName, String sectionName) {
+		String sectionXpath = "//force-record-layout-section[contains(.,'" + sectionName + "')]";
+
+		String fieldXpath = sectionXpath + "//force-record-layout-item//span[text()='" + fieldName  + "']/../..//slot[@slot='outputField']//force-hoverable-link//a | " +
+				sectionXpath + "//force-record-layout-item//span[text()='" + fieldName + "']/../..//slot[@slot='outputField']//lightning-formatted-text | " +
+				sectionXpath + "//force-record-layout-item//span[text()='" + fieldName + "']/../..//slot[@slot='outputField']//lightning-formatted-rich-text | " +
+				sectionXpath + "//force-record-layout-item//span[text()='" + fieldName + "']/../..//slot[@slot='outputField']//force-record-type//span";
+
+		String fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();
+		System.out.println(fieldName + " : " + fieldValue);
+		return fieldValue;
+	}
+
+	/**
+	 * @description: This method will return the value of the field passed in the parameter from the currently open page
+	 * @param fieldName: Name of the field
+	 * @return: Value of the field
+	 */
+	public String getFieldValueFromAPAS(String fieldName) {
+		return getFieldValueFromAPAS(fieldName,"");
+	}
+
+	/**
+	 * Description: This method will save the grid data in hashmap
+	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
+	 */
+	public HashMap<String, ArrayList<String>> getGridDataInHashMap(){
+		return getGridDataInHashMap(-1);
+	}
+
+	/**
+	 * Description: This method will save the grid data in hashmap for the Row Number passed in the argument
+	 * @param rowNumber: Row Number for which data needs to be fetched
+	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
+	 */
+	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int rowNumber){
+
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
+		//This code is to fetch the data for a particular row in the grid
+		String xpathRows = "//tbody/tr";
+		if (!(rowNumber == -1)) xpathRows = xpathRows + "[" + rowNumber + "]";
+
+		HashMap<String,ArrayList<String>> gridDataHashMap = new HashMap<>();
+
+		//Fetching the headers and data web elements from application
+		List<WebElement> webElementsHeaders = driver.findElements(By.xpath("//thead/tr/th"));
+		List<WebElement> webElementsRows = driver.findElements(By.xpath(xpathRows));
+
+		//Converting the grid data into hashmap
+		for(WebElement webElementRow : webElementsRows){
+			List<WebElement> webElementsCells = webElementRow.findElements(By.xpath(".//td | .//th"));
+			for(int gridCellCount=0; gridCellCount< webElementsHeaders.size(); gridCellCount++){
+				String key = webElementsHeaders.get(gridCellCount).getAttribute("title");
+				String value = webElementsCells.get(gridCellCount).getText();
+				gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
+				gridDataHashMap.get(key).add(value);
+			}
+		}
+		return gridDataHashMap;
+	}
 
 }

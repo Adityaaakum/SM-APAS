@@ -44,13 +44,15 @@ public class SoftAssertion {
 	 * @param message: "<Jira ID>: <Some validation message>"
 	 */
 	public void assertTrue(final boolean condition, String message) {
-		String formattedMessage = message + " :: Expected: true" + " || " + "Actual: " + condition;
+		if (!message.contains(":: Expected:"))
+			message = message + " :: Expected: true" + " || " + "Actual: " + condition;
+
 		String testCaseKey = jiraAdaptavistStatusUpdate.extractTestCaseKey(message);
 		if (condition) {
-			ExtentTestManager.getTest().log(LogStatus.PASS, formattedMessage);
+			ExtentTestManager.getTest().log(LogStatus.PASS, message);
 			jiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKey, "Pass");
 		} else {
-			ExtentTestManager.getTest().log(LogStatus.FAIL, formattedMessage);
+			ExtentTestManager.getTest().log(LogStatus.FAIL, message);
 			jiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKey, "Fail");
 			objUtil.getScreenShot(message);
 			testCaseExecutionFailedFlag = true;
