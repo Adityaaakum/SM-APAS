@@ -1,2 +1,0 @@
-Parcel,Processing Status,County Strat Code Description,Estimated Project Value,Issue Date,Completion Date,Permit City Code,Work Description
-000000002,Process,REPAIR,500.00,01/10/2020,01/20/2020,LM,New Construction
