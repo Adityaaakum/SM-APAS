@@ -21,6 +21,7 @@ import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
+import com.apas.config.testdata;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
@@ -60,7 +61,7 @@ public class BppTrendDataValidationTest extends TestBase {
 			tablesAndJiraIDsMap.put(dataArray[0], dataArray[1]);
 		}
 
-		String fileName = System.getProperty("user.dir") + TestBase.CONFIG.getProperty("filePath");
+		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_TABLES_DATA;
 
 		// Step1: Resetting the factor tables status to Not Calculated
 		String rollYear = CONFIG.getProperty("rollYear");

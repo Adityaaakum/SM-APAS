@@ -1,0 +1,46 @@
+{
+	"DataToCreateBuildingPermitManualEntry": {
+		"Building Permit Number": "Atherton - APW17-00227",
+		"Parcel": "002011030",
+		"Processing Status": "Process",
+		"County Strat Code Description": "REPAIRS",
+		"Estimated Project Value": "1111111.00",
+		"Issue Date": "01/01/2020",
+		"Completion Date": "01/05/2020",
+		"Permit City Code": "LM",
+		"Work Description": "Repairs"
+	},
+    "DataToUpdateUsingEditButtonOnDetailsPage": {
+    	"Building Permit Number": "Belmont - B2018-0001",
+		"Parcel": "002022140",
+		"Processing Status": "--None--",
+		"County Strat Code Description": "CONSTRUCTION",
+		"Estimated Project Value": "6000.00",
+		"Issue Date": "01/10/2020",
+		"Completion Date": "01/15/2020",
+		"Permit City Code": "BR",
+		"Work Description": "New Construction"
+	},
+    "DataToUpdateUsingEditLinkOnRecentlyViewedGrid": {
+    	"Building Permit Number": "B1504-086",
+		"Parcel": "002022160",
+		"Processing Status": "Process",
+		"County Strat Code Description": "DEMO",
+		"Estimated Project Value": "00000116572.00",
+		"Issue Date": "01/20/2020",
+		"Completion Date": "01/25/2020",
+		"Permit City Code": "DC",
+		"Work Description": "Building_Permit_1"
+	},
+	"DataToUpdateUsingEditIconOnDetailsPage": {
+		"Building Permit Number": "BLDG2013-0006",
+		"Parcel": "002024360",
+		"Processing Status": "No Process",
+		"County Strat Code Description": "ADDITION",
+		"Estimated Project Value": "8000.00",
+		"Issue Date": "02/01/2020",
+		"Completion Date": "02/05/2020",
+		"Permit City Code": "FC",
+		"Work Description": "Addition"
+	}
+}
