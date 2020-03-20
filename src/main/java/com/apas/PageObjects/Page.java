@@ -8,7 +8,9 @@ import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -781,41 +783,12 @@ public class Page {
 		String randomNumber = RandomStringUtils.randomNumeric(Integer.parseInt(noOfchar));
 		return randomNumber;
 	}
-
-	public List <WebElement> waitForAllElementsToBeVisible(Object object) {
-		List <WebElement> elements = null;
-		if(object instanceof String) {
-			String[] arr = object.toString().split("~");
-			if(arr[1].equalsIgnoreCase("ID")) {
-				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.id(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("tagName")) {
-				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.tagName(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("name")) {
-				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.name(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("linkText")) {
-				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.linkText(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("partialLinkText")) {
-				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.partialLinkText(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("className")) {
-				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.className(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("cssSelector")) {
-				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.cssSelector(arr[0]))));	
-			} else {
-				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.xpath(arr[0]))));	
-			}
-		} else if (object instanceof By) {
-			elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy((By) object));
-		} else {
-			elements = wait.until(ExpectedConditions.visibilityOfAllElements((WebElement)object));	
-		}
-		return elements;
-	}
 	
-	public WebElement locateElement(String locatorValue, int timoutCounter) throws Exception {
+	public WebElement locateElement(String locatorValue, int timoutSeconds) throws Exception {
 		WebElement element = null;
 		boolean elementVisiblityFlag = false;
 		int counter = 0;
-		while (!elementVisiblityFlag || counter < timoutCounter) {
+		while (!elementVisiblityFlag || counter < timoutSeconds) {
 			try {
 				element = driver.findElement(By.xpath(locatorValue));
 				if (element != null) {
@@ -827,6 +800,19 @@ public class Page {
 			counter++;
 		}
 		return element;
+	}
+
+	/**
+	 * Function will wait for an element to be Invisible on the page.
+	 *
+	 * @param Object (Xpath, By)
+	 * @param timeoutInSeconds
+	 *            the timeout in seconds
+	 */
+	public boolean validateAbsenceOfElement(String xpathStr, int timeoutInSeconds) {
+		By by = By.xpath(xpathStr);
+		boolean elementStatus = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOfElementLocated(by));
+		return elementStatus;
 	}
 	
 	public List<WebElement> locateElements(String locatorValue, int timoutCounter) throws Exception {
@@ -846,40 +832,11 @@ public class Page {
 		}
 		return elements;
 	}
-	
-	public WebElement waitForElementToBeVisible(Object object, String locatorType) {
-		WebElement element = null;
-		if(object instanceof String) {
-			String[] arr = object.toString().split("~");
-			if(arr[1].equalsIgnoreCase("ID")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("tagName")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.tagName(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("name")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.name(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("linkText")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.linkText(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("partialLinkText")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.partialLinkText(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("className")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.className(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("cssSelector")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector(arr[0]))));	
-			} else {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(arr[0]))));	
-			}
-		} else if (object instanceof By) {
-			element = wait.until(ExpectedConditions.visibilityOfElementLocated((By) object));
-		} else {
-			element = wait.until(ExpectedConditions.visibilityOf((WebElement)object));
-		}
-		return element;
-	}
-	
+		
 	public WebElement waitForElementToBeVisible(Object object) {
 		WebElement element = null;
 		if(object instanceof String) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(object.toString()))));	
+			element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(object.toString()))));	
 		} else if (object instanceof By) {
 			element = wait.until(ExpectedConditions.visibilityOfElementLocated((By) object));
 		} else {
@@ -888,20 +845,10 @@ public class Page {
 		return element;
 	}
 	
-	public boolean waitForElementToBeInVisible(Object object) {
-		boolean isElementInvisible = false;
-		if(object instanceof String) {
-			isElementInvisible = wait.until(ExpectedConditions.invisibilityOf(driver.findElement(By.xpath(object.toString()))));	
-		} else if (object instanceof By) {
-			isElementInvisible = wait.until(ExpectedConditions.invisibilityOfElementLocated((By) object));
-		}
-		return isElementInvisible;
-	}
-	
-	public WebElement waitForElementToBeClickable(Object object) {
+	public WebElement waitForElementToBeClickable(Object object) {		
 		WebElement element = null;
 		if(object instanceof String) {
-				element = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(object.toString()))));	
+			element = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(object.toString()))));	
 		} else if (object instanceof By) {
 			element = wait.until(ExpectedConditions.elementToBeClickable((By) object));
 		} else {
@@ -910,8 +857,33 @@ public class Page {
 		return element;
 	}
 	
-	public void clickElementOnVisiblity(Object object) {
-		WebElement element = waitForElementToBeVisible(object);
-		element.click();
+	public void getParentWindowHandle() {
+		System.setProperty("parentWindowHandle", driver.getWindowHandle());
+	}
+	
+	public void switchToNewWindow(String parentWindowTitle) throws Exception {		
+		Set<String> windowHandles = driver.getWindowHandles();
+		for(int i = 0; i < 200; i++) {
+			windowHandles = driver.getWindowHandles();
+			if(windowHandles.size() > 1) {
+				break;
+			} else {
+				Thread.sleep(250);
+			}
+		}
+
+		Iterator<String> itr = windowHandles.iterator();
+		while(itr.hasNext()) {
+			String currentHandle = itr.next();
+			if(!(currentHandle.equals(System.getProperty("parentWindowHandle")))) {
+				driver.switchTo().window(currentHandle);
+				waitUntilPageisReady(driver);
+			}
+		}
+		wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(0));
+	}
+	
+	public void switchToParentWindow() {
+		driver.switchTo().window(System.getProperty("parentWindowHandle"));
 	}
 }

@@ -1,90 +1,494 @@
 package com.apas.PageObjects;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import com.apas.config.modules;
+import com.apas.config.users;
+import com.apas.generic.ApasGenericFunctions;
+
 public class BppTrendPage extends Page {
 	Logger logger = Logger.getLogger(LoginPage.class);
-
+	BuildingPermitPage objBuildPermitPage;
+	ApasGenericFunctions objApasGenericFunctions;
+	
 	public BppTrendPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
+		objApasGenericFunctions = new ApasGenericFunctions(driver);
+		objBuildPermitPage = new BuildingPermitPage(driver);
 	}
 
-	@FindBy(xpath = "//input[@name='rollyear']")
+	@FindBy(xpath = "//input[@name = 'rollyear']")
 	public WebElement rollYearDropdown;
 
-	@FindBy(xpath = "//button[@title='Select']")
+	@FindBy(xpath = "//button[@title=  'Select']")
 	public WebElement selectRollYearButton;
 
-	@FindBy(xpath = "//button[@title='Calculate']")
-	public WebElement calculateButton;
-
-	@FindBy(xpath = "//button[@title='Calculate all']")
-	public WebElement calculateAllButton;
-
-	@FindBy(xpath = "//button[@title='ReCalculate all']")
-	public WebElement reCalculateAllButton;
-
-	@FindBy(xpath = "//button[@title='More Tabs']")
+	@FindBy(xpath = "//button[@title = 'More Tabs']")
 	public WebElement moreTabs;
 
-	@FindBy(xpath = "//button[@name='btnSubApproval' and contains(.,'Submit for Approval')]")
-	public WebElement submitForApprovalButton;
+	@FindBy(xpath = "//button[@title = 'Submit All Factors for Approval']")
+	public WebElement submitAllForApprovalButton;
+	
+	@FindBy(xpath = "//button[text() = 'Cancel']")
+	public WebElement cancelBtnInPopUp;
+	
+	@FindBy(xpath = "//button[text() = 'Confirm']")
+	public WebElement confirmBtnInPopUp;
+	
+	@FindBy(xpath = "//lightning-spinner[contains(@class, 'slds-spinner_container')]//div[contains(@class, 'slds-spinner')]")
+	public WebElement statusSpinner;
+	
+	@FindBy(xpath = "(//th[@data-label = 'Year Acquired'])[1]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))]")
+	public WebElement firstRowDataOfTable;
+	
+	@FindBy(xpath = "//div[contains(@class, 'form-footer')]//button[text() = 'Save']")
+	public WebElement saveEditedCellData;
+	
+	@FindBy(xpath = "//button//span[text() = 'More Actions']")
+	public WebElement moreActionsBtn;
+	
+	@FindBy(xpath = "//span[text() = 'Export']//parent::a")
+	public WebElement exportLinkUnderMoreActions;
+	
+	@FindBy(xpath = "//div[contains(@class, 'modal-container slds')]//input[@id = 'formatted-export']")
+	public WebElement formattedReportOption;
 
+	@FindBy(xpath = "//div[contains(@class, 'modal-container slds')]//input[@id = 'data-export']")
+	public WebElement detailsOnlyOption;
+	
+	@FindBy(xpath = "//div[contains(@class, 'modal-container slds')]//span[text() = 'Export']")
+	public WebElement exportButton;
+
+	@FindBy(xpath = "//center//div//h2")
+	public WebElement pageLevelMsg;
+	
+	
+	public void clickOnGivenBppTrendSetUpRollYear(String rollYear) throws Exception {
+		String xpath = "//span[text() = '"+ rollYear +"']//ancestor::td//preceding-sibling::th//a[contains(@title, 'BPP Trend')]";
+		WebElement bppTrendSetupName = locateElement(xpath, 20);
+		Click(bppTrendSetupName);
+	}
+	
 	/**
 	 * Description: This will select the roll year from the drop down
+	 * @param rollYear: Roll Year to select from drop down
 	 */
 	public void clickOnGivenRollYear(String rollYear) throws Exception {
 		String xpathStr = "//div[contains(@id,'dropdown-element')]//span[contains(text(),'" + rollYear + "')]";
 		WebElement element = waitForElementToBeClickable(xpathStr);
 		element.click();
 	}
+		
+	/**
+	 * Description: This will click on the given table name
+	 * @param tableName: Name of the table
+	 * @param isTableUnderMoreTab: true / false flag to specify whether given table falls under more tab
+	 */
+	public void clickOnTableName(String tableName, boolean isTableUnderMoreTab) throws Exception {
+		String xpathStr;
+		if(isTableUnderMoreTab) {
+			Click(waitForElementToBeClickable(moreTabs));
+			xpathStr = "//span[contains(text(), '" + tableName + "')]";
+		} else {
+			xpathStr = "//a[contains(@data-label, '" + tableName + "')]";
+		}
+		
+		WebElement givenTable = locateElement(xpathStr, 20);
+		Click(givenTable);
+	}
+	
+	/**
+	 * Description: This will check buttons are no longer visible at table /page level
+	 * @param args: It supports variable arguments, either 1, 2 or 3 argumets
+	 * First argument always has to be the name of button to locate on webpage
+	 * Second argument would always be the timeOut in seconds for which unavailability of element needs to be checked
+	 * Third argument if required would always be the table name (in case of checking button at table level)
+	 * @return : Status of button as true / false
+	 */
+	public boolean checkUnAvailabilityOfRequiredButton(Object ...args) throws Exception {
+		String xpathBtn = null;
+		int timeoutInSeconds = 0;
+		if(args.length == 3) {
+			xpathBtn = getXpathForRequiredBtton(args[0].toString(), args[2].toString());
+			timeoutInSeconds = Integer.parseInt(args[1].toString());
+		} else if (args.length == 2) {
+			xpathBtn = getXpathForRequiredBtton(args[0].toString());
+			timeoutInSeconds = Integer.parseInt(args[1].toString());
+		}
+				
+		return validateAbsenceOfElement(xpathBtn, timeoutInSeconds);
+	}
+		
+	/**
+	 * Description: This will check whether calculate button is visible
+	 * @param args: It supports variable arguments, either 1, 2 or 3 argumets
+	 * First argument always has to be the name of button to locate on webpage
+	 * Second argument would always be the timeOut in seconds for which availability of element needs to be checked
+	 * Third argument if required would always be the table name (in case of checking button at table level)
+	 * @return : Status of calculate button as true / false
+	 */
+	public boolean checkAvailabilityOfRequiredButton(Object ...args) throws Exception {
+		String xpathBtn = null;
+		int timeoutInSeconds = 0;
+		if(args.length == 3) {
+			xpathBtn = getXpathForRequiredBtton(args[0].toString(), args[2].toString());
+			timeoutInSeconds = Integer.parseInt(args[1].toString());
+		} else if (args.length == 2) {
+			xpathBtn = getXpathForRequiredBtton(args[0].toString());
+			timeoutInSeconds = Integer.parseInt(args[1].toString());
+		}
+
+		WebElement button = locateElement(xpathBtn, timeoutInSeconds);
+		if(button == null) {
+			return false;
+		} else {
+			return button.isDisplayed();
+		}
+	}
+	
+	/**
+	 * Description: This will initiate the calculation by clicking calculate button for individual table (at table level)
+	 * @param tableName: Name of the table
+	 */
+	public void clickRequiredButton(String ...args) throws Exception {
+		String xpath = getXpathForRequiredBtton(args);
+		WebElement button = locateElement(xpath, 40); 
+		javascriptClick(button);		
+	}
+	
+	
+	/**
+	 * Description: This find the XPath of given button for given table name
+	 * @param args: It supports variable arguments, either 1 or 2 argumets
+	 * where first variable always has to be the name of button to locate on webpage
+	 * and second variable if required would always be the table name
+	 * @return : Return the xpath for given button
+	 */
+	public String getXpathForRequiredBtton(String ...args) throws Exception {		
+		String buttonName = null;
+		String btnXpath = null;
+		if(args.length == 1) {
+			buttonName = args[0];
+			btnXpath = "//button[text() = '"+ args[0] +"'] | //button[@title = '"+ args[0] +"']";
+		} else if (args.length == 2) {
+			buttonName = args[0];
+			String tableName = args[1];
+			
+			String xpathBeforeTblName = "//lightning-tab[@data-id = '";
+			String xpathAfterTblName = "']//button[@title = '";
+			String xpathAfterBtnName = "']";
+			
+			btnXpath = xpathBeforeTblName + tableName + xpathAfterTblName + buttonName + xpathAfterBtnName;
+		}
+		return btnXpath;
+	}
+
+	// Below method would read and return the cell data from the table displayed for selected roll year
+	public String retrieveCellData(int... cellDetails) throws Exception {
+		String xpathCellData = null;
+		if(cellDetails.length == 0) {
+			xpathCellData = "((//th[@data-label = 'Year Acquired'])[1]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])[1]";
+		} else if (cellDetails.length == 1) {
+			xpathCellData = "((//th[@data-label = 'Year Acquired'])[1]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])["+ cellDetails[0] +"]"; 
+		} else if (cellDetails.length == 2) {
+			xpathCellData = "((//th[@data-label = 'Year Acquired'])["+ cellDetails[0] +"]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])["+ cellDetails[1] +"]";
+		}
+		System.setProperty("xpathCellData", xpathCellData);
+		WebElement element = locateElement(xpathCellData, 20);
+		return getElementText(element);
+	}
+	
+	// Below method is used the edit the cell data in the table displayed for select roll year.
+	public void editCellData(int data) throws Exception {
+		clickAction(waitForElementToBeClickable(System.getProperty("xpathCellData")));
+		String xpathEditBtn = "//td[contains(@class, 'has-focus')]//button[contains(@class, 'cell-edit')]//lightning-primitive-icon";
+		WebElement editButton = locateElement(xpathEditBtn, 20);
+		Click(editButton);
+		
+		String xpathEditTxtBox = "//div//input[@name = 'dt-inline-edit-text']";
+		WebElement editTxtBox = locateElement(xpathEditTxtBox, 20);
+		enter(editTxtBox, String.valueOf(data));
+		WebElement year = locateElement("//th[@data-label = 'Year Acquired']", 20);
+		Click(year);
+	}
+	
+	/**
+	 * Description: This will retrieve the message displayed in pop up on performing calculate / recalculate / submit for approval
+	 * @param tableName: Name of the table
+	 * @return : Message displayed to show performed action's status
+	 */
+	public String retrieveMsgDisplayedInPopUp(String tableName) throws Exception { 
+		String xpathPopUpMsg = "//div[contains(@class, 'toastContent')]//span[contains(@class, 'toastMessage')]";
+		WebElement msgPopUpWindow = locateElement(xpathPopUpMsg, 30);
+		String popUpMsg = getElementText(msgPopUpWindow);
+		return popUpMsg;
+	}
 
 	/**
-	 * Description: This will return the list of table on the screen
-	 * @return : List of visible tables on the screen
+	 * Description: This will retrieve the message displayed above table data on performing calculate / recalculate / submit for approval
+	 * @param tableName: Name of the table
+	 * @return : Message displayed to show performed action's status
 	 */
-	public List<WebElement> getVisibleTables() throws Exception {
-		String xpathStr = "//ul[@role='tablist']//li//a";
-		List<WebElement> visibleTables = locateElements(xpathStr, 500);
-		return visibleTables;
+	public String retrieveMsgDisplayedAboveTable(String tableName) throws Exception{
+		String xpath = "//lightning-tab[@data-id = '"+ tableName +"']//div[@class = 'hightlight-tab-message']";
+		WebElement message = locateElement(xpath, 30);
+		String text = getElementText(message);
+		return text;
+	}
+
+	/**
+	 * Description: This will reset the status of tables based on the expected status
+	 * @param factorTablesToReset: List of table names wose status is to be reset
+	 * @param expectedStatus: Expected status like Calculated, Not Calculated etc.
+	 * @param rollYear: Roll year for which the status needs to be reset
+	 */
+	public void resetStatusForFactorTables(List<String> factorTablesToReset, String expectedStatus, String rollYear) throws Exception {
+		objApasGenericFunctions.login(users.SYSTEM_ADMIN);
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		
+		clickOnGivenBppTrendSetUpRollYear(rollYear);
+		WebElement element;
+		for(String factorTableName : factorTablesToReset) {
+			String xpathEditIcon = "//span[text() = '"+ factorTableName +"']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]";
+			element = locateElement(xpathEditIcon, 10);
+			javascriptClick(element);
+			
+			String xpathStrInputFields = "//label[text() = '"+ factorTableName +"']//following-sibling::div//input[@type = 'text']";
+			element = waitForElementToBeClickable(xpathStrInputFields);
+			javascriptClick(element);
+			
+			String dropDownOptionXpath = "//div[@role='listbox' and contains(@id, 'dropdown-element')]//lightning-base-combobox-item[@data-value = '"+ expectedStatus +"']"; 
+			WebElement drpDownElement = locateElement(dropDownOptionXpath, 10);
+			javascriptClick(drpDownElement);
+			Click(objBuildPermitPage.saveBtnDetailsPage);
+		}
+		objApasGenericFunctions.logout();
+		Thread.sleep(3000);
+	}
+
+	/**
+	 * Description: Checks the downloaded file in user's system
+	 * @param fileExtension: Expected extension of the downloaded file 
+	 * @return: Return the status true/false on basis of existence of downloaded file
+	 */
+	public List<String> checkDownloadedBppTrendFile() throws Exception {
+		List<String> fileNames = new ArrayList<String>(); 
+		String fileNameFromDir = null;
+		String filePath = "C:/Downloads/";
+		File sourceFiles = new File(filePath);
+		File[] listOfFiles = sourceFiles.listFiles();
+		
+		for (int i = 0; i < listOfFiles.length; i++) {
+			fileNameFromDir = listOfFiles[i].getName().toUpperCase();			  
+			if (listOfFiles[i].isFile()) {
+				fileNameFromDir = listOfFiles[i].getName().toUpperCase();
+				fileNames.add(fileNameFromDir);
+			}
+		}
+		return fileNames;
+	}
+	
+	// Deletes the given files from the downloads directory
+	public void deleteRecentlyDownloadedFiles(List<String> filesToDelete) {
+		File file;
+		for(String fileName : filesToDelete) {
+			String filePath = "C:/Downloads/";
+			filePath = filePath + fileName;
+
+			file = new File(filePath);
+			file.delete();	
+		}
+	}
+	
+	// Exports he valuation & composite factors excel files
+	public void exportExcelFile() throws Exception {
+		// Clicking MoreAction button and then selecting Export option from drop down to open export option window
+		javascriptClick(waitForElementToBeClickable(moreActionsBtn));
+		clickAction(waitForElementToBeClickable(exportLinkUnderMoreActions));
+		
+		// Selecting the export option and clicking export button to initiate export
+		driver.switchTo().defaultContent();
+		javascriptClick(waitForElementToBeClickable(formattedReportOption));
+		javascriptClick(waitForElementToBeClickable(exportButton));
+		
+		Thread.sleep(10000);
 	}
 	
 	/**
-	 * Description: This will select the table irrespective of hidden or displayed
-	 * @param tableName: Name of the table
-	 * @param isTableOutsideMoreTab: True/False if the table is hidden or not
-	 */
-	public void clickOnGivenTableName(String tableName, boolean isTableOutsideMoreTab) throws Exception {
-		String xpathStr = null;
-		if (isTableOutsideMoreTab) {
-			xpathStr = "//a[contains(@data-label, '" + tableName + "')]";
-		} else {
-			xpathStr = "//span[contains(text(), '" + tableName + "')]";
+	 * @Description : Reads tabular grid data from UI
+	 * @param tableName: Takes the name of the table for which data needs to be read
+	 * @return: Return a data map          
+	 **/
+	public Map<String, List<Object>> getTabularDataMap(String tableName) throws Exception {	
+		Map<String, List<Object>> uiTableDataMap = new HashMap<String, List<Object>>();
+		
+		String xpathTableRows = "//lightning-tab[contains(@data-id, '"+ tableName +"')]//table//tbody//tr";
+		String xpathTableData = "//td[(not(contains(@data-label, 'Year Acquired'))) "
+				+ "or (not(contains(@data-label, 'Year Acquired')) and contains(@data-label, 'Rounded'))]";
+		List<WebElement> tableRows = locateElements(xpathTableRows, 30);
+		
+		for(int i = 0; i < tableRows.size(); i++) {
+			int rowNum = i + 1;
+			String xpathYearAcq = "("+ xpathTableRows +")["+ rowNum +"]//th";
+			WebElement yearAcquiredElement = locateElement(xpathYearAcq, 10);
+			String yearAcquiredTxt = getElementText(yearAcquiredElement);
+			
+			String xpathYearData = "("+ xpathTableRows +")["+ rowNum +"]"+ xpathTableData;
+			List<WebElement> yearAcruiredDataElements = locateElements(xpathYearData, 10);
+			
+			List<Object> yearAcruiredData = new ArrayList<Object>();
+			for(int j = 0; j < yearAcruiredDataElements.size(); j++) {
+				Object cellData = Double.parseDouble(getElementText(yearAcruiredDataElements.get(j)));
+				yearAcruiredData.add(cellData);
+			}
+			uiTableDataMap.put(yearAcquiredTxt, yearAcruiredData);
 		}
-		WebElement givenTable = waitForElementToBeClickable(xpathStr);
-		givenTable.click();
+		return uiTableDataMap;
 	}
 	
 	/**
-	 * Description: This will calculate the index
-	 * @param tableName: Name of the table
-	 * @return : Status of the index data submission
-	 */
-	public String clickCalculateButton(String tableName) throws Exception {
-		String xpathStr = "//lightning-tab[contains(@data-id, '" + tableName + "')]/slot/div";
-		String currentMessage = waitForElementToBeClickable(xpathStr).getText();
-		if(currentMessage.equalsIgnoreCase("Yet to be calculated")) {
-			Click(calculateButton);	
-			currentMessage = waitForElementToBeClickable(xpathStr).getText();
-		}
-		return currentMessage;
+	 * @Description : Reads given excel file and converts the data into a map.
+	 * @param filePath: Takes the path of the XLSX workbook
+	 * @param sheetName: Takes the names of the Sheet that is be read from given workbook
+	 * @return: Return a data map          
+	 **/
+	@SuppressWarnings("deprecation")
+	public Map<String, List<Object>> readDataFromExcelUsingPoi(String filePath, String sheetName) throws Exception {
+		String sheetNameForExcel = "";
+		switch (sheetName) {
+        case "Commercial Composite Factors":
+        	sheetNameForExcel = "Commercial Composite";
+            break;
+        case "Industrial Compoiste Factors":
+        	sheetNameForExcel = "Industrial Composite";
+            break;
+        case "Agricultural Compoiste Factors":
+        	sheetNameForExcel = "Agricultural Composite";
+            break;
+        case "Construction Compoiste Factors":
+        	sheetNameForExcel = "Construction Composite";
+            break;
+        case "Agricultural Mobile Equipment Composite Factors":
+        	sheetNameForExcel = "Ag Mobile Equip Composite";
+            break;
+        case "Construction Mobile Equipment Composite Factors":
+        	sheetNameForExcel = "Construction Mobile Composite";
+            break;
+        case "BPP Prop 13 Factors":
+        	sheetNameForExcel = "2019 CPI";
+            break;
+        } 
+
+		Map<String, List<Object>> dataMap = new HashMap<String, List<Object>>();
+		FileInputStream file = null;
+		XSSFWorkbook workBook = null;
+		try {
+            file = new FileInputStream(new File(filePath));
+            workBook = new XSSFWorkbook(file);            
+            XSSFSheet sheet = workBook.getSheet(sheetNameForExcel);            
+            DataFormatter dataFormatter = new DataFormatter(); 
+            
+            Row headerRow = sheet.getRow(0);
+            int totalCells = headerRow.getLastCellNum();   
+            int cellIndexToSkip = -1;
+            int cellIndexForYearAcq = 0;
+            for(int i = 0; i < totalCells; i++) {
+            	String cellValue = dataFormatter.formatCellValue(headerRow.getCell(i));
+            	if(cellValue.toUpperCase().contains("AGE") || cellValue.toUpperCase().contains("ACQ. DURING")) {
+            		cellIndexToSkip = i;
+            	}
+            	if(cellValue.toUpperCase().contains("YEAR ACQUIRED") || cellValue.toUpperCase().contains("YEAR") || cellValue.toUpperCase().contains("YEAR ACQ.")) {
+            		cellIndexForYearAcq = i;
+            	}
+            }
+            
+            int totalRows = sheet.getPhysicalNumberOfRows();      		
+            for(int i = 1; i <= totalRows; i++) {
+                Row currentRow = sheet.getRow(i);
+                List<Object> currentRowData = new ArrayList<>();
+                String yearAcquired = null;
+
+                FormulaEvaluator evaluator = workBook.getCreationHelper().createFormulaEvaluator();                
+                for(int j = 0; j < totalCells; j++) {
+                	if(j != cellIndexToSkip) {
+                		Cell cell = currentRow.getCell(j);
+                		CellValue cellValue = evaluator.evaluate(cell);
+                		Object strValue = cellValue.getNumberValue();
+                		
+                		switch (cellValue.getCellType()) {
+                		    case Cell.CELL_TYPE_STRING:
+                		        strValue = cellValue.getStringValue();
+                		        break;
+                		    case Cell.CELL_TYPE_NUMERIC:
+                		        strValue = cellValue.getNumberValue();
+                		        break;
+                		}
+                		                		
+                		if(j != cellIndexForYearAcq) {
+                			currentRowData.add(strValue);
+                		} else {
+                			yearAcquired = strValue.toString().substring(0, strValue.toString().indexOf("."));
+                		}
+                	}
+                }
+                dataMap.put(yearAcquired, currentRowData);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+        	workBook.close();
+        	file.close();
+        }
+		return dataMap;
 	}
 	
+	/**
+	 * Description: It highlights the mismatched cell data of the table in red color
+	 * @param tableName: Name of the table on BPP Trend page
+	 * @param yearAcquired: Acquired year that is being validated
+	 * @param indexValueOfCell: Table data/Cell number that is mismatched
+	 * @throws Exception
+	 */
+	public void highlightMismatchedCellOnUI(String tableName, String yearAcquired, int indexValueOfCell) throws Exception {
+		indexValueOfCell = indexValueOfCell + 1;
+		String xpathMisMatchedCell = "(//lightning-tab[contains(@data-id, '"+tableName+"')]//"
+				+ "th//lightning-formatted-text[text() = '"+yearAcquired+"']//"
+				+ "ancestor::th//following-sibling::td[not(contains(@data-label, 'Year Acquired')) "
+				+ "or (not(contains(@data-label, 'Year Acquired')) and contains(@data-label, 'Rounded'))])["+ indexValueOfCell +"]";
+		
+		WebElement misMatchedCell = locateElement(xpathMisMatchedCell, 20);
+		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid red'", misMatchedCell);
+	}
+	
+	// Return the list containing the names of columns visible of UI
+	public List<String> getColumnNames(String tableToValidate) throws Exception {
+		List<String> columnNames = new ArrayList<String>();
+		String xpathColNames = "//lightning-tab[contains(@data-id, '"+ tableToValidate +"')]//slot"
+				+ "//th[@scope = 'col' and (not(contains(@aria-label, 'Year Acquired')))]";
+		List<WebElement> colNames = locateElements(xpathColNames, 10);
+		for(WebElement element : colNames) {
+			columnNames.add(getElementText(element));
+		}
+		return columnNames;
+	}
 }
