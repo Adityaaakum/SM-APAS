@@ -1,2 +1,0 @@
-Parcel,Processing Status,County Strat Code Description,Estimated Project Value,Issue Date,Completion Date,Permit City Code,Work Description
-000000001,No Process,REPAIRS,600.00,01/15/2020,01/25/2020,DC,Roof Repair

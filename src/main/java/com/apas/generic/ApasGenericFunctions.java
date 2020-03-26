@@ -14,7 +14,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import com.apas.PageObjects.ApasGenericPage;
-import com.apas.PageObjects.EFileImportPage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
@@ -115,7 +114,14 @@ public class ApasGenericFunctions extends TestBase{
 		Thread.sleep(3000);
 	}
 
-
+	/**
+	 * Description: This method will filter out the records on the grid based on the search string from the APAS level search
+	 * @param searchString: String to search the record
+	 */
+	public void globalSearchRecords(String searchString) throws Exception {
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Searching and filtering the data through APAS level search with the String " + searchString);
+		objApasGenericPage.searchAndSelectFromDropDown(objApasGenericPage.globalSearchListEditBox,searchString);
+	}
 
 	/**
 	 * Description: This method will filter out the records on the grid based on the search string
@@ -172,7 +178,7 @@ public class ApasGenericFunctions extends TestBase{
 	 * Description: This method will save the grid data in hashmap
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
-	public HashMap<String, ArrayList<String>> getGridDataInHashMap(){
+	public HashMap<String, ArrayList<String>> getGridDataInHashMap() throws InterruptedException {
 		return getGridDataInHashMap(-1);
 	}
 
@@ -181,8 +187,7 @@ public class ApasGenericFunctions extends TestBase{
 	 * @param rowNumber: Row Number for which data needs to be fetched
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
-	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int rowNumber){
-
+	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int rowNumber) throws InterruptedException {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
 		//This code is to fetch the data for a particular row in the grid
 		String xpathRows = "//tbody/tr";

@@ -1,6 +1,8 @@
 package com.apas.Tests.BuildingPermit;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,21 +31,16 @@ public class BuildingPermitManualCreationTest extends TestBase {
 
 	private RemoteWebDriver driver;
 	Page objPage;
-	EFileImportTransactionsPage objEfileImportTransactionsPage;
 	ApasGenericFunctions objApasGenericFunctions;
-	BuildingPermitPage objBuildPermit;
-	EFileImportPage objEfileHomePage;
+	BuildingPermitPage objBuildingPermitPage;
 	Util objUtil;
 	SoftAssertion softAssert;
-	Map<String, String> dataMap;
-	
+
 	@BeforeMethod
 	public void beforeMethod(){
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
-		objBuildPermit = new BuildingPermitPage(driver);
-		objEfileImportTransactionsPage = new EFileImportTransactionsPage(driver);
-		objEfileHomePage = new EFileImportPage(driver);
+		objBuildingPermitPage = new BuildingPermitPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
@@ -66,61 +63,135 @@ public class BuildingPermitManualCreationTest extends TestBase {
     }
 
 	/**
-	 Below test case is used to validate the manual creation of building permit 
+	 Below test case is used to validate error appearing if mandatory fields are not filled while manually creating building permit
 	 **/
-	@Test(description = "Creating manual entry for building permit", groups = {"smoke","regression"}, priority = 2, enabled = true)
-	public void bldngPrmtsCreateManualEntry() throws Exception {
+	@Test(description = "SMAB-T418: Mandatory Field Validation while creating manual building permit", groups = {"smoke","regression"}, dataProvider = "loginUsers", enabled = true)
+	public void validateMandatoryFieldErrorsBuildingPermitManualCreation(String loginUser) throws Exception {
 		
-		//Step1: Login to the APAS application using the business admin user
-		objApasGenericFunctions.login(users.BUSINESS_ADMIN);
-		
+		//Step1: Login to the APAS application using the user passed through the data provider
+		objApasGenericFunctions.login(loginUser);
+
 		//Step2: Opening the building permit module
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
-					
-		//Step3: Enter the data to on manual create building permit screen
-		String newManualEntryData = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_NEW_MANUAL_ENTRY_DATA;
-		dataMap = objUtil.generateMapFromDataFile(newManualEntryData);
-		
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Opening manual entry pop and clicking save button without entring any data to validate error messages for mandatory fields.");
-		objBuildPermit.openManualEntryForm();
-		objBuildPermit.waitForManualEntryFormToLoad();
-		objBuildPermit.saveManualEntry();
-		
-		
-		List<String> errorsList = objBuildPermit.retrieveMandatoryFieldsValidationErrorMsgs();
-		String expMsgInPopUpHeader = CONFIG.getProperty("expectedErrorMsgForAllMandatoryFieldsNewEntry");
-		String actMsgInPopUpHeader = errorsList.get(0);
-		softAssert.assertEquals(actMsgInPopUpHeader, expMsgInPopUpHeader, "SMAB-T418: Validating mandatory fields missing error in manual entry pop up's header.");		
-		String expMsgForIndividualField = CONFIG.getProperty("expectedErrorMsgForIndividualMandatoryField");
-		String actMsgForIndividualField = errorsList.get(1);	
-		softAssert.assertEquals(expMsgForIndividualField, actMsgForIndividualField, "SMAB-T418: Validating mandatory fields missing error against individual fields");
-		int fieldsCountInHeaderMsg = Integer.parseInt(errorsList.get(2));		
-		int individualMsgsCount = Integer.parseInt(errorsList.get(3));
-		softAssert.assertEquals(fieldsCountInHeaderMsg, individualMsgsCount, "SMAB-T418: Validating count of field names in header msg against count of individual error msgs");
-		
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Validating to ensure entry is not created when all mandatory fields filled and process is aborted without saving.");	
-		objBuildPermit.enterManualEntryData(dataMap);
-		objBuildPermit.abortManualEntry();
-		boolean buildingPermitNotCreated = objBuildPermit.checkBuildingPermitOnGrid();
-		softAssert.assertTrue(!buildingPermitNotCreated, "SMAB-T418: Validating whether manual entry successfully aborted without saving.");
-		
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Verifying whether manual entry gets saved and pop up window for new entry gets displayed when 'Save & New' option is selected.");
-		objBuildPermit.openManualEntryForm();
-		objBuildPermit.enterManualEntryData(dataMap);
-		boolean isNewManualEntryPopUpDisplayed = objBuildPermit.saveManualEntryAndExit();
-		softAssert.assertTrue(isNewManualEntryPopUpDisplayed, "SMAB-T418: Validating whether pop up for new entry is displayed.");
-		
-		boolean isLoaderVisible = objBuildPermit.checkAndHandlePageLoaderOnEntryCreation();
-		if(isLoaderVisible) {
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Validating newly created manual entry successfully displayed on recently viewed grid.");
-			boolean isEntryDisplayed = objBuildPermit.checkBuildingPermitOnGrid();
-			softAssert.assertTrue(isEntryDisplayed, "SMAB-T418: Validating whether manual entry successfully created and displayed on recently viewed grid.");
-		} else {
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Validating newly created manual entry successfully displayed on details page.");
-			boolean isEntryDisplayed = objBuildPermit.checkBuildingPermitOnDetailsPage();
-			softAssert.assertTrue(isEntryDisplayed, "SMAB-T418: Validating whether manual entry successfully created and displayed on details page.");	
-		}
-		
+
+		//Step3: Open and save building permit manual creation form without entering the data
+		objBuildingPermitPage.openManualEntryForm();
+		objPage.Click(objBuildingPermitPage.saveButton);
+
+		//Step4: Validate the error message appeared for mandatory fields
+		String expectedErrorMessageOnTop = "These required fields must be completed: Estimated Project Value, Issue Date, Building Permit Number, Parcel, Permit City Code, County Strat Code Description, Work Description";
+		String expectedIndividualFieldMessage = "Complete this field";
+		softAssert.assertEquals(objBuildingPermitPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T418: Validating mandatory fields missing error in manual entry pop up header.");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T418: Validating mandatory fields missing error for 'Building Permit Number'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Parcel"),expectedIndividualFieldMessage,"SMAB-T418: Validating mandatory fields missing error for 'Parcel'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("County Strat Code Description"),expectedIndividualFieldMessage,"SMAB-T418: Validating mandatory fields missing error for 'County Strat Code Description'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Estimated Project Value"),expectedIndividualFieldMessage,"SMAB-T418: Validating mandatory fields missing error for 'Estimated Project Value'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Issue Date"),expectedIndividualFieldMessage,"SMAB-T418: Validating mandatory fields missing error for 'Issue Date'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Work Description"),expectedIndividualFieldMessage,"SMAB-T418: Validating mandatory fields missing error for 'Work Description'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Permit City Code"),expectedIndividualFieldMessage,"SMAB-T418: Validating mandatory fields missing error for 'Permit City Code'");
+
+		//Step5: Closing the Manual building permit creation pop up
+		objPage.Click(objBuildingPermitPage.cancelButton);
+
 		softAssert.assertAll();
 	}
+
+	/**
+	 Below test case is used to validate that building permit can be created when 'Building Permit Number, Permit City Code and APN' is unique
+	 **/
+	@Test(description = "SMAB-T519: Validate that building permit can be created when 'Building Permit Number, Permit City Code and APN' is unique", groups = {"smoke","regression"}, dataProvider = "loginUsers", enabled = true)
+	public void validateUniqueFieldsBuildingPermitManualCreation(String loginUser) throws Exception {
+
+		//Step1: Login to the APAS application using the user passed through the data provider
+		objApasGenericFunctions.login(loginUser);
+
+		//Step2: Get any Active Parcel to create the Building Permit record
+		objApasGenericFunctions.searchModule(modules.PARCELS);
+		objApasGenericFunctions.displayRecords("All Active Parcels");
+		String activeParcel = objApasGenericFunctions.getGridDataInHashMap(1).get("APN").get(0);
+
+		//Step3: Opening the building permit module
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+
+		//Step4: Prepare a test data to create a new building permit
+		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
+		manualBuildingPermitMap.put("Parcel",activeParcel);
+
+		//Step5: Open and save building permit manual creation
+		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
+
+		//Step6: Create another building permit with the data user above. An error should occur
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
+
+		//Step7: Validate the error message appeared for mandatory fields
+		String expectedWarningMessage = "This record looks like a duplicate.View Duplicates";
+		softAssert.assertEquals(objBuildingPermitPage.warningMessage.getText(),expectedWarningMessage,"SMAB-T519: Warning Message validation for duplicate fields");
+
+		//Step8: Validation of the building permit after clicking on View Duplicate Link
+		objPage.Click(objBuildingPermitPage.viewDuplicateLink);
+		objPage.waitForElementToBeVisible(objBuildingPermitPage.openBuildingPermitLink);
+		Thread.sleep(2000);
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Building Permit Number"),manualBuildingPermitMap.get("Building Permit Number"),"SMAB-T519: 'Building Permit Number' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Permit City Code"),manualBuildingPermitMap.get("Permit City Code"),"SMAB-T519: 'Permit City Code' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("County Strat Code Description"),manualBuildingPermitMap.get("County Strat Code Description"),"SMAB-T519: 'County Strat Code Description' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Estimated Project Value"),manualBuildingPermitMap.get("Estimated Project Value"),"SMAB-T519: 'Estimated Project Value' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Issue Date"),manualBuildingPermitMap.get("Issue Date"),"SMAB-T519: 'Issue Date' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Calculated Processing Status"),manualBuildingPermitMap.get("Calculated Processing Status"),"SMAB-T519: 'Calculated Processing Status' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Processing Status"),manualBuildingPermitMap.get("Processing Status"),"SMAB-T519: 'Processing Status' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Work Description"),manualBuildingPermitMap.get("Work Description"),"SMAB-T519: 'Work Description' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Parcel"),manualBuildingPermitMap.get("Parcel"),"SMAB-T519: 'Parcel' field validation on View Duplicate screen");
+
+		//Step9: Closing the pops opened on the application
+		objPage.Click(objBuildingPermitPage.closeViewDuplicatePopUpButton);
+		objPage.Click(objBuildingPermitPage.closeNewBuildingPermitPopUpButton);
+
+		softAssert.assertAll();
+	}
+
+	/**
+	 Below test case is used to validate the warning message when building permit is created with retired parcel
+	 **/
+	@Test(description = "SMAB-T626: Validate that warning message appears when a building permit is created with retired parcel", groups = {"smoke","regression"}, dataProvider = "loginUsers", priority = 2, enabled = true)
+	public void validateRetiredParcelBuildingPermitManualCreation(String loginUser) throws Exception {
+
+		//Step1: Login to the APAS application using the user passed through the data provider
+		objApasGenericFunctions.login(loginUser);
+
+		//Step2: Opening the Parcels module
+		objApasGenericFunctions.searchModule(modules.PARCELS);
+
+		//Step3: Search and Open the Parcel
+		objApasGenericFunctions.displayRecords("All Retired Parcels");
+		String retiredParcel = objApasGenericFunctions.getGridDataInHashMap(1).get("APN").get(0);
+
+		//Step2: Opening the building permit module
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+
+		//Step3: Prepare a test data to create a new building permit with retired parcel
+		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
+		String buildingPermitNumber = manualBuildingPermitMap.get("Building Permit Number");
+		manualBuildingPermitMap.put("Parcel",retiredParcel);
+
+		//Step4: Open and save building permit manual creation
+		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
+
+		//Step5: Opening the building permit module
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+
+		//Validation for the warning message appearing on the grid
+		objApasGenericFunctions.displayRecords("All Manual Building Permits");
+		objApasGenericFunctions.searchRecords(buildingPermitNumber);
+		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objApasGenericFunctions.getGridDataInHashMap();
+		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Warning Message").get(0), "The parcel is retired. Please review and confirm the APN on the Building Permit.","SMAB-T626: 'Priority Message' validation on the data displayed on the grid");
+
+		//Step6: open the building permit created with retired parcel
+		objBuildingPermitPage.openBuildingPermit(buildingPermitNumber);
+
+		//Validate the warning message for retired parcel is appearing on the Details page as well
+		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag), "The parcel is retired. Please review and confirm the APN on the Building Permit.","SMAB-T626: 'Priority Message' validation on building permit details page screen");
+
+		softAssert.assertAll();
+	}
+
 }
