@@ -784,11 +784,12 @@ public class Page {
 		return randomNumber;
 	}
 	
-	public WebElement locateElement(String locatorValue, int timoutSeconds) throws Exception {
+	public WebElement locateElement(String locatorValue, int timeoutInSeconds) throws Exception {
 		WebElement element = null;
 		boolean elementVisiblityFlag = false;
 		int counter = 0;
-		while (!elementVisiblityFlag || counter < timoutSeconds) {
+		
+		while (counter < timeoutInSeconds && !elementVisiblityFlag) {			
 			try {
 				element = driver.findElement(By.xpath(locatorValue));
 				if (element != null) {
@@ -798,21 +799,8 @@ public class Page {
 				Thread.sleep(250);
 			}
 			counter++;
-		}
+		}		
 		return element;
-	}
-
-	/**
-	 * Function will wait for an element to be Invisible on the page.
-	 *
-	 * @param Object (Xpath, By)
-	 * @param timeoutInSeconds
-	 *            the timeout in seconds
-	 */
-	public boolean validateAbsenceOfElement(String xpathStr, int timeoutInSeconds) {
-		By by = By.xpath(xpathStr);
-		boolean elementStatus = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOfElementLocated(by));
-		return elementStatus;
 	}
 	
 	public List<WebElement> locateElements(String locatorValue, int timoutCounter) throws Exception {

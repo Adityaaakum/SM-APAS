@@ -57,6 +57,12 @@ public class ApasGenericFunctions extends TestBase{
 		objPage.enter(objLoginPage.txtuserName, CONFIG.getProperty(userType + "UserName"));
 		objPage.enter(objLoginPage.txtpassWord,password);
 		objPage.Click(objLoginPage.btnSubmit);
+		
+		WebElement verificationCodeSection = objPage.locateElement("//h2[text() = 'Verify Your Identity']", 10);
+		if(verificationCodeSection != null) {
+			System.out.println("Waiting for verification code!!");
+			Thread.sleep(40000);
+		}
 		System.out.println("User logged in the application");
 	}
 	

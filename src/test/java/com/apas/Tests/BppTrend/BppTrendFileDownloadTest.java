@@ -65,29 +65,29 @@ public class BppTrendFileDownloadTest extends TestBase {
 		objBppTrnPg.javascriptClick(objBppTrnPg.selectRollYearButton);
 		
 		//Step4: Validating presence of Download, Export Composite Factors & Export Valuation Factors buttons and clicking then sequentially		
-		boolean isDownloadBtnDisplayed = objBppTrnPg.checkAvailabilityOfRequiredButton("Download", 20);
+		boolean isDownloadBtnDisplayed = objBppTrnPg.isDownloadBtnVisible(20);
 		softAssert.assertTrue(isDownloadBtnDisplayed, "SMAB-T206: Is Download button visible on approving all the the submitted calculations:");
-		boolean isExportCompositeBtnDisplayed = objBppTrnPg.checkAvailabilityOfRequiredButton("Export Composite Factors", 20);
+		boolean isExportCompositeBtnDisplayed = objBppTrnPg.isExportCompositeFactorsBtnVisible(20);
 		softAssert.assertTrue(isExportCompositeBtnDisplayed, "SMAB-T303: Is Export Composite Factors button visible on approving all the the submitted calculations:");		
-		boolean isExportValuationBtnDisplayed = objBppTrnPg.checkAvailabilityOfRequiredButton("Export Valuation Factors", 20);
+		boolean isExportValuationBtnDisplayed = objBppTrnPg.isExportValuationFactorsBtnVisible(20);
 		softAssert.assertTrue(isExportValuationBtnDisplayed, "SMAB-T303: Is Export Valuation Factors button visible on approving all the the submitted calculations:");
 
 		objBppTrnPg.getParentWindowHandle();
 
 		//Step5: Downloading PDF file by clicking Download button
-		objBppTrnPg.clickRequiredButton("Download");
+		objBppTrnPg.clickDownloadBtn();
 				
 		//Step6: Downloading Composite Factors Excel file by clicking Export Composite Factors button
-		objBppTrnPg.clickRequiredButton("Export Composite Factors");
+		objBppTrnPg.clickExportCompositeFactorsBtn();
 		objBppTrnPg.switchToNewWindow("Composite Factors");
-		objBppTrnPg.exportExcelFile();
+		objBppTrnPg.exportBppTrendFactorsExcelFiles();
 		driver.close();
 
 		//Step7: Downloading Valuation Factors Excel file by clicking Export Valuation Factors button
 		objBppTrnPg.switchToParentWindow();
-		objBppTrnPg.clickRequiredButton("Export Valuation Factors");
+		objBppTrnPg.clickExportValuationFactorsBtn();
 		objBppTrnPg.switchToNewWindow("Valuation Factors");
-		objBppTrnPg.exportExcelFile();
+		objBppTrnPg.exportBppTrendFactorsExcelFiles();
 		driver.close();
 		
 		objBppTrnPg.switchToParentWindow();
@@ -103,7 +103,7 @@ public class BppTrendFileDownloadTest extends TestBase {
 		
 		List<String> filesToDelete = new ArrayList<String>();
 		
-		List<String> downloadedFilesList = objBppTrnPg.checkDownloadedBppTrendFile();
+		List<String> downloadedFilesList = objBppTrnPg.checkFactorFilesInDownloadFolder();
 		if(downloadedFilesList.size() == 0) {
 			softAssert.assertTrue(false, "SMAB-T206,SMAB-T303: PDF & Excel files have not been downloaded");	
 		} else {
@@ -126,7 +126,7 @@ public class BppTrendFileDownloadTest extends TestBase {
 		softAssert.assertTrue(isValuationExcelDownloaded, "SMAB-T303: Is Valuation Factor XLSX file downloaded successfully:");	
 
 		//Step9: Deleting downloaded files from download directory
-		objBppTrnPg.deleteRecentlyDownloadedFiles(filesToDelete);
+		objBppTrnPg.deleteFactorFilesFromDownloadFolder(filesToDelete);
 		
 		softAssert.assertAll();
 	}

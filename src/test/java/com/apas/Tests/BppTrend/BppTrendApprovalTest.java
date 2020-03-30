@@ -48,6 +48,7 @@ public class BppTrendApprovalTest extends TestBase {
 	@AfterMethod
 	public void afterMethod() throws Exception {
 		objApasGenericFunctions.logout();
+		Thread.sleep(3000);
 	}
 
 	@Test(description = "SMAB-T205: Approve calculations of factor table individually", dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
@@ -66,8 +67,8 @@ public class BppTrendApprovalTest extends TestBase {
 		objBppTrnPg.javascriptClick(objBppTrnPg.selectRollYearButton);
 		
 		//Step4: Validating presence of Approve all button at page level.
-		boolean isApproveAllBtnDisplayed = objBppTrnPg.checkAvailabilityOfRequiredButton("Approve all", 20);
-		softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T205: Is 'Approve all' button visible at page:");
+		boolean isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(20);
+		softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T205: Approve all button should be visible");
 		
 		//Step5: Fetch table names from properties file and collect them in a single list
 		List<String> allTables = new ArrayList<String>();
@@ -78,47 +79,51 @@ public class BppTrendApprovalTest extends TestBase {
 		
 		//Step6: Iterating over the given tables
 		for (int i = 0; i < allTables.size()-1; i++) {
-			ExtentTestManager.getTest().log(LogStatus.INFO, "<<<<<<<<<< Performing Validations For: '"+ allTables.get(i) +"' Table >>>>>>>>>>");
+			String tableName = allTables.get(i);
+			ExtentTestManager.getTest().log(LogStatus.INFO, "**** Performing Validations For: '"+ tableName +"' Table ****");
 			// Clicking on the given table name
-			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(allTables.get(i));
-			objBppTrnPg.clickOnTableName(allTables.get(i), isTableUnderMoreTab);
+			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
+			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
 
 			// Retrieve & Assert message displayed above table before clicking Approve button
-			String actTableMsgBeforeApprovingCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(allTables.get(i));
+			String actTableMsgBeforeApprovingCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
 			String expTableMsgBeforeApprovingCalc = CONFIG.getProperty("tableMsgBeforeApproval");
-			softAssert.assertTrue(actTableMsgBeforeApprovingCalc.equalsIgnoreCase(expTableMsgBeforeApprovingCalc), "SMAB-T205: Validating message at table level before approving the submitted calculation for table '" + allTables.get(i) + "'");
+			softAssert.assertTrue(actTableMsgBeforeApprovingCalc.equalsIgnoreCase(expTableMsgBeforeApprovingCalc), "SMAB-T205: Validating message at table level before approving the submitted calculation for table '" + tableName + "'");
 			
 			// Editing and saving cell data in the table for first factor table specified the list
 			if(i == 0) {
-				int cellDataBeforeEdit = Integer.valueOf(objBppTrnPg.retrieveCellData().split("\\n")[0]);
-				objBppTrnPg.editCellData(cellDataBeforeEdit + 1);
+				int cellDataBeforeEdit = Integer.valueOf(objBppTrnPg.getCellDataFromGridForGivenTable().split("\\n")[0]);
+				objBppTrnPg.editCellDataInGridForGivenTable(cellDataBeforeEdit + 1);
 				objBppTrnPg.Click(objBppTrnPg.saveEditedCellData);
 				
 				objBppTrnPg.javascriptClick(objBppTrnPg.rollYearDropdown);
 				objBppTrnPg.clickOnGivenRollYear(rollYear);
 				objBppTrnPg.javascriptClick(objBppTrnPg.selectRollYearButton);
 				
-				objBppTrnPg.clickOnTableName(allTables.get(i), isTableUnderMoreTab);
-				int cellDataAfterEdit = Integer.valueOf(objBppTrnPg.retrieveCellData().split("\\n")[0]);
-				softAssert.assertTrue(cellDataBeforeEdit != cellDataAfterEdit, "SMAB-T205: Is cell data changed in the table after editing the specified cell:");
+				objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
+				int cellDataAfterEdit = Integer.valueOf(objBppTrnPg.getCellDataFromGridForGivenTable().split("\\n")[0]);
+				softAssert.assertTrue(cellDataBeforeEdit != cellDataAfterEdit, "SMAB-T205: Is cell data changed in the table after editing the specified cell");
 			}
 			
 			// Clicking on Approve button at table level to complete the pending approval
-			ExtentTestManager.getTest().log(LogStatus.INFO, "<<<<< Clicking 'Approve' button >>>>>");
-			objBppTrnPg.clickRequiredButton("Approve", allTables.get(i));	
+			ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Approve' button");
+			objBppTrnPg.clickApproveButton(tableName);
+			
+			//Waiting for pop up message to display and the message displayed above table to update
+			objBppTrnPg.waitForPopUpMsgOnApproveClick(180);
 						
 			// Retrieve & Assert message displayed above table after clicking Approve button
-			String actTableMsgAfterApprovingCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(allTables.get(i));
+			String actTableMsgAfterApprovingCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
 			String expTableMsgAfterApprovingCalc = CONFIG.getProperty("tableMsgAfterApproval");
-			softAssert.assertTrue(actTableMsgAfterApprovingCalc.equalsIgnoreCase(expTableMsgAfterApprovingCalc), "SMAB-T205: Is factor table calculation approved successfully:");
+			softAssert.assertEquals(actTableMsgAfterApprovingCalc, expTableMsgAfterApprovingCalc, "SMAB-T205: Is factor table calculation approved successfully");
 			
 			// Validating presence of Approve All button at page level on clicking Approve button
-			isApproveAllBtnDisplayed = objBppTrnPg.checkAvailabilityOfRequiredButton("Approve all", 20);
-			softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T205: Is 'Approve All' button visible on approving the submitted calculation:");
+			isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(20);
+			softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T205: Approve All button should be visible on approving the submitted calculation");
 			
 			// Validating absence of Approve button once the submitted calculation has been approved by clicking approve button for given table
-			boolean isApproveBtnDisplayed = objBppTrnPg.checkUnAvailabilityOfRequiredButton("Approve", 10);
-			softAssert.assertTrue(isApproveBtnDisplayed, "SMAB-T205: Is 'Approve' button no longer visible at table level:");		
+			boolean isApproveBtnDisplayed = objBppTrnPg.isApproveBtnVisible(5, tableName);
+			softAssert.assertTrue(isApproveBtnDisplayed, "SMAB-T205: Approve button should not be visible");
 		}		
 		softAssert.assertAll();	
 	}
@@ -139,21 +144,21 @@ public class BppTrendApprovalTest extends TestBase {
 		objBppTrnPg.javascriptClick(objBppTrnPg.selectRollYearButton);
 		
 		//Step4: Validating presence of Approve all button at page level
-		boolean isApproveAllBtnDisplayed = objBppTrnPg.checkAvailabilityOfRequiredButton("Approve all", 20);
-		softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T304: Is 'Approve all' button visible at page:");
+		boolean isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(20);
+		softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T304: Approve all button should be visible");
 					
-		// Clicking on Approve All button at table level to complete the pending approval
-		ExtentTestManager.getTest().log(LogStatus.INFO, "<<<<< Clicking 'Approve All' button >>>>>");
-		objBppTrnPg.clickRequiredButton("Approve all");						
+		//Step5: Clicking on Approve All button at table level to complete the pending approval
+		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Approve All' button");
+		objBppTrnPg.clickApproveAllBtn();
+
+		//Step6: Retrieve & Assert pop up message displayed at page level
+		String actPopUpMsg = objBppTrnPg.waitForPopUpMsgOnSubmitAllForApprovalClick(180);
+		String expPopUpMsg = CONFIG.getProperty("pageLevelMsgAfterApproveAll");
+		softAssert.assertEquals(actPopUpMsg, expPopUpMsg, "SMAB-T304: Calculations successfully approved for all tables");
 			
-		// Validating the message displayed at page level on clicking Approve All button
-		String expMsgPostApproveAll = CONFIG.getProperty("pageLevelMsgPostApproveAll");
-		String actMsgPostApproveAll = objBppTrnPg.getElementText(objBppTrnPg.pageLevelMsg);
-		softAssert.assertTrue(actMsgPostApproveAll.equals(expMsgPostApproveAll), "SMAB-T304: Are calculations for factor tables successfully approved:");
-			
-		// Validating absence of Approve All button once the submitted calculation has been approved by clicking approve button for given table
-		isApproveAllBtnDisplayed = objBppTrnPg.checkUnAvailabilityOfRequiredButton("Approve all", 10);
-		softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T304: Is 'Approve all' button no longer visible at page level:");
+		//Step7: Validating absence of Approve All button once the submitted calculation has been approved by clicking approve button for given table
+		isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(5);
+		softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T304: Approve all button should not be visible");
 		
 		softAssert.assertAll();
 	}

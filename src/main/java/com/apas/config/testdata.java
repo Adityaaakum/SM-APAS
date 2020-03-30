@@ -11,4 +11,5 @@ public interface testdata {
 	public static final String BPP_TREND_BOE_INDEX_FACTORS = "\\data\\BppTrend\\BOE Equipment Index Factors and Percent Good Factors Sample.xlsx";
 	public static final String BPP_TREND_CAA_VALUATION_FACTORS = "\\data\\BppTrend\\CAA Valuation Factors Sample.xlsx";
 	public static final String BPP_TREND_BOE_VALUATION_FACTORS = "\\data\\BppTrend\\BOE Valuation Factors.xlsx";
+	public static final String BPP_TREND_SETTINGS = "\\data\\BppTrend\\BppTrendSettings.json";
 }

@@ -8,11 +8,11 @@ import java.util.Map;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
+import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.BuildingPermitPage;
 import com.apas.PageObjects.EFileImportPage;
 import com.apas.PageObjects.EFileImportTransactionsPage;
@@ -22,7 +22,6 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
@@ -54,21 +53,11 @@ public class BuildingPermitManualCreationTest extends TestBase {
 	public void afterMethod() throws IOException, InterruptedException{
 		objApasGenericFunctions.logout();
 	}
-		
-	/**
-	 * Below function will be used to login to application with different users
-	 *
-	 * @return Return the user business admin and appraisal support in an array
-	 **/
-    @DataProvider(name = "loginUsers")
-    public Object[][] dataProviderLoginUserMethod() {
-        return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
-    }
 
 	/**
 	 Below test case is used to validate the manual creation of building permit 
 	 **/
-	@Test(description = "Creating new manual entry for building permit", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 4, enabled = false)
+	@Test(description = "Creating new manual entry for building permit", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression"}, priority = 0, enabled = true)
 	public void createBldngPrmtManualEntry(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the given user
 		if(loginUser.equalsIgnoreCase("dataAdmin")) {
@@ -99,6 +88,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		int individualMsgsCount = Integer.parseInt(errorsList.get(3));
 		softAssert.assertEquals(fieldsCountInHeaderMsg, individualMsgsCount, "SMAB-T418: Validating count of field names in header msg against count of individual error msgs");
 
+		//Step4: Aborting the manual entry by clicking Cancel button
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Validating to ensure entry is not created when all mandatory fields filled and process is aborted without saving.");	
 		objBuildPermit.enterManualEntryData(dataMap);
 		objPage.Click(objBuildPermit.cancelButton);
@@ -106,12 +96,14 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		boolean buildingPermitNotCreated = objBuildPermit.checkBuildingPermitOnGrid(permitNum);
 		softAssert.assertTrue(!buildingPermitNotCreated, "SMAB-T418: Manual entry is not created on closing new manual entry window without saving.");
 		
+		//Step5: Opening the manual entry form again and filling required fields and saving the form
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Verifying whether manual entry gets saved and pop up window for new entry gets displayed when 'Save & New' option is selected.");
 		objBuildPermit.openManualEntryForm();
 		objBuildPermit.enterManualEntryData(dataMap);
 		boolean isNewManualEntryPopUpDisplayed = objBuildPermit.saveManualEntryAndOpenNewAndExit();
 		softAssert.assertTrue(isNewManualEntryPopUpDisplayed, "SMAB-T418: Validating whether pop up for new entry is displayed.");
 				
+		//Step6: Checking whether the newly created manual entry is successfully reflecting or not
 		boolean isLoaderVisible = objBuildPermit.checkAndHandlePageLoaderOnEntryCreation();
 		if(isLoaderVisible) {
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Validating newly created manual entry successfully displayed on recently viewed grid.");
@@ -128,7 +120,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 	/**
 	 Below test case is used to validate the edit process of manual building permit through EDIT button on details page
 	 **/
-	@Test(description = "Editing & saving existing building permit manual entry from Details Page Using Edit Button", dataProvider = "loginUsers", groups = {"smoke"}, priority = 5, enabled = true)
+	@Test(description = "Editing & saving existing building permit manual entry from Details Page Using Edit Button", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke"}, priority = 1, enabled = true)
 	public void editBldngPrmtManualEntryOnDetailsPageUsingEditButton(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the given user
 		objApasGenericFunctions.login(loginUser);
@@ -137,11 +129,11 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
 		
 		//Step3: Clicking on given building permit number from recently viewed grid to navigate to details page
-		//String permitNum = System.getProperty("permitNumber");
-		String permitNum = "Belmont - B2018-0001";
+		String permitNum = System.getProperty("permitNumber");
+		//String permitNum = "Belmont - B2018-0001";
 		objBuildPermit.navToDetailsPageOfGivenBuildingPermit(permitNum);
 		
-		//Step4: Collecting the esisting data of manual building permit entry from all the fields into a map
+		//Step4: Collecting the existing data of manual building permit entry from all the fields into a map
 		List<String> listOfTxtAndDrpDowns = Arrays.asList(CONFIG.getProperty("manualEntryTxtAndDrpDownFields").split(","));
 		List<String> listOfSearchDrpDowns = Arrays.asList(CONFIG.getProperty("manualEntrySearchDrpDownFields").split(","));
 		Map<String, String> dataMapBeforeEditing = objBuildPermit.getExistingManualEntryData(listOfTxtAndDrpDowns, listOfSearchDrpDowns);
@@ -201,23 +193,22 @@ public class BuildingPermitManualCreationTest extends TestBase {
 			}
 		}
 
-		//Step12: Comparing the data maps: Entry data before edit Vs Entry data post edit to ensure entry has been updated
+		//Step12: Comparing the data maps: Entry data before edit against Entry data post edit to ensure entry has been updated
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Comparing the data maps for new entry data against the edited data.");
 		Map<String, String> dataMapAfterEditing = objBuildPermit.getExistingManualEntryData(listOfTxtAndDrpDowns, listOfSearchDrpDowns);
 		for(Map.Entry<String, String> entry : dataMapAfterEditing.entrySet()) {
 			String key = entry.getKey();
-			boolean doesValueFiffer = !(dataMapAfterEditing.get(key).equals(dataMapBeforeEditing.get(key)));
-			softAssert.assertTrue(doesValueFiffer, "SMAB-T418: Validating whether value has updated in manual "
+			boolean doesValueDiffer = !(dataMapAfterEditing.get(key).equals(dataMapBeforeEditing.get(key)));
+			softAssert.assertTrue(doesValueDiffer, "SMAB-T418: Validating whether value has updated in manual "
 					+ "entry post edit for field '"+ key +"-' || BeforeEdit- "+ dataMapBeforeEditing.get(key) + " ---- AfterEdit- "+ dataMapAfterEditing.get(key));
 		}
-		//softAssert.assertNotEquals(dataMapAfterEditing, dataMapBeforeEditing, "SMAB-T418: Validating whether updated data has been saved in the manual entry.");
 		softAssert.assertAll();
 	}
 
 	/**
 	 Below test case is used to validate the edit process of manual building permit through EDIT button on recently viewed grid
 	 **/
-	@Test(description = "Editing & saving existing building permit manual entry from recently viewed grid using Edit Button", dataProvider = "loginUsers", groups = {"smoke"}, priority = 6, enabled = false)
+	@Test(description = "Editing & saving existing building permit manual entry from recently viewed grid using Edit Button", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke"}, priority = 2, enabled = true)
 	public void editBldngPrmtManualOnRecentlyViewedGridUsingEditButton(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
 		objApasGenericFunctions.login(loginUser);
@@ -294,14 +285,19 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		//Step12: Comparing the data maps: Entry data before edit Vs Entry data post edit
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Comparing the data maps for new entry data against the edited data.");
 		Map<String, String> dataMapAfterEditing = objBuildPermit.getExistingManualEntryData(listOfTxtAndDrpDowns, listOfSearchDrpDowns);
-		//softAssert.assertNotEquals(dataMapAfterEditing, dataMapBeforeEditing, "SMAB-T418: Validating whether updated data has been saved in the manual entry.");
+		for(Map.Entry<String, String> entry : dataMapAfterEditing.entrySet()) {
+			String key = entry.getKey();
+			boolean doesValueDiffer = !(dataMapAfterEditing.get(key).equals(dataMapBeforeEditing.get(key)));
+			softAssert.assertTrue(doesValueDiffer, "SMAB-T418: Validating whether value has updated in manual "
+					+ "entry post edit for field '"+ key +"-' || BeforeEdit- "+ dataMapBeforeEditing.get(key) + " ---- AfterEdit- "+ dataMapAfterEditing.get(key));
+		}		
 		softAssert.assertAll();
 	}
 	
 	/**
 	 Below test case is used to validate the edit process of manual building permit through EDIT icon on details page
 	 **/
-	@Test(description = "Editing & saving existing building permit manual entry from Details Page Using Edit Icon", dataProvider = "loginUsers", groups = {"smoke"}, priority = 7, enabled = false)
+	@Test(description = "Editing & saving existing building permit manual entry from Details Page Using Edit Icon", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke"}, priority = 3, enabled = true)
 	public void editBldngPrmtManualEntryOnDetailsPageUsingEditIcon(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
 		objApasGenericFunctions.login(loginUser);
@@ -361,7 +357,12 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		//Step9: Comparing the data maps: Entry data before edit Vs Entry data post edit to ensure entry has been updated
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Comparing the data maps for new entry data against the edited data.");
 		Map<String, String> dataMapAfterEditing = objBuildPermit.getExistingManualEntryData(listOfTxtAndDrpDowns, listOfSearchDrpDowns);
-		//softAssert.assertNotEquals(dataMapAfterEditing, dataMapBeforeEditing, "SMAB-T418: Validating whether updated data has been saved in the manual entry.");		
+		for(Map.Entry<String, String> entry : dataMapAfterEditing.entrySet()) {
+			String key = entry.getKey();
+			boolean doesValueDiffer = !(dataMapAfterEditing.get(key).equals(dataMapBeforeEditing.get(key)));
+			softAssert.assertTrue(doesValueDiffer, "SMAB-T418: Validating whether value has updated in manual "
+					+ "entry post edit for field '"+ key +"-' || BeforeEdit- "+ dataMapBeforeEditing.get(key) + " ---- AfterEdit- "+ dataMapAfterEditing.get(key));
+		}				
 		softAssert.assertAll();
 	}
 }

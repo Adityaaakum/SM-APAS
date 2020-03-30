@@ -66,7 +66,7 @@ public class BppTrendDataValidationTest extends TestBase {
 		// Step1: Resetting the factor tables status to Not Calculated
 		String rollYear = CONFIG.getProperty("rollYear");
 		List<String> factorTablesToReset = Arrays.asList(CONFIG.getProperty("factorTablesToReset").split(","));
-		objBppTrnPg.resetStatusForFactorTables(factorTablesToReset, "Not Calculated", rollYear);
+		objBppTrnPg.resetTablesStatusForGivenRollYear(factorTablesToReset, "Not Calculated", rollYear);
 
 		// Step2: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
@@ -95,18 +95,18 @@ public class BppTrendDataValidationTest extends TestBase {
 			// If map contains the current table name as a key, then check calculation else continue 
 			if (tablesAndJiraIDsMap.containsKey(tableToValidate)) {
 				// Extract data from tables in excel file
-				Map<String, List<Object>> dataMapFromExcel = objBppTrnPg.readDataFromExcelUsingPoi(fileName, tableToValidate);
+				Map<String, List<Object>> dataMapFromExcel = objBppTrnPg.retrieveDataFromExcelForGivenTable(fileName, tableToValidate);
 
 				// Clicking on the given table name
 				boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableToValidate);
-				objBppTrnPg.clickOnTableName(tableToValidate, isTableUnderMoreTab);
+				objBppTrnPg.clickOnTableOnBppTrendPage(tableToValidate, isTableUnderMoreTab);
 
 				// Clicking on calculate button to initiate calculation
-				objBppTrnPg.clickRequiredButton("Calculate", tableToValidate);
+				objBppTrnPg.clickCalculateBtn(tableToValidate);
 				objBppTrnPg.retrieveMsgDisplayedAboveTable(tableToValidate);
 
-				List<String> columnNames = objBppTrnPg.getColumnNames(tableToValidate);
-				Map<String, List<Object>> dataMapFromUI = objBppTrnPg.getTabularDataMap(tableToValidate);
+				List<String> columnNames = objBppTrnPg.retrieveColumnNamesOfGridForGivenTable(tableToValidate);
+				Map<String, List<Object>> dataMapFromUI = objBppTrnPg.retrieveDataFromGridForGivenTable(tableToValidate);
 
 				for (Map.Entry<String, List<Object>> entry : dataMapFromExcel.entrySet()) {
 					String currentKey = entry.getKey().toString();
