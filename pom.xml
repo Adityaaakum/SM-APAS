@@ -190,9 +190,14 @@
 						<!-- <forkCount>10</forkCount> <reuseForks>true</reuseForks> -->
 						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
 						<includes>
+							<include>BuildingPermitImportTest.java</include>
+							<include>BuildingPermitManualCreationTest.java</include>
+							<include>BuildingPermitEditTest.java</include>
+							<include>BuildingPermitDataValidationTest.java</include>
+							<include>BuildingPermitTransactionsLogTest.java</include>
+							<include>CityStratCodesTest.java</include>
 							<include>ReportsTest.java</include>
-<!--							 <include>CityStratCodesTest.java</include>-->
-<!--							<include>NonRelevantPermitSettingsTest.java</include>-->
+							<include>RollwisePermissionTest.java</include>
 						</includes>
 						<groups>${groups}</groups>
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
