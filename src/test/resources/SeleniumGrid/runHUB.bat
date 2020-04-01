@@ -1,1 +1,1 @@
-java -jar %~dp0\seleniumserver\selenium-server-standalone-3.141.59.jar -role hub -hubConfig %~dp0\config\hubconfig.json
+java -jar "%~dp0\seleniumserver\selenium-server-standalone-3.141.59.jar" -role hub -hubConfig "%~dp0\config\hubconfig.json"
