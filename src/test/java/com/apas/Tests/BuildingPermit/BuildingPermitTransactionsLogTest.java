@@ -47,6 +47,7 @@ public class BuildingPermitTransactionsLogTest extends TestBase {
 	@AfterMethod
 	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 
 
@@ -111,7 +112,6 @@ public class BuildingPermitTransactionsLogTest extends TestBase {
 		//Status of the file should be displayed as imported as the file is imported
 		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.statusLabel), "Imported", "SMAB-T430: Status Validation of the imported file on import transaction tab");
 		softAssert.assertTrue(objPage.getElementText(objEfileImportTransactionsPage.efileImportLogLabel).contains("San Mateo Building permits"), "SMAB-T430: Validation that latest generated transaction log is for San Mateo Building permits");
-		softAssert.assertAll();
 	}
 
 }

@@ -76,12 +76,12 @@ public class ApasGenericFunctions extends TestBase{
 	 */
 	public void logout() throws IOException{
 		//Handling the situation where pop remains opened before logging out
-		if (objPage.verifyElementVisible(objApasGenericPage.closeButton))
+		if (objPage.verifyElementVisible(objApasGenericPage.crossButton))
+			objPage.Click(objApasGenericPage.crossButton);
+		else if (objPage.verifyElementVisible(objApasGenericPage.closeButton))
 			objPage.Click(objApasGenericPage.closeButton);
 		else if (objPage.verifyElementVisible(objApasGenericPage.cancelButton))
 			objPage.Click(objApasGenericPage.cancelButton);
-		else if (objPage.verifyElementVisible(objApasGenericPage.crossButton))
-			objPage.Click(objApasGenericPage.crossButton);
 
 		//Logging out of the application
 		ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");

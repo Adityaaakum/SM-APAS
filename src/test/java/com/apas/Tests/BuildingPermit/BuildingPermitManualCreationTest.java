@@ -46,6 +46,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 	@AfterMethod
 	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 	
 	
@@ -89,8 +90,6 @@ public class BuildingPermitManualCreationTest extends TestBase {
 
 		//Step5: Closing the Manual building permit creation pop up
 		objPage.Click(objBuildingPermitPage.cancelButton);
-
-		softAssert.assertAll();
 	}
 
 	/**
@@ -143,7 +142,6 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		objPage.Click(objBuildingPermitPage.closeViewDuplicatePopUpButton);
 		objPage.Click(objBuildingPermitPage.closeNewBuildingPermitPopUpButton);
 
-		softAssert.assertAll();
 	}
 
 	/**
@@ -188,7 +186,6 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		//Validate the warning message for retired parcel is appearing on the Details page as well
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag), "The parcel is retired. Please review and confirm the APN on the Building Permit.","SMAB-T626: 'Priority Message' validation on building permit details page screen");
 
-		softAssert.assertAll();
 	}
 
 }

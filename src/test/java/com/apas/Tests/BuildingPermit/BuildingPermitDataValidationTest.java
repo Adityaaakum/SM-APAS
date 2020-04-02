@@ -43,6 +43,7 @@ public class BuildingPermitDataValidationTest extends TestBase {
 	@AfterMethod
 	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 	
 	
@@ -146,7 +147,6 @@ public class BuildingPermitDataValidationTest extends TestBase {
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Strat Code Reference Number","System Information"), "42", "SMAB-T383: 'Record Type' Field Validation in 'System Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Record Type","System Information"), "Manual Entry Building Permit", "SMAB-T383: 'Record Type' Field Validation in 'System Information' section");
 
-		softAssert.assertAll();
 	}
 
     /**
@@ -237,7 +237,5 @@ public class BuildingPermitDataValidationTest extends TestBase {
         //Strat Code reference Number can be fetched from the County Strat Code Screen of the code choosen while creating the building permit
         softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Strat Code Reference Number","System Information"), "42", "SMAB-T383: 'Record Type' Field Validation in 'System Information' section");
         softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Record Type","System Information"), "Manual Entry Building Permit", "SMAB-T383: 'Record Type' Field Validation in 'System Information' section");
-
-        softAssert.assertAll();
     }
 }

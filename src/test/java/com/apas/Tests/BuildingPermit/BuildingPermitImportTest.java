@@ -48,6 +48,7 @@ public class BuildingPermitImportTest extends TestBase {
 	@AfterMethod
 	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 	
 	
@@ -141,7 +142,6 @@ public class BuildingPermitImportTest extends TestBase {
 		//Status of the file should be displayed as imported as the file is imported 
 		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.statusLabel), "Imported", "SMAB-T430: Status Validation of the imported file on import transaction tab");
 		softAssert.assertTrue(objPage.getElementText(objEfileImportTransactionsPage.efileImportLogLabel).contains("Atherton Building Permits"), "SMAB-T430: Validation that latest generated transaction log is for Atherton Building Permits");
-		softAssert.assertAll();
 	}
 
     /**
@@ -189,7 +189,6 @@ public class BuildingPermitImportTest extends TestBase {
 		objEfileHomePage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		//Status of the imported file should be changed to Reverted as the whole file is reverted for reimport
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Reverted", "SMAB-T361: Validation if status of imported file is reverted.");
-		softAssert.assertAll();
 	}
 	
     /**
@@ -243,7 +242,6 @@ public class BuildingPermitImportTest extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.numberOfTimesTriedRetried), "2", "SMAB-T364: Validation if number of times try/retry count is increased by 1 after retrying the error records");
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsInFile), "10", "SMAB-T364: Validation if total number of records remain same on the table");
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsImportedFile), "2", "SMAB-T364: Validation if total records in file count is increased by 1 after retrying the error records");
-		softAssert.assertAll();
 	}
 	
 	/**
@@ -297,7 +295,6 @@ public class BuildingPermitImportTest extends TestBase {
 		//Status of the file should be displayed as imported as the file is imported 
 		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.statusLabel), "Imported", "SMAB-T430: Status Validation of the imported file on import transaction tab");
 		softAssert.assertTrue(objPage.getElementText(objEfileImportTransactionsPage.efileImportLogLabel).contains("San Mateo Building permits"), "SMAB-T430: Validation that latest generated transaction log is for San Mateo Building permits");
-		softAssert.assertAll();
 	}
 
 }

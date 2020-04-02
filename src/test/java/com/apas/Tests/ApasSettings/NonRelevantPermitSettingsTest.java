@@ -17,7 +17,6 @@ import org.testng.annotations.Test;
 import com.apas.PageObjects.NonRelevantPermitSettingsPage;
 import java.io.IOException;
 
-
 public class NonRelevantPermitSettingsTest extends TestBase {
 
 	private RemoteWebDriver driver;
@@ -37,6 +36,7 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 	@AfterMethod
 	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 	
 	
@@ -76,7 +76,5 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 		softAssert.assertTrue(objPage.verifyElementVisible(objNonRelevantPermitSettingsPage.messageDuplicateData),"SMAB-T398: Validation for existence of duplicate record message after adding the preexisting record");
 		softAssert.assertTrue(objPage.verifyElementVisible(objNonRelevantPermitSettingsPage.linkViewDuplicates),"SMAB-T398: Validation for existence of View Duplicate Link after adding the preexisting record");
 		objPage.Click(objNonRelevantPermitSettingsPage.cancelButton);
-
-		softAssert.assertAll();
 	}
 }

@@ -42,6 +42,7 @@ public class ReportsTest extends TestBase {
 	@AfterMethod
 	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 
 	/**
@@ -58,7 +59,7 @@ public class ReportsTest extends TestBase {
 	 Below test case will validate that user is able to export the report
 	 **/
 	@Test(description = "SMAB-T433: Validation for Reports Export", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true, enabled = true)
-	public void verifyDuplicateNonRelevantSettingsNotAllowed(String loginUser) throws Exception {
+	public void verifyReportExport(String loginUser) throws Exception {
 
 		String downloadLocation = CONFIG.getProperty("downloadFolder");
 		String reportName = "Building Permit by City Code";
@@ -88,7 +89,5 @@ public class ReportsTest extends TestBase {
 		objReportsPage.exportReport(reportName,ReportsPage.DATA_EXPORT);
 		exportedFileName = Objects.requireNonNull(new File(downloadLocation).listFiles())[0].getName();
 		softAssert.assertTrue(exportedFileName.contains("report"), "Exported report name validation");
-
-		softAssert.assertAll();
 	}
 }

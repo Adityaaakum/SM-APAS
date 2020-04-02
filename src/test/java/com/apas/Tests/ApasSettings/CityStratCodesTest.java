@@ -38,6 +38,7 @@ public class CityStratCodesTest extends TestBase {
 	@AfterMethod
 	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 	
 	
@@ -98,6 +99,5 @@ public class CityStratCodesTest extends TestBase {
 
 		countSortedByFilteredBy = objApasGenericFunctions.searchRecords(strCityStratCode2);
 		softAssert.assertEquals(countSortedByFilteredBy,expectedValidationMessage,"SMAB-T396: Validation of records displayed on the grid with the City Strat code " + strCityStratCode2);
-		softAssert.assertAll();
 	}
 }

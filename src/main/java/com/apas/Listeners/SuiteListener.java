@@ -31,7 +31,6 @@ public class SuiteListener extends TestBase implements ITestListener {
 
 	public ExtentReports extent;
 	ExtentTest upTest;
-	private Util objUtil;
 
 	protected String getStackTrace(Throwable t) {
 		StringWriter sw = new StringWriter();
@@ -57,10 +56,10 @@ public class SuiteListener extends TestBase implements ITestListener {
 				JiraAdaptavistStatusUpdate.retrieveJiraTestCases();
 				JiraAdaptavistStatusUpdate.mapTestCaseStatusToJIRA();
 			}
-			objUtil = new Util();
-			
+
 			//This will move old report to archive folder
-			objUtil.migrateOldReportsToAcrhive();
+			new Util().migrateOldReportsToAcrhive();;
+
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -94,6 +93,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 			System.setProperty("description", description);
 
 			upTest = ExtentTestManager.startTest(methodName, "Description: " + description);
+			System.out.println("Starting the test with method name : " + methodName);
 			String[] arrayClassName = className.split("\\.");
 			String upClassname = arrayClassName[0].replace("Test", "");
 			upTest.assignCategory(upClassname);
@@ -110,7 +110,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 	@Override
 	public void onTestSuccess(ITestResult result) {
 		//Updating the extent report with the step that test case is passed.
-		if (SoftAssertion.isSoftAssertionUsedFlag == null || !(SoftAssertion.isSoftAssertionUsedFlag)) {
+		if (!SoftAssertion.isSoftAssertionUsedFlag) {
 			ExtentTestManager.getTest().log(LogStatus.PASS, "Test Case has been PASSED.");
 			ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 			ExtentManager.getExtentInstance().flush();
@@ -149,33 +149,33 @@ public class SuiteListener extends TestBase implements ITestListener {
 	 * @param result: Object of ITestResult
 	 */
 	@Override
-	public void onTestFailure(ITestResult result) {		
+	public void onTestFailure(ITestResult result) {
+		System.out.println("Method Failed:" + result.getMethod().getMethodName());
 		try {
-			if (SoftAssertion.isSoftAssertionUsedFlag == null || !(SoftAssertion.isSoftAssertionUsedFlag)) {
-				RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
 
-				//Taking the screenshot as the test case is failed
-				TakesScreenshot ts = (TakesScreenshot) ldriver;
-				File source = ts.getScreenshotAs(OutputType.FILE);
-				Date date = new Date();
-				SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
-				String upDate = sdf.format(date);
-				String dest = System.getProperty("user.dir") + "//test-output//ErrorScreenshots//"
-						+ result.getMethod().getMethodName() + upDate + ".png";
-				File destination = new File(dest);
-				FileUtils.copyFile(source, destination);
+			RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
 
-				if(!(result.getThrowable() instanceof AssertionError)) {
-					updateTestCaseMapOnExceptionOtherThanAssertionError(result);
-				}
-				
-				ExtentTestManager.getTest().log(LogStatus.FAIL, getStackTrace(result.getThrowable()));
-				//Adding the screenshot to the report
-				ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot below: " + upTest.addScreenCapture(dest));
-				//Finishing the test case
-				ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
-				ExtentManager.getExtentInstance().flush();
+			//Taking the screenshot as the test case is failed
+			File source = ((TakesScreenshot) ldriver).getScreenshotAs(OutputType.FILE);
+			Date date = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
+			String upDate = sdf.format(date);
+			String dest = System.getProperty("user.dir") + "//test-output//ErrorScreenshots//"
+					+ result.getMethod().getMethodName() + upDate + ".png";
+			File destination = new File(dest);
+			FileUtils.copyFile(source, destination);
+
+			if(!(result.getThrowable() instanceof AssertionError)) {
+				updateTestCaseMapOnExceptionOtherThanAssertionError(result);
 			}
+
+			ExtentTestManager.getTest().log(LogStatus.FAIL, getStackTrace(result.getThrowable()));
+			//Adding the screenshot to the report
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot below: " + upTest.addScreenCapture(dest));
+			//Finishing the test case
+			ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
+			ExtentManager.getExtentInstance().flush();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -188,6 +188,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 	@Override
 	public void onTestSkipped(ITestResult result) {
 		String methodName = result.getMethod().getMethodName();
+		System.out.println("Method Skipped : " + methodName);
 		upTest = ExtentTestManager.startTest(methodName, "Description: " + result.getMethod().getDescription());
 
 		ExtentTestManager.getTest().log(LogStatus.SKIP, "Test skipped " + result.getThrowable());

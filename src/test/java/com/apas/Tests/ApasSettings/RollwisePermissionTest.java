@@ -36,6 +36,7 @@ public class RollwisePermissionTest extends TestBase {
 	@AfterMethod
 	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 
     /**
@@ -70,7 +71,5 @@ public class RollwisePermissionTest extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objApasGenericPage.appsListBox),"No results","SMAB-T439: Validation that search module didn't return any 'Non Relevant Permit Settings' apps for logged in generic user");
 		softAssert.assertEquals(objPage.getElementText(objApasGenericPage.itemsListBox),"No results","SMAB-T439: Validation that search module didn't return any 'Non Relevant Permit Settings' items for logged in generic user");
 		objPage.Click(objApasGenericPage.searchClearButton);
-
-		softAssert.assertAll();
 	}
 }
