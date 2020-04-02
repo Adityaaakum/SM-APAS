@@ -3,14 +3,10 @@ package com.apas.Tests.BuildingPermit;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.PageObjects.*;
-import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
-import com.apas.Utils.Util;
 import com.apas.config.modules;
-import com.apas.config.testdata;
 import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -61,7 +57,7 @@ public class BuildingPermitDataValidationTest extends TestBase {
 	/**
 	 Below test case is used to validate the manual creation of building permit
 	 **/
-	@Test(description = "SMAB-T383,SMAB-T520,SMAB-T402,SMAB-T421: Creating manual entry for building permit", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 2, enabled = true)
+	@Test(description = "SMAB-T383,SMAB-T520,SMAB-T402,SMAB-T421: Creating manual entry for building permit", dataProvider = "loginUsers", groups = {"smoke","regression"}, alwaysRun = true)
 	public void validateManuallyCreatedBuildingPermitData(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -152,7 +148,7 @@ public class BuildingPermitDataValidationTest extends TestBase {
     /**
      Below test case is used to validate the building permit data imported through Efile Intake
      **/
-    @Test(description = "SMAB-T383", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 1,enabled = false)
+    @Test(description = "SMAB-T383", dataProvider = "loginUsers", groups = {"smoke","regression"},enabled = false)
     public void validateImportedBuildingPermitData(String loginUser) throws Exception {
         //**********This test case needs to be refactored once efile import functionality is integrated
         //Below Data needs to be fetched from the imported file once efile import is integrated as there are few challenged in integrating efile import

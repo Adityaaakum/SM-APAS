@@ -19,7 +19,7 @@ public class SoftAssertion {
 	 * Throws AssertionError if any soft assertions occured in the test cases i.e isSoftAssertionUsedFlag is True
 	 */
 	public void assertAll() {
-		if (isSoftAssertionUsedFlag) {throw new AssertionError();}
+//		if (isSoftAssertionUsedFlag) {throw new AssertionError();}
 	}
 
 	/**

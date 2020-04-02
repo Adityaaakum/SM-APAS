@@ -114,6 +114,8 @@ public class SuiteListener extends TestBase implements ITestListener {
 			ExtentTestManager.getTest().log(LogStatus.PASS, "Test Case has been PASSED.");
 			ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 			ExtentManager.getExtentInstance().flush();
+		} else{
+			ExtentTestManager.getTest().log(LogStatus.PASS, "Test Case has been FAILED.");
 		}
 	}
 
@@ -191,7 +193,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 		System.out.println("Method Skipped : " + methodName);
 		upTest = ExtentTestManager.startTest(methodName, "Description: " + result.getMethod().getDescription());
 
-		ExtentTestManager.getTest().log(LogStatus.SKIP, "Test skipped " + result.getThrowable());
+		ExtentTestManager.getTest().log(LogStatus.SKIP, "Test skipped : " + result.getThrowable());
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 		ExtentManager.getExtentInstance().flush();
 		TearDown();

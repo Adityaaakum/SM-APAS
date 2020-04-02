@@ -43,7 +43,7 @@ public class RollwisePermissionTest extends TestBase {
 	 Below test case will validate generic user is not able to access below modules
 	 City Strat Codes, County Strat Codes, Non Relevant Permit Settings
 	 **/
-	@Test(description = "SMAB-T439: Validation for user not having the access to certain modules", groups = {"smoke","regression"}, priority = 0, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T439: Validation for user not having the access to certain modules", groups = {"smoke","regression"}, priority = 0, alwaysRun = true)
 	public void verifyGenericUserNotHavingAccess() throws Exception {
 		//****appraisal Support user needs to be replaced by generic user
 		//Step1: Login to the APAS application using the General User

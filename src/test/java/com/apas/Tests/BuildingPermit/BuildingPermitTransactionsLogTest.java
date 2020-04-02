@@ -64,7 +64,7 @@ public class BuildingPermitTransactionsLogTest extends TestBase {
 	/**
 	 Below test case is used to validate status of the imported San Mateo Building Permit file which in XLS format
 	 **/
-	@Test(description = "SMAB-T357,SMAB-T430 Transaction record verification for the imported Building Permit in XLS Format", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 1, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T357,SMAB-T430 Transaction record verification for the imported Building Permit in XLS Format", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 1, alwaysRun = true)
 	public void transactionRecordVerificationBuildingPermitXLS(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
