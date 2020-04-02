@@ -198,8 +198,9 @@
 							<include>CityStratCodesTest.java</include>
 							<include>ReportsTest.java</include>
 							<include>RollwisePermissionTest.java</include>
+							<include>NonRelevantPermitSettingsTest.java</include>
 						</includes>
-						<groups>${groups}</groups>
+<!--						<groups>${groups}</groups>-->
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
 						<!-- <systemPropertyVariables> <browserName>${browserName}</browserName> 
 							<executionType>${executionType}</executionType> <gridHubUrl>${gridHubUrl}</gridHubUrl> 

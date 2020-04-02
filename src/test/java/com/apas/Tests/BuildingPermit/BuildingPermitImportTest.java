@@ -32,8 +32,8 @@ public class BuildingPermitImportTest extends TestBase {
 	ApasGenericFunctions objApasGenericFunctions;
 	BuildingPermitPage objBuildPermit;
 	EFileImportPage objEfileHomePage;
-	Util objUtil;
-	SoftAssertion softAssert;
+	Util objUtil  = new Util();
+	SoftAssertion softAssert  = new SoftAssertion();
 
 	@BeforeMethod
 	public void beforeMethod(){
@@ -43,12 +43,10 @@ public class BuildingPermitImportTest extends TestBase {
 		objEfileImportTransactionsPage = new EFileImportTransactionsPage(driver);
 		objEfileHomePage = new EFileImportPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
-		objUtil = new Util();
-		softAssert = new SoftAssertion();
 	}
 		
 	@AfterMethod
-	public void afterMethod() throws IOException, InterruptedException{
+	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
 	}
 	
@@ -60,7 +58,7 @@ public class BuildingPermitImportTest extends TestBase {
 	 **/
     @DataProvider(name = "loginUsers")
     public Object[][] dataProviderLoginUserMethod() {
-        return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
+        return new Object[][] {{ users.BUSINESS_ADMIN } };
     }
 	
     

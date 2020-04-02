@@ -24,8 +24,8 @@ public class CityStratCodesTest extends TestBase {
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	CityStratCodesPage objCityStratCodesPage;
-	SoftAssertion softAssert;
-	Util objUtils;
+	SoftAssertion softAssert = new SoftAssertion();
+	Util objUtils = new Util();
 
 	@BeforeMethod
 	public void beforeMethod(){
@@ -33,12 +33,10 @@ public class CityStratCodesTest extends TestBase {
 		objPage = new Page(driver);
 		objCityStratCodesPage = new CityStratCodesPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
-		objUtils = new Util();
-		softAssert = new SoftAssertion();
 	}
 		
 	@AfterMethod
-	public void afterMethod() throws IOException, InterruptedException{
+	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
 	}
 	
@@ -50,7 +48,7 @@ public class CityStratCodesTest extends TestBase {
 	 **/
     @DataProvider(name = "loginUsers")
     public Object[][] dataProviderLoginUserMethod() {
-        return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
+        return new Object[][] {{ users.BUSINESS_ADMIN }};
     }
 	
     

@@ -33,8 +33,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	BuildingPermitPage objBuildingPermitPage;
-	Util objUtil;
-	SoftAssertion softAssert;
+	SoftAssertion softAssert  = new SoftAssertion();
 
 	@BeforeMethod
 	public void beforeMethod(){
@@ -42,12 +41,10 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		objPage = new Page(driver);
 		objBuildingPermitPage = new BuildingPermitPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
-		objUtil = new Util();
-		softAssert = new SoftAssertion();
 	}
 		
 	@AfterMethod
-	public void afterMethod() throws IOException, InterruptedException{
+	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
 	}
 	
@@ -59,7 +56,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 	 **/
     @DataProvider(name = "loginUsers")
     public Object[][] dataProviderLoginUserMethod() {
-        return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
+        return new Object[][] {{ users.BUSINESS_ADMIN } };
     }
 
 	/**

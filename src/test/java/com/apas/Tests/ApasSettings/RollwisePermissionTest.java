@@ -23,7 +23,7 @@ public class RollwisePermissionTest extends TestBase {
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
-	SoftAssertion softAssert;
+	SoftAssertion softAssert  = new SoftAssertion();
 
 	@BeforeMethod
 	public void beforeMethod(){
@@ -31,11 +31,10 @@ public class RollwisePermissionTest extends TestBase {
 		objPage = new Page(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
-		softAssert = new SoftAssertion();
 	}
 		
 	@AfterMethod
-	public void afterMethod() throws IOException, InterruptedException{
+	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
 	}
 

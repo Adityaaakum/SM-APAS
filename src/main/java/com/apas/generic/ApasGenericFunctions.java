@@ -26,7 +26,6 @@ public class ApasGenericFunctions extends TestBase{
 	private RemoteWebDriver driver;
 	Page objPage;
 	LoginPage objLoginPage;
-	//EFileImportPage eFilePageObject;
 	ApasGenericPage objApasGenericPage;
 	
 	public ApasGenericFunctions(RemoteWebDriver driver){
@@ -34,7 +33,6 @@ public class ApasGenericFunctions extends TestBase{
 		objPage = new Page(this.driver);
 		objLoginPage = new LoginPage(this.driver);
 		objApasGenericPage = new ApasGenericPage(this.driver);
-		//eFilePageObject = new EFileImportPage(this.driver);
 	}
 	
 	/**
@@ -76,7 +74,16 @@ public class ApasGenericFunctions extends TestBase{
 	/**
 	 * Description: This method will logout the logged in user from APAS application
 	 */
-	public void logout() throws IOException, InterruptedException{	
+	public void logout() throws IOException{
+		//Handling the situation where pop remains opened before logging out
+		if (objPage.verifyElementVisible(objApasGenericPage.closeButton))
+			objPage.Click(objApasGenericPage.closeButton);
+		else if (objPage.verifyElementVisible(objApasGenericPage.cancelButton))
+			objPage.Click(objApasGenericPage.cancelButton);
+		else if (objPage.verifyElementVisible(objApasGenericPage.crossButton))
+			objPage.Click(objApasGenericPage.crossButton);
+
+		//Logging out of the application
 		ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");
 		objPage.Click(objLoginPage.imgUser);
 		objPage.Click(objLoginPage.lnkLogOut);
@@ -150,7 +157,7 @@ public class ApasGenericFunctions extends TestBase{
 	 * @description: This method will return the value of the field passed in the parameter from the currently open page
 	 * @param sectionName: name of the section where field is present
 	 * @param fieldName: Name of the field
-	 * @return: Value of the field
+	 * @return  Value of the field
 	 */
 	public String getFieldValueFromAPAS(String fieldName, String sectionName) {
 		String sectionXpath = "//force-record-layout-section[contains(.,'" + sectionName + "')]";
@@ -168,7 +175,7 @@ public class ApasGenericFunctions extends TestBase{
 	/**
 	 * @description: This method will return the value of the field passed in the parameter from the currently open page
 	 * @param fieldName: Name of the field
-	 * @return: Value of the field
+	 * @return Value of the field
 	 */
 	public String getFieldValueFromAPAS(String fieldName) {
 		return getFieldValueFromAPAS(fieldName,"");
@@ -178,7 +185,7 @@ public class ApasGenericFunctions extends TestBase{
 	 * Description: This method will save the grid data in hashmap
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
-	public HashMap<String, ArrayList<String>> getGridDataInHashMap() throws InterruptedException {
+	public HashMap<String, ArrayList<String>> getGridDataInHashMap() {
 		return getGridDataInHashMap(-1);
 	}
 
@@ -187,7 +194,7 @@ public class ApasGenericFunctions extends TestBase{
 	 * @param rowNumber: Row Number for which data needs to be fetched
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
-	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int rowNumber) throws InterruptedException {
+	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int rowNumber) {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
 		//This code is to fetch the data for a particular row in the grid
 		String xpathRows = "//tbody/tr";

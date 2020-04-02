@@ -24,7 +24,7 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	NonRelevantPermitSettingsPage objNonRelevantPermitSettingsPage;
-	SoftAssertion softAssert;
+	SoftAssertion softAssert = new SoftAssertion();
 
 	@BeforeMethod
 	public void beforeMethod(){
@@ -32,11 +32,10 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 		objPage = new Page(driver);
 		objNonRelevantPermitSettingsPage = new NonRelevantPermitSettingsPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
-		softAssert = new SoftAssertion();
 	}
 		
 	@AfterMethod
-	public void afterMethod() throws IOException, InterruptedException{
+	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
 	}
 	
@@ -48,7 +47,7 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 	 **/
     @DataProvider(name = "loginUsers")
     public Object[][] dataProviderLoginUserMethod() {
-        return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
+        return new Object[][] {{ users.BUSINESS_ADMIN } };
     }
 
 

@@ -28,7 +28,7 @@ public class ReportsTest extends TestBase {
 	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
 	ReportsPage objReportsPage;
-	SoftAssertion softAssert;
+	SoftAssertion softAssert  = new SoftAssertion();
 
 	@BeforeMethod
 	public void beforeMethod(){
@@ -37,11 +37,10 @@ public class ReportsTest extends TestBase {
 		objApasGenericPage = new ApasGenericPage(driver);
 		objReportsPage = new ReportsPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
-		softAssert = new SoftAssertion();
 	}
 		
 	@AfterMethod
-	public void afterMethod() throws IOException, InterruptedException{
+	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
 	}
 
@@ -52,8 +51,7 @@ public class ReportsTest extends TestBase {
 	 **/
 	@DataProvider(name = "loginUsers")
 	public Object[][] dataProviderLoginUserMethod() {
-//        return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
-		return new Object[][] {{ users.APPRAISAL_SUPPORT } };
+		return new Object[][] {{ users.BUSINESS_ADMIN } };
 	}
 
 	/**
