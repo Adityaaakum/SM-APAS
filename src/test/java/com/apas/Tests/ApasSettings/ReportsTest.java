@@ -58,7 +58,7 @@ public class ReportsTest extends TestBase {
 	/**
 	 Below test case will validate that user is able to export the report
 	 **/
-	@Test(description = "SMAB-T433: Validation for Reports Export", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T433: Validation for Reports Export", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true)
 	public void verifyReportExport(String loginUser) throws Exception {
 
 		String downloadLocation = CONFIG.getProperty("downloadFolder");
