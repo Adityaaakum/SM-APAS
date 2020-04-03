@@ -19,6 +19,7 @@ public class SoftAssertion {
 	 * Throws AssertionError if any soft assertions occured in the test cases i.e isSoftAssertionUsedFlag is True
 	 */
 	public void assertAll() {
+		//Keeping this method as a place holder for now as correct report is getting generated even without this function. Will remove it later
 //		if (isSoftAssertionUsedFlag) {throw new AssertionError();}
 	}
 

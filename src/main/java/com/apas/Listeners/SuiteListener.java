@@ -52,9 +52,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 			TestBase.loadPropertyFiles();
 			extent = new ExtentManager().getInstance(context.getSuite().getName());
 			if (flagToUpdateJira && testCycle != null) {
-				System.out.println("Test cases map on start of execution: " + JiraAdaptavistStatusUpdate.testStatus);
 				JiraAdaptavistStatusUpdate.retrieveJiraTestCases();
-				JiraAdaptavistStatusUpdate.mapTestCaseStatusToJIRA();
 			}
 
 			//This will move old report to archive folder
@@ -73,7 +71,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 	public void onFinish(ITestContext context) {
 		if (flagToUpdateJira && testCycle != null) {
 			//Updating the Jira tickets status at the end of the execution
-			System.out.println("Test cases map on end of execution: " + JiraAdaptavistStatusUpdate.testStatus);
+			System.out.println("Test cases execution status on end of execution: " + JiraAdaptavistStatusUpdate.testStatus);
 			JiraAdaptavistStatusUpdate.mapTestCaseStatusToJIRA();
 		}
 	}
@@ -112,40 +110,13 @@ public class SuiteListener extends TestBase implements ITestListener {
 		//Updating the extent report with the step that test case is passed.
 		if (!SoftAssertion.isSoftAssertionUsedFlag) {
 			ExtentTestManager.getTest().log(LogStatus.PASS, "Test Case has been PASSED.");
-			ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
-			ExtentManager.getExtentInstance().flush();
 		} else{
 			ExtentTestManager.getTest().log(LogStatus.PASS, "Test Case has been FAILED.");
 		}
+		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
+		ExtentManager.getExtentInstance().flush();
 	}
 
-	/**
-	 * Description: This method will be executed if the test case is Failed
-	 * It would updated the test cases as Fail in test case map
-	 * if any exception other than AssertionError has occurred
-	 * 
-	 * @param result: Object of ITestResult
-	 */
-	private void updateTestCaseMapOnExceptionOtherThanAssertionError(ITestResult result) {
-		String description = System.getProperty("description");			
-		String[] descriptionArr = description.split(":");			
-		String testCaseKey;
-		
-		if(descriptionArr[0].contains(",")) {
-			String[] testCaseIdArr = descriptionArr[0].split(",");			
-			for(int i = 0; i < testCaseIdArr.length; i++) {
-				testCaseKey = testCaseIdArr[i];
-				String currentStatus = JiraAdaptavistStatusUpdate.testStatus.get(testCaseKey);
-				if((currentStatus == null) || !(currentStatus.equalsIgnoreCase("Fail"))) {
-					JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey, "Fail");
-				}	
-			}
-		} else {
-			testCaseKey = descriptionArr[0];
-			JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey, "Fail");
-		}
-	}
-	
 	/**
 	 * Description: This method will be executed if the test case is Failed
 	 * @param result: Object of ITestResult
@@ -153,7 +124,11 @@ public class SuiteListener extends TestBase implements ITestListener {
 	@Override
 	public void onTestFailure(ITestResult result) {
 		System.out.println("Method Failed:" + result.getMethod().getMethodName());
+
 		try {
+			//Updating the test case status for Jira
+			String testCaseKeys =  JiraAdaptavistStatusUpdate.extractTestCaseKey(System.getProperty("description"));
+			JiraAdaptavistStatusUpdate.updateJiraTestCaseStatus(testCaseKeys,"Fail");
 
 			RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
 
@@ -166,10 +141,6 @@ public class SuiteListener extends TestBase implements ITestListener {
 					+ result.getMethod().getMethodName() + upDate + ".png";
 			File destination = new File(dest);
 			FileUtils.copyFile(source, destination);
-
-			if(!(result.getThrowable() instanceof AssertionError)) {
-				updateTestCaseMapOnExceptionOtherThanAssertionError(result);
-			}
 
 			ExtentTestManager.getTest().log(LogStatus.FAIL, getStackTrace(result.getThrowable()));
 			//Adding the screenshot to the report

@@ -1,13 +1,9 @@
 package com.apas.JiraStatusUpdate;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import com.apas.TestBase.TestBase;
-
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -15,7 +11,9 @@ import io.restassured.response.ResponseBody;
 import io.restassured.specification.RequestSpecification;
 
 public class JiraAdaptavistStatusUpdate extends TestBase {
-	public static HashMap<String, String> testStatus = new HashMap<String, String>();
+
+	public static final String BASE_URI = "https://tools.publicis.sapient.com/jira/rest/atm/1.0/";
+	public static HashMap<String, String> testStatus = new HashMap<>();
 
 	/**
 	 * @author yogsingh5 
@@ -29,7 +27,7 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 			String username = "akaila";
 
 			// Storing BaseURI
-			RestAssured.baseURI = "https://tools.publicis.sapient.com/jira/rest/atm/1.0/";
+			RestAssured.baseURI = BASE_URI;
 			RequestSpecification httpRequest = RestAssured.given();
 
 			// setting content type to make the API call
@@ -55,45 +53,31 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 
 	/**
 	 * @author Sikander Bhambhu 
-	 * Method : retrieveJiraTestCases 
 	 * Description :
 	 *         This method makes the API call for fetching all the test cases
 	 *         from JIRA for given test cycle and created a map with these test
 	 *         cases with null values
 	 **/
 	public static void retrieveJiraTestCases() {
-		try {
-			// Storing BaseURI
-			RestAssured.baseURI = "https://tools.publicis.sapient.com/jira/rest/atm/1.0/";
-			RequestSpecification httpRequest = RestAssured.given();
+		System.out.println("Retrieving the Test Case Keys for the Cycle : " + testCycle);
+		// Storing BaseURI
+		RestAssured.baseURI = BASE_URI;
+		RequestSpecification httpRequest = RestAssured.given();
 
-			// setting content type to make the API call
-			httpRequest.header("Content-Type", "application/json");
-			httpRequest.header("Authorization", "Basic c2lrYmhhbWI6TmF2eWFAMTcyMg==");
+		// setting content type to make the API call
+		httpRequest.header("Content-Type", "application/json");
+		httpRequest.header("Authorization", "Basic c2lrYmhhbWI6TmF2eWFAMTcyMg==");
 
-			// passing body to the API call and retrieving the response
-			Response response = httpRequest.get("testrun/" + testCycle);
-			String responseString = response.getBody().asString();
-			JsonPath jsPath = new JsonPath(responseString);
-			List<Object> items = jsPath.getList("items");
-			
-			Iterator<Object> itr = items.iterator();
-			 while (itr.hasNext()) {
-				int testCaseKeyIndex = -1;
-				List<String> currentIndexValueList = Arrays.asList(itr.next().toString().split(","));
-				for (int i = 0; i < currentIndexValueList.size(); i++) {
-					if (currentIndexValueList.get(i).contains("testCaseKey")) {
-						testCaseKeyIndex = i;
-						break;
-					}
-				}
-
-				String testCaseKey = currentIndexValueList.get(testCaseKeyIndex).split("=")[1];
-				testStatus.put(testCaseKey, null);
-			}
-		} catch (Exception e) {
-
+		// passing body to the API call and retrieving the response
+		Response response = httpRequest.get("testrun/" + testCycle);
+		String responseString = response.getBody().asString();
+		JsonPath jsPath = new JsonPath(responseString);
+		List<Object> testCaseKeys = jsPath.getList("items.testCaseKey");
+		for (Object testCaseKey : testCaseKeys) {
+			testStatus.put(testCaseKey.toString(), "Not Executed");
 		}
+
+		System.out.println("List of Test Cases in the Test Cycle " + testCycle + " is " + testCaseKeys);
 	}
 
 	/**
@@ -104,30 +88,27 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 	 *         updateJiraTestCaseStatus
 	 **/
 	public static void mapTestCaseStatusToJIRA() {
-		try {
-			for (Map.Entry<String, String> entry : testStatus.entrySet()) {
-				String testCaseKey = entry.getKey();
-				String testCaseStatus = entry.getValue();
-				if (testCaseStatus != null) {
-					updateJiraTestCaseStatus(testCaseKey, testCaseStatus);
-				} else {
-					updateJiraTestCaseStatus(testCaseKey, "Not Executed");
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		for (Map.Entry<String, String> entry : testStatus.entrySet()) {
+			String testCaseKey = entry.getKey();
+			String testCaseStatus = entry.getValue();
+			updateJiraTestCaseStatus(testCaseKey, testCaseStatus);
 		}
 	}
 
 	/**
 	 * Updates the test case map with assertion result
-	 * @param testCaseKey: SMAB-T418
+	 * @param testCaseKeyList: SMAB-T418
 	 * @param testCaseStatus: Pass / Fail
 	 */
-	public static void updateTestCaseStatusInMap(String testCaseKey, String testCaseStatus) {
-		String currentStatus = JiraAdaptavistStatusUpdate.testStatus.get(testCaseKey);
-		if((currentStatus == null) || !(currentStatus.equalsIgnoreCase("Fail"))) {
-			JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey, testCaseStatus);
+	public static void updateTestCaseStatusInMap(String testCaseKeyList, String testCaseStatus) {
+		String[] testCaseKeys= testCaseKeyList.split(",");
+		for(String testCaseKey : testCaseKeys){
+			String currentStatus = JiraAdaptavistStatusUpdate.testStatus.get(testCaseKey);
+			if (currentStatus==null){
+				System.out.println("Test Case Key " + testCaseKey + " is not part of Test Cycle " + testCycle);
+			}else if(!(currentStatus.equalsIgnoreCase("Fail"))) {
+				JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey, testCaseStatus);
+			}
 		}
 	}
 
@@ -136,8 +117,6 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 	 * @param message: "SMAB-T418: <Some validation message>"
 	 */
 	public static String extractTestCaseKey(String message) {
-		String testCaseKey = message.substring(0, message.indexOf(":")).trim();
-		System.setProperty("testCaseKey", testCaseKey);
-		return testCaseKey;
+		return message.substring(0, message.indexOf(":")).trim();
 	}
 }
