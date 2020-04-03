@@ -128,7 +128,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 		try {
 			//Updating the test case status for Jira
 			String testCaseKeys =  JiraAdaptavistStatusUpdate.extractTestCaseKey(System.getProperty("description"));
-			JiraAdaptavistStatusUpdate.updateJiraTestCaseStatus(testCaseKeys,"Fail");
+			JiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKeys,"Fail");
 
 			RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
 

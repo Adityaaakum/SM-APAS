@@ -80,7 +80,7 @@ public class ReportsTest extends TestBase {
 		//Step3: Exporting 'Building Permit by City Code' report in Formatted Mode
 		objReportsPage.exportReport(reportName,ReportsPage.FORMATTED_EXPORT);
 		exportedFileName = Objects.requireNonNull(new File(downloadLocation).listFiles())[0].getName();
-		softAssert.assertTrue(exportedFileName.contains("Building Permit by City Code"), "Exported report name validation");
+		softAssert.assertTrue(exportedFileName.contains("Building Permit by City Code"), "SMAB-T433: Exported report name validation");
 
 		//Deleteing all the previously downloaded files
 		objApasGenericFunctions.deleteFilesFromFolder(downloadLocation);
@@ -88,6 +88,6 @@ public class ReportsTest extends TestBase {
 		//Step3: Exporting 'Building Permit by City Code' report in Data Mode
 		objReportsPage.exportReport(reportName,ReportsPage.DATA_EXPORT);
 		exportedFileName = Objects.requireNonNull(new File(downloadLocation).listFiles())[0].getName();
-		softAssert.assertTrue(exportedFileName.contains("report"), "Exported report name validation");
+		softAssert.assertTrue(exportedFileName.contains("report"), "SMAB-T433: Exported report name validation");
 	}
 }

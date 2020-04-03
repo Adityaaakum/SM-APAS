@@ -103,16 +103,16 @@ public class BuildingPermitDataValidationTest extends TestBase {
 		objBuildingPermitPage.openBuildingPermit(buildingPermitNumber);
 
 		//Grid Data validation for the building permit created manually
-		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Building Permit Number").get(0), buildingPermitNumber,"'Building Permit Number' validation on the data displayed on the grid");
-		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Permit City Code").get(0), manualBuildingPermitMap.get("Permit City Code"),"'Permit City Code' validation on the data displayed on the grid");
-		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("County Strat Code Description").get(0), manualBuildingPermitMap.get("County Strat Code Description"),"'County Strat Code Description' validation on the data displayed on the grid");
-		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Estimated Project Value").get(0), "$" + manualBuildingPermitMap.get("Estimated Project Value"),"'Estimated Project Value' validation on the data displayed on the grid");
-		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Issue Date").get(0), manualBuildingPermitMap.get("Issue Date"),"'Issue Date' validation on the data displayed on the grid");
-		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Calculated Processing Status").get(0), "No Process","'Calculated Processing Status' validation on the data displayed on the grid");
-		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Processing Status").get(0), "No Process","'Processing Status' validation on the data displayed on the grid");
-		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Warning Message").get(0), "","'Warning Message' validation on the data displayed on the grid");
-		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Work Description").get(0), manualBuildingPermitMap.get("Work Description"),"'Work Description' validation on the data displayed on the grid");
-		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Parcel").get(0), parcelToSearch,"'Parcel' validation on the data displayed on the grid");
+		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Building Permit Number").get(0), buildingPermitNumber,"SMAB-T383: 'Building Permit Number' validation on the data displayed on the grid");
+		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Permit City Code").get(0), manualBuildingPermitMap.get("Permit City Code"),"SMAB-T383: 'Permit City Code' validation on the data displayed on the grid");
+		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("County Strat Code Description").get(0), manualBuildingPermitMap.get("County Strat Code Description"),"SMAB-T383: 'County Strat Code Description' validation on the data displayed on the grid");
+		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Estimated Project Value").get(0), "$" + manualBuildingPermitMap.get("Estimated Project Value"),"SMAB-T383: 'Estimated Project Value' validation on the data displayed on the grid");
+		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Issue Date").get(0), manualBuildingPermitMap.get("Issue Date"),"SMAB-T383: 'Issue Date' validation on the data displayed on the grid");
+		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Calculated Processing Status").get(0), "No Process","SMAB-T383: 'Calculated Processing Status' validation on the data displayed on the grid");
+		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Processing Status").get(0), "No Process","SMAB-T383: 'Processing Status' validation on the data displayed on the grid");
+		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Warning Message").get(0), "","SMAB-T383: 'Warning Message' validation on the data displayed on the grid");
+		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Work Description").get(0), manualBuildingPermitMap.get("Work Description"),"SMAB-T383: 'Work Description' validation on the data displayed on the grid");
+		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Parcel").get(0), parcelToSearch,"SMAB-T383: 'Parcel' validation on the data displayed on the grid");
 
 		//Validation for the fields in the section Building Permit Information
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Building Permit Number", "Building Permit Information"), buildingPermitNumber, "SMAB-T383: 'Building Permit Number' Field Validation in 'Building Permit Information' section");
@@ -125,7 +125,7 @@ public class BuildingPermitDataValidationTest extends TestBase {
 
 		//Validation for the fields auto populated in the section Situs Information
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs City Code","Situs Information"), situsCityCode, "SMAB-T520: 'Situs City Code' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs","Situs Information"), situsName, "SMAB-T520: SMAB-T421: 'Situs' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs","Situs Information"), situsName, "SMAB-T520, SMAB-T421: 'Situs' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Type","Situs Information"), situsType, "SMAB-T383: 'Situs Type' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Direction"), situsDirection, "SMAB-T383: 'Situs Direction' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Number","Situs Information"), situsNumber, "SMAB-T383: 'Situs Number' Field Validation in 'Situs Information' section");
@@ -135,7 +135,7 @@ public class BuildingPermitDataValidationTest extends TestBase {
 
 		//Validation for the fields auto populated in the section Processing Status
 		//Processing and Calculating Processing Status are calculated based on "Processing Status Information" section from "County Strat Code Infomration"
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process", "SMAB-T520: SMAB-T402: 'Processing Status' Field Validation in 'Processing Status' section");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process", "SMAB-T520, SMAB-T402: 'Processing Status' Field Validation in 'Processing Status' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process", "SMAB-T402: 'Calculated Processing Status' Field Validation in 'Processing Status' section");
 
 		//Validation for the fields auto populated in the section System Information
@@ -194,16 +194,16 @@ public class BuildingPermitDataValidationTest extends TestBase {
         Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objApasGenericFunctions.getGridDataInHashMap();
 
         //Grid Data validation for the building permit created manually
-        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Building Permit Number").get(0), buildingPermitNumber,"'Building Permit Number' validation on the data displayed on the grid");
-        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Permit City Code").get(0), manualBuildingPermitMap.get("Permit City Code"),"'Permit City Code' validation on the data displayed on the grid");
-        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("County Strat Code Description").get(0), manualBuildingPermitMap.get("County Strat Code Description"),"'County Strat Code Description' validation on the data displayed on the grid");
-        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Estimated Project Value").get(0), "$" + manualBuildingPermitMap.get("Estimated Project Value"),"'Estimated Project Value' validation on the data displayed on the grid");
-        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Issue Date").get(0), manualBuildingPermitMap.get("Issue Date"),"'Issue Date' validation on the data displayed on the grid");
-        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Calculated Processing Status").get(0), "No Process","'Calculated Processing Status' validation on the data displayed on the grid");
-        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Processing Status").get(0), "No Process","'Processing Status' validation on the data displayed on the grid");
-        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Warning Message").get(0), "","'Warning Message' validation on the data displayed on the grid");
-        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Work Description").get(0), manualBuildingPermitMap.get("Work Description"),"'Work Description' validation on the data displayed on the grid");
-        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Parcel").get(0), parcelToSearch,"'Parcel' validation on the data displayed on the grid");
+        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Building Permit Number").get(0), buildingPermitNumber,"SMAB-T383: 'Building Permit Number' validation on the data displayed on the grid");
+        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Permit City Code").get(0), manualBuildingPermitMap.get("Permit City Code"),"SMAB-T383: 'Permit City Code' validation on the data displayed on the grid");
+        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("County Strat Code Description").get(0), manualBuildingPermitMap.get("County Strat Code Description"),"SMAB-T383: 'County Strat Code Description' validation on the data displayed on the grid");
+        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Estimated Project Value").get(0), "$" + manualBuildingPermitMap.get("Estimated Project Value"),"SMAB-T383: 'Estimated Project Value' validation on the data displayed on the grid");
+        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Issue Date").get(0), manualBuildingPermitMap.get("Issue Date"),"SMAB-T383: 'Issue Date' validation on the data displayed on the grid");
+        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Calculated Processing Status").get(0), "No Process","SMAB-T383: 'Calculated Processing Status' validation on the data displayed on the grid");
+        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Processing Status").get(0), "No Process","SMAB-T383: 'Processing Status' validation on the data displayed on the grid");
+        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Warning Message").get(0), "","SMAB-T383: 'Warning Message' validation on the data displayed on the grid");
+        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Work Description").get(0), manualBuildingPermitMap.get("Work Description"),"SMAB-T383: 'Work Description' validation on the data displayed on the grid");
+        softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Parcel").get(0), parcelToSearch,"SMAB-T383: 'Parcel' validation on the data displayed on the grid");
 
         //Validation for the fields in the section Building Permit Information
         softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Building Permit Number", "Building Permit Information"), buildingPermitNumber, "SMAB-T383: 'Building Permit Number' Field Validation in 'Building Permit Information' section");
@@ -226,7 +226,7 @@ public class BuildingPermitDataValidationTest extends TestBase {
 
         //Validation for the fields auto populated in the section Processing Status
         //Processing and Calculating Processing Status are calculated based on "Processing Status Information" section from "County Strat Code Infomration"
-        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process", "SMAB-T520: SMAB-T402: 'Processing Status' Field Validation in 'Processing Status' section");
+        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process", "SMAB-T520, SMAB-T402: 'Processing Status' Field Validation in 'Processing Status' section");
         softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process", "SMAB-T402: 'Calculated Processing Status' Field Validation in 'Processing Status' section");
 
         //Validation for the fields auto populated in the section System Information
