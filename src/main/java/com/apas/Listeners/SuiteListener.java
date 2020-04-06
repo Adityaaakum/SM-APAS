@@ -111,7 +111,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 		if (!SoftAssertion.isSoftAssertionUsedFlag) {
 			ExtentTestManager.getTest().log(LogStatus.PASS, "Test Case has been PASSED.");
 		} else{
-			ExtentTestManager.getTest().log(LogStatus.PASS, "Test Case has been FAILED.");
+			ExtentTestManager.getTest().log(LogStatus.FAIL, "Test Case has been FAILED.");
 		}
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 		ExtentManager.getExtentInstance().flush();

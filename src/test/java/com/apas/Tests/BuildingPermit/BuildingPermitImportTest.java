@@ -69,7 +69,7 @@ public class BuildingPermitImportTest extends TestBase {
 	 2. Validation of error and imported records on review and approve screen
 	 3. Status validation of imported file on efile import transaction log screen
 	 **/
-	@Test(description = "SMAB-T362,SMAB-T363,SMAB-T430: Transaction record verification for the imported Building Permit in TXT Format", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T362,SMAB-T363,SMAB-T430: Transaction record verification for the imported Building Permit in TXT Format", dataProvider = "loginUsers", groups = {"smoke","regression"}, alwaysRun = true, enabled = false)
 	public void verifyApproveDiscardBuildingPermitImport(String loginUser) throws Exception {
 		//*******Import Transaction Validation is also there, as per discussion with Amit this needs to be broken into 2 different test cases
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -116,6 +116,7 @@ public class BuildingPermitImportTest extends TestBase {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "SMAB-T363: Validation that error records can be dicarded from Review and Approve Data Page");
 		objPage.Click(objEfileHomePage.rowSelectCheckBox);
 		objPage.Click(objEfileHomePage.discardButton);
+		objPage.Click(objEfileHomePage.continueButton);
 		String numberOfRecordsInErrorRowSection = objPage.getElementText(objEfileHomePage.errorRowSection).split(":")[1].trim();
 		//validating the number of records in the error row section after discarding a record as records should be moved the imported row section after discard
 		softAssert.assertEquals(numberOfRecordsInErrorRowSection, "8", "SMAB-T363: Validation if correct number of records are displayed in Error Row Section after discarding a record");
@@ -181,6 +182,7 @@ public class BuildingPermitImportTest extends TestBase {
 		objPage.Click(objEfileHomePage.viewLink);
 		objPage.waitForElementToBeVisible(objEfileHomePage.errorRowSection,30);
 		objPage.Click(objEfileHomePage.revertButton);
+		objPage.Click(objEfileHomePage.continueButton);
 		objPage.waitForElementToBeVisible(objEfileHomePage.revertSuccessMessage, 20);
 		
 		//Step7: Validation of the file status after reverting the imported file

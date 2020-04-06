@@ -104,6 +104,7 @@ public class ApasGenericFunctions extends TestBase{
 		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
 		webelementInput.clear();
 		webelementInput.sendKeys(expectedValue);
+		webelementInput.submit();
 		Robot robot = new Robot();
 		robot.keyPress(KeyEvent.VK_ENTER);
     	robot.keyRelease(KeyEvent.VK_ENTER);

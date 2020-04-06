@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.relevantcodes.extentreports.LogStatus;
 import org.testng.ITestContext;
 import org.testng.Reporter;
 
@@ -63,5 +64,19 @@ public class ExtentManager {
 	 */
 	public static void setOutputDirectory(ITestContext context) {
 		ExtentManager.context = context;
+	}
+
+	/**
+	 * This function print the message in extent report based on flag
+	 *  @param flag: True/False. Step will be passed or failed based on this flag
+	 *  @param Message: Message to be printed on the extent report
+	 *
+	 */
+	public static void reportLogger(boolean flag, String Message) {
+		if (flag) {
+			ExtentTestManager.getTest().log(LogStatus.PASS, "Test Step Passed :" + Message);
+		} else {
+			ExtentTestManager.getTest().log(LogStatus.FAIL, "Test Step Failed: " + Message);
+		}
 	}
 }
