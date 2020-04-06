@@ -52,6 +52,14 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//*[@class='countSortedByFilteredBy']")
 	public WebElement countSortedByFilteredBy;
 
+	@FindBy(xpath = "//button[@title='Cancel']")
+	public WebElement cancelButton;
+
+	@FindBy(xpath = "//button[@title='Close']")
+	public WebElement closeButton;
+
+	@FindBy(xpath = "//button[@title='Close this window']")
+	public WebElement crossButton;
 
 	/*	Sikander Bhambhu:
 	 *	Next 7 locators are for handling date picker

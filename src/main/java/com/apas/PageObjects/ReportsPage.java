@@ -54,14 +54,23 @@ public class ReportsPage extends Page {
 		//Added this wait as report was taking sometime to open
 		Thread.sleep(3000);
 
+		JavascriptExecutor executor = driver;
+
 		//Using the JavaScriptExecutor as CLICK method is not working
 		WebElement webElement =  driver.findElement(By.xpath("//a[@title='" + reportName + "']"));
-		JavascriptExecutor executor = driver;
 		executor.executeScript("arguments[0].click();", webElement);
 
+		Thread.sleep(30000);
+
 		//Exporting the report in desired format
+
+		driver.switchTo().frame(0);
+
 		Click(arrowButton);
 		Click(linkExport);
+
+		driver.switchTo().parentFrame();
+
 		if (reportType.equals(FORMATTED_EXPORT))
 			Click(formattedExportLabel);
 		else

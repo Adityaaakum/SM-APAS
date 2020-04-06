@@ -138,7 +138,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 		waitForElementToBeClickable(issueDateCalender);
 
 		enter(buildingPermitNumberTxtBox, dataMap.get("Building Permit Number"));
-		searchAndSelectFromDropDown(parcelsSearchBox, dataMap.get("Parcel"));
+		searchAndSelectFromDropDown(parcelsSearchBox, dataMap.get("APN"));
 		selectFromDropDown(processingStatusDrpDown, dataMap.get("Processing Status"));
 		searchAndSelectFromDropDown(countyStratCodeSearchBox, dataMap.get("County Strat Code Description"));
 		enter(estimatedProjectValueTxtBox, dataMap.get("Estimated Project Value"));
@@ -219,9 +219,9 @@ public class BuildingPermitPage extends ApasGenericPage {
 		String buildingPermitNumber = "LM-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
 		Map<String, String> manualBuildingPermitMap = new HashMap<>();
 		manualBuildingPermitMap.put("Permit City Code","LM");
-		manualBuildingPermitMap.put("Parcel","000002");
+		manualBuildingPermitMap.put("APN","000002");
 		manualBuildingPermitMap.put("Building Permit Number",buildingPermitNumber);
-		manualBuildingPermitMap.put("Processing Status","Process");
+		manualBuildingPermitMap.put("Processing Status","No Process");
 		manualBuildingPermitMap.put("Issue Date","11/10/2019");
 		manualBuildingPermitMap.put("Completion Date","11/10/2019");
 		manualBuildingPermitMap.put("County Strat Code Description","REPAIR ROOF");

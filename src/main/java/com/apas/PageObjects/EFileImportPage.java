@@ -34,6 +34,9 @@ public class EFileImportPage extends Page {
 	@FindBy(xpath = "//button[contains(.,'Confirm')]")
 	public WebElement confirmButton;
 
+	@FindBy(xpath = "//button[text()='Continue']")
+	public WebElement continueButton;
+
 	@FindBy(xpath = "//*[@data-key='upload']")
 	public WebElement uploadFilebutton;
 
