@@ -183,38 +183,56 @@ public class ApasGenericFunctions extends TestBase{
 	}
 
 	/**
-	 * Description: This method will save the grid data in hashmap
+	 * Description: This method will save the grid data in hashmap (Default Behavior: First Table and All Rows displayed on UI)
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
 	public HashMap<String, ArrayList<String>> getGridDataInHashMap() {
-		return getGridDataInHashMap(-1);
+		return getGridDataInHashMap(1);
 	}
 
+
 	/**
-	 * Description: This method will save the grid data in hashmap for the Row Number passed in the argument
+	 * Description: This method will save the grid data in hashmap (Default Behavior: Table Index passed in the parameter and all the rows)
+	 * @param tableIndex: Table Index displayed on UI if there are multiple tables displayed on UI
+	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
+	 */
+	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int tableIndex) {
+		return getGridDataInHashMap(tableIndex,-1);
+	}
+
+
+	/**
+	 * Description: This method will save the grid data in hashmap for the Table Index and Row Number passed in the argument
 	 * @param rowNumber: Row Number for which data needs to be fetched
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
-	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int rowNumber) {
+	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int tableIndex, int rowNumber) {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
-		//This code is to fetch the data for a particular row in the grid
-		String xpathRows = "//tbody/tr";
+		//This code is to fetch the data for a particular row in the grid in the table passed in tableIndex
+		String xpathTable = "(//table)[" + tableIndex + "]";
+		String xpathHeaders = xpathTable + "//thead/tr/th";
+		String xpathRows = xpathTable + "//tbody/tr";
 		if (!(rowNumber == -1)) xpathRows = xpathRows + "[" + rowNumber + "]";
 
 		HashMap<String,ArrayList<String>> gridDataHashMap = new HashMap<>();
 
 		//Fetching the headers and data web elements from application
-		List<WebElement> webElementsHeaders = driver.findElements(By.xpath("//thead/tr/th"));
+		List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpathHeaders));
 		List<WebElement> webElementsRows = driver.findElements(By.xpath(xpathRows));
+
+		String key, value;
 
 		//Converting the grid data into hashmap
 		for(WebElement webElementRow : webElementsRows){
 			List<WebElement> webElementsCells = webElementRow.findElements(By.xpath(".//td | .//th"));
 			for(int gridCellCount=0; gridCellCount< webElementsHeaders.size(); gridCellCount++){
-				String key = webElementsHeaders.get(gridCellCount).getAttribute("title");
-				String value = webElementsCells.get(gridCellCount).getText();
-				gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
-				gridDataHashMap.get(key).add(value);
+				key = webElementsHeaders.get(gridCellCount).getAttribute("aria-label");
+				if (key!=null){
+					//"replace("Edit "+ key,"").trim()" code is user to remove the text \nEdit as few cells have edit button and the text of edit button is also returned with getText()
+					value = webElementsCells.get(gridCellCount).getText().replace("Edit "+ key,"").trim();
+					gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
+					gridDataHashMap.get(key).add(value);
+				}
 			}
 		}
 		return gridDataHashMap;
