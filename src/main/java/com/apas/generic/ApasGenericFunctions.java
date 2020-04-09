@@ -13,7 +13,10 @@ import java.util.Objects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.FindBy;
+
 import com.apas.PageObjects.ApasGenericPage;
+import com.apas.PageObjects.BppTrendSetupPage;
 import com.apas.PageObjects.EFileImportPage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
@@ -27,6 +30,7 @@ public class ApasGenericFunctions extends TestBase{
 	private RemoteWebDriver driver;
 	Page objPage;
 	LoginPage objLoginPage;
+	BppTrendSetupPage objBppTrendSetupPage;
 	//EFileImportPage eFilePageObject;
 	ApasGenericPage objApasGenericPage;
 	
@@ -34,6 +38,7 @@ public class ApasGenericFunctions extends TestBase{
 		this.driver = driver;
 		objPage = new Page(this.driver);
 		objLoginPage = new LoginPage(this.driver);
+		objBppTrendSetupPage = new BppTrendSetupPage(this.driver);
 		objApasGenericPage = new ApasGenericPage(this.driver);
 		//eFilePageObject = new EFileImportPage(this.driver);
 	}
@@ -212,5 +217,46 @@ public class ApasGenericFunctions extends TestBase{
 		}
 		return gridDataHashMap;
 	}
+	
+	/**
+	 * This would select Recently Viewed option from the drop down list
+	 * @throws: Throws Exception
+	 */
+	public void selectRecentlyViewedFromDropDown() throws Exception {
+		String currentlyVisibleOption = objPage.getElementText(objBppTrendSetupPage.currenltySelectViewOption);
+		if(!(currentlyVisibleOption.equalsIgnoreCase("Recently Viewed"))) {
+			objPage.Click(objBppTrendSetupPage.selectListViewIcon);
+			objPage.Click(objBppTrendSetupPage.recentlyViewedOption);
+		}
+	}
 
+	/**
+	 * This would select All option from the drop down list
+	 * @throws: Throws Exception
+	 */
+	public void selectAllFromDropDown() throws Exception {
+		String currentlyVisibleOption = objPage.getElementText(objBppTrendSetupPage.currenltySelectViewOption);
+		if(!(currentlyVisibleOption.equalsIgnoreCase("All"))) {
+			objPage.Click(objBppTrendSetupPage.selectListViewIcon);
+			objPage.Click(objBppTrendSetupPage.allOption);
+		}
+	}
+	
+	/**
+	 * Description: This will select the recently viewed mode on grid
+	 */
+	public void selectRecentlyViewedOptionOnGrid() throws Exception {
+		objPage.Click(objPage.waitForElementToBeClickable(objApasGenericPage.selectListViewIcon));
+		objPage.Click(objApasGenericPage.recentlyViewedOption);
+		objPage.Click(objApasGenericPage.pinIcon);
+	}
+	
+	/**
+	 * Description: This will select the All mode on grid
+	 */
+	public void selectAllOptionOnGrid() throws Exception {
+		objPage.Click(objApasGenericPage.selectListViewIcon);
+		objPage.Click(objPage.waitForElementToBeClickable(objApasGenericPage.allOption));
+		objPage.Click(objApasGenericPage.pinIcon);
+	}
 }
