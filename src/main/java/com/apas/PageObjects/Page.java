@@ -762,6 +762,11 @@ public class Page {
 
 	}
 
+	/**
+	 * Generates a random number using special characters
+	 * @param noOfchar: Takes the string argument for number of characters
+	 * @return: Returns the random generated number
+	 */
 	public String generateRandomString(int noOfchar) {
 		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789#@abcdefghijklmnopqrstuvwxyz0";
 		// String randomString = RandomStringUtils.random(noOfchar, true, true);
@@ -774,24 +779,55 @@ public class Page {
 		return randomString;
 	}
 
+	/**
+	 * Generates a random number without using special characters
+	 * @param noOfchar: Takes the integer argument for number of characters
+	 * @return: Returns the random generated number
+	 */
 	public String generateRandomStringWithoutSpecialchar(int noOfchar) {
 		String randomString = RandomStringUtils.random(noOfchar, true, false);
 		return randomString;
 	}
 
+	/**
+	 * Generates a random number
+	 * @param noOfchar: Takes the string argument for number of characters
+	 * @return: Returns the random generated number
+	 */
 	public String generateRandomNumber(String noOfchar) {
 		String randomNumber = RandomStringUtils.randomNumeric(Integer.parseInt(noOfchar));
 		return randomNumber;
 	}
 	
-	public WebElement locateElement(String locatorValue, int timeoutInSeconds) throws Exception {
+	/**
+	 * Function will wait for an element to be Invisible on the page.
+	 * @param: Xpath of the element to locate
+	 * @param: timeout in seconds
+	 */
+	public boolean validateAbsenceOfElement(Object object, int timeoutInSeconds) {
+		boolean elementStatus = false;
+		if(object instanceof String) {
+			By by = By.xpath(object.toString());
+			elementStatus = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOfElementLocated(by));
+		} else {
+			elementStatus = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOf((WebElement) object));			
+		}
+		return elementStatus;
+	}
+
+	/**
+	 * Function will find the element based on the specified xpath
+	 * @param: Xpath of the element to be locate
+	 * @param: timeout in seconds
+	 */
+	public WebElement locateElement(String xpath, int timeoutInSeconds) throws Exception {
 		WebElement element = null;
 		boolean elementVisiblityFlag = false;
 		int counter = 0;
 		
 		while (counter < timeoutInSeconds && !elementVisiblityFlag) {			
 			try {
-				element = driver.findElement(By.xpath(locatorValue));
+				element = driver.findElement(By.xpath(xpath));
 				if (element != null) {
 					elementVisiblityFlag = true;
 				}
@@ -803,6 +839,11 @@ public class Page {
 		return element;
 	}
 	
+	/**
+	 * Function will find all the elements based on the specified xpath
+	 * @param: Xpath of the element to be locate
+	 * @param: timeout in seconds
+	 */
 	public List<WebElement> locateElements(String locatorValue, int timoutCounter) throws Exception {
 		List<WebElement> elements = null;
 		boolean elementsVisiblityFlag = false;
@@ -820,7 +861,12 @@ public class Page {
 		}
 		return elements;
 	}
-		
+
+	/**
+	 * Function will wait for a element until it becomes visible
+	 * @param: Takes argument of object type (xpath or variable of By type or WebElement)
+	 * @return: Returns the WebElement
+	 */
 	public WebElement waitForElementToBeVisible(Object object) {
 		WebElement element = null;
 		if(object instanceof String) {
@@ -832,7 +878,12 @@ public class Page {
 		}
 		return element;
 	}
-	
+
+	/**
+	 * Function will wait for a element until it becomes clickable
+	 * @param: Takes argument of object type (xpath or variable of By type or WebElement)
+	 * @return: Returns the WebElement
+	 */
 	public WebElement waitForElementToBeClickable(Object object) {		
 		WebElement element = null;
 		if(object instanceof String) {
@@ -845,11 +896,17 @@ public class Page {
 		return element;
 	}
 	
-	public void getParentWindowHandle() {
+	/**
+	 * Sets the parent window handle property with parent window's handle
+	 */
+	public void setParentWindowHandle() {
 		System.setProperty("parentWindowHandle", driver.getWindowHandle());
 	}
 	
-	public void switchToNewWindow(String parentWindowTitle) throws Exception {		
+	/**
+	 * Switches the focus on the new window
+	 */
+	public void switchToNewWindow() throws Exception {		
 		Set<String> windowHandles = driver.getWindowHandles();
 		for(int i = 0; i < 200; i++) {
 			windowHandles = driver.getWindowHandles();
@@ -871,6 +928,9 @@ public class Page {
 		wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(0));
 	}
 	
+	/**
+	 * Switches the focus on the parent window
+	 */
 	public void switchToParentWindow() {
 		driver.switchTo().window(System.getProperty("parentWindowHandle"));
 	}

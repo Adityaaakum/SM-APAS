@@ -41,6 +41,18 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//*[@class='countSortedByFilteredBy']")
 	public WebElement countSortedByFilteredBy;
+	
+	@FindBy(xpath = "//a[@title = 'Select List View']")
+	public WebElement selectListViewIcon;
+
+	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'Recently Viewed']")
+	public WebElement recentlyViewedOption;
+
+	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All']")
+	public WebElement allOption;
+	
+	@FindBy(xpath = "//button[@title='Pin this list view']")
+	public WebElement pinIcon;
 
 	/**
 	 * Description: This will click on the module name from the drop down
@@ -50,5 +62,4 @@ public class ApasGenericPage extends Page {
 		WebElement drpDwnOption = waitForElementToBeClickable(xpathStr);
 		drpDwnOption.click();
 	}
-		
 }

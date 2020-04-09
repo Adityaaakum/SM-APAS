@@ -27,13 +27,23 @@ public class DataProviders {
     }
 
 	/**
-	 * Below function will be used to login to application with business administrator user
+	 * Below function will be used to login to application with appraisal support user
 	 *
 	 * @returns: Return the user appraisal support
 	 **/
     @DataProvider(name = "loginApraisalUser")
     public Object[][] dpLoginApraisalUser() {
         return new Object[][] { { users.APPRAISAL_SUPPORT } };
+    }
+
+	/**
+	 * Below function will be used to login to application with system administrator user
+	 *
+	 * @returns: Return the user system administrator
+	 **/
+    @DataProvider(name = "loginSystemAdmin")
+    public Object[][] dpLoginSystemAdmin() {
+        return new Object[][] { { users.SYSTEM_ADMIN } };
     }
     
 	/**

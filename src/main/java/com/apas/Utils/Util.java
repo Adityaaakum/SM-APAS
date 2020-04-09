@@ -224,6 +224,7 @@ public class Util {
 	}
 
 	/**
+	 * @author Sikander Bhambhu
 	 * @Description : This method internally collects all the execution reports
 	 *              from AutomationReport folder and moves them to an archive
 	 *              folder on start of test execution.
@@ -248,5 +249,5 @@ public class Util {
 			ex.printStackTrace();
 		}
 		return dataMap;
-	}	
+	}
 }
