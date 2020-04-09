@@ -72,21 +72,23 @@ public class BppTrendFileDownloadTest extends TestBase {
 		boolean isExportValuationBtnDisplayed = objBppTrnPg.isExportValuationFactorsBtnVisible(20);
 		softAssert.assertTrue(isExportValuationBtnDisplayed, "SMAB-T303: Is Export Valuation Factors button visible on approving all the the submitted calculations:");
 
-		objBppTrnPg.getParentWindowHandle();
+		objBppTrnPg.setParentWindowHandle();
 
 		//Step5: Downloading PDF file by clicking Download button
 		objBppTrnPg.clickDownloadBtn();
 				
 		//Step6: Downloading Composite Factors Excel file by clicking Export Composite Factors button
 		objBppTrnPg.clickExportCompositeFactorsBtn();
-		objBppTrnPg.switchToNewWindow("Composite Factors");
+		//objBppTrnPg.switchToNewWindow("Composite Factors");
+		objBppTrnPg.switchToNewWindow();
 		objBppTrnPg.exportBppTrendFactorsExcelFiles();
 		driver.close();
 
 		//Step7: Downloading Valuation Factors Excel file by clicking Export Valuation Factors button
 		objBppTrnPg.switchToParentWindow();
 		objBppTrnPg.clickExportValuationFactorsBtn();
-		objBppTrnPg.switchToNewWindow("Valuation Factors");
+		//objBppTrnPg.switchToNewWindow("Valuation Factors");
+		objBppTrnPg.switchToNewWindow();
 		objBppTrnPg.exportBppTrendFactorsExcelFiles();
 		driver.close();
 		

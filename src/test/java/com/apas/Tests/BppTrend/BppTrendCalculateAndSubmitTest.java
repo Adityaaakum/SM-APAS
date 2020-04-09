@@ -54,8 +54,8 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 	public void verifyBppTrendCalculate(String loginUser) throws Exception {
 		//Resetting the factor tables status to Not Calculated
 		String rollYear = CONFIG.getProperty("rollYear");
-		List<String> factorTablesToReset = Arrays.asList(CONFIG.getProperty("factorTablesToReset").split(","));
-		objBppTrnPg.resetTablesStatusForGivenRollYear(factorTablesToReset, "Not Calculated", rollYear);
+		//List<String> factorTablesToReset = Arrays.asList(CONFIG.getProperty("factorTablesToReset").split(","));
+		//objBppTrnPg.resetTablesStatusForGivenRollYear(factorTablesToReset, "Not Calculated", rollYear);
 		
 		//Step1: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
