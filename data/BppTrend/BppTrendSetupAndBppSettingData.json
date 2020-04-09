@@ -1,0 +1,65 @@
+{
+	"DataToCreateBppTrendSetup": {
+		"Roll Year": "2021",
+		"Commercial Trends Status": "Import Approved",
+		"Const. Mobile Equipment Trends Status": "Import Approved",
+		"Industrial Trend Status": "Import Approved",
+		"Ag. Mobile Equipment Trends Status": "Import Approved",
+		"Const. Trends Status": "Import Approved",
+		"Ag. Trends Status": "Import Approved",
+		"Computer Trends Status": "Import Approved",
+		"Biopharmaceutical Trends Status": "Import Approved",
+		"Copier Trends Status": "Import Approved",
+		"Semiconductor Trends Status": "Import Approved",
+		"Litho Trends Status": "Import Approved",
+		"Mechanical Slot Machine Trends Status": "Import Approved",
+		"Set-Top Box Trends Status": "Import Approved",
+		"Electronic Slot Machine Trends Status": "Import Approved",
+		"Prop 13 Factor Status": "Not Calculated"
+	},
+	"DataToCreateBppTrendSetting": {
+    	"BPP Trend Roll Year": "2021",
+		"Maximum Equipment index Factor": "125"
+	},
+    "DataToCreateBppTrendCommercialSetting": {
+    	"BPP Trend Roll Year": "2021",
+		"Minimum Good Factor": "10",
+		"Property Type": "Commercial"
+	},
+    "DataToCreateBppTrendIndustrialSetting": {
+    	"BPP Trend Roll Year": "2021",
+		"Minimum Good Factor": "10",
+		"Property Type": "Industrial"
+	},
+    "DataToCreateBppTrendConstructionSetting": {
+    	"BPP Trend Roll Year": "2021",
+		"Minimum Good Factor": "10",
+		"Property Type": "Construction"
+	},
+	"DataToCreateBppTrendAgriculturalSetting": {
+    	"BPP Trend Roll Year": "2021",
+		"Minimum Good Factor": "10",
+		"Property Type": "Agricultural"
+	},
+    "DataToEditBppTrendSetup": {
+		"Roll Year": "2021",
+		"Commercial Trends Status": "Import Approved",
+		"Const. Mobile Equipment Trends Status": "Import Approved",
+		"Industrial Trend Status": "Import Approved",
+		"Ag. Mobile Equipment Trends Status": "Import Approved",
+		"Const. Trends Status": "Import Approved",
+		"Ag. Trends Status": "Import Approved",
+		"Prop 13 Factor Status": "Import Approved",
+		"Computer Trends Status": "Import Approved",
+		"Biopharmaceutical Trends Status": "Import Approved",
+		"Copier Trends Status": "Import Approved",
+		"Semiconductor Trends Status": "Import Approved",
+		"Litho Trends Status": "Import Approved",
+		"Mechanical Slot Machine Trends Status": "Import Approved",
+		"Set-Top Box Trends Status": "Import Approved",
+		"Electronic Slot Machine Trends Status": "Import Approved"
+	},
+	"DataToEditBppTrendSetting": {
+		"Maximum Equipment index Factor": "125"
+	}
+}
