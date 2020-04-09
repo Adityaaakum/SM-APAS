@@ -40,7 +40,7 @@ public class BuildingPermitPage extends Page {
 	public WebElement bldngPrmtTabDetailsPage;
 
 	@FindBy(xpath = "//a[@title = 'New']")
-	private WebElement newButton;
+	public WebElement newButton;
 
 	@FindBy(xpath = "//legend[text() = 'Select a record type']")
 	private WebElement selectRecordTypePopUp;
@@ -76,7 +76,7 @@ public class BuildingPermitPage extends Page {
 	private WebElement buildingPermitPopUp;
 
 	@FindBy(xpath = "//button[@title='Close this window']")
-	private WebElement closeBuildingPermitManualEntryPopUp;
+	public WebElement closeEntryPopUp;
 
 	@FindBy(xpath = "//span[text() = 'Building Permit Number']/parent::label/following-sibling::input")
 	private WebElement buildingPermitNumberTxtBox;
@@ -242,7 +242,7 @@ public class BuildingPermitPage extends Page {
 	 * creation radio button when Data Admin is logged into application
 	 * @throws IOException
 	 */
-	public void openManualEntryForm() throws IOException {
+	public void openNewForm() throws Exception {
 		javascriptClick(waitForElementToBeClickable(newButton));
 		if(System.getProperty("isDataAdminLoggedIn") != null && System.getProperty("isDataAdminLoggedIn").equals("true")) {
 			Click(waitForElementToBeClickable(manualEntryRadioBtn));
@@ -267,7 +267,7 @@ public class BuildingPermitPage extends Page {
 	 * @throws Exception
 	 */
 	public String enterManualEntryData(Map<String, String> dataMap) throws Exception {
-//		String buildingPermitNumber = dataMap.get("Permit City Code") + "-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
+		//String buildingPermitNumber = dataMap.get("Permit City Code") + "-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
 
 		String buildingPermitNumber  = dataMap.get("Building Permit Number");
 		System.setProperty("permitNumber", dataMap.get("Building Permit Number"));
@@ -291,7 +291,7 @@ public class BuildingPermitPage extends Page {
 	 * 	creation radio button when Data Admin is logged into application
 	 *	@throws Exception
 	 */
-	public boolean saveManualEntryAndOpenNewAndExit() throws Exception {
+	public boolean saveEntryAndOpenNewAndExit() throws Exception {
 		Click(saveAndNewButton);
 		if(System.getProperty("isDataAdminLoggedIn") != null && System.getProperty("isDataAdminLoggedIn").equals("true")) {
 			Click(waitForElementToBeClickable(manualEntryRadioBtn));
@@ -301,7 +301,7 @@ public class BuildingPermitPage extends Page {
 		Thread.sleep(2000);
 		boolean isNewManualEntryPopUpDisplayed = waitForElementToBeVisible(20, buildingPermitPopUp);
 		if (isNewManualEntryPopUpDisplayed) {
-			Click(waitForElementToBeClickable(closeBuildingPermitManualEntryPopUp));
+			Click(waitForElementToBeClickable(closeEntryPopUp));
 		}
 		return isNewManualEntryPopUpDisplayed;
 	}
@@ -310,9 +310,9 @@ public class BuildingPermitPage extends Page {
 	 */
 	public void addAndSaveManualBuildingPermit(Map<String, String> dataMap) throws Exception {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Adding and saving a new Building Permit manual record");
-		openManualEntryForm();
+		openNewForm();
 		enterManualEntryData(dataMap);
-		saveManualEntryAndOpenNewAndExit();
+		saveEntryAndOpenNewAndExit();
 	}
 
 		// This method is used to validate & handle the presence of loader on manual entry creation.
@@ -353,26 +353,26 @@ public class BuildingPermitPage extends Page {
 	}
 
 	/**
-	 * @description: This method checks whether newly created buidling permit number
+	 * @description: This method checks whether newly created building permit number
 	 * is displayed on details page.
 	 * @param buildingPermitNum: Takes building permit number as argument
 	 * @return: Return true / false based on the status of element
 	 * @throws Exception
 	 */
-	public boolean checkBuildingPermitOnDetailsPage (String buildingPermitNum) throws Exception {
-		String xpathStr = "//h1//slot//lightning-formatted-text[text() = '" + buildingPermitNum + "']";
+	public boolean checkNewlyCreatedEntryOnDetailsPage (String entryName) throws Exception {
+		String xpathStr = "//h1//slot//lightning-formatted-text[text() = '" + entryName + "']";
 		boolean elemStatus = locateElement(xpathStr, 10).isDisplayed();
 		return elemStatus;
 	}
 
 	/**
-	 * @description: This method checks whether newly created buidling permit number
+	 * @description: This method checks whether newly created building permit number
 	 * is displayed on recently viewed grid.
 	 * @param buildingPermitNum: Takes building permit number as argument
 	 * @return: Return true / false based on the status of element
 	 * @throws Exception
 	 */
-	public boolean checkBuildingPermitOnGrid(String buildingPermitNum) {
+	public boolean checkNewlyCreatedEntryOnGrid(String buildingPermitNum) {
 		String xpathStr = "//tbody/tr//th//a[text() = '" + buildingPermitNum + "']";
 		boolean elemStatus;
 		try {
@@ -385,8 +385,8 @@ public class BuildingPermitPage extends Page {
 	}
 
 	/**
-	 * @description: Thismethod clicks on given building permit number
-	 * and navigates to the detals page
+	 * @description: This method clicks on given building permit number
+	 * and navigates to the details page
 	 * @param buildingPermitNum: Building permit number to open on details page
 	 * @throws Exception
 	 */
@@ -397,12 +397,12 @@ public class BuildingPermitPage extends Page {
 	}
 
 	/**
-	 * @description: Clicks on the show more link displayed against the given building permit number
-	 * @param buildingPermitNum: Building permit number to open on details page
+	 * @description: Clicks on the show more link displayed against the given entry
+	 * @param entryDetails: Name of the entry displayed on grid which is to be accessed
 	 * @throws Exception
 	 */
-	public void clickShowMoreLinkOnRecentlyViewedGrid(String buildingPermitNum) throws Exception {
-		String xpathStr = "//tbody/tr//th//a[text() = '"+ buildingPermitNum +"']/parent::span/parent::th/following-sibling::td//a[@role = 'button']";
+	public void clickShowMoreLinkOnRecentlyViewedGrid(String entryDetails) throws Exception {
+		String xpathStr = "//tbody/tr//th//a[text() = '"+ entryDetails +"']/parent::span/parent::th/following-sibling::td//a[@role = 'button']";
 		WebElement modificationsIcon = locateElement(xpathStr, 10);
 		clickAction(modificationsIcon);
 	}

@@ -73,7 +73,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		Map<String, String> dataMap = objUtil.generateMapFromJsonFile(manualEntryData, "DataToCreateBuildingPermitManualEntry");
 		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Opening manual entry pop and clicking save button without entring any data to validate error messages for mandatory fields.");
-		objBuildPermit.openManualEntryForm();
+		objBuildPermit.openNewForm();
 		objBuildPermit.waitForManualEntryPopUpToLoad();
 		objPage.Click(objBuildPermit.saveButton);
 		
@@ -93,25 +93,25 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		objBuildPermit.enterManualEntryData(dataMap);
 		objPage.Click(objBuildPermit.cancelButton);
 		String permitNum = System.getProperty("permitNumber");
-		boolean buildingPermitNotCreated = objBuildPermit.checkBuildingPermitOnGrid(permitNum);
+		boolean buildingPermitNotCreated = objBuildPermit.checkNewlyCreatedEntryOnGrid(permitNum);
 		softAssert.assertTrue(!buildingPermitNotCreated, "SMAB-T418: Manual entry is not created on closing new manual entry window without saving.");
 		
 		//Step5: Opening the manual entry form again and filling required fields and saving the form
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Verifying whether manual entry gets saved and pop up window for new entry gets displayed when 'Save & New' option is selected.");
-		objBuildPermit.openManualEntryForm();
+		objBuildPermit.openNewForm();
 		objBuildPermit.enterManualEntryData(dataMap);
-		boolean isNewManualEntryPopUpDisplayed = objBuildPermit.saveManualEntryAndOpenNewAndExit();
+		boolean isNewManualEntryPopUpDisplayed = objBuildPermit.saveEntryAndOpenNewAndExit();
 		softAssert.assertTrue(isNewManualEntryPopUpDisplayed, "SMAB-T418: Validating whether pop up for new entry is displayed.");
 				
 		//Step6: Checking whether the newly created manual entry is successfully reflecting or not
 		boolean isLoaderVisible = objBuildPermit.checkAndHandlePageLoaderOnEntryCreation();
 		if(isLoaderVisible) {
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Validating newly created manual entry successfully displayed on recently viewed grid.");
-			boolean isEntryDisplayed = objBuildPermit.checkBuildingPermitOnGrid(permitNum);
+			boolean isEntryDisplayed = objBuildPermit.checkNewlyCreatedEntryOnGrid(permitNum);
 			softAssert.assertTrue(isEntryDisplayed, "SMAB-T418: Validating whether manual entry successfully created and displayed on recently viewed grid.");
 		} else {
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Validating newly created manual entry successfully displayed on details page.");
-			boolean isEntryDisplayed = objBuildPermit.checkBuildingPermitOnDetailsPage(permitNum);
+			boolean isEntryDisplayed = objBuildPermit.checkNewlyCreatedEntryOnDetailsPage(permitNum);
 			softAssert.assertTrue(isEntryDisplayed, "SMAB-T418: Validating whether manual entry successfully created and displayed on details page.");	
 		}
 		softAssert.assertAll();
