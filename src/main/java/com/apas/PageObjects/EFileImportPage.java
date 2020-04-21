@@ -108,12 +108,17 @@ public class EFileImportPage extends Page {
 	
 	@FindBy(xpath = "//input[@class='slds-input']")
 	public WebElement editButtonInput;
+	
+	@FindBy(xpath = "//button[text()='Continue'")
+	public WebElement continueButton;
 		
 	public void selectFileAndSource(String filetype, String source) throws InterruptedException, IOException {
 		System.out.println("File type is:" + filetype + " and Source is:" + source);
 		Click(fileTypedropdown);
+		Thread.sleep(2000);
 		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + filetype + "')]")));
 		Click(sourceDropdown);
+		Thread.sleep(2000);
 		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]")));
 	}
 	
@@ -161,6 +166,7 @@ public class EFileImportPage extends Page {
 		Thread.sleep(2000);
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " + fileName + " on Efile Import Tool");
 		uploadFile(fileName);
+		Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(doneButton);
 		objPage.Click(doneButton);
 		Thread.sleep(3000);

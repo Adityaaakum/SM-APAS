@@ -133,7 +133,7 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 
 	/**
 	 * Extracts the test case key from the argument and sets a system property with it
-	 * @param message: "SMAB-T418: <Some validation message>"
+	 * @param message: "SMAB-T418,SMAB-T419: <Some validation message>"
 	 */
 	public static String extractTestCaseKey(String message) {
 		String testCaseKey = message.substring(0, message.indexOf(":")).trim();

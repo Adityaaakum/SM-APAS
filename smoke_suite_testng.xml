@@ -8,10 +8,10 @@
 	</listeners>
 	<test name="SMAB-T398: Validation for Duplicate Non Relevant Permit Settings" annotations="" preserve-order="true">
 		<classes>
-<!--			<class name="com.apas.Tests.ApasSettings.CityStratCodesTest" />-->
-<!--			<class name="com.apas.Tests.ApasSettings.ReportsTest" />-->
-<!--			<class name="com.apas.Tests.ApasSettings.RollwisePermissionTest" />-->
-			<class name="com.apas.Tests.BuildingPermit.BuildingPermitDataValidationTest" />
+			<class name="com.apas.Tests.ApasSettings.CityStratCodesTest" />
+			<class name="com.apas.Tests.ApasSettings.ReportsTest" />
+			<class name="com.apas.Tests.ApasSettings.RollwisePermissionTest" />
+			<class name="com.apas.Tests.ApasSettings.NonRelevantPermitSettingsTest" />
 		</classes>
 	</test>
 </suite>

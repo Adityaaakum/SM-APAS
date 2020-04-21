@@ -1,6 +1,6 @@
 {
 	"DataToCreateBppTrendSetup": {
-		"Roll Year": "2021",
+		"Roll Year": "2020",
 		"Commercial Trends Status": "Import Approved",
 		"Const. Mobile Equipment Trends Status": "Import Approved",
 		"Industrial Trend Status": "Import Approved",
@@ -18,31 +18,31 @@
 		"Prop 13 Factor Status": "Not Calculated"
 	},
 	"DataToCreateBppTrendSetting": {
-    	"BPP Trend Roll Year": "2021",
+    	"BPP Trend Roll Year": "2020",
 		"Maximum Equipment index Factor": "125"
 	},
     "DataToCreateBppTrendCommercialSetting": {
-    	"BPP Trend Roll Year": "2021",
+    	"BPP Trend Roll Year": "2020",
 		"Minimum Good Factor": "10",
 		"Property Type": "Commercial"
 	},
     "DataToCreateBppTrendIndustrialSetting": {
-    	"BPP Trend Roll Year": "2021",
+    	"BPP Trend Roll Year": "2020",
 		"Minimum Good Factor": "10",
 		"Property Type": "Industrial"
 	},
     "DataToCreateBppTrendConstructionSetting": {
-    	"BPP Trend Roll Year": "2021",
+    	"BPP Trend Roll Year": "2020",
 		"Minimum Good Factor": "10",
 		"Property Type": "Construction"
 	},
 	"DataToCreateBppTrendAgriculturalSetting": {
-    	"BPP Trend Roll Year": "2021",
+    	"BPP Trend Roll Year": "2020",
 		"Minimum Good Factor": "10",
 		"Property Type": "Agricultural"
 	},
     "DataToEditBppTrendSetup": {
-		"Roll Year": "2021",
+		"Roll Year": "2020",
 		"Commercial Trends Status": "Import Approved",
 		"Const. Mobile Equipment Trends Status": "Import Approved",
 		"Industrial Trend Status": "Import Approved",

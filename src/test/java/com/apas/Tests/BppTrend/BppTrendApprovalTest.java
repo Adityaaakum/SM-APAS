@@ -3,8 +3,8 @@ package com.apas.Tests.BppTrend;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -32,7 +32,6 @@ public class BppTrendApprovalTest extends TestBase {
 	BuildingPermitPage objBuildPermitPage;
 	Util objUtil;
 	SoftAssertion softAssert;
-	Map<String, String> dataMap;
 	
 	@BeforeMethod
 	public void beforeMethod() {
@@ -48,41 +47,53 @@ public class BppTrendApprovalTest extends TestBase {
 	@AfterMethod
 	public void afterMethod() throws Exception {
 		objApasGenericFunctions.logout();
-		Thread.sleep(3000);
 	}
 
-	@Test(description = "SMAB-T205: Approve calculations of factor table individually", dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
+	@Test(description = "SMAB-T205,SMAB-T304,SMAB-T157: Approve calculations of valuation, composite & prop 13 tables", groups = {"smoke","regression"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
 	public void verifyBppTrendApproveWorkFlow(String loginUser) throws Exception {		
-		//Step1: Login to the APAS application using the given user
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " +loginUser);
+		//Step1: Fetch table names from properties file and collect them in a single list
+		List<String> allTablesBppTrendSetupPage = new ArrayList<String>();
+		allTablesBppTrendSetupPage.addAll(Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(",")));
+		allTablesBppTrendSetupPage.addAll(Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(",")));
+		
+		//Step2: Check status of the composite & valuation tables on bpp trend status page before approving
 		objApasGenericFunctions.login(loginUser);
-
-		//Step2: Opening the BPP Trend module
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		objApasGenericFunctions.selectAllOptionOnGrid();
+		String tableName;
+		for(int i = 0; i < allTablesBppTrendSetupPage.size(); i++) {
+			tableName = allTablesBppTrendSetupPage.get(i);
+			String currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
+			softAssert.assertEquals(currentStatus, "Submitted for Approval", "SMAB-T157: Status of "+ tableName +" table on Bpp Trend Page before approving");
+		}
+		
+		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
 
-		//Step3: Selecting role year from drop down
+		//Step4: Selecting role year from drop down
 		String rollYear = CONFIG.getProperty("rollYear");
 		objBppTrnPg.javascriptClick(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.javascriptClick(objBppTrnPg.selectRollYearButton);
 		
-		//Step4: Validating presence of Approve all button at page level.
+		//Step5: Validating presence of Approve all button at page level.
 		boolean isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(20);
-		softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T205: Approve all button should be visible");
+		softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T304: Approve all button should be visible");
 		
-		//Step5: Fetch table names from properties file and collect them in a single list
+		//Step6: Fetch table names from properties file and collect them in a single list
 		List<String> allTables = new ArrayList<String>();
-		allTables.addAll(Arrays.asList(CONFIG.getProperty("tableNamesOutsideMoreTab").split(",")));
-		allTables.addAll(Arrays.asList(CONFIG.getProperty("tableNamesUnderMoreTab").split(",")));
+		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
+		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesUnderMoreTab").split(",")));
+		allTables.addAll(Arrays.asList(CONFIG.getProperty("valuationTablesUnderMoreTab").split(",")));
 		
-		String tableNamesUnderMoreTab = CONFIG.getProperty("tableNamesUnderMoreTab");
-		
-		//Step6: Iterating over the given tables
+		String tableNamesUnderMoreTab = CONFIG.getProperty("compositeTablesUnderMoreTab") + "," + CONFIG.getProperty("valuationTablesUnderMoreTab");
+		boolean isTableUnderMoreTab;
+		//Step7: Iterating over the given tables and approving the calculation using Approve button
 		for (int i = 0; i < allTables.size()-1; i++) {
-			String tableName = allTables.get(i);
+			tableName = allTables.get(i);
 			ExtentTestManager.getTest().log(LogStatus.INFO, "**** Performing Validations For: '"+ tableName +"' Table ****");
 			// Clicking on the given table name
-			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
+			isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
 			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
 
 			// Retrieve & Assert message displayed above table before clicking Approve button
@@ -90,9 +101,14 @@ public class BppTrendApprovalTest extends TestBase {
 			String expTableMsgBeforeApprovingCalc = CONFIG.getProperty("tableMsgBeforeApproval");
 			softAssert.assertTrue(actTableMsgBeforeApprovingCalc.equalsIgnoreCase(expTableMsgBeforeApprovingCalc), "SMAB-T205: Validating message at table level before approving the submitted calculation for table '" + tableName + "'");
 			
-			// Editing and saving cell data in the table for first factor table specified the list
-			if(i == 0) {
-				int cellDataBeforeEdit = Integer.valueOf(objBppTrnPg.getCellDataFromGridForGivenTable().split("\\n")[0]);
+			// Editing and saving cell data in the table for first & last factor tables specified the list
+			if((i == 0) || (i == allTables.size()-1)) {
+				WebElement cellTxtBox = objBppTrnPg.locateCellTxtBoxElementInGrid(tableName);
+				int cellDataBeforeEdit = Integer.valueOf(objBppTrnPg.getElementText(cellTxtBox).split("\\n")[0]);
+				WebElement editBtn = objBppTrnPg.locateEditButtonInFocusedCellTxtBox();
+				objBppTrnPg.Click(cellTxtBox);
+				objBppTrnPg.Click(editBtn);
+				
 				objBppTrnPg.editCellDataInGridForGivenTable(cellDataBeforeEdit + 1);
 				objBppTrnPg.Click(objBppTrnPg.saveEditedCellData);
 				
@@ -101,65 +117,116 @@ public class BppTrendApprovalTest extends TestBase {
 				objBppTrnPg.javascriptClick(objBppTrnPg.selectRollYearButton);
 				
 				objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
-				int cellDataAfterEdit = Integer.valueOf(objBppTrnPg.getCellDataFromGridForGivenTable().split("\\n")[0]);
-				softAssert.assertTrue(cellDataBeforeEdit != cellDataAfterEdit, "SMAB-T205: Is cell data changed in the table after editing the specified cell");
+				cellTxtBox = objBppTrnPg.locateCellTxtBoxElementInGrid(tableName);
+				int cellDataAfterEdit = Integer.valueOf(objBppTrnPg.getElementText(cellTxtBox).split("\\n")[0]);
+				softAssert.assertTrue(cellDataBeforeEdit != cellDataAfterEdit, "SMAB-T205: Cell data changed in the table after editing the specified cell");
 			}
 			
 			// Clicking on Approve button at table level to complete the pending approval
 			ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Approve' button");
 			objBppTrnPg.clickApproveButton(tableName);
 			
-			//Waiting for pop up message to display and the message displayed above table to update
+			// Waiting for pop up message to display and the message displayed above table to update
 			objBppTrnPg.waitForPopUpMsgOnApproveClick(180);
-						
+			
 			// Retrieve & Assert message displayed above table after clicking Approve button
 			String actTableMsgAfterApprovingCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
 			String expTableMsgAfterApprovingCalc = CONFIG.getProperty("tableMsgAfterApproval");
-			softAssert.assertEquals(actTableMsgAfterApprovingCalc, expTableMsgAfterApprovingCalc, "SMAB-T205: Is factor table calculation approved successfully");
+			softAssert.assertEquals(actTableMsgAfterApprovingCalc, expTableMsgAfterApprovingCalc, "SMAB-T205: Factor table calculation approved successfully");
 			
 			// Validating presence of Approve All button at page level on clicking Approve button
 			isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(20);
-			softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T205: Approve All button should be visible on approving the submitted calculation");
+			softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T205: Approve All button is visible on approving the submitted calculation");
 			
 			// Validating absence of Approve button once the submitted calculation has been approved by clicking approve button for given table
 			boolean isApproveBtnDisplayed = objBppTrnPg.isApproveBtnVisible(5, tableName);
-			softAssert.assertTrue(isApproveBtnDisplayed, "SMAB-T205: Approve button should not be visible");
-		}		
+			softAssert.assertTrue(!isApproveBtnDisplayed, "SMAB-T205: Approve button is not visible");
+		}
+
+		//Step8: Clicking on the last table given in the tables list to approve it using Approve All button
+		tableName = allTables.get(allTables.size()-1);
+		isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
+		objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
+		
+		//Step9: Clicking Approve All button to approve the calculations of the last table in tables list
+		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Approve All' button");
+		objBppTrnPg.clickApproveAllBtn();
+
+		//Step10: Retrieve & Assert pop up message displayed at page level
+		objBppTrnPg.waitForPopUpMsgOnApproveAllClick(60);
+		
+		//Step11: Validating absence of Approve button once the submitted calculation has been approved by clicking approve button for given table
+		boolean isApproveBtnDisplayed = objBppTrnPg.isApproveBtnVisible(5, tableName);
+		softAssert.assertTrue(!isApproveBtnDisplayed, "SMAB-T205: Approve button is not be visible");
+		
+		//Step12: Validating presence of Download, Export Composite Factors & Export Valuation Factors buttons		
+		boolean isDownloadBtnDisplayed = objBppTrnPg.isDownloadBtnVisible(20);
+		softAssert.assertTrue(isDownloadBtnDisplayed, "SMAB-T304: 'Download' button is visible");
+		boolean isExportCompositeBtnDisplayed = objBppTrnPg.isExportCompositeFactorsBtnVisible(20);
+		softAssert.assertTrue(isExportCompositeBtnDisplayed, "SMAB-T304: 'Export Composite Factors' button is visible");		
+		boolean isExportValuationBtnDisplayed = objBppTrnPg.isExportValuationFactorsBtnVisible(20);
+		softAssert.assertTrue(isExportValuationBtnDisplayed, "SMAB-T304: 'Export Valuation Factors' button is visible");
+
+		//Step13: Validating absence of Approve All button once the submitted calculation has been approved by clicking approve button for given table
+		isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(5);
+		softAssert.assertTrue(!isApproveAllBtnDisplayed, "SMAB-T304: Approve all button is not be visible at page level");
+
+		//Step14: Check status of the composite & valuation tables on bpp trend status page after approving
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		objApasGenericFunctions.selectAllOptionOnGrid();
+		for(int i = 0; i < allTablesBppTrendSetupPage.size(); i++) {
+			tableName = allTablesBppTrendSetupPage.get(i);
+			String currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
+			softAssert.assertEquals(currentStatus, "Approved", "SMAB-T157: Status of "+ tableName +" table on Bpp Trend Page before approving");
+		}
+
+		//Step15: Navigating to Bpp Trend page and selecting role year from drop down and clicking select button
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objBppTrnPg.javascriptClick(objBppTrnPg.rollYearDropdown);
+		objBppTrnPg.clickOnGivenRollYear(rollYear);
+		objBppTrnPg.javascriptClick(objBppTrnPg.selectRollYearButton);
+
+		//Step16: Checking whether edit button in grid's cell data text box is visible after table status is approved
+		WebElement cellTxtBox = objBppTrnPg.locateCellTxtBoxElementInGrid(allTables.get(0));
+		objBppTrnPg.Click(cellTxtBox);
+		WebElement editBtn = objBppTrnPg.locateEditButtonInFocusedCellTxtBox();
+		softAssert.assertTrue((editBtn == null), "SMAB-T157: Edit button is not visible to update cell data in grid after table status is 'Approved'");
+				
 		softAssert.assertAll();	
 	}
 	
-	@Test(description = "SMAB-T304: Approve calculations of all factor tables in one go", dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
-	public void verifyBppTrendApproveAllWorkFlow(String loginUser) throws Exception {
-		//Step1: Login to the APAS application using the given user
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
+	@Test(description = "SMAB-T249: Navigating to all tables post approval with business admin user", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	public void verifyBppTrendViewAllApprovedValueTables(String loginUser) throws Exception {		
+		//Step1: Login and opening the BPP Trend module
 		objApasGenericFunctions.login(loginUser);
-
-		//Step2: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
 
-		//Step3: Selecting role year from drop down
+		//Step2: Selecting role year from drop down
 		String rollYear = CONFIG.getProperty("rollYear");
 		objBppTrnPg.javascriptClick(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.javascriptClick(objBppTrnPg.selectRollYearButton);
 		
-		//Step4: Validating presence of Approve all button at page level
-		boolean isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(20);
-		softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T304: Approve all button should be visible");
-					
-		//Step5: Clicking on Approve All button at table level to complete the pending approval
-		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Approve All' button");
-		objBppTrnPg.clickApproveAllBtn();
-
-		//Step6: Retrieve & Assert pop up message displayed at page level
-		String actPopUpMsg = objBppTrnPg.waitForPopUpMsgOnSubmitAllForApprovalClick(180);
-		String expPopUpMsg = CONFIG.getProperty("pageLevelMsgAfterApproveAll");
-		softAssert.assertEquals(actPopUpMsg, expPopUpMsg, "SMAB-T304: Calculations successfully approved for all tables");
-			
-		//Step7: Validating absence of Approve All button once the submitted calculation has been approved by clicking approve button for given table
-		isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(5);
-		softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T304: Approve all button should not be visible");
+		//Step3: Fetch table names from properties file and collect them in a single list
+		List<String> allTables = new ArrayList<String>();
+		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
+		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesUnderMoreTab").split(",")));
+		allTables.addAll(Arrays.asList(CONFIG.getProperty("valuationTablesUnderMoreTab").split(",")));
 		
-		softAssert.assertAll();
+		String tableNamesUnderMoreTab = CONFIG.getProperty("compositeTablesUnderMoreTab") + "," + CONFIG.getProperty("valuationTablesUnderMoreTab");
+
+		//Step4: Iterating over the given tables
+		for (int i = 0; i < allTables.size(); i++) {
+			String tableName = allTables.get(i);
+			ExtentTestManager.getTest().log(LogStatus.INFO, "**** Performing Validations For: '"+ tableName +"' Table ****");
+			// Clicking on the given table name
+			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
+			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
+
+			// Retrieve & Assert message displayed above approved table
+			String actTableMsgBeforeApprovingCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
+			String expTableMsgBeforeApprovingCalc = CONFIG.getProperty("tableMsgAfterApproval");
+			softAssert.assertEquals(actTableMsgBeforeApprovingCalc, expTableMsgBeforeApprovingCalc, "SMAB-T249: Navigating to approved table '" + tableName + "' with business admin user login & validating message above it");
+		}
 	}
 }

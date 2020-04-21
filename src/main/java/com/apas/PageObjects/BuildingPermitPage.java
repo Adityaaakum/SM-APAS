@@ -1,16 +1,11 @@
 package com.apas.PageObjects;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.apas.Reports.ExtentTestManager;
-import com.relevantcodes.extentreports.LogStatus;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -20,18 +15,21 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.Select;
 
+import com.apas.Reports.ExtentTestManager;
 import com.apas.Utils.Util;
+import com.relevantcodes.extentreports.LogStatus;
 
 public class BuildingPermitPage extends Page {
 	Logger logger = Logger.getLogger(LoginPage.class);
 	Util objUtil;
+	ApasGenericPage objApasGenericPage;
 
 	public BuildingPermitPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
 		objUtil = new Util();
+		objApasGenericPage = new ApasGenericPage(driver);
 	}
 
 	// Locators to create a manual entry.
@@ -39,7 +37,7 @@ public class BuildingPermitPage extends Page {
 	@FindBy(xpath = "//nav[@role = 'navigation']//span[contains (text(), 'Building Permits') and not(contains(text(), 'Menu'))]/parent::a")
 	public WebElement bldngPrmtTabDetailsPage;
 
-	@FindBy(xpath = "//a[@title = 'New']")
+	@FindBy(xpath = "//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']")
 	public WebElement newButton;
 
 	@FindBy(xpath = "//legend[text() = 'Select a record type']")
@@ -210,32 +208,6 @@ public class BuildingPermitPage extends Page {
 	@FindBy(xpath = "//a[@class='deleteAction']")
 	private List <WebElement> dropDownCrossIcons;
 
-	/*	Sikander Bhambhu:
-	 *	Next 7 locators are for handling date picker
-	 *	These would be moved to common package/class
-	 * */
-
-	@FindBy(xpath = "//div[contains(@class, 'visible DESKTOP uiDatePicker')]")
-	private WebElement datePicker;
-
-	@FindBy(xpath = "//select[contains(@class, 'select picklist')]")
-	private WebElement yearDropDown;
-
-	@FindBy(xpath = "//a[@class='navLink prevMonth']")
-	private WebElement prevMnth;
-
-	@FindBy(xpath = "//a[@class='navLink nextMonth']")
-	private WebElement nextMnth;
-
-	@FindBy(xpath = "//span[(contains(@class, 'uiDayInMonthCell')) and (not (contains(@class, 'nextMonth '))) and (not (contains(@class, 'prevMonth ')))]")
-	private List <WebElement> dates;
-
-	@FindBy(xpath = "//h2[@class = 'monthYear']")
-	private WebElement visibleMonth;
-
-	@FindBy(xpath = "//button[text() = 'Today']")
-	private WebElement currentDate;
-
 	/**
 	 * @Description: This method is used to click on New button to open the new building permit.
 	 * It also internally handles the additional pop up window to select manual entry
@@ -243,6 +215,7 @@ public class BuildingPermitPage extends Page {
 	 * @throws IOException
 	 */
 	public void openNewForm() throws Exception {
+		Thread.sleep(1000);
 		javascriptClick(waitForElementToBeClickable(newButton));
 		if(System.getProperty("isDataAdminLoggedIn") != null && System.getProperty("isDataAdminLoggedIn").equals("true")) {
 			Click(waitForElementToBeClickable(manualEntryRadioBtn));
@@ -268,18 +241,17 @@ public class BuildingPermitPage extends Page {
 	 */
 	public String enterManualEntryData(Map<String, String> dataMap) throws Exception {
 		//String buildingPermitNumber = dataMap.get("Permit City Code") + "-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
-
 		String buildingPermitNumber  = dataMap.get("Building Permit Number");
 		System.setProperty("permitNumber", dataMap.get("Building Permit Number"));
 
 		enter(buildingPermitNumberTxtBox, dataMap.get("Building Permit Number"));
-		searchAndSelectFromDropDown(parcelsSearchBox, dataMap.get("Parcel"));
-		selectFromDropDown(processingStatusDrpDown, dataMap.get("Processing Status"));
-		searchAndSelectFromDropDown(countyStratCodeSearchBox, dataMap.get("County Strat Code Description"));
+		objApasGenericPage.searchAndSelectOptionFromDropDown(parcelsSearchBox, dataMap.get("APN"));
+		objApasGenericPage.selectOptionFromDropDown(processingStatusDrpDown, dataMap.get("Processing Status"));
+		objApasGenericPage.searchAndSelectOptionFromDropDown(countyStratCodeSearchBox, dataMap.get("County Strat Code Description"));
 		enter(estimatedProjectValueTxtBox, dataMap.get("Estimated Project Value"));
 		enterDate(issueDateCalender, dataMap.get("Issue Date"));
 		enterDate(completionDateCalender, dataMap.get("Completion Date"));
-		selectFromDropDown(permitCityCodeDrpDown, dataMap.get("Permit City Code"));
+		objApasGenericPage.selectOptionFromDropDown(permitCityCodeDrpDown, dataMap.get("Permit City Code"));
 		enter(workDescriptionTxtBox, dataMap.get("Work Description"));
 
 		return buildingPermitNumber;
@@ -359,7 +331,7 @@ public class BuildingPermitPage extends Page {
 	 * @return: Return true / false based on the status of element
 	 * @throws Exception
 	 */
-	public boolean checkNewlyCreatedEntryOnDetailsPage (String entryName) throws Exception {
+	public boolean checkManualPermitEntryOnDetailsPage (String entryName) throws Exception {
 		String xpathStr = "//h1//slot//lightning-formatted-text[text() = '" + entryName + "']";
 		boolean elemStatus = locateElement(xpathStr, 10).isDisplayed();
 		return elemStatus;
@@ -372,7 +344,7 @@ public class BuildingPermitPage extends Page {
 	 * @return: Return true / false based on the status of element
 	 * @throws Exception
 	 */
-	public boolean checkNewlyCreatedEntryOnGrid(String buildingPermitNum) {
+	public boolean checkManualPermitEntryOnGrid(String buildingPermitNum) {
 		String xpathStr = "//tbody/tr//th//a[text() = '" + buildingPermitNum + "']";
 		boolean elemStatus;
 		try {
@@ -401,9 +373,10 @@ public class BuildingPermitPage extends Page {
 	 * @param entryDetails: Name of the entry displayed on grid which is to be accessed
 	 * @throws Exception
 	 */
-	public void clickShowMoreLinkOnRecentlyViewedGrid(String entryDetails) throws Exception {
-		String xpathStr = "//tbody/tr//th//a[text() = '"+ entryDetails +"']/parent::span/parent::th/following-sibling::td//a[@role = 'button']";
-		WebElement modificationsIcon = locateElement(xpathStr, 10);
+	public void clickShowMoreLinkOnRecentlyViewedGrid(String entryDetails) throws Exception {		
+		Thread.sleep(3000);
+		String xpathStr = "//table//tbody/tr//th//a[text() = '"+ entryDetails +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
+		WebElement modificationsIcon = locateElement(xpathStr, 30);
 		clickAction(modificationsIcon);
 	}
 
@@ -424,8 +397,8 @@ public class BuildingPermitPage extends Page {
 		waitForElementToBeVisible(workDescriptionTxtBox).sendKeys(Keys.chord(Keys.CONTROL, "a"));
 		workDescriptionTxtBox.sendKeys(Keys.BACK_SPACE);
 
-		selectFromDropDown(waitForElementToBeVisible(processingStatusDrpDown), "--None--");
-		selectFromDropDown(waitForElementToBeVisible(permitCityCodeDrpDown), "--None--");
+		objApasGenericPage.selectOptionFromDropDown(waitForElementToBeVisible(processingStatusDrpDown), "--None--");
+		objApasGenericPage.selectOptionFromDropDown(waitForElementToBeVisible(permitCityCodeDrpDown), "--None--");
 
 		waitForElementToBeClickable(closeBtnToRemoveDataFromDrpDown).click();
 		waitForElementToBeClickable(closeBtnToRemoveDataFromDrpDown).click();
@@ -444,9 +417,9 @@ public class BuildingPermitPage extends Page {
 
 		enter(buildingPermitNumberTxtBox, dataMap.get("Building Permit Number"));
 		//enter(buildingPermitNumberTxtBox, buildingPermitNumber);
-		searchAndSelectFromDropDown(parcelsSearchBox, dataMap.get("Parcel"));
-		selectFromDropDown(processingStatusDrpDown, dataMap.get("Processing Status"));
-		searchAndSelectFromDropDown(countyStratCodeSearchBox, dataMap.get("County Strat Code Description"));
+		objApasGenericPage.searchAndSelectOptionFromDropDown(parcelsSearchBox, dataMap.get("Parcel"));
+		objApasGenericPage.selectOptionFromDropDown(processingStatusDrpDown, dataMap.get("Processing Status"));
+		objApasGenericPage.searchAndSelectOptionFromDropDown(countyStratCodeSearchBox, dataMap.get("County Strat Code Description"));
 	}
 
 	/**
@@ -463,7 +436,7 @@ public class BuildingPermitPage extends Page {
 		enter(estimatedProjectValueTxtBox, dataMap.get("Estimated Project Value"));
 		enterDate(issueDateCalender, dataMap.get("Issue Date"));
 		enterDate(completionDateCalender, dataMap.get("Completion Date"));
-		selectFromDropDown(permitCityCodeDrpDown, dataMap.get("Permit City Code"));
+		objApasGenericPage.selectOptionFromDropDown(permitCityCodeDrpDown, dataMap.get("Permit City Code"));
 
 		List<String> validationMsgs = new ArrayList<String>();
 
@@ -590,7 +563,7 @@ public class BuildingPermitPage extends Page {
 
 	/**
 	 * @description: This method is used to fetch the data / values of calculated processing status
-	 * and situs city code value that are expected to be auto displayed on saving the manual enty
+	   and situs city code value that are expected to be auto displayed on saving the manual enty
 	 * @return: Returns a list of values that are auto-displayed
 	 * @throws Exception
 	 */
@@ -610,7 +583,7 @@ public class BuildingPermitPage extends Page {
 	}
 
 	/**
-	 * @description: This maethod nav
+	 * @description: This method navigates to details page and retrieves the existing values of given fields
 	 * @param listOfTxtAndDrpDowns
 	 * @param listOfSearchDrpDowns
 	 * @return: Returns a map containing fields names (as Keys) and their values (as values of keys)
@@ -621,44 +594,16 @@ public class BuildingPermitPage extends Page {
 		String xpathStr = null;
 		for(String key : listOfTxtAndDrpDowns) {
 			xpathStr = "//span[text() = '"+ key +"']/parent::div/following-sibling::div//lightning-formatted-text[@data-output-element-id = 'output-field']";
-			String value = locateElement(xpathStr, 10).getText();
+			String value = locateElement(xpathStr, 30).getText();
 			dataMap.put(key, value);
 		}
 
 		for(String key : listOfSearchDrpDowns) {
 			xpathStr = "//span[text() = '"+ key +"']/parent::div/following-sibling::div//a[@class = 'slds-grow flex-wrap-ie11']";
-			String value = locateElement(xpathStr, 10).getText();
+			String value = locateElement(xpathStr, 30).getText();
 			dataMap.put(key, value);
 		}
 		return dataMap;
-	}
-
-	/** @Description: This method is to handle fields like Parcel or Strat Code
-	 * by clicking on the web element, entering the provided string in textbox
-	 * and then selects value from drop down
-	 * @param element: WebElement for required field
-	 * @param value: Like Roof Repair or Repairs for strat code field etc.
-	 * @throws Exception
-	 */
-	public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
-		enter(element, value);
-		String xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 20);
-		drpDwnOption.click();
-	}
-
-	/**
-	 * @Description: This method is to handle fields like Permit City Code or Processing Status
-	 * by clicking the web element and then selecting the given value from drop down
-	 * @param element: WebElement for required field
-	 * @param value: Like 'Process' or 'No Process' for Processing Status field etc.
-	 * @throws Exception
-	 */
-	public void selectFromDropDown(WebElement element, String value) throws Exception {
-		Click(element);
-		String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 200);
-		drpDwnOption.click();
 	}
 
 	/**
@@ -669,80 +614,7 @@ public class BuildingPermitPage extends Page {
 	 */
 	public void enterDate(WebElement element, String date) throws Exception {
 		Click(element);
-		selectDateFromDatePicker(date);
-	}
-
-	/**
-	 * @Description: This method selects year, month and date from date picker / calender
-	 * @param expctdDate: Accepts date in mm/dd/yyyy format
-	 * @throws Exception
-	 */
-	public void selectDateFromDatePicker(String expctdDate) throws Exception {
-		final Map<String, String> monthMapping = new HashMap<String, String>();
-		monthMapping.put("01", "January");
-		monthMapping.put("02", "February");
-		monthMapping.put("03", "March");
-		monthMapping.put("04", "April");
-		monthMapping.put("05", "May");
-		monthMapping.put("06", "June");
-		monthMapping.put("07", "July");
-		monthMapping.put("08", "August");
-		monthMapping.put("09", "September");
-		monthMapping.put("10", "October");
-		monthMapping.put("11", "November");
-		monthMapping.put("12", "December");
-
-		final String[] monthsArr = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-		final List<String> monthsList = new ArrayList<>(Arrays.asList(monthsArr));
-
-		Date presentDate = new Date();
-		String formattedPresentDate = new SimpleDateFormat("MM/dd/yyyy").format(presentDate);
-		Date dt = new SimpleDateFormat("MM/dd/yyyy").parse(expctdDate);
-		String formattedExpctdDate = new SimpleDateFormat("MM/dd/yyyy").format(dt);
-
-		if(formattedPresentDate.equals(formattedExpctdDate)) {
-			Click(currentDate);
-		} else {
-			String[] dateArray = formattedExpctdDate.toString().split("/");
-			String yearToSelect = dateArray[2];
-			String monthToSelect = monthMapping.get(dateArray[0]);
-			String dateToSelect;
-			if(dateArray[1].startsWith("0")) {
-				dateToSelect = dateArray[1].substring(1);
-			} else {
-				dateToSelect = dateArray[1];
-			}
-
-			Select select = new Select(waitForElementToBeVisible(yearDropDown));
-			select.selectByValue(yearToSelect);
-
-			WebElement visibleMnth = waitForElementToBeVisible(visibleMonth);
-			String visibleMonthTxt = visibleMnth.getText().toLowerCase();
-			visibleMonthTxt = visibleMonthTxt.substring(0, 1).toUpperCase() + visibleMonthTxt.substring(1).toLowerCase();
-
-			int counter = 0;
-			int indexOfDefaultMonth = monthsList.indexOf(visibleMonthTxt);
-			int indexOfMonthToSelect = monthsList.indexOf(monthToSelect);
-			int counterIterations = (Math.abs(indexOfDefaultMonth - indexOfMonthToSelect));
-
-			while(!visibleMonthTxt.equalsIgnoreCase(monthToSelect) || counter > counterIterations) {
-				if(indexOfMonthToSelect < indexOfDefaultMonth) {
-					waitForElementToBeVisible(prevMnth).click();
-				} else {
-					waitForElementToBeVisible(nextMnth).click();
-				}
-				visibleMonthTxt = waitForElementToBeVisible(visibleMonth).getText();
-				counter++;
-			}
-
-			for(WebElement date : dates) {
-				String currentDate = date.getText();
-				if(currentDate.equals(dateToSelect)) {
-					date.click();
-					break;
-				}
-			}
-		}
+		objApasGenericPage.selectDateFromDatePicker(date);
 	}
 
 	/**

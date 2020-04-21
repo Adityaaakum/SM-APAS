@@ -47,20 +47,20 @@ public class SoftAssertion {
 		if (!message.contains(":: Expected:"))
 			message = message + " :: Expected: true" + " || " + "Actual: " + condition;
 
-		String testCaseKey = jiraAdaptavistStatusUpdate.extractTestCaseKey(message);
+		String testCaseKey = JiraAdaptavistStatusUpdate.extractTestCaseKey(message);
 		if (condition) {
 			ExtentTestManager.getTest().log(LogStatus.PASS, message);
-			jiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKey, "Pass");
+			JiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKey, "Pass");
 		} else {
 			ExtentTestManager.getTest().log(LogStatus.FAIL, message);
-			jiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKey, "Fail");
+			JiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKey, "Fail");
 			objUtil.getScreenShot(message);
 			testCaseExecutionFailedFlag = true;
 		}
 	}
 
 	/**
-	 * Asserts that given actaul and expected value and adds the message passed in message parameter
+	 * Asserts that given actual and expected value and adds the message passed in message parameter
 	 * Updates the test case status in test case map as pass or fail
 	 * Takes screen shot on failure and sets testCaseExecutionFailedFlag variable as true
 	 *

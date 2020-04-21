@@ -225,9 +225,7 @@ public class Util {
 
 	/**
 	 * @author Sikander Bhambhu
-	 * @Description : This method internally collects all the execution reports
-	 *              from AutomationReport folder and moves them to an archive
-	 *              folder on start of test execution.
+	 * @Description : It reads the given JSON file and retrieves data from it suing the key provided
 	 * @param filePath: Takes the path of the JSON file
 	 * @param keyName: Takes the names of the key present in JSON file
 	 * for which data needs to be read like 'DataToCreateBuildingPermitManualEntry' etc

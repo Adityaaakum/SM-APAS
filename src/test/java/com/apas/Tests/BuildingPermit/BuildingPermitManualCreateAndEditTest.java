@@ -25,7 +25,7 @@ import com.apas.config.testdata;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class BuildingPermitManualCreationTest extends TestBase {
+public class BuildingPermitManualCreateAndEditTest extends TestBase {
 
 	private RemoteWebDriver driver;
 	Page objPage;
@@ -35,7 +35,6 @@ public class BuildingPermitManualCreationTest extends TestBase {
 	EFileImportPage objEfileHomePage;
 	Util objUtil;
 	SoftAssertion softAssert;
-	Map<String, String> dataMap;
 	
 	@BeforeMethod
 	public void beforeMethod(){
@@ -65,18 +64,17 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		}
 		objApasGenericFunctions.login(loginUser);
 		
-		//Step2: Opening the building permit module
+		//Step2: Opening the building permit module and select all view on grid
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
-					
-		//Step3: Enter the data to on manual create building permit screen
-		String manualEntryData = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_MANUAL_ENTRY_DATA;
-		Map<String, String> dataMap = objUtil.generateMapFromJsonFile(manualEntryData, "DataToCreateBuildingPermitManualEntry");
+		objApasGenericFunctions.selectAllManualBuildingPermitOptionOnGrid();			
 		
+		//Step3: Enter the data to on manual create building permit screen
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Opening manual entry pop and clicking save button without entring any data to validate error messages for mandatory fields.");
 		objBuildPermit.openNewForm();
 		objBuildPermit.waitForManualEntryPopUpToLoad();
 		objPage.Click(objBuildPermit.saveButton);
-		
+
+		//Step4: Validate the error messages displayed on clicking save button without entering mandatory fields
 		List<String> errorsList = objBuildPermit.retrieveMandatoryFieldsValidationErrorMsgs();
 		String expMsgInPopUpHeader = CONFIG.getProperty("expectedErrorMsgForAllMandatoryFieldsNewEntry");
 		String actMsgInPopUpHeader = errorsList.get(0);
@@ -87,31 +85,37 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		int fieldsCountInHeaderMsg = Integer.parseInt(errorsList.get(2));		
 		int individualMsgsCount = Integer.parseInt(errorsList.get(3));
 		softAssert.assertEquals(fieldsCountInHeaderMsg, individualMsgsCount, "SMAB-T418: Validating count of field names in header msg against count of individual error msgs");
-
-		//Step4: Aborting the manual entry by clicking Cancel button
+		
+		//Step5: Create data map from the JSON file
+		String manualEntryData = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_MANUAL_ENTRY_DATA;
+		Map<String, String> dataMap = objUtil.generateMapFromJsonFile(manualEntryData, "DataToCreateBuildingPermitManualEntry");
+		
+		//Step6: Filling out mandatory and required fields and aborting the manual entry by clicking Cancel button
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Validating to ensure entry is not created when all mandatory fields filled and process is aborted without saving.");	
 		objBuildPermit.enterManualEntryData(dataMap);
 		objPage.Click(objBuildPermit.cancelButton);
+		
+		//Step7: Validating manual entry should not have been created on clicking Cancel button.
 		String permitNum = System.getProperty("permitNumber");
-		boolean buildingPermitNotCreated = objBuildPermit.checkNewlyCreatedEntryOnGrid(permitNum);
+		boolean buildingPermitNotCreated = objBuildPermit.checkManualPermitEntryOnGrid(permitNum);
 		softAssert.assertTrue(!buildingPermitNotCreated, "SMAB-T418: Manual entry is not created on closing new manual entry window without saving.");
 		
-		//Step5: Opening the manual entry form again and filling required fields and saving the form
+		//Step8: Opening the manual entry form again and filling required fields and saving the form
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Verifying whether manual entry gets saved and pop up window for new entry gets displayed when 'Save & New' option is selected.");
 		objBuildPermit.openNewForm();
 		objBuildPermit.enterManualEntryData(dataMap);
 		boolean isNewManualEntryPopUpDisplayed = objBuildPermit.saveEntryAndOpenNewAndExit();
 		softAssert.assertTrue(isNewManualEntryPopUpDisplayed, "SMAB-T418: Validating whether pop up for new entry is displayed.");
 				
-		//Step6: Checking whether the newly created manual entry is successfully reflecting or not
+		//Step9: Checking whether the newly created manual entry is successfully reflecting or not
 		boolean isLoaderVisible = objBuildPermit.checkAndHandlePageLoaderOnEntryCreation();
 		if(isLoaderVisible) {
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Validating newly created manual entry successfully displayed on recently viewed grid.");
-			boolean isEntryDisplayed = objBuildPermit.checkNewlyCreatedEntryOnGrid(permitNum);
+			boolean isEntryDisplayed = objBuildPermit.checkManualPermitEntryOnGrid(permitNum);
 			softAssert.assertTrue(isEntryDisplayed, "SMAB-T418: Validating whether manual entry successfully created and displayed on recently viewed grid.");
 		} else {
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Validating newly created manual entry successfully displayed on details page.");
-			boolean isEntryDisplayed = objBuildPermit.checkNewlyCreatedEntryOnDetailsPage(permitNum);
+			boolean isEntryDisplayed = objBuildPermit.checkManualPermitEntryOnDetailsPage(permitNum);
 			softAssert.assertTrue(isEntryDisplayed, "SMAB-T418: Validating whether manual entry successfully created and displayed on details page.");	
 		}
 		softAssert.assertAll();
@@ -130,7 +134,6 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		
 		//Step3: Clicking on given building permit number from recently viewed grid to navigate to details page
 		String permitNum = System.getProperty("permitNumber");
-		//String permitNum = "Belmont - B2018-0001";
 		objBuildPermit.navToDetailsPageOfGivenBuildingPermit(permitNum);
 		
 		//Step4: Collecting the existing data of manual building permit entry from all the fields into a map
@@ -200,7 +203,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 			String key = entry.getKey();
 			boolean doesValueDiffer = !(dataMapAfterEditing.get(key).equals(dataMapBeforeEditing.get(key)));
 			softAssert.assertTrue(doesValueDiffer, "SMAB-T418: Validating whether value has updated in manual "
-					+ "entry post edit for field '"+ key +"-' || BeforeEdit- "+ dataMapBeforeEditing.get(key) + " ---- AfterEdit- "+ dataMapAfterEditing.get(key));
+					+ "entry after editing '"+ key +"'. Value Before Editing - "+ dataMapBeforeEditing.get(key) + " || Value After Editing - "+ dataMapAfterEditing.get(key));
 		}
 		softAssert.assertAll();
 	}
@@ -223,7 +226,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		//Step4: Collecting the existing data of manual building permit entry from all the fields into a map
 		List<String> listOfTxtAndDrpDowns = Arrays.asList(CONFIG.getProperty("manualEntryTxtAndDrpDownFields").split(","));
 		List<String> listOfSearchDrpDowns = Arrays.asList(CONFIG.getProperty("manualEntrySearchDrpDownFields").split(","));
-		Map<String, String> dataMapBeforeEditing = objBuildPermit.getExistingManualEntryData(listOfTxtAndDrpDowns, listOfSearchDrpDowns);		
+		Map<String, String> dataMapBeforeEditing = objBuildPermit.getExistingManualEntryData(listOfTxtAndDrpDowns, listOfSearchDrpDowns);
 		
 		//Step5: Navigate back from details page to recently viewed grid & clicking Show More link & click Edit link under it
 		objBuildPermit.clickAction(objPage.waitForElementToBeClickable(objBuildPermit.bldngPrmtTabDetailsPage));
@@ -289,7 +292,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 			String key = entry.getKey();
 			boolean doesValueDiffer = !(dataMapAfterEditing.get(key).equals(dataMapBeforeEditing.get(key)));
 			softAssert.assertTrue(doesValueDiffer, "SMAB-T418: Validating whether value has updated in manual "
-					+ "entry post edit for field '"+ key +"-' || BeforeEdit- "+ dataMapBeforeEditing.get(key) + " ---- AfterEdit- "+ dataMapAfterEditing.get(key));
+					+ "entry after editing '"+ key +"'. Value Before Editing - "+ dataMapBeforeEditing.get(key) + " || Vc11qaz mjy6alue After Edit- "+ dataMapAfterEditing.get(key));
 		}		
 		softAssert.assertAll();
 	}
@@ -306,7 +309,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
 		
 		//Step3: Clicking on given building permit number from recently viewed grid to navigate to details page
-		String permitNum = System.getProperty("permitNumber");	
+		String permitNum = System.getProperty("permitNumber");
 		objBuildPermit.navToDetailsPageOfGivenBuildingPermit(permitNum);
 		
 		//Step4: Collecting the existing data of manual building permit entry from all the fields into a map
@@ -361,7 +364,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 			String key = entry.getKey();
 			boolean doesValueDiffer = !(dataMapAfterEditing.get(key).equals(dataMapBeforeEditing.get(key)));
 			softAssert.assertTrue(doesValueDiffer, "SMAB-T418: Validating whether value has updated in manual "
-					+ "entry post edit for field '"+ key +"-' || BeforeEdit- "+ dataMapBeforeEditing.get(key) + " ---- AfterEdit- "+ dataMapAfterEditing.get(key));
+					+ "entry after editing '"+ key +"'. Value Before Editing - "+ dataMapBeforeEditing.get(key) + " || Vc11qaz mjy6alue After Edit- "+ dataMapAfterEditing.get(key));
 		}				
 		softAssert.assertAll();
 	}

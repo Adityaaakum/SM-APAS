@@ -24,4 +24,7 @@ public class EFileImportTransactionsPage extends Page {
 	@FindBy(xpath = "//a[contains(.,'Import Transaction-00')]")
 	public WebElement importTransactionName;
 	
+	@FindBy(xpath = "(//a[contains(@title, 'BPP Trend Factors')])[1]")
+	public WebElement importBppTransactionName;
+	
 }

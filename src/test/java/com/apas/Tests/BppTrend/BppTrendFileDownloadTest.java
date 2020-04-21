@@ -66,11 +66,11 @@ public class BppTrendFileDownloadTest extends TestBase {
 		
 		//Step4: Validating presence of Download, Export Composite Factors & Export Valuation Factors buttons and clicking then sequentially		
 		boolean isDownloadBtnDisplayed = objBppTrnPg.isDownloadBtnVisible(20);
-		softAssert.assertTrue(isDownloadBtnDisplayed, "SMAB-T206: Is Download button visible on approving all the the submitted calculations:");
+		softAssert.assertTrue(isDownloadBtnDisplayed, "SMAB-T206: Download button is visible");
 		boolean isExportCompositeBtnDisplayed = objBppTrnPg.isExportCompositeFactorsBtnVisible(20);
-		softAssert.assertTrue(isExportCompositeBtnDisplayed, "SMAB-T303: Is Export Composite Factors button visible on approving all the the submitted calculations:");		
+		softAssert.assertTrue(isExportCompositeBtnDisplayed, "SMAB-T303: Export Composite Factors button is visible");		
 		boolean isExportValuationBtnDisplayed = objBppTrnPg.isExportValuationFactorsBtnVisible(20);
-		softAssert.assertTrue(isExportValuationBtnDisplayed, "SMAB-T303: Is Export Valuation Factors button visible on approving all the the submitted calculations:");
+		softAssert.assertTrue(isExportValuationBtnDisplayed, "SMAB-T303: Export Valuation Factors button is visible");
 
 		objBppTrnPg.setParentWindowHandle();
 
@@ -122,11 +122,11 @@ public class BppTrendFileDownloadTest extends TestBase {
 				}
 			}			
 		}
+			
+		softAssert.assertTrue(isCompositeExcelDownloaded, "SMAB-T303: Composite Factor XLSX file downloaded successfully");	
+		softAssert.assertTrue(isValuationExcelDownloaded, "SMAB-T303: Valuation Factor XLSX file downloaded successfully");	
+		softAssert.assertTrue(isPdfDownloaded, "SMAB-T206: PDF file downloaded successfully");
 		
-		softAssert.assertTrue(isPdfDownloaded, "SMAB-T206: Is PDF file downloaded successfully:");	
-		softAssert.assertTrue(isCompositeExcelDownloaded, "SMAB-T303: Is Composite Factor XLSX file downloaded successfully:");	
-		softAssert.assertTrue(isValuationExcelDownloaded, "SMAB-T303: Is Valuation Factor XLSX file downloaded successfully:");	
-
 		//Step9: Deleting downloaded files from download directory
 		objBppTrnPg.deleteFactorFilesFromDownloadFolder(filesToDelete);
 		

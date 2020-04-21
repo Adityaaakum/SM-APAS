@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -22,6 +24,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import com.apas.TestBase.TestBase;
 import com.apas.config.modules;
 import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
@@ -31,12 +34,14 @@ public class BppTrendPage extends Page {
 	BuildingPermitPage objBuildPermitPage;
 	BuildingPermitPage objBuildPermit;
 	ApasGenericFunctions objApasGenericFunctions;
+	ApasGenericPage objApasGenericPage;
 	
 	public BppTrendPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objBuildPermitPage = new BuildingPermitPage(driver);
+		objApasGenericPage = new ApasGenericPage(driver);
 	}
 
 	// **** Below elements are specific to BPP Trend page ****
@@ -189,15 +194,24 @@ public class BppTrendPage extends Page {
 	
 	/**
 	 * Description: This will select the roll year from the drop down
-	 * @param rollYear: Roll Year for which the BPP Trend Name needs to be clicked
+	 * @param rollYear: Roll Year for which the BPP Trend Name needs to be clicked or bpp trend name itself
 	 * @throws: Exception
 	 */	
-	public void clickBppTrendSetupRollYearNameInGrid(String rollYear) throws Exception {
-		String xpath = "//span[text() = '"+ rollYear +"']//ancestor::td//preceding-sibling::th//a[contains(@title, 'BPP Trend')]";
+	public void clickBppTrendSetupRollYearNameInGrid(String rollYearDetails) throws Exception {
+		String expRegexPattern = "\\d\\d\\d\\d";
+		Pattern.compile(expRegexPattern);
+	
+		String xpath;
+		if(Pattern.matches(expRegexPattern, rollYearDetails)) {
+			xpath = "//span[text() = '"+ rollYearDetails +"']//ancestor::td//preceding-sibling::th//a[contains(@title, 'BPP Trend')]";
+		} else {
+			xpath = "//th//a[contains(@title, '"+ rollYearDetails +"')]";
+		}
+		
 		WebElement bppTrendSetup = locateElement(xpath, 20);
 		String bppTrendSetupName = getElementText(bppTrendSetup).trim();
+		javascriptClick(bppTrendSetup);
 		System.setProperty("BppTrendSetupName", bppTrendSetupName);
-		Click(bppTrendSetup);
 	}
 	
 	/**
@@ -215,6 +229,7 @@ public class BppTrendPage extends Page {
 	 * Description: This will click on the given table name
 	 * @param tableName: Name of the table
 	 * @param isTableUnderMoreTab: true / false flag to specify whether given table falls under more tab
+	 * @throws: Exception
 	 */
 	public void clickOnTableOnBppTrendPage(String tableName, boolean isTableUnderMoreTab) throws Exception {
 		String xpathStr;
@@ -227,7 +242,22 @@ public class BppTrendPage extends Page {
 		WebElement givenTable = locateElement(xpathStr, 120);
 		Click(givenTable);
 	}
-			
+
+	/**
+	 * Description: This will click on the given table name
+	 * @param tableName: Name of the table
+	 * @throws: Exception
+	 */
+	public boolean isTableVisibleOnCalculateClick(String tableName) throws Exception {
+		String tableXpath = "//lightning-tab[@data-id = '"+ tableName +"']//table";
+		WebElement tableContent = locateElement(tableXpath, 60);
+		if(tableContent.isDisplayed()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	/**
 	 * Description: This will check whether calculate button is visible
 	 * @param args: It supports variable arguments, either 1, 2 or 3 arguments
@@ -292,23 +322,38 @@ public class BppTrendPage extends Page {
 	}
 
 	/**
-	 * @Description: Below method would read and return the cell data from the table displayed for selected roll year
+	 * @Description: Locates the cell text box in grid
+	 * @param tableName: Name of the table for which cell text box needs to be located 
 	 * @param cellDetails: Details of cell to edit (row number and column number if required) 
-	 * @return: Returns the visible text displayed in the select cell
+	 * @return: Returns the cell data text box element
 	 * @throws Exception
 	 */
-	public String getCellDataFromGridForGivenTable(int... cellDetails) throws Exception {
+	public WebElement locateCellTxtBoxElementInGrid(String tableName, int... cellDetails) throws Exception {
 		String xpathCellData = null;
 		if(cellDetails.length == 0) {
-			xpathCellData = "((//th[@data-label = 'Year Acquired'])[1]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])[1]";
+			xpathCellData = "((//lightning-tab[@data-id = '"+ tableName +"']//th[@data-label = 'Year Acquired'])[1]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])[1]";
 		} else if (cellDetails.length == 1) {
-			xpathCellData = "((//th[@data-label = 'Year Acquired'])[1]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])["+ cellDetails[0] +"]"; 
+			xpathCellData = "((//lightning-tab[@data-id = '"+ tableName +"']//th[@data-label = 'Year Acquired'])[1]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])["+ cellDetails[0] +"]"; 
 		} else if (cellDetails.length == 2) {
-			xpathCellData = "((//th[@data-label = 'Year Acquired'])["+ cellDetails[0] +"]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])["+ cellDetails[1] +"]";
+			xpathCellData = "((//lightning-tab[@data-id = '"+ tableName +"']//th[@data-label = 'Year Acquired'])["+ cellDetails[0] +"]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])["+ cellDetails[1] +"]";
 		}
 		System.setProperty("xpathCellData", xpathCellData);
 		WebElement element = locateElement(xpathCellData, 20);
-		return getElementText(element);
+		return element;
+	}
+
+	/**
+	 * @Description: Locates the edit button in the cell data text box
+	 * @param cellDetails: Details of cell to edit (row number and column number if required) 
+	 * @return: Returns the edit button element
+	 * @throws Exception
+	 */
+	public WebElement locateEditButtonInFocusedCellTxtBox() throws Exception {
+		WebElement editButton = null;
+		clickAction(waitForElementToBeClickable(System.getProperty("xpathCellData")));
+		String xpathEditBtn = "//td[contains(@class, 'has-focus')]//button[contains(@class, 'cell-edit')]//lightning-primitive-icon";
+		editButton = locateElement(xpathEditBtn, 30);
+		return editButton;
 	}
 	
 	/**
@@ -316,12 +361,7 @@ public class BppTrendPage extends Page {
 	 * @param: Takes the integer / double value to enter in the cell
 	 * @throws Exception 
 	 */	
-	public void editCellDataInGridForGivenTable(Object data) throws Exception {
-		clickAction(waitForElementToBeClickable(System.getProperty("xpathCellData")));
-		String xpathEditBtn = "//td[contains(@class, 'has-focus')]//button[contains(@class, 'cell-edit')]//lightning-primitive-icon";
-		WebElement editButton = locateElement(xpathEditBtn, 20);
-		Click(editButton);
-		
+	public void editCellDataInGridForGivenTable(Object data) throws Exception {		
 		String xpathEditTxtBox = "//div//input[@name = 'dt-inline-edit-text']";
 		WebElement editTxtBox = locateElement(xpathEditTxtBox, 20);
 		enter(editTxtBox, String.valueOf(data));
@@ -351,12 +391,10 @@ public class BppTrendPage extends Page {
 	 * @param expectedStatus: Expected status like Calculated, Not Calculated etc.
 	 * @param rollYear: Roll year for which the status needs to be reset
 	 */
-	public void resetTablesStatusForGivenRollYear(List<String> factorTablesToReset, String expectedStatus, String rollYear) throws Exception {
-		objApasGenericFunctions.login(users.SYSTEM_ADMIN);
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		
+	public void resetTablesStatusForGivenRollYear(List<String> factorTablesToReset, String expectedStatus, String rollYear) throws Exception {		
 		clickBppTrendSetupRollYearNameInGrid(rollYear);
 		WebElement element;
+
 		for(String factorTableName : factorTablesToReset) {
 			String xpathEditIcon = "//span[text() = '"+ factorTableName +"']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]";
 			element = locateElement(xpathEditIcon, 10);
@@ -371,10 +409,24 @@ public class BppTrendPage extends Page {
 			javascriptClick(drpDownElement);
 			Click(objBuildPermitPage.saveBtnDetailsPage);
 		}
-		objApasGenericFunctions.logout();
-		Thread.sleep(3000);
 	}
 
+	/**
+	 * Description: This will retrieve current status of tables
+	 * @param factorTablesToReset: List of table names for which status is to be reset
+	 * @param rollYear: Roll year for which the status needs to be reset
+	 */
+	public String retrieveTablesStatusForGivenRollYear(String tableName, String rollYear) throws Exception {
+		objApasGenericFunctions.login(users.SYSTEM_ADMIN);
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		
+		clickBppTrendSetupRollYearNameInGrid(rollYear);
+		
+		String xpathFieldValue = "//span[text() = '"+ tableName +"']//parent::div//following-sibling::div//span[contains(@class, 'test-id__field-value')]//lightning-formatted-text";
+		WebElement element = locateElement(xpathFieldValue, 10);
+		return getElementText(element);
+	}
+	
 	/**
 	 * Description: Checks the downloaded file in user's system
 	 * @param fileExtension: Expected extension of the downloaded file 
@@ -597,9 +649,12 @@ public class BppTrendPage extends Page {
 	 * @return: Returns a list of String having the visible text of elements found by given xpath 
 	 * @throws Exception 
 	 */
-	public List<String> getTextOfMultipleElements(String xpath) throws Exception {
+	public List<String> getTextOfMultipleElementsFromProp13Table() throws Exception {
+		String xpathCpiValues = "//lightning-tab[contains(@data-id, 'BPP Prop 13 Factors')]//table"
+				+ "//tbody//th//lightning-formatted-text[text() = '"+ TestBase.CONFIG.getProperty("rollYear") +"']//ancestor::th"
+				+ "//following-sibling::td[contains(@data-label, 'CPI Factor')]";
 		List<String> listOfVisibleTextFromElements = new ArrayList<String>();
-		List<WebElement> elements = locateElements(xpath, 30);
+		List<WebElement> elements = locateElements(xpathCpiValues, 30);
 		for(WebElement element : elements) {
 			listOfVisibleTextFromElements.add(getElementText(element));
 		}
@@ -610,7 +665,7 @@ public class BppTrendPage extends Page {
 	 * Checks whether calculate button is visible on BPP trend page for selected table
 	 * @param: Table for which the button needs to be checked
 	 * @param: Timeout in seconds for driver should wait until button is located
-	 * @return: Returns the status as true / false based of visibility of the button
+	 * @return: Returns the status as true / false based on visibility of the button
 	 * @throws: Exception
 	 */
 	public boolean isCalculateBtnVisible(int timeToLocateBtn, String tableName) throws Exception {
@@ -620,7 +675,7 @@ public class BppTrendPage extends Page {
 	/**
 	 * Checks whether calculate all button is visible on BPP trend page
 	 * @param: Timeout in seconds for driver should wait until button is located
-	 * @return: Returns the status as true / false based of visibility of the button
+	 * @return: Returns the status as true / false based on visibility of the button
 	 * @throws: Exception
 	 */
 	public boolean isCalculateAllBtnVisible(int timeToLocateBtn) throws Exception {
@@ -631,7 +686,7 @@ public class BppTrendPage extends Page {
 	 * Checks whether re-calculate button is visible on BPP trend page for selected table
 	 * @param: Table for which the button needs to be checked
 	 * @param: Timeout in seconds for driver should wait until button is located
-	 * @return: Returns the status as true / false based of visibility of the button
+	 * @return: Returns the status as true / false based on visibility of the button
 	 * @throws: Exception
 	 */
 	public boolean isReCalculateBtnVisible(int timeToLocateBtn, String tableName) throws Exception {
@@ -641,7 +696,7 @@ public class BppTrendPage extends Page {
 	/**
 	 * Checks whether re-calculate all button is visible on BPP trend page
 	 * @param: Timeout in seconds for driver should wait until button is located
-	 * @return: Returns the status as true / false based of visibility of the button
+	 * @return: Returns the status as true / false based on visibility of the button
 	 * @throws: Exception
 	 */
 	public boolean isReCalculateAllBtnVisible(int timeToLocateBtn) throws Exception {
@@ -652,7 +707,7 @@ public class BppTrendPage extends Page {
 	 * Checks whether submit for approval button is visible on BPP trend page for selected table
 	 * @param: Table for which the button needs to be checked
 	 * @param: Timeout in seconds for driver should wait until button is located
-	 * @return: Returns the status as true / false based of visibility of the button
+	 * @return: Returns the status as true / false based on visibility of the button
 	 * @throws: Exception
 	 */
 	public boolean isSubmitForApprovalBtnVisible(int timeToLocateBtn, String tableName) throws Exception {
@@ -662,7 +717,7 @@ public class BppTrendPage extends Page {
 	/**
 	 * Checks whether submit all factors for approval button is visible on BPP trend page
 	 * @param: Timeout in seconds for driver should wait until button is located
-	 * @return: Returns the status as true / false based of visibility of the button
+	 * @return: Returns the status as true / false based on visibility of the button
 	 * @throws: Exception
 	 */
 	public boolean isSubmitAllForApprovalBtnVisible(int timeToLocateBtn) throws Exception {
@@ -673,7 +728,7 @@ public class BppTrendPage extends Page {
 	 * Checks whether approve button is visible on BPP trend page for selected table
 	 * @param: Table for which the button needs to be checked
 	 * @param: Timeout in seconds for driver should wait until button is located
-	 * @return: Returns the status as true / false based of presence / visibility of the button
+	 * @return: Returns the status as true / false based on presence / visibility of the button
 	 * @throws: Exception
 	 */
 	public boolean isApproveBtnVisible(int timeToLocateBtn, String tableName) throws Exception {
@@ -683,7 +738,7 @@ public class BppTrendPage extends Page {
 	/**
 	 * Checks whether approve all button is visible on BPP trend page for selected table
 	 * @param: Timeout in seconds for driver should wait until button is located
-	 * @return: Returns the status as true / false based of presence / visibility of the button
+	 * @return: Returns the status as true / false based on presence / visibility of the button
 	 * @throws: Exception
 	 */
 	public boolean isApproveAllBtnVisible(int timeToLocateBtn) throws Exception {
@@ -693,7 +748,7 @@ public class BppTrendPage extends Page {
 	/**
 	 * Checks whether Download button is visible
 	 * @param: Timeout in seconds for driver should wait until button is located
-	 * @return: Returns the status as true / false based of presence / visibility of the button
+	 * @return: Returns the status as true / false based on presence / visibility of the button
 	 * @throws: Exception
 	 */
 	public boolean isDownloadBtnVisible(int timeToLocateBtn) throws Exception {
@@ -1014,7 +1069,7 @@ public class BppTrendPage extends Page {
 			String value = entryData.getValue();
 			String xpathDropDownField = "//span[text() = '"+ key +"']//parent::span//following-sibling::div//div[@class = 'uiPopupTrigger']";
 			WebElement dropDownField = locateElement(xpathDropDownField, 30);
-			objBuildPermitPage.selectFromDropDown(dropDownField, value);
+			objApasGenericPage.selectOptionFromDropDown(dropDownField, value);
 		}
 	}
 	
@@ -1048,7 +1103,7 @@ public class BppTrendPage extends Page {
 	 * @throws Exception
 	 */
 	public void enterPropertyType(String propType) throws Exception {
-		objBuildPermitPage.selectFromDropDown(propertyType, propType);
+		objApasGenericPage.selectOptionFromDropDown(propertyType, propType);
 	}
 	
 	/**
@@ -1070,10 +1125,129 @@ public class BppTrendPage extends Page {
 	}
 	
 	/**
-	 * Description:
+	 * Description: Retrieves the error message displayed on entering an invalid value for max equipment index factor
+	 * @return: Returns the error message
+	 * @throws: Exception
 	 */
 	public String errorMsgOnIncorrectFactorValue() throws Exception {
 		String xpath = "//span[text() = 'Maximum Equipment index Factor']//parent::label//parent::div//following-sibling::ul//li";
 		return getElementText(locateElement(xpath, 30));
+	}
+	
+	/**
+	 * Description: Retrieves the current status of the given table from details page under given BPP Trend Setup
+	 * @param: Takes the names of the table
+	 * @return: Returns the table status
+	 * @throws: Exception
+	 */
+	public String getTableStatusFromBppTrendSetupDetailsPage(String tableName) throws Exception {
+		String xpathTableStatus = "//span[text() = '"+ tableName +"']//parent::div//following-sibling::div//lightning-formatted-text";
+		WebElement tableStatus = locateElement(xpathTableStatus, 30);
+		return getElementText(tableStatus);
+	}
+	
+	/**
+	 * Description: Clicks on the given factor type section on details age of bpp trend setup
+	 * @param factorSectionNameToOpen: Takes the names of the factor section that needs to be accessed
+	 * @return: Returns the table status
+	 * @throws: Exception
+	 */
+	public void clickOnFactorSectionOnDetailsPageOfBppTrendSetup(String factorSectionNameToOpen) throws Exception {
+		switch(factorSectionNameToOpen.toUpperCase()) {
+			case "BPP PROPERTY INDEX FACTORS":
+				Click(bppProperyIndexFactorsTab);
+			case "BPP PERCENT GOOD FACTORS":
+				Click(bppProperyGoodFactorsTab);
+			case "IMPORTED VALUATION FACTORS":
+				Click(moreTabRightSection);
+				Click(dropDownOptionBppImportedValuationFactors);
+			default:
+				System.out.println("Incorrect factor type has been specified.");
+		}		
+	}
+
+	/**
+	 * Description: It locates the new button for given factor section on bpp trend setup details page
+	 * @param factorSectionNameToOpen: Takes the names of the factor section under which New button needs to be located
+	 * @return: It returns New button element
+	 * @throws Exception
+	 */
+	public WebElement getNewBtnUnderFactorSection(String factorSectionNameToOpen) throws Exception {
+		String newBtnXpath = "//span[text() = '"+ factorSectionNameToOpen +"']//ancestor::header[contains(@class, 'slds-media slds-media--center')]//following-sibling::div//a[@title = 'New']";
+		WebElement newButton = locateElement(newBtnXpath, 60);
+		return newButton;
+	}
+	
+	/**
+	 * Description: It creates a new factor entry under given factor section
+	 * @param factorSectionNameToOpen: Takes the names of the factor section under which New button needs to be located
+	 * @throws Exception
+	 */
+	public void enterDataInFactorEntry(Map<String, String> systemInfoMap) throws Exception {
+		for(Entry<String, String> entry : systemInfoMap.entrySet()) {
+			String fieldName = entry.getKey();
+			String fieldValue = entry.getValue();
+			String xpath = null;
+			WebElement element = null;
+			if(fieldName.equalsIgnoreCase("Year Acquired") || fieldName.equalsIgnoreCase("Property Type") || fieldName.equalsIgnoreCase("Good Factor Type")) {
+				xpath = "//span[contains(text(), '"+ fieldName +"')]//parent::span//following-sibling::div[@class = 'uiMenu']";
+				element = locateElement(xpath, 30);
+				Click(element);
+				
+				String dropDownOptionXpath = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//ul//li//a[text() = "+ fieldValue +"]"; 
+				WebElement drpDownElement = locateElement(dropDownOptionXpath, 10);
+				javascriptClick(drpDownElement);				
+			} else {
+				xpath = "//span[contains(text(), '"+ fieldName +"')]//parent::label//following-sibling::input";
+				element = locateElement(xpath, 30);
+				enter(element, fieldValue);
+				if(fieldName.toUpperCase().contains("NAME (Roll Year")) {
+					System.setProperty("factorEntryName", fieldValue);
+				}
+			}
+		}
+		Click(objBuildPermit.saveButton);
+	}
+	
+	/**
+	 * Description: Checks the newly created entry in the table
+	 * @return: Returns the status as true or false
+	 * @throws: Exception
+	 */
+	public boolean isNewlyCreatedEntryVisibleInTable() throws Exception {
+		String newlyCreatedEntryName = System.getProperty("factorEntryName");
+		return locateElement("//a[text() = '"+ newlyCreatedEntryName +"']", 30).isDisplayed();
+	}
+	
+	/**
+	 * Description: Clicks on the show more drop down in the table for given entry.
+	 * @throws: Exception
+	 */
+	public void clickShowMoreDropDownForGivenEntry(String newlyCreatedEntryName) throws Exception {
+		String xpath = "//a[text() = '"+ newlyCreatedEntryName +"']//following::td//span[text() = 'Show More']//ancestor::a";
+		WebElement showMoreDropDown = locateElement(xpath, 30);
+		clickAction(showMoreDropDown);
+	}
+	
+	/**
+	 * Description: Checks the availability of Edit link under show more for given factor entry in the table
+	 * @return: Returns the status as true or false
+	 * @throws: Exception
+	 */
+	public boolean isEditLinkAvailableForNewEntry() throws Exception {
+		String newlyCreatedEntryName = System.getProperty("factorEntryName");
+		clickShowMoreDropDownForGivenEntry(newlyCreatedEntryName);
+		return objBuildPermit.editLinkUnderShowMore.isDisplayed();
+	}
+	
+	/**
+	 * Description: Checks the availability of Delete link under show more for given factor entry in the table
+	 * @return: Returns the status as true or false
+	 * @throws: Exception
+	 */
+	public boolean isDeleteLinkAvailableForNewEntry() throws Exception {
+		String newlyCreatedEntryName = System.getProperty("factorEntryName");
+		clickShowMoreDropDownForGivenEntry(newlyCreatedEntryName);
+		return objBuildPermit.editLinkUnderShowMore.isDisplayed();
 	}
 }

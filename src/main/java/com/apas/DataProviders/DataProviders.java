@@ -8,7 +8,6 @@ public class DataProviders {
 	
 	/**
 	 * Below function will be used to login to application with principal user
-	 *
 	 * @returns: Returns the principal user
 	 **/
     @DataProvider(name = "loginPrincipalUser")
@@ -18,7 +17,6 @@ public class DataProviders {
     
 	/**
 	 * Below function will be used to login to application with business administrator user
-	 *
 	 * @returns: Return the user business administrator
 	 **/
     @DataProvider(name = "loginBusinessAdmin")
@@ -28,7 +26,6 @@ public class DataProviders {
 
 	/**
 	 * Below function will be used to login to application with appraisal support user
-	 *
 	 * @returns: Return the user appraisal support
 	 **/
     @DataProvider(name = "loginApraisalUser")
@@ -45,10 +42,18 @@ public class DataProviders {
     public Object[][] dpLoginSystemAdmin() {
         return new Object[][] { { users.SYSTEM_ADMIN } };
     }
+
+	/**
+	 * Below function will be used to login to application with bpp auditor / appraiser user
+	 * @returns: Return the user bpp auditor / appraiser
+	 **/
+    @DataProvider(name = "loginBppAuditor")
+    public Object[][] dpLoginBppAuditor() {
+        return new Object[][] { { users.BPP_AUDITOR } };
+    }
     
 	/**
 	 * Below function will be used to login to application with different users
-	 *
 	 * @returns: Return the user business administrator and principal user in an array
 	 **/
     @DataProvider(name = "loginBusinessAndPrincipalUsers")
@@ -58,11 +63,19 @@ public class DataProviders {
     
 	/**
 	 * Below function will be used to login to application with different users
-	 *
 	 * @return Return the user business administrator and appraisal support in an array
 	 **/
     @DataProvider(name = "loginBusinessAndAppraisalUsers")
     public Object[][] dpLoginBusinessAndAppraisalUsers() {
         return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
+    }
+    
+	/**
+	 * Below function will be used to login to application with different users
+	 * @returns: Return the user business administrator, principal user and Bpp Auditor in an array
+	 **/
+    @DataProvider(name = "loginBusinessAdminAndPrincipalUserAndBppAuditor")
+    public Object[][] dpLoginBusinessAdminAndPrincipalUserAndBppAuditor() {
+        return new Object[][] { { users.BUSINESS_ADMIN }, { users.PRINCIPAL_USER }, { users.BPP_AUDITOR } };
     }
 }

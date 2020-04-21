@@ -14,6 +14,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.BppTrendSetupPage;
@@ -25,18 +26,40 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.PasswordUtils;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class ApasGenericFunctions extends TestBase{
+public class ApasGenericFunctions extends Page {
+
+	@FindBy(xpath = "//div[@class = 'slds-media__body slds-align-middle']//span[contains(@class, 'triggerLinkText selectedListView uiOutputText')]")
+	public WebElement currenltySelectViewOption;
+	
+	@FindBy(xpath = "//a[@title = 'Select List View']")
+	public WebElement selectListViewIcon;
+
+	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All Imported E-File Building Permits']")
+	public WebElement allImportedEfileBuildingPermitsOption;
+
+	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All Manual Building Permits']")
+	public WebElement allManualBuilingdPermitsOption;
+	
+	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'Recently Viewed']")
+	public WebElement recentlyViewedOption;
+	
+	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All']")
+	public WebElement allOption;
+	
+	@FindBy(xpath = "//force-list-view-manager-pin-button//button[@class='slds-button slds-button_icon']//lightning-primitive-icon")
+	public WebElement pinIcon;	
 	
 	private RemoteWebDriver driver;
-	Page objPage;
 	LoginPage objLoginPage;
 	BppTrendSetupPage objBppTrendSetupPage;
-	//EFileImportPage eFilePageObject;
+	EFileImportPage eFilePageObject;
 	ApasGenericPage objApasGenericPage;
 	
 	public ApasGenericFunctions(RemoteWebDriver driver){
+		super(driver);
 		this.driver = driver;
-		objPage = new Page(this.driver);
+		PageFactory.initElements(driver, this);
+		
 		objLoginPage = new LoginPage(this.driver);
 		objBppTrendSetupPage = new BppTrendSetupPage(this.driver);
 		objApasGenericPage = new ApasGenericPage(this.driver);
@@ -48,22 +71,22 @@ public class ApasGenericFunctions extends TestBase{
 	 * @param userType : Type of the user e.g. business admin / appraisal support
 	 */
 	public void login(String userType) throws Exception{
-		String password = CONFIG.getProperty(userType + "Password");
+		String password = TestBase.CONFIG.getProperty(userType + "Password");
 		
 		//Decrypting the password if the encrypted password is saved in envconfig file and passwordEncryptionFlag flag is set to true
-		if (CONFIG.getProperty("passwordEncryptionFlag").equals("true")){
+		if (TestBase.CONFIG.getProperty("passwordEncryptionFlag").equals("true")){
 			System.out.println("Decrypting the password : " + password);
 			password = PasswordUtils.decrypt(password, "");
 		}
 				
 		ExtentTestManager.getTest().log(LogStatus.INFO, userType + " User is logging in the application with the user : " + userType );
 		
-		objPage.navigateTo(driver, envURL);
-		objPage.enter(objLoginPage.txtuserName, CONFIG.getProperty(userType + "UserName"));
-		objPage.enter(objLoginPage.txtpassWord,password);
-		objPage.Click(objLoginPage.btnSubmit);
+		navigateTo(driver, TestBase.envURL);
+		enter(objLoginPage.txtuserName, TestBase.CONFIG.getProperty(userType + "UserName"));
+		enter(objLoginPage.txtpassWord,password);
+		Click(objLoginPage.btnSubmit);
 		
-		WebElement verificationCodeSection = objPage.locateElement("//h2[text() = 'Verify Your Identity']", 10);
+		WebElement verificationCodeSection = locateElement("//h2[text() = 'Verify Your Identity']", 10);
 		if(verificationCodeSection != null) {
 			System.out.println("Waiting for verification code!!");
 			Thread.sleep(40000);
@@ -77,8 +100,8 @@ public class ApasGenericFunctions extends TestBase{
 	 */
 	public void searchModule(String moduleToSearch) throws Exception {	
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
-		objPage.Click(objApasGenericPage.appLauncher);
-		objPage.enter(objApasGenericPage.appLauncherSearchBox, moduleToSearch);
+		Click(objApasGenericPage.appLauncher);
+		enter(objApasGenericPage.appLauncherSearchBox, moduleToSearch);
 		objApasGenericPage.clickNavOptionFromDropDown(moduleToSearch);
 		//This static wait statement is added as the module title is different from the module to search 
 		Thread.sleep(4000);
@@ -90,9 +113,9 @@ public class ApasGenericFunctions extends TestBase{
 	 */
 	public void logout() throws IOException, InterruptedException{	
 		ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");
-		objPage.Click(objLoginPage.imgUser);
-		objPage.Click(objLoginPage.lnkLogOut);
-		objPage.waitForElementToBeVisible(objLoginPage.txtpassWord,30);
+		Click(objLoginPage.imgUser);
+		Click(objLoginPage.lnkLogOut);
+		waitForElementToBeVisible(objLoginPage.txtpassWord,30);
 	}
 
 	
@@ -103,8 +126,8 @@ public class ApasGenericFunctions extends TestBase{
 	 */
 	public void editGridCellValue(String columnNameOnGrid, String expectedValue) throws IOException, AWTException, InterruptedException{
 		WebElement webelement = driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button"));
-		objPage.scrollToElement(webelement);
-		objPage.Click(webelement);
+		scrollToElement(webelement);
+		Click(webelement);
 		
 		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
 		webelementInput.clear();
@@ -120,9 +143,9 @@ public class ApasGenericFunctions extends TestBase{
 	 */
 	public void displayRecords(String displayOption) throws IOException, InterruptedException {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Displaying all the records on the grid");
-		objPage.Click(objApasGenericPage.selectListViewButton);
+		Click(objApasGenericPage.selectListViewButton);
 		Thread.sleep(1000);
-		objPage.Click(driver.findElement(By.xpath("//a[@role='option']//span[text()='" + displayOption + "']")));
+		Click(driver.findElement(By.xpath("//a[@role='option']//span[text()='" + displayOption + "']")));
 		Thread.sleep(3000);
 	}
 
@@ -133,10 +156,10 @@ public class ApasGenericFunctions extends TestBase{
 	 */
 	public String searchRecords(String searchString) throws Exception {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Searching and filtering the data on the grid with the String " + searchString);
-		objPage.enter(objApasGenericPage.searchListEditBox,searchString);
-		objPage.Click(objApasGenericPage.countSortedByFilteredBy);
+		enter(objApasGenericPage.searchListEditBox,searchString);
+		Click(objApasGenericPage.countSortedByFilteredBy);
 		Thread.sleep(3000);
-		return objPage.getElementText(objApasGenericPage.countSortedByFilteredBy);
+		return getElementText(objApasGenericPage.countSortedByFilteredBy);
 	}
 
 	/**
@@ -217,46 +240,46 @@ public class ApasGenericFunctions extends TestBase{
 		}
 		return gridDataHashMap;
 	}
-	
-	/**
-	 * This would select Recently Viewed option from the drop down list
-	 * @throws: Throws Exception
-	 */
-	public void selectRecentlyViewedFromDropDown() throws Exception {
-		String currentlyVisibleOption = objPage.getElementText(objBppTrendSetupPage.currenltySelectViewOption);
-		if(!(currentlyVisibleOption.equalsIgnoreCase("Recently Viewed"))) {
-			objPage.Click(objBppTrendSetupPage.selectListViewIcon);
-			objPage.Click(objBppTrendSetupPage.recentlyViewedOption);
-		}
-	}
-
-	/**
-	 * This would select All option from the drop down list
-	 * @throws: Throws Exception
-	 */
-	public void selectAllFromDropDown() throws Exception {
-		String currentlyVisibleOption = objPage.getElementText(objBppTrendSetupPage.currenltySelectViewOption);
-		if(!(currentlyVisibleOption.equalsIgnoreCase("All"))) {
-			objPage.Click(objBppTrendSetupPage.selectListViewIcon);
-			objPage.Click(objBppTrendSetupPage.allOption);
-		}
-	}
-	
+		
 	/**
 	 * Description: This will select the recently viewed mode on grid
 	 */
 	public void selectRecentlyViewedOptionOnGrid() throws Exception {
-		objPage.Click(objPage.waitForElementToBeClickable(objApasGenericPage.selectListViewIcon));
-		objPage.Click(objApasGenericPage.recentlyViewedOption);
-		objPage.Click(objApasGenericPage.pinIcon);
+		String currentlyVisibleOption = getElementText(objApasGenericPage.currenltySelectViewOption);
+		if(!(currentlyVisibleOption.equalsIgnoreCase("Recently Viewed"))) {
+			Click(objApasGenericPage.selectListViewIcon);
+			Click(objApasGenericPage.recentlyViewedOption);
+			Click(objApasGenericPage.pinIcon);
+		}
 	}
 	
 	/**
 	 * Description: This will select the All mode on grid
 	 */
 	public void selectAllOptionOnGrid() throws Exception {
-		objPage.Click(objApasGenericPage.selectListViewIcon);
-		objPage.Click(objPage.waitForElementToBeClickable(objApasGenericPage.allOption));
-		objPage.Click(objApasGenericPage.pinIcon);
+		String currentlyVisibleOption = getElementText(objApasGenericPage.currenltySelectViewOption);
+		if(!(currentlyVisibleOption.equalsIgnoreCase("All"))) {
+			Click(objApasGenericPage.selectListViewIcon);
+			Click(objApasGenericPage.allOption);
+			Click(objApasGenericPage.pinIcon);
+		}
+	}
+	
+	/**
+	 * Description: This will select the All mode on grid
+	 */
+	public void selectImportedEfileBuildingPermitsOptionOnGrid() throws Exception {
+		Click(objApasGenericPage.selectListViewIcon);
+		Click(waitForElementToBeClickable(objApasGenericPage.allImportedEfileBuildingPermitsOption));
+		Click(objApasGenericPage.pinIcon);
+	}
+	
+	/**
+	 * Description: This will select the All mode on grid
+	 */
+	public void selectAllManualBuildingPermitOptionOnGrid() throws Exception {
+		Click(objApasGenericPage.selectListViewIcon);
+		Click(waitForElementToBeClickable(objApasGenericPage.allManualBuilingdPermitsOption));
+		Click(objApasGenericPage.pinIcon);
 	}
 }
