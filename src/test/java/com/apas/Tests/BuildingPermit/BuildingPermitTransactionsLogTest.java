@@ -31,8 +31,8 @@ public class BuildingPermitTransactionsLogTest extends TestBase {
 	ApasGenericFunctions objApasGenericFunctions;
 	BuildingPermitPage objBuildPermit;
 	EFileImportPage objEfileHomePage;
-	Util objUtil;
-	SoftAssertion softAssert;
+	Util objUtil  = new Util();
+	SoftAssertion softAssert = new SoftAssertion();
 
 	@BeforeMethod
 	public void beforeMethod(){
@@ -42,13 +42,12 @@ public class BuildingPermitTransactionsLogTest extends TestBase {
 		objEfileImportTransactionsPage = new EFileImportTransactionsPage(driver);
 		objEfileHomePage = new EFileImportPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
-		objUtil = new Util();
-		softAssert = new SoftAssertion();
 	}
 
 	@AfterMethod
-	public void afterMethod() throws IOException, InterruptedException{
+	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 
 
@@ -59,13 +58,13 @@ public class BuildingPermitTransactionsLogTest extends TestBase {
 	 **/
     @DataProvider(name = "loginUsers")
     public Object[][] dataProviderLoginUserMethod() {
-        return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
+        return new Object[][] {{ users.BUSINESS_ADMIN } };
     }
 
 	/**
 	 Below test case is used to validate status of the imported San Mateo Building Permit file which in XLS format
 	 **/
-	@Test(description = "SMAB-T357,SMAB-T430 Transaction record verification for the imported Building Permit in XLS Format", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 1, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T357,SMAB-T430: Transaction record verification for the imported Building Permit in XLS Format", dataProvider = "loginUsers", groups = {"smoke","regression"}, alwaysRun = true)
 	public void transactionRecordVerificationBuildingPermitXLS(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -113,7 +112,6 @@ public class BuildingPermitTransactionsLogTest extends TestBase {
 		//Status of the file should be displayed as imported as the file is imported
 		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.statusLabel), "Imported", "SMAB-T430: Status Validation of the imported file on import transaction tab");
 		softAssert.assertTrue(objPage.getElementText(objEfileImportTransactionsPage.efileImportLogLabel).contains("San Mateo Building permits"), "SMAB-T430: Validation that latest generated transaction log is for San Mateo Building permits");
-		softAssert.assertAll();
 	}
 
 }

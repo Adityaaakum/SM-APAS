@@ -32,8 +32,8 @@ public class BuildingPermitImportTest extends TestBase {
 	ApasGenericFunctions objApasGenericFunctions;
 	BuildingPermitPage objBuildPermit;
 	EFileImportPage objEfileHomePage;
-	Util objUtil;
-	SoftAssertion softAssert;
+	Util objUtil  = new Util();
+	SoftAssertion softAssert  = new SoftAssertion();
 
 	@BeforeMethod
 	public void beforeMethod(){
@@ -43,13 +43,12 @@ public class BuildingPermitImportTest extends TestBase {
 		objEfileImportTransactionsPage = new EFileImportTransactionsPage(driver);
 		objEfileHomePage = new EFileImportPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
-		objUtil = new Util();
-		softAssert = new SoftAssertion();
 	}
 		
 	@AfterMethod
-	public void afterMethod() throws IOException, InterruptedException{
+	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 	
 	
@@ -60,7 +59,7 @@ public class BuildingPermitImportTest extends TestBase {
 	 **/
     @DataProvider(name = "loginUsers")
     public Object[][] dataProviderLoginUserMethod() {
-        return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
+        return new Object[][] {{ users.BUSINESS_ADMIN } };
     }
 	
     
@@ -70,8 +69,8 @@ public class BuildingPermitImportTest extends TestBase {
 	 2. Validation of error and imported records on review and approve screen
 	 3. Status validation of imported file on efile import transaction log screen
 	 **/
-	@Test(description = "SMAB-T362,SMAB-T363,SMAB-T430: Transaction record verification for the imported Building Permit in TXT Format", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true, enabled = true)
-	public void verifyApproveDiscardBuildingPermit(String loginUser) throws Exception {
+	@Test(description = "SMAB-T362,SMAB-T363,SMAB-T430: Transaction record verification for the imported Building Permit in TXT Format", dataProvider = "loginUsers", groups = {"smoke","regression"}, alwaysRun = true, enabled = false)
+	public void verifyApproveDiscardBuildingPermitImport(String loginUser) throws Exception {
 		//*******Import Transaction Validation is also there, as per discussion with Amit this needs to be broken into 2 different test cases
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
@@ -117,6 +116,7 @@ public class BuildingPermitImportTest extends TestBase {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "SMAB-T363: Validation that error records can be dicarded from Review and Approve Data Page");
 		objPage.Click(objEfileHomePage.rowSelectCheckBox);
 		objPage.Click(objEfileHomePage.discardButton);
+		objPage.Click(objEfileHomePage.continueButton);
 		String numberOfRecordsInErrorRowSection = objPage.getElementText(objEfileHomePage.errorRowSection).split(":")[1].trim();
 		//validating the number of records in the error row section after discarding a record as records should be moved the imported row section after discard
 		softAssert.assertEquals(numberOfRecordsInErrorRowSection, "8", "SMAB-T363: Validation if correct number of records are displayed in Error Row Section after discarding a record");
@@ -143,13 +143,12 @@ public class BuildingPermitImportTest extends TestBase {
 		//Status of the file should be displayed as imported as the file is imported 
 		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.statusLabel), "Imported", "SMAB-T430: Status Validation of the imported file on import transaction tab");
 		softAssert.assertTrue(objPage.getElementText(objEfileImportTransactionsPage.efileImportLogLabel).contains("Atherton Building Permits"), "SMAB-T430: Validation that latest generated transaction log is for Atherton Building Permits");
-		softAssert.assertAll();
 	}
 
     /**
 	 Below test case is used to validate the revert functionality on the file having the error records
 	 **/
-	@Test(description = "SMAB-T361,SMAB-T358: Reverting the error records in building permit import", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T361,SMAB-T358: Reverting the error records in building permit import", dataProvider = "loginUsers", groups = {"smoke","regression"}, alwaysRun = true)
 	public void verifyRevertBuildingPermitImport(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -183,6 +182,7 @@ public class BuildingPermitImportTest extends TestBase {
 		objPage.Click(objEfileHomePage.viewLink);
 		objPage.waitForElementToBeVisible(objEfileHomePage.errorRowSection,30);
 		objPage.Click(objEfileHomePage.revertButton);
+		objPage.Click(objEfileHomePage.continueButton);
 		objPage.waitForElementToBeVisible(objEfileHomePage.revertSuccessMessage, 20);
 		
 		//Step7: Validation of the file status after reverting the imported file
@@ -191,13 +191,12 @@ public class BuildingPermitImportTest extends TestBase {
 		objEfileHomePage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		//Status of the imported file should be changed to Reverted as the whole file is reverted for reimport
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Reverted", "SMAB-T361: Validation if status of imported file is reverted.");
-		softAssert.assertAll();
 	}
 	
     /**
 	 Below test case is used to validate the retry functionality after correction on the records in error
 	 **/
-	@Test(description = "SMAB-T364: Retrying the error records in building permit import", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T364: Retrying the error records in building permit import", dataProvider = "loginUsers", groups = {"smoke","regression"}, alwaysRun = true)
 	public void verifyRetryBuildingPermitImport(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -245,61 +244,6 @@ public class BuildingPermitImportTest extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.numberOfTimesTriedRetried), "2", "SMAB-T364: Validation if number of times try/retry count is increased by 1 after retrying the error records");
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsInFile), "10", "SMAB-T364: Validation if total number of records remain same on the table");
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsImportedFile), "2", "SMAB-T364: Validation if total records in file count is increased by 1 after retrying the error records");
-		softAssert.assertAll();
-	}
-	
-	/**
-	 Below test case is used to validate status of the imported San Mateo Building Permit file which in XLS format
-	 **/
-	@Test(description = "SMAB-T357,SMAB-T430 Transaction record verification for the imported Building Permit in XLS Format", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 1, alwaysRun = true, enabled = true)
-	public void transactionRecordVerificationBuildingPermitXLS(String loginUser) throws Exception {
-			
-		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)		
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
-		objApasGenericFunctions.login(loginUser);
-		
-		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
-		
-		//Step3: Uploading the San Mateo Building Permit file having error and success records through Efile Intake Import
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading the San Mateo permit file");
-		String sanMateoBuildingPermitsFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO;
-		objEfileHomePage.uploadFileOnEfileIntake("Building Permit", "San Mateo Building permits", objUtil.getCurrentDate("MMMM YYYY"),sanMateoBuildingPermitsFile);
-		
-		//Step4: Validating that status of the imported file is in progress
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Validation of imported records on Import History table");
-		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "In Progress", "SMAB-T357: Validation if status of imported file is in progress.");
-		
-		//Step5: Waiting for the status of the file to be converted to Imported
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 120);
-		
-		//Step6: Validation of columns of Import history table if those are populated correctly from the imported san mateo building permit file. There are 9 records in error and 1 record correct in the file
-		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.numberOfTimesTriedRetried), "1", "SMAB-T357: Validation if number of times try/retry count is correct on file import");
-		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsInFile), "10", "SMAB-T357: Validation if total number of records count is correct on file import");
-		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsImportedFile), "1", "SMAB-T357: Validation if total records in file count  is correct on file import");
-		
-		//Step7: Validation of error and imported records on review and approve screen if those are populated correctly from the imported san mateo building permit file. There are 9 records in error and 1 record correct in the file
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Validation of imported records on Review and Approve Data Screen");
-		objPage.Click(objEfileHomePage.viewLink);
-		objPage.waitForElementToBeVisible(objEfileHomePage.errorRowSection,30);
-		
-		String numberOfRecordsInErrorRowSection = objPage.getElementText(objEfileHomePage.errorRowSection).split(":")[1].trim();
-		softAssert.assertEquals(numberOfRecordsInErrorRowSection, "9", "SMAB-T357: Validation if correct number of records are displayed in Error Row Section");
-	
-		String numberOfRecordsInImportedRowSection = objPage.getElementText(objEfileHomePage.importedRowSection).split(":")[1].trim();
-		softAssert.assertEquals(numberOfRecordsInImportedRowSection, "1", "SMAB-T357: Validation if correct number of records are displayed in Imported Row Section");
-		
-		//Step9: Opening the Efile import transaction module
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Validation of imported file on efile import transaction screen");
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_TRANSACTIONS);
-		objPage.Click(objEfileImportTransactionsPage.importTransactionName);
-		
-		//By default "Details" tab should be opened showing the transaction details of the imported file
-		softAssert.assertEquals(objPage.getAttributeValue(objEfileImportTransactionsPage.detailsTab,"aria-selected"), "true", "SMAB-T430: Validation if Details tab is selected by default after clicking on import transaction link");
-		//Status of the file should be displayed as imported as the file is imported 
-		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.statusLabel), "Imported", "SMAB-T430: Status Validation of the imported file on import transaction tab");
-		softAssert.assertTrue(objPage.getElementText(objEfileImportTransactionsPage.efileImportLogLabel).contains("San Mateo Building permits"), "SMAB-T430: Validation that latest generated transaction log is for San Mateo Building permits");
-		softAssert.assertAll();
 	}
 
 }

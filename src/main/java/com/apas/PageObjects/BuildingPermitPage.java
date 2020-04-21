@@ -2,11 +2,16 @@ package com.apas.PageObjects;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import com.apas.Reports.ExtentTestManager;
+import com.relevantcodes.extentreports.LogStatus;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -20,8 +25,8 @@ import com.apas.Reports.ExtentTestManager;
 import com.apas.Utils.Util;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class BuildingPermitPage extends Page {
-	Logger logger = Logger.getLogger(LoginPage.class);
+public class BuildingPermitPage extends ApasGenericPage {
+
 	Util objUtil;
 	ApasGenericPage objApasGenericPage;
 
@@ -32,10 +37,7 @@ public class BuildingPermitPage extends Page {
 		objApasGenericPage = new ApasGenericPage(driver);
 	}
 
-	// Locators to create a manual entry.
-
-	@FindBy(xpath = "//nav[@role = 'navigation']//span[contains (text(), 'Building Permits') and not(contains(text(), 'Menu'))]/parent::a")
-	public WebElement bldngPrmtTabDetailsPage;
+	//Below objects are for Building Permit Module Screen
 
 	@FindBy(xpath = "//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']")
 	public WebElement newButton;
@@ -46,77 +48,52 @@ public class BuildingPermitPage extends Page {
 	@FindBy(xpath = "//span[contains(text(), 'Manual Entry Building Permit')]//parent::div//preceding-sibling::div//input[@type = 'radio']")
 	private WebElement manualEntryRadioBtn;
 
+	@FindBy(xpath = "//button[text() = 'Edit']")
+	public WebElement editButton;
+
+	@FindBy(xpath = "//div[@role='menu']//li[@class='uiMenuItem']/a[@title = 'Edit']")
+	public WebElement editMenuItemButton;
+
+	@FindBy(xpath = "//lightning-icon//span[text()='Show More']")
+	public WebElement showMoreButton;
+
 	@FindBy(xpath = "//div[@class = 'inlineFooter']//span[text() = 'Next']//parent::button")
-	private WebElement recordTypePopUpNextButton;
+	public WebElement recordTypePopUpNextButton;
 
-	@FindBy(xpath = "//div[@class = 'inlineFooter']//span[text() = 'Cancel']//parent::button")
-	private WebElement recordTypePopUpCancelButton;
-
-	@FindBy(xpath = "//a[@title='Select List View']")
-	private WebElement listViewsIcon;
-
-	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All']")
-	private WebElement listViewAllOption;
-
-	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'Recently Viewed']")
-	private WebElement listViewRecentlyViewedOption;
-
-	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All E-File Building Permits']")
-	private WebElement listViewEFileOptionRecentlyViewedOption;
-
-	@FindBy(xpath = "//table/thead//th//div/a/span[@class = 'slds-truncate']")
-	private List<WebElement> recentlyViewedGridColumns;
-
-	@FindBy(xpath = "//tbody/tr//th//a")
-	private List<WebElement> buildingPermitNamesFromGrid;
+	//Below objects are for New Building Permit Pop Up
 
 	@FindBy(xpath = "//h2[text() = 'New Building Permit: Manual Entry Building Permit']")
-	private WebElement buildingPermitPopUp;
+	public WebElement buildingPermitPopUp;
 
 	@FindBy(xpath = "//button[@title='Close this window']")
 	public WebElement closeEntryPopUp;
 
 	@FindBy(xpath = "//span[text() = 'Building Permit Number']/parent::label/following-sibling::input")
-	private WebElement buildingPermitNumberTxtBox;
+	public WebElement buildingPermitNumberTxtBox;
 
 	@FindBy(xpath = "//input[@title = 'Search Parcels']")
-	private WebElement parcelsSearchBox;
+	public WebElement parcelsSearchBox;
 
 	@FindBy(xpath = "//span[text() = 'Processing Status']/parent::span/following-sibling::div//a[@class = 'select']")
-	private WebElement processingStatusDrpDown;
-
-	@FindBy(xpath = "//span[text() = 'Calculated Processing Status']/parent::span/following-sibling::div//a[@class = 'select']")
-	private WebElement calculatedProcessingStatusDrpDown;
+	public WebElement processingStatusDrpDown;
 
 	@FindBy(xpath = "//input[@title = 'Search County Strat Codes']")
-	private WebElement countyStratCodeSearchBox;
+	public WebElement countyStratCodeSearchBox;
 
 	@FindBy(xpath = "//span[text() = 'Estimated Project Value']/parent::label/following-sibling::input")
-	private WebElement estimatedProjectValueTxtBox;
+	public WebElement estimatedProjectValueTxtBox;
 
 	@FindBy(xpath = "//span[text() = 'Issue Date']/parent::label/following-sibling::div/input")
-	private WebElement issueDateCalender;
+	public WebElement issueDateCalender;
 
 	@FindBy(xpath = "//span[text() = 'Completion Date']/parent::label/following-sibling::div/input")
-	private WebElement completionDateCalender;
+	public WebElement completionDateCalender;
 
 	@FindBy(xpath = "//span[text() = 'Permit City Code']/parent::span/following-sibling::div//a[@class = 'select']")
-	private WebElement permitCityCodeDrpDown;
+	public WebElement permitCityCodeDrpDown;
 
 	@FindBy(xpath = "//span[text() = 'Work Description']/parent::label/following-sibling::input")
-	private WebElement workDescriptionTxtBox;
-
-	@FindBy(xpath = "//span[text() = 'Owner Name']/parent::label/following-sibling::input")
-	private WebElement ownerNameTxtBox;
-
-	@FindBy(xpath = "//span[text() = 'City APN']/parent::label/following-sibling::input")
-	private WebElement cityApnTxtBox;
-
-	@FindBy(xpath = "//span[text() = 'Building Permit Fee']/parent::label/following-sibling::input")
-	private WebElement buildingPermitFeeTxtBox;
-
-	@FindBy(xpath = "//span[text() = 'Permit Situs Number']/parent::label/following-sibling::input")
-	private WebElement permitSitusNumberTxtBox;
+	public WebElement workDescriptionTxtBox;
 
 	@FindAll({
 			@FindBy(xpath = "//div[@class = 'actionsContainer']//button[@title = 'Save & New']//span[text() = 'Save & New']"),
@@ -124,46 +101,27 @@ public class BuildingPermitPage extends Page {
 	})
 	public WebElement saveAndNewButton;
 
-	@FindBy(xpath = "//div[@class = 'actionsContainer']//button[@title = 'Cancel']//span[text() = 'Cancel']")
+	@FindBy(xpath = "//div[@role='dialog']//button//*[text() = 'Cancel']")
 	public WebElement cancelButton;
 
-	@FindBy(xpath = "//div[@class = 'actionsContainer']//button[@title = 'Save']//span[text() = 'Save']")
+	@FindBy(xpath = "//div[@role='dialog']//button//*[text() = 'Save']")
 	public WebElement saveButton;
 
-	@FindBy(xpath = "//div[contains(@class, 'forceModalActionContainer')]//button[@title = 'Cancel']//span[text() = 'Cancel']")
-	public WebElement cancelBtnEditPopUp;
+	@FindBy(xpath = "//lightning-primitive-icon/*[@data-key='warning']/../../../div")
+	public WebElement warningMessage;
 
-	@FindBy(xpath = "//div[contains(@class, 'forceModalActionContainer')]//button[@title = 'Save']//span[text() = 'Save']")
-	public WebElement saveBtnEditPopUp;
+	@FindBy(xpath = "//force-record-layout-row[contains(.,'Warning Message')]//span/img[@alt='Priority Flag']/..")
+	public WebElement warningMessageWithPriorityFlag;
 
-	@FindBy(xpath = "//div[contains(@class, 'form-footer')]//button[@title = 'Cancel']")
-	public WebElement cancelBtnDetailsPage;
+	@FindBy(xpath = "//a[text()='View Duplicates']")
+	public WebElement viewDuplicateLink;
 
-	@FindBy(xpath = "//div[contains(@class, 'form-footer')]//button[@title = 'Save']")
-	public WebElement saveBtnDetailsPage;
+	@FindBy(xpath = "//div[@data-aura-class='forcePageError']//li")
+	public WebElement errorMsgOnTop;
 
-
-	// Locators to validate error message for mandatory fields while creating / editing manual entry.
-
-	@FindBy(xpath = "//li[contains(text(), 'These required fields must be completed:')]")
-	private WebElement errorMsgOnTop;
-
-	@FindBy(xpath = "//li[text() = 'Complete this field']")
-	private List<WebElement> errorMsgUnderLabels;
-
-	@FindBy(xpath = "//div[@class = 'container']//ul[contains(@class, 'errorsList')]/li")
-	private List<WebElement> errorMsgRestrictedWorkDescManualEntryPopUp;
-
-	@FindBy(xpath = "//li[contains(text(), 'Description should not have the following')]")
-	private WebElement errorMsgRestrictedWorkDescDetailsPage;
-
-	@FindBy(xpath = "//button[@title = 'Close error dialog']")
-	private WebElement closeErrorPopUp;
-
-	// Locators to perform actions on existing building permits from grid.
-
-	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//div[text() = 'Edit']")
-	public WebElement editLinkUnderShowMore;
+	// Below objects are for View Duplicate Pop Up
+	@FindBy(xpath = "//a[contains(text(),'Open This')]")
+	public WebElement openBuildingPermitLink;
 
 	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//div[text() = 'Delete']")
 	private WebElement deleteLinkUnderShowMore;
@@ -208,12 +166,40 @@ public class BuildingPermitPage extends Page {
 	@FindBy(xpath = "//a[@class='deleteAction']")
 	private List <WebElement> dropDownCrossIcons;
 
+	@FindBy(xpath = "//div[contains(.,'View Duplicates')]/button[@title='Close this window']")
+	public WebElement closeViewDuplicatePopUpButton;
+	
+	@FindBy(xpath = "//li[text() = 'Complete this field']")
+	private List<WebElement> errorMsgUnderLabels;
+	
+	@FindBy(xpath = "//div[contains(@class, 'forceModalActionContainer')]//button[@title = 'Save']//span[text() = 'Save']")
+	public WebElement saveBtnEditPopUp;
+
+	@FindBy(xpath = "//li[contains(text(), 'Description should not have the following')]")
+	private WebElement errorMsgRestrictedWorkDescDetailsPage;
+	
+	@FindBy(xpath = "//div[contains(@class, 'form-footer')]//button[@title = 'Save']")
+	public WebElement saveBtnDetailsPage;
+
+	@FindBy(xpath = "//div[contains(@class, 'form-footer')]//button[@title = 'Cancel']")
+	public WebElement cancelBtnDetailsPage;
+	
+	@FindBy(xpath = "//button[@title = 'Close error dialog']")
+	private WebElement closeErrorPopUp;
+	
+	@FindBy(xpath = "//nav[@role = 'navigation']//span[contains (text(), 'Building Permits') and not(contains(text(), 'Menu'))]/parent::a")
+	public WebElement bldngPrmtTabDetailsPage;
+	
+	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//div[text() = 'Edit']")
+	public WebElement editLinkUnderShowMore;
+	
 	/**
 	 * @Description: This method is used to click on New button to open the new building permit.
 	 * It also internally handles the additional pop up window to select manual entry
 	 * creation radio button when Data Admin is logged into application
 	 * @throws IOException
 	 */
+
 	public void openNewForm() throws Exception {
 		Thread.sleep(1000);
 		javascriptClick(waitForElementToBeClickable(newButton));
@@ -221,6 +207,8 @@ public class BuildingPermitPage extends Page {
 			Click(waitForElementToBeClickable(manualEntryRadioBtn));
 			Click(waitForElementToBeClickable(recordTypePopUpNextButton));
 		}
+		waitForElementToBeVisible(buildingPermitPopUp,30);
+		Thread.sleep(2000);
 	}
 
 	/**
@@ -232,7 +220,7 @@ public class BuildingPermitPage extends Page {
 		waitForElementToBeClickable(permitCityCodeDrpDown);
 		waitForElementToBeClickable(issueDateCalender);
 	}
-
+	
 	/**
 	 * @Description: It fills all the required fields in manual entry pop up
 	 * @param dataMap: A data map which contains manual entry pop up field names (as keys)
@@ -276,6 +264,7 @@ public class BuildingPermitPage extends Page {
 			Click(waitForElementToBeClickable(closeEntryPopUp));
 		}
 		return isNewManualEntryPopUpDisplayed;
+
 	}
 
 	/** @Description: This method will create a manual building permit entry in APAS
@@ -607,6 +596,20 @@ public class BuildingPermitPage extends Page {
 	}
 
 	/**
+	 * @Description: This method is to handle fields like Permit City Code or Processing Status
+	 * by clicking the web element and then selecting the given value from drop down
+	 * @param element: WebElement for required field
+	 * @param value: Like 'Process' or 'No Process' for Processing Status field etc.
+	 * @throws Exception
+	 */
+	public void selectFromDropDown(WebElement element, String value) throws Exception {
+		Click(element);
+		String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
+		WebElement drpDwnOption = locateElement(xpathStr, 200);
+		drpDwnOption.click();
+	}
+
+	/**
 	 * @Description: This methods particularly handles the issue date and completion date fields
 	 * @param element: WebElement for required field
 	 * @param date
@@ -626,5 +629,42 @@ public class BuildingPermitPage extends Page {
 		Click(driver.findElement(By.xpath("//a[@title='" + buildingPermitNum + "']")));
 		Thread.sleep(3000);
 	}
+
+	/**
+	 * @description: This method will return the error message appeared against the filed name passed in the parameter
+	 * @param fieldName: field name for which error message needs to be fetched
+	 */
+	public String getIndividualFieldErrorMessage(String fieldName) {
+		return getElementText(driver.findElement(By.xpath("//div[@role='listitem']//span[text()='" + fieldName + "']/../../../ul[contains(@data-aura-class,'uiInputDefaultError')]")));
+	}
+
+	/**
+	 * @description: This method will return the filed value from the view duplicate screen
+	 * @param fieldName: field name for which error message needs to be fetched
+	 */
+	public String getFieldValueFromViewDuplicateScreen(String fieldName) {
+		return getElementText(driver.findElement(By.xpath("//*[@class='tableRowGroup'][contains(.,'" + fieldName + "')]//span")));
+	}
+
+	/**
+	 * @description: This method will return the default data to create manual building permit
+	 * @return hashMapBuildingPermitData : Test data to create manual building permit
+	 */
+	public Map<String, String> getBuildingPermitManualCreationTestData() {
+		String buildingPermitNumber = "LM-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
+		Map<String, String> manualBuildingPermitMap = new HashMap<>();
+		manualBuildingPermitMap.put("Permit City Code","LM");
+		manualBuildingPermitMap.put("APN","000002");
+		manualBuildingPermitMap.put("Building Permit Number",buildingPermitNumber);
+		manualBuildingPermitMap.put("Processing Status","No Process");
+		manualBuildingPermitMap.put("Issue Date","11/10/2019");
+		manualBuildingPermitMap.put("Completion Date","11/10/2019");
+		manualBuildingPermitMap.put("County Strat Code Description","REPAIR ROOF");
+		manualBuildingPermitMap.put("Work Description","New Construction");
+		manualBuildingPermitMap.put("Estimated Project Value","500");
+
+		return  manualBuildingPermitMap;
+	}
+
 
 }

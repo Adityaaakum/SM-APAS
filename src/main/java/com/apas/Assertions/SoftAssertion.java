@@ -8,31 +8,19 @@ import com.relevantcodes.extentreports.LogStatus;
 
 public class SoftAssertion {
 
-	Boolean testCaseExecutionFailedFlag = false;
-	public static Boolean isSoftAssertionUsedFlag = null;
-	Util objUtil = new Util();
-	JiraAdaptavistStatusUpdate jiraAdaptavistStatusUpdate = new JiraAdaptavistStatusUpdate();
+	public static Boolean isSoftAssertionUsedFlag = false;
 
 	/**
 	 * Class constructor to set the isSoftAssertionUsedFlag variable as false
-	 * Initially this variable is null, when class object is created it sets to false
 	 */
-	public SoftAssertion() {
-		isSoftAssertionUsedFlag = false;
-	}
+	public SoftAssertion() {isSoftAssertionUsedFlag = false;}
 
 	/**
-	 * Asserts all the asserts used in test method sequentially & flushes the ExtentManager instance
-	 * Sets isSoftAssertionUsedFlag to true to control onTestPassed / onTestFailure in SuiteListener
-	 * Throws AssertionError if testCaseExecutionFailedFlag variable is true
+	 * Throws AssertionError if any soft assertions occured in the test cases i.e isSoftAssertionUsedFlag is True
 	 */
 	public void assertAll() {
-		isSoftAssertionUsedFlag = true;
-		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
-		ExtentManager.getExtentInstance().flush();
-		if (testCaseExecutionFailedFlag) {
-			throw new AssertionError();
-		}
+		//Keeping this method as a place holder for now as correct report is getting generated even without this function. Will remove it later
+//		if (isSoftAssertionUsedFlag) {throw new AssertionError();}
 	}
 
 	/**
@@ -54,8 +42,8 @@ public class SoftAssertion {
 		} else {
 			ExtentTestManager.getTest().log(LogStatus.FAIL, message);
 			JiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKey, "Fail");
-			objUtil.getScreenShot(message);
-			testCaseExecutionFailedFlag = true;
+			new Util().getScreenShot(message);
+			isSoftAssertionUsedFlag = true;
 		}
 	}
 

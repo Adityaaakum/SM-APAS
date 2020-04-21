@@ -23,7 +23,7 @@ public class RollwisePermissionTest extends TestBase {
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
-	SoftAssertion softAssert;
+	SoftAssertion softAssert  = new SoftAssertion();
 
 	@BeforeMethod
 	public void beforeMethod(){
@@ -31,19 +31,19 @@ public class RollwisePermissionTest extends TestBase {
 		objPage = new Page(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
-		softAssert = new SoftAssertion();
 	}
 		
 	@AfterMethod
-	public void afterMethod() throws IOException, InterruptedException{
+	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 
     /**
 	 Below test case will validate generic user is not able to access below modules
 	 City Strat Codes, County Strat Codes, Non Relevant Permit Settings
 	 **/
-	@Test(description = "SMAB-T439: Validation for user not having the access to certain modules", groups = {"smoke","regression"}, priority = 0, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T439: Validation for user not having the access to certain modules", groups = {"smoke","regression"}, priority = 0, alwaysRun = true)
 	public void verifyGenericUserNotHavingAccess() throws Exception {
 		//****appraisal Support user needs to be replaced by generic user
 		//Step1: Login to the APAS application using the General User
@@ -71,7 +71,5 @@ public class RollwisePermissionTest extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objApasGenericPage.appsListBox),"No results","SMAB-T439: Validation that search module didn't return any 'Non Relevant Permit Settings' apps for logged in generic user");
 		softAssert.assertEquals(objPage.getElementText(objApasGenericPage.itemsListBox),"No results","SMAB-T439: Validation that search module didn't return any 'Non Relevant Permit Settings' items for logged in generic user");
 		objPage.Click(objApasGenericPage.searchClearButton);
-
-		softAssert.assertAll();
 	}
 }

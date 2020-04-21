@@ -28,7 +28,7 @@ public class ReportsTest extends TestBase {
 	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
 	ReportsPage objReportsPage;
-	SoftAssertion softAssert;
+	SoftAssertion softAssert  = new SoftAssertion();
 
 	@BeforeMethod
 	public void beforeMethod(){
@@ -37,12 +37,12 @@ public class ReportsTest extends TestBase {
 		objApasGenericPage = new ApasGenericPage(driver);
 		objReportsPage = new ReportsPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
-		softAssert = new SoftAssertion();
 	}
 		
 	@AfterMethod
-	public void afterMethod() throws IOException, InterruptedException{
+	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 
 	/**
@@ -52,15 +52,14 @@ public class ReportsTest extends TestBase {
 	 **/
 	@DataProvider(name = "loginUsers")
 	public Object[][] dataProviderLoginUserMethod() {
-//        return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
-		return new Object[][] {{ users.APPRAISAL_SUPPORT } };
+		return new Object[][] {{ users.BUSINESS_ADMIN } };
 	}
 
 	/**
 	 Below test case will validate that user is able to export the report
 	 **/
-	@Test(description = "SMAB-T433: Validation for Reports Export", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true, enabled = true)
-	public void verifyDuplicateNonRelevantSettingsNotAllowed(String loginUser) throws Exception {
+	@Test(description = "SMAB-T433: Validation for Reports Export", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true)
+	public void verifyReportExport(String loginUser) throws Exception {
 
 		String downloadLocation = CONFIG.getProperty("downloadFolder");
 		String reportName = "Building Permit by City Code";
@@ -81,7 +80,7 @@ public class ReportsTest extends TestBase {
 		//Step3: Exporting 'Building Permit by City Code' report in Formatted Mode
 		objReportsPage.exportReport(reportName,ReportsPage.FORMATTED_EXPORT);
 		exportedFileName = Objects.requireNonNull(new File(downloadLocation).listFiles())[0].getName();
-		softAssert.assertTrue(exportedFileName.contains("Building Permit by City Code"), "Exported report name validation");
+		softAssert.assertTrue(exportedFileName.contains("Building Permit by City Code"), "SMAB-T433: Exported report name validation");
 
 		//Deleteing all the previously downloaded files
 		objApasGenericFunctions.deleteFilesFromFolder(downloadLocation);
@@ -89,8 +88,6 @@ public class ReportsTest extends TestBase {
 		//Step3: Exporting 'Building Permit by City Code' report in Data Mode
 		objReportsPage.exportReport(reportName,ReportsPage.DATA_EXPORT);
 		exportedFileName = Objects.requireNonNull(new File(downloadLocation).listFiles())[0].getName();
-		softAssert.assertTrue(exportedFileName.contains("report"), "Exported report name validation");
-
-		softAssert.assertAll();
+		softAssert.assertTrue(exportedFileName.contains("report"), "SMAB-T433: Exported report name validation");
 	}
 }

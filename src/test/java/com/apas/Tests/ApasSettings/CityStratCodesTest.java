@@ -24,8 +24,8 @@ public class CityStratCodesTest extends TestBase {
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	CityStratCodesPage objCityStratCodesPage;
-	SoftAssertion softAssert;
-	Util objUtils;
+	SoftAssertion softAssert = new SoftAssertion();
+	Util objUtils = new Util();
 
 	@BeforeMethod
 	public void beforeMethod(){
@@ -33,13 +33,12 @@ public class CityStratCodesTest extends TestBase {
 		objPage = new Page(driver);
 		objCityStratCodesPage = new CityStratCodesPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
-		objUtils = new Util();
-		softAssert = new SoftAssertion();
 	}
 		
 	@AfterMethod
-	public void afterMethod() throws IOException, InterruptedException{
+	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 	
 	
@@ -50,14 +49,14 @@ public class CityStratCodesTest extends TestBase {
 	 **/
     @DataProvider(name = "loginUsers")
     public Object[][] dataProviderLoginUserMethod() {
-        return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
+        return new Object[][] {{ users.BUSINESS_ADMIN }};
     }
 	
     
     /**
 	 Below test case will validate that County record can have multiple related City Code records
 	 **/
-	@Test(description = "SMAB-T396: Validation for County record can have multiple related City Code records", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T396: Validation for County record can have multiple related City Code records", dataProvider = "loginUsers", groups = {"smoke","regression"}, alwaysRun = true)
 	public void verifyCreationOfMultipleRelatedCityCodes(String loginUser) throws Exception {
 		String countSortedByFilteredBy;
 		String strSuccessAlertMessage;
@@ -100,6 +99,5 @@ public class CityStratCodesTest extends TestBase {
 
 		countSortedByFilteredBy = objApasGenericFunctions.searchRecords(strCityStratCode2);
 		softAssert.assertEquals(countSortedByFilteredBy,expectedValidationMessage,"SMAB-T396: Validation of records displayed on the grid with the City Strat code " + strCityStratCode2);
-		softAssert.assertAll();
 	}
 }

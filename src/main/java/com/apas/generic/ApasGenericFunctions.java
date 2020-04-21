@@ -17,8 +17,10 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import com.apas.PageObjects.ApasGenericPage;
+
 import com.apas.PageObjects.BppTrendSetupPage;
 import com.apas.PageObjects.EFileImportPage;
+
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
@@ -63,7 +65,6 @@ public class ApasGenericFunctions extends Page {
 		objLoginPage = new LoginPage(this.driver);
 		objBppTrendSetupPage = new BppTrendSetupPage(this.driver);
 		objApasGenericPage = new ApasGenericPage(this.driver);
-		//eFilePageObject = new EFileImportPage(this.driver);
 	}
 	
 	/**
@@ -111,7 +112,16 @@ public class ApasGenericFunctions extends Page {
 	/**
 	 * Description: This method will logout the logged in user from APAS application
 	 */
-	public void logout() throws IOException, InterruptedException{	
+	public void logout() throws IOException{
+		//Handling the situation where pop remains opened before logging out
+		if (verifyElementVisible(objApasGenericPage.crossButton))
+			Click(objApasGenericPage.crossButton);
+		else if (verifyElementVisible(objApasGenericPage.closeButton))
+			Click(objApasGenericPage.closeButton);
+		else if (verifyElementVisible(objApasGenericPage.cancelButton))
+			Click(objApasGenericPage.cancelButton);
+
+		//Logging out of the application
 		ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");
 		Click(objLoginPage.imgUser);
 		Click(objLoginPage.lnkLogOut);
@@ -132,6 +142,7 @@ public class ApasGenericFunctions extends Page {
 		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
 		webelementInput.clear();
 		webelementInput.sendKeys(expectedValue);
+		webelementInput.submit();
 		Robot robot = new Robot();
 		robot.keyPress(KeyEvent.VK_ENTER);
     	robot.keyRelease(KeyEvent.VK_ENTER);
@@ -149,7 +160,14 @@ public class ApasGenericFunctions extends Page {
 		Thread.sleep(3000);
 	}
 
-
+	/**
+	 * Description: This method will filter out the records on the grid based on the search string from the APAS level search
+	 * @param searchString: String to search the record
+	 */
+	public void globalSearchRecords(String searchString) throws Exception {
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Searching and filtering the data through APAS level search with the String " + searchString);
+		objApasGenericPage.searchAndSelectFromDropDown(objApasGenericPage.globalSearchListEditBox,searchString);
+	}
 
 	/**
 	 * Description: This method will filter out the records on the grid based on the search string
@@ -178,7 +196,7 @@ public class ApasGenericFunctions extends Page {
 	 * @description: This method will return the value of the field passed in the parameter from the currently open page
 	 * @param sectionName: name of the section where field is present
 	 * @param fieldName: Name of the field
-	 * @return: Value of the field
+	 * @return  Value of the field
 	 */
 	public String getFieldValueFromAPAS(String fieldName, String sectionName) {
 		String sectionXpath = "//force-record-layout-section[contains(.,'" + sectionName + "')]";
@@ -196,7 +214,7 @@ public class ApasGenericFunctions extends Page {
 	/**
 	 * @description: This method will return the value of the field passed in the parameter from the currently open page
 	 * @param fieldName: Name of the field
-	 * @return: Value of the field
+	 * @return Value of the field
 	 */
 	public String getFieldValueFromAPAS(String fieldName) {
 		return getFieldValueFromAPAS(fieldName,"");
@@ -206,7 +224,7 @@ public class ApasGenericFunctions extends Page {
 	 * Description: This method will save the grid data in hashmap
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
-	public HashMap<String, ArrayList<String>> getGridDataInHashMap(){
+	public HashMap<String, ArrayList<String>> getGridDataInHashMap() {
 		return getGridDataInHashMap(-1);
 	}
 
@@ -215,8 +233,7 @@ public class ApasGenericFunctions extends Page {
 	 * @param rowNumber: Row Number for which data needs to be fetched
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
-	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int rowNumber){
-
+	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int rowNumber) {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
 		//This code is to fetch the data for a particular row in the grid
 		String xpathRows = "//tbody/tr";

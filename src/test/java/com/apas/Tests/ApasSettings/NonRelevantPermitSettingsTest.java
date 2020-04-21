@@ -17,14 +17,13 @@ import org.testng.annotations.Test;
 import com.apas.PageObjects.NonRelevantPermitSettingsPage;
 import java.io.IOException;
 
-
 public class NonRelevantPermitSettingsTest extends TestBase {
 
 	private RemoteWebDriver driver;
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	NonRelevantPermitSettingsPage objNonRelevantPermitSettingsPage;
-	SoftAssertion softAssert;
+	SoftAssertion softAssert = new SoftAssertion();
 
 	@BeforeMethod
 	public void beforeMethod(){
@@ -32,12 +31,12 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 		objPage = new Page(driver);
 		objNonRelevantPermitSettingsPage = new NonRelevantPermitSettingsPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
-		softAssert = new SoftAssertion();
 	}
 		
 	@AfterMethod
-	public void afterMethod() throws IOException, InterruptedException{
+	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 	
 	
@@ -48,7 +47,7 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 	 **/
     @DataProvider(name = "loginUsers")
     public Object[][] dataProviderLoginUserMethod() {
-        return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
+        return new Object[][] {{ users.BUSINESS_ADMIN } };
     }
 
 
@@ -56,7 +55,7 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 	 Below test case will validate that user is not allowed to create duplicate Non Relevant Permit Settings
 	 PreCondition: AT City Code with Active status is already added in Non Relevant Permit Settings
 	 **/
-	@Test(description = "SMAB-T398: Validation for Duplicate Non Relevant Permit Settings", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T398: Validation for Duplicate Non Relevant Permit Settings", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true)
 	public void verifyDuplicateNonRelevantSettingsNotAllowed(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -77,7 +76,5 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 		softAssert.assertTrue(objPage.verifyElementVisible(objNonRelevantPermitSettingsPage.messageDuplicateData),"SMAB-T398: Validation for existence of duplicate record message after adding the preexisting record");
 		softAssert.assertTrue(objPage.verifyElementVisible(objNonRelevantPermitSettingsPage.linkViewDuplicates),"SMAB-T398: Validation for existence of View Duplicate Link after adding the preexisting record");
 		objPage.Click(objNonRelevantPermitSettingsPage.cancelButton);
-
-		softAssert.assertAll();
 	}
 }
