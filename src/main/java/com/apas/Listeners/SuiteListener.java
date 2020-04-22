@@ -83,6 +83,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 	@Override
 	public void onTestStart(ITestResult result) {
 		try {
+			SoftAssertion.isSoftAssertionUsedFlag = true;
 			//Updating the system properties with test case properties details
 			String methodName = result.getMethod().getMethodName();
 			String className = result.getMethod().toString();

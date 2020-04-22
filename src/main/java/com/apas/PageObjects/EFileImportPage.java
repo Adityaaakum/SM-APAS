@@ -125,6 +125,7 @@ public class EFileImportPage extends Page {
 	 * @param absoluteFilePath: Absoulte Path of the file with the file name
 	 */
 	public void uploadFileOnEfileIntake(String fileType, String source,String period, String absoluteFilePath) throws Exception{
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " +  absoluteFilePath + " file");
 		selectFileAndSource(fileType, source);
 		objPage.waitUntilElementDisplayed(nextButton, 10);
 		objPage.Click(nextButton);

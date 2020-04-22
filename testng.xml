@@ -6,12 +6,25 @@
 		<listener class-name="com.apas.Listeners.SuiteListener"/>
 		<listener class-name="com.apas.Listeners.TestAnnotationListener"/>
 	</listeners>
-	<test name="SMAB-T398: Validation for Duplicate Non Relevant Permit Settings" annotations="" preserve-order="true">
+	<test name="smoke" annotations="">
+<!--		<groups>-->
+<!--			<run>-->
+<!--				<include name="smoke"/>-->
+<!--			</run>-->
+<!--		</groups>-->
 		<classes>
-			<class name="com.apas.Tests.ApasSettings.CityStratCodesTest" />
-			<class name="com.apas.Tests.ApasSettings.ReportsTest" />
-			<class name="com.apas.Tests.ApasSettings.RollwisePermissionTest" />
-			<class name="com.apas.Tests.ApasSettings.NonRelevantPermitSettingsTest" />
+
+			<class name="com.apas.Tests.BuildingPermit.BuildingPermitImportTest"/>
+
+<!--			<class name="com.apas.Tests.ApasSettings.CityStratCodesTest" />-->
+<!--			<class name="com.apas.Tests.ApasSettings.ReportsTest" />-->
+<!--			<class name="com.apas.Tests.ApasSettings.RollwisePermissionTest" />-->
+<!--			<class name="com.apas.Tests.ApasSettings.NonRelevantPermitSettingsTest" />-->
+<!--			<class name="com.apas.Tests.BuildingPermit.BuildingPermitDataValidationTest" />-->
+<!--			<class name="com.apas.Tests.BuildingPermit.BuildingPermitEditTest" />-->
+<!--			<class name="com.apas.Tests.BuildingPermit.BuildingPermitManualCreationTest" />-->
+<!--			<class name="com.apas.Tests.BuildingPermit.BuildingPermitImportTest"/>-->
+<!--			<class name="com.apas.Tests.BuildingPermit.BuildingPermitTransactionsLogTest"/>-->
 		</classes>
 	</test>
 </suite>

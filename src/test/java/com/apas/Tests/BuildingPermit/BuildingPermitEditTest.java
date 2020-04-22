@@ -71,7 +71,7 @@ public class BuildingPermitEditTest extends TestBase {
 		//Step3: Editing the existing Building Permit without giving all the mandatory fields and validating the error messages appearing
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Editing the existing Building Permit without giving all the mandatory fields");
 		objApasGenericFunctions.displayRecords("All Manual Building Permits");
-		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objApasGenericFunctions.getGridDataInHashMap(1);
+		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objApasGenericFunctions.getGridDataInHashMap(1,1);
 		String buildingPermitNumber = manualBuildingPermitGridDataMap.get("Building Permit Number").get(0);
 		objApasGenericFunctions.searchRecords(buildingPermitNumber);
 		objBuildingPermitPage.openBuildingPermit(buildingPermitNumber);
@@ -116,7 +116,7 @@ public class BuildingPermitEditTest extends TestBase {
 		objApasGenericFunctions.searchRecords(updatedBuildingPermitNumber);
 
 		//Step10: Validating that new value entered in estimated project value filed is saved
-		Map<String, ArrayList<String>> manualBuildingPermitGridDataMapAfterEdit = objApasGenericFunctions.getGridDataInHashMap(1);
+		Map<String, ArrayList<String>> manualBuildingPermitGridDataMapAfterEdit = objApasGenericFunctions.getGridDataInHashMap(1,1);
 		softAssert.assertEquals(manualBuildingPermitGridDataMapAfterEdit.get("Work Description").get(0),updatedWorkDescriptionValue,"SMAB-T466: Validating the 'Work Description' after editing the record");
 		softAssert.assertEquals(manualBuildingPermitGridDataMapAfterEdit.get("Building Permit Number").get(0),updatedBuildingPermitNumber,"SMAB-T466: Validating the 'Building Permit Number' after editing the record");
 	}
