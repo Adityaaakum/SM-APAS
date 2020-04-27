@@ -315,7 +315,7 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 	}
 	
 	
-	@Test(description = "SMAB-T253: Perform calculation for Construction Composite Factors table", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 4, enabled = true)
+	@Test(description = "SMAB-T253: Perform calculation for Construction Composite Factors table", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 4, enabled = false)
 	public void verifyBppTrendCalculateConstructionCompositeFactors(String loginUser) throws Exception {		
 		//Step1: Login with system administrator and reset composite factor tables status to "Not Calculated"
 		objApasGenericFunctions.login(users.SYSTEM_ADMIN);
@@ -386,7 +386,7 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 		softAssert.assertAll();
 	}
 	
-	@Test(description = "SMAB-T239: Perform calculation for Construction Mobile Equipment Composite Factors tables", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 5, enabled = true)
+	@Test(description = "SMAB-T239: Perform calculation for Construction Mobile Equipment Composite Factors tables", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 5, enabled = false)
 	public void verifyBppTrendCalculateConstMobileEquipFactors(String loginUser) throws Exception {
 		//Step1: Validating presence of CalculateAll button at page level
 		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
@@ -448,7 +448,7 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 		softAssert.assertAll();		
 	}	
 	
-	@Test(description = "SMAB-T277, SMAB-T577: Perform calculation for BPP Prop 13 table", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 6, enabled = true)
+	@Test(description = "SMAB-T277, SMAB-T577: Perform calculation for BPP Prop 13 table", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 6, enabled = false)
 	public void verifyBppTrendCalculateProp13(String loginUser) throws Exception {
 		//Step1: Validating presence of CalculateAll button at page level before
 		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
@@ -525,7 +525,7 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 		softAssert.assertAll();
 	}
 	
-	@Test(description = "SMAB-T190: Perform calculation for factors tables individually", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 7, enabled = true)
+	@Test(description = "SMAB-T190: Perform calculation for factors tables individually", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 7, enabled = false)
 	public void verifyBppTrendCalculateCompositeFactorAndProp13Tables(String loginUser) throws Exception {
 		//Step1: Login with system administrator and reset composite factor tables status to "Not Calculated"
 		objApasGenericFunctions.login(users.SYSTEM_ADMIN);

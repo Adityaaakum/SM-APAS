@@ -104,7 +104,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		//Step2: Get any Active Parcel to create the Building Permit record
 		objApasGenericFunctions.searchModule(modules.PARCELS);
 		objApasGenericFunctions.displayRecords("All Active Parcels");
-		String activeParcel = objApasGenericFunctions.getGridDataInHashMap(1).get("APN").get(0);
+		String activeParcel = objApasGenericFunctions.getGridDataInHashMap(1,1).get("APN").get(0);
 
 		//Step3: Opening the building permit module
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
@@ -158,7 +158,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 
 		//Step3: Search and Open the Parcel
 		objApasGenericFunctions.displayRecords("All Retired Parcels");
-		String retiredParcel = objApasGenericFunctions.getGridDataInHashMap(1).get("APN").get(0);
+		String retiredParcel = objApasGenericFunctions.getGridDataInHashMap(1,1).get("APN").get(0);
 
 		//Step2: Opening the building permit module
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);

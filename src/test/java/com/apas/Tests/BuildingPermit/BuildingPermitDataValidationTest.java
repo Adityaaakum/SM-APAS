@@ -68,7 +68,7 @@ public class BuildingPermitDataValidationTest extends TestBase {
 
 		//Step3: Search and Open the Parcel
 		objApasGenericFunctions.displayRecords("All Active Parcels");
-		String parcelToSearch = objApasGenericFunctions.getGridDataInHashMap(1).get("APN").get(0);
+		String parcelToSearch = objApasGenericFunctions.getGridDataInHashMap(1,1).get("APN").get(0);
 		System.out.println("Parcel to be linked with the building permit record : " + parcelToSearch);
 		objApasGenericFunctions.searchRecords(parcelToSearch);
 		objParcelsPage.openParcel(parcelToSearch);
