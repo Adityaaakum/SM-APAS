@@ -146,10 +146,10 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 	// Common locators to complete or abort delete action of manual entry.
 
-	@FindBy(xpath = "//span[text() = 'Delete']")
+	@FindBy(xpath = "//div[contains(@class, 'slds-modal__footer')]//span[text() = 'Delete']")
 	private WebElement deleteBtnBuildingPermitInDeletePopUp;
 
-	@FindBy(xpath = "//span[text() = 'Cancel']")
+	@FindBy(xpath = "//div[contains(@class, 'slds-modal__footer')]//span[text() = 'Cancel']")
 	private WebElement cancelBtnBuildingPermitInDeletePopUp;
 
 	// Locators to edit or delete manual entry from details page.

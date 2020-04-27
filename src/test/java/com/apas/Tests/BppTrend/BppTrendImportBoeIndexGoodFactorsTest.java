@@ -62,7 +62,7 @@ public class BppTrendImportBoeIndexGoodFactorsTest extends TestBase {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
 		objApasGenericFunctions.login(loginUser);
 		
-		//Step2: Opening the file import intake module
+		//Step2: Opening the file import in-take module
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		
 //		//Step3: Uploading the Bpp Trend BOE Index Factors file having error and success records
@@ -163,7 +163,7 @@ public class BppTrendImportBoeIndexGoodFactorsTest extends TestBase {
 		objEfileHomePage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Approved", "SMAB-T362: Validation if status of imported file is approved.");
 		
-		//Step9: Opening the Efile import transaction module
+		//Step9: Opening the E-File import transaction module
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Validation of imported file on efile import transaction screen");
 		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_TRANSACTIONS);
 		objBppTrend.clickOnBoeIndexAndGoodFactorsImportLog(rollYear);
@@ -185,7 +185,7 @@ public class BppTrendImportBoeIndexGoodFactorsTest extends TestBase {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
 		objApasGenericFunctions.login(loginUser);
 		
-		//Step2: Opening the file import intake module
+		//Step2: Opening the file import in-take module
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		
 		//Step3: Uploading BPP Trend BOE Index factors file having error and success records through Efile Intake Import
@@ -235,7 +235,7 @@ public class BppTrendImportBoeIndexGoodFactorsTest extends TestBase {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
 		objApasGenericFunctions.login(loginUser);
 		
-		//Step2: Opening the file import intake module
+		//Step2: Opening the file import in-take module
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		
 		//Step3: Uploading the BPP Trend file having error and success records through Efile Intake Import
@@ -298,7 +298,7 @@ public class BppTrendImportBoeIndexGoodFactorsTest extends TestBase {
 			
 			//Step9: Validation of import history columns as the value should be updated based on the records retried from error section
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Validation of error and inported records on Import History table after retry");
-			//Opening the Efile intake module
+			//Opening the E-File in-take module
 			objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 			objEfileHomePage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 			softAssert.assertEquals(objPage.getElementText(objEfileHomePage.numberOfTimesTriedRetried), "2", "SMAB-T364: Validation if number of times try/retry count is increased by 1 after retrying the error records");

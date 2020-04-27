@@ -30,8 +30,9 @@ public class SoftAssertion {
 	 * 
 	 * @param condition: true/false
 	 * @param message: "<Jira ID>: <Some validation message>"
+	 * @throws Exception 
 	 */
-	public void assertTrue(final boolean condition, String message) {
+	public void assertTrue(final boolean condition, String message, boolean... flagToExcludeScreenShot) throws Exception {
 		if (!message.contains(":: Expected:"))
 			message = message + " :: Expected: true" + " || " + "Actual: " + condition;
 
@@ -42,7 +43,9 @@ public class SoftAssertion {
 		} else {
 			ExtentTestManager.getTest().log(LogStatus.FAIL, message);
 			JiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKey, "Fail");
-			new Util().getScreenShot(message);
+			if(flagToExcludeScreenShot.length == 0 || flagToExcludeScreenShot[0] == false) {
+				new Util().getScreenShot(message);	
+			}
 			isSoftAssertionUsedFlag = true;
 		}
 	}
@@ -55,8 +58,9 @@ public class SoftAssertion {
 	 * @param actual: actual value received from the APAS
 	 * @param expected: expected value passed in the test case
 	 * @param message: "<Jira ID>: <Some validation message>"
+	 * @throws Exception 
 	 */
-	public void assertEquals(Object actual, Object expected, String message) {
+	public void assertEquals(Object actual, Object expected, String message) throws Exception {
 		String formattedMessage = message + " :: Expected: " + expected + " || " + "Actual: " + actual;
 		assertTrue(actual.equals(expected), formattedMessage);
 	}

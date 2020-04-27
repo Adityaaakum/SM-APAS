@@ -229,9 +229,9 @@ public class BuildingPermitManualCreateAndEditTest extends TestBase {
 		Map<String, String> dataMapBeforeEditing = objBuildPermit.getExistingManualEntryData(listOfTxtAndDrpDowns, listOfSearchDrpDowns);
 		
 		//Step5: Navigate back from details page to recently viewed grid & clicking Show More link & click Edit link under it
-		objBuildPermit.clickAction(objPage.waitForElementToBeClickable(objBuildPermit.bldngPrmtTabDetailsPage));
+		objBuildPermit.clickAction(objBuildPermit.waitForElementToBeClickable(objBuildPermit.bldngPrmtTabDetailsPage));
 		objBuildPermit.clickShowMoreLinkOnRecentlyViewedGrid(permitNum);
-		objBuildPermit.clickAction(objPage.waitForElementToBeClickable(objBuildPermit.editLinkUnderShowMore));
+		objBuildPermit.clickAction(objBuildPermit.waitForElementToBeClickable(objBuildPermit.editLinkUnderShowMore));
 		
 		//Step6: Clearing all the pre-populated mandatory fields & then clicking SAVE BUTTON
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Clearing all mandatory fields and validating messages against them.");

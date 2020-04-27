@@ -848,7 +848,7 @@ public class Page {
 		List<WebElement> elements = null;
 		boolean elementsVisiblityFlag = false;
 		int counter = 0;
-		while (!elementsVisiblityFlag || counter < timoutCounter) {
+		while (!elementsVisiblityFlag && counter < timoutCounter) {
 			try {
 				elements = driver.findElements(By.xpath(locatorValue));
 				if (elements != null) {
@@ -933,5 +933,13 @@ public class Page {
 	 */
 	public void switchToParentWindow() {
 		driver.switchTo().window(System.getProperty("parentWindowHandle"));
+	}
+	
+	/**
+	 * Description: This method will scroll to the bottom of page
+	 * @throws: Throws Exception
+	 */
+	public void scrollToBottomOfPage() throws Exception {
+		((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
 	}
 }

@@ -96,7 +96,7 @@ public class BppTrendSettingTest  extends TestBase {
 		softAssert.assertTrue(isBppSettingCreated, "SMAB-T418: BPP trend setup created successfully and reflecting on details page");
 	}
 
-	@Test(description = "SMAB-T229: Check for availability of input factor tables on bpp trend roll year screen", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdminAndPrincipalUserAndBppAuditor", dataProviderClass = DataProviders.class, priority = 1, enabled = false)
+	@Test(description = "SMAB-T229: Check for availability of input factor tables on bpp trend roll year screen", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdminAndPrincipalUserAndBppAuditor", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
 	public void verifyBppTrendCreateAndValidateInputFactorTables(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
@@ -159,14 +159,12 @@ public class BppTrendSettingTest  extends TestBase {
 		List<String> multipleFactorIncorrectVauesList = Arrays.asList(CONFIG.getProperty("FactorValuesLessThanMinRange").split(","));
 		for(int i = 0; i < multipleFactorIncorrectVauesList.size(); i++) {
 			objBppTrnPg.enterFactorValue(multipleFactorIncorrectVauesList.get(i));
-			objBppTrnPg.Click(objBuildPermit.saveButton);
-			
 			if(i == 0) {
-				Thread.sleep(3000);
 				String factorValueInTxtBox = objBppTrnPg.getElementText(objBppTrnPg.factorTxtBox);
-				softAssert.assertTrue(!(factorValueInTxtBox.equals(multipleFactorIncorrectVauesList.get(i))), "SMAB-T134: User is not allowed to enter letters. "
+				softAssert.assertTrue((factorValueInTxtBox.equals(multipleFactorIncorrectVauesList.get(i))), "SMAB-T134: User is not allowed to enter letters. "
 						+ "Value entered: "+ multipleFactorIncorrectVauesList.get(i) +". Value allowed to enter: "+ factorValueInTxtBox);
 			}
+			objBppTrnPg.Click(objBuildPermit.saveButton);
 			
 			expectedErrorMsgOnIncorrectFactorValue = CONFIG.getProperty("ErrorMsgOnFactorValueLessThanMinRange");
 			actualErrorMsgOnIncorrectFactorValue = objBppTrnPg.errorMsgOnIncorrectFactorValue();
@@ -227,7 +225,7 @@ public class BppTrendSettingTest  extends TestBase {
 		//Step12: Retrieving the name of newly created bpp setting entry
 		String xpathNewBppSetting = "//span[contains(text(), 'BPP Settings')]//ancestor::div[contains(@class, 'forceRelatedListCardHeader')]//following-sibling::div//h3//a";
 		String bppSettingName = objBppTrnPg.getElementText(objBppTrnPg.locateElement(xpathNewBppSetting, 30));
-		
+				
 		//Step13: Click ViewAll link to navigate to bpp settings grid and edit existing bpp setting entry
 		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.viewAllBppSettings));
 		Thread.sleep(5000);
@@ -251,7 +249,7 @@ public class BppTrendSettingTest  extends TestBase {
 		softAssert.assertTrue(!(factorValueDisplayedAfterEditing.equals(factorValueDisplayedBeforeEditing)), "SMAB-T133: Validation to check equipment index updated with new value. Factor value in grid before editing: "+ factorValueDisplayedBeforeEditing +" || Factor value in grid after editing: "+ factorValueDisplayedAfterEditing);
 	}
 	
-	@Test(description = "Create a new bpp compsote factor setting", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 3, enabled = true)
+	@Test(description = "Create a new bpp compsote factor setting", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 3, enabled = false)
 	public void verifyBppTrendCreateBppCompositeFactorSetting(String loginUser) throws Exception {		
 		//Step1: Navigating to Bpp Composite Factor Setting section and retrieve existing count of bpp composite factor setting
 		//String bppTrendSetupName = System.getProperty("BppTrendSetupName");

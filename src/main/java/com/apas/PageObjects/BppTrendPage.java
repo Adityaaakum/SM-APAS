@@ -1,7 +1,12 @@
 package com.apas.PageObjects;
 
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +20,11 @@ import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.simple.JSONObject;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
@@ -36,6 +44,9 @@ public class BppTrendPage extends Page {
 	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
 	
+    public Map<String, String> trendSettingsOriginalValues;
+    Map<String, Integer> trendSettingRowNumbers;
+	
 	public BppTrendPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
@@ -51,7 +62,7 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//button[@title=  'Select']")
 	public WebElement selectRollYearButton;
 	
-	@FindBy(xpath = "//button[@title = 'More Tabs']")
+	@FindBy(xpath = "//div[@class = 'dv-tab-bppt-container']//button[@title = 'More Tabs']")
 	public WebElement moreTabs;
 	
 	@FindBy(xpath = "//button[text() = 'Cancel']")
@@ -231,16 +242,18 @@ public class BppTrendPage extends Page {
 	 * @param isTableUnderMoreTab: true / false flag to specify whether given table falls under more tab
 	 * @throws: Exception
 	 */
-	public void clickOnTableOnBppTrendPage(String tableName, boolean isTableUnderMoreTab) throws Exception {
+	public WebElement clickOnTableOnBppTrendPage(String tableName, boolean isTableUnderMoreTab) throws Exception {
 		String xpathStr;
 		if(isTableUnderMoreTab) {
-			Click(waitForElementToBeClickable(moreTabs));
+			javascriptClick(moreTabs);
 			xpathStr = "//span[contains(text(), '" + tableName + "')]";
 		} else {
 			xpathStr = "//a[contains(@data-label, '" + tableName + "')]";
 		}
 		WebElement givenTable = locateElement(xpathStr, 120);
+		waitForElementToBeClickable(20, givenTable);
 		Click(givenTable);
+		return givenTable;
 	}
 
 	/**
@@ -392,9 +405,7 @@ public class BppTrendPage extends Page {
 	 * @param rollYear: Roll year for which the status needs to be reset
 	 */
 	public void resetTablesStatusForGivenRollYear(List<String> factorTablesToReset, String expectedStatus, String rollYear) throws Exception {		
-		clickBppTrendSetupRollYearNameInGrid(rollYear);
 		WebElement element;
-
 		for(String factorTableName : factorTablesToReset) {
 			String xpathEditIcon = "//span[text() = '"+ factorTableName +"']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]";
 			element = locateElement(xpathEditIcon, 10);
@@ -568,8 +579,8 @@ public class BppTrendPage extends Page {
             	}
             }
             
-            int totalRows = sheet.getPhysicalNumberOfRows();      		
-            for(int i = 1; i <= totalRows; i++) {
+            int totalRows = sheet.getPhysicalNumberOfRows();   		
+            for(int i = 1; i < totalRows; i++) {
                 Row currentRow = sheet.getRow(i);
                 List<Object> currentRowData = new ArrayList<>();
                 String yearAcquired = null;
@@ -609,6 +620,145 @@ public class BppTrendPage extends Page {
 	}
 	
 	/**
+	 * @Description: Updates the existing trend setting data into excel
+	 * @param filePath: Takes the path of the XLSX workbook
+	 * @param sheetName: Takes the names of the Sheet that is be read from given workbook
+	 * @throws: Throws Exception          
+	 **/
+	public void updateTrendSettingInExcel(String filePath, Map<String, String> updatedSettingValues, String... sheetName) throws Exception {
+		String sheetNameForExcel;
+		if(sheetName.length == 0) {
+			sheetNameForExcel = "Trends Settings ";
+		} else {
+			sheetNameForExcel = sheetName[0];
+		}
+	
+		File file = null;
+		FileInputStream inputStream = null;
+		FileOutputStream outputStream = null;
+		Workbook wb = null;
+		
+		try {
+			//Create an object of File class to open file
+	        file = new File(filePath);
+	        //Create an object of FileInputStream class to read excel file
+	        inputStream = new FileInputStream(file);
+	        
+	        wb = new XSSFWorkbook(inputStream);
+	        Sheet sheet = wb.getSheet(sheetNameForExcel);
+	
+	        //Get the current count of rows in excel file
+	        int totalRows = sheet.getPhysicalNumberOfRows();
+	
+	        //Retrieving original values of trend settings from excel file before updating them and finding row number of trend settings
+	        trendSettingsOriginalValues = new HashMap<String, String>();
+	        trendSettingRowNumbers = new HashMap<String, Integer>();
+	        for(int rowNum = 0; rowNum < totalRows; rowNum++) {
+	            Row currentRow = sheet.getRow(rowNum);
+	        	String trendSettingName = currentRow.getCell(0).getStringCellValue();
+	        	String trendSettingData = currentRow.getCell(1).getStringCellValue();
+	        	if(trendSettingName.contains("Industrial")) {
+	        		trendSettingRowNumbers.put("Industrial", rowNum);
+	        		trendSettingsOriginalValues.put("Industrial", trendSettingData);
+	        	} else if(trendSettingName.contains("Commercial")) {
+	        		trendSettingRowNumbers.put("Commercial", rowNum);
+	        		trendSettingsOriginalValues.put("Commercial", trendSettingData);
+	        	} else if(trendSettingName.contains("Agricultural")) {
+	        		trendSettingRowNumbers.put("Agricultural", rowNum);
+	        		trendSettingsOriginalValues.put("Agricultural", trendSettingData);
+	        	} else if(trendSettingName.contains("Construction")) {
+	        		trendSettingRowNumbers.put("Construction", rowNum);
+	        		trendSettingsOriginalValues.put("Construction", trendSettingData);
+	        	}
+	        }
+	        System.out.println("trendSettingRowNumbers: " + trendSettingRowNumbers);
+	        System.out.println("trendSettingsOriginalValues: " + trendSettingsOriginalValues);
+	        System.out.println("updatedSettingValues: " + updatedSettingValues);
+	        
+	        Cell cell = null;
+	        // Updating the industrial trend setting value
+	        cell = sheet.getRow(trendSettingRowNumbers.get("Industrial")).getCell(1);
+	        cell.setCellValue(updatedSettingValues.get("Industrial"));
+	        // Updating the commercial trend setting value
+	        cell = sheet.getRow(trendSettingRowNumbers.get("Commercial")).getCell(1);
+	        cell.setCellValue(updatedSettingValues.get("Commercial"));
+	        // Updating the agricultural trend setting value
+	        cell = sheet.getRow(trendSettingRowNumbers.get("Agricultural")).getCell(1);
+	        cell.setCellValue(updatedSettingValues.get("Agricultural"));
+	        // Updating the construction trend setting value
+	        cell = sheet.getRow(trendSettingRowNumbers.get("Construction")).getCell(1);
+	        cell.setCellValue(updatedSettingValues.get("Construction"));
+	        
+	        //Create an object of FileOutputStream class to create write data in excel file
+	        outputStream = new FileOutputStream(file);
+	        //write data in the excel file
+	        wb.write(outputStream);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			//close input stream, workbook and output stream
+			inputStream.close();
+			wb.close();
+			outputStream.close();
+		}
+	}
+	
+	/**
+	 * Description: It reverts the trend setting values to original values in excel file
+	 * @param filePath: Complete file path
+	 * @param sheetName: Optional parameter which takes name of the sheet
+	 */
+	public void revertTrendSettingsDataInExcel(String filePath, String... sheetName) throws Exception {
+		String sheetNameForExcel;
+		if(sheetName.length == 0) {
+			sheetNameForExcel = "Trends Settings ";
+		} else {
+			sheetNameForExcel = sheetName[0];
+		}
+	
+		File file = null;
+		FileInputStream inputStream = null;
+		Workbook wb = null;
+		FileOutputStream outputStream = null;
+		
+		try {
+			//Create an object of File class to open file
+	        file = new File(filePath);
+	        //Create an object of FileInputStream class to read excel file
+	        inputStream = new FileInputStream(file);
+	        
+	        wb = new XSSFWorkbook(inputStream);
+	        Sheet sheet = wb.getSheet(sheetNameForExcel);
+	        
+	        Cell cell = null;
+	        // Updating the industrial trend setting value
+	        cell = sheet.getRow(trendSettingRowNumbers.get("Industrial")).getCell(1);
+	        cell.setCellValue(trendSettingsOriginalValues.get("Industrial"));
+	        // Updating the commercial trend setting value
+	        cell = sheet.getRow(trendSettingRowNumbers.get("Commercial")).getCell(1);
+	        cell.setCellValue(trendSettingsOriginalValues.get("Commercial"));
+	        // Updating the agricultural trend setting value
+	        cell = sheet.getRow(trendSettingRowNumbers.get("Agricultural")).getCell(1);
+	        cell.setCellValue(trendSettingsOriginalValues.get("Agricultural"));
+	        // Updating the construction trend setting value
+	        cell = sheet.getRow(trendSettingRowNumbers.get("Construction")).getCell(1);
+	        cell.setCellValue(trendSettingsOriginalValues.get("Construction"));
+	        
+	        //Create an object of FileOutputStream class to create write data in excel file
+	        outputStream = new FileOutputStream(file);
+	        //write data in the excel file
+	        wb.write(outputStream);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			//close input stream, workbook and output stream
+			inputStream.close();
+			wb.close();
+			outputStream.close();
+		}
+	}
+	
+	/**
 	 * Description: It highlights the mismatched cell data of the table in red color
 	 * @param tableName: Name of the table on BPP Trend page
 	 * @param yearAcquired: Acquired year that is being validated
@@ -634,11 +784,13 @@ public class BppTrendPage extends Page {
 	 */
 	public List<String> retrieveColumnNamesOfGridForGivenTable(String tableName) throws Exception {
 		List<String> columnNames = new ArrayList<String>();
-		String xpathColNames = "//lightning-tab[contains(@data-id, '"+ tableName +"')]//slot"
-				+ "//th[@scope = 'col' and (not(contains(@aria-label, 'Year Acquired')))]";
-		List<WebElement> colNames = locateElements(xpathColNames, 10);
-		for(WebElement element : colNames) {
-			columnNames.add(getElementText(element));
+		String xpathColNames = "//lightning-tab[contains(@data-id, '"+ tableName +"')]"
+				+ "//slot//th[@scope = 'col' and (not(contains(@aria-label, 'Year Acquired')))]//span[@class = 'slds-truncate']";
+		List<WebElement> totalColumnsList = locateElements(xpathColNames, 10);
+		
+		for(WebElement column : totalColumnsList) {
+			String columnName = getElementText(column);
+			columnNames.add(columnName);
 		}
 		return columnNames;
 	}
@@ -1093,6 +1245,7 @@ public class BppTrendPage extends Page {
 	 */
 	public void enterFactorValue(String factorValue) throws Exception {
 		waitForElementToBeClickable(factorTxtBox).sendKeys(Keys.chord(Keys.CONTROL, "a"));
+		waitForElementToBeClickable(factorTxtBox).sendKeys(Keys.chord(Keys.CONTROL, "a"));
 		factorTxtBox.sendKeys(Keys.BACK_SPACE);
 		enter(factorTxtBox, factorValue);
 	}
@@ -1249,5 +1402,146 @@ public class BppTrendPage extends Page {
 		String newlyCreatedEntryName = System.getProperty("factorEntryName");
 		clickShowMoreDropDownForGivenEntry(newlyCreatedEntryName);
 		return objBuildPermit.editLinkUnderShowMore.isDisplayed();
+	}
+	
+	/**
+	 * Description: It highlights the mismatched cell data of the table in red color
+	 * @param tableName: Name of the table on BPP Trend page
+	 * @param yearAcquired: Acquired year that is being validated
+	 * @param indexValueOfCell: Table data/Cell number that is mismatched
+	 * @throws Exception
+	 */
+	public void highlightMismatchedCellOnUI(String tableName, String yearAcquired, int indexValueOfCell) throws Exception {
+		System.setProperty("isElementHighlightedDueToFailre", "true");
+		indexValueOfCell = indexValueOfCell + 1;
+		String xpathMisMatchedCell = "(//lightning-tab[contains(@data-id, '"+tableName+"')]//"
+				+ "th//lightning-formatted-text[text() = '"+yearAcquired+"']//"
+				+ "ancestor::th//following-sibling::td[not(contains(@data-label, 'Year Acquired'))])["+ indexValueOfCell +"]";
+		
+		WebElement misMatchedCell = locateElement(xpathMisMatchedCell, 20);
+		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid red'", misMatchedCell);
+	}
+	
+	/**
+	 * Writes the mismatched cell and its respective table and acquired details in a JSON file
+	 * @param: Takes a data map as an argument whose keys are table names having mismatched data
+	 * and values are failed column names of tables
+	 */
+	public void writeMismatchedUiGridContentInJson(String tableName, Map<String, List<String>> mapContainingMismatchedData) throws Exception {
+		JSONObject tableCompObj = new JSONObject();
+		tableCompObj.put(tableName, mapContainingMismatchedData);
+		try {  
+				File file=new File("C:/Users/sikbhamb/Project/APAS_Automation/qa_automation/data/BppTrend/Mismatched Tabular Data/TableComparison.json");  
+			    file.createNewFile();  
+			    FileWriter fileWriter = new FileWriter(file);  
+			    System.out.println("Writing JSON object to file");  
+			    System.out.println("-----------------------");  
+			    System.out.print(tableCompObj);  
+	
+			    fileWriter.write(tableCompObj.toJSONString());  
+			    fileWriter.flush();  
+			    fileWriter.close();
+		} catch (IOException e) {  
+			e.printStackTrace();  
+		}
+	}
+	
+	/**
+	 * Description: This method will zoom out the browser window while comparing UI grid data against Excel data
+	 */
+	public void zoomOutBrowserWindow(int...zoomCount) throws Exception {
+		Robot robot = new Robot();
+		int zoomCountCounter;
+		if(zoomCount.length == 0) {
+			zoomCountCounter = 3;
+		} else {
+			zoomCountCounter = zoomCount[0];
+		}
+		
+		for (int i = 0; i < 3; i++) {			
+			robot.keyPress(KeyEvent.VK_CONTROL);
+			robot.keyPress(KeyEvent.VK_SUBTRACT);
+			robot.keyRelease(KeyEvent.VK_ADD);
+			robot.keyRelease(KeyEvent.VK_SUBTRACT);
+		}
+		System.setProperty("zoomCountCounter", Integer.toString(zoomCountCounter));
+	}
+
+	/**
+	 * Description: This method will zoom into the browser window while comparing UI grid data against Excel data
+	 */
+	public void zoomInBrowserWindow() throws Exception {
+		Robot robot = new Robot();
+		int zoomCountCounter = Integer.parseInt(System.getProperty("zoomCountCounter"));
+			
+		for (int i = 0; i < zoomCountCounter; i++) {
+			robot.keyPress(KeyEvent.VK_CONTROL);
+			robot.keyPress(KeyEvent.VK_ADD);
+			robot.keyRelease(KeyEvent.VK_ADD);
+			robot.keyRelease(KeyEvent.VK_CONTROL);
+		}
+	}
+	
+	/**
+	 * Description: This method will scroll the table UI tabular section vertically
+	 */
+	public void scollUiTabularSectionVertically() throws Exception {
+		Robot robot = new Robot();
+		//To Zoom In
+		for (int i = 0; i < 3; i++) {
+			
+			robot.keyPress(KeyEvent.VK_CONTROL);
+			robot.keyPress(KeyEvent.VK_ADD);
+			robot.keyRelease(KeyEvent.VK_ADD);
+			robot.keyRelease(KeyEvent.VK_CONTROL);
+		}
+	}
+	
+	/**
+	 * Description: It clicks on the show more link on of given Bpp composite factor setting on view all page
+	 * @param settingName: IT takes Bpp composite factor setting as an argument like 'Industrial', 'Commercial' etc.
+	 * @throws Exception
+	 */
+	public void clickShowMoreLinkOfBppSettingOnViewAllGrid(String settingName) throws Exception {
+		String xpath = "//td//span[text() = '"+ settingName +"']//ancestor::td//following-sibling::td//a";
+		WebElement showMoreLink = locateElement(xpath, 30);
+		waitForElementToBeClickable(10, showMoreLink);
+		clickAction(showMoreLink);
+	}
+	
+	/**
+	 * Description: It updates the Bpp composite factor settings on view all page grid
+	 * @param: Takes a data map containing trend settings names as map keys and their values as map values
+	 * @throws: Throws Exception
+	 */
+	public void editBppCompositeFactorValueOnViewAllPage(Map<String, String> updatedSettingValues) throws Exception {		
+		waitForElementToBeClickable(10, moreTabRightSection);
+		clickAction(moreTabRightSection);
+		
+		waitForElementToBeClickable(10, bppCompositeFactorOption);
+		clickAction(bppCompositeFactorOption);
+
+		clickAction(waitForElementToBeClickable(viewAllBppSettings));
+		Thread.sleep(5000);
+		
+		clickShowMoreLinkOfBppSettingOnViewAllGrid("Commercial");
+		clickAction(waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore));
+		enterFactorValue(updatedSettingValues.get("Commercial"));
+		Click(waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
+
+		clickShowMoreLinkOfBppSettingOnViewAllGrid("Industrial");
+		clickAction(waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore));
+		enterFactorValue(updatedSettingValues.get("Industrial"));
+		Click(waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
+		
+		clickShowMoreLinkOfBppSettingOnViewAllGrid("Construction");
+		clickAction(waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore));
+		enterFactorValue(updatedSettingValues.get("Construction"));
+		Click(waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
+		
+		clickShowMoreLinkOfBppSettingOnViewAllGrid("Agricultural");
+		clickAction(waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore));
+		enterFactorValue(updatedSettingValues.get("Agricultural"));
+		Click(waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
 	}
 }

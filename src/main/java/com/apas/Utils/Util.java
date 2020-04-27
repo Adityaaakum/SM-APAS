@@ -18,19 +18,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.apas.BrowserDriver.BrowserDriver;
-import com.apas.Reports.ExtentTestManager;
-import com.relevantcodes.extentreports.LogStatus;
-import org.apache.commons.configuration.PropertiesConfiguration;
+import javax.imageio.ImageIO;
 
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-
-import com.apas.TestBase.TestBase;
-import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
+import com.apas.BrowserDriver.BrowserDriver;
+import com.apas.Reports.ExtentTestManager;
+import com.apas.TestBase.TestBase;
+import com.relevantcodes.extentreports.LogStatus;
+
+import ru.yandex.qatools.ashot.AShot;
+import ru.yandex.qatools.ashot.Screenshot;
+import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
 public class Util {
 
@@ -202,10 +206,11 @@ public class Util {
 	 * Captures the screen shot on assertion failure and attaches it toExtent report
 	 * @param message: "SMAB-T418: <Some validation message>"
 	 */
-	public void getScreenShot(String message) {
+	public void getScreenShot(String message) throws Exception {
 		String methodName = System.getProperty("currentMethodName");
 		RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
 		TakesScreenshot ts = (TakesScreenshot) ldriver;
+				
 		File source = ts.getScreenshotAs(OutputType.FILE);
 
 		Date date = new Date();
@@ -215,7 +220,11 @@ public class Util {
 
 		File destination = new File(dest);
 		try {
-			FileUtils.copyFile(source, destination);
+			//FileUtils.copyFile(source, destination);
+			
+			Screenshot screenshot=new AShot().shootingStrategy(ShootingStrategies.viewportPasting(1000)).takeScreenshot(ldriver);                  
+			ImageIO.write(screenshot.getImage(),"PNG",new File(dest));             
+			
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot for the failed validation : " + message
 					+ ExtentTestManager.getUpTestVariable().addScreenCapture(dest));
 		} catch (IOException e) {
@@ -225,7 +234,7 @@ public class Util {
 
 	/**
 	 * @author Sikander Bhambhu
-	 * @Description : It reads the given JSON file and retrieves data from it suing the key provided
+	 * @Description : It reads the given JSON file and retrieves data from it using the key provided
 	 * @param filePath: Takes the path of the JSON file
 	 * @param keyName: Takes the names of the key present in JSON file
 	 * for which data needs to be read like 'DataToCreateBuildingPermitManualEntry' etc

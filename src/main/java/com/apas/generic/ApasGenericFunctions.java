@@ -14,13 +14,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 
 import com.apas.PageObjects.ApasGenericPage;
-
 import com.apas.PageObjects.BppTrendSetupPage;
 import com.apas.PageObjects.EFileImportPage;
-
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
@@ -28,7 +25,7 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.PasswordUtils;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class ApasGenericFunctions extends Page {
+public class ApasGenericFunctions extends TestBase {
 
 	@FindBy(xpath = "//div[@class = 'slds-media__body slds-align-middle']//span[contains(@class, 'triggerLinkText selectedListView uiOutputText')]")
 	public WebElement currenltySelectViewOption;
@@ -52,18 +49,14 @@ public class ApasGenericFunctions extends Page {
 	public WebElement pinIcon;	
 	
 	private RemoteWebDriver driver;
+	Page objPage;
 	LoginPage objLoginPage;
-	BppTrendSetupPage objBppTrendSetupPage;
-	EFileImportPage eFilePageObject;
 	ApasGenericPage objApasGenericPage;
 	
 	public ApasGenericFunctions(RemoteWebDriver driver){
-		super(driver);
 		this.driver = driver;
-		PageFactory.initElements(driver, this);
-		
+		objPage = new Page(this.driver);
 		objLoginPage = new LoginPage(this.driver);
-		objBppTrendSetupPage = new BppTrendSetupPage(this.driver);
 		objApasGenericPage = new ApasGenericPage(this.driver);
 	}
 	
@@ -72,26 +65,20 @@ public class ApasGenericFunctions extends Page {
 	 * @param userType : Type of the user e.g. business admin / appraisal support
 	 */
 	public void login(String userType) throws Exception{
-		String password = TestBase.CONFIG.getProperty(userType + "Password");
+		String password = CONFIG.getProperty(userType + "Password");
 		
 		//Decrypting the password if the encrypted password is saved in envconfig file and passwordEncryptionFlag flag is set to true
-		if (TestBase.CONFIG.getProperty("passwordEncryptionFlag").equals("true")){
+		if (CONFIG.getProperty("passwordEncryptionFlag").equals("true")){
 			System.out.println("Decrypting the password : " + password);
 			password = PasswordUtils.decrypt(password, "");
 		}
 				
 		ExtentTestManager.getTest().log(LogStatus.INFO, userType + " User is logging in the application with the user : " + userType );
 		
-		navigateTo(driver, TestBase.envURL);
-		enter(objLoginPage.txtuserName, TestBase.CONFIG.getProperty(userType + "UserName"));
-		enter(objLoginPage.txtpassWord,password);
-		Click(objLoginPage.btnSubmit);
-		
-		WebElement verificationCodeSection = locateElement("//h2[text() = 'Verify Your Identity']", 10);
-		if(verificationCodeSection != null) {
-			System.out.println("Waiting for verification code!!");
-			Thread.sleep(40000);
-		}
+		objPage.navigateTo(driver, envURL);
+		objPage.enter(objLoginPage.txtuserName, CONFIG.getProperty(userType + "UserName"));
+		objPage.enter(objLoginPage.txtpassWord,password);
+		objPage.Click(objLoginPage.btnSubmit);
 		System.out.println("User logged in the application");
 	}
 	
@@ -101,8 +88,8 @@ public class ApasGenericFunctions extends Page {
 	 */
 	public void searchModule(String moduleToSearch) throws Exception {	
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
-		Click(objApasGenericPage.appLauncher);
-		enter(objApasGenericPage.appLauncherSearchBox, moduleToSearch);
+		objPage.Click(objApasGenericPage.appLauncher);
+		objPage.enter(objApasGenericPage.appLauncherSearchBox, moduleToSearch);
 		objApasGenericPage.clickNavOptionFromDropDown(moduleToSearch);
 		//This static wait statement is added as the module title is different from the module to search 
 		Thread.sleep(4000);
@@ -114,18 +101,18 @@ public class ApasGenericFunctions extends Page {
 	 */
 	public void logout() throws IOException{
 		//Handling the situation where pop remains opened before logging out
-		if (verifyElementVisible(objApasGenericPage.crossButton))
-			Click(objApasGenericPage.crossButton);
-		else if (verifyElementVisible(objApasGenericPage.closeButton))
-			Click(objApasGenericPage.closeButton);
-		else if (verifyElementVisible(objApasGenericPage.cancelButton))
-			Click(objApasGenericPage.cancelButton);
+		if (objPage.verifyElementVisible(objApasGenericPage.crossButton))
+			objPage.Click(objApasGenericPage.crossButton);
+		else if (objPage.verifyElementVisible(objApasGenericPage.closeButton))
+			objPage.Click(objApasGenericPage.closeButton);
+		else if (objPage.verifyElementVisible(objApasGenericPage.cancelButton))
+			objPage.Click(objApasGenericPage.cancelButton);
 
 		//Logging out of the application
 		ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");
-		Click(objLoginPage.imgUser);
-		Click(objLoginPage.lnkLogOut);
-		waitForElementToBeVisible(objLoginPage.txtpassWord,30);
+		objPage.Click(objLoginPage.imgUser);
+		objPage.Click(objLoginPage.lnkLogOut);
+		objPage.waitForElementToBeVisible(objLoginPage.txtpassWord,30);
 	}
 
 	
@@ -136,8 +123,8 @@ public class ApasGenericFunctions extends Page {
 	 */
 	public void editGridCellValue(String columnNameOnGrid, String expectedValue) throws IOException, AWTException, InterruptedException{
 		WebElement webelement = driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button"));
-		scrollToElement(webelement);
-		Click(webelement);
+		objPage.scrollToElement(webelement);
+		objPage.Click(webelement);
 		
 		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
 		webelementInput.clear();
@@ -154,9 +141,9 @@ public class ApasGenericFunctions extends Page {
 	 */
 	public void displayRecords(String displayOption) throws IOException, InterruptedException {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Displaying all the records on the grid");
-		Click(objApasGenericPage.selectListViewButton);
+		objPage.Click(objApasGenericPage.selectListViewButton);
 		Thread.sleep(1000);
-		Click(driver.findElement(By.xpath("//a[@role='option']//span[text()='" + displayOption + "']")));
+		objPage.Click(driver.findElement(By.xpath("//a[@role='option']//span[text()='" + displayOption + "']")));
 		Thread.sleep(3000);
 	}
 
@@ -174,10 +161,10 @@ public class ApasGenericFunctions extends Page {
 	 */
 	public String searchRecords(String searchString) throws Exception {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Searching and filtering the data on the grid with the String " + searchString);
-		enter(objApasGenericPage.searchListEditBox,searchString);
-		Click(objApasGenericPage.countSortedByFilteredBy);
+		objPage.enter(objApasGenericPage.searchListEditBox,searchString);
+		objPage.Click(objApasGenericPage.countSortedByFilteredBy);
 		Thread.sleep(3000);
-		return getElementText(objApasGenericPage.countSortedByFilteredBy);
+		return objPage.getElementText(objApasGenericPage.countSortedByFilteredBy);
 	}
 
 	/**
@@ -221,38 +208,56 @@ public class ApasGenericFunctions extends Page {
 	}
 
 	/**
-	 * Description: This method will save the grid data in hashmap
+	 * Description: This method will save the grid data in hashmap (Default Behavior: First Table and All Rows displayed on UI)
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
 	public HashMap<String, ArrayList<String>> getGridDataInHashMap() {
-		return getGridDataInHashMap(-1);
+		return getGridDataInHashMap(1);
 	}
 
+
 	/**
-	 * Description: This method will save the grid data in hashmap for the Row Number passed in the argument
+	 * Description: This method will save the grid data in hashmap (Default Behavior: Table Index passed in the parameter and all the rows)
+	 * @param tableIndex: Table Index displayed on UI if there are multiple tables displayed on UI
+	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
+	 */
+	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int tableIndex) {
+		return getGridDataInHashMap(tableIndex,-1);
+	}
+
+
+	/**
+	 * Description: This method will save the grid data in hashmap for the Table Index and Row Number passed in the argument
 	 * @param rowNumber: Row Number for which data needs to be fetched
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
-	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int rowNumber) {
+	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int tableIndex, int rowNumber) {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
-		//This code is to fetch the data for a particular row in the grid
-		String xpathRows = "//tbody/tr";
+		//This code is to fetch the data for a particular row in the grid in the table passed in tableIndex
+		String xpathTable = "(//table)[" + tableIndex + "]";
+		String xpathHeaders = xpathTable + "//thead/tr/th";
+		String xpathRows = xpathTable + "//tbody/tr";
 		if (!(rowNumber == -1)) xpathRows = xpathRows + "[" + rowNumber + "]";
 
 		HashMap<String,ArrayList<String>> gridDataHashMap = new HashMap<>();
 
 		//Fetching the headers and data web elements from application
-		List<WebElement> webElementsHeaders = driver.findElements(By.xpath("//thead/tr/th"));
+		List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpathHeaders));
 		List<WebElement> webElementsRows = driver.findElements(By.xpath(xpathRows));
+
+		String key, value;
 
 		//Converting the grid data into hashmap
 		for(WebElement webElementRow : webElementsRows){
 			List<WebElement> webElementsCells = webElementRow.findElements(By.xpath(".//td | .//th"));
 			for(int gridCellCount=0; gridCellCount< webElementsHeaders.size(); gridCellCount++){
-				String key = webElementsHeaders.get(gridCellCount).getAttribute("title");
-				String value = webElementsCells.get(gridCellCount).getText();
-				gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
-				gridDataHashMap.get(key).add(value);
+				key = webElementsHeaders.get(gridCellCount).getAttribute("aria-label");
+				if (key!=null){
+					//"replace("Edit "+ key,"").trim()" code is user to remove the text \nEdit as few cells have edit button and the text of edit button is also returned with getText()
+					value = webElementsCells.get(gridCellCount).getText().replace("Edit "+ key,"").trim();
+					gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
+					gridDataHashMap.get(key).add(value);
+				}
 			}
 		}
 		return gridDataHashMap;
@@ -262,11 +267,11 @@ public class ApasGenericFunctions extends Page {
 	 * Description: This will select the recently viewed mode on grid
 	 */
 	public void selectRecentlyViewedOptionOnGrid() throws Exception {
-		String currentlyVisibleOption = getElementText(objApasGenericPage.currenltySelectViewOption);
+		String currentlyVisibleOption = objPage.getElementText(objApasGenericPage.currenltySelectViewOption);
 		if(!(currentlyVisibleOption.equalsIgnoreCase("Recently Viewed"))) {
-			Click(objApasGenericPage.selectListViewIcon);
-			Click(objApasGenericPage.recentlyViewedOption);
-			Click(objApasGenericPage.pinIcon);
+			objPage.Click(objApasGenericPage.selectListViewIcon);
+			objPage.Click(objApasGenericPage.recentlyViewedOption);
+			objPage.Click(objApasGenericPage.pinIcon);
 		}
 	}
 	
@@ -274,11 +279,11 @@ public class ApasGenericFunctions extends Page {
 	 * Description: This will select the All mode on grid
 	 */
 	public void selectAllOptionOnGrid() throws Exception {
-		String currentlyVisibleOption = getElementText(objApasGenericPage.currenltySelectViewOption);
+		String currentlyVisibleOption = objPage.getElementText(objApasGenericPage.currenltySelectViewOption);
 		if(!(currentlyVisibleOption.equalsIgnoreCase("All"))) {
-			Click(objApasGenericPage.selectListViewIcon);
-			Click(objApasGenericPage.allOption);
-			Click(objApasGenericPage.pinIcon);
+			objPage.Click(objApasGenericPage.selectListViewIcon);
+			objPage.Click(objApasGenericPage.allOption);
+			objPage.Click(objApasGenericPage.pinIcon);
 		}
 	}
 	
@@ -286,17 +291,17 @@ public class ApasGenericFunctions extends Page {
 	 * Description: This will select the All mode on grid
 	 */
 	public void selectImportedEfileBuildingPermitsOptionOnGrid() throws Exception {
-		Click(objApasGenericPage.selectListViewIcon);
-		Click(waitForElementToBeClickable(objApasGenericPage.allImportedEfileBuildingPermitsOption));
-		Click(objApasGenericPage.pinIcon);
+		objPage.Click(objApasGenericPage.selectListViewIcon);
+		objPage.Click(objPage.waitForElementToBeClickable(objApasGenericPage.allImportedEfileBuildingPermitsOption));
+		objPage.Click(objApasGenericPage.pinIcon);
 	}
 	
 	/**
 	 * Description: This will select the All mode on grid
 	 */
 	public void selectAllManualBuildingPermitOptionOnGrid() throws Exception {
-		Click(objApasGenericPage.selectListViewIcon);
-		Click(waitForElementToBeClickable(objApasGenericPage.allManualBuilingdPermitsOption));
-		Click(objApasGenericPage.pinIcon);
+		objPage.Click(objApasGenericPage.selectListViewIcon);
+		objPage.Click(objPage.waitForElementToBeClickable(objApasGenericPage.allManualBuilingdPermitsOption));
+		objPage.Click(objApasGenericPage.pinIcon);
 	}
 }
