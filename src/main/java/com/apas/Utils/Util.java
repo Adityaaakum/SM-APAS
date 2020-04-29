@@ -224,7 +224,7 @@ public class Util {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return encodedFile;
+		return "data:image/jpeg;base64," + encodedFile;
 	}
 
 
