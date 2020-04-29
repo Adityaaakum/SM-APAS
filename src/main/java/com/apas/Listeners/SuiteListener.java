@@ -1,9 +1,6 @@
 package com.apas.Listeners;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
@@ -31,6 +28,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 
 	public ExtentReports extent;
 	ExtentTest upTest;
+	Util objUtils = new Util();
 
 	protected String getStackTrace(Throwable t) {
 		StringWriter sw = new StringWriter();
@@ -56,7 +54,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 			}
 
 			//This will move old report to archive folder
-			new Util().migrateOldReportsToAcrhive();;
+			objUtils.migrateOldReportsToAcrhive();;
 
 		} catch (Exception e1) {
 			e1.printStackTrace();
@@ -83,7 +81,8 @@ public class SuiteListener extends TestBase implements ITestListener {
 	@Override
 	public void onTestStart(ITestResult result) {
 		try {
-			SoftAssertion.isSoftAssertionUsedFlag = true;
+			//Making isSoftAssertionUsedFlag flag as False to reset soft assertion status
+			SoftAssertion.isSoftAssertionUsedFlag = false;
 			//Updating the system properties with test case properties details
 			String methodName = result.getMethod().getMethodName();
 			String className = result.getMethod().toString();
@@ -145,7 +144,9 @@ public class SuiteListener extends TestBase implements ITestListener {
 
 			ExtentTestManager.getTest().log(LogStatus.FAIL, getStackTrace(result.getThrowable()));
 			//Adding the screenshot to the report
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot below: " + upTest.addScreenCapture(dest));
+			File imageFile = new File(dest);
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot below: " + upTest.addScreenCapture(objUtils.encodeFileToBase64Binary(imageFile)));
+
 			//Finishing the test case
 			ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 			ExtentManager.getExtentInstance().flush();
