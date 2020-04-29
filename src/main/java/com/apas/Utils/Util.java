@@ -1,20 +1,12 @@
 package com.apas.Utils;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.Reports.ExtentTestManager;
@@ -63,7 +55,7 @@ public class Util {
 	 *            the key
 	 * @param value
 	 *            the value
-	 * @param configFile
+	 * @param fileType
 	 * @throws Exception
 	 */
 	public static void setValIntoResource(String key, String value, FileType fileType) throws Exception {
@@ -212,10 +204,28 @@ public class Util {
 		try {
 			FileUtils.copyFile(source, destination);
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot for the failed validation : " + message
-					+ ExtentTestManager.getUpTestVariable().addScreenCapture(dest));
+					+ ExtentTestManager.getUpTestVariable().addScreenCapture(encodeFileToBase64Binary(destination)));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * This method will convert a file into Base 64 Binary to embed in the report
+	 * @param file: File to be encoded
+	 */
+	public String encodeFileToBase64Binary(File file){
+		String encodedFile = null;
+		try {
+			FileInputStream fileInputStreamReader = new FileInputStream(file);
+			byte[] bytes = new byte[(int)file.length()];
+			fileInputStreamReader.read(bytes);
+			encodedFile = Base64.getEncoder().encodeToString(bytes);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return encodedFile;
+	}
+
 
 }
