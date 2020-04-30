@@ -14,7 +14,7 @@
 <!--		</groups>-->
 		<classes>
 
-			<class name="com.apas.Tests.BuildingPermit.BuildingPermitImportTest"/>
+			<!-- <class name="com.apas.Tests.BuildingPermit.BuildingPermitImportTest"/> -->
 
 <!--			<class name="com.apas.Tests.ApasSettings.CityStratCodesTest" />-->
 <!--			<class name="com.apas.Tests.ApasSettings.ReportsTest" />-->

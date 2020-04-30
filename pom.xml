@@ -155,6 +155,12 @@
 			<artifactId>commons-csv</artifactId>
 			<version>1.1</version>
 		</dependency>
+		 <!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -195,7 +201,7 @@
 						</properties>
 						<!-- <forkCount>10</forkCount> <reuseForks>true</reuseForks> -->
 						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
-						<includes>
+						<!-- <includes>
 							<include>BuildingPermitImportTest.java</include>
 							<include>BuildingPermitManualCreationTest.java</include>
 							<include>BuildingPermitEditTest.java</include>
@@ -205,13 +211,19 @@
 							<include>ReportsTest.java</include>
 							<include>RollwisePermissionTest.java</include>
 							<include>NonRelevantPermitSettingsTest.java</include>
-						</includes>
-<!--						<groups>${groups}</groups>-->
-						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
-						<!-- <systemPropertyVariables> <browserName>${browserName}</browserName> 
-							<executionType>${executionType}</executionType> <gridHubUrl>${gridHubUrl}</gridHubUrl> 
-							<platform>${platform}</platform> <region>${region}</region> <deviceName>${deviceName}</deviceName> 
-							<os_version>${os_version}</os_version> </systemPropertyVariables> -->
+						</includes> -->
+						<groups>${$testSuite}</groups>
+						<!-- <suiteXmlFiles> 
+						    <suiteXmlFile>testng.xml</suiteXmlFile> 
+						</suiteXmlFiles> -->
+						<systemPropertyVariables> 
+						    <browserName>${browserName}</browserName> 
+							<testSuite>${testSuite}</testSuite> 
+							<gridHubUrl>${gridHubUrl}</gridHubUrl>						
+							<region>${region}</region>
+							<flagToUpdateJira>$flagToUpdateJira</flagToUpdateJira>
+							<testCycle>$testCycle</testCycle>
+						</systemPropertyVariables>
 					</configuration>
 				</plugin>
 			</plugins>
