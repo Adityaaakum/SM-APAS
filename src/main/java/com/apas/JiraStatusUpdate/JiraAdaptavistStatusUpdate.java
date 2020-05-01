@@ -32,7 +32,7 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 
 			// setting content type to make the API call
 			httpRequest.header("Content-Type", "application/json");
-			httpRequest.header("Authorization", "Basic c2lrYmhhbWI6TmF2eWFAMTcyMg==");
+			httpRequest.header("Authorization", "Basic c2lrYmhhbWI6TkB2eWFAMjIxNw==");
 
 			// instantiating pojo class and setting "Status" and "Executed By" fields
 			TestCaseUpdateRequestMainPojo testCaseUpdateRequestMainPojo = new TestCaseUpdateRequestMainPojo();
@@ -66,7 +66,7 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 
 		// setting content type to make the API call
 		httpRequest.header("Content-Type", "application/json");
-		httpRequest.header("Authorization", "Basic c2lrYmhhbWI6TmF2eWFAMTcyMg==");
+		httpRequest.header("Authorization", "Basic c2lrYmhhbWI6TkB2eWFAMjIxNw==");
 
 		// passing body to the API call and retrieving the response
 		Response response = httpRequest.get("testrun/" + testCycle);
