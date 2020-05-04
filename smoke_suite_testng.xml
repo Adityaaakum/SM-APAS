@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="APAS_Automation" configfailurepolicy="continue">
+
+	<listeners>
+		<listener class-name="com.apas.Listeners.SuiteListener"/>
+		<listener class-name="com.apas.Listeners.TestAnnotationListener"/>
+	</listeners>
+	<test name="SMAB-T398: Validation for Duplicate Non Relevant Permit Settings" annotations="" preserve-order="true">
+		<classes>
+			<class name="com.apas.Tests.ApasSettings.CityStratCodesTest" />
+			<class name="com.apas.Tests.ApasSettings.ReportsTest" />
+			<class name="com.apas.Tests.ApasSettings.RollwisePermissionTest" />
+			<class name="com.apas.Tests.ApasSettings.NonRelevantPermitSettingsTest" />
+		</classes>
+	</test>
+</suite>

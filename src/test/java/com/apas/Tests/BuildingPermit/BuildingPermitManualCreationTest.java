@@ -73,7 +73,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Open and save building permit manual creation form without entering the data
-		objBuildingPermitPage.openManualEntryForm();
+		objBuildingPermitPage.openNewForm();
 		objPage.Click(objBuildingPermitPage.saveButton);
 
 		//Step4: Validate the error message appeared for mandatory fields
@@ -140,7 +140,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 
 		//Step9: Closing the pops opened on the application
 		objPage.Click(objBuildingPermitPage.closeViewDuplicatePopUpButton);
-		objPage.Click(objBuildingPermitPage.closeNewBuildingPermitPopUpButton);
+		objPage.Click(objBuildingPermitPage.closeEntryPopUp);
 
 	}
 

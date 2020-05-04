@@ -145,9 +145,9 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.codoid.products/fillo -->
 		<dependency>
-		    <groupId>com.codoid.products</groupId>
-		    <artifactId>fillo</artifactId>
-		    <version>1.18</version>
+			<groupId>com.codoid.products</groupId>
+			<artifactId>fillo</artifactId>
+			<version>1.18</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-csv -->
 		<dependency>
@@ -155,12 +155,24 @@
 			<artifactId>commons-csv</artifactId>
 			<version>1.1</version>
 		</dependency>
-		 <!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
-        <dependency>
-            <groupId>com.googlecode.json-simple</groupId>
-            <artifactId>json-simple</artifactId>
-            <version>1.1.1</version>
-        </dependency>
+		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/ru.yandex.qatools.ashot/ashot -->
+		<dependency>
+			<groupId>ru.yandex.qatools.ashot</groupId>
+			<artifactId>ashot</artifactId>
+			<version>1.5.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.directory.studio/org.apache.commons.io -->
+		<dependency>
+		    <groupId>org.apache.directory.studio</groupId>
+		    <artifactId>org.apache.commons.io</artifactId>
+		    <version>2.4</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -201,29 +213,28 @@
 						</properties>
 						<!-- <forkCount>10</forkCount> <reuseForks>true</reuseForks> -->
 						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
-						<!-- <includes>
-							<include>BuildingPermitImportTest.java</include>
-							<include>BuildingPermitManualCreationTest.java</include>
-							<include>BuildingPermitEditTest.java</include>
-							<include>BuildingPermitDataValidationTest.java</include>
-							<include>BuildingPermitTransactionsLogTest.java</include>
-							<include>CityStratCodesTest.java</include>
-							<include>ReportsTest.java</include>
-							<include>RollwisePermissionTest.java</include>
-							<include>NonRelevantPermitSettingsTest.java</include>
-						</includes> -->
-						<groups>${$testSuite}</groups>
-						<!-- <suiteXmlFiles> 
-						    <suiteXmlFile>testng.xml</suiteXmlFile> 
-						</suiteXmlFiles> -->
-						<systemPropertyVariables> 
-						    <browserName>${browserName}</browserName> 
-							<testSuite>${testSuite}</testSuite> 
-							<gridHubUrl>${gridHubUrl}</gridHubUrl>						
-							<region>${region}</region>
-							<flagToUpdateJira>$flagToUpdateJira</flagToUpdateJira>
-							<testCycle>$testCycle</testCycle>
-						</systemPropertyVariables>
+						<includes>
+							<!-- <include>BuildingPermitImportTest.java</include> 
+								<include>BuildingPermitManualCreationTest.java</include> 
+								<include>BuildingPermitEditTest.java</include> 
+								<include>BuildingPermitDataValidationTest.java</include> 
+								<include>BuildingPermitTransactionsLogTest.java</include>
+								<include>CityStratCodesTest.java</include> 
+								<include>ReportsTest.java</include> 
+								<include>RollwisePermissionTest.java</include> 
+								<include>NonRelevantPermitSettingsTest.java</include> -->
+								<!-- <include>BppTrendSettingTest.java</include> -->
+								<include>BppTrendCalculateAndSubmitTest.java</include>
+								<!-- <include>BppTrendApprovalTest.java</include>
+								<include>BppTrendFileDownloadTest.java</include> -->
+						</includes>
+						<!-- <groups>${groups}</groups> -->
+						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
+						<!-- <systemPropertyVariables> <browserName>${browserName}</browserName> 
+							<executionType>${executionType}</executionType> <gridHubUrl>${gridHubUrl}</gridHubUrl> 
+							<platform>${platform}</platform> <region>${region}</region> <deviceName>${deviceName}</deviceName> 
+							<os_version>${os_version}</os_version> </systemPropertyVariables> -->
+
 					</configuration>
 				</plugin>
 			</plugins>

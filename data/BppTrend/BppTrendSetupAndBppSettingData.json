@@ -1,0 +1,92 @@
+{
+	"DataToCreateBppTrendSetting": {
+    	"BPP Trend Roll Year": "2020",
+		"Maximum Equipment index Factor": "125"
+	},
+    "DataToCreateBppTrendCommercialSetting": {
+    	"BPP Trend Roll Year": "2020",
+		"Minimum Good Factor": "10",
+		"Property Type": "Commercial"
+	},
+    "DataToCreateBppTrendIndustrialSetting": {
+    	"BPP Trend Roll Year": "2020",
+		"Minimum Good Factor": "10",
+		"Property Type": "Industrial"
+	},
+    "DataToCreateBppTrendConstructionSetting": {
+    	"BPP Trend Roll Year": "2020",
+		"Minimum Good Factor": "10",
+		"Property Type": "Construction"
+	},
+	"DataToCreateBppTrendAgriculturalSetting": {
+    	"BPP Trend Roll Year": "2020",
+		"Minimum Good Factor": "10",
+		"Property Type": "Agricultural"
+	},
+	"DataToEditBppTrendSetting": {
+		"Maximum Equipment index Factor": "125"
+	},
+	"BppPropertyIndexFactor": {
+		"Name (Roll Year - Property Type)": "2018-commercial-2017",
+		"Index Factor": "10",
+		"Property Type": "Commercial",
+		"Year Acquired": "2017"
+	},
+	"BppPercentGoodFactor": {
+		"Name (Roll Year - Type - Age - [Life])": "Good Factor-Test-2017",
+		"Good Factor Type": "Machinery & Equipment",
+		"Year Acquired": "2017",
+		"Age": "10",
+		"Expected Life": "10",
+		"General Good Factor": "1",
+		"New - Good Factor": "1",
+		"Used - Good Factor": "1",
+		"Average - Good Factor": "1",
+		"Identifier": "testing",
+		"Import Status": "Import Completed"	
+	},
+	"ImportedValuationFactor": {
+		"Year Acquired": "125",
+		"Property Type": "Personal Computer",
+		"Import Status": "Import Completed",
+		"Valuation Factor": "10",
+		"Name (Roll Year - Property Type)": "Composite Factor-Test-2017",
+		"Identifier": "testing12"
+	},
+	"DataToCreateBppTrendSetup": {
+		"Roll Year": "2020",
+		"Commercial Trends Status": "Import Approved",
+		"Const. Mobile Equipment Trends Status": "Import Approved",
+		"Industrial Trend Status": "Import Approved",
+		"Ag. Mobile Equipment Trends Status": "Import Approved",
+		"Const. Trends Status": "Import Approved",
+		"Ag. Trends Status": "Import Approved",
+		"Computer Trends Status": "Import Approved",
+		"Biopharmaceutical Trends Status": "Import Approved",
+		"Copier Trends Status": "Import Approved",
+		"Semiconductor Trends Status": "Import Approved",
+		"Litho Trends Status": "Import Approved",
+		"Mechanical Slot Machine Trends Status": "Import Approved",
+		"Set-Top Box Trends Status": "Import Approved",
+		"Electronic Slot Machine Trends Status": "Import Approved",
+		"Prop 13 Factor Status": "Not Calculated"
+	},
+	"DataToEditBppTrendSetup": {
+		"Roll Year": "2020",
+		"Commercial Trends Status": "Import Approved",
+		"Const. Mobile Equipment Trends Status": "Import Approved",
+		"Industrial Trend Status": "Import Approved",
+		"Ag. Mobile Equipment Trends Status": "Import Approved",
+		"Const. Trends Status": "Import Approved",
+		"Ag. Trends Status": "Import Approved",
+		"Prop 13 Factor Status": "Import Approved",
+		"Computer Trends Status": "Import Approved",
+		"Biopharmaceutical Trends Status": "Import Approved",
+		"Copier Trends Status": "Import Approved",
+		"Semiconductor Trends Status": "Import Approved",
+		"Litho Trends Status": "Import Approved",
+		"Mechanical Slot Machine Trends Status": "Import Approved",
+		"Set-Top Box Trends Status": "Import Approved",
+		"Electronic Slot Machine Trends Status": "Import Approved"
+	}
+}

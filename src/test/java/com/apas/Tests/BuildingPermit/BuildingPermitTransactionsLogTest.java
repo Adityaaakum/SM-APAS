@@ -114,7 +114,7 @@ public class BuildingPermitTransactionsLogTest extends TestBase {
 		softAssert.assertTrue(objPage.getElementText(objEfileImportTransactionsPage.efileImportLogLabel).contains("San Mateo Building permits"), "SMAB-T430: Validation that latest generated transaction log is for San Mateo Building permits");
 	}
 
-
+	
 
 //	/**
 //	 Below test case is used to validate below functionalities

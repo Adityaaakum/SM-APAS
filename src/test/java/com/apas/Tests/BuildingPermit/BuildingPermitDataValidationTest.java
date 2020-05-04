@@ -235,3 +235,4 @@ public class BuildingPermitDataValidationTest extends TestBase {
         softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Record Type","System Information"), "Manual Entry Building Permit", "SMAB-T383: 'Record Type' Field Validation in 'System Information' section");
     }
 }
+

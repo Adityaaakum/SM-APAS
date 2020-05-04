@@ -34,15 +34,6 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//span[contains(@class, 'uiOutputText') and text() = '$selectedHeaderOption']")
 	private WebElement textForSelectedHeaderOption;
 
-	@FindBy(xpath = "//span[contains(@class, 'triggerLinkText selectedListView') and text() = 'All']")
-	private WebElement listViews;
-
-	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = '$listViewToSelect']")
-	private WebElement listViewOptions;
-
-	@FindBy(xpath = "//button[@class='slds-button slds-button_icon']//lightning-primitive-icon")
-	private WebElement pinIcon;
-
 	@FindBy(xpath = "//label[text() = 'Roll Year']/following-sibling::div//lightning-base-combobox//div[@role = 'none']")
 	private WebElement dropDownBoxRollYear;
 
@@ -102,5 +93,4 @@ public class BppTrendSetupPage extends Page {
 		}
 		return actualHeaderText;
 	}
-
 }

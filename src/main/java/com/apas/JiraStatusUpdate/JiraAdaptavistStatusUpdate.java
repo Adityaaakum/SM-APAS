@@ -24,7 +24,7 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 	public static void updateJiraTestCaseStatus(String jiraTestCaseId, String testCaseStatus) {
 		try {
 			// String username=System.getProperty("user.name");
-			String username = "akaila";
+			String username = "sikbhamb";
 
 			// Storing BaseURI
 			RestAssured.baseURI = BASE_URI;
@@ -72,6 +72,7 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 		Response response = httpRequest.get("testrun/" + testCycle);
 		String responseString = response.getBody().asString();
 		JsonPath jsPath = new JsonPath(responseString);
+		System.out.println("responseString: " + responseString);
 		List<Object> testCaseKeys = jsPath.getList("items.testCaseKey");
 		for (Object testCaseKey : testCaseKeys) {
 			testStatus.put(testCaseKey.toString(), "Not Executed");
@@ -106,7 +107,7 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 			for(String testCaseKey : testCaseKeys){
 				String currentStatus = JiraAdaptavistStatusUpdate.testStatus.get(testCaseKey);
 				if (currentStatus==null){
-					System.out.println("Test Case Key " + testCaseKey + " is not part of Test Cycle " + testCycle);
+					//System.out.println("Test Case Key " + testCaseKey + " is not part of Test Cycle " + testCycle);
 				}else if(!(currentStatus.equalsIgnoreCase("Fail"))) {
 					JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey, testCaseStatus);
 				}

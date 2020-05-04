@@ -25,6 +25,8 @@
 <!--			<class name="com.apas.Tests.BuildingPermit.BuildingPermitManualCreationTest" />-->
 <!--			<class name="com.apas.Tests.BuildingPermit.BuildingPermitImportTest"/>-->
 <!--			<class name="com.apas.Tests.BuildingPermit.BuildingPermitTransactionsLogTest"/>-->
+
+			<class name="com.apas.Tests.BppTrend.BppTrendCalculateAndSubmitTest"/>
 		</classes>
 	</test>
 </suite>

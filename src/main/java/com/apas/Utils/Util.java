@@ -1,6 +1,7 @@
 package com.apas.Utils;
 
 import java.io.*;
+
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -8,16 +9,18 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.apas.BrowserDriver.BrowserDriver;
-import com.apas.Reports.ExtentTestManager;
-import com.relevantcodes.extentreports.LogStatus;
 import org.apache.commons.configuration.PropertiesConfiguration;
-
-import com.apas.TestBase.TestBase;
 import org.apache.commons.io.FileUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
+import com.apas.BrowserDriver.BrowserDriver;
+import com.apas.Reports.ExtentTestManager;
+import com.apas.TestBase.TestBase;
+import com.relevantcodes.extentreports.LogStatus;
 
 public class Util {
 
@@ -185,6 +188,7 @@ public class Util {
 		}
 	}
 
+
 	/**
 	 * Captures the screen shot on assertion failure and attaches it toExtent report
 	 * @param message: "SMAB-T418: <Some validation message>"
@@ -227,5 +231,29 @@ public class Util {
 		return "data:image/jpeg;base64," + encodedFile;
 	}
 
-
+	/**
+	 * @author Sikander Bhambhu
+	 * @Description : It reads the given JSON file and retrieves data from it using the key provided
+	 * @param filePath: Takes the path of the JSON file
+	 * @param keyName: Takes the names of the key present in JSON file
+	 * for which data needs to be read like 'DataToCreateBuildingPermitManualEntry' etc
+	 * @return: Return a data map          
+	 **/
+	public Map<String, String> generateMapFromJsonFile(String filePath, String keyName) {
+		Map<String, String> dataMap = new HashMap<String, String>();
+        Object obj;
+		try {
+			obj = new JSONParser().parse(new FileReader(filePath));
+	        JSONObject jo = (JSONObject) obj;
+	        JSONObject buildingPermitData = (JSONObject) jo.get(keyName);
+	        Iterator<Map.Entry<String, String>> itr = buildingPermitData.entrySet().iterator(); 
+	        while (itr.hasNext()) { 
+	            Map.Entry<String, String> pair = itr.next(); 
+	            dataMap.put(pair.getKey(), pair.getValue());
+	        }
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return dataMap;
+	}
 }

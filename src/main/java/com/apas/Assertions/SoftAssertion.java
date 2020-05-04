@@ -30,8 +30,9 @@ public class SoftAssertion {
 	 * 
 	 * @param condition: true/false
 	 * @param message: "<Jira ID>: <Some validation message>"
+	 * @throws Exception 
 	 */
-	public void assertTrue(final boolean condition, String message) {
+	public void assertTrue(final boolean condition, String message, boolean... flagToExcludeScreenShot) throws Exception {
 		if (!message.contains(":: Expected:"))
 			message = message + " :: Expected: true" + " || " + "Actual: " + condition;
 
@@ -42,21 +43,24 @@ public class SoftAssertion {
 		} else {
 			ExtentTestManager.getTest().log(LogStatus.FAIL, message);
 			JiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKey, "Fail");
-			new Util().getScreenShot(message);
+			if(flagToExcludeScreenShot.length == 0 || flagToExcludeScreenShot[0] == false) {
+				new Util().getScreenShot(message);	
+			}
 			isSoftAssertionUsedFlag = true;
 		}
 	}
 
 	/**
-	 * Asserts that given actaul and expected value and adds the message passed in message parameter
+	 * Asserts that given actual and expected value and adds the message passed in message parameter
 	 * Updates the test case status in test case map as pass or fail
 	 * Takes screen shot on failure and sets testCaseExecutionFailedFlag variable as true
 	 *
 	 * @param actual: actual value received from the APAS
 	 * @param expected: expected value passed in the test case
 	 * @param message: "<Jira ID>: <Some validation message>"
+	 * @throws Exception 
 	 */
-	public void assertEquals(Object actual, Object expected, String message) {
+	public void assertEquals(Object actual, Object expected, String message) throws Exception {
 		String formattedMessage = message + " :: Expected: " + expected + " || " + "Actual: " + actual;
 		assertTrue(actual.equals(expected), formattedMessage);
 	}

@@ -13,7 +13,11 @@ import java.util.Objects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.FindBy;
+
 import com.apas.PageObjects.ApasGenericPage;
+import com.apas.PageObjects.BppTrendSetupPage;
+import com.apas.PageObjects.EFileImportPage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
@@ -21,7 +25,28 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.PasswordUtils;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class ApasGenericFunctions extends TestBase{
+public class ApasGenericFunctions extends TestBase {
+
+	@FindBy(xpath = "//div[@class = 'slds-media__body slds-align-middle']//span[contains(@class, 'triggerLinkText selectedListView uiOutputText')]")
+	public WebElement currenltySelectViewOption;
+	
+	@FindBy(xpath = "//a[@title = 'Select List View']")
+	public WebElement selectListViewIcon;
+
+	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All Imported E-File Building Permits']")
+	public WebElement allImportedEfileBuildingPermitsOption;
+
+	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All Manual Building Permits']")
+	public WebElement allManualBuilingdPermitsOption;
+	
+	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'Recently Viewed']")
+	public WebElement recentlyViewedOption;
+	
+	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All']")
+	public WebElement allOption;
+	
+	@FindBy(xpath = "//force-list-view-manager-pin-button//button[@class='slds-button slds-button_icon']//lightning-primitive-icon")
+	public WebElement pinIcon;	
 	
 	private RemoteWebDriver driver;
 	Page objPage;
@@ -47,7 +72,7 @@ public class ApasGenericFunctions extends TestBase{
 			System.out.println("Decrypting the password : " + password);
 			password = PasswordUtils.decrypt(password, "");
 		}
-				
+
 		ExtentTestManager.getTest().log(LogStatus.INFO, userType + " User is logging in the application with the user : " + userType );
 		
 		objPage.navigateTo(driver, envURL);
@@ -63,7 +88,9 @@ public class ApasGenericFunctions extends TestBase{
 	 */
 	public void searchModule(String moduleToSearch) throws Exception {	
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
+		objPage.waitForElementToBeClickable(objApasGenericPage.appLauncher);
 		objPage.Click(objApasGenericPage.appLauncher);
+		objPage.waitForElementToBeClickable(objApasGenericPage.appLauncherSearchBox);
 		objPage.enter(objApasGenericPage.appLauncherSearchBox, moduleToSearch);
 		objApasGenericPage.clickNavOptionFromDropDown(moduleToSearch);
 		//This static wait statement is added as the module title is different from the module to search 
@@ -237,5 +264,46 @@ public class ApasGenericFunctions extends TestBase{
 		}
 		return gridDataHashMap;
 	}
-
+		
+	/**
+	 * Description: This will select the recently viewed mode on grid
+	 */
+	public void selectRecentlyViewedOptionOnGrid() throws Exception {
+		String currentlyVisibleOption = objPage.getElementText(objApasGenericPage.currenltySelectViewOption);
+		if(!(currentlyVisibleOption.equalsIgnoreCase("Recently Viewed"))) {
+			objPage.Click(objApasGenericPage.selectListViewIcon);
+			objPage.Click(objApasGenericPage.recentlyViewedOption);
+			objPage.Click(objApasGenericPage.pinIcon);
+		}
+	}
+	
+	/**
+	 * Description: This will select the All mode on grid
+	 */
+	public void selectAllOptionOnGrid() throws Exception {
+		String currentlyVisibleOption = objPage.getElementText(objApasGenericPage.currenltySelectViewOption);
+		if(!(currentlyVisibleOption.equalsIgnoreCase("All"))) {
+			objPage.Click(objApasGenericPage.selectListViewIcon);
+			objPage.Click(objApasGenericPage.allOption);
+			objPage.Click(objApasGenericPage.pinIcon);
+		}
+	}
+	
+	/**
+	 * Description: This will select the All mode on grid
+	 */
+	public void selectImportedEfileBuildingPermitsOptionOnGrid() throws Exception {
+		objPage.Click(objApasGenericPage.selectListViewIcon);
+		objPage.Click(objPage.waitForElementToBeClickable(objApasGenericPage.allImportedEfileBuildingPermitsOption));
+		objPage.Click(objApasGenericPage.pinIcon);
+	}
+	
+	/**
+	 * Description: This will select the All mode on grid
+	 */
+	public void selectAllManualBuildingPermitOptionOnGrid() throws Exception {
+		objPage.Click(objApasGenericPage.selectListViewIcon);
+		objPage.Click(objPage.waitForElementToBeClickable(objApasGenericPage.allManualBuilingdPermitsOption));
+		objPage.Click(objApasGenericPage.pinIcon);
+	}
 }

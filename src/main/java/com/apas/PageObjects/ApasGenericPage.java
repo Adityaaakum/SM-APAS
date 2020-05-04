@@ -85,6 +85,27 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//button[text() = 'Today']")
 	public WebElement currentDate;
+	
+	@FindBy(xpath = "//div[@class = 'slds-media__body slds-align-middle']//span[contains(@class, 'triggerLinkText selectedListView uiOutputText')]")
+	public WebElement currenltySelectViewOption;
+	
+	@FindBy(xpath = "//a[@title = 'Select List View']")
+	public WebElement selectListViewIcon;
+
+	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All Imported E-File Building Permits']")
+	public WebElement allImportedEfileBuildingPermitsOption;
+
+	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All Manual Building Permits']")
+	public WebElement allManualBuilingdPermitsOption;
+	
+	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'Recently Viewed']")
+	public WebElement recentlyViewedOption;
+	
+	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All']")
+	public WebElement allOption;
+	
+	@FindBy(xpath = "//force-list-view-manager-pin-button//button[contains(@class, 'slds-button slds-button_icon')]//lightning-primitive-icon")
+	public WebElement pinIcon;
 
 	/**
 	 * Description: This will click on the module name from the drop down
@@ -181,4 +202,31 @@ public class ApasGenericPage extends Page {
 		}
 	}
 
+	/** @Description: This method is to handle fields like Parcel or Strat Code
+	 * by clicking on the web element, entering the provided string in textbox
+	 * and then selects value from drop down
+	 * @param element: WebElement for required field
+	 * @param value: Like Roof Repair or Repairs for strat code field etc.
+	 * @throws Exception
+	 */
+	public void searchAndSelectOptionFromDropDown(WebElement element, String value) throws Exception {
+		enter(element, value);
+		String xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
+		WebElement drpDwnOption = locateElement(xpathStr, 20);
+		drpDwnOption.click();
+	}
+
+	/**
+	 * @Description: This method is to handle fields like Permit City Code or Processing Status
+	 * by clicking the web element and then selecting the given value from drop down
+	 * @param element: WebElement for required field
+	 * @param value: Like 'Process' or 'No Process' for Processing Status field etc.
+	 * @throws Exception
+	 */
+	public void selectOptionFromDropDown(WebElement element, String value) throws Exception {
+		Click(element);
+		String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
+		WebElement drpDwnOption = locateElement(xpathStr, 200);
+		drpDwnOption.click();
+	}
 }
