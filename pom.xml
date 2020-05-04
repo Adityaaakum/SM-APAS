@@ -227,7 +227,6 @@
 								<include>BppTrendCalculateAndSubmitTest.java</include>
 								<!-- <include>BppTrendApprovalTest.java</include>
 								<include>BppTrendFileDownloadTest.java</include> -->
-							
 						</includes>
 						<!-- <groups>${groups}</groups> -->
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
@@ -235,6 +234,7 @@
 							<executionType>${executionType}</executionType> <gridHubUrl>${gridHubUrl}</gridHubUrl> 
 							<platform>${platform}</platform> <region>${region}</region> <deviceName>${deviceName}</deviceName> 
 							<os_version>${os_version}</os_version> </systemPropertyVariables> -->
+
 					</configuration>
 				</plugin>
 			</plugins>

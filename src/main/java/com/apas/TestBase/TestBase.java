@@ -15,14 +15,12 @@ public class TestBase extends BrowserDriver {
 	public static FileInputStream fsData;
 	
 	public final static String browserName = System.getProperty("browserName");
-	public final String executionType = System.getProperty("executionType");
+	public final String testSuite = System.getProperty("testSuite");
 	public final String gridHubURL = System.getProperty("gridHubURL");
-	public final String platform = System.getProperty("platform");
 	public final String region = System.getProperty("region");
-	public final String deviceName = System.getProperty("deviceName");
-	public final String os_version = System.getProperty("os_version");
-	public final boolean flagToUpdateJira = Boolean.parseBoolean(System.getProperty("flagToUpdateJira"));
+	//public final boolean flagToUpdateJira = Boolean.parseBoolean(System.getProperty("flagToUpdateJira"));
 	public static String testCycle = System.getProperty("testCycle");
+	public final boolean flagToUpdateJira = true ;
 
 
 	public static String envURL;

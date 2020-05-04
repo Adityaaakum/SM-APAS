@@ -1,24 +1,13 @@
 package com.apas.Utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
+
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
@@ -69,7 +58,7 @@ public class Util {
 	 *            the key
 	 * @param value
 	 *            the value
-	 * @param configFile
+	 * @param fileType
 	 * @throws Exception
 	 */
 	public static void setValIntoResource(String key, String value, FileType fileType) throws Exception {
@@ -239,7 +228,7 @@ public class Util {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return encodedFile;
+		return "data:image/jpeg;base64," + encodedFile;
 	}
 
 	/**
