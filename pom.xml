@@ -213,8 +213,8 @@
 						</properties>
 						<!-- <forkCount>10</forkCount> <reuseForks>true</reuseForks> -->
 						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
-						<includes>
-							<!-- <include>BuildingPermitImportTest.java</include> 
+						<!-- <includes>
+							    <include>BuildingPermitImportTest.java</include> 
 								<include>BuildingPermitManualCreationTest.java</include> 
 								<include>BuildingPermitEditTest.java</include> 
 								<include>BuildingPermitDataValidationTest.java</include> 
@@ -222,19 +222,22 @@
 								<include>CityStratCodesTest.java</include> 
 								<include>ReportsTest.java</include> 
 								<include>RollwisePermissionTest.java</include> 
-								<include>NonRelevantPermitSettingsTest.java</include> -->
-								<!-- <include>BppTrendSettingTest.java</include> -->
+								<include>NonRelevantPermitSettingsTest.java</include>
+								<include>BppTrendSettingTest.java</include>
 								<include>BppTrendCalculateAndSubmitTest.java</include>
-								<!-- <include>BppTrendApprovalTest.java</include>
-								<include>BppTrendFileDownloadTest.java</include> -->
-						</includes>
-						<!-- <groups>${groups}</groups> -->
+								<include>BppTrendApprovalTest.java</include>
+								<include>BppTrendFileDownloadTest.java</include>
+						</includes> -->
+						<groups>${groups}</groups>
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
-						<!-- <systemPropertyVariables> <browserName>${browserName}</browserName> 
-							<executionType>${executionType}</executionType> <gridHubUrl>${gridHubUrl}</gridHubUrl> 
-							<platform>${platform}</platform> <region>${region}</region> <deviceName>${deviceName}</deviceName> 
-							<os_version>${os_version}</os_version> </systemPropertyVariables> -->
-
+						<systemPropertyVariables>
+                               <browserName>${browserName}</browserName>
+                               <testSuite>${testSuite}</testSuite>
+                               <gridHubUrl>${gridHubUrl}</gridHubUrl>
+                               <region>${region}</region>
+                               <flagToUpdateJira>$flagToUpdateJira</flagToUpdateJira>
+                               <testCycle>$testCycle</testCycle>
+                          </systemPropertyVariables>     
 					</configuration>
 				</plugin>
 			</plugins>
