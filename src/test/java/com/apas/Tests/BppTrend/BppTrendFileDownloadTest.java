@@ -49,7 +49,7 @@ public class BppTrendFileDownloadTest extends TestBase {
 		objApasGenericFunctions.logout();
 	}
 	
-	@Test(description = "SMAB-T303: Verifying download functionality for excel and PDF files", dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
+	@Test(description = "SMAB-T303: Verifying download functionality for excel and PDF files", groups = {"smoke","regression","BPP Trends"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
 	public void verifyBppTrendDownloadCompositeAndValuationExcelFiles(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or Principal User)
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
@@ -117,7 +117,7 @@ public class BppTrendFileDownloadTest extends TestBase {
 		softAssert.assertAll();
 	}
 	
-	@Test(description = "SMAB-T206: Verifying download functionality for PDF files", dataProvider = "loginBusinessAndPrincipalUsers", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	@Test(description = "SMAB-T206: Verifying download functionality for PDF files", groups = {"smoke","regression","BPP Trends"},dataProvider = "loginBusinessAndPrincipalUsers", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
 	public void verifyBppTrendDownloadBppTrendDetailsFile(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or Principal User)
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
