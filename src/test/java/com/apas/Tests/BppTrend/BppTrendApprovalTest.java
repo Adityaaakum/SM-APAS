@@ -55,11 +55,14 @@ public class BppTrendApprovalTest extends TestBase {
 		List<String> allTablesBppTrendSetupPage = new ArrayList<String>();
 		allTablesBppTrendSetupPage.addAll(Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(",")));
 		allTablesBppTrendSetupPage.addAll(Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(",")));
+		String rollYear = CONFIG.getProperty("rollYear");
 		
 		//Step2: Check status of the composite & valuation tables on bpp trend status page before approving
 		objApasGenericFunctions.login(loginUser);
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
+		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		
 		String tableName;
 		for(int i = 0; i < allTablesBppTrendSetupPage.size(); i++) {
 			tableName = allTablesBppTrendSetupPage.get(i);
@@ -71,14 +74,13 @@ public class BppTrendApprovalTest extends TestBase {
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
 
 		//Step4: Selecting role year from drop down
-		String rollYear = CONFIG.getProperty("rollYear");
 		objBppTrnPg.javascriptClick(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.javascriptClick(objBppTrnPg.selectRollYearButton);
 		
 		//Step5: Validating presence of Approve all button at page level.
 		boolean isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(20);
-		softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T304: Approve all button should be visible");
+		softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T304: Approve all button is visible");
 		
 		//Step6: Fetch table names from properties file and collect them in a single list
 		List<String> allTables = new ArrayList<String>();
@@ -136,7 +138,7 @@ public class BppTrendApprovalTest extends TestBase {
 			
 			// Validating presence of Approve All button at page level on clicking Approve button
 			isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(20);
-			softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T205: Approve All button is visible on approving the submitted calculation");
+			softAssert.assertTrue(isApproveAllBtnDisplayed, "SMAB-T205: Approve All button is visible");
 			
 			// Validating absence of Approve button once the submitted calculation has been approved by clicking approve button for given table
 			boolean isApproveBtnDisplayed = objBppTrnPg.isApproveBtnVisible(5, tableName);
@@ -174,6 +176,7 @@ public class BppTrendApprovalTest extends TestBase {
 		//Step14: Check status of the composite & valuation tables on bpp trend status page after approving
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
+		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
 		for(int i = 0; i < allTablesBppTrendSetupPage.size(); i++) {
 			tableName = allTablesBppTrendSetupPage.get(i);
 			String currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
@@ -228,5 +231,6 @@ public class BppTrendApprovalTest extends TestBase {
 			String expTableMsgBeforeApprovingCalc = CONFIG.getProperty("tableMsgAfterApproval");
 			softAssert.assertEquals(actTableMsgBeforeApprovingCalc, expTableMsgBeforeApprovingCalc, "SMAB-T249: Navigating to approved table '" + tableName + "' with business admin user login & validating message above it");
 		}
+		softAssert.assertAll();
 	}
 }

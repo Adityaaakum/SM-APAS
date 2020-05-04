@@ -72,7 +72,7 @@ public class ApasGenericFunctions extends TestBase {
 			System.out.println("Decrypting the password : " + password);
 			password = PasswordUtils.decrypt(password, "");
 		}
-				
+
 		ExtentTestManager.getTest().log(LogStatus.INFO, userType + " User is logging in the application with the user : " + userType );
 		
 		objPage.navigateTo(driver, envURL);
@@ -88,7 +88,9 @@ public class ApasGenericFunctions extends TestBase {
 	 */
 	public void searchModule(String moduleToSearch) throws Exception {	
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
+		objPage.waitForElementToBeClickable(objApasGenericPage.appLauncher);
 		objPage.Click(objApasGenericPage.appLauncher);
+		objPage.waitForElementToBeClickable(objApasGenericPage.appLauncherSearchBox);
 		objPage.enter(objApasGenericPage.appLauncherSearchBox, moduleToSearch);
 		objApasGenericPage.clickNavOptionFromDropDown(moduleToSearch);
 		//This static wait statement is added as the module title is different from the module to search 

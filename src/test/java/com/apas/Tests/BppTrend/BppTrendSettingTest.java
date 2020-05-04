@@ -31,6 +31,7 @@ public class BppTrendSettingTest  extends TestBase {
 	BuildingPermitPage objBuildPermit;
 	Util objUtil;
 	SoftAssertion softAssert;
+	String rollYear;
 	
 	@BeforeMethod
 	public void beforeMethod() {
@@ -41,6 +42,7 @@ public class BppTrendSettingTest  extends TestBase {
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
+		rollYear = CONFIG.getProperty("rollYear");
 	}
 
 	@AfterMethod
@@ -48,56 +50,8 @@ public class BppTrendSettingTest  extends TestBase {
 		objApasGenericFunctions.logout();
 	}
 	
-	@Test(description = "Create bpp trend setup entry", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, priority = 0, enabled = false)
-	public void verifyBppTrendCreateTrendSetupEntry(String loginUser) throws Exception {		
-		//Step1: Login to the APAS application using the given user
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
-		objApasGenericFunctions.login(loginUser);
-		
-		//Step2: Opening the BPP Trend module
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		
-		//Step3: Click New button on the grid to open form / pop up to create new BPP Trend Setup
-		objBuildPermit.openNewForm();
-		
-		//Step4: Click save button without entering mandatory details
-		objBppTrnPg.Click(objBuildPermit.saveButton);
-		
-		//Step5: Validating the error messages in header section & against mandatory fields
-		List<String> errorsList = objBuildPermit.retrieveMandatoryFieldsValidationErrorMsgs();
-		String expMsgInPopUpHeader = CONFIG.getProperty("expErrorMsgInHeaderForBppTrendSetupFields");
-		String actMsgInPopUpHeader = errorsList.get(0);
-		softAssert.assertEquals(actMsgInPopUpHeader, expMsgInPopUpHeader, "SMAB-T190: Validating mandatory fields missing error in manual entry pop up's header.");		
-		String expMsgForIndividualField = CONFIG.getProperty("expErrorMsgForIndividualMandatoryField");
-		String actMsgForIndividualField = errorsList.get(1);	
-		softAssert.assertEquals(expMsgForIndividualField, actMsgForIndividualField, "SMAB-T190: Validating mandatory fields missing error against individual fields");
-		int fieldsCountInHeaderMsg = Integer.parseInt(errorsList.get(2));		
-		int individualMsgsCount = Integer.parseInt(errorsList.get(3));
-		softAssert.assertEquals(fieldsCountInHeaderMsg, individualMsgsCount, "SMAB-T190: Validating count of field names in header msg against count of individual error msgs");
-
-		//Step6: Generating a data map from data file
-		String bppTrendSetupData = System.getProperty("user.dir") + testdata.BPP_TREND_DATA;
-		Map<String, String> bppTrendSetupDataMap = objUtil.generateMapFromJsonFile(bppTrendSetupData, "DataToCreateBppTrendSetup");
-		
-		//Step7: Entering bpp trend setup name the valid details and clicking save button to create BPP Trend Setup
-		String bppTrendSetupName = bppTrendSetupDataMap.get("Roll Year") + CONFIG.getProperty("bppTrendSetupNameSuffix");
-		objBppTrnPg.enter(objBppTrnPg.bppTrendSetupName, bppTrendSetupName);
-		
-		//Step8: Entering bpp trend roll year and tables status
-		objBppTrnPg.enterBppTrendSettingRollYearAndTableStatus(bppTrendSetupDataMap);
-		
-		//Step9: Clicking save button to complete the creation of BPP Trend Setup
-		objBppTrnPg.Click(objBuildPermit.saveAndNewButton);
-
-		//Step10: Validating newly created bpp trend setup on details page
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Info: Validating newly created manual entry successfully displayed on details page.");
-		objBppTrnPg.Click(objBuildPermit.closeEntryPopUp);
-		boolean isBppSettingCreated = objBuildPermit.checkManualPermitEntryOnDetailsPage(bppTrendSetupName);
-		softAssert.assertTrue(isBppSettingCreated, "SMAB-T418: BPP trend setup created successfully and reflecting on details page");
-	}
-
-	@Test(description = "SMAB-T229: Check for availability of input factor tables on bpp trend roll year screen", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdminAndPrincipalUserAndBppAuditor", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
-	public void verifyBppTrendCreateAndValidateInputFactorTables(String loginUser) throws Exception {		
+	@Test(description = "SMAB-T229: Check for availability of input factor tables on bpp trend roll year screen", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdminAndPrincipalUserAndBppAuditor", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
+	public void verifyBppTrendValidateInputFactorTablesOnDetailsPage(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
 		objApasGenericFunctions.login(loginUser);
@@ -111,23 +65,25 @@ public class BppTrendSettingTest  extends TestBase {
 		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
 		
 		//Step4: Clicking on bpp property index factor tab and validating whether its table is visible
-		objBppTrnPg.Click(objBppTrnPg.bppProperyIndexFactorsTab);
-		boolean isPropertyIndexFactorTableVisible = objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.bppProperyIndexFactorsTableSection, 20).isDisplayed();
+		objBppTrnPg.Click(objBppTrnPg.bppPropertyIndexFactorsTab);
+		boolean isPropertyIndexFactorTableVisible = objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.bppPropertyIndexFactorsTableSection, 20).isDisplayed();
 		softAssert.assertTrue(isPropertyIndexFactorTableVisible, "SMAB-T229: BPP propery index factors table is visible on roll year details page");
 
 		//Step5: Clicking on bpp property good factor tab and validating whether its table is visible
-		objBppTrnPg.Click(objBppTrnPg.bppProperyGoodFactorsTab);
+		objBppTrnPg.Click(objBppTrnPg.bppPropertyGoodFactorsTab);
 		boolean isPercentGoodsFactorTableVisible = objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.bppPercentGoodFactorsTableSection, 20).isDisplayed();
 		softAssert.assertTrue(isPercentGoodsFactorTableVisible, "SMAB-T229: BPP propery good factors table is visible on roll year details page");
 		
 		//Step6: Clicking more tab & then clicking on bpp valuation factor tab option & validating whether its table is visible
-		objBppTrnPg.Click(objBppTrnPg.moreTabRightSection);
-		objBppTrnPg.Click(objBppTrnPg.dropDownOptionBppImportedValuationFactors);
+		objBppTrnPg.Click(objBppTrnPg.moreTabLeftSection);
+		objBppTrnPg.javascriptClick(objBppTrnPg.dropDownOptionBppImportedValuationFactors);
 		boolean isValuationFactorsTableVisible = objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.bppImportedValuationFactorsTableSection, 20).isDisplayed();
 		softAssert.assertTrue(isValuationFactorsTableVisible, "SMAB-T229: BPP valuation factors table is visible on roll year details page");
+		
+		softAssert.assertAll();
 	}
 	
-	@Test(description = "SMAB-T133,SMAB-T134: Create a new bpp setting and editing it with various values", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 2, enabled = true)
+	@Test(description = "SMAB-T133,SMAB-T134: Create a new bpp setting and editing it with various values", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
 	public void verifyBppTrendCreateAndEditBppSetting(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
@@ -159,17 +115,17 @@ public class BppTrendSettingTest  extends TestBase {
 		List<String> multipleFactorIncorrectVauesList = Arrays.asList(CONFIG.getProperty("FactorValuesLessThanMinRange").split(","));
 		for(int i = 0; i < multipleFactorIncorrectVauesList.size(); i++) {
 			objBppTrnPg.enterFactorValue(multipleFactorIncorrectVauesList.get(i));
-			if(i == 0) {
-				String factorValueInTxtBox = objBppTrnPg.getElementText(objBppTrnPg.factorTxtBox);
-				softAssert.assertTrue((factorValueInTxtBox.equals(multipleFactorIncorrectVauesList.get(i))), "SMAB-T134: User is not allowed to enter letters. "
-						+ "Value entered: "+ multipleFactorIncorrectVauesList.get(i) +". Value allowed to enter: "+ factorValueInTxtBox);
-			}
 			objBppTrnPg.Click(objBuildPermit.saveButton);
-			
+			if(i == 0) {
+				String expectedErrorMsgOnFactorValueWithinRangeWithCharacter = CONFIG.getProperty("ErrorMsgOnFactorValueWithinRangeWithCharacter");
+				String actualErrorMsgOnFactorValueWithinRangeWithCharacter = objBppTrnPg.errorMsgOnIncorrectFactorValue();
+				boolean isErrorMsgDislayed = actualErrorMsgOnFactorValueWithinRangeWithCharacter.equals(expectedErrorMsgOnFactorValueWithinRangeWithCharacter);
+				softAssert.assertTrue(isErrorMsgDislayed, "SMAB-T134: Error message displayed: '" + actualErrorMsgOnFactorValueWithinRangeWithCharacter + "' for factor within range having a charcter value");
+			}			
 			expectedErrorMsgOnIncorrectFactorValue = CONFIG.getProperty("ErrorMsgOnFactorValueLessThanMinRange");
 			actualErrorMsgOnIncorrectFactorValue = objBppTrnPg.errorMsgOnIncorrectFactorValue();
 			boolean isErrorMsgDislayed = actualErrorMsgOnIncorrectFactorValue.equals(expectedErrorMsgOnIncorrectFactorValue);
-			softAssert.assertTrue(isErrorMsgDislayed, "SMAB-T134: Error message displayed: '" + actualErrorMsgOnIncorrectFactorValue + "' for factor value less than mumimum range.");
+			softAssert.assertTrue(isErrorMsgDislayed, "SMAB-T134: Error message displayed: '" + actualErrorMsgOnIncorrectFactorValue + "' for factor value less than mumimum range");
 		}
 		
 		//Step8: Validate error message with factor values greater than maximum range
@@ -180,7 +136,7 @@ public class BppTrendSettingTest  extends TestBase {
 		expectedErrorMsgOnIncorrectFactorValue = CONFIG.getProperty("ErrorMsgOnFactorValueGreaterThanMaxRange");
 		actualErrorMsgOnIncorrectFactorValue = objBppTrnPg.errorMsgOnIncorrectFactorValue();
 		boolean isErrorMsgDislayed = actualErrorMsgOnIncorrectFactorValue.contains(expectedErrorMsgOnIncorrectFactorValue);
-		softAssert.assertTrue(isErrorMsgDislayed, "SMAB-T134: Error message displayed: '" + actualErrorMsgOnIncorrectFactorValue + "' for  factor value greater than minimum range.");
+		softAssert.assertTrue(isErrorMsgDislayed, "SMAB-T134: Error message displayed: '" + actualErrorMsgOnIncorrectFactorValue + "' for  factor value greater than minimum range");
 		
 		//Step9: Close the currently opened bpp setting entry pop up
 		objBppTrnPg.Click(objBuildPermit.closeEntryPopUp);
@@ -228,11 +184,10 @@ public class BppTrendSettingTest  extends TestBase {
 				
 		//Step13: Click ViewAll link to navigate to bpp settings grid and edit existing bpp setting entry
 		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.viewAllBppSettings));
-		Thread.sleep(5000);
 		
 		//Step14: Retrieving the equipment index factor value before editing
 		String xpathForFactorValueInGrid = "//tbody/tr//th//a[text() = '"+ bppSettingName +"']//parent::span//parent::th//following-sibling::td//span[contains(text(), '%')]";
-		String factorValueDisplayedBeforeEditing = objBppTrnPg.getElementText(objBppTrnPg.locateElement(xpathForFactorValueInGrid, 30));
+		String factorValueDisplayedBeforeEditing = objBppTrnPg.getElementText(objBppTrnPg.locateElement(xpathForFactorValueInGrid, 90));
 
 		//Step15: Editing and updating the equipment index factor value
 		String factorValue = bppTrendSettingDataMap.get("Maximum Equipment index Factor");
@@ -247,82 +202,7 @@ public class BppTrendSettingTest  extends TestBase {
 		Thread.sleep(2000);
 		String factorValueDisplayedAfterEditing = objBppTrnPg.getElementText(objBppTrnPg.locateElement(xpathForFactorValueInGrid, 30));
 		softAssert.assertTrue(!(factorValueDisplayedAfterEditing.equals(factorValueDisplayedBeforeEditing)), "SMAB-T133: Validation to check equipment index updated with new value. Factor value in grid before editing: "+ factorValueDisplayedBeforeEditing +" || Factor value in grid after editing: "+ factorValueDisplayedAfterEditing);
-	}
-	
-	@Test(description = "Create a new bpp compsote factor setting", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 3, enabled = false)
-	public void verifyBppTrendCreateBppCompositeFactorSetting(String loginUser) throws Exception {		
-		//Step1: Navigating to Bpp Composite Factor Setting section and retrieve existing count of bpp composite factor setting
-		//String bppTrendSetupName = System.getProperty("BppTrendSetupName");
-		//String xpathBppSetupNameInBreadcrumb = "//span[text() = '"+ bppTrendSetupName +"']//parent::a[@class = 'forceBreadCrumbItem']";
-		//objBppTrnPg.Click(objBppTrnPg.locateElement(xpathBppSetupNameInBreadcrumb, 20));
 		
-		//Step1: Generating a data map from data file
-		String bppTrendSetupData = System.getProperty("user.dir") + testdata.BPP_TREND_DATA;
-		Map<String, String> bppTrendSettingDataMap = objUtil.generateMapFromJsonFile(bppTrendSetupData, "DataToCreateBppTrendSetting");
-		
-		//Step2: Opening the BPP Trend module and set All as the view option in grid
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.selectAllOptionOnGrid();
-		
-		//Step3: Clicking on the roll year name in grid to navigate to details page of selected roll year
-		String rollYear = bppTrendSettingDataMap.get("BPP Trend Roll Year");
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
-
-		//Step4: Clicking on the More Tab		
-		Thread.sleep(5000);
-		objBppTrnPg.clickAction(objBppTrnPg.moreTabRightSection);
-
-		//Step5: Clicking on the Bpp Composite Factor Settings option
-		Thread.sleep(2000);
-		objBppTrnPg.clickAction(objBppTrnPg.bppCompositeFactorOption);
-		String bppCompositeSettingCountBeforeCreatingNewSetting = objBppTrnPg.getCountOfBppCompositeFactorSettings();
-		
-		//Step6: Creating a new BPP Trend Commercial Setting Entry
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting));
-		Thread.sleep(2000);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBppTrendSettingLink));
-		Map<String, String> bppTrendCommercialSettingDataMap = objUtil.generateMapFromJsonFile(bppTrendSetupData, "DataToCreateBppTrendCommercialSetting");
-		objBppTrnPg.enterRollYearInBppSettingDetails(rollYear);
-		objBppTrnPg.enterFactorValue(bppTrendCommercialSettingDataMap.get("Minimum Good Factor"));
-		objBppTrnPg.enterPropertyType(bppTrendCommercialSettingDataMap.get("Property Type"));
-		objBppTrnPg.Click(objBuildPermit.saveButton);
-		Thread.sleep(4000);
-		
-		//Step7: Creating a new BPP Trend Industrial Setting Entry
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting));
-		Thread.sleep(2000);
-		objBppTrnPg.clickAction(objBppTrnPg.newBppTrendSettingLink);
-		Map<String, String> bppTrendIndustrialSettingDataMap = objUtil.generateMapFromJsonFile(bppTrendSetupData, "DataToCreateBppTrendIndustrialSetting");
-		objBppTrnPg.enterRollYearInBppSettingDetails(rollYear);
-		objBppTrnPg.enterFactorValue(bppTrendIndustrialSettingDataMap.get("Minimum Good Factor"));
-		objBppTrnPg.enterPropertyType(bppTrendIndustrialSettingDataMap.get("Property Type"));
-		objBppTrnPg.Click(objBuildPermit.saveButton);
-		Thread.sleep(4000);
-		
-		//Step8: Creating a new BPP Trend Construction Setting Entry
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting));
-		Thread.sleep(2000);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBppTrendSettingLink));
-		Map<String, String> bppTrendConstructionSettingDataMap = objUtil.generateMapFromJsonFile(bppTrendSetupData, "DataToCreateBppTrendConstructionSetting");
-		objBppTrnPg.enterRollYearInBppSettingDetails(rollYear);
-		objBppTrnPg.enterFactorValue(bppTrendConstructionSettingDataMap.get("Minimum Good Factor"));
-		objBppTrnPg.enterPropertyType(bppTrendConstructionSettingDataMap.get("Property Type"));
-		objBppTrnPg.Click(objBuildPermit.saveButton);
-		Thread.sleep(4000);
-		
-		//Step9: Creating a new BPP Trend Agricultural Setting Entry
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting));
-		Thread.sleep(2000);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBppTrendSettingLink));
-		Map<String, String> bppTrendAgriculturalSettingDataMap = objUtil.generateMapFromJsonFile(bppTrendSetupData, "DataToCreateBppTrendAgriculturalSetting");
-		objBppTrnPg.enterRollYearInBppSettingDetails(rollYear);
-		objBppTrnPg.enterFactorValue(bppTrendAgriculturalSettingDataMap.get("Minimum Good Factor"));
-		objBppTrnPg.enterPropertyType(bppTrendAgriculturalSettingDataMap.get("Property Type"));
-		objBppTrnPg.Click(objBuildPermit.saveButton);
-		Thread.sleep(4000);
-		
-		//Step10: Validating the count of Bpp Composite Factor Setting post creating a new Entry
-		String bppCompositeSettingCountAfterCreatingNewSetting = objBppTrnPg.getCountOfBppCompositeFactorSettings();
-		softAssert.assertTrue(!(bppCompositeSettingCountAfterCreatingNewSetting.equals(bppCompositeSettingCountBeforeCreatingNewSetting)), "SMAB-T418: BPP trend composite setting successfully creaated & reflecting in right panel");
+		softAssert.assertAll();
 	}
 }

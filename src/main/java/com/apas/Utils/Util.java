@@ -1,6 +1,7 @@
 package com.apas.Utils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -12,15 +13,15 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
-
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openqa.selenium.OutputType;
@@ -31,10 +32,6 @@ import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
 import com.relevantcodes.extentreports.LogStatus;
-
-import ru.yandex.qatools.ashot.AShot;
-import ru.yandex.qatools.ashot.Screenshot;
-import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
 public class Util {
 
@@ -202,15 +199,15 @@ public class Util {
 		}
 	}
 
+
 	/**
 	 * Captures the screen shot on assertion failure and attaches it toExtent report
 	 * @param message: "SMAB-T418: <Some validation message>"
 	 */
-	public void getScreenShot(String message) throws Exception {
+	public void getScreenShot(String message) {
 		String methodName = System.getProperty("currentMethodName");
 		RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
 		TakesScreenshot ts = (TakesScreenshot) ldriver;
-				
 		File source = ts.getScreenshotAs(OutputType.FILE);
 
 		Date date = new Date();
@@ -220,16 +217,29 @@ public class Util {
 
 		File destination = new File(dest);
 		try {
-			//FileUtils.copyFile(source, destination);
-			
-			Screenshot screenshot=new AShot().shootingStrategy(ShootingStrategies.viewportPasting(1000)).takeScreenshot(ldriver);                  
-			ImageIO.write(screenshot.getImage(),"PNG",new File(dest));             
-			
+			FileUtils.copyFile(source, destination);
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot for the failed validation : " + message
-					+ ExtentTestManager.getUpTestVariable().addScreenCapture(dest));
+					+ ExtentTestManager.getUpTestVariable().addScreenCapture(encodeFileToBase64Binary(destination)));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * This method will convert a file into Base 64 Binary to embed in the report
+	 * @param file: File to be encoded
+	 */
+	public String encodeFileToBase64Binary(File file){
+		String encodedFile = null;
+		try {
+			FileInputStream fileInputStreamReader = new FileInputStream(file);
+			byte[] bytes = new byte[(int)file.length()];
+			fileInputStreamReader.read(bytes);
+			encodedFile = Base64.getEncoder().encodeToString(bytes);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return encodedFile;
 	}
 
 	/**

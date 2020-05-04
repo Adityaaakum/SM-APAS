@@ -2,26 +2,29 @@ package com.apas.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
-import com.apas.TestBase.TestBase;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.HttpStatus;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
 import org.json.JSONArray;
-import org.json.JSONTokener;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import com.apas.TestBase.TestBase;
 
 public class SalesforceAPI extends TestBase {
 
@@ -301,7 +304,7 @@ public class SalesforceAPI extends TestBase {
      */
     public void update(String table, String commaSeparatedIdsORSQLQuery, JSONObject jsonObject) {
         System.out.println("Updating " + table);
-
+        
         //Creating HTTP Post Connection
         HttpPost httpPost = salesforceCreateConnection();
 
@@ -310,13 +313,16 @@ public class SalesforceAPI extends TestBase {
             HttpClient httpClient = HttpClientBuilder.create().build();
 
             //Converting IDs from SQL query to comma separated IDs
+            List<String> ids = new ArrayList<String>();
             String commaSeparatedIds = commaSeparatedIdsORSQLQuery;
+
             if (commaSeparatedIdsORSQLQuery.toUpperCase().startsWith("SELECT")){
-                commaSeparatedIds = getCommaSeparatedIds(commaSeparatedIdsORSQLQuery);
+            	commaSeparatedIds = getCommaSeparatedIds(commaSeparatedIdsORSQLQuery);
+            	ids = Arrays.asList(commaSeparatedIds.split(","));
+            } else if(!commaSeparatedIdsORSQLQuery.toUpperCase().startsWith("SELECT")) {
+            	ids.add(commaSeparatedIdsORSQLQuery);
             }
-
-            String[] ids = commaSeparatedIds.split(",");
-
+            
             for (String id : ids){
                 String uri = baseUri + "/sobjects/" + table + "/" + id;
                 try {
@@ -325,6 +331,7 @@ public class SalesforceAPI extends TestBase {
                     httpPatch.addHeader(oauthHeader);
                     httpPatch.addHeader(prettyPrintHeader);
                     StringEntity body = new StringEntity(jsonObject.toString(1));
+                    System.out.println("body: " + body);
                     body.setContentType("application/json");
                     httpPatch.setEntity(body);
 

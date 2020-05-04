@@ -557,6 +557,7 @@ public class Page {
 	public void javascriptClick(WebElement element) throws IOException {
 
 		JavascriptExecutor ex = (JavascriptExecutor) driver;
+		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", element);
 		ex.executeScript("arguments[0].click();", element);
 		waitUntilPageisReady(driver);
 	}

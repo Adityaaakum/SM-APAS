@@ -218,12 +218,16 @@
 								<include>BuildingPermitManualCreationTest.java</include> 
 								<include>BuildingPermitEditTest.java</include> 
 								<include>BuildingPermitDataValidationTest.java</include> 
-								<include>BuildingPermitTransactionsLogTest.java</include> 
+								<include>BuildingPermitTransactionsLogTest.java</include>
 								<include>CityStratCodesTest.java</include> 
 								<include>ReportsTest.java</include> 
 								<include>RollwisePermissionTest.java</include> 
 								<include>NonRelevantPermitSettingsTest.java</include> -->
-							<include>BppTrendCalculateAndSubmitTest.java</include>
+								<!-- <include>BppTrendSettingTest.java</include> -->
+								<include>BppTrendCalculateAndSubmitTest.java</include>
+								<!-- <include>BppTrendApprovalTest.java</include>
+								<include>BppTrendFileDownloadTest.java</include> -->
+							
 						</includes>
 						<!-- <groups>${groups}</groups> -->
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->

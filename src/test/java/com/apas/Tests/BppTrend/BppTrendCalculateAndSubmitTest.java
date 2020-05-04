@@ -3,14 +3,11 @@ package com.apas.Tests.BppTrend;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -22,10 +19,10 @@ import com.apas.PageObjects.BuildingPermitPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
@@ -39,6 +36,7 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 	SoftAssertion softAssert;
 	Map<String, String> dataMap;
 	String rollYear;
+	SalesforceAPI objSalesforceAPI;
 	
 	@BeforeMethod
 	public void beforeMethod() throws Exception {
@@ -50,343 +48,339 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		rollYear = CONFIG.getProperty("rollYear");
-	}
-
-	@AfterMethod
-	public void afterMethod() throws Exception {
-		//objApasGenericFunctions.logout();
+		objSalesforceAPI = new SalesforceAPI();
 	}
 	
-	@Test(description = "SMAB-T190: Perform calculation for Commercial Composite Factors table", groups = {"regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 0, enabled = false)
-	public void verifyBppTrendCalculateCommercialCompositeFactors(String loginUser) throws Exception {
-		//Step1: Login with system administrator and reset composite factor tables status to "Not Calculated"
-		objApasGenericFunctions.login(users.SYSTEM_ADMIN);
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
-		
+	@Test(description = "SMAB-T190: Perform data calculation for factors tables individually", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
+	public void verifyBppTrendCalculateCompositeFactorAndProp13Tables(String loginUser) throws Exception {		
+		//Step1: Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Not Calculated", rollYear);
-		//Step2: Reset valuation factor tables status to "Yet to be submitted"
+
+		//Step2: Resetting the valuation factor tables status to Yet to be submitted
 		List<String> valuationFactorTablesToReset = Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(","));
-		objBppTrnPg.resetTablesStatusForGivenRollYear(valuationFactorTablesToReset, "Yet to submit for Approval", rollYear); 
-		objApasGenericFunctions.logout();
+		objBppTrnPg.resetTablesStatusForGivenRollYear(valuationFactorTablesToReset, "Yet to submit for Approval", rollYear);
 		
-		//Step3: Login to the APAS application using the given user
+		//Step4: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
 		objApasGenericFunctions.login(loginUser);
 		
-		//Step4: Opening the BPP Trend module
+		//Step5: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
 
-		//Step5: Selecting role year from drop down
+		//Step6: Selecting role year from drop down
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
+
+		//Step7: Retrieving the path of excel file to read for data comparison on calculate button click
+		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_TABLES_DATA;
 		
-		//Step6: Validating presence of CalculateAll button at page level
+		//Step8: Validating presence of CalculateAll button at page level before any table is accessed
 		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
 		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T190: Calcuate all button is visible");
 		
-		//Step7: Clicking on the given table
-		String tableName = "Commercial Composite Factors";
-		objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
+		//Step9: Fetch table names from properties file and collect them in a single list
+		List<String> allTables = new ArrayList<String>();
+		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
+		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesUnderMoreTab").split(",")));
+		
+		String tableNamesUnderMoreTab = CONFIG.getProperty("compositeTablesUnderMoreTab");
+		
+		//Step10: Iterating over the given tables
+		for (int i = 0; i < allTables.size(); i++) {
+			String tableName = allTables.get(i);
 			
-		//Step8: Validating presence of calculate button for given tables individually
-		boolean isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, tableName);
-		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T190: Calcuate button is visible");
+			//Step11: Retrieving table data from excel and store in a map
+			Map<String, List<Object>> dataMapFromExcel = objBppTrnPg.retrieveDataFromExcelForGivenTable(fileName, tableName);
 			
-		//Step9: Retrieve message displayed above table before clicking calculate button
-		String actTableMsgBeforeCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-		String expTableMsgBeforeCalc = CONFIG.getProperty("tableMsgBeforeCalculation");
-		softAssert.assertTrue(actTableMsgBeforeCalc.equalsIgnoreCase(expTableMsgBeforeCalc), "SMAB-T190: '"+ expTableMsgBeforeCalc +"' displayed above table before calculation is initiated" + tableName + "'");
- 		
-		//Step10: Clicking on calculate button to initiate calculation
-		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Calculate' Button ");
-		objBppTrnPg.clickCalculateBtn(tableName);
-		
-		//Step11: Waiting for pop up message to display and the message displayed above table to update
-		objBppTrnPg.waitForPopUpMsgOnCalculateClick(180);
-
-		//Step12: Validation to check whether calculation is successfully and table data appears for given table
-		boolean isTableVisible = objBppTrnPg.isTableVisibleOnCalculateClick(tableName);
-		softAssert.assertTrue(isTableVisible, "SMAB-T190: Tabular data visible successfully on clicking calculate button for table '" + tableName + "'");
-		
-		//Step13: Retrieve & Assert updated message  displayed above table
-		String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-		String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
-		softAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "SMAB-T190: Calculation successfully performed for table '" + tableName + "'");
-
-		ExtentTestManager.getTest().log(LogStatus.INFO, "* Checking status of various buttons at page level and individual table level");
-		
-		//Step14: Validating presence of ReCalculate & Submit For Approval buttons at table level on clicking calculate button
-		boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, tableName);
-		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T190: ReCalcuate button is visible");
-		//boolean isSubmitForApprovalBtnDisplayed = objBppTrnPg.isSubmitForApprovalBtnVisible(20, tableName);
-		//softAssert.assertTrue(isSubmitForApprovalBtnDisplayed, "SMAB-T190: Submit For Approval button is visible");
-		
-		//Step15: Validating presence of CalculateAll button on performing the calculation
-		isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
-		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T190: CalcuateAll button is visible");
+			//Step12: Clicking on the given table name
+			ExtentTestManager.getTest().log(LogStatus.INFO, "**** Performing Validations For: '"+ tableName +"' Table ****");
+			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
+			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
 			
-		//Step16: Validating presence of ReCalculateAll button on performing the calculation
-		boolean isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
-		softAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T190: ReCalcuateAll button is visible");
-		
-		//Step17: Validating absence of Calculate button at table level once calculation is done
-		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(5, tableName);
-		softAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T190: Calcuate button is not visible");
-		
-		softAssert.assertAll();		
+			//Step13: Validating presence of calculate button for given tables individually
+			boolean isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, tableName);
+			softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T190: Calcuate button is visible for "+ tableName +" table");
+			
+			//Step14: Retrieve message displayed above table before clicking calculate button
+			String actTableMsgBeforeCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
+			String expTableMsgBeforeCalc = CONFIG.getProperty("tableMsgBeforeCalculation");
+			softAssert.assertTrue(actTableMsgBeforeCalc.equalsIgnoreCase(expTableMsgBeforeCalc), "SMAB-T190: '"+ expTableMsgBeforeCalc +"' displayed above table before calculation is initiated" + tableName + "'");
+			
+			//Step15: Clicking on calculate button to initiate calculation
+			ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Calculate' Button ");
+			objBppTrnPg.clickCalculateBtn(tableName);
+			
+			//Step16: Waiting for pop up message to display and the message displayed above table to update
+			objBppTrnPg.waitForPopUpMsgOnCalculateClick(180);
+			
+			//Step17: Validation to check whether calculation is successful and table data appears for given table
+			boolean isTableVisible = objBppTrnPg.isTableVisibleOnCalculateClick(tableName);
+			softAssert.assertTrue(isTableVisible, "SMAB-T190: Tabular data visible successfully on clicking calculate button for table '" + tableName + "'");
+			
+			//Step18: Retrieve & Assert updated message  displayed above table
+			String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
+			String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
+			softAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "SMAB-T190: Calculation successfully performed for table '" + tableName + "'");
+			
+			//Step19: Retrieving grid data into a map			
+			List<String> columnNames = objBppTrnPg.retrieveColumnNamesOfGridForGivenTable(tableName);
+			
+			//Step20: Retrieving column names of table from UI
+			Map<String, List<Object>> dataMapFromUI = objBppTrnPg.retrieveDataFromGridForGivenTable(tableName);
+			
+			//Step21: Comparing the UI grid data after Calculate button click against the data in excel file
+			System.setProperty("isElementHighlightedDueToFailre", "false");
+			
+			//Step22: Validating the tabular data against data retrieved from excel file
+			for (Map.Entry<String, List<Object>> entry : dataMapFromExcel.entrySet()) {
+				String currentKey = entry.getKey().toString();
+				if (dataMapFromUI.containsKey(currentKey)) {
+					List<Object> acquiredYearDataFromUI = dataMapFromUI.get(currentKey);
+					List<Object> acquiredYearDataFromExcel = dataMapFromExcel.get(currentKey);
+					
+					if (acquiredYearDataFromUI.size() == acquiredYearDataFromExcel.size()) {
+						for (int j = 0; j < acquiredYearDataFromExcel.size(); j++) {
+							if (!(acquiredYearDataFromExcel.get(j).equals(acquiredYearDataFromUI.get(j)))) {
+								objBppTrnPg.highlightMismatchedCellOnUI(tableName, currentKey, j);
+								softAssert.assertTrue(false, "SMAB-T190: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"
+								+ columnNames.get(j) + "' does not match. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
+							}
+						}
+					} else {
+						System.setProperty("isElementHighlightedDueToFailre", "true");
+						softAssert.assertTrue(false, "SMAB-T190: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' does not match.", true);
+					}
+				} else {
+					System.setProperty("isElementHighlightedDueToFailre", "true");
+					softAssert.assertTrue(false, "SMAB-T190: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is not available in UI table.", true);
+				}
+			}
+			if(System.getProperty("isElementHighlightedDueToFailre").equalsIgnoreCase("true")) {
+				softAssert.assertTrue(false, "Excel & UI grid data has mismatched. Taking screen shot of entire table");
+			} else {
+				softAssert.assertTrue(true, "Excel & UI grid data has matched successfully for '"+ tableName + "' table");
+			}
+		}	
+		objApasGenericFunctions.logout();
+		softAssert.assertAll();
 	}
 
-	@Test(description = "SMAB-T190 Perform calculation for Industrial Composite Factors table", groups = {"regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = false)
-	public void verifyBppTrendCalculateIndustrialCompositeFactors(String loginUser) throws Exception {		
-		//Step1: Validating presence of CalculateAll button at page level
-		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
-		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T190: Calcuate all button is visible");
+	@Test(description = "SMAB-T195: Perform data calculation for factors tables individually", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	public void verifyBppTrendReCalculateCompositeFactorTables(String loginUser) throws Exception {
+		//Step1: Resetting the composite factor tables status to Calculated
+		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
+		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Calculated", rollYear);
 		
-		//Step2: Clicking on the given table
-		String tableName = "Industrial Composite Factors";
-		objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
-			
-		//Step3: Validating presence of calculate button for given tables individually
-		boolean isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, tableName);
-		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T190: Calcuate button is visible");
-			
-		//Step4: Retrieve message displayed above table before clicking calculate button
-		String actTableMsgBeforeCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-		String expTableMsgBeforeCalc = CONFIG.getProperty("tableMsgBeforeCalculation");
-		softAssert.assertTrue(actTableMsgBeforeCalc.equalsIgnoreCase(expTableMsgBeforeCalc), "SMAB-T190: '"+ expTableMsgBeforeCalc +"' displayed above table before calculation is initiated" + tableName + "'");
-			
-		//Step5: Clicking on calculate button to initiate calculation
-		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Calculate' Button ");
-		objBppTrnPg.clickCalculateBtn(tableName);
+		//Step2: Resetting the valuation factor tables status to Yet to be submitted
+		List<String> valuationFactorTablesToReset = Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(","));
+		objBppTrnPg.resetTablesStatusForGivenRollYear(valuationFactorTablesToReset, "Yet to submit for Approval", rollYear);
 
-		//Step6: Waiting for pop up message to display and the message displayed above table to update
-		objBppTrnPg.waitForPopUpMsgOnCalculateClick(180);
-
-		//Step7: Validation to check whether calculation is successfully and table data appears for given table
-		boolean isTableVisible = objBppTrnPg.isTableVisibleOnCalculateClick(tableName);
-		softAssert.assertTrue(isTableVisible, "SMAB-T190: Tabular data visible successfully on clicking calculate button for table '" + tableName + "'");
-		
-		//Step8: Retrieve & Assert updated message  displayed above table
-		String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-		String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
-		softAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "SMAB-T190: Calculation successfully performed for table '" + tableName + "'");
-
-		ExtentTestManager.getTest().log(LogStatus.INFO, "* Checking status of various buttons at page level and individual table level");
-		
-		//Step9: Validating presence of ReCalculate & Submit For Approval buttons at table level on clicking calculate button
-		boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, tableName);
-		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T190: ReCalcuate button is visible");
-		//boolean isSubmitForApprovalBtnDisplayed = objBppTrnPg.isSubmitForApprovalBtnVisible(20, tableName);
-		//softAssert.assertTrue(isSubmitForApprovalBtnDisplayed, "SMAB-T190: Submit For Approval button is visible");
-		
-		//Step10: Validating presence of CalculateAll button on performing the calculation
-		isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
-		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T190: CalcuateAll button is visible");
-			
-		//Step11: Validating presence of ReCalculateAll button on performing the calculation
-		boolean isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
-		softAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T190: ReCalcuateAll button ia be visible");
-		
-		//Step12: Validating absence of Calculate button at table level once calculation is done
-		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(5, tableName);
-		softAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T190: Calcuate button is not visible");
-		
-		softAssert.assertAll();		
-	}
-	
-	@Test(description = "SMAB-T190: Perform calculation for Agricultural Composite Factors table", groups = {"regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 2, enabled = false)
-	public void verifyBppTrendCalculateAgriculturalCompositeFactors(String loginUser) throws Exception {		
-		//Step1: Validating presence of CalculateAll button at page level
-		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
-		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T190: Calcuate all button is visible");
-		
-		//Step2: Clicking on the given table
-		String tableName = "Agricultural Composite Factors";
-		objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
-			
-		//Step3: Validating presence of calculate button for given tables individually
-		boolean isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, tableName);
-		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T190: Calcuate button is visible");
-			
-		//Step4: Retrieve message displayed above table before clicking calculate button
-		String actTableMsgBeforeCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-		String expTableMsgBeforeCalc = CONFIG.getProperty("tableMsgBeforeCalculation");
-		softAssert.assertTrue(actTableMsgBeforeCalc.equalsIgnoreCase(expTableMsgBeforeCalc), "SMAB-T190: '"+ expTableMsgBeforeCalc +"' displayed above table before calculation is initiated" + tableName + "'");
-			
-		//Step5: Clicking on calculate button to initiate calculation
-		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Calculate' Button ");
-		objBppTrnPg.clickCalculateBtn(tableName);
-
-		//Step6: Waiting for pop up message to display and the message displayed above table to update
-		objBppTrnPg.waitForPopUpMsgOnCalculateClick(180);
-
-		//Step7: Validation to check whether calculation is successfully and table data appears for given table
-		boolean isTableVisible = objBppTrnPg.isTableVisibleOnCalculateClick(tableName);
-		softAssert.assertTrue(isTableVisible, "SMAB-T190: Tabular data visible successfully on clicking calculate button for table '" + tableName + "'");
-		
-		//Step8: Retrieve & Assert updated message  displayed above table
-		String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-		String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
-		softAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "SMAB-T190: Calculation successfully performed for table '" + tableName + "'");
-
-		ExtentTestManager.getTest().log(LogStatus.INFO, "* Checking status of various buttons at page level and individual table level");
-		
-		//Step9: Validating presence of ReCalculate & Submit For Approval buttons at table level on clicking calculate button
-		boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, tableName);
-		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T190: ReCalcuate button is visible");
-		//boolean isSubmitForApprovalBtnDisplayed = objBppTrnPg.isSubmitForApprovalBtnVisible(20, tableName);
-		//softAssert.assertTrue(isSubmitForApprovalBtnDisplayed, "SMAB-T190: Submit For Approval button is visible");
-		
-		//Step10: Validating presence of CalculateAll button on performing the calculation
-		isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
-		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T190: CalcuateAll button is visible");
-			
-		//Step11: Validating presence of ReCalculateAll button on performing the calculation
-		boolean isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
-		softAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T190: ReCalcuateAll button is visible");
-		
-		//Step12: Validating absence of Calculate button at table level once calculation is done
-		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(5, tableName);
-		softAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T190: Calcuate button is not visible");
-		
-		softAssert.assertAll();		
-	}
-	
-	@Test(description = "SMAB-T190: Perform calculation for Agricultural Mobile Equipment Composite Factors tables", groups = {"regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 3, enabled = false)
-	public void verifyBppTrendCalculateAgrMobileEquipFactors(String loginUser) throws Exception {		
-		//Step1: Validating presence of CalculateAll button at page level
-		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
-		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T190: Calcuate all button is visible");
-		
-		//Step2: Clicking on the given table
-		String tableName = "Agricultural Mobile Equipment Composite Factors";
-		objBppTrnPg.clickOnTableOnBppTrendPage(tableName, true);
-			
-		//Step3: Validating presence of calculate button for given tables individually
-		boolean isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, tableName);
-		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T190: Calcuate button is visible");
-			
-		//Step4: Retrieve message displayed above table before clicking calculate button
-		String actTableMsgBeforeCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-		String expTableMsgBeforeCalc = CONFIG.getProperty("tableMsgBeforeCalculation");
-		softAssert.assertTrue(actTableMsgBeforeCalc.equalsIgnoreCase(expTableMsgBeforeCalc), "SMAB-T190: '"+ expTableMsgBeforeCalc +"' displayed above table before calculation is initiated" + tableName + "'");
-			
-		//Step5: Clicking on calculate button to initiate calculation
-		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Calculate' Button ");
-		objBppTrnPg.clickCalculateBtn(tableName);
-
-		//Step6: Waiting for pop up message to display and the message displayed above table to update
-		objBppTrnPg.waitForPopUpMsgOnCalculateClick(180);
-
-		//Step7: Validation to check whether calculation is successfully and table data appears for given table
-		boolean isTableVisible = objBppTrnPg.isTableVisibleOnCalculateClick(tableName);
-		softAssert.assertTrue(isTableVisible, "SMAB-T190: Tabular data visible successfully on clicking calculate button for table '" + tableName + "'");		
-	
-		//Step8: Retrieve & Assert updated message displayed above table
-		String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-		String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
-		softAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "SMAB-T190: Calculation successfully performed for table '" + tableName + "'");
-
-		ExtentTestManager.getTest().log(LogStatus.INFO, "* Checking status of various buttons at page level and individual table level");
-		
-		//Step9: Validating presence of ReCalculate & Submit For Approval buttons at table level on clicking calculate button
-		boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, tableName);
-		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T190: ReCalcuate button is visible");
-		//boolean isSubmitForApprovalBtnDisplayed = objBppTrnPg.isSubmitForApprovalBtnVisible(20, tableName);
-		//softAssert.assertTrue(isSubmitForApprovalBtnDisplayed, "SMAB-T190: Submit For Approval button is visible");
-		
-		//Step10: Validating presence of CalculateAll button on performing the calculation
-		isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
-		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T190: CalcuateAll button is visible");
-			
-		//Step11: Validating presence of ReCalculateAll button on performing the calculation
-		boolean isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
-		softAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T190: ReCalcuateAll button is visible");
-		
-		//Step12: Validating absence of Calculate button at table level once calculation is done
-		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(5, tableName);
-		softAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T190: Calcuate button is not visible");
-		
-		softAssert.assertAll();		
-	}
-	
-	
-	@Test(description = "SMAB-T253: Perform calculation for Construction Composite Factors table", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 4, enabled = false)
-	public void verifyBppTrendCalculateConstructionCompositeFactors(String loginUser) throws Exception {		
-		//Step1: Login with system administrator and reset composite factor tables status to "Not Calculated"
-		objApasGenericFunctions.login(users.SYSTEM_ADMIN);
+		//Step3: Login with given user & navigate to Bpp Trend Setup Page and click on given bpp trend setup
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
+		objApasGenericFunctions.login(loginUser);
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
 		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+	
+		//Step4: Generate data map containing values of bpp composite factor settings and edit composite factor setting values
+		String[] bppCompositeSettingValues = CONFIG.getProperty("bppCompositeSettingValues").split(",");
+		Map<String, String> updatedSettingValues = new HashMap<String, String>();
+		updatedSettingValues.put("Commercial", bppCompositeSettingValues[0]);
+		updatedSettingValues.put("Industrial", bppCompositeSettingValues[1]);
+		updatedSettingValues.put("Construction", bppCompositeSettingValues[2]);
+		updatedSettingValues.put("Agricultural", bppCompositeSettingValues[3]);
 		
+		//Step5: Edit the values from view all page
+		objBppTrnPg.editBppCompositeFactorValueOnViewAllPage(updatedSettingValues);
+				
+		//Step6: Opening the BPP Trend module
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		
+		//Step7: Selecting role year from drop down
+		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
+		objBppTrnPg.clickOnGivenRollYear(rollYear);
+		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
+
+		//Step8: Retrieving the path of excel file to read for data comparison on calculate button click
+		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_TABLES_DATA;
+		
+		//Step9: Validating presence of ReCalculateAll button at page level before any table is accessed
+		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
+		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T190: ReCalcuate all button is visible");
+		
+		//Step10: Fetch table names from properties file and collect them in a single list
+		List<String> allTables = new ArrayList<String>();
+		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
+		
+		//Step11: Updating trend settings values & retrieving table data from excel and store in a map
+		objBppTrnPg.updateTrendSettingInExcel(fileName, updatedSettingValues);
+		
+		try {
+			//Step12: Iterating over the given tables
+			for (int i = 0; i < allTables.size(); i++) {
+				String tableName = allTables.get(i);
+				Map<String, List<Object>> dataMapFromExcel = objBppTrnPg.retrieveDataFromExcelForGivenTable(fileName, tableName);
+				
+				//Step13: Clicking on the given table name
+				ExtentTestManager.getTest().log(LogStatus.INFO, "**** Performing Validations For: '"+ tableName +"' Table ****");
+				objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
+							
+				//Step14: Retrieve message displayed above table before clicking ReCalculate button
+				String actTableMsgBeforeCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
+				String expTableMsgBeforeCalc = CONFIG.getProperty("tableMsgBeforeReCalculation");
+				softAssert.assertTrue(actTableMsgBeforeCalc.equalsIgnoreCase(expTableMsgBeforeCalc), "SMAB-T195: '"+ expTableMsgBeforeCalc +"' displayed above table before ReCalculation is initiated" + tableName + "'");
+				
+				//Step15: Clicking on ReCalculate button to initiate calculation
+				ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'ReCalculate' Button ");
+				objBppTrnPg.clickReCalculateBtn(tableName);
+				objBppTrnPg.javascriptClick(objBppTrnPg.confirmBtnInPopUp);
+				
+				//Step16: Waiting for pop up message to display and the message displayed above table to update
+				objBppTrnPg.waitForPopUpMsgOnCalculateClick(180);
+				
+				//Step17: Validation to check whether calculation is successful and table data appears for given table
+				boolean isTableVisible = objBppTrnPg.isTableVisibleOnCalculateClick(tableName);
+				softAssert.assertTrue(isTableVisible, "SMAB-T195: Tabular data visible successfully on clicking ReCalculate button for table '" + tableName + "'");
+				
+				//Step18: Retrieve & Assert updated message displayed above table
+				String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
+				String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
+				softAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "SMAB-T195: ReCalculation successfully performed for table '" + tableName + "'");
+				
+				//Step19: Validating presence of ReCalculate button at table level on clicking calculate button
+				boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, tableName);
+				softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T195: ReCalcuate button is visible for table '" + tableName + "'");
+	
+				//Step20: Retrieving grid data into a map			
+				List<String> columnNames = objBppTrnPg.retrieveColumnNamesOfGridForGivenTable(tableName);
+				
+				//Step21: Retrieving column names of table from UI
+				Map<String, List<Object>> dataMapFromUI = objBppTrnPg.retrieveDataFromGridForGivenTable(tableName);
+				
+				//Step22: Comparing the UI grid data after Calculate button click against the data in excel file
+				System.setProperty("isElementHighlightedDueToFailre", "false");
+								
+				//Step23: Validating the tabular data against data retrieved from excel file
+				for (Map.Entry<String, List<Object>> entry : dataMapFromExcel.entrySet()) {
+					String currentKey = entry.getKey().toString();
+					if (dataMapFromUI.containsKey(currentKey)) {
+						List<Object> acquiredYearDataFromUI = dataMapFromUI.get(currentKey);
+						List<Object> acquiredYearDataFromExcel = dataMapFromExcel.get(currentKey);
+						
+						if (acquiredYearDataFromUI.size() == acquiredYearDataFromExcel.size()) {
+							for (int j = 0; j < acquiredYearDataFromExcel.size(); j++) {
+								if (!(acquiredYearDataFromExcel.get(j).equals(acquiredYearDataFromUI.get(j)))) {
+									objBppTrnPg.highlightMismatchedCellOnUI(tableName, currentKey, j);
+									softAssert.assertTrue(false, "SMAB-T195: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"
+									+ columnNames.get(j) + "' does not match. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
+								}
+							}
+						} else {
+							System.setProperty("isElementHighlightedDueToFailre", "true");
+							softAssert.assertTrue(false, "SMAB-T190: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' does not match.", true);
+						}
+					} else {
+						System.setProperty("isElementHighlightedDueToFailre", "true");
+						softAssert.assertTrue(false, "SMAB-T190: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is not available in UI table.", true);
+					}
+				}
+				if(System.getProperty("isElementHighlightedDueToFailre").equalsIgnoreCase("true")) {
+					softAssert.assertTrue(false, "Excel & UI grid data has mismatched. Taking screen shot of entire table");
+				} else {
+					softAssert.assertTrue(true, "Excel & UI grid data has matched successfully for '"+ tableName + "' table");
+				}
+			}				
+		} finally {
+			//Step24: Reverting the values of Bpp composite factor settings in excel file
+			objBppTrnPg.revertTrendSettingsDataInExcel(fileName);
+			
+			//Step25: Reverting the values of Bpp composite factor settings from view all page
+			objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+			objApasGenericFunctions.selectAllOptionOnGrid();
+			objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+			objBppTrnPg.editBppCompositeFactorValueOnViewAllPage(objBppTrnPg.trendSettingsOriginalValues);
+		}
+		objApasGenericFunctions.logout();
+		softAssert.assertAll();
+	}	
+	
+	@Test(description = "SMAB-T253: Perform calculation for Construction Composite Factors table", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 2, enabled = true)
+	public void verifyBppTrendCalculateConstructionCompositeFactors(String loginUser) throws Exception {		
+		//Step1: Reset composite factor tables status to "Not Calculated"
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Not Calculated", rollYear);
-		//Step2: Reset valuation factor tables status to "Yet to be submitted"
-		List<String> valuationFactorTablesToReset = Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(","));
-		objBppTrnPg.resetTablesStatusForGivenRollYear(valuationFactorTablesToReset, "Yet to submit for Approval", rollYear); 
-		objApasGenericFunctions.logout();
 		
-		//Step3: Validating presence of CalculateAll button at page level
+		//Step2: Login to the APAS application using the given user
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
+		objApasGenericFunctions.login(loginUser);
+		
+		//Step3: Opening the BPP Trend module
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+
+		//Step4: Selecting role year from drop down
+		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
+		objBppTrnPg.clickOnGivenRollYear(rollYear);
+		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);		
+
+		//Step5: Validating presence of CalculateAll button at page level
 		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
 		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T253: Calcuate all button is visible");
 		
-		//Step4: Clicking on the given table
+		//Step6: Clicking on the given table
 		String tableName = "Construction Composite Factors";
 		objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
 			
-		//Step5: Validating presence of calculate button for given tables individually
+		//Step7: Validating presence of calculate button for given tables individually
 		boolean isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, tableName);
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T253: Calcuate button is visible");
 			
-		//Step6: Retrieve message displayed above table before clicking calculate button
+		//Step8: Retrieve message displayed above table before clicking calculate button
 		String actTableMsgBeforeCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
 		String expTableMsgBeforeCalc = CONFIG.getProperty("tableMsgBeforeCalculation");
 		softAssert.assertTrue(actTableMsgBeforeCalc.equalsIgnoreCase(expTableMsgBeforeCalc), "SMAB-T253: '"+ expTableMsgBeforeCalc +"' displayed above table before calculation is initiated" + tableName + "'");
 			
-		//Step7: Clicking on calculate button to initiate calculation
+		//Step9: Clicking on calculate button to initiate calculation
 		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Calculate' Button ");
 		objBppTrnPg.clickCalculateBtn(tableName);
 
-		//Step8: Waiting for pop up message to display and the message displayed above table to update
+		//Step10: Waiting for pop up message to display and the message displayed above table to update
 		objBppTrnPg.waitForPopUpMsgOnCalculateClick(180);
 
-		//Step9: Validation to check whether calculation is successfully and table data appears for given table
+		//Step11: Validation to check whether calculation is successfully and table data appears for given table
 		boolean isTableVisible = objBppTrnPg.isTableVisibleOnCalculateClick(tableName);
 		softAssert.assertTrue(isTableVisible, "SMAB-T253: Tabular data visible successfully on clicking calculate button for table '" + tableName + "'");
 		
-		//Step10: Retrieve & Assert updated message  displayed above table
+		//Step12: Retrieve & Assert updated message  displayed above table
 		String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
 		String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
 		softAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "SMAB-T253: Calculation successfully performed for table '" + tableName + "'");
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "* Checking status of various buttons at page level and individual table level");
 		
-		//Step11: Validating presence of ReCalculate & Submit For Approval buttons at table level on clicking calculate button
+		//Step13: Validating presence of ReCalculate & Submit For Approval buttons at table level on clicking calculate button
 		boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, tableName);
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T253: ReCalcuate button is visible");
 		//boolean isSubmitForApprovalBtnDisplayed = objBppTrnPg.isSubmitForApprovalBtnVisible(20, tableName);
 		//softAssert.assertTrue(isSubmitForApprovalBtnDisplayed, "SMAB-T253: Submit For Approval button is visible");
 		
-		//Step12: Validating presence of CalculateAll button on performing the calculation
+		//Step14: Validating presence of CalculateAll button on performing the calculation
 		isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
 		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T253: CalcuateAll button is visible");
 			
-		//Step13: Validating presence of ReCalculateAll button on performing the calculation
+		//Step15: Validating presence of ReCalculateAll button on performing the calculation
 		boolean isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
 		softAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T253: ReCalcuateAll button is visible");
 		
-		//Step14: Validating absence of Calculate button at table level once calculation is done
+		//Step16: Validating absence of Calculate button at table level once calculation is done
 		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(5, tableName);
 		softAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T253: Calcuate button is not visible");
 				
 		softAssert.assertAll();
 	}
 	
-	@Test(description = "SMAB-T239: Perform calculation for Construction Mobile Equipment Composite Factors tables", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 5, enabled = false)
+	@Test(description = "SMAB-T239: Perform calculation for Construction Mobile Equipment Composite Factors tables", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 3, enabled = true)
 	public void verifyBppTrendCalculateConstMobileEquipFactors(String loginUser) throws Exception {
 		//Step1: Validating presence of CalculateAll button at page level
 		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
@@ -448,7 +442,7 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 		softAssert.assertAll();		
 	}	
 	
-	@Test(description = "SMAB-T277, SMAB-T577: Perform calculation for BPP Prop 13 table", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 6, enabled = false)
+	@Test(description = "SMAB-T277, SMAB-T577: Perform calculation for BPP Prop 13 table", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 4, enabled = true)
 	public void verifyBppTrendCalculateProp13(String loginUser) throws Exception {
 		//Step1: Validating presence of CalculateAll button at page level before
 		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
@@ -525,485 +519,71 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 		softAssert.assertAll();
 	}
 	
-	@Test(description = "SMAB-T190: Perform calculation for factors tables individually", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 7, enabled = false)
-	public void verifyBppTrendCalculateCompositeFactorAndProp13Tables(String loginUser) throws Exception {
-		//Step1: Login with system administrator and reset composite factor tables status to "Not Calculated"
-		objApasGenericFunctions.login(users.SYSTEM_ADMIN);
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
-		
-		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
-		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Not Calculated", rollYear);
-
-		//Step2: Resetting the valuation factor tables status to Yet to be submitted
-		List<String> valuationFactorTablesToReset = Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(","));
-		objBppTrnPg.resetTablesStatusForGivenRollYear(valuationFactorTablesToReset, "Yet to submit for Approval", rollYear);
-
-		//Step3: Logging out from Bpp Trend Setup screen 
-		objApasGenericFunctions.logout();
-		
-		//Step4: Login to the APAS application using the given user
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
-		objApasGenericFunctions.login(loginUser);
-		
-		//Step5: Opening the BPP Trend module
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step6: Selecting role year from drop down
-		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
-		objBppTrnPg.clickOnGivenRollYear(rollYear);
-		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
-
-		//Step7: Retrieving the path of excel file to read for data comparison on calculate button click
-		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_TABLES_DATA;
-		
-		//Step8: Validating presence of CalculateAll button at page level before any table is accessed
-		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
-		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T190: Calcuate all button is visible");
-		
-		//Step9: Fetch table names from properties file and collect them in a single list
-		List<String> allTables = new ArrayList<String>();
-		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
-		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesUnderMoreTab").split(",")));
-		
-		String tableNamesUnderMoreTab = CONFIG.getProperty("compositeTablesUnderMoreTab");
-		
-		objBppTrnPg.zoomOutBrowserWindow();
-		
-		//Step10: Iterating over the given tables
-		for (int i = 0; i < allTables.size(); i++) {
-			String tableName = allTables.get(i);
-			
-			//Step11: Retrieving table data from excel and store in a map
-			Map<String, List<Object>> dataMapFromExcel = objBppTrnPg.retrieveDataFromExcelForGivenTable(fileName, tableName);
-			System.out.println("Size of dataMapFromExcel: " + dataMapFromExcel.size());
-			
-			//Step12: Clicking on the given table name
-			ExtentTestManager.getTest().log(LogStatus.INFO, "**** Performing Validations For: '"+ tableName +"' Table ****");
-			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
-			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
-			
-			//Step13: Validating presence of calculate button for given tables individually
-			boolean isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, tableName);
-			softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T190: Calcuate button is visible for "+ tableName +" table");
-			
-			//Step14: Retrieve message displayed above table before clicking calculate button
-			String actTableMsgBeforeCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-			String expTableMsgBeforeCalc = CONFIG.getProperty("tableMsgBeforeCalculation");
-			softAssert.assertTrue(actTableMsgBeforeCalc.equalsIgnoreCase(expTableMsgBeforeCalc), "SMAB-T190: '"+ expTableMsgBeforeCalc +"' displayed above table before calculation is initiated" + tableName + "'");
-			
-			//Step15: Clicking on calculate button to initiate calculation
-			ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Calculate' Button ");
-			objBppTrnPg.clickCalculateBtn(tableName);
-			
-			//Step16: Waiting for pop up message to display and the message displayed above table to update
-			objBppTrnPg.waitForPopUpMsgOnCalculateClick(180);
-			
-			//Step17: Validation to check whether calculation is successful and table data appears for given table
-			boolean isTableVisible = objBppTrnPg.isTableVisibleOnCalculateClick(tableName);
-			softAssert.assertTrue(isTableVisible, "SMAB-T190: Tabular data visible successfully on clicking calculate button for table '" + tableName + "'");
-			
-			//Step18: Retrieve & Assert updated message  displayed above table
-			String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-			String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
-			softAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "SMAB-T190: Calculation successfully performed for table '" + tableName + "'");
-			
-			//Step19: Retrieving grid data into a map			
-			List<String> columnNames = objBppTrnPg.retrieveColumnNamesOfGridForGivenTable(tableName);
-			
-			//Step20: Retrieving column names of table from UI
-			Map<String, List<Object>> dataMapFromUI = objBppTrnPg.retrieveDataFromGridForGivenTable(tableName);
-			System.out.println("Size of dataMapFromUI: " + dataMapFromUI.size());
-			
-			//Step21: Comparing the UI grid data after Calculate button click against the data in excel file
-			System.setProperty("isElementHighlightedDueToFailre", "false");
-			
-			//Step22: Scrolling to the bottom of the page
-			objBppTrnPg.scrollToBottomOfPage();
-			objBppTrnPg.scrollToElement(objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false));
-			
-			//Step23: Validating the tabular data against data retrieved from excel file
-			for (Map.Entry<String, List<Object>> entry : dataMapFromExcel.entrySet()) {
-				String currentKey = entry.getKey().toString();
-				if (dataMapFromUI.containsKey(currentKey)) {
-					List<Object> acquiredYearDataFromUI = dataMapFromUI.get(currentKey);
-					List<Object> acquiredYearDataFromExcel = dataMapFromExcel.get(currentKey);
-					
-					if (acquiredYearDataFromUI.size() == acquiredYearDataFromExcel.size()) {
-						for (int j = 0; j < acquiredYearDataFromExcel.size(); j++) {
-							if (!(acquiredYearDataFromExcel.get(j).equals(acquiredYearDataFromUI.get(j)))) {
-								objBppTrnPg.highlightMismatchedCellOnUI(tableName, currentKey, j);
-								softAssert.assertTrue(false, "SMAB-T190: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"
-								+ columnNames.get(j) + "' does not match. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
-							}
-						}
-					} else {
-						softAssert.assertTrue(false, "SMAB-T190: Size of data list for year acquired '"+ currentKey +"' does not match.", true);
-					}
-				} else {
-					softAssert.assertTrue(false, "SMAB-T190: Data for year acquired '" + currentKey +"' is not available in UI table.", true);
-				}
-			}
-			if(System.getProperty("isElementHighlightedDueToFailre").equalsIgnoreCase("true")) {
-				System.out.println("Taking screen shot after all comparison is done");
-				softAssert.assertTrue(false, "Excel & UI grid data has mismatched. Taking screen shot of entire table");
-			}
-		}
-		//Step24: Zoom into the browser window to reset web-page size.
-		objBppTrnPg.zoomInBrowserWindow();
-		
-		softAssert.assertAll();
-	}
-
-	@Test(description = "SMAB-T195: Perform calculation for factors tables individually", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 8, enabled = true)
-	public void verifyBppTrendReCalculateCompositeFactorTables(String loginUser) throws Exception {
-		//Step1: Login with system administrator & navigate to Bpp Trend Setup Page
-		objApasGenericFunctions.login(users.SYSTEM_ADMIN);
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
-		
-		//Step2: Reset composite factor tables status to "Calculated"
-		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
-		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Calculated", rollYear);		
-		
-		//Step3: Logging out from Bpp Trend Setup screen 
-		objApasGenericFunctions.logout();
-		
-		//Step4: Login with given user & navigate to Bpp Trend Setup Page
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
-		objApasGenericFunctions.login(loginUser);
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
-
-		//Step5: Generate data map containing values of bpp composite factor settings and edit composite factor setting values
-		String[] bppCompositeSettingValues = CONFIG.getProperty("bppCompositeSettingValues").split(",");
-		Map<String, String> updatedSettingValues = new HashMap<String, String>();
-		updatedSettingValues.put("Commercial", bppCompositeSettingValues[0]);
-		updatedSettingValues.put("Industrial", bppCompositeSettingValues[1]);
-		updatedSettingValues.put("Construction", bppCompositeSettingValues[2]);
-		updatedSettingValues.put("Agricultural", bppCompositeSettingValues[3]);
-		
-		//Step6: Edit the values from view all page
-		objBppTrnPg.editBppCompositeFactorValueOnViewAllPage(updatedSettingValues);
-				
-		//Step7: Opening the BPP Trend module
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-		
-		//Step8: Selecting role year from drop down
-		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
-		objBppTrnPg.clickOnGivenRollYear(rollYear);
-		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
-
-		//Step9: Retrieving the path of excel file to read for data comparison on calculate button click
-		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_TABLES_DATA;
-		
-		//Step10: Validating presence of ReCalculateAll button at page level before any table is accessed
-		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
-		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T190: ReCalcuate all button is visible");
-		
-		//Step11: Fetch table names from properties file and collect them in a single list
-		List<String> allTables = new ArrayList<String>();
-		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
-		
-		objBppTrnPg.zoomOutBrowserWindow();
-		
-		//Step12: Iterating over the given tables
-		for (int i = 0; i < allTables.size(); i++) {
-			String tableName = allTables.get(i);
-			
-			//Step13: Updating trend settings values & retrieving table data from excel and store in a map
-			objBppTrnPg.updateTrendSettingInExcel(fileName, updatedSettingValues);
-			Map<String, List<Object>> dataMapFromExcel = objBppTrnPg.retrieveDataFromExcelForGivenTable(fileName, tableName);
-			System.out.println("Size of dataMapFromExcel: " + dataMapFromExcel.size());
-			
-			//Step14: Clicking on the given table name
-			ExtentTestManager.getTest().log(LogStatus.INFO, "**** Performing Validations For: '"+ tableName +"' Table ****");
-			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
-						
-			//Step15: Retrieve message displayed above table before clicking ReCalculate button
-			String actTableMsgBeforeCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-			String expTableMsgBeforeCalc = CONFIG.getProperty("tableMsgBeforeReCalculation");
-			softAssert.assertTrue(actTableMsgBeforeCalc.equalsIgnoreCase(expTableMsgBeforeCalc), "SMAB-T195: '"+ expTableMsgBeforeCalc +"' displayed above table before ReCalculation is initiated" + tableName + "'");
-			
-			//Step16: Clicking on ReCalculate button to initiate calculation
-			ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'ReCalculate' Button ");
-			objBppTrnPg.clickReCalculateBtn(tableName);
-			
-			//Step17: Waiting for pop up message to display and the message displayed above table to update
-			objBppTrnPg.waitForPopUpMsgOnCalculateClick(180);
-			
-			//Step18: Validation to check whether calculation is successful and table data appears for given table
-			boolean isTableVisible = objBppTrnPg.isTableVisibleOnCalculateClick(tableName);
-			softAssert.assertTrue(isTableVisible, "SMAB-T195: Tabular data visible successfully on clicking ReCalculate button for table '" + tableName + "'");
-			
-			//Step19: Retrieve & Assert updated message displayed above table
-			String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-			String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
-			softAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "SMAB-T195: ReCalculation successfully performed for table '" + tableName + "'");
-			
-			//Step20: Validating presence of ReCalculate button at table level on clicking calculate button
-			boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, tableName);
-			softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T195: ReCalcuate button is visible for table '" + tableName + "'");
-
-			//Step21: Retrieving grid data into a map			
-			List<String> columnNames = objBppTrnPg.retrieveColumnNamesOfGridForGivenTable(tableName);
-			
-			//Step22: Retrieving column names of table from UI
-			Map<String, List<Object>> dataMapFromUI = objBppTrnPg.retrieveDataFromGridForGivenTable(tableName);
-			System.out.println("Size of dataMapFromUI: " + dataMapFromUI.size());
-			
-			//Step23: Comparing the UI grid data after Calculate button click against the data in excel file
-			System.setProperty("isElementHighlightedDueToFailre", "false");
-			
-			//Step24: Scrolling to the bottom of the page
-			objBppTrnPg.scrollToBottomOfPage();
-			objBppTrnPg.scrollToElement(objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false));
-			
-			//Step25: Validating the tabular data against data retrieved from excel file
-			for (Map.Entry<String, List<Object>> entry : dataMapFromExcel.entrySet()) {
-				String currentKey = entry.getKey().toString();
-				if (dataMapFromUI.containsKey(currentKey)) {
-					List<Object> acquiredYearDataFromUI = dataMapFromUI.get(currentKey);
-					List<Object> acquiredYearDataFromExcel = dataMapFromExcel.get(currentKey);
-					
-					if (acquiredYearDataFromUI.size() == acquiredYearDataFromExcel.size()) {
-						for (int j = 0; j < acquiredYearDataFromExcel.size(); j++) {
-							if (!(acquiredYearDataFromExcel.get(j).equals(acquiredYearDataFromUI.get(j)))) {
-								objBppTrnPg.highlightMismatchedCellOnUI(tableName, currentKey, j);
-								softAssert.assertTrue(false, "SMAB-T195: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"
-								+ columnNames.get(j) + "' does not match. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
-							}
-						}
-					} else {
-						softAssert.assertTrue(false, "SMAB-T195: Size of data list for year acquired '"+ currentKey +"' does not match.", true);
-					}
-				} else {
-					softAssert.assertTrue(false, "SMAB-T195: Data for year acquired '" + currentKey +"' is not available in UI table.", true);
-				}
-			}
-			if(System.getProperty("isElementHighlightedDueToFailre").equalsIgnoreCase("true")) {
-				System.out.println("Taking screen shot after all comparison is done");
-				softAssert.assertTrue(false, "Excel & UI grid data has mismatched. Taking screen shot of entire table");
-			}
-		}
-		//Step26: Zoom into the browser window to reset web-page size.
-		objBppTrnPg.zoomInBrowserWindow();
-				
-		//Step27: Reverting the values of Bpp composite factor settings from view all page
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
-		objBppTrnPg.editBppCompositeFactorValueOnViewAllPage(objBppTrnPg.trendSettingsOriginalValues);
-		
-		softAssert.assertAll();
-	}	
-
-	@Test(description = "SMAB-T191,SMAB-T241,SMAB-T255: Perform calculation for all factor tables in one go", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 9, enabled = true)
-	public void verifyBppTrendCalculateAll(String loginUser) throws Exception {
+	@Test(description = "SMAB-T191,SMAB-T241,SMAB-T255: Perform calculation for all factor tables in one go", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 5, enabled = true)
+	public void verifyBppTrendCalculateAll(String loginUser) throws Exception {		
 		//Step1: Resetting the composite factor tables status to Not Calculated
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Not Calculated", rollYear);
-		
+
 		//Step2: Resetting the valuation factor tables status to Yet to be submitted
 		List<String> valuationFactorTablesToReset = Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(valuationFactorTablesToReset, "Yet to submit for Approval", rollYear);
 		
-		//Step3: Logging out from Bpp Trend Setup screen 
-		objApasGenericFunctions.logout();
-		Thread.sleep(2000);		
-		
-		//Step4: Login to the APAS application using the given user
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
+		//Step3: Login to the APAS application using the given user
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
 		objApasGenericFunctions.login(loginUser);
-
-		//Step5: Opening the BPP Trend module
+		
+		//Step4: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
 
-		//Step6: Selecting role year from drop down
+		//Step5: Selecting role year from drop down
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
 
-		//Step7: Validating presence of CalculateAll at page level.
+		//Step6: Validating presence of CalculateAll at page level.
 		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(20);
 		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T191: Calcuate all button is visible");
 
-		//Step8: Clicking on Calculate all button to initiate calculations for all tables in one go
+		//Step7: Clicking on Calculate all button to initiate calculations for all tables in one go
 		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Calculate all' button");
 		objBppTrnPg.clickCalculateAllBtn();
 		
-		//Step9: Retrieve & Assert pop up message displayed at page level
+		//Step8: Retrieve & Assert pop up message displayed at page level
 		String actPopUpMsg = objBppTrnPg.waitForPopUpMsgOnCalculateAllClick(180);
 		String expPopUpMsg = CONFIG.getProperty("pageLevelMsgAfterCalculateAll");
 		softAssert.assertEquals(actPopUpMsg, expPopUpMsg, "SMAB-T191: Calculation successfully performed for all tables");
 		
-		//Step10: Validating presence of ReCalculate All & Submit All For Approval buttons at page level on clicking Calculate all button
+		//Step9: Validating presence of ReCalculate All & Submit All For Approval buttons at page level on clicking Calculate all button
 		boolean isSubmitAllFactorsBtnDisplayed = objBppTrnPg.isSubmitAllForApprovalBtnVisible(20);
 		softAssert.assertTrue(isSubmitAllFactorsBtnDisplayed, "SMAB-T191: Submit All Factors For Approval button is visible");
 		boolean isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(20);
 		softAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T191: ReCalcuateAll button is visible");
 		
-		//Step11: Validating absence of CalculateAll at page level.
+		//Step10: Validating absence of CalculateAll at page level.
 		isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(5);
 		softAssert.assertTrue(!isCalculateAllBtnDisplayed, "SMAB-T191: Calcuate all button is not visible");
 		
 		//Step11: Validating status of composite factor tables on Bpp Trend Setup details page post completing calculation
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
-
+		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		
 		String statusInBppTrendSetup = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage("Const. Mobile Equipment Trends Status");
 		softAssert.assertTrue(statusInBppTrendSetup.equals("Calculated"), "SMAB-T241: Const. Mobile Equipment Trends Status on Bpp Trend Setup page post calculation is displayed as 'Calculated'");
-
 		statusInBppTrendSetup = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage("Const. Trends Status");
 		softAssert.assertTrue(statusInBppTrendSetup.equals("Calculated"), "SMAB-T255: Const. Trends status on Bpp Trend Setup page post calculation is displayed as 'Calculated'");
-	}
-
-
-	@Test(description = "SMAB-T191: Perform ReCalculation for all factor tables in one go", groups = {"regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 10, enabled = false)
-	public void verifyBppTrendReCalculateAll(String loginUser) throws Exception {
-		//Step1: Login to the APAS application using the given user
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
-		objApasGenericFunctions.login(loginUser);
-
-		//Step2: Opening the BPP Trend module
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step3: Selecting role year from drop down
-		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
-		objBppTrnPg.clickOnGivenRollYear(rollYear);
-		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
-
-		//Step4: Validating presence of ReCalculate All & Submit All For Approval buttons at page level once data has been calculated by clicking Calculate all button
-		boolean isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(20);
-		softAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T191: ReCalcuateAll button is visible");
-
-		//Step5: Clicking on ReCalculate all button to initiate calculations for all tables in one go
-		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Recalculate all' button");
-		objBppTrnPg.clickReCalculateAllBtn();
-		objBppTrnPg.Click(objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.confirmBtnInPopUp));
 		
-		//Step6: Retrieve & Assert pop up message displayed at page level
-		String actPopUpMsg = objBppTrnPg.waitForPopUpMsgOnCalculateAllClick(180);
-		String expPopUpMsg = CONFIG.getProperty("pageLevelMsgAfterCalculateAll");
-		softAssert.assertEquals(actPopUpMsg, expPopUpMsg, "SMAB-T191: ReCalculation successfully performed for all tables");
-		
-		//Step7: Validating presence of ReCalculate All & Submit All For Approval buttons at page level after performing ReCalculation
-		isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(20);
-		softAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T191: ReCalcuateAll button is visible");
-		boolean isSubmitAllFactorsBtnDisplayed = objBppTrnPg.isSubmitAllForApprovalBtnVisible(20);
-		softAssert.assertTrue(isSubmitAllFactorsBtnDisplayed, "SMAB-T191: Submit All Factors For Approval button is visible");
-	}
-
-	
-	@Test(description = "SMAB-T442: Sumbit calculations for approval for composite & valuation tables individually", groups = {"regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 11, enabled = false)
-	public void verifyBppTrendSubmitForApprovalForCompositeAndValuationTables(String loginUser) throws Exception {
-		//Step1: Fetch composite factor table names from properties file and collect them in a single list
-		List<String> compositeFactorTablesList = new ArrayList<String>();
-		compositeFactorTablesList.addAll(Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(",")));
-		//Step2: Fetch composite factor table names from properties file and collect them in a single list		
-		List<String> valuationFactorTablesList = new ArrayList<String>();
-		valuationFactorTablesList.addAll(Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(",")));
-		
-		//Step3: Navigate to bpp trend setup page before approving
-		objApasGenericFunctions.login(loginUser);
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.selectAllOptionOnGrid();
-		
-		//Step4: Iterate over composite factor tables and validate the status
-		String tableName;
-		for(int i = 0; i < compositeFactorTablesList.size(); i++) {
-			tableName = compositeFactorTablesList.get(i);
-			String currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
-			softAssert.assertEquals(currentStatus, "Calculated", "SMAB-T442: Status of "+ tableName +" table on Bpp Trend Page before approving");
-		}
-
-		//Step5: Iterate over valuation factor tables and validate the status
-		for(int i = 0; i < valuationFactorTablesList.size(); i++) {
-			tableName = valuationFactorTablesList.get(i);
-			String currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
-			softAssert.assertEquals(currentStatus, "Yet to be Submit for approval", "SMAB-T442: Status of "+ tableName +" table on Bpp Trend Page before approving");
-		}
-		
-		//Step6: Opening the BPP Trend module
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step7: Selecting role year from drop down
-		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
-		objBppTrnPg.clickOnGivenRollYear(rollYear);
-		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
-
-		//Step8: Validating presence of ReCalculateAll & SubmitAllForApproval button at page level before any table is accessed
-		boolean	isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(20);
-		softAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T442: Recalcuate all button is visible");
-		boolean	isSubmitAllForApprovalBtnDisplayed = objBppTrnPg.isSubmitAllForApprovalBtnVisible(20);
-		softAssert.assertTrue(isSubmitAllForApprovalBtnDisplayed, "SMAB-T442: Submit All Factors For Approval button is visible");
-		
-		//Step9: Fetch table names from properties file and collect them in a single list
-		List<String> allTables = new ArrayList<String>();
-		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
-		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesUnderMoreTab").split(",")));
-		allTables.addAll(Arrays.asList(CONFIG.getProperty("valuationTablesUnderMoreTab").split(",")));
-		
-		String tableNamesUnderMoreTab = CONFIG.getProperty("compositeTablesUnderMoreTab") + "," + CONFIG.getProperty("valuationTablesUnderMoreTab");
-		
-		//Step10: Iterating over the given tables
-		for (int i = 0; i < allTables.size()-1; i++) {
-			tableName = allTables.get(i);
-			ExtentTestManager.getTest().log(LogStatus.INFO, "**** Performing Validations For: '"+ tableName +"' Table ****");
-			//Clicking on the given table name
-			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
-			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
-															
-			//Clicking on Submit For Approval button to submit the Recalculation
-			ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Submit For Approval' Button");
-			objBppTrnPg.clickSubmitForApprovalBtn(tableName);
-
-			//Waiting for pop up message to display and the message displayed above table to update
-			objBppTrnPg.waitForPopUpMsgOnSubmitForApprovalClick(180);		
-			
-			//Retrieve & Assert message displayed above table on clicking submit for approval button
-			String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-			String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostSubmitForApproval");
-			softAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "SMAB-T442: Calculated data submitted for approval successfully");
-			
-			ExtentTestManager.getTest().log(LogStatus.INFO, "* Checking status of various buttons at page level and individual table level");
-			
-			//Validating absence of ReCalculate & Submit For Approval buttons at table level on clicking submit for approval button
-			boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(10, tableName);
-			softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T442: Is ReCalcuate button is not visible");
-			boolean isSubmitForApprovalBtnDisplayed = objBppTrnPg.isSubmitForApprovalBtnVisible(10, tableName);
-			softAssert.assertTrue(isSubmitForApprovalBtnDisplayed, "SMAB-T442: Submit For Approval button is not visible");
-		
-			//Validating absence of ReCalculate All button at page level on clicking submit for approval button
-			isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(5);
-			softAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T442: ReCalcuateAll button is not visible");
-		}
-		
-		//Step11: Iterate over composite factor tables and validate the status
-		for(int i = 0; i < compositeFactorTablesList.size(); i++) {
-			tableName = compositeFactorTablesList.get(i);
-			String currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
-			softAssert.assertEquals(currentStatus, "Submitted for Approval", "SMAB-T442: Status of "+ tableName +" table on Bpp Trend Page before approving");
-		}
-
-		//Step12: Iterate over valuation factor tables and validate the status
-		for(int i = 0; i < valuationFactorTablesList.size(); i++) {
-			tableName = valuationFactorTablesList.get(i);
-			String currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
-			softAssert.assertEquals(currentStatus, "Submitted for Approval", "SMAB-T442: Status of "+ tableName +" table on Bpp Trend Page before approving");
-		}
+		objApasGenericFunctions.logout();
 		softAssert.assertAll();
 	}
-    
-	@Test(description = "SMAB-T442: Sumbit calculations for approval for all factor tables in one go",groups = {"smoke,regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 12, enabled = true)
+  
+	@Test(description = "SMAB-T442: Sumbit calculations for approval for all factor tables in one go",groups = {"smoke,regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 6, enabled = true)
 	public void verifyBppTrendSubmitAllForApproval(String loginUser) throws Exception {	
 		//Step1: Fetch composite factor table names from properties file and collect them in a single list
 		List<String> compositeFactorTablesList = new ArrayList<String>();
 		compositeFactorTablesList.addAll(Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(",")));
+
 		//Step2: Fetch composite factor table names from properties file and collect them in a single list		
 		List<String> valuationFactorTablesList = new ArrayList<String>();
 		valuationFactorTablesList.addAll(Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(",")));
@@ -1012,8 +592,9 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 		objApasGenericFunctions.login(loginUser);
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
+		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
 			
-		//Step4: Iterate over composite factor tables and validate the status
+		//Step4: Iterate over composite factor tables list and validate their status Bpp trend setup on details page
 		String tableName;
 		for(int i = 0; i < compositeFactorTablesList.size(); i++) {
 			tableName = compositeFactorTablesList.get(i);
@@ -1021,11 +602,11 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 			softAssert.assertEquals(currentStatus, "Calculated", "SMAB-T442: Status of "+ tableName +" table on Bpp Trend Page before approving");
 		}
 		
-		//Step5: Iterate over valuation factor tables and validate the status
+		//Step5: Iterate over valuation factor tables list and validate their status Bpp trend setup on details page
 		for(int i = 0; i < valuationFactorTablesList.size(); i++) {
 			tableName = valuationFactorTablesList.get(i);
 			String currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
-			softAssert.assertEquals(currentStatus, "Yet to be Submit for approval", "SMAB-T442: Status of "+ tableName +" table on Bpp Trend Page before approving");
+			softAssert.assertEquals(currentStatus, "Yet to submit for Approval", "SMAB-T442: Status of "+ tableName +" table on Bpp Trend Page before approving");
 		}
 		
 		//Step6: Opening the BPP Trend module
@@ -1060,20 +641,26 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 		boolean isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(5);
 		softAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T442: ReCalcuateAll button is not visible");
 
-		//Step13: Iterate over composite factor tables and validate the status
+		//Step13: Opening the BPP Trend module
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		objApasGenericFunctions.selectAllOptionOnGrid();
+		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		
+		//Step14: Iterate over composite factor tables list and validate their status Bpp trend setup on details page
 		for(int i = 0; i < compositeFactorTablesList.size(); i++) {
 			tableName = compositeFactorTablesList.get(i);
 			String currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
 			softAssert.assertEquals(currentStatus, "Submitted for Approval", "SMAB-T442: Status of "+ tableName +" table on Bpp Trend Page before approving");
 		}
 
-		//Step14: Iterate over valuation factor tables and validate the status
+		//Step15: Iterate over valuation factor tables list and validate their status Bpp trend setup on details page
 		for(int i = 0; i < valuationFactorTablesList.size(); i++) {
 			tableName = valuationFactorTablesList.get(i);
 			String currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
 			softAssert.assertEquals(currentStatus, "Submitted for Approval", "SMAB-T442: Status of "+ tableName +" table on Bpp Trend Page before approving");
 		}
-		
+		objApasGenericFunctions.logout();		
 		softAssert.assertAll();
 	}
+
 }
