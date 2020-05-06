@@ -27,8 +27,9 @@ public class BuildingPermitDataValidationTest extends TestBase {
 	ParcelsPage objParcelsPage;
 	SoftAssertion softAssert = new SoftAssertion();
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod(){
+		System.out.print("this is before method");
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
 		objBuildingPermitPage = new BuildingPermitPage(driver);
@@ -36,7 +37,7 @@ public class BuildingPermitDataValidationTest extends TestBase {
 		objParcelsPage = new ParcelsPage(driver);
 	}
 		
-	@AfterMethod
+	@AfterMethod(alwaysRun=true)
 	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
 		softAssert.assertAll();
@@ -57,7 +58,7 @@ public class BuildingPermitDataValidationTest extends TestBase {
 	/**
 	 Below test case is used to validate the manual creation of building permit
 	 **/
-	@Test(description = "SMAB-T383,SMAB-T520,SMAB-T402,SMAB-T421: Creating manual entry for building permit", dataProvider = "loginUsers", groups = {"smoke","regression","BuildingPermit-1"}, alwaysRun = true)
+	@Test(description = "SMAB-T383,SMAB-T520,SMAB-T402,SMAB-T421: Creating manual entry for building permit", dataProvider = "loginUsers", groups = {"smoke","regression","BP"}, alwaysRun = true)
 	public void validateManuallyCreatedBuildingPermitData(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)

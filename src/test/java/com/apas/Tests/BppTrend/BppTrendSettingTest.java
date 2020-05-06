@@ -33,7 +33,7 @@ public class BppTrendSettingTest  extends TestBase {
 	SoftAssertion softAssert;
 	String rollYear;
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() {
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
@@ -45,7 +45,7 @@ public class BppTrendSettingTest  extends TestBase {
 		rollYear = CONFIG.getProperty("rollYear");
 	}
 
-	@AfterMethod
+	@AfterMethod(alwaysRun=true)
 	public void afterMethod() throws Exception {
 		objApasGenericFunctions.logout();
 	}

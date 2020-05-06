@@ -36,7 +36,7 @@ public class BuildingPermitManualCreateAndEditTest extends TestBase {
 	Util objUtil;
 	SoftAssertion softAssert;
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod(){
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
@@ -48,7 +48,7 @@ public class BuildingPermitManualCreateAndEditTest extends TestBase {
 		softAssert = new SoftAssertion();
 	}
 		
-	@AfterMethod
+	@AfterMethod(alwaysRun=true)
 	public void afterMethod() throws IOException, InterruptedException{
 		objApasGenericFunctions.logout();
 	}

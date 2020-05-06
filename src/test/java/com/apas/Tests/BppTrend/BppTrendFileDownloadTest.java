@@ -33,7 +33,7 @@ public class BppTrendFileDownloadTest extends TestBase {
 	SoftAssertion softAssert;
 	Map<String, String> dataMap;
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() {
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
@@ -44,7 +44,7 @@ public class BppTrendFileDownloadTest extends TestBase {
 		softAssert = new SoftAssertion();
 	}
 
-	@AfterMethod
+	@AfterMethod(alwaysRun=true)
 	public void afterMethod() throws Exception {
 		objApasGenericFunctions.logout();
 	}

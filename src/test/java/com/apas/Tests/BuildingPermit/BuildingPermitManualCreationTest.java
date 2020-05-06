@@ -35,7 +35,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 	BuildingPermitPage objBuildingPermitPage;
 	SoftAssertion softAssert  = new SoftAssertion();
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod(){
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
@@ -43,7 +43,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 	}
 		
-	@AfterMethod
+	@AfterMethod(alwaysRun=true)
 	public void afterMethod() throws IOException{
 		objApasGenericFunctions.logout();
 		softAssert.assertAll();

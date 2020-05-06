@@ -33,7 +33,7 @@ public class BppTrendApprovalTest extends TestBase {
 	Util objUtil;
 	SoftAssertion softAssert;
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() {
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
@@ -44,7 +44,7 @@ public class BppTrendApprovalTest extends TestBase {
 		softAssert = new SoftAssertion();
 	}
 
-	@AfterMethod
+	@AfterMethod(alwaysRun=true)
 	public void afterMethod() throws Exception {
 		objApasGenericFunctions.logout();
 	}

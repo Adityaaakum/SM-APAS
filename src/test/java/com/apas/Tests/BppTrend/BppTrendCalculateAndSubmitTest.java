@@ -38,7 +38,7 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 	String rollYear;
 	SalesforceAPI objSalesforceAPI;
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception {
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
