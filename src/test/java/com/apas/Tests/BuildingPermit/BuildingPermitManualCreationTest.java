@@ -63,7 +63,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 	/**
 	 Below test case is used to validate error appearing if mandatory fields are not filled while manually creating building permit
 	 **/
-	@Test(description = "SMAB-T418: Mandatory Field Validation while creating manual building permit", groups = {"smoke","regression"}, dataProvider = "loginUsers", alwaysRun = true)
+	@Test(description = "SMAB-T418: Mandatory Field Validation while creating manual building permit", groups = {"smoke","regression","BuildingPermit"}, dataProvider = "loginUsers", alwaysRun = true)
 	public void validateMandatoryFieldErrorsBuildingPermitManualCreation(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -95,7 +95,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 	/**
 	 Below test case is used to validate that building permit can be created when 'Building Permit Number, Permit City Code and APN' is unique
 	 **/
-	@Test(description = "SMAB-T519: Validate that building permit can be created when 'Building Permit Number, Permit City Code and APN' is unique", groups = {"smoke","regression"}, dataProvider = "loginUsers", alwaysRun = true)
+	@Test(description = "SMAB-T519: Validate that building permit can be created when 'Building Permit Number, Permit City Code and APN' is unique", groups = {"smoke","regression","BuildingPermit"}, dataProvider = "loginUsers", alwaysRun = true)
 	public void validateDuplicateBuildingPermitManualCreation(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -147,7 +147,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 	/**
 	 Below test case is used to validate the warning message when building permit is created with retired parcel
 	 **/
-	@Test(description = "SMAB-T626: Validate that warning message appears when a building permit is created with retired parcel", groups = {"smoke","regression"}, dataProvider = "loginUsers", priority = 2, alwaysRun = true)
+	@Test(description = "SMAB-T626: Validate that warning message appears when a building permit is created with retired parcel", groups = {"smoke","regression","BuildingPermit"}, dataProvider = "loginUsers", priority = 2, alwaysRun = true)
 	public void validateRetiredParcelBuildingPermitManualCreation(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider

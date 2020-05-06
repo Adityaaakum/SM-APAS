@@ -22,7 +22,8 @@ public class TestBase extends BrowserDriver {
 	public static String testCycle = System.getProperty("testCycle");
 	public final boolean flagToUpdateJira = true ;
 
-
+	//public  static String browserName = "chrome";
+	//public  static String region = "QA";
 	public static String envURL;
 
 	/**
@@ -70,6 +71,7 @@ public class TestBase extends BrowserDriver {
 	 */
 	public static void loadPropertyFiles() throws Exception {
 		fsEnv  = new FileInputStream(System.getProperty("user.dir") + "//src//test//resources//envConfig" + System.getProperty("region").toUpperCase() + ".properties");
+		//fsEnv  = new FileInputStream(System.getProperty("user.dir") + "//src//test//resources//envConfig" + region + ".properties");
 		fsConfig = new FileInputStream(System.getProperty("user.dir") + "//src//test//resources//envConfig.properties");
 		fsData = new FileInputStream(System.getProperty("user.dir") + "//src//test//resources//TestData.properties");
 		CONFIG.load(fsEnv);

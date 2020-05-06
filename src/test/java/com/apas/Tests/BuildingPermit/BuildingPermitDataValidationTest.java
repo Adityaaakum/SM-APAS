@@ -57,7 +57,7 @@ public class BuildingPermitDataValidationTest extends TestBase {
 	/**
 	 Below test case is used to validate the manual creation of building permit
 	 **/
-	@Test(description = "SMAB-T383,SMAB-T520,SMAB-T402,SMAB-T421: Creating manual entry for building permit", dataProvider = "loginUsers", groups = {"smoke","regression"}, alwaysRun = true)
+	@Test(description = "SMAB-T383,SMAB-T520,SMAB-T402,SMAB-T421: Creating manual entry for building permit", dataProvider = "loginUsers", groups = {"smoke","regression","BuildingPermit-1"}, alwaysRun = true)
 	public void validateManuallyCreatedBuildingPermitData(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -148,7 +148,7 @@ public class BuildingPermitDataValidationTest extends TestBase {
     /**
      Below test case is used to validate the building permit data imported through Efile Intake
      **/
-    @Test(description = "SMAB-T383", dataProvider = "loginUsers", groups = {"smoke","regression"},enabled = false)
+    @Test(description = "SMAB-T383", dataProvider = "loginUsers", groups = {"smoke","regression","BuildingPermit"},enabled = true)
     public void validateImportedBuildingPermitData(String loginUser) throws Exception {
         //**********This test case needs to be refactored once efile import functionality is integrated
         //Below Data needs to be fetched from the imported file once efile import is integrated as there are few challenged in integrating efile import

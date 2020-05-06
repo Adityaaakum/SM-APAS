@@ -59,7 +59,7 @@ public class BuildingPermitEditTest extends TestBase {
 	 1. Error appearing if mandatory fields are not filled while editing the existing building permit record
 	 2. Save the record after updating the value in a field
 	 **/
-	@Test(description = "SMAB-T466: Mandatory Field Validation while editing manual building permit and editing a record", groups = {"smoke","regression"}, dataProvider = "loginUsers", alwaysRun = true)
+	@Test(description = "SMAB-T466: Mandatory Field Validation while editing manual building permit and editing a record", groups = {"smoke","regression","BuildingPermit"}, dataProvider = "loginUsers", alwaysRun = true)
 	public void editBuildingPermitAndMandatoryFiledErrorValidation(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider

@@ -64,7 +64,7 @@ public class BuildingPermitTransactionsLogTest extends TestBase {
 	/**
 	 Below test case is used to validate status of the imported San Mateo Building Permit file which in XLS format
 	 **/
-	@Test(description = "SMAB-T357,SMAB-T430: Transaction record verification for the imported Building Permit in XLS Format", dataProvider = "loginUsers", groups = {"smoke","regression","Building Permit"}, alwaysRun = true)
+	@Test(description = "SMAB-T357,SMAB-T430: Transaction record verification for the imported Building Permit in XLS Format", dataProvider = "loginUsers", groups = {"smoke","regression","BuildingPermit"}, alwaysRun = true)
 	public void transactionRecordVerificationBuildingPermitXLS(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -122,7 +122,7 @@ public class BuildingPermitTransactionsLogTest extends TestBase {
 //	 2. Validation of error and imported records on review and approve screen
 //	 3. Status validation of imported file on efile import transaction log screen
 //	 **/
-//	@Test(description = "SMAB-T362,SMAB-T363,SMAB-T430: Transaction record verification for the imported Building Permit in TXT Format", dataProvider = "loginUsers", groups = {"smoke","regression","Building Permit"}, alwaysRun = true, enabled = false)
+//	@Test(description = "SMAB-T362,SMAB-T363,SMAB-T430: Transaction record verification for the imported Building Permit in TXT Format", dataProvider = "loginUsers", groups = {"smoke","regression","BuildingPermit"}, alwaysRun = true, enabled = true)
 //	public void verifyApproveBuildingPermitImport(String loginUser) throws Exception {
 //		//*******Import Transaction Validation is also there, as per discussion with Amit this needs to be broken into 2 different test cases
 //		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)

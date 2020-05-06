@@ -50,7 +50,7 @@ public class BppTrendSettingTest  extends TestBase {
 		objApasGenericFunctions.logout();
 	}
 	
-	@Test(description = "SMAB-T229: Check for availability of input factor tables on bpp trend roll year screen", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdminAndPrincipalUserAndBppAuditor", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
+	@Test(description = "SMAB-T229: Check for availability of input factor tables on bpp trend roll year screen", groups = {"smoke","regression","BPP Trends"}, dataProvider = "loginBusinessAdminAndPrincipalUserAndBppAuditor", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
 	public void verifyBppTrendValidateInputFactorTablesOnDetailsPage(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);

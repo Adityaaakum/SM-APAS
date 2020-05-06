@@ -56,7 +56,7 @@ public class BuildingPermitManualCreateAndEditTest extends TestBase {
 	/**
 	 Below test case is used to validate the manual creation of building permit 
 	 **/
-	@Test(description = "Creating new manual entry for building permit", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression"}, priority = 0, enabled = true)
+	@Test(description = "Creating new manual entry for building permit", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BuildingPermit"}, priority = 0, enabled = true)
 	public void createBldngPrmtManualEntry(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the given user
 		if(loginUser.equalsIgnoreCase("dataAdmin")) {

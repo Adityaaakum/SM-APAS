@@ -71,7 +71,7 @@ public class BuildingPermitImportTest extends TestBase {
 	 2. Validation of error and imported records on review and approve screen
 	 3. Status validation of imported file on efile import transaction log screen
 	 **/
-	@Test(description = "SMAB-T362,SMAB-T363: Verify Discard and Approve functionality for Building Permit Import in TXT format", dataProvider = "loginUsers", groups = {"smoke","regression"}, alwaysRun = true)
+	@Test(description = "SMAB-T362,SMAB-T363: Verify Discard and Approve functionality for Building Permit Import in TXT format", dataProvider = "loginUsers", groups = {"smoke","regression","BuildingPermit"}, alwaysRun = true)
 	public void verifyApproveDiscardBuildingPermitImport(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -144,7 +144,7 @@ public class BuildingPermitImportTest extends TestBase {
     /**
 	 Below test case is used to validate the revert functionality on the file having the error records
 	 **/
-	@Test(description = "SMAB-T361,SMAB-T358: Reverting the error records in building permit import", dataProvider = "loginUsers", groups = {"smoke","regression"}, alwaysRun = true, enabled = false)
+	@Test(description = "SMAB-T361,SMAB-T358: Reverting the error records in building permit import", dataProvider = "loginUsers", groups = {"smoke","regression","BuildingPermit"}, alwaysRun = true)
 	public void verifyRevertBuildingPermitImport(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -192,7 +192,7 @@ public class BuildingPermitImportTest extends TestBase {
     /**
 	 Below test case is used to validate the retry functionality after correction on the records in error
 	 **/
-	@Test(description = "SMAB-T364: Retrying the error records in building permit import", dataProvider = "loginUsers", groups = {"smoke","regression"}, alwaysRun = true, enabled = false)
+	@Test(description = "SMAB-T364: Retrying the error records in building permit import", dataProvider = "loginUsers", groups = {"smoke","regression","BuildingPermit"}, alwaysRun = true)
 	public void verifyRetryBuildingPermitImport(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)

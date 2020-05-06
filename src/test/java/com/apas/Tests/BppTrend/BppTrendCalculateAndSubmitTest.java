@@ -51,7 +51,7 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 		objSalesforceAPI = new SalesforceAPI();
 	}
 	
-	@Test(description = "SMAB-T190: Perform data calculation for factors tables individually", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
+	@Test(description = "SMAB-T190: Perform data calculation for factors tables individually", groups = {"smoke","regression","BPP Trends"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
 	public void verifyBppTrendCalculateCompositeFactorAndProp13Tables(String loginUser) throws Exception {		
 		//Step1: Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -167,7 +167,7 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 		softAssert.assertAll();
 	}
 
-	@Test(description = "SMAB-T195: Perform data calculation for factors tables individually", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	@Test(description = "SMAB-T195: Perform data calculation for factors tables individually", groups = {"smoke","regression","BPP Trends"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
 	public void verifyBppTrendReCalculateCompositeFactorTables(String loginUser) throws Exception {
 		//Step1: Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -306,7 +306,7 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 		softAssert.assertAll();
 	}	
 	
-	@Test(description = "SMAB-T253: Perform calculation for Construction Composite Factors table", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 2, enabled = true)
+	@Test(description = "SMAB-T253: Perform calculation for Construction Composite Factors table", groups = {"smoke","regression","BPP Trends"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 2, enabled = true)
 	public void verifyBppTrendCalculateConstructionCompositeFactors(String loginUser) throws Exception {		
 		//Step1: Reset composite factor tables status to "Not Calculated"
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -380,7 +380,7 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 		softAssert.assertAll();
 	}
 	
-	@Test(description = "SMAB-T239: Perform calculation for Construction Mobile Equipment Composite Factors tables", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 3, enabled = true)
+	@Test(description = "SMAB-T239: Perform calculation for Construction Mobile Equipment Composite Factors tables", groups = {"smoke","regression","BPP Trends"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 3, enabled = true)
 	public void verifyBppTrendCalculateConstMobileEquipFactors(String loginUser) throws Exception {
 		//Step1: Validating presence of CalculateAll button at page level
 		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
@@ -442,7 +442,7 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 		softAssert.assertAll();		
 	}	
 	
-	@Test(description = "SMAB-T277, SMAB-T577: Perform calculation for BPP Prop 13 table", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 4, enabled = true)
+	@Test(description = "SMAB-T277, SMAB-T577: Perform calculation for BPP Prop 13 table", groups = {"smoke","regression","BPP Trends"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 4, enabled = true)
 	public void verifyBppTrendCalculateProp13(String loginUser) throws Exception {
 		//Step1: Validating presence of CalculateAll button at page level before
 		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
@@ -519,7 +519,7 @@ public class BppTrendCalculateAndSubmitTest extends TestBase {
 		softAssert.assertAll();
 	}
 	
-	@Test(description = "SMAB-T191,SMAB-T241,SMAB-T255: Perform calculation for all factor tables in one go", groups = {"smoke","regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 5, enabled = true)
+	@Test(description = "SMAB-T191,SMAB-T241,SMAB-T255: Perform calculation for all factor tables in one go", groups = {"smoke","regression","BPP Trends"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 5, enabled = true)
 	public void verifyBppTrendCalculateAll(String loginUser) throws Exception {		
 		//Step1: Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));

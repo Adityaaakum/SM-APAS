@@ -183,10 +183,10 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
 
-					<configuration>
+					<!-- <configuration>
 						<fork>true</fork>
 						<executable>C:\Program Files\Java\jdk1.8.0_241\bin\javac.exe</executable>
-					</configuration>
+					</configuration> -->
 
 				</plugin>
 				<plugin>
@@ -228,16 +228,16 @@
 								<include>BppTrendApprovalTest.java</include>
 								<include>BppTrendFileDownloadTest.java</include>
 						</includes> -->
-						<groups>${groups}</groups>
+						<groups>${testSuite}</groups>
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
 						<systemPropertyVariables>
                                <browserName>${browserName}</browserName>
                                <testSuite>${testSuite}</testSuite>
                                <gridHubUrl>${gridHubUrl}</gridHubUrl>
                                <region>${region}</region>
-                               <flagToUpdateJira>$flagToUpdateJira</flagToUpdateJira>
-                               <testCycle>$testCycle</testCycle>
-                          </systemPropertyVariables>     
+                               <flagToUpdateJira>${flagToUpdateJira}</flagToUpdateJira>
+                               <testCycle>${testCycle}</testCycle>
+                          </systemPropertyVariables>    
 					</configuration>
 				</plugin>
 			</plugins>
