@@ -70,6 +70,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 		if (flagToUpdateJira && testCycle != null) {
 			//Updating the Jira tickets status at the end of the execution
 			System.out.println("Test cases execution status on end of execution: " + JiraAdaptavistStatusUpdate.testStatus);
+			TearDown();
 			JiraAdaptavistStatusUpdate.mapTestCaseStatusToJIRA();
 		}
 	}
@@ -81,6 +82,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 	@Override
 	public void onTestStart(ITestResult result) {
 		try {
+			
 			//Making isSoftAssertionUsedFlag flag as False to reset soft assertion status
 			SoftAssertion.isSoftAssertionUsedFlag = false;
 			//Updating the system properties with test case properties details
@@ -89,7 +91,6 @@ public class SuiteListener extends TestBase implements ITestListener {
 			String description = result.getMethod().getDescription();
 			System.setProperty("currentMethodName", methodName);
 			System.setProperty("description", description);
-
 			upTest = ExtentTestManager.startTest(methodName, "Description: " + description);
 			System.out.println("Starting the test with method name : " + methodName);
 			String[] arrayClassName = className.split("\\.");
@@ -107,6 +108,8 @@ public class SuiteListener extends TestBase implements ITestListener {
 	 */
 	@Override
 	public void onTestSuccess(ITestResult result) {
+		
+		System.out.print("This is onSuccess Listner method");
 		//Updating the extent report with the step that test case is passed.
 		if (!SoftAssertion.isSoftAssertionUsedFlag) {
 			ExtentTestManager.getTest().log(LogStatus.PASS, "Test Case has been PASSED.");
@@ -150,8 +153,10 @@ public class SuiteListener extends TestBase implements ITestListener {
 			//Finishing the test case
 			ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 			ExtentManager.getExtentInstance().flush();
+			TearDown();
+			setupTest();
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -169,7 +174,6 @@ public class SuiteListener extends TestBase implements ITestListener {
 		ExtentTestManager.getTest().log(LogStatus.SKIP, "Test skipped : " + result.getThrowable());
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 		ExtentManager.getExtentInstance().flush();
-		TearDown();
 	}
 
 	@Override

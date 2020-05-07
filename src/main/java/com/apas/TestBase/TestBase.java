@@ -18,12 +18,13 @@ public class TestBase extends BrowserDriver {
 	public final String testSuite = System.getProperty("testSuite");
 	public final String gridHubURL = System.getProperty("gridHubURL");
 	public final String region = System.getProperty("region");
-	//public final boolean flagToUpdateJira = Boolean.parseBoolean(System.getProperty("flagToUpdateJira"));
+	public final boolean flagToUpdateJira = Boolean.parseBoolean(System.getProperty("flagToUpdateJira"));
 	public static String testCycle = System.getProperty("testCycle");
-	public final boolean flagToUpdateJira = true ;
-
+	
+	//public final boolean flagToUpdateJira = true ;
 	//public  static String browserName = "chrome";
 	//public  static String region = "QA";
+	
 	public static String envURL;
 
 	/**
@@ -60,6 +61,7 @@ public class TestBase extends BrowserDriver {
 			ldriver.close();
 			Thread.sleep(4000);
 			ldriver.quit();
+			ldriver=null;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

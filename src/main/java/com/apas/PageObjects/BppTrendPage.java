@@ -1,17 +1,15 @@
 package com.apas.PageObjects;
 
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
@@ -24,7 +22,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.json.simple.JSONObject;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
@@ -63,7 +60,7 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//button[@title=  'Select']")
 	public WebElement selectRollYearButton;
 	
-	@FindBy(xpath = "//div[@class = 'dv-tab-bppt-container']//button[@title = 'More Tabs']")
+	@FindBy(xpath = "//div[@class = 'dv-tab-bppt-container']//button[@title = 'More Tabs'] | //lightning-button-menu[contains(@class, 'slds-dropdown')]//button[@title = 'More Tabs']")
 	public WebElement moreTabs;
 	
 	@FindBy(xpath = "//button[text() = 'Cancel']")
@@ -212,6 +209,9 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//span[text() = 'Home']")
 	public WebElement homeTab;
 	
+	@FindBy(xpath = "//button[text() = 'Close']")
+	public WebElement closeButton;
+	
 	/**
 	 * Description: This will select the roll year from the drop down
 	 * @param rollYear: Roll Year for which the BPP Trend Name needs to be clicked or bpp trend name itself
@@ -259,7 +259,7 @@ public class BppTrendPage extends Page {
 		} else {
 			xpathStr = "//a[contains(@data-label, '" + tableName + "')]";
 		}
-		WebElement givenTable = locateElement(xpathStr, 120);
+		WebElement givenTable = locateElement(xpathStr, 200);
 		waitForElementToBeClickable(givenTable);
 		javascriptClick(givenTable);
 		return givenTable;
@@ -313,7 +313,7 @@ public class BppTrendPage extends Page {
 	 */
 	private void clickRequiredButton(String ...args) throws Exception {
 		String xpath = getXpathForRequiredBtton(args);
-		WebElement button = locateElement(xpath, 40); 
+		WebElement button = locateElement(xpath, 120); 
 		javascriptClick(button);		
 	}
 	
@@ -414,15 +414,17 @@ public class BppTrendPage extends Page {
 	 * @param rollYear: Roll year for which the status needs to be reset
 	 */
 	public void resetTablesStatusForGivenRollYear(List<String> columnsToReset, String expectedStatus, String rollYear) throws Exception {		
-		String queryForID = "Select Id From BPP_Trend_Roll_Year__c where Roll_Year__c = '"+ rollYear +"'";
-		String id = null;
-
 		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+		String queryForID = "Select Id From BPP_Trend_Roll_Year__c where Roll_Year__c = '"+ rollYear +"'";
 		for(String columnName : columnsToReset) {
-			objSalesforceAPI.update("BPP_Trend_Roll_Year__c", id, columnName, expectedStatus);
+			objSalesforceAPI.update("BPP_Trend_Roll_Year__c", queryForID, columnName, expectedStatus);
 		}
-
-		//HashMap<String, ArrayList<String>> map = objSalesforceAPI.select("SELECT Ag_Mobile_Equipment_Trends_Status__c,Computer_Trends_Status__c,Const_Mobile_Equipment_Trends_Status__c,Const_Trends_Status__c,Industrial_Trend_Status__c FROM BPP_Trend_Roll_Year__c");
+	}
+	
+	public void removeExistingBppSettingEntry(String rollYear) throws Exception {
+		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+		String queryForID = "SELECT Id FROM BPP_Setting__c where BPP_Trend_Roll_Year_Parent__c = '"+ rollYear +"'";
+		objSalesforceAPI.delete("BPP_Setting__c", queryForID);
 	}
 
 	/**
@@ -1504,4 +1506,175 @@ public class BppTrendPage extends Page {
 		Click(waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
 	}
 	
+	/**
+	 * @Description : Reads given excel file to retrieve total rows in each sheet the data into a map.
+	 * @param filePath: Takes the path of the XLSX workbook
+	 * @return: Return a data map
+	 **/
+	public Map<String, Object> getTotalRowsCountFromExcelForGivenTable(String filePath) throws Exception {
+		List<String> sheetNames = new ArrayList<String>();		
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		FileInputStream file = null;
+		XSSFWorkbook workBook = null;
+		try {
+            file = new FileInputStream(new File(filePath));
+            workBook = new XSSFWorkbook(file);            
+            
+    		for (int i = 0; i < workBook.getNumberOfSheets(); i++) {
+    			String name = workBook.getSheetName(i);
+    			if(!name.equals("Document Details")) {
+        			sheetNames.add(name);
+    			}
+    		}
+            
+    		for(String sheetName : sheetNames) {
+    			XSSFSheet sheet = workBook.getSheet(sheetName);
+    			//Removing the records that are to be restricted while importing the file & header row from total count
+    			int numberOfJunkRecords = Integer.parseInt(TestBase.CONFIG.getProperty("errorRecordsCount"));
+    			int rowCount = sheet.getPhysicalNumberOfRows();
+    			int totalRows = (rowCount - numberOfJunkRecords) - 1;
+    			dataMap.put(sheetName, totalRows);
+    		}
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+        	workBook.close();
+        	file.close();
+        }
+		return dataMap;
+	}
+	
+	/**
+	 * Description: Generates a map having sheet names of excel as keys and column names to be updated as values
+	 */
+	public Map<String, String> mapHavingtableNamesAndEditedColumnName() throws Exception {
+		List<String> SheetNamesWithColumnNames = new ArrayList<String>();
+		SheetNamesWithColumnNames.add(TestBase.CONFIG.getProperty("SheetNameWithColumnHarvestAverage"));
+		SheetNamesWithColumnNames.add(TestBase.CONFIG.getProperty("SheetNameWithColumnNumericvalue"));
+		SheetNamesWithColumnNames.add(TestBase.CONFIG.getProperty("SheetNameWithColumnAgricultural"));
+		SheetNamesWithColumnNames.add(TestBase.CONFIG.getProperty("SheetNameWithColumnConstruction"));
+		SheetNamesWithColumnNames.add(TestBase.CONFIG.getProperty("SheetNamesWithColumnAverage"));
+		
+		Map<String, String> dataMap = new HashMap<String, String>();
+		
+		for(int i = 0; i < SheetNamesWithColumnNames.size(); i++) {
+			List<String> tempList = Arrays.asList(SheetNamesWithColumnNames.get(i).split(":"));			
+			if(tempList.get(0).contains(",")) {
+				List<String> listSheetNamesWithSameColumnName = Arrays.asList(tempList.get(0).split(","));
+				for(int j = 0; j < listSheetNamesWithSameColumnName.size(); j++) {
+					dataMap.put(listSheetNamesWithSameColumnName.get(j), tempList.get(1));		
+				}
+			} else {
+				dataMap.put(tempList.get(0), tempList.get(1));	
+			}
+		}
+		return dataMap;
+	}
+
+	/**
+	 * Description: This method reads the excel file, retrieves original values of cell from various sheets that re to be updated with Junk value
+	 * @param: Takes complete path of the file as the argument
+	 */
+	@SuppressWarnings("deprecation")
+	public Map<String, Map<String, List<String>>> updateExcelDataForGivenFactorTables(String filePath) throws Exception {		
+		//Step1: Creating a map by using above list, this map holds sheet name as "Keys" and column names as "Values"
+		Map<String, String> dataMap = mapHavingtableNamesAndEditedColumnName();
+		
+		Map<String, Map<String, List<String>>> dataMapHavingOriginalValues = new HashMap<String, Map<String, List<String>>>();
+		FileInputStream file = null;
+		XSSFWorkbook workBook = null;
+		try {
+            file = new FileInputStream(new File(filePath));
+            workBook = new XSSFWorkbook(file);
+            Set<String> sheetNames = dataMap.keySet();
+            Map<String, List<String>> dataMapWithColNameAndOriginalValues = new HashMap<String, List<String>>();
+            
+    		for(String sheetName : sheetNames) {
+    			XSSFSheet sheet = workBook.getSheet(sheetName);
+    			int rowCount = sheet.getPhysicalNumberOfRows();
+    			if(rowCount > 0) {
+    	            Row headerRow = sheet.getRow(0);
+    	            int cellIndexOfAverageCol = -1;
+    	            int totalCells = headerRow.getLastCellNum();
+    	            String columnName = dataMap.get(sheetName).toString();    	            
+    	            
+    	            FormulaEvaluator evaluator = workBook.getCreationHelper().createFormulaEvaluator();                
+    	            for(int i = 0; i < totalCells; i++) {
+                		Cell cell = headerRow.getCell(i);
+                		CellValue cellData = evaluator.evaluate(cell);
+                		String cellValue = null;                		
+                		switch (cellData.getCellType()) {
+                		    case Cell.CELL_TYPE_STRING:
+                		    	cellValue = cellData.getStringValue();
+                		        break;
+                		    case Cell.CELL_TYPE_NUMERIC:
+                		        int integerValue = (int) cellData.getNumberValue(); 
+                		        cellValue = Integer.toString(integerValue);
+                		        break;
+                		}
+    	            	
+    	            	if(cellValue.toUpperCase().equals(columnName.toUpperCase())) {
+    	            		cellIndexOfAverageCol = i;
+    	            		columnName = cellValue;
+    	            		break;
+    	            	}
+    	            }
+    	            
+    	            if(cellIndexOfAverageCol > -1) {
+    	            	String[] updatedValues = TestBase.CONFIG.getProperty("junkValueaForRows").split(",");
+        	            int recordsToManipulate = Integer.parseInt(TestBase.CONFIG.getProperty("errorRecordsCount"));
+        	            
+        	            List<String> listOfOriginalExcelValues = new ArrayList<String>();
+        	            for(int i = 1; i <= recordsToManipulate; i++) {
+        	            	Cell cell = null;
+        	    	        cell = sheet.getRow(i).getCell(cellIndexOfAverageCol);
+        	    	        
+        	    	        CellValue cellData = evaluator.evaluate(cell);
+                    		String originalValue = null;                		
+                    		switch (cellData.getCellType()) {
+                    		    case Cell.CELL_TYPE_STRING:
+                    		    	originalValue = cellData.getStringValue();
+                    		        break;
+                    		    case Cell.CELL_TYPE_NUMERIC:
+                    		        int integerValue = (int) cellData.getNumberValue(); 
+                    		        originalValue = Integer.toString(integerValue);
+                    		        break;
+                    		}
+                    		System.out.println("originalValue: "+ originalValue);
+        	    	        listOfOriginalExcelValues.add(originalValue);
+        	    	        String junkValueToEnter = updatedValues[(i - 1)];
+        	    	        System.out.println("cellIndexToUpdate: "+ junkValueToEnter);        	    	        
+        	    	        cell.setCellType(Cell.CELL_TYPE_STRING);
+        	    	        cell.setCellValue(junkValueToEnter);
+        	    	        System.out.println("Cell Index Updated");
+        	            }
+        	            
+        	            System.setProperty(columnName, Integer.toString(cellIndexOfAverageCol));
+        	            dataMapWithColNameAndOriginalValues.put(Integer.toString(cellIndexOfAverageCol), listOfOriginalExcelValues);
+        	            dataMapHavingOriginalValues.put(sheetName, dataMapWithColNameAndOriginalValues);
+        	            
+    	            } else {
+    	            	System.out.println("Column name '"+ dataMap.get(sheetName) +"' is not found in sheet name '"+ sheetName +"'");
+    	            }
+    			} else {
+    				System.out.println("Table name '"+ sheetName +"' does not any data in excel file. Please check & retry!!");
+    			}
+    		}
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+        	workBook.close();
+        	file.close();
+        }
+		return dataMapHavingOriginalValues;
+	}
+	
+	/**
+	 * Description: Reverts the cell data in excel which have been updated with junk values
+	 * @param: Takes a data map having sheet name as key 
+	 * and value as a map having keys index of column to edit and values as original value to update
+	 */
+	public void revertUpdatedCellsInExcel(Map<String, Map<String, List<String>>> dataMap) throws Exception {
+		
+	}
 }

@@ -39,7 +39,8 @@ public class BuildingPermitEditTest extends TestBase {
 	}
 		
 	@AfterMethod(alwaysRun=true)
-	public void afterMethod() throws IOException{
+	public void afterMethod() throws IOException, InterruptedException{
+		System.out.print("This is Edit After Method");
 		objApasGenericFunctions.logout();
 		softAssert.assertAll();
 	}
@@ -120,5 +121,5 @@ public class BuildingPermitEditTest extends TestBase {
 		softAssert.assertEquals(manualBuildingPermitGridDataMapAfterEdit.get("Work Description").get(0),updatedWorkDescriptionValue,"SMAB-T466: Validating the 'Work Description' after editing the record");
 		softAssert.assertEquals(manualBuildingPermitGridDataMapAfterEdit.get("Building Permit Number").get(0),updatedBuildingPermitNumber,"SMAB-T466: Validating the 'Building Permit Number' after editing the record");
 	}
-
 }
+

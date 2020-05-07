@@ -100,21 +100,35 @@ public class ApasGenericFunctions extends TestBase {
 		
 	/**
 	 * Description: This method will logout the logged in user from APAS application
+	 * @throws InterruptedException 
 	 */
-	public void logout() throws IOException{
+	public void logout() throws IOException, InterruptedException{
+		
 		//Handling the situation where pop remains opened before logging out
-		if (objPage.verifyElementVisible(objApasGenericPage.crossButton))
+		/*if (objPage.verifyElementVisible(objApasGenericPage.crossButton))
 			objPage.Click(objApasGenericPage.crossButton);
 		else if (objPage.verifyElementVisible(objApasGenericPage.closeButton))
 			objPage.Click(objApasGenericPage.closeButton);
 		else if (objPage.verifyElementVisible(objApasGenericPage.cancelButton))
-			objPage.Click(objApasGenericPage.cancelButton);
-
+			objPage.Click(objApasGenericPage.cancelButton);*/
+		
 		//Logging out of the application
-		ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");
-		objPage.Click(objLoginPage.imgUser);
-		objPage.Click(objLoginPage.lnkLogOut);
-		objPage.waitForElementToBeVisible(objLoginPage.txtpassWord,30);
+		System.out.print("\n Inside Logout Method");
+		if(objPage.verifyElementVisible(objLoginPage.imgUser)) {
+			System.out.print("\n Logout Image is Visible");
+			ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");
+			Thread.sleep(2000);
+			objPage.Click(objLoginPage.imgUser);
+			Thread.sleep(2000);
+			objPage.Click(objLoginPage.lnkLogOut);
+			objPage.waitForElementToBeVisible(objLoginPage.txtpassWord,30);	
+		}
+		else {
+			
+			ExtentTestManager.getTest().log(LogStatus.FAIL, "The user was not able to logout from application.");
+			
+		}
+		
 	}
 
 	

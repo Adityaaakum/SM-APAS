@@ -214,20 +214,9 @@
 						<!-- <forkCount>10</forkCount> <reuseForks>true</reuseForks> -->
 						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
 						<!-- <includes>
-							    <include>BuildingPermitImportTest.java</include> 
-								<include>BuildingPermitManualCreationTest.java</include> 
-								<include>BuildingPermitEditTest.java</include> 
-								<include>BuildingPermitDataValidationTest.java</include> 
-								<include>BuildingPermitTransactionsLogTest.java</include>
-								<include>CityStratCodesTest.java</include> 
-								<include>ReportsTest.java</include> 
-								<include>RollwisePermissionTest.java</include> 
-								<include>NonRelevantPermitSettingsTest.java</include>
-								<include>BppTrendSettingTest.java</include>
-								<include>BppTrendCalculateAndSubmitTest.java</include>
-								<include>BppTrendApprovalTest.java</include>
-								<include>BppTrendFileDownloadTest.java</include>
-						</includes> -->
+						         <include>BuildingPermit_Manual_Test.java</include>
+						         <include>BuildingPermitEditTest.java</include>
+					    </includes> -->
 						<groups>${testSuite}</groups>
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
 						<systemPropertyVariables>

@@ -44,7 +44,7 @@ public class BuildingPermitManualCreationTest extends TestBase {
 	}
 		
 	@AfterMethod(alwaysRun=true)
-	public void afterMethod() throws IOException{
+	public void afterMethod() throws IOException, InterruptedException{
 		objApasGenericFunctions.logout();
 		softAssert.assertAll();
 	}

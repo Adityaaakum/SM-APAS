@@ -38,7 +38,7 @@ public class BuildingPermitDataValidationTest extends TestBase {
 	}
 		
 	@AfterMethod(alwaysRun=true)
-	public void afterMethod() throws IOException{
+	public void afterMethod() throws IOException, InterruptedException {
 		objApasGenericFunctions.logout();
 		softAssert.assertAll();
 	}
@@ -51,7 +51,7 @@ public class BuildingPermitDataValidationTest extends TestBase {
 	 **/
     @DataProvider(name = "loginUsers")
     public Object[][] dataProviderLoginUserMethod() {
-        return new Object[][] {{ users.BUSINESS_ADMIN } };
+        return new Object[][] {{ users.SYSTEM_ADMIN } };
     }
 
 

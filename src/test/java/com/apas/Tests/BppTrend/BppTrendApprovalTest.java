@@ -49,7 +49,7 @@ public class BppTrendApprovalTest extends TestBase {
 		objApasGenericFunctions.logout();
 	}
 
-	@Test(description = "SMAB-T205,SMAB-T304,SMAB-T157: Approve calculations of valuation, composite & prop 13 tables", groups = {"smoke","regression","BPP Trends"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
+	@Test(description = "SMAB-T205,SMAB-T304,SMAB-T157: Approve calculations of valuation, composite & prop 13 tables", groups = {"smoke","regression","BPPTrends"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
 	public void verifyBppTrendApproveWorkFlow(String loginUser) throws Exception {		
 		//Step1: Fetch table names from properties file and collect them in a single list
 		List<String> allTablesBppTrendSetupPage = new ArrayList<String>();
@@ -198,7 +198,7 @@ public class BppTrendApprovalTest extends TestBase {
 		softAssert.assertAll();	
 	}
 	
-	@Test(description = "SMAB-T249: Navigating to all tables post approval with business admin user", groups = {"smoke","regression","BPP Trends"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	@Test(description = "SMAB-T249: Navigating to all tables post approval with business admin user", groups = {"smoke","regression","BPPTrends"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
 	public void verifyBppTrendViewAllApprovedValueTables(String loginUser) throws Exception {		
 		//Step1: Login and opening the BPP Trend module
 		objApasGenericFunctions.login(loginUser);

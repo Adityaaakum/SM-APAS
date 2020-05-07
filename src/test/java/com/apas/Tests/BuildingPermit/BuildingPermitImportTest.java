@@ -48,7 +48,7 @@ public class BuildingPermitImportTest extends TestBase {
 	}
 		
 	@AfterMethod(alwaysRun=true)
-	public void afterMethod() throws IOException{
+	public void afterMethod() throws IOException, InterruptedException{
 		objApasGenericFunctions.logout();
 		softAssert.assertAll();
 	}

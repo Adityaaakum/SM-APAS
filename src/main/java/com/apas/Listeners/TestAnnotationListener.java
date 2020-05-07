@@ -15,7 +15,7 @@ public class TestAnnotationListener extends TestBase implements IClassListener {
 	public void onBeforeClass(ITestClass testClass) {
 		try {
 			System.out.println("Before Class Steps for Class " + testClass.getName());
-			setupTest();
+			//setupTest();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -29,7 +29,7 @@ public class TestAnnotationListener extends TestBase implements IClassListener {
 	public void onAfterClass(ITestClass testClass) {
 		try {
 			System.out.println("Tear Down (After Class) step for class " + testClass.getName());
-			//TearDown();
+			TearDown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

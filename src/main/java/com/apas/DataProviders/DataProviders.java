@@ -78,4 +78,9 @@ public class DataProviders {
     public Object[][] dpLoginBusinessAdminAndPrincipalUserAndBppAuditor() {
         return new Object[][] { { users.BUSINESS_ADMIN }, { users.PRINCIPAL_USER }, { users.BPP_AUDITOR } };
     }
+    
+    @DataProvider(name = "loginUsers")
+    public Object[][] dpLoginUser() {
+        return new Object[][] { { users.BUSINESS_ADMIN } };
+    }
 }

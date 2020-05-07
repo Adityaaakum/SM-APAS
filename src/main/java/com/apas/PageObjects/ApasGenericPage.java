@@ -211,7 +211,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public void searchAndSelectOptionFromDropDown(WebElement element, String value) throws Exception {
 		enter(element, value);
-		String xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
+		String xpathStr = "//div[@title='" + value.toUpperCase() + "']";
 		WebElement drpDwnOption = locateElement(xpathStr, 20);
 		drpDwnOption.click();
 	}
