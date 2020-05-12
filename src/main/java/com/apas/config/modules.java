@@ -13,4 +13,7 @@ public interface modules {
 	public static final String COUNTY_STRAT_CODES = "County Strat Codes";
 	public static final String REPORTS = "Reports";
 	public static final String PARCELS = "Parcels";
+	public static final String REAL_PROPERTY_SETTINGS_LIBRARIES = "Real Property Settings Libraries";
+	public static final String ROLL_YEAR_SETTINGS = "Roll Year Settings";
+	public static final String EXEMPTION = "Exemption";
 }

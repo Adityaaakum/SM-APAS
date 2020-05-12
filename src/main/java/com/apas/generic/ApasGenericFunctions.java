@@ -320,4 +320,30 @@ public class ApasGenericFunctions extends TestBase {
 		objPage.Click(objPage.waitForElementToBeClickable(objApasGenericPage.allManualBuilingdPermitsOption));
 		objPage.Click(objApasGenericPage.pinIcon);
 	}
+	
+	/**
+	 * @description: This method will be used to select List View option - All or
+	 *               Recently Viewed
+	 * @param fieldName: field name for which List View to select
+	 * @throws InterruptedException 
+	 */
+  public void selectListView(String listViewName) throws Exception{ 
+	ExtentTestManager.getTest().log(LogStatus.INFO, "Selecting List View: "+listViewName);
+  	String[] listViews= {"All","Recently Viewed"};  
+  	String listViewSelected = objPage.getElementText(driver.findElement(By.xpath("//span[contains(@class,'selectedListView')]")));
+      if(!listViewName.equals(listViewSelected)){ 
+      	for(int i=0;i<=(listViews.length)-1;i++) { 
+      	if(listViewName.equals(listViews[i])){
+      		String listViewToSelect = listViews[i];
+      		objPage.Click(objApasGenericPage.selectListViewIcon);
+          	Thread.sleep(1000);
+          	objPage.waitForElementToBeClickable(driver.findElement(By.xpath("//span[text()='"+listViewToSelect+"']")));
+          	WebElement selectlistView = driver.findElement(By.xpath("//span[text()='"+listViewToSelect+"']"));
+          	objPage.Click(selectlistView);
+          	Thread.sleep(1000);
+          	objPage.Click(objApasGenericPage.pinIcon); 
+		} 
+	   }  
+   }
+}
 }

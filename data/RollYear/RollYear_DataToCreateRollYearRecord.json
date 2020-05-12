@@ -1,0 +1,66 @@
+{
+	"DataToCreateCurrentRollYear": {
+		"Roll Year Settings": "2020",
+		"Roll Year": "2020",
+		"Lien Date": "01/01/2020",
+		"Status" : "Open",
+		"Tax Start Date": "07/01/2020",
+		"Tax End Date": "06/30/2021",
+		"Fiscal Start Date": "07/01/2019",
+		"Fiscal End Date": "06/30/2020",
+		"Calendar Start Date": "01/01/2020",
+		"Calendar End Date": "12/31/2020"
+		},
+		
+	"DataToCreateFutureRollYear": {
+		"Roll Year Settings": "2040",
+		"Roll Year": "2040",
+		"Status" : "Open",
+		"Lien Date": "01/01/2040",
+		"Tax Start Date": "07/01/2040",
+		"Tax End Date": "06/30/2041",
+		"Fiscal Start Date": "07/01/2039",
+		"Fiscal End Date": "06/30/2040",
+		"Calendar Start Date": "01/01/2040",
+		"Calendar End Date": "12/31/2040"
+		},	
+		
+	"DataToCreatePastRollYear": {
+		"Roll Year Settings": "2005",
+		"Roll Year": "2005",
+		"Status" : "Open",
+		"Lien Date": "01/01/2005",
+		"Tax Start Date": "07/01/2005",
+		"Tax End Date": "06/30/2006",
+		"Fiscal Start Date": "07/01/2004",
+		"Fiscal End Date": "06/30/2005",
+		"Calendar Start Date": "01/01/2005",
+		"Calendar End Date": "12/31/2005"
+		},
+	
+	"DataToEditPastRollYearToFuture": {
+		"Roll Year Settings": "2022",
+		"Roll Year": "2022",
+		"Status" : "Open",
+		"Lien Date": "01/01/2022",
+		"Tax Start Date": "07/01/2022",
+		"Tax End Date": "06/30/2023",
+		"Fiscal Start Date": "07/01/2021",
+		"Fiscal End Date": "06/30/2022",
+		"Calendar Start Date": "01/01/2022",
+		"Calendar End Date": "12/31/2022"
+		},
+	
+	"DataToValidateFieldLevelErrorMessages": {
+		"Roll Year Settings": "2009",
+		"Roll Year": "2009",
+		"Status" : "Open",
+		"Lien Date": "01/01/2008",
+		"Tax Start Date": "07/01/2008",
+		"Tax End Date": "06/30/2009",
+		"Fiscal Start Date": "07/01/2009",
+		"Fiscal End Date": "06/30/2010",
+		"Calendar Start Date": "01/01/2010",
+		"Calendar End Date": "12/31/2009"
+		}					 	                                  	                            	
+}

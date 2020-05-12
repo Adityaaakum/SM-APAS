@@ -1,0 +1,295 @@
+{
+	"DataToCreateExemptionWithMandatoryFields": {
+		"Date Application Received": "03/01/2020",
+		"Date Acquired Property": "02/01/2019",
+		"Date Occupied/Intend to Occupy Property": "02/02/2019",
+		"Date of Notice of 100% Rating": "02/04/2019",
+		"Effective Date of 100% USDVA Rating": "02/03/2019",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-072-250",
+		"Veteran Name": "Test One",
+		"Veteran SSN": "111-45-6780",
+		"End Date Of Rating": "02/29/2020",
+		"End Rating Reason" : "No Longer Disabled",
+		"Qualification?": "Qualified"
+		},
+	
+	"DataToEditExemptionForQualification": {
+		"Qualification?": "Not Qualified",
+		"Reason for Not Qualified": "Incorrect or Missing Information"
+		},
+		
+	"DataToCreateExemptionWithNoEndDateOfRating": {
+		"Date Application Received": "03/01/2016",
+		"Date Acquired Property": "02/01/2015",
+		"Date Occupied/Intend to Occupy Property": "02/03/2015",
+		"Date of Notice of 100% Rating": "02/04/2015",
+		"Effective Date of 100% USDVA Rating": "02/02/2015",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-072-250",
+		"Veteran Name": "Test Two",
+		"Veteran SSN": "222-45-6780",
+		"Qualification?": "Qualified"	
+	    },  
+			
+	"DataToCreateExemptionWithEndDateOfRating": {
+		"Date Application Received": "03/01/2020",
+		"Date Acquired Property": "02/01/2014",
+		"Date Occupied/Intend to Occupy Property": "02/02/2014",
+		"Date of Notice of 100% Rating": "02/04/2014",
+		"Effective Date of 100% USDVA Rating": "02/03/2014",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-072-250",
+		"Veteran Name": "Test Two",
+		"Veteran SSN": "222-45-6780",
+		"End Date Of Rating": "01/01/2015",
+		"End Rating Reason" : "No Longer Disabled",
+		"Qualification?": "Qualified"
+	    },  	
+	
+	"DataToCreateExemptionWithRequiredFields": {
+		"Date Application Received": "04/01/2016",
+		"Date Acquired Property": "02/06/2016",
+		"Date Occupied/Intend to Occupy Property": "02/02/2016",
+		"Date of Notice of 100% Rating": "02/04/2016",
+		"Effective Date of 100% USDVA Rating": "02/03/2016",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-1234",
+		"APN": "002-072-250",
+		"Veteran Name": "Test Three",
+		"Veteran SSN": "333-45-6780",
+		"End Date Of Rating": "06/30/2016",
+		"End Rating Reason" : "No Longer Disabled",
+		"Qualification?": "Qualified"	
+	    },  
+			
+	"DataToCreateExemptionWithDatesEarlierThanOriginalRecord": {
+		"Date Application Received": "03/01/2020",
+		"Date Acquired Property": "02/01/2015",
+		"Date Occupied/Intend to Occupy Property": "02/02/2015",
+		"Date of Notice of 100% Rating": "02/11/2015",
+		"Effective Date of 100% USDVA Rating": "02/10/2015",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-072-250",
+		"Veteran Name": "Test Three",
+		"Veteran SSN": "333-45-6780",
+		"End Date Of Rating": "12/31/2015",
+		"End Rating Reason" : "Deceased Veteran",
+		"Qualification?": "Qualified"
+	    },
+	    
+	"DataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRating": {
+		"Date Application Received": "03/30/2020",
+		"Date Acquired Property": "02/01/2017",
+		"Date Occupied/Intend to Occupy Property": "02/03/2017",
+		"Date of Notice of 100% Rating": "02/04/2017",
+		"Effective Date of 100% USDVA Rating": "02/02/2017",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-1234",
+		"APN": "002-072-250",
+		"Veteran Name": "Test Three",
+		"Veteran SSN": "333-45-6780",
+		"End Date Of Rating": "12/31/2017",
+		"End Rating Reason" : "Deceased Veteran",
+		"Qualification?": "Qualified"	
+	    },
+	    
+	"DataToCreateExemptionWithEndDate": {
+		"Date Application Received": "04/01/2019",
+		"Date Acquired Property": "07/06/2018",
+		"Date Occupied/Intend to Occupy Property": "07/02/2018",
+		"Date of Notice of 100% Rating": "07/04/2018",
+		"Effective Date of 100% USDVA Rating": "07/03/2017",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-1234",
+		"APN": "002-072-250",
+		"Veteran Name": "Test Four",
+		"Veteran SSN": "444-45-6780",
+		"End Date Of Rating": "12/31/2018",
+		"End Rating Reason" : "No Longer Disabled",
+		"Qualification?": "Qualified"	
+	    },  
+	 
+	 "DataToCreateExemptionWithoutEndDate": {
+		"Date Application Received": "04/02/2019",
+		"Date Acquired Property": "02/01/2019",
+		"Date Occupied/Intend to Occupy Property": "02/03/2019",
+		"Date of Notice of 100% Rating": "02/04/2019",
+		"Effective Date of 100% USDVA Rating": "02/02/2019",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-072-250",
+		"Veteran Name": "Test Four",
+		"Veteran SSN": "444-45-6780",
+		"Qualification?": "Qualified"	
+	    },
+	    
+	 "DataToCreateExemptionWithVeteranOne": {
+		"Date Application Received": "04/02/2018",
+		"Date Acquired Property": "02/01/2018",
+		"Date Occupied/Intend to Occupy Property": "02/03/2018",
+		"Date of Notice of 100% Rating": "02/04/2018",
+		"Effective Date of 100% USDVA Rating": "02/02/2018",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-072-250",
+		"Veteran Name": "Test Name1",
+		"Veteran SSN": "111-11-1111",
+		"Qualification?": "Qualified"	
+	    },
+	    
+	  "DataToCreateExemptionWithVeteranTwo": {
+		"Date Application Received": "04/02/2018",
+		"Date Acquired Property": "02/03/2018",
+		"Date Occupied/Intend to Occupy Property": "02/01/2018",
+		"Date of Notice of 100% Rating": "02/04/2018",
+		"Effective Date of 100% USDVA Rating": "02/02/2018",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-072-250",
+		"Veteran Name": "Test Name2",
+		"Veteran SSN": "111-11-1111",
+		"Qualification?": "Qualified"	
+	    },
+	 
+	 "DataToCreateExemptionWithParcelOne": {
+		"Date Application Received": "04/02/2017",
+		"Date Acquired Property": "02/01/2017",
+		"Date Occupied/Intend to Occupy Property": "02/03/2017",
+		"Date of Notice of 100% Rating": "02/04/2017",
+		"Effective Date of 100% USDVA Rating": "02/02/2017",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-072-250",
+		"Veteran Name": "Test Name",
+		"Veteran SSN": "111-11-1111",
+		"Qualification?": "Qualified"	
+	    },
+	    
+	  "DataToCreateExemptionWithParcelTwo": {
+		"Date Application Received": "04/02/2017",
+		"Date Acquired Property": "02/01/2017",
+		"Date Occupied/Intend to Occupy Property": "02/02/2017",
+		"Date of Notice of 100% Rating": "02/04/2017",
+		"Effective Date of 100% USDVA Rating": "02/03/2017",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-011-020",
+		"Veteran Name": "Test Name",
+		"Veteran SSN": "111-11-1111",
+		"Qualification?": "Qualified"	
+	    },
+	    
+	  "DataToCreateNonQualifiedExemptionWithNoEndDateOfRating": {
+		"Date Application Received": "04/02/2020",
+		"Date Acquired Property": "02/01/2018",
+		"Date Occupied/Intend to Occupy Property": "02/02/2018",
+		"Date of Notice of 100% Rating": "02/04/2018",
+		"Effective Date of 100% USDVA Rating": "02/03/2018",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-011-020",
+		"Veteran Name": "Test Test",
+		"Veteran SSN": "999-99-9999",
+		"Qualification?": "Not Qualified",
+		"Reason for Not Qualified": "Incorrect or Missing Information"	
+	    },
+	    
+	  "DataToCreateQualifiedExemptionWithNoEndDateOfRating": {
+		"Date Application Received": "04/02/2020",
+		"Date Acquired Property": "02/01/2018",
+		"Date Occupied/Intend to Occupy Property": "02/02/2018",
+		"Date of Notice of 100% Rating": "02/04/2018",
+		"Effective Date of 100% USDVA Rating": "02/03/2018",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-011-020",
+		"Veteran Name": "Test Test",
+		"Veteran SSN": "999-99-9999",
+		"Qualification?": "Qualified"	
+	    },
+	    
+	  "DataToCreateExemptionWithMandatoryFieldsOnly": {
+		"Date Application Received": "03/01/2020",
+		"Date Acquired Property": "02/01/2019",
+		"Date Occupied/Intend to Occupy Property": "02/02/2019",
+		"Date of Notice of 100% Rating": "02/04/2019",
+		"Effective Date of 100% USDVA Rating": "02/03/2019",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-072-250",
+		"Veteran Name": "First Test1",
+		"Veteran SSN": "888-45-6780",
+		"End Date Of Rating": "05/05/2020",
+		"End Rating Reason" : "No Longer Disabled",
+		"Qualification?": "Qualified"
+		}, 
+	  
+	  "DataToCreateExemptionWithMandatoryFieldsOne": {
+		"Date Application Received": "03/01/2020",
+		"Date Acquired Property": "02/01/2019",
+		"Date Occupied/Intend to Occupy Property": "02/02/2019",
+		"Date of Notice of 100% Rating": "02/04/2019",
+		"Effective Date of 100% USDVA Rating": "02/03/2019",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-072-250",
+		"Veteran Name": "First Test",
+		"Veteran SSN": "888-45-6780",
+		"End Date Of Rating": "05/05/2020",
+		"End Rating Reason" : "No Longer Disabled",
+		"Qualification?": "Qualified"
+		},
+	
+	"DataToCreateExemptionWithMandatoryFieldsTwo": {
+		"Date Application Received": "03/01/2020",
+		"Date Acquired Property": "02/01/2019",
+		"Date Occupied/Intend to Occupy Property": "02/02/2019",
+		"Date of Notice of 100% Rating": "02/04/2019",
+		"Effective Date of 100% USDVA Rating": "02/03/2019",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-072-250",
+		"Veteran Name": "First Test",
+		"Veteran SSN": "888-45-6780",
+		"End Date Of Rating": "05/05/2020",
+		"End Rating Reason" : "No Longer Disabled",
+		"Qualification?": "Qualified"
+		},
+			
+	"DataToCreateExemptionWithEndDateOfRatingOne": {
+		"Date Application Received": "04/01/2020",
+		"Date Acquired Property": "02/01/2017",
+		"Date Occupied/Intend to Occupy Property": "02/02/2017",
+		"Date of Notice of 100% Rating": "02/04/2017",
+		"Effective Date of 100% USDVA Rating": "02/03/2017",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-072-250",
+		"Veteran Name": "Veteran Test",
+		"Veteran SSN": "777-45-6780",
+		"End Date Of Rating": "12/31/2017",
+		"End Rating Reason" : "No Longer Disabled",
+		"Qualification?": "Qualified"
+	    },
+		
+	"DataToCreateExemptionWithEndDateOfRatingTwo": {
+		"Date Application Received": "05/01/2020",
+		"Date Acquired Property": "03/01/2017",
+		"Date Occupied/Intend to Occupy Property": "03/02/2017",
+		"Date of Notice of 100% Rating": "03/04/2017",
+		"Effective Date of 100% USDVA Rating": "03/03/2017",
+		"Claimant Name": "Chirag",
+		"Claimant SSN": "123-45-6789",
+		"APN": "002-072-250",
+		"Veteran Name": "Veteran Test",
+		"Veteran SSN": "777-45-6780",
+		"End Date Of Rating": "02/01/2018",
+		"End Rating Reason" : "No Longer Disabled",
+		"Qualification?": "Qualified"
+	    }	 	                                  	                            	
+}

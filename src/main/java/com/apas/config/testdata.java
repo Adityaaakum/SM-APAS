@@ -14,4 +14,7 @@ public interface testdata {
 	public static final String BPP_TREND_CAA_VALUATION_FACTORS = "\\data\\BppTrend\\CAA Valuation Factors Sample.xlsx";
 	public static final String BPP_TREND_BOE_VALUATION_FACTORS = "\\data\\BppTrend\\BOE Valuation Factors.xlsx";
 	public static final String BPP_TREND_DATA = "\\data\\BppTrend\\BppTrendSetupAndBppSettingData.json";
+	public static final String RPSL_ENTRY_DATA = "\\data\\DisabledVeteran\\RPSL\\RealPropertySettings.json";
+	public static final String ROLL_YEAR_DATA = "\\data\\RollYear\\RollYear_DataToCreateRollYearRecord.json";
+	public static final String EXEMPTION_MANDATORY_FIELDS_ENTRY_DATA = "\\data\\DisabledVeteran\\DisabledVeteran_DataToCreateExemptionRecord.json";
 }

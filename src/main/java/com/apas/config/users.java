@@ -10,4 +10,7 @@ public interface users {
 	public static final String RP_APPRAISER = "rpAppraiser";
 	public static final String APPRAISAL_SUPPORT = "appraisalSupport";
 	public static final String PRINCIPAL_USER = "bppPricipalUser";
+	public static final String EXEMPTION_SUPPORT_STAFF = "exemptionSupportStaff";
+	public static final String BPP_AUDITOR_WITH_BPP_PRINCIPAL = "bppAuditorWithBppPricipal";
+	public static final String RP_BUSINESS_ADMIN = "rpBusinessAdmin";
 }

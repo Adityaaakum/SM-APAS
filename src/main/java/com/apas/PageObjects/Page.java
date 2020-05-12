@@ -943,4 +943,17 @@ public class Page {
 	public void scrollToBottomOfPage() throws Exception {
 		((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
 	}
+	/**
+	 * This method checks the Radio Button.
+	 *
+	 * @param the element
+	 */
+	public void checkRadioButton(WebElement ele) {
+		waitForElementToBeVisible(ele, 30);
+		waitForElementToBeClickable(ele, 30);
+		if(!ele.isSelected()) {
+			ele.click();
+		}
+		
+	}
 }
