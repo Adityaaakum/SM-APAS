@@ -13,11 +13,7 @@ import java.util.Objects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.FindBy;
-
 import com.apas.PageObjects.ApasGenericPage;
-import com.apas.PageObjects.BppTrendSetupPage;
-import com.apas.PageObjects.EFileImportPage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
@@ -25,28 +21,7 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.PasswordUtils;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class ApasGenericFunctions extends TestBase {
-
-	@FindBy(xpath = "//div[@class = 'slds-media__body slds-align-middle']//span[contains(@class, 'triggerLinkText selectedListView uiOutputText')]")
-	public WebElement currenltySelectViewOption;
-	
-	@FindBy(xpath = "//a[@title = 'Select List View']")
-	public WebElement selectListViewIcon;
-
-	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All Imported E-File Building Permits']")
-	public WebElement allImportedEfileBuildingPermitsOption;
-
-	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All Manual Building Permits']")
-	public WebElement allManualBuilingdPermitsOption;
-	
-	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'Recently Viewed']")
-	public WebElement recentlyViewedOption;
-	
-	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All']")
-	public WebElement allOption;
-	
-	@FindBy(xpath = "//force-list-view-manager-pin-button//button[@class='slds-button slds-button_icon']//lightning-primitive-icon")
-	public WebElement pinIcon;	
+public class ApasGenericFunctions extends TestBase{
 	
 	private RemoteWebDriver driver;
 	Page objPage;
@@ -65,6 +40,7 @@ public class ApasGenericFunctions extends TestBase {
 	 * @param userType : Type of the user e.g. business admin / appraisal support
 	 */
 	public void login(String userType) throws Exception{
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + userType);
 		String password = CONFIG.getProperty(userType + "Password");
 		
 		//Decrypting the password if the encrypted password is saved in envconfig file and passwordEncryptionFlag flag is set to true
@@ -73,8 +49,6 @@ public class ApasGenericFunctions extends TestBase {
 			password = PasswordUtils.decrypt(password, "");
 		}
 
-		ExtentTestManager.getTest().log(LogStatus.INFO, userType + " User is logging in the application with the user : " + userType );
-		
 		objPage.navigateTo(driver, envURL);
 		objPage.enter(objLoginPage.txtuserName, CONFIG.getProperty(userType + "UserName"));
 		objPage.enter(objLoginPage.txtpassWord,password);
@@ -88,10 +62,10 @@ public class ApasGenericFunctions extends TestBase {
 	 */
 	public void searchModule(String moduleToSearch) throws Exception {	
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
-		objPage.waitForElementToBeClickable(objApasGenericPage.appLauncher);
+		Thread.sleep(2000);
 		objPage.Click(objApasGenericPage.appLauncher);
-		objPage.waitForElementToBeClickable(objApasGenericPage.appLauncherSearchBox);
 		objPage.enter(objApasGenericPage.appLauncherSearchBox, moduleToSearch);
+		Thread.sleep(2000);
 		objApasGenericPage.clickNavOptionFromDropDown(moduleToSearch);
 		//This static wait statement is added as the module title is different from the module to search 
 		Thread.sleep(4000);
@@ -100,35 +74,22 @@ public class ApasGenericFunctions extends TestBase {
 		
 	/**
 	 * Description: This method will logout the logged in user from APAS application
-	 * @throws InterruptedException 
 	 */
-	public void logout() throws IOException, InterruptedException{
-		
+	public void logout() throws IOException{
+		ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");
+		System.out.println("Logout from APAS Application");
 		//Handling the situation where pop remains opened before logging out
-		/*if (objPage.verifyElementVisible(objApasGenericPage.crossButton))
-			objPage.Click(objApasGenericPage.crossButton);
-		else if (objPage.verifyElementVisible(objApasGenericPage.closeButton))
-			objPage.Click(objApasGenericPage.closeButton);
-		else if (objPage.verifyElementVisible(objApasGenericPage.cancelButton))
-			objPage.Click(objApasGenericPage.cancelButton);*/
-		
+//		if (objPage.verifyElementVisible(objApasGenericPage.crossButton))
+//			objPage.Click(objApasGenericPage.crossButton);
+//		else if (objPage.verifyElementVisible(objApasGenericPage.closeButton))
+//			objPage.Click(objApasGenericPage.closeButton);
+//		else if (objPage.verifyElementVisible(objApasGenericPage.cancelButton))
+//			objPage.Click(objApasGenericPage.cancelButton);
+
 		//Logging out of the application
-		System.out.print("\n Inside Logout Method");
-		if(objPage.verifyElementVisible(objLoginPage.imgUser)) {
-			System.out.print("\n Logout Image is Visible");
-			ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");
-			Thread.sleep(2000);
-			objPage.Click(objLoginPage.imgUser);
-			Thread.sleep(2000);
-			objPage.Click(objLoginPage.lnkLogOut);
-			objPage.waitForElementToBeVisible(objLoginPage.txtpassWord,30);	
-		}
-		else {
-			
-			ExtentTestManager.getTest().log(LogStatus.FAIL, "The user was not able to logout from application.");
-			
-		}
-		
+		objPage.Click(objLoginPage.imgUser);
+		objPage.Click(objLoginPage.lnkLogOut);
+		objPage.waitForElementToBeVisible(objLoginPage.txtpassWord,30);
 	}
 
 	
@@ -145,11 +106,10 @@ public class ApasGenericFunctions extends TestBase {
 		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
 		webelementInput.clear();
 		webelementInput.sendKeys(expectedValue);
-		webelementInput.submit();
 		Robot robot = new Robot();
 		robot.keyPress(KeyEvent.VK_ENTER);
     	robot.keyRelease(KeyEvent.VK_ENTER);
-    	Thread.sleep(1000);
+    	Thread.sleep(2000);
 	}
 
 	/**
@@ -160,7 +120,7 @@ public class ApasGenericFunctions extends TestBase {
 		objPage.Click(objApasGenericPage.selectListViewButton);
 		Thread.sleep(1000);
 		objPage.Click(driver.findElement(By.xpath("//a[@role='option']//span[text()='" + displayOption + "']")));
-		Thread.sleep(3000);
+		Thread.sleep(5000);
 	}
 
 	/**
@@ -170,6 +130,7 @@ public class ApasGenericFunctions extends TestBase {
 	public void globalSearchRecords(String searchString) throws Exception {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Searching and filtering the data through APAS level search with the String " + searchString);
 		objApasGenericPage.searchAndSelectFromDropDown(objApasGenericPage.globalSearchListEditBox,searchString);
+		Thread.sleep(5000);
 	}
 
 	/**
@@ -206,6 +167,7 @@ public class ApasGenericFunctions extends TestBase {
 
 		String fieldXpath = sectionXpath + "//force-record-layout-item//span[text()='" + fieldName  + "']/../..//slot[@slot='outputField']//force-hoverable-link//a | " +
 				sectionXpath + "//force-record-layout-item//span[text()='" + fieldName + "']/../..//slot[@slot='outputField']//lightning-formatted-text | " +
+				sectionXpath + "//force-record-layout-item//span[text()='" + fieldName + "']/../..//slot[@slot='outputField']//lightning-formatted-number | " +
 				sectionXpath + "//force-record-layout-item//span[text()='" + fieldName + "']/../..//slot[@slot='outputField']//lightning-formatted-rich-text | " +
 				sectionXpath + "//force-record-layout-item//span[text()='" + fieldName + "']/../..//slot[@slot='outputField']//force-record-type//span";
 
@@ -278,41 +240,9 @@ public class ApasGenericFunctions extends TestBase {
 		}
 		return gridDataHashMap;
 	}
-		
-	/**
-	 * Description: This will select the recently viewed mode on grid
-	 */
-	public void selectRecentlyViewedOptionOnGrid() throws Exception {
-		String currentlyVisibleOption = objPage.getElementText(objApasGenericPage.currenltySelectViewOption);
-		if(!(currentlyVisibleOption.equalsIgnoreCase("Recently Viewed"))) {
-			objPage.Click(objApasGenericPage.selectListViewIcon);
-			objPage.Click(objApasGenericPage.recentlyViewedOption);
-			objPage.Click(objApasGenericPage.pinIcon);
-		}
-	}
 	
 	/**
-	 * Description: This will select the All mode on grid
-	 */
-	public void selectAllOptionOnGrid() throws Exception {
-		String currentlyVisibleOption = objPage.getElementText(objApasGenericPage.currenltySelectViewOption);
-		if(!(currentlyVisibleOption.equalsIgnoreCase("All"))) {
-			objPage.Click(objApasGenericPage.selectListViewIcon);
-			objPage.Click(objApasGenericPage.allOption);
-			objPage.Click(objApasGenericPage.pinIcon);
-		}
-	}
-	
-	/**
-	 * Description: This will select the All mode on grid
-	 */
-	public void selectImportedEfileBuildingPermitsOptionOnGrid() throws Exception {
-		objPage.Click(objApasGenericPage.selectListViewIcon);
-		objPage.Click(objPage.waitForElementToBeClickable(objApasGenericPage.allImportedEfileBuildingPermitsOption));
-		objPage.Click(objApasGenericPage.pinIcon);
-	}
-	
-	/**
+<<<<<<< HEAD
 	 * Description: This will select the All mode on grid
 	 */
 	public void selectAllManualBuildingPermitOptionOnGrid() throws Exception {
@@ -346,4 +276,16 @@ public class ApasGenericFunctions extends TestBase {
 	   }  
    }
 }
+
+     /* Description: This will select the All mode on grid
+     */
+    public void selectAllOptionOnGrid() throws Exception {
+        String currentlyVisibleOption = objPage.getElementText(objApasGenericPage.currenltySelectViewOption);
+        if(!(currentlyVisibleOption.equalsIgnoreCase("All"))) {
+            objPage.Click(objApasGenericPage.selectListViewIcon);
+            objPage.Click(objApasGenericPage.allOption);
+            objPage.Click(objApasGenericPage.pinIcon);
+        }
+    }
+
 }

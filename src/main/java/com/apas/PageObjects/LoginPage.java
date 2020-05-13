@@ -26,7 +26,7 @@ public class LoginPage extends Page {
 	@FindBy(xpath = "//h2[text() = 'Verify Your Identity']")
 	public WebElement verificationCode;
 	
-	@FindBy(xpath = "//div/span[@class='uiImage']")
+	@FindBy(xpath = "//button//div/span[@class='uiImage']")
 	public WebElement imgUser;
 
 	@FindBy(xpath = "//div/a[contains(text(),'Log Out')]")
