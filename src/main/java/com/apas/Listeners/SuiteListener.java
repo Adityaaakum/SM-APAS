@@ -174,6 +174,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 		ExtentTestManager.getTest().log(LogStatus.SKIP, "Test skipped : " + result.getThrowable());
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 		ExtentManager.getExtentInstance().flush();
+		TearDown();
 	}
 
 	@Override

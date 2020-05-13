@@ -106,6 +106,7 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath = "//force-list-view-manager-pin-button//button[contains(@class, 'slds-button slds-button_icon')]//lightning-primitive-icon")
 	public WebElement pinIcon;
+	
 
 	/**
 	 * Description: This will click on the module name from the drop down
@@ -229,4 +230,6 @@ public class ApasGenericPage extends Page {
 		WebElement drpDwnOption = locateElement(xpathStr, 200);
 		drpDwnOption.click();
 	}
+	
+
 }

@@ -4,6 +4,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,6 +74,29 @@ public class FileUtils {
         System.out.println("Errors While Comparing HashMaps : " + errors);
 
         return errors;
+    }
+
+    /**
+     * This function will create a folder at the specified path if it doesn't exist
+     * @param folderPath: Path of the folder to be created
+     */
+    public static void createFolder(String folderPath){
+        File dir = new File(folderPath);
+        if (!dir.exists()) dir.mkdirs();
+    }
+
+    /**
+     * This function will replace String in the file and create new file
+     * @param sourceFile: Path of the file where String needs to be replaced
+     * @param stringToBeReplaced : Old Text
+     * @param newTextToReplace : New Text
+     * @param destinationFile : New file to be created with replaced string
+     */
+    public static void replaceString(String sourceFile, String stringToBeReplaced, String newTextToReplace,String destinationFile) throws IOException {
+        String content = org.apache.commons.io.FileUtils.readFileToString(new File(sourceFile), "UTF-8");
+        content = content.replaceAll("<PERMITNO>", newTextToReplace);
+        File tempFile = new File(destinationFile);
+        org.apache.commons.io.FileUtils.writeStringToFile(tempFile, content, "UTF-8");
     }
 
 }

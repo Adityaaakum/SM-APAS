@@ -465,19 +465,16 @@ public class BppTrendPage extends Page {
 		return fileNames;
 	}
 	
-	/**
-	 * Deletes the given files from the downloads directory
-	 */
-	public void deleteFactorFilesFromDownloadFolder(List<String> filesToDelete) {
-		File file;
-		for(String fileName : filesToDelete) {
-			String filePath = "C:/Downloads/";
-			filePath = filePath + fileName;
-
-			file = new File(filePath);
-			file.delete();	
-		}
-	}
+	 /**
+     * Deletes files from the downloads directory
+     */
+    public void deleteFactorFilesFromDownloadFolder() {
+        File dir = new File(TestBase.CONFIG.getProperty("fileDownloadPath"));
+        for(File file: dir.listFiles()) {
+            if (!file.isDirectory())
+                file.delete();
+        }
+    }
 	
 	/**
 	 * @Description: Exports the valuation & composite factors excel files
