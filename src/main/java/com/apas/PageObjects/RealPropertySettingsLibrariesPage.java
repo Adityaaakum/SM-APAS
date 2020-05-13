@@ -125,6 +125,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
 		enter(element, value);
 		String xpathStr = "//*[@role='option']//div[@title='" + value + "']";
+		locateElement(xpathStr, 2);
 		Click(driver.findElement(By.xpath(xpathStr)));
 	}
 	

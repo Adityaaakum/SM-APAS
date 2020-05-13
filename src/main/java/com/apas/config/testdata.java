@@ -25,5 +25,7 @@ public interface testdata {
     public static final String BPP_TREND_BOE_INDEX_FACTORS_XLS = "\\data\\BppTrend\\BOE Equipment Index Factors and Percent Good Factors Sample_XLS_Format.xls";
     
     public static final String BPP_TREND_BOE_INDEX_FACTORS_TRANSFORMATION_RULES= "\\data\\BppTrend\\BOE Equipment Index Factors and Percent Good Factors Sample_Transformation Rules.xlsx";
+    
+    public static final String EXEMPTION_DATA = "\\data\\Exemptions\\ExemptionData.json";
  
 }

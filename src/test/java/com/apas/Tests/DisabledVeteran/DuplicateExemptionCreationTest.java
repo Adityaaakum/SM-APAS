@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.PageObjects.ApasGenericPage;
-import com.apas.PageObjects.DisabledVeteransPage;
+import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.Page;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
@@ -27,7 +27,7 @@ public class DuplicateExemptionCreationTest extends TestBase {
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
-	DisabledVeteransPage objDisabledVeteransPage;
+	ExemptionsPage objDisabledVeteransPage;
 	Util objUtil;
 	Map<String, String> dataMap1;
 	Map<String, String> dataMap2;
@@ -40,10 +40,14 @@ public class DuplicateExemptionCreationTest extends TestBase {
 	
 	
 	@BeforeMethod
-	public void beforeMethod(){
+	public void beforeMethod() throws Exception{
+		if(driver==null) {
+			setupTest();
+			driver = BrowserDriver.getBrowserInstance();
+		}
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
-		objDisabledVeteransPage = new DisabledVeteransPage(driver);
+		objDisabledVeteransPage = new ExemptionsPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();

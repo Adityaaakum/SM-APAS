@@ -1,10 +1,8 @@
 package com.apas.Tests.DisabledVeteran;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -14,16 +12,14 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.PageObjects.ApasGenericPage;
-import com.apas.PageObjects.DisabledVeteransPage;
+import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.Page;
-import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class RestrictDuplicateExemptionCreationTest extends TestBase {
 	
@@ -31,7 +27,7 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
-	DisabledVeteransPage objDisabledVeteransPage;
+	ExemptionsPage objDisabledVeteransPage;
 	Util objUtil;
 	Map<String, String> dataMap;
 	Map<String, String> dataMap1;
@@ -43,10 +39,14 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 	String recordId2, exemptionName2;
 	
 	@BeforeMethod
-	public void beforeMethod(){
+	public void beforeMethod() throws Exception{
+		if(driver==null) {
+			setupTest();
+			driver = BrowserDriver.getBrowserInstance();
+		}
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
-		objDisabledVeteransPage = new DisabledVeteransPage(driver);
+		objDisabledVeteransPage = new ExemptionsPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();

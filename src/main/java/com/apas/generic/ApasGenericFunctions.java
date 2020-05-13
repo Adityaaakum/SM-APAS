@@ -288,4 +288,43 @@ public class ApasGenericFunctions extends TestBase{
         }
     }
 
+    public WebElement locateElement(String xpath, int timeoutInSeconds) throws Exception {WebElement element = null;
+    for(int i = 0; i < timeoutInSeconds; i++) {
+        try {
+            element = driver.findElement(By.xpath(xpath));
+            if(element != null) {
+                break;
+            }
+        } catch (Exception ex) {
+            Thread.sleep(750);
+        }
+    }
+    return element;
+    } 
+    public void selectFromDropDown(WebElement element, String value, String... customXpath) throws Exception {
+        objPage.Click(element);
+        String xpathStr = null;
+        if(customXpath.length == 1)
+        {
+            xpathStr = customXpath[0];
+        }
+        else
+        {
+        xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
+        }
+        WebElement drpDwnOption = locateElement(xpathStr, 10);
+        drpDwnOption.click();
+    }
+    
+    public void searchAndSelectFromDropDown(WebElement element, String value, String... customXpath) throws Exception {
+        objPage.enter(element, value);
+        String xpathStr = null;
+        if(customXpath.length == 1) {
+            xpathStr = customXpath[0]+"//div[@title= '"+value+"']";
+        } else {
+            xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
+        }
+        WebElement drpDwnOption = locateElement(xpathStr, 10);
+        drpDwnOption.click();
+    }
 }

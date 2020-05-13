@@ -18,6 +18,6 @@ public interface modules {
 	public static final String REAL_PROPERTY_SETTINGS_LIBRARIES = "Real Property Settings Libraries";
 	public static final String ROLL_YEAR_SETTINGS = "Roll Year Settings";
 	public static final String EXEMPTION = "Exemption";
-
+	public static final String EXEMPTIONS = "Exemption";
 }
 

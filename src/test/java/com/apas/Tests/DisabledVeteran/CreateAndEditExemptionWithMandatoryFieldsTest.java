@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.FindBy;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -16,7 +14,7 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.PageObjects.ApasGenericPage;
-import com.apas.PageObjects.DisabledVeteransPage;
+import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
@@ -33,7 +31,7 @@ public class CreateAndEditExemptionWithMandatoryFieldsTest extends TestBase {
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
-	DisabledVeteransPage objDisabledVeteransPage;
+	ExemptionsPage objDisabledVeteransPage;
 	Util objUtil;
 	Map<String, String> dataMap1;
 	Map<String, String> dataMap2;
@@ -43,10 +41,14 @@ public class CreateAndEditExemptionWithMandatoryFieldsTest extends TestBase {
 	String recordId1, exemptionName1;
 	
 	@BeforeMethod
-	public void beforeMethod(){
+	public void beforeMethod() throws Exception{
+		if(driver==null) {
+			setupTest();
+			driver = BrowserDriver.getBrowserInstance();
+		}
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
-		objDisabledVeteransPage = new DisabledVeteransPage(driver);
+		objDisabledVeteransPage = new ExemptionsPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
