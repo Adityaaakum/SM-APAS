@@ -45,7 +45,11 @@ public class RollYearSettingsTest extends TestBase {
 	
 	
 	@BeforeMethod
-	public void beforeMethod(){
+	public void beforeMethod() throws Exception{
+		if(driver==null) {
+			setupTest();
+			driver = BrowserDriver.getBrowserInstance();
+		}
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
 		objRollYearSettingsPage = new RollYearSettingsPage(driver);

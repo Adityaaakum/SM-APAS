@@ -49,7 +49,6 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		softAssert = new SoftAssertion();
 	}
-		
 	
 	/**
 	 * Below function will be used to login to application with different users

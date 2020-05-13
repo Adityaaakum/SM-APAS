@@ -186,7 +186,8 @@
 					<configuration>
 						<fork>true</fork>
 						<executable>C:\Program Files\Java\jdk1.8.0_231\bin\javac.exe</executable>
-					</configuration> 
+					</configuration>
+
 
 				</plugin>
 				<plugin>
@@ -211,16 +212,13 @@
 								<value>com.apas.Listeners.SuiteListener,com.apas.Listeners.TestAnnotationListener</value>
 							</property>
 						</properties>
-						<includes>
-							<include>RealPropertySettingsLibrariesTest.java</include>						         
-						</includes>
+						
 						<!-- <forkCount>10</forkCount> <reuseForks>true</reuseForks> -->
 						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
-						 <!--<includes>
-						   <include>BuildingPermit_Manual_Test.java</include>
-						   <include>BuildingPermitEditTest.java</include>
-						   	<include>RealPropertySettingsLibrariesTest.java</include>						         
-					    </includes> -->
+						<includes>
+						<!-- 	 <include>RealPropertySettingsLibrariesTest.java</include> -->         
+						<include>RollYearSettingsTest.java</include>
+						</includes>
 						<groups>${testSuite}</groups>
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
 						<systemPropertyVariables>
