@@ -95,7 +95,7 @@ public class DuplicateExemptionCreationTest extends TestBase {
 		recordId1 = objDisabledVeteransPage.getCurrentUrl(driver);
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForGeneralExemptionOnDetailPage);
 		exemptionName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.exemptionName));
-		apn1 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.parcelOnDetailPage));
+		apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.parcelOnDetailPage))).substring(0, 11);
 		veteranName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranNameOnDetailPage));
 		
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForMoreExemptionOnDetailPage);
@@ -118,7 +118,7 @@ public class DuplicateExemptionCreationTest extends TestBase {
 		recordId2 = objDisabledVeteransPage.getCurrentUrl(driver);
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForGeneralExemptionOnDetailPage);
 		exemptionName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.exemptionName));
-		apn2 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.parcelOnDetailPage));
+		apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.parcelOnDetailPage))).substring(0, 11);
 		veteranName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranNameOnDetailPage));
 		
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForMoreExemptionOnDetailPage);
@@ -159,7 +159,7 @@ public class DuplicateExemptionCreationTest extends TestBase {
 		recordId1 = objDisabledVeteransPage.getCurrentUrl(driver);
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForGeneralExemptionOnDetailPage);
 		exemptionName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.exemptionName));
-		apn1 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.parcelOnDetailPage));
+		apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.parcelOnDetailPage))).substring(0, 11);
 		veteranName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranNameOnDetailPage));
 		
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForMoreExemptionOnDetailPage);
@@ -182,7 +182,7 @@ public class DuplicateExemptionCreationTest extends TestBase {
 		recordId2 = objDisabledVeteransPage.getCurrentUrl(driver);
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForGeneralExemptionOnDetailPage);
 		exemptionName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.exemptionName));
-		apn2 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.parcelOnDetailPage));
+		apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.parcelOnDetailPage))).substring(0, 11);
 		veteranName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranNameOnDetailPage));
 
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForMoreExemptionOnDetailPage);

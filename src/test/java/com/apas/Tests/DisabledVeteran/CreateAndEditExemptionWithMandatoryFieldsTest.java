@@ -221,6 +221,7 @@ public class CreateAndEditExemptionWithMandatoryFieldsTest extends TestBase {
 		
 		//Step14: Save the changes and validate it
 		objPage.Click(objDisabledVeteransPage.saveButtonOnDetailPage);
+		Thread.sleep(1000);
 		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranSSNOnDetailPage)).substring(7), "6781", "Validate updated value for 'Veteran SSN' appears in the Exemption record");		
 		
 		objApasGenericFunctions.logout();

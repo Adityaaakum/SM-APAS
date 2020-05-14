@@ -13,4 +13,5 @@ public interface users {
 	public static final String EXEMPTION_SUPPORT_STAFF = "exemptionSupportStaff";
 	public static final String BPP_AUDITOR_WITH_BPP_PRINCIPAL = "bppAuditorWithBppPricipal";
 	public static final String RP_BUSINESS_ADMIN = "rpBusinessAdmin";
+	public static final String BPP_BUSINESS_ADMIN = "bppBusinessAdmin";
 }

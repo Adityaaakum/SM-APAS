@@ -1,5 +1,6 @@
 package com.apas.Tests.Exemptions;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -10,6 +11,7 @@ import org.testng.annotations.Test;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
+import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
@@ -37,7 +39,7 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 	Util objUtil;
 	SoftAssertion softAssert;
 	String exemptionFilePath;
-	
+	ApasGenericPage objApasGenericPage;
 	
 
 	@BeforeMethod
@@ -57,7 +59,8 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 		softAssert = new SoftAssertion();
 		exemptionFilePath = System.getProperty("user.dir") + testdata.EXEMPTION_DATA;
 		exemptionPageObj=new ExemptionsPage(driver);
-		vaPageObj=new ValueAdjustmentsPage(driver);		
+		vaPageObj=new ValueAdjustmentsPage(driver);	
+		objApasGenericPage= new ApasGenericPage(driver);
 
 	}
 	/*@AfterMethod
@@ -73,15 +76,17 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 	 **/
 	@DataProvider(name = "loginUsers")
 	public Object[][] dataProviderLoginUserMethod() {
-		return new Object[][] { { users.EXEMPTION_SUPPORT_STAFF } };
+		return new Object[][] { { users.BPP_BUSINESS_ADMIN } };
 	}
 	
 	/**
 	 below test case is for business validations for Exemption fields
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 */
-	@Test(description = "business validations for Exemption fields", dataProvider = "loginUsers", groups = {
+	@Test(description = "SMAB-T488,SMAB-T491,SMAB-T492,SMAB-T493,SMAB-T495,SMAB-T496:Future dates Error Messages for date Fields", dataProvider = "loginUsers", groups = {
 			"smoke", "regression" }, priority = 0, alwaysRun = true, enabled = true)
-	public void verifyBusinessValidationsForExemptionFields(String loginUser)
+	public void verifyFuturedatesErrorMessagesWhileCreatingExemption(String loginUser) throws IOException, InterruptedException
 	{
 		try{
 			
@@ -100,11 +105,6 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 			//Step3: selecting mandatory details before verifying error message
 			apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.apn,fieldData.get("APN"),"//ul[@class='lookup__list  visible']");
 			apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.claimantName,fieldData.get("ClaimantName"),"//ul[@class='lookup__list  visible']");
-			
-			//searchAndSelectOptionFromDropDown(exemptionPageObj.apn,fieldData.get("APN"));
-			//searchAndSelectOptionFromDropDown(exemptionPageObj.apn,fieldData.get("APN"));
-			
-			
 			objPage.enter(exemptionPageObj.claimantSSN, fieldData.get("ClaimantSSN"));
 			
 			//step4:
@@ -115,59 +115,96 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 			
 			objPage.enter(exemptionPageObj.dateApplicationReceived,futureDate);
 			objPage.enter(exemptionPageObj.dateOfDeathOfVeteran,futureDate);
+			objPage.enter(exemptionPageObj.veteranName, fieldData.get("VeteranName"));
+			objPage.enter(exemptionPageObj.veteranSSN, fieldData.get("VeteranSSN"));
 			objPage.enter(exemptionPageObj.dateAquiredProperty,futureDate);
 			objPage.enter(exemptionPageObj.dateOccupyProperty,futureDate);
 			objPage.enter(exemptionPageObj.effectiveDateOfUSDVA,futureDate);
 			objPage.enter(exemptionPageObj.dateOfNotice,futureDate);
 			exemptionPageObj.selectbasisForClaims(fieldData, "BasisForClaim");
-			//apasGenericObj.selectFromDropDown(exemptionPageObj.endRatingReason, fieldData.get("EndRatingReason"));
 			objPage.enter(exemptionPageObj.endDateOfRating,futureDate);
 			apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, fieldData.get("Qualification"));
 			objPage.Click(exemptionPageObj.saveButton);
-			exemptionPageObj.checkIfDuplicateExemption(fieldData);
-			
+			Thread.sleep(5000);
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying all entered fields show future date error messages");
 			int msgFound=exemptionPageObj.verifyErrorMessagesWhileCreatingExemption(fieldData,"FuturedatesErrorMessage");
 			softAssert.assertEquals(msgFound,7,"SMAB-T488,SMAB-T491,SMAB-T492,SMAB-T493,SMAB-T495,SMAB-T496:Verify Application Date,Date Of Death Of Veteran, Date Acquired Property, Date Occupied/Intended to occupy Property, Date of Notice of 100% Rating,Effective Date of 100% USDVA Rating, End Date of rating can't be a Future Date");
 			
-			//step5:
-			/**verifying 'Date of Death of Veteran', 'veteran SSN' and 'Deceased Veteran Qualification' are required when 'Unmarried_Spouse_of_Deceased_Veteran__c is 'Yes'
-			**/
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying validation when unmarriedSpouseOfDisabledVeteran is Yes");
-			exemptionPageObj.dateOfDeathOfVeteran.clear();
-			exemptionPageObj.veteranSSN.clear();
-			apasGenericObj.selectFromDropDown(exemptionPageObj.unmarriedSpouseOfDisabledVeteran, "Yes");
+			objPage.Click(objApasGenericPage.crossButton);
+			softAssert.assertAll();
+			apasGenericObj.logout();
+			}
+		catch(Exception e)
+		{
+			System.out.println("Error while validating Future dates error messages validations for Exemption "+e.getMessage());
+			
+		}
+		
+		
+	}
+	
+	
+	@Test(description = "SMAB-T501,SMAB-T502,SMAB-T503,SMAB-T497,SMAB-T498,SMAB-T1278,SMAB-T1122,SMAB-T1223,SMAB-T1263,SMAB-T1264:business validations for Exemption fields", dataProvider = "loginUsers", groups = {
+			"smoke", "regression" }, priority = 1, alwaysRun = true, enabled = true)
+	public void verifyBusinessValidationsForExemptionFields(String loginUser) throws IOException, InterruptedException
+	{
+		try{
+			
+			Map<String, String> businessValidationdata = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
+			
+			//Step1: Login to the APAS application using the credentials passed through data provider
+			apasGenericObj.login(loginUser);
+			
+			//Step2: Opening the Exemption Module
+			apasGenericObj.searchModule(EXEMPTIONS);
+			
+			objPage.Click(exemptionPageObj.newExemptionButton);
+			
+			//Step3: selecting mandatory details before verifying error message
+			apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.apn,businessValidationdata.get("APN"),"//ul[@class='lookup__list  visible']");
+			objPage.enter(exemptionPageObj.dateApplicationReceived,businessValidationdata.get("DateApplicationReceived"));
+			apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.claimantName,businessValidationdata.get("ClaimantName"),"//ul[@class='lookup__list  visible']");
+			objPage.enter(exemptionPageObj.claimantSSN, businessValidationdata.get("ClaimantSSN"));
+			objPage.enter(exemptionPageObj.veteranName, businessValidationdata.get("VeteranName"));
+			objPage.enter(exemptionPageObj.dateAquiredProperty,businessValidationdata.get("DateAquiredProperty"));
+			objPage.enter(exemptionPageObj.dateOccupyProperty,businessValidationdata.get("DateOccupyProperty"));
+			objPage.enter(exemptionPageObj.effectiveDateOfUSDVA,businessValidationdata.get("EffectiveDateOfUSDVA"));
+			objPage.enter(exemptionPageObj.dateOfNotice,businessValidationdata.get("DateOfNotice"));
+			exemptionPageObj.selectbasisForClaims(businessValidationdata, "BasisForClaim");
+			objPage.enter(exemptionPageObj.endDateOfRating,businessValidationdata.get("EnddateOfRating"));
+			apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, businessValidationdata.get("Qualification"));
 			objPage.Click(exemptionPageObj.saveButton);
-			exemptionPageObj.checkIfDuplicateExemption(fieldData);
-			int msgFoundUSODV=exemptionPageObj.verifyErrorMessagesWhileCreatingExemption(fieldData,"unmarriedSpouseVeteranErrorMsgs");
-			softAssert.assertEquals(msgFoundUSODV, 3,"SMAB-T494:Verify 'Date of Death of Veteran', 'Veteran SSN' & 'Deceased Veteran Qualification' are required fields");
-			softAssert.assertEquals(exemptionPageObj.deceasedVeteranQualificationErrormsg.getText(), "Deceased Veteran Qualification is required","SMAB-T498:Verify End Rating Reason is required if End Date of rating is not BLANK");
-
-			//step6:
+		
+			//step4:
 			/**Verifying Veteran SSN is required if Veteran Name is mentioned
 			**/
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying Veteran SSN is required if Veteran Name is mentioned");
-			objPage.enter(exemptionPageObj.veteranName, fieldData.get("VeteranName"));
-			objPage.Click(exemptionPageObj.saveButton);
 			Thread.sleep(2000);
 			softAssert.assertEquals(exemptionPageObj.veteranSSNErrorMsg.getText(),"Veteran's SSN is required" ,"SMAB-T502:Verify Veteran SSN is required if Veteran Name is mentioned");
 			
-			//step7:
+			//step5:
 			/**verifying 'Effective Date of 100% USDVA Rating' can not be greater than 'Date of Notice of 100% Rating'
 			 *and 'End Date of Rating'
 			**/
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying Effective Date of 100% USDVA Rating can't be greater than Date of Notice of 100% Rating");
-			objPage.enter(exemptionPageObj.effectiveDateOfUSDVA, fieldData.get("EffectiveDateOfUSDVA"));
-			objPage.enter(exemptionPageObj.dateOfNotice, fieldData.get("DateOfNotice"));
-			objPage.enter(exemptionPageObj.endDateOfRating, fieldData.get("EnddateOfRating"));
-			objPage.Click(exemptionPageObj.saveButton);
-			exemptionPageObj.checkIfDuplicateExemption(fieldData);
-			
-			int msgFoundEDOUSDVA=exemptionPageObj.verifyErrorMessagesWhileCreatingExemption(fieldData,"EffectiveDateOfUSDVAErrorMsg");
+			int msgFoundEDOUSDVA=exemptionPageObj.verifyErrorMessagesWhileCreatingExemption(businessValidationdata,"EffectiveDateOfUSDVAErrorMsg");
 			softAssert.assertEquals(msgFoundEDOUSDVA, 3, "SMAB-T497,SMAB-T498,SMAB-T1278,SMAB-T1122:Verify End Rating Reason is required if End Date of rating is not BLANK and Verify End Date of rating must be greater than Effective Date of 100% USDVA Rating");
 			
 			
-			//step8:
+			
+			//step6:
+			/**verifying 'Date of Death of Veteran' and 'Deceased Veteran Qualification' are required when 'Unmarried_Spouse_of_Deceased_Veteran__c is 'Yes'
+			**/
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying validation when unmarriedSpouseOfDisabledVeteran is Yes");
+			apasGenericObj.selectFromDropDown(exemptionPageObj.unmarriedSpouseOfDisabledVeteran, "Yes");
+			objPage.Click(exemptionPageObj.saveButton);
+			Thread.sleep(2000);
+			softAssert.assertEquals(exemptionPageObj.dateOfDeathOfVeteranErrorMsg.getText().trim(),"Date of Death of Veteran is required","SMAB-T494:Verify 'Date of Death of Veteran' is required field");
+			softAssert.assertEquals(exemptionPageObj.deceasedVeteranQualificationErrormsg.getText(), "Deceased Veteran Qualification is required","SMAB-T498:Verify Deceased Veteran Qualification is required when unmarriedSpouseOfDisabledVeteran is Yes");
+
+			
+		
+			//step7:
 			/**verifying When 'DV_Exemption_on_Prior_Residence__c is 'Yes' then Prior Residence Street Address, 
 			 Prior Residence City,Prior Residence State,Prior Residence County, Date moved from Prior Residence 
 			 are all mandatory
@@ -176,19 +213,20 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying validation for dvExemptionOnPriorResidence and realted fields");
 			apasGenericObj.selectFromDropDown(exemptionPageObj.dvExemptionOnPriorResidence, "Yes");
 			objPage.Click(exemptionPageObj.saveButton);
-			exemptionPageObj.checkIfDuplicateExemption(fieldData);
+			Thread.sleep(2000);
+			softAssert.assertEquals(exemptionPageObj.errorMessage.getText(),businessValidationdata.get("dvExemptionOnPriorResidenceYesErrorMsg"),"SMAB-T503:Verify Prior Residence Street Address, Prior Residence City,Prior Residence State,Prior Residence County, Date move from Prior Residence are required if 'DV Exemption on Prior Residence' is 'Yes'");
 			
-			softAssert.assertEquals(exemptionPageObj.errorMessage.getText(),fieldData.get("dvExemptionOnPriorResidenceYesErrorMsg"),"SMAB-T503:Verify Prior Residence Street Address, Prior Residence City,Prior Residence State,Prior Residence County, Date move from Prior Residence are required if 'DV Exemption on Prior Residence' is 'Yes'");
-			
-			//step9:
-		/**
-		 * verifying Spouse SSN is required if Spouse Name is not blank
-		 */
-			objPage.enter(exemptionPageObj.spouseName, fieldData.get("SpouseName"));
+			//step8:
+		/*
+		  verifying Spouse SSN is required if Spouse Name is not blank
+		*/ 
+			objPage.enter(exemptionPageObj.spouseName, businessValidationdata.get("SpouseName"));
 			objPage.Click(exemptionPageObj.saveButton);
+			//objPage.locateElement("//div[contains(.,\"Spouse's SSN\")]/following-sibling::ul/li[@class='form-element__help']", 5);
+			Thread.sleep(2000);
 			softAssert.assertEquals(exemptionPageObj.spouseSSNErrorMsg.getText(),"Spouse's SSN is required","SMAB-T501:Verify Spouse SSN is required if Spouse Name is mentioned");			
 			
-			//step10:
+			//step9:
 			/**verifying when 'Qualification' is Not Qualified then 'Qualification Denial Detail' and 'Qualification Denial Reason' are mandatory
 			 * End Date of Rating has to be blank when Qualification is set to Not Qualified.
 			 **/
@@ -196,50 +234,51 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 			objPage.enter(exemptionPageObj.endDateOfRating, "01/01/2020");
 			apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, "Not Qualified");
 			objPage.Click(exemptionPageObj.saveButton);
-			exemptionPageObj.checkIfDuplicateExemption(fieldData);
+			Thread.sleep(2000);
+			softAssert.assertEquals(exemptionPageObj.reasonForNotQualifiedErrorMsg.getText(), businessValidationdata.get("ReasonForNotQualifiedErrorMsg"), "SMAB-T1223:Verify When Exemption qualification is Not Qualified and the Exemption record is saved, then user is prompted to select a value for Qualification Denial Reason");
+			softAssert.assertEquals(exemptionPageObj.enddateOfRatingErrorMsg.getText(),businessValidationdata.get("EnddateOfRatingErrorMsg1") , "mandatory check for End Date of Rating");
 			
-			softAssert.assertEquals(exemptionPageObj.reasonForNotQualifiedErrorMsg.getText(), fieldData.get("ReasonForNotQualifiedErrorMsg"), "SMAB-T1223:Verify When Exemption qualification is Not Qualified and the Exemption record is saved, then user is prompted to select a value for Qualification Denial Reason");
-			softAssert.assertEquals(exemptionPageObj.enddateOfRatingErrorMsg.getText(),fieldData.get("EnddateOfRatingErrorMsg1") , "mandatory check for End Date of Rating");
 			
-			
-			//step11:
+			//step10:
 			/**verifying when 'Qualification' is Not Qualified and 'Reason for not Qualified' is 'Other' then 'Not Qualified Detail' is mandatory
 			 *
 			 **/
 			
 			apasGenericObj.selectFromDropDown(exemptionPageObj.reasonNotQualified, "Other");
 			objPage.Click(exemptionPageObj.saveButton);
-			exemptionPageObj.checkIfDuplicateExemption(fieldData);
-			softAssert.assertEquals(exemptionPageObj.notQualifiedDetailErrorMsg.getText(), fieldData.get("NotQualifiedDetailErrorMsg"), "SMAB-T1262:Verify When Exemption qualification is Not Qualified, Reason for Not Qualified is Other and the Exemption record is saved, then user is prompted to select a value for 'Not Qualified Detail'");
+			Thread.sleep(2000);
+			softAssert.assertEquals(exemptionPageObj.notQualifiedDetailErrorMsg.getText(), businessValidationdata.get("NotQualifiedDetailErrorMsg"), "SMAB-T1262:Verify When Exemption qualification is Not Qualified, Reason for Not Qualified is Other and the Exemption record is saved, then user is prompted to select a value for 'Not Qualified Detail'");
 			
 			
-			//step12:
+			//step11:
 			/**verifying when 'Qualification' is Qualified and 'Reason for not Qualified' is Not Blank then user sees corresponding error message
 			 **/
-			Thread.sleep(2000);
+			
 			apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, "Qualified");
 			objPage.Click(exemptionPageObj.saveButton);
+			Thread.sleep(2000);
 			softAssert.assertEquals(exemptionPageObj.reasonForNotQualifiedErrorMsg.getText(), "Reason for Not Qualified must be blank", "SMAB-T1263,SMAB-T1264:Verify When the Exemption qualification is Qualified,Reason for Not Qualified is not Blank and the Exemption record is saved, then user is prompted with error message");
 			
+			objPage.Click(objApasGenericPage.crossButton);
 			softAssert.assertAll();
 			apasGenericObj.logout();
 			}
 		catch(Exception e)
 		{
+			
 			System.out.println("Error while validating business validations for Exemption "+e.getMessage());
+			
 		}
 		
 		
 	}
 	
-	
-	
 
 	/**
 	 Below test case is used to Edit an Exemption record
 	 **/
-	@Test(description = "Verify date fields are not editable once entered for an Exemption",dataProvider = "loginUsers", groups = {
-			"smoke", "regression" }, priority = 1, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T1282:Verify date fields are not editable once entered for an Exemption",dataProvider = "loginUsers", groups = {
+			"smoke", "regression" }, priority = 2, alwaysRun = true, enabled = true)
 	public void verifyDateFieldsNotEditableonCreatedExemptionDetailsPage(String loginUser)
 	{
 		try
@@ -298,7 +337,7 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 	 Below test case is used to verify if 'End date Of Rating can not be Modified Once Entered by user'
 	 **/
 	@Test(description = "End Date of Rating can't be modified if initially set",dataProvider = "loginUsers", groups = {
-			"smoke", "regression" }, priority = 2, alwaysRun = true, enabled = true)	
+			"smoke", "regression" }, priority = 3, alwaysRun = true, enabled = true)	
 	public void verifyEnddateOfRatingNotModifiableOnceEntered(String loginUser)
 	{
 		
