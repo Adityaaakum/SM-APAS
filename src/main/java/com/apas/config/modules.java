@@ -19,5 +19,9 @@ public interface modules {
 	public static final String ROLL_YEAR_SETTINGS = "Roll Year Settings";
 	public static final String EXEMPTION = "Exemption";
 	public static final String EXEMPTIONS = "Exemption";
+	public static final String ASSESSEES = "Assessees";
+	public static final String SITUS = "Situs";
+	public static final String RPSL = "Real Property Settings Libraries";
+	public static final String ROLLYEAR = "Roll Year Settings";
 }
 

@@ -233,7 +233,7 @@
 						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
 						<includes>
 						<!-- 	 <include>RollYearSettingsTest.java</include> --> 
-						<include>CreateAndEditExemptionWithMandatoryFieldsTest.java</include>        
+						<include>SecurityAndSharingTests.java</include>        
 						
 						</includes>
 						<groups>${testSuite}</groups>
