@@ -1,17 +1,15 @@
 package com.apas.PageObjects;
 
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
@@ -24,16 +22,18 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.json.simple.JSONObject;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
+import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
@@ -41,9 +41,10 @@ import com.apas.generic.ApasGenericFunctions;
 public class BppTrendPage extends Page {
 	Logger logger = Logger.getLogger(LoginPage.class);
 	BuildingPermitPage objBuildPermitPage;
-	BuildingPermitPage objBuildPermit;
 	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
+	Util objUtil;
+	Page objPage;
 	
     public Map<String, String> trendSettingsOriginalValues;
     Map<String, Integer> trendSettingRowNumbers;
@@ -54,8 +55,10 @@ public class BppTrendPage extends Page {
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objBuildPermitPage = new BuildingPermitPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
+		objPage = new Page(driver);
+		objUtil = new Util();
 	}
-
+	
 	// **** Below elements are specific to BPP Trend page ****
 	@FindBy(xpath = "//input[@name = 'rollyear']")
 	public WebElement rollYearDropdown;
@@ -66,7 +69,16 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//div[@class = 'dv-tab-bppt-container']//button[@title = 'More Tabs']")
 	public WebElement moreTabs;
 	
-	@FindBy(xpath = "//button[text() = 'Cancel']")
+	@FindBy(xpath = "//lightning-button-menu[contains(@class, 'slds-dropdown')]//button[@title = 'More Tabs']")
+	public WebElement moreTabsFileColumns;
+	
+	@FindBy(xpath = "//button[contains(@class, 'slds-button_brand') and text() = 'Cancel']")
+	public WebElement cancelBtnInApproveTabPopUp;
+	
+	@FindBy(xpath = "//button[contains(@class, 'slds-button_brand') and text() = 'Confirm']")
+	public WebElement confirmBtnInApproveTabPopUp;
+	
+	@FindBy(xpath = "//button[text() = 'Cancel'] | //button[contains(@class, 'slds-button_brand') and text() = 'Cancel']")
 	public WebElement cancelBtnInPopUp;
 	
 	@FindBy(xpath = "//button[text() = 'Confirm']")
@@ -79,7 +91,7 @@ public class BppTrendPage extends Page {
 	public WebElement firstRowDataOfTable;
 	
 	@FindBy(xpath = "//div[contains(@class, 'form-footer')]//button[text() = 'Save']")
-	public WebElement saveEditedCellData;
+	public WebElement saveBtnToSaveEditedCellData;
 	
 	@FindBy(xpath = "//button//span[text() = 'More Actions']")
 	public WebElement moreActionsBtn;
@@ -102,6 +114,11 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//lightning-tab[contains(@data-id, 'BPP Prop 13 Factor')]//input[@name = 'inputCPIFactor']")
 	public WebElement cpiFactorTxtBox;
 	
+	@FindBy(xpath = "//button[text() = 'Calculate all'] | //button[@title = 'Calculate all']")
+	public WebElement calculateAllBtn;
+
+	@FindBy(xpath = "//button[text() = 'Recalculate all'] | //button[@title = 'ReCalculate all']")
+	public WebElement reCalculateAllBtn;
 	
 	// **** Below elements are specific to BPP Trend Setup page ****
 	@FindBy(xpath = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//a[text() = 'Details']")
@@ -212,9 +229,37 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//span[text() = 'Home']")
 	public WebElement homeTab;
 	
+	@FindBy(xpath = "//button[text() = 'Close']")
+	public WebElement closeButton;
+	
+	@FindBy(xpath = "//lightning-primitive-cell-factory[@class = 'slds-cell-wrap slds-has-focus']//span[text() = 'Edit Average' or text() = 'Edit Factor' or text() = 'Edit Valuation Factor']//ancestor::button//lightning-primitive-icon")
+	public WebElement editIconInImportPageTale;
+	
+	@FindBy(xpath = "//lightning-formatted-text[text() = 'Junk_A' or text() = 'Junk_B']")
+	public WebElement tableCellWithJunkTextOnImportPageTale;
+	
+	@FindBy(xpath = "//lightning-input//div//input[@type = 'text']")
+	public WebElement inputBoxOnImportPage;
+	
+	@FindBy(xpath = "//span[contains(@title,'ERROR ROWS')]")
+	public WebElement errorRowSection;
+	
+	@FindBy(xpath = "//div[contains(@class, 'button-container-inner slds-float_right')]//button//span[text() = 'Save']")
+	public WebElement saveButton;
+	
+	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//a[text() = 'No actions available']")
+	public WebElement noActionsLinkUnderShowMore;
+	
+	@FindBy(xpath = "(//h1[text() = 'BPP Settings']//ancestor::div[contains(@class, 'slds-page-header')]//following-sibling::div//table//tbody/tr//th//a[1])//parent::span//parent::th//following-sibling::td//a[@role = 'button']")
+	public WebElement showMoreDropDownViewAllPage;
+	
+	@FindBy(xpath = "//div[text() = 'Maximum Equipment index Factor:']/following-sibling::div//span")
+	public WebElement maxEquipIndexValueOnDetailsPage;
+	
+	
 	/**
 	 * Description: This will select the roll year from the drop down
-	 * @param rollYear: Roll Year for which the BPP Trend Name needs to be clicked or bpp trend name itself
+	 * @param rollYear: Roll Year for which the BPP Trend Name needs to be clicked or BPP trend name itself
 	 * @throws: Exception
 	 */	
 	public void clickBppTrendSetupRollYearNameInGrid(String rollYearDetails) throws Exception {
@@ -228,7 +273,7 @@ public class BppTrendPage extends Page {
 			xpath = "//th//a[contains(@title, '"+ rollYearDetails +"')]";
 		}
 		
-		WebElement bppTrendSetup = locateElement(xpath, 20);
+		WebElement bppTrendSetup = locateElement(xpath, 60);
 		String bppTrendSetupName = getElementText(bppTrendSetup).trim();
 		javascriptClick(bppTrendSetup);
 		System.setProperty("BppTrendSetupName", bppTrendSetupName);
@@ -241,7 +286,7 @@ public class BppTrendPage extends Page {
 	 */
 	public void clickOnGivenRollYear(String rollYear) throws Exception {
 		String xpathStr = "//div[contains(@id,'dropdown-element')]//span[contains(text(),'" + rollYear + "')]";
-		WebElement element = waitForElementToBeClickable(xpathStr);
+		WebElement element = waitForElementToBeClickable(20, xpathStr);
 		element.click();
 	}
 			
@@ -251,17 +296,33 @@ public class BppTrendPage extends Page {
 	 * @param isTableUnderMoreTab: true / false flag to specify whether given table falls under more tab
 	 * @throws: Exception
 	 */
-	public WebElement clickOnTableOnBppTrendPage(String tableName, boolean isTableUnderMoreTab) throws Exception {
-		String xpathStr;
-		if(isTableUnderMoreTab) {
-			javascriptClick(moreTabs);
-			xpathStr = "//span[contains(text(), '" + tableName + "')]";
+	public WebElement clickOnTableOnBppTrendPage(String tableName, boolean isTableUnderMoreTab, boolean... isTableOnEfileImportPage) throws Exception {
+		WebElement givenTable = null;
+		if(isTableOnEfileImportPage.length == 0 || (isTableOnEfileImportPage.length == 1 && isTableOnEfileImportPage[0] == false)) {
+			String xpathStr;
+			if(isTableUnderMoreTab) {
+				waitForElementToBeClickable(moreTabs, 10);
+				javascriptClick(moreTabs);
+				xpathStr = "//span[contains(text(), '" + tableName + "')]";
+			} else {
+				xpathStr = "//a[contains(@data-label, '" + tableName + "')]";
+			}
+			givenTable = locateElement(xpathStr, 20);
+			waitForElementToBeClickable(givenTable);
+			javascriptClick(givenTable);			
 		} else {
-			xpathStr = "//a[contains(@data-label, '" + tableName + "')]";
+			String xpathStr = "//a[contains(@data-label, '" + tableName + "')]";
+			givenTable = locateElement(xpathStr, 3);	
+			if(givenTable != null) {
+				javascriptClick(givenTable);
+			} else {
+				waitForElementToBeClickable(moreTabsFileColumns, 10);
+				javascriptClick(moreTabsFileColumns);
+				xpathStr = "//span[contains(text(), '" + tableName + "')]";
+				givenTable = locateElement(xpathStr, 20);
+				javascriptClick(givenTable);
+			}			
 		}
-		WebElement givenTable = locateElement(xpathStr, 120);
-		waitForElementToBeClickable(givenTable);
-		javascriptClick(givenTable);
 		return givenTable;
 	}
 
@@ -270,13 +331,36 @@ public class BppTrendPage extends Page {
 	 * @param tableName: Name of the table
 	 * @throws: Exception
 	 */
-	public boolean isTableVisibleOnCalculateClick(String tableName) throws Exception {
+	public boolean isTableDataVisible(String tableName, int...timeOut) throws Exception {
 		String tableXpath = "//lightning-tab[@data-id = '"+ tableName +"']//table";
-		WebElement tableContent = locateElement(tableXpath, 60);
+		int searchTimeOut = 30;
+		if(timeOut.length == 1) {
+			searchTimeOut = timeOut[0];
+		}
+		
+		WebElement tableContent = locateElement(tableXpath, searchTimeOut);
 		if(tableContent.isDisplayed()) {
 			return true;
 		} else {
 			return false;
+		}
+	}
+	
+	/**
+	 * Description: Waits until the page spinner goes invisible within given timeout
+	 * @param: Takes Xpath as an argument
+	 * @throws: Exception
+	 */
+	public void waitForPageSpinnerToDisappear() throws Exception {
+		String xpath = "//lightning-spinner[contains(@class, 'slds-spinner_container')]//div[contains(@class, 'slds-spinner')]";		
+		WebElement element = locateElement(xpath, 30);
+		for(int i = 0; i < 500; i++) {
+			try{
+				element = driver.findElement(By.xpath(xpath));
+				Thread.sleep(100);
+			} catch (Exception ex) {
+				break;		
+			}
 		}
 	}
 	
@@ -313,7 +397,7 @@ public class BppTrendPage extends Page {
 	 */
 	private void clickRequiredButton(String ...args) throws Exception {
 		String xpath = getXpathForRequiredBtton(args);
-		WebElement button = locateElement(xpath, 40); 
+		WebElement button = locateElement(xpath, 60); 
 		javascriptClick(button);		
 	}
 	
@@ -350,15 +434,24 @@ public class BppTrendPage extends Page {
 	 * @return: Returns the cell data text box element
 	 * @throws Exception
 	 */
-	public WebElement locateCellTxtBoxElementInGrid(String tableName, int... cellDetails) throws Exception {
+	public WebElement locateCellToBeEditedBeforeApproval(String tableName, int... cellDetails) throws Exception {
 		String xpathCellData = null;
-		if(cellDetails.length == 0) {
-			xpathCellData = "((//lightning-tab[@data-id = '"+ tableName +"']//th[@data-label = 'Year Acquired'])[1]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])[1]";
-		} else if (cellDetails.length == 1) {
-			xpathCellData = "((//lightning-tab[@data-id = '"+ tableName +"']//th[@data-label = 'Year Acquired'])[1]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])["+ cellDetails[0] +"]"; 
-		} else if (cellDetails.length == 2) {
-			xpathCellData = "((//lightning-tab[@data-id = '"+ tableName +"']//th[@data-label = 'Year Acquired'])["+ cellDetails[0] +"]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])["+ cellDetails[1] +"]";
+		String tagNameToAppend = null;
+		
+		if(tableName.equals("BPP Prop 13 Factors")) {
+			tagNameToAppend = "td";
+		} else {
+			tagNameToAppend = "th";
 		}
+		
+		if(cellDetails.length == 0) {
+			xpathCellData = "((//lightning-tab[@data-id = '"+ tableName +"']//"+ tagNameToAppend +"[@data-label = 'Year Acquired'])[1]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])[1]";
+		} else if (cellDetails.length == 1) {
+			xpathCellData = "((//lightning-tab[@data-id = '"+ tableName +"']//"+ tagNameToAppend +"[@data-label = 'Year Acquired'])[1]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])["+ cellDetails[0] +"]"; 
+		} else if (cellDetails.length == 2) {
+			xpathCellData = "((//lightning-tab[@data-id = '"+ tableName +"']//"+ tagNameToAppend +"[@data-label = 'Year Acquired'])["+ cellDetails[0] +"]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])["+ cellDetails[1] +"]";
+		}
+
 		System.setProperty("xpathCellData", xpathCellData);
 		WebElement element = locateElement(xpathCellData, 60);
 		return element;
@@ -370,11 +463,11 @@ public class BppTrendPage extends Page {
 	 * @return: Returns the edit button element
 	 * @throws Exception
 	 */
-	public WebElement locateEditButtonInFocusedCellTxtBox() throws Exception {
+	public WebElement locateEditButtonInFocusedCell() throws Exception {
 		WebElement editButton = null;
-		clickAction(waitForElementToBeClickable(System.getProperty("xpathCellData")));
+		Click(waitForElementToBeClickable(10, System.getProperty("xpathCellData")));
 		String xpathEditBtn = "//td[contains(@class, 'has-focus')]//button[contains(@class, 'cell-edit')]//lightning-primitive-icon";
-		editButton = locateElement(xpathEditBtn, 30);
+		editButton = locateElement(xpathEditBtn, 10);
 		return editButton;
 	}
 	
@@ -383,12 +476,30 @@ public class BppTrendPage extends Page {
 	 * @param: Takes the integer / double value to enter in the cell
 	 * @throws Exception 
 	 */	
-	public void editCellDataInGridForGivenTable(Object data) throws Exception {		
+	public void editCellDataInGridForGivenTable(String tableName, Object data) throws Exception {		
 		String xpathEditTxtBox = "//div//input[@name = 'dt-inline-edit-text']";
-		WebElement editTxtBox = locateElement(xpathEditTxtBox, 20);
+		WebElement editTxtBox = locateElement(xpathEditTxtBox, 60);
 		enter(editTxtBox, String.valueOf(data));
-		WebElement year = locateElement("//th[@data-label = 'Year Acquired']", 20);
+
+		String tagAppend;
+		if(tableName.equalsIgnoreCase("BPP Prop 13 Factors")) {
+			tagAppend = "td";
+		} else {
+			tagAppend = "th";
+		}
+		
+		WebElement year = locateElement("(//lightning-tab[@data-id = '"+ tableName +"']//"+ tagAppend +"[@data-label = 'Year Acquired'])[1]", 20);
 		Click(year);
+	}
+	
+	/**
+	 * Description: Checks whether edited cell appears in edit mode
+	 * @returns: Return status as true or false
+	 * @throws Exception
+	 */
+	public boolean isEditedCellHighlighted(WebElement editedCell) throws Exception {
+		wait.until(ExpectedConditions.attributeContains(editedCell, "class", "slds-is-edited"));
+		return (editedCell.getAttribute("class").contains("slds-is-edited"));
 	}
 
 	/**
@@ -397,12 +508,16 @@ public class BppTrendPage extends Page {
 	 * @return : Message displayed above the table post performed action is complete
 	 */
 	public String retrieveMsgDisplayedAboveTable(String tableName) throws Exception {
-		//Waiting for the page spinner / loader to go invisible
-		validateAbsenceOfElement("//lightning-spinner//span[text() = 'Loading']", 180);
-		
+		//Waiting for the page spinner to become visible and if visible then wait for it to go invisible
+		String xpath = "//lightning-spinner//span[text() = 'Loading']";
+		WebElement spinner = locateElement(xpath, 5);
+		if(spinner != null) {
+			validateAbsenceOfElement(xpath, 180);
+		}
+
 		//Locating the message displayed above the table once the loader / spinner becomes invisible
-		String xpath = "//lightning-tab[@data-id = '"+ tableName +"']//div[@class = 'hightlight-tab-message']";
-		WebElement message = locateElement(xpath, 120);
+		xpath = "//lightning-tab[@data-id = '"+ tableName +"']//div[@class = 'hightlight-tab-message']";
+		WebElement message = locateElement(xpath, 90);
 		String text = getElementText(message);
 		return text;
 	}
@@ -414,15 +529,17 @@ public class BppTrendPage extends Page {
 	 * @param rollYear: Roll year for which the status needs to be reset
 	 */
 	public void resetTablesStatusForGivenRollYear(List<String> columnsToReset, String expectedStatus, String rollYear) throws Exception {		
-		String queryForID = "Select Id From BPP_Trend_Roll_Year__c where Roll_Year__c = '"+ rollYear +"'";
-		String id = null;
-
 		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+		String queryForID = "Select Id From BPP_Trend_Roll_Year__c where Roll_Year__c = '"+ rollYear +"'";
 		for(String columnName : columnsToReset) {
-			objSalesforceAPI.update("BPP_Trend_Roll_Year__c", id, columnName, expectedStatus);
+			objSalesforceAPI.update("BPP_Trend_Roll_Year__c", queryForID, columnName, expectedStatus);
 		}
-
-		//HashMap<String, ArrayList<String>> map = objSalesforceAPI.select("SELECT Ag_Mobile_Equipment_Trends_Status__c,Computer_Trends_Status__c,Const_Mobile_Equipment_Trends_Status__c,Const_Trends_Status__c,Industrial_Trend_Status__c FROM BPP_Trend_Roll_Year__c");
+	}
+	
+	public void removeExistingBppSettingEntry(String rollYear) throws Exception {
+		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+		String queryForID = "SELECT Id FROM BPP_Setting__c where BPP_Trend_Roll_Year_Parent__c = '"+ rollYear +"'";
+		objSalesforceAPI.delete("BPP_Setting__c", queryForID);
 	}
 
 	/**
@@ -437,7 +554,7 @@ public class BppTrendPage extends Page {
 		clickBppTrendSetupRollYearNameInGrid(rollYear);
 		
 		String xpathFieldValue = "//span[text() = '"+ tableName +"']//parent::div//following-sibling::div//span[contains(@class, 'test-id__field-value')]//lightning-formatted-text";
-		WebElement element = locateElement(xpathFieldValue, 10);
+		WebElement element = locateElement(xpathFieldValue, 30);
 		return getElementText(element);
 	}
 	
@@ -464,16 +581,13 @@ public class BppTrendPage extends Page {
 	}
 	
 	/**
-	 * Deletes the given files from the downloads directory
+	 * Deletes files from the downloads directory
 	 */
-	public void deleteFactorFilesFromDownloadFolder(List<String> filesToDelete) {
-		File file;
-		for(String fileName : filesToDelete) {
-			String filePath = "C:/Downloads/";
-			filePath = filePath + fileName;
-
-			file = new File(filePath);
-			file.delete();	
+	public void deleteFactorFilesFromDownloadFolder() {
+		File dir = new File(TestBase.CONFIG.getProperty("fileDownloadPath"));
+		for(File file: dir.listFiles()) {
+		    if (!file.isDirectory()) 
+		        file.delete();
 		}
 	}
 	
@@ -510,7 +624,7 @@ public class BppTrendPage extends Page {
 		for(int i = 0; i < tableRows.size(); i++) {
 			int rowNum = i + 1;
 			String xpathYearAcq = "("+ xpathTableRows +")["+ rowNum +"]//th";
-			WebElement yearAcquiredElement = locateElement(xpathYearAcq, 10);
+			WebElement yearAcquiredElement = locateElement(xpathYearAcq, 30);
 			String yearAcquiredTxt = getElementText(yearAcquiredElement);
 			
 			String xpathYearData = "("+ xpathTableRows +")["+ rowNum +"]"+ xpathTableData;
@@ -695,19 +809,15 @@ public class BppTrendPage extends Page {
 	        	}
 	        }
 	        
-	        Cell cell = null;
-	        // Updating the industrial trend setting value
-	        cell = sheet.getRow(trendSettingRowNumbers.get("Industrial")).getCell(1);
-	        cell.setCellValue(Integer.parseInt(updatedSettingValues.get("Industrial")));
-	        // Updating the commercial trend setting value
-	        cell = sheet.getRow(trendSettingRowNumbers.get("Commercial")).getCell(1);
-	        cell.setCellValue(Integer.parseInt(updatedSettingValues.get("Commercial")));
-	        // Updating the agricultural trend setting value
-	        cell = sheet.getRow(trendSettingRowNumbers.get("Agricultural")).getCell(1);
-	        cell.setCellValue(Integer.parseInt(updatedSettingValues.get("Agricultural")));
-	        // Updating the construction trend setting value
-	        cell = sheet.getRow(trendSettingRowNumbers.get("Construction")).getCell(1);
-	        cell.setCellValue(Integer.parseInt(updatedSettingValues.get("Construction")));
+	        Cell cell = null;	        
+	        for(Map.Entry<String, Integer> entry : trendSettingRowNumbers.entrySet()) {
+	        	String key = entry.getKey();
+	        	if(updatedSettingValues.containsKey(key)) {
+		        	cell = sheet.getRow(trendSettingRowNumbers.get(key)).getCell(1);
+		        	int updatedCellValue = Integer.parseInt(updatedSettingValues.get(key));
+		        	cell.setCellValue(updatedCellValue);
+	        	}
+	        }
 	        
 	        //Create an object of FileOutputStream class to create write data in excel file
 	        outputStream = new FileOutputStream(file);
@@ -792,7 +902,7 @@ public class BppTrendPage extends Page {
 				+ "ancestor::th//following-sibling::td[not(contains(@data-label, 'Year Acquired')) "
 				+ "or (not(contains(@data-label, 'Year Acquired')) and contains(@data-label, 'Rounded'))])["+ indexValueOfCell +"]";
 		
-		WebElement misMatchedCell = locateElement(xpathMisMatchedCell, 20);
+		WebElement misMatchedCell = locateElement(xpathMisMatchedCell, 30);
 		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid red'", misMatchedCell);
 	}
 	
@@ -892,7 +1002,7 @@ public class BppTrendPage extends Page {
 	 * @return: Returns the status as true / false based on visibility of the button
 	 * @throws: Exception
 	 */
-	public boolean isSubmitAllForApprovalBtnVisible(int timeToLocateBtn) throws Exception {
+	public boolean isSubmitAllFactorsForApprovalBtnVisible(int timeToLocateBtn) throws Exception {
 		return checkAvailabilityOfRequiredButton("Submit All Factors for Approval", timeToLocateBtn);
 	}
 	
@@ -945,6 +1055,22 @@ public class BppTrendPage extends Page {
 	 */
 	public boolean isExportValuationFactorsBtnVisible(int timeToLocateBtn) throws Exception {
 		return checkAvailabilityOfRequiredButton("Export Valuation Factors", timeToLocateBtn);
+	}
+	
+	
+	/**
+	 * Description: Checks whether pencil icon to edit table status on BPP Trend Status page is visible
+	 *  @return: Return status of pencil icon as true or false
+	 * @throws Exception
+	 */
+	public boolean isPencilIconToEditTableStatusVisible(String tableName) throws Exception {
+		String xpathPencilIcon = "//span[text() = '"+ tableName +"']//parent::div//following-sibling::div//button[contains(@class, 'test-id__inline-edit-trigger slds-shrink')]";
+		WebElement element = locateElement(xpathPencilIcon, 5);
+		if(element != null) {
+			return element.isDisplayed();
+		} else {
+			return false;
+		}
 	}
 	
 	
@@ -1022,6 +1148,7 @@ public class BppTrendPage extends Page {
 	 */
 	public void clickDownloadBtn() throws Exception {
 		clickRequiredButton("Download");
+		Thread.sleep(10000);
 	}
 	
 	/**
@@ -1045,7 +1172,7 @@ public class BppTrendPage extends Page {
 	 */
 	public void closePageLevelMsgPopUp() {
 		try {
-			Click(locateElement("//button[@title = 'Close']", 20));
+			Click(locateElement("//button[@title = 'Close']", 30));
 		} catch(Exception ex) {
 			ex.getMessage();
 		}
@@ -1055,8 +1182,41 @@ public class BppTrendPage extends Page {
 	 * It wait for the pop up message to show up when calculate button is clicked
 	 * @param: Timeout for which pop up message needs to be located
 	 */
-	public String waitForPopUpMsgOnCalculateClick(int timeToLocateElemInSec) throws Exception {
+	public String waitForSuccessPopUpMsgOnCalculateClick(int timeToLocateElemInSec) throws Exception {
 		String xpath = "//div[contains(@class, 'toastContent')]//span[text() = 'Data calculated successfully']";
+		String popUpMsg = getElementText(locateElement(xpath, timeToLocateElemInSec));
+		closePageLevelMsgPopUp();
+		return popUpMsg;
+	}
+	
+	/**
+	 * Description: Retrieves the warning message displayed in ReCalculate pop up
+	 * @return: Return the warning message
+	 * @throws Exception
+	 */
+	public String retrieveReCalculatePopUpMessage() throws Exception {
+		String xpath = "//h2[contains(text(), '"+ TestBase.CONFIG.getProperty("recalculatePopUpMsg") +"')]";
+		return getElementText(locateElement(xpath, 10));
+	}
+
+	/**
+	 * Description: Retrieves the warning message displayed on clicking approve button without saving edited data
+	 * @return: Return the warning message
+	 * @throws Exception
+	 */
+	public String retrieveApproveTabDataPopUpMessage() throws Exception {
+		String xpath = "//h2[contains(text(), '"+ TestBase.CONFIG.getProperty("approveTabDataMsg") +"')]";
+		return getElementText(locateElement(xpath, 10));
+	}
+	
+	/**
+	 * Description: Retrieve the error message displayed in pop up on Calculate button's click
+	 * @param timeToLocateElemInSec
+	 * @return: Return the error message displayed in pop up
+	 * @throws Exception
+	 */
+	public String waitForErrorPopUpMsgOnCalculateClick(int timeToLocateElemInSec) throws Exception {
+		String xpath = "//span[@class = 'toastMessage forceActionsText']";
 		String popUpMsg = getElementText(locateElement(xpath, timeToLocateElemInSec));
 		closePageLevelMsgPopUp();
 		return popUpMsg;
@@ -1078,10 +1238,16 @@ public class BppTrendPage extends Page {
 	 * @param: Timeout for which pop up message needs to be located
 	 */
 	public String waitForPopUpMsgOnApproveClick(int timeToLocateElemInSec) throws Exception {
-		String xpath = "//div[contains(@class, 'toastContent')]//span[text() = 'Data approved successfully']";
-		String popUpMsg = getElementText(locateElement(xpath, timeToLocateElemInSec));
-		closePageLevelMsgPopUp();
-		return popUpMsg;
+		String xpathErrorMsg = "//div[contains(@class, 'toastContent')]//span[text() = 'Roll year flag name and roll year must be present']";
+		WebElement errorMsg = locateElement(xpathErrorMsg, 5);
+		if(errorMsg == null) {
+			String xpath = "//div[contains(@class, 'toastContent')]//span[text() = 'Data approved successfully']";
+			String popUpMsg = getElementText(locateElement(xpath, timeToLocateElemInSec));
+			closePageLevelMsgPopUp();
+			return popUpMsg;			
+		} else {
+			return getElementText(errorMsg);
+		}
 	}
 	
 	/**
@@ -1129,13 +1295,17 @@ public class BppTrendPage extends Page {
 		closePageLevelMsgPopUp();
 		return popUpMsg;		
 	}
-	
+
+	/**
+	 * *************************** Below Methods Are For BPP EFile Import Page ****************************
+	 */
+
 	/**
 	 * Clicks on the BOE Index & Good Factors file on import transactions page
 	 * @throws: Throws Exception
 	 */
 	public void clickOnBoeIndexAndGoodFactorsImportLog(String rollYear) throws Exception {
-		WebElement importLogNameInGrid = locateElement("//a[contains(text(), 'BOE - Index and Percent Good Factors :"+ rollYear +"')]", 30);
+		WebElement importLogNameInGrid = locateElement("//a[contains(text(), 'BOE - Index and Percent Good Factors :"+ rollYear +"')]", 60);
 		Click(importLogNameInGrid);
 	}
 
@@ -1144,7 +1314,7 @@ public class BppTrendPage extends Page {
 	 * @throws: Throws Exception
 	 */
 	public void clickOnBoeValuationFactorsImportLog(String rollYear) throws Exception {
-		WebElement importLogNameInGrid = locateElement("//a[contains(text(), 'BOE - Valuation Factors :"+ rollYear +"')]", 30);
+		WebElement importLogNameInGrid = locateElement("//a[contains(text(), 'BOE - Valuation Factors :"+ rollYear +"')]", 60);
 		Click(importLogNameInGrid);
 	}
 
@@ -1153,7 +1323,7 @@ public class BppTrendPage extends Page {
 	 * @throws: Throws Exception
 	 */
 	public void clickOnCaaValuationFactorsImportLog(String rollYear) throws Exception {
-		WebElement importLogNameInGrid = locateElement("//a[contains(text(), 'CAA - Valuation Factors :"+ rollYear +"')]", 30);
+		WebElement importLogNameInGrid = locateElement("//a[contains(text(), 'CAA - Valuation Factors :"+ rollYear +"')]", 60);
 		Click(importLogNameInGrid);
 	}
 	
@@ -1165,7 +1335,7 @@ public class BppTrendPage extends Page {
 	public boolean checkPresenceOfErrorRowsSection() throws Exception {
 		String tableNumber = System.getProperty("tableNumber");
 		String xpathErrorSection = "//lightning-tab[@aria-labelledby = '"+ tableNumber +"__item']//span[contains(@title,'ERROR ROWS')]";
-		return locateElement(xpathErrorSection, 30).isDisplayed();
+		return locateElement(xpathErrorSection, 60).isDisplayed();
 	}
 
 	/**
@@ -1188,7 +1358,7 @@ public class BppTrendPage extends Page {
 	public boolean checkPresenceOfImportedRowsSection() throws Exception {
 		String tableNumber = System.getProperty("tableNumber");
 		String xpathImportedSection = "//lightning-tab[@aria-labelledby = '"+ tableNumber +"__item']//span[contains(@title,'IMPORTED ROWS')]";
-		return locateElement(xpathImportedSection, 30).isDisplayed();
+		return locateElement(xpathImportedSection, 60).isDisplayed();
 	}
 
 	/**
@@ -1211,15 +1381,15 @@ public class BppTrendPage extends Page {
 		String tableNumber = System.getProperty("tableNumber");
 		String xpathIndividualCheckBox = "//lightning-tab[@aria-labelledby = '"+ tableNumber +"__item']"
 				+ "//td//span[@class='slds-checkbox_faux']";
-		WebElement individualCheckBox = locateElement(xpathIndividualCheckBox, 30);
+		WebElement individualCheckBox = locateElement(xpathIndividualCheckBox, 60);
 		Click(individualCheckBox);
 		
 		String xpathDiscardButton = "//lightning-tab[@aria-labelledby = '"+ tableNumber +"__item']//button[text()='Discard']";
-		WebElement discardButton = locateElement(xpathDiscardButton, 30);
+		WebElement discardButton = locateElement(xpathDiscardButton, 60);
 		Click(discardButton);
 		
 		String xpathContinueButton = "//button[text()='Continue']";
-		WebElement continueButton = locateElement(xpathContinueButton, 30);
+		WebElement continueButton = locateElement(xpathContinueButton, 60);
 		Click(continueButton);
 	}
 	
@@ -1231,7 +1401,7 @@ public class BppTrendPage extends Page {
 		String tableNumber = System.getProperty("tableNumber");
 		String xpathSelectAllCheckBox = "//lightning-tab[@aria-labelledby = '"+ tableNumber +"__item']"
 				+ "//input[@class='datatable-select-all'][@type='checkbox']/..//span[@class='slds-checkbox_faux']";
-		WebElement selectAllCheckBox = locateElement(xpathSelectAllCheckBox, 30);
+		WebElement selectAllCheckBox = locateElement(xpathSelectAllCheckBox, 60);
 		Click(selectAllCheckBox);
 		
 		String xpathDiscardButton = "//lightning-tab[@aria-labelledby = '"+ tableNumber +"__item']//button[text()='Discard']";
@@ -1252,8 +1422,9 @@ public class BppTrendPage extends Page {
 		for(Map.Entry<String, String> entryData : bppTrendSetupDataMap.entrySet()) {
 			String key = entryData.getKey();
 			String value = entryData.getValue();
+			
 			String xpathDropDownField = "//span[text() = '"+ key +"']//parent::span//following-sibling::div//div[@class = 'uiPopupTrigger']";
-			WebElement dropDownField = locateElement(xpathDropDownField, 30);
+			WebElement dropDownField = locateElement(xpathDropDownField, 60);
 			objApasGenericPage.selectOptionFromDropDown(dropDownField, value);
 		}
 	}
@@ -1267,7 +1438,7 @@ public class BppTrendPage extends Page {
 		Click(deleteIconForPrePopulatedRollYear);
 		rollYearTxtBox.sendKeys(bppSettingRollYear);
 		String xpathStr = "//mark[text() = '" + bppSettingRollYear.toUpperCase() + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 20);
+		WebElement drpDwnOption = locateElement(xpathStr, 60);
 		drpDwnOption.click();
 	}
 
@@ -1297,7 +1468,7 @@ public class BppTrendPage extends Page {
 	 */
 	public String getCountOfBppSettings() throws Exception {
 		String xpath = "//article[contains(@class, 'slds-card slds-card_boundary')]//span[text() = 'BPP Settings']//following-sibling::span";
-		WebElement bppSettingsCount = locateElement(xpath, 200);
+		WebElement bppSettingsCount = locateElement(xpath, 60);
 		return getElementText(bppSettingsCount).substring(1, 2);
 	}
 	
@@ -1327,7 +1498,58 @@ public class BppTrendPage extends Page {
 	 * @throws: Exception
 	 */
 	public String getTableStatusFromBppTrendSetupDetailsPage(String tableName) throws Exception {
-		String xpathTableStatus = "//span[text() = '"+ tableName +"']//parent::div//following-sibling::div//lightning-formatted-text";
+		String tableNameForTrendSetupPage = null;
+		switch(tableName) {
+		case"Commercial Composite Factors":
+			tableNameForTrendSetupPage = "Commercial Trends Status";
+			break;
+		case"Industrial Composite Factors":
+			tableNameForTrendSetupPage = "Industrial Trend Status";
+			break;
+		case"Construction Composite Factors":
+			tableNameForTrendSetupPage = "Const. Trends Status";
+			break;
+		case"Construction Mobile Equipment Composite Factors":
+			tableNameForTrendSetupPage = "Const. Mobile Equipment Trends Status";
+			break;
+		case"Agricultural Mobile Equipment Composite Factors":
+			tableNameForTrendSetupPage = "Ag. Mobile Equipment Trends Status";
+			break;
+		case"Agricultural Composite Factors":
+			tableNameForTrendSetupPage = "Ag. Trends Status";
+			break;
+		case"BPP Prop 13 Factors":
+			tableNameForTrendSetupPage = "Prop 13 Factor Status";
+			break;
+		case"Computer Valuation Factors":
+			tableNameForTrendSetupPage = "Computer Trends Status";
+			break;
+		case"Biopharmaceutical Valuation Factors":
+			tableNameForTrendSetupPage = "Biopharmaceutical Trends Status";
+			break;
+		case"Copier Valuation Factors":
+			tableNameForTrendSetupPage = "Copier Trends Status";
+			break;
+		case"Semiconductor Valuation Factors":
+			tableNameForTrendSetupPage = "Semiconductor Trends Status";
+			break;
+		case"Litho Valuation Factors":
+			tableNameForTrendSetupPage = "Litho Trends Status";
+			break;
+		case"Mechanical Slot Machines Valuation Factors":
+			tableNameForTrendSetupPage = "Mechanical Slot Machine Trends Status";
+			break;
+		case"Set-Top Box Valuation Factors":
+			tableNameForTrendSetupPage = "Set-Top Box Trends Status";
+			break;
+		case"Electrical Slot Machines Valuation Factors":
+			tableNameForTrendSetupPage = "Electronic Slot Machine Trends Status";
+			break;
+		default:
+			tableNameForTrendSetupPage = tableName;
+		}
+		
+		String xpathTableStatus = "//span[text() = '"+ tableNameForTrendSetupPage +"']//parent::div//following-sibling::div//lightning-formatted-text";
 		WebElement tableStatus = locateElement(xpathTableStatus, 30);
 		return getElementText(tableStatus);
 	}
@@ -1377,7 +1599,7 @@ public class BppTrendPage extends Page {
 			WebElement element = null;
 			if(fieldName.equalsIgnoreCase("Year Acquired") || fieldName.equalsIgnoreCase("Property Type") || fieldName.equalsIgnoreCase("Good Factor Type")) {
 				xpath = "//span[contains(text(), '"+ fieldName +"')]//parent::span//following-sibling::div[@class = 'uiMenu']";
-				element = locateElement(xpath, 30);
+				element = locateElement(xpath, 60);
 				Click(element);
 				
 				String dropDownOptionXpath = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//ul//li//a[text() = "+ fieldValue +"]"; 
@@ -1392,7 +1614,7 @@ public class BppTrendPage extends Page {
 				}
 			}
 		}
-		Click(objBuildPermit.saveButton);
+		Click(objBuildPermitPage.saveButton);
 	}
 	
 	/**
@@ -1412,7 +1634,7 @@ public class BppTrendPage extends Page {
 	 */
 	public void clickShowMoreDropDownForGivenEntry(String newlyCreatedEntryName) throws Exception {
 		String xpath = "//a[text() = '"+ newlyCreatedEntryName +"']//following::td//span[text() = 'Show More']//ancestor::a";
-		WebElement showMoreDropDown = locateElement(xpath, 30);
+		WebElement showMoreDropDown = locateElement(xpath, 60);
 		clickAction(showMoreDropDown);
 	}
 	
@@ -1424,18 +1646,18 @@ public class BppTrendPage extends Page {
 	public boolean isEditLinkAvailableForNewEntry() throws Exception {
 		String newlyCreatedEntryName = System.getProperty("factorEntryName");
 		clickShowMoreDropDownForGivenEntry(newlyCreatedEntryName);
-		return objBuildPermit.editLinkUnderShowMore.isDisplayed();
+		return objBuildPermitPage.editLinkUnderShowMore.isDisplayed();
 	}
 	
 	/**
-	 * Description: Checks the availability of Delete link under show more for given factor entry in the table
+	 * Description: Checks the availability of Delete link under show more for given factor type
 	 * @return: Returns the status as true or false
 	 * @throws: Exception
 	 */
-	public boolean isDeleteLinkAvailableForNewEntry() throws Exception {
+	public boolean isDeleteLinkAvailableForNewFactorEntry(String factorType) throws Exception {
 		String newlyCreatedEntryName = System.getProperty("factorEntryName");
 		clickShowMoreDropDownForGivenEntry(newlyCreatedEntryName);
-		return objBuildPermit.editLinkUnderShowMore.isDisplayed();
+		return objBuildPermitPage.editLinkUnderShowMore.isDisplayed();
 	}
 	
 	/**
@@ -1452,7 +1674,7 @@ public class BppTrendPage extends Page {
 				+ "th//lightning-formatted-text[text() = '"+yearAcquired+"']//"
 				+ "ancestor::th//following-sibling::td[not(contains(@data-label, 'Year Acquired'))]//lightning-formatted-text)["+ indexValueOfCell +"]";
 		
-		WebElement misMatchedCell = locateElement(xpathMisMatchedCell, 20);
+		WebElement misMatchedCell = locateElement(xpathMisMatchedCell, 30);
 		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid red'", misMatchedCell);
 	}
 	
@@ -1468,9 +1690,32 @@ public class BppTrendPage extends Page {
 		waitForElementToBeClickable(10, showMoreLink);
 		javascriptClick(showMoreLink);
 	}
+
+	/**
+	 * Description: Creates the BPP Composite Factor Setting on Bpp trend status page
+	 * @param: Takes composite factor setting factor value as
+	 * @throws: Exception
+	 */
+	public void createBppCompositeFactorSetting(String propertyType, String minGoodFactorValue, String...rollYear) throws Exception {
+		clickAction(moreTabRightSection);
+		Thread.sleep(2000);
+		clickAction(bppCompositeFactorOption);
+		
+		clickAction(waitForElementToBeClickable(dropDownIconBppCompFactorSetting));
+		Thread.sleep(2000);
+		clickAction(waitForElementToBeClickable(newBppTrendSettingLink));
+
+		if(rollYear.length == 1) {
+			enterRollYearInBppSettingDetails(rollYear[0]);			
+		}
+		enterFactorValue(minGoodFactorValue);
+		enterPropertyType(propertyType);
+		Click(saveBtnInBppSettingPopUp);
+		Thread.sleep(3000);
+	}
 	
 	/**
-	 * Description: It updates the Bpp composite factor settings on view all page grid
+	 * Description: It updates the Bpp composite factor settings on view all page
 	 * @param: Takes a data map containing trend settings names as map keys and their values as map values
 	 * @throws: Throws Exception
 	 */
@@ -1483,25 +1728,849 @@ public class BppTrendPage extends Page {
 
 		clickAction(waitForElementToBeClickable(viewAllBppCompositeFactorSettings));
 		
-		clickShowMoreLinkOfBppSettingOnViewAllGrid("Commercial");
-		clickAction(waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore));
-		enterFactorValue(updatedSettingValues.get("Commercial"));
-		Click(waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
+		if(updatedSettingValues.size() == 4) {
+			clickShowMoreLinkOfBppSettingOnViewAllGrid("Commercial");
+			clickAction(waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore));
+			enterFactorValue(updatedSettingValues.get("Commercial"));
+			Click(waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
 
-		clickShowMoreLinkOfBppSettingOnViewAllGrid("Industrial");
-		clickAction(waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore));
-		enterFactorValue(updatedSettingValues.get("Industrial"));
-		Click(waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
-		
-		clickShowMoreLinkOfBppSettingOnViewAllGrid("Construction");
-		clickAction(waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore));
-		enterFactorValue(updatedSettingValues.get("Construction"));
-		Click(waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
-		
-		clickShowMoreLinkOfBppSettingOnViewAllGrid("Agricultural");
-		clickAction(waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore));
-		enterFactorValue(updatedSettingValues.get("Agricultural"));
-		Click(waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
+			clickShowMoreLinkOfBppSettingOnViewAllGrid("Industrial");
+			clickAction(waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore));
+			enterFactorValue(updatedSettingValues.get("Industrial"));
+			Click(waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
+			
+			clickShowMoreLinkOfBppSettingOnViewAllGrid("Construction");
+			clickAction(waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore));
+			enterFactorValue(updatedSettingValues.get("Construction"));
+			Click(waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
+			
+			clickShowMoreLinkOfBppSettingOnViewAllGrid("Agricultural");
+			clickAction(waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore));
+			enterFactorValue(updatedSettingValues.get("Agricultural"));
+			Click(waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));			
+		} else {
+			for(Map.Entry<String, String> entry : updatedSettingValues.entrySet()) {
+				String key = entry.getKey();
+				String value = entry.getValue();
+				clickShowMoreLinkOfBppSettingOnViewAllGrid(key);
+				clickAction(waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore));
+				enterFactorValue(value);
+				Click(waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));			
+			}
+		}
 	}
 	
+	/**
+	 * Description: It deletes the Bpp composite factor settings from view all page
+	 * @param: Takes a data map containing trend settings names as map keys and their values as map values
+	 * @throws: Throws Exception
+	 */
+	public void deleteBppCompositeFactorValueOnViewAllPage(String[] namesOfSettingsToDelete) throws Exception {		
+		waitForElementToBeClickable(10, moreTabRightSection);
+		clickAction(moreTabRightSection);
+
+		waitForElementToBeClickable(10, bppCompositeFactorOption);
+		clickAction(bppCompositeFactorOption);
+
+		clickAction(waitForElementToBeClickable(viewAllBppCompositeFactorSettings));
+		
+		for(int i = 0; i < namesOfSettingsToDelete.length; i++) {
+			clickShowMoreLinkOfBppSettingOnViewAllGrid(namesOfSettingsToDelete[i]);
+			clickAction(waitForElementToBeClickable(objBuildPermitPage.deleteLinkUnderShowMore));
+			clickAction(objBuildPermitPage.deleteLinkUnderShowMore);
+			Click(waitForElementToBeClickable(objBuildPermitPage.deleteBtnInDeletePopUp));			
+		}
+
+//		clickShowMoreLinkOfBppSettingOnViewAllGrid("Commercial");
+//		clickAction(waitForElementToBeClickable(objBuildPermitPage.deleteLinkUnderShowMore));
+//		clickAction(objBuildPermitPage.deleteLinkUnderShowMore);
+//		Click(waitForElementToBeClickable(objBuildPermitPage.deleteBtnInDeletePopUp));
+//
+//		clickShowMoreLinkOfBppSettingOnViewAllGrid("Industrial");
+//		clickAction(waitForElementToBeClickable(objBuildPermitPage.deleteLinkUnderShowMore));
+//		clickAction(objBuildPermitPage.deleteLinkUnderShowMore);
+//		Click(waitForElementToBeClickable(objBuildPermitPage.deleteBtnInDeletePopUp));
+//		
+//		clickShowMoreLinkOfBppSettingOnViewAllGrid("Construction");
+//		clickAction(waitForElementToBeClickable(objBuildPermitPage.deleteLinkUnderShowMore));
+//		clickAction(objBuildPermitPage.deleteLinkUnderShowMore);
+//		Click(waitForElementToBeClickable(objBuildPermitPage.deleteBtnInDeletePopUp));
+//		
+//		clickShowMoreLinkOfBppSettingOnViewAllGrid("Agricultural");
+//		clickAction(waitForElementToBeClickable(objBuildPermitPage.deleteLinkUnderShowMore));
+//		clickAction(objBuildPermitPage.deleteLinkUnderShowMore);
+//		Click(waitForElementToBeClickable(objBuildPermitPage.deleteBtnInDeletePopUp));
+	}
+	
+	
+	/**
+	 * Description: Creates the BPP Setting on BPP trend status page
+	 * @param: Takes equipment factor value
+	 * @throws: Exception
+	 */
+	public void createBppSetting(String equipIndexFactorValue) throws Exception {
+		clickAction(waitForElementToBeClickable(dropDownIconBppSetting));
+		clickAction(waitForElementToBeClickable(newBppTrendSettingLink));
+		enterFactorValue(equipIndexFactorValue);
+		Click(saveBtnInBppSettingPopUp);
+	}
+	
+	/**
+	 * Description: Edits the BPP Setting on BPP trend status page
+	 * @param: Takes equipment factor value
+	 * @throws: Exception
+	 */
+	public void editBppSettingValueOnDetailsPage(String equipIndexFactorValue) throws Exception {
+		waitForElementToBeClickable(dropDownIconDetailsSection, 10);
+		clickAction(dropDownIconDetailsSection);
+		waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore, 10);
+		clickAction(objBuildPermitPage.editLinkUnderShowMore);
+		enterFactorValue(equipIndexFactorValue);
+	}
+	
+	/**
+	 * Description: Deletes the BPP Setting on BPP trend status page
+	 * @throws: Exception
+	 */
+	public void deletesBppSettingValueOnDetailsPage() throws Exception {
+		clickAction(dropDownIconDetailsSection);
+		Thread.sleep(2000);
+		clickAction(objBuildPermitPage.deleteLinkUnderShowMore);
+		Click(waitForElementToBeClickable(objBuildPermitPage.deleteBtnInDeletePopUp));
+	}
+	
+	/**
+	 * @Description : Reads given excel file to retrieve total rows in each sheet the data into a map.
+	 * @param filePath: Takes the path of the XLSX workbook
+	 * @return: Return a data map
+	 **/
+	public Map<String, Object> getTotalRowsCountFromExcelForGivenTable(String filePath) throws Exception {
+		List<String> sheetNames = new ArrayList<String>();		
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		FileInputStream file = null;
+		XSSFWorkbook workBook = null;
+		try {
+            file = new FileInputStream(new File(filePath));
+            workBook = new XSSFWorkbook(file);            
+            
+    		for (int i = 0; i < workBook.getNumberOfSheets(); i++) {
+    			String name = workBook.getSheetName(i);
+    			if(!name.equals("Document Details")) {
+        			sheetNames.add(name);
+    			}
+    		}
+            
+    		for(String sheetName : sheetNames) {
+    			XSSFSheet sheet = workBook.getSheet(sheetName);
+    			//Removing the records that are to be restricted while importing the file & header row from total count
+    			int numberOfJunkRecords = Integer.parseInt(TestBase.CONFIG.getProperty("errorRecordsCount"));
+    			int rowCount = sheet.getPhysicalNumberOfRows();
+    			int totalRows = (rowCount - numberOfJunkRecords) - 1;
+    			dataMap.put(sheetName, totalRows);
+    		}
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+        	workBook.close();
+        	file.close();
+        }
+		return dataMap;
+	}
+	
+	/**
+	 * Description: Return a map containing error records, records to be imported and total records in given excel
+	 */
+	public Map<String, Object> countOfDifferentRowTypesInExcel(String filePath) throws Exception {
+		Map<String, Object> dataMap = getTotalRowsCountFromExcelForGivenTable(filePath);
+		int totalImportedRows = 0;
+		int totalErrorRows = Integer.parseInt(TestBase.CONFIG.getProperty("errorRecordsCount")) * dataMap.size();
+		for(Map.Entry<String, Object> entry : dataMap.entrySet()) {
+			totalImportedRows = totalImportedRows + (int) entry.getValue();
+		}
+		
+		int totalRows = totalImportedRows + totalErrorRows;
+		
+		dataMap.put("File Count", totalRows);
+		dataMap.put("Import Count", totalImportedRows);
+		dataMap.put("Error Count", totalErrorRows);
+		
+		return dataMap;
+	}
+	
+	/**
+	 * Description: Generates a map having sheet names of excel as keys and column names to be updated as values
+	 */
+	public Map<String, String> mapHavingtableNamesAndEditedColumnName() throws Exception {
+		List<String> SheetNamesWithColumnNames = new ArrayList<String>();
+		SheetNamesWithColumnNames.add(TestBase.CONFIG.getProperty("SheetNameWithColumnHarvestAverage"));
+		SheetNamesWithColumnNames.add(TestBase.CONFIG.getProperty("SheetNameWithColumnNumericvalue"));
+		SheetNamesWithColumnNames.add(TestBase.CONFIG.getProperty("SheetNameWithColumnAgricultural"));
+		SheetNamesWithColumnNames.add(TestBase.CONFIG.getProperty("SheetNameWithColumnConstruction"));
+		SheetNamesWithColumnNames.add(TestBase.CONFIG.getProperty("SheetNamesWithColumnAverage"));
+		
+		Map<String, String> dataMap = new HashMap<String, String>();
+		
+		for(int i = 0; i < SheetNamesWithColumnNames.size(); i++) {
+			List<String> tempList = Arrays.asList(SheetNamesWithColumnNames.get(i).split(":"));			
+			if(tempList.get(0).contains(",")) {
+				List<String> listSheetNamesWithSameColumnName = Arrays.asList(tempList.get(0).split(","));
+				for(int j = 0; j < listSheetNamesWithSameColumnName.size(); j++) {
+					dataMap.put(listSheetNamesWithSameColumnName.get(j), tempList.get(1));		
+				}
+			} else {
+				dataMap.put(tempList.get(0), tempList.get(1));	
+			}
+		}
+		return dataMap;
+	}
+
+	/**
+	 * Description: This method reads the excel file, retrieves original values of cell from various sheets that re to be updated with Junk value
+	 * @param: Takes complete path of the file as the argument
+	 */
+	@SuppressWarnings("deprecation")
+	public Map<String, Map<String, List<String>>> updateExcelDataForGivenFactorTables(String filePath) throws Exception {		
+		//Step1: Creating a map by using above list, this map holds sheet name as "Keys" and column names as "Values"
+		Map<String, String> dataMap = mapHavingtableNamesAndEditedColumnName();
+		
+		Map<String, Map<String, List<String>>> dataMapHavingOriginalValues = new HashMap<String, Map<String, List<String>>>();
+		FileInputStream file = null;
+		XSSFWorkbook workBook = null;
+		try {
+            file = new FileInputStream(new File(filePath));
+            workBook = new XSSFWorkbook(file);
+            Set<String> sheetNames = dataMap.keySet();
+            Map<String, List<String>> dataMapWithColNameAndOriginalValues = new HashMap<String, List<String>>();
+            
+    		for(String sheetName : sheetNames) {
+    			XSSFSheet sheet = workBook.getSheet(sheetName);
+    			int rowCount = sheet.getPhysicalNumberOfRows();
+    			if(rowCount > 0) {
+    	            Row headerRow = sheet.getRow(0);
+    	            int cellIndexOfAverageCol = -1;
+    	            int totalCells = headerRow.getLastCellNum();
+    	            String columnName = dataMap.get(sheetName).toString();    	            
+    	            
+    	            FormulaEvaluator evaluator = workBook.getCreationHelper().createFormulaEvaluator();                
+    	            for(int i = 0; i < totalCells; i++) {
+                		Cell cell = headerRow.getCell(i);
+                		CellValue cellData = evaluator.evaluate(cell);
+                		String cellValue = null;                		
+                		switch (cellData.getCellType()) {
+                		    case Cell.CELL_TYPE_STRING:
+                		    	cellValue = cellData.getStringValue();
+                		        break;
+                		    case Cell.CELL_TYPE_NUMERIC:
+                		        int integerValue = (int) cellData.getNumberValue(); 
+                		        cellValue = Integer.toString(integerValue);
+                		        break;
+                		}
+    	            	
+    	            	if(cellValue.toUpperCase().equals(columnName.toUpperCase())) {
+    	            		cellIndexOfAverageCol = i;
+    	            		columnName = cellValue;
+    	            		break;
+    	            	}
+    	            }
+    	            
+    	            if(cellIndexOfAverageCol > -1) {
+    	            	String[] updatedValues = TestBase.CONFIG.getProperty("junkValueaForRows").split(",");
+        	            int recordsToManipulate = Integer.parseInt(TestBase.CONFIG.getProperty("errorRecordsCount"));
+        	            
+        	            List<String> listOfOriginalExcelValues = new ArrayList<String>();
+        	            for(int i = 1; i <= recordsToManipulate; i++) {
+        	            	Cell cell = null;
+        	    	        cell = sheet.getRow(i).getCell(cellIndexOfAverageCol);
+        	    	        
+        	    	        CellValue cellData = evaluator.evaluate(cell);
+                    		String originalValue = null;                		
+                    		switch (cellData.getCellType()) {
+                    		    case Cell.CELL_TYPE_STRING:
+                    		    	originalValue = cellData.getStringValue();
+                    		        break;
+                    		    case Cell.CELL_TYPE_NUMERIC:
+                    		        int integerValue = (int) cellData.getNumberValue(); 
+                    		        originalValue = Integer.toString(integerValue);
+                    		        break;
+                    		}
+
+        	    	        listOfOriginalExcelValues.add(originalValue);
+        	    	        String junkValueToEnter = updatedValues[(i - 1)];
+        	    	        
+        	    	        cell.setCellType(Cell.CELL_TYPE_STRING);
+        	    	        cell.setCellValue(junkValueToEnter);
+        	            }
+        	            
+        	            System.setProperty(columnName, Integer.toString(cellIndexOfAverageCol));
+        	            dataMapWithColNameAndOriginalValues.put(Integer.toString(cellIndexOfAverageCol), listOfOriginalExcelValues);
+        	            dataMapHavingOriginalValues.put(sheetName, dataMapWithColNameAndOriginalValues);
+        	            
+    	            } else {
+    	            	System.out.println("Column name '"+ dataMap.get(sheetName) +"' is not found in sheet name '"+ sheetName +"'");
+    	            }
+    			} else {
+    				System.out.println("Table name '"+ sheetName +"' does not any data in excel file. Please check & retry!!");
+    			}
+    		}
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+        	workBook.close();
+        	file.close();
+        }
+		return dataMapHavingOriginalValues;
+	}
+	
+	/**
+	 * Description: Retrieves the index value of specified column form history table
+	 * @param: Takes name of the column from history table on Efile import page
+	 * @throws: Exception
+	 */
+	private String getIndexPositionOfGivenColumn(String colName) throws Exception {
+		String xpath = "//h2[text() = 'E-File Import Tool']//ancestor::header//following-sibling::div[@class = 'pageBody']//thead//span[@class = 'slds-truncate']";
+		
+		int indexPositionOfGivenColumn = -1;
+
+		List <WebElement> tableColumns = locateElements(xpath, 30);		
+		for(int i = 0; i < tableColumns.size(); i++) {
+			int indexPos = i+1;
+			String columnName = getElementText(locateElement("("+ xpath +")["+ indexPos +"]", 10));
+			if(columnName.equalsIgnoreCase(colName)) {
+				indexPositionOfGivenColumn = i;
+				break;
+			}
+		}		
+		return Integer.toString(indexPositionOfGivenColumn);
+	}
+
+	/**
+	 * Description: Retrieves the value of file count column form history table
+	 * @throws: Exception
+	 */
+	public String getFileCountFromHistoryTable() throws Exception {
+		String indexPosFileCount = getIndexPositionOfGivenColumn("File Count");
+		String xpath = "//h2[text() = 'E-File Import Tool']//ancestor::header//following-sibling::div[@class = 'pageBody']//tbody//tr[1]//td["+ indexPosFileCount +"]";
+		return getElementText(locateElement(xpath, 30));
+	}
+
+	/**
+	 * Description: Retrieves the value of import count column form history table
+	 * @throws: Exception
+	 */
+	public String getImportCountFromHistoryTable() throws Exception {
+		String indexPosImportCount = getIndexPositionOfGivenColumn("Import Count");
+		String xpath = "//h2[text() = 'E-File Import Tool']//ancestor::header//following-sibling::div[@class = 'pageBody']//tbody//tr[1]//td["+ indexPosImportCount +"]";
+		return getElementText(locateElement(xpath, 30));
+	}
+	
+	/**
+	 * Description: Retrieves the value of error count column form history table
+	 * @throws: Exception
+	 */
+	public String getErrorCountFromHistoryTable() throws Exception {
+		String indexPosErrorCount = getIndexPositionOfGivenColumn("Error Count");
+		String xpath = "//h2[text() = 'E-File Import Tool']//ancestor::header//following-sibling::div[@class = 'pageBody']//tbody//tr[1]//td["+ indexPosErrorCount +"]";
+		return getElementText(locateElement(xpath, 30));
+	}
+
+	/**
+	 * Description: Retrieves the file status from the table grid on import logs page
+	 */
+	public String fileStatusOnImportLogsPage(String fileType) throws Exception {
+		String name = null;
+		if(fileType.equalsIgnoreCase("BOE - Valuation Factors")) {
+			name = "BOE - Valuation Factors";
+		} else if(fileType.equalsIgnoreCase("BOE - Index and Percent Good Factors")) {
+			name = "Index and Percent Good Factors";
+		} else if(fileType.equalsIgnoreCase("CAA - Valuation Factors")) {
+			name = "CAA - Valuation Factors";
+		}
+
+		String xpathStatusColumn = "//span[text() = 'E-File Import Logs']//ancestor::div[contains(@class, 'slds-page-header')]//following-sibling::div//thead//tr//th[contains(@class, 'slds-is-resizable')]//span[@class ='slds-truncate']";
+		int indexPositionOfStatus = -1;
+		int indexPositionOfName = -1;
+
+		List <WebElement> tableColumns = locateElements(xpathStatusColumn, 30);		
+		for(int i = 0; i < tableColumns.size(); i++) {
+			int indexPos = i+1;
+			String columnName = getElementText(locateElement("("+ xpathStatusColumn +")["+ indexPos +"]", 10));
+			if(columnName.equalsIgnoreCase("Status")) {
+				indexPositionOfStatus = i;
+			} else if(columnName.equalsIgnoreCase("Name")) {
+				indexPositionOfName = i;
+			}
+			
+			if(indexPositionOfStatus > -1 && indexPositionOfName > -1) {
+				break;
+			}
+		}
+				
+		String xpath = null;
+		int indexDifference = indexPositionOfName - indexPositionOfStatus;
+		int elementIndex = Math.abs(indexDifference);
+
+		if(indexPositionOfName < indexPositionOfStatus) {
+			xpath = "((//a[contains(@title, '"+ name +"')])[1])//ancestor::th//following-sibling::td["+elementIndex+"]";
+		} else {
+			xpath = "((//a[contains(@title, '"+ name +"')])[1])//ancestor::th//preceding-sibling::td["+elementIndex+"]";			
+		}
+		String fileStatusOnImportPage = getElementText(locateElement(xpath, 30));
+		return fileStatusOnImportPage;
+	}
+	
+	/**
+	 * Description: Retrieves the value of given field from import log details page
+	 * @param: Takes the name of the field as argument
+	 * @return: Return the String value
+	 * @throws: Exception
+	 */
+	public String getFieldValuesFromImportLogsDetailsPage(String fileType, String fieldName) throws Exception {
+		String name = null;
+		if(fileType.equalsIgnoreCase("BOE - Valuation Factors")) {
+			name = "BOE - Valuation Factors";
+		} else if(fileType.equalsIgnoreCase("BOE - Index and Percent Good Factors")) {
+			name = "Index and Percent Good Factors";
+		} else if(fileType.equalsIgnoreCase("CAA - Valuation Factors")) {
+			name = "CAA - Valuation Factors";
+		}
+				
+		String xpathForNameField = "((//a[contains(@title, '"+ name +"')])[1])";
+		Click(locateElement(xpathForNameField, 30));
+	
+		String xpathForFieldValue = null;
+		if (fieldName.equalsIgnoreCase("File Count") || fieldName.equalsIgnoreCase("Import Count")) {
+			xpathForFieldValue = "//div[text() = 'E-File Import Log']//ancestor::div[contains(@class, 'row region-header')]//following-sibling::div//span[text() = '"+ fieldName +"']//parent::div//following-sibling::div//lightning-formatted-number";
+		} else {
+			xpathForFieldValue = "//div[text() = 'E-File Import Log']//ancestor::div[contains(@class, 'row region-header')]//following-sibling::div//span[text() = '"+ fieldName +"']//parent::div//following-sibling::div//lightning-formatted-text";
+		}
+		return getElementText(locateElement(xpathForFieldValue, 30));
+	}
+	
+	/**
+	 * Description: Retrieves the file status from the table grid on import transactions page
+	 */
+	public String fileStatusOnImportTransactionPage(String fileType) throws Exception {
+		String name = null;
+		if(fileType.equalsIgnoreCase("BOE - Valuation Factors")) {
+			name = "BOE - Valuation Factors";
+		} else if(fileType.equalsIgnoreCase("BOE - Index and Percent Good Factors")) {
+			name = "Index and Percent Good Factors";
+		} else if(fileType.equalsIgnoreCase("CAA - Valuation Factors")) {
+			name = "CAA - Valuation Factors";
+		}
+		
+		String xpathStatusColumn = "//span[text() = 'E-File Import Transactions']//ancestor::div[contains(@class, 'slds-page-header')]//following-sibling::div//thead//tr//th[contains(@class, 'slds-is-resizable')]//span[@class ='slds-truncate']";
+		int indexPositionOfStatus = -1;
+		int indexPositionOfImportLog = -1;
+		List <WebElement> tableColumns = locateElements(xpathStatusColumn, 30);
+		for(int i = 0; i < tableColumns.size(); i++) {
+			int indexPos = i+1;
+			String columnName = getElementText(locateElement("("+ xpathStatusColumn +")["+ indexPos +"]", 10));
+
+			if(columnName.equalsIgnoreCase("Status")) {
+				indexPositionOfStatus = i;
+			} else if(columnName.equalsIgnoreCase("E-File Import Log")) {
+				indexPositionOfImportLog = i;
+			}
+			
+			if(indexPositionOfStatus > -1 && indexPositionOfImportLog > -1) {
+				break;
+			}
+		}
+		
+		String xpath = null;
+		int indexDifference = indexPositionOfImportLog - indexPositionOfStatus;
+		int elementIndex = Math.abs(indexDifference);
+		
+		if(indexPositionOfImportLog < indexPositionOfStatus) {
+			xpath = "((//a[contains(@title, '"+ name +"')])[1])//ancestor::td//following-sibling::td["+elementIndex+"]";
+		} else {
+			xpath = "((//a[contains(@title, '"+ name +"')])[1])//ancestor::td//preceding-sibling::td["+elementIndex+"]";			
+		}
+		
+		String fileStatusOnImportPage = getElementText(locateElement(xpath, 30));
+		return fileStatusOnImportPage;
+	}
+	
+	/**
+	 * Description: Return value of Error Message column from tables based on given parameters
+	 * @param tableName: Name of the table which is currently selected
+	 * @param rowNumber: Row number in which element needs to be located
+	 * @param columnName: Name of column whose value needs to be read
+	 * @return: Return the value
+	 * @throws Exception
+	 */
+	public String getErrorMessageFromTable(String tableName, int rowNumber) throws Exception {
+		String columnName = "Error Message";
+		String message = readDataFromBppTrendFactorTableOnEfileImportPage(tableName, rowNumber, columnName);
+		return message;
+	}
+	
+	/**
+	 * Description: Return value of Age column from tables based on given parameters
+	 * @param tableName: Name of the table which is currently selected
+	 * @param rowNumber: Row number in which element needs to be located
+	 * @param columnName: Name of column whose value needs to be read
+	 * @return: Return the value
+	 * @throws Exception
+	 */
+	public String getAgeValueFromTable(String tableName, int rowNumber, String columnName) throws Exception {
+		return readDataFromBppTrendFactorTableOnEfileImportPage(tableName, rowNumber, columnName);
+	}
+	
+	/**
+	 * Description: Return value of Average column from tables based on given parameters
+	 * @param tableName: Name of the table which is currently selected
+	 * @param rowNumber: Row number in which element needs to be located
+	 * @param columnName: Name of column whose value needs to be read
+	 * @return: Return the value
+	 * @throws Exception
+	 */
+	public String getAverageValueFromTable(String tableName, int rowNumber, String columnName) throws Exception {
+		return readDataFromBppTrendFactorTableOnEfileImportPage(tableName, rowNumber, columnName);
+	}
+	
+	/**
+	 * Description: Return value of Year column from tables based on given parameters
+	 * @param tableName: Name of the table which is currently selected
+	 * @param rowNumber: Row number in which element needs to be located
+	 * @param columnName: Name of column whose value needs to be read
+	 * @return: Return the value
+	 * @throws Exception
+	 */
+	public String getYearValueFromTable(String tableName, int rowNumber, String columnName) throws Exception {
+		return readDataFromBppTrendFactorTableOnEfileImportPage(tableName, rowNumber, columnName);
+	}
+	
+	/**
+	 * Description: Generates xpath for elements in table based on given parameters on approve and revert page in Efile import
+	 * @param tableName: Name of the table which is currently selected
+	 * @param rowNumber: Row number in which element needs to be located
+	 * @param columnName: Name of column whose value needs to be read
+	 * @return: Return value read from table
+	 * @throws Exception
+	 */
+	public String readDataFromBppTrendFactorTableOnEfileImportPage(String tableName, int rowNumber, String columnName) throws Exception {
+		String tableNumber = "0";
+		String columnData;
+		if("Commercial Equipment Index".equalsIgnoreCase(tableName)) {
+			tableNumber = "1";
+		} else if("Construction ME Good Factors".equalsIgnoreCase(tableName)) {
+			tableNumber = "6";
+		} else if("Agricultural ME Good Factors".equalsIgnoreCase(tableName)) {
+			tableNumber = "7";
+		}
+		
+		String xpath = "//lightning-tab[@aria-labelledby = '"+tableNumber+"__item']//span[contains(text(), 'ERROR ROWS')]"
+				+ "//ancestor::div[@class = 'slds-accordion__summary']"
+				+ "//following-sibling::div[@class = 'slds-accordion__content']"
+				+ "//table//tbody//tr["+rowNumber+"]//td[@data-label = '"+columnName+"']//lightning-formatted-text";
+
+		List<WebElement> elements = locateElements(xpath, 20);
+		try {
+			columnData = getElementText(elements.get(0));
+		} catch(Exception ex) {
+			columnData = "";	
+		}
+		return columnData;
+	}
+	
+	/**
+	 * Description: Generated an expected error message based on given parameters 
+	 * @param columnName: Name of the column for which expected error message must be generated
+	 * @param columnValue: Value of the given column
+	 * @return: Return the expected error message as String
+	 * @throws Exception
+	 */
+	public String getnerateExpectedErrorMsgForTableColumn(String columnName, String columnValue) throws Exception {
+		if("Age".equalsIgnoreCase(columnName)) {
+			if("".equals(columnValue)) {
+				return "Age must be present";
+			}
+			else {
+				if(isColumnValueOnlyNumeric(columnValue)) {
+					if(Integer.parseInt(columnValue) == 0) {
+						return "Age should be between 1 and 40";
+					} else if(Integer.parseInt(columnValue) > 40) {
+						return "Age must be less than 40";
+					}
+				} 
+				else {
+					return "Age must be numeric without any sign";
+				}
+			}	
+		} 
+		
+		else if("Average".equalsIgnoreCase(columnName)) {
+			if("".equals(columnValue)) {
+				return "Average must be present";
+			}
+			else {
+				if(isColumnValueOnlyNumeric(columnValue)) {
+					if(Integer.parseInt(columnValue) == 0) {
+						return "Index Factor should be 1 or more";
+					} else if(Integer.parseInt(columnValue) > 999) {
+						return "NUMBER_OUTSIDE_VALID_RANGE:Index Factor: value outside of valid range";
+					}
+				} 
+				else {
+					return "Average must be numeric without any sign";
+				}
+			}
+		} 
+		
+		else if("Year".equalsIgnoreCase(columnName)) {
+			if("".equals(columnValue)) {
+				return "Year must be present.";
+			}
+			else {			
+				if(columnValue.length() == 4) {
+					if(isColumnValueOnlyNumeric(columnValue)) {
+						if(isGivenYearVaild(columnValue)) {
+							return "DUPLICATE_VALUE:duplicate value found";
+						} else {
+							if(Integer.parseInt(columnValue) < 1974) {
+								return "Year must be greater than 1974";
+							} else if(Integer.parseInt(columnValue) > Integer.parseInt(TestBase.CONFIG.getProperty("rollYear"))){
+								return "Year must be less than 2020";
+							}
+						}
+					} else {
+						return "Year must be numeric without any sign";
+					}
+				} 
+				else {
+					if(isColumnValueOnlyNumeric(columnValue)) {
+						if(isGivenYearVaild(columnValue)) {
+							return "DUPLICATE_VALUE:duplicate value found";
+						} else {
+							if(Integer.parseInt(columnValue) < 1974) {
+								return "Year must be greater than 1974";
+							} else if(Integer.parseInt(columnValue) > Integer.parseInt(TestBase.CONFIG.getProperty("rollYear"))){
+								return "Year must be less than "+ TestBase.CONFIG.getProperty("rollYear");
+							}
+						}
+					} else {
+						return "Year must be numeric without any sign";
+					}
+				}
+			}
+		}
+		return "Unsupported column name or unsupported value has been provided. Please Retry With Valid Data!!";
+	}
+	
+	/**
+	 * Description: Checks whether given value from table on approve & revert page in Efile import is numeric
+	 * @param str: Takes string value of the number
+	 * @return: Return the status as true / false
+	 * @throws: Exception
+	 */
+	private boolean isColumnValueOnlyNumeric(String str) throws Exception {
+		if(str.startsWith("-") || str.startsWith("+") || str.contains(".")) {
+			return false;
+		} else {
+			try {
+				Integer.parseInt(str);
+				return true;
+			} catch (NumberFormatException ex) {
+				return false;
+			}
+		}
+	}
+	
+	/**
+	 * Description: Checks whether value of given year is a valid year
+	 * @param year: Takes string value of year which needs to be validated
+	 * @return: Return status as true / false
+	 * @throws: Exception
+	 */
+	private boolean isGivenYearVaild(String year) throws Exception {
+		int givenYear = Integer.parseInt(year);
+		if(givenYear > 1974 && givenYear < Integer.parseInt(TestBase.CONFIG.getProperty("rollYear"))) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Description: Create a new bpp trend setup with no bpp settings and no bpp composite settings and no data uploaded
+	 * @return: Return the name of the bpp trend setup created
+	 * @throws: Exception
+	 */
+	public String createDummyBppTrendSetupForErrorsValidation() throws Exception {
+		//Step1: Login to the APAS application using the given user
+		objApasGenericFunctions.login(users.SYSTEM_ADMIN);
+		
+		//Step2: Opening the BPP Trend module
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+
+		//Step3: Click New button on the grid to open form / pop up to create new BPP Trend Setup
+		WebElement newButton = objPage.locateElement("//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']", 10);
+		Click(newButton);
+		
+		//Step4: Entering BPP trend setup name and roll year
+		int year = Integer.parseInt(TestBase.CONFIG.getProperty("rollYear")) + 2;
+		String trendSetupName = year + " " + TestBase.CONFIG.getProperty("bppTrendSetupNameSuffix");
+
+		System.setProperty("trendSetupForErrorValidationOnCalcuate", trendSetupName);
+		System.setProperty("rollYearForErrorValidationOnCalculate", Integer.toString(year));
+		enter(bppTrendSetupName, trendSetupName);
+		WebElement rollYearField = locateElement("//span[text() = 'Roll Year']//parent::span//following-sibling::div", 10);
+		
+		//Step5: Setting the status of composite factor tables to Not Calculated
+		objApasGenericPage.selectOptionFromDropDown(rollYearField, Integer.toString(year));
+		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Commercial Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), "Not Calculated");
+		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Const. Mobile Equipment Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), "Not Calculated");
+		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Industrial Trend Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), "Not Calculated");
+		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Ag. Mobile Equipment Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), "Not Calculated");
+		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Const. Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), "Not Calculated");
+		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Ag. Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), "Not Calculated");
+		
+		//Step6: Clicking save button
+		Click(saveBtnInBppSettingPopUp);
+				
+		//Step7: logging out from application
+		objApasGenericFunctions.logout();
+		
+		return trendSetupName;		
+	}
+	
+	/**
+	 * Description: Clicks on calculate button to perform calculation with missing Bpp Settings in selected roll year
+	 * @returns: Return the error message displayed in pop up
+	 * @throws: Exception
+	 * calculationWith_BppCompFactorSettings_MissingInSystem
+	 */
+	public String calculation_With_Missing_BppSetting(String tableName, boolean isTableUnderMoreBtn) throws Exception {
+		//Navigating to BPP Trend page and selecting given roll year
+		String rollYear = System.getProperty("rollYearForErrorValidationOnCalculate");
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		Click(rollYearDropdown);
+		clickOnGivenRollYear(rollYear);
+		Click(selectRollYearButton);
+
+		//Clicking on given table name and then calculate button
+		clickOnTableOnBppTrendPage(tableName, isTableUnderMoreBtn);
+		clickCalculateBtn(tableName);
+		
+		//Retrieve and return the error message displayed in pop up on clicking calculate button
+		return waitForErrorPopUpMsgOnCalculateClick(20);
+	}
+	
+	/**
+	 * Description: Clicks on calculate button to perform calculation with missing Bpp Composite Factor Settings in selected roll year
+	 * @returns: Return the error message displayed in pop up
+	 * @throws: Exception
+	 */
+	public String calculation_With_Missing_BppCompFactorSettings(String tableName, boolean isTableUnderMoreBtn) throws Exception {		
+		//Opening the BPP Trend module and set All as the view option in grid
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		objApasGenericFunctions.selectAllOptionOnGrid();
+		
+		//Clicking on the roll year name in grid to navigate to details page of selected roll year
+		String rollYear = System.getProperty("rollYearForErrorValidationOnCalculate");
+		clickBppTrendSetupRollYearNameInGrid(rollYear);
+		
+		//Create a BPP Setting under selected BPP Trend Setup
+		createBppSetting("125");
+		
+		//Navigating to BPP Trend page and selecting given roll year
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		Click(rollYearDropdown);
+		clickOnGivenRollYear(rollYear);
+		Click(selectRollYearButton);
+
+		//Clicking on given table name and then calculate button
+		clickOnTableOnBppTrendPage(tableName, isTableUnderMoreBtn);
+		clickCalculateBtn(tableName);
+		
+		//Retrieve and return the error message displayed in pop up on clicking calculate button
+		return waitForErrorPopUpMsgOnCalculateClick(20);
+	}
+	
+	/**
+	 * Description: Clicks on calculate button to perform calculation with missing Bpp Composite Factor Settings in selected roll year
+	 * @returns: Return the error message displayed in pop up
+	 * @throws: Exception
+	 */
+	public String calculation_With_Missing_IndexAndGoodFactors(String tableName, boolean isTableUnderMoreBtn) throws Exception {		
+		//Opening the BPP Trend module and set All as the view option in grid
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		objApasGenericFunctions.selectAllOptionOnGrid();
+		
+		//Clicking on the roll year name in grid to navigate to details page of selected roll year
+		String rollYear = System.getProperty("rollYearForErrorValidationOnCalculate");
+		clickBppTrendSetupRollYearNameInGrid(rollYear);
+		Thread.sleep(3000);
+		
+		//Create a BPP Composite Factor Settings
+		if(tableName.contains("Commercial")) {
+			createBppCompositeFactorSetting("Commercial", "10");	
+		} else if(tableName.contains("Industrial")) {
+			createBppCompositeFactorSetting("Industrial", "9");	
+		} else if(tableName.contains("Agricultural")) {
+			createBppCompositeFactorSetting("Agricultural", "11");	
+		} else if(tableName.contains("Construction")) {
+			createBppCompositeFactorSetting("Construction", "10");	
+		}
+
+		//Navigating to BPP Trend page and selecting given roll year
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		Click(rollYearDropdown);
+		clickOnGivenRollYear(rollYear);
+		Click(selectRollYearButton);
+
+		//Clicking on given table name and then calculate button
+		clickOnTableOnBppTrendPage(tableName, isTableUnderMoreBtn);
+		clickCalculateBtn(tableName);
+		
+		//Retrieve and return the error message displayed in pop up on clicking calculate button
+		return waitForErrorPopUpMsgOnCalculateClick(20);
+	}
+	
+	/**
+	 * Description: Delete BPP Trend Setup entry
+	 */
+	public void deleteDummyBppTrendSetup(String bppTrendSetupName) throws Exception {
+		if(bppTrendSetupName != null) {
+			//Opening the BPP Trend module and set All as the view option in grid
+			objApasGenericFunctions.login(users.SYSTEM_ADMIN);
+			objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+			objApasGenericFunctions.selectAllOptionOnGrid();
+			
+			objBuildPermitPage.clickShowMoreLinkOnRecentlyViewedGrid(bppTrendSetupName);
+			Thread.sleep(2000);
+			javascriptClick(waitForElementToBeClickable(objBuildPermitPage.deleteLinkUnderShowMore));
+			Thread.sleep(1000);
+			Click(waitForElementToBeClickable(deletBtnInBppSettingPopUp));
+		}
+	}
+	
+	/**
+	 * Description: Retrieves the value from maximum equipment index factor value from BPP Setting pop up
+	 * @throws: Exception
+	 */
+	public String retrieveMaxEqipIndexValueFromPopUp() throws Exception {
+		String xpathMaxEquipIndexFactorValue = "//div[text() = 'Maximum Equipment index Factor:']/following-sibling::div//span";
+		return getElementText(locateElement(xpathMaxEquipIndexFactorValue, 20));
+	}
+	
+	/**
+	 * Description: Retrieve the name of newly created BPP Setting
+	 * @throws: Exception
+	 */
+	public String retrieveBppSettingName() throws Exception {
+		String xpathNewBppSetting = "//span[contains(text(), 'BPP Settings')]//ancestor::div[contains(@class, 'forceRelatedListCardHeader')]//following-sibling::div//h3//a";
+		return getElementText(locateElement(xpathNewBppSetting, 20));
+	}
+	
+	/**
+	 * Description: Retrieves the value from maximum equipment index factor value from BPP Setting pop up
+	 * @throws: Exception
+	 */
+	public String retrieveMaxEqipIndexValueFromViewAllGrid(String bppSettingName) throws Exception {
+		String xpathForMaxEqipIndexInGrid = "//tbody/tr//th//a[text() = '"+ bppSettingName +"']//parent::span//parent::th//following-sibling::td//span[contains(text(), '%')]";
+		return getElementText(locateElement(xpathForMaxEqipIndexInGrid, 20));
+	}
 }

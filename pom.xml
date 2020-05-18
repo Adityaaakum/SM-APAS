@@ -223,10 +223,22 @@
 								<include>ReportsTest.java</include> 
 								<include>RollwisePermissionTest.java</include> 
 								<include>NonRelevantPermitSettingsTest.java</include> -->
+																
+								<!-- <include>BppTrend_AgriculturalCompostieTable_CalculateAndReCalculate.java</include> -->
+								<!-- <include>BppTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalculate</include> -->
+								<!-- <include>BppTrend_CommercialCompostieTable_CalculateAndReCalculate.java</include> -->
+								<!-- <include>BppTrend_ConstructionCompostieTable_CalculateAndReCalculate.java</include> -->
+								<!-- <include>BppTrend_ConstructionMobileEquipCompostieTable_CalculateAndReCalculate.java</include> -->
+								<!-- <include>BppTrend_IndustrialCompostieTable_CalculateAndReCalculate.java</include> -->
+								<!-- <include>BppTrend_Prop13Table_CalculateAndReCalculate.java</include> -->
+								
+								<!-- <include>BppTrendEfileImportTest.java</include> -->
 								<!-- <include>BppTrendSettingTest.java</include> -->
-								<include>BppTrendCalculateAndSubmitTest.java</include>
-								<!-- <include>BppTrendApprovalTest.java</include>
-								<include>BppTrendFileDownloadTest.java</include> -->
+								<!-- <include>BppTrend_Calculate_Submit_Approve_OutputTables</include> -->
+								<include>BppTrendApprovalTest.java</include>
+								<!-- <include>BppTrendSecurityAndSharingTest</include> -->
+								<!-- <include>BppTrendFilesDownloadTest.java</include> -->					
+								
 						</includes>
 						<!-- <groups>${groups}</groups> -->
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->

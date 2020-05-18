@@ -14,4 +14,10 @@ public interface testdata {
 	public static final String BPP_TREND_CAA_VALUATION_FACTORS = "\\data\\BppTrend\\CAA Valuation Factors Sample.xlsx";
 	public static final String BPP_TREND_BOE_VALUATION_FACTORS = "\\data\\BppTrend\\BOE Valuation Factors.xlsx";
 	public static final String BPP_TREND_DATA = "\\data\\BppTrend\\BppTrendSetupAndBppSettingData.json";
+	
+	public static final String BPP_TREND_BOE_INDEX_FACTORS_CSV = "\\data\\BppTrend\\BOE Equipment Index Factors and Percent Good Factors Sample_CSV_Format.csv";
+	public static final String BPP_TREND_BOE_INDEX_FACTORS_TXT = "\\data\\BppTrend\\BOE Equipment Index Factors and Percent Good Factors Sample_TXT_Format.txt";
+	public static final String BPP_TREND_BOE_INDEX_FACTORS_XLS = "\\data\\BppTrend\\BOE Equipment Index Factors and Percent Good Factors Sample_XLS_Format.xls";
+	
+	public static final String BPP_TREND_BOE_INDEX_FACTORS_TRANSFORMATION_RULES= "\\data\\BppTrend\\BOE Equipment Index Factors and Percent Good Factors Sample_Transformation Rules.xlsx";
 }

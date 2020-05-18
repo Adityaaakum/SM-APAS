@@ -16,7 +16,7 @@ public class SoftAssertion {
 	public SoftAssertion() {isSoftAssertionUsedFlag = false;}
 
 	/**
-	 * Throws AssertionError if any soft assertions occured in the test cases i.e isSoftAssertionUsedFlag is True
+	 * Throws AssertionError if any soft assertions occurred in the test cases i.e isSoftAssertionUsedFlag is True
 	 */
 	public void assertAll() {
 		//Keeping this method as a place holder for now as correct report is getting generated even without this function. Will remove it later
@@ -65,4 +65,16 @@ public class SoftAssertion {
 		assertTrue(actual.equals(expected), formattedMessage);
 	}
 
+	/**
+	 * Asserts that actual String contains expected value and adds the message passed in message parameter
+	 *
+	 * @param actual: actual value received from the APAS
+	 * @param expected: expected value passed in the test case
+	 * @param message: "<Jira ID>: <Some validation message>"
+	 * @throws Exception 
+	 */
+	public void assertContains(Object actual, Object expected, String message) throws Exception {
+		String formattedMessage = message + " :: Validation for \"" + expected + "\" Contains \"" + actual  + "\"";
+		assertTrue(actual.toString().contains(expected.toString()), formattedMessage);
+	}
 }	

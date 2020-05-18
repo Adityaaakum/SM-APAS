@@ -25,11 +25,13 @@ public class ExtentManager {
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
 			String upDate = sdf.format(date);
-			String resultFile = System.getProperty("user.dir") + "//test-output//AutomationReport//" + upDate + "_"
-					+ TestBase.browserName + SuiteName + ".html";
+			String environment = System.getProperty("region").toUpperCase();
+//			String resultFile = System.getProperty("user.dir") + "//test-output//AutomationReport//" + upDate + "_"
+//					+ TestBase.browserName + SuiteName + ".html";
+			String resultFile = System.getProperty("user.dir") + "//test-output//AutomationReport//" + SuiteName + "_" + environment + "_" + upDate + ".html";
 			extent = new ExtentReports(resultFile, true);
 			// setEmaildirectoryPath(resultFile);
-			extent.config().reportHeadline(", Env: " + "");
+			extent.config().reportHeadline(", Env: " + environment);
 			extent.config().reportName(SuiteName);
 			Reporter.log("Extent Report directory: " + resultDirectory, true);
 			// setExtent(extent);

@@ -1,6 +1,8 @@
 package com.apas.Listeners;
 
-import java.io.*;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
@@ -20,6 +22,7 @@ import com.apas.Reports.ExtentManager;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
+import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
@@ -28,8 +31,8 @@ public class SuiteListener extends TestBase implements ITestListener {
 
 	public ExtentReports extent;
 	ExtentTest upTest;
-	Util objUtils = new Util();
-
+	Util objUtils = new Util(); 
+	
 	protected String getStackTrace(Throwable t) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
@@ -70,6 +73,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 		if (flagToUpdateJira && testCycle != null) {
 			//Updating the Jira tickets status at the end of the execution
 			System.out.println("Test cases execution status on end of execution: " + JiraAdaptavistStatusUpdate.testStatus);
+			TearDown();
 			JiraAdaptavistStatusUpdate.mapTestCaseStatusToJIRA();
 		}
 	}
@@ -107,6 +111,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 	 */
 	@Override
 	public void onTestSuccess(ITestResult result) {
+		System.out.print("This is onSuccess Listner method");
 		//Updating the extent report with the step that test case is passed.
 		if (!SoftAssertion.isSoftAssertionUsedFlag) {
 			ExtentTestManager.getTest().log(LogStatus.PASS, "Test Case has been PASSED.");
@@ -125,33 +130,36 @@ public class SuiteListener extends TestBase implements ITestListener {
 	public void onTestFailure(ITestResult result) {
 		System.out.println("Method Failed:" + result.getMethod().getMethodName());
 
-		try {
-			//Updating the test case status for Jira
-			String testCaseKeys =  JiraAdaptavistStatusUpdate.extractTestCaseKey(System.getProperty("description"));
-			JiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKeys,"Fail");
+		try {				
+				//Updating the test case status for Jira
+				String testCaseKeys =  JiraAdaptavistStatusUpdate.extractTestCaseKey(System.getProperty("description"));
+				JiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKeys,"Fail");
+	
+				RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
+	
+				//Taking the screenshot as the test case is failed
+				File source = ((TakesScreenshot) ldriver).getScreenshotAs(OutputType.FILE);
+				Date date = new Date();
+				SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
+				String upDate = sdf.format(date);
+				String dest = System.getProperty("user.dir") + "//test-output//ErrorScreenshots//"
+						+ result.getMethod().getMethodName() + upDate + ".png";
+				File destination = new File(dest);
+				FileUtils.copyFile(source, destination);
+	
+				ExtentTestManager.getTest().log(LogStatus.FAIL, getStackTrace(result.getThrowable()));
+				//Adding the screenshot to the report
+				File imageFile = new File(dest);
+				ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot below: " + upTest.addScreenCapture(objUtils.encodeFileToBase64Binary(imageFile)));
+	
+				//Finishing the test case
+				ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
+				ExtentManager.getExtentInstance().flush();
+				
+				TearDown();
+				setupTest();
 
-			RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
-
-			//Taking the screenshot as the test case is failed
-			File source = ((TakesScreenshot) ldriver).getScreenshotAs(OutputType.FILE);
-			Date date = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
-			String upDate = sdf.format(date);
-			String dest = System.getProperty("user.dir") + "//test-output//ErrorScreenshots//"
-					+ result.getMethod().getMethodName() + upDate + ".png";
-			File destination = new File(dest);
-			FileUtils.copyFile(source, destination);
-
-			ExtentTestManager.getTest().log(LogStatus.FAIL, getStackTrace(result.getThrowable()));
-			//Adding the screenshot to the report
-			File imageFile = new File(dest);
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot below: " + upTest.addScreenCapture(objUtils.encodeFileToBase64Binary(imageFile)));
-
-			//Finishing the test case
-			ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
-			ExtentManager.getExtentInstance().flush();
-
-		} catch (IOException e) {
+			} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

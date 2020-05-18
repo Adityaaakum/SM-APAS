@@ -88,9 +88,9 @@ public class ApasGenericFunctions extends TestBase {
 	 */
 	public void searchModule(String moduleToSearch) throws Exception {	
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
-		objPage.waitForElementToBeClickable(objApasGenericPage.appLauncher);
+		objPage.waitForElementToBeClickable(objApasGenericPage.appLauncher, 30);
 		objPage.Click(objApasGenericPage.appLauncher);
-		objPage.waitForElementToBeClickable(objApasGenericPage.appLauncherSearchBox);
+		objPage.waitForElementToBeClickable(objApasGenericPage.appLauncherSearchBox, 30);
 		objPage.enter(objApasGenericPage.appLauncherSearchBox, moduleToSearch);
 		objApasGenericPage.clickNavOptionFromDropDown(moduleToSearch);
 		//This static wait statement is added as the module title is different from the module to search 
@@ -103,15 +103,16 @@ public class ApasGenericFunctions extends TestBase {
 	 */
 	public void logout() throws IOException{
 		//Handling the situation where pop remains opened before logging out
-		if (objPage.verifyElementVisible(objApasGenericPage.crossButton))
-			objPage.Click(objApasGenericPage.crossButton);
-		else if (objPage.verifyElementVisible(objApasGenericPage.closeButton))
-			objPage.Click(objApasGenericPage.closeButton);
-		else if (objPage.verifyElementVisible(objApasGenericPage.cancelButton))
-			objPage.Click(objApasGenericPage.cancelButton);
+//		if (objPage.verifyElementVisible(objApasGenericPage.crossButton))
+//			objPage.Click(objApasGenericPage.crossButton);
+//		else if (objPage.verifyElementVisible(objApasGenericPage.closeButton))
+//			objPage.Click(objApasGenericPage.closeButton);
+//		else if (objPage.verifyElementVisible(objApasGenericPage.cancelButton))
+//			objPage.Click(objApasGenericPage.cancelButton);
 
 		//Logging out of the application
 		ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");
+		//objPage.scrollToElement(objLoginPage.imgUser);
 		objPage.Click(objLoginPage.imgUser);
 		objPage.Click(objLoginPage.lnkLogOut);
 		objPage.waitForElementToBeVisible(objLoginPage.txtpassWord,30);

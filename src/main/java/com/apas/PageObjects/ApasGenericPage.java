@@ -112,7 +112,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public void clickNavOptionFromDropDown(String navOption) throws Exception {
 		String xpathStr = "//a[contains(@data-label, '" + navOption + "')]//b[text() = '" + navOption + "']";
-		WebElement drpDwnOption = waitForElementToBeClickable(xpathStr);
+		WebElement drpDwnOption = waitForElementToBeClickable(20, xpathStr);
 		drpDwnOption.click();
 	}
 
@@ -212,7 +212,7 @@ public class ApasGenericPage extends Page {
 	public void searchAndSelectOptionFromDropDown(WebElement element, String value) throws Exception {
 		enter(element, value);
 		String xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 20);
+		WebElement drpDwnOption = locateElement(xpathStr, 30);
 		drpDwnOption.click();
 	}
 
@@ -226,7 +226,7 @@ public class ApasGenericPage extends Page {
 	public void selectOptionFromDropDown(WebElement element, String value) throws Exception {
 		Click(element);
 		String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 200);
+		WebElement drpDwnOption = locateElement(xpathStr, 30);
 		drpDwnOption.click();
 	}
 }

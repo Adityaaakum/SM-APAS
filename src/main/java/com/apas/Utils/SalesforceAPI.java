@@ -221,7 +221,11 @@ public class SalesforceAPI extends TestBase {
      */
     private String getCommaSeparatedIds(String sqlQuery){
         HashMap<String, ArrayList<String>> queryDataHashMap = select(sqlQuery);
-        return queryDataHashMap.get("Id").toString().replace("[","").replace("]","");
+        String Ids = "";
+        if (queryDataHashMap.get("Id") != null){
+            Ids = queryDataHashMap.get("Id").toString().replace("[","").replace("]","");
+        }
+        return Ids;
     }
 
     /**
@@ -253,7 +257,7 @@ public class SalesforceAPI extends TestBase {
                 String[] ids= commaSeparatedIds.split(",");
 
                 for (String id: ids){
-                    String uri = baseUri + "/sobjects/" + table + "/" + id;
+                    String uri = baseUri + "/sobjects/" + table + "/" + id.trim();
                     HttpDelete httpDelete = new HttpDelete(uri);
                     httpDelete.addHeader(oauthHeader);
                     httpDelete.addHeader(prettyPrintHeader);
@@ -304,7 +308,7 @@ public class SalesforceAPI extends TestBase {
      */
     public void update(String table, String commaSeparatedIdsORSQLQuery, JSONObject jsonObject) {
         System.out.println("Updating " + table);
-        
+
         //Creating HTTP Post Connection
         HttpPost httpPost = salesforceCreateConnection();
 
@@ -313,25 +317,21 @@ public class SalesforceAPI extends TestBase {
             HttpClient httpClient = HttpClientBuilder.create().build();
 
             //Converting IDs from SQL query to comma separated IDs
-            List<String> ids = new ArrayList<String>();
             String commaSeparatedIds = commaSeparatedIdsORSQLQuery;
-
             if (commaSeparatedIdsORSQLQuery.toUpperCase().startsWith("SELECT")){
-            	commaSeparatedIds = getCommaSeparatedIds(commaSeparatedIdsORSQLQuery);
-            	ids = Arrays.asList(commaSeparatedIds.split(","));
-            } else if(!commaSeparatedIdsORSQLQuery.toUpperCase().startsWith("SELECT")) {
-            	ids.add(commaSeparatedIdsORSQLQuery);
+                commaSeparatedIds = getCommaSeparatedIds(commaSeparatedIdsORSQLQuery);
             }
-            
+
+            String[] ids = commaSeparatedIds.split(",");
+
             for (String id : ids){
-                String uri = baseUri + "/sobjects/" + table + "/" + id;
+                String uri = baseUri + "/sobjects/" + table + "/" + id.trim();
                 try {
 
                     HttpPatch httpPatch = new HttpPatch(uri);
                     httpPatch.addHeader(oauthHeader);
                     httpPatch.addHeader(prettyPrintHeader);
                     StringEntity body = new StringEntity(jsonObject.toString(1));
-                    System.out.println("body: " + body);
                     body.setContentType("application/json");
                     httpPatch.setEntity(body);
 
@@ -350,9 +350,6 @@ public class SalesforceAPI extends TestBase {
                 }
             }
         }
-
-        //Release HTTP Post connection
-        salesforceReleaseConnection(httpPost);
     }
 
     /**
