@@ -1,6 +1,8 @@
 package com.apas.PageObjects;
 
 import java.io.IOException;
+
+import com.apas.Reports.ReportLogger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -34,8 +36,14 @@ public class EFileImportPage extends Page {
 	@FindBy(xpath = "//button[contains(.,'Confirm')]")
 	public WebElement confirmButton;
 
+	@FindBy(xpath = "//button[contains(.,'Cancel')]")
+	public WebElement cancelButton;
+
 	@FindBy(xpath = "//button[text()='Continue']")
 	public WebElement continueButton;
+
+	@FindBy(xpath = "//div[@class='warning']")
+	public WebElement warning;
 
 	@FindBy(xpath = "//*[@data-key='upload']")
 	public WebElement uploadFilebutton;
@@ -55,19 +63,25 @@ public class EFileImportPage extends Page {
 	@FindBy(xpath = "//span[contains(@title,'ERROR ROWS')]")
 	public WebElement errorRowSection;
 
+	@FindBy(xpath = "//button[contains(.,'ERROR ROWS')]")
+	public WebElement errorRowSectionExpandButton;
+
 	@FindBy(xpath = "//span[contains(@title,'IMPORTED ROWS')]")
 	public WebElement importedRowSection;
+
+	@FindBy(xpath = "//button[contains(.,'IMPORTED ROWS')]")
+	public WebElement importedRowSectionExpandButton;
 
 	@FindBy(xpath = "(//td[@data-label='Status'])[1]")
 	public WebElement statusImportedFile;
 
-	@FindBy(xpath = "(//td[@data-label='Number of Times Tried/Retried'])[1]")
+	@FindBy(xpath = "(//td[@data-label='Number of Tries'])[1]")
 	public WebElement numberOfTimesTriedRetried;
 
-	@FindBy(xpath = "(//td[@data-label='Total Records Imported'])[1]")
+	@FindBy(xpath = "(//td[@data-label='Import Count'])[1]")
 	public WebElement totalRecordsImportedFile;
 
-	@FindBy(xpath = "(//td[@data-label='Total Records in File'])[1]")
+	@FindBy(xpath = "(//td[@data-label='File Count'])[1]")
 	public WebElement totalRecordsInFile;
 
 	@FindBy(xpath = "//a[contains(@data-label,'BuildingPermits')]")
@@ -108,14 +122,18 @@ public class EFileImportPage extends Page {
 
 	@FindBy(xpath = "//input[@class='slds-input']")
 	public WebElement editButtonInput;
-		
-	public void selectFileAndSource(String filetype, String source) throws IOException, InterruptedException {
-		System.out.println("File type is:" + filetype + " and Source is:" + source);
+
+	/**
+	 * This method will select the file type and source from E-File Import Tool page
+	 * @param fileType : Value from File Type Drop Down
+	 * @param source: Value from source drop down
+	 */
+	public void selectFileAndSource(String fileType, String source) throws IOException, InterruptedException {
+		System.out.println("File type is:" + fileType + " and Source is:" + source);
 		Click(fileTypedropdown);
 		Thread.sleep(2000);
-		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + filetype + "')]")));
+		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + fileType + "')]")));
 		Click(sourceDropdown);
-		Thread.sleep(2000);
 		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]")));
 	}
 
@@ -139,8 +157,9 @@ public class EFileImportPage extends Page {
 		uploadFileInputBox.sendKeys(absoluteFilePath);
 		Thread.sleep(2000);
 		objPage.waitForElementToBeClickable(doneButton);
+		Thread.sleep(6000);
 		objPage.Click(doneButton);
-		Thread.sleep(3000);
+		Thread.sleep(12000);
 	}
 
 	/**
@@ -164,4 +183,25 @@ public class EFileImportPage extends Page {
 		Thread.sleep(2000);
 	}
 	
+
+	/**
+	 * This method will expand the section provided in webelement passed in the parameter
+	 * @param element : section to be expanded
+	 */
+	public void expandSection(WebElement element) throws IOException {
+		String ariaExpanded = getAttributeValue(element,"aria-expanded");
+		if (ariaExpanded.equals("false"))
+			Click(element);
+	}
+
+	/**
+	 * This method will collapse the section provided in webelement passed in the parameter
+	 * @param element : section to be expanded
+	 */
+	public void collapseSection(WebElement element) throws IOException {
+		String ariaExpanded = getAttributeValue(element,"aria-expanded");
+		if (ariaExpanded.equals("true"))
+			Click(element);
+	}
+
 }

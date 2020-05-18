@@ -2,10 +2,9 @@ package com.apas.TestBase;
 
 import java.io.FileInputStream;
 import java.util.Properties;
+import com.apas.Utils.FileUtils;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import com.apas.BrowserDriver.BrowserDriver;
-import com.apas.Reports.ExtentTestManager;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class TestBase extends BrowserDriver {
 
@@ -13,14 +12,16 @@ public class TestBase extends BrowserDriver {
 	public static FileInputStream fsEnv;
 	public static FileInputStream fsConfig;
 	public static FileInputStream fsData;
-	
+
 	public final static String browserName = System.getProperty("browserName");
-	public final String testSuite = System.getProperty("testSuite");
+	public final String executionType = System.getProperty("executionType");
 	public final String gridHubURL = System.getProperty("gridHubURL");
+	public final String platform = System.getProperty("platform");
 	public final String region = System.getProperty("region");
-	//public final boolean flagToUpdateJira = Boolean.parseBoolean(System.getProperty("flagToUpdateJira"));
+	public final String deviceName = System.getProperty("deviceName");
+	public final String os_version = System.getProperty("os_version");
+	public final boolean flagToUpdateJira = Boolean.parseBoolean(System.getProperty("flagToUpdateJira"));
 	public static String testCycle = System.getProperty("testCycle");
-	public final boolean flagToUpdateJira = true ;
 
 
 	public static String envURL;
@@ -44,6 +45,9 @@ public class TestBase extends BrowserDriver {
 				envURL = CONFIG.getProperty("URL_uat");
 			}
 			ldriver.get(envURL);
+
+			//Temp folder is to create temporary file during tests so that those can be deleted at the end if required
+			FileUtils.createFolder(System.getProperty("user.dir") + CONFIG.getProperty("temporaryFolderPath"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

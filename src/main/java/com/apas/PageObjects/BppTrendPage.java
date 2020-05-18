@@ -66,7 +66,7 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//button[@title=  'Select']")
 	public WebElement selectRollYearButton;
 	
-	@FindBy(xpath = "//div[@class = 'dv-tab-bppt-container']//button[@title = 'More Tabs']")
+	@FindBy(xpath = "//div[@class = 'dv-tab-bppt-container']//button[@title = 'More Tabs'] | //lightning-button-menu[contains(@class, 'slds-dropdown')]//button[@title = 'More Tabs']")
 	public WebElement moreTabs;
 	
 	@FindBy(xpath = "//lightning-button-menu[contains(@class, 'slds-dropdown')]//button[@title = 'More Tabs']")

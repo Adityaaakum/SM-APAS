@@ -15,7 +15,7 @@ public class TestAnnotationListener extends TestBase implements IClassListener {
 	public void onBeforeClass(ITestClass testClass) {
 		try {
 			System.out.println("Before Class Steps for Class " + testClass.getName());
-			setupTest();
+			//setupTest();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

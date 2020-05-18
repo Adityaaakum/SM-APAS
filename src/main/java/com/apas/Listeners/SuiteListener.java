@@ -85,6 +85,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 	@Override
 	public void onTestStart(ITestResult result) {
 		try {
+			
 			//Making isSoftAssertionUsedFlag flag as False to reset soft assertion status
 			SoftAssertion.isSoftAssertionUsedFlag = false;
 			//Updating the system properties with test case properties details
@@ -93,7 +94,6 @@ public class SuiteListener extends TestBase implements ITestListener {
 			String description = result.getMethod().getDescription();
 			System.setProperty("currentMethodName", methodName);
 			System.setProperty("description", description);
-
 			upTest = ExtentTestManager.startTest(methodName, "Description: " + description);
 			System.out.println("Starting the test with method name : " + methodName);
 			String[] arrayClassName = className.split("\\.");
@@ -111,6 +111,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 	 */
 	@Override
 	public void onTestSuccess(ITestResult result) {
+
 		System.out.print("This is onSuccess Listner method");
 		//Updating the extent report with the step that test case is passed.
 		if (!SoftAssertion.isSoftAssertionUsedFlag) {
@@ -130,36 +131,35 @@ public class SuiteListener extends TestBase implements ITestListener {
 	public void onTestFailure(ITestResult result) {
 		System.out.println("Method Failed:" + result.getMethod().getMethodName());
 
-		try {				
-				//Updating the test case status for Jira
-				String testCaseKeys =  JiraAdaptavistStatusUpdate.extractTestCaseKey(System.getProperty("description"));
-				JiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKeys,"Fail");
-	
-				RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
-	
-				//Taking the screenshot as the test case is failed
-				File source = ((TakesScreenshot) ldriver).getScreenshotAs(OutputType.FILE);
-				Date date = new Date();
-				SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
-				String upDate = sdf.format(date);
-				String dest = System.getProperty("user.dir") + "//test-output//ErrorScreenshots//"
-						+ result.getMethod().getMethodName() + upDate + ".png";
-				File destination = new File(dest);
-				FileUtils.copyFile(source, destination);
-	
-				ExtentTestManager.getTest().log(LogStatus.FAIL, getStackTrace(result.getThrowable()));
-				//Adding the screenshot to the report
-				File imageFile = new File(dest);
-				ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot below: " + upTest.addScreenCapture(objUtils.encodeFileToBase64Binary(imageFile)));
-	
-				//Finishing the test case
-				ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
-				ExtentManager.getExtentInstance().flush();
-				
-				TearDown();
-				setupTest();
+		try {
+			//Updating the test case status for Jira
+			String testCaseKeys =  JiraAdaptavistStatusUpdate.extractTestCaseKey(System.getProperty("description"));
+			JiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKeys,"Fail");
 
-			} catch (Exception e) {
+			RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
+
+			//Taking the screenshot as the test case is failed
+			File source = ((TakesScreenshot) ldriver).getScreenshotAs(OutputType.FILE);
+			Date date = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
+			String upDate = sdf.format(date);
+			String dest = System.getProperty("user.dir") + "//test-output//ErrorScreenshots//"
+					+ result.getMethod().getMethodName() + upDate + ".png";
+			File destination = new File(dest);
+			FileUtils.copyFile(source, destination);
+
+			ExtentTestManager.getTest().log(LogStatus.FAIL, getStackTrace(result.getThrowable()));
+			//Adding the screenshot to the report
+			File imageFile = new File(dest);
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Snapshot below: " + upTest.addScreenCapture(objUtils.encodeFileToBase64Binary(imageFile)));
+
+			//Finishing the test case
+			ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
+			ExtentManager.getExtentInstance().flush();
+			TearDown();
+			setupTest();
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

@@ -2,29 +2,27 @@ package com.apas.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
+import com.apas.Reports.ReportLogger;
+import com.apas.TestBase.TestBase;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import org.json.JSONTokener;
-
-import com.apas.TestBase.TestBase;
+import org.json.JSONException;
 
 public class SalesforceAPI extends TestBase {
 
@@ -291,6 +289,7 @@ public class SalesforceAPI extends TestBase {
      * @param value : New value to be updated
      */
     public void update(String table, String commaSeparatedIdsORSQLQuery, String column, String value)  {
+        ReportLogger.INFO("Updating the object " + table + " through Salesforce API");
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(column,value);
@@ -322,31 +321,34 @@ public class SalesforceAPI extends TestBase {
                 commaSeparatedIds = getCommaSeparatedIds(commaSeparatedIdsORSQLQuery);
             }
 
-            String[] ids = commaSeparatedIds.split(",");
+            System.out.println("Updating " + table + " for IDs : " + commaSeparatedIds);
 
-            for (String id : ids){
-                String uri = baseUri + "/sobjects/" + table + "/" + id.trim();
-                try {
+            if (!commaSeparatedIds.equals("")){
+                String[] ids = commaSeparatedIds.split(",");
 
-                    HttpPatch httpPatch = new HttpPatch(uri);
-                    httpPatch.addHeader(oauthHeader);
-                    httpPatch.addHeader(prettyPrintHeader);
-                    StringEntity body = new StringEntity(jsonObject.toString(1));
-                    body.setContentType("application/json");
-                    httpPatch.setEntity(body);
+                for (String id : ids){
+                    String uri = baseUri + "/sobjects/" + table + "/" + id;
+                    try {
 
-                    HttpResponse response = httpClient.execute(httpPatch);
+                        HttpPatch httpPatch = new HttpPatch(uri);
+                        httpPatch.addHeader(oauthHeader);
+                        httpPatch.addHeader(prettyPrintHeader);
+                        StringEntity body = new StringEntity(jsonObject.toString(1));
+                        body.setContentType("application/json");
+                        httpPatch.setEntity(body);
 
-                    //Process the response
-                    System.out.println("Status Line : " + response.getStatusLine());
-                    int statusCode = response.getStatusLine().getStatusCode();
-                    if (statusCode == 204) {
-                        System.out.println("Update " + table + " successful for Id " + id);
-                    } else {
-                        System.out.println("Update " + table + " Not successful for id " + id + ". Status code is " + statusCode);
+                        HttpResponse response = httpClient.execute(httpPatch);
+
+                        //Process the response
+                        int statusCode = response.getStatusLine().getStatusCode();
+                        if (statusCode == 204) {
+                            System.out.println("Update " + table + " successful for Id " + id);
+                        } else {
+                            System.out.println("Update " + table + " Not successful for id " + id + ". Status code is " + statusCode);
+                        }
+                    } catch (JSONException | IOException | NullPointerException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException | IOException | NullPointerException e) {
-                    e.printStackTrace();
                 }
             }
         }

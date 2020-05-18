@@ -80,6 +80,9 @@ public class BuildingPermitPage extends ApasGenericPage {
 	@FindBy(xpath = "//input[@title = 'Search County Strat Codes']")
 	public WebElement countyStratCodeSearchBox;
 
+	@FindBy(xpath = "//*[@class='pillContainerListItem'][contains(.,'REPAIR ROOF')]//*[@class='deleteAction']")
+	public WebElement deleteRepairRoof;
+
 	@FindBy(xpath = "//span[text() = 'Estimated Project Value']/parent::label/following-sibling::input")
 	public WebElement estimatedProjectValueTxtBox;
 
@@ -228,6 +231,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	 * @throws Exception
 	 */
 	public String enterManualEntryData(Map<String, String> dataMap) throws Exception {
+		
 		//String buildingPermitNumber = dataMap.get("Permit City Code") + "-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
 		String buildingPermitNumber  = dataMap.get("Building Permit Number");
 		System.setProperty("permitNumber", dataMap.get("Building Permit Number"));
@@ -251,20 +255,45 @@ public class BuildingPermitPage extends ApasGenericPage {
 	 * 	creation radio button when Data Admin is logged into application
 	 *	@throws Exception
 	 */
-	public boolean saveEntryAndOpenNewAndExit() throws Exception {
+	public void saveEntryAndOpenNewAndExit() throws Exception {
 		Click(saveAndNewButton);
 		if(System.getProperty("isDataAdminLoggedIn") != null && System.getProperty("isDataAdminLoggedIn").equals("true")) {
 			Click(waitForElementToBeClickable(manualEntryRadioBtn));
 			Click(waitForElementToBeClickable(recordTypePopUpNextButton));
 		}
 
-		Thread.sleep(2000);
+		/*Thread.sleep(2000);
 		boolean isNewManualEntryPopUpDisplayed = waitForElementToBeVisible(20, buildingPermitPopUp);
 		if (isNewManualEntryPopUpDisplayed) {
 			Click(waitForElementToBeClickable(closeEntryPopUp));
 		}
-		return isNewManualEntryPopUpDisplayed;
+		return isNewManualEntryPopUpDisplayed;*/
 
+	}
+	
+	/** @throws InterruptedException 
+	 * @Description: This method will Click Save button on the New Building Permit PopUp Window
+	 */
+	public void clickSaveNewBuildingPermitEntryPopUp() throws IOException, InterruptedException {
+		
+		boolean isNewManualEntryPopUpDisplayed = waitForElementToBeVisible(20, buildingPermitPopUp);
+		if (isNewManualEntryPopUpDisplayed) {
+			Click(waitForElementToBeClickable(saveButton));
+			Thread.sleep(2000);
+		}
+		
+	}
+	
+	
+	/** @Description: This method will Click close the New Building Permit PopUp Window
+	 */
+	public void closeNewBuildingPermitEntryPopUp() throws IOException {
+		
+		boolean isNewManualEntryPopUpDisplayed = waitForElementToBeVisible(20, buildingPermitPopUp);
+		if (isNewManualEntryPopUpDisplayed) {
+			Click(waitForElementToBeClickable(closeEntryPopUp));
+		}
+		
 	}
 
 	/** @Description: This method will create a manual building permit entry in APAS
@@ -273,7 +302,8 @@ public class BuildingPermitPage extends ApasGenericPage {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Adding and saving a new Building Permit manual record");
 		openNewForm();
 		enterManualEntryData(dataMap);
-		saveEntryAndOpenNewAndExit();
+		//saveEntryAndOpenNewAndExit();
+		clickSaveNewBuildingPermitEntryPopUp();
 	}
 
 		// This method is used to validate & handle the presence of loader on manual entry creation.
@@ -666,5 +696,12 @@ public class BuildingPermitPage extends ApasGenericPage {
 		return  manualBuildingPermitMap;
 	}
 
+	public void enterEstimatedProjectValue(String value) throws IOException, InterruptedException {
+		waitForElementToBeClickable(estimatedProjectValueTxtBox,15);
+		estimatedProjectValueTxtBox.clear();
+		estimatedProjectValueTxtBox.sendKeys(Keys.chord(Keys.CONTROL,"a", Keys.DELETE));
+		Thread.sleep(3000);
+		estimatedProjectValueTxtBox.sendKeys(value);
+	}
 
 }

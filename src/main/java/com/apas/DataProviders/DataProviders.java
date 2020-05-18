@@ -80,6 +80,7 @@ public class DataProviders {
         return new Object[][] { { users.BUSINESS_ADMIN }, { users.PRINCIPAL_USER }, { users.BPP_AUDITOR } };
     }
     
+<<<<<<< HEAD
 	/**
 	 * Below function will be used to upload files with different invalid formats
 	 * @returns: Returns the names of invalid files
@@ -225,4 +226,10 @@ public class DataProviders {
         //return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
     	return new Object[][] { { users.PRINCIPAL_USER } };
     }
+=======
+    @DataProvider(name = "loginUsers")
+    public Object[][] dpLoginUser() {
+        return new Object[][] { { users.BUSINESS_ADMIN } };
+    }
+>>>>>>> 66dc6865b76a397c2e503581b4d81c8239bc86b8
 }

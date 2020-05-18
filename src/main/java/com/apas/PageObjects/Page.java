@@ -247,8 +247,8 @@ public class Page {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public void Click(WebElement elem) throws IOException {
-		waitForElementToBeVisible(15, elem);
-		waitForElementToBeClickable(15, elem);
+		waitForElementToBeVisible(20, elem);
+		waitForElementToBeClickable(20, elem);
 
 		/*
 		 * if (browserName.equalsIgnoreCase("Edge")) { javascriptClick(elem); }
@@ -451,13 +451,13 @@ public class Page {
 	 *            the timeout in seconds
 	 */
 	public WebElement waitForElementToBeVisible(WebElement element, int timeoutInSeconds) {
-		//try {
-			//wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(element));
+		try {
+			wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(element));
 
-			wait.until(ExpectedConditions.visibilityOf(element));
-		//} catch (org.openqa.selenium.StaleElementReferenceException e) {
-			//e.printStackTrace();
-		//}
+//			wait.until(ExpectedConditions.visibilityOf(element));
+		} catch (org.openqa.selenium.StaleElementReferenceException e) {
+			e.printStackTrace();
+		}
 		return element;
 	}
 	
@@ -592,7 +592,6 @@ public class Page {
 	public void javascriptClick(WebElement element) throws IOException {
 
 		JavascriptExecutor ex = (JavascriptExecutor) driver;
-		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", element);
 		ex.executeScript("arguments[0].click();", element);
 		waitUntilPageisReady(driver);
 	}
@@ -798,11 +797,6 @@ public class Page {
 
 	}
 
-	/**
-	 * Generates a random number using special characters
-	 * @param noOfchar: Takes the string argument for number of characters
-	 * @return: Returns the random generated number
-	 */
 	public String generateRandomString(int noOfchar) {
 		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789#@abcdefghijklmnopqrstuvwxyz0";
 		// String randomString = RandomStringUtils.random(noOfchar, true, true);
@@ -815,57 +809,55 @@ public class Page {
 		return randomString;
 	}
 
-	/**
-	 * Generates a random number without using special characters
-	 * @param noOfchar: Takes the integer argument for number of characters
-	 * @return: Returns the random generated number
-	 */
 	public String generateRandomStringWithoutSpecialchar(int noOfchar) {
 		String randomString = RandomStringUtils.random(noOfchar, true, false);
 		return randomString;
 	}
 
-	/**
-	 * Generates a random number
-	 * @param noOfchar: Takes the string argument for number of characters
-	 * @return: Returns the random generated number
-	 */
 	public String generateRandomNumber(String noOfchar) {
 		String randomNumber = RandomStringUtils.randomNumeric(Integer.parseInt(noOfchar));
 		return randomNumber;
 	}
-	
-	/**
-	 * Function will wait for an element to be Invisible on the page.
-	 * @param: Xpath of the element to locate
-	 * @param: timeout in seconds
-	 */
-	public boolean validateAbsenceOfElement(Object object, int timeoutInSeconds) {
-		boolean elementStatus = false;
-		if(object instanceof String) {
-			By by = By.xpath(object.toString());
-			elementStatus = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOfElementLocated(by));
-		} else {
-			elementStatus = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOf((WebElement) object));			
-		}
-		return elementStatus;
-	}
 
-	/**
-	 * Function will find the element based on the specified xpath
-	 * @param: Xpath of the element to be locate
-	 * @param: timeout in seconds
-	 */
-	public WebElement locateElement(String xpath, int timeoutInSeconds) throws Exception {
+	public List <WebElement> waitForAllElementsToBeVisible(Object object) {
+		List <WebElement> elements = null;
+		if(object instanceof String) {
+			String[] arr = object.toString().split("~");
+			if(arr[1].equalsIgnoreCase("ID")) {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.id(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("tagName")) {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.tagName(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("name")) {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.name(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("linkText")) {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.linkText(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("partialLinkText")) {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.partialLinkText(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("className")) {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.className(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("cssSelector")) {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.cssSelector(arr[0]))));	
+			} else {
+				elements = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(By.xpath(arr[0]))));	
+			}
+		} else if (object instanceof By) {
+			elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy((By) object));
+		} else {
+			elements = wait.until(ExpectedConditions.visibilityOfAllElements((WebElement)object));	
+		}
+		return elements;
+	}
+	
+	public WebElement locateElement(String locatorValue, int timeoutInSeconds) throws Exception {
 		WebElement element = null;
 		//Wait wait = new WebDriverWait(driver, timeoutInSeconds);
 		for(int i = 0; i < timeoutInSeconds; i++) {
 			try {
-				element = driver.findElement(By.xpath(xpath));
+				element = driver.findElement(By.xpath(locatorValue));
 				if(element != null) {
 					break;
-				}
-			} catch (Exception ex) {
+				} 
+			}catch (Exception ex) {
 				Thread.sleep(250);
 			}
 		}
@@ -933,10 +925,28 @@ public class Page {
 	 * @param: Takes argument of object type (xpath or variable of By type or WebElement)
 	 * @return: Returns the WebElement
 	 */
-	public WebElement waitForElementToBeVisible(Object object) {
+	
+	public WebElement waitForElementToBeVisible(Object object, String locatorType) {
 		WebElement element = null;
 		if(object instanceof String) {
-			element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(object.toString()))));	
+			String[] arr = object.toString().split("~");
+			if(arr[1].equalsIgnoreCase("ID")) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("tagName")) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.tagName(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("name")) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.name(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("linkText")) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.linkText(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("partialLinkText")) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.partialLinkText(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("className")) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.className(arr[0]))));	
+			} else if (arr[1].equalsIgnoreCase("cssSelector")) {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector(arr[0]))));	
+			} else {
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(arr[0]))));	
+			}
 		} else if (object instanceof By) {
 			element = wait.until(ExpectedConditions.visibilityOfElementLocated((By) object));
 		} else {
@@ -944,16 +954,33 @@ public class Page {
 		}
 		return element;
 	}
-
-	/**
-	 * Function will wait for a element until it becomes clickable
-	 * @param: Takes argument of object type (xpath or variable of By type or WebElement)
-	 * @return: Returns the WebElement
-	 */
-	public WebElement waitForElementToBeClickable(Object object) {		
+	
+	public WebElement waitForElementToBeVisible(Object object) {
 		WebElement element = null;
 		if(object instanceof String) {
-			element = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(object.toString()))));	
+				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(object.toString()))));	
+		} else if (object instanceof By) {
+			element = wait.until(ExpectedConditions.visibilityOfElementLocated((By) object));
+		} else {
+			element = wait.until(ExpectedConditions.visibilityOf((WebElement)object));
+		}
+		return element;
+	}
+	
+	public boolean waitForElementToBeInVisible(Object object) {
+		boolean isElementInvisible = false;
+		if(object instanceof String) {
+			isElementInvisible = wait.until(ExpectedConditions.invisibilityOf(driver.findElement(By.xpath(object.toString()))));	
+		} else if (object instanceof By) {
+			isElementInvisible = wait.until(ExpectedConditions.invisibilityOfElementLocated((By) object));
+		}
+		return isElementInvisible;
+	}
+	
+	public WebElement waitForElementToBeClickable(Object object) {
+		WebElement element = null;
+		if(object instanceof String) {
+				element = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(object.toString()))));	
 		} else if (object instanceof By) {
 			element = wait.until(ExpectedConditions.elementToBeClickable((By) object));
 		} else {
@@ -962,7 +989,28 @@ public class Page {
 		return element;
 	}
 	
+	public void clickElementOnVisiblity(Object object) {
+		WebElement element = waitForElementToBeVisible(object);
+		element.click();
+	}
+	
 	/**
+     * Function will wait for an element to be Invisible on the page.
+     * @param: Xpath of the element to locate
+     * @param: timeout in seconds
+     */
+    public boolean validateAbsenceOfElement(Object object, int timeoutInSeconds) {
+        boolean elementStatus = false;
+        if(object instanceof String) {
+            By by = By.xpath(object.toString());
+            elementStatus = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOfElementLocated(by));
+        } else {
+            elementStatus = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOf((WebElement) object));           
+        }
+        return elementStatus;
+    }
+    
+    /**
 	 * Sets the parent window handle property with parent window's handle
 	 */
 	public void setParentWindowHandle() {
@@ -1000,4 +1048,5 @@ public class Page {
 	public void switchToParentWindow() {
 		driver.switchTo().window(System.getProperty("parentWindowHandle"));
 	}
+
 }

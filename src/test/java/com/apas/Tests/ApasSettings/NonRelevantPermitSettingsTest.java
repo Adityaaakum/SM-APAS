@@ -34,7 +34,7 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 	}
 		
 	@AfterMethod
-	public void afterMethod() throws IOException{
+	public void afterMethod() throws IOException, InterruptedException{
 		objApasGenericFunctions.logout();
 		softAssert.assertAll();
 	}
