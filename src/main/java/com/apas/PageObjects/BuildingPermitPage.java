@@ -80,6 +80,9 @@ public class BuildingPermitPage extends ApasGenericPage {
 	@FindBy(xpath = "//input[@title = 'Search County Strat Codes']")
 	public WebElement countyStratCodeSearchBox;
 
+	@FindBy(xpath = "//*[@class='pillContainerListItem'][contains(.,'REPAIR ROOF')]//*[@class='deleteAction']")
+	public WebElement deleteRepairRoof;
+
 	@FindBy(xpath = "//span[text() = 'Estimated Project Value']/parent::label/following-sibling::input")
 	public WebElement estimatedProjectValueTxtBox;
 
@@ -693,5 +696,12 @@ public class BuildingPermitPage extends ApasGenericPage {
 		return  manualBuildingPermitMap;
 	}
 
+	public void enterEstimatedProjectValue(String value) throws IOException, InterruptedException {
+		waitForElementToBeClickable(estimatedProjectValueTxtBox,15);
+		estimatedProjectValueTxtBox.clear();
+		estimatedProjectValueTxtBox.sendKeys(Keys.chord(Keys.CONTROL,"a", Keys.DELETE));
+		Thread.sleep(3000);
+		estimatedProjectValueTxtBox.sendKeys(value);
+	}
 
 }

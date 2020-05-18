@@ -5,6 +5,7 @@ import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.PageObjects.*;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.users;
@@ -31,13 +32,12 @@ public class BuildingPermit_Manual_Test extends TestBase {
 	BuildingPermitPage objBuildingPermitPage;
 	ParcelsPage objParcelsPage;
 	SoftAssertion softAssert = new SoftAssertion();
+	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	Util objUtil  = new Util();
 
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
-		
 		if(driver==null) {
-			
 			setupTest();
 			driver = BrowserDriver.getBrowserInstance();
 		}
@@ -349,4 +349,153 @@ public class BuildingPermit_Manual_Test extends TestBase {
 		objApasGenericFunctions.logout();
 	}
 
-  }
+	/**
+	 Below test case is used to validate the values in Processing Status and Calculated Processing Status fields when processing status was not selected
+	 **/
+	@Test(description = "SMAB-T399: Validate that Process and Calculated Process Status fields are auto populated when process status field is not selected", groups = {"regression","buildingPermit"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	public void verify_BuildingPermit_Manual_ProcessFieldsStatus_ProcessingStatusNotSelectedByUser(String loginUser) throws Exception {
+
+		//Pre-requisite: Fetch the APN to be used to create building permit
+		String query ="SELECT Name FROM Parcel__c where status__c = 'Active' limit 1";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		String activeAPN = response.get("Name").get(0);
+		System.out.println("Active APN fetched through Salesforce API : " + activeAPN);
+
+		//Step1: Login to the APAS application using the user passed through the data provider
+		objApasGenericFunctions.login(loginUser);
+
+		//Step2: Opening the building permit module
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+
+		//Step3: Prepare a test data to create a new building permit with active parcel fetched through SQL Query
+		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
+		manualBuildingPermitMap.put("APN",activeAPN);
+		manualBuildingPermitMap.put("Processing Status","--None--");
+
+		//Step4: Open and save building permit manual creation
+		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
+		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
+
+		//Step5: Validation of Processing Status and Calculated Processing Status values when Processing Status is not selected
+		//Below is the rule based on Selected County Strat Code 'REPAIR ROOF'
+		//Processing Status should be populated as 'No Process'
+		//Calculated Processing Status should be populated as 'No Process' as Estimated project value is not satisfying the criteria "Greater Than or Equal to $25,000"
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T399: Validation of 'Calculated Processing Status' field when Process Status was not selected while creating building permit manually");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T399: Validation of 'Processing Status' field when Process Status was not selected while creating building permit manually");
+
+		//Logout at the end of the test
+		objApasGenericFunctions.logout();
+	}
+
+	/**
+	 Below test case is used to validate the values in Processing Status and Calculated Processing Status fields when processing status was selected
+	 **/
+	@Test(description = "SMAB-T400: Validate that Process and Calculated Process Status fields are auto populated when process status field is selected", groups = {"regression","buildingPermit"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	public void verify_BuildingPermit_Manual_ProcessFieldsStatus_ProcessingStatusSelectedByUser(String loginUser) throws Exception {
+
+		//Pre-requisite: Fetch the APN to be used to create building permit
+		String query ="SELECT Name FROM Parcel__c where status__c = 'Active' limit 1";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		String activeAPN = response.get("Name").get(0);
+		System.out.println("Active APN fetched through Salesforce API : " + activeAPN);
+
+		//Step1: Login to the APAS application using the user passed through the data provider
+		objApasGenericFunctions.login(loginUser);
+
+		//Step2: Opening the building permit module
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+
+		//Step3: Prepare a test data to create a new building permit with retired parcel
+		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
+		manualBuildingPermitMap.put("APN",activeAPN);
+		manualBuildingPermitMap.put("Processing Status","Process");
+
+		//Step4: Open and save building permit manual creation
+		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
+		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
+
+		//Step5: Validation of Processing Status and Calculated Processing Status values when Processing Status is not selected
+		//Below is the rule based on Selected County Strat Code 'REPAIR ROOF'
+		//Processing Status should be populated as 'Process' as it has been explicitly selected by user
+		//Calculated Processing Status should be populated as 'No Process' as Estimated project value is not satisfying the criteria "Greater Than or Equal to $25,000"
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Process Status was selected while creating building permit manually");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Process Status was selected while creating building permit manually");
+
+		//Logout at the end of the test
+		objApasGenericFunctions.logout();
+	}
+
+	/**
+	 Below test case is used to validate the values in Processing Status and Calculated Processing Status fields when Estimated Project value or County Strat Code is changed
+	 Below is the rule based on Selected County Strat Code 'REPAIR ROOF'
+	 Processing Status should be populated as it has been explicitly selected by user
+	 Calculated Processing Status should be populated as 'Process' if Estimated project value is "Greater Than or Equal to $25,000" ELSE 'No Process'
+	 **/
+	@Test(description = "SMAB-T403, SMAB-T404: Validated the Calculated Process Status field is automatically updated when estimated project value or county strat code is updated", groups = {"regression","buildingPermit"}, dataProvider = "loginUsers", dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	public void verify_BuildingPermit_Manual_CalculatedProcessingStatus_EstimatedProjectValueOrCountyStratCodeUpdated(String loginUser) throws Exception {
+
+		//Pre-requisite: Fetch the APN to be used to create building permit
+		String query ="SELECT Name FROM Parcel__c where status__c = 'Active' limit 1";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		String activeAPN = response.get("Name").get(0);
+		System.out.println("Active APN fetched through Salesforce API : " + activeAPN);
+
+		//Step1: Login to the APAS application using the user passed through the data provider
+		objApasGenericFunctions.login(loginUser);
+
+		//Step2: Opening the building permit module
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+
+		//Step3: Prepare a test data to create a new building permit with retired parcel
+		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
+		manualBuildingPermitMap.put("APN",activeAPN);
+		manualBuildingPermitMap.put("Processing Status","No Process");
+		manualBuildingPermitMap.put("Estimated Project Value","3000");
+
+		//Step4: Open and save building permit manual creation
+		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
+
+		//Step5: validation of process status after adding the building permit
+		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Estimated Project value is selected 3000 and county strat code as REPAIR ROOF");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 3000 and county strat code as REPAIR ROOF");
+
+		//step6: Update the estimated project value as less than 25000 and check the status of Calculated processing status field is updated accordingly
+		objPage.Click(objBuildingPermitPage.editButton);
+		objBuildingPermitPage.enterEstimatedProjectValue("25000");
+		objPage.Click(objBuildingPermitPage.saveButton);
+		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 25000 and county strat code as REPAIR ROOF");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Estimated Project value is selected 25000 and county strat code as REPAIR ROOF");
+
+		//Step7: Update the estimated project value such that value of calculated processing status is switched
+		objPage.Click(objBuildingPermitPage.editButton);
+		objBuildingPermitPage.enterEstimatedProjectValue("7000");
+		objPage.Click(objBuildingPermitPage.saveButton);
+		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 7000 and county strat code as REPAIR ROOF");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Process Status when Estimated Project value is selected 7000 and county strat code as REPAIR ROOF");
+
+		//Step8: Update the county strat code such that value of calculated processing status is switched
+		//Following is the condition for SOLAR County Strat Code "'No Process' if estimated project value is Less Than or Equal To 5000
+		objPage.Click(objBuildingPermitPage.editButton);
+		objPage.Click(objBuildingPermitPage.deleteRepairRoof);
+		objBuildingPermitPage.searchAndSelectFromDropDown(objBuildingPermitPage.countyStratCodeSearchBox, "SOLAR");
+		objPage.Click(objBuildingPermitPage.saveButton);
+		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when County strat code is changed to SOLAR from REPAIR ROOF");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when County strat code is changed to SOLAR from REPAIR ROOF");
+
+		//Step9: Update the processing status as No Process and Calculated Processing status should be updated with the same value
+		objPage.Click(objBuildingPermitPage.editButton);
+		objBuildingPermitPage.selectFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "No Process");
+		objPage.Click(objBuildingPermitPage.saveButton);
+		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
+
+		//Logout at the end of the test
+		objApasGenericFunctions.logout();
+	}
+
+}
