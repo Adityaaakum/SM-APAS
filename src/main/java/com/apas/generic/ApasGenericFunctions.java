@@ -327,4 +327,11 @@ public class ApasGenericFunctions extends TestBase{
         WebElement drpDwnOption = locateElement(xpathStr, 10);
         drpDwnOption.click();
     }
+    
+    public void searchAndSelectOptionFromDropDown(WebElement element, String value) throws Exception {
+  	  objPage.enter(element, value);
+        String xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
+        WebElement drpDwnOption = objPage.locateElement(xpathStr, 20);
+        drpDwnOption.click();
+    }
 }

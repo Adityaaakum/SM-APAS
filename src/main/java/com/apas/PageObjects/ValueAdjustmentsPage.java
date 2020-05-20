@@ -73,13 +73,11 @@ public class ValueAdjustmentsPage extends Page {
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Determination']//parent::div//following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement vaDetermination;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Due Date']//parent::div//following-sibling::lightning-helptext/following-sibling::div//span")
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Due Date']//parent::div//following-sibling::lightning-helptext/following-sibling::div//span//lightning-formatted-text")
 	public WebElement penaltyDate1;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Due Date 2']//parent::div//following-sibling::lightning-helptext/following-sibling::div//span")
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Due Date 2']//parent::div//following-sibling::lightning-helptext/following-sibling::div//span//lightning-formatted-text")
 	public WebElement penaltyDate2;
-	
-	
 	
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
 	public WebElement vaRollYear;
@@ -233,6 +231,13 @@ public class ValueAdjustmentsPage extends Page {
 	
 	@FindBy(xpath = "//span[text()='View All']")
     public WebElement viewAllLink;
+	
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Low Income Late Penalty']//parent::div//following-sibling::lightning-helptext/following-sibling::div//lightning-formatted-number")
+    public WebElement vaRollYearLowIncomeLatePenaltyLabel;
+	
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Low Income Late Penalty 2']//parent::div//following-sibling::lightning-helptext/following-sibling::div//lightning-formatted-number")
+    public WebElement vaRollYearLowIncomeLatePenalty2Label;
+	
 //--------- Deepika's Locators ----------------
 	
 	public String getPastDateFromADate(String date,int days) throws ParseException
@@ -821,6 +826,97 @@ public float convertToFloat(Object amount)
 	float convertedAmt=Float.parseFloat(finalAmtAsString);	
 	return convertedAmt;		
 }
+
+/**
+ * Description: This method will select the VA for a particular Roll Year
+ * @param : rollYear for which VA will be opened
+ * @throws Exception 
+ */
+public String selectVAByRollYear(String rollYear) throws Exception
+{	
+	String vALinkName="";
+	Thread.sleep(3000);
+	int noOfVAs = getnumberOfValueAdjustments();  
+	System.out.println("No. of VAs are: "+noOfVAs);
+	for (int i = 1; i <=noOfVAs; i++) 
+	  { 			 				  
+		System.out.println("inside for");
+		
+		locateElement("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+i+"]//td[2]//span//span",3); 		  				  
+		WebElement startDate = driver.findElement(By.xpath("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+ i + "]//td[2]//span//span"));  
+		String startDateRY =  startDate.getText().trim();			
+		String actualRY = startDateRY.substring(4, startDateRY.length()).trim();
+		
+		if(actualRY.equals(rollYear.trim())) {
+			locateElement("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+i+"]//td[2]//span//span//..//..//preceding-sibling::th//span//a",3);
+			WebElement valueAdjustmentLink = driver.findElement(By.xpath("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+i+"]//td[2]//span//span//..//..//preceding-sibling::th//span//a"));
+			vALinkName = valueAdjustmentLink.getText();
+			
+			System.out.println("VA Link clicked is: "+ vALinkName);
+			
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Value Adjustment Link: "+ vALinkName);
+			vALinkName = valueAdjustmentLink.getText();
+			Click(valueAdjustmentLink);	
+			Thread.sleep(3000);			
+		}
+	  }
+	
+	return vALinkName;
+}
+
+
+/**
+ * Description: This method will verify that VA for a particular Roll Year is not created
+ * @param : rollYear for which VA will be verified
+ * returns : true if VA is not created for particular Roll Year
+ * @throws Exception 
+ */
+public boolean verifyVANotCreated(String rollYear) throws Exception
+{	
+	boolean flag = false;
+	
+	Thread.sleep(2000);
+	
+	int noOfVAs = getnumberOfValueAdjustments();  
+	System.out.println("No. of VAs are: "+noOfVAs);
+	for (int i = 1; i <=noOfVAs; i++) 
+	  { 			 				  
+		System.out.println("inside for");
+		
+		locateElement("//div[contains(@class,'windowViewMode-normal')]//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+i+"]//td[2]//span//span",3); 		  				  
+		WebElement startDate = driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal')]//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+ i + "]//td[2]//span//span"));  
+		String startDateRY =  startDate.getText().trim();			
+		String actualRY = startDateRY.substring(4, startDateRY.length()).trim();
+		
+		if(actualRY.equals(rollYear.trim())) {
+			flag = false;
+		}
+		else {
+			flag = true;
+		}
+	  }
+	
+	return flag;
+}
+
+
+/**
+ * Description: This method will navigate to VA List View in Exemption from VA Related List
+ * @throws Exception 
+ */
+public void navigateToVAListViewInExemption() throws Exception
+{	
+	//Step1: Selecting the Value Adjustment Related List Tab
+	ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Related List - Value Adjustement Tab");
+	objPage.locateElement("//div[contains(@class,'windowViewMode-normal')]//li[@title='Value Adjustments']//a", 2);
+	objPage.Click(valueAdjustmentRelatedListTab);
+
+	//Step2: Clicking on 'View All' Link of Value Adjustment Related List Tab
+	ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on View All Link");
+	objPage.locateElement("//div[contains(@class,'windowViewMode-normal')]//span[text()='View All']", 20);
+	objPage.javascriptClick(viewAllLink);
+}
+	
 //---------------------------- Deepika's Methods ---------------------------------
 
 }

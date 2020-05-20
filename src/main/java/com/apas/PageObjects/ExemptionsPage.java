@@ -23,10 +23,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.Reports.ExtentTestManager;
+import com.apas.config.modules;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class ExemptionsPage extends Page {
+public class ExemptionsPage extends ApasGenericPage {
 	Logger logger;
 	Page objPage;
 	SoftAssertion softAssert1;
@@ -438,6 +439,8 @@ public class ExemptionsPage extends Page {
 	@FindBy(xpath = "//li[contains(text(),'There seems to be an existing record with overlapp')]")
 	public WebElement duplicateErrorMsgWithOverlappingDetails;
 	
+	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
+	public WebElement successAlertText;
 	
 	/**
 	 * Description: This method will select basis for claim
@@ -1374,6 +1377,40 @@ public String editExemptionAndValidateEnabledStatusOnDetailPage(String fieldLabe
 	return flag;
 }
 
+/**
+ * Description: This method will search and select the Exemption
+ * @param : Exemption Name which needs to be selected
+ * @throws Exception 
+ */
+public void searchAndSelectExemption(String exemptionName) throws Exception
+{	
+	
+	// Step1: Opening the Exemption module
+	apasGenericObj.searchModule(modules.EXEMPTION);
+	
+	// Step2: Selecting List View 'All'
+	apasGenericObj.selectListView("All");
+	
+	//Step3: Fetching value of Exemption created above
+	String value = exemptionName;
+	
+	//Step4: Searching and selecting the Exemption
+	apasGenericObj.searchAndSelectOptionFromDropDown(globalSearchListEditBox, value);
+	objPage.waitUntilPageisReady(driver);	
+}
 
+/**
+ * Description: This method will fetch the exemption Name from the text of success alert
+ * @return : returns the exemption Name
+ */
+public String getExemptionNameFromSuccessAlert() throws Exception {
+	//waitForElementToBeVisible(successAlert,30);
+	locateElement("//div[@role='alert'][@data-key='success']",2);
+	locateElement("//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']",2);
+	String successAlert =  getElementText(successAlertText);
+	String exemptionName = successAlert.split("-")[1].split("\"")[0];
+	System.out.println("InActive Exemption Name after split:"+exemptionName);
+	return exemptionName;
+}
 
 }
