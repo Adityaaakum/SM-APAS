@@ -2,7 +2,9 @@ package com.apas.Tests.Exemptions;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -76,7 +78,7 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 	 **/
 	@DataProvider(name = "loginUsers")
 	public Object[][] dataProviderLoginUserMethod() {
-		return new Object[][] { { users.BPP_BUSINESS_ADMIN } };
+		return new Object[][] { { users.EXEMPTION_SUPPORT_STAFF } };
 	}
 	
 	/**
@@ -344,6 +346,7 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 		try{
 
 			Map<String, String> dataToEdit = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData");
+			String expectedError=dataToEdit.get("endDateOfRatingErrorMessage");
 			
 			//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 				
@@ -354,41 +357,44 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 			
 			//step3: creating an exempton record
 			objPage.Click(exemptionPageObj.newExemptionButton);
-			//apasGenericObj.locateElement("//h2[contains(text(),'New Exemption: Disabled Veterans')", 3);
+			
 			exemptionPageObj.createNewExemptionWithMandatoryData(dataToEdit);
-			String expectedError=dataToEdit.get("endDateOfRatingErrorMessage");
-			
-			
-			//step4: adding End date of rating
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Added End date Of Rating");
+			//step4: adding end date of rating
 			objPage.Click(exemptionPageObj.editExemption);
-			//apasGenericObj.locateElement("//h2[contains(.,'Edit Exemption')]", 3);
-			objPage.scrollToElement(exemptionPageObj.endDateOfRating);
 			objPage.enter(exemptionPageObj.endDateOfRating, dataToEdit.get("EnddateOfRating")); 
 			apasGenericObj.selectFromDropDown(exemptionPageObj.endRatingReason, dataToEdit.get("EndRatingReason"));
 			objPage.Click(exemptionPageObj.saveButton);
-			//softAssert.assertEquals(actualError, expectedError, "SMAB-T485:Verified End date of Rating can't be modified once set");
-			//ste5: updating end date of rating on page level edit and verifying it should not be updated
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Verify End date of Rating can't be modified once set on page level Edit");
-			objPage.Click(exemptionPageObj.editExemption);
-			//apasGenericObj.locateElement("//h2[contains(.,'Edit Exemption')]", 3);
-			objPage.scrollToElement(exemptionPageObj.endDateOfRating);
-			objPage.enter(exemptionPageObj.endDateOfRating, dataToEdit.get("EnddateOfRatingUpdated")); 
-			String actualError=exemptionPageObj.fieldErrorMsg.getText().trim();
-			softAssert.assertEquals(actualError, expectedError, "SMAB-T500:Verified End date of Rating can't be modified once set");
-			objPage.Click(exemptionPageObj.cancelButton);
-		
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Added End date Of Rating");
+				
+			
+			
 			//step6:now updating end date of rating on field level and verifying it should not be updated
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying End date of Rating can't be modified once set on field level Edit");
+			Thread.sleep(5000);
+			//driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 			exemptionPageObj.editAndInputFieldData("End Date of Rating",exemptionPageObj.endDateOfRating,dataToEdit.get("EnddateOfRatingUpdated"));
-			//String genericErrorMsg=exemptionPageObj.genericErrorMsg.getText().trim();
-			//softAssert.assertEquals(genericErrorMsg, "End Date of Rating", "End Date of Rating can't be modified if initially set at field level");
 			String erroMsgOnField=vaPageObj.editFieldErrorMsg.getText().trim();
 			softAssert.assertEquals(erroMsgOnField, expectedError,"SMAB-T1218:verified End Date of Rating can't be modified if set once on field level edit.");
 			objPage.Click(exemptionPageObj.cancelButton);
 			String exemptionStatus=exemptionPageObj.exemationStatusOnDetails.getText().trim();
 			softAssert.assertEquals(exemptionStatus, "Inactive","SMAB-T643:Verify that User is able to validate Exemption 'Status' based on the 'End Date of Rating' for the Exemption record");
+		
 			
-			softAssert.assertAll();
+			
+			//ste5: updating end date of rating on page level edit and verifying it should not be updated
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying End date of Rating can't be modified once set on page level Edit");
+			Thread.sleep(8000);
+			objPage.waitForElementToBeClickable(5, exemptionPageObj.editExemption);
+			objPage.Click(exemptionPageObj.editExemption);
+			objPage.waitForElementToBeClickable(5,exemptionPageObj.endDateOfRating);
+			objPage.enter(exemptionPageObj.endDateOfRating, dataToEdit.get("EnddateOfRatingUpdated")); 
+			objPage.Click(exemptionPageObj.saveButton);
+			Thread.sleep(3000);
+			String actualError=exemptionPageObj.fieldErrorMsg.getText().trim();
+			softAssert.assertEquals(actualError, expectedError, "SMAB-T500:Verified End date of Rating can't be modified once set");
+			objPage.Click(exemptionPageObj.cancelButton);
+			
+			
 			apasGenericObj.logout();
 			
 			
@@ -396,6 +402,7 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
+			System.out.println(e.getStackTrace());
 			
 		}
 	}

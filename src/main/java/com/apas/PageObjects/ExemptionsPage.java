@@ -1,7 +1,6 @@
 package com.apas.PageObjects;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,36 +8,25 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 //import org.apache.commons.math3.util.Precision;
 import org.apache.log4j.Logger;
-import org.eclipse.jetty.util.annotation.Name;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.Wait;
-import org.testng.asserts.SoftAssert;
-
 import com.apas.Assertions.SoftAssertion;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class ExemptionsPage extends ApasGenericPage {
+public class ExemptionsPage extends Page {
 	Logger logger;
 	Page objPage;
 	SoftAssertion softAssert1;
@@ -268,8 +256,7 @@ public class ExemptionsPage extends ApasGenericPage {
 	
 	
 	
-//////////////////////////New locators
-	
+//////////////////////////New locators////////////////////////////////
 	
 	
 	@FindBy(xpath = "//label[contains(.,\"Veteran's Name\")]/following::input[1]")
@@ -366,6 +353,10 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[text() = 'More Exemption Detail']//ancestor::button[contains(@class, 'test-id__section-header-button slds')]")
 	public WebElement expandedIconForMoreExemptionOnDetailPage;
 	
+	@FindBy(xpath = "//span[text() = 'General Information']//ancestor::button[contains(@class, 'test-id__section-header-button slds')]")
+	public WebElement expandedIconForGeneralExemptionOnDetailPage;
+	
+	
 	@FindBy(xpath = "//span[text() = " + "\"" + "Veteran" + "'s" + " Name" + "\"" + "]//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]")
 	public WebElement editPencilIconForVeteranNameOnDetailPage;
 	
@@ -446,10 +437,7 @@ public class ExemptionsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//li[contains(text(),'There seems to be an existing record with overlapp')]")
 	public WebElement duplicateErrorMsgWithOverlappingDetails;
-
-//------------Locators For Expand Icon On General Exemption Details Page---------------------	
-	@FindBy(xpath = "//span[text() = 'General Information']//ancestor::button[contains(@class, 'test-id__section-header-button slds')]")
-	public WebElement expandedIconForGeneralExemptionOnDetailPage;
+	
 	
 	/**
 	 * Description: This method will select basis for claim
@@ -506,21 +494,29 @@ public class ExemptionsPage extends ApasGenericPage {
 	
 	public void checkIfDuplicateExemption(Map<String,String> fieldData) throws Exception
 	{
-		Thread.sleep(5000);
-		if(objPage.verifyElementVisible(errorMessage) && errorMessage.getText().contains("There seems to be"))
+		if(objPage.locateElement("//div[@class='pageLevelErrors']//li", 3).isDisplayed())
 		{
-			
-			objPage.enter(veteranName, fieldData.get("VeteranName"));
-			objPage.enter(veteranSSN, fieldData.get("VeteranSSN"));
+		
+		if(errorMessage.getText().contains("There seems to be"))
+		{
+			String generatedString = fieldData.get("VeteranName").concat(RandomStringUtils.random(3, false, true));
+			//objPage.enter(veteranName, fieldData.get("VeteranName"));
+			objPage.enter(veteranName, generatedString);
+			//objPage.enter(veteranSSN, fieldData.get("VeteranSSN"));
 			objPage.Click(saveButton);
-			Thread.sleep(2000);
+			Thread.sleep(5000);
 		}
 		else
 		{
 			System.out.println("not a duplicate record");
 		}
-	}
+		}
 	
+	else
+	{
+		System.out.println("not a duplicate record");
+	}
+	}
 	/**
 	 * Description: This method is to compare the component of various screens 
 	 * @param dataMap: datafile map
@@ -669,7 +665,7 @@ public int verifyErrorMessagesWhileCreatingExemption(Map<String,String> testData
 		System.out.println("comaring::"+errorMsgs[i]+" with:: "+allErrorMsgs.get(j));
 			if(errorMsgs[i].equals(allErrorMsgs.get(j).getText().trim()))
 				{
-				System.out.println("Error message "+errorMsgs[i]+ "found in error list");
+				//System.out.println("Error message "+errorMsgs[i]+ "found in error list");
 				noOfMsgsFound++;
 				break;
 				}
@@ -747,12 +743,15 @@ public String getDateInRequiredFormat(Object date,String format) throws ParseExc
 public void editAndInputFieldData(String fieldName,WebElement field, String data)
 {
 		try {
-		WebElement editbutton=driver.findElement(By.xpath("//button/span[contains(.,'"+fieldName+"')]/ancestor::button"));
+
+			//WebElement editbutton=driver.findElement(By.xpath("//button/span[contains(.,'"+fieldName+"')]/ancestor::button"));
 		
-		objPage.Click(editbutton);
+		//objPage.waitForElementToBeClickable(driver.findElement(By.xpath("//button/span[contains(.,'"+fieldName+"')]/ancestor::button")), 5);
+		objPage.clickElementOnVisiblity("//button/span[contains(.,'"+fieldName+"')]/ancestor::button");
+		//objPage.Click(editbutton);
 		objPage.enter(field, data);
 		objPage.Click(saveButton);
-		Thread.sleep(2000);
+		Thread.sleep(4000);
 			}
 		
 		catch (Exception e) {
@@ -792,22 +791,14 @@ public String createNewExemptionWithMandatoryData(Map<String, String> newExempti
 		objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
 		apasGenericObj.searchAndSelectFromDropDown(claimantName,newExemptionData.get("ClaimantName"),"//ul[@class='lookup__list  visible']");
 		objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
-	//	String vName=newExemptionData.get("veteranName");
-		//String vName1= vName.concat(RandomStringUtils.randomAlphabetic(2));
-		//objPage.enter(veteranName, vName1);
-		//objPage.enter(veteranSSN, newExemptionData.get("veteranSSN"));
+		objPage.enter(veteranName, newExemptionData.get("VeteranName"));
+		objPage.enter(veteranSSN, newExemptionData.get("VeteranSSN"));
 		objPage.enter(dateAquiredProperty, newExemptionData.get("DateAquiredProperty"));
 		objPage.enter(dateOccupyProperty, newExemptionData.get("DateOccupyProperty"));
 		objPage.enter(effectiveDateOfUSDVA, newExemptionData.get("EffectiveDateOfUSDVA"));
 		objPage.enter(dateOfNotice, newExemptionData.get("DateOfNotice"));
 		selectbasisForClaims(newExemptionData, "BasisForClaim");
 		apasGenericObj.selectFromDropDown(qualification, newExemptionData.get("Qualification"));
-	/*	if(newExemptionData.containsKey("EnddateOfRating"))
-		{
-			objPage.enter(endDateOfRating, newExemptionData.get("EnddateOfRating"));	
-			apasGenericObj.selectFromDropDown(endRatingReason, newExemptionData.get("EndRatingReason"));
-		}
-	*/	
 		objPage.Click(saveButton);
 		checkIfDuplicateExemption(newExemptionData);
 		objPage.locateElement("//div[@class='windowViewMode-normal oneContent active lafPageHost']//div[contains(.,'Date Application Received')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text", 4);
@@ -1275,7 +1266,6 @@ public void saveExemptionRecordWithNoValues() throws Exception {
 	saveExemptionRecord();
 }
 
-
 /**
  * Description: This method will remove leading zeroes from the month and day value in Date
  * @param dateValue: Date value passed from the Json file
@@ -1383,7 +1373,6 @@ public String editExemptionAndValidateEnabledStatusOnDetailPage(String fieldLabe
 	Click(cancelButtonOnDetailPage);
 	return flag;
 }
-
 
 
 

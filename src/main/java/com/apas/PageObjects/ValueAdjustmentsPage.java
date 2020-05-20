@@ -24,7 +24,7 @@ import com.apas.Reports.ExtentTestManager;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class ValueAdjustmentsPage extends ApasGenericPage {
+public class ValueAdjustmentsPage extends Page {
 	
 	Logger logger;
 	Page objPage;
@@ -514,25 +514,23 @@ public int getActiveVA() {
 }
 
 
-public String findVABasedOnEndDate(String endDateOfRating) throws Exception {
+public String findVABasedOnEndDate(String endDateOfRating) {
 	
 	
 	List<WebElement> vaEndDates=vaEndDateFromList;
 	
-	int i=0;
+	//int i=0;
 	String newVA=null;
-	for(Iterator<WebElement> end= vaEndDates.iterator(); end.hasNext();i++)
+	for(int i=0;i<vaEndDates.size();i++)
 	{
-		if(end.next().getText().equals(endDateOfRating))
+		if(vaEndDates.get(i).equals(endDateOfRating))
 		{
 			newVA=driver.findElement(By.xpath("//lst-list-view-manager-header//following::div//table//tbody//tr["+(i)+"]//td[1]//following-sibling::th//a")).getText();
 			String startDate=driver.findElement(By.xpath("//lst-list-view-manager-header//following::div//table//tbody//tr["+(i)+"]//td[2]//span/span")).getText();
 			String endDate=driver.findElement(By.xpath("//lst-list-view-manager-header//following::div//table//tbody//tr["+(i)+"]//td[3]//span/span")).getText();
 			String status=driver.findElement(By.xpath("//lst-list-view-manager-header//following::div//table//tbody//tr["+(i)+"]//td[4]//span/span")).getText();
-			System.out.println("New Va created with Start date::"+startDate+" and end date::"+end.next().getText());
-			
-			
-			softAssert1.assertEquals(vaEndDateDetails.getText(), endDateOfRating, "SMAB-T601:-VA with Start date::"+startDate+" and end date: "+endDate+" is created with status:"+status);
+			System.out.println("New Va created with Start date::"+startDate+" and end date::"+endDate);
+			//softAssert1.assertEquals(vaEndDateDetails.getText(), endDateOfRating, "SMAB-T601:-VA with Start date::"+startDate+" and end date: "+endDate+" is created with status:"+status);
 			
 			break;
 		}

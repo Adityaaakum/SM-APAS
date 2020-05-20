@@ -242,7 +242,7 @@ public class ApasGenericFunctions extends TestBase{
 	}
 	
 	/**
-<<<<<<< HEAD
+
 	 * Description: This will select the All mode on grid
 	 */
 	public void selectAllManualBuildingPermitOptionOnGrid() throws Exception {
