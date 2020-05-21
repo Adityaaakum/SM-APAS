@@ -51,7 +51,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the manual creation of building permit
 	 **/
-	@Test(description = "SMAB-T383,SMAB-T520,SMAB-T402,SMAB-T421: Creating manual entry for building permit", dataProvider = "loginUsers", dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T383,SMAB-T520,SMAB-T402,SMAB-T421: Creating manual entry for building permit", dataProvider = "loginUsers", dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit_Demo"}, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_ManualCreateNewBuildingPermitWithDataValidations(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -146,7 +146,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	 1. Error appearing if mandatory fields are not filled while editing the existing building permit record
 	 2. Save the record after updating the value in a field
 	 **/
-	@Test(description = "SMAB-T466: Mandatory Field Validation while editing manual building permit and editing a record", groups = {"smoke","regression","buildingPermit"}, dataProvider = "loginUsers", dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T466: Mandatory Field Validation while editing manual building permit and editing a record", groups = {"smoke","regression","buildingPermit_Demo"}, dataProvider = "loginUsers", dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_EditAndValidateRequiredFieldsValidationsForExistingPermit(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -214,7 +214,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate error appearing if mandatory fields are not filled while manually creating building permit
 	 **/
-	@Test(description = "SMAB-T418: Mandatory Field Validation while creating manual building permit", groups = {"smoke","regression","buildingPermit"}, dataProvider = "loginUsers", dataProviderClass =  DataProviders.class, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T418: Mandatory Field Validation while creating manual building permit", groups = {"smoke","regression","buildingPermit_Demo"}, dataProvider = "loginUsers", dataProviderClass =  DataProviders.class, alwaysRun = true, enabled = true)
 	public void verify_ManualCreationWithRequiredieldsValidations(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -249,7 +249,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate that building permit can be created when 'Building Permit Number, Permit City Code and APN' is unique
 	 **/
-	@Test(description = "SMAB-T519: Validate that building permit can be created when 'Building Permit Number, Permit City Code and APN' is unique", groups = {"smoke","regression","buildingPermit"}, dataProvider = "loginUsers", dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T519: Validate that building permit can be created when 'Building Permit Number, Permit City Code and APN' is unique", groups = {"smoke","regression","buildingPermit_Demo"}, dataProvider = "loginUsers", dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_ManualCreationForDuplicateCheck(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -306,7 +306,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the warning message when building permit is created with retired parcel
 	 **/
-	@Test(description = "SMAB-T626: Validate that warning message appears when a building permit is created with retired parcel", groups = {"smoke","regression","buildingPermit"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T626: Validate that warning message appears when a building permit is created with retired parcel", groups = {"smoke","regression","buildingPermit_Demo"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_ManualCreationWithRetiredParcel(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -352,7 +352,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the values in Processing Status and Calculated Processing Status fields when processing status was not selected
 	 **/
-	@Test(description = "SMAB-T399: Validate that Process and Calculated Process Status fields are auto populated when process status field is not selected", groups = {"regression","buildingPermit"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T399: Validate that Process and Calculated Process Status fields are auto populated when process status field is not selected", groups = {"regression","buildingPermit_Demo"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_Manual_ProcessFieldsStatus_ProcessingStatusNotSelectedByUser(String loginUser) throws Exception {
 
 		//Pre-requisite: Fetch the APN to be used to create building permit
@@ -390,7 +390,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the values in Processing Status and Calculated Processing Status fields when processing status was selected
 	 **/
-	@Test(description = "SMAB-T400: Validate that Process and Calculated Process Status fields are auto populated when process status field is selected", groups = {"regression","buildingPermit"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T400: Validate that Process and Calculated Process Status fields are auto populated when process status field is selected", groups = {"regression","buildingPermit_Demo"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_Manual_ProcessFieldsStatus_ProcessingStatusSelectedByUser(String loginUser) throws Exception {
 
 		//Pre-requisite: Fetch the APN to be used to create building permit
@@ -431,7 +431,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	 Processing Status should be populated as it has been explicitly selected by user
 	 Calculated Processing Status should be populated as 'Process' if Estimated project value is "Greater Than or Equal to $25,000" ELSE 'No Process'
 	 **/
-	@Test(description = "SMAB-T403, SMAB-T404: Validated the Calculated Process Status field is automatically updated when estimated project value or county strat code is updated", groups = {"regression","buildingPermit"}, dataProvider = "loginUsers", dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T403, SMAB-T404: Validated the Calculated Process Status field is automatically updated when estimated project value or county strat code is updated", groups = {"regression","buildingPermit_Demo"}, dataProvider = "loginUsers", dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_Manual_CalculatedProcessingStatus_EstimatedProjectValueOrCountyStratCodeUpdated(String loginUser) throws Exception {
 
 		//Pre-requisite: Fetch the APN to be used to create building permit
