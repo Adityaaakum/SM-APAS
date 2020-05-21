@@ -50,10 +50,10 @@ public class RollYearSettingsPage extends Page {
 	@FindBy(xpath = "//span[text() = 'Roll Year']//parent::span//following-sibling::div[@class='uiMenu']")
 	public WebElement rollYear;
 
-	@FindBy(xpath = "//span[text() = 'Fiscal Start Date']//parent::label//following-sibling::div//input[@class=' input']")
+	@FindBy(xpath = "//span[text() = 'Open Roll Start Date']//parent::label//following-sibling::div//input[@class=' input']")
 	public WebElement fiscalStartDate;
 
-	@FindBy(xpath = "//span[text() = 'Fiscal End Date']//parent::label//following-sibling::div//input[@class=' input']")
+	@FindBy(xpath = "//span[text() = 'Open Roll End Date']//parent::label//following-sibling::div//input[@class=' input']")
 	public WebElement fiscalEndDate;
 
 	@FindBy(xpath = "//span[text() = 'Calendar Start Date']//parent::label//following-sibling::div//input[@class=' input']")
@@ -563,13 +563,13 @@ public class RollYearSettingsPage extends Page {
 	public void clickShowMoreButton(String rollYearName, String action) throws Exception {       
         Thread.sleep(1000);
         String xpathStr1 = "//a[@title='" + rollYearName + "']//parent::span//parent::th//following-sibling::td[9]//span//div//a//lightning-icon";
-        WebElement showMoreIcon = locateElement(xpathStr1, 30);
+        WebElement showMoreIcon = locateElement(xpathStr1, 3);
         if (showMoreIcon != null){
         	ExtentTestManager.getTest().log(LogStatus.INFO, "Roll Year settings record exist");
         	Click(showMoreIcon);
         	Thread.sleep(1000);
         	String xpathStr2 = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
-        	WebElement actionOnShowMoreIcon = locateElement(xpathStr2, 30);
+        	WebElement actionOnShowMoreIcon = locateElement(xpathStr2, 3);
         	
         	if(actionOnShowMoreIcon != null){
         		clickAction(actionOnShowMoreIcon);

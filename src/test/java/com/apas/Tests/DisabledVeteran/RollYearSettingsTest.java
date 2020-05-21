@@ -234,13 +234,16 @@ public class RollYearSettingsTest extends TestBase {
 		objRollYearSettingsPage.clearFieldValue(objRollYearSettingsPage.calendarEndDateOnDetailEditPage);
 		objRollYearSettingsPage.clearFieldValue(objRollYearSettingsPage.taxStartDateOnDetailEditPage);
 		objPage.Click(objRollYearSettingsPage.saveButtonOnDetailPage);
-		
+		objPage.Click(objRollYearSettingsPage.saveButtonOnDetailPage);
 		//Step9: Validate the error message appears as a pop-up at the bottom of the screen		
 		Thread.sleep(1000);
 		softAssert.assertTrue(driver.findElements(By.xpath("//h2[@class='slds-truncate slds-text-heading_medium']")).size() == 1, "Validate error message pop-up that appear at the bottom of the page i.e. 'We hit a snag'");
 		softAssert.assertTrue(driver.findElements(By.xpath("//a[contains(text(), 'Calendar Start Date')]")).size() == 1, "Validate that 'Calendar Start Date' appears in error message pop-up");
 		softAssert.assertTrue(driver.findElements(By.xpath("//a[contains(text(), 'Calendar End Date')]")).size() == 1, "Validate that 'Calendar End Date' appears in error message pop-up");
 		softAssert.assertTrue(driver.findElements(By.xpath("//a[contains(text(), 'Tax Start Date')]")).size() == 1, "Validate that 'Tax Start Date' appears in error message pop-up");
+		
+		
+		
 		
 		//Step10: Click CANCEL button and edit the record
 		objPage.Click(objRollYearSettingsPage.cancelButtonOnDetailPage);

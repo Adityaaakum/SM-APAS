@@ -232,14 +232,14 @@
 
 						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
 						<includes>
-						<!--<include>RollYearSettingsTest.java</include>--> 
-						<include>DuplicateExemptionCreationTest.java</include>
-						<include>RestrictDuplicateExemptionCreationTest.java</include>
+						<include>RollYearSettingsTest.java</include> 
+						<!--<include>DuplicateExemptionCreationTest.java</include>--> 
+						<!--<include>RestrictDuplicateExemptionCreationTest.java</include>--> 
 						<!--<include>CreateAndEditExemptionWithMandatoryFieldsTest.java</include>-->
-						<include>RealPropertySettingsLibrariesTest.java</include>
-						<include>ExemptionTests.java</include>
-						<include>SecurityAndSharingTests.java</include>
-						<include>AnnualProcessTest.java</include>
+						<!--<include>RealPropertySettingsLibrariesTest.java</include>--> 
+						<!--<include>ExemptionTests.java</include>--> 
+						<!--<include>SecurityAndSharingTests.java</include>--> 
+						<!--<include>AnnualProcessTest.java</include>--> 
 						</includes>
 						<groups>${testSuite}</groups>
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->

@@ -817,7 +817,7 @@ public class Page {
 		WebElement element = null;
 		boolean elementVisiblityFlag = false;
 		int counter = 0;
-		while (!elementVisiblityFlag || counter < timoutCounter) {
+		while (!elementVisiblityFlag && counter < timoutCounter) {
 			try {
 				element = driver.findElement(By.xpath(locatorValue));
 				if (element != null) {
@@ -835,7 +835,7 @@ public class Page {
 		List<WebElement> elements = null;
 		boolean elementsVisiblityFlag = false;
 		int counter = 0;
-		while (!elementsVisiblityFlag || counter < timoutCounter) {
+		while (!elementsVisiblityFlag && counter < timoutCounter) {
 			try {
 				elements = driver.findElements(By.xpath(locatorValue));
 				if (elements != null) {

@@ -163,7 +163,7 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 		//Step11: Verify Duplicate Current Roll Year cannot be created
 		String expectedWarningMessageOnTop = "This record looks like a duplicate.View Duplicates";
 		objPage.waitForElementToBeVisible(objRPSLPage.warningMsgOnTop, 30);
-		softAssert.assertEquals(objRPSLPage.warningMsgOnTop.getText(),expectedWarningMessageOnTop,"SMAB-T539:");
+		softAssert.assertEquals(objRPSLPage.warningMsgOnTop.getText(),expectedWarningMessageOnTop,"SMAB-T539:Verify the User is not able to create duplicate Exemption limit record for current roll year");
 		objPage.Click(objRPSLPage.cancelButton);
 		
 		System.setProperty("currentYearRPSL", "strRPSLName");		

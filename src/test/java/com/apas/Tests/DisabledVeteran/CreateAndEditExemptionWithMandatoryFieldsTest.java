@@ -117,14 +117,14 @@ public class CreateAndEditExemptionWithMandatoryFieldsTest extends TestBase {
 		if (loginUser.equals("exemptionSupportStaff")){
 			dataMap1 = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFieldsOne");
 			dataMap1.put("Veteran Name", dataMap1.get("Veteran Name") + objDisabledVeteransPage.getRandomIntegerBetweenRange(100, 10000));
-			objDisabledVeteransPage.createExemptionWithMandatoryFields(dataMap1);
+			objDisabledVeteransPage.createExemptionWithoutEndDateOfRating(dataMap1);
 			recordId = objDisabledVeteransPage.getCurrentUrl(driver);
 			exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.exemptionName));
 		}
 		else {
 			dataMap2 = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFieldsTwo");
 			dataMap2.put("Veteran Name", dataMap2.get("Veteran Name") + objDisabledVeteransPage.getRandomIntegerBetweenRange(100, 10000));
-			objDisabledVeteransPage.createExemptionWithMandatoryFields(dataMap2);
+			objDisabledVeteransPage.createExemptionWithoutEndDateOfRating(dataMap2);
 			recordId1 = objDisabledVeteransPage.getCurrentUrl(driver);
 			exemptionName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.exemptionName));
 		}
