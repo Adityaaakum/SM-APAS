@@ -290,7 +290,7 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 			//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 				
 			apasGenericObj.login(loginUser);
-			
+			objPage.waitUntilPageisReady(driver);
 			//Step2: Opening the Exemption Module
 			apasGenericObj.searchModule(EXEMPTIONS);
 			
@@ -351,7 +351,7 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 			//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 				
 			apasGenericObj.login(loginUser);
-			
+			objPage.waitUntilPageisReady(driver);
 			//Step2: Opening the Exemption Module
 			apasGenericObj.searchModule(EXEMPTIONS);
 			
