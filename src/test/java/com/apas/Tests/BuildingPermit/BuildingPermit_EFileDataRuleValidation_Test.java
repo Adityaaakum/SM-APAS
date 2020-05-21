@@ -271,7 +271,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	 2. Validation of error and imported records on review and approve screen
 	 **/
 	@Test(description = "SMAB-T362,SMAB-T363: Verify Discard and Approve functionality for San Mateo Building Permit Import in XLS format", dataProvider = "loginUsers", dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
-	public void verify_BuildingPermit_ApproveAndDiscard_SanMateo(String loginUser) throws Exception {
+	public void verify_BuildingPermit_DiscardAndApprove_SanMateo(String loginUser) throws Exception {
 
 		String period = objUtil.getCurrentDate("MMMM YYYY");
 
