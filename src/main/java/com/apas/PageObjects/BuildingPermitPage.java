@@ -127,7 +127,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	public WebElement openBuildingPermitLink;
 
 	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//div[text() = 'Delete']")
-	private WebElement deleteLinkUnderShowMore;
+	public WebElement deleteLinkUnderShowMore;
 
 	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//div[text() = 'Change Owner']")
 	private WebElement changeOwnerLinkUnderShowMore;
@@ -150,7 +150,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	// Common locators to complete or abort delete action of manual entry.
 
 	@FindBy(xpath = "//div[contains(@class, 'slds-modal__footer')]//span[text() = 'Delete']")
-	private WebElement deleteBtnBuildingPermitInDeletePopUp;
+	public WebElement deleteBtnInDeletePopUp;
 
 	@FindBy(xpath = "//div[contains(@class, 'slds-modal__footer')]//span[text() = 'Cancel']")
 	private WebElement cancelBtnBuildingPermitInDeletePopUp;
@@ -204,7 +204,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	 */
 
 	public void openNewForm() throws Exception {
-		Thread.sleep(1000);
+		Thread.sleep(15000);
 		javascriptClick(waitForElementToBeClickable(newButton));
 		if(System.getProperty("isDataAdminLoggedIn") != null && System.getProperty("isDataAdminLoggedIn").equals("true")) {
 			Click(waitForElementToBeClickable(manualEntryRadioBtn));
@@ -352,7 +352,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	 */
 	public boolean checkManualPermitEntryOnDetailsPage (String entryName) throws Exception {
 		String xpathStr = "//h1//slot//lightning-formatted-text[text() = '" + entryName + "']";
-		boolean elemStatus = locateElement(xpathStr, 10).isDisplayed();
+		boolean elemStatus = locateElement(xpathStr, 60).isDisplayed();
 		return elemStatus;
 	}
 
@@ -395,7 +395,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	public void clickShowMoreLinkOnRecentlyViewedGrid(String entryDetails) throws Exception {		
 		Thread.sleep(3000);
 		String xpathStr = "//table//tbody/tr//th//a[text() = '"+ entryDetails +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
-		WebElement modificationsIcon = locateElement(xpathStr, 30);
+		WebElement modificationsIcon = locateElement(xpathStr, 60);
 		clickAction(modificationsIcon);
 	}
 
@@ -499,7 +499,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 		WebElement element;
 		for(String fieldName : searchAndSelectFields) {
 			String xpathCloseBtn = "//label[text() = '"+ fieldName +"']//following-sibling::div//button[@title = 'Clear Selection']";
-			WebElement closeBtn = locateElement(xpathCloseBtn, 5);
+			WebElement closeBtn = locateElement(xpathCloseBtn, 30);
 			((JavascriptExecutor) driver).executeScript("arguments[0].click();", closeBtn);
 
 			String xpathStrInputFields = "//label[text() = '"+ fieldName + "']//parent::label//following-sibling::div//input[@type = 'text']";
@@ -537,7 +537,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	public List<String> editWorkDescIndividuallyOnDetailsPage(List<String> invalidDescValues) throws Exception {
 		List<String> validationMessage = new ArrayList<String>();
 		String xpathStr = "//span[text() = 'Work Description']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]";
-		Click(locateElement(xpathStr, 5));
+		Click(locateElement(xpathStr, 30));
 
 		for (String invalidDescValue : invalidDescValues) {
 			xpathStr = "//label[text() = 'Work Description']//following-sibling::div//input[contains(@name, 'Work')]";
@@ -562,7 +562,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	 */
 	public List<String> editAndCancelIssueDateDetailsPage() throws Exception {
 		String xpathDescTxt = "//span[text() = 'Issue Date']/parent::div/following-sibling::div//lightning-formatted-text[@data-output-element-id = 'output-field']";
-		String descValueBeforeEdit = locateElement(xpathDescTxt, 10).getText();
+		String descValueBeforeEdit = locateElement(xpathDescTxt, 60).getText();
 
 		List<String> validationMessage = new ArrayList<String>();
 		String xpathStr = "//span[text() = 'Issue Date']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]";
@@ -591,10 +591,10 @@ public class BuildingPermitPage extends ApasGenericPage {
 		String calcProcStatusTxt = "";
 		String situsCityCodeTxt = "";
 		String xpathCalcProcStatus = "//span[text() = 'Calculated Processing Status']/parent::div/following-sibling::div//lightning-formatted-text[@data-output-element-id = 'output-field']";
-		calcProcStatusTxt = locateElement(xpathCalcProcStatus, 10).getText();
+		calcProcStatusTxt = locateElement(xpathCalcProcStatus, 30).getText();
 
 		String xpathSitusCityCode = "//span[text() = 'Situs City Code']//parent::div//following-sibling::div//span//lightning-formatted-text";
-		situsCityCodeTxt = locateElement(xpathSitusCityCode, 10).getText();
+		situsCityCodeTxt = locateElement(xpathSitusCityCode, 30).getText();
 
 		autoPopulatedValues.put("Situs City Code", situsCityCodeTxt);
 		autoPopulatedValues.put("Calculated Processing Status", calcProcStatusTxt);
@@ -635,7 +635,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	public void selectFromDropDown(WebElement element, String value) throws Exception {
 		Click(element);
 		String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 200);
+		WebElement drpDwnOption = locateElement(xpathStr, 30);
 		drpDwnOption.click();
 	}
 
