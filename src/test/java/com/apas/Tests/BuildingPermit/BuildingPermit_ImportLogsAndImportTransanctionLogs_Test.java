@@ -35,7 +35,12 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 	String sanMateoBuildingPermitFile;
 
 	@BeforeMethod(alwaysRun=true)
-	public void beforeMethod(){
+	public void beforeMethod() throws Exception{
+		
+		if(driver==null) {
+			setupTest();
+			driver = BrowserDriver.getBrowserInstance();
+		}
 		
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);

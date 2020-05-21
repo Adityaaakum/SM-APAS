@@ -1,4 +1,4 @@
-package com.apas.Tests.ApasSettings;
+/*package com.apas.Tests.ApasSettings;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
@@ -39,10 +39,10 @@ public class RollwisePermissionTest extends TestBase {
 		softAssert.assertAll();
 	}
 
-    /**
+    *//**
 	 Below test case will validate generic user is not able to access below modules
 	 City Strat Codes, County Strat Codes, Non Relevant Permit Settings
-	 **/
+	 **//*
 	@Test(description = "SMAB-T439: Validation for user not having the access to certain modules", groups = {"smoke","regression"}, priority = 0, alwaysRun = true)
 	public void verifyGenericUserNotHavingAccess() throws Exception {
 		//****appraisal Support user needs to be replaced by generic user
@@ -73,3 +73,4 @@ public class RollwisePermissionTest extends TestBase {
 		objPage.Click(objApasGenericPage.searchClearButton);
 	}
 }
+*/
