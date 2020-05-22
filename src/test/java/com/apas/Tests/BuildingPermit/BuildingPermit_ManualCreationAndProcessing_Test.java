@@ -337,13 +337,13 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objApasGenericFunctions.displayRecords("All Manual Building Permits");
 		objApasGenericFunctions.searchRecords(buildingPermitNumber);
 		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objApasGenericFunctions.getGridDataInHashMap();
-		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Warning Message").get(0), "The parcel is retired. Please review and confirm the APN on the Building Permit.","SMAB-T626: 'Priority Message' validation on the data displayed on the grid");
+		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Warning Message").get(0), "APN is retired.","SMAB-T626: 'Priority Message' validation on the data displayed on the grid");
 
 		//Step6: open the building permit created with retired parcel
 		objBuildingPermitPage.openBuildingPermit(buildingPermitNumber);
 
 		//Validate the warning message for retired parcel is appearing on the Details page as well
-		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag), "The parcel is retired. Please review and confirm the APN on the Building Permit.","SMAB-T626: 'Priority Message' validation on building permit details page screen");
+		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag), "APN is retired.","SMAB-T626: 'Priority Message' validation on building permit details page screen");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
