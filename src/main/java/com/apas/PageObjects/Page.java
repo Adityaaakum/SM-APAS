@@ -246,7 +246,7 @@ public class Page {
 	 */
 	public void Click(WebElement elem) throws IOException {
 		waitForElementToBeVisible(20, elem);
-		waitForElementToBeClickable(20, elem);
+//		waitForElementToBeClickable(20, elem);
 
 		/*
 		 * if (browserName.equalsIgnoreCase("Edge")) { javascriptClick(elem); }
