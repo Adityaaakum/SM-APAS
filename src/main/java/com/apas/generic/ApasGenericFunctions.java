@@ -242,7 +242,42 @@ public class ApasGenericFunctions extends TestBase{
 	}
 	
 	/**
-     * Description: This will select the All mode on grid
+
+	 * Description: This will select the All mode on grid
+	 */
+	public void selectAllManualBuildingPermitOptionOnGrid() throws Exception {
+		objPage.Click(objApasGenericPage.selectListViewIcon);
+		objPage.Click(objPage.waitForElementToBeClickable(objApasGenericPage.allManualBuilingdPermitsOption));
+		objPage.Click(objApasGenericPage.pinIcon);
+	}
+	
+	/**
+	 * @description: This method will be used to select List View option - All or
+	 *               Recently Viewed
+	 * @param fieldName: field name for which List View to select
+	 * @throws InterruptedException 
+	 */
+  public void selectListView(String listViewName) throws Exception{ 
+	ExtentTestManager.getTest().log(LogStatus.INFO, "Selecting List View: "+listViewName);
+  	String[] listViews= {"All","Recently Viewed"};  
+  	String listViewSelected = objPage.getElementText(driver.findElement(By.xpath("//span[contains(@class,'selectedListView')]")));
+      if(!listViewName.equals(listViewSelected)){ 
+      	for(int i=0;i<=(listViews.length)-1;i++) { 
+      	if(listViewName.equals(listViews[i])){
+      		String listViewToSelect = listViews[i];
+      		objPage.Click(objApasGenericPage.selectListViewIcon);
+          	Thread.sleep(1000);
+          	objPage.waitForElementToBeClickable(driver.findElement(By.xpath("//span[text()='"+listViewToSelect+"']")));
+          	WebElement selectlistView = driver.findElement(By.xpath("//span[text()='"+listViewToSelect+"']"));
+          	objPage.Click(selectlistView);
+          	Thread.sleep(1000);
+          	objPage.Click(objApasGenericPage.pinIcon); 
+		} 
+	   }  
+   }
+}
+
+     /* Description: This will select the All mode on grid
      */
     public void selectAllOptionOnGrid() throws Exception {
         String currentlyVisibleOption = objPage.getElementText(objApasGenericPage.currenltySelectViewOption);
@@ -253,4 +288,50 @@ public class ApasGenericFunctions extends TestBase{
         }
     }
 
+    public WebElement locateElement(String xpath, int timeoutInSeconds) throws Exception {WebElement element = null;
+    for(int i = 0; i < timeoutInSeconds; i++) {
+        try {
+            element = driver.findElement(By.xpath(xpath));
+            if(element != null) {
+                break;
+            }
+        } catch (Exception ex) {
+            Thread.sleep(750);
+        }
+    }
+    return element;
+    } 
+    public void selectFromDropDown(WebElement element, String value, String... customXpath) throws Exception {
+        objPage.Click(element);
+        String xpathStr = null;
+        if(customXpath.length == 1)
+        {
+            xpathStr = customXpath[0];
+        }
+        else
+        {
+        xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
+        }
+        WebElement drpDwnOption = locateElement(xpathStr, 10);
+        drpDwnOption.click();
+    }
+    
+    public void searchAndSelectFromDropDown(WebElement element, String value, String... customXpath) throws Exception {
+        objPage.enter(element, value);
+        String xpathStr = null;
+        if(customXpath.length == 1) {
+            xpathStr = customXpath[0]+"//div[@title= '"+value+"']";
+        } else {
+            xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
+        }
+        WebElement drpDwnOption = locateElement(xpathStr, 10);
+        drpDwnOption.click();
+    }
+    
+    public void searchAndSelectOptionFromDropDown(WebElement element, String value) throws Exception {
+  	  objPage.enter(element, value);
+        String xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
+        WebElement drpDwnOption = objPage.locateElement(xpathStr, 20);
+        drpDwnOption.click();
+    }
 }

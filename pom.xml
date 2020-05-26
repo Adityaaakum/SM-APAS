@@ -173,12 +173,12 @@
 		    <artifactId>org.apache.commons.io</artifactId>
 		    <version>2.4</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
+		
         <dependency>
-           <groupId>com.googlecode.json-simple</groupId>
-           <artifactId>json-simple</artifactId>
-           <version>1.1.1</version>
-        </dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-math3</artifactId>
+		    <version>3.5</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -189,10 +189,11 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
 
-					<!-- <configuration>
+					<configuration>
 						<fork>true</fork>
-						<executable>C:\Program Files\Java\jdk1.8.0_241\bin\javac.exe</executable>
-					</configuration> -->
+						<executable>C:\Program Files\Java\jdk1.8.0_231\bin\javac.exe</executable>
+					</configuration>
+
 
 				</plugin>
 				<plugin>
@@ -217,13 +218,24 @@
 								<value>com.apas.Listeners.SuiteListener,com.apas.Listeners.TestAnnotationListener</value>
 							</property>
 						</properties>
+
+						
+						<!-- <forkCount>10</forkCount> <reuseForks>true</reuseForks> -->
+
 						<forkCount>0</forkCount> 
 						<!-- <reuseForks>true</reuseForks> -->
+
 						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
-						<!-- <includes>
-						         <include>BuildingPermit_Manual_Test.java</include>
-						         <include>BuildingPermitEditTest.java</include>
-					    </includes> -->
+						<includes>
+						<include>RollYearSettingsTest.java</include> 
+						<include>DuplicateExemptionCreationTest.java</include>
+						<include>RestrictDuplicateExemptionCreationTest.java</include>
+						<include>CreateAndEditExemptionWithMandatoryFieldsTest.java</include>
+						<include>RealPropertySettingsLibrariesTest.java</include>
+						<include>ExemptionTests.java</include>
+						<include>SecurityAndSharingTests.java</include>
+						<include>AnnualProcessTest.java</include>
+						</includes>
 						<groups>${testSuite}</groups>
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
 						<systemPropertyVariables>

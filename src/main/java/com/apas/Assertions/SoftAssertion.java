@@ -1,10 +1,8 @@
 package com.apas.Assertions;
 
-import com.apas.Reports.ReportLogger;
-import com.apas.Utils.Util;
 import com.apas.JiraStatusUpdate.JiraAdaptavistStatusUpdate;
-import com.apas.Reports.ExtentManager;
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Utils.Util;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class SoftAssertion {
