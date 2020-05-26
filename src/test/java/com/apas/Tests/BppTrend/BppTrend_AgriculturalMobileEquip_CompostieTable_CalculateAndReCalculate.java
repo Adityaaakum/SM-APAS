@@ -43,10 +43,10 @@ public class BppTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 	
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
-		//if(driver==null) {
-            //setupTest();
-            //driver = BrowserDriver.getBrowserInstance();
-        //}
+		if(driver==null) {
+            setupTest();
+            driver = BrowserDriver.getBrowserInstance();
+        }
 		
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
@@ -91,6 +91,7 @@ public class BppTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 		objApasGenericFunctions.login(loginUser);
 		
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -102,7 +103,7 @@ public class BppTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T166: Calculate all button is visible at page level");
 			
 		//Step4: Clicking on the given table
-		objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
+		objBppTrnPg.clickOnTableOnBppTrendPage(tableName, true);
 				
 		//Step5: Validating presence of calculate button for given tables individually
 		boolean isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, tableName);
@@ -208,7 +209,7 @@ public class BppTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 		objApasGenericFunctions.selectAllOptionOnGrid();
 		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
 		String statusInBppTrendSetup = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
-		objSoftAssert.assertEquals(statusInBppTrendSetup, "Calculated", "SMAB-T268: Table status on Bpp Trend Setup page post calculation");
+		softAssert.assertEquals(statusInBppTrendSetup, "Calculated", "SMAB-T268: Table status on Bpp Trend Setup page post calculation");
 
 		//Step24: Log out from the application
 		objApasGenericFunctions.logout();
@@ -259,6 +260,7 @@ public class BppTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 					
 			//Step5: Opening the BPP Trend module		
 			objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+			objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 			objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 			objBppTrnPg.clickOnGivenRollYear(rollYear);
 			objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -270,7 +272,7 @@ public class BppTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 			objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "ReCalcuate all button is visible");
 				
 			//Step7: Clicking on the given table
-			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
+			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, true);
 					
 			//Step8: Validating availability of ReCalculate button at table level before performing calculation
 			boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(3, tableName);
@@ -362,7 +364,9 @@ public class BppTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 			if(System.getProperty("isElementHighlightedDueToFailre").equalsIgnoreCase("true")) {
 				softAssert.assertTrue(false, "Excel & UI grid data has mismatched. Taking screen shot of entire table");
 			}
-		} finally {
+		} catch(Exception ex) {
+			ex.printStackTrace();
+			
 			//Step24: Reverting the values of BPP composite factor settings in excel file
 			objBppTrnPg.revertTrendSettingsDataInExcel(fileName);
 			
@@ -380,49 +384,4 @@ public class BppTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 		softAssert.assertAll();
 	}
 	
-	
-	
-	/**
-	 * DESCRIPTION: Performing Following Validations <AGRICULTURAL MOBILE EQUIP COMPOSITE FACTORS>::
-	 * 1. Validating error message for missing BPP Settings (Maximum Equip. Index Value):: TestCase/JIRA Id: SMAB-T192
-	 * 2. Validating error message for missing BPP Composite Settings (Minimum Index Value):: TestCase/JIRA Id: SMAB-T192
-	 * 3. Validating error message for missing good and index factor data:: TestCase/JIRA Id: SMAB-T193
-	 * 4. Deleting the dummy/test BPP Trend Setup
-	 */
-	@Test(description = "SMAB-T192,SMAB-T193: Calculation of AGRICULTURAL MOBILE EQUIP COMPOSITE FACTORS with missing calculation variables", groups = {"smoke,regression,BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 2, enabled = true)
-	public void verify_BppTrend_AgriculturalMobileCompositeFactors_CalculateWithCalculationVariablesMissing(String loginUser) throws Exception {					
-		try {
-			//Step1: Creating a new BPP trend setup with no BPP settings, no composite factors settings, no index & goods factor data for future roll year
-			objBppTrnPg.createDummyBppTrendSetupForErrorsValidation();
-				
-			//Step2: Log in using given user
-			objApasGenericFunctions.login(loginUser);
-			String tableName = "Agricultural Mobile Equipment Composite Factors";
-			
-			//Step3: Perform calculation by clicking calculate button when BPP Setting is missing
-			ExtentTestManager.getTest().log(LogStatus.INFO, "** Validating error messages on Calculate button click when factor setting, bpp settings goods factor data is missing**");
-			String actErrorMessage = objBppTrnPg.calculation_With_Missing_BppSetting(tableName, false);
-			softAssert.assertContains(actErrorMessage, "Maximum Equipment index factor must be specified", "SMAB-T192: Error message encountered when triggered calculation with missing calculation variables(Max Index Factor and Min Good Factor)");
-		
-			//Step4: Perform calculation by clicking calculate button when BPP Composite Factor Settings are missing
-			actErrorMessage = objBppTrnPg.calculation_With_Missing_BppCompFactorSettings(tableName, false);		
-			softAssert.assertContains(actErrorMessage, "Index factors not found for Agricultural", "SMAB-T192: Error message encountered when triggered calculation with missing calculation variables(Max Index Factor and Min Good Factor)");
-			
-			//Step5: Perform calculation by clicking calculate button when BPP Percent Index & Good Factors are missing
-			actErrorMessage = objBppTrnPg.calculation_With_Missing_IndexAndGoodFactors("tableName", false);
-			softAssert.assertContains(actErrorMessage, "Index factors not found for Agricultural", "SMAB-T193: Error message encountered when triggered calculation with missing input tables(BPP Property Index Factors, BPP Property Good Factors)");
-			
-			//Step6: Log out from the application
-			objApasGenericFunctions.logout();
-		} finally {
-			//Step7: Delete the dummy tend setup created for error messages validation
-			objBppTrnPg.deleteDummyBppTrendSetup(System.getProperty("trendSetupForErrorValidationOnCalcuate"));
-			
-			//Step8: Log out application at end of test case
-			objApasGenericFunctions.logout();
-			
-			//Step9: Assert all the assertions
-			softAssert.assertAll();
-		}
-	}
 }

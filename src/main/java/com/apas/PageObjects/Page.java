@@ -730,8 +730,12 @@ public class Page {
 	}
 
 	public void clickAction(WebElement element) throws IOException {
+		waitForElementToBeVisible(element, 10);
+		waitForElementToBeClickable(element, 10);
+		
 		actions = new Actions(driver);
 		actions.moveToElement(element).build().perform();
+		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", element);
 		actions.click(element).build().perform();
 		waitUntilPageisReady(driver);
 	}
@@ -850,18 +854,23 @@ public class Page {
 	
 	public WebElement locateElement(String locatorValue, int timeoutInSeconds) throws Exception {
 		WebElement element = null;
-		//Wait wait = new WebDriverWait(driver, timeoutInSeconds);
-		for(int i = 0; i < timeoutInSeconds; i++) {
-			try {
-				element = driver.findElement(By.xpath(locatorValue));
-				if(element != null) {
-					break;
-				} 
-			}catch (Exception ex) {
-				Thread.sleep(250);
-			}
+		wait = new WebDriverWait(driver, timeoutInSeconds);
+		try {
+			element = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(locatorValue)));
+		} catch (Exception ex) {
+
 		}
-		return element;
+		
+		if(element != null) {
+			try {
+				element = wait.until(ExpectedConditions.visibilityOf(element));
+				return element;
+			} catch (Exception ex) {
+				return null;
+			}
+		} else {
+			return null;
+		}
 	}
 	
 	/**

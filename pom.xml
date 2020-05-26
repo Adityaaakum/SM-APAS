@@ -173,12 +173,6 @@
 		    <artifactId>org.apache.commons.io</artifactId>
 		    <version>2.4</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
-        <dependency>
-           <groupId>com.googlecode.json-simple</groupId>
-           <artifactId>json-simple</artifactId>
-           <version>1.1.1</version>
-        </dependency>
 	</dependencies>
 
 	<build>
@@ -189,10 +183,10 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
 
-					<!-- <configuration>
+					<configuration>
 						<fork>true</fork>
 						<executable>C:\Program Files\Java\jdk1.8.0_241\bin\javac.exe</executable>
-					</configuration> -->
+					</configuration>
 
 				</plugin>
 				<plugin>
@@ -217,10 +211,8 @@
 								<value>com.apas.Listeners.SuiteListener,com.apas.Listeners.TestAnnotationListener</value>
 							</property>
 						</properties>
-						<forkCount>0</forkCount> 
-						<!-- <reuseForks>true</reuseForks> -->
+						<!-- <forkCount>10</forkCount> <reuseForks>true</reuseForks> -->
 						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
-
 						<includes>
 							<!-- <include>BuildingPermitImportTest.java</include> 
 								<include>BuildingPermitManualCreationTest.java</include> 
@@ -240,31 +232,22 @@
 								<!-- <include>BppTrend_IndustrialCompostieTable_CalculateAndReCalculate.java</include> -->
 								<!-- <include>BppTrend_Prop13Table_CalculateAndReCalculate.java</include> -->
 								
-								<!-- <include>BppTrendEfileImportTest.java</include> -->
+								<include>BPPTrend_EfileImport_Test.java</include>								
+								<!-- <include>BpTrend_CalculateWithMissing_IndexAndFactorSettings</include> -->
 								<!-- <include>BppTrendSettingTest.java</include> -->
 								<!-- <include>BppTrend_Calculate_Submit_Approve_OutputTables</include> -->
-								<include>BppTrendApprovalTest.java</include>
+								<!-- <include>BppTrendApprovalTest.java</include> -->
 								<!-- <include>BppTrendSecurityAndSharingTest</include> -->
 								<!-- <include>BppTrendFilesDownloadTest.java</include> -->					
 								
 						</includes>
 						<!-- <groups>${groups}</groups> -->
-
-						<!-- <includes>
-						         <include>BuildingPermit_Manual_Test.java</include>
-						         <include>BuildingPermitEditTest.java</include>
-					    </includes> -->
-						<groups>${testSuite}</groups>
-
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
-						<systemPropertyVariables>
-                               <browserName>${browserName}</browserName>
-                               <testSuite>${testSuite}</testSuite>
-                               <gridHubUrl>${gridHubUrl}</gridHubUrl>
-                               <region>${region}</region>
-                               <flagToUpdateJira>${flagToUpdateJira}</flagToUpdateJira>
-                               <testCycle>${testCycle}</testCycle>
-                          </systemPropertyVariables>    
+						<!-- <systemPropertyVariables> <browserName>${browserName}</browserName> 
+							<executionType>${executionType}</executionType> <gridHubUrl>${gridHubUrl}</gridHubUrl> 
+							<platform>${platform}</platform> <region>${region}</region> <deviceName>${deviceName}</deviceName> 
+							<os_version>${os_version}</os_version> </systemPropertyVariables> -->
+
 					</configuration>
 				</plugin>
 			</plugins>

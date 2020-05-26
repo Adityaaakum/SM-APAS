@@ -43,10 +43,10 @@ public class BppTrend_Prop13Table_CalculateAndReCalculate extends TestBase {
 	
 	@BeforeMethod
 	public void beforeMethod() throws Exception {
-		//if(driver==null) {
-            //setupTest();
-            //driver = BrowserDriver.getBrowserInstance();
-        //}
+		if(driver==null) {
+            setupTest();
+            driver = BrowserDriver.getBrowserInstance();
+        }
 		
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
@@ -82,7 +82,7 @@ public class BppTrend_Prop13Table_CalculateAndReCalculate extends TestBase {
 	 * 12. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T277
 	 * 13. Validating the status of the table on BPP Trend Setup Page: SMAB-T278
 	 */
-	@Test(description = "SMAB-T190,SMAB-T276,SMAB-T277,SMAB-T278,SMAB-T442,SMAB-T577: Performing validation on PROP 13 FACTORS before and after calculation", groups = {"smoke,regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
+	@Test(description = "SMAB-T190,SMAB-T276,SMAB-T277,SMAB-T278,SMAB-T442,SMAB-T577: Performing validation on PROP 13 FACTORS before and after calculation", groups = {"smoke,regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
 	public void verifyBppTrend_Prop13Factors_CalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Reseting the status of all composite factor tables to "Not Calculated" through SalesForce API
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -92,6 +92,7 @@ public class BppTrend_Prop13Table_CalculateAndReCalculate extends TestBase {
 		objApasGenericFunctions.login(loginUser);
 		
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -118,61 +119,67 @@ public class BppTrend_Prop13Table_CalculateAndReCalculate extends TestBase {
 		String expTableMsgBeforeCalc = CONFIG.getProperty("tableMsgBeforeCalculation");
 		objSoftAssert.assertEquals(actTableMsgBeforeCalc, expTableMsgBeforeCalc, "Message displayed above '"+ tableName +"' before calculation is initiated");
 	 	
-		//Step8: Clicking on calculate button to initiate calculation
+		//Step8: Validating value of Prop 13 factor for current year
+		String prop13FactorValueCurrentRollYear = objBppTrnPg.getElementText(objBppTrnPg.locateCellToBeEdited(tableName));
+		double prop13FactorValue = Double.parseDouble(prop13FactorValueCurrentRollYear);
+		softAssert.assertEquals((int)prop13FactorValue, 1, "SMAB-T277: Validation for Prop 13 factor value for current year");
+		softAssert.assertEquals((int)prop13FactorValue, 1, "SMAB-T301: Validation for Prop 13 factor value for current year");
+		
+		//Step9: Clicking on calculate button to initiate calculation
 		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Calculate' Button");
 		objBppTrnPg.clickCalculateBtn(tableName);
 		
-		//Step9: Waiting for pop up message to display and the message displayed above table to update
+		//Step10: Waiting for pop up message to display and the message displayed above table to update
 		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);			
 
-		//Step10: Validation to check whether calculation is successfully and table data appears for given table
+		//Step11: Validation to check whether calculation is successfully and table data appears for given table
 		boolean isTableVisible = objBppTrnPg.isTableDataVisible(tableName);
 		softAssert.assertTrue(isTableVisible, "SMAB-T276: User successfully triggered calculation for '"+ tableName +" 'table");
 			
-		//Step11: Retrieve & Assert updated message  displayed above table
+		//Step12: Retrieve & Assert updated message  displayed above table
 		String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
 		String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
 		objSoftAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "Message displayed above the table after Calculation is completed");
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "* Checking status of various buttons at page level and table level");
-		//Step12: Validating presence of ReCalculate button at table level after calculate button is clicked
+		//Step13: Validating presence of ReCalculate button at table level after calculate button is clicked
 		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, tableName);
 		objSoftAssert.assertTrue(isReCalculateBtnDisplayed, "ReCalcuate button is visible for calculated table");
 			
 		//Below validation has been commented for now as 'Submit For Approval' button has been removed from UI
-		//Step13: Validating availability of Submit For Approval buttons at table level on clicking calculate button
+		//Step14: Validating availability of Submit For Approval buttons at table level on clicking calculate button
 		//boolean isSubmitForApprovalBtnDisplayed = objBppTrnPg.isSubmitForApprovalBtnVisible(20, tableName);
 		//softAssert.assertTrue(isSubmitForApprovalBtnDisplayed, "SMAB-T442: Submit For Approval button is visible for calculated table");
 		
-		//Step14: Validating presence of CalculateAll button at page level on performing the calculation
+		//Step15: Validating presence of CalculateAll button at page level on performing the calculation
 		isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
 		objSoftAssert.assertTrue(isCalculateAllBtnDisplayed, "CalcuateAll button is visible at page level");
 			
-		//Step15: Validating presence of ReCalculateAll button at page level on performing the calculation
+		//Step16: Validating presence of ReCalculateAll button at page level on performing the calculation
 		boolean isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
 		objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "ReCalcuateAll button is visible at page level");
 			
-		//Step16: Validating absence of Calculate button at table level once calculation is done
+		//Step17: Validating absence of Calculate button at table level once calculation is done
 		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(2, tableName);
 		objSoftAssert.assertTrue(!isCalculateBtnDisplayed, "Calculate button is not available for Calculated table");
 		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Comparing the UI grid data against the data available in Trend Calculator file **");
-		//Step17: Retrieving the path of excel file to read for data comparison on calculate button click
+		//Step18: Retrieving the path of excel file to read for data comparison on calculate button click
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_TABLES_DATA;
 								
-		//Step18: Generating data map from the Trend Calculator excel file using the given table name
+		//Step19: Generating data map from the Trend Calculator excel file using the given table name
 		Map<String, List<Object>> dataMapFromExcel = objBppTrnPg.retrieveDataFromExcelForGivenTable(fileName, tableName);
 			
-		//Step19: Generating data map from the UI grid data	
+		//Step20: Generating data map from the UI grid data	
 		List<String> columnNames = objBppTrnPg.retrieveColumnNamesOfGridForGivenTable(tableName);
 			
-		//Step20: Retrieving column names of table from UI
+		//Step21: Retrieving column names of table from UI
 		Map<String, List<Object>> dataMapFromUI = objBppTrnPg.retrieveDataFromGridForGivenTable(tableName);
 			
-		//Step21: Comparing the UI grid data after Calculate button click against the data in excel file
+		//Step22: Comparing the UI grid data after Calculate button click against the data in excel file
 		System.setProperty("isElementHighlightedDueToFailre", "false");
 
-		//Step22: Validating the tabular data against data retrieved from excel file
+		//Step23: Validating the tabular data against data retrieved from excel file
 		for (Map.Entry<String, List<Object>> entry : dataMapFromExcel.entrySet()) {
 			String currentKey = entry.getKey().toString();
 			if (dataMapFromUI.containsKey(currentKey)) {
@@ -204,18 +211,16 @@ public class BppTrend_Prop13Table_CalculateAndReCalculate extends TestBase {
 			softAssert.assertTrue(false, "Excel & UI grid data has mismatched. Taking screen shot of entire table");
 		}
 		
-		//Step23: Validating the table's status on BPP Trend Setup page
+		//Step24: Validating the table's status on BPP Trend Setup page
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
 		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
 		String statusInBppTrendSetup = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
-		objSoftAssert.assertEquals(statusInBppTrendSetup, "Calculated", "SMAB-T278: Table status on Bpp Trend Setup page post calculation");
+		softAssert.assertEquals(statusInBppTrendSetup, "Calculated", "SMAB-T278: Table status on Bpp Trend Setup page post calculation");
 
-		//Step24: Log out from the application
-		objApasGenericFunctions.logout();
-			
-		//Step25: Assert all the assertions
+		//Step25: Log out from the application
 		softAssert.assertAll();
+		objApasGenericFunctions.logout();
 	}
 
 	
@@ -235,7 +240,7 @@ public class BppTrend_Prop13Table_CalculateAndReCalculate extends TestBase {
 	 * 11. Validating the status of the table on BPP Trend Setup Page
 	 * 12. Reverting the changed settings in excel file and BPP Trend Setup page
 	 */
-	@Test(description = "SMAB-T302,SMAB-T195,SMAB-T196,SMAB-T442,SMAB-T577: Performing validation on PROP 13 COMPOSITE FACTORS before and after calculation", groups = {"smoke,regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	@Test(description = "SMAB-T302,SMAB-T195,SMAB-T196,SMAB-T442,SMAB-T577: Performing validation on PROP 13 COMPOSITE FACTORS before and after calculation", groups = {"smoke,regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
 	public void verifyBppTrend_IndustrialCompositeFactors_ReCalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -247,6 +252,7 @@ public class BppTrend_Prop13Table_CalculateAndReCalculate extends TestBase {
 			
 		//Step3: Opening the BPP Trend module		
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -258,67 +264,20 @@ public class BppTrend_Prop13Table_CalculateAndReCalculate extends TestBase {
 		objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "ReCalcuate all button is visible");
 			
 		//Step5: Clicking on the given table
-		objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
+		objBppTrnPg.clickOnTableOnBppTrendPage(tableName, true);
 				
 		//Step6: Validating availability of ReCalculate button at table level before performing calculation
 		boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(3, tableName);
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T195: ReCalcuate button is visible for Calculated table");
 		
-		//Step7: Retrieve message displayed above table before clicking calculate button
+		//Step7: Retrieve message displayed above table before clicking ReCalculate button
 		String actTableMsgBeforeCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
 		String expTableMsgBeforeCalc = CONFIG.getProperty("tableMsgBeforeReCalculation");
 		objSoftAssert.assertEquals(actTableMsgBeforeCalc, expTableMsgBeforeCalc, "Message displayed above '"+ tableName +"' before ReCalculation is initiated");
 		
-		//Step8: Clicking on ReCalculate button
-		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'ReCalculate' Button ");
-		objBppTrnPg.clickReCalculateBtn(tableName);
-		
-		//Step9: Retrieve and collect grid CPI Factor data for given roll year in a list
-		List<String> gridDataWithFirstCpiFactor = objBppTrnPg.getTextOfMultipleElementsFromProp13Table();
-		
-		//Step10: Enter updated value CPI Factor text-box
-		objBppTrnPg.enter(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.cpiFactorTxtBox), CONFIG.getProperty("cpiFactorSecondValue"));
-		
-		//Step11: Validating the warning message on ReCalculate click
-		String actWarningMsgInPopUp = objBppTrnPg.retrieveReCalculatePopUpMessage();
-		String expWarningMsgInPopUp = CONFIG.getProperty("recalculatePopUpMsg");
-		softAssert.assertContains(actWarningMsgInPopUp, expWarningMsgInPopUp, "SMAB-T196: Warning / Pop up message dislayed when 'ReCalculate' button is clicked");
-		
-		//Step12: Clicking 'Confirm' button in warning pop up to trigger ReCalculation
-		objBppTrnPg.javascriptClick(objBppTrnPg.confirmBtnInPopUp);
-		
-		//Step13: Waiting for pop up message to display and the message displayed above table to update
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);			
-
-		//Step14: Validation to check whether ReCalculation is successful and table data appears for given table
-		boolean isTableVisible = objBppTrnPg.isTableDataVisible(tableName);
-		softAssert.assertTrue(isTableVisible, "SMAB-T195: User successfully triggered ReCalculation for '"+ tableName +" 'table");
-			
-		//Step15: Retrieve & Assert updated message displayed above table
-		String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-		String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
-		objSoftAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "Message displayed above the table after ReCalculation is completed");
-
-		ExtentTestManager.getTest().log(LogStatus.INFO, "* Checking status of various buttons at page level and table level");
-		//Step16: Validating presence of ReCalculate button at table level after calculate button is clicked
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, tableName);
-		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T195: ReCalcuate button is visible for calculated table");
-								
-		//Step17: Validating presence of ReCalculateAll button at page level on performing the calculation
-		isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
-		objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "ReCalcuateAll button is visible at page level");
-					
-		//Step18: Retrieve and collect grid CPI Factor data for given roll year in a list
-		List<String> gridDataWithSecondCpiFactor = objBppTrnPg.getTextOfMultipleElementsFromProp13Table();
-
-		//Step19: Checking whether CPI Factor values have updated on UI when calculation done with updated cPI factor value
-		softAssert.assertTrue(!(gridDataWithFirstCpiFactor.equals(gridDataWithSecondCpiFactor)), "SMAB-T277: Is calculation updated in grid post "
-				+ "changing the CPI factor value. "+ "gridDataWithFirstCpiFactor: "+ gridDataWithFirstCpiFactor +"  "
-						+ "||  gridDataWithSecondCpiFactor: "+ gridDataWithSecondCpiFactor);
-
-		//Step20: Retrieving roll year and year acquired values to check roll year values are 1 year greater than acquired year values
-		List<WebElement> rollYears = objBppTrnPg.locateElements("//th[@data-label = 'Roll Year']//lightning-formatted-text", 60);
-		List<WebElement> yearAcquired = objBppTrnPg.locateElements("//td[@data-label = 'Year Acquired']//lightning-formatted-text", 60);
+		//Step8: Retrieving roll year and year acquired values to check roll year values are 1 year greater than acquired year values
+		List<WebElement> rollYears = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//th[@data-label = 'Roll Year']//lightning-formatted-text", 60);
+		List<WebElement> yearAcquired = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'Year Acquired']//lightning-formatted-text", 60);
 		for(int i = 0; i < rollYears.size(); i++) {
 			int currentRollYear = Integer.parseInt(objBppTrnPg.getElementText(rollYears.get(i)));
 			int currentYearAcquired = Integer.parseInt(objBppTrnPg.getElementText(yearAcquired.get(i)));
@@ -329,11 +288,52 @@ public class BppTrend_Prop13Table_CalculateAndReCalculate extends TestBase {
 			softAssert.assertTrue(yearsComparisonStatus, "SMAB-T577: 'Roll Year' is 1 year greatrer than 'Year Acquired'. Roll Year Value: "+ currentRollYear + " || Year Acquired Value: "+ currentYearAcquired);
 		}
 		
-		//Step21: Log out from the application
-		objApasGenericFunctions.logout();
-			
-		//Step22: Assert all the assertions
+		//Step9: Edit the CPI factor value and click ReCalculate button and validating the warning message on ReCalculate click
+		objBppTrnPg.enter(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.cpiFactorTxtBox), CONFIG.getProperty("cpiFactorSecondValue"));
+		objBppTrnPg.clickReCalculateBtn(tableName);
+		String actWarningMsgInPopUp = objBppTrnPg.retrieveReCalculatePopUpMessage();
+		String expWarningMsgInPopUp = CONFIG.getProperty("recalculatePopUpMsg");
+		softAssert.assertContains(actWarningMsgInPopUp, expWarningMsgInPopUp, "SMAB-T196: Warning / Pop up message dislayed when 'ReCalculate' button is clicked");
+		
+		//Step10: Clicking 'Confirm' button in warning pop up to trigger ReCalculation
+		objBppTrnPg.javascriptClick(objBppTrnPg.confirmBtnInPopUp);
+		
+		//Step11: Validating error message on calculating the table after editing the value of approved CPI
+		String errorMessage = objBppTrnPg.waitForErrorPopUpMsgOnCalculateClick(30);
+		softAssert.assertContains(errorMessage, "CPI Factors can't be updated once Submitted for Approval or Approved", "SMAB-T301: Validation to check error message on clicking calculate button after editing approved CPI value");
+		
+		//Step12: Waiting for pop up message to display and the message displayed above table to update
+//		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+//
+//		//Step13: Validation to check whether ReCalculation is successful and table data appears for given table
+//		boolean isTableVisible = objBppTrnPg.isTableDataVisible(tableName);
+//		softAssert.assertTrue(isTableVisible, "SMAB-T195: User successfully triggered ReCalculation for '"+ tableName +" 'table");
+//			
+//		//Step14: Retrieve & Assert updated message displayed above table
+//		String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
+//		String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
+//		objSoftAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "Message displayed above the table after ReCalculation is completed");
+//
+//		ExtentTestManager.getTest().log(LogStatus.INFO, "* Checking status of various buttons at page level and table level");
+//		//Step15: Validating presence of ReCalculate button at table level after calculate button is clicked
+//		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, tableName);
+//		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T195: ReCalcuate button is visible for calculated table");
+//								
+//		//Step16: Validating presence of ReCalculateAll button at page level on performing the calculation
+//		isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
+//		objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "ReCalcuateAll button is visible at page level");
+//					
+//		//Step17: Retrieve and collect grid CPI Factor data for given roll year in a list
+//		List<String> gridDataWithSecondCpiFactor = objBppTrnPg.getTextOfMultipleElementsFromProp13Table();
+//
+//		//Step18: Checking whether CPI Factor values have updated on UI when calculation done with updated cPI factor value
+//		softAssert.assertTrue(!(gridDataWithFirstCpiFactor.equals(gridDataWithSecondCpiFactor)), "SMAB-T277: Is calculation updated in grid post "
+//				+ "changing the CPI factor value. "+ "gridDataWithFirstCpiFactor: "+ gridDataWithFirstCpiFactor +"  "
+//						+ "||  gridDataWithSecondCpiFactor: "+ gridDataWithSecondCpiFactor);
+		
+		//Step19: Log out from the application
 		softAssert.assertAll();
+		objApasGenericFunctions.logout();
 	}
 	
 }

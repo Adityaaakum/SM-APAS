@@ -38,10 +38,10 @@ public class BppTrendSettingTest  extends TestBase {
 	
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
-//		if(driver==null) {
-//            setupTest();
-//            driver = BrowserDriver.getBrowserInstance();
-//        }
+		if(driver==null) {
+            setupTest();
+            driver = BrowserDriver.getBrowserInstance();
+        }
 		
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
@@ -92,22 +92,22 @@ public class BppTrendSettingTest  extends TestBase {
 		//Step6: Clicking on the roll year name in grid to navigate to details page of selected roll year
 		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
 		
-		//Step7: Move & click on BPP Setting drop down icon
-		Thread.sleep(3000);
-		String bppSettingCountBeforeCreatingNewSetting = objBppTrnPg.getCountOfBppSettings();
-
+		String bppSettingCountBeforeCreatingNewSetting = null;
+		try {
+		
+		//Step7: Get existing count of BPP Settings and click BPP Setting drop down
+		bppSettingCountBeforeCreatingNewSetting = objBppTrnPg.getCountOfBppSettings("0");
 		objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppSetting, 10);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppSetting));
+		objBppTrnPg.clickAction(objBppTrnPg.dropDownIconBppSetting);
 
 		//Step8: Click on New option to create BPP Setting entry
-		objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppSetting, 10);
-		objBppTrnPg.Click(objBppTrnPg.newBppTrendSettingLink);
+		objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBppTrendSettingLink, 10);
+		objBppTrnPg.clickAction(objBppTrnPg.newBppTrendSettingLink);
 		
 		//Step9: Validate error message with factor values less than minimum range
 		String expectedErrorMsgOnIncorrectFactorValue;
 		String actualErrorMsgOnIncorrectFactorValue;
 		List<String> multipleFactorIncorrectVauesList = Arrays.asList(CONFIG.getProperty("FactorValuesLessThanMinRange").split(","));
-
 		for(int i = 0; i < multipleFactorIncorrectVauesList.size(); i++) {
 			objBppTrnPg.enterFactorValue(multipleFactorIncorrectVauesList.get(i));
 			objBppTrnPg.Click(objBuildPermit.saveButton);
@@ -134,12 +134,13 @@ public class BppTrendSettingTest  extends TestBase {
 		boolean isErrorMsgDislayed = actualErrorMsgOnIncorrectFactorValue.contains(expectedErrorMsgOnIncorrectFactorValue);
 		softAssert.assertTrue(isErrorMsgDislayed, "SMAB-T134: Error message displayed: '" + actualErrorMsgOnIncorrectFactorValue + "' for  factor value greater than minimum range");
 		
-		//Step11: Close the currently opened BPP Setting entry pop up
+		//Step11: Close the currently opened bpp setting entry pop up
 		objBppTrnPg.Click(objBuildPermit.closeEntryPopUp);
 		
-		//Step12: Create and Edit BPP Setting entry with factor values within specified range
+		//Step12: Create and Edit bpp setting entry with factor values within specified range
 		List<String> multipleFactorCorrectVauesList = Arrays.asList(CONFIG.getProperty("FactorValuesWithinRange").split(","));
 		for(int i = 0; i < multipleFactorCorrectVauesList.size(); i++) {
+			//Thread.sleep(3000);
 			if(i == 0) {
 				//Creating the BPP setting entry
 				objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppSetting, 10);
@@ -148,24 +149,24 @@ public class BppTrendSettingTest  extends TestBase {
 				objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBppTrendSettingLink, 10);
 				objBppTrnPg.clickAction(objBppTrnPg.newBppTrendSettingLink);
 				
-				objBppTrnPg.enterRollYearInBppSettingDetails(rollYear);	
+				objBppTrnPg.enterRollYearInBppSettingDetails(rollYear);
 				objBppTrnPg.enterFactorValue(multipleFactorCorrectVauesList.get(i));
 				objBppTrnPg.Click(objBuildPermit.saveButton);
 			} else {
 				//Retrieving equipment index factor value before performing edit operation
-				String factorValueBeforeEdit = objBppTrnPg.retrieveMaxEqipIndexValueFromPopUp();
+				String factorValueBeforeEdit = objBppTrnPg.getElementText(objBppTrnPg.locateElement("//div[text() = 'Maximum Equipment index Factor:']/following-sibling::div//span", 30));
 				factorValueBeforeEdit = factorValueBeforeEdit.substring(0, factorValueBeforeEdit.length()-1);
 				
-				//Editing the BPP newly created setting entry
+				//Editing the BPP newly created setting entry				
 				objBppTrnPg.clickAction(objBppTrnPg.dropDownIconDetailsSection);
-				objBppTrnPg.waitForElementToBeVisible(objBuildPermit.editLinkUnderShowMore, 20);
+				//Thread.sleep(2000);
 				objBppTrnPg.clickAction(objBuildPermit.editLinkUnderShowMore);
 				objBppTrnPg.enterFactorValue(multipleFactorCorrectVauesList.get(i));
 				objBppTrnPg.Click(objBppTrnPg.waitForElementToBeClickable(objBuildPermit.saveBtnEditPopUp));
 				
 				//Retrieving equipment index factor value after performing edit operation
-				objBppTrnPg.waitForElementTextToBe(objBppTrnPg.maxEquipIndexValueOnDetailsPage, multipleFactorCorrectVauesList.get(i), 10);
-				String factorValueAfterEdit = objBppTrnPg.retrieveMaxEqipIndexValueFromPopUp();
+				//Thread.sleep(2000);
+				String factorValueAfterEdit = objBppTrnPg.getElementText(objBppTrnPg.locateElement("//div[text() = 'Maximum Equipment index Factor:']/following-sibling::div//span", 30));
 				factorValueAfterEdit = factorValueAfterEdit.substring(0, factorValueAfterEdit.length()-1);
 				
 				//Validation for checking whether updated values are reflecting or not
@@ -173,18 +174,24 @@ public class BppTrendSettingTest  extends TestBase {
 			}
 		}
 		
-		//Step13: Validating the count of BPP Setting before creating new BPP Setting
-		String bppSettingCountAfterCreatingNewSetting = objBppTrnPg.getCountOfBppSettings();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		//Step13: Validating the count of BPP Setting after creating new bpp setting
+		String bppSettingCountAfterCreatingNewSetting = objBppTrnPg.getCountOfBppSettings("1");
 		softAssert.assertTrue(!(bppSettingCountAfterCreatingNewSetting.equals(bppSettingCountBeforeCreatingNewSetting)), "SMAB-T133: BPP trend setting successfully created & reflecting in right panel. Bpp setting count before creating new setting: "+ bppSettingCountBeforeCreatingNewSetting +" || Bpp setting count after creating and editing new setting: "+ bppSettingCountAfterCreatingNewSetting);
 
-		//Step14: Retrieving the name of newly created BPP setting entry
-		String bppSettingName = objBppTrnPg.retrieveBppSettingName();
+		//Step14: Retrieving the name of newly created bpp setting entry
+		String xpathNewBppSetting = "//span[contains(text(), 'BPP Settings')]//ancestor::div[contains(@class, 'forceRelatedListCardHeader')]//following-sibling::div//h3//a";
+		String bppSettingName = objBppTrnPg.getElementText(objBppTrnPg.locateElement(xpathNewBppSetting, 30));
 				
-		//Step15: Click ViewAll link to navigate to BPP settings grid and edit existing BPP Setting entry
+		//Step15: Click ViewAll link to navigate to bpp settings grid and edit existing bpp setting entry
 		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.viewAllBppSettings));
 		
 		//Step16: Retrieving the equipment index factor value before editing
-		String factorValueDisplayedBeforeEditing = objBppTrnPg.retrieveMaxEqipIndexValueFromViewAllGrid(bppSettingName);
+		String xpathForFactorValueInGrid = "//tbody/tr//th//a[text() = '"+ bppSettingName +"']//parent::span//parent::th//following-sibling::td//span[contains(text(), '%')]";
+		String factorValueDisplayedBeforeEditing = objBppTrnPg.getElementText(objBppTrnPg.locateElement(xpathForFactorValueInGrid, 90));
 
 		//Step17: Editing and updating the equipment index factor value
 		String factorValue = bppTrendSettingDataMap.get("Maximum Equipment index Factor");
@@ -196,8 +203,8 @@ public class BppTrendSettingTest  extends TestBase {
 		objBppTrnPg.Click(objBppTrnPg.waitForElementToBeClickable(objBuildPermit.saveBtnEditPopUp));
 
 		//Step18: Retrieving and validating the equipment index factor value after editing
-		objBppTrnPg.waitForElementTextToBe(objBppTrnPg.maxEquipIndexValueOnDetailsPage, Integer.toString(updatedFactorValue), 10);
-		String factorValueDisplayedAfterEditing = objBppTrnPg.retrieveMaxEqipIndexValueFromViewAllGrid(bppSettingName);
+		Thread.sleep(2000);
+		String factorValueDisplayedAfterEditing = objBppTrnPg.getElementText(objBppTrnPg.locateElement(xpathForFactorValueInGrid, 30));
 		softAssert.assertTrue(!(factorValueDisplayedAfterEditing.equals(factorValueDisplayedBeforeEditing)), "SMAB-T133: Validation to check equipment index updated with new value. Factor value in grid before editing: "+ factorValueDisplayedBeforeEditing +" || Factor value in grid after editing: "+ factorValueDisplayedAfterEditing);
 		
 		softAssert.assertAll();
@@ -209,7 +216,7 @@ public class BppTrendSettingTest  extends TestBase {
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating the user is able select and view  input factor tables on BPP Trend Setup page:: SMAB-T229
 	 */
-	@Test(description = "SMAB-T229: Check for availability of input factor tables on bpp trend roll year screen",  groups = {"regression","bppTrend"}, dataProvider = "loginBusinessAndPrincipalUsers", dataProviderClass = DataProviders.class, priority = 2, enabled = false)
+	@Test(description = "SMAB-T229: Check for availability of input factor tables on bpp trend roll year screen",  groups = {"regression","bppTrend"}, dataProvider = "loginBusinessAndPrincipalUsers", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
 	public void verify_BppTrend_ValidateInputFactorTables_OnDetailsPage(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
@@ -249,7 +256,7 @@ public class BppTrendSettingTest  extends TestBase {
 	 * 2. Validating user is able to edit Max. Equip. Index when status is Needs Recalculation:: Test Case/JIRA ID: SMAB-T272
 	 * 3. Validating user is able to edit Max. Equip. Index when status is Submitted for Approval:: Test Case/JIRA ID: SMAB-T273
 	 */
-	@Test(description = "SMAB-T271,SMAB-T272,SMAB-T273: Edit BPP Setting with with different status of tables", groups = {"smoke","regression","bppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = false)
+	@Test(description = "SMAB-T271,SMAB-T272,SMAB-T273: Edit BPP Setting with with different status of tables", groups = {"smoke","regression","bppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 2, enabled = true)
 	public void verify_BppTrend_EditMaxEquipIndex_WithVariousStatusOfTables(String loginUser) throws Exception {
 		//Step1: Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -351,7 +358,9 @@ public class BppTrendSettingTest  extends TestBase {
 			objBppTrnPg.Click(objBppTrnPg.waitForElementToBeClickable(objBuildPermitPage.cancelButton));
 			softAssert.assertContains(errorMessage, "Maximum Equipment index Factor is locked for editing for the Roll Year", "SMAB-T271: Updated value of maximum equip. index factor has been saved");
 			
-		} finally {
+		} catch(Exception ex) {
+			ex.printStackTrace();
+			
 			//Step 25: Reverting the changes done to maximum equipment index factor value
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Reverting the maximum equipment index factor value");
 			objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Calculated", rollYear);
@@ -376,7 +385,7 @@ public class BppTrendSettingTest  extends TestBase {
 	 * 5. Calculating rest of the tables and validating presence of Recalculate button after calculation is done:: Test Case/JIRA ID: SMAB-T170
 	 * 6. Checking status of tables on BPP Trend Setup page:: Test Case/JIRA ID: SMAB-T170
 	 */
-	@Test(description = "SMAB-T170,SMAB-T172: Perform calculation & re-calculation for factors tables individually using calculate & recalclate buttons with updating max. equip. index factor", groups = {"regression","bppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 3, enabled = false)
+	@Test(description = "SMAB-T170,SMAB-T172: Perform calculation & re-calculation for factors tables individually using calculate & recalclate buttons with updating max. equip. index factor", groups = {"regression","bppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
 	public void verify_BppTrend_CalculateAndReCalculate_ByUpdatingMaxEquipIndexFactor(String loginUser) throws Exception {		
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -423,6 +432,7 @@ public class BppTrendSettingTest  extends TestBase {
 		
 		//Step7: Opening the BPP Trend module, selecting roll year and clicking select button
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -435,16 +445,16 @@ public class BppTrendSettingTest  extends TestBase {
 		 */
 		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Initiating Calculation For COMMERCIAL COMPOSITE Factors ******");
 		objBppTrnPg.clickOnTableOnBppTrendPage("Commercial Composite Factors", false);
-		boolean isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(60, "Commercial Composite Factors");
+		boolean isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, "Commercial Composite Factors");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T170: Calcuate button is visible for Commercial Composite Factors table");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T172: Calcuate button is visible for Commercial Composite Factors table");
 
 		objBppTrnPg.clickCalculateBtn("Commercial Composite Factors");
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(30);
 		boolean isTableVisible = objBppTrnPg.isTableDataVisible("Commercial Composite Factors");
 		softAssert.assertTrue(isTableVisible, "SMAB-T172: User successfully triggered calculation for Commercial Composite Factors table");
 		
-		boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "Commercial Composite Factors");
+		boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "Commercial Composite Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for Commercial Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T172: ReCalcuate button is visible for Commercial Composite Factors table");
 		
@@ -456,16 +466,16 @@ public class BppTrendSettingTest  extends TestBase {
 		 */
 		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Initiating Calculation For INDUSTRIAL COMPOSITE Factors ******");
 		objBppTrnPg.clickOnTableOnBppTrendPage("Industrial Composite Factors", false);
-		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(60, "Industrial Composite Factors");
+		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, "Industrial Composite Factors");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T170: Calcuate button is visible for Industrial Composite Factors table");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T172: Calcuate button is visible for Industrial Composite Factors table");
 		
 		objBppTrnPg.clickCalculateBtn("Industrial Composite Factors");
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(30);
 		isTableVisible = objBppTrnPg.isTableDataVisible("Industrial Composite Factors");
 		softAssert.assertTrue(isTableVisible, "SMAB-T172: User successfully triggered calculation for Industrial Composite Factors table");
 		
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "Industrial Composite Factors");
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "Industrial Composite Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for Industrial Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T172: ReCalcuate button is visible for Industrial Composite Factors table");
 
@@ -477,16 +487,16 @@ public class BppTrendSettingTest  extends TestBase {
 		 */
 		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Initiating Calculation For CONSTRUCTION MOBILE EQUIP COMPOSITE Factors ******");
 		objBppTrnPg.clickOnTableOnBppTrendPage("Construction Mobile Equipment Composite Factors", true);
-		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(60, "Construction Mobile Equipment Composite Factors");
+		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, "Construction Mobile Equipment Composite Factors");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T170: Calcuate button is visible for Construction Mobile Equipment Composite Factors table");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T172: Calcuate button is visible for Construction Mobile Equipment Composite Factors table");
 		
 		objBppTrnPg.clickCalculateBtn("Construction Mobile Equipment Composite Factors");
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(30);
 		isTableVisible = objBppTrnPg.isTableDataVisible("Construction Mobile Equipment Composite Factors");
 		softAssert.assertTrue(isTableVisible, "SMAB-T172: User successfully triggered calculation for Construction Mobile Equipment Composite Factors table");
 		
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "Construction Mobile Equipment Composite Factors");
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "Construction Mobile Equipment Composite Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for Construction Mobile Equipment Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T172: ReCalcuate button is visible for Construction Mobile Equipment Composite Factors table");
 		
@@ -498,16 +508,16 @@ public class BppTrendSettingTest  extends TestBase {
 		 */
 		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Initiating Calculation For BPP PROP 13 Factors ******");
 		objBppTrnPg.clickOnTableOnBppTrendPage("BPP Prop 13 Factors", true);
-		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(60, "BPP Prop 13 Factors");
+		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, "BPP Prop 13 Factors");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T170: Calcuate button is visible for BPP Prop 13 Factors table");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T172: Calcuate button is visible for BPP Prop 13 Factors table");
 		
 		objBppTrnPg.clickCalculateBtn("BPP Prop 13 Factors");
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(30);
 		isTableVisible = objBppTrnPg.isTableDataVisible("BPP Prop 13 Factors");
 		softAssert.assertTrue(isTableVisible, "SMAB-T172: User successfully triggered calculation for BPP Prop 13 Factors table");
 		
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "BPP Prop 13 Factors");
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "BPP Prop 13 Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for BPP Prop 13 Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T172: ReCalcuate button is visible for BPP Prop 13 Factors table");
 
@@ -549,23 +559,24 @@ public class BppTrendSettingTest  extends TestBase {
 		 * Validating availability of ReCalculate button
 		 */
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Initiating ReCalculation For COMMERCIAL COMPOSITE Factors ******");
 		objBppTrnPg.clickOnTableOnBppTrendPage("Commercial Composite Factors", false);
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "Commercial Composite Factors");
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "Commercial Composite Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for Commercial Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T173: ReCalcuate button is visible for Commercial Composite Factors table");
 
 		objBppTrnPg.clickReCalculateBtn("Commercial Composite Factors");
 		objBppTrnPg.Click(objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.confirmBtnInPopUp, 20));
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(30);
 		isTableVisible = objBppTrnPg.isTableDataVisible("Commercial Composite Factors");
 		softAssert.assertTrue(isTableVisible, "SMAB-T173: User successfully triggered calculation for Commercial Composite Factors table");
 		
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "Commercial Composite Factors");
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "Commercial Composite Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for Commercial Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T173: ReCalcuate button is visible for Commercial Composite Factors table");
 		
@@ -577,17 +588,17 @@ public class BppTrendSettingTest  extends TestBase {
 		 */
 		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Initiating ReCalculation For INDUSTRIAL COMPOSITE Factors ******");
 		objBppTrnPg.clickOnTableOnBppTrendPage("Industrial Composite Factors", false);
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "Industrial Composite Factors");
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "Industrial Composite Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for Industrial Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T173: ReCalcuate button is visible for Industrial Composite Factors table");
 		
 		objBppTrnPg.clickReCalculateBtn("Industrial Composite Factors");
 		objBppTrnPg.Click(objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.confirmBtnInPopUp, 20));
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(30);
 		isTableVisible = objBppTrnPg.isTableDataVisible("Industrial Composite Factors");
 		softAssert.assertTrue(isTableVisible, "SMAB-T173: User successfully triggered calculation for Industrial Composite Factors table");
 		
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "Industrial Composite Factors");
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "Industrial Composite Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for Industrial Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T173: ReCalcuate button is visible for Industrial Composite Factors table");
 
@@ -599,17 +610,17 @@ public class BppTrendSettingTest  extends TestBase {
 		 */
 		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Initiating ReCalculation For CONSTRUCTION MOBILE EQUIP COMPOSITE Factors ******");
 		objBppTrnPg.clickOnTableOnBppTrendPage("Construction Mobile Equipment Composite Factors", true);
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "Construction Mobile Equipment Composite Factors");
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "Construction Mobile Equipment Composite Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for Construction Mobile Equipment Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T173: ReCalcuate button is visible for Construction Mobile Equipment Composite Factors table");
 		
 		objBppTrnPg.clickReCalculateBtn("Construction Mobile Equipment Composite Factors");
 		objBppTrnPg.Click(objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.confirmBtnInPopUp, 20));
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(30);
 		isTableVisible = objBppTrnPg.isTableDataVisible("Construction Mobile Equipment Composite Factors");
 		softAssert.assertTrue(isTableVisible, "SMAB-T173: User successfully triggered calculation for Construction Mobile Equipment Composite Factors table");
 		
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "Construction Mobile Equipment Composite Factors");
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "Construction Mobile Equipment Composite Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for Construction Mobile Equipment Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T173: ReCalcuate button is visible for Construction Mobile Equipment Composite Factors table");
 		
@@ -621,17 +632,17 @@ public class BppTrendSettingTest  extends TestBase {
 		 */
 		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Initiating ReCalculation For BPP PROP 13 Factors ******");
 		objBppTrnPg.clickOnTableOnBppTrendPage("BPP Prop 13 Factors", true);
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "BPP Prop 13 Factors");
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "BPP Prop 13 Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for BPP Prop 13 Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T173: ReCalcuate button is visible for BPP Prop 13 Factors table");
 		
 		objBppTrnPg.clickReCalculateBtn("BPP Prop 13 Factors");
 		objBppTrnPg.Click(objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.confirmBtnInPopUp, 20));
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(30);
 		isTableVisible = objBppTrnPg.isTableDataVisible("BPP Prop 13 Factors");
 		softAssert.assertTrue(isTableVisible, "SMAB-T173: User successfully triggered calculation for BPP Prop 13 Factors table");
 		
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "BPP Prop 13 Factors");
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "BPP Prop 13 Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for BPP Prop 13 Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T173: ReCalcuate button is visible for BPP Prop 13 Factors table");
 
@@ -668,6 +679,7 @@ public class BppTrendSettingTest  extends TestBase {
 		
 		//Step24: Opening the BPP Trend module, selecting roll year and clicking select button
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -679,17 +691,17 @@ public class BppTrendSettingTest  extends TestBase {
 		 * Validating availability of ReCalculate button
 		 */
 		objBppTrnPg.clickOnTableOnBppTrendPage("Construction Composite Factors", false);
-		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(60, "Construction Composite Factors");
+		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, "Construction Composite Factors");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T170: Calcuate button is visible for Construction Composite Factors table");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T172: Calcuate button is visible for Construction Composite Factors table");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T173: Calcuate button is visible for Construction Composite Factors table");
 		
 		objBppTrnPg.clickCalculateBtn("Construction Composite Factors");
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(30);
 		isTableVisible = objBppTrnPg.isTableDataVisible("Construction Composite Factors");
 		softAssert.assertTrue(isTableVisible, "SMAB-T172: User successfully triggered calculation for Construction Composite Factors table");
 		
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "Construction Composite Factors");
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "Construction Composite Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for Construction Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T172: ReCalcuate button is visible for Construction Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T173: ReCalcuate button is visible for Construction Composite Factors table");
@@ -701,17 +713,17 @@ public class BppTrendSettingTest  extends TestBase {
 		 * Validating availability of ReCalculate button
 		 */
 		objBppTrnPg.clickOnTableOnBppTrendPage("Agricultural Composite Factors", false);
-		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(60, "Agricultural Composite Factors");
+		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, "Agricultural Composite Factors");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T170: Calcuate button is visible for Agricultural Composite Factors table");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T172: Calcuate button is visible for Agricultural Composite Factors table");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T173: Calcuate button is visible for Agricultural Composite Factors table");
 		
 		objBppTrnPg.clickCalculateBtn("Agricultural Composite Factors");
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(30);
 		isTableVisible = objBppTrnPg.isTableDataVisible("Agricultural Composite Factors");
 		softAssert.assertTrue(isTableVisible, "SMAB-T172: User successfully triggered calculation for Agricultural Composite Factors table");
 		
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "Agricultural Composite Factors");
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "Agricultural Composite Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for Agricultural Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T172: ReCalcuate button is visible for Agricultural Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T173: ReCalcuate button is visible for Agricultural Composite Factors table");
@@ -723,17 +735,17 @@ public class BppTrendSettingTest  extends TestBase {
 		 * Validating availability of ReCalculate button
 		 */
 		objBppTrnPg.clickOnTableOnBppTrendPage("Agricultural Mobile Equipment Composite Factors", true);
-		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(60, "Agricultural Mobile Equipment Composite Factors");
+		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, "Agricultural Mobile Equipment Composite Factors");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T170: Calcuate button is visible for Agricultural Mobile Equipment Composite Factors table");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T172: Calcuate button is visible for Agricultural Mobile Equipment Composite Factors table");
 		softAssert.assertTrue(isCalculateBtnDisplayed, "SMAB-T173: Calcuate button is visible for Agricultural Mobile Equipment Composite Factors table");
 
 		objBppTrnPg.clickCalculateBtn("Agricultural Mobile Equipment Composite Factors");
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(30);
 		isTableVisible = objBppTrnPg.isTableDataVisible("Agricultural Mobile Equipment Composite Factors");
 		softAssert.assertTrue(isTableVisible, "SMAB-T172: User successfully triggered calculation for Agricultural Mobile Equipment Composite Factors table");
 		
-		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(60, "Agricultural Mobile Equipment Composite Factors");
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, "Agricultural Mobile Equipment Composite Factors");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T170: ReCalcuate button is visible for Agricultural Mobile Equipment Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T172: ReCalcuate button is visible for Agricultural Mobile Equipment Composite Factors table");
 		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T173: ReCalcuate button is visible for Agricultural Mobile Equipment Composite Factors table");
@@ -747,7 +759,7 @@ public class BppTrendSettingTest  extends TestBase {
 		List<String> valuationFactorTables = Arrays.asList(CONFIG.getProperty("valuationTablesUnderMoreTab").split(","));
 		for(String valuationFactorTable : valuationFactorTables) {
 			objBppTrnPg.clickOnTableOnBppTrendPage(valuationFactorTable, true);
-			isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(10, "valuationFactorTable");
+			isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(5, "valuationFactorTable");
 			softAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T249: Calcuate button is NOT visible for "+ valuationFactorTable +" table");
 		}
 		

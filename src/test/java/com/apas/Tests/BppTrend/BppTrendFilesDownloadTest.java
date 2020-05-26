@@ -84,9 +84,10 @@ public class BppTrendFilesDownloadTest extends TestBase {
 
 		//Step3: Selecting role year from drop down
 		String rollYear = CONFIG.getProperty("rollYear");
-		objBppTrnPg.javascriptClick(objBppTrnPg.rollYearDropdown);
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
+		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
-		objBppTrnPg.javascriptClick(objBppTrnPg.selectRollYearButton);
+		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
 		
 		//Step4: Validating presence of Export Composite Factors & Export Valuation Factors buttons and clicking then sequentially
 		boolean isExportCompositeBtnDisplayed = objBppTrnPg.isExportCompositeFactorsBtnVisible(20);
@@ -135,7 +136,9 @@ public class BppTrendFilesDownloadTest extends TestBase {
 	
 			softAssert.assertTrue(isCompositeExcelDownloaded, "SMAB-T303: Composite Factor XLSX file downloaded successfully");	
 			softAssert.assertTrue(isValuationExcelDownloaded, "SMAB-T303: Valuation Factor XLSX file downloaded successfully");	
-		} finally {
+		} catch(Exception ex) {
+			ex.printStackTrace();
+			
 			//Step9: Deleting downloaded files from download directory
 			objBppTrnPg.deleteFactorFilesFromDownloadFolder();
 		}
@@ -169,9 +172,10 @@ public class BppTrendFilesDownloadTest extends TestBase {
 
 		//Step3: Selecting role year from drop down
 		String rollYear = CONFIG.getProperty("rollYear");
-		objBppTrnPg.javascriptClick(objBppTrnPg.rollYearDropdown);
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
+		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
-		objBppTrnPg.javascriptClick(objBppTrnPg.selectRollYearButton);
+		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
 		
 		//Step4: Validating presence of Download buttons and clicking then sequentially		
 		boolean isDownloadBtnDisplayed = objBppTrnPg.isDownloadBtnVisible(20);
@@ -194,7 +198,9 @@ public class BppTrendFilesDownloadTest extends TestBase {
 				isPdfDownloaded = true;
 			}
 			softAssert.assertTrue(isPdfDownloaded, "SMAB-T206: PDF file downloaded with "+ loginUser +" user successfully");
-		} finally {
+		} catch(Exception ex) {
+			ex.printStackTrace();
+			
 			//Step9: Deleting downloaded files from download directory
 			objBppTrnPg.deleteFactorFilesFromDownloadFolder();
 		}

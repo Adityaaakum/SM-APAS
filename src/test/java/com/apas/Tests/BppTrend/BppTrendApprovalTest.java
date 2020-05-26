@@ -38,10 +38,10 @@ public class BppTrendApprovalTest extends TestBase {
 	
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
-//		if(driver==null) {
-//            setupTest();
-//            driver = BrowserDriver.getBrowserInstance();
-//        }
+		if(driver==null) {
+            setupTest();
+            driver = BrowserDriver.getBrowserInstance();
+        }
 		
 		driver = BrowserDriver.getBrowserInstance();
 		objSoftAssert = new SoftAssert();
@@ -102,7 +102,7 @@ public class BppTrendApprovalTest extends TestBase {
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
 
 		//Step4: Selecting role year from drop down
-		objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 10);
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -126,7 +126,7 @@ public class BppTrendApprovalTest extends TestBase {
 			//Step8: Clicking on the given table name
 			isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
 			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
-
+			
 			//Step9: Retrieve & Assert message displayed above table before clicking Approve button
 			String actTableMsgBeforeApprovingCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
 			String expTableMsgBeforeApprovingCalc = CONFIG.getProperty("tableMsgBeforeApproval");
@@ -138,7 +138,7 @@ public class BppTrendApprovalTest extends TestBase {
 			softAssert.assertTrue(isApproveBtnDisplayed, "SMAB-T157: Approve button is visible for Calculated table '"+ tableName +"'");
 			
 			//Step11: Editing and saving cell data in the table for first & last factor tables specified the list
-			WebElement editedCell = objBppTrnPg.locateCellToBeEditedBeforeApproval(tableName);
+			WebElement editedCell = objBppTrnPg.locateCellToBeEdited(tableName);
 			int cellDataBeforeEdit;
 			if(tableName.equalsIgnoreCase("BPP Prop 13 Factors")) {
 				double cellData = Double.valueOf(objBppTrnPg.getElementText(editedCell).split("\\n")[0]);
@@ -156,7 +156,7 @@ public class BppTrendApprovalTest extends TestBase {
 			softAssert.assertTrue(isEditedCellHighlighted, "SMAB-T449: Edited cell is highlighted in yellow color for "+ tableName +" table");
 			
 			ExtentTestManager.getTest().log(LogStatus.INFO, "** Editing table data and clicking Approve button wihtout saving the data **");
-			if(i < allTables.size() - 1) {
+			if(i > 0) {
 				//Step12: Approving the table data without saving edited cell
 				objBppTrnPg.clickApproveButton(tableName);
 				
@@ -172,7 +172,7 @@ public class BppTrendApprovalTest extends TestBase {
 				objBppTrnPg.waitForPopUpMsgOnApproveClick(60);
 				
 				objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
-				editedCell = objBppTrnPg.locateCellToBeEditedBeforeApproval(tableName);
+				editedCell = objBppTrnPg.locateCellToBeEdited(tableName);
 
 				int cellDataAfterEdit;
 				if(tableName.equalsIgnoreCase("BPP Prop 13 Factors")) {
@@ -191,22 +191,21 @@ public class BppTrendApprovalTest extends TestBase {
 				
 				//Step17: Cancel the pop up message and save the cell data
 				objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.cancelBtnInApproveTabPopUp, 10);
-				objBppTrnPg.javascriptClick(objBppTrnPg.cancelBtnInApproveTabPopUp);
+				objBppTrnPg.Click(objBppTrnPg.cancelBtnInApproveTabPopUp);
 				objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.saveBtnToSaveEditedCellData, 10);
 				objBppTrnPg.Click(objBppTrnPg.saveBtnToSaveEditedCellData);
 
-				//Step18: Clicking approve button to approve tab data				
+				//Step18: Clicking approve button to approve tab data
+				//objBppTrnPg.waitForPageSpinnerToDisappear();
 				objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
 				objBppTrnPg.clickApproveButton(tableName);
-				objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.confirmBtnInApproveTabPopUp, 10);
-				objBppTrnPg.javascriptClick(objBppTrnPg.confirmBtnInApproveTabPopUp);
 				
 				//Step19: Waiting for pop up message to display and the message displayed above table to update
 				objBppTrnPg.waitForPopUpMsgOnApproveClick(60);
 				
 				//Step20: Validating whether updated value has been saved in the edited cell post clicking save button
 				objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
-				editedCell = objBppTrnPg.locateCellToBeEditedBeforeApproval(tableName);
+				editedCell = objBppTrnPg.locateCellToBeEdited(tableName);
 				int cellDataAfterEdit = Integer.valueOf(objBppTrnPg.getElementText(editedCell).split("\\n")[0]);
 				softAssert.assertTrue(cellDataBeforeEdit != cellDataAfterEdit, "SMAB-T205: Data has been updated in  approved "+ tableName +" table. Value before updating: "+ cellDataBeforeEdit + " || Value after updating: "+ cellDataAfterEdit);
 			}
@@ -231,13 +230,14 @@ public class BppTrendApprovalTest extends TestBase {
 			isApproveBtnDisplayed = objBppTrnPg.isApproveBtnVisible(5, tableName);
 			softAssert.assertTrue(!isApproveBtnDisplayed, "SMAB-T205: Approve button is not visible for table '"+ tableName +"'");
 			softAssert.assertTrue(!isApproveBtnDisplayed, "SMAB-T157: Approve button is not visible for table '"+ tableName +"'");
-			softAssert.assertTrue(!isApproveBtnDisplayed, "SMAB-T156: Approve button is not visible for table '"+ tableName +"'");			
+			softAssert.assertTrue(!isApproveBtnDisplayed, "SMAB-T156: Approve button is not visible for table '"+ tableName +"'");
 		}
 
 		//Step24: Navigating to BPP Trend Setup page and checking status of the composite & valuation tables
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
 		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		
 		for(int i = 0; i < allTablesBppTrendSetupPage.size(); i++) {
 			tableName = allTablesBppTrendSetupPage.get(i);
 			String currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
@@ -247,9 +247,10 @@ public class BppTrendApprovalTest extends TestBase {
 
 		//Step25: Navigating to BPP Trend page, selecting role year from drop down and clicking select button
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-		objBppTrnPg.javascriptClick(objBppTrnPg.rollYearDropdown);
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
+		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
-		objBppTrnPg.javascriptClick(objBppTrnPg.selectRollYearButton);
+		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
 
 		//Step26: Checking whether edit button in table's cell data is visible after table data is approved
 		for(int i = 0; i < allTables.size(); i++) {
@@ -261,7 +262,7 @@ public class BppTrendApprovalTest extends TestBase {
 			softAssert.assertTrue(isTableVisible, "SMAB-T155: Pinciapl user is able to see calculated table "+ tableName +" post approval");
 			softAssert.assertTrue(isTableVisible, "SMAB-T157: Pinciapl user is able to see calculated table "+ tableName +" post approval");
 			
-			WebElement cellTxtBox = objBppTrnPg.locateCellToBeEditedBeforeApproval(allTables.get(i));
+			WebElement cellTxtBox = objBppTrnPg.locateCellToBeEdited(allTables.get(i));
 			objBppTrnPg.Click(cellTxtBox);
 			WebElement editBtn = objBppTrnPg.locateEditButtonInFocusedCell();
 			softAssert.assertTrue((editBtn == null), "SMAB-T157: Edit button is not visible to update cell data in grid after table status is 'Approved'");

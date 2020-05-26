@@ -91,8 +91,7 @@ public class BppTrend_Calculate_Submit_Approve_OutputTables extends TestBase {
 		
 		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step4: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -185,8 +184,7 @@ public class BppTrend_Calculate_Submit_Approve_OutputTables extends TestBase {
 
 		//Step2: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step3: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -304,8 +302,7 @@ public class BppTrend_Calculate_Submit_Approve_OutputTables extends TestBase {
 		
 		//Step8: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step9: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -379,8 +376,7 @@ public class BppTrend_Calculate_Submit_Approve_OutputTables extends TestBase {
 
 		//Step2: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step3: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);

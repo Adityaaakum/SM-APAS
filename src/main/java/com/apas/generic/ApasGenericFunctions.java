@@ -62,9 +62,9 @@ public class ApasGenericFunctions extends TestBase{
 	 */
 	public void searchModule(String moduleToSearch) throws Exception {	
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
-		objPage.waitForElementToBeClickable(objApasGenericPage.appLauncher, 30);
+		objPage.waitForElementToBeClickable(objApasGenericPage.appLauncher, 60);
 		objPage.Click(objApasGenericPage.appLauncher);
-		objPage.waitForElementToBeClickable(objApasGenericPage.appLauncherSearchBox, 30);
+		objPage.waitForElementToBeClickable(objApasGenericPage.appLauncherSearchBox, 60);
 		objPage.enter(objApasGenericPage.appLauncherSearchBox, moduleToSearch);
 		Thread.sleep(2000);
 		objApasGenericPage.clickNavOptionFromDropDown(moduleToSearch);
@@ -88,7 +88,9 @@ public class ApasGenericFunctions extends TestBase{
 //			objPage.Click(objApasGenericPage.cancelButton);
 
 		//Logging out of the application
+		objPage.waitForElementToBeClickable(objLoginPage.imgUser, 10);
 		objPage.Click(objLoginPage.imgUser);
+		objPage.waitForElementToBeClickable(objLoginPage.lnkLogOut, 10);
 		objPage.Click(objLoginPage.lnkLogOut);
 		objPage.waitForElementToBeVisible(objLoginPage.txtpassWord,30);
 	}

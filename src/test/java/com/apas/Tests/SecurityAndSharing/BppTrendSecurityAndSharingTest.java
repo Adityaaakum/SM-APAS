@@ -78,8 +78,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step4: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -127,8 +126,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step4: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -180,12 +178,11 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step4: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
-
+		
 		//Step6: Validating presence of Submit All Factors For Approval button at page level
 		boolean	isSubmitAllFactorsBtnDisplayed = objBppTrnPg.isSubmitAllFactorsForApprovalBtnVisible(20);
 		objSoftAssert.assertTrue(isSubmitAllFactorsBtnDisplayed, "For User '"+ loginUser +"': Submit All Factors For Approval button is visible");
@@ -235,8 +232,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step4: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -289,8 +285,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step4: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -323,8 +318,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step4: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -357,8 +351,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step4: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -390,9 +383,8 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		objApasGenericFunctions.login(loginUser);
 		
 		//Step3: Opening the BPP Trend module
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-
-		//Step4: Selecting role year from drop down
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -469,18 +461,17 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step4: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
 
-		//Step6: Validating absence of CalculateAll button at page level
+		//Step4: Validating absence of CalculateAll button at page level
 		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(10);
 		softAssert.assertTrue(!isCalculateAllBtnDisplayed, "SMAB-T174: For User '"+ loginUser +"': Calcuate All button is not visible");
 		softAssert.assertTrue(!isCalculateAllBtnDisplayed, "SMAB-T175: For User '"+ loginUser +"': Calcuate All button is not visible");
 				
-		//Step7: Fetch table names from properties file and collect them in a single list
+		//Step5: Fetch table names from properties file and collect them in a single list
 		List<String> allTables = new ArrayList<String>();
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesUnderMoreTab").split(",")));
@@ -488,15 +479,15 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		String tableNamesUnderMoreTab = CONFIG.getProperty("compositeTablesUnderMoreTab") + "," + CONFIG.getProperty("valuationTablesUnderMoreTab");
 		
-		//Step8: Iterating over the given tables
+		//Step6: Iterating over the given tables
 		for (int i = 0; i < allTables.size(); i++) {			
-			//Step9: Clicking on the given table name
+			//Step7: Clicking on the given table name
 			String tableName = allTables.get(i);
 			ExtentTestManager.getTest().log(LogStatus.INFO, "**** Performing Validations For: '"+ tableName +"' Table ****");
 			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
 			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
 			
-			//Step10: Validating absence of Calculate button at table level
+			//Step8: Validating absence of Calculate button at table level
 			boolean isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(10, tableName);
 			softAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T174: For User '"+ loginUser +"': Calcuate button is not visible");
 			softAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T175: For User '"+ loginUser +"': Calcuate button is not visible");
@@ -526,18 +517,17 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step4: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
 
-		//Step6: Validating absence of ReCalculateAll button at page level
+		//Step4: Validating absence of ReCalculateAll button at page level
 		boolean	isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(10);
 		softAssert.assertTrue(!isReCalculateAllBtnDisplayed, "SMAB-T174: For User '"+ loginUser +"': ReCalcuate All button is not visible");
 		softAssert.assertTrue(!isReCalculateAllBtnDisplayed, "SMAB-T175: For User '"+ loginUser +"': ReCalcuate All button is not visible");
 				
-		//Step7: Fetch table names from properties file and collect them in a single list
+		//Step5: Fetch table names from properties file and collect them in a single list
 		List<String> allTables = new ArrayList<String>();
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesUnderMoreTab").split(",")));
@@ -545,15 +535,15 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		String tableNamesUnderMoreTab = CONFIG.getProperty("compositeTablesUnderMoreTab") + "," + CONFIG.getProperty("valuationTablesUnderMoreTab");
 		
-		//Step8: Iterating over the given tables
+		//Step6: Iterating over the given tables
 		for (int i = 0; i < allTables.size(); i++) {			
-			//Step9: Clicking on the given table name
+			//Step7: Clicking on the given table name
 			String tableName = allTables.get(i);
 			ExtentTestManager.getTest().log(LogStatus.INFO, "**** Performing Validations For: '"+ tableName +"' Table ****");
 			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
 			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
 			
-			//Step10: Validating absence of ReCalculate button at table level
+			//Step8: Validating absence of ReCalculate button at table level
 			boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(10, tableName);
 			softAssert.assertTrue(!isReCalculateBtnDisplayed, "SMAB-T174: For User '"+ loginUser +"': ReCalcuate button is not visible");
 			softAssert.assertTrue(!isReCalculateBtnDisplayed, "SMAB-T175: For User '"+ loginUser +"': ReCalcuate button is not visible");
@@ -584,18 +574,17 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step4: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
 
-		//Step6: Validating absence of Submit All Factors For Approval button at page level
+		//Step4: Validating absence of Submit All Factors For Approval button at page level
 		boolean	isSubmitAllFactorsBtnDisplayed = objBppTrnPg.isSubmitAllFactorsForApprovalBtnVisible(10);
 		softAssert.assertTrue(!isSubmitAllFactorsBtnDisplayed, "SMAB-T174: For User '"+ loginUser +"': Submit All Factors For Approval button is not visible");
 		softAssert.assertTrue(!isSubmitAllFactorsBtnDisplayed, "SMAB-T175: For User '"+ loginUser +"': Submit All Factors For Approval button is not visible");
 		
-		////Step7: Fetch table names from properties file and collect them in a single list
+		////Step5: Fetch table names from properties file and collect them in a single list
 		//List<String> allTables = new ArrayList<String>();
 		//allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
 		//allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesUnderMoreTab").split(",")));
@@ -603,15 +592,15 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		//String tableNamesUnderMoreTab = CONFIG.getProperty("compositeTablesUnderMoreTab") + "," + CONFIG.getProperty("valuationTablesUnderMoreTab");
 		
-		////Step8: Iterating over the given tables
+		////Step6: Iterating over the given tables
 		//for (int i = 0; i < allTables.size(); i++) {			
-			////Step9: Clicking on the given table name
+			////Step7: Clicking on the given table name
 			//String tableName = allTables.get(i);
 			//ExtentTestManager.getTest().log(LogStatus.INFO, "**** Performing Validations For: '"+ tableName +"' Table ****");
 			//boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
 			//objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
 			
-			////Step10: Validating absence of Submit For Approval button at table level
+			////Step8: Validating absence of Submit For Approval button at table level
 			//boolean isSubmitForApprovalBtnDisplayed = objBppTrnPg.isSubmitForApprovalBtnVisible(10, tableName);
 			//softAssert.assertTrue(!isSubmitForApprovalBtnDisplayed, "SMAB-T174: For User '"+ loginUser +"': Submit For Approval button is not visible");
 			//softAssert.assertTrue(!isSubmitForApprovalBtnDisplayed, "SMAB-T175: For User '"+ loginUser +"': Submit For Approval button is not visible");
@@ -640,17 +629,16 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step4: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
 
-		//Step6: Validating absence of ApproveAll button at page level
+		//Step4: Validating absence of ApproveAll button at page level
 		boolean	isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(10);
 		objSoftAssert.assertTrue(!isApproveAllBtnDisplayed, "For User '"+ loginUser +"': Approve All button is not visible");
 				
-		//Step7: Fetch table names from properties file and collect them in a single list
+		//Step5: Fetch table names from properties file and collect them in a single list
 		List<String> allTables = new ArrayList<String>();
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesUnderMoreTab").split(",")));
@@ -658,15 +646,15 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		String tableNamesUnderMoreTab = CONFIG.getProperty("compositeTablesUnderMoreTab") + "," + CONFIG.getProperty("valuationTablesUnderMoreTab");
 		
-		//Step8: Iterating over the given tables
+		//Step6: Iterating over the given tables
 		for (int i = 0; i < allTables.size(); i++) {			
-			//Step9: Clicking on the given table name
+			//Step7: Clicking on the given table name
 			String tableName = allTables.get(i);
 			ExtentTestManager.getTest().log(LogStatus.INFO, "**** Performing Validations For: '"+ tableName +"' Table ****");
 			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
 			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
 			
-			//Step10: Validating absence of Approve button at table level
+			//Step8: Validating absence of Approve button at table level
 			boolean isApproveBtnDisplayed = objBppTrnPg.isApproveBtnVisible(10, tableName);
 			objSoftAssert.assertTrue(!isApproveBtnDisplayed, "For User '"+ loginUser +"': Approve button is not visible");
 		}
@@ -695,13 +683,12 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step4: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
 
-		//Step6: Validating absence of Export Composite Factors button at page level
+		//Step4: Validating absence of Export Composite Factors button at page level
 		boolean	isDownloadBtnDisplayed = objBppTrnPg.isExportCompositeFactorsBtnVisible(10);
 		softAssert.assertTrue(!isDownloadBtnDisplayed, "SMAB-T450: For User '"+ loginUser +"': Export Composite Factors button is not visible");
 		
@@ -730,8 +717,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		
 		//Step3: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-
-		//Step4: Selecting role year from drop down
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
@@ -870,10 +856,10 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	/**
 	 * DESCRIPTION: Performing following for table: <ALL APPROVED FACTORS TABLES>
 	 * 1. Validating the message above each table to confirm it has been Approved:: Test Case/JIRD ID: SMAB-T249
-	 * 2. Validating table data should not be editable:: Test Case/JIRD ID: SMAB-T250
+	 * 2. Validating table data should not be editable:: Test Case/JIRD ID: SMAB-T250, SMAB-T301
 	 * 3. Validating the unavailability of ReCalculate button for Approved tables:: Test Case/JIRA ID: T199
 	 */
-	@Test(description = "SMAB-T199,SMAB-T249,SMAB-T250: Navigating to all approved tabls and validating table data should not be editable", groups = {"smoke","regression","bppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 16, enabled = true)
+	@Test(description = "SMAB-T199,SMAB-T249,SMAB-T250,SMAB-T301: Navigating to all approved tabls and validating table data should not be editable", groups = {"smoke","regression","bppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 16, enabled = true)
 	public void verify_BppTrend_ViewApprovedTables(String loginUser) throws Exception {		
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -889,9 +875,10 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 
 		//Step2: Selecting role year from drop down
 		String rollYear = CONFIG.getProperty("rollYear");
-		objBppTrnPg.javascriptClick(objBppTrnPg.rollYearDropdown);
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
+		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
-		objBppTrnPg.javascriptClick(objBppTrnPg.selectRollYearButton);
+		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
 		
 		//Step3: Fetch table names from properties file and collect them in a single list
 		List<String> allTables = new ArrayList<String>();
@@ -924,10 +911,13 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 			softAssert.assertTrue(!isReCalculateBtnDisplayed, "SMAB-T199: ReCalcuate button is not visible for Approved table '"+ tableName +"'");
 			
 			//Step9: Checking whether edit button in grid's cell data text box is visible after table status is approved
-			WebElement cellTxtBox = objBppTrnPg.locateCellToBeEditedBeforeApproval(allTables.get(i));
+			WebElement cellTxtBox = objBppTrnPg.locateCellToBeEdited(allTables.get(i));
 			objBppTrnPg.Click(cellTxtBox);
 			WebElement editBtn = objBppTrnPg.locateEditButtonInFocusedCell();
-			softAssert.assertTrue((editBtn == null), "SMAB-T250: Edit pencil icon is not visible to update table data in grid for "+ tableName +"");			
+			softAssert.assertTrue((editBtn == null), "SMAB-T250: Edit pencil icon is not visible to update table data in grid for "+ tableName +"");
+			if(tableName.equalsIgnoreCase("BPP Prop 13 Factors")) {
+				softAssert.assertTrue((editBtn == null), "SMAB-T301: Edit pencil icon is not visible to update table data in grid for "+ tableName +"");
+			}
 		}
 		softAssert.assertAll();
 		objApasGenericFunctions.logout();
