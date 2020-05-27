@@ -40,7 +40,7 @@ public class CreateAndEditExemptionWithMandatoryFieldsTest extends TestBase {
 	String recordId, exemptionName;
 	String recordId1, exemptionName1;
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
 		if(driver==null) {
 			setupTest();

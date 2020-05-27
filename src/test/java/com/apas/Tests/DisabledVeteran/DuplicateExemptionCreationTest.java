@@ -39,7 +39,7 @@ public class DuplicateExemptionCreationTest extends TestBase {
 	String recordId3, exemptionName3;
 	
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
 		if(driver==null) {
 			setupTest();

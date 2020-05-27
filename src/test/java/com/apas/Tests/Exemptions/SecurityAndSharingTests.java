@@ -55,7 +55,7 @@ public class SecurityAndSharingTests extends TestBase implements testdata, modul
 	ParcelsPage parcelObj;
 	
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
 		
 		if(driver==null) {

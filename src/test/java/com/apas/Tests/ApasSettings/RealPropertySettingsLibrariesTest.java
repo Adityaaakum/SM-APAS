@@ -34,7 +34,7 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 	Util objUtils;
 	Map<String, String> dataMap;
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
 		
 		if(driver==null) {

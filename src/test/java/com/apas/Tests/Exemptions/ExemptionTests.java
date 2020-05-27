@@ -44,7 +44,7 @@ public class ExemptionTests extends TestBase implements testdata, modules, users
 	ApasGenericPage objApasGenericPage;
 	
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
 		
 		if(driver==null) {

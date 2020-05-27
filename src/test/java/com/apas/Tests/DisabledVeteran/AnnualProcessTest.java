@@ -44,7 +44,7 @@ public class AnnualProcessTest extends TestBase{
 	ApasGenericPage objApasGenericPage;
 	String iNActiveExemptionName;
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception {
 		if(driver==null) {
 			setupTest();

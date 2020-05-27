@@ -39,7 +39,7 @@ public class RollYearSettingsTest extends TestBase {
 	String rollYearData, recordId, rollYearName;
 	
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
 		
 

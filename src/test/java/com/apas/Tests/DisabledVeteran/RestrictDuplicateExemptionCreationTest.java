@@ -38,7 +38,7 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 	String recordId1, exemptionName1;
 	String recordId2, exemptionName2;
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
 		if(driver==null) {
 			setupTest();
