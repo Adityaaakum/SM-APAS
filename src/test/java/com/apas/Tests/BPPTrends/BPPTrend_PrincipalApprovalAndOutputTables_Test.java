@@ -70,7 +70,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 	 * 6. Validating table data is not editable once approved:: Test Case/JIRA ID: SMAB-T157
 	 * 7. Validating table status on BPP Trend Setup page post approving:: Test Case/JIRA ID:SMAB-T155
 	 */
-	@Test(description = "SMAB-T205,SMAB-T155,SMAB-T156,SMAB-T157,SMAB-T250: Approve calculations of valuation, composite & prop 13 tables", groups = {"smoke","regression","BppTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	@Test(description = "SMAB-T205,SMAB-T155,SMAB-T156,SMAB-T157,SMAB-T250: Approve calculations of valuation, composite & prop 13 tables", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
 	public void verify_BppTrend_Approve(String loginUser) throws Exception {	
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));

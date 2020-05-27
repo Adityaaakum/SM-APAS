@@ -1,4 +1,4 @@
-package com.apas.Tests.BPPTrends;
+/*package com.apas.Tests.BPPTrends;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -67,7 +67,7 @@ public class BPPTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 		//objApasGenericFunctions.logout();
 	}
 	
-	/**
+	*//**
 	 * DESCRIPTION: Performing Following Validations <AGRICULTURAL MOBILE EQUIP COMPOSITE FACTORS>::
 	 * 1. Validating the availability of CalculateAll button
 	 * 2. Validating the availability of Calculate button:: TestCase/JIRA ID: SMAB-T190
@@ -81,7 +81,7 @@ public class BPPTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 	 * 10. Validating the absence of Submit For Approval button:: TestCase/JIRA ID: SMAB-T442
 	 * 11. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T200
 	 * 12. Validating the status of the table on BPP Trend Setup Page: SMAB-T268
-	 */
+	 *//*
 	@Test(description = "SMAB-T200,SMAB-T268,SMAB-T190,SMAB-T194,SMAB-T198,SMAB-T442: Performing validation on AGRICULTURAL MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
 	public void verify_BppTrend_AgriculturalMobileCompositeFactors_CalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Reseting the status of all composite factor tables to "Not Calculated" through SalesForce API
@@ -220,7 +220,7 @@ public class BPPTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 	}
 
 
-	/**
+	*//**
 	 * DESCRIPTION: Performing Following Validations <AGRICULTURAL MOBILE EQUIP COMPOSITE FACTORS>::
 	 * 1. Validating the availability of Recalculate All button for Calculated table
 	 * 2. Validating the availability of Recalculate button for Calculated table:: Test Case/JIRA ID: SMAB-T195
@@ -234,7 +234,7 @@ public class BPPTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 	 * 10. Validating the data of UI table against the Trend Calculator excel file:: Test Case/JIRA ID: SMAB-T302
 	 * 11. Validating the status of the table on BPP Trend Setup Page
 	 * 12. Reverting the changed settings in excel file and BPP Trend Setup page
-	 */
+	 *//*
 	@Test(description = "SMAB-T195,SMAB-T196,SMAB-T442: Performing validation on AGRICULTURAL MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
 	public void verify_BppTrend_AgriculturalMobileCompositeFactors_ReCalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Resetting the composite factor tables status to Calculated
@@ -384,3 +384,4 @@ public class BPPTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 	}
 	
 }
+*/

@@ -66,7 +66,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 	 * 4. Validating whether files have been successfully downloaded in the system at given path:: Test Case/JIRA ID: SMAB-T303
 	 * 5. Deleting the files once verification is done
 	 */
-	@Test(description = "SMAB-T303: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups = {"regression","BppTrend"}, dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	@Test(description = "SMAB-T303: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups={"regression","BPPTrend"}, dataProviderClass = DataProviders.class, priority = 1, enabled = true)
 	public void verify_BppTrend_DownloadCompositeAndValuationExcelFiles(String loginUser) throws Exception {		
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -152,7 +152,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 	 * 3. Validating whether PDF file has been successfully downloaded in the system at given path:: Test Case/JIRA ID: SMAB-T206
 	 * 4. Deleting the file once verification is done
 	 */
-	@Test(description = "SMAB-T206: Verifying download functionality for PDF files", dataProvider = "loginBusinessAndPrincipalUsers", groups = {"regression","BppTrend"}, dataProviderClass = DataProviders.class, priority = 0, enabled = true)
+	@Test(description = "SMAB-T206: Verifying download functionality for PDF files", dataProvider = "loginBusinessAndPrincipalUsers", groups={"regression","BPPTrend"}, dataProviderClass = DataProviders.class, priority = 0, enabled = true)
 	public void verify_BppTrend_DownloadBppTrendPdfFile(String loginUser) throws Exception {		
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));

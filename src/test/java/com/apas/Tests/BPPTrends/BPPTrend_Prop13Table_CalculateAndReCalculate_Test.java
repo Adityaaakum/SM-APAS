@@ -1,4 +1,4 @@
-package com.apas.Tests.BPPTrends;
+/*package com.apas.Tests.BPPTrends;
 
 import java.util.Arrays;
 import java.util.List;
@@ -67,7 +67,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		//objApasGenericFunctions.logout();
 	}
 	
-	/**
+	*//**
 	 * DESCRIPTION: Performing Following Validations <PROP 13 FACTORS>::
 	 * 1. Validating the availability of CalculateAll button
 	 * 2. Validating the availability of Calculate button:: TestCase/JIRA ID: SMAB-T190
@@ -82,7 +82,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 	 * 11. Validating Roll Year value is Acquired Year + 1:: TestCase/JIRA ID: SMAB-T577
 	 * 12. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T277
 	 * 13. Validating the status of the table on BPP Trend Setup Page: SMAB-T278
-	 */
+	 *//*
 	@Test(description = "SMAB-T190,SMAB-T276,SMAB-T277,SMAB-T278,SMAB-T442,SMAB-T577: Performing validation on PROP 13 FACTORS before and after calculation", groups = {"smoke,regression,BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
 	public void verify_BppTrend_Prop13Factors_CalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Reseting the status of all composite factor tables to "Not Calculated" through SalesForce API
@@ -226,7 +226,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 
 	
 	
-	/**
+	*//**
 	 * DESCRIPTION: Performing Following Validations <PROP 13 COMPOSITE FACTORS>::
 	 * 1. Validating the availability of Recalculate All button for Calculated table
 	 * 2. Validating the availability of Recalculate button for Calculated table:: Test Case/JIRA ID: SMAB-T195
@@ -240,7 +240,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 	 * 10. Validating the data of UI table against the Trend Calculator excel file:: Test Case/JIRA ID: SMAB-T302
 	 * 11. Validating the status of the table on BPP Trend Setup Page
 	 * 12. Reverting the changed settings in excel file and BPP Trend Setup page
-	 */
+	 *//*
 	@Test(description = "SMAB-T302,SMAB-T195,SMAB-T196,SMAB-T442,SMAB-T577: Performing validation on PROP 13 COMPOSITE FACTORS before and after calculation", groups = {"smoke,regression,BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
 	public void verify_BppTrend_IndustrialCompositeFactors_ReCalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Resetting the composite factor tables status to Calculated
@@ -338,3 +338,4 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 	}
 	
 }
+*/
