@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import com.apas.Reports.ReportLogger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -76,17 +77,8 @@ public class ApasGenericFunctions extends TestBase{
 	 * Description: This method will logout the logged in user from APAS application
 	 */
 	public void logout() throws IOException{
-		ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");
-		System.out.println("Logout from APAS Application");
-		//Handling the situation where pop remains opened before logging out
-//		if (objPage.verifyElementVisible(objApasGenericPage.crossButton))
-//			objPage.Click(objApasGenericPage.crossButton);
-//		else if (objPage.verifyElementVisible(objApasGenericPage.closeButton))
-//			objPage.Click(objApasGenericPage.closeButton);
-//		else if (objPage.verifyElementVisible(objApasGenericPage.cancelButton))
-//			objPage.Click(objApasGenericPage.cancelButton);
-
 		//Logging out of the application
+		ReportLogger.INFO("User is getting logged out of the application");
 		objPage.Click(objLoginPage.imgUser);
 		objPage.Click(objLoginPage.lnkLogOut);
 		objPage.waitForElementToBeVisible(objLoginPage.txtpassWord,30);

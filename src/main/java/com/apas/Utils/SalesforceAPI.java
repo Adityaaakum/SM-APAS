@@ -100,7 +100,7 @@ public class SalesforceAPI extends TestBase {
 
                 return true;
             } else {
-                System.out.println("Error authenticating to Force.com: " + statusCode);
+                ReportLogger.FAIL("Error authenticating to Force.com: " + statusCode);
                 return false;
             }
 
@@ -191,6 +191,7 @@ public class SalesforceAPI extends TestBase {
      * @return HashMap containing the data received from HTTP Post request
      */
     public HashMap<String, ArrayList<String>> select(String sqlQuery) {
+        ReportLogger.INFO("Executing the query : " + sqlQuery);
         sqlQuery = sqlQuery.replace("%", "%25");
         sqlQuery = sqlQuery.replace(" ", "%20");
         sqlQuery = sqlQuery.replace("'", "%27");
@@ -232,7 +233,7 @@ public class SalesforceAPI extends TestBase {
      * @param commaSeparatedIdsORSqlQuery : List of ids separated by comma to be deleted or Select query fetching the IDs to be deleted
      */
     public void delete(String table, String commaSeparatedIdsORSqlQuery) {
-
+        ReportLogger.INFO("Deleting the records from " + table + " for following query or comma separated IDs : " + commaSeparatedIdsORSqlQuery);
         String commaSeparatedIds = commaSeparatedIdsORSqlQuery;
 
         //Converting the IDs returned from SQL query to comma separated
@@ -240,7 +241,7 @@ public class SalesforceAPI extends TestBase {
             commaSeparatedIds = getCommaSeparatedIds(commaSeparatedIdsORSqlQuery);
         }
 
-        System.out.println("Deleting " + commaSeparatedIds + " from table " + table);
+        ReportLogger.INFO("Deleting " + commaSeparatedIds + " from table " + table);
 
         //Creating HTTP Post Connection
         HttpPost httpPost = salesforceCreateConnection();
@@ -266,7 +267,7 @@ public class SalesforceAPI extends TestBase {
                     if (statusCode == 204) {
                         System.out.println(id + " Deleted Successfully.");
                     } else {
-                        System.out.println(id + " Delete NOT Successful. Status Code : " + statusCode);
+                        ReportLogger.FAIL(id + " Delete NOT Successful. Status Code : " + statusCode);
                     }
                 }
 
@@ -289,7 +290,6 @@ public class SalesforceAPI extends TestBase {
      * @param value : New value to be updated
      */
     public void update(String table, String commaSeparatedIdsORSQLQuery, String column, String value)  {
-        ReportLogger.INFO("Updating the object " + table + " through Salesforce API");
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(column,value);
@@ -306,7 +306,7 @@ public class SalesforceAPI extends TestBase {
      * @param jsonObject : List of columns to be updated in form of json object
      */
     public void update(String table, String commaSeparatedIdsORSQLQuery, JSONObject jsonObject) {
-        System.out.println("Updating " + table);
+        ReportLogger.INFO("Updating the object " + table + " through Salesforce API for following query or comma separated IDs : " + commaSeparatedIdsORSQLQuery);
 
         //Creating HTTP Post Connection
         HttpPost httpPost = salesforceCreateConnection();
@@ -321,7 +321,7 @@ public class SalesforceAPI extends TestBase {
                 commaSeparatedIds = getCommaSeparatedIds(commaSeparatedIdsORSQLQuery);
             }
 
-            System.out.println("Updating " + table + " for IDs : " + commaSeparatedIds);
+            ReportLogger.INFO("Updating " + table + " for IDs : " + commaSeparatedIds);
 
             if (!commaSeparatedIds.equals("")){
                 String[] ids = commaSeparatedIds.split(",");
@@ -344,7 +344,7 @@ public class SalesforceAPI extends TestBase {
                         if (statusCode == 204) {
                             System.out.println("Update " + table + " successful for Id " + id);
                         } else {
-                            System.out.println("Update " + table + " Not successful for id " + id + ". Status code is " + statusCode);
+                            ReportLogger.FAIL("Update " + table + " Not successful for id " + id + ". Status code is " + statusCode);
                         }
                     } catch (JSONException | IOException | NullPointerException e) {
                         e.printStackTrace();
