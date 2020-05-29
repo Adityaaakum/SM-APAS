@@ -1,4 +1,4 @@
-package com.apas.Tests.BPPTrends;
+/*package com.apas.Tests.BPPTrends;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,16 +68,16 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 	}
 	
 	
-	/**
+	*//**
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating error message for missing BPP Settings (Maximum Equip. Index Value):: TestCase/JIRA Id: SMAB-T192,SMAB-T163
 	 * 2. Validating error message for missing BPP Composite Settings (Minimum Index Value):: TestCase/JIRA Id: SMAB-T192
 	 * 3. Validating error message for missing good and index factor data:: TestCase/JIRA Id: SMAB-T193,SMAB-T257
 	 * 4. Deleting the dummy/test BPP Trend Setup
-	 */
+	 *//*
 	@Test(description = "SMAB-T163,SMAB-T192,SMAB-T193,SMAB-T257: Calculation of INDUSTRIAL COMPOSITE FACTORS with missing calculation variables", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
 	public void verify_BppTrend_CompositeFactors_CalculateWithCalculationVariablesMissing(String loginUser) throws Exception {					
-		try {
+		//try {
 			//Step1: Login to the APAS application using the given user
 			objApasGenericFunctions.login(users.SYSTEM_ADMIN);
 			
@@ -89,7 +89,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 			objApasGenericFunctions.logout();
 			
 			//Step4: Login with given login user
-			objApasGenericFunctions.login(loginUser);
+			objApasGenericFunctions.login(loginUser);	
 			
 			//Step5: Navigating to BPP Trend page and selecting given roll year
 			ExtentTestManager.getTest().log(LogStatus.INFO, "** Navigating back to BPP Trends page **");
@@ -248,7 +248,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 				}
 			}
 			Thread.sleep(2000);
-		} finally {
+		//} finally {
 			//Step18: Log out application at end of test case
 			objApasGenericFunctions.logout();
 			
@@ -257,6 +257,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 	
 			//Step20: Assert all the assertions
 			softAssert.assertAll();
-		}
+		//}
 	}
 }
+*/

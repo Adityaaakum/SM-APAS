@@ -55,10 +55,10 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		rollYear = CONFIG.getProperty("rollYear");
 	}
 
-	@AfterMethod
+	/*@AfterMethod
 	public void afterMethod() throws Exception {
 		//objApasGenericFunctions.logout();
-	}
+	}*/
 	
 	/**
 	 * DESCRIPTION: Performing following for table: <SUBMITTED FOR APPROVAL TABLES>
@@ -70,7 +70,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 	 * 6. Validating table data is not editable once approved:: Test Case/JIRA ID: SMAB-T157
 	 * 7. Validating table status on BPP Trend Setup page post approving:: Test Case/JIRA ID:SMAB-T155
 	 */
-	@Test(description = "SMAB-T205,SMAB-T155,SMAB-T156,SMAB-T157,SMAB-T250: Approve calculations of valuation, composite & prop 13 tables", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	@Test(description = "SMAB-T205,SMAB-T155,SMAB-T156,SMAB-T157,SMAB-T250: Approve calculations of valuation, composite & prop 13 tables", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_Approve(String loginUser) throws Exception {	
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -187,6 +187,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 				softAssert.assertEquals(cellDataBeforeEdit, cellDataAfterEdit, "SMAB-T449: Validating table data on clicking approve button without saving the edited data for "+ tableName +" table");
 			} else {
 				ExtentTestManager.getTest().log(LogStatus.INFO, "** Editing table data and clicking Approve button after saving the data **");
+				
 				//Step16: Clicking approve button to approve tab data
 				objBppTrnPg.clickApproveButton(tableName);
 				
@@ -202,7 +203,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 				objBppTrnPg.clickApproveButton(tableName);
 				
 				//Step19: Waiting for pop up message to display and the message displayed above table to update
-				objBppTrnPg.waitForPopUpMsgOnApproveClick(60);
+				//objBppTrnPg.waitForPopUpMsgOnApproveClick(60);
 				
 				//Step20: Validating whether updated value has been saved in the edited cell post clicking save button
 				objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);

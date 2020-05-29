@@ -23,6 +23,8 @@ import com.apas.config.modules;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
+import groovy.transform.Undefined.EXCEPTION;
+
 public class BPPTrend_FilesExport_Test extends TestBase {
 
 	RemoteWebDriver driver;
@@ -53,10 +55,10 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 		rollYear = CONFIG.getProperty("rollYear");
 	}
 
-	@AfterMethod
+	/*@AfterMethod
 	public void afterMethod() throws Exception {
 		//objApasGenericFunctions.logout();
-	}
+	}*/
 	
 	/**
 	 * DESCRIPTION: Performing following once all tables are APPROVED:
@@ -66,7 +68,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 	 * 4. Validating whether files have been successfully downloaded in the system at given path:: Test Case/JIRA ID: SMAB-T303
 	 * 5. Deleting the files once verification is done
 	 */
-	@Test(description = "SMAB-T303: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups={"regression","BPPTrend"}, dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	@Test(description = "SMAB-T303: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups={"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_DownloadCompositeAndValuationExcelFiles(String loginUser) throws Exception {		
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -98,7 +100,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 	
 		objBppTrnPg.setParentWindowHandle();
 		
-		try {
+		//try {
 			//Step5: Downloading Composite Factors Excel file by clicking Export Composite Factors button
 			objBppTrnPg.clickExportCompositeFactorsBtn();
 			objBppTrnPg.switchToNewWindow();
@@ -137,10 +139,11 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 	
 			softAssert.assertTrue(isCompositeExcelDownloaded, "SMAB-T303: Composite Factor XLSX file downloaded successfully");	
 			softAssert.assertTrue(isValuationExcelDownloaded, "SMAB-T303: Valuation Factor XLSX file downloaded successfully");	
-		} finally {
+		//} catch(EXCEPTION e) {
+			//e.printStackTrace();
 			//Step9: Deleting downloaded files from download directory
 			objBppTrnPg.deleteFactorFilesFromDownloadFolder();
-		}
+		//}
 		softAssert.assertAll();
 		objApasGenericFunctions.logout();
 	}
@@ -180,7 +183,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 		boolean isDownloadBtnDisplayed = objBppTrnPg.isDownloadBtnVisible(20);
 		softAssert.assertTrue(isDownloadBtnDisplayed, "SMAB-T206: Download button is visible");
 
-		try {
+		//try {
 			//Step5: Downloading PDF file by clicking Download button
 			objBppTrnPg.clickDownloadBtn();
 			
@@ -197,10 +200,10 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 				isPdfDownloaded = true;
 			}
 			softAssert.assertTrue(isPdfDownloaded, "SMAB-T206: PDF file downloaded with "+ loginUser +" user successfully");
-		} finally {
+		//} finally {
 			//Step9: Deleting downloaded files from download directory
 			objBppTrnPg.deleteFactorFilesFromDownloadFolder();
-		}
+		//}
 		softAssert.assertAll();
 		objApasGenericFunctions.logout();
 	}

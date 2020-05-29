@@ -56,17 +56,17 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 		objBuildPermitPage = new BuildingPermitPage(driver);
 	}
 	
-	@AfterMethod
+	/*@AfterMethod
 	public void afterMethod() throws Exception {
 		//objApasGenericFunctions.logout();
-	}
+	}*/
 	
 	/**
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating the user is able to update and enter the 'Max. Equip. Index Factor':: TestCase/JIRA ID: SMAB-T133
 	 * 2. Validating the user is not able to enter invalid value of 'Max. Equip. Index Factor':: TestCase/JIRA ID: SMAB-T134
 	 */
-	@Test(description = "SMAB-T133,SMAB-T134: Create and edit BPP Setting with invalid and valid max. equip. index factor", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
+	@Test(description = "SMAB-T133,SMAB-T134: Create and edit BPP Setting with invalid and valid max. equip. index factor", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_CreateAndEdit_BppSetting(String loginUser) throws Exception {		
 		//Step1: Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -205,7 +205,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating the user is able select and view  input factor tables on BPP Trend Setup page:: SMAB-T229
 	 */
-	@Test(description = "SMAB-T229: Check for availability of input factor tables on bpp trend roll year screen",  groups={"regression","BPPTrend"}, dataProvider = "loginBusinessAndPrincipalUsers", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	@Test(description = "SMAB-T229: Check for availability of input factor tables on bpp trend roll year screen",  groups={"regression","BPPTrend"}, dataProvider = "loginBusinessAndPrincipalUsers", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_ValidateInputFactorTables_OnDetailsPage(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
@@ -245,7 +245,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 	 * 2. Validating user is able to edit Max. Equip. Index when status is Needs Recalculation:: Test Case/JIRA ID: SMAB-T272
 	 * 3. Validating user is able to edit Max. Equip. Index when status is Submitted for Approval:: Test Case/JIRA ID: SMAB-T273
 	 */
-	@Test(description = "SMAB-T271,SMAB-T272,SMAB-T273: Edit BPP Setting with with different status of tables", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 2, enabled = true)
+	@Test(description = "SMAB-T271,SMAB-T272,SMAB-T273: Edit BPP Setting with with different status of tables", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_EditMaxEquipIndex_WithVariousStatusOfTables(String loginUser) throws Exception {
 		//Step1: Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -261,7 +261,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 
 		//Step4: Clicking on the roll year name in grid to navigate to details page of selected roll year
 		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
-		try {
+		//try {
 			//Step5: Retrieving equipment index factor value before performing edit operation
 			String factorValueBeforeEdit = objBppTrnPg.retrieveMaxEqipIndexValueFromPopUp();
 			factorValueBeforeEdit = factorValueBeforeEdit.substring(0, factorValueBeforeEdit.length()-1);
@@ -347,14 +347,15 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 			objBppTrnPg.Click(objBppTrnPg.waitForElementToBeClickable(objBuildPermitPage.cancelButton));
 			softAssert.assertContains(errorMessage, "Maximum Equipment index Factor is locked for editing for the Roll Year", "SMAB-T271: Updated value of maximum equip. index factor has been saved");
 			
-		} finally {
+		//} finally {
 			//Step 25: Reverting the changes done to maximum equipment index factor value
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Reverting the maximum equipment index factor value");
 			objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Calculated", rollYear);
 			driver.navigate().refresh();
 			objBppTrnPg.editBppSettingValueOnDetailsPage("125");
 			objBppTrnPg.Click(objBppTrnPg.waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
-		}
+			Thread.sleep(4000);
+		//}
 		
 		//Step28: Log out from application
 		softAssert.assertAll();
@@ -372,7 +373,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 	 * 5. Calculating rest of the tables and validating presence of Recalculate button after calculation is done:: Test Case/JIRA ID: SMAB-T170
 	 * 6. Checking status of tables on BPP Trend Setup page:: Test Case/JIRA ID: SMAB-T170
 	 */
-	@Test(description = "SMAB-T170,SMAB-T172: Perform calculation & re-calculation for factors tables individually using calculate & recalclate buttons with updating max. equip. index factor", groups={"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	@Test(description = "SMAB-T170,SMAB-T172: Perform calculation & re-calculation for factors tables individually using calculate & recalclate buttons with updating max. equip. index factor", groups={"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_CalculateAndReCalculate_ByUpdatingMaxEquipIndexFactor(String loginUser) throws Exception {		
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));

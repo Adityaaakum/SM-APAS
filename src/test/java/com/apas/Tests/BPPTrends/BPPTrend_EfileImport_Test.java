@@ -1,4 +1,4 @@
-package com.apas.Tests.BPPTrends;
+/*package com.apas.Tests.BPPTrends;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,18 +62,18 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objSalesforceAPI = new SalesforceAPI();
 	}
 		
-	/*@AfterMethod
+	@AfterMethod
 	public void afterMethod() throws IOException, InterruptedException{
 		//objApasGenericFunctions.logout();
-	}*/
+	}
 
-	/**
+	*//**
 	 * DESCRIPTION: Performing Following Validations <E-File Import>::
 	 * 1. Validating the restrictions on uploading file with .CSV format:: TestCase/JIRA ID: SMAB-T112
 	 * 2. Validating the restrictions on uploading file with .TXT format:: TestCase/JIRA ID: SMAB-T112
 	 * 3. Validating the restrictions on uploading file with .XLS format:: TestCase/JIRA ID: SMAB-T112
-	 */
-	@Test(description = "SMAB-T112: Validating restrictions on uploading BPP Trends data files in invalid format", dataProvider = "invalidFileTypes", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"}, priority = 7, enabled = true)
+	 *//*
+	@Test(description = "SMAB-T112: Validating restrictions on uploading BPP Trends data files in invalid format", dataProvider = "invalidFileTypes", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"})
 	public void verify_BppTrend_ImportWithInvalidFormat(String fileName) throws Exception {		
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business administrator)
 		objApasGenericFunctions.login(users.BUSINESS_ADMIN);
@@ -110,14 +110,14 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	}
 	
 
-	/**
+	*//**
 	 * DESCRIPTION: Performing Following Validations <E-File Import On BOE INDEX File>
 	 * 1. Validating the successful uploading of data file with valid format:: TestCase/JIRA ID: SMAB-T111 
 	 * 2. Validating error records cannot be approved on review & approve page:: TestCase/JIRA ID: SMAB-T106
 	 * 3. Validating revert functionality of error records
 	 * 4. Validating status post reverting error records on history page
-	 */
-	@Test(description = "SMAB-T106,SMAB-T111: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"}, priority = 4, enabled = true)
+	 *//*
+	@Test(description = "SMAB-T106,SMAB-T111: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"})
 	public void verify_BppTrend_BoeIndexFileImportDiscardErrorRecordsAndRevert(String loginUser) throws Exception {
 		//Step1: Update the status of Approved data via SalesForce API
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -242,7 +242,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	}
 
 	
-	/**
+	*//**
 	 * DESCRIPTION: Performing Following Validations <E-File Import On BOE INDEX File>
 	 * 1. Validating the successful uploading of data file with valid format:: TestCase/JIRA ID: SMAB-T111 
 	 * 2. Validating error records cannot be approved on review & approve page:: TestCase/JIRA ID: SMAB-T106
@@ -250,8 +250,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 4. Validating retry functionality of error records
 	 * 5. Approving all records
 	 * 6. Validating status post approving on history page and transaction import logs page
-	 */
-	@Test(description = "SMAB-T112: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"}, priority = 5, enabled = true)
+	 *//*
+	@Test(description = "SMAB-T112: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"})
 	public void verify_BppTrend_BoeIndexImportRetryErrorRecordsAndApprove(String loginUser) throws Exception {
 		//Update the status of Approved data via SalesForce API
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -406,14 +406,14 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	}
 		
 	
-	/**
+	*//**
 	 * DESCRIPTION: Performing Following Validations <E-File Import On BOE VALUATION File>
 	 * 1. Validating the successful uploading of data file with valid format:: TestCase/JIRA ID: SMAB-T111 
 	 * 2. Validating error records cannot be approved on review & approve page:: TestCase/JIRA ID: SMAB-T106
 	 * 3. Validating revert functionality of error records
 	 * 4. Validating status post reverting error records on history page
-	 */
-	@Test(description = "SMAB-T112: Discarding error records and reverting import for BOE valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"}, priority = 2, enabled = true)
+	 *//*
+	@Test(description = "SMAB-T112: Discarding error records and reverting import for BOE valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"})
 	public void verify_BppTrend_BoeValFileImportDiscardErrorRecordsAndRevert(String loginUser) throws Exception {
 		//Step1: Update the status of Approved data via SalesForce API
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -534,7 +534,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	}
 	
 	
-	/**
+	*//**
 	 * DESCRIPTION: Performing Following Validations <E-File Import On BOE VALUATION File>
 	 * 1. Validating the successful uploading of data file with valid format:: TestCase/JIRA ID: SMAB-T111 
 	 * 2. Validating error records cannot be approved on review & approve page:: TestCase/JIRA ID: SMAB-T106
@@ -542,8 +542,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 4. Validating retry functionality of error records
 	 * 5. Approving all records
 	 * 6. Validating status post approving on history page and transaction import logs page
-	 */
-	@Test(description = "SMAB-T112: Correcting error records and retrying an approving them in BOE Valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"}, priority = 3, enabled = true)
+	 *//*
+	@Test(description = "SMAB-T112: Correcting error records and retrying an approving them in BOE Valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"})
 	public void verify_BppTrend_BoeValImportRetryErrorRecordsAndApprove(String loginUser) throws Exception {
 		//Update the status of Approved data via SalesForce API
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -695,14 +695,14 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	}
 	
 	
-	/**
+	*//**
 	 * DESCRIPTION: Performing Following Validations <E-File Import On CAA VALUATION File>
 	 * 1. Validating the successful uploading of data file with valid format:: TestCase/JIRA ID: SMAB-T111 
 	 * 2. Validating error records cannot be approved on review & approve page:: TestCase/JIRA ID: SMAB-T106
 	 * 3. Validating revert functionality of error records
 	 * 4. Validating status post reverting error records on history page
-	 */
-	@Test(description = "SMAB-T112: Discarding error records and reverting import for CAA valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"}, priority = 0, enabled = true)
+	 *//*
+	@Test(description = "SMAB-T112: Discarding error records and reverting import for CAA valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"})
 	public void verify_BppTrend_CaaValFileImportDiscardErrorRecordsAndRevert(String loginUser) throws Exception {
 		//Step1: Update the status of Approved data via SalesForce API
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -823,7 +823,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	}
 
 	
-	/**
+	*//**
 	 * DESCRIPTION: Performing Following Validations <E-File Import On CAA VALUATION File>
 	 * 1. Validating the successful uploading of data file with valid format:: TestCase/JIRA ID: SMAB-T111 
 	 * 2. Validating error records cannot be approved on review & approve page:: TestCase/JIRA ID: SMAB-T106
@@ -831,8 +831,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 4. Validating retry functionality of error records
 	 * 5. Approving all records
 	 * 6. Validating status post approving on history page and transaction import logs page
-	 */
-	@Test(description = "SMAB-T112: Correcting error records and retrying an approving them in CAA Valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"}, priority = 1, enabled = true)
+	 *//*
+	@Test(description = "SMAB-T112: Correcting error records and retrying an approving them in CAA Valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"})
 	public void verify_BppTrend_CaaValImportRetryErrorRecordsAndApprove(String loginUser) throws Exception {
 		//Update the status of Approved data via SalesForce API
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -984,7 +984,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	}
 
 
-	/**
+	*//**
 	 * DESCRIPTION: Performing Following Validations <E-File Import>::
 	 * 1. Validating transformation rules on Year, Age and Average columns:: Test Case/JIRA ID: SMAB-T105
 	 * 		a. Duplicate records
@@ -995,8 +995,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 		f. Year left blank
 	 * 		h. Age is greater than 40 and less than 1
 	 * 		i. Index / Average value beyond range
-	 */
-	@Test(description = "SMAB-T105: Validating transformation rules on BOE Index file import", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"}, priority = 6, enabled = true)
+	 *//*
+	@Test(description = "SMAB-T105: Validating transformation rules on BOE Index file import", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups={"smoke","regression","BPPTrend"})
 	public void verify_BppTrend_TransformationRulesForImport(String loginUser) throws Exception {
 		//Update the status of Approved data via SalesForce API
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -1077,4 +1077,4 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertAll();
 		objApasGenericFunctions.logout();
 	}
-}
+}*/

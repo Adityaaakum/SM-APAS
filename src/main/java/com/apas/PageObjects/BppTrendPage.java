@@ -1122,6 +1122,7 @@ public class BppTrendPage extends Page {
 	 * @throws: Exception
 	 */
 	public void clickApproveButton(String tableName) throws Exception {
+		Thread.sleep(2000);
 		clickRequiredButton("Approve", tableName);
 	}
 	
