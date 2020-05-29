@@ -147,7 +147,8 @@ public class EFileImportPage extends Page {
 	public void uploadFileOnEfileIntake(String fileType, String source,String period, String absoluteFilePath) throws Exception{
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " +  absoluteFilePath + " file");
 		selectFileAndSource(fileType, source);
-		objPage.waitUntilElementDisplayed(nextButton, 10);
+		objPage.waitUntilElementDisplayed(nextButton, 15);
+		objPage.scrollToElement(nextButton);
 		objPage.Click(nextButton);
 		objPage.Click(periodDropdown);
 		objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
@@ -156,9 +157,10 @@ public class EFileImportPage extends Page {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " + absoluteFilePath + " on Efile Import Tool");
 		uploadFileInputBox.sendKeys(absoluteFilePath);
 		objPage.waitForElementToBeClickable(doneButton);
-		Thread.sleep(6000);
+		Thread.sleep(2000);
 		objPage.Click(doneButton);
-		Thread.sleep(12000);
+		waitForElementToBeClickable(statusImportedFile,20);
+		objPage.waitForElementTextToBe(statusImportedFile, "In Progress", 120);
 	}
 
 	/**

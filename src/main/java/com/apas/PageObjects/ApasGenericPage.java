@@ -61,6 +61,9 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//button[@title='Close this window']")
 	public WebElement crossButton;
 
+	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
+	public WebElement successAlert;
+
 	/*	Sikander Bhambhu:
 	 *	Next 7 locators are for handling date picker
 	 * */

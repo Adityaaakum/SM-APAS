@@ -15,12 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -246,7 +241,7 @@ public class Page {
 	 */
 	public void Click(WebElement elem) throws IOException {
 		waitForElementToBeVisible(20, elem);
-//		waitForElementToBeClickable(20, elem);
+		waitForElementToBeClickable(20, elem);
 
 		/*
 		 * if (browserName.equalsIgnoreCase("Edge")) { javascriptClick(elem); }
@@ -282,6 +277,7 @@ public class Page {
 
 		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", elem);		
 		elem.clear();
+		elem.sendKeys(Keys.chord(Keys.CONTROL,"a", Keys.DELETE));
 		elem.sendKeys(value);
 		Thread.sleep(2000);
 	}
@@ -391,7 +387,7 @@ public class Page {
 	/**
 	 * Function will wait for an element to come in Clickable state on the page.
 	 * @param timeoutInSeconds the timeout in seconds
-	 * @param Object (Xpath, By)
+	 * @param object (Xpath, By)
 	 */
 	public boolean waitForElementToBeClickable(int timeoutInSeconds, Object object) {
 		boolean isElementClickable = false;
@@ -490,7 +486,7 @@ public class Page {
 	/**
 	 * Function will wait for an element to be Invisible on the page.
 	 *
-	 * @param Object (Xpath, By)
+	 * @param object (Xpath, By)
 	 * @param timeoutInSeconds
 	 *            the timeout in seconds
 	 */
@@ -511,7 +507,7 @@ public class Page {
 	/**
 	 * Function will wait for an element to attain a value.
 	 *
-	 * @param Object (Xpath, By)
+	 * @param element (Xpath, By)
 	 * @param timeoutInSeconds
 	 *            the timeout in seconds
 	 */
@@ -528,7 +524,7 @@ public class Page {
 	/**
 	 * Function will wait for an element to be Visible on the page.
 	 * @param timeoutInSeconds the timeout in seconds
-	 * @param Object (Xpath, By)
+	 * @param object (Xpath, By)
 	 */
 	public boolean waitForElementToBeVisible(int timeoutInSeconds, Object object) {
 		boolean isElementVisible = false;
@@ -646,31 +642,13 @@ public class Page {
 	}
 
 	/**
-	 * Function will wait until to Max timeout until the weblement is located.
+	 * Function will wait until to Max timeout until the webelement is located.
 	 *
-	 * @param element
-	 *            the element
-	 * @return true, if successful
+	 * @param xpath : xpath of the element to be located
+	 * @param timeOut : maximum time to wait for element to be present
 	 */
-	public boolean waitUntilElementIsPresent(final WebElement element) {
-
-		Integer timeoutInSeconds = MAX_TIMEOUT;
-		FluentWait<RemoteWebDriver> wait = new FluentWait<RemoteWebDriver>(driver);
-		wait.pollingEvery(1, TimeUnit.SECONDS);
-		wait.withTimeout(timeoutInSeconds, TimeUnit.SECONDS);
-		wait.ignoring(NoSuchElementException.class);
-		WebElement elem = wait.until(new Function<RemoteWebDriver, WebElement>() {
-			public WebElement apply(RemoteWebDriver driver) {
-				if (element.isEnabled()) {
-					// System.out.println("Element is Present.");
-					return element;
-				} else {
-					return null;
-				}
-			}
-		});
-		// If element is found then it will display the status
-		return elem.isEnabled();
+	public void waitUntilElementIsPresent(String xpath, int timeOut) throws Exception {
+		locateElement(xpath,timeOut);
 	}
 
 	/**
@@ -983,7 +961,6 @@ public class Page {
 	/**
 	 * This method checks the Radio Button.
 	 *
-	 * @param the element
 	 */
 	public void checkRadioButton(WebElement ele) {
 		waitForElementToBeVisible(ele, 30);
@@ -993,4 +970,5 @@ public class Page {
 		}
 		
 	}
+
 }
