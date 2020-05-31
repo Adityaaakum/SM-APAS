@@ -45,7 +45,8 @@
 		"Qualification": "Qualified",
 		"DateOfNoticeUpdated": "01/15/2019",
 		"VeteranName": "SM testing1",
-		"VeteranSSN": "987654321"
+		"VeteranSSN": "987654321",
+		"QualificationUpdateErrorMsg":"You cannot update the Qualification field from Qualified to Not Qualified. You may enter End Date of Rating and End Rating Reason."
 		
 	},
 	"NewExemptionCreation": {
@@ -114,7 +115,7 @@
 		"BasisForClaim": "Blind In Both Eyes,Disabled Because Of Loss Of Use Of 2 Or More Limbs",
 		"Qualification": "Qualified",
 		"EndRatingReason": "Deceased Veteran",
-		"EnddateOfRating": "06/30/2020"
+		"EnddateOfRatingNeeded": "01/15/2006"
 		
 	},
 	
@@ -130,7 +131,10 @@
 		"EffectiveDateOfUSDVA": "01/14/2011",
 		"DateOfNotice": "01/16/2015",
 		"BasisForClaim": "Blind In Both Eyes,Disabled Because Of Loss Of Use Of 2 Or More Limbs",
-		"Qualification": "Qualified"
+		"Qualification": "Qualified",
+		"EndRatingReason": "Deceased Veteran",
+		"EnddateOfRating": "06/30/2018"
+		
 		
 	},
 	"BusinessValidationsForExemptionFields": {
@@ -175,6 +179,26 @@
 	"verifyRightSideBarAsPerParcel": {
 		"rightSideSections": "Business Events,Work Items,Documents,Notes",
 		"rightSideBottomSections": "New Calendar Event,New Task"
+		
+		
+		},
+		
+		"NotQualifiedToQualifiedData":{
+		"APN": "002-021-030",
+		"DateApplicationReceived": "03/17/2020",
+		"ClaimantName": "yogender",
+		"ClaimantSSN": "123456789",
+		"VeteranName": "SMtestdataQ",
+		"VeteranSSN": "987654321",
+		"DateAquiredProperty": "01/14/2012",
+		"DateOccupyProperty": "01/14/2012",
+		"EffectiveDateOfUSDVA": "01/14/2011",
+		"DateOfNotice": "01/16/2015",
+		"BasisForClaim": "Blind In Both Eyes,Disabled Because Of Loss Of Use Of 2 Or More Limbs",
+		"Qualification": "Not Qualified",
+		"ReasonForNotQualified":"Incorrect or Missing Information",
+		"EndRatingReason": "Deceased Veteran",
+		"EnddateOfRating": "06/30/2018"
 		
 		
 		}
