@@ -638,7 +638,8 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step4: Validating the building permit is added successfully
 		objPage.waitForElementToBeVisible(objBuildingPermitPage.successAlert,20);
-		softAssert.assertEquals(objBuildingPermitPage.successAlert.getText(),"success Building Permit \"" + buildingPermitNumber + "\" was created. Close","SMAB-T443: Validation for Permit City Code values population for manual building permit");
+		String actualSuccessMessage = objBuildingPermitPage.successAlert.getText();
+		softAssert.assertEquals(actualSuccessMessage,"success\nBuilding Permit \"" + buildingPermitNumber + "\" was created.\nClose","SMAB-T443: Validation for Permit City Code values population for manual building permit");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();

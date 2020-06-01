@@ -63,7 +63,7 @@ public class SoftAssertion {
 	 */
 	public void assertEquals(Object actual, Object expected, String message) throws Exception {
 		String formattedMessage = message + " :: Expected: " + expected + " || " + "Actual: " + actual;
-		assertTrue(actual.equals(expected), formattedMessage);
+		assertTrue(actual.toString().equals(expected.toString()), formattedMessage);
 	}
 
 	/**

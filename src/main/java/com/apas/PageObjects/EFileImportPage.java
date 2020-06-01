@@ -145,16 +145,15 @@ public class EFileImportPage extends Page {
 	 * @param absoluteFilePath: Absoulte Path of the file with the file name
 	 */
 	public void uploadFileOnEfileIntake(String fileType, String source,String period, String absoluteFilePath) throws Exception{
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " +  absoluteFilePath + " file");
+		ReportLogger.INFO("Uploading " +  absoluteFilePath + " file");
 		selectFileAndSource(fileType, source);
 		objPage.waitUntilElementDisplayed(nextButton, 15);
-		objPage.scrollToElement(nextButton);
+		objPage.scrollToTop();
 		objPage.Click(nextButton);
 		objPage.Click(periodDropdown);
 		objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
 		objPage.Click(confirmButton);
 		Thread.sleep(2000);
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " + absoluteFilePath + " on Efile Import Tool");
 		uploadFileInputBox.sendKeys(absoluteFilePath);
 		objPage.waitForElementToBeClickable(doneButton);
 		Thread.sleep(2000);

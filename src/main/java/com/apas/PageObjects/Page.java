@@ -184,6 +184,25 @@ public class Page {
 	}
 
 	/**
+	 * Function will scroll to the top of the UI.
+	 * Note: scrollToElement was not working on few elements
+	 */
+	public void scrollToTop() {
+		JavascriptExecutor jse = (JavascriptExecutor)driver;
+		jse.executeScript("scroll(250, 0)");
+	}
+
+
+	/**
+	 * Function will scroll to the bottom of UI.
+	 * Note: scrollToElement was not working on few elements
+	 */
+	public void scrollToBottom() {
+		JavascriptExecutor jse = (JavascriptExecutor)driver;
+		jse.executeScript("scroll(0, 250)");
+	}
+
+	/**
 	 * Function will wait until the page is not in ready state.
 	 *
 	 * @param driver
