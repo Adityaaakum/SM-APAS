@@ -12,9 +12,12 @@ import java.util.Objects;
 
 import com.apas.Reports.ReportLogger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import com.apas.PageObjects.ApasGenericPage;
+import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
@@ -293,37 +296,119 @@ public class ApasGenericFunctions extends TestBase{
     }
     return element;
     } 
-    public void selectFromDropDown(WebElement element, String value, String... customXpath) throws Exception {
+    public void selectFromDropDown(WebElement element, String value) throws Exception {
         objPage.Click(element);
         String xpathStr = null;
-        if(customXpath.length == 1)
-        {
-            xpathStr = customXpath[0];
-        }
-        else
-        {
+        
         xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-        }
+        
         WebElement drpDwnOption = locateElement(xpathStr, 10);
         drpDwnOption.click();
     }
     
-    public void searchAndSelectFromDropDown(WebElement element, String value, String... customXpath) throws Exception {
+    public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
         objPage.enter(element, value);
         String xpathStr = null;
-        if(customXpath.length == 1) {
-            xpathStr = customXpath[0]+"//div[@title= '"+value+"']";
-        } else {
-            xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
-        }
+       
+            xpathStr = "//mark[text() = '" + value + "']";
+        
         WebElement drpDwnOption = locateElement(xpathStr, 10);
         drpDwnOption.click();
     }
     
-    public void searchAndSelectOptionFromDropDown(WebElement element, String value) throws Exception {
-  	  objPage.enter(element, value);
-        String xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
-        WebElement drpDwnOption = objPage.locateElement(xpathStr, 20);
+    
+
+/**
+ * Description: This method is to check unavailbility of an element 
+ * @param element:  xpath of the element
+ * @return : true if element not found
+ */
+
+
+public boolean isNotDisplayed(WebElement element)
+{
+	//driver.findElement((By) element);
+	try{ 
+		if(element.isDisplayed())
+	    	{		return true;}
+		 
+		}
+	    catch(org.openqa.selenium.NoSuchElementException e)
+	    {
+	    return false;
+	    }
+	return false;
+	
+}
+
+
+
+/**
+ * Description: This method will select multiple values from left pane to right pane
+ * (e.g:basis for claim,Deceased veteran Qualification)
+ * @param values: values to select
+ * @param fieldname:  e.g: Deceased Veterna Qualification
+ */
+
+public void selectMultipleValues(String values,String fieldName) throws IOException {
+	String[] allValues=values.split(",");
+	JavascriptExecutor js= (JavascriptExecutor) driver;
+	
+	for(String value: allValues)
+	{	
+		
+	WebElement elem=driver.findElement(By.xpath("//ul[@role='listbox']//li//span[text()='"+value+"']"));
+	js.executeScript("arguments[0].scrollIntoView(true);", elem);
+	objPage.Click(elem);
+	WebElement arrow=driver.findElement(By.xpath("//div[text()='"+fieldName+"']//following::button[@title='Move selection to Chosen']"));
+	js.executeScript("arguments[0].scrollIntoView(true);", arrow);
+	objPage.Click(arrow);
+	}
+}
+
+
+
+/**
+ * @Description: This method is to edit(enter) a record by clicking on the pencil icon and save it(field level edit)
+ * @param fieldName: name of the required field
+ * @param field: field Webelement
+ * @param data: the data to be entered intextbox
+ * @throws Exception
+ */
+
+public void editAndInputFieldData(String fieldName,WebElement field, String data) throws Exception
+{
+objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'"+fieldName+"')]/ancestor::button");
+		objPage.enter(field, data);
+		objPage.Click(ExemptionsPage.saveButton);
+		Thread.sleep(4000);
+	
+}
+
+
+/**
+ * @Description: This method is to edit(select) a record by clicking on the pencil icon and save it(field level edit)
+ * @param fieldName: name of the required field
+ * @param data: the data to be selected from drop down
+ * @throws Exception
+ */
+
+public void editAndSelectFieldData(String fieldName, String value) throws Exception
+{
+		objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'"+fieldName+"')]/ancestor::button");
+		WebElement dropdown=driver.findElement(By.xpath("//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'"+fieldName+"')]//div/input"));
+		//selectFromDropDown(dropdown, value);
+		objPage.Click(dropdown);
+        String xpathStr = null;
+        xpathStr = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'"+fieldName+"')]//span[@title='"+value+"']";
+        WebElement drpDwnOption = locateElement(xpathStr, 3);
         drpDwnOption.click();
-    }
+		objPage.Click(ExemptionsPage.saveButton);
+		Thread.sleep(4000);
+	
+}
+
+
+
+
 }

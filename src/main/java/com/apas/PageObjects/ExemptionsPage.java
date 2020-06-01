@@ -123,7 +123,7 @@ public class ExemptionsPage extends ApasGenericPage {
 	public WebElement dateAcquiredProperty;
 	
 	@FindBy(xpath = "//button[@title='Save']")
-	public WebElement saveButton;
+	public static WebElement saveButton;
 	
 	
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//div[contains(.,'Date Occupied/Intend to Occupy Property')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
@@ -255,6 +255,8 @@ public class ExemptionsPage extends ApasGenericPage {
 	public List<WebElement> rightSideBottomSectionsOnUI;
 	
 	
+	@FindBy(xpath="//div[@class='windowViewMode-normal oneContent active lafPageHost']//label[contains(text(),'Qualification?')]/parent::lightning-combobox//div[contains(@id,'help-text')]")
+	public WebElement QualificationOnDetailsPageErrorMsg;
 	
 	
 //////////////////////////New locators////////////////////////////////
@@ -442,116 +444,12 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
 	public WebElement successAlertText;
 	
-	/**
-	 * Description: This method will select basis for claim
-	 * @param dataMap: datafile map
-	 * @param fieldname:  Deceased Veterna Qualification
-	 */
-	
-	public void selectbasisForClaims(Map<String, String> dataMap,String fieldName) throws IOException {
-		String[] mapValuesToRead=dataMap.get(fieldName).split(",");
-		for(String s: mapValuesToRead)
-		{	
-		WebElement elem=driver.findElement(By.xpath("//ul[@role='listbox']//li//span[text()='"+s+"']"));
-		objPage.Click(elem);
-		objPage.Click(basisForClaim);
-		}
-	}
-	/**
-	 * Description: This method will select Deceased Veteran Qualification
-	 * @param dataMap: datafile map
-	 * @param fieldname:  Deceased Veterna Qualification
-	 */
-	
-	public void selectDeceasedVeteranQualification(Map<String, String> dataMap,String fieldName) throws IOException {
-		String[] mapValuesToRead=dataMap.get(fieldName).split(",");
-		for(String s: mapValuesToRead)
-		{	
-		WebElement elem=driver.findElement(By.xpath("//ul[@role='listbox']//li//span[text()='"+s+"']"));
-		objPage.Click(elem);
-		objPage.Click(deceasedVeteranQualification);
-		}
-	}
+
 	
 	/**
-	 * Description: This method will return tomorrows date
-	 *@return tommorodate: returns future date for dates validations
-	 */
-	
-	public String getTommorowsdate()
-	{
-	
-	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-	Calendar cal = Calendar.getInstance();
-	cal.add(Calendar.DAY_OF_MONTH, 1);  
-	String tommorowDate = sdf.format(cal.getTime());  
-	
-	return tommorowDate;
-	
-	}
-	
-	/**
-	 * Description: This method checks if the exemption to be created is duplicate by verfying the error message 
-	 * @param dataMap: datafile map
-	 */
-	
-	public void checkIfDuplicateExemption(Map<String,String> fieldData) throws Exception
-	{
-		if(objPage.locateElement("//div[@class='pageLevelErrors']//li", 3).isDisplayed())
-		{
-		
-		if(errorMessage.getText().contains("There seems to be"))
-		{
-			String generatedString = fieldData.get("VeteranName").concat(RandomStringUtils.random(3, false, true));
-			//objPage.enter(veteranName, fieldData.get("VeteranName"));
-			objPage.enter(veteranName, generatedString);
-			//objPage.enter(veteranSSN, fieldData.get("VeteranSSN"));
-			objPage.Click(saveButton);
-			Thread.sleep(5000);
-		}
-		else
-		{
-			System.out.println("not a duplicate record");
-		}
-		}
-	
-	else
-	{
-		System.out.println("not a duplicate record");
-	}
-	}
-	/**
-	 * Description: This method is to compare the component of various screens 
-	 * @param dataMap: datafile map
-	 * @param fieldname:  fieldname in the data file to read
-	 * @param fieldname:  xpath of the section
-	 */
-	
-	public int verifySection(Map<String,String> rightSidesectionsOnParcels, String fieldname,List<WebElement> xpath)
-	{
-			int counter=0;
-		String[] parcelSections=rightSidesectionsOnParcels.get(fieldname).split(",");
-		
-		List<WebElement> rightSectionsonExemptionUI=xpath;
-		
-					for(int i=0;i<parcelSections.length;i++){
-						for(int j=0;j<rightSectionsonExemptionUI.size();j++)
-						{
-						if(parcelSections[i].equals(rightSectionsonExemptionUI.get(j).getText()))
-						{
-							counter++;
-							break;
-						}
-					}
-				}
-		return counter;
-		
-	}
-	
-	/**
-	 * Description: This method is to determine the Roll Year of any given date(e.g Application receieved date) 
+	 * Description: This method is to determine the Roll Year of any given date(e.g Application received date) 
 	 * @param date:  date for which to determine Roll Year
-	 * @return : returns the Roll year
+	 * @return roll Year: returns the Roll year
 	 */
 	
 	
@@ -566,119 +464,18 @@ public class ExemptionsPage extends ApasGenericPage {
 		{
 		rollYear=rollYear+1;
 		}	
-		
-		//System.out.println("Roll Year is ::"+rollYear);
 		return String.valueOf(rollYear);
 		
 	}
 	
-	/**
-	 * Description: This method is to determine maximum dates out of given number of dates 
-	 * @param alldate...: n number of date
-	 * @return : returns the maximum date
-	 */
-	
-	
-public String determineMaxDate(String... alldates)
-{
-	String max=alldates[0];
-			
-	for (int i = 1; i < alldates.length; i++) 
-   {
-		if (alldates[i].compareTo(max)>0) 
-             max = alldates[i]; 
-    }
-	return max;
-	
-}
-
-
+	////To be deleted after using database query instead of using this
 /**
  * Description: This method is to select a record from list screen  
  * User should be on the respective screen
  */
 
-	
-public boolean checkForAndSelectRecordsInList() throws Exception
-{
-	boolean flag=false;
-	if(newRecord.isDisplayed())
-	{
-		objPage.Click(newRecord);
-		WebElement displayed=objPage.locateElement("//div[@class='windowViewMode-normal oneContent active lafPageHost']//li[@title='Details']//a[@data-tab-value='detailTab']", 4);
-		if(displayed.isDisplayed())
-		{flag=true;}
-		
-	}
-	else
-	{
-	objPage.Click(selectlistView);
-	objPage.Click(allView);
-	Thread.sleep(2000);
-	objPage.Click(newRecord);
-	WebElement displayed=objPage.locateElement("//div[@class='windowViewMode-normal oneContent active lafPageHost']//li[@title='Details']//a[@data-tab-value='detailTab']", 4);
-	if(displayed.isDisplayed())
-	{
-		flag=true;
-	}
-	
-	}	
-	return flag;
-	
-}
 
 
-/**
- * Description: This method is to check unavailbility of an element 
- * @param element:  xpath of the element
- * @return : true if element not found
- */
-
-
-public boolean isNotDisplayed(String element)
-{
-	try {
-	    driver.findElement(By.xpath(element));
-	    return true;
-	  }
-	catch (org.openqa.selenium.NoSuchElementException e) {
-	    return false;
-	  }
-}
-
-/**
- * Description: This method is to check unavailbility of an element 
- * @param element:  xpath of the element
- * @return : true if element not found
- */
-
-
-public int verifyErrorMessagesWhileCreatingExemption(Map<String,String> testData, String data) {
-	
-	
-	List<WebElement> allErrorMsgs= fieldsErrorMsg;
-	System.out.println("total errors found on UI::"+allErrorMsgs.size());
-	String[] errorMsgs=testData.get(data).split(",");
-	int noOfMsgsFound=0;
-	//Iterator<WebElement> itr = allErrorMsgs.iterator();
-	for(int i=0;i<errorMsgs.length;i++){
-	for(int j=0;j<allErrorMsgs.size();j++)
-	{
-		
-		System.out.println("comaring::"+errorMsgs[i]+" with:: "+allErrorMsgs.get(j));
-			if(errorMsgs[i].equals(allErrorMsgs.get(j).getText().trim()))
-				{
-				//System.out.println("Error message "+errorMsgs[i]+ "found in error list");
-				noOfMsgsFound++;
-				break;
-				}
-		}
-	}
-	System.out.println("Error message found on UI::"+noOfMsgsFound);
-	return noOfMsgsFound;
-	
-	
-}
 
 
 public String createNewExemption(Map<String,String> newExemptionData) throws Exception {
@@ -686,15 +483,15 @@ public String createNewExemption(Map<String,String> newExemptionData) throws Exc
 	
 	
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Entering/Selecting values for New Exemption record");
-	apasGenericObj.searchAndSelectFromDropDown(apn,newExemptionData.get("APN"),"//ul[@class='lookup__list  visible']");
+	apasGenericObj.searchAndSelectFromDropDown(apn,newExemptionData.get("APN"));
 	objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-	apasGenericObj.searchAndSelectFromDropDown(claimantName,newExemptionData.get("ClaimantName"),"//ul[@class='lookup__list  visible']");
+	apasGenericObj.searchAndSelectFromDropDown(claimantName,newExemptionData.get("ClaimantName"));
 	objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
 	objPage.enter(spouseName, newExemptionData.get("SpouseName"));
 	objPage.enter(spouseSSN, newExemptionData.get("SpouseSSN"));
 	apasGenericObj.selectFromDropDown(unmarriedSpouseOfDisabledVeteran, newExemptionData.get("UnmarriedSpouseOfDisabledVeteran"));
 	objPage.enter(dateOfDeathOfVeteran, newExemptionData.get("DateOfDeathOfVeteran"));
-	objPage.enter(veteranName, newExemptionData.get("VeteranName"));
+	objPage.enter(veteranName, newExemptionData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 	objPage.enter(veteranSSN, newExemptionData.get("VeteranSSN"));
 	objPage.enter(dateAquiredProperty, newExemptionData.get("DateAquiredProperty"));
 	objPage.enter(dateOccupyProperty, newExemptionData.get("DateOccupyProperty"));
@@ -706,15 +503,15 @@ public String createNewExemption(Map<String,String> newExemptionData) throws Exc
 	objPage.enter(priorResidenceCounty, newExemptionData.get("PriorResidenceCounty"));
 	objPage.enter(effectiveDateOfUSDVA, newExemptionData.get("EffectiveDateOfUSDVA"));
 	objPage.enter(dateOfNotice, newExemptionData.get("DateOfNotice"));
-	selectbasisForClaims(newExemptionData, "BasisForClaim");
+	apasGenericObj.selectMultipleValues(newExemptionData.get("BasisForClaim"), "Basis for Claim");
 	objPage.enter(claimanatEmailAddress, newExemptionData.get("EmailAddress"));
 	objPage.enter(claimantTelephone,newExemptionData.get("Telephone"));
-	selectDeceasedVeteranQualification(newExemptionData, "DeceasedVeteranQualification");
+	apasGenericObj.selectMultipleValues(newExemptionData.get("DeceasedVeteranQualification"), "Deceased Veteran Qualification");
 	apasGenericObj.selectFromDropDown(qualification, newExemptionData.get("Qualification"));
 	//apasGenericObj.selectFromDropDown(disabledVeteranObj.endRatingReason, newExemptionData.get("EndRatingReason"));
 	//objPage.enter(disabledVeteranObj.endDateOfRating, newExemptionData.get("EnddateOfRating"));
 	objPage.Click(saveButton);
-	checkIfDuplicateExemption(newExemptionData);
+	//checkIfDuplicateExemption(newExemptionData);
 	objPage.locateElement("//a[contains(.,'Value Adjustments')]", 3);
 	String exemptionName=newExemptionNameAftercreation.getText();
 	System.out.println("Created Exemption:: "+exemptionName);
@@ -723,97 +520,41 @@ public String createNewExemption(Map<String,String> newExemptionData) throws Exc
 	}
 
 
-public String getDateInRequiredFormat(Object date,String format) throws ParseException
-	{
-	SimpleDateFormat sdf = new SimpleDateFormat(format);
-	Calendar cal = Calendar.getInstance();
-	String convertedDate = sdf.format(cal.getTime());  
-	//String convertedDate = sdf.format(date);
-	return convertedDate;
-
-	/*String convertedDate=null;
-	if(date!=null)
-	{
-	String date1=date.toString();
-	SimpleDateFormat sdf = new SimpleDateFormat(format);
-	Date startDateString1  = sdf.parse(date1);
-	convertedDate = sdf.format(startDateString1);
-	}
-	return convertedDate;*/
-	}
-
-
-public void editAndInputFieldData(String fieldName,WebElement field, String data)
-{
-		try {
-
-			//WebElement editbutton=driver.findElement(By.xpath("//button/span[contains(.,'"+fieldName+"')]/ancestor::button"));
-		
-		//objPage.waitForElementToBeClickable(driver.findElement(By.xpath("//button/span[contains(.,'"+fieldName+"')]/ancestor::button")), 5);
-		objPage.clickElementOnVisiblity("//button/span[contains(.,'"+fieldName+"')]/ancestor::button");
-		//objPage.Click(editbutton);
-		objPage.enter(field, data);
-		objPage.Click(saveButton);
-		Thread.sleep(4000);
-			}
-		
-		catch (Exception e) {
-		e.printStackTrace();
-					}
-	
-	
-}
-
-
-
-public void editAndSelectFieldData(String fieldName, String data)
-{
-		try {
-		WebElement editbutton=driver.findElement(By.xpath("//button/span[contains(.,'"+fieldName+"')]/ancestor::button"));
-		WebElement dropdown=driver.findElement(By.xpath("//lightning-combobox[contains(.,'"+fieldName+"')]//div/input"));
-		objPage.Click(editbutton);
-		apasGenericObj.selectFromDropDown(dropdown, data);
-		objPage.Click(saveButton);
-			}
-		
-		catch (Exception e) {
-		e.printStackTrace();
-					}
-	
-	
-}
-
-
-
-public String createNewExemptionWithMandatoryData(Map<String, String> newExemptionData) {
+public String createNewExemptionWithMandatoryData(Map<String, String> newExemptionData) throws Exception {
 
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Entering/Selecting values for New Exemption record");
 	String exemptionName = null;
-	try {
-		apasGenericObj.searchAndSelectFromDropDown(apn,newExemptionData.get("APN"),"//ul[@class='lookup__list  visible']");
+	
+		apasGenericObj.searchAndSelectFromDropDown(apn,newExemptionData.get("APN"));
 		objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-		apasGenericObj.searchAndSelectFromDropDown(claimantName,newExemptionData.get("ClaimantName"),"//ul[@class='lookup__list  visible']");
+		apasGenericObj.searchAndSelectFromDropDown(claimantName,newExemptionData.get("ClaimantName"));
 		objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
-		objPage.enter(veteranName, newExemptionData.get("VeteranName"));
+		objPage.enter(veteranName, newExemptionData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 		objPage.enter(veteranSSN, newExemptionData.get("VeteranSSN"));
 		objPage.enter(dateAquiredProperty, newExemptionData.get("DateAquiredProperty"));
 		objPage.enter(dateOccupyProperty, newExemptionData.get("DateOccupyProperty"));
 		objPage.enter(effectiveDateOfUSDVA, newExemptionData.get("EffectiveDateOfUSDVA"));
 		objPage.enter(dateOfNotice, newExemptionData.get("DateOfNotice"));
-		selectbasisForClaims(newExemptionData, "BasisForClaim");
+		apasGenericObj.selectMultipleValues(newExemptionData.get("BasisForClaim"), "Basis for Claim");
 		apasGenericObj.selectFromDropDown(qualification, newExemptionData.get("Qualification"));
+		if(newExemptionData.get("Qualification").contains("Not Qualified"))
+		{
+			apasGenericObj.selectFromDropDown(reasonNotQualified, newExemptionData.get("ReasonForNotQualified"));	
+			
+		}
+		if(newExemptionData.containsKey("EnddateOfRatingNeeded"))
+		{
+			objPage.enter(endDateOfRating, newExemptionData.get("EnddateOfRatingNeeded"));
+			apasGenericObj.selectFromDropDown(endRatingReason, newExemptionData.get("EndRatingReason"));
+			
+		}
 		objPage.Click(saveButton);
-		checkIfDuplicateExemption(newExemptionData);
+		//checkIfDuplicateExemption(newExemptionData);
 		objPage.locateElement("//div[@class='windowViewMode-normal oneContent active lafPageHost']//div[contains(.,'Date Application Received')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text", 4);
 		exemptionName=newExemptionNameAftercreation.getText();
 		System.out.println("Created Exemption:: "+exemptionName);
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Created "+exemptionName+" Exemption with mandatory data");
-		
-		
-	} catch (Exception e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+	
 	
 	return exemptionName;
 }
@@ -1395,7 +1136,7 @@ public void searchAndSelectExemption(String exemptionName) throws Exception
 	String value = exemptionName;
 	
 	//Step4: Searching and selecting the Exemption
-	apasGenericObj.searchAndSelectOptionFromDropDown(globalSearchListEditBox, value);
+	apasGenericObj.searchAndSelectFromDropDown(globalSearchListEditBox, value);
 	objPage.waitUntilPageisReady(driver);	
 }
 
