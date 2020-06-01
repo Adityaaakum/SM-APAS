@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.apas.Reports.ReportLogger;
+import com.apas.Utils.SalesforceAPI;
+import com.apas.config.testdata;
 import org.apache.log4j.Logger;
 
 import com.apas.Reports.ExtentTestManager;
@@ -29,6 +32,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 	Util objUtil;
 	ApasGenericPage objApasGenericPage;
+	SalesforceAPI salesforceAPI = new SalesforceAPI();
 
 	public BuildingPermitPage(RemoteWebDriver driver) {
 		super(driver);
@@ -94,6 +98,9 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//span[text() = 'Permit City Code']/parent::span/following-sibling::div//a[@class = 'select']")
 	public WebElement permitCityCodeDrpDown;
+
+	@FindBy(xpath = "//div[@class='select-options']/ul/li/..")
+	public WebElement permitCityCodeDrpDownOptions;
 
 	@FindBy(xpath = "//span[text() = 'Work Description']/parent::label/following-sibling::input")
 	public WebElement workDescriptionTxtBox;
@@ -231,11 +238,8 @@ public class BuildingPermitPage extends ApasGenericPage {
 	 * @throws Exception
 	 */
 	public String enterManualEntryData(Map<String, String> dataMap) throws Exception {
-		
-		//String buildingPermitNumber = dataMap.get("Permit City Code") + "-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
-		String buildingPermitNumber  = dataMap.get("Building Permit Number");
-		System.setProperty("permitNumber", dataMap.get("Building Permit Number"));
 
+		String buildingPermitNumber  = dataMap.get("Building Permit Number");
 		enter(buildingPermitNumberTxtBox, dataMap.get("Building Permit Number"));
 		objApasGenericPage.searchAndSelectOptionFromDropDown(parcelsSearchBox, dataMap.get("APN"));
 		objApasGenericPage.selectOptionFromDropDown(processingStatusDrpDown, dataMap.get("Processing Status"));
@@ -346,7 +350,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	/**
 	 * @description: This method checks whether newly created building permit number
 	 * is displayed on details page.
-	 * @param buildingPermitNum: Takes building permit number as argument
+	 * @param entryName: Takes building permit number as argument
 	 * @return: Return true / false based on the status of element
 	 * @throws Exception
 	 */
@@ -664,8 +668,10 @@ public class BuildingPermitPage extends ApasGenericPage {
 	 * @description: This method will return the error message appeared against the filed name passed in the parameter
 	 * @param fieldName: field name for which error message needs to be fetched
 	 */
-	public String getIndividualFieldErrorMessage(String fieldName) {
-		return getElementText(driver.findElement(By.xpath("//div[@role='listitem']//span[text()='" + fieldName + "']/../../../ul[contains(@data-aura-class,'uiInputDefaultError')]")));
+	public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
+		String xpath = "//div[@role='listitem']//span[text()='" + fieldName + "']/../../../ul[contains(@data-aura-class,'uiInputDefaultError')]";
+		waitUntilElementIsPresent(xpath,20);
+		return getElementText(driver.findElement(By.xpath(xpath)));
 	}
 
 	/**
@@ -681,17 +687,18 @@ public class BuildingPermitPage extends ApasGenericPage {
 	 * @return hashMapBuildingPermitData : Test data to create manual building permit
 	 */
 	public Map<String, String> getBuildingPermitManualCreationTestData() {
-		String buildingPermitNumber = "LM-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
-		Map<String, String> manualBuildingPermitMap = new HashMap<>();
-		manualBuildingPermitMap.put("Permit City Code","LM");
-		manualBuildingPermitMap.put("APN","000002");
+
+		//Fetch the APN to be used to create building permit
+		String query ="SELECT Name FROM Parcel__c where status__c = 'Active' limit 1";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		String activeAPN = response.get("Name").get(0);
+		ReportLogger.INFO("Active APN fetched through Salesforce API : " + activeAPN);
+
+		String manualEntryData = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_MANUAL + "\\BuildingPermitManualCreationData.json";
+		Map<String, String> manualBuildingPermitMap = objUtil.generateMapFromJsonFile(manualEntryData, "BuildingPermitManualCreationData");
+		String buildingPermitNumber = manualBuildingPermitMap.get("Permit City Code") + "-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
 		manualBuildingPermitMap.put("Building Permit Number",buildingPermitNumber);
-		manualBuildingPermitMap.put("Processing Status","No Process");
-		manualBuildingPermitMap.put("Issue Date","11/10/2019");
-		manualBuildingPermitMap.put("Completion Date","11/10/2019");
-		manualBuildingPermitMap.put("County Strat Code Description","REPAIR ROOF");
-		manualBuildingPermitMap.put("Work Description","New Construction");
-		manualBuildingPermitMap.put("Estimated Project Value","500");
+		manualBuildingPermitMap.put("APN",activeAPN);
 
 		return  manualBuildingPermitMap;
 	}

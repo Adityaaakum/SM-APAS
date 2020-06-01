@@ -230,5 +230,16 @@ public class DataProviders {
     public Object[][] dpLoginUser() {
         return new Object[][] { { users.BUSINESS_ADMIN } };
     }
-
+    
+    @DataProvider(name = "loginExemptionSupportStaff")
+	public Object[][] dataProviderLoginUserMethod() {
+		return new Object[][] { { users.EXEMPTION_SUPPORT_STAFF } };
+	}
+    
+	
+	@DataProvider(name = "rpApprasierAndBPPAuditor")
+	public Object[][] dataProviderLoginUserMethodForUser() {
+		return new Object[][] { { users.RP_APPRAISER }, { users.BPP_AUDITOR }};
+	}
+    
 }

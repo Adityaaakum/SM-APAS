@@ -4,6 +4,7 @@ import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.PageObjects.*;
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -146,7 +147,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	 1. Error appearing if mandatory fields are not filled while editing the existing building permit record
 	 2. Save the record after updating the value in a field
 	 **/
-	@Test(description = "SMAB-T466: Mandatory Field Validation while editing manual building permit and editing a record", groups = {"smoke","regression","buildingPermit"}, dataProvider = "loginUsers", dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T466: Mandatory Field Validation while editing manual building permit and editing a record", groups = {"smoke","regression","buildingPermit_Demo"}, dataProvider = "loginUsers", dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_EditAndValidateRequiredFieldsValidationsForExistingPermit(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -214,8 +215,8 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate error appearing if mandatory fields are not filled while manually creating building permit
 	 **/
-	@Test(description = "SMAB-T418: Mandatory Field Validation while creating manual building permit", groups = {"smoke","regression","buildingPermit"}, dataProvider = "loginUsers", dataProviderClass =  DataProviders.class, alwaysRun = true, enabled = true)
-	public void verify_ManualCreationWithRequiredieldsValidations(String loginUser) throws Exception {
+	@Test(description = "SMAB-T418: Mandatory Field Validation while creating manual building permit", groups = {"smoke","regression","buildingPermit_Demo"}, dataProvider = "loginUsers", dataProviderClass =  DataProviders.class, alwaysRun = true, enabled = true)
+	public void verify_ManualCreationWithRequiredFieldsValidations(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -249,7 +250,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate that building permit can be created when 'Building Permit Number, Permit City Code and APN' is unique
 	 **/
-	@Test(description = "SMAB-T519: Validate that building permit can be created when 'Building Permit Number, Permit City Code and APN' is unique", groups = {"smoke","regression","buildingPermit"}, dataProvider = "loginUsers", dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T519: Validate that building permit can be created when 'Building Permit Number, Permit City Code and APN' is unique", groups = {"smoke","regression","buildingPermit_Demo"}, dataProvider = "loginUsers", dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_ManualCreationForDuplicateCheck(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -306,7 +307,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the warning message when building permit is created with retired parcel
 	 **/
-	@Test(description = "SMAB-T626: Validate that warning message appears when a building permit is created with retired parcel", groups = {"smoke","regression","buildingPermit"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T626: Validate that warning message appears when a building permit is created with retired parcel", groups = {"smoke","regression","buildingPermit_Demo"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_ManualCreationWithRetiredParcel(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -337,13 +338,13 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objApasGenericFunctions.displayRecords("All Manual Building Permits");
 		objApasGenericFunctions.searchRecords(buildingPermitNumber);
 		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objApasGenericFunctions.getGridDataInHashMap();
-		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Warning Message").get(0), "The parcel is retired. Please review and confirm the APN on the Building Permit.","SMAB-T626: 'Priority Message' validation on the data displayed on the grid");
+		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Warning Message").get(0), "APN is retired.","SMAB-T626: 'Priority Message' validation on the data displayed on the grid");
 
 		//Step6: open the building permit created with retired parcel
 		objBuildingPermitPage.openBuildingPermit(buildingPermitNumber);
 
 		//Validate the warning message for retired parcel is appearing on the Details page as well
-		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag), "The parcel is retired. Please review and confirm the APN on the Building Permit.","SMAB-T626: 'Priority Message' validation on building permit details page screen");
+		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag), "APN is retired.","SMAB-T626: 'Priority Message' validation on building permit details page screen");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -352,7 +353,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the values in Processing Status and Calculated Processing Status fields when processing status was not selected
 	 **/
-	@Test(description = "SMAB-T399: Validate that Process and Calculated Process Status fields are auto populated when process status field is not selected", groups = {"regression","buildingPermit"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T399: Validate that Process and Calculated Process Status fields are auto populated when process status field is not selected", groups = {"regression","buildingPermit_Demo"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_Manual_ProcessFieldsStatus_ProcessingStatusNotSelectedByUser(String loginUser) throws Exception {
 
 		//Pre-requisite: Fetch the APN to be used to create building permit
@@ -390,7 +391,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the values in Processing Status and Calculated Processing Status fields when processing status was selected
 	 **/
-	@Test(description = "SMAB-T400: Validate that Process and Calculated Process Status fields are auto populated when process status field is selected", groups = {"regression","buildingPermit"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T400: Validate that Process and Calculated Process Status fields are auto populated when process status field is selected", groups = {"regression","buildingPermit_Demo"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_Manual_ProcessFieldsStatus_ProcessingStatusSelectedByUser(String loginUser) throws Exception {
 
 		//Pre-requisite: Fetch the APN to be used to create building permit
@@ -431,7 +432,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	 Processing Status should be populated as it has been explicitly selected by user
 	 Calculated Processing Status should be populated as 'Process' if Estimated project value is "Greater Than or Equal to $25,000" ELSE 'No Process'
 	 **/
-	@Test(description = "SMAB-T403, SMAB-T404: Validated the Calculated Process Status field is automatically updated when estimated project value or county strat code is updated", groups = {"regression","buildingPermit"}, dataProvider = "loginUsers", dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T403, SMAB-T404: Validated the Calculated Process Status field is automatically updated when estimated project value or county strat code is updated", groups = {"regression","buildingPermit_Demo"}, dataProvider = "loginUsers", dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_Manual_CalculatedProcessingStatus_EstimatedProjectValueOrCountyStratCodeUpdated(String loginUser) throws Exception {
 
 		//Pre-requisite: Fetch the APN to be used to create building permit
@@ -497,5 +498,152 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
 	}
+
+	/**
+	 Below test case is used to validate the error message as per the business rule validation while creating building permit manually
+	 **/
+	@Test(description = "SMAB-T630,SMAB-T627,SMAB-T628,SMAB-T631: Validate the error message as per the business rule validation while creating building permit manually", groups = {"regression","buildingPermit"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	public void verify_BuildingPermit_Manual_ErrorMessageValidations(String loginUser) throws Exception {
+
+		//Step1: Login to the APAS application using the user passed through the data provider
+		objApasGenericFunctions.login(loginUser);
+
+		//Step2: Opening the building permit module
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+
+		//Step3: Open the Intake Form to create manual building permit
+		objBuildingPermitPage.openNewForm();
+		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
+		objBuildingPermitPage.enterManualEntryData(manualBuildingPermitMap);
+
+		//Step4: Estimated Project Value Error validation for less than zero value (SMAB-T630)
+		objPage.enter(objBuildingPermitPage.estimatedProjectValueTxtBox,"-20");
+		objPage.Click(objBuildingPermitPage.saveButton);
+		objPage.waitForElementToBeVisible(objBuildingPermitPage.errorMsgOnTop,30);
+		softAssert.assertEquals(objBuildingPermitPage.errorMsgOnTop.getText(),"Invalid Permit Value or Fee","SMAB-T630: Error message validation when 'Estimated Project Value' is less than zero");
+
+		//Step5: Future Issue Date Error validation (SMAB-T627)
+		objBuildingPermitPage.enterDate(objBuildingPermitPage.issueDateCalender, "11/10/2039");
+		objPage.Click(objBuildingPermitPage.saveButton);
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Issue Date"),"Issue Date should not be greater than to Current Date","SMAB-T627: 'Issue Date' error validation when data is selected in future");
+
+		//This step is captured as part of implementation of SMAB-2007 for revised error messages
+		objBuildingPermitPage.enterDate(objBuildingPermitPage.completionDateCalender, "11/10/2039");
+		objPage.Click(objBuildingPermitPage.saveButton);
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Completion Date"),"Completion Date should not be greater than to Current Date","SMAB-T627: 'Issue Date' error validation when data is selected in future");
+
+		//Step6: Completion Date Less Than Issue Date Error validation (SMAB-T628)
+		objBuildingPermitPage.enterDate(objBuildingPermitPage.issueDateCalender, "11/10/2019");
+		objBuildingPermitPage.enterDate(objBuildingPermitPage.completionDateCalender, "11/08/2019");
+		objPage.Click(objBuildingPermitPage.saveButton);
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Completion Date"),"Completion Date should be greater than to Issue Date","SMAB-T628: Completion Date Less Than Issue Date Error message validation");
+
+		//Step7: Wrong Format Issue Date Error validation (SMAB-T631)
+		objBuildingPermitPage.enter(objBuildingPermitPage.issueDateCalender, "15/23/2019");
+		objPage.Click(objBuildingPermitPage.saveButton);
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Issue Date"),"Invalid data type.","SMAB-T631: Issue Date in invalid format Error message validation");
+
+		//Step8: Wrong Format Completion Date Error validation (SMAB-T631)
+		objBuildingPermitPage.enter(objBuildingPermitPage.completionDateCalender, "15/23/2019");
+		objPage.Click(objBuildingPermitPage.saveButton);
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Completion Date"),"Invalid data type.","SMAB-T631: Completion Date in invalid format Error message validation");
+		objPage.Click(objBuildingPermitPage.cancelButton);
+
+		//Logout at the end of the test
+		objApasGenericFunctions.logout();
+	}
+
+	/**
+	 Below test case is used to validate the the correct values in Permit City Code drop down while creating manual building permit
+	 **/
+	@Test(description = "SMAB-T506: Validate the correct values in Permit City Code drop down while creating manual building permit", groups = {"regression","buildingPermit"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	public void verify_BuildingPermit_Manual_PermitCityCodeValues(String loginUser) throws Exception {
+
+		//Step1: Login to the APAS application using the user passed through the data provider
+		objApasGenericFunctions.login(loginUser);
+
+		//Step2: Opening the building permit module
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+
+		//Step3: Open the Intake Form to create manual building permit
+		objBuildingPermitPage.openNewForm();
+
+		//Step4: Permit City Code values validation for manual building permit
+		objPage.Click(objBuildingPermitPage.permitCityCodeDrpDown);
+		String expectedPermitCityCodeValues = "--None--\nBR\nCL\nDC\nEG\nEP\nFC\nHM\nLH\nLM\nMB\nMO\nMP\nPC\nPR\nPV\nSC\nSG";
+		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.permitCityCodeDrpDownOptions),expectedPermitCityCodeValues,"SMAB-T506: Validation for Permit City Code values population for manual building permit");
+
+		//Logout at the end of the test
+		objApasGenericFunctions.logout();
+	}
+
+	/**
+	 Below test case is used to validate situs information is not populated when APN doesn't have any primary situs linked
+	 **/
+	@Test(description = "SMAB-T424: Validation for no Situs when primary situs doesn't exist for the parcel", groups = {"regression","buildingPermit"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	public void verify_BuildingPermit_Manual_NoSitusPopulation(String loginUser) throws Exception {
+
+		//Pre-Requisite: Pull the APN which doenst have primary situs linked
+		String query ="SELECT Primary_Situs__c,Status__C,Name FROM Parcel__c where Status__C='Active' and Primary_Situs__C='' limit 1";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		String activeAPNWithoutPrimarySitus = response.get("Name").get(0);
+		ReportLogger.INFO("Active APN without primary situs fetched through Salesforce API : " + activeAPNWithoutPrimarySitus);
+
+		//Step1: Login to the APAS application using the user passed through the data provider
+		objApasGenericFunctions.login(loginUser);
+
+		//Step2: Opening the building permit module
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+
+		//Step3: Open the Intake Form to create manual building permit
+		objBuildingPermitPage.openNewForm();
+
+		//Step4: Permit City Code values validation for manual building permit
+		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
+		manualBuildingPermitMap.put("APN",activeAPNWithoutPrimarySitus);
+		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
+		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
+
+		//Validation for the situs fields not auto populated as selected APN doesn't have the primary situs linked
+		ReportLogger.INFO("Validation for the situs fields not auto populated as selected APN " + activeAPNWithoutPrimarySitus + "doesn't have the primary situs linked");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs City Code","Situs Information"), "", "SMAB-T424: 'Situs City Code' Field Validation in 'Situs Information' section should be blank");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs","Situs Information"), "", "SMAB-T424: 'Situs' Field Validation in 'Situs Information' section should be blank");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Type","Situs Information"), "", "SMAB-T424: 'Situs Type' Field Validation in 'Situs Information' section should be blank");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Direction"), "", "SMAB-T424: 'Situs Direction' Field Validation in 'Situs Information' section should be blank");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Number","Situs Information"), "", "SMAB-T424: 'Situs Number' Field Validation in 'Situs Information' section should be blank");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "", "SMAB-T424: 'Situs Unit Number' Field Validation in 'Situs Information' section should be blank");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Street Name","Situs Information"), "", "SMAB-T424: 'Situs Street Name' Field Validation in 'Situs Information' section should be blank");
+
+		//Logout at the end of the test
+		objApasGenericFunctions.logout();
+	}
+
+	/**
+	 Below test case is used to validate successful creation of manual building permit with non relevant permit prefixes
+	 **/
+	@Test(description = "SMAB-T443: Validation for successful creation of manual building permit with non relevant permit prefixes", groups = {"regression","buildingPermit"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
+	public void verify_BuildingPermit_Manual_NonRelevantPermitPrefixes(String loginUser) throws Exception {
+
+		//Step1: Login to the APAS application using the user passed through the data provider
+		objApasGenericFunctions.login(loginUser);
+
+		//Step2: Opening the building permit module
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+
+		//Step3: Add the building permit with Non Relevant Permit Prefixes
+		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
+		String buildingPermitNumber = "TR-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
+		manualBuildingPermitMap.put("Building Permit Number",buildingPermitNumber);
+		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
+
+		//Step4: Validating the building permit is added successfully
+		objPage.waitForElementToBeVisible(objBuildingPermitPage.successAlert,20);
+		String actualSuccessMessage = objBuildingPermitPage.successAlert.getText();
+		softAssert.assertEquals(actualSuccessMessage,"success\nBuilding Permit \"" + buildingPermitNumber + "\" was created.\nClose","SMAB-T443: Validation for Permit City Code values population for manual building permit");
+
+		//Logout at the end of the test
+		objApasGenericFunctions.logout();
+	}
+
 
 }

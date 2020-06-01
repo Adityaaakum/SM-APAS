@@ -43,10 +43,20 @@ public class SuiteListener extends TestBase implements ITestListener {
 	 */
 	@Override
 	public void onStart(ITestContext context) {
+
+		//killing chrome driver process if there is any process left from previous regressions
+		if(System.getProperty("os.name").contains("Windows")) {
+			try {
+				Process process = Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe /T");
+				process.destroy();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 		ExtentManager.setOutputDirectory(context);
 		CONFIG = new Properties();
 		try {
-			
 			TestBase.loadPropertyFiles();
 			extent = new ExtentManager().getInstance(context.getSuite().getName());
 			if (flagToUpdateJira && testCycle != null) {
@@ -55,7 +65,6 @@ public class SuiteListener extends TestBase implements ITestListener {
 
 			//This will move old report to archive folder
 			objUtils.migrateOldReportsToAcrhive();;
-
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
