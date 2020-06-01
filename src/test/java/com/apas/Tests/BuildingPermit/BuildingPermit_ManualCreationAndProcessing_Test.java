@@ -52,7 +52,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the manual creation of building permit
 	 **/
-	@Test(description = "SMAB-T383,SMAB-T520,SMAB-T402,SMAB-T421: Creating manual entry for building permit", dataProvider = "loginUsers", dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit_Demo"}, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T383,SMAB-T520,SMAB-T402,SMAB-T421: Creating manual entry for building permit", dataProvider = "loginUsers", dataProviderClass = DataProviders.class, groups={"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_ManualCreateNewBuildingPermitWithDataValidations(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)

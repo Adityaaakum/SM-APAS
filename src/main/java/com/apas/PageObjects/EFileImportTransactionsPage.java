@@ -25,8 +25,11 @@ public class EFileImportTransactionsPage extends Page {
 	@FindBy(xpath = "//*[@class='slds-form__row']//*[@class='test-id__field-label' and contains(.,'Status')]/../..//*[@data-output-element-id='output-field']")
 	public WebElement statusLabel;
 	
-	@FindBy(xpath = "//*[@class='slds-form__row']//*[@class='test-id__field-label' and contains(.,'E-File Import Log')]/../..//*[@data-output-element-id='output-field']")
+	@FindBy(xpath = "//nav[@aria-label = 'Global Navigation']//one-app-nav-bar-item-root//a//span[text() = 'E-File Import Logs']")
 	public WebElement efileImportLogLabel;
+	
+	@FindBy(xpath = "//nav[@aria-label = 'Global Navigation']//one-app-nav-bar-item-root//a//span[text() = 'E-File Import Transactions']")
+	public WebElement efileImportTransactionLabel;
 	
 	@FindBy(xpath = "//a[contains(.,'Import Transaction-00')]")
 	public WebElement importTransactionName;
