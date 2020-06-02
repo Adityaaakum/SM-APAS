@@ -310,15 +310,14 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	@Test(description = "SMAB-T626: Validate that warning message appears when a building permit is created with retired parcel", groups = {"smoke","regression","buildingPermit_Demo"}, dataProvider = "loginUsers",dataProviderClass = DataProviders.class, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_ManualCreationWithRetiredParcel(String loginUser) throws Exception {
 
+		//Pre-requisite: Fetch Retired APN to be used to create building permit
+		String query ="SELECT Name FROM Parcel__c where status__c = 'Retired' limit 1";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		String retiredAPN = response.get("Name").get(0);
+		ReportLogger.INFO("Retired APN fetched through Salesforce API : " + retiredAPN);
+
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
-
-		//Step2: Opening the Parcels module
-		objApasGenericFunctions.searchModule(modules.PARCELS);
-
-		//Step3: Search and Open the Parcel
-		objApasGenericFunctions.displayRecords("All Retired Parcels");
-		String retiredParcel = objApasGenericFunctions.getGridDataInHashMap(1).get("APN").get(0);
 
 		//Step2: Opening the building permit module
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
@@ -326,7 +325,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Step3: Prepare a test data to create a new building permit with retired parcel
 		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
 		String buildingPermitNumber = manualBuildingPermitMap.get("Building Permit Number");
-		manualBuildingPermitMap.put("APN",retiredParcel);
+		manualBuildingPermitMap.put("APN",retiredAPN);
 
 		//Step4: Open and save building permit manual creation
 		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
@@ -530,13 +529,13 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//This step is captured as part of implementation of SMAB-2007 for revised error messages
 		objBuildingPermitPage.enterDate(objBuildingPermitPage.completionDateCalender, "11/10/2039");
 		objPage.Click(objBuildingPermitPage.saveButton);
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Completion Date"),"Completion Date should not be greater than to Current Date","SMAB-T627: 'Issue Date' error validation when data is selected in future");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Completion Date"),"Completion Date should not be greater than Current Date","SMAB-T627: 'Issue Date' error validation when data is selected in future");
 
 		//Step6: Completion Date Less Than Issue Date Error validation (SMAB-T628)
 		objBuildingPermitPage.enterDate(objBuildingPermitPage.issueDateCalender, "11/10/2019");
 		objBuildingPermitPage.enterDate(objBuildingPermitPage.completionDateCalender, "11/08/2019");
 		objPage.Click(objBuildingPermitPage.saveButton);
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Completion Date"),"Completion Date should be greater than to Issue Date","SMAB-T628: Completion Date Less Than Issue Date Error message validation");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Completion Date"),"Completion Date should be greater than Issue Date","SMAB-T628: Completion Date Less Than Issue Date Error message validation");
 
 		//Step7: Wrong Format Issue Date Error validation (SMAB-T631)
 		objBuildingPermitPage.enter(objBuildingPermitPage.issueDateCalender, "15/23/2019");
@@ -570,8 +569,9 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step4: Permit City Code values validation for manual building permit
 		objPage.Click(objBuildingPermitPage.permitCityCodeDrpDown);
-		String expectedPermitCityCodeValues = "--None--\nBR\nCL\nDC\nEG\nEP\nFC\nHM\nLH\nLM\nMB\nMO\nMP\nPC\nPR\nPV\nSC\nSG";
+		String expectedPermitCityCodeValues = "--None--\nBR\nCL\nDC\nEG\nEH\nEP\nFC\nHM\nLH\nLM\nMB\nMO\nMP\nPC\nPR\nPV\nSC\nSG";
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.permitCityCodeDrpDownOptions),expectedPermitCityCodeValues,"SMAB-T506: Validation for Permit City Code values population for manual building permit");
+		objPage.Click(objBuildingPermitPage.cancelButton);
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -644,6 +644,5 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
 	}
-
 
 }
