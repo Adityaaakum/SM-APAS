@@ -1,9 +1,6 @@
 package com.apas.Tests.BuildingPermit;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.FileUtils;
 import com.apas.Utils.SalesforceAPI;
@@ -88,22 +85,8 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objPage.Click(objEfileImportPage.viewLink);
 		objPage.waitForElementToBeVisible(objEfileImportPage.errorRowSection,30);
 
-		//Step5: Comparing the data from the error row table with the expected data
-		ReportLogger.INFO("Data Validation of Error Row Records on Review and Approve Data Page");
-		HashMap<String, ArrayList<String>> actualErrorRowTable  = objApasGenericFunctions.getGridDataInHashMap(1);
-		String expectedErrorRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "Import_TestData_ValidAndInvalidScenarios_AT_ExpectedErrorRecords.csv";
-		HashMap<String, ArrayList<String>> expectedErrorRowTable = FileUtils.getCSVData(expectedErrorRowTableFile);
-		softAssert.assertEquals(FileUtils.compareHashMaps(actualErrorRowTable,expectedErrorRowTable),"","Data Comparison validation for Error Row Table");
-
-		//Step6: Comparing the data from the Imported Row Table with the expected data
-		ReportLogger.INFO("Data Validation of Imported Row Records on Review and Approve Data Page");
-		HashMap<String, ArrayList<String>> actualImportedRowTable  = objApasGenericFunctions.getGridDataInHashMap(2);
-		String expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "Import_TestData_ValidAndInvalidScenarios_AT_ExpectedImportedRecords.csv";
-		HashMap<String, ArrayList<String>> expectedImportedRowTable = FileUtils.getCSVData(expectedImportedRowTableFile);
-		softAssert.assertEquals(FileUtils.compareHashMaps(actualImportedRowTable,expectedImportedRowTable),"","Data Comparison validation for Imported Row Table");
-
 		//Step7: Validating that correct number of records are moved to error and imported row sections after file import
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Validation of Error and Imported Row Records on Review and Approve Data Page");
+		ReportLogger.INFO("Validation of Error and Imported Row Records on Review and Approve Data Page");
 		//Validation of number of records in error row section. Expected is 13 as 13 records are passed with wrong data in the input file
 		String numberOfRecordsInErrorRowSection = objPage.getElementText(objEfileImportPage.errorRowSection).split(":")[1].trim();
 		softAssert.assertEquals(numberOfRecordsInErrorRowSection, "14", "SMAB-T362: Validation if correct number of records are displayed in Error Row Section after file import");
@@ -112,7 +95,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		softAssert.assertEquals(numberOfRecordsInImportedRowSection, "8", "SMAB-T362: Validation if correct number of records are displayed in Imported Row Section after file import");
 
 		//Step8: Validation for Records discard functionality from Review and Approve Page
-		ExtentTestManager.getTest().log(LogStatus.INFO, "SMAB-T363: Validation that error records can be discarded from Review and Approve Data Page");
+		ReportLogger.INFO("SMAB-T363: Validation that error records can be discarded from Review and Approve Data Page");
 		objPage.Click(objEfileImportPage.rowSelectCheckBox);
 		objPage.Click(objEfileImportPage.discardButton);
 		objPage.Click(objEfileImportPage.continueButton);
@@ -123,11 +106,10 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		softAssert.assertEquals(numberOfRecordsInImportedRowSection, "8", "SMAB-T362: Validation if correct number of records are displayed in Imported Row Section after discarding a record");
 
 		//Step9: Validating the approve functionality after all the records are cleared from error section and approved
-		ExtentTestManager.getTest().log(LogStatus.INFO, "SMAB-T362: Validation that status is approved after approving all the records");
+		ReportLogger.INFO("SMAB-T362: Validation that status is approved after approving all the records");
 		objPage.Click(objEfileImportPage.selectAllCheckBox);
 		objPage.Click(objEfileImportPage.discardButton);
 		objPage.Click(objEfileImportPage.continueButton);
-
 		objPage.Click(objEfileImportPage.approveButton);
 		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
 
@@ -137,6 +119,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.statusImportedFile), "Approved", "SMAB-T362: Validation if status of imported file is approved.");
 
 		//Step9: Validating the warning message for the approved buildling permit records and user should not be allowed to re-import the approved building permit records
+		objPage.scrollToTop();
 		objPage.Click(objEfileImportPage.nextButton);
 		objPage.Click(objEfileImportPage.periodDropdown);
 		objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
@@ -149,36 +132,61 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objApasGenericFunctions.logout();
 	}
 
-
 	/**
 	 Below test case is used to validate the building permit data imported through Efile Intake
 	 **/
-	@Test(description = "SMAB-T354,SMAB-T356,SMAB-T383,SMAB-T440: Validate the data on records imported through E-file intake module", dataProvider = "loginUsers",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, priority = 2, enabled = true)
+	@Test(description = "SMAB-T354,SMAB-T356,SMAB-T383,SMAB-T440: Validate the data on records imported through E-file intake module", dataProvider = "loginUsers",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, enabled = true)
 	public void verify_BuildingPermit_ThroughEFileImportTool(String loginUser) throws Exception {
-		/*
-		 The data is being fetched from the Atherton file used in verify_BuildingPermit_DiscardAndApprove method
-		  If the data is changed in E-file import file, there will be an impact on this scenario as well and data for below fields need to be updated
-		 */
 
-		String buildingPermitNumber = "T17-002947";
+		String period = objUtil.getCurrentDate("MMMM YYYY");
 
-		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
+		//Reverting the Approved Import logs if any in the system
+		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
+		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+
+		//Step1: Creating temporary file with random building permit number
+		String buildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
+		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "SingleValidRecord_AT.txt";
+		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "SingleValidRecord_AT.txt";
+		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",buildingPermitNumber,temporaryFile);
+
+		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);
 
-		//Step2: Opening the building permit module
+		//Step3: Opening the file import intake module
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+
+		//Step4: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
+		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", period ,temporaryFile);
+
+		//Step5: Waiting for Status of the imported file to be converted to "Imported"
+		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
+		objPage.waitForElementTextToBe(objEfileImportPage.statusImportedFile, "Imported", 120);
+
+		//step6: Validating that atherton file is successfully imported
+		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.totalRecordsInFile), "1", "SMAB-T440: Validation of total number of records with the records in file");
+		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.totalRecordsImportedFile), "1", "SMAB-T440: Validation of total records in file count is equal to the valid records in file");
+
+		//Step7: Approving the imported file
+		objPage.Click(objEfileImportPage.viewLink);
+		objPage.waitForElementToBeVisible(objEfileImportPage.errorRowSection,30);
+		objPage.Click(objEfileImportPage.approveButton);
+		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
+
+		//Step8: Opening the building permit module
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
 
-		//Step3: Opening the Building Permit with the Building Permit Number imported through Efile import
+		//Step9: Opening the Building Permit with the Building Permit Number imported through Efile import
 		objApasGenericFunctions.displayRecords("All Imported E-File Building Permits");
 		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
 
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Validating the field values on building permit created through E-File Intake for Building Permit Number : " + buildingPermitNumber);
+		ReportLogger.INFO("Validating the field values on building permit created through E-File Intake for Building Permit Number : " + buildingPermitNumber);
 
-		//Step4: Validation for the fields in the section Building Permit Information
+		//Step10: Validation for the fields in the section Building Permit Information
 		//Processing and Calculating Processing Status are calculated based on "Processing Status Information" section from "County Strat Code Information"
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Building Permit Number", "Building Permit Information"), "T17-002947", "SMAB-T356: 'Building Permit Number' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Building Permit Number", "Building Permit Information"), buildingPermitNumber, "SMAB-T356: 'Building Permit Number' Field Validation in 'Building Permit Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("APN", "Building Permit Information"), "060-241-050", "SMAB-T356: 'Parcel' Field Validation in 'Building Permit Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Estimated Project Value", "Building Permit Information"), "$2,000", "SMAB-T356: 'Estimated Project Value' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Estimated Project Value", "Building Permit Information"), "$1,000", "SMAB-T356: 'Estimated Project Value' Field Validation in 'Building Permit Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("City APN", "Building Permit Information"), "060241050", "SMAB-T356: 'Parcel' Field Validation in 'Building Permit Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Issue Date", "Building Permit Information"), "4/3/2018", "SMAB-T356: 'Issue Date' Field Validation in 'Building Permit Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Completion Date", "Building Permit Information"), "10/1/2019", "SMAB-T356: 'Completion Date' Field Validation in 'Building Permit Information' section");
@@ -238,7 +246,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 	/**
 	 Below test case is used to validate the revert functionality on the file having the error records
 	 **/
-	@Test(description = "SMAB-T361,SMAB-T358,SMAB-T970: Reverting the error records in building permit import", dataProvider = "loginUsers",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"},priority = 3, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T361,SMAB-T358,SMAB-T970: Reverting the error records in building permit import", dataProvider = "loginUsers",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"},alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_Revert(String loginUser) throws Exception {
 
 		String period = objUtil.getCurrentDate("MMMM YYYY");
@@ -356,7 +364,6 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objApasGenericFunctions.logout();
 	}
 
-	
 	/**
 	 Below test case is used to validate that building permit should only be visible after approval
 	 **/
@@ -395,6 +402,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		//Step8: Validating the building permit records should not be visible in the system as it has not been approved yet
 		String xpathBuildingPermit = "//*[@role='option']//*[@title='" + buildingPermitNumber + "']";
 		objPage.enter(objBuildingPermitPage.globalSearchListEditBox,buildingPermitNumber);
+		objPage.waitUntilElementIsPresent(xpathBuildingPermit,10);
 		List<WebElement> webElementBuildingPermitBeforeApproved = driver.findElements(By.xpath(xpathBuildingPermit));
 		softAssert.assertTrue(webElementBuildingPermitBeforeApproved.size() == 0,"SMAB-T661: Validating that building permit " + buildingPermitNumber + " should not be visible in the system as its not approved yet");
 

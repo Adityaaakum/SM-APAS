@@ -102,56 +102,101 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	/**
 	 Below test case is used to validate the building permit warning messages for retired parcel and situs information mismatch imported through Efile Intake
 	 **/
-	@Test(description = "SMAB-T453,SMAB-T455: Validate Retired parcel and situs information mismatch records imported through E-file intake module", dataProvider = "loginUsers",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, priority = 2,enabled = true)
+	@Test(description = "SMAB-T453,SMAB-T455: Validate Retired parcel and situs information mismatch records imported through E-file intake module", dataProvider = "loginUsers",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, enabled = true)
 	public void verify_BuildingPermit_ThroughEFileImportTool_WithRetiredParcelAndSitusMismatch(String loginUser) throws Exception {
 
-		/*
-		 *The Building Permit with retired parcel and situs information mismatch data is being fetched from the Atherton file used in verify_BuildingPermit_DiscardAndApprove method
-		 *If the data is changed in E-file import file, there will be an impact on this scenario as well and data for below fields need to be updated
-		 */
-		String buildingPermitNumber = "T17-002941";
+		String period = objUtil.getCurrentDate("MMMM YYYY");
 
-		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
+		//Reverting the Approved Import logs if any in the system
+		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
+		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+
+		//Step1: Creating temporary file with random building permit number
+		String buildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
+		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "RetiredParcelAndSitusMismatch.txt";
+		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "RetiredParcelAndSitusMismatch.txt";
+		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",buildingPermitNumber,temporaryFile);
+
+		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);
 
-		//Step2: Opening the building permit module
+		//Step3: Opening the file import intake module
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+
+		//Step4: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
+		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", period ,temporaryFile);
+
+		//Step5: Waiting for Status of the imported file to be converted to "Imported"
+		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
+		objPage.waitForElementTextToBe(objEfileImportPage.statusImportedFile, "Imported", 120);
+
+		//Step6: Approving the imported file
+		objPage.Click(objEfileImportPage.viewLink);
+		objPage.waitForElementToBeVisible(objEfileImportPage.errorRowSection,30);
+		objPage.Click(objEfileImportPage.approveButton);
+		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
+
+		//Step7: Opening the building permit module
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Opening the Building Permit with the Building Permit Number imported through Efile import
 		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
 
-		//Step4: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
-		String expectedMessage = "The parcel is retired. Please review and confirm the APN on the Building Permit.\nSitus information from the Building Permit does not match in the system.";
+		//Step8: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
+		String expectedMessage = "APN is retired.\nCity Situs not matching system.";
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag).trim(), expectedMessage, "SMAB-T453,SMAB-T455: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
 	}
+
 	/**
 	 Below test case is used to validate the warning message for missing/wrong parcel
 	 **/
-	@Test(description = "SMAB-T451,SMAB-T374: Validate Warning message for Missing/Wrong Parcel and Situs Type auto population for the records imported through E-file intake module", dataProvider = "loginUsers",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"},priority = 2,enabled = true)
+	@Test(description = "SMAB-T451,SMAB-T374: Validate Warning message for Missing/Wrong Parcel and Situs Type auto population for the records imported through E-file intake module", dataProvider = "loginUsers",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"},enabled = true)
 	public void verify_BuildingPermit_ThroughEFileImportTool_WrongParcelAndSitusTypePopulation(String loginUser) throws Exception {
 
-		/*
-		 *The Building Permit with missing APN data is being fetched from the Atherton file used in verify_BuildingPermit_DiscardAndApprove method
-		 *If the data is changed in E-file import file, there will be an impact on this scenario as well and data for below fields need to be updated
-		 */
-		String missingBuildingPermitNumber = "T17-002101";
+		String period = objUtil.getCurrentDate("MMMM YYYY");
 
-		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
+		//Reverting the Approved Import logs if any in the system
+		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
+		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+
+		//Step1: Creating temporary file with random building permit number
+		String missingAPNBuildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
+		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "WrongParcelAndSitusTypePopulation.txt";
+		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "WrongParcelAndSitusTypePopulation.txt";
+		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",missingAPNBuildingPermitNumber,temporaryFile);
+
+		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);
 
-		ReportLogger.INFO("Validating the warning message for missing APN for Building Permit number " + missingBuildingPermitNumber);
+		//Step3: Opening the file import intake module
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+
+		//Step4: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
+		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", period ,temporaryFile);
+
+		//Step5: Waiting for Status of the imported file to be converted to "Imported"
+		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
+		objPage.waitForElementTextToBe(objEfileImportPage.statusImportedFile, "Imported", 120);
+
+		//Step6: Approving the imported file
+		objPage.Click(objEfileImportPage.viewLink);
+		objPage.waitForElementToBeVisible(objEfileImportPage.errorRowSection,30);
+		objPage.Click(objEfileImportPage.approveButton);
+		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
+
+		ReportLogger.INFO("Validating the warning message for missing APN for Building Permit number " + missingAPNBuildingPermitNumber);
 
 		//Step2: Opening the building permit module to validate warning message for missing APN
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Opening the Building Permit with the Building Permit Number imported through Efile import
-		objApasGenericFunctions.globalSearchRecords(missingBuildingPermitNumber);
+		objApasGenericFunctions.globalSearchRecords(missingAPNBuildingPermitNumber);
 
 		//Step4: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
-		String expectedMessage = "Parcel and Situs information from the Building Permit does not match in the system.";
+		String expectedMessage = "Invalid APN.	";
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag).trim(), expectedMessage, "SMAB-T451: Warning message validation for building permit(Imported through E-File Intake module) with missing APN");
 
 		//Step5: Validation of Situs Type population from Situs Street Name with special keywords
@@ -167,13 +212,13 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objApasGenericFunctions.globalSearchRecords(wrongBuildingPermitNumber);
 
 		//Step6: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
-		expectedMessage = "Parcel and Situs information from the Building Permit does not match in the system.";
+		expectedMessage = "Invalid APN.";
 		softAssert.assertEquals(objBuildingPermitPage.warningMessageWithPriorityFlag.getText(), expectedMessage, "SMAB-T451: Warning message validation for building permit(Imported through E-File Intake module) with wrong APN");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
 	}
-	
+
 	/**
 	 Below test case is used to validate below functionalities
 	 1. Atherton building permit import functionality with business admin and appraisal support user roles
@@ -334,7 +379,5 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
 	}
-
-
 
 }

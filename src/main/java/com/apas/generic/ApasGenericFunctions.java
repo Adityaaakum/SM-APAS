@@ -120,7 +120,7 @@ public class ApasGenericFunctions extends TestBase{
 	 * @param searchString: String to search the record
 	 */
 	public void globalSearchRecords(String searchString) throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Searching and filtering the data through APAS level search with the String " + searchString);
+		ReportLogger.INFO("Searching and filtering the data through APAS level search with the String" + searchString);
 		objApasGenericPage.searchAndSelectFromDropDown(objApasGenericPage.globalSearchListEditBox,searchString);
 		Thread.sleep(5000);
 	}
