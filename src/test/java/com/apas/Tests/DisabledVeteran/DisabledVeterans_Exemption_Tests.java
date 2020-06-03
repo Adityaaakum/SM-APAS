@@ -74,7 +74,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	 * @throws Exception 
 	 */
 	@Test(description = "SMAB-T488,SMAB-T491,SMAB-T492,SMAB-T493,SMAB-T495,SMAB-T496:Future dates Error Messages for date Fields",dataProvider="loginExemptionSupportStaff" ,dataProviderClass = DataProviders.class, groups = {
-			"smoke", "regression","DisabledVeteran" }, priority = 0, alwaysRun = true, enabled = true)
+			"smoke", "regression","DisabledVeteranExemption"})
 	public void verify_Disabledveteran_FutureDatesErrorMessagesWhileCreatingExemption(String loginUser) throws Exception
 	{
 		
@@ -132,7 +132,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	
 	
 	@Test(description = "SMAB-T501,SMAB-T502,SMAB-T503,SMAB-T497,SMAB-T498,SMAB-T1278,SMAB-T1122,SMAB-T1223,SMAB-T1263,SMAB-T1264,SMAB-T1221:business validations for Exemption fields", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-			"smoke", "regression","DisabledVeteran" }, priority = 1, alwaysRun = true, enabled = true)
+			"smoke", "regression","DisabledVeteranExemption" })
 	public void verify_Disabledveteran_BusinessValidationsForExemptionFields(String loginUser) throws Exception
 	{
 			Map<String, String> businessValidationdata = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
@@ -271,7 +271,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	 * @throws Exception 
 	 **/
 	@Test(description = "SMAB-T1282:Verify date fields are not editable once entered for an Exemption",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-			"smoke", "regression" ,"DisabledVeteran"}, priority = 2, alwaysRun = true, enabled = true)
+			"smoke", "regression" ,"DisabledVeteranExemption"})
 	public void verify_Disabledveteran_DateFieldsNotEditableonCreatedExemptionDetailsPage(String loginUser) throws Exception
 	{	Map<String, String> dataToEdit = objUtil.generateMapFromJsonFile(exemptionFilePath, "editExemptionData");
 			
@@ -332,7 +332,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	 * @throws Exception 
 	 **/
 	@Test(description = "SMAB-T1218:End Date of Rating can't be modified if initially set",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-			"smoke", "regression","DisabledVeteran" }, priority = 3, alwaysRun = true, enabled = true)	
+			"smoke", "regression","DisabledVeteranExemption"})	
 	public void verify_Disabledveteran_EnddateOfRatingNotModifiableOnceEntered(String loginUser) throws Exception
 	{
 			Map<String, String> dataToEdit = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData");

@@ -71,7 +71,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 	// Below test case is used to validate permission access on Exemption and VA's
 	
 	@Test(description = "SMAB-T474: Verify User is able to create a VAR record",  dataProvider = "rpApprasierAndBPPAuditor",dataProviderClass = DataProviders.class, groups = {
-			"smoke", "regression","DisabledVeteran" }, priority = 1, alwaysRun = true, enabled = true)
+			"smoke", "regression","DisabledVeteranExemption" })
 	public void verify_Disabledveteran_NonAdminsAndAppraisalSupportUserNotAbleToCREDExemptionAndValueAdjustment(String loginInvalidUser) throws Exception
 	{
 
@@ -104,7 +104,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 	
 	// Below test case is used to validate permission access on Roll year
 	@Test(description = "SMAB-T642: Verify User is able to create a VAR record",  dataProvider = "loginBppAuditor",dataProviderClass = DataProviders.class, groups = {
-			"smoke", "regression","DisabledVeteran" }, priority = 2, alwaysRun = true, enabled = true)
+			"smoke", "regression","DisabledVeteranExemption"})
 	public void verify_Disabledveteran_nonSystemAdminNotAbleToCREDRollYearObjrct(String loginInvalidUser) throws Exception
 	{
 		String currentYear = objUtil.getCurrentDate("YYYY");

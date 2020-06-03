@@ -75,7 +75,7 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 	 Exemption2 : Various combinations - Without End Date of Rating, With End Date of Rating, Interchangeable Start Dates, Different Qualified details
 	 **/
 	
-	@Test(description = "SMAB-T526: Disabled Veteran - Verify user is not able to create duplicate Exemption record", groups = {"regression", "DisabledVeteran"}, priority = 0, dataProvider = "loginUsers", alwaysRun = true)
+	@Test(description = "SMAB-T526: Disabled Veteran - Verify user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
 	public void duplicateExemptionIsNotCreated(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -148,9 +148,9 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 	 Exemption2 : Without End Date of Rating
 	 **/
 	
-    @Test(description = "SMAB-T526: Disabled Veteran - Verify user is not able to create duplicate Exemption record", groups = {"regression", "DisabledVeteran"}, dependsOnMethods = {"duplicateExemptionIsNotCreated"}, dataProvider = "loginUsers", alwaysRun = true)
+    @Test(description = "SMAB-T526: Disabled Veteran - Verify user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dependsOnMethods = {"duplicateExemptionIsNotCreated"}, dataProvider = "loginUsers")
 	public void editExemptionAndDuplicateExemptionErrorValidation(String loginUser) throws Exception {
-		
+    if(!failedMethods.contains("duplicateExemptionIsNotCreated")) {	
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
 
@@ -182,7 +182,10 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 		objDisabledVeteransPage.cancelExemptionRecord();
 		
 		objApasGenericFunctions.logout();
-		
+    }
+	else {
+		softAssert.assertTrue(false, "This Test depends on 'duplicateExemptionIsNotCreated' which got failed");	
+	}
 	}
 	
 	/**
@@ -191,7 +194,7 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 	 Exemption2 : With End Date of Rating
 	 **/
 	
-	@Test(description = "SMAB-T526: Disabled Veteran - Verify user is not able to create duplicate Exemption record", groups = {"regression", "DisabledVeteran"}, dataProvider = "loginUsers", alwaysRun = true)
+	@Test(description = "SMAB-T526: Disabled Veteran - Verify user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
 	public void duplicateExemptionWithOverlappingDates(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -236,7 +239,7 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 	 -Non Qualified is updated with 'Qualified' and status changes to 'Active'
 	 **/
 	
-	@Test(description = "SMAB-T526: Disabled Veteran - Verify user is not able to create duplicate Exemption record", groups = {"regression", "DisabledVeteran"}, dataProvider = "loginUsers", alwaysRun = true)
+	@Test(description = "SMAB-T526: Disabled Veteran - Verify user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
 	public void notQualifiedExemptionDuplicateCreation(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider

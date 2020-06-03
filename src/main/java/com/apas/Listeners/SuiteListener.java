@@ -2,6 +2,7 @@ package com.apas.Listeners;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 
@@ -28,13 +29,13 @@ public class SuiteListener extends TestBase implements ITestListener {
 
 	public ExtentReports extent;
 	ExtentTest upTest;
-	Util objUtils = new Util();
-
+	Util objUtils = new Util();		
 	protected String getStackTrace(Throwable t) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		t.printStackTrace(pw);
 		return sw.toString();
+		
 	}
 
 	/**
@@ -43,10 +44,9 @@ public class SuiteListener extends TestBase implements ITestListener {
 	 */
 	@Override
 	public void onStart(ITestContext context) {
-
 		//killing chrome driver process if there is any process left from previous regressions
 		if(System.getProperty("os.name").contains("Windows")) {
-			try {
+			try {				
 				Process process = Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe /T");
 				process.destroy();
 			} catch (IOException e) {
@@ -124,6 +124,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 			ExtentTestManager.getTest().log(LogStatus.PASS, "Test Case has been PASSED.");
 		} else{
 			ExtentTestManager.getTest().log(LogStatus.FAIL, "Test Case has been FAILED.");
+			failedMethods.add(result.getMethod().getMethodName());
 		}
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 		ExtentManager.getExtentInstance().flush();
@@ -136,7 +137,6 @@ public class SuiteListener extends TestBase implements ITestListener {
 	@Override
 	public void onTestFailure(ITestResult result) {
 		System.out.println("Method Failed:" + result.getMethod().getMethodName());
-
 		try {
 			//Updating the test case status for Jira
 			String testCaseKeys =  JiraAdaptavistStatusUpdate.extractTestCaseKey(System.getProperty("description"));
