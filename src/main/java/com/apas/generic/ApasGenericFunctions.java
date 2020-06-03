@@ -255,7 +255,9 @@ public class ApasGenericFunctions extends TestBase{
 	 */
   public void selectListView(String listViewName) throws Exception{ 
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Selecting List View: "+listViewName);
-  	String[] listViews= {"All","Recently Viewed"};  
+  	String[] listViews= {"All","Recently Viewed"}; 
+  	WebElement selectedListView = driver.findElement(By.xpath("//span[contains(@class,'selectedListView')]"));
+  	objPage.waitForElementToBeClickable(40,selectedListView);		
   	String listViewSelected = objPage.getElementText(driver.findElement(By.xpath("//span[contains(@class,'selectedListView')]")));
       if(!listViewName.equals(listViewSelected)){ 
       	for(int i=0;i<=(listViews.length)-1;i++) { 

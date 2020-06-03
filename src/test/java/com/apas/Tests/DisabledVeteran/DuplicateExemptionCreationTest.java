@@ -75,7 +75,7 @@ public class DuplicateExemptionCreationTest extends TestBase {
 	 Below test case is used to validate that Exemption records can be created with overlapping dates but for different Veteran 
 	 **/
 	
-    @Test(description = "SMAB-T528: Disabled Veteran - Verify user is able to create a same Exemption record with different Veteran Name", groups = {"regression", "DisabledVeteran"}, dataProvider = "loginUsers", alwaysRun = true)
+    @Test(description = "SMAB-T528: Disabled Veteran - Verify user is able to create a same Exemption record with different Veteran Name", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
 	public void duplicateExemptionCreationButWithDifferentVeteranName(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -139,7 +139,7 @@ public class DuplicateExemptionCreationTest extends TestBase {
 	 Below test case is used to validate that Exemption records can be created with overlapping dates but on different Parcel 
 	 **/
 	
-    @Test(description = "SMAB-T530: Disabled Veteran - Verify user is able to create a same Exemption record with different Parcel", groups = {"regression", "DisabledVeteran"}, dataProvider = "loginUsers", alwaysRun = true)
+    @Test(description = "SMAB-T530: Disabled Veteran - Verify user is able to create a same Exemption record with different Parcel", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
 	public void duplicateExemptionCreationButForDifferentParcel(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -202,7 +202,7 @@ public class DuplicateExemptionCreationTest extends TestBase {
 	    -End Date of second Exemption is set to a date earlier than Start Date of original record (Without End Date of Rating)
 	 **/
 	
-	@Test(description = "SMAB-T532: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (having End Date of Rating as Blank)", groups = {"regression", "DisabledVeteran"}, dataProvider = "loginUsers", alwaysRun = true)
+	@Test(description = "SMAB-T532: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (having End Date of Rating as Blank)", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
 	public void duplicateExemptionWithNonOverlappingDates1(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -264,7 +264,7 @@ public class DuplicateExemptionCreationTest extends TestBase {
 	 -'Status' field on Exemption record is read-only
 	 **/
     
-	@Test(description = "SMAB-T533: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (End Date of Rating is not blank), SMAB-T534: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record), SMAB-T609: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of original record and status of original record is marked as Inactive, SMAB-T659: Disabled Veteran - Verify user is not able to view 'Status' field as editable field on Exemption record", groups = {"regression", "DisabledVeteran"}, dataProvider = "loginUsers", alwaysRun = true)
+	@Test(description = "SMAB-T533: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (End Date of Rating is not blank), SMAB-T534: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record), SMAB-T609: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of original record and status of original record is marked as Inactive, SMAB-T659: Disabled Veteran - Verify user is not able to view 'Status' field as editable field on Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
 	public void duplicateExemptionWithNonOverlappingDates2(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -340,7 +340,7 @@ public class DuplicateExemptionCreationTest extends TestBase {
 	 -Another Exemption can be created for a Veteran if Start Date of second Exemption (With No End Date of Rating) is set to a date later than End Date of original record
 	 **/
 	
-	@Test(description = "SMAB-T534: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record)", groups = {"regression", "DisabledVeteran"}, dataProvider = "loginUsers", alwaysRun = true)
+	@Test(description = "SMAB-T534: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record)", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
 	public void duplicateExemptionWithNonOverlappingDates3(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider

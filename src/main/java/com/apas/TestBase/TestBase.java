@@ -1,6 +1,7 @@
 package com.apas.TestBase;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Properties;
 import com.apas.Utils.FileUtils;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -12,7 +13,7 @@ public class TestBase extends BrowserDriver {
 	public static FileInputStream fsEnv;
 	public static FileInputStream fsConfig;
 	public static FileInputStream fsData;
-
+	
 	public final static String browserName = System.getProperty("browserName");
 	public final String executionType = System.getProperty("executionType");
 	public final String gridHubURL = System.getProperty("gridHubURL");
@@ -25,6 +26,7 @@ public class TestBase extends BrowserDriver {
 
 
 	public static String envURL;
+	public static ArrayList<String> failedMethods = new ArrayList<String>();
 
 	/**
 	 * Function SetupTest will be executed before every test class.
@@ -34,7 +36,6 @@ public class TestBase extends BrowserDriver {
 		try {
 			CONFIG = new Properties();
 			TestBase.loadPropertyFiles();
-
 			if (region.equalsIgnoreCase("dev")) {
 				envURL = CONFIG.getProperty("URL_dev");
 			}else if (region.equalsIgnoreCase("qa")) {
