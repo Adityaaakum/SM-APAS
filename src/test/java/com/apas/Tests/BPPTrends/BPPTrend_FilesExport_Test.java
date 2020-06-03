@@ -1,4 +1,4 @@
-package com.apas.Tests.BppTrend;
+package com.apas.Tests.BPPTrends;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,9 +23,9 @@ import com.apas.config.modules;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class BppTrendFilesDownloadTest extends TestBase {
+public class BPPTrend_FilesExport_Test extends TestBase {
 
-	private RemoteWebDriver driver;
+	RemoteWebDriver driver;
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrnPg;
@@ -37,6 +37,7 @@ public class BppTrendFilesDownloadTest extends TestBase {
 	
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
+		
 		if(driver==null) {
             setupTest();
             driver = BrowserDriver.getBrowserInstance();
@@ -65,7 +66,7 @@ public class BppTrendFilesDownloadTest extends TestBase {
 	 * 4. Validating whether files have been successfully downloaded in the system at given path:: Test Case/JIRA ID: SMAB-T303
 	 * 5. Deleting the files once verification is done
 	 */
-	@Test(description = "SMAB-T303: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups = {"regression","bppTrend"}, dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	@Test(description = "SMAB-T303: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups = {"regression","BppTrend"}, dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_DownloadCompositeAndValuationExcelFiles(String loginUser) throws Exception {		
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -135,10 +136,10 @@ public class BppTrendFilesDownloadTest extends TestBase {
 			}
 	
 			softAssert.assertTrue(isCompositeExcelDownloaded, "SMAB-T303: Composite Factor XLSX file downloaded successfully");	
-			softAssert.assertTrue(isValuationExcelDownloaded, "SMAB-T303: Valuation Factor XLSX file downloaded successfully");	
-		} catch(Exception ex) {
-			ex.printStackTrace();
-			
+			softAssert.assertTrue(isValuationExcelDownloaded, "SMAB-T303: Valuation Factor XLSX file downloaded successfully");
+		} catch(Exception e ) {
+			e.printStackTrace();
+		} finally {
 			//Step9: Deleting downloaded files from download directory
 			objBppTrnPg.deleteFactorFilesFromDownloadFolder();
 		}
@@ -153,7 +154,7 @@ public class BppTrendFilesDownloadTest extends TestBase {
 	 * 3. Validating whether PDF file has been successfully downloaded in the system at given path:: Test Case/JIRA ID: SMAB-T206
 	 * 4. Deleting the file once verification is done
 	 */
-	@Test(description = "SMAB-T206: Verifying download functionality for PDF files", dataProvider = "loginBusinessAndPrincipalUsers", groups = {"regression","bppTrend"}, dataProviderClass = DataProviders.class, priority = 0, enabled = true)
+	@Test(description = "SMAB-T206: Verifying download functionality for PDF files", dataProvider = "loginBusinessAndPrincipalUsers", groups = {"regression","BppTrend"}, dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_DownloadBppTrendPdfFile(String loginUser) throws Exception {		
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -198,9 +199,9 @@ public class BppTrendFilesDownloadTest extends TestBase {
 				isPdfDownloaded = true;
 			}
 			softAssert.assertTrue(isPdfDownloaded, "SMAB-T206: PDF file downloaded with "+ loginUser +" user successfully");
-		} catch(Exception ex) {
-			ex.printStackTrace();
-			
+		} catch(Exception e ) {
+			e.printStackTrace();
+		} finally {
 			//Step9: Deleting downloaded files from download directory
 			objBppTrnPg.deleteFactorFilesFromDownloadFolder();
 		}

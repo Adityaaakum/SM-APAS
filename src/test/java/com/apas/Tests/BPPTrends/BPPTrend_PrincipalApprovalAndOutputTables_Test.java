@@ -1,4 +1,4 @@
-package com.apas.Tests.BppTrend;
+package com.apas.Tests.BPPTrends;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,9 +24,9 @@ import com.apas.config.modules;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class BppTrendApprovalTest extends TestBase {
+public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 
-	private RemoteWebDriver driver;
+	RemoteWebDriver driver;
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrnPg;
@@ -38,6 +38,7 @@ public class BppTrendApprovalTest extends TestBase {
 	
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
+		
 		if(driver==null) {
             setupTest();
             driver = BrowserDriver.getBrowserInstance();
@@ -69,7 +70,7 @@ public class BppTrendApprovalTest extends TestBase {
 	 * 6. Validating table data is not editable once approved:: Test Case/JIRA ID: SMAB-T157
 	 * 7. Validating table status on BPP Trend Setup page post approving:: Test Case/JIRA ID:SMAB-T155
 	 */
-	@Test(description = "SMAB-T205,SMAB-T155,SMAB-T156,SMAB-T157,SMAB-T250: Approve calculations of valuation, composite & prop 13 tables", groups = {"smoke","regression","bppTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	@Test(description = "SMAB-T205,SMAB-T155,SMAB-T156,SMAB-T157,SMAB-T250: Approve calculations of valuation, composite & prop 13 tables", groups = {"smoke","regression","BppTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_Approve(String loginUser) throws Exception {	
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));

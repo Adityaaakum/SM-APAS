@@ -13,6 +13,8 @@ import java.util.Objects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
@@ -252,7 +254,10 @@ public class ApasGenericFunctions extends TestBase{
         if(!(currentlyVisibleOption.equalsIgnoreCase("All"))) {
             objPage.Click(objApasGenericPage.selectListViewIcon);
             objPage.Click(objApasGenericPage.allOption);
-            objPage.Click(objApasGenericPage.pinIcon);
+
+            objPage.waitForElementToBeVisible(objApasGenericPage.pinIcon, 10);
+            objPage.waitForElementToBeClickable(objApasGenericPage.pinIcon, 10);
+            objPage.clickAction(objApasGenericPage.pinIcon);
         }
     }
 

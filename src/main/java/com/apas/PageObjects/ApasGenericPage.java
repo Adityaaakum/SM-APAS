@@ -231,6 +231,7 @@ public class ApasGenericPage extends Page {
 		Click(element);
 		String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
 		WebElement drpDwnOption = locateElement(xpathStr, 30);
+		waitForElementToBeClickable(drpDwnOption, 10);
 		drpDwnOption.click();
 	}
 	

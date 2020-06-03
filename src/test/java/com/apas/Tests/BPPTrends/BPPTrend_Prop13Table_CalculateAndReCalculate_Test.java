@@ -1,4 +1,4 @@
-package com.apas.Tests.BppTrend;
+package com.apas.Tests.BPPTrends;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,9 +26,9 @@ import com.apas.config.testdata;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class BppTrend_Prop13Table_CalculateAndReCalculate extends TestBase {
+public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase {
 
-	private RemoteWebDriver driver;
+	RemoteWebDriver driver;
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrnPg;
@@ -41,8 +41,9 @@ public class BppTrend_Prop13Table_CalculateAndReCalculate extends TestBase {
 	BuildingPermitPage objBuildPermit;
 	SoftAssert objSoftAssert;
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
+		
 		if(driver==null) {
             setupTest();
             driver = BrowserDriver.getBrowserInstance();
@@ -82,8 +83,8 @@ public class BppTrend_Prop13Table_CalculateAndReCalculate extends TestBase {
 	 * 12. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T277
 	 * 13. Validating the status of the table on BPP Trend Setup Page: SMAB-T278
 	 */
-	@Test(description = "SMAB-T190,SMAB-T276,SMAB-T277,SMAB-T278,SMAB-T442,SMAB-T577: Performing validation on PROP 13 FACTORS before and after calculation", groups = {"smoke,regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
-	public void verifyBppTrend_Prop13Factors_CalculateAndCompare(String loginUser) throws Exception {					
+	@Test(description = "SMAB-T190,SMAB-T276,SMAB-T277,SMAB-T278,SMAB-T442,SMAB-T577: Performing validation on PROP 13 FACTORS before and after calculation", groups = {"smoke,regression,BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	public void verify_BppTrend_Prop13Factors_CalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Reseting the status of all composite factor tables to "Not Calculated" through SalesForce API
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Not Calculated", rollYear);
@@ -165,7 +166,7 @@ public class BppTrend_Prop13Table_CalculateAndReCalculate extends TestBase {
 		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Comparing the UI grid data against the data available in Trend Calculator file **");
 		//Step18: Retrieving the path of excel file to read for data comparison on calculate button click
-		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_TABLES_DATA;
+		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CALCULATOR;
 								
 		//Step19: Generating data map from the Trend Calculator excel file using the given table name
 		Map<String, List<Object>> dataMapFromExcel = objBppTrnPg.retrieveDataFromExcelForGivenTable(fileName, tableName);
@@ -240,8 +241,8 @@ public class BppTrend_Prop13Table_CalculateAndReCalculate extends TestBase {
 	 * 11. Validating the status of the table on BPP Trend Setup Page
 	 * 12. Reverting the changed settings in excel file and BPP Trend Setup page
 	 */
-	@Test(description = "SMAB-T302,SMAB-T195,SMAB-T196,SMAB-T442,SMAB-T577: Performing validation on PROP 13 COMPOSITE FACTORS before and after calculation", groups = {"smoke,regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
-	public void verifyBppTrend_IndustrialCompositeFactors_ReCalculateAndCompare(String loginUser) throws Exception {					
+	@Test(description = "SMAB-T302,SMAB-T195,SMAB-T196,SMAB-T442,SMAB-T577: Performing validation on PROP 13 COMPOSITE FACTORS before and after calculation", groups = {"smoke,regression,BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	public void verify_BppTrend_Prop13Factors_ReCalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Calculated", rollYear);

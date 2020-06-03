@@ -1,7 +1,6 @@
-package com.apas.Tests.BppTrend;
+package com.apas.Tests.BPPTrends;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +8,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
@@ -24,11 +24,10 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
-import org.testng.asserts.SoftAssert;
 
-public class BppTrend_IndustrialCompostieTable_CalculateAndReCalculate extends TestBase {
+public class BPPTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalculate_Test extends TestBase {
 
-	private RemoteWebDriver driver;
+	RemoteWebDriver driver;
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrnPg;
@@ -41,8 +40,9 @@ public class BppTrend_IndustrialCompostieTable_CalculateAndReCalculate extends T
 	BuildingPermitPage objBuildPermit;
 	SoftAssert objSoftAssert;
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
+		
 		if(driver==null) {
             setupTest();
             driver = BrowserDriver.getBrowserInstance();
@@ -67,7 +67,7 @@ public class BppTrend_IndustrialCompostieTable_CalculateAndReCalculate extends T
 	}
 	
 	/**
-	 * DESCRIPTION: Performing Following Validations <Industrial COMPOSITE FACTORS>::
+	 * DESCRIPTION: Performing Following Validations <AGRICULTURAL MOBILE EQUIP COMPOSITE FACTORS>::
 	 * 1. Validating the availability of CalculateAll button
 	 * 2. Validating the availability of Calculate button:: TestCase/JIRA ID: SMAB-T190
 	 * 3. Validating the unavailability of Recalculate button for table that is Not Calculated:: TestCase/JIRA ID: SMAB-T198
@@ -78,14 +78,20 @@ public class BppTrend_IndustrialCompostieTable_CalculateAndReCalculate extends T
 	 * 8. Validating the presence of Recalculate button for Calculated table
 	 * 9. Validating the absence of Calculate button
 	 * 10. Validating the absence of Submit For Approval button:: TestCase/JIRA ID: SMAB-T442
-	 * 11. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T166
-	 * 12. Validating the status of the table on BPP Trend Setup Page
+	 * 11. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T200
+	 * 12. Validating the status of the table on BPP Trend Setup Page: SMAB-T268
 	 */
-	@Test(description = "SMAB-T166,SMAB-T190,SMAB-T194,SMAB-T198,SMAB-T442: Performing validation on INDUSTRIAL COMPOSITE FACTORS before and after calculation", groups = {"smoke,regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
-	public void verifyBppTrend_IndustrialCompositeFactors_CalculateAndCompare(String loginUser) throws Exception {					
+	@Test(description = "SMAB-T200,SMAB-T268,SMAB-T190,SMAB-T194,SMAB-T198,SMAB-T442: Performing validation on AGRICULTURAL MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	public void verify_BppTrend_AgriculturalMobileCompositeFactors_CalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Reseting the status of all composite factor tables to "Not Calculated" through SalesForce API
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Not Calculated", rollYear);
+		
+		//Resetting the maximum equipment index factor value to default value
+		objBppTrnPg.updateMaximumEquipmentIndexFactorValue(CONFIG.getProperty("maxEqipIndexFactorDefaultValue"), rollYear);
+
+		//Resetting the minimum equipment index factor value to default value
+		objBppTrnPg.updateMinimumEquipmentIndexFactorValue("Agricultural", CONFIG.getProperty("minEqipFactorAgriculturalDefaultValue"), rollYear);
 		
 		//Step2: Log into application and navigate to BPP Trend page and select a roll year which has data
 		objApasGenericFunctions.login(loginUser);
@@ -96,14 +102,14 @@ public class BppTrend_IndustrialCompostieTable_CalculateAndReCalculate extends T
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
 
-		String tableName = "Industrial Composite Factors";
+		String tableName = "Agricultural Mobile Equipment Composite Factors";
 		
 		//Step3: Validating presence of CalculateAll button at page level
 		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
 		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T166: Calculate all button is visible at page level");
 			
 		//Step4: Clicking on the given table
-		objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
+		objBppTrnPg.clickOnTableOnBppTrendPage(tableName, true);
 				
 		//Step5: Validating presence of calculate button for given tables individually
 		boolean isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(30, tableName);
@@ -159,7 +165,7 @@ public class BppTrend_IndustrialCompostieTable_CalculateAndReCalculate extends T
 		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Comparing the UI grid data against the data available in Trend Calculator file **");
 		//Step17: Retrieving the path of excel file to read for data comparison on calculate button click
-		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_TABLES_DATA;
+		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CALCULATOR;
 								
 		//Step18: Generating data map from the Trend Calculator excel file using the given table name
 		Map<String, List<Object>> dataMapFromExcel = objBppTrnPg.retrieveDataFromExcelForGivenTable(fileName, tableName);
@@ -185,20 +191,19 @@ public class BppTrend_IndustrialCompostieTable_CalculateAndReCalculate extends T
 					for (int j = 0; j < acquiredYearDataFromExcel.size(); j++) {
 						if (!(acquiredYearDataFromExcel.get(j).equals(acquiredYearDataFromUI.get(j)))) {
 							objBppTrnPg.highlightMismatchedCellOnUI(tableName, currentKey, j);
-							
-							softAssert.assertTrue(false, "SMAB-T166: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' matched. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
+							softAssert.assertTrue(false, "SMAB-T200: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' matched. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
 						}
 					}
 					if(isDataMatched) {
-						softAssert.assertTrue(true, "SMAB-T166: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched with Trend Calculator data.", true);
+						softAssert.assertTrue(true, "SMAB-T200: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched with Trend Calculator data.", true);
 					}
 				} else {
 					System.setProperty("isElementHighlightedDueToFailre", "true");
-					softAssert.assertTrue(false, "SMAB-T166: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched.", true);
+					softAssert.assertTrue(false, "SMAB-T200: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched.", true);
 				}
 			} else {
 				System.setProperty("isElementHighlightedDueToFailre", "true");
-				softAssert.assertTrue(false, "SMAB-T166: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is present in UI table.", true);
+				softAssert.assertTrue(false, "SMAB-T200: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is present in UI table.", true);
 			}
 		}
 		if(System.getProperty("isElementHighlightedDueToFailre").equalsIgnoreCase("true")) {
@@ -210,7 +215,7 @@ public class BppTrend_IndustrialCompostieTable_CalculateAndReCalculate extends T
 		objApasGenericFunctions.selectAllOptionOnGrid();
 		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
 		String statusInBppTrendSetup = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
-		objSoftAssert.assertEquals(statusInBppTrendSetup, "Calculated", "Table status on Bpp Trend Setup page post calculation");
+		softAssert.assertEquals(statusInBppTrendSetup, "Calculated", "SMAB-T268: Table status on Bpp Trend Setup page post calculation");
 
 		//Step24: Log out from the application
 		objApasGenericFunctions.logout();
@@ -221,7 +226,7 @@ public class BppTrend_IndustrialCompostieTable_CalculateAndReCalculate extends T
 
 
 	/**
-	 * DESCRIPTION: Performing Following Validations <INDUSTRIAL COMPOSITE FACTORS>::
+	 * DESCRIPTION: Performing Following Validations <AGRICULTURAL MOBILE EQUIP COMPOSITE FACTORS>::
 	 * 1. Validating the availability of Recalculate All button for Calculated table
 	 * 2. Validating the availability of Recalculate button for Calculated table:: Test Case/JIRA ID: SMAB-T195
 	 * 3. Validating the message displayed above table before initiating calculations
@@ -235,147 +240,128 @@ public class BppTrend_IndustrialCompostieTable_CalculateAndReCalculate extends T
 	 * 11. Validating the status of the table on BPP Trend Setup Page
 	 * 12. Reverting the changed settings in excel file and BPP Trend Setup page
 	 */
-	@Test(description = "SMAB-T302,SMAB-T195,SMAB-T196,SMAB-T442: Performing validation on INDUSTRIAL COMPOSITE FACTORS before and after calculation", groups = {"smoke,regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
-	public void verifyBppTrend_IndustrialCompositeFactors_ReCalculateAndCompare(String loginUser) throws Exception {					
+	@Test(description = "SMAB-T195,SMAB-T196,SMAB-T442: Performing validation on AGRICULTURAL MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	public void verify_BppTrend_AgriculturalMobileCompositeFactors_ReCalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Calculated", rollYear);
+		
+		//Resetting the maximum equipment index factor value to default value
+		objBppTrnPg.updateMaximumEquipmentIndexFactorValue(CONFIG.getProperty("maxEqipIndexFactorDefaultValue"), rollYear);
 
+		//Updating the minimum equipment index factor value
+		objBppTrnPg.updateMinimumEquipmentIndexFactorValue("Agricultural", CONFIG.getProperty("minEqipFactorUpdatedValue"), rollYear);
+		
 		//Step2: Login with given user & navigate to BPP Trend Setup Page and click on given BPP trend setup
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);		
 		objApasGenericFunctions.login(loginUser);
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
 		
-		String tableName = null;
-		String fileName = null;
+		//Step5: Opening the BPP Trend module
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
+		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
+		objBppTrnPg.clickOnGivenRollYear(rollYear);
+		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
+
+		String tableName = "Agricultural Mobile Equipment Composite Factors";
 		
-		try {
-			//Step3: Generate data map containing values of bpp composite factor settings and edit composite factor setting values
-			Map<String, String> updatedSettingValues = new HashMap<String, String>();
-			updatedSettingValues.put("Industrial", "50");
+		//Step6: Validating presence of ReCalculateAll button at page level
+		boolean	isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
+		objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "ReCalcuate all button is visible");
 			
-			//Step4: Edit the values from view all page
-			objBppTrnPg.editBppCompositeFactorValueOnViewAllPage(updatedSettingValues);
-					
-			//Step5: Opening the BPP Trend module		
-			objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-			objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
-			objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
-			objBppTrnPg.clickOnGivenRollYear(rollYear);
-			objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
-	
-			tableName = "Industrial Composite Factors";
-			
-			//Step6: Validating presence of ReCalculateAll button at page level
-			boolean	isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
-			objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "ReCalcuate all button is visible");
+		//Step7: Clicking on the given table
+		objBppTrnPg.clickOnTableOnBppTrendPage(tableName, true);
 				
-			//Step7: Clicking on the given table
-			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
-					
-			//Step8: Validating availability of ReCalculate button at table level before performing calculation
-			boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(3, tableName);
-			softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T195: ReCalcuate button is visible for Calculated table");
+		//Step8: Validating availability of ReCalculate button at table level before performing calculation
+		boolean isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(3, tableName);
+		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T195: ReCalcuate button is visible for Calculated table");
+		
+		//Step9: Retrieve message displayed above table before clicking calculate button
+		String actTableMsgBeforeCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
+		String expTableMsgBeforeCalc = CONFIG.getProperty("tableMsgBeforeReCalculation");
+		objSoftAssert.assertEquals(actTableMsgBeforeCalc, expTableMsgBeforeCalc, "Message displayed above '"+ tableName +"' before ReCalculation is initiated");
+		
+		//Step10: Clicking on ReCalculate button
+		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'ReCalculate' Button ");
+		objBppTrnPg.clickReCalculateBtn(tableName);
+		
+		//Step11: Validating the warning message on ReCalculate click
+		String actWarningMsgInPopUp = objBppTrnPg.retrieveReCalculatePopUpMessage();
+		String expWarningMsgInPopUp = CONFIG.getProperty("recalculatePopUpMsg");
+		softAssert.assertContains(actWarningMsgInPopUp, expWarningMsgInPopUp, "SMAB-T196: Warning / Pop up message dislayed when 'ReCalculate' button is clicked");
+		
+		//Step12: Clicking 'Confirm' button in warning pop up to trigger ReCalculation
+		objBppTrnPg.javascriptClick(objBppTrnPg.confirmBtnInPopUp);
+		
+		//Step13: Waiting for pop up message to display and the message displayed above table to update
+		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);			
+
+		//Step14: Validation to check whether ReCalculation is successful and table data appears for given table
+		boolean isTableVisible = objBppTrnPg.isTableDataVisible(tableName);
+		softAssert.assertTrue(isTableVisible, "SMAB-T195: User successfully triggered ReCalculation for '"+ tableName +" 'table");
 			
-			//Step9: Retrieve message displayed above table before clicking calculate button
-			String actTableMsgBeforeCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-			String expTableMsgBeforeCalc = CONFIG.getProperty("tableMsgBeforeReCalculation");
-			objSoftAssert.assertEquals(actTableMsgBeforeCalc, expTableMsgBeforeCalc, "Message displayed above '"+ tableName +"' before ReCalculation is initiated");
-			
-			//Step10: Clicking on ReCalculate button
-			ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'ReCalculate' Button ");
-			objBppTrnPg.clickReCalculateBtn(tableName);
-			
-			//Step11: Validating the warning message on ReCalculate click
-			String actWarningMsgInPopUp = objBppTrnPg.retrieveReCalculatePopUpMessage();
-			String expWarningMsgInPopUp = CONFIG.getProperty("recalculatePopUpMsg");
-			softAssert.assertContains(actWarningMsgInPopUp, expWarningMsgInPopUp, "SMAB-T196: Warning / Pop up message dislayed when 'ReCalculate' button is clicked");
-			
-			//Step12: Clicking 'Confirm' button in warning pop up to trigger ReCalculation
-			objBppTrnPg.javascriptClick(objBppTrnPg.confirmBtnInPopUp);
-			
-			//Step13: Waiting for pop up message to display and the message displayed above table to update
-			objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);			
-	
-			//Step14: Validation to check whether ReCalculation is successful and table data appears for given table
-			boolean isTableVisible = objBppTrnPg.isTableDataVisible(tableName);
-			softAssert.assertTrue(isTableVisible, "SMAB-T195: User successfully triggered ReCalculation for '"+ tableName +" 'table");
-				
-			//Step15: Retrieve & Assert updated message displayed above table
-			String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
-			String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
-			objSoftAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "Message displayed above the table after ReCalculation is completed");
-	
-			ExtentTestManager.getTest().log(LogStatus.INFO, "* Checking status of various buttons at page level and table level");
-			//Step16: Validating presence of ReCalculate button at table level after calculate button is clicked
-			isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, tableName);
-			softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T195: ReCalcuate button is visible for calculated table");
-									
-			//Step17: Validating presence of ReCalculateAll button at page level on performing the calculation
-			isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
-			objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "ReCalcuateAll button is visible at page level");
-						
-			ExtentTestManager.getTest().log(LogStatus.INFO, "** Comparing the UI grid data against the data available in Trend Calculator file **");
-			//Step18: Retrieving the path of excel file to read for data comparison on calculate button click
-			fileName = System.getProperty("user.dir") + testdata.BPP_TREND_TABLES_DATA;
-									
-			//Step19: Update Industrial Setting value in excel and retrieve data into a data map for give table
-			objBppTrnPg.updateTrendSettingInExcel(fileName, updatedSettingValues);
-			Map<String, List<Object>> dataMapFromExcel = objBppTrnPg.retrieveDataFromExcelForGivenTable(fileName, tableName);
-				
-			//Step21: Generating data map from the UI grid data	
-			List<String> columnNames = objBppTrnPg.retrieveColumnNamesOfGridForGivenTable(tableName);
-				
-			//Step20: Retrieving column names of table from UI
-			Map<String, List<Object>> dataMapFromUI = objBppTrnPg.retrieveDataFromGridForGivenTable(tableName);
-				
-			//Step22: Comparing the UI grid data after Calculate button click against the data in excel file
-			System.setProperty("isElementHighlightedDueToFailre", "false");
-	
-			//Step23: Validating the tabular data against data retrieved from excel file
-			for (Map.Entry<String, List<Object>> entry : dataMapFromExcel.entrySet()) {
-				String currentKey = entry.getKey().toString();
-				if (dataMapFromUI.containsKey(currentKey)) {
-					List<Object> acquiredYearDataFromUI = dataMapFromUI.get(currentKey);
-					List<Object> acquiredYearDataFromExcel = dataMapFromExcel.get(currentKey);
-					
-					if (acquiredYearDataFromUI.size() == acquiredYearDataFromExcel.size()) {
-						boolean isDataMatched = true;
-						for (int j = 0; j < acquiredYearDataFromExcel.size(); j++) {
-							if (!(acquiredYearDataFromExcel.get(j).equals(acquiredYearDataFromUI.get(j)))) {
-								objBppTrnPg.highlightMismatchedCellOnUI(tableName, currentKey, j);
+		//Step15: Retrieve & Assert updated message displayed above table
+		String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
+		String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
+		objSoftAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "Message displayed above the table after ReCalculation is completed");
+
+		ExtentTestManager.getTest().log(LogStatus.INFO, "* Checking status of various buttons at page level and table level");
+		//Step16: Validating presence of ReCalculate button at table level after calculate button is clicked
+		isReCalculateBtnDisplayed = objBppTrnPg.isReCalculateBtnVisible(30, tableName);
+		softAssert.assertTrue(isReCalculateBtnDisplayed, "SMAB-T195: ReCalcuate button is visible for calculated table");
 								
-								softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' matched. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
-							}
+		//Step17: Validating presence of ReCalculateAll button at page level on performing the calculation
+		isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
+		objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "ReCalcuateAll button is visible at page level");
+					
+		ExtentTestManager.getTest().log(LogStatus.INFO, "** Comparing the UI grid data against the data available in Trend Calculator file **");
+		//Step18: Retrieving the path of excel file to read for data comparison on calculate button click
+		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CALCULATOR_WITH_UPDATED_MIN_EQIP_INDEX_FACTOR;
+								
+		//Step19: Update Agricultural Setting value in excel and retrieve data into a data map for give table
+		objBppTrnPg.updateTrendSettingInExcel(fileName, "Agricultural", CONFIG.getProperty("minEqipFactorUpdatedValue"));
+		Map<String, List<Object>> dataMapFromExcel = objBppTrnPg.retrieveDataFromExcelForGivenTable(fileName, tableName);
+			
+		//Step21: Generating data map from the UI grid data	
+		List<String> columnNames = objBppTrnPg.retrieveColumnNamesOfGridForGivenTable(tableName);
+			
+		//Step20: Retrieving column names of table from UI
+		Map<String, List<Object>> dataMapFromUI = objBppTrnPg.retrieveDataFromGridForGivenTable(tableName);
+			
+		//Step22: Comparing the UI grid data after Calculate button click against the data in excel file
+		System.setProperty("isElementHighlightedDueToFailre", "false");
+
+		//Step23: Validating the tabular data against data retrieved from excel file
+		for (Map.Entry<String, List<Object>> entry : dataMapFromExcel.entrySet()) {
+			String currentKey = entry.getKey().toString();
+			if (dataMapFromUI.containsKey(currentKey)) {
+				List<Object> acquiredYearDataFromUI = dataMapFromUI.get(currentKey);
+				List<Object> acquiredYearDataFromExcel = dataMapFromExcel.get(currentKey);
+				
+				if (acquiredYearDataFromUI.size() == acquiredYearDataFromExcel.size()) {
+					boolean isDataMatched = true;
+					for (int j = 0; j < acquiredYearDataFromExcel.size(); j++) {
+						if (!(acquiredYearDataFromExcel.get(j).equals(acquiredYearDataFromUI.get(j)))) {
+							objBppTrnPg.highlightMismatchedCellOnUI(tableName, currentKey, j);
+							
+							softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' matched. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
 						}
-						if(isDataMatched) {
-							softAssert.assertTrue(true, "SMAB-T302: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched with Trend Calculator data.", true);
-						}
-					} else {
-						System.setProperty("isElementHighlightedDueToFailre", "true");
-						softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched.", true);
+					}
+					if(isDataMatched) {
+						softAssert.assertTrue(true, "SMAB-T302: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched with Trend Calculator data.", true);
 					}
 				} else {
 					System.setProperty("isElementHighlightedDueToFailre", "true");
-					softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is present in UI table.", true);
+					softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched.", true);
 				}
+			} else {
+				System.setProperty("isElementHighlightedDueToFailre", "true");
+				softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is present in UI table.", true);
 			}
-			if(System.getProperty("isElementHighlightedDueToFailre").equalsIgnoreCase("true")) {
-				softAssert.assertTrue(false, "Excel & UI grid data has mismatched. Taking screen shot of entire table");
-			}
-		} catch(Exception ex) {
-			ex.printStackTrace();
-			
-			//Step24: Reverting the values of BPP composite factor settings in excel file
-			objBppTrnPg.revertTrendSettingsDataInExcel(fileName);
-			
-			//Step25: Reverting the values of BPP composite factor settings from view all page
-			objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-			objApasGenericFunctions.selectAllOptionOnGrid();
-			objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
-			objBppTrnPg.editBppCompositeFactorValueOnViewAllPage(objBppTrnPg.trendSettingsOriginalValues);
+		}
+
+		if(System.getProperty("isElementHighlightedDueToFailre").equalsIgnoreCase("true")) {
+			softAssert.assertTrue(false, "Excel & UI grid data has mismatched. Taking screen shot of entire table");
 		}
 
 		//Step26: Log out from the application

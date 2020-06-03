@@ -1,8 +1,6 @@
 package com.apas.Listeners;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
@@ -22,7 +20,6 @@ import com.apas.Reports.ExtentManager;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
-import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
@@ -31,8 +28,8 @@ public class SuiteListener extends TestBase implements ITestListener {
 
 	public ExtentReports extent;
 	ExtentTest upTest;
-	Util objUtils = new Util(); 
-	
+	Util objUtils = new Util();
+
 	protected String getStackTrace(Throwable t) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
@@ -46,10 +43,20 @@ public class SuiteListener extends TestBase implements ITestListener {
 	 */
 	@Override
 	public void onStart(ITestContext context) {
+
+		//killing chrome driver process if there is any process left from previous regressions
+		if(System.getProperty("os.name").contains("Windows")) {
+			try {
+				Process process = Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe /T");
+				process.destroy();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 		ExtentManager.setOutputDirectory(context);
 		CONFIG = new Properties();
 		try {
-			
 			TestBase.loadPropertyFiles();
 			extent = new ExtentManager().getInstance(context.getSuite().getName());
 			if (flagToUpdateJira && testCycle != null) {
@@ -58,7 +65,6 @@ public class SuiteListener extends TestBase implements ITestListener {
 
 			//This will move old report to archive folder
 			objUtils.migrateOldReportsToAcrhive();;
-
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -111,7 +117,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 	 */
 	@Override
 	public void onTestSuccess(ITestResult result) {
-
+		
 		System.out.print("This is onSuccess Listner method");
 		//Updating the extent report with the step that test case is passed.
 		if (!SoftAssertion.isSoftAssertionUsedFlag) {

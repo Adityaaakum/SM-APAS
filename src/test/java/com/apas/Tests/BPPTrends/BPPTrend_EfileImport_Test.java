@@ -1,14 +1,14 @@
-package com.apas.Tests.BppTrend;
+package com.apas.Tests.BPPTrends;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -43,7 +43,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	String rollYear;
 	SalesforceAPI objSalesforceAPI;
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
 		
 		if(driver==null) {
@@ -58,8 +58,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
-		//rollYear = CONFIG.getProperty("rollYear");
-		rollYear = "2020";
+		rollYear = CONFIG.getProperty("rollYear");
 		objSalesforceAPI = new SalesforceAPI();
 	}
 		
@@ -74,7 +73,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Validating the restrictions on uploading file with .TXT format:: TestCase/JIRA ID: SMAB-T112
 	 * 3. Validating the restrictions on uploading file with .XLS format:: TestCase/JIRA ID: SMAB-T112
 	 */
-	@Test(description = "SMAB-T112: Validating restrictions on uploading BPP Trends data files in invalid format", dataProvider = "invalidFileTypes", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"}, priority = 7, enabled = true)
+	@Test(description = "SMAB-T112: Validating restrictions on uploading BPP Trends data files in invalid format", dataProvider = "invalidFileTypes", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"})
 	public void verify_BppTrend_ImportWithInvalidFormat(String fileName) throws Exception {		
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business administrator)
 		objApasGenericFunctions.login(users.BUSINESS_ADMIN);
@@ -118,12 +117,13 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 3. Validating revert functionality of error records
 	 * 4. Validating status post reverting error records on history page
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"}, priority = 1, enabled = true)
+	@Test(description = "SMAB-T106,SMAB-T111: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"})
 	public void verify_BppTrend_BoeIndexFileImportDiscardErrorRecordsAndRevert(String loginUser) throws Exception {
-		//Step1: Update the status of Approved data via SalesForce API
+		//Step1: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
-				
+		objSalesforceAPI.deleteBPPTrendRollYearData(rollYear);
+
 		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
 		objApasGenericFunctions.login(loginUser);
@@ -138,7 +138,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		//Step5: Uploading the BPP Trend BOE Index Factors file having error and success records
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYear, fileName);		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 120);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 180);
 		
 		//Step6: Checking the status in import logs
 		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
@@ -172,12 +172,17 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			String tableName = allTables.get(i);
 			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
 			objBppTrend.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab, true);
+			
+			objBppTrend.waitForPageSpinnerToDisappear(3);
 
 			//Step12: Validating that correct number of records are moved to error and imported row sections after file import			
 			String errorRecords = CONFIG.getProperty("errorRecordsCount");
 			String tableNameToRetrieveExpImportedRowsCount = objBppTrend.locateElement("//a[@data-tab-value = '"+ tableNumber +"']", 60).getText();
 
-			String successRecords = mapWithExpectedImportedRowForAllTables.get(tableNameToRetrieveExpImportedRowsCount).toString();
+			//String successRecords = mapWithExpectedImportedRowForAllTables.get(tableNameToRetrieveExpImportedRowsCount).toString();
+			String countOfTotalRecordsStr = mapWithExpectedImportedRowForAllTables.get(tableNameToRetrieveExpImportedRowsCount).toString();
+			int countOfTotalRecordsInt = Integer.parseInt(countOfTotalRecordsStr);
+			String expectedImportedRowsCount = Integer.toString(countOfTotalRecordsInt - Integer.parseInt(errorRecords));
 			boolean isErrorRowSectionDisplayed = objBppTrend.checkPresenceOfErrorRowsSection();
 			boolean isImportedRowSectionDisplayed = objBppTrend.checkPresenceOfImportedRowsSection();;
 			
@@ -192,8 +197,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			
 			if (isImportedRowSectionDisplayed){
 				//Step15: Validation of number of records in imported row section. Expected is 1 as 1 record is passed with correct data in the input file
-				String numberOfRecordsInImportedRowSection = objBppTrend.getCountOfRowsFromImportedRowsSection();
-				softAssert.assertEquals(numberOfRecordsInImportedRowSection, successRecords, "SMAB-T112: Validation if correct number of records are displayed in Imported Row Section after file import");
+				String actualImportedRowsCount = objBppTrend.getCountOfRowsFromImportedRowsSection();
+				softAssert.assertEquals(actualImportedRowsCount, expectedImportedRowsCount, "SMAB-T112: Validation if correct number of records are displayed in Imported Row Section after file import");
 			} else {
 				//Step16: Validating if the imported row section is coming on review and approve page after clicking "View Link" from history table
 				softAssert.assertTrue(false, "SMAB-T112: Validation for Imported Row Section presence after clicking view link button");	
@@ -210,9 +215,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			softAssert.assertEquals(numberOfRecordsInErrorRowSection, updatedRecordsInErrorRowPostDelete, "SMAB-T112: Validation if correct number of records are displayed in Error Row Section after discarding a record");
 
 			if(Integer.parseInt(numberOfRecordsInErrorRowSection) > 0) {
-				ExtentTestManager.getTest().log(LogStatus.INFO, "SMAB-T112: Validation that status is approved after approving all the records");
 				objBppTrend.discardAllErrorRows();
-			}
+			}		
 		}
 
 		//Step19: Reverting the imported file
@@ -252,13 +256,14 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 5. Approving all records
 	 * 6. Validating status post approving on history page and transaction import logs page
 	 */
-	@Test(description = "SMAB-T112: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"}, priority = 3, enabled = true)
+	@Test(description = "SMAB-T112: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"})
 	public void verify_BppTrend_BoeIndexImportRetryErrorRecordsAndApprove(String loginUser) throws Exception {
-		//Update the status of Approved data via SalesForce API
+		//Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
+		objSalesforceAPI.deleteBPPTrendRollYearData(rollYear);
 				
-		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
+		//Step1: Login to the APAS application using the credentials passed through data provider (Business administrator or appraisal support)
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
 		objApasGenericFunctions.login(loginUser);
 		
@@ -269,7 +274,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS;
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYear, fileName);		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 120);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 180);
 
 		//Step4: Validations for file count, import count and error count before retrying all errorred records
 		Map<String, Object> dataMapWthRowCounts = objBppTrend.countOfDifferentRowTypesInExcel(fileName);
@@ -293,8 +298,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String tableNamesUnderMoreTab = CONFIG.getProperty("BoeIndexTablesUnderMoreTabOnImportPage");
 		allTables.addAll(Arrays.asList(tableNamesUnderMoreTab.split(",")));
 		
-		String errorredRowsBeforeRetrying = null;
-		String importedRowsBeforeRetrying = null;
+		Map<String, Integer> dataMapForExpImportedRowsCountBeforeRetry = new HashMap<String, Integer>();
+		String importedRowsCount;
 		
 		//Step7: Iterate over all the tables / columns
 		for (int i = 0; i < allTables.size(); i++) {
@@ -307,16 +312,15 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
 			objBppTrend.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab, true);
 					
+			importedRowsCount = objBppTrend.getCountOfRowsFromImportedRowsSection();
+			dataMapForExpImportedRowsCountBeforeRetry.put(tableName, Integer.parseInt(importedRowsCount));
+			
 			int valueToEnter = 80;
 			int numberOfErrorRecordsUnderCurrentTable = Integer.parseInt(objBppTrend.getCountOfRowsFromErrorRowsSection());
 			
 			//Step9: Iterating over all the tables to correct the invalid data 
-			for(int j = 1; j <= numberOfErrorRecordsUnderCurrentTable; j++) {
-				//Step10: Retrieving the imported and error count for current table
-				errorredRowsBeforeRetrying = objBppTrend.getCountOfRowsFromErrorRowsSection();
-				importedRowsBeforeRetrying = objBppTrend.getCountOfRowsFromImportedRowsSection();
-				
-				//Step11: Editing the value of average column
+			for(int j = 1; j <= numberOfErrorRecordsUnderCurrentTable; j++) {				
+				//Step10: Editing the value of average column
 				objBppTrend.waitForElementToBeClickable(objBppTrend.tableCellWithJunkTextOnImportPageTale);
 				objBppTrend.Click(objBppTrend.tableCellWithJunkTextOnImportPageTale);
 				
@@ -344,6 +348,9 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Index and Percent Good Factors");
 		objPage.Click(objEfileHomePage.viewLink);
 		
+		int errorredRowsBeforeRetrying = Integer.parseInt(CONFIG.getProperty("errorRecordsCount"));
+		int expImportedRowsBeforeRetrying;
+		
 		//Step16: Iterate over all the columns to check count of records
 		for (int i = 0; i < allTables.size(); i++) {
 			//Step17: Setting tableNumber property to iterate tables sequentially in DOM during file import
@@ -356,50 +363,50 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			objBppTrend.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab, true);
 			
 			String errorredRowsAfterRetrying = objBppTrend.getCountOfRowsFromErrorRowsSection();
-			String importedRowsAfterRetrying = objBppTrend.getCountOfRowsFromImportedRowsSection();
-			int importedRowsAfterRetryingInt = Integer.parseInt(importedRowsAfterRetrying) + Integer.parseInt(errorredRowsBeforeRetrying);
-			importedRowsAfterRetrying = Integer.toString(importedRowsAfterRetryingInt);
+			String actualImportedRowsAfterRetrying = objBppTrend.getCountOfRowsFromImportedRowsSection();
 			
-			//Step20: Validating that corrected records are moved to imported row section after retry.
+			//Step19: Validating that corrected records are moved to imported row section after retry.
 			softAssert.assertEquals(errorredRowsAfterRetrying, "0", "SMAB-T112: Validation if correct number of records are displayed in Error Row Section after correcting and retrying the error record");
-			int expimportedRowsAfterRetrying = Integer.parseInt(importedRowsBeforeRetrying) + Integer.parseInt(errorredRowsBeforeRetrying);
-			softAssert.assertEquals(importedRowsAfterRetrying, Integer.toString(expimportedRowsAfterRetrying), "SMAB-T112: Validation if correct number of records are displayed in Imported Row Section after correcting and retrying the error record");
+			
+			expImportedRowsBeforeRetrying = dataMapForExpImportedRowsCountBeforeRetry.get(tableName);
+			int expImportedRowsAfterRetrying = expImportedRowsBeforeRetrying + errorredRowsBeforeRetrying;
+			softAssert.assertEquals(actualImportedRowsAfterRetrying, Integer.toString(expImportedRowsAfterRetrying), "SMAB-T112: Validation if correct number of records are displayed in Imported Row Section under "+ tableName +" after correcting and retrying the error record");
 		}
 		
-		//Step21: Clicking approve button
+		//Step20: Clicking approve button
 		objPage.Click(objEfileHomePage.approveButton);
 		objPage.waitForElementToBeVisible(objEfileHomePage.efileRecordsApproveSuccessMessage, 20);
 
-		//Step22: Searching the efile intake module to validate the status of the imported file after approve on history table
+		//Step21: Searching the efile intake module to validate the status of the imported file after approve on history table
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Index and Percent Good Factors");
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Approved", "SMAB-T112: Validation if status of imported file is approved.");
 
-		//Step23: Validations to check file count after successfully retrying and approving all error records in history table
+		//Step22: Validations to check file count after successfully retrying and approving all error records in history table
 		int fileCountAfterRetrying = Integer.parseInt(objBppTrend.getFileCountFromHistoryTable());
 		int expFileCountAfterRetrying = importCountBeforeRetrying + errorCountBeforeRetrying;
 		softAssert.assertEquals(fileCountAfterRetrying, expFileCountAfterRetrying, "SMAB-T112: Validating file count after successfully retrying all errorred records");
 		
-		//Step24: Validations to check import count after successfully retrying and approving all error records in history table
+		//Step23: Validations to check import count after successfully retrying and approving all error records in history table
 		int importCountAfterRetrying = Integer.parseInt(objBppTrend.getImportCountFromHistoryTable());
 		int expImportCountAfterRetrying = importCountBeforeRetrying + errorCountBeforeRetrying;
 		softAssert.assertEquals(importCountAfterRetrying, expImportCountAfterRetrying, "SMAB-T112: Validating import count after successfully retrying all errorred records");
 		
-		//Step25: Validations to check error count after successfully retrying and approving all error records in history table
+		//Step24: Validations to check error count after successfully retrying and approving all error records in history table
 		int errorCountAfterRetrying = Integer.parseInt(objBppTrend.getErrorCountFromHistoryTable());		
 		softAssert.assertEquals(errorCountAfterRetrying, 0, "SMAB-T112: Validating error count after successfully retrying all errorred records");
 		
-		//Step26: Checking the status on import logs page
+		//Step25: Checking the status on import logs page
 		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
 		String fileStatusOnImportPage = objBppTrend.fileStatusOnImportLogsPage("BOE - Index and Percent Good Factors");
 		softAssert.assertEquals(fileStatusOnImportPage, "Approved", "SMAB-T112: Validation if status of imported file is approved on import logs page.");
 
-		//Step27: Checking the status on import logs details page
+		//Step26: Checking the status on import logs details page
 		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
 		String fileStatusOnImportLogDetailsPage = objBppTrend.getFieldValuesFromImportLogsDetailsPage("BOE - Index and Percent Good Factors", "Status");
 		softAssert.assertEquals(fileStatusOnImportLogDetailsPage, "Approved", "SMAB-T112: Validation if status of imported file is approved on import logs details page.");		
 		
-		//Step28: Checking the status on transaction logs page
+		//Step27: Checking the status on transaction logs page
 		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_TRANSACTIONS);
 		String fileStatusOnTransactionPage = objBppTrend.fileStatusOnImportTransactionPage("BOE - Index and Percent Good Factors");
 		softAssert.assertEquals(fileStatusOnTransactionPage, "Imported", "SMAB-T112: Validation if status of imported file is approved on transactions page.");
@@ -416,11 +423,12 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 3. Validating revert functionality of error records
 	 * 4. Validating status post reverting error records on history page
 	 */
-	@Test(description = "SMAB-T112: Discarding error records and reverting import for BOE valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"}, priority = 1, enabled = true)
+	@Test(description = "SMAB-T112: Discarding error records and reverting import for BOE valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"})
 	public void verify_BppTrend_BoeValFileImportDiscardErrorRecordsAndRevert(String loginUser) throws Exception {
-		//Step1: Update the status of Approved data via SalesForce API
+		//Step1: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
+		objSalesforceAPI.deleteBPPTrendRollYearData(rollYear);
 				
 		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
@@ -435,7 +443,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		//Step5: Uploading the Bpp Trend BOE Index Factors file having error and success records
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Valuation Factors", rollYear, fileName);		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 120);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 180);
 		
 		//Step6: Checking the status in import logs page
 		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
@@ -466,11 +474,12 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			String tableName = allTables.get(i);
 			objBppTrend.clickOnTableOnBppTrendPage(tableName, false);
 
+			objBppTrend.waitForPageSpinnerToDisappear(3);
+			
 			//Step12: Validating that correct number of records are moved to error and imported row sections after file import			
 			String errorRecords = CONFIG.getProperty("errorRecordsCount");
-			String tableNameToRetrieveExpImportedRowsCount = objBppTrend.locateElement("//a[@data-tab-value = '"+ tableNumber +"']", 60).getText();
-
 			String actualSuccessRecords = objBppTrend.getCountOfRowsFromImportedRowsSection();
+			
 			boolean isErrorRowSectionDisplayed = objBppTrend.checkPresenceOfErrorRowsSection();
 			boolean isImportedRowSectionDisplayed = objBppTrend.checkPresenceOfImportedRowsSection();;
 			
@@ -484,8 +493,29 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			}
 			
 			if (isImportedRowSectionDisplayed){
-				//Step15: Validation of number of records in imported row section. Expected is 1 as 1 record is passed with correct data in the input file
-				String expectedSuccessRecords = objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYear);
+				String expectedSuccessRecords = null;
+				String strTotalCount;
+				int intTotalCount = 0;
+				//Generating expected number of records for various BOE Valuation tables
+				if(tableName.equalsIgnoreCase("Computer Val Factors") || tableName.equalsIgnoreCase("Semiconductor Val Factors")) {
+					objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYear, tableName);
+					strTotalCount = System.getProperty("totalRecordsCount");
+					int numberOfDataColumns = Integer.parseInt(CONFIG.getProperty("dataColumnsInComputeAndSemiConductorValTables"));
+					intTotalCount = Integer.parseInt(strTotalCount) * numberOfDataColumns;
+					intTotalCount = intTotalCount - Integer.parseInt(errorRecords);
+					expectedSuccessRecords = Integer.toString(intTotalCount);
+				} else if(tableName.equalsIgnoreCase("Biopharmaceutical Val Factors")) {
+					objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYear, tableName);
+					strTotalCount = System.getProperty("totalRecordsCount");
+					int numberOfDataColumns = Integer.parseInt(CONFIG.getProperty("dataColumnsToBeApprovedInBioPharmaTable"));
+					intTotalCount = Integer.parseInt(strTotalCount) * numberOfDataColumns;
+					intTotalCount = intTotalCount - Integer.parseInt(errorRecords);
+					expectedSuccessRecords = Integer.toString(intTotalCount);
+				} else {
+					expectedSuccessRecords = objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYear, tableName);
+				}
+				
+				//Step15: Validation of number of records in imported row section.
 				softAssert.assertEquals(expectedSuccessRecords, actualSuccessRecords, "SMAB-T112: Validation if correct number of records are displayed in Imported Row Section after file import");
 			} else {
 				//Step16: Validating if the imported row section is coming on review and approve page after clicking "View Link" from history table
@@ -545,16 +575,16 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 5. Approving all records
 	 * 6. Validating status post approving on history page and transaction import logs page
 	 */
-	@Test(description = "SMAB-T112: Correcting error records and retrying an approving them in BOE Valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"}, priority = 4, enabled = true)
+	@Test(description = "SMAB-T112: Correcting error records and retrying an approving them in BOE Valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"})
 	public void verify_BppTrend_BoeValImportRetryErrorRecordsAndApprove(String loginUser) throws Exception {
-		//Update the status of Approved data via SalesForce API
+		//Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
+		objSalesforceAPI.deleteBPPTrendRollYearData(rollYear);
 				
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
 		objApasGenericFunctions.login(loginUser);
-		//objApasGenericFunctions.login(users.PRINCIPAL_USER);
 		
 		//Step2: Opening the file import in-take module
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
@@ -563,7 +593,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS;
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Valuation Factors", rollYear, fileName);		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 120);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 180);
 
 		//Step4: Validations for file count, import count and error count before retrying all errorred records
 		Map<String, Object> dataMapWthRowCounts = objBppTrend.countOfDifferentRowTypesInExcel(fileName);
@@ -578,15 +608,15 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		int errorCountBeforeRetrying = Integer.parseInt(objBppTrend.getErrorCountFromHistoryTable());			
 		softAssert.assertEquals(errorCountBeforeRetrying, errorCountFromExcel, "SMAB-T112: Validating error count before retrying errorred records");
 		
+		Map<String, Integer> dataMapForExpImportedRowsCountBeforeRetry = new HashMap<String, Integer>();
+		String importedRowsCount;
+		
 		//Step5: Click View link to navigate to review & approve page
 		objPage.Click(objEfileHomePage.viewLink);
 		
 		//Step6: Store columns / tables in a list
 		List<String> allTables = new ArrayList<String>();
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("BoeValuationTablesOnImportPage").split(",")));
-		
-		String errorredRowsBeforeRetrying = null;
-		String importedRowsBeforeRetrying = null;
 		
 		//Step7: Iterate over all the tables / columns
 		for (int i = 0; i < allTables.size(); i++) {
@@ -598,15 +628,15 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			String tableName = allTables.get(i);
 			objBppTrend.clickOnTableOnBppTrendPage(tableName, false);
 					
+			//Step9: Generating expected imported error count for current table
+			importedRowsCount = objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYear, tableName);
+			dataMapForExpImportedRowsCountBeforeRetry.put(tableName, Integer.parseInt(importedRowsCount));
+			
 			int valueToEnter = 80;
 			int numberOfErrorRecordsUnderCurrentTable = Integer.parseInt(objBppTrend.getCountOfRowsFromErrorRowsSection());
 			
-			//Step9: Iterating over all the tables to correct the invalid data 
+			//Step10: Iterating over all the tables to correct the invalid data 
 			for(int j = 1; j <= numberOfErrorRecordsUnderCurrentTable; j++) {
-				//Step10: Retrieving the imported and error count for current table
-				errorredRowsBeforeRetrying = objBppTrend.getCountOfRowsFromErrorRowsSection();
-				importedRowsBeforeRetrying = objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYear);
-				
 				//Step11: Editing the value of average column
 				objBppTrend.waitForElementToBeClickable(objBppTrend.tableCellWithJunkTextOnImportPageTale);
 				objBppTrend.Click(objBppTrend.tableCellWithJunkTextOnImportPageTale);
@@ -619,7 +649,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 				objBppTrend.enter(objBppTrend.inputBoxOnImportPage, Integer.toString(valueToEnter));
 				
 				//Step13: Clicking on adjacent cell to move control from input box
-				WebElement adjacentCell = objBppTrend.locateElement("((//lightning-formatted-text[text() = 'Junk_A'] | //lightning-formatted-text[text() = 'Junk_B'])[1])//ancestor::td//preceding-sibling::td[1]", 120);
+				WebElement adjacentCell = objBppTrend.locateElement("((//lightning-formatted-text[text() = 'Junk_A'] | //lightning-formatted-text[text() = 'Junk_B'])[1])//ancestor::td//preceding-sibling::td[contains(@data-label, 'Year')]", 120);
 				objBppTrend.Click(adjacentCell);
 				Thread.sleep(1000);
 			}			
@@ -635,6 +665,9 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Valuation Factors");
 		objPage.Click(objEfileHomePage.viewLink);
 		
+		int errorredRowsBeforeRetrying = Integer.parseInt(CONFIG.getProperty("errorRecordsCount"));
+		int expImportedRowsBeforeRetrying;
+		
 		//Step16: Iterate over all the columns to check count of records
 		for (int i = 0; i < allTables.size(); i++) {
 			//Step17: Setting tableNumber property to iterate tables sequentially in DOM during file import
@@ -644,16 +677,16 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			//Step18: Clicking on the given table name
 			String tableName = allTables.get(i);
 			objBppTrend.clickOnTableOnBppTrendPage(tableName, false);
-			
+
 			String errorredRowsAfterRetrying = objBppTrend.getCountOfRowsFromErrorRowsSection();
-			String importedRowsAfterRetrying = objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYear);
-			int importedRowsAfterRetryingInt = Integer.parseInt(importedRowsAfterRetrying) + Integer.parseInt(errorredRowsBeforeRetrying);
-			importedRowsAfterRetrying = Integer.toString(importedRowsAfterRetryingInt);
+			String actualImportedRowsAfterRetrying = objBppTrend.getCountOfRowsFromImportedRowsSection();
 			
-			//Step20: Validating that corrected records are moved to imported row section after retry.
+			//Step19: Validating error records are zero and corrected records are moved to imported row section after retry.
 			softAssert.assertEquals(errorredRowsAfterRetrying, "0", "SMAB-T112: Validation if correct number of records are displayed in Error Row Section after correcting and retrying the error record");
-			int expImportedRowsAfterRetrying = Integer.parseInt(importedRowsBeforeRetrying) + Integer.parseInt(errorredRowsBeforeRetrying);
-			softAssert.assertEquals(importedRowsAfterRetrying, Integer.toString(expImportedRowsAfterRetrying), "SMAB-T112: Validation if correct number of records are displayed in Imported Row Section after correcting and retrying the error record");
+			
+			expImportedRowsBeforeRetrying = dataMapForExpImportedRowsCountBeforeRetry.get(tableName);
+			int expImportedRowsAfterRetrying = expImportedRowsBeforeRetrying + errorredRowsBeforeRetrying;
+			softAssert.assertEquals(actualImportedRowsAfterRetrying, Integer.toString(expImportedRowsAfterRetrying), "SMAB-T112: Validation if correct number of records are displayed in Imported Row Section under "+ tableName +" after correcting and retrying the error record");
 		}
 		
 		//Step21: Clicking approve button
@@ -706,11 +739,12 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 3. Validating revert functionality of error records
 	 * 4. Validating status post reverting error records on history page
 	 */
-	@Test(description = "SMAB-T112: Discarding error records and reverting import for CAA valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"}, priority = 5, enabled = true)
+	@Test(description = "SMAB-T112: Discarding error records and reverting import for CAA valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"})
 	public void verify_BppTrend_CaaValFileImportDiscardErrorRecordsAndRevert(String loginUser) throws Exception {
-		//Step1: Update the status of Approved data via SalesForce API
+		//Step1: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
+		objSalesforceAPI.deleteBPPTrendRollYearData(rollYear);
 				
 		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
@@ -725,7 +759,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		//Step5: Uploading the Bpp Trend BOE Index Factors file having error and success records
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "CAA - Valuation Factors", rollYear, fileName);		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 120);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 180);
 		
 		//Step6: Checking the status in import logs page
 		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
@@ -756,9 +790,10 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			String tableName = allTables.get(i);
 			objBppTrend.clickOnTableOnBppTrendPage(tableName, false);
 
+			objBppTrend.waitForPageSpinnerToDisappear(3);
+			
 			//Step12: Validating that correct number of records are moved to error and imported row sections after file import			
 			String errorRecords = CONFIG.getProperty("errorRecordsCount");
-			String tableNameToRetrieveExpImportedRowsCount = objBppTrend.locateElement("//a[@data-tab-value = '"+ tableNumber +"']", 60).getText();
 
 			String actualSuccessRecords = objBppTrend.getCountOfRowsFromImportedRowsSection();
 			boolean isErrorRowSectionDisplayed = objBppTrend.checkPresenceOfErrorRowsSection();
@@ -775,7 +810,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 
 			if (isImportedRowSectionDisplayed){
 				//Step15: Validation of number of records in imported row section. Expected is 1 as 1 record is passed with correct data in the input file
-				String expectedImportCount = objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYear);
+				String expectedImportCount = objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYear, tableName);
 				softAssert.assertEquals(actualSuccessRecords, expectedImportCount, "SMAB-T112: Validation if correct number of records are displayed in Imported Row Section after file import");
 			} else {
 				//Step16: Validating if the imported row section is coming on review and approve page after clicking "View Link" from history table
@@ -835,23 +870,12 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 5. Approving all records
 	 * 6. Validating status post approving on history page and transaction import logs page
 	 */
-	@Test(description = "SMAB-T112: Correcting error records and retrying an approving them in CAA Valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"}, priority = 4, enabled = true)
+	@Test(description = "SMAB-T112: Correcting error records and retrying an approving them in CAA Valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"})
 	public void verify_BppTrend_CaaValImportRetryErrorRecordsAndApprove(String loginUser) throws Exception {
-		//Update the status of Approved data via SalesForce API & delete the records from tables
-		String updateQuery = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
-		objSalesforceAPI.update("E_File_Import_Log__c", updateQuery, "Status__c", "Reverted");
-
-		String deleteQuery = "select id from BPP_Composite_Factor__c where Roll_Year__c = '"+ rollYear +"'";
-		//objSalesforceAPI.delete("E_File_Import_Log__c", deleteQuery);
-
-		deleteQuery = "select id from BPP_Trend_Valuation_Factor__c where Roll_Year__c = '"+ rollYear +"'";
-		//objSalesforceAPI.delete("E_File_Import_Log__c", deleteQuery);
-
-		deleteQuery = "select id from BPP_Property_Good_Factor__c where Roll_Year__c = '"+ rollYear +"'";
-		//objSalesforceAPI.delete("E_File_Import_Log__c", deleteQuery);
-
-		deleteQuery = "select id from BPP_Property_Index_Factor__c where Roll_Year__c = '"+ rollYear +"'";
-		//objSalesforceAPI.delete("E_File_Import_Log__c", deleteQuery);
+		//Delete the existing data from system before importing files
+		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
+		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
+		objSalesforceAPI.deleteBPPTrendRollYearData(rollYear);
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
@@ -864,7 +888,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VALUATION_FACTORS;
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "CAA - Valuation Factors", rollYear, fileName);		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 120);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 180);
 		
 		//Step4: Validations for file count, import count and error count before retrying all errorred records
 		Map<String, Object> dataMapWthRowCounts = objBppTrend.countOfDifferentRowTypesInExcel(fileName);
@@ -882,13 +906,13 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		//Step4: Click View link to navigate to review & approve page
 		objPage.Click(objEfileHomePage.viewLink);
 		
+		Map<String, Integer> dataMapForExpImportedRowsCountBeforeRetry = new HashMap<String, Integer>();
+		String importedRowsCount;
+		
 		//Step5: Store columns / tables in a list
 		List<String> allTables = new ArrayList<String>();
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("CaaValuationTablesOnImportPage").split(",")));
-		
-		String errorredRowsBeforeRetrying = null;
-		String importedRowsBeforeRetrying = null;
-		
+				
 		//Step6: Iterate over all the tables / columns
 		for (int i = 0; i < allTables.size(); i++) {
 			//Step7: Setting tableNumber property to iterate tables sequentially in DOM during file import
@@ -898,16 +922,16 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			//Step8: Clicking on the given table name
 			String tableName = allTables.get(i);
 			objBppTrend.clickOnTableOnBppTrendPage(tableName, false);
-					
+
+			//Step9: Generating expected imported error count for current table
+			importedRowsCount = objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYear, tableName);
+			dataMapForExpImportedRowsCountBeforeRetry.put(tableName, Integer.parseInt(importedRowsCount));
+			
 			int valueToEnter = 80;
 			int numberOfErrorRecordsUnderCurrentTable = Integer.parseInt(objBppTrend.getCountOfRowsFromErrorRowsSection());
 			
-			//Step9: Iterating over all the tables to correct the invalid data 
+			//Step10: Iterating over all the tables to correct the invalid data 
 			for(int j = 1; j <= numberOfErrorRecordsUnderCurrentTable; j++) {
-				//Step10: Retrieving the imported and error count for current table
-				errorredRowsBeforeRetrying = objBppTrend.getCountOfRowsFromErrorRowsSection();
-				importedRowsBeforeRetrying = objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYear);
-				
 				//Step11: Editing the value of average column
 				objBppTrend.waitForElementToBeClickable(objBppTrend.tableCellWithJunkTextOnImportPageTale);
 				objBppTrend.Click(objBppTrend.tableCellWithJunkTextOnImportPageTale);
@@ -936,6 +960,9 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "CAA - Valuation Factors");
 		objPage.Click(objEfileHomePage.viewLink);
 		
+		int errorredRowsBeforeRetrying = Integer.parseInt(CONFIG.getProperty("errorRecordsCount"));
+		int expImportedRowsBeforeRetrying;
+		
 		//Step16: Iterate over all the columns to check count of records
 		for (int i = 0; i < allTables.size(); i++) {
 			//Step17: Setting tableNumber property to iterate tables sequentially in DOM during file import
@@ -946,16 +973,15 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			String tableName = allTables.get(i);
 			objBppTrend.clickOnTableOnBppTrendPage(tableName, false);
 			
-			//Step19: Retrieving count from error and import sections			
 			String errorredRowsAfterRetrying = objBppTrend.getCountOfRowsFromErrorRowsSection();
-			String importedRowsAfterRetrying = objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYear);
-			int importedRowsAfterRetryingInt = Integer.parseInt(importedRowsAfterRetrying) + Integer.parseInt(errorredRowsBeforeRetrying);
-			importedRowsAfterRetrying = Integer.toString(importedRowsAfterRetryingInt);
-
-			//Step20: Validating that corrected records are moved to imported row section after retry.
+			String actualImportedRowsAfterRetrying = objBppTrend.getCountOfRowsFromImportedRowsSection();
+			
+			//Step19: Validating error records are zero and corrected records are moved to imported row section after retry.
 			softAssert.assertEquals(errorredRowsAfterRetrying, "0", "SMAB-T112: Validation if correct number of records are displayed in Error Row Section after correcting and retrying the error record");
-			int expImportedRowsAfterRetrying = Integer.parseInt(importedRowsBeforeRetrying) + Integer.parseInt(errorredRowsBeforeRetrying);
-			softAssert.assertEquals(importedRowsAfterRetrying, Integer.toString(expImportedRowsAfterRetrying), "SMAB-T112: Validation if correct number of records are displayed in Imported Row Section after correcting and retrying the error record");
+			
+			expImportedRowsBeforeRetrying = dataMapForExpImportedRowsCountBeforeRetry.get(tableName);
+			int expImportedRowsAfterRetrying = expImportedRowsBeforeRetrying + errorredRowsBeforeRetrying;
+			softAssert.assertEquals(actualImportedRowsAfterRetrying, Integer.toString(expImportedRowsAfterRetrying), "SMAB-T112: Validation if correct number of records are displayed in Imported Row Section under "+ tableName +" after correcting and retrying the error record");
 		}
 		
 		//Step21: Clicking approve button
@@ -1013,16 +1039,16 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 		h. Age is greater than 40 and less than 1
 	 * 		i. Index / Average value beyond range
 	 */
-	@Test(description = "SMAB-T105: Validating transformation rules on BOE Index file import", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"}, priority = 6, enabled = true)
-	public void verify_BppTrend_TransformationRulesForImport(String loginUser) throws Exception {
-		//Update the status of Approved data via SalesForce API
+	@Test(description = "SMAB-T105: Validating transformation rules on BOE Index file import", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke,regression,BppTrend"})
+	public void verify_BppTrend_TransformationRules_On_BoeIndexAndPercentFactors_Import(String loginUser) throws Exception {
+		//Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYear + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
-				
+		objSalesforceAPI.deleteBPPTrendRollYearData(rollYear);
+		
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
-		//objApasGenericFunctions.login(loginUser);
-		objApasGenericFunctions.login(users.PRINCIPAL_USER);
+		objApasGenericFunctions.login(loginUser);
 		
 		//Step2: Opening the file import in-take module
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
@@ -1031,7 +1057,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String bppTrendIndexFactorsFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_TRANSFORMATION_RULES;
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYear, bppTrendIndexFactorsFile);		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 120);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 180);
 		
 		//Step4: Click View link to navigate to review & approve page
 		objPage.Click(objEfileHomePage.viewLink);

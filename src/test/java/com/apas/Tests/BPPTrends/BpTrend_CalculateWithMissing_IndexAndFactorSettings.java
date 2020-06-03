@@ -1,4 +1,4 @@
-package com.apas.Tests.BppTrend;
+package com.apas.Tests.BPPTrends;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ import com.relevantcodes.extentreports.LogStatus;
 
 public class BpTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBase {
 
-	private RemoteWebDriver driver;
+	RemoteWebDriver driver;
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrnPg;
@@ -43,6 +43,7 @@ public class BpTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBas
 	
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
+		
 		if(driver==null) {
             setupTest();
             driver = BrowserDriver.getBrowserInstance();
@@ -74,7 +75,7 @@ public class BpTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBas
 	 * 3. Validating error message for missing good and index factor data:: TestCase/JIRA Id: SMAB-T193,SMAB-T257
 	 * 4. Deleting the dummy/test BPP Trend Setup
 	 */
-	@Test(description = "SMAB-T163,SMAB-T192,SMAB-T193,SMAB-T257: Calculation of INDUSTRIAL COMPOSITE FACTORS with missing calculation variables", groups = {"smoke,regression"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
+	@Test(description = "SMAB-T163,SMAB-T192,SMAB-T193,SMAB-T257: Calculation of INDUSTRIAL COMPOSITE FACTORS with missing calculation variables", groups = {"smoke,regression,BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_CompositeFactors_CalculateWithCalculationVariablesMissing(String loginUser) throws Exception {					
 		try {
 			//Step1: Login to the APAS application using the given user
@@ -247,6 +248,8 @@ public class BpTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBas
 				}
 			}
 			Thread.sleep(2000);
+		} catch(Exception e ) {
+			e.printStackTrace();
 		} finally {
 			//Step18: Log out application at end of test case
 			objApasGenericFunctions.logout();

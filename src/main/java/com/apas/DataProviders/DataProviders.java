@@ -231,4 +231,8 @@ public class DataProviders {
         return new Object[][] { { users.BUSINESS_ADMIN } };
     }
 
+    @DataProvider(name = "variousStatusOfCompositeAndValuationTables")
+    public Object[][] dpVariousStatusOfCompositeAndValuationTables() {
+    	return new Object[][] { { "Not Calculated" }, { "Calculated" }, { "Needs Recalculation" }, {"Submitted for Approval"}, {"Approved"} };
+    }
 }

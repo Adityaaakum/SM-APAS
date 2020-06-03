@@ -57,16 +57,11 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	public void afterMethod() throws Exception {
 		//objApasGenericFunctions.logout();
 	}
-
-		
-	// Data providers must be given appropriate login credentials
-	// Need to update the JIRA IDs in methods associated to sharing (No JIRA IDs available as of now)
 	
-
 	/**
 	 * Description: Validating the availability of Calculate and Calculate All buttons for allowed users
 	 */
-	@Test(description = "Perform security verification on Calculate & Calculate All buttons for allowed users", groups = {"bppTrend","regression"}, dataProvider = "usersAllowedToCalculate", dataProviderClass = DataProviders.class, priority = 0, enabled = true)
+	@Test(description = "Perform security verification on Calculate & Calculate All buttons for allowed users", groups = {"bppTrend","regression"}, dataProvider = "usersAllowedToCalculate", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_SharingOfCalculateButtons_forAllowedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -114,7 +109,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	/**
 	 * Description: Validating the availability of ReCalculate and ReCalculate All buttons for allowed users
 	 */
-	@Test(description = "Perform security verification on ReCalculate & ReCalculate All buttons for allowed users", groups = {"bppTrend","regression"}, dataProvider = "usersAllowedToReCalculate", dataProviderClass = DataProviders.class, priority = 2, enabled = true)
+	@Test(description = "Perform security verification on ReCalculate & ReCalculate All buttons for allowed users", groups = {"bppTrend","regression"}, dataProvider = "usersAllowedToReCalculate", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_SharingOfReCalculateButtons_forAllowedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -162,7 +157,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	/**
 	 * Description: Validating the availability of Submit All Factors For Approval button for allowed users
 	 */
-	@Test(description = "Perform security verification on Submit All Factors For Approval button for allowed users", groups = {"bppTrend","regression"}, dataProvider = "usersAllowedToSubmitAllFactors", dataProviderClass = DataProviders.class, priority = 4, enabled = true)
+	@Test(description = "Perform security verification on Submit All Factors For Approval button for allowed users", groups = {"bppTrend","regression"}, dataProvider = "usersAllowedToSubmitAllFactors", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_SharingOfSubmitAllFactorsButton_forAllowedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -216,7 +211,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	/**
 	 * Description: Validating the availability of Approve & Approve All buttons for allowed users
 	 */
-	@Test(description = "Perform security verification on Approve & Approve All buttons for allowed users", groups = {"bppTrend","regression"}, dataProvider = "usersAllowedToApprove", dataProviderClass = DataProviders.class, priority = 6, enabled = true)
+	@Test(description = "Perform security verification on Approve & Approve All buttons for allowed users", groups = {"bppTrend","regression"}, dataProvider = "usersAllowedToApprove", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_SharingOfApproveButtons_forAllowedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Submitted for Approval
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -269,7 +264,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	/**
 	 * Description: Validating the availability of Download button for allowed users
 	 */
-	@Test(description = "Perform security verification on Download button for allowed users", groups = {"bppTrend","regression"}, dataProvider = "usersAllowedToDownloadPdfFile", dataProviderClass = DataProviders.class, priority = 8, enabled = true)
+	@Test(description = "Perform security verification on Download button for allowed users", groups = {"bppTrend","regression"}, dataProvider = "usersAllowedToDownloadPdfFile", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_SharingOfDownloadButton_forAllowedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Approved
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -302,7 +297,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	/**
 	 * Description: Validating the availability of Export Composite Factors button for allowed users
 	 */
-	@Test(description = "Perform security verification on Export Composite Factors button for allowed users", groups = {"bppTrend","regression"}, dataProvider = "usersAllowedToExportCompFactorsFile", dataProviderClass = DataProviders.class, priority = 10, enabled = true)
+	@Test(description = "Perform security verification on Export Composite Factors button for allowed users", groups = {"bppTrend","regression"}, dataProvider = "usersAllowedToExportCompFactorsFile", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_SharingOfExportCompositeFactorsButton_forAllowedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Approved
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -335,7 +330,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	/**
 	 * Description: Validating the availability of Export Valuation Factors button for allowed users
 	 */
-	@Test(description = "Perform security verification on Export Valuation Factors button for allowed users", groups = {"bppTrend","regression"}, dataProvider = "usersAllowedToExportValFactorsFile", dataProviderClass = DataProviders.class, priority = 12, enabled = true)
+	@Test(description = "Perform security verification on Export Valuation Factors button for allowed users", groups = {"bppTrend","regression"}, dataProvider = "usersAllowedToExportValFactorsFile", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_SharingOfExportValuationFactorsButton_forAllowedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Approved
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -368,7 +363,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	/**
 	 * DESCRIPTION: Validating the availability of edit pencil icon to edit table status on BPP Trend Setup
 	 */
-	@Test(description = "Validating the availability of edit pencil icon to edit table status on BPP Trend Setup", groups = {"bppTrend","regression"}, dataProvider = "usersRestrictedToExportValFactorsFile", dataProviderClass = DataProviders.class, priority = 14, enabled = true)
+	@Test(description = "Validating the availability of edit pencil icon to edit table status on BPP Trend Setup", groups = {"bppTrend","regression"}, dataProvider = "usersRestrictedToExportValFactorsFile", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_SharingOfEditPencilIcon_BppTrendSetupPage_forAllowedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Approved
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -445,7 +440,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	 * DESCRIPTION: Checking Security Level For Restricted Users
 	 * 1. Validating the unavailability of Calculate and Calculate All buttons:: Test Case/JIRA ID: SMAB-T174, SMAB-T175
 	 */
-	@Test(description = "SMAB-T174,SMAB-T175: Perform security verification on Calculate & Calculate All buttons for restricted users", groups = {"bppTrend","regression"}, dataProvider = "usersRestrictedToCalculate", dataProviderClass = DataProviders.class, priority = 1, enabled = true)
+	@Test(description = "SMAB-T174,SMAB-T175: Perform security verification on Calculate & Calculate All buttons for restricted users", groups = {"bppTrend","regression"}, dataProvider = "usersRestrictedToCalculate", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_RestrictionsOnCalculateButtons_forRestrictedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -491,6 +486,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 			boolean isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(10, tableName);
 			softAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T174: For User '"+ loginUser +"': Calcuate button is not visible");
 			softAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T175: For User '"+ loginUser +"': Calcuate button is not visible");
+			softAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T247: For User '"+ loginUser +"': Calcuate button is not visible");
 		}
 		softAssert.assertAll();
 		objApasGenericFunctions.logout();
@@ -501,7 +497,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	 * DESCRIPTION: Checking Security Level For Restricted Users
 	 * 1. Validating the unavailability of ReCalculate and ReCalculate All buttons:: Test Case/JIRA ID: SMAB-T174, SMAB-T175
 	 */
-	@Test(description = "SMAB-T174,SMAB-T175: Perform security verification on ReCalculate & ReCalculate All buttons for restricted users", groups = {"bppTrend","regression"}, dataProvider = "usersRestrictedToReCalculate", dataProviderClass = DataProviders.class, priority = 3, enabled = true)
+	@Test(description = "SMAB-T174,SMAB-T175: Perform security verification on ReCalculate & ReCalculate All buttons for restricted users", groups = {"bppTrend","regression"}, dataProvider = "usersRestrictedToReCalculate", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_RestrictionsOnReCalculateButtons_forRestrictedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -558,7 +554,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	 * 1. Validating the unavailability of Submit Factor For Approval 
 	 * and Submit Factor For Approval buttons:: Test Case/JIRA ID: SMAB-T174, SMAB-T175
 	 */
-	@Test(description = "SMAB-T174,SMAB-T175: Perform security verification on Submit All Factors For Approval button for restricted users", groups = {"bppTrend","regression"}, dataProvider = "usersRestrictedToSubmitAllFactors", dataProviderClass = DataProviders.class, priority = 5, enabled = true)
+	@Test(description = "SMAB-T174,SMAB-T175: Perform security verification on Submit All Factors For Approval button for restricted users", groups = {"bppTrend","regression"}, dataProvider = "usersRestrictedToSubmitAllFactors", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_RestrictionsOnSubmitAllFactorsButton_forRestrictedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -613,7 +609,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	/**
 	 * Description: Validating the unavailability of Approve & Approve All buttons for restricted users
 	 */
-	@Test(description = "Perform security verification on Approve & Approve All buttons for restricted users", groups = {"bppTrend","regression"}, dataProvider = "usersRestrictedToApprove", dataProviderClass = DataProviders.class, priority = 7, enabled = true)
+	@Test(description = "Perform security verification on Approve & Approve All buttons for restricted users", groups = {"bppTrend","regression"}, dataProvider = "usersRestrictedToApprove", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_RestrictionsOnApproveButtons_forRestrictedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Submitted for Approval
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -667,7 +663,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	 * DESCRIPTION: Validating the unavailability of Export Composite Factors button for restricted users
 	 * JIRA ID Asserted: SMAB-T450
 	 */
-	@Test(description = "Perform security verification on Export Composite Factors button for restricted users", groups = {"bppTrend","regression"}, dataProvider = "usersRestrictedToExportCompFactorsFile", dataProviderClass = DataProviders.class, priority = 12, enabled = true)
+	@Test(description = "Perform security verification on Export Composite Factors button for restricted users", groups = {"bppTrend","regression"}, dataProvider = "usersRestrictedToExportCompFactorsFile", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_RestrictionsOn_ExportCompositeFactorsButton_forRestrictedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Approved
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -701,7 +697,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	 * DESCRIPTION: Validating the unavailability of Export Valuation Factors button for restricted users
 	 * JIRA ID Asserted: SMAB-T450
 	 */
-	@Test(description = "Perform security verification on Export Valuation Factors button for restricted users", groups = {"regression","bppTrend"}, dataProvider = "usersRestrictedToExportValFactorsFile", dataProviderClass = DataProviders.class, priority = 13, enabled = true)
+	@Test(description = "Perform security verification on Export Valuation Factors button for restricted users", groups = {"regression","bppTrend"}, dataProvider = "usersRestrictedToExportValFactorsFile", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_RestrictionsOn_ExportValuationFactorsButton_forRestrictedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Approved
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -735,7 +731,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	 * DESCRIPTION: Validating the unavailability of edit pencil icon to edit table status on BPP Trend Setup
 	 * JIRA ID Asserted: SMAB-T171
 	 */
-	@Test(description = "SMAB-T171: Validating the unavailability of edit pencil icon to edit table status on BPP Trend Setup", groups = {"smoke","bppTrend","regression"}, dataProvider = "usersRestrictedEditTableStatusOnBppTrendPage", dataProviderClass = DataProviders.class, priority = 14, enabled = true)
+	@Test(description = "SMAB-T171: Validating the unavailability of edit pencil icon to edit table status on BPP Trend Setup", groups = {"smoke","bppTrend","regression"}, dataProvider = "usersRestrictedEditTableStatusOnBppTrendPage", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_RestrictionsOn_EditPencilIcon_BppTrendSetupPage_forRestrictedUsers(String loginUser) throws Exception {		
 		//Step1: Resetting the Composite factor tables status to Approved
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -806,7 +802,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	 * DESCRIPTION: Validating the unavailability of edit and delete links under maximum equipment index factor in BPP Trend Setup
 	 * JIRA ID Asserted: SMAB-T270
 	 */
-	@Test(description = "SMAB-T270: Validating the unavailability of edit and delete links under maximum equipment index factor in BPP Trend Setup", groups = {"smoke","regression","bppTrend"}, dataProvider = "usersRestrictedToModifyMaxEquipIndexFactor", dataProviderClass = DataProviders.class, priority = 15, enabled = true)
+	@Test(description = "SMAB-T270: Validating the unavailability of edit and delete links under maximum equipment index factor in BPP Trend Setup", groups = {"smoke","regression","bppTrend"}, dataProvider = "usersRestrictedToModifyMaxEquipIndexFactor", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_RestrictionsOn_editingMaxEquipIndexFactor_forRestrictedUsers(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
@@ -859,7 +855,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 	 * 2. Validating table data should not be editable:: Test Case/JIRD ID: SMAB-T250, SMAB-T301
 	 * 3. Validating the unavailability of ReCalculate button for Approved tables:: Test Case/JIRA ID: T199
 	 */
-	@Test(description = "SMAB-T199,SMAB-T249,SMAB-T250,SMAB-T301: Navigating to all approved tabls and validating table data should not be editable", groups = {"smoke","regression","bppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, priority = 16, enabled = true)
+	@Test(description = "SMAB-T199,SMAB-T249,SMAB-T250,SMAB-T301: Navigating to all approved tabls and validating table data should not be editable", groups = {"smoke","regression","bppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_ViewApprovedTables(String loginUser) throws Exception {		
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
