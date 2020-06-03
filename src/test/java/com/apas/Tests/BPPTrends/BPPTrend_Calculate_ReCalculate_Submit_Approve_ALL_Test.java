@@ -76,7 +76,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 	 * 4. Checking presence of ReCalculate all and Submit All Factors For Approval buttons
 	 * 5. Checking the status of all tables in BPP Trends page
 	 */
-	@Test(description = "SMAB-T191: Perform calculation for all factor tables in one go", groups = {"smoke","regression","BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T191: Perform calculation for all factor tables in one go", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_CalculateAll(String loginUser) throws Exception {		
 		//Step1: Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -169,7 +169,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 	 * 4. Checking presence of ReCalculate all and Submit All Factors For Approval buttons
 	 * 5. Checking the status of all tables in BPP Trends page
 	 */
-	@Test(description = "SMAB-T197: Perform ReCalculation for all factor tables in one go", groups = {"regression","BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T197: Perform ReCalculation for all factor tables in one go", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_ReCalculateAll(String loginUser) throws Exception {
 		//Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -267,7 +267,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 	 * 6. Validating the status of all the composite factor table on BPP Trend Setup age:: Test Case/JIRA ID: SMAB-T442
 	 * 7. Validating the status of all the valuation factor table on BPP Trend Setup age:: Test Case/JIRA ID: SMAB-T442, SMAB-T247
 	 */
-	@Test(description = "SMAB-T250,SMAB-T442,SMAB-T247: Sumbit calculations for approval for all factor tables in one go",groups = {"smoke","regression","BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T250,SMAB-T442,SMAB-T247: Sumbit calculations for approval for all factor tables in one go",groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_SubmitAllFactorForApproval(String loginUser) throws Exception {	
 		//Step1: Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -368,7 +368,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 	 * 1. Validation to approve all tables in one go using Approving all button:: Test Case/JIRA ID: SMAB-T304
 	 * 1. Validation to check download and export buttons once table are approved:: Test Case/JIRA ID: SMAB-T304
 	 */
-	@Test(description = "SMAB-T304: Aproving all factor tables in one go using ApproveAll button", groups = {"smoke","regression","BppTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T304: Aproving all factor tables in one go using ApproveAll button", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_ApproveAll(String loginUser) throws Exception {
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));

@@ -1,4 +1,4 @@
-package com.apas.Tests.ApasSettings;
+/*package com.apas.Tests.ApasSettings;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
@@ -42,20 +42,20 @@ public class CityStratCodesTest extends TestBase {
 	}
 	
 	
-	/**
+	*//**
 	 * Below function will be used to login to application with different users
 	 *
 	 * @return Return the user business admin and appraisal support in an array
-	 **/
+	 **//*
     @DataProvider(name = "loginUsers")
     public Object[][] dataProviderLoginUserMethod() {
         return new Object[][] {{ users.BUSINESS_ADMIN }};
     }
 	
     
-    /**
+    *//**
 	 Below test case will validate that County record can have multiple related City Code records
-	 **/
+	 **//*
 	@Test(description = "SMAB-T396: Validation for County record can have multiple related City Code records", dataProvider = "loginUsers", groups = {"smoke","regression"}, alwaysRun = true)
 	public void verifyCreationOfMultipleRelatedCityCodes(String loginUser) throws Exception {
 		String countSortedByFilteredBy;
@@ -101,3 +101,4 @@ public class CityStratCodesTest extends TestBase {
 		softAssert.assertEquals(countSortedByFilteredBy,expectedValidationMessage,"SMAB-T396: Validation of records displayed on the grid with the City Strat code " + strCityStratCode2);
 	}
 }
+*/

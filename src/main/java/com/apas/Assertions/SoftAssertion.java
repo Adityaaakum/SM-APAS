@@ -1,10 +1,8 @@
 package com.apas.Assertions;
 
-import com.apas.Reports.ReportLogger;
-import com.apas.Utils.Util;
 import com.apas.JiraStatusUpdate.JiraAdaptavistStatusUpdate;
-import com.apas.Reports.ExtentManager;
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Utils.Util;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class SoftAssertion {
@@ -65,7 +63,7 @@ public class SoftAssertion {
 	 */
 	public void assertEquals(Object actual, Object expected, String message) throws Exception {
 		String formattedMessage = message + " :: Expected: " + expected + " || " + "Actual: " + actual;
-		assertTrue(actual.equals(expected), formattedMessage);
+		assertTrue(actual.toString().equals(expected.toString()), formattedMessage);
 	}
 
 	/**

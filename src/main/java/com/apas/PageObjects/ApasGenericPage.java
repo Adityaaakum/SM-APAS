@@ -61,6 +61,9 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//button[@title='Close this window']")
 	public WebElement crossButton;
 
+	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
+	public WebElement successAlert;
+
 	/*	Sikander Bhambhu:
 	 *	Next 7 locators are for handling date picker
 	 * */
@@ -126,9 +129,9 @@ public class ApasGenericPage extends Page {
 	 */
 	public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
 		enter(element, value);
-		String xpathStr = "//*[@role='option']//div[@title='" + value + "']";
+		String xpathStr = "//*[@role='option']//*[@title='" + value + "']";
 		Click(driver.findElement(By.xpath(xpathStr)));
-	}
+		}
 
 	/**
 	 * @Description: This method selects year, month and date from date picker / calender
@@ -235,5 +238,5 @@ public class ApasGenericPage extends Page {
 		drpDwnOption.click();
 	}
 	
-
+	
 }

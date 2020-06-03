@@ -10,12 +10,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import com.apas.Reports.ReportLogger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import com.apas.PageObjects.ApasGenericPage;
+import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
@@ -79,18 +83,11 @@ public class ApasGenericFunctions extends TestBase{
 	 * Description: This method will logout the logged in user from APAS application
 	 */
 	public void logout() throws IOException{
-		ExtentTestManager.getTest().log(LogStatus.INFO, "User is getting logged out of the application");
-		System.out.println("Logout from APAS Application");
-		//Handling the situation where pop remains opened before logging out
-//		if (objPage.verifyElementVisible(objApasGenericPage.crossButton))
-//			objPage.Click(objApasGenericPage.crossButton);
-//		else if (objPage.verifyElementVisible(objApasGenericPage.closeButton))
-//			objPage.Click(objApasGenericPage.closeButton);
-//		else if (objPage.verifyElementVisible(objApasGenericPage.cancelButton))
-//			objPage.Click(objApasGenericPage.cancelButton);
-
 		//Logging out of the application
 		objPage.waitForElementToBeClickable(objLoginPage.imgUser, 10);
+
+		ReportLogger.INFO("User is getting logged out of the application");
+
 		objPage.Click(objLoginPage.imgUser);
 		objPage.waitForElementToBeClickable(objLoginPage.lnkLogOut, 10);
 		objPage.Click(objLoginPage.lnkLogOut);
@@ -133,7 +130,7 @@ public class ApasGenericFunctions extends TestBase{
 	 * @param searchString: String to search the record
 	 */
 	public void globalSearchRecords(String searchString) throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Searching and filtering the data through APAS level search with the String " + searchString);
+		ReportLogger.INFO("Searching and filtering the data through APAS level search with the String" + searchString);
 		objApasGenericPage.searchAndSelectFromDropDown(objApasGenericPage.globalSearchListEditBox,searchString);
 		Thread.sleep(5000);
 	}
@@ -247,7 +244,42 @@ public class ApasGenericFunctions extends TestBase{
 	}
 	
 	/**
-     * Description: This will select the All mode on grid
+
+	 * Description: This will select the All mode on grid
+	 */
+	public void selectAllManualBuildingPermitOptionOnGrid() throws Exception {
+		objPage.Click(objApasGenericPage.selectListViewIcon);
+		objPage.Click(objPage.waitForElementToBeClickable(objApasGenericPage.allManualBuilingdPermitsOption));
+		objPage.Click(objApasGenericPage.pinIcon);
+	}
+	
+	/**
+	 * @description: This method will be used to select List View option - All or
+	 *               Recently Viewed
+	 * @param fieldName: field name for which List View to select
+	 * @throws InterruptedException 
+	 */
+  public void selectListView(String listViewName) throws Exception{ 
+	ExtentTestManager.getTest().log(LogStatus.INFO, "Selecting List View: "+listViewName);
+  	String[] listViews= {"All","Recently Viewed"};  
+  	String listViewSelected = objPage.getElementText(driver.findElement(By.xpath("//span[contains(@class,'selectedListView')]")));
+      if(!listViewName.equals(listViewSelected)){ 
+      	for(int i=0;i<=(listViews.length)-1;i++) { 
+      	if(listViewName.equals(listViews[i])){
+      		String listViewToSelect = listViews[i];
+      		objPage.Click(objApasGenericPage.selectListViewIcon);
+          	Thread.sleep(1000);
+          	objPage.waitForElementToBeClickable(driver.findElement(By.xpath("//span[text()='"+listViewToSelect+"']")));
+          	WebElement selectlistView = driver.findElement(By.xpath("//span[text()='"+listViewToSelect+"']"));
+          	objPage.Click(selectlistView);
+          	Thread.sleep(1000);
+          	objPage.Click(objApasGenericPage.pinIcon); 
+		} 
+	   }  
+   }
+}
+
+     /* Description: This will select the All mode on grid
      */
     public void selectAllOptionOnGrid() throws Exception {
         String currentlyVisibleOption = objPage.getElementText(objApasGenericPage.currenltySelectViewOption);
@@ -260,5 +292,133 @@ public class ApasGenericFunctions extends TestBase{
             objPage.clickAction(objApasGenericPage.pinIcon);
         }
     }
+
+    public WebElement locateElement(String xpath, int timeoutInSeconds) throws Exception {WebElement element = null;
+    for(int i = 0; i < timeoutInSeconds; i++) {
+        try {
+            element = driver.findElement(By.xpath(xpath));
+            if(element != null) {
+                break;
+            }
+        } catch (Exception ex) {
+            Thread.sleep(750);
+        }
+    }
+    return element;
+    } 
+    public void selectFromDropDown(WebElement element, String value) throws Exception {
+        objPage.Click(element);
+        String xpathStr = null;
+        
+        xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
+        
+        WebElement drpDwnOption = locateElement(xpathStr, 10);
+        drpDwnOption.click();
+    }
+    
+    public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
+        objPage.enter(element, value);
+        String xpathStr = null;
+       
+            xpathStr = "//mark[text() = '" + value + "']";
+        
+        WebElement drpDwnOption = locateElement(xpathStr, 10);
+        drpDwnOption.click();
+    }
+    
+    
+
+/**
+ * Description: This method is to check unavailbility of an element 
+ * @param element:  xpath of the element
+ * @return : true if element not found
+ */
+
+
+public boolean isNotDisplayed(WebElement element)
+{
+	//driver.findElement((By) element);
+	try{ 
+		if(element.isDisplayed())
+	    	{		return true;}
+		 
+		}
+	    catch(org.openqa.selenium.NoSuchElementException e)
+	    {
+	    return false;
+	    }
+	return false;
+	
+}
+
+
+
+/**
+ * Description: This method will select multiple values from left pane to right pane
+ * (e.g:basis for claim,Deceased veteran Qualification)
+ * @param values: values to select
+ * @param fieldname:  e.g: Deceased Veterna Qualification
+ */
+
+public void selectMultipleValues(String values,String fieldName) throws IOException {
+	String[] allValues=values.split(",");
+	JavascriptExecutor js= (JavascriptExecutor) driver;
+	
+	for(String value: allValues)
+	{	
+		
+	WebElement elem=driver.findElement(By.xpath("//ul[@role='listbox']//li//span[text()='"+value+"']"));
+	js.executeScript("arguments[0].scrollIntoView(true);", elem);
+	objPage.Click(elem);
+	WebElement arrow=driver.findElement(By.xpath("//div[text()='"+fieldName+"']//following::button[@title='Move selection to Chosen']"));
+	js.executeScript("arguments[0].scrollIntoView(true);", arrow);
+	objPage.Click(arrow);
+	}
+}
+
+
+
+/**
+ * @Description: This method is to edit(enter) a record by clicking on the pencil icon and save it(field level edit)
+ * @param fieldName: name of the required field
+ * @param field: field Webelement
+ * @param data: the data to be entered intextbox
+ * @throws Exception
+ */
+
+public void editAndInputFieldData(String fieldName,WebElement field, String data) throws Exception
+{
+objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'"+fieldName+"')]/ancestor::button");
+		objPage.enter(field, data);
+		objPage.Click(ExemptionsPage.saveButton);
+		Thread.sleep(4000);
+	
+}
+
+
+/**
+ * @Description: This method is to edit(select) a record by clicking on the pencil icon and save it(field level edit)
+ * @param fieldName: name of the required field
+ * @param data: the data to be selected from drop down
+ * @throws Exception
+ */
+
+public void editAndSelectFieldData(String fieldName, String value) throws Exception
+{
+		objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'"+fieldName+"')]/ancestor::button");
+		WebElement dropdown=driver.findElement(By.xpath("//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'"+fieldName+"')]//div/input"));
+		//selectFromDropDown(dropdown, value);
+		objPage.Click(dropdown);
+        String xpathStr = null;
+        xpathStr = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'"+fieldName+"')]//span[@title='"+value+"']";
+        WebElement drpDwnOption = locateElement(xpathStr, 3);
+        drpDwnOption.click();
+		objPage.Click(ExemptionsPage.saveButton);
+		Thread.sleep(4000);
+	
+}
+
+
+
 
 }

@@ -81,7 +81,7 @@ public class BPPTrend_CommercialCompostieTable_CalculateAndReCalculate_Test exte
 	 * 11. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T162, SMAB-T165
 	 * 12. Validating the status of the table on BPP Trend Setup Page
 	 */
-	@Test(description = "SMAB-T162,SMAB-T165,SMAB-T190,SMAB-T194,SMAB-T198,SMAB-T442: Performing validation on COMMERCIAL COMPOSITE FACTORS before and after calculation", groups = {"smoke,regression,BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T162,SMAB-T165,SMAB-T190,SMAB-T194,SMAB-T198,SMAB-T442: Performing validation on COMMERCIAL COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_CommercialCompositeFactors_CalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Reseting the status of all composite factor tables to "Not Calculated" through SalesForce API
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -247,7 +247,7 @@ public class BPPTrend_CommercialCompostieTable_CalculateAndReCalculate_Test exte
 	 * 
 	 * JIRA IDs VALIDATED: SMAB-T162, SMAB-T165, SMAB-T195, SMAB-T196,SMAB-T442
 	 */
-	@Test(description = "SMAB-T162,SMAB-T165,SMAB-T195,SMAB-T196,SMAB-T442: Performing validation on COMMERCIAL COMPOSITE FACTORS before and after calculation", groups = {"smoke,regression,BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T162,SMAB-T165,SMAB-T195,SMAB-T196,SMAB-T442: Performing validation on COMMERCIAL COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_CommercialCompositeFactors_ReCalculateAndCompare(String loginUser) throws Exception {
 		//Step1: Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));

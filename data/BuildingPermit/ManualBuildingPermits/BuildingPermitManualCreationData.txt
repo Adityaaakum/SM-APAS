@@ -1,2 +1,0 @@
-Building Permit NumberParcel,Processing Status,County Strat Code Description,Estimated Project Value,Issue Date,Completion Date,Permit City Code,Work Description
-GeneratedRandomValue,FetchedDynamically,Process,REPAIR ROOF,500.00,11/10/2019,11/20/2019,LM,New Construction

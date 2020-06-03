@@ -1,4 +1,4 @@
-package com.apas.Tests.ApasSettings;
+/*package com.apas.Tests.ApasSettings;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
@@ -45,19 +45,19 @@ public class ReportsTest extends TestBase {
 		softAssert.assertAll();
 	}
 
-	/**
+	*//**
 	 * Below function will be used to login to application with different users
 	 *
 	 * @return Return the user business admin and appraisal support in an array
-	 **/
+	 **//*
 	@DataProvider(name = "loginUsers")
 	public Object[][] dataProviderLoginUserMethod() {
 		return new Object[][] {{ users.BUSINESS_ADMIN } };
 	}
 
-	/**
+	*//**
 	 Below test case will validate that user is able to export the report
-	 **/
+	 **//*
 	@Test(description = "SMAB-T433: Validation for Reports Export", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true)
 	public void verifyReportExport(String loginUser) throws Exception {
 
@@ -91,3 +91,4 @@ public class ReportsTest extends TestBase {
 		softAssert.assertTrue(exportedFileName.contains("report"), "SMAB-T433: Exported report name validation");
 	}
 }
+*/

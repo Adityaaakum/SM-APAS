@@ -7,6 +7,11 @@ public interface testdata {
 	public static final String BUILDING_PERMIT_SAN_MATEO = "\\data\\BuildingPermit\\SanMateoBuildingPermits\\";
 	public static final String BUILDING_PERMIT_MANUAL = "\\data\\BuildingPermit\\ManualBuildingPermits\\";
 	public static final String BUILDING_PERMIT_UNINCORPORATED = "\\data\\BuildingPermit\\UnicorporatedBuildingPermits\\";
+	public static final String BPP_TREND_TABLES_DATA = "\\data\\BppTrend\\2020_Trend_Factors_Calculator.xlsx";
+	
+	public static final String RPSL_ENTRY_DATA = "\\data\\DisabledVeteran\\RPSL\\RealPropertySettings.json";
+	public static final String ROLL_YEAR_DATA = "\\data\\RollYear\\RollYear_DataToCreateRollYearRecord.json";
+	public static final String EXEMPTION_MANDATORY_FIELDS_ENTRY_DATA = "\\data\\DisabledVeteran\\DisabledVeteran_DataToCreateExemptionRecord.json";
 
 	public static final String BUILDING_PERMIT_NEW_MANUAL_ENTRY_DATA = "\\data\\BuildingPermit\\SanMateoBuildingPermits\\BuildingPermit_DataToCreateManualEntry.txt";
 	public static final String BUILDING_PERMIT_MANUAL_ENTRY_DATA = "\\data\\BuildingPermit\\SanMateoBuildingPermits\\BuildingPermit_ManualEntryData.json";
@@ -24,4 +29,8 @@ public interface testdata {
 	public static final String BPP_TREND_BOE_VALUATION_FACTORS_TRANSFORMATION_RULES= "\\data\\BppTrend\\Transformation_Validation_Files\\BOE Valuation Factors 2020_Transformation Rules.xlsx";
 	public static final String BPP_TREND_CAA_VALUATION_FACTORS_TRANSFORMATION_RULES= "\\data\\BppTrend\\Transformation_Validation_Files\\CAA Valuation Factors 2020_Transformation Rules.xlsx";
 	public static final String BPP_TREND_CALCULATOR_WITH_UPDATED_MIN_EQIP_INDEX_FACTOR = "\\data\\BppTrend\\Temp\\2020_Trend_Factors_Calculator.xlsx";
+    
+    public static final String EXEMPTION_DATA = "\\data\\Exemptions\\ExemptionData.json";
+    public static final String ANNUAL_PROCESS_DATA = "\\data\\DisabledVeteran\\AnnualProcess\\DisabledVeteran_AnnualProcessData.json";
+ 
 }

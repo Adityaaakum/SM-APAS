@@ -81,7 +81,7 @@ public class BPPTrend_ConstructionMobileEquipCompostieTable_CalculateAndReCalcul
 	 * 11. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T240
 	 * 12. Validating the status of the table on BPP Trend Setup Page: SMAB-T241
 	 */
-	@Test(description = "SMAB-T239,SMAB-T240,SMAB-T241,SMAB-T269,SMAB-T190,SMAB-T194,SMAB-T198,SMAB-T442: Performing validation on CONSTRUCTION MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"smoke,regression,BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T239,SMAB-T240,SMAB-T241,SMAB-T269,SMAB-T190,SMAB-T194,SMAB-T198,SMAB-T442: Performing validation on CONSTRUCTION MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_ConstructionMobileEquipCompostieTable_CalculateAndCompare(String loginUser) throws Exception {
 		//Step1: Reseting the status of all composite factor tables to "Not Calculated" through SalesForce API
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -241,7 +241,7 @@ public class BPPTrend_ConstructionMobileEquipCompostieTable_CalculateAndReCalcul
 	 * 11. Validating the status of the table on BPP Trend Setup Page
 	 * 12. Reverting the changed settings in excel file and BPP Trend Setup page
 	 */
-	@Test(description = "SMAB-T195,SMAB-T196,SMAB-T442: Performing validation on CONSTRUCTION MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"smoke,regression,BppTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T195,SMAB-T196,SMAB-T442: Performing validation on CONSTRUCTION MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_ConstructionMobileEquipCompostieTable_ReCalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));

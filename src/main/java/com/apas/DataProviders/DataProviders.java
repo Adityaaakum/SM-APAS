@@ -235,4 +235,16 @@ public class DataProviders {
     public Object[][] dpVariousStatusOfCompositeAndValuationTables() {
     	return new Object[][] { { "Not Calculated" }, { "Calculated" }, { "Needs Recalculation" }, {"Submitted for Approval"}, {"Approved"} };
     }
+    
+    @DataProvider(name = "loginExemptionSupportStaff")
+	public Object[][] dataProviderLoginUserMethod() {
+		return new Object[][] { { users.EXEMPTION_SUPPORT_STAFF } };
+	}
+    
+    
+	@DataProvider(name = "rpApprasierAndBPPAuditor")
+	public Object[][] dataProviderLoginUserMethodForUser() {
+		return new Object[][] { { users.RP_APPRAISER }, { users.BPP_AUDITOR }};
+	}
+    
 }

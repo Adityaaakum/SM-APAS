@@ -654,9 +654,11 @@ public class BppTrendPage extends Page {
 	 */
 	public void deleteFactorFilesFromDownloadFolder() {
 		File dir = new File(TestBase.CONFIG.getProperty("fileDownloadPath"));
-		for(File file: dir.listFiles()) {
-		    if (!file.isDirectory()) 
-		        file.delete();
+		if(dir.listFiles().length > 0) {
+			for(File file: dir.listFiles()) {
+			    if (!file.isDirectory()) 
+			        file.delete();
+			}
 		}
 	}
 	

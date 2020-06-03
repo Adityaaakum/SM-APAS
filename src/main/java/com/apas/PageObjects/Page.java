@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -22,6 +23,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -191,6 +194,25 @@ public class Page {
 	}
 
 	/**
+	 * Function will scroll to the top of the UI.
+	 * Note: scrollToElement was not working on few elements
+	 */
+	public void scrollToTop() {
+		JavascriptExecutor jse = (JavascriptExecutor)driver;
+		jse.executeScript("scroll(250, 0)");
+	}
+
+
+	/**
+	 * Function will scroll to the bottom of UI.
+	 * Note: scrollToElement was not working on few elements
+	 */
+	public void scrollToBottom() {
+		JavascriptExecutor jse = (JavascriptExecutor)driver;
+		jse.executeScript("scroll(0, 250)");
+	}
+
+	/**
 	 * Function will wait until the page is not in ready state.
 	 *
 	 * @param driver
@@ -284,6 +306,7 @@ public class Page {
 
 		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", elem);		
 		elem.clear();
+		elem.sendKeys(Keys.chord(Keys.CONTROL,"a", Keys.DELETE));
 		elem.sendKeys(value);
 		Thread.sleep(2000);
 	}
@@ -421,7 +444,7 @@ public class Page {
 	/**
 	 * Function will wait for an element to come in clickable state on the page.
 	 * @param timeoutInSeconds the timeout in seconds
-	 * @param Object (Xpath, By)
+	 * @param object (Xpath, By)
 	 */
 	public WebElement waitForElementToBeClickable(int timeoutInSeconds, Object object) {
 		boolean isElementClickable = false;
@@ -522,7 +545,7 @@ public class Page {
 	/**
 	 * Function will wait for an element to be Invisible on the page.
 	 *
-	 * @param Object (Xpath, By)
+	 * @param object (Xpath, By)
 	 * @param timeoutInSeconds
 	 *            the timeout in seconds
 	 */
@@ -543,7 +566,7 @@ public class Page {
 	/**
 	 * Function will wait for an element to attain a value.
 	 *
-	 * @param Object (Xpath, By)
+	 * @param element (Xpath, By)
 	 * @param timeoutInSeconds
 	 *            the timeout in seconds
 	 */
@@ -563,7 +586,7 @@ public class Page {
 	/**
 	 * Function will wait for an element to be Visible on the page.
 	 * @param timeoutInSeconds the timeout in seconds
-	 * @param Object (Xpath, By)
+	 * @param object (Xpath, By)
 	 */
 	public boolean waitForElementToBeVisible(int timeoutInSeconds, Object object) {
 		boolean isElementVisible = false;
@@ -681,31 +704,13 @@ public class Page {
 	}
 
 	/**
-	 * Function will wait until to Max timeout until the weblement is located.
+	 * Function will wait until to Max timeout until the webelement is located.
 	 *
-	 * @param element
-	 *            the element
-	 * @return true, if successful
+	 * @param xpath : xpath of the element to be located
+	 * @param timeOut : maximum time to wait for element to be present
 	 */
-	public boolean waitUntilElementIsPresent(final WebElement element) {
-
-		Integer timeoutInSeconds = MAX_TIMEOUT;
-		FluentWait<RemoteWebDriver> wait = new FluentWait<RemoteWebDriver>(driver);
-		wait.pollingEvery(1, TimeUnit.SECONDS);
-		wait.withTimeout(timeoutInSeconds, TimeUnit.SECONDS);
-		wait.ignoring(NoSuchElementException.class);
-		WebElement elem = wait.until(new Function<RemoteWebDriver, WebElement>() {
-			public WebElement apply(RemoteWebDriver driver) {
-				if (element.isEnabled()) {
-					// System.out.println("Element is Present.");
-					return element;
-				} else {
-					return null;
-				}
-			}
-		});
-		// If element is found then it will display the status
-		return elem.isEnabled();
+	public void waitUntilElementIsPresent(String xpath, int timeOut) throws Exception {
+		locateElement(xpath,timeOut);
 	}
 	
 	/**
@@ -929,41 +934,6 @@ public class Page {
 	    return elements;
 	};
 	
-	/**
-	 * Function will wait for a element until it becomes visible
-	 * @param: Takes argument of object type (xpath or variable of By type or WebElement)
-	 * @return: Returns the WebElement
-	 */
-	
-	public WebElement waitForElementToBeVisible(Object object, String locatorType) {
-		WebElement element = null;
-		if(object instanceof String) {
-			String[] arr = object.toString().split("~");
-			if(arr[1].equalsIgnoreCase("ID")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("tagName")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.tagName(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("name")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.name(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("linkText")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.linkText(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("partialLinkText")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.partialLinkText(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("className")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.className(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("cssSelector")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector(arr[0]))));	
-			} else {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(arr[0]))));	
-			}
-		} else if (object instanceof By) {
-			element = wait.until(ExpectedConditions.visibilityOfElementLocated((By) object));
-		} else {
-			element = wait.until(ExpectedConditions.visibilityOf((WebElement)object));
-		}
-		return element;
-	}
-	
 	public WebElement waitForElementToBeVisible(Object object) {
 		WebElement element = null;
 		if(object instanceof String) {
@@ -1056,6 +1026,27 @@ public class Page {
 	 */
 	public void switchToParentWindow() {
 		driver.switchTo().window(System.getProperty("parentWindowHandle"));
+	}
+    
+	/**
+	 * Description: This method will scroll to the bottom of page
+	 * @throws: Throws Exception
+	 */
+	public void scrollToBottomOfPage() throws Exception {
+		((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+	}
+
+	/**
+	 * This method checks the Radio Button.
+	 *
+	 */
+	public void checkRadioButton(WebElement ele) {
+		waitForElementToBeVisible(ele, 30);
+		waitForElementToBeClickable(ele, 30);
+		if(!ele.isSelected()) {
+			ele.click();
+		}
+		
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.apas.Tests.ApasSettings;
+/*package com.apas.Tests.ApasSettings;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
@@ -40,21 +40,21 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 	}
 	
 	
-	/**
+	*//**
 	 * Below function will be used to login to application with different users
 	 *
 	 * @return Return the user business admin and appraisal support in an array
-	 **/
+	 **//*
     @DataProvider(name = "loginUsers")
     public Object[][] dataProviderLoginUserMethod() {
         return new Object[][] {{ users.BUSINESS_ADMIN } };
     }
 
 
-    /**
+    *//**
 	 Below test case will validate that user is not allowed to create duplicate Non Relevant Permit Settings
 	 PreCondition: AT City Code with Active status is already added in Non Relevant Permit Settings
-	 **/
+	 **//*
 	@Test(description = "SMAB-T398: Validation for Duplicate Non Relevant Permit Settings", dataProvider = "loginUsers", groups = {"smoke","regression"}, priority = 0, alwaysRun = true)
 	public void verifyDuplicateNonRelevantSettingsNotAllowed(String loginUser) throws Exception {
 
@@ -78,3 +78,4 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 		objPage.Click(objNonRelevantPermitSettingsPage.cancelButton);
 	}
 }
+*/
