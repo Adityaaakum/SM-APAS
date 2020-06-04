@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 
+import com.apas.Reports.ReportLogger;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -177,10 +178,10 @@ public class SuiteListener extends TestBase implements ITestListener {
 	@Override
 	public void onTestSkipped(ITestResult result) {
 		String methodName = result.getMethod().getMethodName();
-		System.out.println("Method Skipped : " + methodName);
 		upTest = ExtentTestManager.startTest(methodName, "Description: " + result.getMethod().getDescription());
-
-		ExtentTestManager.getTest().log(LogStatus.SKIP, "Test skipped : " + result.getThrowable());
+        ReportLogger.INFO("Method Skipped : " + methodName);
+        ReportLogger.INFO("Test skipped : " + result.getThrowable());
+        ReportLogger.INFO(methodName + "Method Skipped because following parent method failed on which this method depends : " + result.getMethod().getMethodsDependedUpon());
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 		ExtentManager.getExtentInstance().flush();
 		TearDown();

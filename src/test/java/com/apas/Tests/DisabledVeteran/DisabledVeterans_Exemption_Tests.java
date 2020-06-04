@@ -44,7 +44,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	BuildingPermitPage objBuildingPermitPage;
 	
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
 		
 		if(driver==null) {

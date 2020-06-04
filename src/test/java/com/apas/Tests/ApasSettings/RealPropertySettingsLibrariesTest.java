@@ -508,7 +508,7 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 	 **/
 	@DataProvider(name = "loginUsers2")
 	public Object[][] dataProviderVerifyViewAccessWithUsers() {
-		return new Object[][] { { users.BPP_AUDITOR_WITH_BPP_PRINCIPAL }};
+		return new Object[][] { { users.PRINCIPAL_USER }};
 	}
 	/**
 	 Below test case is used to validate user other than Exemption Support Staff is only able to view Exemption limit records
