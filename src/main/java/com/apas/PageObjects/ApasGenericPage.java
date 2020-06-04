@@ -19,7 +19,7 @@ public class ApasGenericPage extends Page {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//one-app-launcher-header/button[@class = 'slds-button']")
+	@FindBy(xpath = "//one-app-launcher-header/button[contains(@class,'slds-button')]")
 	public WebElement appLauncher;
 	
 	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items')]")
