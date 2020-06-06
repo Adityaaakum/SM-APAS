@@ -131,7 +131,7 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 		
 		//----- This Functions needs to be verified If we're taking this or Sikander's---
 		//Step3: Selecting 'All' List View
-		objApasGenericFunctions.selectListView("All");
+		objApasGenericFunctions.displayRecords("All");
 		
 		//Step4: Fetching data for new record
 		String manualEntryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
@@ -222,7 +222,7 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Selecting 'All' List View
-		objApasGenericFunctions.selectListView("All");
+		objApasGenericFunctions.displayRecords("All");
 		
 		//Step4: Fetching value of RPSL created in above Test case
 		String value = System.getProperty("futureYearRPSL");
@@ -277,7 +277,7 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Selecting 'All' List View
-		objApasGenericFunctions.selectListView("All");
+		objApasGenericFunctions.displayRecords("All");
 		Thread.sleep(3000);
 		
 		//Step4: Fetching value of RPSL created in above Test case
@@ -446,7 +446,7 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Select All List View
-		objApasGenericFunctions.selectListView("All");
+		objApasGenericFunctions.displayRecords("All");
 		
 		//Step4: Verify 8 RPSL are displayed
 		boolean noOfRPSL = objRPSLPage.verify8YearsRPSL();
@@ -480,7 +480,7 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 		
 		//Step3: Select All List View
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Selecting 'All' List View");
-		objApasGenericFunctions.selectListView("All");
+		objApasGenericFunctions.displayRecords("All");
 		
 		//Step4: Calculate Number of RPSL records
 		int numberOfRPSL = objRPSLPage.numberOfRPSL.size();
@@ -522,7 +522,7 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Select All List View
-		objApasGenericFunctions.selectListView("All");
+		objApasGenericFunctions.displayRecords("All");
 		Thread.sleep(2000);
 		
 		//Step4: Verify New Button is not present
