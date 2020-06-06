@@ -179,9 +179,9 @@ public class SuiteListener extends TestBase implements ITestListener {
 	public void onTestSkipped(ITestResult result) {
 		String methodName = result.getMethod().getMethodName();
 		upTest = ExtentTestManager.startTest(methodName, "Description: " + result.getMethod().getDescription());
-        ReportLogger.INFO("Method Skipped : " + methodName);
-        ReportLogger.INFO("Test skipped : " + result.getThrowable());
-        ReportLogger.INFO(methodName + "Method Skipped because following parent method failed on which this method depends : " + result.getMethod().getMethodsDependedUpon());
+        ReportLogger.SKIP("Method Skipped : " + methodName);
+        ReportLogger.SKIP("Test skipped : " + result.getThrowable());
+        ReportLogger.SKIP(methodName + "Method Skipped because following parent method failed on which this method depends : " + result.getMethod().getMethodsDependedUpon());
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 		ExtentManager.getExtentInstance().flush();
 		TearDown();
