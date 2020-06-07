@@ -1157,11 +1157,12 @@ public String getExemptionNameFromSuccessAlert() throws Exception {
 
 
 public String fetchAssesseeName() throws Exception {
-       SalesforceAPI objSalesforceAPI = new SalesforceAPI();
-       String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type = 'Person' OR Type = 'Business'";
-       HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
-       String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
-       ReportLogger.INFO("Assessee Name fetched through Salesforce API : " + assesseeName);
+	String assesseeName = "SMtestPerson";
+//       SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+//       String queryForID = "SELECT FirstName, LastName FROM Account limit 1";
+//       HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
+//       String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
+//       ReportLogger.INFO("Assessee Name fetched through Salesforce API : " + assesseeName);
        return assesseeName;
    }
 
