@@ -218,8 +218,9 @@ public class ApasGenericPage extends Page {
 		//String xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
 		//WebElement drpDwnOption = locateElement(xpathStr, 30);
 
-		String xpathStr = "//div[@title='" + value.toUpperCase() + "']";
+		String xpathStr = "//div[@title='" + value.toUpperCase() + "'] | //mark[text() = '" + value + "']";
 		WebElement drpDwnOption = locateElement(xpathStr, 20);
+		waitForElementToBeVisible(drpDwnOption, 10);
 		drpDwnOption.click();
 	}
 

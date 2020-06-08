@@ -192,7 +192,8 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//div[@class = 'actionsContainer']//div[contains(@class, 'slds-float_right')]//button[@title = 'Save & New']")
 	public WebElement saveAndNewBtnInBppSettingPopUp;
 	
-	@FindBy(xpath = "//div[@class = 'actionsContainer']//div[contains(@class, 'slds-float_right')]//button[@title = 'Cancel']")
+	//@FindBy(xpath = "//div[@class = 'actionsContainer']//div[contains(@class, 'slds-float_right')]//button[@title = 'Cancel']")
+	@FindBy(xpath = "//button[@title = 'Cancel']//span[text() = 'Cancel']")
 	public WebElement cancelBtnInBppSettingPopUp;
 	
 	@FindBy(xpath = "//div[contains(@class, 'modal-footer slds')]//button[@title = 'Delete']")
@@ -213,7 +214,7 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//span[text() = 'Name']//parent::label//following-sibling::input")
 	public WebElement systemNameInBewBppTrendSetting;
 	
-	@FindBy(xpath = "//span[text() = 'Files']//parent::span[text() = 'View All']//ancestor::a")
+	@FindBy(xpath = "//span[text() = 'Files']//parent::span[text() = 'View All']") //ancestor::a
 	public WebElement viewAllFiles;
 	
 	@FindBy(xpath = "//span[text() = 'BPP Settings']//parent::span[text() = 'View All']")
@@ -284,27 +285,57 @@ public class BppTrendPage extends Page {
 	
 	@FindBy(xpath = "//div[contains(@class, 'slds-inline_icon_text--warning forceDedupeManager')]//div")
 	public WebElement errorMsgOnDuplicateCpiFactor;
-
+	
+	@FindBy(xpath = "//span[contains(text(), 'Filtered by all cpi factors')]")
+	public WebElement sortingMessage;
+	
+	@FindBy(xpath = "(//td[@class = 'slds-cell-edit cellContainer']//span[@class = 'slds-truncate uiOutputNumber'])[1]")
+	public WebElement firstCpiFactorValue;
+	
+	@FindBy(xpath = "//table[contains(@class, 'slds-table--resizable-cols uiVirtualDataTable')]")
+	public WebElement tableSection;
+	
+	@FindBy(xpath = "//div[@class = 'uiBlock']//p//span")
+	public WebElement errorMsgOnEditClick;
+	
+	@FindBy(xpath = "//th[@title = 'Roll Year']//a")
+	public WebElement rollYearSort;
+	
+	@FindBy(xpath = "//div[contains(@class, 'LOADED forceContentFileDroppableZone')]//span[contains(@class, 'itemTitle slds-text-body')]")
+	public List<WebElement> filesListOnBppTrendSetupPage;
+	
+	@FindBy(xpath = "//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']")
+	public WebElement newBtnViewAllPage;
+	
 	
 	/**
 	 * Description: This will select the roll year from the drop down
 	 * @param rollYear: Roll Year for which the BPP Trend Name needs to be clicked or BPP trend name itself
 	 * @throws: Exception
 	 */	
-	public void clickBppTrendSetupRollYearNameInGrid(String rollYearDetails) throws Exception {
+	public void clickOnEntryNameInGrid(String detailsOfEntryToSelect) throws Exception {
 		String expRegexPattern = "\\d\\d\\d\\d";
 		Pattern.compile(expRegexPattern);
 	
 		String xpath;
-		if(Pattern.matches(expRegexPattern, rollYearDetails)) {
-			xpath = "//span[text() = '"+ rollYearDetails +"']//ancestor::td//preceding-sibling::th//a[contains(@title, 'BPP Trend')]";
+		if(Pattern.matches(expRegexPattern, detailsOfEntryToSelect)) {
+			xpath = "//span[text() = '"+ detailsOfEntryToSelect +"']//ancestor::td//preceding-sibling::th//a[contains(@title, 'BPP Trend')]";
 		} else {
-			xpath = "//th//a[contains(@title, '"+ rollYearDetails +"')]";
+			xpath = "//th//a[contains(@title, '"+ detailsOfEntryToSelect +"')]";
 		}
 		
+		String bppTrendSetupName;
 		WebElement bppTrendSetup = locateElement(xpath, 60);
-		String bppTrendSetupName = getElementText(bppTrendSetup).trim();
-		javascriptClick(bppTrendSetup);
+		try {
+			waitForElementToBeClickable(bppTrendSetup, 10);
+			bppTrendSetupName = getElementText(bppTrendSetup).trim();
+			Click(bppTrendSetup);
+		} catch(Exception ex) {
+			bppTrendSetup = locateElement(xpath, 60);
+			waitForElementToBeClickable(bppTrendSetup, 10);
+			bppTrendSetupName = getElementText(bppTrendSetup).trim();
+			Click(bppTrendSetup);
+		}
 		System.setProperty("BppTrendSetupName", bppTrendSetupName);
 	}
 	
@@ -331,14 +362,23 @@ public class BppTrendPage extends Page {
 		if(isTableOnEfileImportPage.length == 0 || (isTableOnEfileImportPage.length == 1 && isTableOnEfileImportPage[0] == false)) {
 			String xpathStr;
 			if(isTableUnderMoreTab) {
+				waitForElementToBeVisible(moreTabs, 10);
+				waitForElementToBeClickable(moreTabs, 10);
 				Click(moreTabs);
+				WebElement dropDownList = locateElement("//button[@title = 'More Tabs' and @aria-expanded = 'true']", 10); ////div[@class = 'slds-dropdown slds-dropdown_right']", 10);
+				System.out.println("Drop down list under more tab::"+ dropDownList);
+				if(dropDownList == null) {
+					System.out.println("Inside If Condition");
+					waitForElementToBeClickable(moreTabs, 10);
+					Click(moreTabs);	
+				}
 				xpathStr = "//span[contains(text(), '" + tableName + "')]";
 			} else {
 				xpathStr = "//a[contains(@data-label, '" + tableName + "')]";
 			}
 			givenTable = locateElement(xpathStr, 30);
 			waitForElementToBeClickable(givenTable);
-			javascriptClick(givenTable);			
+			clickAction(givenTable);			
 		} else {
 			String xpathStr = "//a[contains(@data-label, '" + tableName + "')]";
 			givenTable = locateElement(xpathStr, 20);	
@@ -436,6 +476,10 @@ public class BppTrendPage extends Page {
 	private void clickRequiredButton(String ...args) throws Exception {
 		String xpath = getXpathForRequiredBtton(args);
 		WebElement button = locateElement(xpath, 60);
+		if(button == null) {
+			button = locateElement(xpath, 60);
+		}
+		waitForElementToBeClickable(button, 10);
 		Click(button);
 	}
 	
@@ -491,7 +535,10 @@ public class BppTrendPage extends Page {
 		}
 
 		System.setProperty("xpathCellData", xpathCellData);
-		WebElement element = locateElement(xpathCellData, 60);
+		WebElement element = locateElement(xpathCellData, 30);
+		if(element == null) {
+			element = locateElement(xpathCellData, 30);
+		}
 		return element;
 	}
 
@@ -601,7 +648,7 @@ public class BppTrendPage extends Page {
 	}
 	
 	/**
-	 * Description: This will delete the existing Bpp Setting entry (Max. Equip. Index) for given roll year
+	 * Description: This will delete the existing BPP Setting entry (Max. Equip. Index) for given roll year
 	 * @param rollYear
 	 * @throws Exception
 	 */
@@ -612,6 +659,17 @@ public class BppTrendPage extends Page {
 	}
 
 	/**
+	 * Description: This will delete the existing BPP Composite Factor Setting entries (Min. Equip. Index) for given roll year
+	 * @param rollYear
+	 * @throws Exception
+	 */
+	public void removeExistingBppFactorSettingEntry(String rollYear) throws Exception {
+		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+		String queryForID = "SELECT Id FROM BPP_Composite_Factors_Setting__c Where BPP_Trend_Roll_Year_Parent__c = '"+ rollYear +"'";
+		objSalesforceAPI.delete("BPP_Composite_Factors_Setting__c", queryForID);
+	}	
+	
+	/**
 	 * Description: This will retrieve current status of tables
 	 * @param factorTablesToReset: List of table names for which status is to be reset
 	 * @param rollYear: Roll year for which the status needs to be reset
@@ -620,7 +678,7 @@ public class BppTrendPage extends Page {
 		objApasGenericFunctions.login(users.SYSTEM_ADMIN);
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		
-		clickBppTrendSetupRollYearNameInGrid(rollYear);
+		clickOnEntryNameInGrid(rollYear);
 		
 		String xpathFieldValue = "//span[text() = '"+ tableName +"']//parent::div//following-sibling::div//span[contains(@class, 'test-id__field-value')]//lightning-formatted-text";
 		WebElement element = locateElement(xpathFieldValue, 30);
@@ -1237,7 +1295,9 @@ public class BppTrendPage extends Page {
 	 */
 	public void closePageLevelMsgPopUp() {
 		try {
-			Click(locateElement("//button[@title = 'Close']", 30));
+			WebElement pageLevelPopUpCloseBtn = locateElement("//button[@title = 'Close']", 30);
+			waitForElementToBeClickable(pageLevelPopUpCloseBtn, 10);
+			javascriptClick(pageLevelPopUpCloseBtn);
 		} catch(Exception ex) {
 			ex.getMessage();
 		}
@@ -1641,7 +1701,17 @@ public class BppTrendPage extends Page {
 	 */
 	public String errorMsgOnIncorrectFactorValue() throws Exception {
 		String xpath = "//span[text() = 'Maximum Equipment index Factor']//parent::label//parent::div//following-sibling::ul//li";
-		return getElementText(locateElement(xpath, 30));
+		return getElementText(locateElement(xpath, 10));
+	}
+	
+	/**
+	 * Description: Retrieves the error message displayed on entering an invalid value for min. equipment index factor
+	 * @return: Returns the error message
+	 * @throws: Exception
+	 */
+	public String errorMsgUnderMinEquipFactorIndexField() throws Exception {
+		String xpath = "//span[text() = 'Minimum Good Factor']//parent::label//parent::div//following-sibling::ul//li";
+		return getElementText(locateElement(xpath, 10));
 	}
 	
 	/**
@@ -2058,6 +2128,16 @@ public class BppTrendPage extends Page {
 	 * @throws: Exception
 	 */
 	public void createBppCompositeFactorSetting(String propertyType, String minGoodFactorValue, String...rollYear) throws Exception {
+		WebElement moreTab = locateElement("//div[contains(@class, 'column region-sidebar-right')]//button[@title = 'More Tabs']", 10);
+		if(moreTab != null) {
+			waitForElementToBeClickable(moreTab, 10);
+			clickAction(moreTab);
+			waitForElementToBeVisible(bppCompositeFactorOption, 10);
+			clickAction(bppCompositeFactorOption);
+        } else {
+			clickAction(bppCompFactorSettingTab);
+		}
+		
 		waitForElementToBeVisible(dropDownIconBppCompFactorSetting, 10);
 		waitForElementToBeClickable(dropDownIconBppCompFactorSetting, 10);
 		clickAction(waitForElementToBeClickable(dropDownIconBppCompFactorSetting));
@@ -2101,7 +2181,7 @@ public class BppTrendPage extends Page {
 	}
 	
 	/**
-	 * Description: It deletes the Bpp composite factor settings from view all page
+	 * Description: It deletes the BPP composite factor settings from view all page
 	 * @param: Takes a data map containing trend settings names as map keys and their values as map values
 	 * @throws: Throws Exception
 	 */
@@ -2120,6 +2200,28 @@ public class BppTrendPage extends Page {
 			clickAction(objBuildPermitPage.deleteLinkUnderShowMore);
 			Click(waitForElementToBeClickable(objBuildPermitPage.deleteBtnInDeletePopUp));			
 		}
+	}
+	
+	/**
+	 * Description: Clicks on the show more link displayed against the given entry
+	 * @param entryDetails: Name of the entry displayed on grid which is to be accessed
+	 * @throws Exception
+	 */
+	public void clickOnShowMoreLinkInGridForGivenProprtyType(String propertyName) throws Exception {
+		String xpathShowMoreLink = "//table//tbody/tr//td//span[text() = '"+ propertyName +"']//parent::span//parent::td//following-sibling::td//a[@role = 'button']";
+		Thread.sleep(2000);
+		WebElement modificationsIcon = locateElement(xpathShowMoreLink, 20);
+		clickAction(modificationsIcon);
+	}
+	
+	/**
+	 * Description: Finds the show more link displayed against the given entry
+	 * @param entryDetails: Name of the entry displayed on grid which is to be accessed
+	 * @throws Exception
+	 */
+	public String retrieveExistingMinEquipFactorValueFromGridForGivenProprtyType(String propertyName) throws Exception {
+		String xpathShowMoreLink = "//table//tbody/tr//td//span[text() = '"+ propertyName +"']//parent::span//parent::td//following-sibling::td//span[@class = 'slds-truncate uiOutputNumber']";
+		return getElementText(locateElement(xpathShowMoreLink, 20));
 	}
 	
 	/**
@@ -2151,7 +2253,7 @@ public class BppTrendPage extends Page {
 	 * Description: Deletes the BPP Setting on BPP trend status page
 	 * @throws: Exception
 	 */
-	public void deletesBppSettingValueOnDetailsPage() throws Exception {
+	public void deleteBppSettingValueOnDetailsPage() throws Exception {
 		clickAction(dropDownIconDetailsSection);
 
 		waitForElementToBeVisible(objBuildPermitPage.deleteLinkUnderShowMore, 10);
@@ -2417,10 +2519,7 @@ public class BppTrendPage extends Page {
 	 */
 	public String getErrorCountFromHistoryTable() throws Exception {
 		String indexPosErrorCount = getIndexPositionOfGivenColumn("Error Count");
-		System.out.println("indexPosErrorCount: "+ indexPosErrorCount);
 		String xpath = "//h2[text() = 'E-File Import Tool']//ancestor::header//following-sibling::div[@class = 'pageBody']//tbody//tr[1]//td["+ indexPosErrorCount +"]";
-		System.out.println("xpath: "+ xpath);
-		System.out.println("Error Count In Histroy Table:: "+ getElementText(locateElement(xpath, 30)));
 		return getElementText(locateElement(xpath, 30));
 	}
 
@@ -2606,8 +2705,8 @@ public class BppTrendPage extends Page {
 		String columnData;
 		if("Commercial Equipment Index".equalsIgnoreCase(tableName)) {
 			tableNumber = "1";
-		} else if("Construction ME Good Factors".equalsIgnoreCase(tableName)) {
-			tableNumber = "6";
+		} else if("Agricultural Index".equalsIgnoreCase(tableName)) {
+			tableNumber = "3";
 		} else if("Agricultural ME Good Factors".equalsIgnoreCase(tableName)) {
 			tableNumber = "7";
 		}
@@ -2616,8 +2715,9 @@ public class BppTrendPage extends Page {
 				+ "//ancestor::div[@class = 'slds-accordion__summary']"
 				+ "//following-sibling::div[@class = 'slds-accordion__content']"
 				+ "//table//tbody//tr["+rowNumber+"]//td[@data-label = '"+columnName+"']//lightning-formatted-text";
-
+		
 		List<WebElement> elements = locateElements(xpath, 20);
+		
 		try {
 			columnData = getElementText(elements.get(0));
 		} catch(Exception ex) {
@@ -2671,7 +2771,7 @@ public class BppTrendPage extends Page {
 		} 
 		
 		else if("Year".equalsIgnoreCase(columnName)) {
-			if("".equals(columnValue)) {
+			if("".equals(columnValue) || " ".equals(columnValue)) {
 				return "Year must be present.";
 			}
 			else {			
@@ -2806,7 +2906,7 @@ public class BppTrendPage extends Page {
 		
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
 		String rollYear = System.getProperty("rollYearForErrorValidationOnCalculate");
-		clickBppTrendSetupRollYearNameInGrid(rollYear);
+		clickOnEntryNameInGrid(rollYear);
 		
 		//Create a BPP Setting under selected BPP Trend Setup
 		createBppSetting("125");
@@ -2839,7 +2939,7 @@ public class BppTrendPage extends Page {
 		
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
 		String rollYear = System.getProperty("rollYearForErrorValidationOnCalculate");
-		clickBppTrendSetupRollYearNameInGrid(rollYear);
+		clickOnEntryNameInGrid(rollYear);
 		
 		//Create a BPP Composite Factor Settings
 		if(tableName.contains("Commercial")) {

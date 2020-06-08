@@ -19,6 +19,7 @@ import com.apas.JiraStatusUpdate.JiraAdaptavistStatusUpdate;
 import com.apas.Reports.ExtentManager;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.Util;
 import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;
@@ -43,7 +44,6 @@ public class SuiteListener extends TestBase implements ITestListener {
 	 */
 	@Override
 	public void onStart(ITestContext context) {
-
 		//killing chrome driver process if there is any process left from previous regressions
 		if(System.getProperty("os.name").contains("Windows")) {
 			try {

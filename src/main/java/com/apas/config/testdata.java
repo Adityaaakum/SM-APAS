@@ -28,7 +28,7 @@ public interface testdata {
 	public static final String BPP_TREND_BOE_INDEX_FACTORS_TRANSFORMATION_RULES= "\\data\\BppTrend\\Transformation_Validation_Files\\BOE Equipment Index Factors and Percent Good Factors Sample_Transformation Rules.xlsx";
 	public static final String BPP_TREND_BOE_VALUATION_FACTORS_TRANSFORMATION_RULES= "\\data\\BppTrend\\Transformation_Validation_Files\\BOE Valuation Factors 2020_Transformation Rules.xlsx";
 	public static final String BPP_TREND_CAA_VALUATION_FACTORS_TRANSFORMATION_RULES= "\\data\\BppTrend\\Transformation_Validation_Files\\CAA Valuation Factors 2020_Transformation Rules.xlsx";
-	public static final String BPP_TREND_CALCULATOR_WITH_UPDATED_MIN_EQIP_INDEX_FACTOR = "\\data\\BppTrend\\Temp\\2020_Trend_Factors_Calculator.xlsx";
+	public static final String BPP_TREND_CALCULATOR_WITH_UPDATED_MIN_EQIP_INDEX_FACTOR = "\\data\\BppTrend\\Updated_Trend_Calculator_For_ReCalculation\\2020_Trend_Factors_Calculator.xlsx";
     
     public static final String EXEMPTION_DATA = "\\data\\Exemptions\\ExemptionData.json";
     public static final String ANNUAL_PROCESS_DATA = "\\data\\DisabledVeteran\\AnnualProcess\\DisabledVeteran_AnnualProcessData.json";

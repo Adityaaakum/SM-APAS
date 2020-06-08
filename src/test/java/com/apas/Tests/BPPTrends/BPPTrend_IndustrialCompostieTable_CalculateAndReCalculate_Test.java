@@ -214,7 +214,7 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 		//Step23: Validating the table's status on BPP Trend Setup page
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 		String statusInBppTrendSetup = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
 		objSoftAssert.assertEquals(statusInBppTrendSetup, "Calculated", "Table status on Bpp Trend Setup page post calculation");
 
@@ -237,11 +237,11 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 	 * 7. Validating the message displayed above table after ReCalculation is done
 	 * 8. Validating the presence of ReCalculate button for Calculated table:: Test Case/JIRA ID: SMAB-T195
 	 * 9. Validating the absence of Submit For Approval button:: Test Case/JIRA ID: SMAB-T442
-	 * 10. Validating the data of UI table against the Trend Calculator excel file:: Test Case/JIRA ID: SMAB-T302
+	 * 10. Validating the data of UI table against the Trend Calculator excel file:: Test Case/JIRA ID: SMAB-T302, SMAB-T164
 	 * 11. Validating the status of the table on BPP Trend Setup Page
 	 * 12. Reverting the changed settings in excel file and BPP Trend Setup page
 	 */
-	@Test(description = "SMAB-T302,SMAB-T195,SMAB-T196,SMAB-T442: Performing validation on INDUSTRIAL COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T302,SMAB-T195,SMAB-T196,SMAB-T442,SMAB-T164: Performing validation on INDUSTRIAL COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_IndustrialCompositeFactors_ReCalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -346,18 +346,22 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 							objBppTrnPg.highlightMismatchedCellOnUI(tableName, currentKey, j);
 							
 							softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' matched. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
+							softAssert.assertTrue(false, "SMAB-T164: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' matched. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
 						}
 					}
 					if(isDataMatched) {
 						softAssert.assertTrue(true, "SMAB-T302: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched with Trend Calculator data.", true);
+						softAssert.assertTrue(true, "SMAB-T164: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched with Trend Calculator data.", true);
 					}
 				} else {
 					System.setProperty("isElementHighlightedDueToFailre", "true");
 					softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched.", true);
+					softAssert.assertTrue(false, "SMAB-T164: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched.", true);
 				}
 			} else {
 				System.setProperty("isElementHighlightedDueToFailre", "true");
 				softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is present in UI table.", true);
+				softAssert.assertTrue(false, "SMAB-T164: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is present in UI table.", true);
 			}
 		}
 		

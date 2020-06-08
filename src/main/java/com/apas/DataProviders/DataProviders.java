@@ -230,11 +230,6 @@ public class DataProviders {
     public Object[][] dpLoginUser() {
         return new Object[][] { { users.BUSINESS_ADMIN } };
     }
-
-    @DataProvider(name = "variousStatusOfCompositeAndValuationTables")
-    public Object[][] dpVariousStatusOfCompositeAndValuationTables() {
-    	return new Object[][] { { "Not Calculated" }, { "Calculated" }, { "Needs Recalculation" }, {"Submitted for Approval"}, {"Approved"} };
-    }
     
     @DataProvider(name = "loginExemptionSupportStaff")
 	public Object[][] dataProviderLoginUserMethod() {
@@ -244,7 +239,19 @@ public class DataProviders {
     
 	@DataProvider(name = "rpApprasierAndBPPAuditor")
 	public Object[][] dataProviderLoginUserMethodForUser() {
-		return new Object[][] { { users.RP_APPRAISER }, { users.BPP_AUDITOR }};
+		return new Object[][] { { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
 	}
-    
+
+	/**
+	 * Return different status of composite and valuation factor tables
+	 */
+    @DataProvider(name = "variousStatusOfCompositeTablesBeforeSubmitting")
+    public Object[][] dpVariousStatusOfCompositeTables() {
+    	return new Object[][] { { "Not Calculated" }, { "Calculated" } };
+    }
+
+    @DataProvider(name = "variousStatusOfCompositeAndValuationTables")
+    public Object[][] dpVariousStatusOfCompositeAndValuationTables() {
+    	return new Object[][] { { "Not Calculated" }, { "Calculated" }, { "Needs Recalculation" }, {"Submitted for Approval"}, {"Approved"} };
+    }
 }

@@ -218,7 +218,7 @@ public class BPPTrend_CommercialCompostieTable_CalculateAndReCalculate_Test exte
 		//Step23: Validating the table's status on BPP Trend Setup page
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 		String statusInBppTrendSetup = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
 		objSoftAssert.assertEquals(statusInBppTrendSetup, "Calculated", "Table status on Bpp Trend Setup page post calculation");
 

@@ -487,7 +487,6 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 			boolean isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(10, tableName);
 			softAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T174: For User '"+ loginUser +"': Calcuate button is not visible");
 			softAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T175: For User '"+ loginUser +"': Calcuate button is not visible");
-			softAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T247: For User '"+ loginUser +"': Calcuate button is not visible");
 		}
 		softAssert.assertAll();
 		objApasGenericFunctions.logout();
@@ -752,7 +751,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 
 		//Step4: Clicking on BPP Trend Setup name
 		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 		
 		//Step5: Validating absence of Edit pencil icon to edit table status on BPP Trend Setup page
 		List<String> tableNamesOnBppTrendSetupPage = new ArrayList<String>();
@@ -784,7 +783,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 
 		//Step11: Clicking on BPP Trend Setup name
 		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 		
 		//Step12: Validating absence of Edit pencil icon to edit table status on BPP Trend Setup page
 		for(String tableName : tableNamesOnBppTrendSetupPage) {
@@ -814,7 +813,7 @@ public class BppTrendSecurityAndSharingTest extends TestBase {
 		objApasGenericFunctions.selectAllOptionOnGrid();
 
 		//Step3: Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 		
 		/**
 		 * Step4: Clicking show more drop down and validating absence of following

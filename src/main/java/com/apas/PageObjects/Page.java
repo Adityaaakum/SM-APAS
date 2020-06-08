@@ -306,7 +306,8 @@ public class Page {
 
 		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", elem);		
 		elem.clear();
-		elem.sendKeys(Keys.chord(Keys.CONTROL,"a", Keys.DELETE));
+		elem.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+		elem.sendKeys(Keys.BACK_SPACE);
 		elem.sendKeys(value);
 		Thread.sleep(2000);
 	}
@@ -871,6 +872,8 @@ public class Page {
 				element = wait.until(ExpectedConditions.visibilityOf(element));
 				return element;
 			} catch (Exception ex) {
+				System.out.println("Re-Checking Element");
+
 				return null;
 			}
 		} else {
@@ -896,6 +899,25 @@ public class Page {
 		return elements;
 	}
 
+	/**
+	 * Function will wait until to Max timeout until the WebElement is located.
+	 * @param: Takes xpath to locate element, time out in seconds, pooling time in seconds
+	 * @return: Returns the element
+	 */
+	public WebElement waitUntilElementIsPresent(int timeOutInSec, final String xpath){
+	    Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(timeOutInSec))
+	    		.pollingEvery(Duration.ofSeconds(500))
+	    		.ignoring(NoSuchElementException.class)
+	    		.ignoring(StaleElementReferenceException.class);
+
+	    WebElement element = wait.until(new Function<WebDriver, WebElement>() {
+	        public WebElement apply(WebDriver driver) {
+	            return driver.findElement(By.xpath(xpath));
+	        }
+	    });
+	    return element;
+	};
+	
 	/**
 	 * Function will wait until to Max timeout until the WebElement is located.
 	 * @param: Takes xpath to locate element, time out in seconds, pooling time in seconds

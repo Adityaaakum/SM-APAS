@@ -284,8 +284,10 @@ public class ApasGenericFunctions extends TestBase{
     public void selectAllOptionOnGrid() throws Exception {
         String currentlyVisibleOption = objPage.getElementText(objApasGenericPage.currenltySelectViewOption);
         if(!(currentlyVisibleOption.equalsIgnoreCase("All"))) {
-            objPage.Click(objApasGenericPage.selectListViewIcon);
-            objPage.Click(objApasGenericPage.allOption);
+        	objApasGenericPage.waitForElementToBeClickable(objApasGenericPage.selectListViewIcon, 10);
+        	objPage.Click(objApasGenericPage.selectListViewIcon);
+        	objApasGenericPage.waitForElementToBeClickable(objApasGenericPage.allOption, 10);
+        	objPage.Click(objApasGenericPage.allOption);
 
             objPage.waitForElementToBeVisible(objApasGenericPage.pinIcon, 10);
             objPage.waitForElementToBeClickable(objApasGenericPage.pinIcon, 10);
