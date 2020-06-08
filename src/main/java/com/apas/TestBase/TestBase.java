@@ -44,6 +44,8 @@ public class TestBase extends BrowserDriver {
 				envURL = CONFIG.getProperty("URL_sit");
 			} else if (region.equalsIgnoreCase("uat")) {
 				envURL = CONFIG.getProperty("URL_uat");
+			} else if (region.equalsIgnoreCase("preuat")) {
+				envURL = CONFIG.getProperty("URL_preuat");
 			}
 			ldriver.get(envURL);
 

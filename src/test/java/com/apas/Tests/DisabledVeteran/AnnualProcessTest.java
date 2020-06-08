@@ -92,7 +92,7 @@ public class AnnualProcessTest extends TestBase{
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Selecting 'All' List View
-		objApasGenericFunctions.selectListView("All");
+		objApasGenericFunctions.displayRecords("All");
 		
 		//Step4: Delete current Roll Year's RPSL if it already exists	
 		String strRollYear = dataMap1.get("Roll Year Settings");
@@ -170,7 +170,7 @@ public class AnnualProcessTest extends TestBase{
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Selecting 'All' List View
-		objApasGenericFunctions.selectListView("All");
+		objApasGenericFunctions.displayRecords("All");
 		
 		//Step4: Delete current Roll Year's RPSL if it already exists	
 		String strRollYear = dataMap1.get("Roll Year Settings");

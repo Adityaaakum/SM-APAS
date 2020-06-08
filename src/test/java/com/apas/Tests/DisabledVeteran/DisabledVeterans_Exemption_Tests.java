@@ -1,11 +1,9 @@
 package com.apas.Tests.DisabledVeteran;
 
 import java.util.Map;
-
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.Assertions.SoftAssertion;
@@ -25,8 +23,6 @@ import com.apas.config.testdata;
 import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
-	
-    
 
 public class DisabledVeterans_Exemption_Tests extends TestBase implements testdata, modules, users{
 
@@ -42,11 +38,9 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	String exemptionFilePath;
 	ApasGenericPage objApasGenericPage;
 	BuildingPermitPage objBuildingPermitPage;
-	
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
-		
 		if(driver==null) {
 			setupTest();
 			driver = BrowserDriver.getBrowserInstance();
@@ -66,68 +60,65 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		objBuildingPermitPage=new BuildingPermitPage(driver);
 
 	}
-	
-	
-	
+
 	/**
 	 below test case is for business validations for Exemption fields
 	 * @throws Exception 
 	 */
-	@Test(description = "SMAB-T488,SMAB-T491,SMAB-T492,SMAB-T493,SMAB-T495,SMAB-T496:Future dates Error Messages for date Fields",dataProvider="loginExemptionSupportStaff" ,dataProviderClass = DataProviders.class, groups = {
-			"smoke", "regression","DisabledVeteranExemption"})
-	public void verify_Disabledveteran_FutureDatesErrorMessagesWhileCreatingExemption(String loginUser) throws Exception
-	{
+	@Test(description = "SMAB-T488,SMAB-T491,SMAB-T492,SMAB-T493,SMAB-T495,SMAB-T496:Future dates Error Messages for date Fields",dataProvider="loginExemptionSupportStaff" ,dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption"})
+	public void verify_DisabledVeteran_FutureDatesErrorMessagesWhileCreatingExemption(String loginUser) throws Exception {
 		
-			Map<String, String> fieldData = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
-			
-			String futureDate=DateUtil.getFutureORPastDate(java.time.LocalDate.now().toString(), 2, "yyyy-MM-dd");	        
-			String endDateGreaterThanUSDVADate=DateUtil.getFutureORPastDate(java.time.LocalDate.now().toString(), 5, "yyyy-MM-dd");
-			//Step1: Login to the APAS application using the credentials passed through data provider
-			apasGenericObj.login(loginUser);
-			
-			//Step2: Opening the Exemption Module
-			apasGenericObj.searchModule(EXEMPTIONS);
-			
-			objPage.Click(exemptionPageObj.newExemptionButton);
-			
-			//Step3: selecting mandatory details before verifying error message
-			apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.apn,fieldData.get("APN"));
-			apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.claimantName,fieldData.get("ClaimantName"));
-			objPage.enter(exemptionPageObj.claimantSSN, fieldData.get("ClaimantSSN"));
-			
-			//step4:
-			/**verifying 'Date Application Received','Date Acquire Property','Date of Death Veteran',
-			 'Date occupied/Intend to occupy Property','Date Move From Prior Residence',
-			 'Effective Date of 100% USDVA Rating','Date of Notice of 100% Rating', can not be future dates
-			 **/
-			ReportLogger.INFO("Verifying all entered date fields show future date error messages");
-			objPage.enter(exemptionPageObj.dateApplicationReceived,futureDate);
-			objPage.enter(exemptionPageObj.dateOfDeathOfVeteran,futureDate);
-			objPage.enter(exemptionPageObj.veteranName, fieldData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
-			objPage.enter(exemptionPageObj.veteranSSN, fieldData.get("VeteranSSN"));
-			objPage.enter(exemptionPageObj.dateAquiredProperty,futureDate);
-			objPage.enter(exemptionPageObj.dateOccupyProperty,futureDate);
-			objPage.enter(exemptionPageObj.effectiveDateOfUSDVA,futureDate);
-			objPage.enter(exemptionPageObj.dateOfNotice,futureDate);
-			apasGenericObj.selectMultipleValues(fieldData.get("BasisForClaim"), "Basis for Claim");
-			objPage.enter(exemptionPageObj.endDateOfRating,endDateGreaterThanUSDVADate);
-			apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, fieldData.get("Qualification"));
-			objPage.Click(ExemptionsPage.saveButton);
-			Thread.sleep(5000);
-			//ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying all entered fields show future date error messages");
-			
-			String expected=" can't be a future date";
-			softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date Application Received"),"Date Application Received".concat(expected),"SMAB-T491: Verify Application Date can't be a Future Date");
-			softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date of Death of Veteran"),"Date of Death of Veteran".concat(expected),"SMAB-T494: Verify Date Of death of veteran Property can't be a Future Date");
-			softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date Acquired Property"),"Date Acquired Property".concat(expected),"SMAB-T492: Verify Date Acquired Property can't be a Future Date");
-			softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date Occupied/Intend to Occupy Property"),"Date Occupied/Intend to Occupy Property".concat(expected),"SMAB-T493: Verify Date Occupy Property can't be a Future Date");
-			softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Effective Date of 100% USDVA Rating"),"Effective Date of 100% USDVA Rating".concat(expected),"SMAB-T496: Verify Effective Date of 100% USDVA Rating can't be a Future Date");
-			softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date of Notice of 100% Rating"),"Date of Notice of 100% Rating".concat(expected),"SMAB-T495: Verify Date of notice of 100% rating can't be a Future Date");
-			softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("End Date of Rating"),"End Date of Rating".concat(expected),"SMAB-T488: Verify End Date of rating can't be a Future Date");
-			objPage.Click(objApasGenericPage.crossButton);
+		Map<String, String> fieldData = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
+		fieldData.put("ClaimantName",exemptionPageObj.fetchAssesseeName());
 
-			apasGenericObj.logout();
-		
+		String futureDate=DateUtil.getFutureORPastDate(java.time.LocalDate.now().toString(), 2, "yyyy-MM-dd");
+		String endDateGreaterThanUSDVADate=DateUtil.getFutureORPastDate(java.time.LocalDate.now().toString(), 5, "yyyy-MM-dd");
+		//Step1: Login to the APAS application using the credentials passed through data provider
+		apasGenericObj.login(loginUser);
+
+		//Step2: Opening the Exemption Module
+		apasGenericObj.searchModule(EXEMPTIONS);
+
+		objPage.Click(exemptionPageObj.newExemptionButton);
+
+		//Step3: selecting mandatory details before verifying error message
+		apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.apn,exemptionPageObj.fetchActiveAPN());
+		apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.claimantName,fieldData.get("ClaimantName"));
+		objPage.enter(exemptionPageObj.claimantSSN, fieldData.get("ClaimantSSN"));
+
+		//step4:
+		/**verifying 'Date Application Received','Date Acquire Property','Date of Death Veteran',
+		 'Date occupied/Intend to occupy Property','Date Move From Prior Residence',
+		 'Effective Date of 100% USDVA Rating','Date of Notice of 100% Rating', can not be future dates
+		 **/
+		ReportLogger.INFO("Verifying all entered date fields show future date error messages");
+		objPage.enter(exemptionPageObj.dateApplicationReceived,futureDate);
+		objPage.enter(exemptionPageObj.dateOfDeathOfVeteran,futureDate);
+		objPage.enter(exemptionPageObj.veteranName, fieldData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
+		objPage.enter(exemptionPageObj.veteranSSN, fieldData.get("VeteranSSN"));
+		objPage.enter(exemptionPageObj.dateAquiredProperty,futureDate);
+		objPage.enter(exemptionPageObj.dateOccupyProperty,futureDate);
+		objPage.enter(exemptionPageObj.effectiveDateOfUSDVA,futureDate);
+		objPage.enter(exemptionPageObj.dateOfNotice,futureDate);
+		apasGenericObj.selectMultipleValues(fieldData.get("BasisForClaim"), "Basis for Claim");
+		objPage.enter(exemptionPageObj.endDateOfRating,endDateGreaterThanUSDVADate);
+		apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, fieldData.get("Qualification"));
+		objPage.Click(ExemptionsPage.saveButton);
+		Thread.sleep(5000);
+		//ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying all entered fields show future date error messages");
+
+		String expected=" can't be a future date";
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date Application Received"),"Date Application Received".concat(expected),"SMAB-T491: Verify Application Date can't be a Future Date");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date of Death of Veteran"),"Date of Death of Veteran".concat(expected),"SMAB-T494: Verify Date Of death of veteran Property can't be a Future Date");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date Acquired Property"),"Date Acquired Property".concat(expected),"SMAB-T492: Verify Date Acquired Property can't be a Future Date");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date Occupied/Intend to Occupy Property"),"Date Occupied/Intend to Occupy Property".concat(expected),"SMAB-T493: Verify Date Occupy Property can't be a Future Date");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Effective Date of 100% USDVA Rating"),"Effective Date of 100% USDVA Rating".concat(expected),"SMAB-T496: Verify Effective Date of 100% USDVA Rating can't be a Future Date");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date of Notice of 100% Rating"),"Date of Notice of 100% Rating".concat(expected),"SMAB-T495: Verify Date of notice of 100% rating can't be a Future Date");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("End Date of Rating"),"End Date of Rating".concat(expected),"SMAB-T488: Verify End Date of rating can't be a Future Date");
+		objPage.Click(objApasGenericPage.crossButton);
+
+		apasGenericObj.logout();
+
 	}
 	
 	
@@ -136,6 +127,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	public void verify_Disabledveteran_BusinessValidationsForExemptionFields(String loginUser) throws Exception
 	{
 			Map<String, String> businessValidationdata = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
+			businessValidationdata.put("ClaimantName",exemptionPageObj.fetchAssesseeName());
 			
 			//Step1: Login to the APAS application using the credentials passed through data provider
 			apasGenericObj.login(loginUser);
@@ -146,7 +138,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			objPage.Click(exemptionPageObj.newExemptionButton);
 			
 			//Step3: selecting mandatory details before verifying error message
-			apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.apn,businessValidationdata.get("APN"));
+			apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.apn,exemptionPageObj.fetchActiveAPN());
 			objPage.enter(exemptionPageObj.dateApplicationReceived,businessValidationdata.get("DateApplicationReceived"));
 			apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.claimantName,businessValidationdata.get("ClaimantName"));
 			objPage.enter(exemptionPageObj.claimantSSN, businessValidationdata.get("ClaimantSSN"));

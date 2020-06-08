@@ -45,7 +45,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 	ParcelsPage parcelObj;
 	
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
 		
 		if(driver==null) {
