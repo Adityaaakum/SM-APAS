@@ -43,5 +43,13 @@
 		"DV Annual Low Income Due Date": "2/15/2022",
 		"DV Annual Low Income Due Date2": "12/12/2022"		
        }
-
+	"DataToCreateRPSLEntryForValidation": {
+		"Roll Year Settings": "2023",
+		"Status": "Yet to submit for Approval",
+		"DV Low Income Exemption Amount": "209156",
+		"DV Basic Exemption Amount": "139437",
+		"DV Low Income Household Limit Amount" : "56789",
+		"DV Annual Low Income Due Date": "2/15/2023",
+		"DV Annual Low Income Due Date2": "12/12/2023"		
+       }
 }
