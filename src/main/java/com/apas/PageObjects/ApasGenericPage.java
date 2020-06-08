@@ -19,7 +19,7 @@ public class ApasGenericPage extends Page {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//one-app-launcher-header/button[@class = 'slds-button']")
+	@FindBy(xpath = "//one-app-launcher-header/button[contains(@class,'slds-button')]")
 	public WebElement appLauncher;
 	
 	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items')]")
@@ -34,7 +34,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//div[@role='combobox']//div[@aria-label='Items']/p")
 	public WebElement itemsListBox;
 
-	@FindBy(xpath = "//a[@role='button'][@title='Select List View']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//a[@role='button'][@title='Select List View']")
 	public WebElement selectListViewButton;
 
 	@FindBy(xpath = "//a[@role='option']//span[text()='All' or text()='All Active Parcels']")
@@ -129,7 +129,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
 		enter(element, value);
-		String xpathStr = "//*[@role='option']//*[@title='" + value + "']";
+		String xpathStr = "//*[@role='option']//*[@title='" + value + "'] | //div[@title='" + value + "']";
 		Click(driver.findElement(By.xpath(xpathStr)));
 		}
 

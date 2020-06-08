@@ -2,9 +2,11 @@ package com.apas.Listeners;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 
+import com.apas.Reports.ReportLogger;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -29,13 +31,13 @@ public class SuiteListener extends TestBase implements ITestListener {
 
 	public ExtentReports extent;
 	ExtentTest upTest;
-	Util objUtils = new Util();
-
+	Util objUtils = new Util();		
 	protected String getStackTrace(Throwable t) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		t.printStackTrace(pw);
 		return sw.toString();
+		
 	}
 
 	/**
@@ -46,7 +48,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 	public void onStart(ITestContext context) {
 		//killing chrome driver process if there is any process left from previous regressions
 		if(System.getProperty("os.name").contains("Windows")) {
-			try {
+			try {				
 				Process process = Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe /T");
 				process.destroy();
 			} catch (IOException e) {
@@ -124,6 +126,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 			ExtentTestManager.getTest().log(LogStatus.PASS, "Test Case has been PASSED.");
 		} else{
 			ExtentTestManager.getTest().log(LogStatus.FAIL, "Test Case has been FAILED.");
+			failedMethods.add(result.getMethod().getMethodName());
 		}
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 		ExtentManager.getExtentInstance().flush();
@@ -136,7 +139,6 @@ public class SuiteListener extends TestBase implements ITestListener {
 	@Override
 	public void onTestFailure(ITestResult result) {
 		System.out.println("Method Failed:" + result.getMethod().getMethodName());
-
 		try {
 			//Updating the test case status for Jira
 			String testCaseKeys =  JiraAdaptavistStatusUpdate.extractTestCaseKey(System.getProperty("description"));
@@ -177,10 +179,10 @@ public class SuiteListener extends TestBase implements ITestListener {
 	@Override
 	public void onTestSkipped(ITestResult result) {
 		String methodName = result.getMethod().getMethodName();
-		System.out.println("Method Skipped : " + methodName);
 		upTest = ExtentTestManager.startTest(methodName, "Description: " + result.getMethod().getDescription());
-
-		ExtentTestManager.getTest().log(LogStatus.SKIP, "Test skipped : " + result.getThrowable());
+        ReportLogger.SKIP("Method Skipped : " + methodName);
+        ReportLogger.SKIP("Test skipped : " + result.getThrowable());
+        ReportLogger.SKIP(methodName + "Method Skipped because following parent method failed on which this method depends : " + result.getMethod().getMethodsDependedUpon());
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 		ExtentManager.getExtentInstance().flush();
 		TearDown();

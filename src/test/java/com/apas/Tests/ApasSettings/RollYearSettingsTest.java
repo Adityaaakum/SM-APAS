@@ -1,4 +1,4 @@
-package com.apas.Tests.DisabledVeteran;
+package com.apas.Tests.ApasSettings;
 
 import java.io.IOException;
 import java.util.List;
@@ -84,7 +84,7 @@ public class RollYearSettingsTest extends TestBase {
 	 -Create Roll Year record for Future Year
 	 **/
 	
-	@Test(description = "SMAB-T638: Disabled Veterans- Verify that System Admins are able to CRED(Create/Read/Edit/Delete) the 'Roll Year Settings' record", groups = {"smoke", "Regression", "DisabledVeteran"}, dataProvider = "loginUsers", alwaysRun = true)
+	@Test(description = "SMAB-T638: Disabled Veterans- Verify that System Admins are able to CRED(Create/Read/Edit/Delete) the 'Roll Year Settings' record", groups = {"smoke", "regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
 	public void createFutureRollYearRecord(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -139,7 +139,7 @@ public class RollYearSettingsTest extends TestBase {
 	 -Create Roll Year record for past year
 	 **/
 	
-	@Test(description = "SMAB-T638: Disabled Veterans- Verify that System Admins are able to CRED(Create/Read/Edit/Delete) the 'Roll Year Settings' record", groups = {"Regression", "DisabledVeteran"}, dataProvider = "loginUsers", alwaysRun = true)
+	@Test(description = "SMAB-T638: Disabled Veterans- Verify that System Admins are able to CRED(Create/Read/Edit/Delete) the 'Roll Year Settings' record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
 	public void createPastRollYearRecord(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -201,9 +201,9 @@ public class RollYearSettingsTest extends TestBase {
 	 -Edit a Roll Year record
 	 **/
 	
-	@Test(description = "SMAB-T638: Disabled Veterans- Verify that System Admins are able to CRED(Create/Read/Edit/Delete) the 'Roll Year Settings' record", groups = {"Regression", "DisabledVeteran"}, dependsOnMethods = {"createPastRollYearRecord"}, dataProvider = "loginUsers", alwaysRun = true)
+	@Test(description = "SMAB-T638: Disabled Veterans- Verify that System Admins are able to CRED(Create/Read/Edit/Delete) the 'Roll Year Settings' record", groups = {"regression","DisabledVeteranExemption"}, dependsOnMethods = {"createPastRollYearRecord"}, dataProvider = "loginUsers")
 	public void editPastRollYearRecord(String loginUser) throws Exception {
-	
+	if(!failedMethods.contains("createPastRollYearRecord")) {
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
 		
@@ -256,6 +256,10 @@ public class RollYearSettingsTest extends TestBase {
 		
 		objApasGenericFunctions.logout();
 	}
+	else {
+		softAssert.assertTrue(false, "This Test depends on 'createPastRollYearRecord' which got failed");	
+	}
+	}
 
 	
 	/**
@@ -263,7 +267,7 @@ public class RollYearSettingsTest extends TestBase {
 	-Field level validations (error messages)
 	 **/
 	
-	@Test(description = "SMAB-T638: Disabled Veterans- Verify that System Admins are able to CRED(Create/Read/Edit/Delete) the 'Roll Year Settings' record, SMAB-T1283: Disabled Veterans - Verify the layout changes on Roll Year Settings Page", groups = {"Regression", "DisabledVeteran"}, dataProvider = "loginUsers", alwaysRun = true)
+	@Test(description = "SMAB-T638: Disabled Veterans- Verify that System Admins are able to CRED(Create/Read/Edit/Delete) the 'Roll Year Settings' record, SMAB-T1283: Disabled Veterans - Verify the layout changes on Roll Year Settings Page", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
 	public void fieldLevelValidationsInRollYearSettings(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -338,7 +342,7 @@ public class RollYearSettingsTest extends TestBase {
 	 -Create Roll Year record for past year
 	 **/
 	
-	@Test(description = "SMAB-T638: Disabled Veterans- Verify that System Admins are able to CRED(Create/Read/Edit/Delete) the 'Roll Year Settings' record", groups = {"Regression", "DisabledVeteran"}, dataProvider = "loginUsers1", alwaysRun = true)
+	@Test(description = "SMAB-T638: Disabled Veterans- Verify that System Admins are able to CRED(Create/Read/Edit/Delete) the 'Roll Year Settings' record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers1")
 	public void viewRollYearRecord(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -373,7 +377,7 @@ public class RollYearSettingsTest extends TestBase {
 	 Current Roll Year can have other instances linked like CPI factor and Exemption & Penalty Calculations due to which current Roll Year record can't be deleted and created again
 	 **/
 	
-	/*@Test(description = "SMAB-T638: Disabled Veterans- Verify that System Admins are able to CRED(Create/Read/Edit/Delete) the 'Roll Year Settings' record", groups = {"Regression", "DisabledVeteran"}, dataProvider = "loginUsers", alwaysRun = true)
+	/*@Test(description = "SMAB-T638: Disabled Veterans- Verify that System Admins are able to CRED(Create/Read/Edit/Delete) the 'Roll Year Settings' record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
 	public void createCurrentRollYearRecord(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider

@@ -23,6 +23,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.config.modules;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
@@ -62,7 +64,7 @@ public class ExemptionsPage extends ApasGenericPage {
 	public WebElement cancelButton;
 	
 	
-	@FindBy(xpath = "//a[@title='New']/div[@title='New'][1]")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//a[@title = 'New']")
 	public WebElement newExemptionButton;
 
 	@FindBy(xpath = "//input[@title='Search Parcels']")
@@ -480,12 +482,12 @@ public class ExemptionsPage extends ApasGenericPage {
 
 public String createNewExemption(Map<String,String> newExemptionData) throws Exception {
 	// TODO Auto-generated method stub
-	
+	String assesseeName = fetchAssesseeName();
 	
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Entering/Selecting values for New Exemption record");
-	apasGenericObj.searchAndSelectFromDropDown(apn,newExemptionData.get("APN"));
+	apasGenericObj.searchAndSelectFromDropDown(apn,fetchActiveAPN());
 	objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-	apasGenericObj.searchAndSelectFromDropDown(claimantName,newExemptionData.get("ClaimantName"));
+	apasGenericObj.searchAndSelectFromDropDown(claimantName,assesseeName);
 	objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
 	objPage.enter(spouseName, newExemptionData.get("SpouseName"));
 	objPage.enter(spouseSSN, newExemptionData.get("SpouseSSN"));
@@ -521,13 +523,12 @@ public String createNewExemption(Map<String,String> newExemptionData) throws Exc
 
 
 public String createNewExemptionWithMandatoryData(Map<String, String> newExemptionData) throws Exception {
-
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Entering/Selecting values for New Exemption record");
-	String exemptionName = null;
-	
-		apasGenericObj.searchAndSelectFromDropDown(apn,newExemptionData.get("APN"));
+
+		String assesseeName = fetchAssesseeName();
+		apasGenericObj.searchAndSelectFromDropDown(apn,fetchActiveAPN());
 		objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-		apasGenericObj.searchAndSelectFromDropDown(claimantName,newExemptionData.get("ClaimantName"));
+		apasGenericObj.searchAndSelectFromDropDown(claimantName,assesseeName);
 		objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
 		objPage.enter(veteranName, newExemptionData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 		objPage.enter(veteranSSN, newExemptionData.get("VeteranSSN"));
@@ -537,21 +538,17 @@ public String createNewExemptionWithMandatoryData(Map<String, String> newExempti
 		objPage.enter(dateOfNotice, newExemptionData.get("DateOfNotice"));
 		apasGenericObj.selectMultipleValues(newExemptionData.get("BasisForClaim"), "Basis for Claim");
 		apasGenericObj.selectFromDropDown(qualification, newExemptionData.get("Qualification"));
-		if(newExemptionData.get("Qualification").contains("Not Qualified"))
-		{
-			apasGenericObj.selectFromDropDown(reasonNotQualified, newExemptionData.get("ReasonForNotQualified"));	
-			
+		if(newExemptionData.get("Qualification").contains("Not Qualified")) {
+			apasGenericObj.selectFromDropDown(reasonNotQualified, newExemptionData.get("ReasonForNotQualified"));
 		}
-		if(newExemptionData.containsKey("EnddateOfRatingNeeded"))
-		{
+		if(newExemptionData.containsKey("EnddateOfRatingNeeded")) {
 			objPage.enter(endDateOfRating, newExemptionData.get("EnddateOfRatingNeeded"));
 			apasGenericObj.selectFromDropDown(endRatingReason, newExemptionData.get("EndRatingReason"));
-			
 		}
 		objPage.Click(saveButton);
 		//checkIfDuplicateExemption(newExemptionData);
 		objPage.locateElement("//div[@class='windowViewMode-normal oneContent active lafPageHost']//div[contains(.,'Date Application Received')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text", 4);
-		exemptionName=newExemptionNameAftercreation.getText();
+		String exemptionName=newExemptionNameAftercreation.getText();
 		System.out.println("Created Exemption:: "+exemptionName);
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Created "+exemptionName+" Exemption with mandatory data");
 	
@@ -702,9 +699,10 @@ public void waitForExemptionScreenToLoad() {
  */
 
 public void enterNonQualifiedExemptionData(Map<String, String> dataMap) throws Exception {
+	String assesseeName = fetchAssesseeName();
 	searchAndSelectFromDropDown(apn, dataMap.get("APN"));
 	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
-	searchAndSelectFromDropDown(claimantName, dataMap.get("Claimant Name"));
+	searchAndSelectFromDropDown(claimantName, assesseeName);
 	enter(claimantSSN, dataMap.get("Claimant SSN"));
 	enter(nameOfVeteran, dataMap.get("Veteran Name"));
 	enter(veteranSSN, dataMap.get("Veteran SSN"));
@@ -723,9 +721,10 @@ public void enterNonQualifiedExemptionData(Map<String, String> dataMap) throws E
  */
 
 public void enterExemptionDataWithMandatoryField(Map<String, String> dataMap) throws Exception {
+	String assesseeName = fetchAssesseeName();
 	searchAndSelectFromDropDown(apn, dataMap.get("APN"));
 	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
-	searchAndSelectFromDropDown(claimantName, dataMap.get("Claimant Name"));
+	searchAndSelectFromDropDown(claimantName, assesseeName);
 	enter(claimantSSN, dataMap.get("Claimant SSN"));
 	enterDate(dateAquiredProperty, dataMap.get("Date Acquired Property"));
 	enterDate(dateOccupiedProperty, dataMap.get("Date Occupied/Intend to Occupy Property"));
@@ -741,9 +740,10 @@ public void enterExemptionDataWithMandatoryField(Map<String, String> dataMap) th
  */
 
 public void enterExemptionData(Map<String, String> dataMap) throws Exception {
+	String assesseeName = fetchAssesseeName();
 	searchAndSelectFromDropDown(apn, dataMap.get("APN"));
 	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
-	searchAndSelectFromDropDown(claimantName, dataMap.get("Claimant Name"));
+	searchAndSelectFromDropDown(claimantName, assesseeName);
 	enter(claimantSSN, dataMap.get("Claimant SSN"));
 	enter(nameOfVeteran, dataMap.get("Veteran Name"));
 	enter(veteranSSN, dataMap.get("Veteran SSN"));
@@ -761,9 +761,10 @@ public void enterExemptionData(Map<String, String> dataMap) throws Exception {
  */
 
 public void enterExemptionDataWithEndDateOfRating(Map<String, String> dataMap) throws Exception {
+	String assesseeName = fetchAssesseeName();
 	searchAndSelectFromDropDown(apn, dataMap.get("APN"));
 	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
-	searchAndSelectFromDropDown(claimantName, dataMap.get("Claimant Name"));
+	searchAndSelectFromDropDown(claimantName, assesseeName);
 	enter(claimantSSN, dataMap.get("Claimant SSN"));
 	enter(nameOfVeteran, dataMap.get("Veteran Name"));
 	enter(veteranSSN, dataMap.get("Veteran SSN"));
@@ -1130,7 +1131,7 @@ public void searchAndSelectExemption(String exemptionName) throws Exception
 	apasGenericObj.searchModule(modules.EXEMPTION);
 	
 	// Step2: Selecting List View 'All'
-	apasGenericObj.selectListView("All");
+	apasGenericObj.displayRecords("All");
 	
 	//Step3: Fetching value of Exemption created above
 	String value = exemptionName;
@@ -1153,5 +1154,26 @@ public String getExemptionNameFromSuccessAlert() throws Exception {
 	System.out.println("InActive Exemption Name after split:"+exemptionName);
 	return exemptionName;
 }
+
+
+public String fetchAssesseeName() throws Exception {
+       SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+       String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type = 'Person' OR Type = 'Business'";
+       HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
+       String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
+       ReportLogger.INFO("Assessee Name fetched through Salesforce API : " + assesseeName);
+       return assesseeName;
+   }
+
+   /*
+   This method is used to return the first active APN from Salesforce
+   @return: returns the active APN
+    */
+	public String fetchActiveAPN() {
+		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+		String queryForID = "SELECT Name FROM Parcel__c where Status__c='Active' Limit 1";
+		HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
+		return response.get("Name").get(0);
+	}
 
 }
