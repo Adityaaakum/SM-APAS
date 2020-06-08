@@ -21,6 +21,7 @@ import com.apas.JiraStatusUpdate.JiraAdaptavistStatusUpdate;
 import com.apas.Reports.ExtentManager;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.Util;
 import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;

@@ -16,6 +16,8 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.LoginPage;
@@ -82,8 +84,12 @@ public class ApasGenericFunctions extends TestBase{
 	 */
 	public void logout() throws IOException{
 		//Logging out of the application
+		objPage.waitForElementToBeClickable(objLoginPage.imgUser, 10);
+
 		ReportLogger.INFO("User is getting logged out of the application");
+
 		objPage.Click(objLoginPage.imgUser);
+		objPage.waitForElementToBeClickable(objLoginPage.lnkLogOut, 10);
 		objPage.Click(objLoginPage.lnkLogOut);
 		objPage.waitForElementToBeVisible(objLoginPage.txtpassWord,30);
 	}
@@ -253,9 +259,14 @@ public class ApasGenericFunctions extends TestBase{
     public void selectAllOptionOnGrid() throws Exception {
         String currentlyVisibleOption = objPage.getElementText(objApasGenericPage.currenltySelectViewOption);
         if(!(currentlyVisibleOption.equalsIgnoreCase("All"))) {
-            objPage.Click(objApasGenericPage.selectListViewIcon);
-            objPage.Click(objApasGenericPage.allOption);
-            objPage.Click(objApasGenericPage.pinIcon);
+        	objApasGenericPage.waitForElementToBeClickable(objApasGenericPage.selectListViewIcon, 10);
+        	objPage.Click(objApasGenericPage.selectListViewIcon);
+        	objApasGenericPage.waitForElementToBeClickable(objApasGenericPage.allOption, 10);
+        	objPage.Click(objApasGenericPage.allOption);
+
+            objPage.waitForElementToBeVisible(objApasGenericPage.pinIcon, 10);
+            objPage.waitForElementToBeClickable(objApasGenericPage.pinIcon, 10);
+            objPage.clickAction(objApasGenericPage.pinIcon);
         }
     }
 

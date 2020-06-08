@@ -55,22 +55,23 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		rollYear = CONFIG.getProperty("rollYear");
 	}
 
-	/*@AfterMethod
+	@AfterMethod
 	public void afterMethod() throws Exception {
 		//objApasGenericFunctions.logout();
-	}*/
+	}
 	
 	/**
 	 * DESCRIPTION: Performing following for table: <SUBMITTED FOR APPROVAL TABLES>
 	 * 1. Checking status of tables on BPP Trend Setup page:: Test Case/JIRA ID: SMAB-T157
 	 * 2. Validating presence of Approve button for each table:: Test Case/JIRA ID: SMAB-T156,SMAB-T157
-	 * 3. Editing and Saving new value in commercial composite table before approving it:: Test Case/JIRA ID: SMAB-T205
+	 * 3. Editing and Saving new value in commercial composite table before approving it:: Test Case/JIRA ID: SMAB-T205, SMAB-T212
 	 * 4. Approving the tables that are submitted for approval:: Test Case/JIRA ID: SMAB-T205
 	 * 5. Validating the absence of Approval button post approving table:: Test Case/JIRA ID:SMAB-T156
-	 * 6. Validating table data is not editable once approved:: Test Case/JIRA ID: SMAB-T157
-	 * 7. Validating table status on BPP Trend Setup page post approving:: Test Case/JIRA ID:SMAB-T155
+	 * 6. Validating table data is not editable once approved:: Test Case/JIRA ID: SMAB-T157, SMAB-T212
+	 * 7. Validating CPI Factor is not editable once approved:: Test Case/JIRA ID: SMAB-T212
+	 * 8. Validating table status on BPP Trend Setup page post approving:: Test Case/JIRA ID:SMAB-T155
 	 */
-	@Test(description = "SMAB-T205,SMAB-T155,SMAB-T156,SMAB-T157,SMAB-T250: Approve calculations of valuation, composite & prop 13 tables", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T205,SMAB-T155,SMAB-T156,SMAB-T157,SMAB-T250,SMAB-T212: Approve calculations of valuation, composite & prop 13 tables", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_Approve(String loginUser) throws Exception {	
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -90,7 +91,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		objApasGenericFunctions.login(loginUser);
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 
 		String tableName;
 		for(int i = 0; i < allTablesBppTrendSetupPage.size(); i++) {
@@ -187,7 +188,6 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 				softAssert.assertEquals(cellDataBeforeEdit, cellDataAfterEdit, "SMAB-T449: Validating table data on clicking approve button without saving the edited data for "+ tableName +" table");
 			} else {
 				ExtentTestManager.getTest().log(LogStatus.INFO, "** Editing table data and clicking Approve button after saving the data **");
-				
 				//Step16: Clicking approve button to approve tab data
 				objBppTrnPg.clickApproveButton(tableName);
 				
@@ -203,13 +203,16 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 				objBppTrnPg.clickApproveButton(tableName);
 				
 				//Step19: Waiting for pop up message to display and the message displayed above table to update
-				//objBppTrnPg.waitForPopUpMsgOnApproveClick(60);
+				objBppTrnPg.waitForPopUpMsgOnApproveClick(60);
 				
 				//Step20: Validating whether updated value has been saved in the edited cell post clicking save button
 				objBppTrnPg.clickOnTableOnBppTrendPage(tableName, false);
 				editedCell = objBppTrnPg.locateCellToBeEdited(tableName);
 				int cellDataAfterEdit = Integer.valueOf(objBppTrnPg.getElementText(editedCell).split("\\n")[0]);
 				softAssert.assertTrue(cellDataBeforeEdit != cellDataAfterEdit, "SMAB-T205: Data has been updated in  approved "+ tableName +" table. Value before updating: "+ cellDataBeforeEdit + " || Value after updating: "+ cellDataAfterEdit);
+				if(tableName.equalsIgnoreCase("BPP Prop 13 Factors")) {
+					softAssert.assertTrue(cellDataBeforeEdit != cellDataAfterEdit, "SMAB-T212: Data has been updated in  approved "+ tableName +" table. Value before updating: "+ cellDataBeforeEdit + " || Value after updating: "+ cellDataAfterEdit);
+				}
 			}
 			
 			//Step22: Retrieve & Assert message displayed above table after clicking Approve button
@@ -238,7 +241,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		//Step24: Navigating to BPP Trend Setup page and checking status of the composite & valuation tables
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 		
 		for(int i = 0; i < allTablesBppTrendSetupPage.size(); i++) {
 			tableName = allTablesBppTrendSetupPage.get(i);
@@ -268,6 +271,13 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 			objBppTrnPg.Click(cellTxtBox);
 			WebElement editBtn = objBppTrnPg.locateEditButtonInFocusedCell();
 			softAssert.assertTrue((editBtn == null), "SMAB-T157: Edit button is not visible to update cell data in grid after table status is 'Approved'");
+			
+			if(tableName.equalsIgnoreCase("BPP Prop 13 Factors")) {
+				softAssert.assertTrue((editBtn == null), "SMAB-T212: Edit button is not visible to update cell data in grid after table status is 'Approved'");
+				
+				WebElement disabledCpiInputField = objBppTrnPg.locateElement("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//input[@disabled]", 10);
+				softAssert.assertTrue((disabledCpiInputField != null), "SMAB-T212: CPI Factor filed is locked for editing after table status is 'Approved'");	
+			}
 		}
 				
 		softAssert.assertAll();
