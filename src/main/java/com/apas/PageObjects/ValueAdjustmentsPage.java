@@ -1,17 +1,10 @@
 package com.apas.PageObjects;
 
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
+import com.apas.Assertions.SoftAssertion;
+import com.apas.Reports.ExtentTestManager;
+import com.apas.generic.ApasGenericFunctions;
+import com.relevantcodes.extentreports.LogStatus;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.math3.util.Precision;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -19,10 +12,15 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import com.apas.Assertions.SoftAssertion;
-import com.apas.Reports.ExtentTestManager;
-import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class ValueAdjustmentsPage extends Page {
 	
@@ -431,62 +429,6 @@ public void verifyPenltyPercantgeAndVariousAmountsForVA(String currentDate,Strin
 	
 }
 
-
-
-private void calculateExemptionAmountPenaltyAmountNetExemptionVA(WebElement va) {
-System.out.println("execeuting amoutns verifications for"+va.getText());
-	try{
-	double exemptionAmountcalculated=converToDouble(vaExemptionAmountCalculated.getText());
-	double penaltyAmountCalculated=converToDouble(vaPenaltyAmountCalculated.getText());
-	double netExemptionAmount=converToDouble(vaNetExemptionAmount.getText());
-	double rollYearBasicRefAmt=converToDouble(vaRollYearBasicRefAmount.getText());
-	double rollYearLowIncomeRefAmt=converToDouble(vaRollYearLowIncomeRefAmount.getText());
-	
-	
-	
-	String[] taxyearProratedString=vataxYearProratedPercentage.getText().split("%");
-	double taxyearProrated=Double.parseDouble(taxyearProratedString[0]);
-	String[] penaltyPercentageString=vaPenaltyPercentage.getText().split(".");
-	double penalty=Double.parseDouble(penaltyPercentageString[0]);
-	
-	double exemptionAmtCalculatedAsPerForm;	
-	double penaltyAmtCalAsPerForm;
-	double netExemptionAmtAsPerForm;
-	//DecimalFormat df = new DecimalFormat("###.###");
-	
-	
-	if(vaDeterminationType.equals("Basic Disabled Veterans Exemption"))
-	{
-		
-	exemptionAmtCalculatedAsPerForm=Precision.round( rollYearBasicRefAmt * (taxyearProrated/100) , 2);	
-	penaltyAmtCalAsPerForm= Precision.round( exemptionAmtCalculatedAsPerForm * (penalty/100) , 2);
-	netExemptionAmtAsPerForm=Precision.round( exemptionAmtCalculatedAsPerForm-penaltyAmtCalAsPerForm , 2);
-	
-	}
-	else
-	{
-	exemptionAmtCalculatedAsPerForm=Precision.round((rollYearBasicRefAmt + (rollYearLowIncomeRefAmt *((100- penalty)/100))) * (taxyearProrated/100) , 2);
-	
-	penaltyAmtCalAsPerForm=Precision.round((rollYearBasicRefAmt  *((100- penalty)/100)) * (taxyearProrated/100) , 2);
-	//netExemptionAmtAsPerForm=Precision.round(rollYearBasicRefAmt + (rollYearLowIncomeRefAmt - rollYearBasicRefAmt)*((100-penalty)/100) , 2);
-	netExemptionAmtAsPerForm=Precision.round( exemptionAmtCalculatedAsPerForm-penaltyAmtCalAsPerForm , 2);
-	}
-	
-	System.out.println("Exemption Amount calculated::"+exemptionAmountcalculated+" penalty Amount Calculated::"+penaltyAmountCalculated+" net Exemption Amount:;"+netExemptionAmount);
-	softAssert1.assertEquals(exemptionAmountcalculated, exemptionAmtCalculatedAsPerForm, "verifying exemption amount calculated for VA "+va.getText());
-	softAssert1.assertEquals(penaltyAmountCalculated, penaltyAmtCalAsPerForm, "verifying penalty amount calculated for VA "+va.getText());
-	softAssert1.assertEquals(netExemptionAmount, netExemptionAmtAsPerForm, "SMAB-T1292:verifying Net exemption amount calculated for VA "+va.getText());
-	}
-	catch(Exception e)
-	{
-		System.out.println("Error while calcaulting penalty amounts::"+e.getMessage());
-	System.out.println("Error stack trace::"+e.getStackTrace());}
-	
-}
-
-
-
-
 public double converToDouble(Object amount)
 {
 	
@@ -599,8 +541,8 @@ public int getnumberOfValueAdjustments() throws Exception {
 
 /**
  * @description: This method will return difference of no of days between 2 dates
- * @param fieldName: element from which start date is fetched
- * @param fieldName: element from which end date is fetched
+ * @param eleStartDate: element from which start date is fetched
+ * @param eleEndDate: element from which end date is fetched
  * @return : returns the difference of no of days between 2 dates
  */
 public float verifyNoOfDays(WebElement eleStartDate, WebElement eleEndDate) {

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><suite name="APAS_Automation_FailedCases_ReExecution">
-<listeners>
-<listener class-name="com.apas.Listeners.SuiteListener"/>
-<listener class-name="com.apas.Listeners.TestAnnotationListener"/>
-</listeners>
-<test name="Failed_Re_Execution">
-<classes/>
-</test>
-</suite>

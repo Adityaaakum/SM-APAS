@@ -21,7 +21,10 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//one-app-launcher-header/button[contains(@class,'slds-button')]")
 	public WebElement appLauncher;
-	
+
+	@FindBy(xpath = "//table[@role='grid']//thead/tr//th")
+	public WebElement dataGrid;
+
 	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items')]")
 	public WebElement appLauncherSearchBox;
 
