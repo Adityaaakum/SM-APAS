@@ -65,7 +65,7 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 	 2. User is not able to create duplicate Exemption limit record for any random roll year
 	 3. User is not able to create duplicate Exemption limit record for a roll year whose entry already exists	 
 	 **/
-	@Test(description = "SMAB-T536: Creation of Future Real Property Settings", dataProvider = "loginUsers", groups = {"smoke","regression","DisabledVeteranExemption"})
+	@Test(description = "SMAB-T536,SMAB-T540,SMAB-T541:Test Creation of Future Real Property Settings & duplicate creation", dataProvider = "loginUsers", groups = {"smoke","regression","DisabledVeteranExemption"})
 	public void verifyFututreRPSLCreation(String loginUser) throws Exception {
 		String strSuccessAlertMessage;
 		
@@ -119,7 +119,7 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 	 Below test case will validate that 
 	 1. User is able to create Exemption limit record for the current roll year
 	 **/
-	@Test(description = "SMAB-T535: Creating Current Roll Year's Real Property Settings",groups = {"smoke","regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
+	@Test(description = "SMAB-T535,SMAB-T539: Test Current Roll Year's RPSL creation & duplicate RPSL ",groups = {"smoke","regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
 	public void verifyCurrentYearRPSLCreation(String loginUser) throws Exception {
 		String strSuccessAlertMessage;
 		
@@ -369,15 +369,16 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 		
 		//Step6: Clicking on Save button & Verifying the RPSL record for current year after creation
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
-		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSL + "\" was created.","SMAB-T535:Verify the User is able to create Exemption limit record for the current roll year");	
+		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSL + "\" was created.","Verify the User is able to create Exemption limit record for the current roll year");	
 		
 		//Step7: Selecting module & 'All' List View
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		objApasGenericFunctions.displayRecords("All");
 				
 		//Step8: Fetching value of RPSL created in above Test case
+		
 		String value = strRPSLName;
-				
+		objApasGenericFunctions.searchRecords(strRPSLName);		
 		// Step9: Searching and selecting the RPSL for Editing
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Selecting RPSL record: '" + value + "' for editing");
 		objRPSLPage.clickShowMoreLink(value);
