@@ -832,35 +832,15 @@ public float convertToFloat(Object amount)
  * @param : rollYear for which VA will be opened
  * @throws Exception 
  */
-public String selectVAByRollYear(String rollYear) throws Exception
+public String selectVAByStartDate(String startDate) throws Exception
 {	
-	String vALinkName="";
-	Thread.sleep(3000);
-	int noOfVAs = getnumberOfValueAdjustments();  
-	System.out.println("No. of VAs are: "+noOfVAs);
-	for (int i = 1; i <=noOfVAs; i++) 
-	  { 			 				  
-		System.out.println("inside for");
-		
-		locateElement("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+i+"]//td[2]//span//span",3); 		  				  
-		WebElement startDate = driver.findElement(By.xpath("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+ i + "]//td[2]//span//span"));  
-		String startDateRY =  startDate.getText().trim();			
-		String actualRY = startDateRY.substring(4, startDateRY.length()).trim();
-		
-		if(actualRY.equals(rollYear.trim())) {
-			locateElement("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+i+"]//td[2]//span//span//..//..//preceding-sibling::th//span//a",3);
-			WebElement valueAdjustmentLink = driver.findElement(By.xpath("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+i+"]//td[2]//span//span//..//..//preceding-sibling::th//span//a"));
-			vALinkName = valueAdjustmentLink.getText();
-			
-			System.out.println("VA Link clicked is: "+ vALinkName);
-			
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Value Adjustment Link: "+ vALinkName);
-			vALinkName = valueAdjustmentLink.getText();
-			Click(valueAdjustmentLink);	
-			Thread.sleep(3000);			
-		}
-	  }
-	
+	String xpath = "//div[contains(@class,'windowViewMode-normal')]//span[contains(text(),'"+startDate+"')]//..//..//preceding-sibling::th//a";
+	waitUntilElementIsPresent(xpath,40);
+	WebElement valueAdjustmentLink = driver.findElement(By.xpath(xpath));
+	String vALinkName = valueAdjustmentLink.getText();
+	ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Value Adjustment Link: "+ vALinkName);
+	Click(valueAdjustmentLink);	
+	Thread.sleep(3000);	
 	return vALinkName;
 }
 

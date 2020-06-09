@@ -277,39 +277,47 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			//step3: creating an exemption record
 			objPage.Click(exemptionPageObj.newExemptionButton);
 			exemptionPageObj.createNewExemptionWithMandatoryData(dataToEdit);
-
+			objPage.waitForElementToBeVisible(exemptionPageObj.dateOccupyPropertyExemptionDetails, 5);	
 
 			//Step4: Updating 'Date Acquired Property' to 1/11/2020
 			ReportLogger.INFO("verifying Date Acquired Property can't be edited once record is saved");
 			apasGenericObj.editAndInputFieldData("Date Acquired Property",exemptionPageObj.dateAcquiredProperty,dataToEdit.get("DateAquiredPropertyUpdated"));
+			objPage.waitForElementToBeVisible(exemptionPageObj.genericErrorMsg, 10);
 			softAssert.assertEquals(exemptionPageObj.genericErrorMsg.getText(), "Date Acquired Property", "Verify that Date Acquired Property can't be updated generic error message beside cancel button");
 			softAssert.assertEquals(objPage.getElementText(vaPageObj.editFieldErrorMsg), dataToEdit.get("dateAcauiredErrorMessage"),"Verify that Date Acquired Property can't be updated");
 			objPage.Click(exemptionPageObj.cancelButton);
 			
 			//Step5: Updating 'Date Occupy Property' to 1/9/2020
 			ReportLogger.INFO("verifying Date Occupied/Intend to Occupy Property can't be edited once record is saved");
+		    objPage.scrollToElement(exemptionPageObj.dateApplicationReceivedExemptionDetails);
 			apasGenericObj.editAndInputFieldData("Date Occupied/Intend to Occupy Property",exemptionPageObj.dateOccupyProperty,dataToEdit.get("DateOccupyPropertyUpdated"));
+			objPage.waitForElementToBeVisible(exemptionPageObj.genericErrorMsg, 10);
 			softAssert.assertEquals(exemptionPageObj.genericErrorMsg.getText(), "Date Occupied/Intend to Occupy Property", "Verify that Date Occupied Property can't be updated generic error message beside cancel button");
 			softAssert.assertEquals(objPage.getElementText(vaPageObj.editFieldErrorMsg), dataToEdit.get("dateOccupyErrorMessage"),"Verify that Date Occupied Property can't be updated");			
 			objPage.Click(exemptionPageObj.cancelButton);
 			
 			//Step6: Updating 'Effective Date of 100% USDVA Rating' to 1/10/2020
 			ReportLogger.INFO("verifying Effective Date of 100% USDVA Rating can't be edited once record is saved");
+			objPage.scrollToElement(exemptionPageObj.dateOccupiedOnDetailPage);
 			apasGenericObj.editAndInputFieldData("Effective Date of 100% USDVA Rating",exemptionPageObj.effectiveDateOfUSDVA,dataToEdit.get("EffectiveDateOfUSDVAUpdated"));
+			objPage.waitForElementToBeVisible(exemptionPageObj.genericErrorMsg, 10);
 			softAssert.assertEquals(exemptionPageObj.genericErrorMsg.getText(), "Effective Date of 100% USDVA Rating", "Verify that Effective Date Of USDVA can't be updated generic error message beside cancel button");
 			softAssert.assertEquals(objPage.getElementText(vaPageObj.editFieldErrorMsg), dataToEdit.get("effectiveDateErrorMessage"),"Verify that effective Date can't be updated");			
 			objPage.Click(exemptionPageObj.cancelButton);
 			
 			//Step7: Updating 'Date of Notice of Rating' to 1/10/2020
 			ReportLogger.INFO("verifying Date of Notice of 100% Rating can't be edited once record is saved");
+			objPage.scrollToElement(exemptionPageObj.dateOccupiedOnDetailPage);
 			apasGenericObj.editAndInputFieldData("Date of Notice of 100% Rating",exemptionPageObj.dateOfNoticeOfRating,dataToEdit.get("DateOfNoticeUpdated"));
+			objPage.waitForElementToBeVisible(exemptionPageObj.genericErrorMsg, 10);
 			softAssert.assertEquals(exemptionPageObj.genericErrorMsg.getText(), "Date of Notice of 100% Rating", "Verify that Date of Notice of 100% rating can't be updated generic error message beside cancel button");
 			softAssert.assertEquals(objPage.getElementText(vaPageObj.editFieldErrorMsg), dataToEdit.get("dateOfNoticeErrorMessage"),"SMAB-T1282:Verify that Date of Notice of Rating can't be updated");			
 			objPage.Click(exemptionPageObj.cancelButton);
 			
 			//step8: Verifying user gets error message when updating the 'Qualification?' from Qualified to Not Qualified
 			ReportLogger.INFO("Verifying user gets error message when updating the 'Qualification?' from Qualified to Not Qualified");
-			apasGenericObj.editAndSelectFieldData("Qualification?", "Not Qualified");			
+			apasGenericObj.editAndSelectFieldData("Qualification?", "Not Qualified");	
+			objPage.waitForElementToBeVisible(exemptionPageObj.QualificationOnDetailsPageErrorMsg, 10);
 			softAssert.assertEquals(objPage.getElementText(exemptionPageObj.QualificationOnDetailsPageErrorMsg), dataToEdit.get("QualificationUpdateErrorMsg"),"SMAB-T1269:Verify user gets error message when updating the 'Qualification?' from Qualified to Not Qualified");
 			
 			objPage.Click(exemptionPageObj.cancelButton);

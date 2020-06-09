@@ -118,7 +118,8 @@ public class AnnualProcessTest extends TestBase{
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
 		//Step8: Click on 2020 Roll Year's Value Adjustment
-		String vaLinkName = objValueAdjustmentPage.selectVAByRollYear(strRollYear);	
+		String strStartDate = dataMap1.get("Start Date");
+		String vaLinkName = objValueAdjustmentPage.selectVAByStartDate(strStartDate);	
 		softAssert.assertContains(vaLinkName, "VALADJMT-","Verify that when the 'Annual Batch process' runs 'Value Adjustment Record's gets created for all the Active Exemption records");
 		
 		//Step9: Verify RPSL values are blank in current Roll Year's VA
@@ -241,7 +242,8 @@ public class AnnualProcessTest extends TestBase{
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
 		//Step7: Click on 2020 Roll Year's Value Adjustment
-		objValueAdjustmentPage.selectVAByRollYear(strRollYear);		
+		String strStartDate = dataMap1.get("Start Date");
+		String vaLinkName = objValueAdjustmentPage.selectVAByStartDate(strStartDate);		
 		
 		//Step8: Verify RPSL values are updated in selected VA from Active Exemption
 		dataMap3 = objUtils.generateMapFromJsonFile(manualEntryData, "DataToVerifyForDeletedRPSL");
@@ -357,7 +359,8 @@ public class AnnualProcessTest extends TestBase{
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
 		//Step8: Click on 2020 Roll Year's Value Adjustment
-		objValueAdjustmentPage.selectVAByRollYear(strRollYear);		
+		String strStartDate = dataMap1.get("Start Date");
+		String vaLinkName = objValueAdjustmentPage.selectVAByStartDate(strStartDate);		
 		
 		//Step9: Verify RPSL values are updated in selected VA from Active Exemption
 		dataMap3 = objUtils.generateMapFromJsonFile(manualEntryData, "DataToVerifyForCreatedRPSL");

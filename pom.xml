@@ -226,7 +226,7 @@
 						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
 <!--						 <includes>-->
 <!--                           <include>AnnualProcessTest.java</include> -->
-<!--                        </includes> -->
+<!--                       </includes> -->
 						<groups>${testSuite}</groups>
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
 						<systemPropertyVariables>
