@@ -246,7 +246,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	 */
 	public void clickShowMoreLink(String entryDetails) throws Exception {		
 		Thread.sleep(2000);
-		String xpathStr = "//table//tbody/tr//th//a[text() = '"+ entryDetails +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
+		String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//th//a[text() = '"+ entryDetails +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
 		WebElement modificationsIcon = locateElement(xpathStr, 30);
 		clickAction(modificationsIcon);
 	}

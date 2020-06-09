@@ -40,7 +40,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//a[@role='option']//span[text()='All' or text()='All Active Parcels']")
 	public WebElement selectListViewOptionAll;
 
-	@FindBy(xpath = "//input[@placeholder='Search this list...']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//input[@placeholder='Search this list...']")
 	public WebElement searchListEditBox;
 
 	@FindBy(xpath = "//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputEntitySelector']//input")
