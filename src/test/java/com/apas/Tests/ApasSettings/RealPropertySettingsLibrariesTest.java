@@ -483,10 +483,10 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 		objApasGenericFunctions.displayRecords("All");
 		
 		//Step4: Calculate Number of RPSL records
-		int numberOfRPSL = objRPSLPage.numberOfRPSL.size();
+		//int numberOfRPSL = objRPSLPage.numberOfRPSL.size();
 		
 		//step5 : Verify Edit Access for 'Approved' RPSL
-		String actualMsg = objRPSLPage.verifyEditAccess(numberOfRPSL);
+		String actualMsg = objRPSLPage.verifyEditAccess();
 		
 		// Step6: Verify Error message
 		String expectedErrorMessage = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";

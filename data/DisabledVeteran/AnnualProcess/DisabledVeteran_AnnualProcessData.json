@@ -30,7 +30,8 @@
 		},
 		
 	 "RollYear": {
-		"Roll Year Settings": "2020"	
+		"Roll Year Settings": "2020"
+		"Start Date": "7/1/2020"	
        }          	   
        
        "DataToVerifyForDeletedRPSL": {

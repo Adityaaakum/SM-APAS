@@ -1,5 +1,7 @@
 package com.apas.PageObjects;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -272,35 +274,26 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	 * @param recordType: Name of the record displayed which is to be selected
 	 * @throws Exception
 	 */
-	public String verifyEditAccess(int noOfRPSL) throws Exception {	
+	public String verifyEditAccess() throws Exception {	
 		String errorMsgText = null;
-		
-		 for (int i = 1; i <=noOfRPSL; i++) { 
-			  System.out.println("inside for " +i); 
-			  locateElement("//div[contains(@class,'windowViewMode-normal')]//table//tbody//tr["+ i + "]//td[8]//span//span",3); 		  				  
-			  WebElement status = driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal')]//table//tbody//tr["+ i + "]//td[8]//span//span"));  
-			  System.out.println("Now Print Status"+status.getText());
-			  
-		// Step1: Verifying if Status of RPSL is 'Approved' 
-			  String actualStatus = status.getText().trim(); 
-			  String expectedStatus = "Approved"; 
-			  if(actualStatus.equals(expectedStatus.trim())) {
-				  System.out.println("inside if " + i);
-				  
-		// Step2: Clicking on 'Approved' RPSL record 
-			  locateElement("//div[contains(@class,'windowViewMode-normal')]//table//tbody//tr["+ i + "]//th//a",3);
-			  WebElement exemptionLink = driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal')]//table//tbody//tr["+ i + "]//th//a"));		  				  
-			  System.out.println("Exemption Link text: " + exemptionLink.getText());
-			  Click(exemptionLink);
-			  waitUntilPageisReady(driver);
-			  ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on 'Edit' button for record whose status is 'Approved'");
-			  Click(editButton);			  
-			  locateElement("//div[@class='uiBlock']//p[@class='detail']//span",3);
-			  System.out.println("eror: "+errorMsgforEdit.getText());
-			  errorMsgText =  errorMsgforEdit.getText();
-			  }
-			  break;
-			}
+		//Fetch Approved RPSL Name from DB
+		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+		String queryForID = "SELECT Name FROM Real_Property_Settings_Library__c WHERE Status__c='Approved'";
+		HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
+		String RPSLName = response.get("Name").get(0);
+		System.out.println("RPSL: "+RPSLName);
+		//Click on Approved RPSL
+		String xPath = "//div[contains(@class,'windowViewMode-normal')]//a[text()='"+RPSLName+"']";
+		waitUntilElementIsPresent(xPath,20);
+		WebElement exemptionLink = driver.findElement(By.xpath(xPath));		
+		Click(exemptionLink);
+	    waitUntilPageisReady(driver);
+	    
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on 'Edit' button for record whose status is 'Approved'");
+		Click(editButton);			  
+		locateElement("//div[@class='uiBlock']//p[@class='detail']//span",3);
+		System.out.println("eror: "+errorMsgforEdit.getText());
+		errorMsgText =  errorMsgforEdit.getText();				 
 		return errorMsgText;
 	
 	}
