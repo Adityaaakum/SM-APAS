@@ -244,7 +244,7 @@ public class RealPropertySettingsLibrariesTest extends TestBase {
 		
 		//Step8: Fetching value of RPSL created in above Test case
 		String value = strRPSLName;
-		
+		objApasGenericFunctions.searchRecords(strRPSLName);
 		//Step9: Searching and selecting the RPSL
 		objRPSLPage.clickShowMoreLink(value);
 		objPage.clickAction(objPage.waitForElementToBeClickable(objRPSLPage.editLinkUnderShowMore));
