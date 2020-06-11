@@ -32,7 +32,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		softAssert = new SoftAssertion();
 	}
 	
-	@FindBy(xpath = "//a[@title = 'New']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//a[@title = 'New']")
 	public WebElement newButton;
 	
 	@FindBy(xpath = "//button[@title = 'Cancel']")
@@ -390,7 +390,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step2: Selecting 'All' List View
-		objApasGenericFunctions.selectListView("All");
+		objApasGenericFunctions.displayRecords("All");
 		
 		//Step3: Fetching value of RPSL for which status needs to be updated
 		String value = "Exemption Limits - "+ rollYear;
@@ -422,7 +422,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step2: Selecting 'All' List View
-		objApasGenericFunctions.selectListView("All");
+		objApasGenericFunctions.displayRecords("All");
 		
 		//Step3: Delete current Roll Year's RPSL if it already exists	
 		verifyAndDeleteExistingRPSL(strRollYear);
@@ -436,4 +436,6 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRollYear + "\" was created.","Verify the User is able to create Exemption limit record for the current roll year");	
 		
 	 }
+	 
+	 	 
 }

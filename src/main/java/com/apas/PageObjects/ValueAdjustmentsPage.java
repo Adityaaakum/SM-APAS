@@ -1,5 +1,6 @@
 package com.apas.PageObjects;
 
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -9,8 +10,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.math3.util.Precision;
+import com.apas.Assertions.SoftAssertion;
+import com.apas.Reports.ExtentTestManager;
+import com.apas.generic.ApasGenericFunctions;
+import com.relevantcodes.extentreports.LogStatus;
+
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -21,12 +27,10 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import com.apas.Assertions.SoftAssertion;
-import com.apas.Reports.ExtentTestManager;
+
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.DateUtil;
-import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
+
 
 public class ValueAdjustmentsPage extends Page {
 	
@@ -370,6 +374,7 @@ public double calculatePenaltyAmountForVA(double penaltyPercentage, boolean vaTy
 			}
 	}
 
+
 	else
 	{
 		if(determination.equals("Basic Disabled Veterans Exemption"))
@@ -397,8 +402,8 @@ public boolean verifyIfInitialFilingOrAnnualVA(String applicationdate) throws Ex
 	driver.navigate().back();
 	objPage.waitForElementToBeVisible(vaPenaltyPercentage, 10);
 	return (appdate.compareTo(openRollstartdate)>0);
-
 }
+
 
 /**
  * @description: This method will return VA name
@@ -453,8 +458,8 @@ public int getnumberOfValueAdjustments() throws Exception {
 
 /**
  * @description: This method will return difference of no of days between 2 dates
- * @param fieldName: element from which start date is fetched
- * @param fieldName: element from which end date is fetched
+ * @param eleStartDate: element from which start date is fetched
+ * @param eleEndDate: element from which end date is fetched
  * @return : returns the difference of no of days between 2 dates
  */
 public float verifyNoOfDays(WebElement eleStartDate, WebElement eleEndDate) {

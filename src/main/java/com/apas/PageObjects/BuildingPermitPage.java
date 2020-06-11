@@ -49,11 +49,20 @@ public class BuildingPermitPage extends ApasGenericPage {
 	@FindBy(xpath = "//legend[text() = 'Select a record type']")
 	private WebElement selectRecordTypePopUp;
 
-	@FindBy(xpath = "//span[contains(text(), 'Manual Entry Building Permit')]//parent::div//preceding-sibling::div//input[@type = 'radio']")
-	private WebElement manualEntryRadioBtn;
+	@FindBy(xpath = "//span[contains(text(), 'Manual Entry Building Permit')]//parent::div//preceding-sibling::div//input[@type = 'radio']/..")
+	public WebElement manualEntryRadioBtn;
+
+	@FindBy(xpath = "//span[contains(text(), 'E-File Building Permit')]//parent::div//preceding-sibling::div//input[@type = 'radio']/..")
+	public WebElement efileRadioButton;
+
+	@FindBy(xpath = "//a[@role='menuitem'][text()='No actions available']")
+	public WebElement noActionAvailableOption;
 
 	@FindBy(xpath = "//button[text() = 'Edit']")
 	public WebElement editButton;
+
+	@FindBy(xpath = "//button[text() = 'Delete']")
+	public WebElement deleteButton;
 
 	@FindBy(xpath = "//div[@role='menu']//li[@class='uiMenuItem']/a[@title = 'Edit']")
 	public WebElement editMenuItemButton;
@@ -66,7 +75,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 	//Below objects are for New Building Permit Pop Up
 
-	@FindBy(xpath = "//h2[text() = 'New Building Permit: Manual Entry Building Permit']")
+	@FindBy(xpath = "//h2[contains(text(),'New Building Permit')]")
 	public WebElement buildingPermitPopUp;
 
 	@FindBy(xpath = "//button[@title='Close this window']")
@@ -74,6 +83,9 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//span[text() = 'Building Permit Number']/parent::label/following-sibling::input")
 	public WebElement buildingPermitNumberTxtBox;
+
+	@FindBy(xpath = "//span[text() = 'Owner Name']/parent::label/following-sibling::input")
+	public WebElement OwnerNameTextBox;
 
 	@FindBy(xpath = "//input[@title = 'Search Parcels']")
 	public WebElement parcelsSearchBox;
@@ -134,7 +146,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	public WebElement openBuildingPermitLink;
 
 	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//div[text() = 'Delete']")
-	private WebElement deleteLinkUnderShowMore;
+	public WebElement deleteLinkUnderShowMore;
 
 	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//div[text() = 'Change Owner']")
 	private WebElement changeOwnerLinkUnderShowMore;
@@ -157,7 +169,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	// Common locators to complete or abort delete action of manual entry.
 
 	@FindBy(xpath = "//div[contains(@class, 'slds-modal__footer')]//span[text() = 'Delete']")
-	private WebElement deleteBtnBuildingPermitInDeletePopUp;
+	public WebElement deleteBtnInDeletePopUp;
 
 	@FindBy(xpath = "//div[contains(@class, 'slds-modal__footer')]//span[text() = 'Cancel']")
 	private WebElement cancelBtnBuildingPermitInDeletePopUp;
@@ -180,7 +192,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	public WebElement closeViewDuplicatePopUpButton;
 	
 	@FindBy(xpath = "//li[text() = 'Complete this field']")
-	private List<WebElement> errorMsgUnderLabels;
+	public List<WebElement> errorMsgUnderLabels;
 	
 	@FindBy(xpath = "//div[contains(@class, 'forceModalActionContainer')]//button[@title = 'Save']//span[text() = 'Save']")
 	public WebElement saveBtnEditPopUp;
@@ -202,23 +214,51 @@ public class BuildingPermitPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//div[text() = 'Edit']")
 	public WebElement editLinkUnderShowMore;
-	
-	/**
-	 * @Description: This method is used to click on New button to open the new building permit.
-	 * It also internally handles the additional pop up window to select manual entry
-	 * creation radio button when Data Admin is logged into application
-	 * @throws IOException
-	 */
 
-	public void openNewForm() throws Exception {
-		Thread.sleep(1000);
+	/**
+	 * @Description: This method is used to open the building permit entry form
+	 * @param buildingPermitType : value can be "E-File Building Permit" or "Manual Entry Building Permit"
+	 */
+	public void openNewForm(String buildingPermitType) throws Exception {
+		//Select one of the following values for Building Permit Type "E-File Building Permit" or "Manual Entry Building Permit"
 		javascriptClick(waitForElementToBeClickable(newButton));
-		if(System.getProperty("isDataAdminLoggedIn") != null && System.getProperty("isDataAdminLoggedIn").equals("true")) {
-			Click(waitForElementToBeClickable(manualEntryRadioBtn));
-			Click(waitForElementToBeClickable(recordTypePopUpNextButton));
-		}
 		waitForElementToBeVisible(buildingPermitPopUp,30);
-		Thread.sleep(2000);
+		waitForElementToBeClickable(buildingPermitPopUp,20);
+
+		//Validating if E-file or manual building permit selection radio buttons are visible
+		if (verifyElementVisible(manualEntryRadioBtn)){
+			if (buildingPermitType.equals("Manual Entry Building Permit"))
+				Click(manualEntryRadioBtn);
+			else
+				Click(efileRadioButton);
+			Click(recordTypePopUpNextButton);
+		}
+		waitForElementToBeVisible(buildingPermitNumberTxtBox,30);
+		waitForElementToBeClickable(buildingPermitNumberTxtBox,20);
+	}
+
+	/**
+	 * @Description: This method is used to open the building permit manual entry form
+	 */
+	public void openNewForm() throws Exception {
+		openNewForm("Manual Entry Building Permit");
+////		Thread.sleep(15000);
+//		javascriptClick(waitForElementToBeClickable(newButton));
+//		waitForElementToBeVisible(buildingPermitPopUp,30);
+//		waitForElementToBeClickable(buildingPermitPopUp,20);
+//
+//		if (verifyElementVisible(manualEntryRadioBtn)){
+//			Click(waitForElementToBeClickable(manualEntryRadioBtn));
+//			Click(waitForElementToBeClickable(recordTypePopUpNextButton));
+//		}
+////		if(System.getProperty("isDataAdminLoggedIn") != null && System.getProperty("isDataAdminLoggedIn").equals("true")) {
+////			Click(waitForElementToBeClickable(manualEntryRadioBtn));
+////			Click(waitForElementToBeClickable(recordTypePopUpNextButton));
+////		}
+//
+//		waitForElementToBeClickable(buildingPermitNumberTxtBox,20);
+//
+////		Thread.sleep(2000);
 	}
 
 	/**
@@ -249,6 +289,9 @@ public class BuildingPermitPage extends ApasGenericPage {
 		enterDate(completionDateCalender, dataMap.get("Completion Date"));
 		objApasGenericPage.selectOptionFromDropDown(permitCityCodeDrpDown, dataMap.get("Permit City Code"));
 		enter(workDescriptionTxtBox, dataMap.get("Work Description"));
+
+		//This text box comes only while adding E-File Building Permit manually
+		if (verifyElementVisible(OwnerNameTextBox)) enter(OwnerNameTextBox,dataMap.get("Owner Name"));
 
 		return buildingPermitNumber;
 	}
@@ -356,7 +399,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	 */
 	public boolean checkManualPermitEntryOnDetailsPage (String entryName) throws Exception {
 		String xpathStr = "//h1//slot//lightning-formatted-text[text() = '" + entryName + "']";
-		boolean elemStatus = locateElement(xpathStr, 10).isDisplayed();
+		boolean elemStatus = locateElement(xpathStr, 60).isDisplayed();
 		return elemStatus;
 	}
 
@@ -399,7 +442,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	public void clickShowMoreLinkOnRecentlyViewedGrid(String entryDetails) throws Exception {		
 		Thread.sleep(3000);
 		String xpathStr = "//table//tbody/tr//th//a[text() = '"+ entryDetails +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
-		WebElement modificationsIcon = locateElement(xpathStr, 30);
+		WebElement modificationsIcon = locateElement(xpathStr, 60);
 		clickAction(modificationsIcon);
 	}
 
@@ -503,7 +546,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 		WebElement element;
 		for(String fieldName : searchAndSelectFields) {
 			String xpathCloseBtn = "//label[text() = '"+ fieldName +"']//following-sibling::div//button[@title = 'Clear Selection']";
-			WebElement closeBtn = locateElement(xpathCloseBtn, 5);
+			WebElement closeBtn = locateElement(xpathCloseBtn, 30);
 			((JavascriptExecutor) driver).executeScript("arguments[0].click();", closeBtn);
 
 			String xpathStrInputFields = "//label[text() = '"+ fieldName + "']//parent::label//following-sibling::div//input[@type = 'text']";
@@ -541,7 +584,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	public List<String> editWorkDescIndividuallyOnDetailsPage(List<String> invalidDescValues) throws Exception {
 		List<String> validationMessage = new ArrayList<String>();
 		String xpathStr = "//span[text() = 'Work Description']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]";
-		Click(locateElement(xpathStr, 5));
+		Click(locateElement(xpathStr, 30));
 
 		for (String invalidDescValue : invalidDescValues) {
 			xpathStr = "//label[text() = 'Work Description']//following-sibling::div//input[contains(@name, 'Work')]";
@@ -566,7 +609,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	 */
 	public List<String> editAndCancelIssueDateDetailsPage() throws Exception {
 		String xpathDescTxt = "//span[text() = 'Issue Date']/parent::div/following-sibling::div//lightning-formatted-text[@data-output-element-id = 'output-field']";
-		String descValueBeforeEdit = locateElement(xpathDescTxt, 10).getText();
+		String descValueBeforeEdit = locateElement(xpathDescTxt, 60).getText();
 
 		List<String> validationMessage = new ArrayList<String>();
 		String xpathStr = "//span[text() = 'Issue Date']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]";
@@ -595,10 +638,10 @@ public class BuildingPermitPage extends ApasGenericPage {
 		String calcProcStatusTxt = "";
 		String situsCityCodeTxt = "";
 		String xpathCalcProcStatus = "//span[text() = 'Calculated Processing Status']/parent::div/following-sibling::div//lightning-formatted-text[@data-output-element-id = 'output-field']";
-		calcProcStatusTxt = locateElement(xpathCalcProcStatus, 10).getText();
+		calcProcStatusTxt = locateElement(xpathCalcProcStatus, 30).getText();
 
 		String xpathSitusCityCode = "//span[text() = 'Situs City Code']//parent::div//following-sibling::div//span//lightning-formatted-text";
-		situsCityCodeTxt = locateElement(xpathSitusCityCode, 10).getText();
+		situsCityCodeTxt = locateElement(xpathSitusCityCode, 30).getText();
 
 		autoPopulatedValues.put("Situs City Code", situsCityCodeTxt);
 		autoPopulatedValues.put("Calculated Processing Status", calcProcStatusTxt);
@@ -639,7 +682,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	public void selectFromDropDown(WebElement element, String value) throws Exception {
 		Click(element);
 		String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 200);
+		WebElement drpDwnOption = locateElement(xpathStr, 30);
 		drpDwnOption.click();
 	}
 
@@ -658,9 +701,11 @@ public class BuildingPermitPage extends ApasGenericPage {
 	 * @description: This method will open the Building Permit passed in the argument
 	 * @param buildingPermitNum: Takes building permit number as argument
 	 */
-	public void openBuildingPermit(String buildingPermitNum) throws IOException, InterruptedException {
+	public void openBuildingPermit(String buildingPermitNum) throws Exception {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening the Building Permit with number : " + buildingPermitNum);
-		Click(driver.findElement(By.xpath("//a[@title='" + buildingPermitNum + "']")));
+		String xpath = "//a[@title='" + buildingPermitNum + "']";
+		waitUntilElementIsPresent(xpath,15);
+		Click(driver.findElement(By.xpath(xpath)));
 		Thread.sleep(3000);
 	}
 

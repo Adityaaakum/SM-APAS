@@ -2,6 +2,7 @@ package com.apas.DataProviders;
 
 import org.testng.annotations.DataProvider;
 
+import com.apas.config.testdata;
 import com.apas.config.users;
 
 public class DataProviders {
@@ -24,7 +25,18 @@ public class DataProviders {
         return new Object[][] { { users.BUSINESS_ADMIN } };
     }
 
-	/**
+
+    /**
+     * Below function will be used to login to application with BPP business administrator user
+     * @returns: Return the user BPP business administrator
+     **/
+    @DataProvider(name = "loginBPPBusinessAdmin")
+    public Object[][] dpLoginBPPBusinessAdminUser() {
+        return new Object[][] { { users.BPP_BUSINESS_ADMIN } };
+    }
+
+
+    /**
 	 * Below function will be used to login to application with appraisal support user
 	 * @returns: Return the user appraisal support
 	 **/
@@ -79,6 +91,152 @@ public class DataProviders {
         return new Object[][] { { users.BUSINESS_ADMIN }, { users.PRINCIPAL_USER }, { users.BPP_AUDITOR } };
     }
     
+	/**
+	 * Below function will be used to upload files with different invalid formats
+	 * @returns: Returns the names of invalid files
+	 **/
+    @DataProvider(name = "invalidFileTypes")
+    public Object[][] dpInvalidFieTypes() {
+        return new Object[][] { { testdata.BPP_TREND_BOE_INDEX_FACTORS_CSV }, 
+        						{ testdata.BPP_TREND_BOE_INDEX_FACTORS_TXT }, 
+        						{ testdata.BPP_TREND_BOE_INDEX_FACTORS_XLS } };
+    }
+    
+    // ************** Below Users Are For Security And Sharing Of BPP Trends *************
+    
+	/**
+	 * Returns users allowed to access Calculate and Calculate All button
+	 **/
+    @DataProvider(name = "usersAllowedToCalculate")
+    public Object[][] dpUsersAllowedToCalculate() {
+        return new Object[][] { { users.BUSINESS_ADMIN } };
+    }
+    
+	/**
+	 * Returns users not allowed to access Calculate and Calculate All button
+	 **/
+    @DataProvider(name = "usersRestrictedToCalculate")
+    public Object[][] dpUsersRestrictedToCalculate() {
+        //return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
+    	return new Object[][] { { users.PRINCIPAL_USER } };
+    }
+    
+	/**
+	 * Returns users allowed to access ReCalculate and ReCalculate All button
+	 **/
+    @DataProvider(name = "usersAllowedToReCalculate")
+    public Object[][] dpUsersAllowedToReCalculate() {
+        return new Object[][] { { users.BUSINESS_ADMIN } };
+    }
+    
+	/**
+	 * Returns users not allowed to access ReCalculate and ReCalculate All button
+	 **/
+    @DataProvider(name = "usersRestrictedToReCalculate")
+    public Object[][] dpUsersRestrictedToReCalculate() {
+    	//return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
+    	return new Object[][] { { users.PRINCIPAL_USER } };
+    }
+    
+	/**
+	 * Returns users allowed to access Submit Factor and Submit All Factors For Approval button
+	 **/
+    @DataProvider(name = "usersAllowedToSubmitAllFactors")
+    public Object[][] dpUsersAllowedToSubmitAllFactors() {
+        return new Object[][] { { users.BUSINESS_ADMIN } };
+    }
+    
+	/**
+	 * Returns users not allowed to access Submit Factor and Submit All Factors For Approval button
+	 **/
+    @DataProvider(name = "usersRestrictedToSubmitAllFactors")
+    public Object[][] dpUsersRestrictedToSubmitAllFactors() {
+    	//return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
+    	return new Object[][] { { users.PRINCIPAL_USER } };
+    }
+    
+	/**
+	 * Returns users allowed to access Approve and Approve All button
+	 **/
+    @DataProvider(name = "usersAllowedToApprove")
+    public Object[][] dpUsersAllowedToApprove() {
+        return new Object[][] { { users.PRINCIPAL_USER } };
+    }
+    
+	/**
+	 * Returns users not allowed to access Approve and Approve All button
+	 **/
+    @DataProvider(name = "usersRestrictedToApprove")
+    public Object[][] dpUsersRestrictedToApprove() {
+        return new Object[][] { { users.BUSINESS_ADMIN } };
+    }
+
+	/**
+	 * Returns users allowed to access Download button
+	 **/
+    @DataProvider(name = "usersAllowedToDownloadPdfFile")
+    public Object[][] dpUsersAllowedToDownloadPdfFile() {
+        return new Object[][] { { users.BUSINESS_ADMIN }, { users.PRINCIPAL_USER } };
+    }
+    
+	/**
+	 * Returns users not allowed to access Download button
+	 **/
+    @DataProvider(name = "usersRestrictedToDownloadPdfFile")
+    public Object[][] dpUsersRestrictedToDownloadPdfFile() {
+        return new Object[][] {  };
+    }
+    
+	/**
+	 * Returns users allowed to access Export Composite Factors button
+	 **/
+    @DataProvider(name = "usersAllowedToExportCompFactorsFile")
+    public Object[][] dpUsersAllowedToExportCompFactorsFile() {
+        return new Object[][] { { users.PRINCIPAL_USER } };
+    }
+    
+	/**
+	 * Returns users not allowed to access Export Composite Factors button
+	 **/
+    @DataProvider(name = "usersRestrictedToExportCompFactorsFile")
+    public Object[][] dpUsersRestrictedToExportCompFactorsFile() {
+        return new Object[][] { { users.BUSINESS_ADMIN } };
+    }
+    
+	/**
+	 * Returns users allowed to access Export Valuation Factors button
+	 **/
+    @DataProvider(name = "usersAllowedToExportValFactorsFile")
+    public Object[][] dpUsersAllowedToExportValFactorsFile() {
+        return new Object[][] { { users.PRINCIPAL_USER } };
+    }
+    
+	/**
+	 * Returns users not allowed to access Export Valuation Factors button
+	 **/
+    @DataProvider(name = "usersRestrictedToExportValFactorsFile")
+    public Object[][] dpUsersRestrictedToExportValFactorsFile() {
+        return new Object[][] { { users.BUSINESS_ADMIN } };
+    }
+
+	/**
+	 * Returns users not allowed to access edit pencil icon on BPP Trend Setup page
+	 **/
+    @DataProvider(name = "usersRestrictedEditTableStatusOnBppTrendPage")
+    public Object[][] dpUsersRestrictedEditTableStatusOnBppTrendPage() {
+        //return new Object[][] { { users.PRINCIPAL_USER }, { users.BPP_AUDITOR }, { users.BUSINESS_ADMIN } };
+    	return new Object[][] { { users.PRINCIPAL_USER } };
+    }
+    
+	/**
+	 * Returns users not allowed to access edit and delete option for maximum equipment index factor
+	 **/
+    @DataProvider(name = "usersRestrictedToModifyMaxEquipIndexFactor")
+    public Object[][] dpUsersRestrictedToModifyMaxEquipIndexFactor() {
+        //return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
+    	return new Object[][] { { users.PRINCIPAL_USER } };
+    }
+
     @DataProvider(name = "loginUsers")
     public Object[][] dpLoginUser() {
         return new Object[][] { { users.BUSINESS_ADMIN } };
@@ -89,10 +247,27 @@ public class DataProviders {
 		return new Object[][] { { users.EXEMPTION_SUPPORT_STAFF } };
 	}
     
-	
+    
 	@DataProvider(name = "rpApprasierAndBPPAuditor")
 	public Object[][] dataProviderLoginUserMethodForUser() {
-		return new Object[][] { { users.RP_APPRAISER }, { users.BPP_AUDITOR }};
+		return new Object[][] { { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
 	}
-    
+
+	/**
+	 * Return different status of composite and valuation factor tables
+	 */
+    @DataProvider(name = "variousStatusOfCompositeTablesBeforeSubmitting")
+    public Object[][] dpVariousStatusOfCompositeTables() {
+    	return new Object[][] { { "Not Calculated" }, { "Calculated" } };
+    }
+
+    @DataProvider(name = "variousStatusOfCompositeAndValuationTables")
+    public Object[][] dpVariousStatusOfCompositeAndValuationTables() {
+        return new Object[][]{{"Not Calculated"}, {"Calculated"}, {"Needs Recalculation"}, {"Submitted for Approval"}, {"Approved"}};
+    }
+
+    @DataProvider(name = "BPPAuditorAndPrincipal")
+    public Object[][] dataBPPAuditorAndPricipalUser() {
+        return new Object[][] { { users.PRINCIPAL_USER }, { users.BPP_AUDITOR }};
+    }
 }

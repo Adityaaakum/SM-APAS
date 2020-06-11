@@ -27,7 +27,7 @@
 		"Maximum Equipment index Factor": "125"
 	},
 	"BppPropertyIndexFactor": {
-		"Name (Roll Year - Property Type)": "2018-commercial-2017",
+		"Name (Roll Year - Property Type)": "Commercial-2017",
 		"Index Factor": "10",
 		"Property Type": "Commercial",
 		"Year Acquired": "2017"
@@ -54,21 +54,21 @@
 		"Identifier": "testing12"
 	},
 	"DataToCreateBppTrendSetup": {
-		"Roll Year": "2020",
-		"Commercial Trends Status": "Import Approved",
-		"Const. Mobile Equipment Trends Status": "Import Approved",
-		"Industrial Trend Status": "Import Approved",
-		"Ag. Mobile Equipment Trends Status": "Import Approved",
-		"Const. Trends Status": "Import Approved",
-		"Ag. Trends Status": "Import Approved",
-		"Computer Trends Status": "Import Approved",
-		"Biopharmaceutical Trends Status": "Import Approved",
-		"Copier Trends Status": "Import Approved",
-		"Semiconductor Trends Status": "Import Approved",
-		"Litho Trends Status": "Import Approved",
-		"Mechanical Slot Machine Trends Status": "Import Approved",
-		"Set-Top Box Trends Status": "Import Approved",
-		"Electronic Slot Machine Trends Status": "Import Approved",
+		"Roll Year": "2022",
+		"Commercial Trends Status": "Not Calculated",
+		"Const. Mobile Equipment Trends Status": "Not Calculated",
+		"Industrial Trend Status": "Not Calculated",
+		"Ag. Mobile Equipment Trends Status": "Not Calculated",
+		"Const. Trends Status": "Not Calculated",
+		"Ag. Trends Status": "Not Calculated",
+		"Computer Trends Status": "Not Calculated",
+		"Biopharmaceutical Trends Status": "Not Calculated",
+		"Copier Trends Status": "Not Calculated",
+		"Semiconductor Trends Status": "Not Calculated",
+		"Litho Trends Status": "Not Calculated",
+		"Mechanical Slot Machine Trends Status": "Not Calculated",
+		"Set-Top Box Trends Status": "Not Calculated",
+		"Electronic Slot Machine Trends Status": "Not Calculated",
 		"Prop 13 Factor Status": "Not Calculated"
 	},
 	"DataToEditBppTrendSetup": {

@@ -12,7 +12,7 @@ public class DataProviders {
      **/
     @DataProvider(name = "loginUsers")
     public Object[][] dataProviderLoginUserMethod() {
-        return new Object[][] {{ users.BUSINESS_ADMIN }};
+        return new Object[][] {{ users.BPP_BUSINESS_ADMIN }};
     }
 
 }

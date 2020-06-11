@@ -19,9 +19,12 @@ public class ApasGenericPage extends Page {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//one-app-launcher-header/button[@class = 'slds-button']")
+	@FindBy(xpath = "//one-app-launcher-header/button[contains(@class,'slds-button')]")
 	public WebElement appLauncher;
-	
+
+	@FindBy(xpath = "//table[@role='grid']//thead/tr//th")
+	public WebElement dataGrid;
+
 	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items')]")
 	public WebElement appLauncherSearchBox;
 
@@ -34,7 +37,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//div[@role='combobox']//div[@aria-label='Items']/p")
 	public WebElement itemsListBox;
 
-	@FindBy(xpath = "//a[@role='button'][@title='Select List View']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//a[@role='button'][@title='Select List View']")
 	public WebElement selectListViewButton;
 
 	@FindBy(xpath = "//a[@role='option']//span[text()='All' or text()='All Active Parcels']")
@@ -116,7 +119,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public void clickNavOptionFromDropDown(String navOption) throws Exception {
 		String xpathStr = "//a[contains(@data-label, '" + navOption + "')]//b[text() = '" + navOption + "']";
-		WebElement drpDwnOption = waitForElementToBeClickable(xpathStr);
+		WebElement drpDwnOption = waitForElementToBeClickable(20, xpathStr);
 		drpDwnOption.click();
 	}
 
@@ -129,9 +132,9 @@ public class ApasGenericPage extends Page {
 	 */
 	public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
 		enter(element, value);
-		String xpathStr = "//*[@role='option']//div[@title='" + value + "']";
+		String xpathStr = "//*[@role='option']//*[@title='" + value + "'] | //div[@title='" + value + "']";
 		Click(driver.findElement(By.xpath(xpathStr)));
-	}
+		}
 
 	/**
 	 * @Description: This method selects year, month and date from date picker / calender
@@ -215,8 +218,12 @@ public class ApasGenericPage extends Page {
 	 */
 	public void searchAndSelectOptionFromDropDown(WebElement element, String value) throws Exception {
 		enter(element, value);
-		String xpathStr = "//div[@title='" + value.toUpperCase() + "']";
+		//String xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
+		//WebElement drpDwnOption = locateElement(xpathStr, 30);
+
+		String xpathStr = "//div[@title='" + value.toUpperCase() + "'] | //mark[text() = '" + value + "']";
 		WebElement drpDwnOption = locateElement(xpathStr, 20);
+		waitForElementToBeVisible(drpDwnOption, 10);
 		drpDwnOption.click();
 	}
 
@@ -230,7 +237,8 @@ public class ApasGenericPage extends Page {
 	public void selectOptionFromDropDown(WebElement element, String value) throws Exception {
 		Click(element);
 		String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 200);
+		WebElement drpDwnOption = locateElement(xpathStr, 30);
+		waitForElementToBeClickable(drpDwnOption, 10);
 		drpDwnOption.click();
 	}
 	

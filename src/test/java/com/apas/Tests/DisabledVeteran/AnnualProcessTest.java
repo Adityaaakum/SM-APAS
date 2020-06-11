@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
+import com.apas.Listeners.SuiteListener;
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.Page;
@@ -77,7 +78,7 @@ public class AnnualProcessTest extends TestBase{
 	 * 3. Verify for Active Exemption record, Current Year's VA contains Blank values from RPSL record
 	 **/
 	@Test(description = "SMAB-T566: Verify when RPSL record is missing, for Active Exemption records 'VA' gets created with blank values", dataProvider = "loginUsers", groups = {
-			"smoke", "regression" }, alwaysRun = true, enabled = true)
+			"smoke", "regression","DisabledVeteranExemption" })
 	public void verifyBlankVACreatedWithMissingRPSLForActiveExemption(String loginUser) throws Exception {
 		
 		// Step1: Login to the APAS application using the credentials passed through		
@@ -91,7 +92,7 @@ public class AnnualProcessTest extends TestBase{
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Selecting 'All' List View
-		objApasGenericFunctions.selectListView("All");
+		objApasGenericFunctions.displayRecords("All");
 		
 		//Step4: Delete current Roll Year's RPSL if it already exists	
 		String strRollYear = dataMap1.get("Roll Year Settings");
@@ -155,7 +156,7 @@ public class AnnualProcessTest extends TestBase{
 	 * 3. Verify for In-Active Exemption record, Current Year's VA is not created
 	 **/
 	@Test(description = "SMAB-T1380: Verify when RPSL record is missing, for In-Active Exemption records 'VA' does not get created", dataProvider = "loginUsers", groups = {
-			"smoke", "regression" }, alwaysRun = true, enabled = true)
+			"smoke", "regression","DisabledVeteranExemption" })
 	public void verifyNoVACreatedWithMissingRPSLForInActiveExemption(String loginUser) throws Exception {
 		
 		// Step1: Login to the APAS application using the credentials passed through		
@@ -169,7 +170,7 @@ public class AnnualProcessTest extends TestBase{
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Selecting 'All' List View
-		objApasGenericFunctions.selectListView("All");
+		objApasGenericFunctions.displayRecords("All");
 		
 		//Step4: Delete current Roll Year's RPSL if it already exists	
 		String strRollYear = dataMap1.get("Roll Year Settings");
@@ -202,7 +203,7 @@ public class AnnualProcessTest extends TestBase{
 		
 		//Step9: verify 2020 Roll Year's Value Adjustment is not created
 		boolean fVACreated = objValueAdjustmentPage.verifyVANotCreated(strRollYear);
-		softAssert.assertTrue(fVACreated,"SMAB-T1380:VVerify when RPSL record is missing, for In-Active Exemption records 'VA' does not get created");
+		softAssert.assertTrue(fVACreated,"SMAB-T1380:Verify when RPSL record is missing, for In-Active Exemption records 'VA' does not get created");
 		objApasGenericFunctions.logout();
 		
 	}	
@@ -213,8 +214,9 @@ public class AnnualProcessTest extends TestBase{
 	 * 2. Verify for Active Exemption record created in above test, Current Year's VA is updated with blank values from RPSL record
 	 **/
 	@Test(description = "SMAB-T1381: Verify when 'Annual Batch process' runs and a 'VAR' is present for next Tax Year then it gets updated with blank values if status of RPSL is other than 'Approved'", dataProvider = "loginUsers", groups = {
-			"smoke", "regression" }, dependsOnMethods = {"verifyBlankVACreatedWithMissingRPSLForActiveExemption"}, alwaysRun = true, enabled = true)
+			"smoke", "regression","DisabledVeteranExemption" }, dependsOnMethods = {"verifyBlankVACreatedWithMissingRPSLForActiveExemption"})
 	public void verifyVANotUpdatedWithUnApprovedRPSLForActiveExemption(String loginUser) throws Exception {
+	if(!failedMethods.contains("verifyBlankVACreatedWithMissingRPSLForActiveExemption")) {	
 		String strSuccessAlertMessage;
 		//Step1: Login to the APAS application using the credentials passed through		
 		objApasGenericFunctions.login(loginUser);
@@ -267,14 +269,19 @@ public class AnnualProcessTest extends TestBase{
 				
 		objApasGenericFunctions.logout();
 	}
+	else {
+		softAssert.assertTrue(false, "This Test depends on 'verifyBlankVACreatedWithMissingRPSLForActiveExemption' which got failed");	
+	}
+}
 	/**
 	 * Below test case will 
 	 * 1. Create Real Property settings Record for current Roll Year with Status other than 'Approved'
 	 * 2. Verify for In-Active Exemption record created in above test, Current Year's VA is still not created even if RPSL is created
 	 **/
 	@Test(description = "SMAB-T510: Verify when 'Annual Batch process' runs for In-Active Exemption record 'VAR' for working Tax Year is not created if status of RPSL is other than 'Approved'", dataProvider = "loginUsers", groups = {
-			"smoke", "regression" }, dependsOnMethods = {"verifyNoVACreatedWithMissingRPSLForInActiveExemption"}, alwaysRun = true, enabled = true)
+			"smoke", "regression","DisabledVeteranExemption" }, dependsOnMethods = {"verifyNoVACreatedWithMissingRPSLForInActiveExemption"})
 	public void verifyVANotCreatedWithUnApprovedRPSLFoInActiveExemption(String loginUser) throws Exception {
+	if(!failedMethods.contains("verifyNoVACreatedWithMissingRPSLForInActiveExemption")) {
 		String strSuccessAlertMessage;
 		//Step1: Login to the APAS application using the credentials passed through		
 		objApasGenericFunctions.login(loginUser);
@@ -303,7 +310,10 @@ public class AnnualProcessTest extends TestBase{
 		softAssert.assertTrue(fVACreated,"SMAB-T510:Verify when 'Annual Batch process' runs for In-Active Exemption record 'VAR' for working Tax Year is not created if status of RPSL is other than 'Approved'");
 		
 		objApasGenericFunctions.logout();
-				
+	}
+	else {
+		softAssert.assertTrue(false, "This Test depends on 'verifyNoVACreatedWithMissingRPSLForInActiveExemption' which got failed");	
+	}			
 	}
 	
 	
@@ -314,10 +324,11 @@ public class AnnualProcessTest extends TestBase{
 	 * 3. Verify for In-Active Exemption record created in above test, Current Year's VA is still not created even if RPSL is created
 	 **/
 	@Test(description = "SMAB-T1382, T511: Verify that when the 'Annual Batch process' runs and status of RPSL is 'Approved', VAR for Active Exemption gets updated with relevant values & for In-Active Exemption, does not get created", dataProvider = "loginUsers", groups = {
-			"smoke", "regression" }, dependsOnMethods = {"verifyBlankVACreatedWithMissingRPSLForActiveExemption", "verifyNoVACreatedWithMissingRPSLForInActiveExemption"}, alwaysRun = true, enabled = true)
+			"smoke", "regression","DisabledVeteranExemption" }, dependsOnMethods = {"verifyBlankVACreatedWithMissingRPSLForActiveExemption", "verifyNoVACreatedWithMissingRPSLForInActiveExemption"})
 	
 	
 	public void verifyVAWithApprovedRPSL(String loginUser) throws Exception {
+	if(!failedMethods.contains("verifyBlankVACreatedWithMissingRPSLForActiveExemption")) {
 		String strSuccessAlertMessage;
 		//Step1: Login to the APAS application using the credentials passed through		
 		objApasGenericFunctions.login(loginUser);
@@ -389,7 +400,10 @@ public class AnnualProcessTest extends TestBase{
 		softAssert.assertTrue(fVACreated,"SMAB-T511: Verify when annual batch process runs VAR does not get created for In-Active Exemption Record");
 		
 		objApasGenericFunctions.logout();
-				
+	}
+	else {
+		softAssert.assertTrue(false, "This Test depends on 'verifyBlankVACreatedWithMissingRPSLForActiveExemption' which got failed");	
+	}			
 	}
 	
 }

@@ -84,7 +84,7 @@ public class CreateAndEditExemptionWithMandatoryFieldsTest extends TestBase {
 	 -Exemption Support staff and RP Business Admin users are able to create an Exemption record
 	 **/
 	
-	@Test(description = "SMAB-T522: Disabled Veteran - Verify user is able to create and edit Exemption record by filling mandatory fields, SMAB-T523: Disabled Veteran - Verify user is not able to create Exemption record when mandatory fields are not entered before saving, SMAB-T480: Disabled Veterans- Verify that Exemption Support staff and Business Admins users are able to create an Exemption record", groups = {"smoke", "regression", "DisabledVeteran"}, dataProvider = "loginUsers1", alwaysRun = true)
+	@Test(description = "SMAB-T522: Disabled Veteran - Verify user is able to create and edit Exemption record by filling mandatory fields, SMAB-T523: Disabled Veteran - Verify user is not able to create Exemption record when mandatory fields are not entered before saving, SMAB-T480: Disabled Veterans- Verify that Exemption Support staff and Business Admins users are able to create an Exemption record", groups = {"smoke", "regression", "DisabledVeteranExemption"}, dataProvider = "loginUsers1")
 	public void createExemptionWithMandatoryFields(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -138,9 +138,9 @@ public class CreateAndEditExemptionWithMandatoryFieldsTest extends TestBase {
 	 -Mandatory check validations on edit Exemption screen using Pencil Edit button
 	 **/
 	
-	@Test(description = "SMAB-T522: Disabled Veteran - Verify user is able to create and edit Exemption record by filling mandatory fields, SMAB-T527 : Disabled Veteran - Verify user is not able to edit and save Exemption record when mandatory fields are not entered before saving", groups = {"smoke", "regression", "DisabledVeteran"}, dependsOnMethods = {"createExemptionWithMandatoryFields"}, dataProvider = "loginUsers", alwaysRun = true)
+	@Test(description = "SMAB-T522: Disabled Veteran - Verify user is able to create and edit Exemption record by filling mandatory fields, SMAB-T527 : Disabled Veteran - Verify user is not able to edit and save Exemption record when mandatory fields are not entered before saving", groups = {"smoke", "regression","DisabledVeteranExemption"}, dependsOnMethods = {"createExemptionWithMandatoryFields"}, dataProvider = "loginUsers")
 	public void editExemptionAndMandatoryFieldErrorValidation(String loginUser) throws Exception {
-		
+	if(!failedMethods.contains("createExemptionWithMandatoryFields")) {	
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
 
@@ -226,6 +226,10 @@ public class CreateAndEditExemptionWithMandatoryFieldsTest extends TestBase {
 		
 		objApasGenericFunctions.logout();
 	}
+	else {
+		softAssert.assertTrue(false, "This Test depends on 'createExemptionWithMandatoryFields' which got failed");	
+	}
+	}
 
 	/**
 	 Below test case is used to validate,
@@ -235,9 +239,9 @@ public class CreateAndEditExemptionWithMandatoryFieldsTest extends TestBase {
 	 -Exemption Support staff and RP Business Admin users are able to view and edit an Exemption record
 	 **/
 	
-	@Test(description = "SMAB-T523: Disabled Veteran - Verify user is not able to edit Exemption record when mandatory fields are not entered before saving, SMAB-T479: Disabled Veterans- Verify that Business admin and Exemption Support staff users are able to view an Exemption record, SMAB-T481: Disabled Veterans- Verify that Exemption Support staff and Business Admins users are able to edit an Exemption record", groups = {"regression", "DisabledVeteran"}, dependsOnMethods = {"createExemptionWithMandatoryFields"}, dataProvider = "loginUsers1", alwaysRun = true)
+	@Test(description = "SMAB-T523: Disabled Veteran - Verify user is not able to edit Exemption record when mandatory fields are not entered before saving, SMAB-T479: Disabled Veterans- Verify that Business admin and Exemption Support staff users are able to view an Exemption record, SMAB-T481: Disabled Veterans- Verify that Exemption Support staff and Business Admins users are able to edit an Exemption record", groups = {"regression","DisabledVeteranExemption"}, dependsOnMethods = {"createExemptionWithMandatoryFields"}, dataProvider = "loginUsers1")
 	public void editExemptionUsingShowMoreAndMandatoryFieldErrorValidation(String loginUser) throws Exception {
-		
+	if(!failedMethods.contains("createExemptionWithMandatoryFields")) {	
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
 
@@ -298,5 +302,9 @@ public class CreateAndEditExemptionWithMandatoryFieldsTest extends TestBase {
 		}
 		
 		objApasGenericFunctions.logout();
+	}
+	else {
+		softAssert.assertTrue(false, "This Test depends on 'createExemptionWithMandatoryFields' which got failed");	
+	}
 	}
 }

@@ -25,6 +25,7 @@ import org.openqa.selenium.support.ui.Select;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.config.modules;
 import com.apas.generic.ApasGenericFunctions;
@@ -65,7 +66,7 @@ public class ExemptionsPage extends ApasGenericPage {
 	public WebElement cancelButton;
 	
 	
-	@FindBy(xpath = "//a[@title='New']/div[@title='New'][1]")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//a[@title = 'New']")
 	public WebElement newExemptionButton;
 
 	@FindBy(xpath = "//input[@title='Search Parcels']")
@@ -482,7 +483,8 @@ public class ExemptionsPage extends ApasGenericPage {
 
 
 public String createNewExemption(Map<String,String> newExemptionData) throws Exception {
-	
+
+	ExtentTestManager.getTest().log(LogStatus.INFO, "Entering/Selecting values for New Exemption record");
 	apasGenericObj.searchAndSelectFromDropDown(apn,fetchActiveAPN());
 	objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
 	apasGenericObj.searchAndSelectFromDropDown(claimantName,fetchAssesseeName());
@@ -514,20 +516,15 @@ public String createNewExemption(Map<String,String> newExemptionData) throws Exc
 	
 	//objPage.locateElement("//a[contains(.,'Value Adjustments')]", 3);
 	objPage.waitForElementToBeVisible(dateApplicationReceivedExemptionDetails, 10);
-	String exemptionName=newExemptionNameAftercreation.getText();
-	System.out.println("Created Exemption:: "+exemptionName);
-	return exemptionName;
-	
+	ReportLogger.INFO("Created "+newExemptionNameAftercreation.getText()+" Exemption with mandatory data");
+	return newExemptionNameAftercreation.getText();
+
 	}
 
 
 public String createNewExemptionWithMandatoryData(Map<String, String> newExemptionData) throws Exception {
-
+	
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Entering/Selecting values for New Exemption record");
-	String exemptionName = null;
-	
-	
-	
 		apasGenericObj.searchAndSelectFromDropDown(apn,fetchActiveAPN());
 		objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
 		apasGenericObj.searchAndSelectFromDropDown(claimantName,fetchAssesseeName());
@@ -540,25 +537,20 @@ public String createNewExemptionWithMandatoryData(Map<String, String> newExempti
 		objPage.enter(dateOfNotice, newExemptionData.get("DateOfNotice"));
 		apasGenericObj.selectMultipleValues(newExemptionData.get("BasisForClaim"), "Basis for Claim");
 		apasGenericObj.selectFromDropDown(qualification, newExemptionData.get("Qualification"));
-		if(newExemptionData.get("Qualification").contains("Not Qualified"))
-		{
-			apasGenericObj.selectFromDropDown(reasonNotQualified, newExemptionData.get("ReasonForNotQualified"));	
-			
+		if(newExemptionData.get("Qualification").contains("Not Qualified")) {
+			apasGenericObj.selectFromDropDown(reasonNotQualified, newExemptionData.get("ReasonForNotQualified"));
 		}
-		if(newExemptionData.containsKey("EnddateOfRatingNeeded"))
-		{
+		if(newExemptionData.containsKey("EnddateOfRatingNeeded")) {
 			objPage.enter(endDateOfRating, newExemptionData.get("EnddateOfRatingNeeded"));
 			apasGenericObj.selectFromDropDown(endRatingReason, newExemptionData.get("EndRatingReason"));
-			
 		}
 		objPage.Click(saveButton);
+
 		objPage.waitForElementToBeVisible(dateApplicationReceivedExemptionDetails, 10);
-		exemptionName=newExemptionNameAftercreation.getText();
-		System.out.println("Created Exemption:: "+exemptionName);
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Created "+exemptionName+" Exemption with mandatory data");
+		ReportLogger.INFO("Created "+newExemptionNameAftercreation.getText()+" Exemption with mandatory data");
 	
 	
-	return exemptionName;
+	return newExemptionNameAftercreation.getText();
 }
 
 
@@ -704,9 +696,10 @@ public void waitForExemptionScreenToLoad() {
  */
 
 public void enterNonQualifiedExemptionData(Map<String, String> dataMap) throws Exception {
+	String assesseeName = fetchAssesseeName();
 	searchAndSelectFromDropDown(apn, dataMap.get("APN"));
 	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
-	searchAndSelectFromDropDown(claimantName, dataMap.get("Claimant Name"));
+	searchAndSelectFromDropDown(claimantName, assesseeName);
 	enter(claimantSSN, dataMap.get("Claimant SSN"));
 	enter(nameOfVeteran, dataMap.get("Veteran Name"));
 	enter(veteranSSN, dataMap.get("Veteran SSN"));
@@ -725,9 +718,10 @@ public void enterNonQualifiedExemptionData(Map<String, String> dataMap) throws E
  */
 
 public void enterExemptionDataWithMandatoryField(Map<String, String> dataMap) throws Exception {
+	String assesseeName = fetchAssesseeName();
 	searchAndSelectFromDropDown(apn, dataMap.get("APN"));
 	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
-	searchAndSelectFromDropDown(claimantName, dataMap.get("Claimant Name"));
+	searchAndSelectFromDropDown(claimantName, assesseeName);
 	enter(claimantSSN, dataMap.get("Claimant SSN"));
 	enterDate(dateAquiredProperty, dataMap.get("Date Acquired Property"));
 	enterDate(dateOccupiedProperty, dataMap.get("Date Occupied/Intend to Occupy Property"));
@@ -743,9 +737,10 @@ public void enterExemptionDataWithMandatoryField(Map<String, String> dataMap) th
  */
 
 public void enterExemptionData(Map<String, String> dataMap) throws Exception {
+	String assesseeName = fetchAssesseeName();
 	searchAndSelectFromDropDown(apn, dataMap.get("APN"));
 	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
-	searchAndSelectFromDropDown(claimantName, dataMap.get("Claimant Name"));
+	searchAndSelectFromDropDown(claimantName, assesseeName);
 	enter(claimantSSN, dataMap.get("Claimant SSN"));
 	enter(nameOfVeteran, dataMap.get("Veteran Name"));
 	enter(veteranSSN, dataMap.get("Veteran SSN"));
@@ -763,9 +758,10 @@ public void enterExemptionData(Map<String, String> dataMap) throws Exception {
  */
 
 public void enterExemptionDataWithEndDateOfRating(Map<String, String> dataMap) throws Exception {
+	String assesseeName = fetchAssesseeName();
 	searchAndSelectFromDropDown(apn, dataMap.get("APN"));
 	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
-	searchAndSelectFromDropDown(claimantName, dataMap.get("Claimant Name"));
+	searchAndSelectFromDropDown(claimantName, assesseeName);
 	enter(claimantSSN, dataMap.get("Claimant SSN"));
 	enter(nameOfVeteran, dataMap.get("Veteran Name"));
 	enter(veteranSSN, dataMap.get("Veteran SSN"));
@@ -1132,7 +1128,7 @@ public void searchAndSelectExemption(String exemptionName) throws Exception
 	apasGenericObj.searchModule(modules.EXEMPTION);
 	
 	// Step2: Selecting List View 'All'
-	apasGenericObj.selectListView("All");
+	apasGenericObj.displayRecords("All");
 	
 	//Step3: Fetching value of Exemption created above
 	String value = exemptionName;
@@ -1158,6 +1154,7 @@ public String getExemptionNameFromSuccessAlert() throws Exception {
 
 
 public String fetchAssesseeName() throws Exception {
+
     SalesforceAPI objSalesforceAPI = new SalesforceAPI();
     String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type = 'Person' OR Type = 'Business'";
     HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
@@ -1165,12 +1162,17 @@ public String fetchAssesseeName() throws Exception {
     return assesseeName;
 }
 
-public String fetchActiveAPN() throws Exception {
-    SalesforceAPI objSalesforceAPI = new SalesforceAPI();
-    String queryForID = "SELECT Name FROM Parcel__c where Status__c='Active' Limit 1";
-    HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
-    String apn = response.get("Name").get(0);
-    return apn;
-}
+
+   /*
+   This method is used to return the first active APN from Salesforce
+   @return: returns the active APN
+    */
+	public String fetchActiveAPN() {
+		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+		String queryForID = "SELECT Name FROM Parcel__c where Status__c='Active' Limit 1";
+		HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
+		return response.get("Name").get(0);
+	}
+
 
 }

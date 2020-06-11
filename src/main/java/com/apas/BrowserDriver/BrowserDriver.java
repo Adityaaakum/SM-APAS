@@ -76,7 +76,6 @@ public class BrowserDriver {
 				dwc.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 				dwc.setCapability("unexpectedAlertBehaviour", "accept");
 				dwc.setCapability(ChromeOptions.CAPABILITY, options);
-
 				Wdriver = new RemoteWebDriver(url, dwc);
 				Wdriver.manage().window().maximize();
 				setWebDriver(Wdriver);

@@ -145,10 +145,35 @@ public class EFileImportPage extends Page {
 	 * @param absoluteFilePath: Absoulte Path of the file with the file name
 	 */
 	public void uploadFileOnEfileIntake(String fileType, String source,String period, String absoluteFilePath) throws Exception{
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " +  absoluteFilePath + " file");
+		ReportLogger.INFO("Uploading " +  absoluteFilePath + " file");
 		selectFileAndSource(fileType, source);
 		objPage.waitUntilElementDisplayed(nextButton, 15);
-		objPage.scrollToElement(nextButton);
+		objPage.scrollToTop();
+		objPage.Click(nextButton);
+		objPage.Click(periodDropdown);
+		objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
+		objPage.Click(confirmButton);
+		Thread.sleep(2000);
+		uploadFileInputBox.sendKeys(absoluteFilePath);
+		Thread.sleep(2000);
+		objPage.waitForElementToBeClickable(doneButton);
+		Thread.sleep(2000);
+		objPage.Click(doneButton);
+		waitForElementToBeClickable(statusImportedFile,20);
+		objPage.waitForElementTextToBe(statusImportedFile, "In Progress", 120);
+	}
+	
+	/**
+	 * This method will upload the file on Efile Import module
+	 * @param fileType : Value from File Type Drop Down
+	 * @param source: Value from source drop down
+	 * @param period: Period for which the file needs to be uploaded
+	 * @param absoluteFilePath: Absoulte Path of the file with the file name
+	 */
+	public void uploadInvalidFormatFileOnEfileIntake(String fileType, String source,String period, String absoluteFilePath) throws Exception{
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " +  absoluteFilePath + " file");
+		selectFileAndSource(fileType, source);
+		objPage.waitUntilElementDisplayed(nextButton, 10);
 		objPage.Click(nextButton);
 		objPage.Click(periodDropdown);
 		objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
@@ -156,13 +181,9 @@ public class EFileImportPage extends Page {
 		Thread.sleep(2000);
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " + absoluteFilePath + " on Efile Import Tool");
 		uploadFileInputBox.sendKeys(absoluteFilePath);
-		objPage.waitForElementToBeClickable(doneButton);
 		Thread.sleep(2000);
-		objPage.Click(doneButton);
-		waitForElementToBeClickable(statusImportedFile,20);
-		objPage.waitForElementTextToBe(statusImportedFile, "In Progress", 120);
 	}
-
+	
 	/**
 	 * This method will expand the section provided in webelement passed in the parameter
 	 * @param element : section to be expanded

@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>APAS_Automation</groupId>
@@ -97,8 +97,8 @@
 			<artifactId>commons-configuration</artifactId>
 			<version>1.10</version>
 		</dependency>
-		<!-- <dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId> 
-			<version>4.0</version> <scope>system</scope> <systemPath>${project.basedir}\src\lib\sqljdbc4.jar</systemPath> 
+		<!-- <dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId>
+			<version>4.0</version> <scope>system</scope> <systemPath>${project.basedir}\src\lib\sqljdbc4.jar</systemPath>
 			</dependency> -->
 		<dependency>
 			<groupId>org.json</groupId>
@@ -169,15 +169,15 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.directory.studio/org.apache.commons.io -->
 		<dependency>
-		    <groupId>org.apache.directory.studio</groupId>
-		    <artifactId>org.apache.commons.io</artifactId>
-		    <version>2.4</version>
+			<groupId>org.apache.directory.studio</groupId>
+			<artifactId>org.apache.commons.io</artifactId>
+			<version>2.4</version>
 		</dependency>
-		
-        <dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-math3</artifactId>
-		    <version>3.5</version>
+		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 	</dependencies>
 
@@ -188,11 +188,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
-
-<!--					<configuration>-->
-<!--						<fork>true</fork>-->
-<!--						<executable>C:\Program Files\Java\jdk1.8.0_231\bin\javac.exe</executable>-->
-<!--					</configuration>-->
 
 				</plugin>
 				<plugin>
@@ -217,27 +212,23 @@
 								<value>com.apas.Listeners.SuiteListener,com.apas.Listeners.TestAnnotationListener</value>
 							</property>
 						</properties>
-
-						
-						<!-- <forkCount>10</forkCount> <reuseForks>true</reuseForks> -->
-
-						<forkCount>0</forkCount> 
+						<forkCount>0</forkCount>
 						<!-- <reuseForks>true</reuseForks> -->
 						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
 						<!-- <includes>
-                             <include>BuildingPermit_Manual_Test.java</include>
-                             <include>BuildingPermitEditTest.java</include>
-                        </includes> -->
+						         <include>BuildingPermit_Manual_Test.java</include>
+						         <include>BuildingPermitEditTest.java</include>
+					    </includes> -->
 						<groups>${testSuite}</groups>
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
 						<systemPropertyVariables>
-                               <browserName>${browserName}</browserName>
-                               <testSuite>${testSuite}</testSuite>
-                               <gridHubUrl>${gridHubUrl}</gridHubUrl>
-                               <region>${region}</region>
-                               <flagToUpdateJira>${flagToUpdateJira}</flagToUpdateJira>
-                               <testCycle>${testCycle}</testCycle>
-                          </systemPropertyVariables>    
+							<browserName>${browserName}</browserName>
+							<testSuite>${testSuite}</testSuite>
+							<gridHubUrl>${gridHubUrl}</gridHubUrl>
+							<region>${region}</region>
+							<flagToUpdateJira>${flagToUpdateJira}</flagToUpdateJira>
+							<testCycle>${testCycle}</testCycle>
+						</systemPropertyVariables>
 					</configuration>
 				</plugin>
 			</plugins>

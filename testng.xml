@@ -6,26 +6,18 @@
 		<listener class-name="com.apas.Listeners.SuiteListener"/>
 		<listener class-name="com.apas.Listeners.TestAnnotationListener"/>
 	</listeners>
-	<test name="smoke" annotations="">
-<!--		<groups>-->
-<!--			<run>-->
-<!--				<include name="smoke"/>-->
-<!--			</run>-->
-<!--		</groups>-->
+	<test name="regression" annotations="">
+		<groups>
+			<run>
+				<include name="regression"/>
+			</run>
+		</groups>
 		<classes>
-
-			<!-- <class name="com.apas.Tests.BuildingPermit.BuildingPermitImportTest"/> -->
-
-<!--			<class name="com.apas.Tests.ApasSettings.CityStratCodesTest" />-->
-<!--			<class name="com.apas.Tests.ApasSettings.ReportsTest" />-->
-<!--			<class name="com.apas.Tests.ApasSettings.RollwisePermissionTest" />-->
-<!--			<class name="com.apas.Tests.ApasSettings.NonRelevantPermitSettingsTest" />-->
-			<!-- <class name="com.apas.Tests.BuildingPermit.BuildingPermitDataValidationTest" /> -->
-<!--			<class name="com.apas.Tests.BuildingPermit.BuildingPermitEditTest" />-->
-<!--			<class name="com.apas.Tests.BuildingPermit.BuildingPermitManualCreationTest" />-->
-<!--			<class name="com.apas.Tests.BuildingPermit.BuildingPermitImportTest"/>-->
-<!--			<class name="com.apas.Tests.BuildingPermit.BuildingPermitTransactionsLogTest"/>-->
-<!--            <class name="com.apas.Tests.BppTrend.BppTrendCalculateAndSubmitTest"/> -->
+			 <class name="com.apas.Tests.BuildingPermit.BuildingPermit_ManualCreationAndProcessing_Test">
+				 <methods>
+					 <include name="verify_BuildingPermit_EditBuildingPermitsImportedThroughEfile"/>
+				 </methods>
+			 </class>
 		</classes>
 	</test>
 </suite>
