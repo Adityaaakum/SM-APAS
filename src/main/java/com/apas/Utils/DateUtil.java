@@ -50,19 +50,32 @@ public static String getDateInRequiredFormat(String date,String givenFormat,Stri
  * Description: This method is to determine maximum dates out of given number of dates 
  * @param alldates...: n number of date
  * @return : returns the maximum date in String format
+ * @throws ParseException 
  */
 
 
-public static String determineMaxDate(String... alldates)
+public static String determineMaxDate(String... alldates) throws ParseException
 {
-String max=alldates[0];
+	SimpleDateFormat sdfo = new SimpleDateFormat("MM/dd/yyyy");
+	 Date max = sdfo.parse(alldates[0]);
+	
+	 for(int i=1;i<alldates.length;i++)
+	 {
+	
+	 Date next = sdfo.parse(alldates[i]);
+	 
+	 if (max.compareTo(next) > 0 || max.compareTo(next) == 0) {
+		 
+		} 
+	 else if (max.compareTo(next) < 0) { 
 		
-for (int i = 1; i < alldates.length; i++) 
-{
-	if (alldates[i].compareTo(max)>0) 
-         max = alldates[i]; 
-}
-return max;
+		  max=next;
+       } 
+ 
+        
+	 }
+	
+	return sdfo.format(max).toString();
 
 }
 

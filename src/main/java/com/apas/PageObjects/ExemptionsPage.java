@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.RandomStringUtils;
 //import org.apache.commons.math3.util.Precision;
 import org.apache.log4j.Logger;
@@ -21,6 +22,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+
 import com.apas.Assertions.SoftAssertion;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
@@ -470,7 +472,7 @@ public class ExemptionsPage extends ApasGenericPage {
 		
 	}
 	
-	////To be deleted after using database query instead of using this
+
 /**
  * Description: This method is to select a record from list screen  
  * User should be on the respective screen
@@ -481,13 +483,11 @@ public class ExemptionsPage extends ApasGenericPage {
 
 
 public String createNewExemption(Map<String,String> newExemptionData) throws Exception {
-	// TODO Auto-generated method stub
-	String assesseeName = fetchAssesseeName();
-	
+
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Entering/Selecting values for New Exemption record");
 	apasGenericObj.searchAndSelectFromDropDown(apn,fetchActiveAPN());
 	objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-	apasGenericObj.searchAndSelectFromDropDown(claimantName,assesseeName);
+	apasGenericObj.searchAndSelectFromDropDown(claimantName,fetchAssesseeName());
 	objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
 	objPage.enter(spouseName, newExemptionData.get("SpouseName"));
 	objPage.enter(spouseSSN, newExemptionData.get("SpouseSSN"));
@@ -510,25 +510,24 @@ public String createNewExemption(Map<String,String> newExemptionData) throws Exc
 	objPage.enter(claimantTelephone,newExemptionData.get("Telephone"));
 	apasGenericObj.selectMultipleValues(newExemptionData.get("DeceasedVeteranQualification"), "Deceased Veteran Qualification");
 	apasGenericObj.selectFromDropDown(qualification, newExemptionData.get("Qualification"));
-	//apasGenericObj.selectFromDropDown(disabledVeteranObj.endRatingReason, newExemptionData.get("EndRatingReason"));
-	//objPage.enter(disabledVeteranObj.endDateOfRating, newExemptionData.get("EnddateOfRating"));
+	objPage.enter(endDateOfRating, newExemptionData.get("EnddateOfRating"));
+	apasGenericObj.selectFromDropDown(endRatingReason, newExemptionData.get("EndRatingReason"));
 	objPage.Click(saveButton);
-	//checkIfDuplicateExemption(newExemptionData);
-	objPage.locateElement("//a[contains(.,'Value Adjustments')]", 3);
-	String exemptionName=newExemptionNameAftercreation.getText();
-	System.out.println("Created Exemption:: "+exemptionName);
-	return exemptionName;
 	
+	//objPage.locateElement("//a[contains(.,'Value Adjustments')]", 3);
+	objPage.waitForElementToBeVisible(dateApplicationReceivedExemptionDetails, 10);
+	ReportLogger.INFO("Created "+newExemptionNameAftercreation.getText()+" Exemption with mandatory data");
+	return newExemptionNameAftercreation.getText();
+
 	}
 
 
 public String createNewExemptionWithMandatoryData(Map<String, String> newExemptionData) throws Exception {
+	
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Entering/Selecting values for New Exemption record");
-
-		String assesseeName = fetchAssesseeName();
 		apasGenericObj.searchAndSelectFromDropDown(apn,fetchActiveAPN());
 		objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-		apasGenericObj.searchAndSelectFromDropDown(claimantName,assesseeName);
+		apasGenericObj.searchAndSelectFromDropDown(claimantName,fetchAssesseeName());
 		objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
 		objPage.enter(veteranName, newExemptionData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 		objPage.enter(veteranSSN, newExemptionData.get("VeteranSSN"));
@@ -546,14 +545,12 @@ public String createNewExemptionWithMandatoryData(Map<String, String> newExempti
 			apasGenericObj.selectFromDropDown(endRatingReason, newExemptionData.get("EndRatingReason"));
 		}
 		objPage.Click(saveButton);
-		//checkIfDuplicateExemption(newExemptionData);
-		objPage.locateElement("//div[@class='windowViewMode-normal oneContent active lafPageHost']//div[contains(.,'Date Application Received')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text", 4);
-		String exemptionName=newExemptionNameAftercreation.getText();
-		System.out.println("Created Exemption:: "+exemptionName);
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Created "+exemptionName+" Exemption with mandatory data");
+
+		objPage.waitForElementToBeVisible(dateApplicationReceivedExemptionDetails, 10);
+		ReportLogger.INFO("Created "+newExemptionNameAftercreation.getText()+" Exemption with mandatory data");
 	
 	
-	return exemptionName;
+	return newExemptionNameAftercreation.getText();
 }
 
 
@@ -1157,13 +1154,14 @@ public String getExemptionNameFromSuccessAlert() throws Exception {
 
 
 public String fetchAssesseeName() throws Exception {
-       SalesforceAPI objSalesforceAPI = new SalesforceAPI();
-       String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type = 'Person' OR Type = 'Business'";
-       HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
-       String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
-       ReportLogger.INFO("Assessee Name fetched through Salesforce API : " + assesseeName);
-       return assesseeName;
-   }
+
+    SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+    String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type = 'Person' OR Type = 'Business'";
+    HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
+    String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
+    return assesseeName;
+}
+
 
    /*
    This method is used to return the first active APN from Salesforce
@@ -1175,5 +1173,6 @@ public String fetchAssesseeName() throws Exception {
 		HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
 		return response.get("Name").get(0);
 	}
+
 
 }

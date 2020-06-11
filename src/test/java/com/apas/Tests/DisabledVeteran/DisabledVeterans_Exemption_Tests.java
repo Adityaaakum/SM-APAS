@@ -65,27 +65,30 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	 below test case is for business validations for Exemption fields
 	 * @throws Exception 
 	 */
-	@Test(description = "SMAB-T488,SMAB-T491,SMAB-T492,SMAB-T493,SMAB-T495,SMAB-T496:Future dates Error Messages for date Fields",dataProvider="loginExemptionSupportStaff" ,dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption"})
-	public void verify_DisabledVeteran_FutureDatesErrorMessagesWhileCreatingExemption(String loginUser) throws Exception {
+
+	@Test(description = "SMAB-T488,SMAB-T491,SMAB-T492,SMAB-T493,SMAB-T495,SMAB-T496:Future dates Error Messages for date Fields",dataProvider="loginExemptionSupportStaff" ,dataProviderClass = DataProviders.class, groups = {
+			"smoke", "regression","DisabledVeteranExemption"})
+	public void verify_Disabledveteran_FutureDatesErrorMessagesWhileCreatingExemption(String loginUser) throws Exception{
 		
 		Map<String, String> fieldData = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
-		fieldData.put("ClaimantName",exemptionPageObj.fetchAssesseeName());
-
-		String futureDate=DateUtil.getFutureORPastDate(java.time.LocalDate.now().toString(), 2, "yyyy-MM-dd");
+		fieldData.put("ClaimantName", exemptionPageObj.fetchAssesseeName());
+		fieldData.put("APN", exemptionPageObj.fetchActiveAPN());
+		
+		String futureDate=DateUtil.getFutureORPastDate(java.time.LocalDate.now().toString(), 2, "yyyy-MM-dd");	        
 		String endDateGreaterThanUSDVADate=DateUtil.getFutureORPastDate(java.time.LocalDate.now().toString(), 5, "yyyy-MM-dd");
 		//Step1: Login to the APAS application using the credentials passed through data provider
 		apasGenericObj.login(loginUser);
-
+		
 		//Step2: Opening the Exemption Module
 		apasGenericObj.searchModule(EXEMPTIONS);
-
+		
 		objPage.Click(exemptionPageObj.newExemptionButton);
-
+		
 		//Step3: selecting mandatory details before verifying error message
-		apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.apn,exemptionPageObj.fetchActiveAPN());
+		apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.apn,fieldData.get("APN"));
 		apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.claimantName,fieldData.get("ClaimantName"));
 		objPage.enter(exemptionPageObj.claimantSSN, fieldData.get("ClaimantSSN"));
-
+		
 		//step4:
 		/**verifying 'Date Application Received','Date Acquire Property','Date of Death Veteran',
 		 'Date occupied/Intend to occupy Property','Date Move From Prior Residence',
@@ -106,7 +109,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		objPage.Click(ExemptionsPage.saveButton);
 		Thread.sleep(5000);
 		//ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying all entered fields show future date error messages");
-
+		
 		String expected=" can't be a future date";
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date Application Received"),"Date Application Received".concat(expected),"SMAB-T491: Verify Application Date can't be a Future Date");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date of Death of Veteran"),"Date of Death of Veteran".concat(expected),"SMAB-T494: Verify Date Of death of veteran Property can't be a Future Date");
@@ -123,11 +126,11 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	
 	
 	@Test(description = "SMAB-T501,SMAB-T502,SMAB-T503,SMAB-T497,SMAB-T498,SMAB-T1278,SMAB-T1122,SMAB-T1223,SMAB-T1263,SMAB-T1264,SMAB-T1221:business validations for Exemption fields", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-			"smoke", "regression","DisabledVeteranExemption" })
-	public void verify_Disabledveteran_BusinessValidationsForExemptionFields(String loginUser) throws Exception
-	{
+			"smoke", "regression","DisabledVeteranExemption"})
+	public void verify_Disabledveteran_BusinessValidationsForExemptionFields(String loginUser) throws Exception{
 			Map<String, String> businessValidationdata = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
-			businessValidationdata.put("ClaimantName",exemptionPageObj.fetchAssesseeName());
+			businessValidationdata.put("ClaimantName", exemptionPageObj.fetchAssesseeName());
+			businessValidationdata.put("APN", exemptionPageObj.fetchActiveAPN());
 			
 			//Step1: Login to the APAS application using the credentials passed through data provider
 			apasGenericObj.login(loginUser);
@@ -138,7 +141,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			objPage.Click(exemptionPageObj.newExemptionButton);
 			
 			//Step3: selecting mandatory details before verifying error message
-			apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.apn,exemptionPageObj.fetchActiveAPN());
+			apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.apn,businessValidationdata.get("APN"));
 			objPage.enter(exemptionPageObj.dateApplicationReceived,businessValidationdata.get("DateApplicationReceived"));
 			apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.claimantName,businessValidationdata.get("ClaimantName"));
 			objPage.enter(exemptionPageObj.claimantSSN, businessValidationdata.get("ClaimantSSN"));
@@ -241,17 +244,6 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			Thread.sleep(2000);
 			softAssert.assertEquals(exemptionPageObj.reasonForNotQualifiedErrorMsg.getText(), "Reason for Not Qualified must be blank", "SMAB-T1263,SMAB-T1264:Verify When the Exemption qualification is Qualified,Reason for Not Qualified is not Blank and the Exemption record is saved, then user is prompted with error message");
 			
-			/*//step12:
-			*//**verifying when 'Qualification' is Qualified and 'Reason for not Qualified' is Not Blank then user sees corresponding error message
-			 **//*
-			ReportLogger.INFO("verifyin error message when 'Qualification' is Not Qualified and 'Reason for not Qualified' is Not Blank");	
-			apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, "Qualified");
-			objPage.Click(exemptionPageObj.saveButton);
-			Thread.sleep(2000);
-			softAssert.assertEquals(exemptionPageObj.reasonForNotQualifiedErrorMsg.getText(), "Reason for Not Qualified must be blank", "SMAB-T1221,SMAB-T1263,SMAB-T1264:Verify When the Exemption qualification is Qualified,Reason for Not Qualified is not Blank and the Exemption record is saved, then user is prompted with error message");
-			
-		*/	
-			
 			objPage.Click(objApasGenericPage.crossButton);
 
 			apasGenericObj.logout();
@@ -313,6 +305,8 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			softAssert.assertEquals(objPage.getElementText(exemptionPageObj.QualificationOnDetailsPageErrorMsg), dataToEdit.get("QualificationUpdateErrorMsg"),"SMAB-T1269:Verify user gets error message when updating the 'Qualification?' from Qualified to Not Qualified");
 			
 			objPage.Click(exemptionPageObj.cancelButton);
+			softAssert.assertEquals(objPage.getElementText(exemptionPageObj.exemationStatusOnDetails), "Active","SMAB-T499,SMAB-T489:Verify New exemption will always have status as active if Qualification? is Qualified");
+			
 
 			apasGenericObj.logout();
 			
@@ -347,15 +341,10 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			objPage.enter(exemptionPageObj.endDateOfRating, dataToEdit.get("EnddateOfRating")); 
 			apasGenericObj.selectFromDropDown(exemptionPageObj.endRatingReason, dataToEdit.get("EndRatingReason"));
 			objPage.Click(ExemptionsPage.saveButton);
-			
-				
-			
-			
+	
 			//step6:now updating end date of rating on field level and verifying it should not be updated
-			//ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying End date of Rating can't be modified once set on field level Edit");
 			ReportLogger.INFO("Verifying End date of Rating can't be modified once updated on field level Edit");
 			Thread.sleep(5000);
-			//driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 			apasGenericObj.editAndInputFieldData("End Date of Rating",exemptionPageObj.endDateOfRating,dataToEdit.get("EnddateOfRatingUpdated"));
 			String erroMsgOnField=vaPageObj.editFieldErrorMsg.getText().trim();
 			softAssert.assertEquals(erroMsgOnField, expectedError,"SMAB-T1218:verified End Date of Rating can't be modified if set once on field level edit.");
@@ -366,7 +355,6 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			
 			
 			//ste5: updating end date of rating on page level edit and verifying it should not be updated
-			///ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying End date of Rating can't be modified once set on page level Edit");
 			ReportLogger.INFO("Verifying End date of Rating can't be modified once set on Page level Edit");
 			Thread.sleep(8000);
 			objPage.waitForElementToBeClickable(5, exemptionPageObj.editExemption);

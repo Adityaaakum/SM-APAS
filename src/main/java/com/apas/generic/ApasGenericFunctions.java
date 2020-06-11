@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Objects;
 
 import com.apas.Reports.ReportLogger;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.LoginPage;
@@ -302,9 +302,7 @@ public class ApasGenericFunctions extends TestBase {
     public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
         objPage.enter(element, value);
         String xpathStr = null;
-
-        xpathStr = "//mark[text() = '" + value + "']";
-
+            xpathStr = "//div[@title = '" + value + "']";
         WebElement drpDwnOption = locateElement(xpathStr, 10);
         drpDwnOption.click();
     }
@@ -351,7 +349,6 @@ public class ApasGenericFunctions extends TestBase {
         }
     }
 
-
     /**
      * @param fieldName: name of the required field
      * @param field:     field Webelement
@@ -359,14 +356,16 @@ public class ApasGenericFunctions extends TestBase {
      * @throws Exception
      * @Description: This method is to edit(enter) a record by clicking on the pencil icon and save it(field level edit)
      */
-    public void editAndInputFieldData(String fieldName, WebElement field, String data) throws Exception {
-        objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'" + fieldName + "')]/ancestor::button");
-        objPage.enter(field, data);
-        objPage.Click(ExemptionsPage.saveButton);
-        Thread.sleep(4000);
 
-    }
-
+public void editAndInputFieldData(String fieldName,WebElement field, String data) throws Exception
+{
+objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'Edit "+fieldName+"')]/ancestor::button");
+		objPage.enter(field, data);
+		objPage.Click(ExemptionsPage.saveButton);
+		Thread.sleep(4000);
+	
+}
+   
 
     /**
      * @param fieldName: name of the required field
@@ -375,18 +374,40 @@ public class ApasGenericFunctions extends TestBase {
      * @Description: This method is to edit(select) a record by clicking on the pencil icon and save it(field level edit)
      */
 
-    public void editAndSelectFieldData(String fieldName, String value) throws Exception {
-        objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'" + fieldName + "')]/ancestor::button");
-        WebElement dropdown = driver.findElement(By.xpath("//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'" + fieldName + "')]//div/input"));
-        //selectFromDropDown(dropdown, value);
-        objPage.Click(dropdown);
-        String xpathStr = null;
-        xpathStr = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'" + fieldName + "')]//span[@title='" + value + "']";
+
+public void editAndSelectFieldData(String fieldName, String value) throws Exception
+{
+		objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'Edit "+fieldName+"')]/ancestor::button");
+		WebElement dropdown=driver.findElement(By.xpath("//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'"+fieldName+"')]//div/input"));
+		//selectFromDropDown(dropdown, value);
+		objPage.Click(dropdown);
+        
+        String xpathStr = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'"+fieldName+"')]//span[@title='"+value+"']";
         WebElement drpDwnOption = locateElement(xpathStr, 3);
         drpDwnOption.click();
-        objPage.Click(ExemptionsPage.saveButton);
-        Thread.sleep(4000);
+		objPage.Click(ExemptionsPage.saveButton);
+		Thread.sleep(4000);
+	
+}
 
-    }
+/**
+ * @Description: This method is to check for the disapperance of an element
+ * @param element, timeout: webelement to be searched 
+ * @param timeOutInSeconds: timeout in seconds
+ * @throws Exception
+ */
+
+
+public void waitForElementToDisappear(WebElement element, int timeOutInSeconds) throws Exception {
+        for(int i = 0; i < (timeOutInSeconds * 10); i++) {
+            try {
+                element.isDisplayed();               
+            } catch(NoSuchElementException ex) {
+                break;//ex.printStackTrace();
+            } catch(StaleElementReferenceException ex) {
+                break;//ex.printStackTrace();
+            }
+        		}
+		}
 
 }
