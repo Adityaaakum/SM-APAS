@@ -79,6 +79,8 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	{
 		
 			Map<String, String> fieldData = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
+			fieldData.put("ClaimantName", exemptionPageObj.fetchAssesseeName());
+			fieldData.put("APN", exemptionPageObj.fetchActiveAPN());
 			
 			String futureDate=DateUtil.getFutureORPastDate(java.time.LocalDate.now().toString(), 2, "yyyy-MM-dd");	        
 			String endDateGreaterThanUSDVADate=DateUtil.getFutureORPastDate(java.time.LocalDate.now().toString(), 5, "yyyy-MM-dd");
@@ -136,6 +138,8 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	public void verify_Disabledveteran_BusinessValidationsForExemptionFields(String loginUser) throws Exception
 	{
 			Map<String, String> businessValidationdata = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
+			businessValidationdata.put("ClaimantName", exemptionPageObj.fetchAssesseeName());
+			businessValidationdata.put("APN", exemptionPageObj.fetchActiveAPN());
 			
 			//Step1: Login to the APAS application using the credentials passed through data provider
 			apasGenericObj.login(loginUser);
@@ -321,6 +325,8 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			softAssert.assertEquals(objPage.getElementText(exemptionPageObj.QualificationOnDetailsPageErrorMsg), dataToEdit.get("QualificationUpdateErrorMsg"),"SMAB-T1269:Verify user gets error message when updating the 'Qualification?' from Qualified to Not Qualified");
 			
 			objPage.Click(exemptionPageObj.cancelButton);
+			softAssert.assertEquals(objPage.getElementText(exemptionPageObj.exemationStatusOnDetails), "Active","SMAB-T499,SMAB-T489:Verify New exemption will always have status as active if Qualification? is Qualified");
+			
 
 			apasGenericObj.logout();
 			
