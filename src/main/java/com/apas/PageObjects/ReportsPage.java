@@ -1,6 +1,7 @@
 package com.apas.PageObjects;
 
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.relevantcodes.extentreports.LogStatus;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -78,5 +79,24 @@ public class ReportsPage extends Page {
 		Click(exportButton);
 		//Added this wait to allow the file to download
 		Thread.sleep(5000);
+	}
+	
+	/**
+	 * Description: This method will navigate to the report Name passed as parameter
+	 * @param reportName: Name of the Report
+	 */
+	public void navigateToReport(String reportName) throws IOException, InterruptedException {
+		ReportLogger.INFO("Opening All Reports Screen");
+		Click(linkAllReports);
+		//Opening the report "Building Permit By City Code"
+		ReportLogger.INFO("Opening the report " + reportName);
+		//Added this wait as report was taking sometime to open
+		Thread.sleep(3000);
+		JavascriptExecutor executor = driver;
+		//Using the JavaScriptExecutor as CLICK method is not working
+		WebElement webElement =  driver.findElement(By.xpath("//a[@title='" + reportName + "']"));
+		executor.executeScript("arguments[0].click();", webElement);
+		waitUntilPageisReady(driver);
+		Thread.sleep(3000);
 	}
 }

@@ -256,4 +256,23 @@ public class Util {
 		}
 		return dataMap;
 	}
+	/**
+	 * Description: This method will count files with extension '.xlsx.' in Downloads Folder
+	 * @param: File Extension will be passed as argument. for e.g. : xlsx
+	 * @param: Folder Path will be passed as argument
+	 * @return integer: number of files with extension '.xlsx.' in Downloads Folder
+	 */
+	public int countFilesInFolder(String fileExtension, String path) {
+		File folder = new File(path);
+		String[] fileNames = folder.list();
+		int totalExcelFiles = 0;
+		for (int i = 0; i< fileNames.length; i++)
+		{
+		  if (fileNames[i].contains("."+fileExtension))
+		    {
+			  totalExcelFiles++;
+		     }
+		  }	
+		return totalExcelFiles;
+	}
 }

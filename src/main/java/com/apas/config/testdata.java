@@ -27,5 +27,6 @@ public interface testdata {
     
     public static final String EXEMPTION_DATA = "\\data\\Exemptions\\ExemptionData.json";
     public static final String ANNUAL_PROCESS_DATA = "\\data\\DisabledVeteran\\AnnualProcess\\DisabledVeteran_AnnualProcessData.json";
- 
+    public static final String EXEMPTION_REPORT_DATA = "\\data\\DisabledVeteran\\DVExemptionReport\\DisabledVeteran_DVExemptionReport.json";
+    
 }

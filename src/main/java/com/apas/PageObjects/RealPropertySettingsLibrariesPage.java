@@ -299,7 +299,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	}
 	
 
-	 public void removeExistingRealPropertySettingEntry(String rollYear) throws Exception {
+	 public void removeRealPropertySettingEntry(String rollYear) throws Exception {
 	        SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 	        String queryForID = "SELECT Id FROM Real_Property_Settings_Library__c where Name = 'Exemption Limits - " + rollYear +"'";
 	        objSalesforceAPI.delete("Real_Property_Settings_Library__c", queryForID);
@@ -312,22 +312,14 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		 * @throws Exception
 		 */
 		public void verifyAndDeleteExistingRPSL(String rollYear) throws Exception {	
-			String locatorKey = "//table//tbody/tr//td//a[text() = '"+ rollYear +"']";
-			boolean flag = false;				
+			String xPath = "//table//tbody/tr//td//a[text() = '"+ rollYear +"']";	
+			WebElement ele = null;
 			try {			
-				WebElement ele = driver.findElement(By.xpath(locatorKey));
-				flag = true;
-				System.out.println("Flag inside try: "+ flag);
-			} catch (org.openqa.selenium.NoSuchElementException e) {
-		    	flag =  false;
-		    	System.out.println("Flag inside catch: "+ flag);
-		    }
-			catch (Exception e) {
-		    	flag =  false;
-		    }
-			if(flag){
-				removeExistingRealPropertySettingEntry(rollYear);
-			}	
+				ele = driver.findElement(By.xpath(xPath));
+				removeRealPropertySettingEntry(rollYear);
+			} catch (Exception e) {
+				logger.info("Element: " + ele + "is not getting dispayed.");
+		    }	
 		
 		}
 	
@@ -372,43 +364,13 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 			return flag;			
 	    }
 	 
-	 /**
-		 * @description: This method will edit the Status of RPSL
-		 * @param rollYear: Roll Year for which RPSL status to be edited
-		 * @throws Exception
-		 */
-	 public void editRPSLStatus(String rollYear, String status) throws Exception {			
-		
-		//Step1: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
-		
-		//Step2: Selecting 'All' List View
-		objApasGenericFunctions.displayRecords("All");
-		
-		//Step3: Fetching value of RPSL for which status needs to be updated
-		String value = "Exemption Limits - "+ rollYear;
-		
-		//Step4: Searching and selecting the RPSL
-		clickShowMoreLink(value);
-		clickAction(waitForElementToBeClickable(editLinkUnderShowMore));
-		waitUntilPageisReady(driver);
-		
-		//Step5: Edit the RPSL Status
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Editing the Status field to '"+status + "'");
-		selectFromDropDown(statusDropDown,status);		
-		
-		//Step6: Saving the RPSL after editing 'Status' dropdown
-		String strSuccessAlertMessage = saveRealPropertySettings();
-		System.out.println("success message is :"+strSuccessAlertMessage);
-		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + value + "\" was saved.","RPSL is edited successfully");			 
-	 }
 	 
 	 /**
 		 * @description: This method will create the RPSL
 		 * @param dataMap: Data with which RPSL is created
 		 * @throws Exception
 		 */
-	 public void createRPSL(Map<String, String> dataMap) throws Exception {			
+	 public String createRPSL(Map<String, String> dataMap) throws Exception {			
 		 String strRollYear = dataMap.get("Roll Year Settings");
 		 
 		//Step1: Opening the Real Property Settings Libraries module
@@ -425,9 +387,8 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		enterRealPropertySettingsDetails(dataMap);
 		
 		//Step7: Clicking on Save button & Verifying the RPSL record for current year after creation		
-		String strSuccessAlertMessage = saveRealPropertySettings();
-		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRollYear + "\" was created.","Verify the User is able to create Exemption limit record for the current roll year");	
-		
+		String strSuccessAlertMessage = saveRealPropertySettings();	
+		return strSuccessAlertMessage;
 	 }
 	 
 	 	 
