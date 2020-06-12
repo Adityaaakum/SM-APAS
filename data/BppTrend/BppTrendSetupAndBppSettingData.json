@@ -27,7 +27,7 @@
 		"Maximum Equipment index Factor": "125"
 	},
 	"BppPropertyIndexFactor": {
-		"Name (Roll Year - Property Type)": "2018-commercial-2017",
+		"Name (Roll Year - Property Type)": "Commercial-2017",
 		"Index Factor": "10",
 		"Property Type": "Commercial",
 		"Year Acquired": "2017"

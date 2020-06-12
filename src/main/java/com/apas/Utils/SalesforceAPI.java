@@ -252,6 +252,7 @@ public class SalesforceAPI extends TestBase {
             //Set up the objects necessary to make the request.
             HttpClient httpClient = HttpClientBuilder.create().build();
             try {
+
             	if(!commaSeparatedIds.equals("")) {
 	                String[] ids= commaSeparatedIds.split(",");
 	                for (String id: ids){
@@ -326,7 +327,7 @@ public class SalesforceAPI extends TestBase {
                 String[] ids = commaSeparatedIds.split(",");
 
                 for (String id : ids){
-                    String uri = baseUri + "/sobjects/" + table + "/" + id;
+                    String uri = baseUri + "/sobjects/" + table + "/" + id.trim();
                     try {
 
                         HttpPatch httpPatch = new HttpPatch(uri);
@@ -355,7 +356,7 @@ public class SalesforceAPI extends TestBase {
         //Release HTTP Post connection
         salesforceReleaseConnection(httpPost);
     }
-
+    
     /**
      * This method will delete BPP Trend data for the roll years passed in the parameter
      * @param rollYear : Roll Year data to be deleted

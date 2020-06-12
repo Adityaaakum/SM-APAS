@@ -82,7 +82,7 @@
 	},
 	"newExemptionMandatoryData": {
     	"APN": "002-012-050",
-		"DateApplicationReceived": "03/17/2020",
+		"DateApplicationReceived": "03/17/2019",
 		"ClaimantName": "yogender",
 		"ClaimantSSN": "123456789",
 		"VeteranName": "SM test5",
@@ -133,7 +133,7 @@
 		"BasisForClaim": "Blind In Both Eyes,Disabled Because Of Loss Of Use Of 2 Or More Limbs",
 		"Qualification": "Qualified",
 		"EndRatingReason": "Deceased Veteran",
-		"EnddateOfRating": "06/30/2018"
+		"EnddateOfRating": "6/30/2018"
 		
 		
 	},
@@ -151,9 +151,9 @@
 		"DateAquiredProperty": "01/14/2013",
 		"DateOccupyProperty": "01/14/2013",
 		"DVExemptionOnPriorResidence": "Yes"
-		"DateMovedPriorResidence": "01/13/2013",
-		"EffectiveDateOfUSDVA": "01/14/2016",
-		"DateOfNotice": "01/16/2015",
+		"DateMovedPriorResidence": "1/13/2013",
+		"EffectiveDateOfUSDVA": "1/14/2016",
+		"DateOfNotice": "1/16/2015",
 		"DvExemptionOnPriorResidence": "No",
 		"BasisForClaim": "Blind In Both Eyes,Disabled Because Of Loss Of Use Of 2 Or More Limbs",
 		"DeceasedVeteranQualification": "Blindess,Total Disability Because Of Injury",
@@ -166,7 +166,7 @@
 		"DeceasedVeteranQualificationErrorMsg":"Deceased Veteran Qualification is required",
 		"EffectiveDateOfUSDVAErrorMsg":"Date of Notice of 100% Rating cannot be less than the Effective Date of 100% USDVA Rating.,End Rating Reason Is required,End Date of Rating must be greater than Effective Date",
 		"EnddateOfRatingErrorMsg":"End Date of Rating must be greater than Effective Date",
-		"EnddateOfRating": "06/30/2015",
+		"EnddateOfRating": "6/30/2015",
 		"VeteranSSNErrorMessage":"Veteran's SSN is required",
 		"dvExemptionOnPriorResidenceYesErrorMsg":"Either all the following fields or one of them is blank : Prior Residence Street Address, Prior Residence City,Prior Residence State,Prior Residence County, Date moved from Prior Residence",
 		"ReasonForNotQualifiedErrorMsg":"Reason for Not Qualified is required when Qualification is Not Qualified.",
@@ -176,29 +176,74 @@
 		
 	},
 	
-	"verifyRightSideBarAsPerParcel": {
-		"rightSideSections": "Business Events,Work Items,Documents,Notes",
-		"rightSideBottomSections": "New Calendar Event,New Task"
-		
+	"onlyOneVAtestData": {
+		"APN": "002-072-250",
+		"DateApplicationReceived": "1/15/2020",
+		"ClaimantName": "yogender",
+		"ClaimantSSN": "123456789",
+		"SpouseName": "Anjelina",
+		"SpouseSSN": "123456789",
+		"UnmarriedSpouseOfDisabledVeteran": "Yes",
+		"DateOfDeathOfVeteran": "11/6/2019",
+		"VeteranName": "SM County",
+		"VeteranSSN": "987654321",
+		"DateAquiredProperty": "1/1/2020",
+		"DateOccupyProperty": "1/8/2020",
+		"DVExemptionOnPriorResidence": "Yes"
+		"DateMovedPriorResidence": "1/15/2020",
+		"PriorResidenceStreet": "221 baker street",
+		"PriorResidenceCity": "orlenas",
+		"PriorResidenceState": "California",
+		"PriorResidenceCounty": "SM",
+		"EffectiveDateOfUSDVA": "1/2/2018",
+		"DateOfNotice": "1/15/2020",
+		"DvExemptionOnPriorResidence": "Yes",
+		"BasisForClaim": "Blind In Both Eyes",
+		"DeceasedVeteranQualification": "Blindess",
+		"EmailAddress": "abc@gmail.com",
+		"Telephone": "0112345679",
+		"Qualification": "Qualified",
+		"EndRatingReason": "Deceased Veteran",
+		"EnddateOfRating": "1/16/2020"
 		
 		},
 		
 		"NotQualifiedToQualifiedData":{
 		"APN": "002-021-030",
-		"DateApplicationReceived": "03/17/2020",
+		"DateApplicationReceived": "3/17/2020",
 		"ClaimantName": "yogender",
 		"ClaimantSSN": "123456789",
 		"VeteranName": "SMtestdataQ",
 		"VeteranSSN": "987654321",
-		"DateAquiredProperty": "01/14/2012",
-		"DateOccupyProperty": "01/14/2012",
-		"EffectiveDateOfUSDVA": "01/14/2011",
-		"DateOfNotice": "01/16/2015",
+		"DateAquiredProperty": "1/14/2012",
+		"DateOccupyProperty": "1/14/2012",
+		"EffectiveDateOfUSDVA": "1/14/2011",
+		"DateOfNotice": "1/16/2015",
 		"BasisForClaim": "Blind In Both Eyes,Disabled Because Of Loss Of Use Of 2 Or More Limbs",
 		"Qualification": "Not Qualified",
 		"ReasonForNotQualified":"Incorrect or Missing Information",
 		"EndRatingReason": "Deceased Veteran",
-		"EnddateOfRating": "06/30/2018"
+		"EnddateOfRating": "6/30/2018"
+		},
+		
+		"NoPenaltyData": {
+		"APN": "002-021-030",
+		"DateApplicationReceived": "3/17/2018",
+		"ClaimantName": "yogender",
+		"ClaimantSSN": "123456789",
+		"VeteranName": "SMtestdataQ",
+		"VeteranSSN": "987654321",
+		"DateAquiredProperty": "1/14/2012",
+		"DateOccupyProperty": "1/14/2012",
+		"EffectiveDateOfUSDVA": "1/14/2011",
+		"DateOfNotice": "5/16/2018",
+		"BasisForClaim": "Blind In Both Eyes,Disabled Because Of Loss Of Use Of 2 Or More Limbs",
+		"Qualification": "Qualified",
+		"ReasonForNotQualified":"Incorrect or Missing Information",
+		"EndRatingReason": "Deceased Veteran",
+		"EnddateOfRating": "6/30/2018"
+		
+		
 		
 		
 		}

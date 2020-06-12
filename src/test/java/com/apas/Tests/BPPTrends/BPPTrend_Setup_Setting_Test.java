@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -13,6 +14,7 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.BppTrendPage;
 import com.apas.PageObjects.BuildingPermitPage;
 import com.apas.PageObjects.Page;
@@ -25,17 +27,17 @@ import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class BPPTrend_Setup_Setting_Test  extends TestBase {
+public class BPPTrend_Setup_Setting_Test extends TestBase {
 	
 	RemoteWebDriver driver;
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrnPg;
-	BuildingPermitPage objBuildPermit;
 	Util objUtil;
 	SoftAssertion softAssert;
 	String rollYear;
 	BuildingPermitPage objBuildPermitPage;
+	ApasGenericPage objApasGenericPage;
 	
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -48,25 +50,25 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
 		objBppTrnPg = new BppTrendPage(driver);
-		objBuildPermit = new BuildingPermitPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		rollYear = CONFIG.getProperty("rollYear");
 		objBuildPermitPage = new BuildingPermitPage(driver);
+		objApasGenericPage = new ApasGenericPage(driver);
 	}
 	
-	/*@AfterMethod
+	@AfterMethod
 	public void afterMethod() throws Exception {
 		//objApasGenericFunctions.logout();
-	}*/
+	}
 	
 	/**
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating the user is able to update and enter the 'Max. Equip. Index Factor':: TestCase/JIRA ID: SMAB-T133
 	 * 2. Validating the user is not able to enter invalid value of 'Max. Equip. Index Factor':: TestCase/JIRA ID: SMAB-T134
 	 */
-	@Test(description = "SMAB-T133,SMAB-T134: Create and edit BPP Setting with invalid and valid max. equip. index factor", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T133,SMAB-T134,SMAB-T139: Create and edit BPP Setting with invalid and valid max. equip. index factor", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_CreateAndEdit_BppSetting(String loginUser) throws Exception {		
 		//Step1: Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -92,7 +94,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 		objApasGenericFunctions.selectAllOptionOnGrid();
 		
 		//Step6: Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 		
 		//Step7: Get existing count of BPP Settings and click BPP Setting drop down
 		String bppSettingCountBeforeCreatingNewSetting = objBppTrnPg.getCountOfBppSettings("0");
@@ -107,44 +109,44 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 		List<String> multipleFactorIncorrectVauesList = Arrays.asList(CONFIG.getProperty("FactorValuesLessThanMinRange").split(","));
 		for(int i = 0; i < multipleFactorIncorrectVauesList.size(); i++) {
 			objBppTrnPg.enterFactorValue(multipleFactorIncorrectVauesList.get(i));
-			objBppTrnPg.Click(objBuildPermit.saveButton);
+			objBppTrnPg.Click(objBuildPermitPage.saveButton);
 			if(i == 0) {
 				String expectedErrorMsgOnFactorValueWithinRangeWithCharacter = CONFIG.getProperty("ErrorMsgOnFactorValueWithinRangeWithCharacter");
 				String actualErrorMsgOnFactorValueWithinRangeWithCharacter = objBppTrnPg.errorMsgOnIncorrectFactorValue();
-				boolean isErrorMsgDislayed = actualErrorMsgOnFactorValueWithinRangeWithCharacter.equals(expectedErrorMsgOnFactorValueWithinRangeWithCharacter);
-				softAssert.assertTrue(isErrorMsgDislayed, "SMAB-T134: Error message displayed: '" + actualErrorMsgOnFactorValueWithinRangeWithCharacter + "' for factor within range having a charcter value");
+				boolean isErrorMsgDisplayed = actualErrorMsgOnFactorValueWithinRangeWithCharacter.equals(expectedErrorMsgOnFactorValueWithinRangeWithCharacter);
+				softAssert.assertTrue(isErrorMsgDisplayed, "SMAB-T134: Error message displayed: '" + actualErrorMsgOnFactorValueWithinRangeWithCharacter + "' for factor within range having a charcter value");
 			} else {		
 				expectedErrorMsgOnIncorrectFactorValue = CONFIG.getProperty("ErrorMsgOnFactorValueLessThanMinRange");
 				actualErrorMsgOnIncorrectFactorValue = objBppTrnPg.errorMsgOnIncorrectFactorValue();
-				boolean isErrorMsgDislayed = actualErrorMsgOnIncorrectFactorValue.equals(expectedErrorMsgOnIncorrectFactorValue);
-				softAssert.assertTrue(isErrorMsgDislayed, "SMAB-T134: Error message displayed: '" + actualErrorMsgOnIncorrectFactorValue + "' for factor value less than mumimum range");
-			}
+				boolean isErrorMsgDisplayed = actualErrorMsgOnIncorrectFactorValue.equals(expectedErrorMsgOnIncorrectFactorValue);
+				softAssert.assertTrue(isErrorMsgDisplayed, "SMAB-T134: Error message displayed: '" + actualErrorMsgOnIncorrectFactorValue + "' for factor value less than mumimum range");
+				softAssert.assertTrue(isErrorMsgDisplayed, "SMAB-T138: Error message displayed: '" + actualErrorMsgOnIncorrectFactorValue + "' for factor value less than mumimum range");			}
 		}
 		
 		//Step10: Validate error message with factor values greater than maximum range
 		String FactorValueGreaterThanMaxRange = CONFIG.getProperty("FactorValueGreaterThanMaxRange");
 		objBppTrnPg.enterFactorValue(FactorValueGreaterThanMaxRange);
-		objBppTrnPg.Click(objBuildPermit.saveButton);
+		objBppTrnPg.Click(objBuildPermitPage.saveButton);
 		
 		expectedErrorMsgOnIncorrectFactorValue = CONFIG.getProperty("ErrorMsgOnFactorValueGreaterThanMaxRange");
 		actualErrorMsgOnIncorrectFactorValue = objBppTrnPg.errorMsgOnIncorrectFactorValue();
-		boolean isErrorMsgDislayed = actualErrorMsgOnIncorrectFactorValue.contains(expectedErrorMsgOnIncorrectFactorValue);
-		softAssert.assertTrue(isErrorMsgDislayed, "SMAB-T134: Error message displayed: '" + actualErrorMsgOnIncorrectFactorValue + "' for  factor value greater than minimum range");
+		boolean isErrorMsgDisplayed = actualErrorMsgOnIncorrectFactorValue.contains(expectedErrorMsgOnIncorrectFactorValue);
+		softAssert.assertTrue(isErrorMsgDisplayed, "SMAB-T134: Error message displayed: '" + actualErrorMsgOnIncorrectFactorValue + "' for  factor value greater than minimum range");
 		
-		//Step11: Close the currently opened bpp setting entry pop up
-		objBppTrnPg.Click(objBuildPermit.closeEntryPopUp);
+		//Step11: Close the currently opened BPP setting entry pop up
+		objBppTrnPg.Click(objBuildPermitPage.closeEntryPopUp);
 		
 		//Step12: Create and Edit bpp setting entry with factor values within specified range
 		List<String> multipleFactorCorrectVauesList = Arrays.asList(CONFIG.getProperty("FactorValuesWithinRange").split(","));
 		for(int i = 0; i < multipleFactorCorrectVauesList.size(); i++) {
-			Thread.sleep(3000);
+			//Thread.sleep(3000);
 			if(i == 0) {
 				//Creating the BPP setting entry
-				objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppSetting));
-				objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBppTrendSettingLink));
+				objBppTrnPg.clickAction(objBppTrnPg.dropDownIconBppSetting);
+				objBppTrnPg.clickAction(objBppTrnPg.newBppTrendSettingLink);
 				objBppTrnPg.enterRollYearInBppSettingDetails(rollYear);	
 				objBppTrnPg.enterFactorValue(multipleFactorCorrectVauesList.get(i));
-				objBppTrnPg.Click(objBuildPermit.saveButton);
+				objBppTrnPg.Click(objBuildPermitPage.saveButton);
 			} else {
 				//Retrieving equipment index factor value before performing edit operation
 				String factorValueBeforeEdit = objBppTrnPg.getElementText(objBppTrnPg.locateElement("//div[text() = 'Maximum Equipment index Factor:']/following-sibling::div//span", 30));
@@ -152,13 +154,13 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 				
 				//Editing the BPP newly created setting entry				
 				objBppTrnPg.clickAction(objBppTrnPg.dropDownIconDetailsSection);
-				Thread.sleep(2000);
-				objBppTrnPg.clickAction(objBuildPermit.editLinkUnderShowMore);
+				//Thread.sleep(2000);
+				objBppTrnPg.clickAction(objBuildPermitPage.editLinkUnderShowMore);
 				objBppTrnPg.enterFactorValue(multipleFactorCorrectVauesList.get(i));
-				objBppTrnPg.Click(objBppTrnPg.waitForElementToBeClickable(objBuildPermit.saveBtnEditPopUp));
+				objBppTrnPg.Click(objBppTrnPg.waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
 				
 				//Retrieving equipment index factor value after performing edit operation
-				Thread.sleep(2000);
+				//Thread.sleep(2000);
 				String factorValueAfterEdit = objBppTrnPg.getElementText(objBppTrnPg.locateElement("//div[text() = 'Maximum Equipment index Factor:']/following-sibling::div//span", 30));
 				factorValueAfterEdit = factorValueAfterEdit.substring(0, factorValueAfterEdit.length()-1);
 				
@@ -175,7 +177,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 		String xpathNewBppSetting = "//span[contains(text(), 'BPP Settings')]//ancestor::div[contains(@class, 'forceRelatedListCardHeader')]//following-sibling::div//h3//a";
 		String bppSettingName = objBppTrnPg.getElementText(objBppTrnPg.locateElement(xpathNewBppSetting, 30));
 				
-		//Step15: Click ViewAll link to navigate to bpp settings grid and edit existing bpp setting entry
+		//Step15: Click ViewAll link to navigate to BPP settings grid and edit existing bpp setting entry
 		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.viewAllBppSettings));
 		
 		//Step16: Retrieving the equipment index factor value before editing
@@ -184,12 +186,12 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 
 		//Step17: Editing and updating the equipment index factor value
 		String factorValue = bppTrendSettingDataMap.get("Maximum Equipment index Factor");
-		objBuildPermit.clickShowMoreLinkOnRecentlyViewedGrid(bppSettingName);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBuildPermit.editLinkUnderShowMore));
+		objBuildPermitPage.clickShowMoreLinkOnRecentlyViewedGrid(bppSettingName);
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore));
 		
 		int updatedFactorValue = Integer.parseInt(factorValue) + 1;
 		objBppTrnPg.enterFactorValue(Integer.toString(updatedFactorValue));
-		objBppTrnPg.Click(objBppTrnPg.waitForElementToBeClickable(objBuildPermit.saveBtnEditPopUp));
+		objBppTrnPg.Click(objBppTrnPg.waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
 
 		//Step18: Retrieving and validating the equipment index factor value after editing
 		Thread.sleep(2000);
@@ -205,7 +207,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating the user is able select and view  input factor tables on BPP Trend Setup page:: SMAB-T229
 	 */
-	@Test(description = "SMAB-T229: Check for availability of input factor tables on bpp trend roll year screen",  groups={"regression","BPPTrend"}, dataProvider = "loginBusinessAndPrincipalUsers", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T229: Check for availability of input factor tables on bpp trend roll year screen",  groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAndPrincipalUsers", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_ValidateInputFactorTables_OnDetailsPage(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
@@ -216,7 +218,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 		objApasGenericFunctions.selectAllOptionOnGrid();
 		
 		//Step3: Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 		
 		//Step4: Clicking on BPP property index factor tab and validating whether its table is visible
 		objBppTrnPg.Click(objBppTrnPg.bppPropertyIndexFactorsTab);
@@ -245,7 +247,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 	 * 2. Validating user is able to edit Max. Equip. Index when status is Needs Recalculation:: Test Case/JIRA ID: SMAB-T272
 	 * 3. Validating user is able to edit Max. Equip. Index when status is Submitted for Approval:: Test Case/JIRA ID: SMAB-T273
 	 */
-	@Test(description = "SMAB-T271,SMAB-T272,SMAB-T273: Edit BPP Setting with with different status of tables", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T271,SMAB-T272,SMAB-T273: Edit BPP Setting with with different status of tables", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_EditMaxEquipIndex_WithVariousStatusOfTables(String loginUser) throws Exception {
 		//Step1: Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -260,8 +262,8 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 		objApasGenericFunctions.selectAllOptionOnGrid();
 
 		//Step4: Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
-		//try {
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
+		try {
 			//Step5: Retrieving equipment index factor value before performing edit operation
 			String factorValueBeforeEdit = objBppTrnPg.retrieveMaxEqipIndexValueFromPopUp();
 			factorValueBeforeEdit = factorValueBeforeEdit.substring(0, factorValueBeforeEdit.length()-1);
@@ -297,7 +299,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 			objApasGenericFunctions.selectAllOptionOnGrid();
 	
 			//Step13: Clicking on the roll year name in grid to navigate to details page of selected roll year
-			objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+			objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 			
 			//Step14: Retrieving equipment index factor value before performing edit operation
 			factorValueBeforeEdit = objBppTrnPg.retrieveMaxEqipIndexValueFromPopUp();
@@ -333,7 +335,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 			objApasGenericFunctions.selectAllOptionOnGrid();
 	
 			//Step22: Clicking on the roll year name in grid to navigate to details page of selected roll year
-			objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+			objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 			
 			//Step23: Retrieving equipment index factor value before performing edit operation
 			factorValueBeforeEdit = objBppTrnPg.retrieveMaxEqipIndexValueFromPopUp();
@@ -346,16 +348,17 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 			String errorMessage = objBppTrnPg.getElementText(objBppTrnPg.waitForElementToBeVisible(objBuildPermitPage.errorMsgOnTop, 10));
 			objBppTrnPg.Click(objBppTrnPg.waitForElementToBeClickable(objBuildPermitPage.cancelButton));
 			softAssert.assertContains(errorMessage, "Maximum Equipment index Factor is locked for editing for the Roll Year", "SMAB-T271: Updated value of maximum equip. index factor has been saved");
-			
-		//} finally {
+
+		} catch(Exception e ) {
+			e.printStackTrace();
+		} finally {
 			//Step 25: Reverting the changes done to maximum equipment index factor value
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Reverting the maximum equipment index factor value");
 			objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Calculated", rollYear);
 			driver.navigate().refresh();
 			objBppTrnPg.editBppSettingValueOnDetailsPage("125");
 			objBppTrnPg.Click(objBppTrnPg.waitForElementToBeClickable(objBuildPermitPage.saveBtnEditPopUp));
-			Thread.sleep(4000);
-		//}
+		}
 		
 		//Step28: Log out from application
 		softAssert.assertAll();
@@ -373,7 +376,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 	 * 5. Calculating rest of the tables and validating presence of Recalculate button after calculation is done:: Test Case/JIRA ID: SMAB-T170
 	 * 6. Checking status of tables on BPP Trend Setup page:: Test Case/JIRA ID: SMAB-T170
 	 */
-	@Test(description = "SMAB-T170,SMAB-T172: Perform calculation & re-calculation for factors tables individually using calculate & recalclate buttons with updating max. equip. index factor", groups={"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T170,SMAB-T172,SMAB-T173: Perform calculation & re-calculation for factors tables individually using calculate & recalclate buttons with updating max. equip. index factor", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_CalculateAndReCalculate_ByUpdatingMaxEquipIndexFactor(String loginUser) throws Exception {		
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -398,7 +401,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 		//Step4: Navigate to BPP Trend Setup page and check status of composite & valuation tables
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 		
 		//Step5: Iterate over composite factor tables list and validate their status BPP trend setup on details page
 		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Validating Status Of Tables On BPP TREND SETUP Screen ******");
@@ -512,7 +515,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 		//Step12: Navigating to BPP Trend Setup page and again validating status of table 
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Validating Status Of Tables On BPP TREND SETUP Screen ******");
 		//Step13: Iterate over composite factor tables list and validate their status BPP trend setup on details page
@@ -637,7 +640,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 		//Step20: Navigating to BPP Trend Setup page and again validating status of table 
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Validating Status Of Tables On BPP TREND SETUP Screen ******");
 		//Step21: Iterate over composite factor tables list and validate their status BPP trend setup on details page
@@ -764,7 +767,7 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 		//Step31: Navigating to BPP Trend Setup page and again validating status of table 
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
-		objBppTrnPg.clickBppTrendSetupRollYearNameInGrid(rollYear);
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 
 		//Step32: Iterate over composite factor tables list and validate their status BPP trend setup on details page
 		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Validating Status Of Tables On BPP TREND SETUP Screen ******");
@@ -785,6 +788,306 @@ public class BPPTrend_Setup_Setting_Test  extends TestBase {
 			softAssert.assertEquals(currentStatus, "Yet to submit for Approval", "SMAB-T173: Status of "+ tableName +" on Bpp Trend Setup page post calculation");
 		}
 
+		softAssert.assertAll();
+		objApasGenericFunctions.logout();
+	}
+
+	/**
+	 * DESCRIPTION: Performing Following Validations::
+	 * 1. Validating the user is able to create and update 'Max. Equip. Index Factor' when calculations are not done:: TestCase/JIRA ID: SMAB-T133
+	 */
+	@Test(description = "SMAB-T135,SMAB-T138: Create, edit and delete BPP Setting when calculations are not done", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	public void verify_BppTrend_CreateAndEdit_BppSetting_WhenCalculationAreNotDone(String loginUser) throws Exception {		
+		//Step1: Resetting the composite factor tables status to Not Calculated
+		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
+		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Not Calculated", rollYear);
+
+		//Step2: Resetting the valuation factor tables status to Yet to be submitted
+		List<String> valuationFactorTablesToReset = Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(","));
+		objBppTrnPg.resetTablesStatusForGivenRollYear(valuationFactorTablesToReset, "Yet to submit for Approval", rollYear);
+		
+		//Delete the existing BPP composite setting entry for given roll year
+		objBppTrnPg.removeExistingBppSettingEntry(rollYear);
+		
+		//Step3: Login to the APAS application using the given user
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
+		objApasGenericFunctions.login(loginUser);
+	
+		//Step4: Opening the BPP Trend module and set All as the view option in grid and select a BPP trend setup from grid
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		objApasGenericFunctions.selectAllOptionOnGrid();
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on the BPP Trend Setup name");
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
+
+		/**Step5: Checking the status of tables on details page
+		 * a. Fetch composite factor table names from properties file and collect them in a single list
+		 * b. Fetch composite factor table names from properties file and collect them in a single list
+		 * c. Iterate over composite factor tables list and validate their status BPP trend setup on details page
+		 * d. Iterate over valuation factor tables list and validate their status BPP trend setup on details page
+		 */
+		List<String> compositeFactorTablesList = new ArrayList<String>();
+		compositeFactorTablesList.addAll(Arrays.asList(CONFIG.getProperty("compositeFactorTablesForBppSetupPage").split(",")));
+
+		List<String> valuationFactorTablesList = new ArrayList<String>();
+		valuationFactorTablesList.addAll(Arrays.asList(CONFIG.getProperty("valuationFactorTablesForBppSetupPage").split(",")));
+		
+		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Validating Status Of Tables On BPP TREND SETUP Screen ******");
+		String tableName, currentStatus;
+		for(int i = 0; i < compositeFactorTablesList.size(); i++) {
+			tableName = compositeFactorTablesList.get(i);
+			currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
+			softAssert.assertEquals(currentStatus, "Not Calculated", "SMAB-T135: Status of "+ tableName +" on Bpp Trend Setup page ");
+		}
+		
+		for(int i = 0; i < valuationFactorTablesList.size(); i++) {
+			tableName = valuationFactorTablesList.get(i);
+			currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
+			softAssert.assertEquals(currentStatus, "Yet to submit for Approval", "SMAB-T135: Status of "+ tableName +" on Bpp Trend Setup page");
+		}
+		
+		//Step5: Creating a new entry
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating an entry for Maximum Equipment Index factor");
+		objBppTrnPg.createBppSetting("125");
+		String popUpMsg = objBppTrnPg.waitForPopUpMsg(10);
+		softAssert.assertTrue((popUpMsg.contains("was created")), "SMAB-T135: New Bpp Setting entry created successfully. Pop up message displayed- "+ popUpMsg);
+		
+		//Step6: Edit the newly created entry on details page
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Editing an entry for Maximum Equipment Index factor");
+		objBppTrnPg.editBppSettingValueOnDetailsPage("150");
+		objBppTrnPg.Click(objBuildPermitPage.saveButton);
+		popUpMsg = objBppTrnPg.waitForPopUpMsg(10);
+		softAssert.assertTrue((popUpMsg.contains("was saved")), "SMAB-T135: Bpp Setting entry edited successfully. Pop up message displayed- "+ popUpMsg);
+		
+		//Step7: Delete the newly created entry
+		//ExtentTestManager.getTest().log(LogStatus.INFO, "Deleting an entry for Maximum Equipment Index factor");
+		//objBppTrnPg.deleteBppSettingValueOnDetailsPage();
+		//popUpMsg = objBppTrnPg.waitForPopUpMsg(10);
+		//softAssert.assertTrue((popUpMsg.contains("was deleted")), "SMAB-T135: Bpp Setting entry deleted successfully. Pop up message displayed- "+ popUpMsg);
+		
+		//Step8: Re-Creating a new entry
+		//ExtentTestManager.getTest().log(LogStatus.INFO, "Re-Creating an entry for Maximum Equipment Index factor");
+		//objBppTrnPg.createBppSetting("160");
+		//popUpMsg = objBppTrnPg.waitForPopUpMsg(10);
+		//softAssert.assertTrue((popUpMsg.contains("was created")), "SMAB-T135: Bpp Setting entry created successfully. Pop up message displayed- "+ popUpMsg);
+		
+		//Step9: Retrieving the name of newly created BPP setting entry
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Retrieving the name of newly created BPP Setting");
+		String xpathNewBppSetting = "//span[contains(text(), 'BPP Settings')]//ancestor::div[contains(@class, 'forceRelatedListCardHeader')]//following-sibling::div//h3//a";
+		String bppSettingName = objBppTrnPg.getElementText(objBppTrnPg.locateElement(xpathNewBppSetting, 30));
+				
+		//Step10: Click ViewAll link to navigate to BPP settings grid and edit existing BPP setting entry
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on View All link to navigate to grid page");
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.viewAllBppSettings));
+		
+		//Step11: Retrieving the equipment index factor value before editing
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Validating the value of maximum equipment factor on view all page");
+		String xpathForFactorValueInGrid = "//tbody/tr//th//a[text() = '"+ bppSettingName +"']//parent::span//parent::th//following-sibling::td//span[contains(text(), '%')]";
+		String factorValueOnVeiwAllPage = objBppTrnPg.getElementText(objBppTrnPg.locateElement(xpathForFactorValueInGrid, 90));
+		softAssert.assertEquals(factorValueOnVeiwAllPage, "150%", "SMAB-T135: Validating maximum equip. index factor value on view all page");
+		softAssert.assertEquals(factorValueOnVeiwAllPage, "150%", "SMAB-T138: Validating maximum equip. index factor value on view all page");		
+
+		//softAssert.assertEquals(factorValueOnVeiwAllPage, "160%", "SMAB-T135: Validating maximum equip. index factor value on view all page");
+		//softAssert.assertEquals(factorValueOnVeiwAllPage, "160%", "SMAB-T138: Validating maximum equip. index factor value on view all page");
+		
+		softAssert.assertAll();
+		objApasGenericFunctions.logout();
+	}
+	
+	
+	/**
+	 * DESCRIPTION: Performing Following Validations::
+	 * 1. Validating the user is able to create and update the 'Max. Equip. Index Factor' when calculations are done:: TestCase/JIRA ID: SMAB-T136
+	 */
+	@Test(description = "SMAB-T136,SMAB-T139: Crete, edit BPP Setting when table calculcations are done", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	public void verify_BppTrend_CreatAndEdit_BppSetting_WhenCalculationAreDone(String loginUser) throws Exception {		
+		//Step1: Resetting the composite factor tables status to Calculated
+		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
+		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Calculated", rollYear);
+
+		//Step2: Resetting the valuation factor tables status to Yet to be submitted
+		List<String> valuationFactorTablesToReset = Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(","));
+		objBppTrnPg.resetTablesStatusForGivenRollYear(valuationFactorTablesToReset, "Yet to submit for Approval", rollYear);
+		
+		//Delete the existing BPP composite setting entry for given roll year
+		objBppTrnPg.removeExistingBppSettingEntry(rollYear);
+		
+		//Step3: Login to the APAS application using the given user
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
+		objApasGenericFunctions.login(loginUser);
+	
+		//Step4: Opening the BPP Trend module and set All as the view option in grid and select a BPP trend setup from grid
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		objApasGenericFunctions.selectAllOptionOnGrid();
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on BPP Trend Setup name in the grid");
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
+
+		/**Step5: Checking the status of tables on details page
+		 * a. Fetch composite factor table names from properties file and collect them in a single list
+		 * b. Fetch composite factor table names from properties file and collect them in a single list
+		 * c. Iterate over composite factor tables list and validate their status BPP trend setup on details page
+		 * d. Iterate over valuation factor tables list and validate their status BPP trend setup on details page
+		 */
+		List<String> compositeFactorTablesList = new ArrayList<String>();
+		compositeFactorTablesList.addAll(Arrays.asList(CONFIG.getProperty("compositeFactorTablesForBppSetupPage").split(",")));
+
+		List<String> valuationFactorTablesList = new ArrayList<String>();
+		valuationFactorTablesList.addAll(Arrays.asList(CONFIG.getProperty("valuationFactorTablesForBppSetupPage").split(",")));
+		
+		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Validating Status Of Tables On BPP TREND SETUP Screen ******");
+		String tableName, currentStatus;
+		for(int i = 0; i < compositeFactorTablesList.size(); i++) {
+			tableName = compositeFactorTablesList.get(i);
+			currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
+			softAssert.assertEquals(currentStatus, "Calculated", "SMAB-T136: Status of "+ tableName +" on Bpp Trend Setup page ");
+			softAssert.assertEquals(currentStatus, "Calculated", "SMAB-T139: Status of "+ tableName +" on Bpp Trend Setup page ");
+		}
+		
+		for(int i = 0; i < valuationFactorTablesList.size(); i++) {
+			tableName = valuationFactorTablesList.get(i);
+			currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
+			softAssert.assertEquals(currentStatus, "Yet to submit for Approval", "SMAB-T136: Status of "+ tableName +" on Bpp Trend Setup page");
+			softAssert.assertEquals(currentStatus, "Yet to submit for Approval", "SMAB-T139: Status of "+ tableName +" on Bpp Trend Setup page");
+		}
+		
+		//Step5: Creating a new entry
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating an entry for Maximum Equipment Index factor");
+		objBppTrnPg.createBppSetting("125");
+		String popUpMsg = objBppTrnPg.waitForPopUpMsg(10);
+		softAssert.assertTrue((popUpMsg.contains("was created")), "SMAB-T136: New Bpp Setting entry created successfully. Pop up message displayed- "+ popUpMsg);
+		softAssert.assertTrue((popUpMsg.contains("was created")), "SMAB-T139: New Bpp Setting entry created successfully. Pop up message displayed- "+ popUpMsg);
+		
+		//Step6: Edit the newly created entry on details page
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Editing the newly created maximum equipment index factor entry");
+		objBppTrnPg.editBppSettingValueOnDetailsPage("150");
+		objBppTrnPg.Click(objBuildPermitPage.saveButton);
+		popUpMsg = objBppTrnPg.waitForPopUpMsg(10);
+		softAssert.assertTrue((popUpMsg.contains("was saved")), "SMAB-T136: New Bpp Setting entry edited successfully. Pop up message displayed- "+ popUpMsg);
+		softAssert.assertTrue((popUpMsg.contains("was saved")), "SMAB-T139: New Bpp Setting entry edited successfully. Pop up message displayed- "+ popUpMsg);
+		
+		//Step7: Delete the newly created entry
+		//ExtentTestManager.getTest().log(LogStatus.INFO, "Deleting the newly created entry");
+		//objBppTrnPg.deleteBppSettingValueOnDetailsPage();
+		//popUpMsg = objBppTrnPg.waitForPopUpMsg(10);
+		//softAssert.assertTrue((popUpMsg.contains("was deleted")), "SMAB-T136: Bpp Setting entry deleted successfully. Pop up message displayed- "+ popUpMsg);
+		//softAssert.assertTrue((popUpMsg.contains("was deleted")), "SMAB-T139: Bpp Setting entry deleted successfully. Pop up message displayed- "+ popUpMsg);
+		
+		//Step8: Re-Creating a new entry
+		//ExtentTestManager.getTest().log(LogStatus.INFO, "Re-Creating an entry for Maximum Equipment Index factor");
+		//objBppTrnPg.createBppSetting("160");
+		//popUpMsg = objBppTrnPg.waitForPopUpMsg(10);
+		//softAssert.assertTrue((popUpMsg.contains("was created")), "SMAB-T136: New Bpp Setting entry created successfully. Pop up message displayed- "+ popUpMsg);
+		//softAssert.assertTrue((popUpMsg.contains("was created")), "SMAB-T139: New Bpp Setting entry created successfully. Pop up message displayed- "+ popUpMsg);
+		
+		//Step9: Retrieving the name of newly created BPP setting entry
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Retrieving the name of newly created BPP setting entry");
+		String xpathNewBppSetting = "//span[contains(text(), 'BPP Settings')]//ancestor::div[contains(@class, 'forceRelatedListCardHeader')]//following-sibling::div//h3//a";
+		String bppSettingName = objBppTrnPg.getElementText(objBppTrnPg.locateElement(xpathNewBppSetting, 30));
+				
+		//Step10: Click ViewAll link to navigate to BPP settings grid page
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Click ViewAll link to navigate to BPP settings grid page");
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.viewAllBppSettings));
+		
+		//Step11: Retrieving the equipment index factor value before editing
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Validating the maximum equipment index factor value on view all page");
+		String xpathForFactorValueInGrid = "//tbody/tr//th//a[text() = '"+ bppSettingName +"']//parent::span//parent::th//following-sibling::td//span[contains(text(), '%')]";
+		String factorValueOnVeiwAllPage = objBppTrnPg.getElementText(objBppTrnPg.locateElement(xpathForFactorValueInGrid, 90));
+		softAssert.assertEquals(factorValueOnVeiwAllPage, "150%", "SMAB-T136: Validating maximum equip. index factor value on view all page");
+		//softAssert.assertEquals(factorValueOnVeiwAllPage, "160%", "SMAB-T136: Validating maximum equip. index factor value on view all page");
+		
+		softAssert.assertAll();
+		objApasGenericFunctions.logout();
+	}
+	
+	
+	/**
+	 * DESCRIPTION: Performing Following Validations::
+	 * 1. Validating user is unable to update 'Max. Equip. Index Factor' when calculations are approved:: TestCase/JIRA ID: SMAB-T137, SMAB-T274
+	 * 2. Validating user is unable to delete 'Max. Equip. Index Factor' when calculations are approved:: TestCase/JIRA ID: SMAB-T137
+	 */
+	@Test(description = "SMAB-T137,SMAB-T274: Edit BPP Setting when table calculations are approved", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	public void verify_BppTrend_EditBppSetting_AfterApprovalOfTableCalculations(String loginUser) throws Exception {		
+		//Step1: Resetting the composite factor tables status to Approved
+		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
+		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Approved", rollYear);
+
+		//Step2: Resetting the valuation factor tables status to Approved
+		List<String> valuationFactorTablesToReset = Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(","));
+		objBppTrnPg.resetTablesStatusForGivenRollYear(valuationFactorTablesToReset, "Approved", rollYear);
+		
+		//Delete the existing BPP composite setting entry for given roll year
+		objBppTrnPg.removeExistingBppSettingEntry(rollYear);
+		
+		//Step3: Login to the APAS application using the given user
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
+		objApasGenericFunctions.login(loginUser);
+	
+		//Step4: Opening the BPP Trend module and set All as the view option in grid and select a BPP trend setup from grid
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		objApasGenericFunctions.selectAllOptionOnGrid();
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on the BPP Trend Setup entry in the grid");
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
+
+		/**Step5: Checking the status of tables on details page
+		 * a. Fetch composite factor table names from properties file and collect them in a single list
+		 * b. Fetch composite factor table names from properties file and collect them in a single list
+		 * c. Iterate over composite factor tables list and validate their status BPP trend setup on details page
+		 * d. Iterate over valuation factor tables list and validate their status BPP trend setup on details page
+		 */
+		List<String> compositeFactorTablesList = new ArrayList<String>();
+		compositeFactorTablesList.addAll(Arrays.asList(CONFIG.getProperty("compositeFactorTablesForBppSetupPage").split(",")));
+
+		List<String> valuationFactorTablesList = new ArrayList<String>();
+		valuationFactorTablesList.addAll(Arrays.asList(CONFIG.getProperty("valuationFactorTablesForBppSetupPage").split(",")));
+		
+		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Validating Status Of Tables On BPP TREND SETUP Screen ******");
+		String tableName, currentStatus;
+		for(int i = 0; i < compositeFactorTablesList.size(); i++) {
+			tableName = compositeFactorTablesList.get(i);
+			currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
+			softAssert.assertEquals(currentStatus, "Approved", "SMAB-T137: Status of "+ tableName +" on Bpp Trend Setup page ");
+			softAssert.assertEquals(currentStatus, "Approved", "SMAB-T274: Status of "+ tableName +" on Bpp Trend Setup page ");
+		}
+		
+		for(int i = 0; i < valuationFactorTablesList.size(); i++) {
+			tableName = valuationFactorTablesList.get(i);
+			currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
+			softAssert.assertEquals(currentStatus, "Approved", "SMAB-T137: Status of "+ tableName +" on Bpp Trend Setup page");
+			softAssert.assertEquals(currentStatus, "Approved", "SMAB-T274: Status of "+ tableName +" on Bpp Trend Setup page");
+		}
+		
+		//Step5: Creating a new entry
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating a new entry for maximum equipment index factor");
+		objBppTrnPg.createBppSetting("125");
+		String popUpMsg = objBppTrnPg.waitForPopUpMsg(10);
+		softAssert.assertTrue((popUpMsg.contains("was created")), "SMAB-T137: New Bpp Setting entry created successfully. Message on Entry creation- "+ popUpMsg);
+		softAssert.assertTrue((popUpMsg.contains("was created")), "SMAB-T274: New Bpp Setting entry created successfully. Message on Entry creation- "+ popUpMsg);
+		
+		//Step6: Edit the newly created entry on details page
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Editing the newly created maximum equipment index factor entry post table calculations are approved");
+		objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconDetailsSection, 10);
+		objBppTrnPg.clickAction(objBppTrnPg.dropDownIconDetailsSection);
+		objBppTrnPg.waitForElementToBeClickable(objBuildPermitPage.editLinkUnderShowMore, 10);
+		objBppTrnPg.clickAction(objBuildPermitPage.editLinkUnderShowMore);
+		objBppTrnPg.enterFactorValue("150");
+		objBppTrnPg.Click(objBuildPermitPage.saveButton);
+
+		String expectedErrorMessage = "Maximum Equipment index Factor is locked for editing for the Roll Year";
+		String errorMsgOnClickingSaveBtn = objBppTrnPg.getElementText(objBuildPermitPage.errorMsgOnTop);
+		softAssert.assertEquals(errorMsgOnClickingSaveBtn, expectedErrorMessage, "SMAB-T137: Validating error message on editing and saving max. equip. index value when calculations are approved");
+		
+		//Step7: Enter original value and save
+		objBppTrnPg.enterFactorValue("125");
+		objBppTrnPg.Click(objBuildPermitPage.saveButton);
+		popUpMsg = objBppTrnPg.waitForPopUpMsg(10);
+		softAssert.assertTrue((popUpMsg.contains("was saved")), "SMAB-T137: Bpp Setting entry was edited and saved created successfully with its original value. Message on editing and saving with original value- "+ popUpMsg);
+		softAssert.assertTrue((popUpMsg.contains("was saved")), "SMAB-T274: Bpp Setting entry was edited and saved created successfully with its original value. Message on editing and saving with original value- "+ popUpMsg);
+		
+		//Step8: Delete the entry
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Validating the absence of delete option once table claculations are approved.");
+		objBppTrnPg.clickAction(objBppTrnPg.dropDownIconDetailsSection);
+		WebElement deleteButton = objBppTrnPg.locateElement("//div[contains(@class, 'uiMenuList--default visible positioned')]//div[text() = 'Delete']", 5);
+		softAssert.assertTrue((deleteButton == null), "SMAB-T137: For User '"+ loginUser +"': Delete button is not visible under show more drop down when calculations are approved");
+		
 		softAssert.assertAll();
 		objApasGenericFunctions.logout();
 	}

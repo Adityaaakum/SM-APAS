@@ -306,7 +306,8 @@ public class Page {
 
 		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", elem);		
 		elem.clear();
-		elem.sendKeys(Keys.chord(Keys.CONTROL,"a", Keys.DELETE));
+		elem.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+		elem.sendKeys(Keys.BACK_SPACE);
 		elem.sendKeys(value);
 		Thread.sleep(2000);
 	}
@@ -735,8 +736,12 @@ public class Page {
 	}
 
 	public void clickAction(WebElement element) throws IOException {
+		waitForElementToBeVisible(element, 10);
+		waitForElementToBeClickable(element, 10);
+		
 		actions = new Actions(driver);
 		actions.moveToElement(element).build().perform();
+		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", element);
 		actions.click(element).build().perform();
 		waitUntilPageisReady(driver);
 	}
@@ -853,7 +858,66 @@ public class Page {
 		return elements;
 	}
 	
+	public WebElement locateElement(String locatorValue, int timeoutInSeconds) throws Exception {
+		WebElement element = null;
+		wait = new WebDriverWait(driver, timeoutInSeconds);
+		try {
+			element = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(locatorValue)));
+		} catch (Exception ex) {
 
+		}
+		
+		if(element != null) {
+			try {
+				element = wait.until(ExpectedConditions.visibilityOf(element));
+				return element;
+			} catch (Exception ex) {
+				System.out.println("Re-Checking Element");
+
+				return null;
+			}
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Function will find all the elements based on the specified xpath
+	 * @param: Xpath of the element to be locate
+	 * @param: timeout in seconds
+	 */
+	public List<WebElement> locateElements(String xpath, int timeoutInSeconds) throws Exception {
+		List<WebElement> elements = null;
+		for(int i = 0; i < timeoutInSeconds; i++) {
+			elements = driver.findElements(By.xpath(xpath));
+			if(elements != null) {
+				break;
+			} else {
+				Thread.sleep(250);
+			}
+		}
+		return elements;
+	}
+
+	/**
+	 * Function will wait until to Max timeout until the WebElement is located.
+	 * @param: Takes xpath to locate element, time out in seconds, pooling time in seconds
+	 * @return: Returns the element
+	 */
+	public WebElement waitUntilElementIsPresent(int timeOutInSec, final String xpath){
+	    Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(timeOutInSec))
+	    		.pollingEvery(Duration.ofSeconds(500))
+	    		.ignoring(NoSuchElementException.class)
+	    		.ignoring(StaleElementReferenceException.class);
+
+	    WebElement element = wait.until(new Function<WebDriver, WebElement>() {
+	        public WebElement apply(WebDriver driver) {
+	            return driver.findElement(By.xpath(xpath));
+	        }
+	    });
+	    return element;
+	};
+	
 	/**
 	 * Function will wait until to Max timeout until the WebElement is located.
 	 * @param: Takes xpath to locate element, time out in seconds, pooling time in seconds
@@ -891,36 +955,6 @@ public class Page {
 	    });
 	    return elements;
 	};
-	
-		
-	public WebElement waitForElementToBeVisible(Object object, String locatorType) {
-		WebElement element = null;
-		if(object instanceof String) {
-			String[] arr = object.toString().split("~");
-			if(arr[1].equalsIgnoreCase("ID")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("tagName")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.tagName(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("name")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.name(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("linkText")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.linkText(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("partialLinkText")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.partialLinkText(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("className")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.className(arr[0]))));	
-			} else if (arr[1].equalsIgnoreCase("cssSelector")) {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector(arr[0]))));	
-			} else {
-				element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(arr[0]))));	
-			}
-		} else if (object instanceof By) {
-			element = wait.until(ExpectedConditions.visibilityOfElementLocated((By) object));
-		} else {
-			element = wait.until(ExpectedConditions.visibilityOf((WebElement)object));
-		}
-		return element;
-	}
 	
 	public WebElement waitForElementToBeVisible(Object object) {
 		WebElement element = null;
@@ -1015,48 +1049,6 @@ public class Page {
 	public void switchToParentWindow() {
 		driver.switchTo().window(System.getProperty("parentWindowHandle"));
 	}
-	
-
-	public WebElement locateElement(String locatorValue, int timeoutInSeconds) throws Exception {
-        WebElement element = null;
-        wait = new WebDriverWait(driver, timeoutInSeconds);
-        try {
-            element = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(locatorValue)));
-        } catch (Exception ex) {
-
- 
-
-        }
-        
-        if(element != null) {
-            try {
-                element = wait.until(ExpectedConditions.visibilityOf(element));
-                return element;
-            } catch (Exception ex) {
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-     * Function will find all the elements based on the specified xpath
-     * @param: Xpath of the element to be locate
-     * @param: timeout in seconds
-     */
-    public List<WebElement> locateElements(String xpath, int timeoutInSeconds) throws Exception {
-        List<WebElement> elements = null;
-        for(int i = 0; i < timeoutInSeconds; i++) {
-            elements = driver.findElements(By.xpath(xpath));
-            if(elements != null) {
-                break;
-            } else {
-                Thread.sleep(250);
-            }
-        }
-        return elements;
-    }
     
 	/**
 	 * Description: This method will scroll to the bottom of page

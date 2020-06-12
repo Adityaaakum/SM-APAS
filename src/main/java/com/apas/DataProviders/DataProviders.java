@@ -25,7 +25,18 @@ public class DataProviders {
         return new Object[][] { { users.BUSINESS_ADMIN } };
     }
 
-	/**
+
+    /**
+     * Below function will be used to login to application with BPP business administrator user
+     * @returns: Return the user BPP business administrator
+     **/
+    @DataProvider(name = "loginBPPBusinessAdmin")
+    public Object[][] dpLoginBPPBusinessAdminUser() {
+        return new Object[][] { { users.BPP_BUSINESS_ADMIN } };
+    }
+
+
+    /**
 	 * Below function will be used to login to application with appraisal support user
 	 * @returns: Return the user appraisal support
 	 **/
@@ -236,10 +247,27 @@ public class DataProviders {
 		return new Object[][] { { users.EXEMPTION_SUPPORT_STAFF } };
 	}
     
-	
+    
 	@DataProvider(name = "rpApprasierAndBPPAuditor")
 	public Object[][] dataProviderLoginUserMethodForUser() {
-		return new Object[][] { { users.RP_APPRAISER }, { users.BPP_AUDITOR }};
+		return new Object[][] { { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
 	}
-    
+
+	/**
+	 * Return different status of composite and valuation factor tables
+	 */
+    @DataProvider(name = "variousStatusOfCompositeTablesBeforeSubmitting")
+    public Object[][] dpVariousStatusOfCompositeTables() {
+    	return new Object[][] { { "Not Calculated" }, { "Calculated" } };
+    }
+
+    @DataProvider(name = "variousStatusOfCompositeAndValuationTables")
+    public Object[][] dpVariousStatusOfCompositeAndValuationTables() {
+        return new Object[][]{{"Not Calculated"}, {"Calculated"}, {"Needs Recalculation"}, {"Submitted for Approval"}, {"Approved"}};
+    }
+
+    @DataProvider(name = "BPPAuditorAndPrincipal")
+    public Object[][] dataBPPAuditorAndPricipalUser() {
+        return new Object[][] { { users.PRINCIPAL_USER }, { users.BPP_AUDITOR }};
+    }
 }

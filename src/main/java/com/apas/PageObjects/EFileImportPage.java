@@ -162,7 +162,7 @@ public class EFileImportPage extends Page {
 		waitForElementToBeClickable(statusImportedFile,20);
 		objPage.waitForElementTextToBe(statusImportedFile, "In Progress", 120);
 	}
-
+	
 	/**
 	 * This method will upload the file on Efile Import module
 	 * @param fileType : Value from File Type Drop Down
@@ -184,7 +184,6 @@ public class EFileImportPage extends Page {
 		Thread.sleep(2000);
 	}
 	
-
 	/**
 	 * This method will expand the section provided in webelement passed in the parameter
 	 * @param element : section to be expanded

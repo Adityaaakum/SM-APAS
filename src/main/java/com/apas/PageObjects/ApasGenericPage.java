@@ -21,7 +21,10 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//one-app-launcher-header/button[contains(@class,'slds-button')]")
 	public WebElement appLauncher;
-	
+
+	@FindBy(xpath = "//table[@role='grid']//thead/tr//th")
+	public WebElement dataGrid;
+
 	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items')]")
 	public WebElement appLauncherSearchBox;
 
@@ -217,8 +220,9 @@ public class ApasGenericPage extends Page {
 		//String xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
 		//WebElement drpDwnOption = locateElement(xpathStr, 30);
 
-		String xpathStr = "//div[@title='" + value.toUpperCase() + "']";
+		String xpathStr = "//div[@title='" + value.toUpperCase() + "'] | //mark[text() = '" + value + "']";
 		WebElement drpDwnOption = locateElement(xpathStr, 20);
+		waitForElementToBeVisible(drpDwnOption, 10);
 		drpDwnOption.click();
 	}
 
@@ -233,6 +237,7 @@ public class ApasGenericPage extends Page {
 		Click(element);
 		String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
 		WebElement drpDwnOption = locateElement(xpathStr, 30);
+		waitForElementToBeClickable(drpDwnOption, 10);
 		drpDwnOption.click();
 	}
 	
