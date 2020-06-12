@@ -171,10 +171,10 @@ public class BppTrendPage extends Page {
 
 	@FindBy(xpath = "//span[text() = 'BPP Composite Factors Settings']/ancestor::header//following-sibling::div//a[contains(@class, 'slds-button') and @role = 'button']")
 	public WebElement dropDownIconBppCompFactorSetting;
-	
+
 	@FindBy(xpath = "//a[@title = 'New']")
 	public WebElement newBtnToCreateEntry;
-	
+
 	@FindBy(xpath = "//span[contains(text(), 'Roll Year')]//parent::label//following-sibling::div//input[contains(@class, 'uiInputTextForAutocomplete')]")
 	public WebElement rollYearTxtBox;
 	

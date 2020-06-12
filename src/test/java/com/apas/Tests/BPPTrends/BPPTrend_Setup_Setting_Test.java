@@ -1092,4 +1092,7 @@ public class BPPTrend_Setup_Setting_Test extends TestBase {
 		objApasGenericFunctions.logout();
 	}
 	
+
+
+
 }

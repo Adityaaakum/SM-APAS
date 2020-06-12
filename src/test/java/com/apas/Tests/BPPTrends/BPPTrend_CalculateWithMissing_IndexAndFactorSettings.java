@@ -130,7 +130,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 			}
 		}
 		
-		//Thread.sleep(1000);
+		Thread.sleep(2000);
 		
 		//Step8: Opening the BPP Trend module and set All as the view option in grid
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
@@ -194,13 +194,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 		
 		//Step15: Create a BPP Composite Factor Settings
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Clicking on Bpp Composite Factors Settings tab **");
-		WebElement moreTab = null;
-		try {
-			objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.moreTabRightSection, 10);
-			moreTab = objBppTrnPg.moreTabRightSection;
-		} catch (Exception ex) {
-			
-		}
+		WebElement moreTab = objBppTrnPg.locateElement("//div[contains(@class, 'column region-sidebar-right')]//button[@title = 'More Tabs']", 10);
 		
 		if(moreTab != null) {
 			objBppTrnPg.clickAction(moreTab);
@@ -306,8 +300,11 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 		String queryForBppTrendRollYear = "Select Id From BPP_Trend_Roll_Year__c Where Roll_Year__c = '"+ rollYear +"'";
 		new SalesforceAPI().delete("BPP_Trend_Roll_Year__c", queryForBppTrendRollYear);
 		
-		//Step19: Log out application at end of test case
+		//Step20: Log out application at end of test case
 		softAssert.assertAll();
 		objApasGenericFunctions.logout();
 	}
+	
+	
+	
 }

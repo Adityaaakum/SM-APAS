@@ -606,4 +606,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		softAssert.assertAll();
 	}
 
+
+
+
 }
