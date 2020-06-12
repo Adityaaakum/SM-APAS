@@ -530,28 +530,6 @@ public float convertToFloat(Object amount)
 	return convertedAmt;		
 
 }
-/**
- * @description: This method will return difference of no of days between 2 dates i.e. end Date - start Date
- * @param eleStartDate: element from which start date is fetched
- * @param eleEndDate: element from which end date is fetched
- * @return : returns the difference of no of days between 2 dates
- * @throws ParseException 
- */
-public float getDateDifference(WebElement eleStartDate, WebElement eleEndDate) throws ParseException {
-	System.out.println("inside verifynoofdays");
-	String startDate = objPage.getElementText(eleStartDate);
-	String endDate = objPage.getElementText(eleEndDate);	
-	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-    Date firstDate = null;
-    Date secondDate= null;
-	firstDate = sdf.parse(startDate);
-	secondDate = sdf.parse(endDate);
-	 
-    long diffInMillies = Math.abs(secondDate.getTime() - firstDate.getTime());
-    float diff = (TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS))+1;    
-    return diff;	
-}
-
 
 
 }

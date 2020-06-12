@@ -23,6 +23,7 @@ import org.openqa.selenium.support.PageFactory;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
@@ -480,10 +481,10 @@ public double converToDouble(Object amount){
  * @throws Exception 
  */
 public float verifyTaxYearProatedPercentage() throws Exception {
-	float numberOfDays = apasGenericObj.getDateDifference(startDateValueLabel,endDateValueLabel);	
+	float numberOfDays = DateUtil.getDateDifference(startDateValueLabel,endDateValueLabel);	
 	locateElement("//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Settings']//parent::div//following-sibling::div//a", 2);
 	Click(rollYearSettingsLabel);
-	float totalNoOfDays = apasGenericObj.getDateDifference(taxStartDateValueLabel,taxEndDateValueLabel);
+	float totalNoOfDays = DateUtil.getDateDifference(taxStartDateValueLabel,taxEndDateValueLabel);
 	driver.navigate().back();
 	float taxYearProatedPercentage = 0;
 	float taxYearProated = 0;

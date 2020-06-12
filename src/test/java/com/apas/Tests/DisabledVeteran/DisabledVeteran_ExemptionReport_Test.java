@@ -15,7 +15,6 @@ import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.ApasGenericPage;
-import com.apas.PageObjects.DVExemptionExportReportPage;
 import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ReportsPage;
@@ -34,7 +33,6 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 	ApasGenericFunctions objApasGenericFunctions;
 	SoftAssertion softAssert;
 	Util objUtils;
-	DVExemptionExportReportPage objDVReport;
 	ExemptionsPage objExemptionsPage;
 	ApasGenericPage objApasGenericPage;
 	ReportsPage objReportsPage;
@@ -51,7 +49,6 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		softAssert = new SoftAssertion();
 		objApasGenericPage = new ApasGenericPage(driver);
-		objDVReport = new DVExemptionExportReportPage(driver);
 		objExemptionsPage = new ExemptionsPage(driver);	
 		objReportsPage = new ReportsPage(driver);
 	}
@@ -78,15 +75,15 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		objPage.switchToFrameByIndex(0);
 		
 		// Step5: Waiting for 'DV Exemption Export' Report to be visible on screen
-		objPage.waitForElementToBeClickable(40,objDVReport.exemptionNameLabel);		
+		objPage.waitForElementToBeClickable(40,objReportsPage.exemptionNameLabel);		
 		//Thread.sleep(2000);
-		boolean flagReportDisplayed = objPage.verifyElementEnabled(objDVReport.exemptionNameLabel);
+		boolean flagReportDisplayed = objPage.verifyElementEnabled(objReportsPage.exemptionNameLabel);
 		ReportLogger.INFO("DV Exemption Export Report is visible: "+flagReportDisplayed);
 		if(flagReportDisplayed) {
 			// Step6: Minimizing the browser to 50%
 			objApasGenericFunctions.zoomOutPageContent();			
 			// Step7: Calculating number of columns in report
-			int noOfColumns = objDVReport.colNames.size();			
+			int noOfColumns = objReportsPage.colNames.size();			
 			ReportLogger.INFO("No of columns in DV Exemption Export Report are : "+noOfColumns);
 			
 			// Step8: Fetching data to verify column names in report
@@ -123,7 +120,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 				column = columnName.split("'")[0];
 				xpathLink = "//table[contains(@class,'full')]//span[contains(text(),'"+column+"')]//ancestor::tr//following-sibling::tr[1]//td["+i+"]//a";
 					
-				boolean fLink = objDVReport.waitForElementToBeVisible(2,xpathLink);				
+				boolean fLink = objReportsPage.waitForElementToBeVisible(2,xpathLink);				
 				
 				softAssert.assertEquals(columnsContainsLink.contains(column),fLink,"SMAB-T606: Verify column: " +columnName+" contains link in data");
 			}
@@ -156,7 +153,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		objApasGenericFunctions.searchModule(modules.REPORTS);
 		
 		// Step4: Navigating to 'DV Exemption Export' Report
-		objDVReport.exportReport("DV Exemption Export","formatted-export");
+		objReportsPage.exportReport("DV Exemption Export","formatted-export");
 		
 		Thread.sleep(10000);
 		// Step5: Count No. Of Files with extension '.xlsx' in downloads folder after downloading DV Exemption Export Report
@@ -229,9 +226,9 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		objPage.switchToFrameByIndex(0);
 		
 		// Step11: Waiting for 'DV Exemption Export' Report to be visible on screen
-		objDVReport.waitForElementToBeClickable(40,objDVReport.exemptionNameLabel);		
+		objReportsPage.waitForElementToBeClickable(40,objReportsPage.exemptionNameLabel);		
 		Thread.sleep(2000);
-		boolean flagReportDisplayed = objPage.verifyElementEnabled(objDVReport.exemptionNameLabel);
+		boolean flagReportDisplayed = objPage.verifyElementEnabled(objReportsPage.exemptionNameLabel);
 		
 		ReportLogger.INFO("DV Exemption Export Report is visible: "+flagReportDisplayed);
 		if(flagReportDisplayed) {
@@ -239,7 +236,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 			objApasGenericFunctions.zoomOutPageContent();				
 			
 			// Step13: Sort the column "Exemption: Exemption Name" in Descending Order
-			objDVReport.sortReportColumn("Exemption: Exemption Name");
+			objReportsPage.sortReportColumn("Exemption: Exemption Name");
 			
 			// Step13: Fetch the data from 2nd row of Report
 			HashMap<String, ArrayList<String>> getReportDataInActiveExemp = objApasGenericFunctions.getGridDataInLinkedHM(2);
