@@ -366,5 +366,7 @@ public class BPPTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 		//Step27: Assert all the assertions
 		softAssert.assertAll();
 	}
+
+	
 	
 }

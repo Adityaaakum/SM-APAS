@@ -368,4 +368,6 @@ public class BPPTrend_ConstructionMobileEquipCompostieTable_CalculateAndReCalcul
 		softAssert.assertAll();
 	}
 	
+
+
 }
