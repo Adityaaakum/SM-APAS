@@ -37,13 +37,13 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//div[@role='combobox']//div[@aria-label='Items']/p")
 	public WebElement itemsListBox;
 
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//a[@role='button'][@title='Select List View']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='button'][@title='Select List View']")
 	public WebElement selectListViewButton;
 
 	@FindBy(xpath = "//a[@role='option']//span[text()='All' or text()='All Active Parcels']")
 	public WebElement selectListViewOptionAll;
 
-	@FindBy(xpath = "//input[@placeholder='Search this list...']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//input[@placeholder='Search this list...']")
 	public WebElement searchListEditBox;
 
 	@FindBy(xpath = "//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputEntitySelector']//input")
@@ -135,7 +135,6 @@ public class ApasGenericPage extends Page {
 		String xpathStr = "//*[@role='option']//*[@title='" + value + "'] | //div[@title='" + value + "']";
 		Click(driver.findElement(By.xpath(xpathStr)));
 		}
-
 	/**
 	 * @Description: This method selects year, month and date from date picker / calender
 	 * @param expctdDate: Accepts date in mm/dd/yyyy format

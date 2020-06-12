@@ -1155,12 +1155,13 @@ public String getExemptionNameFromSuccessAlert() throws Exception {
 
 public String fetchAssesseeName() throws Exception {
 
-    SalesforceAPI objSalesforceAPI = new SalesforceAPI();
-    String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type = 'Person' OR Type = 'Business'";
-    HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
-    String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
-    return assesseeName;
-}
+       SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+       String queryForID = "SELECT FirstName, LastName FROM Account limit 1";
+       HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
+       String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
+       ReportLogger.INFO("Assessee Name fetched through Salesforce API : " + assesseeName);
+       return assesseeName;
+   }
 
 
    /*
@@ -1174,5 +1175,18 @@ public String fetchAssesseeName() throws Exception {
 		return response.get("Name").get(0);
 	}
 
+	 /*
+	   This method is used to return the Exemption Name with particular Veteran Name
+	   @param: Veteran Name used to create Exemption 
+	   @return: returns the Exemption Name
+	    */
+	public String fetchExemptionName(String veteranName) throws Exception {
+		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+		String queryForID = "SELECT Name FROM Exemption__c WHERE Name_of_Veteran__c ='"+veteranName+"'";
+		HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
+		String exemptionName = response.get("Name").get(0);
+		ReportLogger.INFO("Exemption Name fetched through Salesforce API : " + exemptionName);
+		return exemptionName;
+	   }
 
 }
