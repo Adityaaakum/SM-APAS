@@ -252,25 +252,24 @@ public class SalesforceAPI extends TestBase {
             //Set up the objects necessary to make the request.
             HttpClient httpClient = HttpClientBuilder.create().build();
             try {
-
-                String[] ids= commaSeparatedIds.split(",");
-
-                for (String id: ids){
-                    String uri = baseUri + "/sobjects/" + table + "/" + id;
-                    HttpDelete httpDelete = new HttpDelete(uri);
-                    httpDelete.addHeader(oauthHeader);
-                    httpDelete.addHeader(prettyPrintHeader);
-
-                    HttpResponse response = httpClient.execute(httpDelete);
-
-                    int statusCode = response.getStatusLine().getStatusCode();
-                    if (statusCode == 204) {
-                        System.out.println(id + " Deleted Successfully.");
-                    } else {
-                        ReportLogger.FAIL(id + " Delete NOT Successful. Status Code : " + statusCode);
-                    }
-                }
-
+            	if(!commaSeparatedIds.equals("")) {
+	                String[] ids= commaSeparatedIds.split(",");
+	                for (String id: ids){
+	                    String uri = baseUri + "/sobjects/" + table + "/" + id;
+	                    HttpDelete httpDelete = new HttpDelete(uri);
+	                    httpDelete.addHeader(oauthHeader);
+	                    httpDelete.addHeader(prettyPrintHeader);
+	
+	                    HttpResponse response = httpClient.execute(httpDelete);
+	
+	                    int statusCode = response.getStatusLine().getStatusCode();
+	                    if (statusCode == 204) {
+	                        System.out.println(id + " Deleted Successfully.");
+	                    } else {
+	                        ReportLogger.FAIL(id + " Delete NOT Successful. Status Code : " + statusCode);
+	                    }
+	                }
+            }
             } catch (IOException | NullPointerException ioe) {
                 ioe.printStackTrace();
             }

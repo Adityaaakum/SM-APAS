@@ -21,6 +21,7 @@ import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ValueAdjustmentsPage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
@@ -165,9 +166,8 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		String totalAnnualHouseHoldIncome = (lowIncomeThreshholdAmount.substring(1, lowIncomeThreshholdAmount.length())).replaceAll(",", "");
 		
 		// Step9: Get Yesterday's date to modify VA
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);		
-		Date date = DateUtils.addDays(new Date(), -1);
-		String currentDate = sdf.format(date);
+		String date = DateUtil.getCurrentDate("MM/dd/yyyy");
+		String currentDate = DateUtil.getFutureORPastDate(date, -1, "MM/dd/yyyy");
 		Thread.sleep(1000);
 		
 		// Step10: Click on 'Edit' Button to modify VA

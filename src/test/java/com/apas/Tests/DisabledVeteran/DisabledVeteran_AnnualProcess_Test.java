@@ -81,7 +81,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		
 		//Step4: Delete current Roll Year's RPSL if it already exists	
 		String strRollYear = rollYearAndStartDateDataMap.get("Roll Year Settings");
-		objRPSLPage.verifyAndDeleteExistingRPSL(strRollYear);
+		objRPSLPage.removeRealPropertySettingEntry(strRollYear);
 		
 		//Step5: Open the Exemption module
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);
@@ -163,7 +163,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		
 		//Step4: Delete current Roll Year's RPSL if it already exists	
 		String strRollYear = rollYearAndStartDateDataMap.get("Roll Year Settings");
-		objRPSLPage.verifyAndDeleteExistingRPSL(strRollYear);
+		objRPSLPage.removeRealPropertySettingEntry(strRollYear);
 		
 		//Step5: Open the Exemption module
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);
@@ -208,7 +208,8 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 	@Test(description = "SMAB-T1381: Verify when 'Annual Batch process' runs and a 'VAR' is present for next Tax Year then it gets updated with blank values if status of RPSL is other than 'Approved'", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {
 			"smoke", "regression","DisabledVeteranExemption" }, dependsOnMethods = {"DisabledVeteran_verifyBlankVACreatedWithMissingRPSLForActiveExemption"})
 	public void DisabledVeteran_verifyVANotUpdatedWithUnApprovedRPSLForActiveExemption(String loginUser) throws Exception {
-	if(!failedMethods.contains("verifyBlankVACreatedWithMissingRPSLForActiveExemption")) {	
+	if(!failedMethods.contains("verifyBlankVACreatedWithMissingRPSLForActiveExemption")) {
+		
 		//Step1: Login to the APAS application using the credentials passed through		
 		objApasGenericFunctions.login(loginUser);
 				
@@ -288,7 +289,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		
 		//Step5: Delete current Roll Year's RPSL if it already exists	
 		String strRollYear = rollYearAndStartDateDataMap.get("Roll Year Settings");
-		objRPSLPage.verifyAndDeleteExistingRPSL(strRollYear);
+		objRPSLPage.removeRealPropertySettingEntry(strRollYear);
 				
 		//Step6: Fetching data to create new RPSL record
 		String entryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
@@ -342,7 +343,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		
 		//Step5: Delete current Roll Year's RPSL if it already exists	
 		String strRollYear = rollYearAndStartDateDataMap.get("Roll Year Settings");
-		objRPSLPage.verifyAndDeleteExistingRPSL(strRollYear);
+		objRPSLPage.removeRealPropertySettingEntry(strRollYear);
 				
 		//Step6: Fetching data and create new RPSL record
 		String entryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		

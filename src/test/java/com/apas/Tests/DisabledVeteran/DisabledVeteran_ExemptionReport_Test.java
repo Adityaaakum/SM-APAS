@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -54,13 +55,14 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		objExemptionsPage = new ExemptionsPage(driver);	
 		objReportsPage = new ReportsPage(driver);
 	}
+
 	
 	/**
 	 * Below test case will 
 	 * 1. Verify Columns of Report are in expected Order
 	 * 2. Verify if expected column data contain link 
 	 **/
-	@Test(description = "SMAB-T566: ", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class ,groups = {"smoke", "regression", "DisabledVeteranExemption" })
+	@Test(description = "SMAB-T606: Verify the Exemption Support staff is able to generate the report with the Active and deactivated exemptions", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class ,groups = {"smoke", "regression", "DisabledVeteranExemption" })
 	public void DisabledVeteran_verifyColNamesandLinksInData(String loginUser) throws Exception {
 		
 		// Step1: Login to the APAS application using the credentials passed through		
@@ -109,7 +111,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 			
 			// Step11: Verify Column Names visible on Report
 			ReportLogger.INFO("Column names in application are : "+actualColumns);
-			softAssert.assertEquals(actualColumns, expectedColumnNames, "Verify Column Names in Report");
+			softAssert.assertEquals(actualColumns, expectedColumnNames, "SMAB-T606: Verify Column Names in Report");
 			
 			// Step12: Verify data corresponding to Column Names contains link or not
 			if(actualColumns.equals(expectedColumnNames)) {
@@ -123,7 +125,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 					
 				boolean fLink = objDVReport.waitForElementToBeVisible(2,xpathLink);				
 				
-				softAssert.assertEquals(columnsContainsLink.contains(column),fLink,"Verify column: " +columnName+" contains link in data");
+				softAssert.assertEquals(columnsContainsLink.contains(column),fLink,"SMAB-T606: Verify column: " +columnName+" contains link in data");
 			}
 			}
 			else{
@@ -131,6 +133,8 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 			}
 				
 		}
+		objApasGenericFunctions.zoomInPageContent();
+		objApasGenericFunctions.logout();
 	}
 	
 	
@@ -138,7 +142,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 	 * Below test case will 
 	 * 1. Verify if user is able to download the report
 	 **/
-	@Test(description = "SMAB-T566: ", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class ,groups = {"smoke", "regression", "DisabledVeteranExemption" })
+	@Test(description = "SMAB-T635: Verify the exemption support staff can export the Report", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class ,groups = {"smoke", "regression", "DisabledVeteranExemption" })
 	public void DisabledVeteran_verifyExportReport(String loginUser) throws Exception {
 		
 		// Step1: Count No. Of Files with extension '.xlsx' in downloads folder
@@ -160,11 +164,12 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		
 		System.out.println("Files after download: "+noOfXLFilesafterDownload);
 		
-		// Step5: Get last modified File Name from Downloads folder 
+		// Step6: Get last modified File Name from Downloads folder 
 		String lastDownloadedFile = objApasGenericFunctions.getLastModifiedFile("C:\\Downloads");
 		ReportLogger.INFO("Last downloaded file name is: "+lastDownloadedFile);
-		softAssert.assertTrue(lastDownloadedFile.contains("DV Exemption Export"), "Verify user is able to download the Report");
-	
+		softAssert.assertTrue(lastDownloadedFile.contains("DV Exemption Export"), "SMAB-T635: Verify the exemption support staff can export the Report");
+		
+		objApasGenericFunctions.logout();
 	}
 	
 	
@@ -173,7 +178,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 	 * 1. Create Exemptions with status - Active & In Active
 	 * 2. Verify if created Exemptions are visible on Report or not 
 	 **/
-	@Test(description = "SMAB-T566: ", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class ,groups = {"smoke", "regression", "DisabledVeteranExemption" })
+	@Test(description = "SMAB-T606: Verify the Exemption Support staff is able to generate the report with the Active and deactivated exemptions", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class ,groups = {"smoke", "regression", "DisabledVeteranExemption" })
 	public void DisabledVeteran_verifyCreatedExemptionsVisiblityInReport(String loginUser) throws Exception {
 		// Step1: Login to the APAS application using the credentials passed through		
 		objApasGenericFunctions.login(loginUser);
@@ -239,17 +244,19 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 			// Step13: Fetch the data from 2nd row of Report
 			HashMap<String, ArrayList<String>> getReportDataInActiveExemp = objApasGenericFunctions.getGridDataInLinkedHM(2);
 			String actualInActiveExemption = getReportDataInActiveExemp.get("Exemption: Exemption Name").get(0).replace("[", "").replace("]", "");
-			softAssert.assertEquals(actualInActiveExemption, inActiveExemptionName, "Verify In Active Exemption created is visible in report");
+			softAssert.assertEquals(actualInActiveExemption, inActiveExemptionName, "SMAB-T606:Verify In Active Exemption created is visible in report");
 			
 			// Step14: Fetch the data from 4th row of Report
 			HashMap<String, ArrayList<String>> getReportDataActiveExemp = objApasGenericFunctions.getGridDataInLinkedHM(4);
 
 			// Step15: Verify Exemption with Status 'Active' created above is visible in report
 			String actualActiveExemption = getReportDataActiveExemp.get("Exemption: Exemption Name").get(0).replace("[", "").replace("]", "");
-			softAssert.assertEquals(actualActiveExemption, activeExemptionName, "Verify Active Exemption created is visible in report");
+			softAssert.assertEquals(actualActiveExemption, activeExemptionName, "SMAB-T606:Verify Active Exemption created is visible in report");
 			
-	}		
-	
+	}	 
+		objApasGenericFunctions.zoomInPageContent();
+		objPage.waitUntilElementIsPresent("//button//div/span[@class='uiImage']", 40);
+		objApasGenericFunctions.logout();
 	}
 	
 	

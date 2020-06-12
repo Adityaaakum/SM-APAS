@@ -402,6 +402,24 @@ public void zoomOutPageContent() throws Exception
 }
 
 /**
+ * @Description: This method is to Zoom Out browser Content 
+ */
+public void zoomInPageContent() throws Exception
+{
+	// Step6: Maximizing the browser content from 50 to 100%
+	Thread.sleep(10);
+	for (int i = 1; i <5; i++) {
+		Robot robot=new Robot();
+		 robot.keyPress(KeyEvent.VK_CONTROL);		
+		 robot.keyPress(KeyEvent.VK_ADD);		
+		 robot.keyRelease(KeyEvent.VK_ADD);		
+		 robot.keyRelease(KeyEvent.VK_CONTROL);				 
+		 robot.keyRelease(KeyEvent.VK_ENTER);
+	}
+	
+}
+
+/**
  * @Description: This method is to fetch File Name last modified in Downloads Folder
  * @param: Folder Path is passed in which last modified file is to be fetched 
  * @returns: File Name last modified 

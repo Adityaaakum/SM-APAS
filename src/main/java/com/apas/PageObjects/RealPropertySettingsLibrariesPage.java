@@ -1,7 +1,5 @@
 package com.apas.PageObjects;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,13 +11,11 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import com.apas.Assertions.SoftAssertion;
-import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
-import com.apas.config.testdata;
 import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	SoftAssertion softAssert;
@@ -112,7 +108,10 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//span[text()='Close this window']//ancestor::button")
 	public WebElement closeErrorPopUp;
 	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//tr//span[text()='Approved']//..//..//preceding-sibling::th//a")
+	public WebElement approvedRPSLLink;
 	
+	public String xPathErrorMsg = "//div[@class='uiBlock']//p[@class='detail']//span";
 	
 	
 	/**
@@ -129,27 +128,13 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		drpDwnOption.click();
 	}
 	
-	/** @Description: This method is to handle fields like Roll Year Settings
-	 * by clicking on the web element, entering the provided string in textbox
-	 * and then selects value from drop down
-	 * @param element: WebElement for required field
-	 * @param value: Like 2020 0r 2021 for Roll Year Settings field etc.
-	 * @throws Exception
-	 */
-	public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
-		enter(element, value);
-		String xpathStr = "//*[@role='option']//div[@title='" + value + "']";
-		locateElement(xpathStr, 2);
-		Click(driver.findElement(By.xpath(xpathStr)));
-	}
-	
 	/**
 	 * @description: This method will return the error message appeared against the field name passed in the parameter
 	 * @param fieldName: field name for which error message needs to be fetched
 	 * @throws Exception 
 	 */
 	public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
-		//locateElement("//*/span[text() = '" + fieldName + "']//..//..//..//ul[contains(@class,'has-error')]//li",2);
+		waitUntilElementIsPresent("//*/span[text() = '\" + fieldName + \"']//..//..//..//ul[contains(@class,'has-error')]//li", 2);
 		return getElementText(driver.findElement(By.xpath("//*/span[text() = '" + fieldName + "']//..//..//..//ul[contains(@class,'has-error')]//li")));
 	}
 
@@ -165,10 +150,10 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	 * @param status: Status
 	 */
 	public void enterRealPropertySettingsDetails(Map<String, String> dataMap) throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on New Button");
+		ReportLogger.INFO("Clicking on New Button");
 		Click(newButton);
 		//selectRecordType("Exemption Limits");
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Entering details for Real Property Settings record");
+		ReportLogger.INFO("Entering details for Real Property Settings record");
 		enter(rpSettingNameEditBox,dataMap.get("Roll Year Settings"));
 		selectFromDropDown(statusDropDown,dataMap.get("Status"));
 		searchAndSelectFromDropDown(searchRollYearSettingsLookup,dataMap.get("Roll Year Settings"));
@@ -184,7 +169,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	 * @return : returns the text message of success alert
 	 */
 	public String saveRealPropertySettings() throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Save Button");
+		ReportLogger.INFO("Clicking on Save Button");
 		Click(saveButton);
 		//waitForElementToBeVisible(successAlert,30);
 		locateElement("//div[@role='alert'][@data-key='success']",2);
@@ -192,55 +177,6 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		return getElementText(successAlertText);
 	}
 	
-	/**
-	 * Description: This method will click on cancel and verify if success message is present or not
-	 * @return : returns the flag either true or false based on whether success message is present or not
-	 */
-	public boolean cancelRealPropertySettings() throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Cancel Button");
-		Click(cancelButton);
-		String locatorKey = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']";
-		boolean flag = false;	
-		WebElement successAlert = null;
-		try {			
-			successAlert = driver.findElement(By.xpath(locatorKey));
-			flag = true;	    
-		} 
-		
-		catch (org.openqa.selenium.NoSuchElementException e) {
-	    }
-		
-		catch (Exception e) {
-	    }
-		return flag;
-		
-	}
-	
-	/**
-	 * Description: This method will verify if 8 years of Real Property settings are displayed or not
-	 * @return : returns the flag either true or false based on whether 8 years of RPSL are displayed or not
-	 */
-	public boolean verify8YearsRPSL() throws Exception {
-		boolean flag = false;
-		int noOfRPSL = numberOfRPSL.size();
-		if(noOfRPSL>=8) {
-			flag = true;
-		}
-		return flag;
-	}
-	
-	
-
-	public void searchAndSelectOptionFromDropDown(WebElement element, String value) throws Exception {
-		enter(element, value);
-		String yearInValue = value.substring(19, value.length());
-		System.out.println("yearInValue: "+yearInValue);
-        String xpathStr = "//span[@title ='" + value.toUpperCase() + "']//mark[text() = '" + value.toUpperCase() + "']";
-        WebElement drpDwnOption = locateElement(xpathStr, 20);
-        drpDwnOption.click();
-    }
-	
-
 	/**
 	 * @description: Clicks on the show more link displayed against the given entry
 	 * @param entryDetails: Name of the entry displayed on grid which is to be accessed
@@ -252,77 +188,16 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		WebElement modificationsIcon = locateElement(xpathStr, 30);
 		clickAction(modificationsIcon);
 	}
-	
-	/**
-	 * @description: Selects Radio Button displayed corresponding to record Type
-	 * @param recordType: Name of the record displayed which is to be selected
-	 * @throws Exception
-	 */
-	public void selectRecordType(String recordType) throws Exception {	
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Selecting Record Type: "+recordType);
-		String xpathStr = "//span[text()='"+recordType+"']//..//preceding-sibling::div//input";
-		WebElement radBtn = locateElement(xpathStr, 30);
-		checkRadioButton(radBtn);
-		Click(nextButton);
-		waitUntilPageisReady(driver);
-		
-	}
-	
-
-	/**
-	 * @description: Selects Radio Button displayed corresponding to record Type
-	 * @param recordType: Name of the record displayed which is to be selected
-	 * @throws Exception
-	 */
-	public String verifyEditAccess() throws Exception {	
-		String errorMsgText = null;
-		//Fetch Approved RPSL Name from DB
-		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
-		String queryForID = "SELECT Name FROM Real_Property_Settings_Library__c WHERE Status__c='Approved'";
-		HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
-		String RPSLName = response.get("Name").get(0);
-		System.out.println("RPSL: "+RPSLName);
-		//Click on Approved RPSL
-		String xPath = "//div[contains(@class,'windowViewMode-normal')]//a[text()='"+RPSLName+"']";
-		waitUntilElementIsPresent(xPath,20);
-		WebElement exemptionLink = driver.findElement(By.xpath(xPath));		
-		Click(exemptionLink);
-	    waitUntilPageisReady(driver);
-	    
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on 'Edit' button for record whose status is 'Approved'");
-		Click(editButton);			  
-		locateElement("//div[@class='uiBlock']//p[@class='detail']//span",3);
-		System.out.println("eror: "+errorMsgforEdit.getText());
-		errorMsgText =  errorMsgforEdit.getText();				 
-		return errorMsgText;
-	
-	}
-	
 
 	 public void removeRealPropertySettingEntry(String rollYear) throws Exception {
 	        SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 	        String queryForID = "SELECT Id FROM Real_Property_Settings_Library__c where Name = 'Exemption Limits - " + rollYear +"'";
 	        objSalesforceAPI.delete("Real_Property_Settings_Library__c", queryForID);
+	        
 	    }
 	
 	
-	 /**
-		 * @description: Verify if given RPSL record already exists then delete it
-		 * @param rollYear: Roll Year for which RPSL to be deleted
-		 * @throws Exception
-		 */
-		public void verifyAndDeleteExistingRPSL(String rollYear) throws Exception {	
-			String xPath = "//table//tbody/tr//td//a[text() = '"+ rollYear +"']";	
-			WebElement ele = null;
-			try {			
-				ele = driver.findElement(By.xpath(xPath));
-				removeRealPropertySettingEntry(rollYear);
-			} catch (Exception e) {
-				logger.info("Element: " + ele + "is not getting dispayed.");
-		    }	
 		
-		}
-	
 	
 		/**
 		 * Function will clear existing value and enter the value in the element.
@@ -338,30 +213,6 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	        waitForElementToBeClickable(elem).sendKeys(Keys.chord(Keys.CONTROL, "a"));
 	        elem.sendKeys(Keys.BACK_SPACE);
 	        enter(elem, value);
-	    }
-	
-	 
-	 /**
-		 * Function will return true if element is not visible.
-		 *
-		* @param elem
-	 *            the Webelement
-	 * @return true, if successful
-	 * @throws Exception
-     *             the exception
-	 */
-	 public boolean verifyButtonNotPresent(String locatorKey) throws Exception {			
-			boolean flag = false;			
-			try {	
-				
-				WebElement ele = driver.findElement(By.xpath(locatorKey));
-				flag = true;        
-		    
-			} catch (org.openqa.selenium.NoSuchElementException e) {
-				flag = false;		    	
-		    }
-			
-			return flag;			
 	    }
 	 
 	 
@@ -380,10 +231,10 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		objApasGenericFunctions.displayRecords("All");
 		
 		//Step3: Delete current Roll Year's RPSL if it already exists	
-		verifyAndDeleteExistingRPSL(strRollYear);
+		removeRealPropertySettingEntry(strRollYear);
 		 		
 		//Step4: Creating the RPSL record for current year
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Adding current year's 'Real Property Settings' record with following details: "+ dataMap);
+		ReportLogger.INFO("Adding current year's 'Real Property Settings' record with following details: "+ dataMap);
 		enterRealPropertySettingsDetails(dataMap);
 		
 		//Step7: Clicking on Save button & Verifying the RPSL record for current year after creation		

@@ -32,8 +32,7 @@ public class DateUtil {
 			
 	 }
 
-	 
-
+	
 public static String getDateInRequiredFormat(String date,String givenFormat,String expectedFormat) throws ParseException
 	{
 	SimpleDateFormat sdf = new SimpleDateFormat(givenFormat);
@@ -66,6 +65,20 @@ return max;
 
 }
 
-
+/**
+ * @author Sikander Bhambhu 
+ * 
+ * @Description: This method takes an expected format for date and return
+ *               the current date in the format provided.
+ * 
+ * @param format:
+ *            expected format of date, example 'MM/dd/yyyy'
+ **/
+public static String getCurrentDate(String format) {
+	Date date = new Date();
+	SimpleDateFormat sdf = new SimpleDateFormat(format);
+	String formattedDate = sdf.format(date);
+	return formattedDate;
+}
 
 }
