@@ -1070,4 +1070,12 @@ public class Page {
 		}
 		
 	}
+	/**
+	 * Switches the focus on the frame
+	 */
+	public void switchToFrameByIndex(int frameIndex) {
+		driver.switchTo().frame(frameIndex);
+		
+	}
+	
 }

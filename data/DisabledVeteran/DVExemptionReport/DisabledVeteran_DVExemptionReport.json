@@ -5,7 +5,7 @@
 		"Date Occupied/Intend to Occupy Property": "07/01/2018",
 		"Date of Notice of 100% Rating": "07/01/2018",
 		"Effective Date of 100% USDVA Rating": "07/01/2018",
-		"Claimant Name": "Test Record",
+		"Claimant Name": "Global Media",
 		"Claimant SSN": "123-45-6789",
 		"APN": "002-072-250",
 		"Veteran Name": "Test One",
@@ -19,7 +19,7 @@
 		"Date Occupied/Intend to Occupy Property": "02/02/2019",
 		"Date of Notice of 100% Rating": "02/04/2019",
 		"Effective Date of 100% USDVA Rating": "02/03/2019",
-		"Claimant Name": "Test Record",
+		"Claimant Name": "Global Media",
 		"Claimant SSN": "123-45-6789",
 		"APN": "002-072-250",
 		"Veteran Name": "Test One",
@@ -29,34 +29,10 @@
 		"Qualification?": "Qualified"
 		},
 		
-	 "RollYearAndStartDate": {
-		"Roll Year Settings": "2020"
-		"Start Date": "7/1/2020"	
+	 "columnNames": {
+		"Column Names": "APN,Exemption: Exemption Name,Status,Claimant's Name,Roll Year Settings: Roll Year Settings,Status,Start Date,End Date,Number of days,Exemption Amount Calculated,Penalty Amount Calculated,Penalty Amount - User Adjusted,Net Exemption Amount,Determination,Value Adjustments: Last Modified Date"
+		"Columns contains Link" : "APN,Exemption: Exemption Name,Claimant's Name,Roll Year Settings: Roll Year Settings"
        }          	   
        
-       "DataToVerifyForDeletedRPSL": {
-		"Roll Year Basic Ref Amount": "$0.00"
-		"Roll Year LowIncome Ref Amount": "$0.00"
-		"Roll Year Threshhold Amount": "$0.00"
-		"Roll Year Due Date": ""				
-		"Roll Year Due Date2": ""
-		"Roll Year LowIncome Penalty": "0.00%"	
-		"Roll Year LowIncome Penalty2": "0.00%"		
-       }              
-       
-       
-       "DataToVerifyForCreatedRPSL": {
-		"Roll Year Basic Ref Amount": "$139,437.00"
-		"Roll Year LowIncome Ref Amount": "$209,156.00"
-		"Roll Year Threshhold Amount": "$56,789.00"
-		"Roll Year Due Date": "2/15/2020"				
-		"Roll Year Due Date2": "12/12/2020"
-		"Roll Year LowIncome Penalty": "10.00%"	
-		"Roll Year LowIncome Penalty2": "15.00%"		
-       }  
-       
-       "DataToEditRPSLEntry": {
-		"Roll Year Settings": "2020",
-		"Status": "Approved"
-       }                       	
+                  	
 }
