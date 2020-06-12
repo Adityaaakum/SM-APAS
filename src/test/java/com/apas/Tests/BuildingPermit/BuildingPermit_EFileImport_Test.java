@@ -402,7 +402,6 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		//Step8: Validating the building permit records should not be visible in the system as it has not been approved yet
 		String xpathBuildingPermit = "//*[@role='option']//*[@title='" + buildingPermitNumber + "']";
 		objPage.enter(objBuildingPermitPage.globalSearchListEditBox,buildingPermitNumber);
-		objPage.waitUntilElementIsPresent(xpathBuildingPermit,10);
 		List<WebElement> webElementBuildingPermitBeforeApproved = driver.findElements(By.xpath(xpathBuildingPermit));
 		softAssert.assertTrue(webElementBuildingPermitBeforeApproved.size() == 0,"SMAB-T661: Validating that building permit " + buildingPermitNumber + " should not be visible in the system as its not approved yet");
 
@@ -417,6 +416,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 
 		//Step11: Validating the building permit records should be visible in the system as it has been approved
 		objPage.enter(objBuildingPermitPage.globalSearchListEditBox,buildingPermitNumber);
+		objPage.waitUntilElementIsPresent(xpathBuildingPermit,10);
 		List<WebElement> webElementBuildingPermitAfterApproved = driver.findElements(By.xpath(xpathBuildingPermit));
 		softAssert.assertTrue(webElementBuildingPermitAfterApproved.size() == 1,"SMAB-T661: Validating that building permit " + buildingPermitNumber + " should be visible in the system only when import is approved");
 		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
