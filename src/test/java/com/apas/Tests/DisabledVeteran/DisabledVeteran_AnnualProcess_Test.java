@@ -63,7 +63,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 	 * 3. Verify for Active Exemption record, Current Year's VA contains Blank values from RPSL record
 	 **/
 	@Test(description = "SMAB-T566: Verify when RPSL record is missing, for Active Exemption records 'VA' gets created with blank values",dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {
-			"smoke", "regression","DisabledVeteranExemption" })
+			"smoke", "regression","DisabledVeteranExemption" },alwaysRun=false, enabled = false)
 	public void DisabledVeteran_verifyBlankVACreatedWithMissingRPSLForActiveExemption(String loginUser) throws Exception {
 		
 		// Step1: Login to the APAS application using the credentials passed through		
@@ -145,7 +145,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 	 * 3. Verify for In-Active Exemption record, Current Year's VA is not created
 	 **/
 	@Test(description = "SMAB-T1380: Verify when RPSL record is missing, for In-Active Exemption records 'VA' does not get created", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {
-			"smoke", "regression","DisabledVeteranExemption" })
+			"smoke", "regression","DisabledVeteranExemption" },alwaysRun=false, enabled = false)
 	public void DisabledVeteran_verifyNoVACreatedWithMissingRPSLForInActiveExemption(String loginUser) throws Exception {
 		
 		// Step1: Login to the APAS application using the credentials passed through		
@@ -206,7 +206,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 	 * 2. Verify for Active Exemption record created in above test, Current Year's VA is updated with blank values from RPSL record
 	 **/
 	@Test(description = "SMAB-T1381: Verify when 'Annual Batch process' runs and a 'VAR' is present for next Tax Year then it gets updated with blank values if status of RPSL is other than 'Approved'", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {
-			"smoke", "regression","DisabledVeteranExemption" }, dependsOnMethods = {"DisabledVeteran_verifyBlankVACreatedWithMissingRPSLForActiveExemption"})
+			"smoke", "regression","DisabledVeteranExemption" }, dependsOnMethods = {"DisabledVeteran_verifyBlankVACreatedWithMissingRPSLForActiveExemption"},alwaysRun=false, enabled = false)
 	public void DisabledVeteran_verifyVANotUpdatedWithUnApprovedRPSLForActiveExemption(String loginUser) throws Exception {
 	if(!failedMethods.contains("verifyBlankVACreatedWithMissingRPSLForActiveExemption")) {
 		
@@ -271,7 +271,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 	 * 2. Verify for In-Active Exemption record created in above test, Current Year's VA is still not created even if RPSL is created
 	 **/
 	@Test(description = "SMAB-T510: Verify when 'Annual Batch process' runs for In-Active Exemption record 'VAR' for working Tax Year is not created if status of RPSL is other than 'Approved'", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {
-			"smoke", "regression","DisabledVeteranExemption" }, dependsOnMethods = {"DisabledVeteran_verifyNoVACreatedWithMissingRPSLForInActiveExemption"})
+			"smoke", "regression","DisabledVeteranExemption" }, dependsOnMethods = {"DisabledVeteran_verifyNoVACreatedWithMissingRPSLForInActiveExemption"},alwaysRun=false, enabled = false)
 	public void DisabledVeteran_verifyVANotCreatedWithUnApprovedRPSLForInActiveExemption(String loginUser) throws Exception {
 	if(!failedMethods.contains("verifyNoVACreatedWithMissingRPSLForInActiveExemption")) {
 		//Step1: Login to the APAS application using the credentials passed through		
@@ -324,7 +324,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 	 * 3. Verify for In-Active Exemption record created in above test, Current Year's VA is still not created even if RPSL is created
 	 **/
 	@Test(description = "SMAB-T1382, T511: Verify that when the 'Annual Batch process' runs and status of RPSL is 'Approved', VAR for Active Exemption gets updated with relevant values & for In-Active Exemption, does not get created", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {
-			"smoke", "regression","DisabledVeteranExemption" }, dependsOnMethods = {"DisabledVeteran_verifyBlankVACreatedWithMissingRPSLForActiveExemption", "DisabledVeteran_verifyNoVACreatedWithMissingRPSLForInActiveExemption"})
+			"smoke", "regression","DisabledVeteranExemption" }, dependsOnMethods = {"DisabledVeteran_verifyBlankVACreatedWithMissingRPSLForActiveExemption", "DisabledVeteran_verifyNoVACreatedWithMissingRPSLForInActiveExemption"},alwaysRun=false, enabled = false)
 	
 	public void DisabledVeteran_verifyVAWithApprovedRPSL(String loginUser) throws Exception {
 	if(!failedMethods.contains("verifyBlankVACreatedWithMissingRPSLForActiveExemption")) {

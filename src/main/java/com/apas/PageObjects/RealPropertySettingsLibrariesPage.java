@@ -196,26 +196,6 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	        
 	    }
 	
-	
-		
-	
-		/**
-		 * Function will clear existing value and enter the value in the element.
-		 *
-		 * @param elem
-		 *            Element in which value needs to be entered
-		 * @param value
-		 *            the value needs to be entered
-		 * @throws Exception
-		 *             the exception
-		 */
-	 public void clearAndEnterValue(WebElement elem, String value) throws Exception {
-	        waitForElementToBeClickable(elem).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-	        elem.sendKeys(Keys.BACK_SPACE);
-	        enter(elem, value);
-	    }
-	 
-	 
 	 /**
 		 * @description: This method will create the RPSL
 		 * @param dataMap: Data with which RPSL is created
