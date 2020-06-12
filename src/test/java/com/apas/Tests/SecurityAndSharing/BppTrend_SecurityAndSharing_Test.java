@@ -24,7 +24,7 @@ import com.apas.config.modules;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class BppTrendSecurityAndSharingTest extends TestBase {
+public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	private RemoteWebDriver driver;
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;

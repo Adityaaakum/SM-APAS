@@ -27,7 +27,7 @@ import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class BpTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBase {
+public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBase {
 
 	RemoteWebDriver driver;
 	Page objPage;
@@ -130,7 +130,7 @@ public class BpTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBas
 			}
 		}
 		
-		Thread.sleep(2000);
+		//Thread.sleep(1000);
 		
 		//Step8: Opening the BPP Trend module and set All as the view option in grid
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
@@ -194,7 +194,13 @@ public class BpTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBas
 		
 		//Step15: Create a BPP Composite Factor Settings
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Clicking on Bpp Composite Factors Settings tab **");
-		WebElement moreTab = objBppTrnPg.locateElement("//div[contains(@class, 'column region-sidebar-right')]//button[@title = 'More Tabs']", 10);
+		WebElement moreTab = null;
+		try {
+			objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.moreTabRightSection, 10);
+			moreTab = objBppTrnPg.moreTabRightSection;
+		} catch (Exception ex) {
+			
+		}
 		
 		if(moreTab != null) {
 			objBppTrnPg.clickAction(moreTab);
@@ -208,8 +214,8 @@ public class BpTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBas
 		objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting, 10);
 		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting));
 		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.newBppTrendSettingLink, 20);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBppTrendSettingLink));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.newBtnToCreateEntry, 20);
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBtnToCreateEntry));
 
 		objBppTrnPg.enterFactorValue("10");
 		objBppTrnPg.enterPropertyType("Commercial");
@@ -221,8 +227,8 @@ public class BpTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBas
 		objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting, 10);
 		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting));
 		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.newBppTrendSettingLink, 20);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBppTrendSettingLink));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.newBtnToCreateEntry, 20);
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBtnToCreateEntry));
 
 		objBppTrnPg.enterFactorValue("9");
 		objBppTrnPg.enterPropertyType("Industrial");
@@ -234,8 +240,8 @@ public class BpTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBas
 		objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting, 10);
 		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting));
 		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.newBppTrendSettingLink, 20);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBppTrendSettingLink));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.newBtnToCreateEntry, 20);
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBtnToCreateEntry));
 
 		objBppTrnPg.enterFactorValue("11");
 		objBppTrnPg.enterPropertyType("Agricultural");
@@ -247,8 +253,8 @@ public class BpTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBas
 		objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting, 10);
 		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting));
 		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.newBppTrendSettingLink, 20);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBppTrendSettingLink));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.newBtnToCreateEntry, 20);
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBtnToCreateEntry));
 
 		objBppTrnPg.enterFactorValue("10");
 		objBppTrnPg.enterPropertyType("Construction");
@@ -300,7 +306,7 @@ public class BpTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBas
 		String queryForBppTrendRollYear = "Select Id From BPP_Trend_Roll_Year__c Where Roll_Year__c = '"+ rollYear +"'";
 		new SalesforceAPI().delete("BPP_Trend_Roll_Year__c", queryForBppTrendRollYear);
 		
-		//Step20: Log out application at end of test case
+		//Step19: Log out application at end of test case
 		softAssert.assertAll();
 		objApasGenericFunctions.logout();
 	}

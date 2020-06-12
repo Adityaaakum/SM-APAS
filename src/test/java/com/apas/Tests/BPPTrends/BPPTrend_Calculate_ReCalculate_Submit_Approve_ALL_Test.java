@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -311,7 +310,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 			softAssert.assertEquals(currentStatus, "Calculated", "SMAB-T442: Status of "+ tableName +" table on Bpp Trend Page before approving");
 		}
 		
-		//Step7: Iterate over valuation factor tables list and validate their status Bpp trend setup on details page
+		//Step7: Iterate over valuation factor tables list and validate their status BPP trend setup on details page
 		for(int i = 0; i < valuationFactorTablesList.size(); i++) {
 			tableName = valuationFactorTablesList.get(i);
 			String currentStatus = objBppTrnPg.getTableStatusFromBppTrendSetupDetailsPage(tableName);
@@ -363,8 +362,8 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 		//Step16: Navigating on BPP Prop 13 tables to validate CPI Factor input field is disabled
 		ExtentTestManager.getTest().log(LogStatus.INFO, "* Navigating on BPP Prop 13 tables to validate CPI Factor input field is disabled");
 		objBppTrnPg.clickOnTableOnBppTrendPage("BPP Prop 13 Factors", true);
-		WebElement disabledCpiInputField = objBppTrnPg.locateElement("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//input[@disabled]", 10);
-		softAssert.assertTrue((disabledCpiInputField != null), "SMAB-T211: CPI Factor filed is locked for editing after table data is submitted for approval");	
+		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.disabledCpiInputField, 10);
+		softAssert.assertTrue((objBppTrnPg.disabledCpiInputField != null), "SMAB-T211: CPI Factor filed is locked for editing after table data is submitted for approval");	
 		
 		//Step17: Navigating over valuation factor tables to check absence of calculate button on BPP Trend page
 		ExtentTestManager.getTest().log(LogStatus.INFO, "* Navigating over valuation factor tables to check absence of calculate button on BPP Trend page");

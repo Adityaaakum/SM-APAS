@@ -77,11 +77,10 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 	 * 7. Validating the message displayed above table after calculation is done
 	 * 8. Validating the presence of Recalculate button for Calculated table
 	 * 9. Validating the absence of Calculate button
-	 * 10. Validating the absence of Submit For Approval button:: TestCase/JIRA ID: SMAB-T442
-	 * 11. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T166
-	 * 12. Validating the status of the table on BPP Trend Setup Page
+	 * 10. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T166
+	 * 11. Validating the status of the table on BPP Trend Setup Page
 	 */
-	@Test(description = "SMAB-T166,SMAB-T190,SMAB-T194,SMAB-T198,SMAB-T442: Performing validation on INDUSTRIAL COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T166,SMAB-T190,SMAB-T194,SMAB-T198: Performing validation on INDUSTRIAL COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_IndustrialCompositeFactors_CalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Reseting the status of all composite factor tables to "Not Calculated" through SalesForce API
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -190,21 +189,21 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 					boolean isDataMatched = true;
 					for (int j = 0; j < acquiredYearDataFromExcel.size(); j++) {
 						if (!(acquiredYearDataFromExcel.get(j).equals(acquiredYearDataFromUI.get(j)))) {
+							isDataMatched = false;
 							objBppTrnPg.highlightMismatchedCellOnUI(tableName, currentKey, j);
-							
-							softAssert.assertTrue(false, "SMAB-T166: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' matched. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
+							softAssert.assertTrue(false, "SMAB-T166: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' MACTHED. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
 						}
 					}
 					if(isDataMatched) {
-						softAssert.assertTrue(true, "SMAB-T166: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched with Trend Calculator data.", true);
+						softAssert.assertTrue(true, "SMAB-T166: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' MATCHED with Trend Calculator data", true);
 					}
 				} else {
 					System.setProperty("isElementHighlightedDueToFailre", "true");
-					softAssert.assertTrue(false, "SMAB-T166: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched.", true);
+					softAssert.assertTrue(false, "SMAB-T166: Count of columns for '"+ tableName +" 'for year acquired '"+ currentKey +"' MATCHED", true);
 				}
 			} else {
 				System.setProperty("isElementHighlightedDueToFailre", "true");
-				softAssert.assertTrue(false, "SMAB-T166: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is present in UI table.", true);
+				softAssert.assertTrue(false, "SMAB-T166: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is PRESENT in UI table", true);
 			}
 		}
 		if(System.getProperty("isElementHighlightedDueToFailre").equalsIgnoreCase("true")) {
@@ -236,10 +235,7 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 	 * 6. Validating the presence of table grid once calculation is successful
 	 * 7. Validating the message displayed above table after ReCalculation is done
 	 * 8. Validating the presence of ReCalculate button for Calculated table:: Test Case/JIRA ID: SMAB-T195
-	 * 9. Validating the absence of Submit For Approval button:: Test Case/JIRA ID: SMAB-T442
-	 * 10. Validating the data of UI table against the Trend Calculator excel file:: Test Case/JIRA ID: SMAB-T302, SMAB-T164
-	 * 11. Validating the status of the table on BPP Trend Setup Page
-	 * 12. Reverting the changed settings in excel file and BPP Trend Setup page
+	 * 9. Validating the data of UI table against the Trend Calculator excel file:: Test Case/JIRA ID: SMAB-T302, SMAB-T164
 	 */
 	@Test(description = "SMAB-T302,SMAB-T195,SMAB-T196,SMAB-T442,SMAB-T164: Performing validation on INDUSTRIAL COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_IndustrialCompositeFactors_ReCalculateAndCompare(String loginUser) throws Exception {					
@@ -343,25 +339,25 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 					boolean isDataMatched = true;
 					for (int j = 0; j < acquiredYearDataFromExcel.size(); j++) {
 						if (!(acquiredYearDataFromExcel.get(j).equals(acquiredYearDataFromUI.get(j)))) {
+							isDataMatched = false;
 							objBppTrnPg.highlightMismatchedCellOnUI(tableName, currentKey, j);
-							
-							softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' matched. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
-							softAssert.assertTrue(false, "SMAB-T164: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' matched. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
+							softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' MACTHED. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
+							softAssert.assertTrue(false, "SMAB-T164: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' MACTHED. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
 						}
 					}
 					if(isDataMatched) {
-						softAssert.assertTrue(true, "SMAB-T302: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched with Trend Calculator data.", true);
-						softAssert.assertTrue(true, "SMAB-T164: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched with Trend Calculator data.", true);
+						softAssert.assertTrue(true, "SMAB-T302: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' MATCHED with Trend Calculator data", true);
+						softAssert.assertTrue(true, "SMAB-T164: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' MATCHED with Trend Calculator data", true);
 					}
 				} else {
 					System.setProperty("isElementHighlightedDueToFailre", "true");
-					softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched.", true);
-					softAssert.assertTrue(false, "SMAB-T164: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched.", true);
+					softAssert.assertTrue(false, "SMAB-T302: Count of columns for '"+ tableName +" 'for year acquired '"+ currentKey +"' MATCHED", true);
+					softAssert.assertTrue(false, "SMAB-T164: Count of columns for '"+ tableName +" 'for year acquired '"+ currentKey +"' MATCHED", true);
 				}
 			} else {
 				System.setProperty("isElementHighlightedDueToFailre", "true");
-				softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is present in UI table.", true);
-				softAssert.assertTrue(false, "SMAB-T164: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is present in UI table.", true);
+				softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is PRESENT in UI table", true);
+				softAssert.assertTrue(false, "SMAB-T164: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is PRESENT in UI table", true);
 			}
 		}
 		

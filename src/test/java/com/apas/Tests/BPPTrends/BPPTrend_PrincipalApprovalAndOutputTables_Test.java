@@ -275,8 +275,8 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 			if(tableName.equalsIgnoreCase("BPP Prop 13 Factors")) {
 				softAssert.assertTrue((editBtn == null), "SMAB-T212: Edit button is not visible to update cell data in grid after table status is 'Approved'");
 				
-				WebElement disabledCpiInputField = objBppTrnPg.locateElement("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//input[@disabled]", 10);
-				softAssert.assertTrue((disabledCpiInputField != null), "SMAB-T212: CPI Factor filed is locked for editing after table status is 'Approved'");	
+				objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.disabledCpiInputField, 10);
+				softAssert.assertTrue((objBppTrnPg.disabledCpiInputField != null), "SMAB-T212: CPI Factor filed is locked for editing after table status is 'Approved'");	
 			}
 		}
 				

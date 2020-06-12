@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -172,7 +173,7 @@ public class BppTrendPage extends Page {
 	public WebElement dropDownIconBppCompFactorSetting;
 	
 	@FindBy(xpath = "//a[@title = 'New']")
-	public WebElement newBppTrendSettingLink;
+	public WebElement newBtnToCreateEntry;
 	
 	@FindBy(xpath = "//span[contains(text(), 'Roll Year')]//parent::label//following-sibling::div//input[contains(@class, 'uiInputTextForAutocomplete')]")
 	public WebElement rollYearTxtBox;
@@ -304,8 +305,56 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//div[contains(@class, 'LOADED forceContentFileDroppableZone')]//span[contains(@class, 'itemTitle slds-text-body')]")
 	public List<WebElement> filesListOnBppTrendSetupPage;
 	
+	@FindBy(xpath = "(//div[@data-aura-class='forcePageError']//li)[2]")
+	public WebElement errorMsgOnInvalidPercentGoodsYearAcquired;
+	
+	@FindBy(xpath = "//ul[contains(@class, 'has-error uiInputDefaultError')]//li")
+	public WebElement errorMsgOnInvalidValuationFactorYearAcquired;
+	
 	@FindBy(xpath = "//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']")
 	public WebElement newBtnViewAllPage;
+	
+	@FindBy(xpath = "//a[contains(@href, 'Good_Factor')]//span[@class = 'view-all-label' and text() = 'View All']")
+	public WebElement viewAllBtnUnderBppPercentGoodsTab;
+
+	@FindBy(xpath = "//a[contains(@href, 'Valuation_Factor')]//span[@class = 'view-all-label' and text() = 'View All']")
+	public WebElement viewAllBtnUnderValuationFactorsTab;
+	
+	@FindBy(xpath = "(//div[@data-aura-class='forcePageError']//li)[1]")
+	public WebElement showMoreLinkForEditPostApprovalOfCalculation;
+	
+	@FindBy(xpath = "//div[contains(@id, 'help-message-')]")
+	public WebElement errorMsgOnImportForInvalidFileFormat;
+	
+	@FindBy(xpath = "((//lightning-formatted-text[text() = 'Junk_A'] | //lightning-formatted-text[text() = 'Junk_B'])[1])//ancestor::td//preceding-sibling::td[2]")
+	public WebElement cellAdjacentToErrorDataCellOnImportPage;
+	
+	@FindBy(xpath = "//lightning-tab[@data-id = 'BPP Prop 13 Factors']//th[@data-label = 'Roll Year']//lightning-formatted-text")
+	public List<WebElement> prop13RollYearColumnList;
+
+	@FindBy(xpath = "//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'Year Acquired']//lightning-formatted-text")
+	public List<WebElement> prop13YearAcquiredColumnList;
+	
+	@FindBy(xpath = "//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'CPI Factor (Rounded)']//lightning-formatted-text")
+	public List<WebElement> cpiRoundedValuesList;
+	
+	@FindBy(xpath = "//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'Prop 13 Factor (Rounded)']//lightning-formatted-text")
+	public List<WebElement> prop13RoundedValuesList;
+	
+	@FindBy(xpath = "//lightning-tab[@data-id = 'BPP Prop 13 Factors']//input[@disabled]")
+	public WebElement disabledCpiInputField;
+	
+	@FindBy(xpath = "(//span[contains(@class, 'itemTitle slds-text-body') and contains(text(), '.pdf')])[1]")
+	public WebElement downloadBtnBppTrendSetupPage;
+	
+	@FindBy(xpath = "//span[text() = 'Download']")
+	public WebElement downloadBtnInPopUpOnBppTrendSetupPage;
+	
+	@FindBy(xpath = "//button[@title = 'Close']")
+	public WebElement closeBtnFileDownloadPage;
+	
+	@FindBy(xpath = "(//th[@scope = 'row']//span//a)[1]")
+	public WebElement firstRowInCpiFactorGrid;
 	
 	
 	/**
@@ -365,10 +414,8 @@ public class BppTrendPage extends Page {
 				waitForElementToBeVisible(moreTabs, 10);
 				waitForElementToBeClickable(moreTabs, 10);
 				Click(moreTabs);
-				WebElement dropDownList = locateElement("//button[@title = 'More Tabs' and @aria-expanded = 'true']", 10); ////div[@class = 'slds-dropdown slds-dropdown_right']", 10);
-				System.out.println("Drop down list under more tab::"+ dropDownList);
+				WebElement dropDownList = locateElement("//button[@title = 'More Tabs' and @aria-expanded = 'true']", 10);
 				if(dropDownList == null) {
-					System.out.println("Inside If Condition");
 					waitForElementToBeClickable(moreTabs, 10);
 					Click(moreTabs);	
 				}
@@ -630,7 +677,7 @@ public class BppTrendPage extends Page {
 	public void updateMaximumEquipmentIndexFactorValue(String expectedValue, String rollYear) throws Exception {
 		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 		//Below query is to set the maximum equipment index factor value to its default values
-		String queryForMaxEquipFactor = "Select BPP_Trend_Roll_Year__c  FROM BPP_Setting__c Where BPP_Trend_Roll_Year_Parent__c = '"+ rollYear +"'";
+		String queryForMaxEquipFactor = "Select Id FROM BPP_Setting__c Where BPP_Trend_Roll_Year_Parent__c = '"+ rollYear +"'";
 		objSalesforceAPI.update("BPP_Setting__c", queryForMaxEquipFactor, "Maximum_Equipment_index_Factor__c", expectedValue);
 	}
 	
@@ -643,8 +690,8 @@ public class BppTrendPage extends Page {
 	public void updateMinimumEquipmentIndexFactorValue(String propertyType, String expectedValue, String rollYear) throws Exception {
 		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 		//Below query is to set the minimum equipment index factor value to its default values
-		String queryForMaxEquipFactor = "Select BPP_Trend_Roll_Year__c  FROM BPP_Setting__c Where BPP_Trend_Roll_Year_Parent__c = '"+ rollYear +"'";
-		objSalesforceAPI.update("BPP_Setting__c", queryForMaxEquipFactor, "Maximum_Equipment_index_Factor__c", expectedValue);
+		String queryForMinGoodsFactor = "Select Id FROM BPP_Composite_Factors_Setting__c Where BPP_Trend_Roll_Year_Parent__c = '"+rollYear+"' and Property_Type__c = '"+propertyType+"'";
+		objSalesforceAPI.update("BPP_Composite_Factors_Setting__c", queryForMinGoodsFactor, "Minimum_Good_Factor__c", expectedValue);
 	}
 	
 	/**
@@ -761,7 +808,7 @@ public class BppTrendPage extends Page {
 			
 			List<Object> yearAcruiredData = new ArrayList<Object>();
 			for(int j = 0; j < yearAcruiredDataElements.size(); j++) {
-				Object cellData = Double.parseDouble(getElementText(yearAcruiredDataElements.get(j)));
+				Object cellData = (int)Double.parseDouble(getElementText(yearAcruiredDataElements.get(j)));
 				yearAcruiredData.add(cellData);
 			}
 			uiTableDataMap.put(yearAcquiredTxt, yearAcruiredData);
@@ -807,9 +854,9 @@ public class BppTrendPage extends Page {
 		XSSFWorkbook workBook = null;
 		try {
             file = new FileInputStream(new File(filePath));
-            workBook = new XSSFWorkbook(file);            
+            workBook = new XSSFWorkbook(file);         
             XSSFSheet sheet = workBook.getSheet(sheetNameForExcel);
-            DataFormatter dataFormatter = new DataFormatter(); 
+            DataFormatter dataFormatter = new DataFormatter();
             
             int startingRow;
             Row headerRow;
@@ -857,7 +904,8 @@ public class BppTrendPage extends Page {
                 		}
                 		                		
                 		if(j != cellIndexForYearAcq) {
-                			currentRowData.add(strValue);
+                			int intValue = (int) Math.round((double)strValue);
+                			currentRowData.add(intValue);
                 		} else {
                 			yearAcquired = strValue.toString().substring(0, strValue.toString().indexOf("."));
                 		}
@@ -1826,11 +1874,114 @@ public class BppTrendPage extends Page {
 	 */
 	public WebElement clickNewButtonUnderFactorSection(String factorsTable) throws Exception {
 		String newBtnXpath = "//span[text() = '"+ factorsTable +"']//ancestor::header[contains(@class, 'slds-media slds-media--center')]//following-sibling::div//a[@title = 'New']";
-		WebElement newButton = locateElement(newBtnXpath, 60);
-		waitForElementToBeClickable(newButton, 20);
-		Click(newButton);
+		WebElement newButton = locateElement(newBtnXpath, 10);
+		try {
+			newButton = locateElement(newBtnXpath, 10);
+			waitForElementToBeClickable(newButton, 10);
+			clickAction(newButton);
+		} catch(Exception ex) {
+			newButton = locateElement(newBtnXpath, 10);
+			waitForElementToBeClickable(newButton, 10);
+			clickAction(newButton);			
+		}
+
 		return newButton;
 	}
+	
+	/**
+	 * Description: Retrieves the file status from the table grid on import transactions page
+	 * @param: Name of the column whose index position is to be found
+	 * @return: Index position of given column from the the grid table on View All page
+	 * @throws: Exception
+	 */
+	public String retrieveIndexPositionOfGivenColumnFromViewAllPage(String columnName) throws Exception {		
+		String xpathOfGridColumns = "//span[text() = 'BPP Trend Setup']//ancestor::div[contains(@class, 'slds-page-header')]//following-sibling::div//thead//tr//th[contains(@class, 'slds-is-resizable')]//span[@class ='slds-truncate']";
+		System.out.println("xpathOfGridColumns: "+ xpathOfGridColumns);
+		int indexPositionOfGivenColumn = -1;
+		List <WebElement> tableColumns = locateElements(xpathOfGridColumns, 20);
+		System.out.println("Table Columns List Size: "+ tableColumns.size());
+		int indexPos;
+		String xpath;
+		for(int i = 0; i < tableColumns.size(); i++) {
+			indexPos = i+1;
+			xpath = "("+ xpathOfGridColumns +")["+ indexPos +"]";
+			System.out.println("Xpath is: "+ xpath);
+			String currentColumnName = getElementText(locateElement(xpath, 10));
+			System.out.println("Current Column Name: "+ currentColumnName);
+			if(columnName.equalsIgnoreCase(currentColumnName)) {
+				indexPositionOfGivenColumn = i;
+				System.out.println("indexPositionOfGivenColumn: "+ indexPositionOfGivenColumn);
+				break;
+			}
+		}
+		return Integer.toString(indexPositionOfGivenColumn);
+	}
+	
+	public String getExistingNameFromViewAllGrid() throws Exception {
+		System.out.println("Xpath: //tbody//tr[1]//th//a");
+		WebElement nameOfPropType = locateElement("//tbody//tr[1]//th//a", 10);
+		return getElementText(nameOfPropType);
+	}
+	
+	public String getExistingYearAcquiredFromViewAllGrid() throws Exception {
+		String indexPosition = retrieveIndexPositionOfGivenColumnFromViewAllPage("Year Acquired");
+		System.out.println("indexPosition: "+ indexPosition);
+		String xpath = "(//tbody//tr[1]//td)["+ indexPosition +"]//span[@class = 'slds-truncate']";
+		WebElement yearAcquired = locateElement(xpath, 10);
+		return getElementText(yearAcquired);
+	}
+
+	public String getExistingPropertyTypeFromViewAllGrid() throws Exception {
+		String indexPosition = retrieveIndexPositionOfGivenColumnFromViewAllPage("Property Type");
+		System.out.println("indexPosition: "+ indexPosition);
+		String xpath = "(//tbody//tr[1]//td)["+ indexPosition +"]//span[@class = 'slds-truncate']";
+		WebElement propertyType = locateElement(xpath, 10);
+		return getElementText(propertyType);
+	}
+
+	public String getExistingValuationFactorFromViewAllGrid() throws Exception {
+		String indexPosition = retrieveIndexPositionOfGivenColumnFromViewAllPage("Valuation Factor");
+		System.out.println("indexPosition: "+ indexPosition);
+		String xpath = "(//tbody//tr[1]//td)["+ indexPosition +"]//span[@class = 'slds-truncate']";
+		WebElement valuationFactor = locateElement(xpath, 10);
+		return getElementText(valuationFactor);
+	}
+
+	
+	
+	public String getExistingAgeFromViewAllGrid() throws Exception {
+		String indexPosition = retrieveIndexPositionOfGivenColumnFromViewAllPage("Age");
+		System.out.println("indexPosition: "+ indexPosition);
+		String xpath = "(//tbody//tr[1]//td)["+ indexPosition +"]//span[@class = 'slds-truncate']";
+		WebElement age = locateElement(xpath, 10);
+		return getElementText(age);
+	}
+	
+	public String getExistingGoodFactorTypeFromViewAllGrid() throws Exception {
+		String indexPosition = retrieveIndexPositionOfGivenColumnFromViewAllPage("Good Factor Type");
+		System.out.println("indexPosition: "+ indexPosition);
+		String xpath = "(//tbody//tr[1]//td)["+ indexPosition +"]//span[@class = 'slds-truncate']";
+		WebElement goodFactorType = locateElement(xpath, 10);
+		return getElementText(goodFactorType);
+	}
+
+	public String getExistingExpectedLifeFromViewAllGrid() throws Exception {
+		String indexPosition = retrieveIndexPositionOfGivenColumnFromViewAllPage("Expected Life");
+		System.out.println("indexPosition: "+ indexPosition);
+		String xpath = "(//tbody//tr[1]//td)["+ indexPosition +"]//span[@class = 'slds-truncate']";
+		WebElement expectedLife = locateElement(xpath, 10);
+		return getElementText(expectedLife);
+	}
+
+	public String getExistingGeneralGoodFactorFromViewAllGrid() throws Exception {
+		String indexPosition = retrieveIndexPositionOfGivenColumnFromViewAllPage("General Good Factor");
+		System.out.println("indexPosition: "+ indexPosition);
+		String xpath = "(//tbody//tr[1]//td)["+ indexPosition +"]//span[@class = 'slds-truncate']";
+		WebElement generalGoodFactor = locateElement(xpath, 10);
+		return getElementText(generalGoodFactor);
+	}
+	
+	
 	
 	/**
 	 * Description: It creates a new factor entry under given factor section
@@ -1859,18 +2010,32 @@ public class BppTrendPage extends Page {
 	 * @return: Returns the status as true or false
 	 * @throws: Exception
 	 */
-	public boolean isBppFactorEntryVisibleInTable(String newlyCreatedEntryName) throws Exception {
-		return locateElement("//a[text() = '"+ newlyCreatedEntryName +"']", 30).isDisplayed();
+	public boolean isFactorEntryVisibleInTable(String newlyCreatedEntryName) throws Exception {
+		WebElement element = locateElement("//a[text() = '"+ newlyCreatedEntryName +"']", 10);
+		if(element == null) {
+			element = locateElement("//a[text() = '"+ newlyCreatedEntryName +"']", 10);
+		}
+		return element.isDisplayed();
 	}
 	
 	/**
 	 * Description: Clicks on the show more drop down in the table for given entry.
-	 * @param newlyCreatedEntryName: It takes bpp factor name as argument
+	 * @param newlyCreatedEntryName: It takes BPP factor name as argument
 	 * @throws: Exception
 	 */
-	public void clickShowMoreDropDownForGivenFactorEntry(String factorEntryName) throws Exception {
-		String xpath = "//a[text() = '"+ factorEntryName +"']//following::td//span[text() = 'Show More']//ancestor::a";
-		WebElement showMoreDropDown = locateElement(xpath, 60);
+	public void clickShowMoreDropDownForGivenFactorEntry(String factorTableName) throws Exception {
+		//String rowNum = getRowNumberToUpdate(factorTableName, TestBase.CONFIG.getProperty("rollYear"), propertyType);
+		String xpath;
+		if(factorTableName.equalsIgnoreCase("BPP Percent Good Factors")) {
+			xpath = "(//span[text() = 'Machinery and Equipment'])[1]//parent::td//following-sibling::td//span[text() = 'Show More'] | (//span[text() = 'Machinery and Equipment'])[1]//parent::td//following-sibling::td//a[@title = 'Show 2 more actions']";
+		} else {
+			xpath = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = '"+factorTableName+"']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr[1]//a[@role = 'button']";
+		}
+		
+		WebElement showMoreDropDown = locateElement(xpath, 15);
+		if(showMoreDropDown == null) {
+			showMoreDropDown = locateElement(xpath, 15);
+		}
 		clickAction(showMoreDropDown);
 	}
 	
@@ -1879,8 +2044,8 @@ public class BppTrendPage extends Page {
 	 * @return: Returns the status as true or false
 	 * @throws: Exception
 	 */
-	public boolean isEditLinkAvailableForGivenFactorEntry(String factorEntryName) throws Exception {
-		clickShowMoreDropDownForGivenFactorEntry(factorEntryName);
+	public boolean isEditLinkAvailableForGivenFactorEntry(String factorTableName) throws Exception {
+		clickShowMoreDropDownForGivenFactorEntry(factorTableName);
 		waitForElementToBeVisible(objBuildPermitPage.editLinkUnderShowMore, 10);
 		return objBuildPermitPage.editLinkUnderShowMore.isDisplayed();
 	}
@@ -1890,8 +2055,8 @@ public class BppTrendPage extends Page {
 	 * @return: Returns the status as true or false
 	 * @throws: Exception
 	 */
-	public boolean isDeleteLinkAvailableForGivenFactorEntry(String factorEntryName) throws Exception {
-		clickShowMoreDropDownForGivenFactorEntry(factorEntryName);
+	public boolean isDeleteLinkAvailableForGivenFactorEntry(String factorTableName) throws Exception {
+		clickShowMoreDropDownForGivenFactorEntry(factorTableName);
 		waitForElementToBeVisible(objBuildPermitPage.deleteLinkUnderShowMore, 10);
 		return objBuildPermitPage.deleteLinkUnderShowMore.isDisplayed();
 	}
@@ -1959,13 +2124,44 @@ public class BppTrendPage extends Page {
 	}
 	
 	/**
+	 * Description:: Generates the row number to be read basis on the parameter provided
+	 * @param: Takes Property Name as an argument like 'Agricultural', 'Commercial'
+	 * @param: Roll Year
+	 * @param: Name of the table whose rows are to be edited like 'BPP Property Index Factors'
+	 * @returns: Index of the row to be edited
+	 * @throws Exception
+	 */
+	private String getRowNumberToUpdate(String tableName, String rollYear, String propertyName) throws Exception {
+		String expRowHeading = rollYear + "-" + propertyName;		
+		String xpath = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = '"+tableName+"']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr//th//a";
+		
+		List<WebElement> rowDetailsList = locateElements(xpath, 10);
+		if(rowDetailsList == null) {
+			rowDetailsList = locateElements(xpath, 10);
+		}
+		
+		String currentRowHeading;
+		int rowNumberToUpdate = -1;
+		for(int i = 0; i < rowDetailsList.size(); i++) {
+			currentRowHeading = getElementText(rowDetailsList.get(i));			
+			if(currentRowHeading.equalsIgnoreCase(expRowHeading)) {
+				rowNumberToUpdate = i + 1;
+				break;
+			}
+		}
+		return Integer.toString(rowNumberToUpdate);
+	}
+	
+	
+	/**
 	 * Description: Retrieves the property type value from BPP Property Index Factors table
 	 * @return: Return the property type value
 	 * @throws: Exception
 	 */
-	public String readPropertyTypeValueFromBppPropIndexFactors() throws Exception {
+	public String readPropertyTypeValueFromBppPropIndexFactors(String propertyType) throws Exception {
+		String rowNum = getRowNumberToUpdate("BPP Property Index Factors", TestBase.CONFIG.getProperty("rollYear"), propertyType);
 		String indexOfPropertyType = getIndexPositionOfGivenColumnFromGivenFactorTable("BPP Property Index Factors", "Property Type");		
-		String xpathPropertyType = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = 'BPP Property Index Factors']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr[1]//td["+ indexOfPropertyType +"]";
+		String xpathPropertyType = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = 'BPP Property Index Factors']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr["+rowNum+"]//td["+ indexOfPropertyType +"]";
 		String propertyTypeValue = getElementText(locateElement(xpathPropertyType, 20));
 		return propertyTypeValue;
 	}
@@ -1975,11 +2171,19 @@ public class BppTrendPage extends Page {
 	 * @return: Return the good factor type value
 	 * @throws: Exception
 	 */
-	public String readGoodFactorTypeValueFromBppPercentGoodFactors() throws Exception {
+	public String readGoodFactorTypeValueFromBppPercentGoodFactors(String propertyType) throws Exception {
+		String rowNum = getRowNumberToUpdate("BPP Percent Good Factors", TestBase.CONFIG.getProperty("rollYear"), propertyType);
 		String indexOfGoodFactorType = getIndexPositionOfGivenColumnFromGivenFactorTable("BPP Percent Good Factors", "Good Factor Type");
-		String xpathGoodFactorType = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = 'BPP Percent Good Factors']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr[1]//td["+ indexOfGoodFactorType +"]";
+		String xpathGoodFactorType = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = 'BPP Percent Good Factors']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr["+rowNum+"]//td["+ indexOfGoodFactorType +"]";
 		String goodFactorTypeValue = getElementText(locateElement(xpathGoodFactorType, 20));
 		return goodFactorTypeValue;
+	}
+	
+	public String readPercentGoodFactorsMandatoryValuesFromDetailsPage() throws Exception {
+		String xpath = "//span[text() = 'BPP Trend Setup']//ancestor::div[contains(@class, 'slds-page-header')]//following-sibling::div//thead//tr//th[contains(@class, 'slds-is-resizable')]//span[@class ='slds-truncate']";
+	
+		
+		return "";
 	}
 	
 	/**
@@ -1987,9 +2191,10 @@ public class BppTrendPage extends Page {
 	 * @return: Return the property type value
 	 * @throws: Exception
 	 */
-	public String readPropertyTypeValueFromImportedValuationFactors() throws Exception {
+	public String readPropertyTypeValueFromImportedValuationFactors(String propertyType) throws Exception {
+		String rowNum = getRowNumberToUpdate("Imported Valuation Factors", TestBase.CONFIG.getProperty("rollYear"), propertyType);
 		String indexOfPropertyType = getIndexPositionOfGivenColumnFromGivenFactorTable("Imported Valuation Factors", "Property Type");		
-		String xpathPropertyType = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = 'Imported Valuation Factors']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr[1]//td["+ indexOfPropertyType +"]";
+		String xpathPropertyType = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = 'Imported Valuation Factors']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr["+rowNum+"]//td["+ indexOfPropertyType +"]";
 		String propertyTypeValue = getElementText(locateElement(xpathPropertyType, 20));
 		return propertyTypeValue;
 	}
@@ -1999,9 +2204,10 @@ public class BppTrendPage extends Page {
 	 * @return: Return the year acquired value
 	 * @throws: Exception
 	 */
-	public String readAcquiredYearValueFromGivenFactorTable(String factorTableName) throws Exception {
+	public String readAcquiredYearValueFromGivenFactorTable(String factorTableName, String propertyType) throws Exception {
+		String rowNum = getRowNumberToUpdate(factorTableName, TestBase.CONFIG.getProperty("rollYear"), propertyType);
 		String indexOfYearAcquired = getIndexPositionOfGivenColumnFromGivenFactorTable(factorTableName, "Year Acquired");
-		String xpathYear = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = '"+ factorTableName +"']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr[1]//td["+ indexOfYearAcquired +"]";
+		String xpathYear = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = '"+ factorTableName +"']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr["+rowNum+"]//td["+ indexOfYearAcquired +"]";
 		String yearAcquiredValue = getElementText(locateElement(xpathYear, 20));
 		return yearAcquiredValue;
 	}
@@ -2011,8 +2217,9 @@ public class BppTrendPage extends Page {
 	 * @return: Return the name value
 	 * @throws: Exception
 	 */
-	public String readNameValueFromGivenFactorTable(String factorTableName) throws Exception {
-		String xpathName = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = '"+ factorTableName +"']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr[1]//th[1]//a";
+	public String readNameValueFromGivenFactorTable(String factorTableName, String propertyType) throws Exception {
+		String rowNum = getRowNumberToUpdate(factorTableName, TestBase.CONFIG.getProperty("rollYear"), propertyType);
+		String xpathName = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = '"+ factorTableName +"']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr["+rowNum+"]//th[1]//a";
 		String nameValue = getElementText(locateElement(xpathName, 20));
 		return nameValue;
 	}
@@ -2022,9 +2229,10 @@ public class BppTrendPage extends Page {
 	 * @return: Return the Index Factor value
 	 * @throws: Exception
 	 */
-	public String readIndexFactorValue() throws Exception {
+	public String readIndexFactorValue(String propertyType) throws Exception {
+		String rowNum = getRowNumberToUpdate("BPP Property Index Factors", TestBase.CONFIG.getProperty("rollYear"), propertyType);
 		String indexOfIndexFactor = getIndexPositionOfGivenColumnFromGivenFactorTable("BPP Property Index Factors", "Index Factor");
-		String xpathIndexFactor = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = 'BPP Property Index Factors']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr[1]//td["+ indexOfIndexFactor +"]";
+		String xpathIndexFactor = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = 'BPP Property Index Factors']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr["+rowNum+"]//td["+ indexOfIndexFactor +"]";
 		String indexFactorValue = getElementText(locateElement(xpathIndexFactor, 20));
 		return indexFactorValue;
 	}
@@ -2034,9 +2242,10 @@ public class BppTrendPage extends Page {
 	 * @return: Return the Valuation Factor value
 	 * @throws: Exception
 	 */
-	public String readValuationFactorValue() throws Exception {
+	public String readValuationFactorValue(String propertyType) throws Exception {
+		String rowNum = getRowNumberToUpdate("Imported Valuation Factors", TestBase.CONFIG.getProperty("rollYear"), propertyType);
 		String indexOfValuationFactor = getIndexPositionOfGivenColumnFromGivenFactorTable("Imported Valuation Factors", "Valuation Factor");
-		String xpathValuationFactor = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = 'Imported Valuation Factors']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr[1]//td["+ indexOfValuationFactor +"]";
+		String xpathValuationFactor = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = 'Imported Valuation Factors']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr["+rowNum+"]//td["+ indexOfValuationFactor +"]";
 		String valuationFactorValue = getElementText(locateElement(xpathValuationFactor, 20));
 		return valuationFactorValue;
 	}
@@ -2142,8 +2351,8 @@ public class BppTrendPage extends Page {
 		waitForElementToBeClickable(dropDownIconBppCompFactorSetting, 10);
 		clickAction(waitForElementToBeClickable(dropDownIconBppCompFactorSetting));
 		
-		waitForElementToBeVisible(newBppTrendSettingLink, 20);
-		clickAction(waitForElementToBeClickable(newBppTrendSettingLink));
+		waitForElementToBeVisible(newBtnToCreateEntry, 20);
+		clickAction(waitForElementToBeClickable(newBtnToCreateEntry));
 
 		if(rollYear.length == 1) {
 			enterRollYearInBppSettingDetails(rollYear[0]);			
@@ -2231,7 +2440,7 @@ public class BppTrendPage extends Page {
 	 */
 	public void createBppSetting(String equipIndexFactorValue) throws Exception {
 		clickAction(waitForElementToBeClickable(dropDownIconBppSetting));
-		clickAction(waitForElementToBeClickable(newBppTrendSettingLink));
+		clickAction(waitForElementToBeClickable(newBtnToCreateEntry));
 		enterFactorValue(equipIndexFactorValue);
 		Click(saveBtnInBppSettingPopUp);
 	}
@@ -2266,7 +2475,7 @@ public class BppTrendPage extends Page {
 	 * @param filePath: Takes the path of the XLSX workbook
 	 * @return: Return a data map
 	 **/
-	public Map<String, Object> getTotalRowsCountFromExcelForGivenTable(String filePath) throws Exception {
+	public Map<String, Object> getTotalRowsCountFromExcelForGivenTable(String filePath, String rollYear) throws Exception {
 		List<String> sheetNames = new ArrayList<String>();		
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 		FileInputStream file = null;
@@ -2301,7 +2510,8 @@ public class BppTrendPage extends Page {
     		else {
 				for (String sheetName : sheetNames) {
 					int endingRecordYearForValuationFile = Integer.parseInt(TestBase.CONFIG.getProperty("endingRecordYearForValuationFile"));
-					int currentRollYear = Integer.parseInt(TestBase.CONFIG.getProperty("rollYear"));
+					//int currentRollYear = Integer.parseInt(TestBase.CONFIG.getProperty("rollYear"));
+					int currentRollYear = Integer.parseInt(rollYear);
 					int totalRows;
 					
 					if(sheetName.equalsIgnoreCase("Computer Val Factors") || sheetName.equalsIgnoreCase("Semiconductor Val Factors")) {
@@ -2328,8 +2538,8 @@ public class BppTrendPage extends Page {
 	/**
 	 * Description: Return a map containing error records, records to be imported and total records in given excel
 	 */
-	public Map<String, Object> countOfDifferentRowTypesInExcel(String filePath) throws Exception {
-		Map<String, Object> dataMap = getTotalRowsCountFromExcelForGivenTable(filePath);
+	public Map<String, Object> countOfDifferentRowTypesInExcel(String filePath, String rollYear) throws Exception {
+		Map<String, Object> dataMap = getTotalRowsCountFromExcelForGivenTable(filePath, rollYear);
 		int totalImportedRows = 0;
 		int totalErrorRows = Integer.parseInt(TestBase.CONFIG.getProperty("errorRecordsCount")) * dataMap.size();
 		
@@ -3012,5 +3222,23 @@ public class BppTrendPage extends Page {
 	public String retrieveMaxEqipIndexValueFromViewAllGrid(String bppSettingName) throws Exception {
 		String xpathForMaxEqipIndexInGrid = "//tbody/tr//th//a[text() = '"+ bppSettingName +"']//parent::span//parent::th//following-sibling::td//span[contains(text(), '%')]";
 		return getElementText(locateElement(xpathForMaxEqipIndexInGrid, 20));
+	}
+
+	
+	public void clickJunkDataCell(String tableNumber) throws Exception {
+		String xpath = "(//lightning-tab[@aria-labelledby = '"+tableNumber+"__item']//span[contains(@title,'ERROR ROWS')]//ancestor::div[@class = 'slds-accordion__summary']//following-sibling::div//table//lightning-formatted-text[starts-with(text(), 'Junk_')])";
+		Click(locateElement(xpath, 10));
+	}
+	
+	public void clickPencilIconAndEditJunkDataCell(String tableNumber, int valueToEnter) throws Exception {
+		String xpath = "(//lightning-tab[@aria-labelledby = '"+tableNumber+"__item']//span[contains(@title,'ERROR ROWS')]//ancestor::div[@class = 'slds-accordion__summary']//following-sibling::div//table//lightning-formatted-text[starts-with(text(), 'Junk_')])";
+		Click(locateElement(xpath, 10));
+	}
+	
+	public void clickAdjacentCell(String tableNumber) throws Exception {
+		String xpath = "((//lightning-tab[@aria-labelledby = '"+tableNumber+"__item']//span[contains(@title,'ERROR ROWS')]//ancestor::div[@class = 'slds-accordion__summary']//following-sibling::div//table//lightning-formatted-text[text() = 'Junk_A'] | //lightning-formatted-text[text() = 'Junk_B'])["+tableNumber+"])//ancestor::td//preceding-sibling::td[2]";
+		System.out.println("Adacent cell: "+ xpath);
+		Click(locateElement(xpath, 10));
+	
 	}
 }

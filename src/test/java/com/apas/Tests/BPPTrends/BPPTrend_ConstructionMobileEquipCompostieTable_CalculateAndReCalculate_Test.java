@@ -77,11 +77,10 @@ public class BPPTrend_ConstructionMobileEquipCompostieTable_CalculateAndReCalcul
 	 * 7. Validating the message displayed above table after calculation is done
 	 * 8. Validating the presence of Recalculate button for Calculated table
 	 * 9. Validating the absence of Calculate button
-	 * 10. Validating the absence of Submit For Approval button:: TestCase/JIRA ID: SMAB-T442
-	 * 11. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T240
-	 * 12. Validating the status of the table on BPP Trend Setup Page: SMAB-T241
+	 * 10. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T240
+	 * 11. Validating the status of the table on BPP Trend Setup Page: SMAB-T241
 	 */
-	@Test(description = "SMAB-T239,SMAB-T240,SMAB-T241,SMAB-T269,SMAB-T190,SMAB-T194,SMAB-T198,SMAB-T442: Performing validation on CONSTRUCTION MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T239,SMAB-T240,SMAB-T241,SMAB-T269,SMAB-T190,SMAB-T194,SMAB-T198: Performing validation on CONSTRUCTION MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_ConstructionMobileEquipCompostieTable_CalculateAndCompare(String loginUser) throws Exception {
 		//Step1: Reseting the status of all composite factor tables to "Not Calculated" through SalesForce API
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -106,7 +105,7 @@ public class BPPTrend_ConstructionMobileEquipCompostieTable_CalculateAndReCalcul
 		
 		//Step3: Validating presence of CalculateAll button at page level
 		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
-		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T166: Calculate all button is visible at page level");
+		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T241: Calculate all button is visible at page level");
 			
 		//Step4: Clicking on the given table
 		objBppTrnPg.clickOnTableOnBppTrendPage(tableName, true);
@@ -191,20 +190,21 @@ public class BPPTrend_ConstructionMobileEquipCompostieTable_CalculateAndReCalcul
 					boolean isDataMatched = true;
 					for (int j = 0; j < acquiredYearDataFromExcel.size(); j++) {
 						if (!(acquiredYearDataFromExcel.get(j).equals(acquiredYearDataFromUI.get(j)))) {
+							isDataMatched = false;
 							objBppTrnPg.highlightMismatchedCellOnUI(tableName, currentKey, j);
-							softAssert.assertTrue(false, "SMAB-T240: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' matched. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
+							softAssert.assertTrue(false, "SMAB-T240: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' MACTHED. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
 						}
 					}
 					if(isDataMatched) {
-						softAssert.assertTrue(true, "SMAB-T240: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched with Trend Calculator data.", true);
+						softAssert.assertTrue(true, "SMAB-T240: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' MATCHED with Trend Calculator data", true);
 					}
 				} else {
 					System.setProperty("isElementHighlightedDueToFailre", "true");
-					softAssert.assertTrue(false, "SMAB-T240: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched.", true);
+					softAssert.assertTrue(false, "SMAB-T240: Count of columns for '"+ tableName +" 'for year acquired '"+ currentKey +"' MACTHED", true);
 				}
 			} else {
 				System.setProperty("isElementHighlightedDueToFailre", "true");
-				softAssert.assertTrue(false, "SMAB-T240: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is present in UI table.", true);
+				softAssert.assertTrue(false, "SMAB-T240: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is PRESENT in UI table", true);
 			}
 		}
 		if(System.getProperty("isElementHighlightedDueToFailre").equalsIgnoreCase("true")) {
@@ -236,12 +236,8 @@ public class BPPTrend_ConstructionMobileEquipCompostieTable_CalculateAndReCalcul
 	 * 6. Validating the presence of table grid once calculation is successful
 	 * 7. Validating the message displayed above table after ReCalculation is done
 	 * 8. Validating the presence of ReCalculate button for Calculated table:: Test Case/JIRA ID: SMAB-T195
-	 * 9. Validating the absence of Submit For Approval button:: Test Case/JIRA ID: SMAB-T442
-	 * 10. Validating the data of UI table against the Trend Calculator excel file:: Test Case/JIRA ID: SMAB-T302
-	 * 11. Validating the status of the table on BPP Trend Setup Page
-	 * 12. Reverting the changed settings in excel file and BPP Trend Setup page
 	 */
-	@Test(description = "SMAB-T195,SMAB-T196,SMAB-T442: Performing validation on CONSTRUCTION MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T195,SMAB-T196: Performing validation on CONSTRUCTION MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_ConstructionMobileEquipCompostieTable_ReCalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -343,21 +339,21 @@ public class BPPTrend_ConstructionMobileEquipCompostieTable_CalculateAndReCalcul
 					boolean isDataMatched = true;
 					for (int j = 0; j < acquiredYearDataFromExcel.size(); j++) {
 						if (!(acquiredYearDataFromExcel.get(j).equals(acquiredYearDataFromUI.get(j)))) {
+							isDataMatched = false;
 							objBppTrnPg.highlightMismatchedCellOnUI(tableName, currentKey, j);
-							
-							softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' matched. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
+							softAssert.assertTrue(false, "SMAB-T195: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' MACTHED. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
 						}
 					}
 					if(isDataMatched) {
-						softAssert.assertTrue(true, "SMAB-T302: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched with Trend Calculator data.", true);
+						softAssert.assertTrue(true, "SMAB-T195: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' MATCHED with Trend Calculator data", true);
 					}
 				} else {
 					System.setProperty("isElementHighlightedDueToFailre", "true");
-					softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched.", true);
+					softAssert.assertTrue(false, "SMAB-T195: Count of columns for '"+ tableName +" 'for year acquired '"+ currentKey +"' MACTHED", true);
 				}
 			} else {
 				System.setProperty("isElementHighlightedDueToFailre", "true");
-				softAssert.assertTrue(false, "SMAB-T302: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is present in UI table.", true);
+				softAssert.assertTrue(false, "SMAB-T195: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is PRESENT in UI table", true);
 			}
 		}
 		

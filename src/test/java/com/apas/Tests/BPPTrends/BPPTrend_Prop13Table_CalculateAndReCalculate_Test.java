@@ -80,12 +80,10 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 	 * 7. Validating the message displayed above table after calculation is done
 	 * 8. Validating the presence of Recalculate button for Calculated table
 	 * 9. Validating the absence of Calculate button
-	 * 10. Validating the absence of Submit For Approval button:: TestCase/JIRA ID: SMAB-T442
-	 * 11. Validating Roll Year value is Acquired Year + 1:: TestCase/JIRA ID: SMAB-T577
-	 * 12. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T277
-	 * 13. Validating the status of the table on BPP Trend Setup Page: SMAB-T278
+	 * 10. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T277
+	 * 11. Validating the status of the table on BPP Trend Setup Page: SMAB-T278
 	 */
-	@Test(description = "SMAB-T190,SMAB-T276,SMAB-T277,SMAB-T278,SMAB-T442,SMAB-T577,SMAB-T211: Performing validation on PROP 13 FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T190,SMAB-T211,SMAB-T276,SMAB-T277,SMAB-T278: Performing validation on PROP 13 FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_Prop13Factors_CalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Reseting the status of all composite factor tables to "Not Calculated" through SalesForce API
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -135,7 +133,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		objBppTrnPg.clickCalculateBtn(tableName);
 		
 		//Step10: Waiting for pop up message to display and the message displayed above table to update
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);			
+		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(30);			
 
 		//Step11: Validation to check whether calculation is successfully and table data appears for given table
 		boolean isTableVisible = objBppTrnPg.isTableDataVisible(tableName);
@@ -145,7 +143,8 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		//Step12: Retrieve & Assert updated message  displayed above table
 		String actTableMsgPostCalc = objBppTrnPg.retrieveMsgDisplayedAboveTable(tableName);
 		String expTableMsgPostCalc = CONFIG.getProperty("tableMsgPostCalculation");
-		objSoftAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "Message displayed above the table after Calculation is completed");
+		softAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "SMAB-T276: Message displayed above the table after Calculation is completed");
+		softAssert.assertEquals(actTableMsgPostCalc, expTableMsgPostCalc, "SMAB-T211: Message displayed above the table after Calculation is completed");
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "* Checking status of various buttons at page level and table level");
 		//Step13: Validating presence of ReCalculate button at table level after calculate button is clicked
@@ -196,21 +195,21 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 					boolean isDataMatched = true;
 					for (int j = 0; j < acquiredYearDataFromExcel.size(); j++) {
 						if (!(acquiredYearDataFromExcel.get(j).equals(acquiredYearDataFromUI.get(j)))) {
-							objBppTrnPg.highlightMismatchedCellOnUI(tableName, currentKey, j);
-							
-							softAssert.assertTrue(false, "SMAB-T166: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' matched. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
+							isDataMatched = false;
+							objBppTrnPg.highlightMismatchedCellOnUI(tableName, currentKey, j);		
+							softAssert.assertTrue(false, "SMAB-T277: Data for '"+ tableName +" 'for year acquired '" + currentKey + "' and column named '"+ columnNames.get(j) + "' MACTHED. Excel data: "+ acquiredYearDataFromExcel.get(j) + " || UI Data: " + acquiredYearDataFromUI.get(j), true);
 						}
 					}
 					if(isDataMatched) {
-						softAssert.assertTrue(true, "SMAB-T166: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched with Trend Calculator data.", true);
+						softAssert.assertTrue(true, "SMAB-T277: UI Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' MATCHED with Trend Calculator data", true);
 					}
 				} else {
 					System.setProperty("isElementHighlightedDueToFailre", "true");
-					softAssert.assertTrue(false, "SMAB-T166: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' matched.", true);
+					softAssert.assertTrue(false, "SMAB-T277: Count of columns for '"+ tableName +" 'for year acquired '"+ currentKey +"' MACTHED", true);
 				}
 			} else {
 				System.setProperty("isElementHighlightedDueToFailre", "true");
-				softAssert.assertTrue(false, "SMAB-T166: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is present in UI table.", true);
+				softAssert.assertTrue(false, "SMAB-T277: Data for '"+ tableName +" 'for year acquired '"+ currentKey +"' is PRESENT in UI table", true);
 			}
 		}
 		if(System.getProperty("isElementHighlightedDueToFailre").equalsIgnoreCase("true")) {
@@ -241,12 +240,11 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 	 * 6. Validating the presence of table grid once calculation is successful
 	 * 7. Validating the message displayed above table after ReCalculation is done
 	 * 8. Validating the presence of ReCalculate button for Calculated table:: Test Case/JIRA ID: SMAB-T195
-	 * 9. Validating the absence of Submit For Approval button:: Test Case/JIRA ID: SMAB-T442
-	 * 10. Validating the data of UI table against the Trend Calculator excel file:: Test Case/JIRA ID: SMAB-T302
-	 * 11. Validating the status of the table on BPP Trend Setup Page
-	 * 12. Reverting the changed settings in excel file and BPP Trend Setup page
+	 * 9. Validating table data is locked & editing is not allowed once it is approved:: Test Case/JIRA ID: SMAB-T301
+	 * 10. Validating Prop 13 Factors (Rounded) and CPI factors (Rounded) values have only 2 digits after a decimal:: Test Case/JIRA ID: SMAB-T569
+	 * 11. Reverting the changed settings in excel file and BPP Trend Setup page
 	 */
-	@Test(description = "SMAB-T302,SMAB-T195,SMAB-T196,SMAB-T442,SMAB-T577: Performing validation on PROP 13 COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T195,SMAB-T196,SMAB-T301,SMAB-T569,SMAB-T577: Performing validation on PROP 13 COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_Prop13Factors_ReCalculateAndCompare(String loginUser) throws Exception {					
 		//Step1: Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
@@ -293,8 +291,11 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		objSoftAssert.assertEquals(actTableMsgBeforeCalc, expTableMsgBeforeCalc, "Message displayed above '"+ tableName +"' before ReCalculation is initiated");
 		
 		//Step8: Retrieving roll year and year acquired values to check roll year values are 1 year greater than acquired year values
-		List<WebElement> rollYears = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//th[@data-label = 'Roll Year']//lightning-formatted-text", 60);
-		List<WebElement> yearAcquired = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'Year Acquired']//lightning-formatted-text", 60);
+		//List<WebElement> rollYears = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//th[@data-label = 'Roll Year']//lightning-formatted-text", 60);
+		//List<WebElement> yearAcquired = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'Year Acquired']//lightning-formatted-text", 60);
+
+		List<WebElement> rollYears = objBppTrnPg.prop13RollYearColumnList;
+		List<WebElement> yearAcquired = objBppTrnPg.prop13YearAcquiredColumnList;
 		for(int i = 0; i < rollYears.size(); i++) {
 			int currentRollYear = Integer.parseInt(objBppTrnPg.getElementText(rollYears.get(i)));
 			int currentYearAcquired = Integer.parseInt(objBppTrnPg.getElementText(yearAcquired.get(i)));
@@ -306,8 +307,11 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		}
 		
 		//Step9: Validating Prop13 Rounded and CPI Factors Rounded are displayed to 2 decimal places
-		List<WebElement> cpiRoundedValuesList = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'CPI Factor (Rounded)']//lightning-formatted-text", 60);
-		List<WebElement> prop13RoundedValuesList = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'Prop 13 Factor (Rounded)']//lightning-formatted-text", 60);
+		//List<WebElement> cpiRoundedValuesList = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'CPI Factor (Rounded)']//lightning-formatted-text", 60);
+		//List<WebElement> prop13RoundedValuesList = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'Prop 13 Factor (Rounded)']//lightning-formatted-text", 60);
+		
+		List<WebElement> cpiRoundedValuesList = objBppTrnPg.cpiRoundedValuesList;
+		List<WebElement> prop13RoundedValuesList = objBppTrnPg.prop13RoundedValuesList;
 		for(int i = 0; i < cpiRoundedValuesList.size(); i++) {
 			String currentCpiRoundedValue = objBppTrnPg.getElementText(cpiRoundedValuesList.get(i));
 			String lengthPostDecimalInCpiRoundedValue = (currentCpiRoundedValue.split("\\."))[1];
@@ -379,8 +383,9 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		WebElement editBtn = objBppTrnPg.locateEditButtonInFocusedCell();
 
 		softAssert.assertTrue((editBtn == null), "SMAB-T301: Edit button is not visible to update cell data in grid after table status is 'Approved'");		
-		WebElement disabledCpiInputField = objBppTrnPg.locateElement("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//input[@disabled]", 10);
-		softAssert.assertTrue((disabledCpiInputField != null), "SMAB-T301: CPI Factor filed is locked for editing after table status is 'Approved'");	
+		//WebElement disabledCpiInputField = objBppTrnPg.locateElement("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//input[@disabled]", 10);
+		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.disabledCpiInputField, 10);
+		softAssert.assertTrue((objBppTrnPg.disabledCpiInputField != null), "SMAB-T301: CPI Factor filed is locked for editing after table status is 'Approved'");	
 		
 		//Step22: Log out from the application
 		softAssert.assertAll();

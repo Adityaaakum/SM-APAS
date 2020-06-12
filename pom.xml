@@ -239,15 +239,18 @@
 								<include>BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test.java</include> -->
 								<!-- <include>BPPTrend_Prop13Table_CalculateAndReCalculate_Test.java</include> -->
 								
-								<!-- <include>BPPTrend_EfileImport_Test.java</include> -->
-								<!-- <include>BpTrend_CalculateWithMissing_IndexAndFactorSettings.java</include> -->
-								<!-- <include>BPPTrend_Setup_Setting_Test.java</include> -->
+								
+								<!-- <include>BPPTrend_CalculateWithMissing_IndexAndFactorSettings.java</include> -->
 								<!-- <include>BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test.java</include> -->
+								<!-- <include>BPPTrend_EfileImport_Test.java</include> -->
+								<include>BPPTrend_FilesExport_Test.java</include>
+								<!-- <include>BPPTrend_InflationFactor_Test.java</include>
 								<include>BPPTrend_PrincipalApprovalAndOutputTables_Test.java</include>
-								<!-- <include>BppTrendSecurityAndSharingTest.java</include> -->
-								<!-- <include>BPPTrend_FilesExport_Test.java</include> -->
-								<!-- <include>BPPTrend_InflationFactor_Test.java</include> -->
-								<!-- <include>BPPTrend_Setup_CompositeFactorSetting_Test.java</include> -->
+								<include>BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test.java</include>
+								<include>BppTrend_SecurityAndSharing_Test.java</include>
+								<include>BPPTrend_Setup_Setting_Test.java</include>
+								<include>BPPTrend_Setup_CompositeFactorSetting_Test.java</include> -->
+
 								
 						</includes>
 						<!-- <groups>${groups}</groups> -->

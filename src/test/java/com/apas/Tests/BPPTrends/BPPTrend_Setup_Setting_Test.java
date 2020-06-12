@@ -101,7 +101,7 @@ public class BPPTrend_Setup_Setting_Test extends TestBase {
 		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppSetting));
 
 		//Step8: Click on New option to create BPP Setting entry
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBppTrendSettingLink));
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBtnToCreateEntry));
 		
 		//Step9: Validate error message with factor values less than minimum range
 		String expectedErrorMsgOnIncorrectFactorValue;
@@ -143,7 +143,7 @@ public class BPPTrend_Setup_Setting_Test extends TestBase {
 			if(i == 0) {
 				//Creating the BPP setting entry
 				objBppTrnPg.clickAction(objBppTrnPg.dropDownIconBppSetting);
-				objBppTrnPg.clickAction(objBppTrnPg.newBppTrendSettingLink);
+				objBppTrnPg.clickAction(objBppTrnPg.newBtnToCreateEntry);
 				objBppTrnPg.enterRollYearInBppSettingDetails(rollYear);	
 				objBppTrnPg.enterFactorValue(multipleFactorCorrectVauesList.get(i));
 				objBppTrnPg.Click(objBuildPermitPage.saveButton);
