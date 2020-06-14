@@ -220,40 +220,11 @@
 						<forkCount>0</forkCount>
 						<!-- <reuseForks>true</reuseForks> -->
 						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
-
-						<includes>
-							<!-- <include>BuildingPermitImportTest.java</include> 
-								<include>BuildingPermitManualCreationTest.java</include> 
-								<include>BuildingPermitEditTest.java</include> 
-								<include>BuildingPermitDataValidationTest.java</include> 
-								<include>BuildingPermitTransactionsLogTest.java</include>
-								<include>CityStratCodesTest.java</include> 
-								<include>ReportsTest.java</include> 
-								<include>RollwisePermissionTest.java</include> 
-								<include>NonRelevantPermitSettingsTest.java</include> -->
-																
-								<!-- <include>BPPTrend_AgriculturalCompostieTable_CalculateAndReCalculate_Test.java</include>
-								<include>BPPTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalculate_Test.java</include>
-								<include>BPPTrend_CommercialCompostieTable_CalculateAndReCalculate_Test.java</include>
-								<include>BPPTrend_ConstructionCompostieTable_CalculateAndReCalculate_Test.java</include>
-								<include>BPPTrend_ConstructionMobileEquipCompostieTable_CalculateAndReCalculate_Test.java</include>
-								<include>BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test.java</include> -->
-								<!-- <include>BPPTrend_Prop13Table_CalculateAndReCalculate_Test.java</include> -->
-								
-								
-								<!-- <include>BPPTrend_CalculateWithMissing_IndexAndFactorSettings.java</include> -->
-								<!-- <include>BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test.java</include> -->
-								<!-- <include>BPPTrend_EfileImport_Test.java</include> -->
-								<include>BPPTrend_FilesExport_Test.java</include>
-								<!-- <include>BPPTrend_InflationFactor_Test.java</include>
-								<include>BPPTrend_PrincipalApprovalAndOutputTables_Test.java</include>
-								<include>BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test.java</include>
-								<include>BppTrend_SecurityAndSharing_Test.java</include>
-								<include>BPPTrend_Setup_Setting_Test.java</include>
-								<include>BPPTrend_Setup_CompositeFactorSetting_Test.java</include> -->
-
-								
-						</includes>
+						<!-- <includes>
+						         <include>BuildingPermit_Manual_Test.java</include>
+						         <include>BuildingPermitEditTest.java</include>
+					    </includes> -->
+						<groups>${testSuite}</groups>
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
 						<systemPropertyVariables>
 							<browserName>${browserName}</browserName>

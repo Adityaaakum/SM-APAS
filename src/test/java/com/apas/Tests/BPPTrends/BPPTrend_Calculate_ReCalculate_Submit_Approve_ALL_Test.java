@@ -540,7 +540,4 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 		objApasGenericFunctions.logout();
 	}
 		
-
-
-
 }

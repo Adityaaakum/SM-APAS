@@ -1248,6 +1248,4 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertAll();
 		objApasGenericFunctions.logout();
 	}
-
-
 }
