@@ -5,6 +5,8 @@ public interface testdata {
 	//List of test data files used in different test cases
 	public static final String BUILDING_PERMIT_ATHERTON = "\\data\\BuildingPermit\\AthertonBuildingPermits\\";
 	public static final String BUILDING_PERMIT_SAN_MATEO = "\\data\\BuildingPermit\\SanMateoBuildingPermits\\";
+	public static final String BUILDING_PERMIT_BURLINGAME = "\\data\\BuildingPermit\\BurlingamePermits\\";
+	public static final String BUILDING_PERMIT_BELMONT = "\\data\\BuildingPermit\\BelmontPermits\\";
 	public static final String BUILDING_PERMIT_MANUAL = "\\data\\BuildingPermit\\ManualBuildingPermits\\";
 	public static final String BUILDING_PERMIT_UNINCORPORATED = "\\data\\BuildingPermit\\UnicorporatedBuildingPermits\\";
 	public static final String BPP_TREND_TABLES_DATA = "\\data\\BppTrend\\2020_Trend_Factors_Calculator.xlsx";

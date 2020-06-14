@@ -96,6 +96,9 @@ public class BuildingPermitPage extends ApasGenericPage {
 	@FindBy(xpath = "//input[@title = 'Search County Strat Codes']")
 	public WebElement countyStratCodeSearchBox;
 
+	@FindBy(xpath = "//span[text() = 'City Strat Code']/parent::label/following-sibling::input")
+	public WebElement cityStratCodeTextBox;
+
 	@FindBy(xpath = "//*[@class='pillContainerListItem'][contains(.,'REPAIR ROOF')]//*[@class='deleteAction']")
 	public WebElement deleteRepairRoof;
 
@@ -292,6 +295,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 		//This text box comes only while adding E-File Building Permit manually
 		if (verifyElementVisible(OwnerNameTextBox)) enter(OwnerNameTextBox,dataMap.get("Owner Name"));
+		if (verifyElementVisible(cityStratCodeTextBox)) enter(cityStratCodeTextBox,dataMap.get("City Strat Code"));
 
 		return buildingPermitNumber;
 	}
@@ -705,6 +709,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening the Building Permit with number : " + buildingPermitNum);
 		String xpath = "//a[@title='" + buildingPermitNum + "']";
 		waitUntilElementIsPresent(xpath,15);
+		waitForElementToBeClickable(driver.findElement(By.xpath(xpath)),10);
 		Click(driver.findElement(By.xpath(xpath)));
 		Thread.sleep(3000);
 	}

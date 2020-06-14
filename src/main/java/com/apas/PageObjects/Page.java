@@ -144,6 +144,16 @@ public class Page {
 		return flag;
 	}
 
+	public boolean verifyElementExists(String xpath) {
+		try {
+			if (driver.findElement(By.xpath(xpath)).isDisplayed()) return true;
+		} catch (Exception e) {
+			return false;
+		}
+		return false;
+	}
+
+
 	/**
 	 * Function will return true if element is not visible.
 	 *
@@ -317,7 +327,7 @@ public class Page {
 	 *
 	 * @param elem
 	 *            Element in which value needs to be entered
-	 * @param value
+	 * @param key
 	 *            the value needs to be entered
 	 * @throws Exception
 	 *             the exception
