@@ -107,7 +107,7 @@ public class ApasGenericFunctions extends TestBase {
      */
     public void editGridCellValue(String columnNameOnGrid, String expectedValue) throws IOException, AWTException, InterruptedException {
         WebElement webelement = driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button"));
-        objPage.scrollToElement(webelement);
+//        objPage.scrollToElement(webelement);
         objPage.Click(webelement);
 
         WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
@@ -129,7 +129,7 @@ public class ApasGenericFunctions extends TestBase {
         objPage.waitUntilElementIsPresent(xpathDisplayOption, 10);
         objPage.Click(driver.findElement(By.xpath(xpathDisplayOption)));
         objPage.waitForElementToBeClickable(objApasGenericPage.dataGrid);
-        Thread.sleep(2000);
+        Thread.sleep(4000);
     }
 
     /**
@@ -226,7 +226,7 @@ public class ApasGenericFunctions extends TestBase {
     public HashMap<String, ArrayList<String>> getGridDataInHashMap(int tableIndex, int rowNumber) {
         ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
         //This code is to fetch the data for a particular row in the grid in the table passed in tableIndex
-        String xpathTable = "(//table)[" + tableIndex + "]";
+        String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table)[" + tableIndex + "]";
         String xpathHeaders = xpathTable + "//thead/tr/th";
         String xpathRows = xpathTable + "//tbody/tr";
         if (!(rowNumber == -1)) xpathRows = xpathRows + "[" + rowNumber + "]";
@@ -246,7 +246,9 @@ public class ApasGenericFunctions extends TestBase {
                 key = webElementsHeaders.get(gridCellCount).getAttribute("aria-label");
                 if (key != null) {
                     //"replace("Edit "+ key,"").trim()" code is user to remove the text \nEdit as few cells have edit button and the text of edit button is also returned with getText()
-                    value = webElementsCells.get(gridCellCount).getText().split("Edit " + key)[0].trim();
+                    value = webElementsCells.get(gridCellCount).getText();
+                    String[] splitValues = value.split("Edit " + key);
+                    if (splitValues.length > 0) value = splitValues[0]; else value = "";
                     gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
                     gridDataHashMap.get(key).add(value);
                 }

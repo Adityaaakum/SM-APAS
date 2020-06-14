@@ -24,6 +24,11 @@ public class EFileImportPage extends Page {
 	@FindBy(xpath = "//*[@name='docType']")
 	WebElement fileTypedropdown;
 
+	@FindBy(xpath = "//lightning-spinner")
+	public WebElement spinner;
+
+	public String xpathSpinner = "//lightning-spinner";
+
 	@FindBy(xpath = "//*[@name='source']")
 	WebElement sourceDropdown;
 
@@ -202,6 +207,18 @@ public class EFileImportPage extends Page {
 		String ariaExpanded = getAttributeValue(element,"aria-expanded");
 		if (ariaExpanded.equals("true"))
 			Click(element);
+	}
+
+	/**
+	 * This method will return the error message from error grid with work dercription having the value passed in parameter
+	 * @param stringValueInRow : Value of the work description
+	 */
+	public String getErrorMessageFromErrorGrid(String stringValueInRow){
+		String xpath = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table)[1]//tbody//tr[contains(.,'" + stringValueInRow + "')]//th[@data-label='ERROR_MESSAGE']";
+//		if (verifyElementExists(stringValueInRow))
+			return getElementText(driver.findElement(By.xpath(xpath)));
+//		else
+//			return "";
 	}
 
 }
