@@ -305,6 +305,4 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 		objApasGenericFunctions.logout();
 	}
 	
-	
-	
 }
