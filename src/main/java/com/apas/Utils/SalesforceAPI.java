@@ -256,7 +256,7 @@ public class SalesforceAPI extends TestBase {
             	if(!commaSeparatedIds.equals("")) {
 	                String[] ids= commaSeparatedIds.split(",");
 	                for (String id: ids){
-	                    String uri = baseUri + "/sobjects/" + table + "/" + id;
+	                    String uri = baseUri + "/sobjects/" + table + "/" + id.trim();
 	                    HttpDelete httpDelete = new HttpDelete(uri);
 	                    httpDelete.addHeader(oauthHeader);
 	                    httpDelete.addHeader(prettyPrintHeader);

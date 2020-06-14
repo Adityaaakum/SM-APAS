@@ -23,6 +23,7 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
+import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
@@ -482,39 +483,42 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 	 */
 	@Test(description = "SMAB-T1145: Check availlbility of calculate button when BPP trend files are not imported", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_Calculate_When_InputFiles_NotImported(String loginUser) throws Exception {		
-		//Step1: Resetting the composite factor tables status to Not Calculated
-		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
-		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Yet to be Imported", rollYear);
+		//Step1: Login to the APAS application using the given user
+		objApasGenericFunctions.login(users.SYSTEM_ADMIN);
+		
+		//Step2: Opening the BPP Trend module
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		
+		//Step3: Creating a new BPP trend setup with no BPP settings, no composite factors settings, no index & goods factor data for future roll year
+		objBppTrnPg.createDummyBppTrendSetupForErrorsValidation();
+		objApasGenericFunctions.logout();
 
-		//Resetting the valuation factor tables status to Yet to be submitted
-		List<String> valuationFactorTablesToReset = Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(","));
-		objBppTrnPg.resetTablesStatusForGivenRollYear(valuationFactorTablesToReset, "Yet to be Imported", rollYear);
-
-		//Step2: Login to the APAS application using the given user
+		//Step4: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
 		objApasGenericFunctions.login(loginUser);
 		
-		//Step3: Opening the BPP Trend module
+		//Step5: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		String rollYear = System.getProperty("rollYearForErrorValidationOnCalculate");
 		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
 
-		//Step4: Validating presence of CalculateAll at page level.
+		//Step6: Validating presence of CalculateAll at page level.
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Validating the absence of 'Calculate All' button when input files are not imported in the system");
-		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(90);
+		boolean	isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(5);
 		softAssert.assertTrue(!isCalculateAllBtnDisplayed, "SMAB-T1145: Calcuate all button is not visible");
 
-		//Step5: Navigating over valuation factor tables to check absence of calculate button
+		//Step7: Navigating over valuation factor tables to check absence of calculate button
 		boolean isCalculateBtnVisible;
 		String tableName;
 		
 		List<String> allTablesList = new ArrayList<String>();
 		allTablesList.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
-		allTablesList.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesUnderMoreTab").split(",")));
+		allTablesList.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesUnderMoreTabExcludingProp13").split(",")));
 		allTablesList.addAll(Arrays.asList(CONFIG.getProperty("valuationTablesUnderMoreTab").split(",")));
-		
+				
 		String tableNamesUnderMoreTab = CONFIG.getProperty("compositeTablesUnderMoreTab") + "," + CONFIG.getProperty("valuationTablesUnderMoreTab");
 		boolean isTableUnderMoreTab;
 		
@@ -523,9 +527,15 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 			tableName = allTablesList.get(i);
 			isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
 			objBppTrnPg.clickOnTableOnBppTrendPage(tableName, isTableUnderMoreTab);
-			isCalculateBtnVisible = objBppTrnPg.isCalculateBtnVisible(5, tableName);
+			isCalculateBtnVisible = objBppTrnPg.isCalculateBtnVisible(3, tableName);
 			softAssert.assertTrue(!isCalculateBtnVisible, "SMAB-T1145: Calculate button under '"+ tableName +"' table is not visible");
 		}
+		
+		//Step8: Deleting the new BPP Trend Setup created
+		String queryForBppTrendRollYear = "Select Id From BPP_Trend_Roll_Year__c Where Roll_Year__c = '"+ rollYear +"'";
+		new SalesforceAPI().delete("BPP_Trend_Roll_Year__c", queryForBppTrendRollYear);
+		
+		//Step9: Logging out of the application
 		softAssert.assertAll();
 		objApasGenericFunctions.logout();
 	}

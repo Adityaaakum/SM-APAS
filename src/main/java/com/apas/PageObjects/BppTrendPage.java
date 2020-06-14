@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -22,6 +21,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -246,7 +246,7 @@ public class BppTrendPage extends Page {
 	public WebElement closeButton;
 	
 	@FindBy(xpath = "//lightning-primitive-cell-factory[@class = 'slds-cell-wrap slds-has-focus']//span[text() = 'Edit Average' or text() = 'Edit Factor' or text() = 'Edit Valuation Factor']//ancestor::button//lightning-primitive-icon")
-	public WebElement editIconInImportPageTale;
+	public WebElement editIconInImportPageTable;
 	
 	@FindBy(xpath = "//lightning-formatted-text[text() = 'Junk_A' or text() = 'Junk_B']")
 	public WebElement tableCellWithJunkTextOnImportPageTale;
@@ -655,7 +655,7 @@ public class BppTrendPage extends Page {
 	}
 
 	/**
-	 * Description: This will reset the status of tables based on the expected status and min & max equip factors to default values
+	 * Description: This will reset the status of tables based on the expected status
 	 * @param factorTablesToReset: List of table names for which status is to be reset
 	 * @param expectedStatus: Expected status like Calculated, Not Calculated etc.
 	 * @param rollYear: Roll year for which the status needs to be reset
@@ -664,9 +664,14 @@ public class BppTrendPage extends Page {
 		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 		//Query to update the status of composite & valuation factor tables
 		String queryForID = "Select Id From BPP_Trend_Roll_Year__c where Roll_Year__c = '"+ rollYear +"'";
+		
+		JSONObject jsonObj = new JSONObject();
 		for(String columnName : columnsToReset) {
-			objSalesforceAPI.update("BPP_Trend_Roll_Year__c", queryForID, columnName, expectedStatus);
+			jsonObj.put(columnName, expectedStatus);
+			//objSalesforceAPI.update("BPP_Trend_Roll_Year__c", queryForID, columnName, expectedStatus);
 		}
+		
+		objSalesforceAPI.update("BPP_Trend_Roll_Year__c", queryForID, jsonObj);
 	}
 
 	/**
@@ -1896,21 +1901,17 @@ public class BppTrendPage extends Page {
 	 */
 	public String retrieveIndexPositionOfGivenColumnFromViewAllPage(String columnName) throws Exception {		
 		String xpathOfGridColumns = "//span[text() = 'BPP Trend Setup']//ancestor::div[contains(@class, 'slds-page-header')]//following-sibling::div//thead//tr//th[contains(@class, 'slds-is-resizable')]//span[@class ='slds-truncate']";
-		System.out.println("xpathOfGridColumns: "+ xpathOfGridColumns);
 		int indexPositionOfGivenColumn = -1;
 		List <WebElement> tableColumns = locateElements(xpathOfGridColumns, 20);
-		System.out.println("Table Columns List Size: "+ tableColumns.size());
+
 		int indexPos;
 		String xpath;
 		for(int i = 0; i < tableColumns.size(); i++) {
 			indexPos = i+1;
 			xpath = "("+ xpathOfGridColumns +")["+ indexPos +"]";
-			System.out.println("Xpath is: "+ xpath);
 			String currentColumnName = getElementText(locateElement(xpath, 10));
-			System.out.println("Current Column Name: "+ currentColumnName);
 			if(columnName.equalsIgnoreCase(currentColumnName)) {
 				indexPositionOfGivenColumn = i;
-				System.out.println("indexPositionOfGivenColumn: "+ indexPositionOfGivenColumn);
 				break;
 			}
 		}
@@ -1918,14 +1919,12 @@ public class BppTrendPage extends Page {
 	}
 	
 	public String getExistingNameFromViewAllGrid() throws Exception {
-		System.out.println("Xpath: //tbody//tr[1]//th//a");
 		WebElement nameOfPropType = locateElement("//tbody//tr[1]//th//a", 10);
 		return getElementText(nameOfPropType);
 	}
 	
 	public String getExistingYearAcquiredFromViewAllGrid() throws Exception {
 		String indexPosition = retrieveIndexPositionOfGivenColumnFromViewAllPage("Year Acquired");
-		System.out.println("indexPosition: "+ indexPosition);
 		String xpath = "(//tbody//tr[1]//td)["+ indexPosition +"]//span[@class = 'slds-truncate']";
 		WebElement yearAcquired = locateElement(xpath, 10);
 		return getElementText(yearAcquired);
@@ -1933,7 +1932,6 @@ public class BppTrendPage extends Page {
 
 	public String getExistingPropertyTypeFromViewAllGrid() throws Exception {
 		String indexPosition = retrieveIndexPositionOfGivenColumnFromViewAllPage("Property Type");
-		System.out.println("indexPosition: "+ indexPosition);
 		String xpath = "(//tbody//tr[1]//td)["+ indexPosition +"]//span[@class = 'slds-truncate']";
 		WebElement propertyType = locateElement(xpath, 10);
 		return getElementText(propertyType);
@@ -1941,7 +1939,6 @@ public class BppTrendPage extends Page {
 
 	public String getExistingValuationFactorFromViewAllGrid() throws Exception {
 		String indexPosition = retrieveIndexPositionOfGivenColumnFromViewAllPage("Valuation Factor");
-		System.out.println("indexPosition: "+ indexPosition);
 		String xpath = "(//tbody//tr[1]//td)["+ indexPosition +"]//span[@class = 'slds-truncate']";
 		WebElement valuationFactor = locateElement(xpath, 10);
 		return getElementText(valuationFactor);
@@ -1951,7 +1948,6 @@ public class BppTrendPage extends Page {
 	
 	public String getExistingAgeFromViewAllGrid() throws Exception {
 		String indexPosition = retrieveIndexPositionOfGivenColumnFromViewAllPage("Age");
-		System.out.println("indexPosition: "+ indexPosition);
 		String xpath = "(//tbody//tr[1]//td)["+ indexPosition +"]//span[@class = 'slds-truncate']";
 		WebElement age = locateElement(xpath, 10);
 		return getElementText(age);
@@ -1959,7 +1955,6 @@ public class BppTrendPage extends Page {
 	
 	public String getExistingGoodFactorTypeFromViewAllGrid() throws Exception {
 		String indexPosition = retrieveIndexPositionOfGivenColumnFromViewAllPage("Good Factor Type");
-		System.out.println("indexPosition: "+ indexPosition);
 		String xpath = "(//tbody//tr[1]//td)["+ indexPosition +"]//span[@class = 'slds-truncate']";
 		WebElement goodFactorType = locateElement(xpath, 10);
 		return getElementText(goodFactorType);
@@ -1967,7 +1962,6 @@ public class BppTrendPage extends Page {
 
 	public String getExistingExpectedLifeFromViewAllGrid() throws Exception {
 		String indexPosition = retrieveIndexPositionOfGivenColumnFromViewAllPage("Expected Life");
-		System.out.println("indexPosition: "+ indexPosition);
 		String xpath = "(//tbody//tr[1]//td)["+ indexPosition +"]//span[@class = 'slds-truncate']";
 		WebElement expectedLife = locateElement(xpath, 10);
 		return getElementText(expectedLife);
@@ -1975,7 +1969,6 @@ public class BppTrendPage extends Page {
 
 	public String getExistingGeneralGoodFactorFromViewAllGrid() throws Exception {
 		String indexPosition = retrieveIndexPositionOfGivenColumnFromViewAllPage("General Good Factor");
-		System.out.println("indexPosition: "+ indexPosition);
 		String xpath = "(//tbody//tr[1]//td)["+ indexPosition +"]//span[@class = 'slds-truncate']";
 		WebElement generalGoodFactor = locateElement(xpath, 10);
 		return getElementText(generalGoodFactor);
@@ -2549,7 +2542,7 @@ public class BppTrendPage extends Page {
 			int intValue = Integer.parseInt(strValue);
 			totalRows = totalRows + intValue;
 		}
-
+		
 		totalImportedRows = totalRows - totalErrorRows;
 		dataMap.put("File Count", totalRows);
 		dataMap.put("Import Count", totalImportedRows);
@@ -3059,7 +3052,7 @@ public class BppTrendPage extends Page {
 	 * @return: Return the name of the bpp trend setup created
 	 * @throws: Exception
 	 */
-	public String createDummyBppTrendSetupForErrorsValidation() throws Exception {
+	public String createDummyBppTrendSetupForErrorsValidation(String... compFactorTablesStatus) throws Exception {
 		//Step3: Click New button on the grid to open form / pop up to create new BPP Trend Setup
 		WebElement newButton = objPage.locateElement("//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']", 10);
 		Click(newButton);
@@ -3072,17 +3065,21 @@ public class BppTrendPage extends Page {
 		System.setProperty("rollYearForErrorValidationOnCalculate", Integer.toString(year));
 		enter(bppTrendSetupName, trendSetupName);
 		WebElement rollYearField = locateElement("//span[text() = 'Roll Year']//parent::span//following-sibling::div", 10);
-		
-		//Step5: Setting the status of composite factor tables to Not Calculated
+
+		//Step3: 
 		objApasGenericPage.selectOptionFromDropDown(rollYearField, Integer.toString(year));
-		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Commercial Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), "Not Calculated");
-		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Const. Mobile Equipment Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), "Not Calculated");
-		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Industrial Trend Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), "Not Calculated");
-		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Ag. Mobile Equipment Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), "Not Calculated");
-		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Const. Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), "Not Calculated");
-		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Ag. Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), "Not Calculated");
 		
-		//Step6: Clicking save button
+		//Step4: Setting the status of composite factor tables to Not Calculated
+		if(compFactorTablesStatus.length == 1) {
+			objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Commercial Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), compFactorTablesStatus[0]);
+			objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Const. Mobile Equipment Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), compFactorTablesStatus[0]);
+			objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Industrial Trend Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), compFactorTablesStatus[0]);
+			objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Ag. Mobile Equipment Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), compFactorTablesStatus[0]);
+			objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Const. Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), compFactorTablesStatus[0]);
+			objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Ag. Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), compFactorTablesStatus[0]);
+		}
+		
+		//Step5: Clicking save button
 		Click(saveBtnInBppSettingPopUp);
 		Thread.sleep(2000);
 				
@@ -3224,21 +3221,22 @@ public class BppTrendPage extends Page {
 		return getElementText(locateElement(xpathForMaxEqipIndexInGrid, 20));
 	}
 
-	
-	public void clickJunkDataCell(String tableNumber) throws Exception {
-		String xpath = "(//lightning-tab[@aria-labelledby = '"+tableNumber+"__item']//span[contains(@title,'ERROR ROWS')]//ancestor::div[@class = 'slds-accordion__summary']//following-sibling::div//table//lightning-formatted-text[starts-with(text(), 'Junk_')])";
-		Click(locateElement(xpath, 10));
+	/**
+	 * Description: Clicks the junk data cell in the selected table and updated the correct value in it
+	 * @param tableNumber: Number of the table
+	 * @param updatedValue: Value to be entered
+	 * @throws Exception
+	 */
+	public void updateCorrectDataInTable(String tableNumber, String updatedValue) throws Exception {
+		String junkDataCellXpath = "(//lightning-tab[@aria-labelledby = '"+tableNumber+"__item']//span[contains(@title,'ERROR ROWS')]//ancestor::div[@class = 'slds-accordion__summary']//following-sibling::div//table//lightning-formatted-text[starts-with(text(), 'Junk_')])";
+		Click(locateElement(junkDataCellXpath, 10));
+		
+		String xpathEditIcon = "//lightning-primitive-cell-factory[@class = 'slds-cell-wrap slds-has-focus']//span[text() = 'Edit Average' or text() = 'Edit Factor' or text() = 'Edit Valuation Factor']//ancestor::button//lightning-primitive-icon";
+		WebElement editIcon = locateElement(xpathEditIcon, 10);
+		javascriptClick(editIcon);
+		enter(inputBoxOnImportPage, updatedValue);
+		enter(inputBoxOnImportPage, Keys.TAB);
+		
 	}
 	
-	public void clickPencilIconAndEditJunkDataCell(String tableNumber, int valueToEnter) throws Exception {
-		String xpath = "(//lightning-tab[@aria-labelledby = '"+tableNumber+"__item']//span[contains(@title,'ERROR ROWS')]//ancestor::div[@class = 'slds-accordion__summary']//following-sibling::div//table//lightning-formatted-text[starts-with(text(), 'Junk_')])";
-		Click(locateElement(xpath, 10));
-	}
-	
-	public void clickAdjacentCell(String tableNumber) throws Exception {
-		String xpath = "((//lightning-tab[@aria-labelledby = '"+tableNumber+"__item']//span[contains(@title,'ERROR ROWS')]//ancestor::div[@class = 'slds-accordion__summary']//following-sibling::div//table//lightning-formatted-text[text() = 'Junk_A'] | //lightning-formatted-text[text() = 'Junk_B'])["+tableNumber+"])//ancestor::td//preceding-sibling::td[2]";
-		System.out.println("Adacent cell: "+ xpath);
-		Click(locateElement(xpath, 10));
-	
-	}
 }

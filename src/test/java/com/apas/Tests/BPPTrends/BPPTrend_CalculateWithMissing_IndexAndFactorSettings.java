@@ -85,7 +85,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		
 		//Step3: Creating a new BPP trend setup with no BPP settings, no composite factors settings, no index & goods factor data for future roll year
-		objBppTrnPg.createDummyBppTrendSetupForErrorsValidation();
+		objBppTrnPg.createDummyBppTrendSetupForErrorsValidation("Not Calculated");
 		objApasGenericFunctions.logout();
 		
 		//Step4: Login with given login user
