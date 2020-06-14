@@ -460,16 +460,20 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//step6: Update the estimated project value as less than 25000 and check the status of Calculated processing status field is updated accordingly
 		objPage.Click(objBuildingPermitPage.editButton);
+		ReportLogger.INFO("Updating the value of Estimated Project Value to 25000");
 		objBuildingPermitPage.enterEstimatedProjectValue("25000");
 		objPage.Click(objBuildingPermitPage.saveButton);
+		objPage.waitForElementToBeVisible(objBuildingPermitPage.successAlert,20);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 25000 and county strat code as REPAIR ROOF");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Estimated Project value is selected 25000 and county strat code as REPAIR ROOF");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Processing Status' field when Estimated Project value is selected 25000 and county strat code as REPAIR ROOF");
 
 		//Step7: Update the estimated project value such that value of calculated processing status is switched
 		objPage.Click(objBuildingPermitPage.editButton);
+		ReportLogger.INFO("Updating the value of Estimated Project Value to 7000");
 		objBuildingPermitPage.enterEstimatedProjectValue("7000");
 		objPage.Click(objBuildingPermitPage.saveButton);
+		objPage.waitForElementToBeVisible(objBuildingPermitPage.successAlert,20);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 7000 and county strat code as REPAIR ROOF");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Process Status when Estimated Project value is selected 7000 and county strat code as REPAIR ROOF");
@@ -478,16 +482,19 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Following is the condition for SOLAR County Strat Code "'No Process' if estimated project value is Less Than or Equal To 5000
 		objPage.Click(objBuildingPermitPage.editButton);
 		objPage.Click(objBuildingPermitPage.deleteRepairRoof);
+		ReportLogger.INFO("Updating the value of County Strat Code to 'SOLAR'");
 		objBuildingPermitPage.searchAndSelectFromDropDown(objBuildingPermitPage.countyStratCodeSearchBox, "SOLAR");
 		objPage.Click(objBuildingPermitPage.saveButton);
+		objPage.waitForElementToBeVisible(objBuildingPermitPage.successAlert,20);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when County strat code is changed to SOLAR from REPAIR ROOF");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when County strat code is changed to SOLAR from REPAIR ROOF");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Processing Status' field when County strat code is changed to SOLAR from REPAIR ROOF");
 
 		//Step9: Update the processing status as No Process and Calculated Processing status should be updated with the same value
 		objPage.Click(objBuildingPermitPage.editButton);
 		objBuildingPermitPage.selectFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "No Process");
 		objPage.Click(objBuildingPermitPage.saveButton);
+		objPage.waitForElementToBeVisible(objBuildingPermitPage.successAlert,20);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
