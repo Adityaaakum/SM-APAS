@@ -344,7 +344,7 @@ public class Page {
 		 */
 
 		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", elem);		
-		elem.clear();
+		//elem.clear();
 		elem.sendKeys(key);
 		Thread.sleep(2000);
 	}
@@ -882,8 +882,6 @@ public class Page {
 				element = wait.until(ExpectedConditions.visibilityOf(element));
 				return element;
 			} catch (Exception ex) {
-				System.out.println("Re-Checking Element");
-
 				return null;
 			}
 		} else {

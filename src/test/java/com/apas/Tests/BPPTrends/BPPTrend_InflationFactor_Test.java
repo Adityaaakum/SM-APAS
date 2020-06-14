@@ -132,7 +132,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		//Step4: Opening the BPP Trend module and set All as the view option in grid
 		objApasGenericFunctions.searchModule(modules.CPI_FACTORS);
 		objApasGenericFunctions.selectAllOptionOnGrid();
-		Thread.sleep(3000);
+		Thread.sleep(2000);
 		
 		//Step5: Adding all roll year elements into a list
 		List<WebElement> rollYearsElementsList = objBppTrnPg.rollYears;
@@ -292,7 +292,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		//Step2: Opening the BPP Trend module and set All as the view option in grid
 		objApasGenericFunctions.searchModule(modules.CPI_FACTORS);
 		objApasGenericFunctions.selectAllOptionOnGrid();
-		Thread.sleep(3000);
+		Thread.sleep(2000);
 		
 		WebElement firstEntyOfGrid = objBppTrnPg.locateElement("(//th[@scope = 'row']//span//a)[1]", 10);
 		String cpiFactorToEdit = objBppTrnPg.getElementText(firstEntyOfGrid);
@@ -302,7 +302,6 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		HashMap<String, ArrayList<String>> cpiFactorData = new SalesforceAPI().select(queryForCpiFactorID);
 		String cpiFactorID = cpiFactorData.get("Id").get(0);
 		String cpiFactorCurrentStatus = cpiFactorData.get("Status__c").get(0).trim();
-		System.out.println("cpiFactorCurrentStatus: "+ cpiFactorCurrentStatus);
 		
 		new SalesforceAPI().update("CPI_Factor__c", cpiFactorID, "Status__c", "Approved");
 		
@@ -337,6 +336,9 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		softAssert.assertAll();
 		objApasGenericFunctions.logout();
 	}
+	
+	
+	
 	
 	
 }
