@@ -66,7 +66,7 @@ public class ExemptionsPage extends ApasGenericPage {
 	public WebElement cancelButton;
 	
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//a[@title = 'New']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title = 'New']")
 	public WebElement newExemptionButton;
 
 	@FindBy(xpath = "//input[@title='Search Parcels']")
@@ -1153,12 +1153,15 @@ public String getExemptionNameFromSuccessAlert() throws Exception {
 }
 
 
-public String fetchAssesseeName() throws Exception {
-
-       SalesforceAPI objSalesforceAPI = new SalesforceAPI();
-       String queryForID = "SELECT FirstName, LastName FROM Account limit 1";
-       HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
-       String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
+public String fetchAssesseeName() {
+		//This AssesseeName is temporarily hard coded for PreUAT environment as there is some code deference in preuat and qa
+	   String assesseeName = "SMtestPerson";
+	   if (!System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
+		   SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+		   String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type = 'Person' OR Type = 'Business'";
+		   HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
+		   assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
+	   }
        ReportLogger.INFO("Assessee Name fetched through Salesforce API : " + assesseeName);
        return assesseeName;
    }

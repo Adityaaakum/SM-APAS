@@ -30,7 +30,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		softAssert = new SoftAssertion();
 	}
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//a[@title = 'New']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title = 'New']")
 	public WebElement newButton;
 	
 	@FindBy(xpath = "//button[@title = 'Cancel']")
