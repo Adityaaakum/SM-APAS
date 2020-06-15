@@ -128,8 +128,8 @@ public class ApasGenericFunctions extends TestBase {
         String xpathDisplayOption = "//a[@role='option']//span[text()='" + displayOption + "']";
         objPage.waitUntilElementIsPresent(xpathDisplayOption, 10);
         objPage.Click(driver.findElement(By.xpath(xpathDisplayOption)));
-        objPage.waitForElementToBeClickable(objApasGenericPage.dataGrid);
-        Thread.sleep(4000);
+        //objPage.waitForElementToBeClickable(objApasGenericPage.dataGrid);
+        Thread.sleep(6000);
     }
 
     /**
@@ -422,15 +422,16 @@ public void zoomInPageContent() throws Exception
 {
 	// Step6: Maximizing the browser content from 50 to 100%
 	Thread.sleep(10);
-	for (int i = 1; i <5; i++) {
+	for (int i = 1; i <6; i++) {
 		Robot robot=new Robot();
 		 robot.keyPress(KeyEvent.VK_CONTROL);		
 		 robot.keyPress(KeyEvent.VK_ADD);		
 		 robot.keyRelease(KeyEvent.VK_ADD);		
 		 robot.keyRelease(KeyEvent.VK_CONTROL);				 
 		 robot.keyRelease(KeyEvent.VK_ENTER);
+		 Thread.sleep(1000);
 	}
-	
+	 Thread.sleep(1000);
 }
 
 

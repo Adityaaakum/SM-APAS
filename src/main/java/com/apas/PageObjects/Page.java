@@ -1086,4 +1086,13 @@ public class Page {
 		
 	}
 	
+	/**
+	 * Switches the focus out of the frame
+	 * @throws InterruptedException 
+	 */
+	public void switchBackFromFrame() throws InterruptedException {
+		driver.switchTo().defaultContent();
+		Thread.sleep(1000);		
+	}
+	
 }

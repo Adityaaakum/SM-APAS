@@ -481,9 +481,11 @@ public double converToDouble(Object amount){
  * @throws Exception 
  */
 public float verifyTaxYearProatedPercentage() throws Exception {
+	objPage.waitForElementToBeClickable(60, startDateValueLabel);
 	float numberOfDays = DateUtil.getDateDifference(startDateValueLabel,endDateValueLabel);	
 	locateElement("//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Settings']//parent::div//following-sibling::div//a", 2);
 	Click(rollYearSettingsLabel);
+	objPage.waitForElementToBeClickable(60, taxStartDateValueLabel);
 	float totalNoOfDays = DateUtil.getDateDifference(taxStartDateValueLabel,taxEndDateValueLabel);
 	driver.navigate().back();
 	float taxYearProatedPercentage = 0;

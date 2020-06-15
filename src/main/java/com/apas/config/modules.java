@@ -25,5 +25,6 @@ public interface modules {
 	public static final String SITUS = "Situs";
 	public static final String RPSL = "Real Property Settings Libraries";
 	public static final String ROLLYEAR = "Roll Year Settings";
+	public static final String VALUE_ADJUSTMENTS = "Value Adjustments";
 }
 
