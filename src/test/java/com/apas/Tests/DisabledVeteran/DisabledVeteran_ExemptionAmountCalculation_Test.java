@@ -225,8 +225,8 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		Thread.sleep(1000);
 		
 		//Step3: Searching and selecting the Exemption
-		objApasGenericPage.searchAndSelectFromDropDown(objApasGenericPage.globalSearchListEditBox, VAName);
-		objPage.waitUntilPageisReady(driver);			
+		objApasGenericFunctions.searchModule(modules.VALUE_ADJUSTMENTS);
+		objApasGenericFunctions.globalSearchRecords(VAName);		
 		
 		//Step4: Verify 'Value Adjustment Name' attribute is displayed on VAR
 		objPage.waitForElementToBeVisible(objValueAdjustmentPage.vAnameLabel,50);
