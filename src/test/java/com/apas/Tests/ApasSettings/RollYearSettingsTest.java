@@ -96,17 +96,19 @@ public class RollYearSettingsTest extends TestBase {
 		//Step3: Save an Roll Year Settings record without entering any details		
 		objRollYearSettingsPage.saveRollYearRecordWithNoValues();
 		
-		//Step4: Validate error messages when no field value is entered and Roll Year Settings record is saved		
-		List<String> errorsList = objRollYearSettingsPage.retrieveRollYearMandatoryFieldsValidationErrorMsgs();
-		String expMsgInPopUpHeader = CONFIG.getProperty("expectedErrorMsgForAllMandatoryFieldsRollYearRecord");
-		String actMsgInPopUpHeader = errorsList.get(0);
-		softAssert.assertEquals(actMsgInPopUpHeader, expMsgInPopUpHeader, "Validate error message related to mandatory fields in Roll Year screen's header");		
-		String expMsgForIndividualField = CONFIG.getProperty("expectedErrorMsgForIndividualMandatoryFieldExemptionRecord");
-		String actMsgForIndividualField = errorsList.get(1);	
-		softAssert.assertEquals(expMsgForIndividualField, actMsgForIndividualField, "Validate error message related to individual fields in Roll Year screen's layout");
-		int fieldsCountInHeaderMsg = Integer.parseInt(errorsList.get(2));		
-		int individualMsgsCount = Integer.parseInt(errorsList.get(3));
-		softAssert.assertEquals(fieldsCountInHeaderMsg, individualMsgsCount, "Validate the count of field names in header message against the count of individual error message");
+		//Step4: Validate error messages when no field value is entered and Roll Year Settings record is saved
+		String expectedErrorMessageOnTop = "These required fields must be completed: Calendar End Date, Calendar Start Date, Open Roll End Date, Lien Date, Roll Year Settings, Roll Year, Open Roll Start Date, Tax End Date, Tax Start Date";
+		String expectedIndividualFieldMessage = "Complete this field";
+		softAssert.assertEquals(objRollYearSettingsPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T638: Validating mandatory fields missing error in Roll Year Settings screen.");
+		softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage("Calendar End Date"),expectedIndividualFieldMessage,"SMAB-T638: Validating mandatory fields missing error for 'Calendar End Date'");
+		softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage("Calendar Start Date"),expectedIndividualFieldMessage,"SMAB-T638: Validating mandatory fields missing error for 'Calendar Start Date'");
+		softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage("Open Roll End Date"),expectedIndividualFieldMessage,"SMAB-T638: Validating mandatory fields missing error for 'Open Roll End Date'");
+		softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage("Lien Date"),expectedIndividualFieldMessage,"SMAB-T638: Validating mandatory fields missing error for 'Lien Date'");
+		softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage("Roll Year Settings"),expectedIndividualFieldMessage,"SMAB-T638: Validating mandatory fields missing error for 'Roll Year Settings'");
+		softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage("Roll Year"),expectedIndividualFieldMessage,"SMAB-T638: Validating mandatory fields missing error for 'Roll Year'");
+		softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage("Open Roll Start Date"),expectedIndividualFieldMessage,"SMAB-T638: Validating mandatory fields missing error for 'Open Roll Start Date'");
+		softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage("Tax End Date"),expectedIndividualFieldMessage,"SMAB-T638: Validating mandatory fields missing error for 'Tax End Date'");
+		softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage("Tax Start Date"),expectedIndividualFieldMessage,"SMAB-T638: Validating mandatory fields missing error for 'Tax Start Date'");
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Error messages related to mandatory fields are validated");
 		objRollYearSettingsPage.cancelRollYearRecord();
 		
@@ -189,8 +191,9 @@ public class RollYearSettingsTest extends TestBase {
 		objRollYearSettingsPage.selectFromDropDown(objRollYearSettingsPage.rollYear, dataMap.get("Roll Year"));
 		objRollYearSettingsPage.enterDate(objRollYearSettingsPage.fiscalEndDate, dataMap.get("Fiscal End Date"));
 		Thread.sleep(2000);
-		softAssert.assertTrue(objRollYearSettingsPage.duplicateRecord.isDisplayed() == true, "Validate duplicate error message is displayed as Roll Year record exist");
-		softAssert.assertTrue(objRollYearSettingsPage.viewDuplicateRecord.isDisplayed() == true, "Validate duplicate error view link is displayed as Roll Year record exist");
+		softAssert.assertTrue(objRollYearSettingsPage.duplicateRecord.isDisplayed(), "Validate duplicate error message is displayed as Roll Year record exist");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.duplicateRecord)),"This record looks like a duplicate.View Duplicates", "Validate duplicate error message text");
+		softAssert.assertTrue(objRollYearSettingsPage.viewDuplicateRecord.isDisplayed(), "Validate duplicate error view link is displayed as Roll Year record exist");
 		objRollYearSettingsPage.cancelRollYearRecord();
 		
 		objApasGenericFunctions.logout();
