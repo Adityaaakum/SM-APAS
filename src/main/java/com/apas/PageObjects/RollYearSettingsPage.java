@@ -86,7 +86,7 @@ public class RollYearSettingsPage extends Page {
 	@FindBy(xpath = "//div[@role='menu']//li[@class='uiMenuItem']/a[@title = 'Edit']")
 	public WebElement editMenuItemButton;
 	
-	@FindBy(xpath = "//div[text() = 'This record looks like a duplicate.']")
+	@FindBy(xpath = "//div[@data-aura-class='forceDedupeManager']/div")
 	public WebElement duplicateRecord;
 	
 	@FindBy(xpath = "//div//a[text() = 'View Duplicates']")
@@ -220,7 +220,7 @@ public class RollYearSettingsPage extends Page {
 	 * */
 	
 	@FindBy(xpath = "//li[contains(text(), 'These required fields must be completed:')]")
-	private WebElement errorMsgOnTop;
+	public WebElement errorMsgOnTop;
 	
 	@FindBy(xpath = "//li[text() = 'Complete this field'] | //span[text() = 'Complete this field']")
 	private List<WebElement> errorMsgUnderLabels; 
@@ -588,4 +588,14 @@ public class RollYearSettingsPage extends Page {
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Roll Year settings record doesn't exist");
 		}
     }
+	
+	/**
+	 * @description: This method will return the error message appeared against the filed name passed in the parameter
+	 * @param fieldName: field name for which error message needs to be fetched
+	 */
+	public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
+		String xpath = "//div[@role='listitem']//span[text()='" + fieldName + "']/../../../ul[contains(@data-aura-class,'uiInputDefaultError')]";
+		waitUntilElementIsPresent(xpath,20);
+		return getElementText(driver.findElement(By.xpath(xpath)));
+	}
 }

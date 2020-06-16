@@ -1093,5 +1093,14 @@ public class Page {
 	public void scrollToTopOfPage() throws Exception {
 		((JavascriptExecutor) driver).executeScript("window.scrollTo(0, -document.body.scrollHeight)");
 	}
+		
+	/**
+	 * Switches the focus out of the frame
+	 * @throws InterruptedException 
+	 */
+	public void switchBackFromFrame() throws InterruptedException {
+		driver.switchTo().defaultContent();
+		Thread.sleep(1000);		
+	}
 	
 }

@@ -37,7 +37,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 	ApasGenericPage objApasGenericPage;
 	ReportsPage objReportsPage;
 	
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception {
 		if(driver==null) {
 			setupTest();
@@ -131,6 +131,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 				
 		}
 		objApasGenericFunctions.zoomInPageContent();
+		objPage.switchBackFromFrame();
 		objApasGenericFunctions.logout();
 	}
 	
@@ -252,7 +253,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 			
 	}	 
 		objApasGenericFunctions.zoomInPageContent();
-		objPage.waitUntilElementIsPresent("//button//div/span[@class='uiImage']", 40);
+		objPage.switchBackFromFrame();
 		objApasGenericFunctions.logout();
 	}
 	

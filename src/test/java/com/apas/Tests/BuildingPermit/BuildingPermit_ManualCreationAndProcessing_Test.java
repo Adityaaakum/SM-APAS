@@ -229,14 +229,14 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Step4: Validate the error message appeared for mandatory fields
 		String expectedErrorMessageOnTop = "These required fields must be completed: Estimated Project Value, Issue Date, Building Permit Number, APN, Permit City Code, County Strat Code Description, Work Description";
 		String expectedIndividualFieldMessage = "Complete this field";
-		softAssert.assertEquals(objBuildingPermitPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T418: Validating mandatory fields missing error in manual entry pop up header.");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T418: Validating mandatory fields missing error for 'Building Permit Number'");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),expectedIndividualFieldMessage,"SMAB-T418: Validating mandatory fields missing error for 'Parcel'");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("County Strat Code Description"),expectedIndividualFieldMessage,"SMAB-T418: Validating mandatory fields missing error for 'County Strat Code Description'");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Estimated Project Value"),expectedIndividualFieldMessage,"SMAB-T418: Validating mandatory fields missing error for 'Estimated Project Value'");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Issue Date"),expectedIndividualFieldMessage,"SMAB-T418: Validating mandatory fields missing error for 'Issue Date'");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Work Description"),expectedIndividualFieldMessage,"SMAB-T418: Validating mandatory fields missing error for 'Work Description'");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Permit City Code"),expectedIndividualFieldMessage,"SMAB-T418: Validating mandatory fields missing error for 'Permit City Code'");
+		softAssert.assertEquals(objBuildingPermitPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error in manual entry pop up header.");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Building Permit Number'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Parcel'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("County Strat Code Description"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'County Strat Code Description'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Estimated Project Value"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Estimated Project Value'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Issue Date"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Issue Date'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Work Description"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Work Description'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Permit City Code"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Permit City Code'");
 
 		//Step5: Closing the Manual building permit creation pop up
 		objPage.Click(objBuildingPermitPage.cancelButton);
@@ -460,16 +460,20 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//step6: Update the estimated project value as less than 25000 and check the status of Calculated processing status field is updated accordingly
 		objPage.Click(objBuildingPermitPage.editButton);
+		ReportLogger.INFO("Updating the value of Estimated Project Value to 25000");
 		objBuildingPermitPage.enterEstimatedProjectValue("25000");
 		objPage.Click(objBuildingPermitPage.saveButton);
+		objPage.waitForElementToBeVisible(objBuildingPermitPage.successAlert,20);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 25000 and county strat code as REPAIR ROOF");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Estimated Project value is selected 25000 and county strat code as REPAIR ROOF");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Processing Status' field when Estimated Project value is selected 25000 and county strat code as REPAIR ROOF");
 
 		//Step7: Update the estimated project value such that value of calculated processing status is switched
 		objPage.Click(objBuildingPermitPage.editButton);
+		ReportLogger.INFO("Updating the value of Estimated Project Value to 7000");
 		objBuildingPermitPage.enterEstimatedProjectValue("7000");
 		objPage.Click(objBuildingPermitPage.saveButton);
+		objPage.waitForElementToBeVisible(objBuildingPermitPage.successAlert,20);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 7000 and county strat code as REPAIR ROOF");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Process Status when Estimated Project value is selected 7000 and county strat code as REPAIR ROOF");
@@ -478,16 +482,19 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Following is the condition for SOLAR County Strat Code "'No Process' if estimated project value is Less Than or Equal To 5000
 		objPage.Click(objBuildingPermitPage.editButton);
 		objPage.Click(objBuildingPermitPage.deleteRepairRoof);
+		ReportLogger.INFO("Updating the value of County Strat Code to 'SOLAR'");
 		objBuildingPermitPage.searchAndSelectFromDropDown(objBuildingPermitPage.countyStratCodeSearchBox, "SOLAR");
 		objPage.Click(objBuildingPermitPage.saveButton);
+		objPage.waitForElementToBeVisible(objBuildingPermitPage.successAlert,20);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when County strat code is changed to SOLAR from REPAIR ROOF");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when County strat code is changed to SOLAR from REPAIR ROOF");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Processing Status' field when County strat code is changed to SOLAR from REPAIR ROOF");
 
 		//Step9: Update the processing status as No Process and Calculated Processing status should be updated with the same value
 		objPage.Click(objBuildingPermitPage.editButton);
 		objBuildingPermitPage.selectFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "No Process");
 		objPage.Click(objBuildingPermitPage.saveButton);
+		objPage.waitForElementToBeVisible(objBuildingPermitPage.successAlert,20);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
@@ -656,8 +663,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		ReportLogger.INFO("City Strat Code pulled through APAS Salesforce API : " + cityStratCode);
 
 		//Step1: Login to the APAS application using the user passed through the data provider
-//		objApasGenericFunctions.login(loginSystemAdmin);
-		objApasGenericFunctions.login(users.DATA_ADMIN);
+		objApasGenericFunctions.login(loginSystemAdmin);
 
 		//Step2: Opening the building permit module
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);

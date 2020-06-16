@@ -52,6 +52,7 @@ public class ExemptionsPage extends ApasGenericPage {
 		
 	}
 
+	
 	@FindBy(xpath = "//div[@class='pageLevelErrors']//li")
 	public WebElement errorMessage;
 
@@ -434,7 +435,7 @@ public class ExemptionsPage extends ApasGenericPage {
 	 * */
 	
 	@FindBy(xpath = "//li[contains(text(), 'These required fields must be completed:')]")
-	private WebElement errorMsgOnTop;
+	public WebElement errorMsgOnTop;
 	
 	@FindBy(xpath = "//li[text() = 'Complete this field'] | //span[text() = 'Complete this field']")
 	private List<WebElement> errorMsgUnderLabels; 
@@ -853,29 +854,6 @@ public void clearFieldValue(WebElement elem) throws Exception {
 }
 
 /**
- * Description: This method will retrieve error message in case mandatory fields are not filled on Exemption screen
- * @return : returns the list containing the error messages and the count of fields
- */
-
-public List<String> retrieveExemptionMandatoryFieldsValidationErrorMsgs() throws Exception {
-	List<String> errorsList = new ArrayList<String>();
-	String errorMsgOnTopOfPopUpWindow = getElementText(waitForElementToBeVisible(errorMsgOnTop));
-	errorsList.add(errorMsgOnTopOfPopUpWindow);
-
-	String individualErrorMsg = getElementText(errorMsgUnderLabels.get(0));
-	errorsList.add(individualErrorMsg);
-	
-	String fieldsStr = errorMsgOnTopOfPopUpWindow.split(":")[1];
-	String[] totalMandatoryFields = fieldsStr.split(",");
-	int countOfMandatoryFields = totalMandatoryFields.length;
-	errorsList.add(Integer.toString(countOfMandatoryFields));
-	
-	int countOfIndividualErrorMsgs = errorMsgUnderLabels.size();
-	errorsList.add(Integer.toString(countOfIndividualErrorMsgs));
-	return errorsList;
-}	
-
-/**
  * Description: This method will fetch the current URL and process it to get the Record Id
  * @param driver: Driver Instance
  * @return : returns the Record Id
@@ -1191,5 +1169,21 @@ public String fetchAssesseeName() {
 		ReportLogger.INFO("Exemption Name fetched through Salesforce API : " + exemptionName);
 		return exemptionName;
 	   }
-
+	
+	/**
+	 * @description: This method will return the error message appeared against the filed name passed in the parameter
+	 * @param fieldName: field name for which error message needs to be fetched
+	 */
+	public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
+		String xpath;
+		if (fieldName.contains("Claimant's")){
+			 xpath = "//div[@role='listitem']//span[text()=" + "\"" + fieldName + "\"" + "]/../../../ul[contains(@data-aura-class,'uiInputDefaultError')]";
+		}else if(fieldName.equals("Basis for Claim")){
+			 xpath = "//span[@class='slds-has-error slds-form-element__help']";
+		}else{
+			 xpath = "//div[@role='listitem']//span[text()='" + fieldName + "']/../../../ul[contains(@data-aura-class,'uiInputDefaultError')]";
+		}
+		waitUntilElementIsPresent(xpath,20);
+		return getElementText(driver.findElement(By.xpath(xpath)));
+	}
 }

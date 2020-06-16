@@ -140,7 +140,9 @@ public class EFileImportPage extends Page {
 		Thread.sleep(2000);
 		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + fileType + "')]")));
 		Click(sourceDropdown);
-		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]")));
+		WebElement webElementSourceOption = driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]"));
+		scrollToElement(webElementSourceOption);
+		Click(webElementSourceOption);
 	}
 
 	/**
