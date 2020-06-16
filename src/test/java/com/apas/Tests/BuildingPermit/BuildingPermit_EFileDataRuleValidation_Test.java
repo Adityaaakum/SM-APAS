@@ -90,7 +90,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		HashMap<String, ArrayList<String>> actualImportedRowTable  = objApasGenericFunctions.getGridDataInHashMap(1);
 		String expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_UNINCORPORATED + "WorkDescriptionWithKeywords_UN_ExpectedImportedRecords.csv";
 		HashMap<String, ArrayList<String>> expectedImportedRowTable = FileUtils.getCSVData(expectedImportedRowTableFile);
-		softAssert.assertEquals(FileUtils.compareHashMaps(actualImportedRowTable,expectedImportedRowTable),"","Data Comparison validation for Imported Row Table");
+		softAssert.assertEquals(FileUtils.compareHashMaps(actualImportedRowTable,expectedImportedRowTable),"","SMAB-T548: Data Comparison validation for Imported Row Table");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -256,7 +256,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		HashMap<String, ArrayList<String>> actualImportedRowTable  = objApasGenericFunctions.getGridDataInHashMap(2);
 		String expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "OneValidAndTwoInvalidRecordsForPermitValue_ExpectedImportedRecords.csv";
 		HashMap<String, ArrayList<String>> expectedImportedRowTable = FileUtils.getCSVData(expectedImportedRowTableFile);
-		softAssert.assertEquals(FileUtils.compareHashMaps(actualImportedRowTable,expectedImportedRowTable),"","SMAB-T417,SMAB-T456 : Data Comparison validation for Imported Row Table");
+		softAssert.assertEquals(FileUtils.compareHashMaps(actualImportedRowTable,expectedImportedRowTable),"","SMAB-T417,SMAB-T456,SMAB-T452 : Data Comparison validation for Imported Row Table");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -302,7 +302,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		HashMap<String, ArrayList<String>> actualImportedRowTable  = objApasGenericFunctions.getGridDataInHashMap(2);
 		String expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "NonNumericValueSanMateo_ExpectedImportedRecords.csv";
 		HashMap<String, ArrayList<String>> expectedImportedRowTable = FileUtils.getCSVData(expectedImportedRowTableFile);
-		softAssert.assertEquals(FileUtils.compareHashMaps(actualImportedRowTable,expectedImportedRowTable),"","SMAB-T417,SMAB-T456:Data Comparison validation for Imported Row Table");
+		softAssert.assertEquals(FileUtils.compareHashMaps(actualImportedRowTable,expectedImportedRowTable),"","SMAB-T417,SMAB-T456,SMAB-T357:Data Comparison validation for Imported Row Table");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -533,10 +533,58 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Negative Permit Fee"),"Invalid Permit Fee","SMAB-T625 : Error Message validation for the scenario 'Negative Permit Fee'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid Issue Date Format"),"Invalid Issue Date format","SMAB-T619 : Error Message validation for the scenario 'Invalid Issue Date Format'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid Completion Date Format"),"Invalid Completed Date format","SMAB-T619 : Error Message validation for the scenario 'Invalid Completion Date Format'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permit Starts With TR"),"No Process for ST & MISC permits","SMAB-T1388 : Error Message validation for the scenario 'Building Permit Starts With TR'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permit Starts With ST"),"No Process for ST & MISC permits","SMAB-T1388 : Error Message validation for the scenario 'Building Permit Starts With ST'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permit Starts With MISC"),"No Process for ST & MISC permits","SMAB-T1388 : Error Message validation for the scenario 'Building Permit Starts With MISC'");
-//		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Duplicate Permit"),"Invalid Square Footage","Error Message validation for the scenario 'Duplicate Permit'");
+
+		//Logout at the end of the test
+		objApasGenericFunctions.logout();
+	}
+
+	/**
+	 Below test case is used to validate the duplicate building permit error message on efile import
+	 **/
+	@Test(description = "SMAB-T440: Validate duplicate record error message with same Permit Number, Parcel and City", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, enabled = false)
+	public void verify_BuildingPermit_DuplicateRecordErrorMessage(String loginUser) throws Exception {
+
+		String period = objUtil.getCurrentDate("MMMM YYYY");
+
+		String queryRevert = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='June 2020' and File_Source__C like '%Atherton%' and Status__c = 'In Progress'";
+		salesforceAPI.update("E_File_Import_Log__c",queryRevert,"Status__c","Imported");
+
+
+		//Reverting the Approved Import logs if any in the system
+		String queryRevertApprove = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
+		salesforceAPI.update("E_File_Import_Log__c",queryRevertApprove,"Status__c","Imported");
+
+		//Reverting the Approved Import logs if any in the system
+		String queryBuildingPermit = "SELECT Name FROM Building_Permit__c where city_apn__C = '060241050' and situs_city_code__c = 'AT' limit 1";
+		String buildingPermitNumber = salesforceAPI.select(queryBuildingPermit).get("Name").get(0);
+
+		//Step1: Creating temporary file with building permit number with existing city apn and parcel
+		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "DuplicateRecordErrorValidation_AT.txt";
+		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "DuplicateRecordErrorValidation_AT.txt";
+		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",buildingPermitNumber,temporaryFile);
+
+		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
+		objApasGenericFunctions.login(loginUser);
+
+		//Step3: Opening the file import intake module
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+
+		//Step4: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
+		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", period ,temporaryFile);
+
+		//Step5: Waiting for Status of the imported file to be converted to "Imported"
+		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
+		objPage.waitForElementTextToBe(objEfileImportPage.statusImportedFile, "Imported", 120);
+
+		//Step7: Approving the imported file
+		objPage.Click(objEfileImportPage.viewLink);
+		objPage.waitForElementToBeVisible(objEfileImportPage.errorRowSection,30);
+
+		//Step5: Comparing the data from the error row table with the expected data
+		ReportLogger.INFO("Data Validation of Error Row Records on Review and Approve Data Page");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Duplicate Error Record"),"Duplicate Permit (City code, Permit #, Cityapn)","SMAB-T457 : Error Message validation for the scenario 'Duplicate Error Record'");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
