@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -25,11 +26,14 @@ import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
@@ -354,7 +358,16 @@ public class BppTrendPage extends Page {
 	public WebElement closeBtnFileDownloadPage;
 	
 	@FindBy(xpath = "(//th[@scope = 'row']//span//a)[1]")
-	public WebElement firstRowInCpiFactorGrid;
+	public WebElement firstEntryInGrid;
+	
+	@FindBy(xpath = "//div[text() = 'Maximum Equipment index Factor:']/following-sibling::div//span")
+	public WebElement factorValue;
+	
+	@FindBy(xpath = "//span[contains(text(), 'BPP Settings')]//ancestor::div[contains(@class, 'forceRelatedListCardHeader')]//following-sibling::div//h3//a")
+	public WebElement bppSettingName;
+	
+	@FindBy(xpath = "//span[@class = 'toastMessage slds-text-heading--small forceActionsText']")
+	public WebElement popUpSaveBtn;
 	
 	
 	/**
@@ -1605,7 +1618,8 @@ public class BppTrendPage extends Page {
 			expectedRecordsCount = totalRecordsCount - errorRecords;
 		}
 		else if(tableName.contains("Biopharmaceutical Val Factors")) {
-			numberOfDataColumns = Integer.parseInt(TestBase.CONFIG.getProperty("dataColumnsToBeApprovedInBioPharmaTable"));
+			//numberOfDataColumns = Integer.parseInt(TestBase.CONFIG.getProperty("dataColumnsToBeApprovedInBioPharmaTable"));
+			numberOfDataColumns = Integer.parseInt(TestBase.CONFIG.getProperty("totalDataColumnsInBioPharmaTable"));
 			totalRecordsCount = (totalRecordsCount * numberOfDataColumns);
 			expectedRecordsCount = totalRecordsCount - errorRecords;
 		}
@@ -3237,6 +3251,35 @@ public class BppTrendPage extends Page {
 		enter(inputBoxOnImportPage, updatedValue);
 		enter(inputBoxOnImportPage, Keys.TAB);
 		
+	}
+	
+	/**
+	 * Description: Retrieves the value of maximum factor value from the grid
+	 * @return: Return the value as String
+	 * @throws: Exception
+	 */
+	public String retrieveFactorValueFromGrid(String bppSettingName) throws Exception {
+		String xpathForFactorValueInGrid = "//tbody/tr//th//a[text() = '"+ bppSettingName +"']//parent::span//parent::th//following-sibling::td//span[contains(text(), '%')]";
+		return getElementText(locateElement(xpathForFactorValueInGrid, 10));
+	}
+	
+	/**
+	 * DescriptioN: Checks whether element is displayed on the web page
+	 * @param: WebElement
+	 * @return: Returns true / false bases on availability of element
+	 * @throws: Exception 
+	 */
+	public boolean isElementAvailable(WebElement element, int timeOutInSec) throws Exception {
+		try {
+			waitForElementToBeVisible(element, timeOutInSec);
+			return true;
+		} catch(TimeoutException ex) {
+			return false;
+		} catch(NoSuchElementException ex) {
+			return false;
+		} catch(StaleElementReferenceException ex) {
+			return false;
+		}
 	}
 	
 }
