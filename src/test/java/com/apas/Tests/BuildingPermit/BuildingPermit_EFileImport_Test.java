@@ -254,6 +254,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 	@Test(description = "SMAB-T361,SMAB-T358,SMAB-T970: Reverting the error records in building permit import", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"},alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_Revert(String loginUser) throws Exception {
 
+		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "OneValidAndTwoInvalidRecordsForPermitValue.txt";
 		String period = objUtil.getCurrentDate("MMMM YYYY");
 
 		//Reverting the Approved Import logs if any in the system
@@ -279,9 +280,9 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		ReportLogger.INFO("Reverting Imported Records on File Import History table");
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.numberOfTimesTriedRetried), "1", "SMAB-T358: Validation if number of times try/retry count is correct on file import");
 		//Validation of "Total Records in File" column for the imported file. Expected is 10 as 10 records are sent in the file
-		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.totalRecordsInFile), "23", "SMAB-T358: Validation if total number of records count is correct on file import");
+		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.totalRecordsInFile), "3", "SMAB-T358: Validation if total number of records count is correct on file import");
 		//Validation of "Total Records Imported" column for the imported file. Expected is 1 as 1 records has the correct record out of 10 records sent in the file
-		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.totalRecordsImportedFile), "9", "SMAB-T358: Validation if total records in file count  is correct on file import");
+		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.totalRecordsImportedFile), "1", "SMAB-T358: Validation if total records in file count  is correct on file import");
 
 		//Step6: Reverting the Atherton Building Permit file on Review and Approve Screen
 		objPage.Click(objEfileImportPage.viewLink);
@@ -361,6 +362,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.totalRecordsImportedFile), "2", "SMAB-T364: Validation if total records in file count is increased by 1 after retrying the error records");
 
 		//Validation of error message when trying to re-import the already imported file
+		objPage.scrollToTop();
 		objPage.Click(objEfileImportPage.nextButton);
 		objPage.Click(objEfileImportPage.periodDropdown);
 		objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
