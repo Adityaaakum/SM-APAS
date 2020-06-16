@@ -1086,4 +1086,12 @@ public class Page {
 		
 	}
 	
+	/**
+	 * Description: This method will scroll to the top of page
+	 * @throws: Throws Exception
+	 */
+	public void scrollToTopOfPage() throws Exception {
+		((JavascriptExecutor) driver).executeScript("window.scrollTo(0, -document.body.scrollHeight)");
+	}
+	
 }

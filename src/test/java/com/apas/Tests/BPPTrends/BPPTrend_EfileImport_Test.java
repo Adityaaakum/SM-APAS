@@ -475,12 +475,15 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 					intTotalCount = intTotalCount - Integer.parseInt(errorRecords);
 					expectedSuccessRecords = Integer.toString(intTotalCount);
 				} else if(tableName.equalsIgnoreCase("Biopharmaceutical Val Factors")) {
-					objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYearForImport, tableName);
-					strTotalCount = System.getProperty("totalRecordsCount");
-					int numberOfDataColumns = Integer.parseInt(CONFIG.getProperty("dataColumnsToBeApprovedInBioPharmaTable"));
-					intTotalCount = Integer.parseInt(strTotalCount) * numberOfDataColumns;
-					intTotalCount = intTotalCount - Integer.parseInt(errorRecords);
-					expectedSuccessRecords = Integer.toString(intTotalCount);
+					//objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYearForImport, tableName);
+					//strTotalCount = System.getProperty("totalRecordsCount");
+					//int numberOfDataColumns = Integer.parseInt(CONFIG.getProperty("dataColumnsToBeApprovedInBioPharmaTable"));
+					//intTotalCount = Integer.parseInt(strTotalCount) * numberOfDataColumns;
+					//intTotalCount = intTotalCount - Integer.parseInt(errorRecords);
+					//expectedSuccessRecords = Integer.toString(intTotalCount);
+
+					int recordsCount = Integer.parseInt(objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYearForImport, tableName));
+					expectedSuccessRecords = Integer.toString(recordsCount);
 				} else {
 					expectedSuccessRecords = objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYearForImport, tableName);
 				}
@@ -534,7 +537,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertAll();
 		objApasGenericFunctions.logout();
 	}
-	
+
 	
 	/**
 	 * DESCRIPTION: Performing Following Validations <E-File Import On BOE VALUATION File>
@@ -606,7 +609,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			objBppTrend.clickOnTableOnBppTrendPage(tableName, false, true);
 			objBppTrend.clickOnTableOnBppTrendPage(tableName, false, true);
 					
-			//Step9: Generating expected imported error count for current table
+			//Step9: Generating expected imported count for current table
 			importedRowsCount = objBppTrend.getCountOfRowsFromImportedRowsSectionForValuationFile(rollYearForImport, tableName);
 			dataMapForExpImportedRowsCountBeforeRetry.put(tableName, Integer.parseInt(importedRowsCount));
 			

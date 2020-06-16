@@ -83,23 +83,21 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		objApasGenericFunctions.searchModule(modules.CPI_FACTORS);
 		objApasGenericFunctions.selectAllOptionOnGrid();
 		
-		//Step3: Checking availability of new button on grid page
-		WebElement newButton = objBppTrnPg.locateElement("//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']", 10);
-		softAssert.assertTrue(newButton == null, "SMAB-T210: For User "+ loginUser +"-- New button is not visible on grid page");
+		//Step3: Checking unavailability of new button on grid page
+		softAssert.assertTrue(!objBppTrnPg.isElementAvailable(objBppTrnPg.newBtnViewAllPage, 10), "SMAB-T210: For User "+ loginUser +"-- New button is not visible on grid page");
 
 		//Step4: Finding the first entry from the grid to perform edit operation on it
-		WebElement firstEntryFromGrid = objBppTrnPg.locateElement("(//th[@scope = 'row']//span//a)[1]", 5);
-		if(firstEntryFromGrid != null) {
+		if(objBppTrnPg.isElementAvailable(objBppTrnPg.firstEntryInGrid, 10)) {
 			//Step5: Clicking show more icon and checking availability of edit link under it
-			String cpiFactorToEdit = objBppTrnPg.getElementText(firstEntryFromGrid);			
+			String cpiFactorToEdit = objBppTrnPg.getElementText(objBppTrnPg.firstEntryInGrid);			
 			objBuildPermitPage.clickShowMoreLinkOnRecentlyViewedGrid(cpiFactorToEdit);
-			WebElement editOptionUnderShowMore = objBppTrnPg.locateElement("//div[contains(@class, 'uiMenuList--default visible positioned')]//div[text() = 'Edit']", 5);
-			softAssert.assertTrue(editOptionUnderShowMore == null, "SMAB-T210: For User "+ loginUser +"-- Edit link is not visible under show more option on grid");
+
+			//Step6: Checking unavailability of edit link under show more drop down on view all grid
+			softAssert.assertTrue(!objBppTrnPg.isElementAvailable(objBuildPermit.editLinkUnderShowMore, 5), "SMAB-T210: For User "+ loginUser +"-- Edit link is not visible under show more option on grid");
 			
-			//Step6: Checking availability of edit button on details page
+			//Step7: Checking unavailability of edit button on details page
 			objBppTrnPg.clickOnEntryNameInGrid(cpiFactorToEdit);
-			WebElement editBtnOnDetailsPage = objBppTrnPg.locateElement("//button[text() = 'Edit']", 10);
-			softAssert.assertTrue(editBtnOnDetailsPage == null, "SMAB-T210: For User "+ loginUser +"-- Edit button is not visible on details page");
+			softAssert.assertTrue(!objBppTrnPg.isElementAvailable(objBuildPermit.editBtnDetailsPage, 5), "SMAB-T210: For User "+ loginUser +"-- Edit button is not visible on details page");
 		}
 		else {
 			softAssert.assertTrue(true, "SMAB-T210: For User "+ loginUser +"-- No records available for editing on grid or on details page");			
@@ -294,8 +292,8 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		objApasGenericFunctions.selectAllOptionOnGrid();
 		Thread.sleep(2000);
 		
-		WebElement firstEntyOfGrid = objBppTrnPg.locateElement("(//th[@scope = 'row']//span//a)[1]", 10);
-		String cpiFactorToEdit = objBppTrnPg.getElementText(firstEntyOfGrid);
+		
+		String cpiFactorToEdit = objBppTrnPg.getElementText(objBppTrnPg.firstEntryInGrid);
 
 		//Step3: Retrieving CPI Factor to edit using roll year fetched in above step
 		String queryForCpiFactorID = "Select Id, Status__c FROM CPI_Factor__c Where Name = '"+ cpiFactorToEdit +"'";

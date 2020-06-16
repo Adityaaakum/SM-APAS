@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -183,8 +182,6 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 			softAssert.assertContains(actErrorMessage, msgOnMissingCompositeFactorSetting, "SMAB-T192: Error message encountered when triggered calculation with missing calculation variables(Min. Good Factor)");
 		}
 		
-		//Thread.sleep(2000);
-		
 		//Step13: Opening the BPP Trend module and set All as the view option in grid
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.selectAllOptionOnGrid();
@@ -193,11 +190,9 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 		
 		//Step15: Create a BPP Composite Factor Settings
-		ExtentTestManager.getTest().log(LogStatus.INFO, "** Clicking on Bpp Composite Factors Settings tab **");
-		WebElement moreTab = objBppTrnPg.locateElement("//div[contains(@class, 'column region-sidebar-right')]//button[@title = 'More Tabs']", 10);
-		
-		if(moreTab != null) {
-			objBppTrnPg.clickAction(moreTab);
+		ExtentTestManager.getTest().log(LogStatus.INFO, "** Clicking on Bpp Composite Factors Settings tab **");	
+		if(objBppTrnPg.moreTabRightSection != null) {
+			objBppTrnPg.clickAction(objBppTrnPg.moreTabRightSection);
 			objBppTrnPg.clickAction(objBppTrnPg.bppCompositeFactorOption);
         } else {
         	objBppTrnPg.clickAction(objBppTrnPg.bppCompFactorSettingTab);

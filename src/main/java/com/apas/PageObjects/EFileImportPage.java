@@ -2,14 +2,15 @@ package com.apas.PageObjects;
 
 import java.io.IOException;
 
-import com.apas.Reports.ReportLogger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class EFileImportPage extends Page {
@@ -179,6 +180,9 @@ public class EFileImportPage extends Page {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " +  absoluteFilePath + " file");
 		selectFileAndSource(fileType, source);
 		objPage.waitUntilElementDisplayed(nextButton, 10);
+	
+		objPage.scrollToTopOfPage();
+		
 		objPage.Click(nextButton);
 		objPage.Click(periodDropdown);
 		objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));

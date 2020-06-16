@@ -274,6 +274,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 		//Step3: Clicking download button
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking download button on Bpp Trend Setup Details page");
 		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.downloadBtnBppTrendSetupPage, 10);
+		objBppTrnPg.scrollToBottomOfPage();
 		objBppTrnPg.clickAction(objBppTrnPg.downloadBtnBppTrendSetupPage);
 		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking download button In pop up");
