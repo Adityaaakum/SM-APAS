@@ -124,6 +124,7 @@ public class CreateAndEditExemptionWithMandatoryFieldsTest extends TestBase {
 			objDisabledVeteransPage.createExemptionWithoutEndDateOfRating(dataMap1);
 			recordId = objDisabledVeteransPage.getCurrentUrl(driver);
 			exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.exemptionName));
+			softAssert.assertTrue(exemptionName.contains("EXMPTN"),"SMAB-T522: Validate user is able to create Exemption with mandtory fields'");
 		}
 		else {
 			dataMap2 = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFieldsTwo");
@@ -131,6 +132,7 @@ public class CreateAndEditExemptionWithMandatoryFieldsTest extends TestBase {
 			objDisabledVeteransPage.createExemptionWithoutEndDateOfRating(dataMap2);
 			recordId1 = objDisabledVeteransPage.getCurrentUrl(driver);
 			exemptionName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.exemptionName));
+			softAssert.assertTrue(exemptionName1.contains("EXMPTN"),"SMAB-T480: Validate user is able to create Exemption with mandtory fields'");
 		}
 		
 		objApasGenericFunctions.logout();
@@ -193,7 +195,7 @@ public class CreateAndEditExemptionWithMandatoryFieldsTest extends TestBase {
 		
 		//Step10: Save the changes and validate the details
 		objDisabledVeteransPage.saveExemptionRecord();
-		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.endDateOfRatingOnDetailPage)), objDisabledVeteransPage.removeZeroInMonthAndDay(dataMap1.get("End Date Of Rating")), "Validate updated value for 'End Date of Rating' appears in the Exemption record");						
+		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.endDateOfRatingOnDetailPage)), objDisabledVeteransPage.removeZeroInMonthAndDay(dataMap1.get("End Date Of Rating")), "SMAB-T522: Validate updated value for 'End Date of Rating' appears in the Exemption record");						
 	
 		//Step11: Edit the record using pencil icon and remove 'Claimant's SSN' value and click Save button to validate the error message pop-up
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForGeneralExemptionOnDetailPage);
@@ -217,7 +219,7 @@ public class CreateAndEditExemptionWithMandatoryFieldsTest extends TestBase {
 		//Step14: Save the changes and validate it
 		objPage.Click(objDisabledVeteransPage.saveButtonOnDetailPage);
 		Thread.sleep(1000);
-		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranSSNOnDetailPage)).substring(7), "6781", "Validate updated value for 'Veteran SSN' appears in the Exemption record");		
+		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranSSNOnDetailPage)).substring(7), "6781", "SMAB-T522: Validate updated value for 'Veteran SSN' appears in the Exemption record");		
 		
 		objApasGenericFunctions.logout();
 	}
