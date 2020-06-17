@@ -214,7 +214,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 	 * 4. on editing VAR,the user cannot enter a value into the Penalty Adjustment Reason 
 	 *    or Penalty Adjustment Other Reason Detail when the Penalty Amount - User Adjusted is blank or $0
 	 **/
-	@Test(description = "SMAB-T1134, SMAB-T1266, SMAB-1267, SMAB-1268: Verify validations on Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption" })
+	@Test(description = "SMAB-T1134, SMAB-T1266, SMAB-T1267, SMAB-T1268: Verify validations on Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption" })
 	public void DisabledVeteran_verifyValidationsOnVA(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
