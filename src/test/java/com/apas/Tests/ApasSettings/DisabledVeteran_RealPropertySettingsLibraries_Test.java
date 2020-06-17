@@ -61,7 +61,7 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 	 2. User is not able to create duplicate Exemption limit record for any random roll year
 	 3. User is not able to create duplicate Exemption limit record for a roll year whose entry already exists	 
 	 **/
-	@Test(description = "SMAB-T536,SMAB-T540,SMAB-T541:Test Creation of Future Real Property Settings & duplicate creation", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"smoke","regression","DisabledVeteranExemption"})
+	@Test(description = "SMAB-T536,SMAB-T540,SMAB-T541:Test Creation of Future Real Property Settings & duplicate creation", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption"})
 	public void DisabledVeteran_verifyFututreRPSLCreation(String loginUser) throws Exception {
 		String strSuccessAlertMessage;
 		
@@ -112,6 +112,8 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 	/**
 	 Below test case will validate that 
 	 1. User is able to create Exemption limit record for the current roll year
+	 2. User is not able to create duplicate Exemption Limit record for current Roll Year
+	 3. User is able to edit Exemption limit record for the current roll year
 	 **/
 	@Test(description = "SMAB-T535,SMAB-T539: Test Current Roll Year's RPSL creation & duplicate RPSL ",groups = {"smoke","regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class)
 	public void DisabledVeteran_verifyCurrentYearRPSLCreation(String loginUser) throws Exception {
@@ -158,13 +160,36 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		softAssert.assertEquals(objRPSLPage.warningMsgOnTop.getText(),expectedWarningMessageOnTop,"SMAB-T539:Verify the User is not able to create duplicate Exemption limit record for current roll year");
 		objPage.Click(objRPSLPage.cancelButton);
 		
+		//Step12: Click on All List View	
+		objApasGenericFunctions.displayRecords("All");
+		
+		//Step13: Search value of RPSL created above
+		String strRPSLName = "Exemption Limits - " + createRPSLDataMap.get("Roll Year Settings");
+		objApasGenericFunctions.searchRecords(strRPSLName);
+		
+		//Step14: Selecting the RPSL
+		objRPSLPage.clickShowMoreLink(strRPSLName);
+		objPage.clickAction(objPage.waitForElementToBeClickable(objRPSLPage.editLinkUnderShowMore));
+
+		//Step15: Fetching the data to edit the RPSL record
+		//String manualEntryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
+		Map<String, String> editRPSDataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToEditRPSLEntry");	
+		
+		//Step16: Edit the RPSL
+		ReportLogger.INFO("Editing the Status field to '"+editRPSDataMap.get("Status") + "'");
+		objRPSLPage.selectFromDropDown(objRPSLPage.statusDropDown,editRPSDataMap.get("Status"));		
+		
+		//Step17: Saving the RPSL after editing 'Status' dropdown
+		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
+		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSLName + "\" was saved.","SMAB-T535: Verify the User is able to edit Exemption limit record for the current roll year");			
+		
 		objApasGenericFunctions.logout();
 	}
 		
 	/**
 	 Below test case is used to validate the validation rules on Real Property Settings Library screen
 	 **/
-	@Test(description = "SMAB-T544: Mandatory Field Validation while creating Real Property Settings", groups = {"smoke","regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class )
+	@Test(description = "SMAB-T544: Mandatory Field Validation while creating Real Property Settings", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class )
 	public void DisabledVeteran_validateMandatoryFieldErrorsRPSLCreation(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
@@ -200,69 +225,9 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 	}
 	
 	/**
-	 Below test case is used to validate User is able to edit Exemption limit record for the current roll year
-	 **/
-	@Test(description = "SMAB-T535: Verify Editing of Real Property Settings Libraries", groups = {"smoke","regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class )
-	public void DisabledVeteran_editRPSL(String loginUser) throws Exception {
-	
-		String strSuccessAlertMessage;
-		
-		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
-		objApasGenericFunctions.login(loginUser);
-
-		//Step2: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
-		
-		//Step3: Fetching data for new record
-		String manualEntryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
-		Map<String, String> createRPSLdataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToCreateCurrentRPSLEntry");
-		
-		//Step4: Delete current Roll Year's RPSL if it already exists	
-		String strRPSLName = "Exemption Limits - " + createRPSLdataMap.get("Roll Year Settings");
-		String strRPSL = createRPSLdataMap.get("Roll Year Settings");
-		objRPSLPage.removeRealPropertySettingEntry(strRPSL);
-		
-		//Step5: Creating the RPSL record for current year
-		ReportLogger.INFO("Adding current year's 'Real Property Settings' record");
-		objRPSLPage.enterRealPropertySettingsDetails(createRPSLdataMap);
-		
-		//Step6: Clicking on Save button & Verifying the RPSL record for current year after creation
-		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
-		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSL + "\" was created.","SMAB-T535:Verify the User is able to create Exemption limit record for the current roll year");	
-		
-		//Step7: Selecting module & 'All' List View
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
-		objApasGenericFunctions.displayRecords("All");
-		
-		//Step8: Fetching value of RPSL created in above Test case
-		String value = strRPSLName;
-		objApasGenericFunctions.searchRecords(strRPSLName);
-		//Step9: Searching and selecting the RPSL
-		objRPSLPage.clickShowMoreLink(value);
-		objPage.clickAction(objPage.waitForElementToBeClickable(objRPSLPage.editLinkUnderShowMore));
-
-		//Step510: Fetching the data to edit the RPSL record
-		//String manualEntryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
-		Map<String, String> editRPSDataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToEditRPSLEntry");	
-		
-		//Step11: Edit the RPSL
-		ReportLogger.INFO("Editing the Status field to '"+editRPSDataMap.get("Status") + "'");
-		objRPSLPage.selectFromDropDown(objRPSLPage.statusDropDown,editRPSDataMap.get("Status"));		
-		
-		//Step12: Saving the RPSL after editing 'Status' dropdown
-		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
-		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + value + "\" was saved.","SMAB-T535: Verify the User is able to edit Exemption limit record for the current roll year");			
-		
-		objApasGenericFunctions.logout();
-	
-	}
-	
-	
-	
-	/**
 	 Below test case will validate that user is not able to create Real Property Settings Library if 'Cancel' button is clicked instead of 'Save' button
 	 **/
-	@Test(description = "SMAB-T537: Verify Current Roll Year RPSL not created on clicking Cancel button", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"smoke","regression","DisabledVeteranExemption"})
+	@Test(description = "SMAB-T537: Verify Current Roll Year RPSL not created on clicking Cancel button", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption"})
 	public void DisabledVeteran_verifyCancelRPSLCreation(String loginUser) throws Exception {
 		boolean strSuccessAlert;
 		
@@ -293,7 +258,7 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 	 /**
 	 Below test case will validate that user is not able to create RPSL having $0 in amount fields
 	 **/
-	@Test(description = "SMAB-T538: Creation of RPSL with $0 in amount fields", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"smoke","regression","DisabledVeteranExemption"})
+	@Test(description = "SMAB-T538: Creation of RPSL with $0 in amount fields", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption"})
 	public void DisabledVeteran_verifyValidationRulesOnRPSLCreation(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
@@ -337,7 +302,7 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 	/**
 	 Below test case is used to validate that User is not able to edit and save Exemption limit record for a roll year when entered value is $0
 	 **/
-	@Test(description = "SMAB-T542:Verify the User is not able to edit and save Exemption limit record for a roll year when entered value is $0", groups = {"smoke","regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class )
+	@Test(description = "SMAB-T542:Verify the User is not able to edit and save Exemption limit record for a roll year when entered value is $0", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class )
 	public void DisabledVeteran_verifyValidationRulesOnRPSLEditing(String loginUser) throws Exception {
 		String strSuccessAlertMessage;
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
@@ -433,7 +398,7 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 	 1. 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'
 	 2. Non-System Admin users are not able to update a locked 'Real Property Settings' record
 	 **/
-	@Test(description = "SMAB-T640,641: Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'", groups = {"smoke","regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T640,641: Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class)
 	public void DisabledVeteran_verifyEditRPSLUsersAccess(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
 		objApasGenericFunctions.login(loginUser);
@@ -473,7 +438,7 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 	/**
 	 Below test case is used to validate user other than Exemption Support Staff is only able to view Exemption limit records
 	 **/
-	@Test(description = "SMAB-T545: Verify user other than Exemption Support Staff is only able to view Exemption limit records", groups = {"smoke","regression","DisabledVeteranExemption"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class )
+	@Test(description = "SMAB-T545: Verify user other than Exemption Support Staff is only able to view Exemption limit records", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class )
 	public void DisabledVeteran_verifyViewRPSLUsersAccess(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
 		objApasGenericFunctions.login(loginUser);
