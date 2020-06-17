@@ -60,7 +60,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 	 * 1. 'Basic Exemption Amount' Calculated is correct for each VA(Current + Past years)
 	 * 2. Net Exemption Amount is correct for each VA(Current + Past Years)
 	 **/
-	@Test(description = "SMAB-T612: Verify Basic Exemption Amount for each 'Active' Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption" })
+	@Test(description = "SMAB-T1213, SMAB-T612: Verify Basic & Net Exemption Amount for each 'Active' Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption" })
 	public void DisabledVeteran_verifyBasicExemptionAmount(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
@@ -104,8 +104,8 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 			float expectedExemptionAmount = objValueAdjustmentPage.calculateBasicExemptionAmount();			  
 			String exemptionAmount = objValueAdjustmentPage.exemptionAmountCalculatedValueLabel.getText();			  
 			float actualExemptionAmount = objApasGenericFunctions.convertToFloat(exemptionAmount); 		 
-//			ReportLogger.INFO("Verifying Exemption Amount Calculated");
-//			softAssert.assertEquals(actualExemptionAmount,expectedExemptionAmount,"SMAB-T574: Verify Exemption Amount calculated for each eligible year if the Determination is 'Basic'");
+			ReportLogger.INFO("Verifying Exemption Amount Calculated");
+			softAssert.assertEquals(actualExemptionAmount,expectedExemptionAmount,"SMAB-T1213: Verify Exemption Amount calculated for each eligible year if the Determination is 'Basic'");
 			   
 			//Step9: Calculate Net Exemption Amount in an 'Active' Value Adjustment			
 			ReportLogger.INFO("Verifying Net Exemption Amount");
@@ -126,7 +126,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 	 * 4. Net Exemption Amount of Low Income VAR that results in penalty
 	 **/
 	
-  @Test(description = "SMAB-T573, SMAB-T512, SMAB-T475: Verify Low Income Exemption Amount for each 'Active' Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption" })
+  @Test(description = "SMAB-T573, SMAB-T512, SMAB-T475: Verify Low Income Exemption Amount for each 'Active' Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"regression","DisabledVeteranExemption" })
   	public void DisabledVeteran_verifyLowIncomeExemptionAmount(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
