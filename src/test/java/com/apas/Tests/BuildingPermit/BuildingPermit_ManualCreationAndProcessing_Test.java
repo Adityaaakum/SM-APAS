@@ -165,7 +165,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		Thread.sleep(2000);
 
 		//Step4: Save after entering 'Tree Removal' in Work Description. There should be an error
-		String expectedWorkDescriptionError = "This is a permit type that will not be further processed. No Process for Work Desc with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
+		String expectedWorkDescriptionError = "No Process for Work Desc with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.workDescriptionTxtBox,30);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,"Tree Removal");
 		objPage.Click(objBuildingPermitPage.saveButton);
