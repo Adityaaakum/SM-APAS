@@ -66,7 +66,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	 * @throws Exception 
 	 */
 
-	@Test(description = "SMAB-T488,SMAB-T491,SMAB-T492,SMAB-T493,SMAB-T495,SMAB-T496:Future dates Error Messages for date Fields",dataProvider="loginExemptionSupportStaff" ,dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T488,SMAB-T491,SMAB-T492,SMAB-T493,SMAB-T494,SMAB-T495,SMAB-T496:Future dates Error Messages for date Fields",dataProvider="loginExemptionSupportStaff" ,dataProviderClass = DataProviders.class, groups = {
 			"smoke", "regression","DisabledVeteranExemption"})
 	public void verify_Disabledveteran_FutureDatesErrorMessagesWhileCreatingExemption(String loginUser) throws Exception{
 		
@@ -125,7 +125,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	}
 	
 	
-	@Test(description = "SMAB-T501,SMAB-T502,SMAB-T503,SMAB-T497,SMAB-T498,SMAB-T1278,SMAB-T1122,SMAB-T1223,SMAB-T1263,SMAB-T1264,SMAB-T1221:business validations for Exemption fields", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T501,SMAB-T502,SMAB-T503,SMAB-T497,SMAB-T494,SMAB-T498,SMAB-T1278,SMAB-T1122,SMAB-T1223,SMAB-T1263,SMAB-T1262,SMAB-T1264,SMAB-T1221:Verify business validations while creating Exemption records", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 			"smoke", "regression","DisabledVeteranExemption"})
 	public void verify_Disabledveteran_BusinessValidationsForExemptionFields(String loginUser) throws Exception{
 			Map<String, String> businessValidationdata = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
@@ -254,7 +254,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	 Below test case is used to Edit an Exemption record
 	 * @throws Exception 
 	 **/
-	@Test(description = "SMAB-T1282:Verify date fields are not editable once entered for an Exemption",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T1282,SMAB-T1269,SMAB-T499,SMAB-T489:Verify date fields are not editable once entered for an Exemption",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 			"smoke", "regression" ,"DisabledVeteranExemption"})
 	public void verify_Disabledveteran_DateFieldsNotEditableonCreatedExemptionDetailsPage(String loginUser) throws Exception
 	{	Map<String, String> dataToEdit = objUtil.generateMapFromJsonFile(exemptionFilePath, "editExemptionData");
@@ -269,39 +269,47 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			//step3: creating an exemption record
 			objPage.Click(exemptionPageObj.newExemptionButton);
 			exemptionPageObj.createNewExemptionWithMandatoryData(dataToEdit);
-
+			objPage.waitForElementToBeVisible(exemptionPageObj.dateOccupyPropertyExemptionDetails, 5);	
 
 			//Step4: Updating 'Date Acquired Property' to 1/11/2020
 			ReportLogger.INFO("verifying Date Acquired Property can't be edited once record is saved");
 			apasGenericObj.editAndInputFieldData("Date Acquired Property",exemptionPageObj.dateAcquiredProperty,dataToEdit.get("DateAquiredPropertyUpdated"));
-			softAssert.assertEquals(exemptionPageObj.genericErrorMsg.getText(), "Date Acquired Property", "Verify that Date Acquired Property can't be updated generic error message beside cancel button");
-			softAssert.assertEquals(objPage.getElementText(vaPageObj.editFieldErrorMsg), dataToEdit.get("dateAcauiredErrorMessage"),"Verify that Date Acquired Property can't be updated");
+			objPage.waitForElementToBeVisible(exemptionPageObj.genericErrorMsg, 10);
+			softAssert.assertEquals(exemptionPageObj.genericErrorMsg.getText(), "Date Acquired Property", "SMAB-T1282:Verify that Date Acquired Property can't be updated generic error message beside cancel button");
+			softAssert.assertEquals(objPage.getElementText(vaPageObj.editFieldErrorMsg), dataToEdit.get("dateAcauiredErrorMessage"),"SMAB-T1282:Verify that Date Acquired Property can't be updated");
 			objPage.Click(exemptionPageObj.cancelButton);
 			
 			//Step5: Updating 'Date Occupy Property' to 1/9/2020
 			ReportLogger.INFO("verifying Date Occupied/Intend to Occupy Property can't be edited once record is saved");
+			 objPage.scrollToElement(exemptionPageObj.dateApplicationReceivedExemptionDetails);
 			apasGenericObj.editAndInputFieldData("Date Occupied/Intend to Occupy Property",exemptionPageObj.dateOccupyProperty,dataToEdit.get("DateOccupyPropertyUpdated"));
-			softAssert.assertEquals(exemptionPageObj.genericErrorMsg.getText(), "Date Occupied/Intend to Occupy Property", "Verify that Date Occupied Property can't be updated generic error message beside cancel button");
-			softAssert.assertEquals(objPage.getElementText(vaPageObj.editFieldErrorMsg), dataToEdit.get("dateOccupyErrorMessage"),"Verify that Date Occupied Property can't be updated");			
+			objPage.waitForElementToBeVisible(exemptionPageObj.genericErrorMsg, 10);
+			softAssert.assertEquals(exemptionPageObj.genericErrorMsg.getText(), "Date Occupied/Intend to Occupy Property", "SMAB-T1282:Verify that Date Occupied Property can't be updated generic error message beside cancel button");
+			softAssert.assertEquals(objPage.getElementText(vaPageObj.editFieldErrorMsg), dataToEdit.get("dateOccupyErrorMessage"),"SMAB-T1282:Verify that Date Occupied Property can't be updated");			
 			objPage.Click(exemptionPageObj.cancelButton);
 			
 			//Step6: Updating 'Effective Date of 100% USDVA Rating' to 1/10/2020
 			ReportLogger.INFO("verifying Effective Date of 100% USDVA Rating can't be edited once record is saved");
+			objPage.scrollToElement(exemptionPageObj.dateOccupiedOnDetailPage);
 			apasGenericObj.editAndInputFieldData("Effective Date of 100% USDVA Rating",exemptionPageObj.effectiveDateOfUSDVA,dataToEdit.get("EffectiveDateOfUSDVAUpdated"));
-			softAssert.assertEquals(exemptionPageObj.genericErrorMsg.getText(), "Effective Date of 100% USDVA Rating", "Verify that Effective Date Of USDVA can't be updated generic error message beside cancel button");
-			softAssert.assertEquals(objPage.getElementText(vaPageObj.editFieldErrorMsg), dataToEdit.get("effectiveDateErrorMessage"),"Verify that effective Date can't be updated");			
+			objPage.waitForElementToBeVisible(exemptionPageObj.genericErrorMsg, 10);
+			softAssert.assertEquals(exemptionPageObj.genericErrorMsg.getText(), "Effective Date of 100% USDVA Rating", "SMAB-T1282:Verify that Effective Date Of USDVA can't be updated generic error message beside cancel button");
+			softAssert.assertEquals(objPage.getElementText(vaPageObj.editFieldErrorMsg), dataToEdit.get("effectiveDateErrorMessage"),"SMAB-T1282:Verify that effective Date can't be updated");			
 			objPage.Click(exemptionPageObj.cancelButton);
 			
 			//Step7: Updating 'Date of Notice of Rating' to 1/10/2020
 			ReportLogger.INFO("verifying Date of Notice of 100% Rating can't be edited once record is saved");
+			objPage.scrollToElement(exemptionPageObj.dateOccupiedOnDetailPage);
 			apasGenericObj.editAndInputFieldData("Date of Notice of 100% Rating",exemptionPageObj.dateOfNoticeOfRating,dataToEdit.get("DateOfNoticeUpdated"));
-			softAssert.assertEquals(exemptionPageObj.genericErrorMsg.getText(), "Date of Notice of 100% Rating", "Verify that Date of Notice of 100% rating can't be updated generic error message beside cancel button");
+			objPage.waitForElementToBeVisible(exemptionPageObj.genericErrorMsg, 10);
+			softAssert.assertEquals(exemptionPageObj.genericErrorMsg.getText(), "Date of Notice of 100% Rating", "SMAB-T1282:Verify that Date of Notice of 100% rating can't be updated generic error message beside cancel button");
 			softAssert.assertEquals(objPage.getElementText(vaPageObj.editFieldErrorMsg), dataToEdit.get("dateOfNoticeErrorMessage"),"SMAB-T1282:Verify that Date of Notice of Rating can't be updated");			
 			objPage.Click(exemptionPageObj.cancelButton);
 			
 			//step8: Verifying user gets error message when updating the 'Qualification?' from Qualified to Not Qualified
 			ReportLogger.INFO("Verifying user gets error message when updating the 'Qualification?' from Qualified to Not Qualified");
 			apasGenericObj.editAndSelectFieldData("Qualification?", "Not Qualified");			
+			objPage.waitForElementToBeVisible(exemptionPageObj.QualificationOnDetailsPageErrorMsg, 10);
 			softAssert.assertEquals(objPage.getElementText(exemptionPageObj.QualificationOnDetailsPageErrorMsg), dataToEdit.get("QualificationUpdateErrorMsg"),"SMAB-T1269:Verify user gets error message when updating the 'Qualification?' from Qualified to Not Qualified");
 			
 			objPage.Click(exemptionPageObj.cancelButton);
@@ -317,7 +325,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	 Below test case is used to verify if 'End date Of Rating can not be Modified Once Entered by user'
 	 * @throws Exception 
 	 **/
-	@Test(description = "SMAB-T1218:End Date of Rating can't be modified if initially set",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T1218,SMAB-T643,SMAB-T500:Verify End Date of Rating can't be modified if initially set",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 			"smoke", "regression","DisabledVeteranExemption"})	
 	public void verify_Disabledveteran_EnddateOfRatingNotModifiableOnceEntered(String loginUser) throws Exception
 	{

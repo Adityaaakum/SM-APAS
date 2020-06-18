@@ -70,7 +70,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 	
 	// Below test case is used to validate permission access on Exemption and VA's
 	
-	@Test(description = "SMAB-T474: Verify User is able to create a VAR record",  dataProvider = "rpApprasierAndBPPAuditor",dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify User without permission is not able to create a new Exemption and VA record",  dataProvider = "rpApprasierAndBPPAuditor",dataProviderClass = DataProviders.class, groups = {
 			"smoke", "regression","DisabledVeteranExemption" })
 	public void verify_Disabledveteran_NonAdminsAndAppraisalSupportUserNotAbleToCREDExemptionAndValueAdjustment(String loginInvalidUser) throws Exception
 	{
@@ -103,7 +103,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 	}
 	
 	// Below test case is used to validate permission access on Roll year
-	@Test(description = "SMAB-T642: Verify User is able to create a VAR record",  dataProvider = "loginBppAuditor",dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T642,SMAB-T482:Verify User without permission is not able to create a new Roll Year record",  dataProvider = "loginBppAuditor",dataProviderClass = DataProviders.class, groups = {
 			"smoke", "regression","DisabledVeteranExemption"})
 	public void verify_Disabledveteran_nonSystemAdminNotAbleToCREDRollYearObjrct(String loginInvalidUser) throws Exception
 	{
