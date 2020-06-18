@@ -268,11 +268,11 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		String expectedPenaltyAdjstmntErrorMsg = "Penalty Adjustment Reason is not allowed when the Penalty Amount - User Adjusted is blank.";
 		objPage.waitForElementToBeClickable(objValueAdjustmentPage.errMsgPenaltyAdjstmntRsn,10);
 		String actualPenaltyAdjstmntErrorMsg = objValueAdjustmentPage.errMsgPenaltyAdjstmntRsn.getText();
-		softAssert.assertEquals(actualPenaltyAdjstmntErrorMsg, expectedPenaltyAdjstmntErrorMsg, "Verify on editing VAR,the user cannot enter a value into the Penalty Adjustment Reason when the Penalty Amount - User Adjusted is blank or $0");		 
+		softAssert.assertEquals(actualPenaltyAdjstmntErrorMsg, expectedPenaltyAdjstmntErrorMsg, "SMAB-T1268: Verify on editing VAR,the user cannot enter a value into the Penalty Adjustment Reason when the Penalty Amount - User Adjusted is blank or $0");		 
 		
 		String expectedPenaltyAdjstmntReasonDetailErrorMsg = "Penalty Adjustment Other Reason Detail is allowed when the Penalty Adjustment Reason is 'Other'.";
 		String actualPenaltyAdjstmntReasonDetailErrorMsg = objValueAdjustmentPage.errMsgPenaltyAdjstmntOthRsnDetail.getText();
-		softAssert.assertEquals(actualPenaltyAdjstmntReasonDetailErrorMsg, expectedPenaltyAdjstmntReasonDetailErrorMsg, "SMAB-T1266: Verify on editing VAR,the user cannot enter a value into the Penalty Adjustment Other Reason Detail when the Penalty Amount - User Adjusted is blank or $0\");");
+		softAssert.assertEquals(actualPenaltyAdjstmntReasonDetailErrorMsg, expectedPenaltyAdjstmntReasonDetailErrorMsg, "SMAB-T1268: Verify on editing VAR,the user cannot enter a value into the Penalty Adjustment Other Reason Detail when the Penalty Amount - User Adjusted is blank or $0");
 		
 		objPage.Click(objValueAdjustmentPage.cancelButton);
 		objApasGenericFunctions.logout();
