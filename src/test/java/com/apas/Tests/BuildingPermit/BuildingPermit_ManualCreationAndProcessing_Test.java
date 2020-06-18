@@ -194,9 +194,6 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step8: Validation for record with old building permit number exists or not
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
-		objApasGenericFunctions.searchRecords(buildingPermitNumber);
-		manualBuildingPermitGridDataMap = objApasGenericFunctions.getGridDataInHashMap();
-		softAssert.assertTrue(manualBuildingPermitGridDataMap.get("Building Permit Number") == null, "SMAB-T466: Validation that record with old building permit number " + buildingPermitNumber + " should not exist as building permit number is updated");
 
 		//Step9: Search the building permit number record edited above
 		objApasGenericFunctions.searchRecords(updatedBuildingPermitNumber);

@@ -335,6 +335,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		//Step6: Correcting one of the error record to validate the retry functionality
 		ReportLogger.INFO("Correct the permit value of first failed record to retry");
 		objApasGenericFunctions.editGridCellValue("VALUE", "2000");
+		objPage.Click(objEfileImportPage.rowSelectCheckBox);
 		objEfileImportPage.collapseSection(objEfileImportPage.errorRowSectionExpandButton);
 		objPage.scrollToTop();
 		objPage.Click(objEfileImportPage.retryButton);
