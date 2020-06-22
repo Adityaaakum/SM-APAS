@@ -267,7 +267,7 @@ public class ValueAdjustmentsPage extends Page {
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
 	public WebElement successAlertText;
 	
-	@FindBy(xpath = "//li[@title='Value Adjustments']//a")			
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//li[@title='Value Adjustments']//a")			
     public WebElement valueAdjustmentRelatedListTab;
 	
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='View All']")
@@ -581,7 +581,7 @@ public void navigateToVAListViewInExemption() throws Exception
 {	
 	//Step1: Selecting the Value Adjustment Related List Tab
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Related List - Value Adjustement Tab");
-	objPage.locateElement("//div[contains(@class,'windowViewMode-normal')]//li[@title='Value Adjustments']//a", 20);
+	objPage.locateElement("//div[contains(@class,'windowViewMode-normal')]//li[@title='Value Adjustments']//a", 30);
 	waitForElementToBeClickable(valueAdjustmentRelatedListTab);
 	objPage.Click(valueAdjustmentRelatedListTab);
 
