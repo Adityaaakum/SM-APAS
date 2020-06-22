@@ -251,7 +251,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 	/**
 	 Below test case is used to validate the revert functionality on the file having the error records
 	 **/
-	@Test(description = "SMAB-T361,SMAB-T358,SMAB-T970: Reverting the error records in building permit import", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"},alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T361,SMAB-T358,SMAB-T970,SMAB-T25: Reverting the error records in building permit import", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"},alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_Revert(String loginUser) throws Exception {
 
 		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "OneValidAndTwoInvalidRecordsForPermitValue.txt";
@@ -296,7 +296,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		objEfileImportPage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		//Status of the imported file should be changed to Reverted as the whole file is reverted for reimport
-		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.statusImportedFile), "Reverted", "SMAB-T361,SMAB-T970: Validation if status of imported file is reverted.");
+		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.statusImportedFile), "Reverted", "SMAB-T361,SMAB-T970,SMAB-T25: Validation if status of imported file is reverted.");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
