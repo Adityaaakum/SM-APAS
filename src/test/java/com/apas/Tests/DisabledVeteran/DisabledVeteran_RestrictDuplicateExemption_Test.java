@@ -150,7 +150,7 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 	
     @Test(description = "SMAB-T526: Validate user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dependsOnMethods = {"verify_DisabledVeteran_DuplicateExemptionIsNotCreated"}, dataProvider = "loginUsers")
 	public void verify_DisabledVeteran_EditExemptionAndDuplicateErrorValidation(String loginUser) throws Exception {
-    if(!failedMethods.contains("duplicateExemptionIsNotCreated")) {	
+    if(!failedMethods.contains("verify_DisabledVeteran_DuplicateExemptionIsNotCreated")) {
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
 

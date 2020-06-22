@@ -204,9 +204,9 @@ public class RollYearSettingsTest extends TestBase {
 	 -Edit a Roll Year record
 	 **/
 	
-	@Test(description = "SMAB-T638: Validate that System Admin is able to edit Past Roll Year record", groups = {"regression","DisabledVeteranExemption"}, dependsOnMethods = {"createPastRollYearRecord"}, dataProvider = "loginUsers")
+	@Test(description = "SMAB-T638: Validate that System Admin is able to edit Past Roll Year record", groups = {"regression","DisabledVeteranExemption"}, dependsOnMethods = {"verify_RollYear_CreatePastRecord"}, dataProvider = "loginUsers")
 	public void verify_RollYear_EditPastRecord(String loginUser) throws Exception {
-	if(!failedMethods.contains("createPastRollYearRecord")) {
+	if(!failedMethods.contains("verify_RollYear_CreatePastRecord")) {
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
 		
