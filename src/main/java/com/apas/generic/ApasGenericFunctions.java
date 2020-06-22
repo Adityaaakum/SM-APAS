@@ -301,7 +301,7 @@ public class ApasGenericFunctions extends TestBase {
         objPage.Click(element);
         String xpathStr = null;
 
-        xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
+        xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "'] | //span[@class='slds-media__body']/span[contains(.,'" + value + "')]";
 
         WebElement drpDwnOption = locateElement(xpathStr, 10);
         drpDwnOption.click();

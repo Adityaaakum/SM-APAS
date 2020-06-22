@@ -127,7 +127,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		objPage.Click(vaPageObj.valueAdjustmentTab);
 		objPage.waitForElementToBeVisible(vaPageObj.valueAdjustmentsCountLabel, 5);
 		ReportLogger.INFO("verifying Actual VA count should be 0 as Qualification is Not Qualified");
-		softAssert.assertEquals(vaPageObj.VAlist.size(), 0, "SMAB-1261: Verifying Zero value adjustments record is created for Not Qualified Exemption");
+		softAssert.assertEquals(vaPageObj.VAlist.size(), 0, "SMAB-T1261: Verifying Zero value adjustments record is created for Not Qualified Exemption");
 		
 		/** step6: updating qualification to Qualified and
 		Verifying corresponding VA's count should be as per the dates
@@ -142,7 +142,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		apasGenericObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
 		objPage.Click(exemptionPageObj.exemptionDetailsTab);
 		objPage.waitForElementToBeVisible(exemptionPageObj.dateApplicationReceivedExemptionDetails, 5);
-		softAssert.assertEquals(exemptionPageObj.qualificationOnDetailPage.getText().trim(),"Qualified" , "SMAB-1261:Qualification is updated to Qualified");
+		softAssert.assertEquals(exemptionPageObj.qualificationOnDetailPage.getText().trim(),"Qualified" , "SMAB-T1261:Qualification is updated to Qualified");
 		ReportLogger.INFO("verifying actual VA count after Qualification is updated to Qualified ");
 		int actualVAtoBeCreated=vaPageObj.verifyValueAdjustments(maxDate, null, currentRollYear);
 		ReportLogger.INFO("actual VA to be cretaed after updating Qualification to Qualified should be:"+actualVAtoBeCreated);
@@ -200,7 +200,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	/**
 	 Below test case is used to verify that on entering End date of Rating future VA's are deactivated,deleted and new is created
 	 **/
-	@Test(description = "SMAB-T499,SMAB-T601,SMAB-T485,SMBA-T602,SMAB-T1281,SMAB-T486: Verify future dated VA's are DEACTIVATED with Status Not Active when end date of rating is entered",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T499,SMAB-T601,SMAB-T485,SMAB-T602,SMAB-T1281,SMAB-T486: Verify future dated VA's are DEACTIVATED with Status Not Active when end date of rating is entered",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 			"smoke", "regression","DisabledVeteranExemption" })
 	public void verify_Disabledveteran_UpdatingEndDateOfRating_DeletesFutureVA_CreatesNewVA_DeActivesVA(String loginUser) throws Exception	{
 		Map<String, String> endDateOfRatingData = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData1");
@@ -251,10 +251,10 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 			objPage.Click(vaPageObj.valueAdjustmentTab);
 			objPage.waitForElementToBeVisible(vaPageObj.viewAllLink, 10);
 			ReportLogger.INFO("Verifying Actual and Expected count of VA after end date of rating Actual::"+vaPageObj.VAlist.size()+"|| Expected::"+(vaCreatedBasedOnDates-1));
-			softAssert.assertEquals(vaPageObj.VAlist.size(),vaCreatedBasedOnDates-1, "SMAB-T485,SMBA-T602,SMAB-T1281:---Verify user can terminate the exemption by entering end date of rating(Future VA deleted)");
+			softAssert.assertEquals(vaPageObj.VAlist.size(),vaCreatedBasedOnDates-1, "SMAB-T485,SMAB-T602,SMAB-T1281:---Verify user can terminate the exemption by entering end date of rating(Future VA deleted)");
 			ReportLogger.INFO("Verifying remaining Active and Deactivated Value Adjustment records as per end date of rating");
 			int expectedActiveVA=vaPageObj.verifyValueAdjustments(maxDate,endDateOfRating,currentRollYear);//1/14/2012 & 6/30/2018
-			softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Status","Active"), expectedActiveVA, "SMAB-T485,SMBA-T602,SMAB-T1281:---Verify user can terminate the exemption by entering end date of rating(Active VA)");
+			softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Status","Active"), expectedActiveVA, "SMAB-T485,SMAB-T602,SMAB-T1281:---Verify user can terminate the exemption by entering end date of rating(Active VA)");
 			softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Status","Not Active"),(vaPageObj.VAlist.size()-expectedActiveVA), "SMAB-T486,SMAB-T1281:---Verify future dated Value Adjustment records are DEACTIVATED with Status Not Active when end date of rating is entered");
 			String newCreatedVA=vaPageObj.findVANameBasedOnEndDate(endDateOfRating);
 			ReportLogger.INFO("newly created VA as per End date oF Ratintg::"+newCreatedVA);
@@ -296,7 +296,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	objPage.waitForElementToBeVisible(vaPageObj.viewAllLink, 10);
 	softAssert.assertEquals(vaPageObj.VAlist.size(), 1,"SMAB-T562:Verify only one VA(basic Disabled veteran)is created for Current Roll");
 	softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Determination","Basic Disabled Veterans Exemption"), 1,"SMAB-T562:Verify only one VA(basic Disabled veteran)is created for Current Roll");
-	softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Status","Active"), 1, "SMAB-T485,SMBA-T602:---Verify user can terminate the exemption by entering end date of rating(Active VA)");
+	softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Status","Active"), 1, "SMAB-T485,SMAB-T602:---Verify user can terminate the exemption by entering end date of rating(Active VA)");
 	
 	apasGenericObj.logout();
 	}
@@ -394,7 +394,7 @@ public void verify_Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEnd
 			String determination=vaPageObj.vaDetermination.getText().trim();
 			
 			boolean vaType=vaPageObj.verifyIfInitialFilingOrAnnualVA(applicationDate);
-			softAssert.assertEquals(vaType,vaPageObj.vaInitialFilingFlag.isSelected(), "SMAB-T1365,SMAB-1387:Verify user is able to view 'Is Initial Filing Exemption?' field on all Value Adjustment records after creating an Exemption record");
+			softAssert.assertEquals(vaType,vaPageObj.vaInitialFilingFlag.isSelected(), "SMAB-T1365,SMAB-T1387:Verify user is able to view 'Is Initial Filing Exemption?' field on all Value Adjustment records after creating an Exemption record");
 			double penaltyPercentageCalculated=vaPageObj.calculatePenaltyPercentageForVA(vaType,applicationDate, graceEndDate,determination);
 			softAssert.assertEquals(penaltyPercentage,penaltyPercentageCalculated, "SMAB-T1375,SMAB-T1290,SMAB-T1277:Verify user is able to view correct 'Penalty Percentage' and 'Penalty Amount calculated' for 'Initial Filling Basic Exemption' and 'Initial Filling Low income' VA's");
 			double penaltyAmountCalculated=vaPageObj.calculatePenaltyAmountForVA(penaltyPercentageCalculated,vaType,determination);
