@@ -193,7 +193,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objApasGenericFunctions.globalSearchRecords(missingAPNBuildingPermitNumber);
 
 		//Step4: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
-		String expectedMessage = "Invalid APN.	";
+		String expectedMessage = "Invalid APN.";
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag).trim(), expectedMessage, "SMAB-T451: Warning message validation for building permit(Imported through E-File Intake module) with missing APN");
 
 		//Step5: Validation of Situs Type population from Situs Street Name with special keywords
@@ -210,7 +210,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Step6: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
 		expectedMessage = "Invalid APN.";
-		softAssert.assertEquals(objBuildingPermitPage.warningMessageWithPriorityFlag.getText(), expectedMessage, "SMAB-T451: Warning message validation for building permit(Imported through E-File Intake module) with wrong APN");
+		softAssert.assertEquals(objBuildingPermitPage.warningMessageWithPriorityFlag.getText().trim(), expectedMessage, "SMAB-T451: Warning message validation for building permit(Imported through E-File Intake module) with wrong APN");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -265,7 +265,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	/**
 	 Below test case is used to validate the data is imported correctly for San Mateo in Excel format
 	 **/
-	@Test(description = "SMAB-T417,SMAB-T456: Data validation for San Mateo Building Permit Import in XLS format", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T417,SMAB-T456,SMAB-T357: Data validation for San Mateo Building Permit Import in XLS format", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_DataValidationAfterSanMateoExcelFileImport(String loginUser) throws Exception {
 
 		String sanMateoBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "NonNumericValueSanMateo.xlsx";
@@ -543,26 +543,19 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	/**
 	 Below test case is used to validate the duplicate building permit error message on efile import
 	 **/
-	@Test(description = "SMAB-T440: Validate duplicate record error message with same Permit Number, Parcel and City", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, enabled = false)
-	public void verify_BuildingPermit_DuplicateRecordErrorMessage(String loginUser) throws Exception {
+	@Test(description = "SMAB-T549,SMAB-T623: Validate the upsert functionality for record with same Permit Number, Parcel and City", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"})
+	public void verify_BuildingPermit_UpsertValidationForDuplicateRecord(String loginUser) throws Exception {
 
 		String period = objUtil.getCurrentDate("MMMM YYYY");
-
-		String queryRevert = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='June 2020' and File_Source__C like '%Atherton%' and Status__c = 'In Progress'";
-		salesforceAPI.update("E_File_Import_Log__c",queryRevert,"Status__c","Imported");
-
 
 		//Reverting the Approved Import logs if any in the system
 		String queryRevertApprove = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
 		salesforceAPI.update("E_File_Import_Log__c",queryRevertApprove,"Status__c","Imported");
 
-		//Reverting the Approved Import logs if any in the system
-		String queryBuildingPermit = "SELECT Name FROM Building_Permit__c where city_apn__C = '060241050' and situs_city_code__c = 'AT' limit 1";
-		String buildingPermitNumber = salesforceAPI.select(queryBuildingPermit).get("Name").get(0);
-
 		//Step1: Creating temporary file with building permit number with existing city apn and parcel
-		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "DuplicateRecordErrorValidation_AT.txt";
-		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "DuplicateRecordErrorValidation_AT.txt";
+		String buildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
+		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "DuplicateRecordUpsertValidation_AT.txt";
+		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "DuplicateRecordUpsertValidation_AT.txt";
 		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",buildingPermitNumber,temporaryFile);
 
 		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -577,14 +570,32 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		//Step5: Waiting for Status of the imported file to be converted to "Imported"
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
 		objPage.waitForElementTextToBe(objEfileImportPage.statusImportedFile, "Imported", 120);
-
-		//Step7: Approving the imported file
 		objPage.Click(objEfileImportPage.viewLink);
 		objPage.waitForElementToBeVisible(objEfileImportPage.errorRowSection,30);
 
-		//Step5: Comparing the data from the error row table with the expected data
-		ReportLogger.INFO("Data Validation of Error Row Records on Review and Approve Data Page");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Duplicate Error Record"),"Duplicate Permit (City code, Permit #, Cityapn)","SMAB-T457 : Error Message validation for the scenario 'Duplicate Error Record'");
+		//Step6: Validation that there should be only 1 record in import section as the duplicate record should upsert
+		String numberOfRecordsInErrorRowSection = objPage.getElementText(objEfileImportPage.errorRowSection).split(":")[1].trim();
+		softAssert.assertEquals(numberOfRecordsInErrorRowSection, "0", "SMAB-T549,SMAB-T623: Validation that error section should not have any record as the duplicate record should upsert");
+
+		String numberOfRecordsInImportedRowSection = objPage.getElementText(objEfileImportPage.importedRowSection).split(":")[1].trim();
+		softAssert.assertEquals(numberOfRecordsInImportedRowSection, "1", "SMAB-T549,SMAB-T623: Validation that import section should have only one record as the records should get upsert because of same City APN, City Code and Permit Number");
+
+		//Step7: Approve the record
+		objPage.Click(objEfileImportPage.approveButton);
+		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
+
+		//Step8: Opening Building Permit module
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+
+		//Step9: Open the building permit record created through above efile intake functionality
+		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
+
+		//Step10: Validation that value of upserted records are reflected in the building permit
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Issue Date", "Building Permit Information"), "6/3/2018", "SMAB-T549,SMAB-T623: 'Issue Date' Field Validation in 'Building Permit Information' section for upsert record");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Completion Date", "Building Permit Information"), "11/1/2019", "SMAB-T549,SMAB-T623: 'Completion Date' Field Validation in 'Building Permit Information' section for upsert record");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Estimated Project Value"), "$2,300","SMAB-T549,SMAB-T623: 'Estimated Project Value' validation on the data displayed on the grid for upsert record");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("City Strat Code", "City and County Information"), "ALTERATION", "SMAB-T549,SMAB-T623: 'County Strat Code Description' Field Validation in 'City and County Information' section for upsert record");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Building Permit Fee", "Building Permit Information"), "$2,222.33", "SMAB-T549,SMAB-T623: 'Building Permit Fee' Field Validation in 'Building Permit Information' section for upsert record");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();

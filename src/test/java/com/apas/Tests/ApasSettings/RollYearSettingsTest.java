@@ -172,6 +172,7 @@ public class RollYearSettingsTest extends TestBase {
 		softAssert.assertTrue(objRollYearSettingsPage.duplicateRecord.isDisplayed(), "Validate duplicate error message is displayed as Roll Year record exist");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.duplicateRecord)),"This record looks like a duplicate.View Duplicates", "SMAB-T638: Validate duplicate error message text");
 		softAssert.assertTrue(objRollYearSettingsPage.viewDuplicateRecord.isDisplayed(), "Validate duplicate error view link is displayed as Roll Year record exist");
+
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Roll Year screen");
 		objPage.Click(objRollYearSettingsPage.cancelButton);
 		

@@ -165,7 +165,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		Thread.sleep(2000);
 
 		//Step4: Save after entering 'Tree Removal' in Work Description. There should be an error
-		String expectedWorkDescriptionError = "This is a permit type that will not be further processed. No Process for Work Desc with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
+		String expectedWorkDescriptionError = "No Process for Work Desc with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.workDescriptionTxtBox,30);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,"Tree Removal");
 		objPage.Click(objBuildingPermitPage.saveButton);
@@ -194,9 +194,6 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step8: Validation for record with old building permit number exists or not
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
-		objApasGenericFunctions.searchRecords(buildingPermitNumber);
-		manualBuildingPermitGridDataMap = objApasGenericFunctions.getGridDataInHashMap();
-		softAssert.assertTrue(manualBuildingPermitGridDataMap.get("Building Permit Number") == null, "SMAB-T466: Validation that record with old building permit number " + buildingPermitNumber + " should not exist as building permit number is updated");
 
 		//Step9: Search the building permit number record edited above
 		objApasGenericFunctions.searchRecords(updatedBuildingPermitNumber);
