@@ -21,7 +21,7 @@ import com.apas.config.testdata;
 import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
 
-public class DuplicateExemptionCreationTest extends TestBase {
+public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 	
 	private RemoteWebDriver driver;
 	Page objPage;
@@ -75,8 +75,8 @@ public class DuplicateExemptionCreationTest extends TestBase {
 	 Below test case is used to validate that Exemption records can be created with overlapping dates but for different Veteran 
 	 **/
 	
-    @Test(description = "SMAB-T528: Disabled Veteran - Verify user is able to create a same Exemption record with different Veteran Name", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
-	public void duplicateExemptionCreationButWithDifferentVeteranName(String loginUser) throws Exception {
+    @Test(description = "SMAB-T528: Validate user is able to create a same Exemption record with different Veteran Name", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
+	public void verify_DisabledVeteran_SameExemptionWithDifferentVeteranName(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -100,9 +100,9 @@ public class DuplicateExemptionCreationTest extends TestBase {
 		
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForMoreExemptionOnDetailPage);
 		startDate1 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.startDateOnDetailPage));
-		softAssert.assertEquals(veteranName1, dataMap1.get("Veteran Name"), "Validate 'Veteran Name' in the Exemption record");
-		softAssert.assertEquals(startDate1, objDisabledVeteransPage.removeZeroInMonthAndDay(dataMap1.get("Date Occupied/Intend to Occupy Property")), "Validate 'Start Date' in the Exemption record");
-		softAssert.assertEquals(apn1, dataMap1.get("APN"), "Validate 'APN' in the Exemption record");
+		softAssert.assertEquals(veteranName1, dataMap1.get("Veteran Name"), "SMAB-T528: Validate 'Veteran Name' in the Exemption record");
+		softAssert.assertEquals(startDate1, objDisabledVeteransPage.removeZeroInMonthAndDay(dataMap1.get("Date Occupied/Intend to Occupy Property")), "SMAB-T528: Validate 'Start Date' in the Exemption record");
+		softAssert.assertEquals(apn1, dataMap1.get("APN"), "SMAB-T528: Validate 'APN' in the Exemption record");
 		
 		//Step6: Navigate back to the Exemption module
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);
@@ -123,13 +123,13 @@ public class DuplicateExemptionCreationTest extends TestBase {
 		
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForMoreExemptionOnDetailPage);
 		startDate2 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.startDateOnDetailPage));
-		softAssert.assertEquals(veteranName2, dataMap2.get("Veteran Name"), "Validate 'Veteran Name' in the Exemption record");
-		softAssert.assertEquals(startDate2, objDisabledVeteransPage.removeZeroInMonthAndDay(dataMap2.get("Date Acquired Property")), "Validate 'Start Date' in the Exemption record");
-		softAssert.assertEquals(apn2, dataMap2.get("APN"), "Validate 'APN' in the Exemption record");
+		softAssert.assertEquals(veteranName2, dataMap2.get("Veteran Name"), "SMAB-T528: Validate 'Veteran Name' in the Exemption record");
+		softAssert.assertEquals(startDate2, objDisabledVeteransPage.removeZeroInMonthAndDay(dataMap2.get("Date Acquired Property")), "SMAB-T528: Validate 'Start Date' in the Exemption record");
+		softAssert.assertEquals(apn2, dataMap2.get("APN"), "SMAB-T528: Validate 'APN' in the Exemption record");
 		
 		//Step10: Validate the 'Veteran Name' and 'Exemption Name' shouldn't match
 		softAssert.assertTrue(exemptionName1 != exemptionName2, "SMAB-T528: Verify user is able to create a same Exemption record with different Veteran Name");
-		softAssert.assertTrue(veteranName1 != veteranName2, "Exemption records with overlapping dates are successfully created but for different Veteran");
+		softAssert.assertTrue(veteranName1 != veteranName2, "SMAB-T528: Exemption records with overlapping dates are successfully created but for different Veteran");
 	
 		objApasGenericFunctions.logout();
     }
@@ -139,8 +139,8 @@ public class DuplicateExemptionCreationTest extends TestBase {
 	 Below test case is used to validate that Exemption records can be created with overlapping dates but on different Parcel 
 	 **/
 	
-    @Test(description = "SMAB-T530: Disabled Veteran - Verify user is able to create a same Exemption record with different Parcel", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
-	public void duplicateExemptionCreationButForDifferentParcel(String loginUser) throws Exception {
+    @Test(description = "SMAB-T530: Validate user is able to create a same Exemption record with different Parcel", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
+	public void verify_DisabledVeteran_SameExemptionWithDifferentParcel(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -164,9 +164,9 @@ public class DuplicateExemptionCreationTest extends TestBase {
 		
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForMoreExemptionOnDetailPage);
 		startDate1 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.startDateOnDetailPage));
-		softAssert.assertEquals(veteranName1, dataMap1.get("Veteran Name"), "Validate 'Veteran Name' in the Exemption record");
-		softAssert.assertEquals(apn1, dataMap1.get("APN"), "Validate 'APN' in the Exemption record");
-		softAssert.assertEquals(startDate1, objDisabledVeteransPage.removeZeroInMonthAndDay(dataMap1.get("Date Occupied/Intend to Occupy Property")), "Validate 'Start Date' in the Exemption record");
+		softAssert.assertEquals(veteranName1, dataMap1.get("Veteran Name"), "SMAB-T530: Validate 'Veteran Name' in the Exemption record");
+		softAssert.assertEquals(apn1, dataMap1.get("APN"), "SMAB-T530: Validate 'APN' in the Exemption record");
+		softAssert.assertEquals(startDate1, objDisabledVeteransPage.removeZeroInMonthAndDay(dataMap1.get("Date Occupied/Intend to Occupy Property")), "SMAB-T530: Validate 'Start Date' in the Exemption record");
 		
 		//Step6: Navigate back to the Exemption module
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);
@@ -187,13 +187,13 @@ public class DuplicateExemptionCreationTest extends TestBase {
 
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForMoreExemptionOnDetailPage);
 		startDate2 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.startDateOnDetailPage));
-		softAssert.assertEquals(veteranName2, dataMap2.get("Veteran Name"), "Validate 'Veteran Name' in the Exemption record");
-		softAssert.assertEquals(apn2, dataMap2.get("APN"), "Validate 'APN' in the Exemption record");
-		softAssert.assertEquals(startDate2, objDisabledVeteransPage.removeZeroInMonthAndDay(dataMap2.get("Effective Date of 100% USDVA Rating")), "Validate 'Start Date' in the Exemption record");
+		softAssert.assertEquals(veteranName2, dataMap2.get("Veteran Name"), "SMAB-T530: Validate 'Veteran Name' in the Exemption record");
+		softAssert.assertEquals(apn2, dataMap2.get("APN"), "SMAB-T530: Validate 'APN' in the Exemption record");
+		softAssert.assertEquals(startDate2, objDisabledVeteransPage.removeZeroInMonthAndDay(dataMap2.get("Effective Date of 100% USDVA Rating")), "SMAB-T530: Validate 'Start Date' in the Exemption record");
 		
 		//Step10: Validate the 'APN' and 'Exemption Name' shouldn't match
 		softAssert.assertTrue(exemptionName1 != exemptionName2, "SMAB-T530: Verify user is able to create a same Exemption record with different Parcel");
-		softAssert.assertTrue(apn1 != apn2, "Exemption records with overlapping dates are successfully created but with different Parcel Number");
+		softAssert.assertTrue(apn1 != apn2, "SMAB-T530: Exemption records with overlapping dates are successfully created but with different Parcel Number");
 	
 		objApasGenericFunctions.logout();
     }
@@ -202,8 +202,8 @@ public class DuplicateExemptionCreationTest extends TestBase {
 	    -End Date of second Exemption is set to a date earlier than Start Date of original record (Without End Date of Rating)
 	 **/
 	
-	@Test(description = "SMAB-T532: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (having End Date of Rating as Blank)", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
-	public void duplicateExemptionWithNonOverlappingDates1(String loginUser) throws Exception {
+	@Test(description = "SMAB-T532, SMAB-T649: Validate a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (having End Date of Rating as Blank)", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
+	public void verify_DisabledVeteran_SameExemptionWithNonOverlappingDates1(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -222,8 +222,8 @@ public class DuplicateExemptionCreationTest extends TestBase {
 		recordId1 = objDisabledVeteransPage.getCurrentUrl(driver);
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForGeneralExemptionOnDetailPage);
 		exemptionName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.exemptionName));
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranNameOnDetailPage)), dataMap1.get("Veteran Name"), "Validate 'Veteran Name' in the Exemption record with no End Date");
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranSSNOnDetailPage)).substring(7), dataMap1.get("Veteran SSN").substring(7), "Validate last 4 digits of 'Veteran's SSN' in the Exemption record with no End Date");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranNameOnDetailPage)), dataMap1.get("Veteran Name"), "SMAB-T532: Validate 'Veteran Name' in the Exemption record with no End Date");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranSSNOnDetailPage)).substring(7), dataMap1.get("Veteran SSN").substring(7), "SMAB-T532: Validate last 4 digits of 'Veteran's SSN' in the Exemption record with no End Date");
 		
 		//Step7: Validate that the status of Exemption when 'End Date of Rating' on the Exemption is not saved
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.statusOnDetailPage)), "Active", "SMAB-T649: Verify that User is able to validate Exemption 'Status' based on the 'End Date of Rating' for the Exemption record");
@@ -242,15 +242,15 @@ public class DuplicateExemptionCreationTest extends TestBase {
 		recordId2 = objDisabledVeteransPage.getCurrentUrl(driver);
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForGeneralExemptionOnDetailPage);
 		exemptionName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.exemptionName));
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranNameOnDetailPage)), dataMap2.get("Veteran Name"), "Validate 'Veteran Name' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranSSNOnDetailPage)).substring(7), dataMap2.get("Veteran SSN").substring(7), "Validate last 4 digits of 'Veteran's SSN' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranNameOnDetailPage)), dataMap2.get("Veteran Name"), "SMAB-T532: Validate 'Veteran Name' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranSSNOnDetailPage)).substring(7), dataMap2.get("Veteran SSN").substring(7), "SMAB-T532: Validate last 4 digits of 'Veteran's SSN' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
 		
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForMoreExemptionOnDetailPage);
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.startDateOnDetailPage)), objDisabledVeteransPage.removeZeroInMonthAndDay(dataMap2.get("Effective Date of 100% USDVA Rating")), "Validate 'Start Date' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.endDateOnDetailPage)), objDisabledVeteransPage.removeZeroInMonthAndDay(dataMap2.get("End Date Of Rating")), "Validate 'End Date' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.startDateOnDetailPage)), objDisabledVeteransPage.removeZeroInMonthAndDay(dataMap2.get("Effective Date of 100% USDVA Rating")), "SMAB-T532: Validate 'Start Date' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.endDateOnDetailPage)), objDisabledVeteransPage.removeZeroInMonthAndDay(dataMap2.get("End Date Of Rating")), "SMAB-T532: Validate 'End Date' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
 		
 		//Step12: Validate the 'Record Ids' and 'Exemption Names' doesn't match for both the Exemptions created
-		softAssert.assertTrue(recordId1 != recordId2, "Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
+		softAssert.assertTrue(recordId1 != recordId2, "SMAB-T532: Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
 		softAssert.assertTrue(exemptionName1 != exemptionName2, "SMAB-T532: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (having End Date of Rating as Blank");
 	
 		objApasGenericFunctions.logout();
@@ -264,8 +264,8 @@ public class DuplicateExemptionCreationTest extends TestBase {
 	 -'Status' field on Exemption record is read-only
 	 **/
     
-	@Test(description = "SMAB-T533: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (End Date of Rating is not blank), SMAB-T534: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record), SMAB-T609: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of original record and status of original record is marked as Inactive, SMAB-T659: Disabled Veteran - Verify user is not able to view 'Status' field as editable field on Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
-	public void duplicateExemptionWithNonOverlappingDates2(String loginUser) throws Exception {
+	@Test(description = "SMAB-T533, SMAB-T534, SMAB-T609, SMAB-T659, SMAB-T643: Validate a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (End Date of Rating is not blank),  Vlaidate a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record), Validate a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of original record and status of original record is marked as Inactive, Validate user is not able to view 'Status' field as editable field on Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
+	public void verify_DisabledVeteran_SameExemptionWithNonOverlappingDates2(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -284,8 +284,8 @@ public class DuplicateExemptionCreationTest extends TestBase {
 		recordId1 = objDisabledVeteransPage.getCurrentUrl(driver);
 		objDisabledVeteransPage.expandIcon(objDisabledVeteransPage.expandedIconForGeneralExemptionOnDetailPage);
 		exemptionName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.exemptionName));
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranNameOnDetailPage)), dataMap1.get("Veteran Name"), "Validate 'Veteran Name' in the Exemption record");
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranSSNOnDetailPage)).substring(7), dataMap1.get("Veteran SSN").substring(7), "Validate last 4 digits of 'Veteran's SSN' in the Exemption record");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranNameOnDetailPage)), dataMap1.get("Veteran Name"), "SMAB-T609: Validate 'Veteran Name' in the Exemption record");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.veteranSSNOnDetailPage)).substring(7), dataMap1.get("Veteran SSN").substring(7), "SMAB-T609: Validate last 4 digits of 'Veteran's SSN' in the Exemption record");
 		
 		//Step6: Validate that the status of Exemption is saved as 'Inactive' as 'End Date of Rating' on the Exemption is a past date
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.statusOnDetailPage)), "Inactive", "SMAB-T643: Verify that User is able to validate Exemption 'Status' based on the 'End Date of Rating' for the Exemption record");
@@ -340,8 +340,8 @@ public class DuplicateExemptionCreationTest extends TestBase {
 	 -Another Exemption can be created for a Veteran if Start Date of second Exemption (With No End Date of Rating) is set to a date later than End Date of original record
 	 **/
 	
-	@Test(description = "SMAB-T534: Disabled Veteran - Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record)", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
-	public void duplicateExemptionWithNonOverlappingDates3(String loginUser) throws Exception {
+	@Test(description = "SMAB-T534: Validate a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record)", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
+	public void verify_DisabledVeteran_SameExemptionWithNonOverlappingDates3(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);

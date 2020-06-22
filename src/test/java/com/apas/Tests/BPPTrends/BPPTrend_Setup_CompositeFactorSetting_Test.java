@@ -235,4 +235,6 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		objApasGenericFunctions.logout();
 	}
 	
+	
+	
 }

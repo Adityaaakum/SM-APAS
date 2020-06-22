@@ -140,7 +140,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 	public void onTestFailure(ITestResult result) {
 		System.out.println("Method Failed:" + result.getMethod().getMethodName());
 		try {
-			//Updating the test case status for Jira
+			//Updating the test case status for Jira.
 			String testCaseKeys =  JiraAdaptavistStatusUpdate.extractTestCaseKey(System.getProperty("description"));
 			JiraAdaptavistStatusUpdate.updateTestCaseStatusInMap(testCaseKeys,"Fail");
 

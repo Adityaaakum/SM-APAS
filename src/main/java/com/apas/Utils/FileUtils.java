@@ -60,7 +60,7 @@ public class FileUtils {
                 //Data validation of the has maps
                 for (int count =0; count< listOfValue1.size();count++){
                     if (listOfValue1.size() == listOfValue2.size()){
-                        if (!listOfValue1.get(count).equals(listOfValue2.get(count))) {
+                        if (!listOfValue1.get(count).trim().equals(listOfValue2.get(count).trim())) {
                             errors = errors + "Value mismatch for Row# " + (count + 1) + " and Column:" + key + " | HashMap1 : " + listOfValue1.get(count) + " | HashMap2 : " + listOfValue2.get(count) + "\n";
                         }
                     } else {

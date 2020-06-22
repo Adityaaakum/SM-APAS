@@ -256,11 +256,6 @@ public class DataProviders {
 	/**
 	 * Return different status of composite and valuation factor tables
 	 */
-    @DataProvider(name = "variousStatusOfCompositeTablesBeforeSubmitting")
-    public Object[][] dpVariousStatusOfCompositeTables() {
-    	return new Object[][] { { "Not Calculated" }, { "Calculated" } };
-    }
-
     @DataProvider(name = "variousStatusOfCompositeAndValuationTables")
     public Object[][] dpVariousStatusOfCompositeAndValuationTables() {
         return new Object[][]{{"Not Calculated"}, {"Calculated"}, {"Needs Recalculation"}, {"Submitted for Approval"}, {"Approved"}};
@@ -270,4 +265,53 @@ public class DataProviders {
     public Object[][] dataBPPAuditorAndPricipalUser() {
         return new Object[][] { { users.PRINCIPAL_USER }, { users.BPP_AUDITOR }};
     }
+    
+    
+	/**
+	 * Return different status of composite and valuation factor tables post submitting calculations
+	 */
+    @DataProvider(name = "variousStatusOfTablesPostSubmittingCalculations")
+    public Object[][] dpVariousStatusOfTablesPostSubmittingCalculations() {
+    	return new Object[][] { { "Submitted for Approval" }, { "Approved" } };
+    }
+    
+    @DataProvider(name = "variousStatusOfCompositeTablesBeforeSubmitting")
+    public Object[][] dpVariousStatusOfCompositeTables() {
+    	return new Object[][] { { "Not Calculated" }, { "Calculated" }, {"Needs Recalculation"} };
+    }
+
+    
+    @DataProvider(name = "variousStatusOfValuationTablesBeforeSubmitting")
+    public Object[][] dpVariousStatusOfValuationTables() {
+    	return new Object[][] { { "Yet to submit for Approval" }, { "Import Approved" } };
+    }
+           
+    
+	/**
+	 * Below function will be used to login to application with different users
+	 * @returns: Return the user BPP business administrator and RP business administrator users in an array
+	 **/
+    @DataProvider(name = "loginBppAndRpBusinessAdminUsers")
+    public Object[][] dpLoginBppAndRpBusinessAdminUsers() {
+        return new Object[][] { { users.RP_BUSINESS_ADMIN }, { users.BUSINESS_ADMIN } };
+    }
+ 
+	/**
+	 * Below function will be used to login to application with different users
+	 * @returns: Return the user BPP business administrator, RP business administrator and Principal users in an array
+	 **/
+    @DataProvider(name = "loginBppAndRpBusinessAdminAndPrincipalUsers")
+    public Object[][] dpLoginBppAndRpBusinessAdminAndPrincipalUsers() {
+        return new Object[][] { { users.RP_BUSINESS_ADMIN }, { users.BUSINESS_ADMIN }, { users.PRINCIPAL_USER } };
+    }
+    
+	/**
+	 * Below function will be used to login to application with different users
+	 * @returns: Return the user BPP RP business administrator and Principal users in an array
+	 **/
+    @DataProvider(name = "loginRpBusinessAdminAndPrincipalUsers")
+    public Object[][] dpLoginRpBusinessAdminAndPrincipalUsers() {
+        return new Object[][] { { users.RP_BUSINESS_ADMIN }, { users.PRINCIPAL_USER } };
+    }
+    
 }

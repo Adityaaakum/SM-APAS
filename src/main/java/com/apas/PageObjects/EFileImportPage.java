@@ -2,14 +2,15 @@ package com.apas.PageObjects;
 
 import java.io.IOException;
 
-import com.apas.Reports.ReportLogger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class EFileImportPage extends Page {
@@ -23,6 +24,11 @@ public class EFileImportPage extends Page {
 
 	@FindBy(xpath = "//*[@name='docType']")
 	WebElement fileTypedropdown;
+
+	@FindBy(xpath = "//lightning-spinner")
+	public WebElement spinner;
+
+	public String xpathSpinner = "//lightning-spinner";
 
 	@FindBy(xpath = "//*[@name='source']")
 	WebElement sourceDropdown;
@@ -134,7 +140,9 @@ public class EFileImportPage extends Page {
 		Thread.sleep(2000);
 		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + fileType + "')]")));
 		Click(sourceDropdown);
-		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]")));
+		WebElement webElementSourceOption = driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]"));
+		scrollToElement(webElementSourceOption);
+		Click(webElementSourceOption);
 	}
 
 	/**
@@ -174,6 +182,9 @@ public class EFileImportPage extends Page {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " +  absoluteFilePath + " file");
 		selectFileAndSource(fileType, source);
 		objPage.waitUntilElementDisplayed(nextButton, 10);
+	
+		objPage.scrollToTopOfPage();
+		
 		objPage.Click(nextButton);
 		objPage.Click(periodDropdown);
 		objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
@@ -202,6 +213,18 @@ public class EFileImportPage extends Page {
 		String ariaExpanded = getAttributeValue(element,"aria-expanded");
 		if (ariaExpanded.equals("true"))
 			Click(element);
+	}
+
+	/**
+	 * This method will return the error message from error grid with work dercription having the value passed in parameter
+	 * @param stringValueInRow : Value of the work description
+	 */
+	public String getErrorMessageFromErrorGrid(String stringValueInRow){
+		String xpath = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table)[1]//tbody//tr[contains(.,'" + stringValueInRow + "')]//th[@data-label='ERROR_MESSAGE']";
+//		if (verifyElementExists(stringValueInRow))
+			return getElementText(driver.findElement(By.xpath(xpath)));
+//		else
+//			return "";
 	}
 
 }

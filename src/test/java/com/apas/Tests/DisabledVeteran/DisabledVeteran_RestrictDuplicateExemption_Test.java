@@ -21,7 +21,7 @@ import com.apas.config.testdata;
 import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
 
-public class RestrictDuplicateExemptionCreationTest extends TestBase {
+public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 	
 	private RemoteWebDriver driver;
 	Page objPage;
@@ -75,8 +75,8 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 	 Exemption2 : Various combinations - Without End Date of Rating, With End Date of Rating, Interchangeable Start Dates, Different Qualified details
 	 **/
 	
-	@Test(description = "SMAB-T526: Disabled Veteran - Verify user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
-	public void duplicateExemptionIsNotCreated(String loginUser) throws Exception {
+	@Test(description = "SMAB-T526: Validate user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
+	public void verify_DisabledVeteran_DuplicateExemptionIsNotCreated(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -107,7 +107,7 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 			
 		//Step9: Validate error message when Duplicate Exemption is created for same Veteran on same dates but with No End Date of Rating	
 		String expectedDuplicateErrorMsgOnTop1 = "There seems to be an existing record with a blank end date. Please refer to record with id " + recordId + " for details";
-		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.duplicateErrorMsgWithBlankEndDate)), expectedDuplicateErrorMsgOnTop1, "Exemption already exist for the Veteran with no End Date");
+		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.duplicateErrorMsgWithBlankEndDate)), expectedDuplicateErrorMsgOnTop1, "SMAB-T526: Exemption already exist for the Veteran with no End Date");
 			
 		//Step10: Enter End date of Rating and save the record and validate the error message
 		objDisabledVeteransPage.enterEndDateOfRating(dataMap1);
@@ -115,7 +115,7 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 			
 		//Step11: Validate error message when duplicate Exemption is created for same Veteran with overlapping details	
 		String expectedDuplicateErrorMsgOnTop2 = "There seems to be an existing record with overlapping details. Please refer to record with id " + recordId + " for details.";
-		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop2, "Exemption already exist for the Veteran with overlapping details");
+		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop2, "SMAB-T526: Exemption already exist for the Veteran with overlapping details");
 			
 		//Step12: Interchange Date Occupied and Effective Date values and save Exemption and validate the error message
 		objDisabledVeteransPage.interchangeOccupiedAndEffectiveDate(dataMap1);
@@ -123,7 +123,7 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 			
 		//Step13: Validate error message when duplicate Exemption is created for same Veteran with overlapping details	
 		String expectedDuplicateErrorMsgOnTop3 = "There seems to be an existing record with overlapping details. Please refer to record with id " + recordId + " for details.";
-		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop3, "Exemption still has overlapping details as the Start Date is 'Date Acquired Property' or 'Effective Date of 100% USDVA Rating' or 'Date Occupied/Intend to Occupy Property' (whichever is later)");
+		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop3, "SMAB-T526: Exemption still has overlapping details as the Start Date is 'Date Acquired Property' or 'Effective Date of 100% USDVA Rating' or 'Date Occupied/Intend to Occupy Property' (whichever is later)");
 			
 		//Step14: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 	    dataMap2 = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToEditExemptionForQualification");
@@ -134,7 +134,7 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 			
 		//Step16: Validate error message when duplicate Exemption is created for same Veteran with overlapping details
 		String expectedDuplicateErrorMsgOnTop4 = "There seems to be an existing record with overlapping details. Please refer to record with id " + recordId + " for details.";
-		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop4, "Exemption already exist for the Veteran with overlapping details");
+		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop4, "SMAB-T526: Exemption already exist for the Veteran with overlapping details");
 		objDisabledVeteransPage.cancelExemptionRecord();
 		
 		objApasGenericFunctions.logout();
@@ -148,9 +148,9 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 	 Exemption2 : Without End Date of Rating
 	 **/
 	
-    @Test(description = "SMAB-T526: Disabled Veteran - Verify user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dependsOnMethods = {"duplicateExemptionIsNotCreated"}, dataProvider = "loginUsers")
-	public void editExemptionAndDuplicateExemptionErrorValidation(String loginUser) throws Exception {
-    if(!failedMethods.contains("duplicateExemptionIsNotCreated")) {	
+    @Test(description = "SMAB-T526: Validate user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dependsOnMethods = {"verify_DisabledVeteran_DuplicateExemptionIsNotCreated"}, dataProvider = "loginUsers")
+	public void verify_DisabledVeteran_EditExemptionAndDuplicateErrorValidation(String loginUser) throws Exception {
+    if(!failedMethods.contains("verify_DisabledVeteran_DuplicateExemptionIsNotCreated")) {
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
 
@@ -178,7 +178,7 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 			
 		//Step7: Validate error message when duplicate Exemption is created for same Veteran with overlapping details	
 		String expectedDuplicateErrorMsgOnTop = "There seems to be an existing record with overlapping details. Please refer to record with id " + recordId + " for details.";
-		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop, "Both Exemptions has overlapping dates, hence another Exemption cannot be created for this Veteran");					
+		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop, "SMAB-T526: Both Exemptions has overlapping dates, hence another Exemption cannot be created for this Veteran");					
 		objDisabledVeteransPage.cancelExemptionRecord();
 		
 		objApasGenericFunctions.logout();
@@ -194,8 +194,8 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 	 Exemption2 : With End Date of Rating
 	 **/
 	
-	@Test(description = "SMAB-T526: Disabled Veteran - Verify user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
-	public void duplicateExemptionWithOverlappingDates(String loginUser) throws Exception {
+	@Test(description = "SMAB-T526: Validate user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
+	public void verify_DisabledVeteran_DuplicateExemptionWithOverlappingDates(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -226,7 +226,7 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 					
 		//Step9: Validate error message when Duplicate Exemption is created for same Veteran on same dates and with End Date of Rating	
 		String expectedDuplicateErrorMsgOnTop1 = "There seems to be an existing record with overlapping details. Please refer to record with id " + recordId1 + " for details.";
-		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop1, "Exemption already exist for this Veteran with overlapping dates");
+		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop1, "SMAB-T526: Exemption already exist for this Veteran with overlapping dates");
 		objDisabledVeteransPage.cancelExemptionRecord();
 		
 		objApasGenericFunctions.logout();
@@ -239,8 +239,8 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 	 -Non Qualified is updated with 'Qualified' and status changes to 'Active'
 	 **/
 	
-	@Test(description = "SMAB-T526: Disabled Veteran - Verify user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
-	public void notQualifiedExemptionDuplicateCreation(String loginUser) throws Exception {
+	@Test(description = "SMAB-T526: Validate user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
+	public void verify_DisabledVeteran_NotQualifiedExemptionDuplicateCreation(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -258,7 +258,7 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 		//Step5: Capture the Record Id, Parcel Number, Start Date, Veteran Name and Exemption Name. Also, validate some of its details
 		recordId2 = objDisabledVeteransPage.getCurrentUrl(driver);
 		exemptionName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.exemptionName));
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.statusOnDetailPage)), "Inactive", "Validate 'Status' field in the Exemption record");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.statusOnDetailPage)), "Inactive", "SMAB-T526: Validate 'Status' field in the Exemption record");
 		
 		//Step6: Open the Exemption module
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);
@@ -272,7 +272,7 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 							
 		//Step9: Validate error message when Duplicate Exemption is created for same Veteran on same dates but with No End Date of Rating	
 		String expectedDuplicateErrorMsgOnTop = "There seems to be an existing record with a blank end date. Please refer to record with id " + recordId2 + " for details";
-		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.duplicateErrorMsgWithBlankEndDate)), expectedDuplicateErrorMsgOnTop, "Validate if a Non Qualified exemption exist, another Qualified Exemption with same details cannot be created");
+		softAssert.assertEquals(objDisabledVeteransPage.getElementText(objDisabledVeteransPage.waitForElementToBeVisible(objDisabledVeteransPage.duplicateErrorMsgWithBlankEndDate)), expectedDuplicateErrorMsgOnTop, "SMAB-T526: Validate if a Non Qualified exemption exist, another Qualified Exemption with same details cannot be created");
 	
 		//Step10: Cancel the existing record and then EDIT the Exemption record created initially
 		objDisabledVeteransPage.cancelExemptionRecord();
@@ -289,8 +289,8 @@ public class RestrictDuplicateExemptionCreationTest extends TestBase {
 		objDisabledVeteransPage.openExemptionUsingLocator(recordId2, exemptionName2);
 		
 		//Step14: Validate the changes made are updated in the record and status is changed to 'Active'
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.qualificationOnDetailPage)), "Qualified", "Validate 'Qualification?' field in the Exemption record");
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.statusOnDetailPage)), "Active", "Validate 'Status' field in the Exemption record");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.qualificationOnDetailPage)), "Qualified", "SMAB-T526: Validate 'Qualification?' field in the Exemption record");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objDisabledVeteransPage.statusOnDetailPage)), "Active", "SMAB-T526: Validate 'Status' field in the Exemption record");
 		
 		objApasGenericFunctions.logout();
 	}

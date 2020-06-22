@@ -5,31 +5,28 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.math3.util.Precision;
-import com.apas.Assertions.SoftAssertion;
-import com.apas.Reports.ExtentTestManager;
-import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
-
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-
+import com.apas.Assertions.SoftAssertion;
+import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.DateUtil;
+import com.apas.Utils.SalesforceAPI;
+import com.apas.generic.ApasGenericFunctions;
+import com.relevantcodes.extentreports.LogStatus;
 
 
 public class ValueAdjustmentsPage extends Page {
@@ -282,6 +279,41 @@ public class ValueAdjustmentsPage extends Page {
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Low Income Late Penalty 2']//parent::div//following-sibling::lightning-helptext/following-sibling::div//lightning-formatted-number")
     public WebElement vaRollYearLowIncomeLatePenalty2Label;
 	
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Name']")
+    public WebElement vAnameLabel;
+	
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Name']//parent::div//following-sibling::div//lightning-formatted-text")
+    public WebElement vAnameValue;
+	
+	@FindBy(xpath = "//div[contains(@role,'listitem')]//span[text()='Start Date']//parent::div//parent::div[contains(@class,'readonly')]")
+	public WebElement startDateReadOnlyField;
+	
+	@FindBy(xpath = "//div[contains(@role,'listitem')]//span[text()='Start Date']//parent::div//parent::div[contains(@class,'readonly')]")
+	public WebElement endDateReadOnlyField;
+	
+	@FindBy(xpath = "//div[@class='select-options']//ul//li//a")
+	public List<WebElement> determinationFieldValuesList;
+	
+	@FindBy(xpath="//div[contains(@role,'listitem')]//span[text()='Penalty Adjustment Reason']//..//parent::div//following-sibling::ul//li")
+	public WebElement errMsgPenaltyAdjstmntRsn;
+	
+	@FindBy(xpath="//div[contains(@role,'listitem')]//span[text()='Penalty Adjustment Other Reason Detail']//..//parent::div//following-sibling::ul//li")
+	public WebElement errMsgPenaltyAdjstmntOthRsnDetail;
+	
+	@FindBy(xpath = "//div[contains(@class,'modal-footer')]//button//span[text() = 'Cancel']")
+    public WebElement cancelButton;
+	
+	@FindBy(xpath = "//span[text() = 'Determination']/parent::span/following-sibling::div//a[@class = 'select']")
+    public WebElement determinationDropDown;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//tr//span[contains(text(),'Active')]//..//parent::td//..//span[contains(text(),'Basic Disabled')]//..//..//preceding-sibling::th//a")
+    public WebElement activeBasicDetVA;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//tr[1]//span[contains(text(),'Start Date')]//..//..//parent::th//parent::tr//..//..//tbody//span[text()='7/1/2020']//..//..//preceding-sibling::th//a")
+    public WebElement vAforRY2020;
+	
+	public String xPathStatus = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[@title='Status']";
+	public String xPathRollYearLowIncomeThresholdAmount = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Low Income Threshold Amount']//parent::div//following-sibling::div//lightning-formatted-text";
 //--------- Deepika's Locators ----------------
 	
 
@@ -443,59 +475,18 @@ public double converToDouble(Object amount){
 	return convertedAmt;
 	}
 
-
-
-
-//---------------------------- Deepika's Methods ---------------------------------
-/**
- * @throws Exception 
- * @description: This method will return the no. of VAs on the page
- * @return : returns the no. of VAs
- */
-public int getnumberOfValueAdjustments() throws Exception {
-	return numberOfValueAdjustments.size();
-}
-
-/**
- * @description: This method will return difference of no of days between 2 dates
- * @param eleStartDate: element from which start date is fetched
- * @param eleEndDate: element from which end date is fetched
- * @return : returns the difference of no of days between 2 dates
- */
-public float verifyNoOfDays(WebElement eleStartDate, WebElement eleEndDate) {
-	System.out.println("inside verifynoofdays");
-	String startDate = getElementText(eleStartDate);
-	String endDate = getElementText(eleEndDate);	
-	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-    Date firstDate = null;
-    Date secondDate= null;
-	try {
-		firstDate = sdf.parse(startDate);
-		secondDate = sdf.parse(endDate);
-		System.out.println("inside try");
-	} catch (ParseException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}  
-    long diffInMillies = Math.abs(secondDate.getTime() - firstDate.getTime());
-    float diff = (TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS))+1;
-    
-    System.out.println("diff: " + diff);
-    
-    return diff;	
-}
-
-
 /**
  * @description: This method will return the Tax Year Prorated Percentage Calculated
  * @return : returns the Tax Year Prorated Percentage Calculated
  * @throws Exception 
  */
 public float verifyTaxYearProatedPercentage() throws Exception {
-	float numberOfDays = verifyNoOfDays(startDateValueLabel,endDateValueLabel);	
+	objPage.waitForElementToBeClickable(60, startDateValueLabel);
+	float numberOfDays = DateUtil.getDateDifference(startDateValueLabel,endDateValueLabel);	
 	locateElement("//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Settings']//parent::div//following-sibling::div//a", 2);
 	Click(rollYearSettingsLabel);
-	float totalNoOfDays = verifyNoOfDays(taxStartDateValueLabel,taxEndDateValueLabel);
+	objPage.waitForElementToBeClickable(60, taxStartDateValueLabel);
+	float totalNoOfDays = DateUtil.getDateDifference(taxStartDateValueLabel,taxEndDateValueLabel);
 	driver.navigate().back();
 	float taxYearProatedPercentage = 0;
 	float taxYearProated = 0;
@@ -511,11 +502,9 @@ public float verifyTaxYearProatedPercentage() throws Exception {
  */
 public float calculateBasicExemptionAmount() throws Exception {
 	double taxYearProatedPercentage = verifyTaxYearProatedPercentage();
-	float basicExemptionAmt = convertToFloat(basicReferenceAmountLabel.getText());
-	DecimalFormat d = new DecimalFormat("0.00");
-					
+	float basicExemptionAmt = apasGenericObj.convertToFloat(basicReferenceAmountLabel.getText());
+	DecimalFormat d = new DecimalFormat("0.00");					
 	float exemptionAmountCalculated = Float.parseFloat(d.format((basicExemptionAmt*taxYearProatedPercentage)/100));
-	System.out.println("final exemption amt is:"+exemptionAmountCalculated);
 	return exemptionAmountCalculated;
 }
 
@@ -526,37 +515,23 @@ public float calculateBasicExemptionAmount() throws Exception {
  */
 public float calculateNetExemptionAmount(float exemptionAmountCalculated) throws Exception {
 	float netExemptionAmountCalculated=0;
-	float penaltyAmtCal=0;
+	float penaltyAmt=0;
 	float penaltyAmtUserAdjustCal=0;
 	
-	String penaltyAmt = penaltyAmtCalcValueLabel.getText();		
-	if(penaltyAmt!=null) {
-		String penaltyAmtC = (penaltyAmt.substring(1, penaltyAmt.length())).replaceAll(",", "");
-		penaltyAmtCal = Float.parseFloat(penaltyAmtC);
-	}
-	else {
-		penaltyAmtCal = (float) 0.00;
-	}
-		
+	String penaltyAmtCalculated = penaltyAmtCalcValueLabel.getText();
 	String penaltyAmtUserAdjust = penaltyAmtUserAdjustValueLabel.getText();		
-	if(penaltyAmtUserAdjust!=null) {
-		String penaltyAmtUserAdjustC = (penaltyAmt.substring(1, penaltyAmt.length())).replaceAll(",", "");
-		penaltyAmtUserAdjustCal = Float.parseFloat(penaltyAmtUserAdjustC);
-		}
-		else {
-			penaltyAmtUserAdjustCal = (float) 0.00;
-		}
 	
-	if(penaltyAmtUserAdjust==null) {
-		netExemptionAmountCalculated = exemptionAmountCalculated - penaltyAmtCal;
+	if("".equals(penaltyAmtCalculated) && "".equals(penaltyAmtUserAdjust)) {
+		penaltyAmt = (float) 0.00;	
+	}else if("".equals(penaltyAmtUserAdjust) && !("".equals(penaltyAmtCalculated))) {
+		penaltyAmt = apasGenericObj.convertToFloat(penaltyAmtCalculated);
+	}else {
+		penaltyAmt = apasGenericObj.convertToFloat(penaltyAmtUserAdjust);
 	}
-	else {
-		netExemptionAmountCalculated = exemptionAmountCalculated - penaltyAmtUserAdjustCal;
-	}
-	
-	System.out.println("final net exemption amt is:"+netExemptionAmountCalculated);
+    netExemptionAmountCalculated = exemptionAmountCalculated - penaltyAmt;
 	return netExemptionAmountCalculated;
 }
+
 
 /**
  * @description: This method will return the Low Income Exemption Amount Calculated
@@ -565,81 +540,11 @@ public float calculateNetExemptionAmount(float exemptionAmountCalculated) throws
  */
 public float calculateLowIncomeExemptionAmount() throws Exception {
 	double taxYearProatedPercentage = verifyTaxYearProatedPercentage();
-	float lowIncomeExemptionAmt = convertToFloat(lowIncomeReferenceAmountLabel.getText());
-	System.out.println("lowIncome Exemption Amt: "+ lowIncomeExemptionAmt);
+	float lowIncomeExemptionAmt = apasGenericObj.convertToFloat(lowIncomeReferenceAmountLabel.getText());
 	DecimalFormat d = new DecimalFormat("0.00");
 	Float exemptionAmountCalculated = Float.parseFloat(d.format((lowIncomeExemptionAmt*taxYearProatedPercentage)/100));
-	System.out.println("final exemption amt is:"+exemptionAmountCalculated);
 	return exemptionAmountCalculated;
 }
-
-/**
- * @description: This method will verify true or false based on year passed as an argument is leap or not
- * @param Element: Roll Year for which leap year needs to be calculated
- * @return : returns the true or false based on year passed as an argument is leap or not
- */
-public boolean verifyLeapYear(WebElement elem) {
-	String yearToVerify = elem.getText().trim();		
-	int year = Integer.parseInt(yearToVerify);		
-    boolean leap = false;	
-    if(year % 4 == 0)
-    {
-        if( year % 100 == 0)
-        {
-            // year is divisible by 400, hence the year is a leap year
-            if ( year % 400 == 0)
-                leap = true;
-            else
-                leap = false;
-        }
-        else
-            leap = true;
-    }
-    else
-        leap = false;
-    
-    return leap;
-
-}
-
-
-/**
- * @description: This method will modify the 'Determination' of VA from Basic to Low-Income
- * @throws Exception
- * returns: boolean value based if 'Determination' of VA is modified from Basic to Low-Income
- */
-public String modifyVADeterminationToLowIncome() throws Exception {
-	Thread.sleep(1000);
-	String lowIncomeThreshholdAmount = rollYearLowIncomeThreshholdAmountLabel.getText();
-	
-	System.out.println("lowIncomeThreshholdAmount: "+lowIncomeThreshholdAmount);
-	
-	Thread.sleep(1000);
-	String totalAnnualHouseHoldIncome = (lowIncomeThreshholdAmount.substring(1, lowIncomeThreshholdAmount.length())).replaceAll(",", "");		
-	
-	System.out.println("totalAnnualHouseHoldIncome: "+totalAnnualHouseHoldIncome);	
-	Thread.sleep(1000);
-	
-	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);		
-	Date date = DateUtils.addDays(new Date(), -1);
-	String currentDate = sdf.format(date);
-	Thread.sleep(1000);
-	
-	Click(editButton);	
-	
-	enter(annualFormReceivedDateEditBox,currentDate);
-	
-	totalAnnualHouseholdIncomeEditBox.clear();
-	
-	enter(totalAnnualHouseholdIncomeEditBox,totalAnnualHouseHoldIncome);
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Modifying Determination of VA from 'Basic' to 'Low-Income'");
-	
-	Click(saveButton);	
-	
-	String actualSuccessAlertText = successAlretText();
-	return actualSuccessAlertText;
-}
-
 /**
  * Description: This method will click on save and add a new Real Property settings
  * @return : returns the text message of success alert
@@ -651,110 +556,20 @@ public String successAlretText() throws Exception {
 }
 
 /**
- * Description: This method will click on Active Value Adjustment
- * @param : it takes row no. as an argument
- * @throws Exception 
- */
-public void clickActiveVA(int rowNum) throws Exception {
-int i = rowNum;
-locateElement("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+i+"]//td[4]//span//span",3); 		  				  
-WebElement status = driver.findElement(By.xpath("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+ i + "]//td[4]//span//span"));  
- 
-//Step10: Verifying if Status of Value Adjustment is 'Active' 
-String actualStatus = status.getText().trim(); 
-String expectedStatus = "Active"; 
-if(actualStatus.equals(expectedStatus.trim())) {		  
-	//Step11: Clicking on 'Active' Value Adjustment link 
-	locateElement("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+i+"]//td[4]//span//span//..//..//preceding-sibling::th//span//a",3);
-	WebElement valueAdjustmentLink = driver.findElement(By.xpath("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+i+"]//td[4]//span//span//..//..//preceding-sibling::th//span//a"));
-	System.out.println("VA Link clicked is: "+ valueAdjustmentLink.getText());
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Value Adjustment Link: "+ valueAdjustmentLink.getText());
-	Click(valueAdjustmentLink);
-	  }
-}
-
-/**
- * Description: This method will convert amount of type String to Float
- * @param : Amount Object
- */
-public float convertToFloat(Object amount)
-{	
-	String amt=(String)amount;
-	String finalAmtAsString=(amt.substring(1, amt.length())).replaceAll(",", "");
-	float convertedAmt=Float.parseFloat(finalAmtAsString);	
-	return convertedAmt;		
-}
-
-/**
  * Description: This method will select the VA for a particular Roll Year
  * @param : rollYear for which VA will be opened
  * @throws Exception 
  */
-public String selectVAByRollYear(String rollYear) throws Exception
+public String selectVAByStartDate(String startDate) throws Exception
 {	
-	String vALinkName="";
-	Thread.sleep(3000);
-	int noOfVAs = getnumberOfValueAdjustments();  
-	System.out.println("No. of VAs are: "+noOfVAs);
-	for (int i = 1; i <=noOfVAs; i++) 
-	  { 			 				  
-		System.out.println("inside for");
-		
-		locateElement("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+i+"]//td[2]//span//span",3); 		  				  
-		WebElement startDate = driver.findElement(By.xpath("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+ i + "]//td[2]//span//span"));  
-		String startDateRY =  startDate.getText().trim();			
-		String actualRY = startDateRY.substring(4, startDateRY.length()).trim();
-		
-		if(actualRY.equals(rollYear.trim())) {
-			locateElement("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+i+"]//td[2]//span//span//..//..//preceding-sibling::th//span//a",3);
-			WebElement valueAdjustmentLink = driver.findElement(By.xpath("//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+i+"]//td[2]//span//span//..//..//preceding-sibling::th//span//a"));
-			vALinkName = valueAdjustmentLink.getText();
-			
-			System.out.println("VA Link clicked is: "+ vALinkName);
-			
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Value Adjustment Link: "+ vALinkName);
-			vALinkName = valueAdjustmentLink.getText();
-			Click(valueAdjustmentLink);	
-			Thread.sleep(3000);			
-		}
-	  }
-	
+	String xpath = "//div[contains(@class,'windowViewMode-normal')]//span[contains(text(),'"+startDate+"')]//..//..//preceding-sibling::th//a";
+	waitUntilElementIsPresent(xpath,40);
+	WebElement valueAdjustmentLink = driver.findElement(By.xpath(xpath));
+	String vALinkName = valueAdjustmentLink.getText();
+	ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Value Adjustment Link: "+ vALinkName);
+	Click(valueAdjustmentLink);	
+	Thread.sleep(3000);	
 	return vALinkName;
-}
-
-
-/**
- * Description: This method will verify that VA for a particular Roll Year is not created
- * @param : rollYear for which VA will be verified
- * returns : true if VA is not created for particular Roll Year
- * @throws Exception 
- */
-public boolean verifyVANotCreated(String rollYear) throws Exception
-{	
-	boolean flag = false;
-	
-	Thread.sleep(2000);
-	
-	int noOfVAs = getnumberOfValueAdjustments();  
-	System.out.println("No. of VAs are: "+noOfVAs);
-	for (int i = 1; i <=noOfVAs; i++) 
-	  { 			 				  
-		System.out.println("inside for");
-		
-		locateElement("//div[contains(@class,'windowViewMode-normal')]//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+i+"]//td[2]//span//span",3); 		  				  
-		WebElement startDate = driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal')]//h1[@title='Value Adjustments']//ancestor::div[@role='banner']//following-sibling::div[contains(@class,'listDisplays')]//table//tbody//tr["+ i + "]//td[2]//span//span"));  
-		String startDateRY =  startDate.getText().trim();			
-		String actualRY = startDateRY.substring(4, startDateRY.length()).trim();
-		
-		if(actualRY.equals(rollYear.trim())) {
-			flag = false;
-		}
-		else {
-			flag = true;
-		}
-	  }
-	
-	return flag;
 }
 
 
@@ -766,15 +581,26 @@ public void navigateToVAListViewInExemption() throws Exception
 {	
 	//Step1: Selecting the Value Adjustment Related List Tab
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Related List - Value Adjustement Tab");
-	objPage.locateElement("//div[contains(@class,'windowViewMode-normal')]//li[@title='Value Adjustments']//a", 2);
+	objPage.locateElement("//div[contains(@class,'windowViewMode-normal')]//li[@title='Value Adjustments']//a", 20);
+	waitForElementToBeClickable(valueAdjustmentRelatedListTab);
 	objPage.Click(valueAdjustmentRelatedListTab);
 
 	//Step2: Clicking on 'View All' Link of Value Adjustment Related List Tab
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on View All Link");
 	objPage.locateElement("//div[contains(@class,'windowViewMode-normal')]//span[text()='View All']", 20);
+	waitForElementToBeClickable(viewAllLink);
 	objPage.javascriptClick(viewAllLink);
+	Thread.sleep(3000);
+	}
+
+public String fetchVA() throws Exception {
+    SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+    String queryForID = "SELECT Name FROM Value_Adjustments__c where Net_Exemption_Amount__C != 0.0";
+    HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
+    String vaName = response.get("Name").get(0);
+    ReportLogger.INFO("VAe fetched through Salesforce API : " + vaName);
+    return vaName;
 }
-	
-//---------------------------- Deepika's Methods ---------------------------------
+
 
 }

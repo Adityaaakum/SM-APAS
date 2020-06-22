@@ -21,6 +21,7 @@ import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
+import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
@@ -69,13 +70,13 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 	 * 4. Validating whether files have been successfully downloaded in the system at given path:: Test Case/JIRA ID: SMAB-T303
 	 * 5. Deleting the files once verification is done
 	 */
-	@Test(description = "SMAB-T303,SMAB-T266,SMAB-T313: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T303,SMAB-T266,SMAB-T313,SMAB-T1132: Verifying download functionality for excel files", dataProvider = "loginRpBusinessAdminAndPrincipalUsers", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_DownloadCompositeAndValuationExcelFiles(String loginUser) throws Exception {		
-		//Resetting the composite factor tables status to Not Calculated
+		//Resetting the composite factor tables status
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Approved", rollYear);
 
-		//Resetting the valuation factor tables status to Yet to be submitted
+		//Resetting the valuation factor tables status
 		List<String> valuationFactorTablesToReset = Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(valuationFactorTablesToReset, "Approved", rollYear);
 		
@@ -98,14 +99,23 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 		
 		//Step4: Validating presence of Export Composite Factors & Export Valuation Factors buttons and clicking then sequentially
 		boolean isExportCompositeBtnDisplayed = objBppTrnPg.isExportCompositeFactorsBtnVisible(20);
-		softAssert.assertTrue(isExportCompositeBtnDisplayed, "SMAB-T303: Export Composite Factors button is visible");
-		softAssert.assertTrue(isExportCompositeBtnDisplayed, "SMAB-T266: Export Composite Factors button is visible");
-		softAssert.assertTrue(isExportCompositeBtnDisplayed, "SMAB-T313: Export Valuation Factors button is visible");
+		if(loginUser.contains("rpBusinessAdmin")) {
+			softAssert.assertTrue(isExportCompositeBtnDisplayed, "SMAB-T1132: Export Composite Factors button is visible");
+		} else {
+			softAssert.assertTrue(isExportCompositeBtnDisplayed, "SMAB-T303: Export Composite Factors button is visible");
+			softAssert.assertTrue(isExportCompositeBtnDisplayed, "SMAB-T266: Export Composite Factors button is visible");
+			softAssert.assertTrue(isExportCompositeBtnDisplayed, "SMAB-T313: Export Composite Factors button is visible");
+		}
+		
 		boolean isExportValuationBtnDisplayed = objBppTrnPg.isExportValuationFactorsBtnVisible(20);
-		softAssert.assertTrue(isExportValuationBtnDisplayed, "SMAB-T303: Export Valuation Factors button is visible");
-		softAssert.assertTrue(isExportValuationBtnDisplayed, "SMAB-T266: Export Valuation Factors button is visible");
-		softAssert.assertTrue(isExportValuationBtnDisplayed, "SMAB-T313: Export Valuation Factors button is visible");
-	
+		if(loginUser.contains("rpBusinessAdmin")) {
+			softAssert.assertTrue(isExportCompositeBtnDisplayed, "SMAB-T1132: Export Valuation Factors button is visible");
+		} else {
+			softAssert.assertTrue(isExportValuationBtnDisplayed, "SMAB-T303: Export Valuation Factors button is visible");
+			softAssert.assertTrue(isExportValuationBtnDisplayed, "SMAB-T266: Export Valuation Factors button is visible");
+			softAssert.assertTrue(isExportValuationBtnDisplayed, "SMAB-T313: Export Valuation Factors button is visible");
+		}
+		
 		objBppTrnPg.setParentWindowHandle();
 		
 		//Step5: Downloading Composite Factors Excel file by clicking Export Composite Factors button
@@ -144,10 +154,15 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 			}
 		}
 	
-		softAssert.assertTrue(isCompositeExcelDownloaded, "SMAB-T303: Composite Factor XLSX file downloaded successfully");
-		softAssert.assertTrue(isCompositeExcelDownloaded, "SMAB-T266: Composite Factor XLSX file downloaded successfully");
-		softAssert.assertTrue(isValuationExcelDownloaded, "SMAB-T303: Valuation Factor XLSX file downloaded successfully");
-		softAssert.assertTrue(isValuationExcelDownloaded, "SMAB-T266: Valuation Factor XLSX file downloaded successfully");
+		if(loginUser.contains("rpBusinessAdmin")) {
+			softAssert.assertTrue(isCompositeExcelDownloaded, "SMAB-T1132: Composite Factor XLSX file downloaded successfully");
+			softAssert.assertTrue(isValuationExcelDownloaded, "SMAB-T1132: Valuation Factor XLSX file downloaded successfully");
+		} else {
+			softAssert.assertTrue(isCompositeExcelDownloaded, "SMAB-T303: Composite Factor XLSX file downloaded successfully");
+			softAssert.assertTrue(isCompositeExcelDownloaded, "SMAB-T266: Composite Factor XLSX file downloaded successfully");
+			softAssert.assertTrue(isValuationExcelDownloaded, "SMAB-T303: Valuation Factor XLSX file downloaded successfully");
+			softAssert.assertTrue(isValuationExcelDownloaded, "SMAB-T266: Valuation Factor XLSX file downloaded successfully");	
+		}
 
 		//Step8: Deleting downloaded files from download directory
 		objBppTrnPg.deleteFactorFilesFromDownloadFolder();
@@ -163,13 +178,13 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 	 * 3. Validating whether PDF file has been successfully downloaded in the system at given path:: Test Case/JIRA ID: SMAB-T206
 	 * 4. Deleting the file once verification is done
 	 */
-	@Test(description = "SMAB-T206: Verifying download functionality for PDF files", dataProvider = "loginBusinessAndPrincipalUsers", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T206,T1130: Verifying download functionality for PDF files", dataProvider = "loginBppAndRpBusinessAdminAndPrincipalUsers", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_DownloadBppTrendPdfFile(String loginUser) throws Exception {		
-		//Resetting the composite factor tables status to Not Calculated
+		//Resetting the composite factor tables status
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Approved", rollYear);
 
-		//Resetting the valuation factor tables status to Yet to be submitted
+		//Resetting the valuation factor tables status
 		List<String> valuationFactorTablesToReset = Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(valuationFactorTablesToReset, "Approved", rollYear);
 		
@@ -178,7 +193,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or Principal User)
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user : " + loginUser);
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericFunctions.login(users.RP_BUSINESS_ADMIN);
 
 		//Step2: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
@@ -192,8 +207,12 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 		
 		//Step4: Validating presence of Download buttons and clicking then sequentially		
 		boolean isDownloadBtnDisplayed = objBppTrnPg.isDownloadBtnVisible(20);
-		softAssert.assertTrue(isDownloadBtnDisplayed, "SMAB-T206: Download button is visible");
-
+		if(loginUser.contains("rpBusinessAdmin")) {
+			softAssert.assertTrue(isDownloadBtnDisplayed, "SMAB-T1130: Download button is visible");
+		} else {
+			softAssert.assertTrue(isDownloadBtnDisplayed, "SMAB-T206: Download button is visible");
+		}
+		
 		//Step5: Downloading PDF file by clicking Download button
 		objBppTrnPg.clickDownloadBtn();
 			
@@ -209,8 +228,13 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 			filesToDelete.add(fileName);
 			isPdfDownloaded = true;
 		}
-		softAssert.assertTrue(isPdfDownloaded, "SMAB-T206: PDF file downloaded with "+ loginUser +" user successfully");
-
+		
+		if(loginUser.contains("rpBusinessAdmin")) {
+			softAssert.assertTrue(isPdfDownloaded, "SMAB-T1130: PDF file downloaded with "+ loginUser +" user successfully");
+		} else {
+			softAssert.assertTrue(isPdfDownloaded, "SMAB-T206: PDF file downloaded with "+ loginUser +" user successfully");
+		}
+		
 		//Step7: Deleting downloaded files from download directory
 		objBppTrnPg.deleteFactorFilesFromDownloadFolder();
 		
@@ -227,11 +251,11 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 	 */
 	@Test(description = "SMAB-T206: Verifying download functionality for PDF file from Bpp Trend Setup page", dataProvider = "loginBusinessAndPrincipalUsers", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_DownloadBppTrendPdfFile_From_BppTrendSetupPage(String loginUser) throws Exception {		
-		//Resetting the composite factor tables status to Not Calculated
+		//Resetting the composite factor tables status
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Approved", rollYear);
 
-		//Resetting the valuation factor tables status to Yet to be submitted
+		//Resetting the valuation factor tables status
 		List<String> valuationFactorTablesToReset = Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(valuationFactorTablesToReset, "Approved", rollYear);
 		
@@ -244,15 +268,18 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 
 		//Step2: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		int year = Integer.parseInt(rollYear);
-		year = year - 1;
-		String valueToSearch = year + ".pdf";
-		objBppTrnPg.waitForElementToBeClickable(objApasGenericPage.globalSearchListEditBox, 10);
-		objApasGenericPage.searchAndSelectOptionFromDropDown(objApasGenericPage.globalSearchListEditBox, valueToSearch);
+		objApasGenericFunctions.selectAllOptionOnGrid();
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 		
 		//Step3: Clicking download button
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking download button");
-		objBppTrnPg.Click(objBppTrnPg.locateElement("//span[text() = 'Download']", 10));
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking download button on Bpp Trend Setup Details page");
+		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.downloadBtnBppTrendSetupPage, 10);
+		objBppTrnPg.scrollToBottomOfPage();
+		objBppTrnPg.clickAction(objBppTrnPg.downloadBtnBppTrendSetupPage);
+		
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking download button In pop up");
+		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.downloadBtnInPopUpOnBppTrendSetupPage, 10);
+		objBppTrnPg.Click(objBppTrnPg.downloadBtnInPopUpOnBppTrendSetupPage);
 		Thread.sleep(5000);
 		
 		//Step4: Validating whether files have been downloaded successfully in the download directory 
@@ -273,7 +300,8 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 		objBppTrnPg.deleteFactorFilesFromDownloadFolder();
 				
 		softAssert.assertAll();
-		objBppTrnPg.javascriptClick(objBppTrnPg.locateElement("//button[@title = 'Close']", 10));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.closeBtnFileDownloadPage);
+		objBppTrnPg.javascriptClick(objBppTrnPg.closeBtnFileDownloadPage);
 		objApasGenericFunctions.logout();
 	}
 
@@ -282,13 +310,13 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 	 * DESCRIPTION: Performing following once all tables are APPROVED:
 	 * 1. Validating unavailability of buttons to download composite and valuation excel file from BPP Trend Setup:: Test Case/JIRA ID: SMAB-T312
 	 */
-	@Test(description = "SMAB-T312: Verifying unaailablity of buttons to download valuation and composite excel files from Bpp Trend Setup page", dataProvider = "loginBusinessAdmin", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T312: Verifying unavailablity of buttons to download valuation and composite excel files from Bpp Trend Setup page", dataProvider = "loginBusinessAdmin", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_Download_CompositeAndValuation_ExcelFiles_From_BppTrendSetupPage(String loginUser) throws Exception {		
-		//Resetting the composite factor tables status to Not Calculated
+		//Resetting the composite factor tables status
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Approved", rollYear);
 
-		//Resetting the valuation factor tables status to Yet to be submitted
+		//Resetting the valuation factor tables status
 		List<String> valuationFactorTablesToReset = Arrays.asList(CONFIG.getProperty("valuationFactorTablesOnBppSetupPage").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(valuationFactorTablesToReset, "Approved", rollYear);
 		
@@ -304,9 +332,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 		objApasGenericFunctions.selectAllOptionOnGrid();
 		
 		//Step3: Clicking on the roll year name in grid to navigate to details page of selected roll year
-		int year = Integer.parseInt(rollYear);
-		year = year - 1;
-		objBppTrnPg.clickOnEntryNameInGrid(Integer.toString(year));
+		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
 		
 		//Step4: Clicking on view all option to navigate to all files grid
 		boolean isExportCompositeBtnDisplayed = objBppTrnPg.isExportCompositeFactorsBtnVisible(10);
@@ -318,4 +344,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 		objApasGenericFunctions.logout();
 	}
 
+	
+	
+	
 }

@@ -196,6 +196,7 @@ public class SalesforceAPI extends TestBase {
         sqlQuery = sqlQuery.replace(" ", "%20");
         sqlQuery = sqlQuery.replace("'", "%27");
         sqlQuery = sqlQuery.replace("=", "%3D");
+        sqlQuery = sqlQuery.replace("!", "%21");
         System.out.println("Modified query for URI : " + sqlQuery);
 
         HashMap<String, ArrayList<String>> hashMap = new HashMap<>();
@@ -253,24 +254,24 @@ public class SalesforceAPI extends TestBase {
             HttpClient httpClient = HttpClientBuilder.create().build();
             try {
 
-                String[] ids= commaSeparatedIds.split(",");
-
-                for (String id: ids){
-                    String uri = baseUri + "/sobjects/" + table + "/" + id.trim();
-                    HttpDelete httpDelete = new HttpDelete(uri);
-                    httpDelete.addHeader(oauthHeader);
-                    httpDelete.addHeader(prettyPrintHeader);
-
-                    HttpResponse response = httpClient.execute(httpDelete);
-
-                    int statusCode = response.getStatusLine().getStatusCode();
-                    if (statusCode == 204) {
-                        System.out.println(id + " Deleted Successfully.");
-                    } else {
-                        ReportLogger.FAIL(id + " Delete NOT Successful. Status Code : " + statusCode);
-                    }
-                }
-
+            	if(!commaSeparatedIds.equals("")) {
+	                String[] ids= commaSeparatedIds.split(",");
+	                for (String id: ids){
+	                    String uri = baseUri + "/sobjects/" + table + "/" + id.trim();
+	                    HttpDelete httpDelete = new HttpDelete(uri);
+	                    httpDelete.addHeader(oauthHeader);
+	                    httpDelete.addHeader(prettyPrintHeader);
+	
+	                    HttpResponse response = httpClient.execute(httpDelete);
+	
+	                    int statusCode = response.getStatusLine().getStatusCode();
+	                    if (statusCode == 204) {
+	                        System.out.println(id + " Deleted Successfully.");
+	                    } else {
+	                        ReportLogger.FAIL(id + " Delete NOT Successful. Status Code : " + statusCode);
+	                    }
+	                }
+            }
             } catch (IOException | NullPointerException ioe) {
                 ioe.printStackTrace();
             }

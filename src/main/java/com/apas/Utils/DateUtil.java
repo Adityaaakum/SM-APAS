@@ -5,6 +5,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.WebElement;
 
 public class DateUtil {
 	
@@ -32,8 +36,7 @@ public class DateUtil {
 			
 	 }
 
-	 
-
+	
 public static String getDateInRequiredFormat(String date,String givenFormat,String expectedFormat) throws ParseException
 	{
 	SimpleDateFormat sdf = new SimpleDateFormat(givenFormat);
@@ -79,6 +82,42 @@ public static String determineMaxDate(String... alldates) throws ParseException
 
 }
 
+/**
+ * @author Sikander Bhambhu 
+ * 
+ * @Description: This method takes an expected format for date and return
+ *               the current date in the format provided.
+ * 
+ * @param format:
+ *            expected format of date, example 'MM/dd/yyyy'
+ **/
+public static String getCurrentDate(String format) {
+	Date date = new Date();
+	SimpleDateFormat sdf = new SimpleDateFormat(format);
+	String formattedDate = sdf.format(date);
+	return formattedDate;
+}
 
+/**
+ * @description: This method will return difference of no of days between 2 dates i.e. end Date - start Date
+ * @param eleStartDate: element from which start date is fetched
+ * @param eleEndDate: element from which end date is fetched
+ * @return : returns the difference of no of days between 2 dates in "MM/dd/yyyy" format
+ * @throws ParseException 
+ */
+public static float getDateDifference(WebElement eleStartDate, WebElement eleEndDate) throws ParseException {
+	
+	String startDate = eleStartDate.getText();
+	String endDate = eleEndDate.getText();	
+	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+    Date firstDate = null;
+    Date secondDate= null;
+	firstDate = sdf.parse(startDate);
+	secondDate = sdf.parse(endDate);
+	 
+    long diffInMillies = Math.abs(secondDate.getTime() - firstDate.getTime());
+    float diff = (TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS))+1;    
+    return diff;	
+}
 
 }

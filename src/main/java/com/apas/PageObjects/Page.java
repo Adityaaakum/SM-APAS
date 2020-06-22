@@ -144,6 +144,16 @@ public class Page {
 		return flag;
 	}
 
+	public boolean verifyElementExists(String xpath) {
+		try {
+			if (driver.findElement(By.xpath(xpath)).isDisplayed()) return true;
+		} catch (Exception e) {
+			return false;
+		}
+		return false;
+	}
+
+
 	/**
 	 * Function will return true if element is not visible.
 	 *
@@ -317,7 +327,7 @@ public class Page {
 	 *
 	 * @param elem
 	 *            Element in which value needs to be entered
-	 * @param value
+	 * @param key
 	 *            the value needs to be entered
 	 * @throws Exception
 	 *             the exception
@@ -334,7 +344,7 @@ public class Page {
 		 */
 
 		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", elem);		
-		elem.clear();
+		//elem.clear();
 		elem.sendKeys(key);
 		Thread.sleep(2000);
 	}
@@ -872,8 +882,6 @@ public class Page {
 				element = wait.until(ExpectedConditions.visibilityOf(element));
 				return element;
 			} catch (Exception ex) {
-				System.out.println("Re-Checking Element");
-
 				return null;
 			}
 		} else {
@@ -1070,5 +1078,29 @@ public class Page {
 		}
 		
 	}
-
+	/**
+	 * Switches the focus on the frame
+	 */
+	public void switchToFrameByIndex(int frameIndex) {
+		driver.switchTo().frame(frameIndex);
+		
+	}
+	
+	/**
+	 * Description: This method will scroll to the top of page
+	 * @throws: Throws Exception
+	 */
+	public void scrollToTopOfPage() throws Exception {
+		((JavascriptExecutor) driver).executeScript("window.scrollTo(0, -document.body.scrollHeight)");
+	}
+		
+	/**
+	 * Switches the focus out of the frame
+	 * @throws InterruptedException 
+	 */
+	public void switchBackFromFrame() throws InterruptedException {
+		driver.switchTo().defaultContent();
+		Thread.sleep(1000);		
+	}
+	
 }

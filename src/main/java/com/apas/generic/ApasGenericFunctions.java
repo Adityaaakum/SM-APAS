@@ -5,10 +5,16 @@ import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import com.apas.Reports.ReportLogger;
 
@@ -101,7 +107,7 @@ public class ApasGenericFunctions extends TestBase {
      */
     public void editGridCellValue(String columnNameOnGrid, String expectedValue) throws IOException, AWTException, InterruptedException {
         WebElement webelement = driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button"));
-        objPage.scrollToElement(webelement);
+//        objPage.scrollToElement(webelement);
         objPage.Click(webelement);
 
         WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
@@ -122,8 +128,8 @@ public class ApasGenericFunctions extends TestBase {
         String xpathDisplayOption = "//a[@role='option']//span[text()='" + displayOption + "']";
         objPage.waitUntilElementIsPresent(xpathDisplayOption, 10);
         objPage.Click(driver.findElement(By.xpath(xpathDisplayOption)));
-        objPage.waitForElementToBeClickable(objApasGenericPage.dataGrid);
-        Thread.sleep(2000);
+        //objPage.waitForElementToBeClickable(objApasGenericPage.dataGrid);
+        Thread.sleep(6000);
     }
 
     /**
@@ -220,7 +226,7 @@ public class ApasGenericFunctions extends TestBase {
     public HashMap<String, ArrayList<String>> getGridDataInHashMap(int tableIndex, int rowNumber) {
         ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
         //This code is to fetch the data for a particular row in the grid in the table passed in tableIndex
-        String xpathTable = "(//table)[" + tableIndex + "]";
+        String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table)[" + tableIndex + "]";
         String xpathHeaders = xpathTable + "//thead/tr/th";
         String xpathRows = xpathTable + "//tbody/tr";
         if (!(rowNumber == -1)) xpathRows = xpathRows + "[" + rowNumber + "]";
@@ -240,7 +246,9 @@ public class ApasGenericFunctions extends TestBase {
                 key = webElementsHeaders.get(gridCellCount).getAttribute("aria-label");
                 if (key != null) {
                     //"replace("Edit "+ key,"").trim()" code is user to remove the text \nEdit as few cells have edit button and the text of edit button is also returned with getText()
-                    value = webElementsCells.get(gridCellCount).getText().split("Edit " + key)[0].trim();
+                    value = webElementsCells.get(gridCellCount).getText();
+                    String[] splitValues = value.split("Edit " + key);
+                    if (splitValues.length > 0) value = splitValues[0]; else value = "";
                     gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
                     gridDataHashMap.get(key).add(value);
                 }
@@ -389,14 +397,118 @@ public void editAndSelectFieldData(String fieldName, String value) throws Except
 		Thread.sleep(4000);
 	
 }
+/**
+ * @Description: This method is to Zoom Out browser Content 
+ */
+public void zoomOutPageContent() throws Exception
+{
+	// Step6: Minimizing the browser content to 50%	
+	for (int i = 1; i <6; i++) {
+		Robot robot=new Robot();
+		 robot.keyPress(KeyEvent.VK_CONTROL);		
+		 robot.keyPress(KeyEvent.VK_SUBTRACT);		
+		 robot.keyRelease(KeyEvent.VK_SUBTRACT);		
+		 robot.keyRelease(KeyEvent.VK_CONTROL);				 
+		 robot.keyRelease(KeyEvent.VK_ENTER);
+		 Thread.sleep(1000);
+	}
+	Thread.sleep(1000);
+	
+}
 
+/**
+
+ * @Description: This method is to Zoom Out browser Content 
+ */
+public void zoomInPageContent() throws Exception
+{
+	// Step6: Maximizing the browser content from 50 to 100%
+	Thread.sleep(10);
+	for (int i = 1; i <6; i++) {
+		Robot robot=new Robot();
+		 robot.keyPress(KeyEvent.VK_CONTROL);		
+		 robot.keyPress(KeyEvent.VK_ADD);		
+		 robot.keyRelease(KeyEvent.VK_ADD);		
+		 robot.keyRelease(KeyEvent.VK_CONTROL);				 
+		 robot.keyRelease(KeyEvent.VK_ENTER);
+		 Thread.sleep(1000);
+	}
+	 Thread.sleep(1000);
+}
+
+
+
+/**
+ * @Description: This method is to fetch File Name last modified in Downloads Folder
+ * @param: Folder Path is passed in which last modified file is to be fetched 
+ * @returns: File Name last modified 
+ * @throws: Exception
+ */
+public String getLastModifiedFile(String path) throws Exception
+{
+	File dir = new File(path);		
+	File[] files = dir.listFiles();
+	String fileName="";  
+	for (int i = 0; i < files.length; i++) {
+	 File lastModifiedFile = files[0];
+      if (lastModifiedFile.lastModified() < files[i].lastModified()) {
+          lastModifiedFile = files[i];
+          fileName= lastModifiedFile.getName();
+      }
+	}
+	return fileName;
+	}
+
+
+/**
+ * Description: This method will save the grid data in ArrayList(Headers=value) for the Row Number passed in the argument
+ * @param rowNumber: Row Number for which data needs to be fetched
+ * @return hashMap: Grid data in ArrayList of type ArrayList<String>
+ */
+public HashMap<String, ArrayList<String>> getGridDataInLinkedHM(int rowNumber) {
+	
+	ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
+	//This code is to fetch the data for a particular row in the grid in the table passed in tableIndex
+	String xpathTable = "//table[contains(@class,'data-grid-full-table')]";
+	String xpathHeaders = xpathTable +"//tbody//tr[1]//th//span[contains(@class,'header-value')]";
+	String xpathRows = xpathTable + "//tbody/tr";
+	if (!(rowNumber == -1)) xpathRows = xpathRows + "[" + rowNumber + "]";
+
+	HashMap<String,ArrayList<String>> gridDataHashMap = new LinkedHashMap<>();
+	
+	//Fetching the headers and data web elements from application
+	List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpathHeaders));
+	List<WebElement> webElementsRows = driver.findElements(By.xpath(xpathRows));
+	String key, value;
+	boolean flag=false;
+	//Converting the grid data into hashmap
+	for(WebElement webElementRow : webElementsRows){
+		List<WebElement> webElementsCells = webElementRow.findElements(By.xpath(".//td | .//th | .//td/data-tooltip"));
+		for(int gridCellCount=0; gridCellCount< webElementsHeaders.size(); gridCellCount++){
+			key = webElementsHeaders.get(gridCellCount).getText();
+			//Status column exists twice in Report and below check will add both as keys
+			if(key.equals("Status") && flag == true) {
+				key=key + "_1";
+			}
+			if(!key.equals("")){
+				value = webElementsCells.get(gridCellCount).getText().trim();
+				System.out.println("value: "+value);
+				gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
+				gridDataHashMap.get(key).add(value);
+				if(key.equals("Status")){
+					flag = true;
+				}
+			}
+		}
+	}
+	return gridDataHashMap;
+}
 /**
  * @Description: This method is to check for the disapperance of an element
  * @param element, timeout: webelement to be searched 
  * @param timeOutInSeconds: timeout in seconds
  * @throws Exception
  */
-
 
 public void waitForElementToDisappear(WebElement element, int timeOutInSeconds) throws Exception {
         for(int i = 0; i < (timeOutInSeconds * 10); i++) {
@@ -409,5 +521,20 @@ public void waitForElementToDisappear(WebElement element, int timeOutInSeconds) 
             }
         		}
 		}
+
+
+/**
+ * Description: This method will convert amount of type String to Float
+ * @param : Amount Object
+ */
+public float convertToFloat(Object amount)
+{	
+	String amt=(String)amount;
+	String finalAmtAsString=(amt.substring(1, amt.length())).replaceAll(",", "");
+	float convertedAmt=Float.parseFloat(finalAmtAsString);	
+	return convertedAmt;		
+
+}
+
 
 }
