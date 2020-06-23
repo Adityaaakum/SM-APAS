@@ -305,7 +305,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 	/**
 	 Below test case is used to validate the retry functionality after correction on the records in error
 	 **/
-	@Test(description = "SMAB-T364, SMAB-T435: Retrying the error records in building permit import", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T364, SMAB-T435,SMAB-T570: Retrying the error records in building permit import", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_RetryErrorRecords(String loginUser) throws Exception {
 
 		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "OneValidAndTwoInvalidRecordsForPermitValue.txt";
@@ -358,7 +358,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		//Opening the Efile intake module
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		objEfileImportPage.selectFileAndSource("Building Permit", "Atherton Building Permits");
-		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.numberOfTimesTriedRetried), "2", "SMAB-T364: Validation if number of times try/retry count is increased by 1 after retrying the error records");
+		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.numberOfTimesTriedRetried), "2", "SMAB-T364,SMAB-T570: Validation if number of times try/retry count is increased by 1 after retrying the error records");
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.totalRecordsInFile), "3", "SMAB-T364: Validation if total number of records remain same on the table");
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.totalRecordsImportedFile), "2", "SMAB-T364: Validation if total records in file count is increased by 1 after retrying the error records");
 
