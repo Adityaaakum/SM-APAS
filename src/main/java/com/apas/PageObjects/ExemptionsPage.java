@@ -403,6 +403,8 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
 	public WebElement successAlertText;
 	
+	public String exemptionNumber = "//lightning-formatted-text[contains(text(),'EXMPTN-')]";
+	
 
 	
 	/**

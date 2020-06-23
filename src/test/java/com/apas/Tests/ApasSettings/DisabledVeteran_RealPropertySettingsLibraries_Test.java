@@ -98,7 +98,13 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		objPage.Click(objRPSLPage.saveButton);
 		
 		//Step10: Verify Duplicate Future Roll Year cannot be created
-		String expectedWarningMessageOnTop = "This record looks like a duplicate.View Duplicates";
+		String expectedWarningMessageOnTop;
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			expectedWarningMessageOnTop = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
+		}
+		else {
+			expectedWarningMessageOnTop = "This record looks like a duplicate.View Duplicates";			
+		}
 		objPage.waitForElementToBeVisible(objRPSLPage.warningMsgOnTop, 30);
 		softAssert.assertEquals(objRPSLPage.warningMsgOnTop.getText(),expectedWarningMessageOnTop,"SMAB-T540:Verify the User is not able to create duplicate Exemption limit record for any random roll year");
 		softAssert.assertEquals(objRPSLPage.warningMsgOnTop.getText(),expectedWarningMessageOnTop,"SMAB-T541:Verify the User is not able to create duplicate Exemption limit record for a roll year whose entry already exists");
@@ -155,7 +161,13 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		objPage.Click(objRPSLPage.saveButton);		
 		
 		//Step11: Verify Duplicate Current Roll Year cannot be created
-		String expectedWarningMessageOnTop = "This record looks like a duplicate.View Duplicates";
+		String expectedWarningMessageOnTop;
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			expectedWarningMessageOnTop = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
+		}
+		else {
+			expectedWarningMessageOnTop = "This record looks like a duplicate.View Duplicates";			
+		}
 		objPage.waitForElementToBeVisible(objRPSLPage.warningMsgOnTop, 30);
 		softAssert.assertEquals(objRPSLPage.warningMsgOnTop.getText(),expectedWarningMessageOnTop,"SMAB-T539:Verify the User is not able to create duplicate Exemption limit record for current roll year");
 		objPage.Click(objRPSLPage.cancelButton);
@@ -208,7 +220,14 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 
 		//Step4: Validate the error message appeared for mandatory fields
 		String expectedErrorMessageOnTop = "These required fields must be completed: DV Basic Exemption Amount, DV Low Income Exemption Amount, DV Low Income Household Limit, RP Setting Name, Roll Year Settings, Status";
-		String expectedIndividualFieldMessage = "Complete this field";
+		
+		String expectedIndividualFieldMessage;
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			expectedIndividualFieldMessage = "Complete this field.";
+		}
+		else {
+			expectedIndividualFieldMessage  = "Complete this field";
+		}	
 		objPage.waitUntilElementIsPresent("//ul[@class='errorsList']//li", 60);
 		objPage.waitForElementToBeVisible(objRPSLPage.errorMsgOnTop, 30);
 		softAssert.assertEquals(objRPSLPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T544: Validating mandatory fields missing error in manual entry pop up header.");
