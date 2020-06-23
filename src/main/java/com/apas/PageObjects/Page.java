@@ -1103,4 +1103,28 @@ public class Page {
 		Thread.sleep(1000);		
 	}
 	
+	/**
+	 * Description: This method will clear a field value on the screen
+	 * @param elem: locator of element where field value needs to be cleared
+	 */
+	
+	public void clearFieldValue(WebElement elem) throws Exception {
+		waitForElementToBeClickable(15, elem);
+		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", elem);		
+		elem.clear();
+		Thread.sleep(2000);
+	}
+	
+	/**
+	 * Description: This method will expand icon on Detail page
+	 * @param element: WebElement on which action is to be performed
+	 */
+
+	public void expandIcon(WebElement element) throws Exception {
+		String propertyValue = getAttributeValue(element, "aria-expanded");
+		if (propertyValue.equals("false")){
+			Click(element);
+		}
+	}
+	
 }

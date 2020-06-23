@@ -23,23 +23,29 @@ import org.openqa.selenium.support.ui.Select;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.SalesforceAPI;
+import com.apas.Utils.Util;
 import com.gargoylesoftware.htmlunit.javascript.host.dom.Document;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class RollYearSettingsPage extends Page {
-	String exemptionFileLocation = "";
+public class RollYearSettingsPage extends ApasGenericPage {
+	
+	Util objUtil;
+	ApasGenericPage objApasGenericPage;
 	SalesforceAPI objSalesforceAPI;
 
 	public RollYearSettingsPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
+		objUtil = new Util();
+		objApasGenericPage = new ApasGenericPage(driver);
+		objSalesforceAPI = new SalesforceAPI();
 	}
 	
 	
 	//Locators added for elements on Roll Year Settings screen
 
 	@FindBy(xpath = "//a[@title='New']/div[@title='New'][1]")
-	public WebElement newExemptionButton;
+	public WebElement newRollYearButton;
 	
 	@FindBy(xpath = "//span[text()='Recently Viewed']")
 	public WebElement recentlyViewedListView;
@@ -119,10 +125,6 @@ public class RollYearSettingsPage extends Page {
 	@FindBy(xpath = "//li[text()='Calendar End Date year should be same as Roll Year']")
 	public WebElement errorOnCalendarEndDate2;
 	
-	@FindBy(xpath = "//span[text()='Delete']")
-	public WebElement deleteConfirmationPostDeleteAction;
-	
-	
 	
 	//Locators added for elements on Roll Years Settings screen - Detail Page
 	
@@ -189,31 +191,6 @@ public class RollYearSettingsPage extends Page {
 	@FindBy(xpath = "//label[text()='Tax Start Date']//following-sibling::div//input")
 	public WebElement taxStartDateOnDetailEditPage;
 	
-	/*	Next 7 locators are for handling date picker
-	 *	These would be moved to common package/class
-	 * */
-	
-	@FindBy(xpath = "//div[contains(@class, 'visible DESKTOP uiDatePicker')]")
-	private WebElement datePicker;
-
-	@FindBy(xpath = "//select[contains(@class, 'select picklist')]")
-	private WebElement yearDropDown;
-	
-	@FindBy(xpath = "//a[@class='navLink prevMonth']")
-	private WebElement prevMnth;
-	
-	@FindBy(xpath = "//a[@class='navLink nextMonth']")
-	private WebElement nextMnth;
-	
-	@FindBy(xpath = "//span[(contains(@class, 'uiDayInMonthCell')) and (not (contains(@class, 'nextMonth '))) and (not (contains(@class, 'prevMonth ')))]")
-	private List <WebElement> dates;
-
-	@FindBy(xpath = "//h2[@class = 'monthYear']")
-	private WebElement visibleMonth;
-
-	@FindBy(xpath = "//button[text() = 'Today']")
-	private WebElement currentDate;
-	
 	
 	/*	Next 4 locators are for validating error messages for duplicate Exemption or missing details
 	 *	These would be moved to common package/class
@@ -240,81 +217,7 @@ public class RollYearSettingsPage extends Page {
 	
 	public void enterDate(WebElement element, String date) throws Exception {
 		Click(element);
-		selectDateFromDatePicker(date);
-	}
-	
-	/**
-	 * Description: This method selects the date from date picker
-	 * @param date: date to enter
-	 */
-	
-	public void selectDateFromDatePicker(String expctdDate) throws Exception {
-		final Map<String, String> monthMapping = new HashMap<String, String>();
-		monthMapping.put("01", "January");
-		monthMapping.put("02", "February");
-		monthMapping.put("03", "March");
-		monthMapping.put("04", "April");
-		monthMapping.put("05", "May");
-		monthMapping.put("06", "June");
-		monthMapping.put("07", "July");
-		monthMapping.put("08", "August");
-		monthMapping.put("09", "September");
-		monthMapping.put("10", "October");
-		monthMapping.put("11", "November");
-		monthMapping.put("12", "December");
-				
-		final String[] monthsArr = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-		final List<String> monthsList = new ArrayList<>(Arrays.asList(monthsArr));
-		
-		Date presentDate = new Date();
-		String formattedPresentDate = new SimpleDateFormat("MM/dd/yyyy").format(presentDate);		
-		Date dt = new SimpleDateFormat("MM/dd/yyyy").parse(expctdDate);
-		String formattedExpctdDate = new SimpleDateFormat("MM/dd/yyyy").format(dt);
-		
-		if(formattedPresentDate.equals(formattedExpctdDate)) {
-			Click(currentDate);
-		} else {		
-			String[] dateArray = formattedExpctdDate.toString().split("/");
-			String yearToSelect = dateArray[2];
-			String monthToSelect = monthMapping.get(dateArray[0]);
-			String dateToSelect;
-			if(dateArray[1].startsWith("0")) {
-				dateToSelect = dateArray[1].substring(1);
-			} else {
-				dateToSelect = dateArray[1];
-			}
-
-			Select select = new Select(waitForElementToBeVisible(yearDropDown));
-			select.selectByValue(yearToSelect);
-			
-			WebElement visibleMnth = waitForElementToBeVisible(visibleMonth);
-			String visibleMonthTxt = visibleMnth.getText().toLowerCase();
-			visibleMonthTxt = visibleMonthTxt.substring(0, 1).toUpperCase() + visibleMonthTxt.substring(1).toLowerCase();
-			
-			int counter = 0;
-			int indexOfDefaultMonth = monthsList.indexOf(visibleMonthTxt);		
-			int indexOfMonthToSelect = monthsList.indexOf(monthToSelect);
-			int counterIterations = (Math.abs(indexOfDefaultMonth - indexOfMonthToSelect));
-			
-			while(!visibleMonthTxt.equalsIgnoreCase(monthToSelect) || counter > counterIterations) {
-				if(indexOfMonthToSelect < indexOfDefaultMonth) {
-					waitForElementToBeVisible(prevMnth).click();
-				} else {
-					waitForElementToBeVisible(nextMnth).click();
-				}
-				visibleMonthTxt = waitForElementToBeVisible(visibleMonth).getText();
-				counter++;
-			}
-			
-			for(WebElement date : dates) {
-				String currentDate = date.getText();
-				if(currentDate.equals(dateToSelect)) {
-					date.click();
-					break;
-				}
-			}
-		}
-		
+		objApasGenericPage.selectDateFromDatePicker(date);
 	}
 	
 	
@@ -323,20 +226,13 @@ public class RollYearSettingsPage extends Page {
 	 */
 	public void saveRollYearRecordWithNoValues() throws Exception {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to open a Roll Year record");
-		openRollYearScreen();
-		waitForRollYearScreenToLoad();
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Without entering any data on the Roll Year record, click 'Save' button");
-		saveRollYearRecord();
-	}
-	
-	
-	/**
-	 * Description: This method will click New button on Roll Year screen
-	 */
-	
-	public void openRollYearScreen() throws Exception {
 		Thread.sleep(2000);
-		Click(waitForElementToBeClickable(newExemptionButton));
+		Click(waitForElementToBeClickable(newRollYearButton));
+		waitForElementToBeClickable(rollYearSettings);
+		waitForElementToBeClickable(rollYear);
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Without entering any data on the Roll Year record, click 'Save' button");
+		Click(saveButton);
+		Thread.sleep(1000);
 	}
 	
 	
@@ -353,97 +249,27 @@ public class RollYearSettingsPage extends Page {
 		drpDwnOption.click();
 	}
 	
+	
 	/**
-	 * Description: This method will search and select from dropdown
-	 * @param element: locator of element where date need to be put in
-	 * @param value: field value to enter
+	 * Description: This method includes other methods and creates/updates a Roll Year record
+	 * @param dataMap: Map that is storing values from JSON file
 	 */
 	
-	public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
-		enter(element, value);
-		String xpathStr = "//div[@title='" + value + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 200);
-		drpDwnOption.click();
-	}
-	
-
-	/**
-	 * Description: This method will wait for Roll Year screen to load before entering values
-	 */
-	
-	public void waitForRollYearScreenToLoad() {
+	public void createOrUpdateRollYearRecord(Map<String, String> dataMap, String action) throws Exception {
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Click '" + action + "' button to open a Roll Year record");
+		Thread.sleep(1000);
+		if (action == "New") Click(waitForElementToBeClickable(newRollYearButton));
+		if (action == "Edit") Click(waitForElementToBeClickable(editButton));
+		Thread.sleep(1000);
 		waitForElementToBeClickable(rollYearSettings);
 		waitForElementToBeClickable(rollYear);
-	}
-	
-	/**
-	 * Description: This method will click SAVE button on Roll Year screen
-	 */
-	
-	public void saveRollYearRecord() throws Exception {
+		enterRollYearData(dataMap);
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Save' button to save the details entered in Exemption record");
 		Click(saveButton);
 		Thread.sleep(1000);
-	}
-	
-	/**
-	 * Description: This method will retrieve error message in case mandatory fields are not filled on Roll Year screen
-	 * @return : returns the list containing the error messages and the count of fields
-	 */
-	
-	public List<String> retrieveRollYearMandatoryFieldsValidationErrorMsgs() throws Exception {
-		List<String> errorsList = new ArrayList<String>();
-		String errorMsgOnTopOfPopUpWindow = getElementText(waitForElementToBeVisible(errorMsgOnTop));
-		errorsList.add(errorMsgOnTopOfPopUpWindow);
-
-		String individualErrorMsg = getElementText(errorMsgUnderLabels.get(0));
-		errorsList.add(individualErrorMsg);
-		
-		String fieldsStr = errorMsgOnTopOfPopUpWindow.split(":")[1];
-		String[] totalMandatoryFields = fieldsStr.split(",");
-		int countOfMandatoryFields = totalMandatoryFields.length;
-		errorsList.add(Integer.toString(countOfMandatoryFields));
-		
-		int countOfIndividualErrorMsgs = errorMsgUnderLabels.size();
-		errorsList.add(Integer.toString(countOfIndividualErrorMsgs));
-		return errorsList;
-	}	
-	
-	/**
-	 * Description: This method will click CANCEL button on Roll Year screen
-	 */
-	
-	public void cancelRollYearRecord() throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Roll Year screen");
-		Click(cancelButton);
-	}
-	
-	/**
-	 * Description: This method includes other methods and creates a Roll Year record
-	 * @param dataMap: Map that is storing values from JSON file
-	 */
-	
-	public void createRollYearRecord(Map<String, String> dataMap) throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to open a Roll Year record");
-		openRollYearScreen();
-		waitForRollYearScreenToLoad();
-		enterRollYearData(dataMap);
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Save' button to save the details entered in Exemption record");
-		saveRollYearRecord();
 		
 	}
 	
-	/**
-	 * Description: This method includes other methods and creates a Roll Year record
-	 * @param dataMap: Map that is storing values from JSON file
-	 */
-	
-	public void editRollYearRecord(Map<String, String> dataMap) throws Exception {
-		editRollYearRecord();
-		waitForRollYearScreenToLoad();
-		enterRollYearData(dataMap);
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Save' button to save the details entered in Exemption record");
-		saveRollYearRecord();
-	}
 	
 	/**
 	 * Description: This method will enter mandatory field values in Roll Year screen
@@ -473,121 +299,6 @@ public class RollYearSettingsPage extends Page {
 		Thread.sleep(3000);
 	}
 	
-	/**
-	 * Description: This method will click EDIT button on Roll Year Detail screen
-	 */
-	public void editRollYearRecord() throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Edit' button to update it");
-		Click(editButton);
-		Thread.sleep(1000);
-	}
-	
-	/**
-	 * Description: This method will click EDIT pencil icon on Roll Year Detail screen
-	 */
-	public void editPencilIconRollYearRecord() throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Edit' pencil icon to update it");
-		Click(editPencilIconForRollYearOnDetailPage);
-		Thread.sleep(1000);
-	}
-	
-	
-	/**
-	 * Description: This method will update field values in Roll Year Detail screen
-	 */
-	public void updateRollYearRecord(Map<String, String> dataMap) throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Update the field values" + dataMap);
-		enter(rollYearSettings, dataMap.get("Roll Year Settings"));
-		selectFromDropDown(rollYear, dataMap.get("Roll Year"));
-		enterDate(lienDate, dataMap.get("Lien Date"));
-		enterDate(taxStartDate, dataMap.get("Tax Start Date"));
-		enterDate(taxEndDate, dataMap.get("Tax End Date"));
-		enterDate(fiscalStartDate, dataMap.get("Fiscal Start Date"));
-		enterDate(fiscalEndDate, dataMap.get("Fiscal End Date"));
-		enterDate(calendarStartDate, dataMap.get("Calendar Start Date"));
-		enterDate(calendarEndDate, dataMap.get("Calendar End Date"));
-	}
-	
-	/**
-	 * Description: This method will fetch the current URL and process it to get the Record Id
-	 * @param driver: Driver Instance
-	 * @return : returns the Record Id
-	 */
-	
-	public String getCurrentUrl(RemoteWebDriver driver) throws Exception {
-		wait.until(ExpectedConditions.urlContains("/view"));
-		String url = driver.getCurrentUrl();
-		String recordId = url.split("/")[6];
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Roll Year record id - " + recordId);
-		Thread.sleep(1000);
-		return recordId;
-	
-	}
-	
-	/**
-	 * Description: This method will clear a field value on Roll Year screen
-	 * @param elem: locator of element where field value needs to be cleared
-	 */
-	
-	public void clearFieldValue(WebElement elem) throws Exception {
-		waitForElementToBeClickable(15, elem);
-		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", elem);		
-		elem.clear();
-		Thread.sleep(2000);
-	}
-	
-	/**
-	 * Description: This method will delete an existing Roll Year record
-	 * @param dataMap: Map that is storing values from JSON file
-	 */
-	
-	public void deleteExistingRollYearRecordThroughQuery(Map<String, String> dataMap) throws Exception {
-		WebElement elem = locateElement("//a[@title='" + dataMap.get("Roll Year") + "']", 3);
-		
-		if (elem != null){
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Roll Year settings record exist");
-			objSalesforceAPI.delete("Roll_Year_Settings__c", "SELECT Id FROM Roll_Year_Settings__c Where Name = '" + dataMap.get("Roll Year") + "'");
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Existing Roll Year settings record is deleted");
-			Thread.sleep(2000); 
-		}
-		else{
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Roll Year settings record doesn't exist");
-		}
-	}
-	
-	/**
-	 * Description: This method will click 'Show More Button' on Roll Year Screen
-	 * @param recordId: Roll Year Settings Name
-	 * @param action: Action user want to perform - Edit/Delete
-	 */
-	public void clickShowMoreButton(String rollYearName, String action) throws Exception {       
-        Thread.sleep(1000);
-        String xpathStr1 = "//a[@title='" + rollYearName + "']//parent::span//parent::th//following-sibling::td[9]//span//div//a//lightning-icon";
-        WebElement showMoreIcon = locateElement(xpathStr1, 3);
-        if (showMoreIcon != null){
-        	ExtentTestManager.getTest().log(LogStatus.INFO, "Roll Year settings record exist");
-        	Click(showMoreIcon);
-        	Thread.sleep(1000);
-        	String xpathStr2 = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
-        	WebElement actionOnShowMoreIcon = locateElement(xpathStr2, 3);
-        	
-        	if(actionOnShowMoreIcon != null){
-        		clickAction(actionOnShowMoreIcon);
-        		Thread.sleep(1000);
-        		if (action.equals("Delete")){
-        			Click(deleteConfirmationPostDeleteAction);
-        			ExtentTestManager.getTest().log(LogStatus.INFO, "Existing Roll Year settings record is deleted");
-        			Thread.sleep(2000);
-        		}
-        	}
-        	else{
-    			ExtentTestManager.getTest().log(LogStatus.INFO, "'" + action + "' option is not visible for the user");
-    		}	
-        } 
-        else{
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Roll Year settings record doesn't exist");
-		}
-    }
 	
 	/**
 	 * @description: This method will return the error message appeared against the filed name passed in the parameter

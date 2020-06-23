@@ -6,7 +6,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+
+import com.apas.Reports.ExtentTestManager;
+import com.relevantcodes.extentreports.LogStatus;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -66,6 +70,9 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
 	public WebElement successAlert;
+	
+	@FindBy(xpath = "//span[text()='Delete']")
+	public WebElement deleteConfirmationPostDeleteAction;
 
 	/*	Sikander Bhambhu:
 	 *	Next 7 locators are for handling date picker
@@ -135,6 +142,7 @@ public class ApasGenericPage extends Page {
 		String xpathStr = "//*[@role='option']//*[@title='" + value + "'] | //div[@title='" + value + "']";
 		Click(driver.findElement(By.xpath(xpathStr)));
 		}
+	
 	/**
 	 * @Description: This method selects year, month and date from date picker / calender
 	 * @param expctdDate: Accepts date in mm/dd/yyyy format
@@ -241,5 +249,63 @@ public class ApasGenericPage extends Page {
 		drpDwnOption.click();
 	}
 	
+	/**
+	 * Description: This method will fetch the current URL and process it to get the Record Id
+	 * @param driver: Driver Instance
+	 * @return : returns the Record Id
+	 */
 	
+	public String getCurrentRecordId(RemoteWebDriver driver, String Mod) throws Exception {
+		wait.until(ExpectedConditions.urlContains("/view"));
+		String url = driver.getCurrentUrl();
+		String recordId = url.split("/")[6];
+		driver.navigate().refresh();
+		ExtentTestManager.getTest().log(LogStatus.INFO, Mod + " record id - " + recordId);
+		Thread.sleep(1000);
+		return recordId;
+	
+	}
+	
+	
+	/**
+	 * Description: This method will click 'Show More Button' on the Screen
+	 * @param screenName: Screen Name
+	 * @param modRecordName: Record Number
+	 * @param action: Action user want to perform - Edit/Delete
+	 */
+	public void clickShowMoreButtonAndAct(String screenName, String modRecordName, String action) throws Exception {       
+		Thread.sleep(1000);
+		String xpathStr1="";
+	    if (screenName == "Roll Year Settings") {
+        		xpathStr1 = "//a[@title='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[9]//span//div//a//lightning-icon";
+        	}
+	    if (screenName == "Exemptions") {
+    		xpathStr1 = "//a[@data-recordid='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[6]//span//div//a//lightning-icon";
+    		}
+        WebElement showMoreIcon = locateElement(xpathStr1, 3);
+        if (showMoreIcon != null){
+        	ExtentTestManager.getTest().log(LogStatus.INFO, screenName + " record exist");
+        	Click(showMoreIcon);
+        	Thread.sleep(1000);
+        	String xpathStr2 = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
+        	WebElement actionOnShowMoreIcon = locateElement(xpathStr2, 3);
+        	
+        	if(actionOnShowMoreIcon != null){
+        		clickAction(actionOnShowMoreIcon);
+        		Thread.sleep(1000);
+        		if (action.equals("Delete")){
+        			Click(deleteConfirmationPostDeleteAction);
+        			ExtentTestManager.getTest().log(LogStatus.INFO, "Existing " + screenName + "record is deleted");
+        			Thread.sleep(2000);
+        		}
+        	}
+        	else{
+    			ExtentTestManager.getTest().log(LogStatus.INFO, "'" + action + "' option is not visible for the user");
+    		}	
+        } 
+        else{
+			ExtentTestManager.getTest().log(LogStatus.INFO, screenName + " record doesn't exist");
+		}
+    }
+
 }

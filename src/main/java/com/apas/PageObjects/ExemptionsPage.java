@@ -36,6 +36,7 @@ public class ExemptionsPage extends ApasGenericPage {
 	Page objPage;
 	SoftAssertion softAssert1;
 	ApasGenericFunctions apasGenericObj;
+	ApasGenericPage objApasGenericPage;
 	String exemptionFileLocation = "";
 	
 	
@@ -47,8 +48,7 @@ public class ExemptionsPage extends ApasGenericPage {
 		objPage=new Page(driver);
 		softAssert1=new SoftAssertion();
 		apasGenericObj= new ApasGenericFunctions(driver);
-		
-		
+		objApasGenericPage = new ApasGenericPage(driver);
 		
 	}
 
@@ -62,10 +62,8 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath="//h2[contains(.,'Edit Exemption')]")
 	public WebElement editExemptionHeader;
 	
-
 	@FindBy(xpath = "//button[@title='Cancel']")
 	public WebElement cancelButton;
-	
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title = 'New']")
 	public WebElement newExemptionButton;
@@ -81,7 +79,6 @@ public class ExemptionsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//div[contains(.,'Grace End Date')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement graceEndDateExemptionDetails;
-	
 	
 	@FindBy(xpath = "//input[@title='Search Assessees']")
 	public WebElement claimantName;
@@ -116,13 +113,11 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath="//div[@class='windowViewMode-normal oneContent active lafPageHost']//li[@title='Details']//a[@data-tab-value='detailTab']")
 	public WebElement exemptionDetailsTab;
 
-
 	@FindBy(xpath = "//label[contains(.,'Date Occupied/Intend to Occupy Property')]/following::input[1]")
 	public WebElement dateOccupyProperty;
 	
 	@FindBy(xpath = "//label[contains(.,'Date of Notice of 100% Rating')]/following::input[1]")
 	public WebElement dateOfNoticeOfRating;
-	
 	
 	@FindBy(xpath = "//label[contains(.,'Date Acquired Property')]/following::input[1]")
 	public WebElement dateAcquiredProperty;
@@ -130,11 +125,8 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//button[@title='Save']")
 	public static WebElement saveButton;
 	
-	
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//div[contains(.,'Date Occupied/Intend to Occupy Property')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement dateOccupyPropertyExemptionDetails;
-	
-	
 
 	@FindBy(xpath = "//span[@data-aura-class='uiPicklistLabel' and contains(.,'DV Exemption on Prior Residence')]/following::div[1]//div/a")
 	public WebElement dvExemptionOnPriorResidence;
@@ -159,7 +151,6 @@ public class ExemptionsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//div[contains(.,'Effective Date of 100% USDVA Rating')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement effectiveDateOfUSDVAExemptionDetails;
-	
 
 	@FindBy(xpath = "//a[@title='Select List View']")
 	public WebElement selectlistView;
@@ -167,7 +158,6 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//li[2]//a[contains(.,'All')]")
 	public WebElement allView;
 	
-
 	@FindBy(xpath = "//label[contains(.,'Date of Notice of 100% Rating')]/following::input[1]")
 	public WebElement dateOfNotice;
 
@@ -234,24 +224,17 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//table//tr[1]//th[@scope='row']//a")
 	public WebElement newRecord;
 	
-
 	@FindBy(xpath="//li[@class='form-element__help']")
 	public List<WebElement> fieldsErrorMsg;
 	
 	@FindBy(xpath="//li[@class='form-element__help']")
 	public WebElement fieldErrorMsg;
 	
-	
 	@FindBy(xpath="//div[@class='windowViewMode-normal oneContent active lafPageHost']//div[contains(text(),'Exemption')]//following-sibling::slot/slot/lightning-formatted-text")
 	public WebElement newExemptionNameAftercreation;
 	
-	
 	@FindBy(xpath="//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(text(),'Status')]/parent::div/following-sibling::div//span//slot[@slot='outputField']//lightning-formatted-text")
 	public WebElement exemationStatusOnDetails;
-	
-	/*@FindBy(xpath="//flexipage-record-page-decorator[contains(@style,'display: block;')]//a[contains(.,'Details')]")
-	public WebElement exemationDetails;
-	*/
 	
 	@FindBy(xpath="//div[@class='windowViewMode-normal oneContent active lafPageHost']//slot[@name='sidebar']//ul[@role='tablist']//li[not(contains(@style,'visibility: hidden;'))]")
 	public List<WebElement> rightSideTopSectionsOnUI;
@@ -259,13 +242,11 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath="//div[@class='windowViewMode-normal oneContent active lafPageHost']//ul[@class='tabs__nav']//li/a//span[@class='title']")
 	public List<WebElement> rightSideBottomSectionsOnUI;
 	
-	
 	@FindBy(xpath="//div[@class='windowViewMode-normal oneContent active lafPageHost']//label[contains(text(),'Qualification?')]/parent::lightning-combobox//div[contains(@id,'help-text')]")
 	public WebElement QualificationOnDetailsPageErrorMsg;
 	
 	
-//////////////////////////New locators////////////////////////////////
-	
+	//////////////////////////New locators////////////////////////////////
 	
 	@FindBy(xpath = "//label[contains(.,\"Veteran's Name\")]/following::input[1]")
 	public WebElement nameOfVeteran;
@@ -279,7 +260,6 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//label[contains(.,'Date Occupied/Intend to Occupy Property')]/following::input[1]")
 	public WebElement dateOccupiedProperty;
 
-		
 	@FindBy(xpath = "//span[contains(text(),'Blind In Both Eyes')]")
 	public WebElement basisForClaim1;
 	
@@ -364,7 +344,6 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[text() = 'General Information']//ancestor::button[contains(@class, 'test-id__section-header-button slds')]")
 	public WebElement expandedIconForGeneralExemptionOnDetailPage;
 	
-	
 	@FindBy(xpath = "//span[text() = " + "\"" + "Veteran" + "'s" + " Name" + "\"" + "]//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]")
 	public WebElement editPencilIconForVeteranNameOnDetailPage;
 	
@@ -404,31 +383,6 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//label[text() = 'End Rating Reason']//following-sibling::div[@class='slds-form-element__control']//lightning-base-combobox")
 	public WebElement endRatingReasonOnDetailEditPage;
 	
-	/*	Next 7 locators are for handling date picker
-	 *	These would be moved to common package/class
-	 * */
-	
-	@FindBy(xpath = "//div[contains(@class, 'visible DESKTOP uiDatePicker')]")
-	private WebElement datePicker;
-
-	@FindBy(xpath = "//select[contains(@class, 'select picklist')]")
-	private WebElement yearDropDown;
-	
-	@FindBy(xpath = "//a[@class='navLink prevMonth']")
-	private WebElement prevMnth;
-	
-	@FindBy(xpath = "//a[@class='navLink nextMonth']")
-	private WebElement nextMnth;
-	
-	@FindBy(xpath = "//span[(contains(@class, 'uiDayInMonthCell')) and (not (contains(@class, 'nextMonth '))) and (not (contains(@class, 'prevMonth ')))]")
-	private List <WebElement> dates;
-
-	@FindBy(xpath = "//h2[@class = 'monthYear']")
-	private WebElement visibleMonth;
-
-	@FindBy(xpath = "//button[text() = 'Today']")
-	private WebElement currentDate;
-	
 	
 	/*	Next 4 locators are for validating error messages for duplicate Exemption or missing details
 	 *	These would be moved to common package/class
@@ -457,7 +411,6 @@ public class ExemptionsPage extends ApasGenericPage {
 	 * @return roll Year: returns the Roll year
 	 */
 	
-	
 	public static String determineRollYear(String date)
 	{	
 		System.out.println("Determining Roll year for::"+date);
@@ -478,10 +431,6 @@ public class ExemptionsPage extends ApasGenericPage {
  * Description: This method is to select a record from list screen  
  * User should be on the respective screen
  */
-
-
-
-
 
 public String createNewExemption(Map<String,String> newExemptionData) throws Exception {
 
@@ -556,7 +505,7 @@ public String createNewExemptionWithMandatoryData(Map<String, String> newExempti
 
 
 
-////////////////new functions//////////////////////////////////////////
+	////////////////new functions//////////////////////////////////////////
 
 
 /**
@@ -567,82 +516,9 @@ public String createNewExemptionWithMandatoryData(Map<String, String> newExempti
 
 public void enterDate(WebElement element, String date) throws Exception {
 	Click(element);
-	selectDateFromDatePicker(date);
+	objApasGenericPage.selectDateFromDatePicker(date);
 }
 
-/**
- * Description: This method selects the date from date picker
- * @param date: date to enter
- */
-
-public void selectDateFromDatePicker(String expctdDate) throws Exception {
-	final Map<String, String> monthMapping = new HashMap<String, String>();
-	monthMapping.put("01", "January");
-	monthMapping.put("02", "February");
-	monthMapping.put("03", "March");
-	monthMapping.put("04", "April");
-	monthMapping.put("05", "May");
-	monthMapping.put("06", "June");
-	monthMapping.put("07", "July");
-	monthMapping.put("08", "August");
-	monthMapping.put("09", "September");
-	monthMapping.put("10", "October");
-	monthMapping.put("11", "November");
-	monthMapping.put("12", "December");
-			
-	final String[] monthsArr = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-	final List<String> monthsList = new ArrayList<>(Arrays.asList(monthsArr));
-	
-	Date presentDate = new Date();
-	String formattedPresentDate = new SimpleDateFormat("MM/dd/yyyy").format(presentDate);		
-	Date dt = new SimpleDateFormat("MM/dd/yyyy").parse(expctdDate);
-	String formattedExpctdDate = new SimpleDateFormat("MM/dd/yyyy").format(dt);
-	
-	if(formattedPresentDate.equals(formattedExpctdDate)) {
-		Click(currentDate);
-	} else {		
-		String[] dateArray = formattedExpctdDate.toString().split("/");
-		String yearToSelect = dateArray[2];
-		String monthToSelect = monthMapping.get(dateArray[0]);
-		String dateToSelect;
-		if(dateArray[1].startsWith("0")) {
-			dateToSelect = dateArray[1].substring(1);
-		} else {
-			dateToSelect = dateArray[1];
-		}
-
-		Select select = new Select(waitForElementToBeVisible(yearDropDown));
-		select.selectByValue(yearToSelect);
-		
-		WebElement visibleMnth = waitForElementToBeVisible(visibleMonth);
-		String visibleMonthTxt = visibleMnth.getText().toLowerCase();
-		visibleMonthTxt = visibleMonthTxt.substring(0, 1).toUpperCase() + visibleMonthTxt.substring(1).toLowerCase();
-		
-		int counter = 0;
-		int indexOfDefaultMonth = monthsList.indexOf(visibleMonthTxt);		
-		int indexOfMonthToSelect = monthsList.indexOf(monthToSelect);
-		int counterIterations = (Math.abs(indexOfDefaultMonth - indexOfMonthToSelect));
-		
-		while(!visibleMonthTxt.equalsIgnoreCase(monthToSelect) || counter > counterIterations) {
-			if(indexOfMonthToSelect < indexOfDefaultMonth) {
-				waitForElementToBeVisible(prevMnth).click();
-			} else {
-				waitForElementToBeVisible(nextMnth).click();
-			}
-			visibleMonthTxt = waitForElementToBeVisible(visibleMonth).getText();
-			counter++;
-		}
-		
-		for(WebElement date : dates) {
-			String currentDate = date.getText();
-			if(currentDate.equals(dateToSelect)) {
-				date.click();
-				break;
-			}
-		}
-	}
-	
-}
 
 /**
  * Description: This method will select from dropdown
@@ -655,30 +531,6 @@ public void selectFromDropDown(WebElement element, String value) throws Exceptio
 	String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
 	WebElement drpDwnOption = locateElement(xpathStr, 200);
 	drpDwnOption.click();
-}
-
-/**
- * Description: This method will search and select from dropdown
- * @param element: locator of element where date need to be put in
- * @param value: field value to enter
- */
-
-public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
-	enter(element, value);
-	String xpathStr = "//div[@title='" + value + "']";
-	WebElement drpDwnOption = locateElement(xpathStr, 200);
-	drpDwnOption.click();
-}
-
-/**
- * Description: This method will click New button on Exemption screen
- * @param element: locator of element where date need to be put in
- * @param value: field value to enter
- */
-
-public void openExemptionScreen() throws Exception {
-	Thread.sleep(2000);
-	Click(waitForElementToBeClickable(newExemptionButton));
 }
 
 /**
@@ -782,7 +634,6 @@ public void enterExemptionDataWithEndDateOfRating(Map<String, String> dataMap) t
  */
 
 public void enterEndDateOfRating(Map<String, String> dataMap) throws Exception {
-	//ExtentTestManager.getTest().log(LogStatus.INFO, "Update 'End Date of Rating' and 'End Rating Reason' in the Exemption record");
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Update some details in the Exemption record i.e. End Date Of Rating :  " + dataMap.get("End Date Of Rating") + " and End Rating Reason : " + dataMap.get("End Rating Reason"));
 	Thread.sleep(1000);
 	enterDate(endDateOfRating, dataMap.get("End Date Of Rating"));	
@@ -796,7 +647,6 @@ public void enterEndDateOfRating(Map<String, String> dataMap) throws Exception {
  */
 
 public void interchangeOccupiedAndEffectiveDate(Map<String, String> dataMap) throws Exception {
-	//ExtentTestManager.getTest().log(LogStatus.INFO, "Interchange values of 'Effective Date of 100% USDVA Rating' and 'Date Occupied/Intend to Occupy Property' in the Exemption record");
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Interchange values of 'Effective Date of 100% USDVA Rating' and 'Date Occupied/Intend to Occupy Property' in the Exemption record i.e. Date Occupied/Intend to Occupy Property :  " + dataMap.get("Effective Date of 100% USDVA Rating") + " and Effective Date of 100% USDVA Rating : " + dataMap.get("Date Occupied/Intend to Occupy Property"));
 	enterDate(dateOccupiedProperty, dataMap.get("Effective Date of 100% USDVA Rating"));
 	enterDate(effectiveDateOfUSDVA, dataMap.get("Date Occupied/Intend to Occupy Property"));	
@@ -840,43 +690,15 @@ public void cancelExemptionRecord() throws Exception {
 	Click(cancelButton);
 }
 
-
-/**
- * Description: This method will clear a field value on Exemption screen
- * @param elem: locator of element where field value needs to be cleared
- */
-
-public void clearFieldValue(WebElement elem) throws Exception {
-	waitForElementToBeClickable(15, elem);
-	((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", elem);		
-	elem.clear();
-	Thread.sleep(2000);
-}
-
-/**
- * Description: This method will fetch the current URL and process it to get the Record Id
- * @param driver: Driver Instance
- * @return : returns the Record Id
- */
-
-public String getCurrentUrl(RemoteWebDriver driver) throws Exception {
-	wait.until(ExpectedConditions.urlContains("/view"));
-	String url = driver.getCurrentUrl();
-	String recordId = url.split("/")[6];
-	driver.navigate().refresh();
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Exemption record id - " + recordId);
-	return recordId;
-
-}	
-
 /**
  * Description: This method includes other methods and creates an Exemption with limited fields data and without EndDateOfRating
  * @param dataMap: Map that is storing values from JSON file
  */
 
 public void createExemptionWithoutEndDateOfRating(Map<String, String> dataMap) throws Exception {
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to fill the following details in the Exemption record : " + dataMap);
-	openExemptionScreen();	
+	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to fill the following details in the Exemption record : " + dataMap);	
+	Thread.sleep(2000);
+	Click(waitForElementToBeClickable(newExemptionButton));
 	waitForExemptionScreenToLoad();
 	enterExemptionData(dataMap);
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Save' button to save the details entered in Exemption record");
@@ -889,8 +711,9 @@ public void createExemptionWithoutEndDateOfRating(Map<String, String> dataMap) t
  */
 
 public void createExemptionWithEndDateOfRating(Map<String, String> dataMap) throws Exception {
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to fill the following details in the Exemption record : " + dataMap);
-	openExemptionScreen();	
+	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to fill the following details in the Exemption record : " + dataMap);	
+	Thread.sleep(2000);
+	Click(waitForElementToBeClickable(newExemptionButton));
 	waitForExemptionScreenToLoad();
 	enterExemptionDataWithEndDateOfRating(dataMap);
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Save' button to save the details in Exemption record");
@@ -903,8 +726,9 @@ public void createExemptionWithEndDateOfRating(Map<String, String> dataMap) thro
  */
 
 public void createNonQualifiedExemption(Map<String, String> dataMap) throws Exception {
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to fill the following details in the Exemption record : " + dataMap);
-	openExemptionScreen();	
+	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to fill the following details in the Exemption record : " + dataMap);	
+	Thread.sleep(2000);
+	Click(waitForElementToBeClickable(newExemptionButton));
 	waitForExemptionScreenToLoad();
 	enterNonQualifiedExemptionData(dataMap);
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Save' button to save the details entered in Exemption record");
@@ -917,8 +741,9 @@ public void createNonQualifiedExemption(Map<String, String> dataMap) throws Exce
  */
 
 public void createExemptionWithMandatoryFields(Map<String, String> dataMap) throws Exception {
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to fill the following details in the Exemption record : " + dataMap);
-	openExemptionScreen();	
+	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to fill the following details in the Exemption record : " + dataMap);	
+	Thread.sleep(2000);
+	Click(waitForElementToBeClickable(newExemptionButton));
 	waitForExemptionScreenToLoad();
 	enterExemptionDataWithMandatoryField(dataMap);
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Save' button to save the details entered in Exemption record");
@@ -931,7 +756,6 @@ public void createExemptionWithMandatoryFields(Map<String, String> dataMap) thro
  */
 
 public void updateQualifiedData(Map<String, String> dataMap) throws Exception {
-	//ExtentTestManager.getTest().log(LogStatus.INFO, "Update 'Qualification' and 'Reason for Not Qualified' in the Exemption record"));
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Update some details in the Exemption record i.e. Qualification? :  " + dataMap.get("Qualification?") + " and Reason for Not Qualified : " + dataMap.get("Reason for Not Qualified"));
 	Thread.sleep(1000);
 	selectFromDropDown(qualification, dataMap.get("Qualification?"));
@@ -980,29 +804,12 @@ public void openExemptionUsingLocator(String recordId, String exempName) throws 
  */
 public void saveExemptionRecordWithNoValues() throws Exception {
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to open an Exemption record");
-	openExemptionScreen();
+	Thread.sleep(2000);
+	Click(waitForElementToBeClickable(newExemptionButton));
 	waitForExemptionScreenToLoad();
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Without entering any data on the Exemption record, click 'Save' button");
 	saveExemptionRecord();
 }
-
-/**
- * Description: This method will remove leading zeroes from the month and day value in Date
- * @param dateValue: Date value passed from the Json file
- * @return : returns the dateValue
- */
-public void clickShowMoreButton(String recordId, String action) throws Exception {       
-    Thread.sleep(1000);
-    String xpathStr1 = "//a[@data-recordid='" + recordId + "']//parent::span//parent::th//following-sibling::td[6]//span//div//a//lightning-icon";
-    WebElement showMoreIcon = locateElement(xpathStr1, 30);
-    Click(showMoreIcon);
-    Thread.sleep(1000);
-    String xpathStr2 = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
-    WebElement editOnShowMoreIcon = locateElement(xpathStr2, 30);
-    clickAction(editOnShowMoreIcon);
-    Thread.sleep(1000);
-}
-
 
 /**
  * Description: This method will remove leading zeroes from the month and day value in Date
@@ -1033,30 +840,6 @@ public String removeZeroInMonthAndDay(String dateValue) throws Exception {
 		}
 	
 	return dateValue;
-}
-
-
-/**
- * Description: This method will expand icon for More Exemption Detail section on Exemption Detail page
- * @param element: WebElement on which action is to be performed
- */
-
-public void expandIcon(WebElement element) throws Exception {
-	String propertyValue = getAttributeValue(element, "aria-expanded");
-	if (propertyValue.equals("false")){
-		Click(element);
-	}
-}
-
-/**
- * Description: This method will generate a Random Number
- * @param min, max: Numbers between a random number will be generated
- * @return : returns the random number
- */
-
-public double getRandomIntegerBetweenRange(int min, int max){
-	    int x = (int) (Math.random()*((max-min)+1))+min;
-	    return x;
 }
 
 /**
