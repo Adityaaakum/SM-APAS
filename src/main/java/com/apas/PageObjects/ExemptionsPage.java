@@ -467,7 +467,7 @@ public String createNewExemption(Map<String,String> newExemptionData) throws Exc
 	objPage.Click(saveButton);
 	
 	//objPage.locateElement("//a[contains(.,'Value Adjustments')]", 3);
-	objPage.waitForElementToBeVisible(dateApplicationReceivedExemptionDetails, 10);
+	objPage.waitForElementToBeVisible(newExemptionNameAftercreation, 20);
 	ReportLogger.INFO("Created "+newExemptionNameAftercreation.getText()+" Exemption with mandatory data");
 	return newExemptionNameAftercreation.getText();
 
@@ -498,7 +498,7 @@ public String createNewExemptionWithMandatoryData(Map<String, String> newExempti
 		}
 		objPage.Click(saveButton);
 
-		objPage.waitForElementToBeVisible(dateApplicationReceivedExemptionDetails, 10);
+		objPage.waitForElementToBeVisible(newExemptionNameAftercreation, 20);
 		ReportLogger.INFO("Created "+newExemptionNameAftercreation.getText()+" Exemption with mandatory data");
 	
 	
