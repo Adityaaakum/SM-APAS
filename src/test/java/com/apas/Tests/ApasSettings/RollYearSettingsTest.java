@@ -97,6 +97,7 @@ public class RollYearSettingsTest extends TestBase {
 		
 		//Step7: Delete the existing Roll Year record
 		objApasGenericPage.clickShowMoreButtonAndAct("Roll Year Settings", dataToCreateFutureRollYearMap.get("Roll Year"), "Delete");
+		//softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct("Roll Year Settings", dataToCreateFutureRollYearMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate user is able to delete the existing Roll Year record");
 		
 		//Step8: Change the List view and Create Roll Year record
 		objApasGenericFunctions.displayRecords("Recently Viewed");
@@ -136,6 +137,7 @@ public class RollYearSettingsTest extends TestBase {
 		
 		//Step5: Delete the existing Roll Year record
 		objApasGenericPage.clickShowMoreButtonAndAct("Roll Year Settings", dataToCreatePastRollYearMap.get("Roll Year"), "Delete");
+		//softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct("Roll Year Settings", dataToCreatePastRollYearMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate user is able to delete the existing Roll Year record");
 		
 		//Step6: Change the List view and Create Roll Year record
 		objApasGenericFunctions.displayRecords("Recently Viewed");
@@ -189,6 +191,7 @@ public class RollYearSettingsTest extends TestBase {
 					
 		//Step14: Delete the existing Roll Year record
 		objApasGenericPage.clickShowMoreButtonAndAct("Roll Year Settings", dataToEditPastRollYearToFutureMap.get("Roll Year"), "Delete");
+		//softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct("Roll Year Settings", dataToEditPastRollYearToFutureMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate user is able to delete the existing Roll Year record");
 				
 		//Step15: Search the existing Roll Year Settings record
 		objApasGenericFunctions.displayRecords("All");
@@ -248,14 +251,10 @@ public class RollYearSettingsTest extends TestBase {
 		objApasGenericFunctions.displayRecords("All");
 		objApasGenericFunctions.searchRecords(dataToValidateFieldLevelErrorMessagesMap.get("Roll Year"));
 		
-		//Step5: Delete the existing Roll Year record
-		objApasGenericPage.clickShowMoreButtonAndAct("Roll Year Settings", dataToValidateFieldLevelErrorMessagesMap.get("Roll Year"), "Delete");
-				
-		//Step6: Change the List view and Create Roll Year record
-		objApasGenericFunctions.displayRecords("Recently Viewed");
+		//Step5: Create Roll Year record
 		objRollYearSettingsPage.createOrUpdateRollYearRecord(dataToValidateFieldLevelErrorMessagesMap, "New");
 		
-		//Step7: Validate error messages displayed at field level
+		//Step6: Validate error messages displayed at field level
 		Thread.sleep(1000);
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnLienDate.isDisplayed(), "SMAB-T638: Validate error message is displayed on 'Lien Date' field");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnTaxStartDate.isDisplayed(), "SMAB-T638: Validate error message is displayed on 'Tax Start Date' field");
@@ -265,12 +264,12 @@ public class RollYearSettingsTest extends TestBase {
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnCalendarStartDate.isDisplayed(), "SMAB-T638: Validate error message is displayed on 'Calendar Start Date' field");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnCalendarEndDate1.isDisplayed(), "SMAB-T638: Validate error message is displayed on 'Calendar End Date' field");
 		
-		//Step8: Enter a different 'Calendar End Date' and Save the record
+		//Step7: Enter a different 'Calendar End Date' and Save the record
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Enter a different value for 'Calendar End Date' i.e. 12/31/2010 and click SAVE button to validate a different error message");
 		objRollYearSettingsPage.enterDate(objRollYearSettingsPage.calendarEndDate, "12/31/2010");
 		objPage.Click(objRollYearSettingsPage.saveButton);
 		
-		//Step9: Validate error messages again that are displayed at field level
+		//Step8: Validate error messages again that are displayed at field level
 		Thread.sleep(2000);
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnLienDate.isDisplayed(), "SMAB-T638: Validate error message is displayed on 'Lien Date' field");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnTaxStartDate.isDisplayed(), "SMAB-T638: Validate error message is displayed on 'Tax Start Date' field");
@@ -280,12 +279,12 @@ public class RollYearSettingsTest extends TestBase {
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnCalendarStartDate.isDisplayed(), "SMAB-T638: Validate error message is displayed on 'Calendar Start Date' field");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnCalendarEndDate2.isDisplayed(), "SMAB-T638: Validate error message is displayed on 'Calendar End Date' field");
 		
-		//Step10: Enter a different 'Fiscal End Date' and Save the record
+		//Step9: Enter a different 'Fiscal End Date' and Save the record
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Enter a different value for 'Fiscal End Date' i.e. 12/31/2008 and click SAVE button to validate a different error message");
 		objRollYearSettingsPage.enterDate(objRollYearSettingsPage.fiscalEndDate, "12/31/2008");
 		objPage.Click(objRollYearSettingsPage.saveButton);
 		
-		//Step11: Validate error messages again that are displayed at field level
+		//Step10: Validate error messages again that are displayed at field level
 		Thread.sleep(2000);
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnLienDate.isDisplayed(), "SMAB-T638: Validate error message is displayed on 'Lien Date' field");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnTaxStartDate.isDisplayed(), "SMAB-T638: Validate error message is displayed on 'Tax Start Date' field");
@@ -300,7 +299,6 @@ public class RollYearSettingsTest extends TestBase {
 		
 		objApasGenericFunctions.logout();	
 	}
-
 	
 	/**
 	 Below test case is used to validate 
@@ -331,6 +329,7 @@ public class RollYearSettingsTest extends TestBase {
 		
 		//Step6: Delete the existing Roll Year record
 		objApasGenericPage.clickShowMoreButtonAndAct("Roll Year Settings", dataToCreatePastRollYearMap.get("Roll Year"), "Delete");
+		//softAssert.assertTrue(!objApasGenericPage.clickShowMoreButtonAndAct("Roll Year Settings", dataToCreatePastRollYearMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate non system admin user is not able to delete the existing Roll Year record");
 		
 		objApasGenericFunctions.logout();
 	}
