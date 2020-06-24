@@ -26,16 +26,16 @@
 		},	
 		
 	"DataToCreatePastRollYear": {
-		"Roll Year Settings": "2005",
-		"Roll Year": "2005",
+		"Roll Year Settings": "1979",
+		"Roll Year": "1979",
 		"Status" : "Open",
-		"Lien Date": "01/01/2005",
-		"Tax Start Date": "07/01/2005",
-		"Tax End Date": "06/30/2006",
-		"Fiscal Start Date": "07/01/2004",
-		"Fiscal End Date": "06/30/2005",
-		"Calendar Start Date": "01/01/2005",
-		"Calendar End Date": "12/31/2005"
+		"Lien Date": "01/01/1979",
+		"Tax Start Date": "07/01/1979",
+		"Tax End Date": "06/30/1980",
+		"Fiscal Start Date": "07/01/1978",
+		"Fiscal End Date": "06/30/1979",
+		"Calendar Start Date": "01/01/1979",
+		"Calendar End Date": "12/31/1979"
 		},
 	
 	"DataToEditPastRollYearToFuture": {
