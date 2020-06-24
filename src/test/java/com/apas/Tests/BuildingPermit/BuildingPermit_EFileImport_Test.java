@@ -90,10 +90,10 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		ReportLogger.INFO("Validation of Error and Imported Row Records on Review and Approve Data Page");
 		//Validation of number of records in error row section. Expected is 13 as 13 records are passed with wrong data in the input file
 		String numberOfRecordsInErrorRowSection = objPage.getElementText(objEfileImportPage.errorRowSection).split(":")[1].trim();
-		softAssert.assertEquals(numberOfRecordsInErrorRowSection, "2", "SMAB-T362: Validation if correct number of records are displayed in Error Row Section after file import");
+		softAssert.assertEquals(numberOfRecordsInErrorRowSection, "2", "SMAB-T362,SMAB-T360: Validation if correct number of records are displayed in Error Row Section after file import");
 		//Validation of number of records in imported row section. Expected is 3 as 3 records are passed with correct data in the input file
 		String numberOfRecordsInImportedRowSection = objPage.getElementText(objEfileImportPage.importedRowSection).split(":")[1].trim();
-		softAssert.assertEquals(numberOfRecordsInImportedRowSection, "1", "SMAB-T362: Validation if correct number of records are displayed in Imported Row Section after file import");
+		softAssert.assertEquals(numberOfRecordsInImportedRowSection, "1", "SMAB-T362,SMAB-T360: Validation if correct number of records are displayed in Imported Row Section after file import");
 
 		//Step8: Validation for Records discard functionality from Review and Approve Page
 		ReportLogger.INFO("SMAB-T363: Validation that error records can be discarded from Review and Approve Data Page");
@@ -379,7 +379,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 	/**
 	 Below test case is used to validate that building permit should only be visible after approval
 	 **/
-	@Test(description = "SMAB-T661: Validation for building permit record creation after import is approved", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, enabled = true)
+	@Test(description = "SMAB-T661,SMAB-T913: Validation for building permit record creation after import is approved", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, enabled = true)
 	public void verify_BuildingPermit_RecordCreationAfterImportApproved(String loginUser) throws Exception {
 
 		String period = objUtil.getCurrentDate("MMMM YYYY");
@@ -430,7 +430,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objPage.enter(objBuildingPermitPage.globalSearchListEditBox,buildingPermitNumber);
 		objPage.waitUntilElementIsPresent(xpathBuildingPermit,10);
 		List<WebElement> webElementBuildingPermitAfterApproved = driver.findElements(By.xpath(xpathBuildingPermit));
-		softAssert.assertTrue(webElementBuildingPermitAfterApproved.size() == 1,"SMAB-T661: Validating that building permit " + buildingPermitNumber + " should be visible in the system only when import is approved");
+		softAssert.assertTrue(webElementBuildingPermitAfterApproved.size() == 1,"SMAB-T661,SMAB-T913: Validating that building permit " + buildingPermitNumber + " should be visible in the system only when import is approved");
 		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
 
 		//Logout at the end of the test

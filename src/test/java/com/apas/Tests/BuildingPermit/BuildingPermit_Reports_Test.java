@@ -6,20 +6,13 @@ import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ReportsPage;
-import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
 import com.apas.config.modules;
-import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 public class BuildingPermit_Reports_Test extends TestBase {
@@ -32,7 +25,11 @@ public class BuildingPermit_Reports_Test extends TestBase {
 	SoftAssertion softAssert  = new SoftAssertion();
 
 	@BeforeMethod(alwaysRun=true)
-	public void beforeMethod(){
+	public void beforeMethod() throws Exception {
+		if(driver==null) {
+			setupTest();
+			driver = BrowserDriver.getBrowserInstance();
+		}
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
@@ -43,8 +40,8 @@ public class BuildingPermit_Reports_Test extends TestBase {
 	/*
 	 Below test case will validate that user is able to export the report
 	 */
-	@Test(description = "SMAB-T433: Validation for Reports Export", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression"},alwaysRun = false)
-	public void verifyReportExport(String loginUser) throws Exception {
+	@Test(description = "SMAB-T433,SMAB-T373: Validation for Reports Export", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression"})
+	public void verify_BuildingPermit_ReportExport(String loginUser) throws Exception {
 
 		String downloadLocation = CONFIG.getProperty("downloadFolder");
 		String reportName = "Building Permit by City Code";
@@ -63,8 +60,11 @@ public class BuildingPermit_Reports_Test extends TestBase {
 		//Step3: Exporting 'Building Permit by City Code' report in Formatted Mode
 		objReportsPage.exportReport(reportName,ReportsPage.FORMATTED_EXPORT);
 		exportedFileName = Objects.requireNonNull(new File(downloadLocation).listFiles())[0].getName();
-		softAssert.assertTrue(exportedFileName.contains("Building Permit by City Code"), "SMAB-T433: Exported report name validation. Report name should contain 'Building Permit by City Code' in formatted export");
-		softAssert.assertTrue(exportedFileName.endsWith(".xls"), "SMAB-T433: Exported data fomratted report should be in Excel");
+		softAssert.assertTrue(exportedFileName.contains("Building Permit by City Code"), "SMAB-T433,SMAB-T373: Exported report name validation. Report name should contain 'Building Permit by City Code' in formatted export. Actual Report Name : " + exportedFileName);
+		softAssert.assertEquals(exportedFileName.split("\\.")[1],"xlsx", "SMAB-T433,SMAB-T373: Exported data formatted report should be in XLSX");
+
+		//Step2: Opening the Reports module
+		objApasGenericFunctions.searchModule(modules.REPORTS);
 
 		//Deleteing all the previously downloaded files
 		objApasGenericFunctions.deleteFilesFromFolder(downloadLocation);
@@ -72,7 +72,10 @@ public class BuildingPermit_Reports_Test extends TestBase {
 		//Step3: Exporting 'Building Permit by City Code' report in Data Mode
 		objReportsPage.exportReport(reportName,ReportsPage.DATA_EXPORT);
 		exportedFileName = Objects.requireNonNull(new File(downloadLocation).listFiles())[0].getName();
-		softAssert.assertTrue(exportedFileName.contains("report"), "SMAB-T433: Exported report name validation. Report name should contain the word 'Report' in case of data format");
-		softAssert.assertTrue(exportedFileName.endsWith(".csv"), "SMAB-T433: Exported data fomratted report should be in CSV");
+		softAssert.assertTrue(exportedFileName.contains("report"), "SMAB-T433,SMAB-T373: Exported report name validation. Report name should contain the word 'Report' in case of data format. Actual Report Name : " + exportedFileName);
+		softAssert.assertEquals(exportedFileName.split("\\.")[1],"xls", "SMAB-T433,SMAB-T373: Exported data formatted report should be in XLS");
+
+		//Logout at the end of the test
+		objApasGenericFunctions.logout();
 	}
 }

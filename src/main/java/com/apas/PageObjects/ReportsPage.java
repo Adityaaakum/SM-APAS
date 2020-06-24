@@ -1,16 +1,12 @@
 package com.apas.PageObjects;
 
-import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
-import com.relevantcodes.extentreports.LogStatus;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -50,42 +46,41 @@ public class ReportsPage extends Page {
 
 	/**
 	 * Description: This method will export the report in the way passed in the parameter reportType
-	 * @param reportType: Type of Report
+	 * @param reportType: Type of Report, Refer to class variables, it can be either FORMATTED_EXPORT or DATA_EXPORT
 	 * @param reportName: Name of the Report
 	 */
 	public void exportReport(String reportName, String reportType) throws IOException, InterruptedException {
 		// Opening all reports screen
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening All Reports Screen");
+		ReportLogger.INFO("Opening All Reports Screen");
 		Click(linkAllReports);
-		//Opening the report "Building Permit By City Code"
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening the report " + reportName);
-		//Added this wait as report was taking sometime to open
 		Thread.sleep(3000);
 
-		JavascriptExecutor executor = driver;
-
+		//Opening the report passed in the parameter report name
 		//Using the JavaScriptExecutor as CLICK method is not working
+		ReportLogger.INFO("Opening the report " + reportName);
+		JavascriptExecutor executor = driver;
 		WebElement webElement =  driver.findElement(By.xpath("//a[@title='" + reportName + "']"));
 		executor.executeScript("arguments[0].click();", webElement);
-
 		Thread.sleep(30000);
 
-		//Exporting the report in desired format
-
+		//Switching the frame as the generated report is in different frame
 		driver.switchTo().frame(0);
 
 		Click(arrowButton);
 		Click(linkExport);
 
+		//Switching back to parent frame to export the report
 		driver.switchTo().parentFrame();
 
 		if (reportType.equals(FORMATTED_EXPORT))
 			Click(formattedExportLabel);
 		else
 			Click(dataExportLabel);
+
 		Click(exportButton);
+
 		//Added this wait to allow the file to download
-		Thread.sleep(5000);
+		Thread.sleep(10000);
 	}
 	
 	/**

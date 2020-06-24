@@ -311,7 +311,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	/**
 	 Below test case is validate the error message on Atherton file import
 	 **/
-	@Test(description = "SMAB-T315,SMAB-T458,SMAB-T459,SMAB-T619,SMAB-T621,SMAB-T624,SMAB-T625,SMAB-T457,SMAB-T549: Error message verification for the imported Atherton Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T315,SMAB-T458,SMAB-T459,SMAB-T619,SMAB-T621,SMAB-T624,SMAB-T625,SMAB-T457,SMAB-T549,SMAB-T460: Error message verification for the imported Atherton Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_ErrorMessageValidation_AthertonTxtFile(String loginUser) throws Exception {
 
 		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "ErrorMessageRecordsAtherton.txt";
@@ -346,18 +346,18 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Wrok Description with keyword Tree Removal"),"No Process for Work Desc. with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"","SMAB-T315: Error Message validation for the scenario 'Wrok Description with keyword 'Tree Removal''");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Work Description with keyword public works permits"),"No Process for Work Desc. with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"","SMAB-T315: Error Message validation for the scenario 'Work Description with keyword 'public works permits''");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Work Description with keywork temporary signs/banners"),"No Process for Work Desc. with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"","SMAB-T315: Error Message validation for the scenario 'Work Description with keywork 'temporary signs/banners''");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Exponential Square Footage"),"Invalid Square Footage","SMAB-T625 : Error Message validation for the scenario 'Exponential Square Footage'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("String Square Footage"),"Invalid Square Footage","SMAB-T625 : Error Message validation for the scenario 'String Square Footage'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("String Permit Value"),"Invalid Permit Value","SMAB-T625 : Error Message validation for the scenario 'String Permit Value'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Exponential Permit Value"),"Invalid Permit Value","SMAB-T625 : Error Message validation for the scenario 'Exponential Permit Value'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("String Permit Fee"),"Invalid Permit Fee","SMAB-T625 : Error Message validation for the scenario 'String Permit Fee'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Exponential Permit Fee"),"Invalid Permit Fee","SMAB-T625 : Error Message validation for the scenario 'Exponential Permit Fee'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Exponential Square Footage"),"Invalid Square Footage","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Exponential Square Footage'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("String Square Footage"),"Invalid Square Footage","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'String Square Footage'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("String Permit Value"),"Invalid Permit Value","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'String Permit Value'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Exponential Permit Value"),"Invalid Permit Value","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Exponential Permit Value'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("String Permit Fee"),"Invalid Permit Fee","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'String Permit Fee'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Exponential Permit Fee"),"Invalid Permit Fee","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Exponential Permit Fee'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Blank City Code"),"City Code value must be AT","SMAB-T624 : Error Message validation for the scenario 'Blank City Code'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Wrong City Code"),"City Code value must be AT","SMAB-T624 : Error Message validation for the scenario 'Wrong City Code'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Zero Permit Value"),"Invalid Permit Value","SMAB-T625 : Error Message validation for the scenario 'Zero Permit Value'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Negative Permit Value"),"Invalid Permit Value","SMAB-T625 : Error Message validation for the scenario 'Negative Permit Value'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Zero Permit Fee"),"Invalid Permit Fee","SMAB-T625 : Error Message validation for the scenario 'Zero Permit Fee'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Negative Permit Fee"),"Invalid Permit Fee","SMAB-T625 : Error Message validation for the scenario 'Negative Permit Fee'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Zero Permit Value"),"Invalid Permit Value","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Zero Permit Value'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Negative Permit Value"),"Invalid Permit Value","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Negative Permit Value'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Zero Permit Fee"),"Invalid Permit Fee","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Zero Permit Fee'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Negative Permit Fee"),"Invalid Permit Fee","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Negative Permit Fee'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid Issue Date Format"),"Invalid Issue Date format","SMAB-T619 : Error Message validation for the scenario 'Invalid Issue Date Format'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid Completion Date Format"),"Invalid Completed Date format","SMAB-T619 : Error Message validation for the scenario 'Invalid Completion Date Format'");
 //		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Duplicate Permit"),"Invalid Square Footage","Error Message validation for the scenario 'Duplicate Permit'");
