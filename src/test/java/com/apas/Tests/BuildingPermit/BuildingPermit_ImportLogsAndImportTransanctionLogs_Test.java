@@ -81,13 +81,13 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 		//Step6: Import Logs grid validation for the imported Atherton Building Permit file
 		ReportLogger.INFO("Validating the data on Import Logs Grid for Atherton Building Permit file");
 		softAssert.assertEquals(importLogsGridData.size(),10,"SMAB-T431,SMAB-T92 : Columns count validation on Import Logs Grid");
-		softAssert.assertEquals(importLogsGridData.get("Name").get(0),"Building Permit :Atherton Building Permits :" + period,"SMAB-T431,SMAB-T92 : Validation for column 'Name' on Import Logs Grid");
-		softAssert.assertEquals(importLogsGridData.get("File Type").get(0),"Building Permit","SMAB-T431,SMAB-T92 : Validation for column 'File Type' on Import Logs Grid");
-		softAssert.assertEquals(importLogsGridData.get("File Source").get(0),"Atherton Building Permits","SMAB-T431,SMAB-T92 : Validation for column 'File Source' on Import Logs Grid");
-		softAssert.assertEquals(importLogsGridData.get("Import Period").get(0),period,"SMAB-T431,SMAB-T92 : Validation for column 'Import Period' on Import Logs Grid");
-		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Imported","SMAB-T431,SMAB-T92 : Validation for column 'Status' on Import Logs Grid");
-		softAssert.assertEquals(importLogsGridData.get("File Count").get(0),"3","SMAB-T431,SMAB-T92 : Validation for column 'File Count' on Import Logs Grid");
-		softAssert.assertEquals(importLogsGridData.get("Import Count").get(0),"1","SMAB-T431,SMAB-T92 : Validation for column 'Import Count' on Import Logs Grid");
+		softAssert.assertEquals(importLogsGridData.get("Name").get(0),"Building Permit :Atherton Building Permits :" + period,"SMAB-T431,SMAB-T92,SMAB-T662: Validation for column 'Name' on Import Logs Grid");
+		softAssert.assertEquals(importLogsGridData.get("File Type").get(0),"Building Permit","SMAB-T431,SMAB-T92,SMAB-T662: Validation for column 'File Type' on Import Logs Grid");
+		softAssert.assertEquals(importLogsGridData.get("File Source").get(0),"Atherton Building Permits","SMAB-T431,SMAB-T92,SMAB-T662: Validation for column 'File Source' on Import Logs Grid");
+		softAssert.assertEquals(importLogsGridData.get("Import Period").get(0),period,"SMAB-T431,SMAB-T92,SMAB-T662: Validation for column 'Import Period' on Import Logs Grid");
+		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Imported","SMAB-T431,SMAB-T92,SMAB-T662: Validation for column 'Status' on Import Logs Grid");
+		softAssert.assertEquals(importLogsGridData.get("File Count").get(0),"3","SMAB-T431,SMAB-T92,SMAB-T662: Validation for column 'File Count' on Import Logs Grid");
+		softAssert.assertEquals(importLogsGridData.get("Import Count").get(0),"1","SMAB-T431,SMAB-T92,SMAB-T662: Validation for column 'Import Count' on Import Logs Grid");
 
 		//Step7: Open the import logs of the building permit file uploaded in previous steps
 		objEFileImportLogsPage.openImportLog("Building Permit :Atherton Building Permits :" + period);
