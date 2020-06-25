@@ -166,6 +166,11 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step4: Save after entering 'Tree Removal' in Work Description. There should be an error
 		String expectedWorkDescriptionError = "No Process for Work Desc with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
+		String expectedFieldLevelError = "Complete this field";
+		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
+			expectedWorkDescriptionError = "Description should not have the following ('Tree Removal', 'public works permits', 'temporary signs/banners')";
+			expectedFieldLevelError = "Complete this field.";
+		}
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.workDescriptionTxtBox,30);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,"Tree Removal");
 		objPage.Click(objBuildingPermitPage.saveButton);
@@ -177,7 +182,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step6: Validating the error message on edit pop when mandatory fields are not filled
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.errorMsgOnTop),"These required fields must be completed: Work Description","SMAB-T466: Warning message validation on the top when 'Work Description' field is not entered while editing the building permit record");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Work Description"),"Complete this field","SMAB-T466: Warning message validation at the field level 'Work Description' field is not entered while editing the building permit record");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Work Description"),expectedFieldLevelError,"SMAB-T466: Warning message validation at the field level 'Work Description' field is not entered while editing the building permit record");
 
 		//Step7: Enter the updated estimated project value and builing permit number and save the record
 		String updatedWorkDescriptionValue = "New Construction " + objUtil.getCurrentDate("mmss");
@@ -274,6 +279,9 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
         
 		//Step7: Validate the error message appeared for mandatory fields
 		String expectedWarningMessage = "This record looks like a duplicate.View Duplicates";
+		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
+			expectedWarningMessage = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
+		}
 		softAssert.assertEquals(objBuildingPermitPage.warningMessage.getText(),expectedWarningMessage,"SMAB-T519: Warning Message validation for duplicate fields");
         
 		//Step8: Validation of the building permit after clicking on View Duplicate Link
@@ -460,6 +468,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		ReportLogger.INFO("Updating the value of Estimated Project Value to 25000");
 		objBuildingPermitPage.enterEstimatedProjectValue("25000");
 		objPage.Click(objBuildingPermitPage.saveButton);
+		Thread.sleep(2000);
 		objPage.waitForElementToBeVisible(objBuildingPermitPage.successAlert,20);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 25000 and county strat code as REPAIR ROOF");
@@ -470,6 +479,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		ReportLogger.INFO("Updating the value of Estimated Project Value to 7000");
 		objBuildingPermitPage.enterEstimatedProjectValue("7000");
 		objPage.Click(objBuildingPermitPage.saveButton);
+		Thread.sleep(2000);
 		objPage.waitForElementToBeVisible(objBuildingPermitPage.successAlert,20);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 7000 and county strat code as REPAIR ROOF");
@@ -482,6 +492,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		ReportLogger.INFO("Updating the value of County Strat Code to 'SOLAR'");
 		objBuildingPermitPage.searchAndSelectFromDropDown(objBuildingPermitPage.countyStratCodeSearchBox, "SOLAR");
 		objPage.Click(objBuildingPermitPage.saveButton);
+		Thread.sleep(2000);
 		objPage.waitForElementToBeVisible(objBuildingPermitPage.successAlert,20);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when County strat code is changed to SOLAR from REPAIR ROOF");
@@ -491,6 +502,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objPage.Click(objBuildingPermitPage.editButton);
 		objBuildingPermitPage.selectFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "No Process");
 		objPage.Click(objBuildingPermitPage.saveButton);
+		Thread.sleep(2000);
 		objPage.waitForElementToBeVisible(objBuildingPermitPage.successAlert,20);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
@@ -677,6 +689,9 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objPage.Click(objBuildingPermitPage.saveButton);
 		String expectedErrorMessageOnTop = "These required fields must be completed: Estimated Project Value, Issue Date, Building Permit Number, Owner Name, APN, Permit City Code, Work Description";
 		String expectedIndividualFieldMessage = "Complete this field";
+		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
+			expectedIndividualFieldMessage = "Complete this field.";
+		}
 		softAssert.assertEquals(objBuildingPermitPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T345: Validating mandatory fields missing error in manual entry pop up header.");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Building Permit Number'");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Parcel'");
@@ -733,7 +748,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Step4: Update the work description and building permit number on efile building permit number and save the record
 		ReportLogger.INFO("Editing the existing E-File Building Permit record with Building Permit Number : " + buildingPermitNumber);
 		String updatedWorkDescriptionValue = "New Construction " + objUtil.getCurrentDate("mmss");
-		String updatedBuildingPermitNumber = "AT-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
+		String updatedBuildingPermitNumber = buildingPermitNumber + objUtil.getCurrentDate("HHmmss");
 		ReportLogger.INFO("Value to be updated in 'Work Description' field : " + updatedWorkDescriptionValue);
 		ReportLogger.INFO("Old 'Building Permit Number' value : " + buildingPermitNumber);
 		ReportLogger.INFO("Value to be updated in 'Building Permit Number' field : " + updatedBuildingPermitNumber);
