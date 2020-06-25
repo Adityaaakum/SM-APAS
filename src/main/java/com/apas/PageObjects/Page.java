@@ -146,11 +146,11 @@ public class Page {
 
 	public boolean verifyElementExists(String xpath) {
 		try {
-			if (driver.findElement(By.xpath(xpath)).isDisplayed()) return true;
+			driver.findElement(By.xpath(xpath));
 		} catch (Exception e) {
 			return false;
 		}
-		return false;
+		return true;
 	}
 
 

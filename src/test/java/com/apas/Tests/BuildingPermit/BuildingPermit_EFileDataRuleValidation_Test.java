@@ -396,9 +396,9 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Step5: Comparing the data from the error row table with the expected data
 		ReportLogger.INFO("Error Message Validation of Error Row Records on Review and Approve Data Page");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with TR"),"No Process fo TR, MI & TE permits","SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with TR'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with MI"),"No Process fo TR, MI & TE permits","SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with MI'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with TE"),"No Process fo TR, MI & TE permits","SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with TE'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with TR"),"No Process for TR, MI & TE permits","SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with TR'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with MI"),"No Process for TR, MI & TE permits","SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with MI'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with TE"),"No Process for TR, MI & TE permits","SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with TE'");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
