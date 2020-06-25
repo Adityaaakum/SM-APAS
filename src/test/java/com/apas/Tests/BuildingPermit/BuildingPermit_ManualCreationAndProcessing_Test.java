@@ -211,7 +211,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	 Below test case is used to validate error appearing if mandatory fields are not filled while manually creating building permit
 	 **/
 	@Test(description = "SMAB-T418: Mandatory Field Validation while creating manual building permit", groups = {"smoke","regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass =  DataProviders.class, alwaysRun = true)
-	public void verify_ManualCreationWithRequiredFieldsValidations(String loginUser) throws Exception {
+	public void verify_BuildingPermit_ManualCreationWithRequiredFieldsValidations(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
