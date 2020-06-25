@@ -254,6 +254,10 @@ public class ApasGenericFunctions extends TestBase {
                 }
             }
         }
+
+        //Removing the Row Number key as this is meta data column and not part of grid
+        gridDataHashMap.remove("Row Number");
+
         return gridDataHashMap;
     }
 
@@ -301,7 +305,7 @@ public class ApasGenericFunctions extends TestBase {
         objPage.Click(element);
         String xpathStr = null;
 
-        xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "'] | //span[@class='slds-media__body']/span[contains(.,'" + value + "')]";
+        xpathStr = "//*[@role='listitem' or @role='listbox']//*[text()='" + value + "']";
 
         WebElement drpDwnOption = locateElement(xpathStr, 10);
         drpDwnOption.click();
