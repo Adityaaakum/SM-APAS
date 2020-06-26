@@ -303,11 +303,8 @@ public class ApasGenericFunctions extends TestBase {
 
     public void selectFromDropDown(WebElement element, String value) throws Exception {
         objPage.Click(element);
-        String xpathStr = null;
-
-        xpathStr = "//*[@role='listitem' or @role='listbox']//*[text()='" + value + "']";
-
-        WebElement drpDwnOption = locateElement(xpathStr, 10);
+        String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
+        WebElement drpDwnOption = objPage.locateElement(xpathStr, 200);
         drpDwnOption.click();
     }
 
@@ -540,5 +537,14 @@ public float convertToFloat(Object amount)
 
 }
 
+    /**
+     * @description: This method will return the error message appeared against the filed name passed in the parameter
+     * @param fieldName: field name for which error message needs to be fetched
+     */
+    public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
+        String xpath = "//div[@role='listitem']//span[text()='" + fieldName + "']/../../../ul[contains(@data-aura-class,'uiInputDefaultError')]";
+        objPage.waitUntilElementIsPresent(xpath,20);
+        return objPage.getElementText(driver.findElement(By.xpath(xpath)));
+    }
 
 }
