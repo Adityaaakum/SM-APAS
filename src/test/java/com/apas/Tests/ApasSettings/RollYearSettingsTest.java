@@ -74,6 +74,9 @@ public class RollYearSettingsTest extends TestBase {
 		//Step4: Validate error messages when no field value is entered and Roll Year Settings record is saved
 		String expectedErrorMessageOnTop = "These required fields must be completed: Calendar End Date, Calendar Start Date, Open Roll End Date, Lien Date, Roll Year Settings, Roll Year, Open Roll Start Date, Tax End Date, Tax Start Date";
 		String expectedIndividualFieldMessage = "Complete this field";
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			expectedIndividualFieldMessage = "Complete this field.";
+			}
 		softAssert.assertEquals(objRollYearSettingsPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T638: Validating mandatory fields missing error in Roll Year Settings screen.");
 		softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage("Calendar End Date"),expectedIndividualFieldMessage,"SMAB-T638: Validating mandatory fields missing error for 'Calendar End Date'");
 		softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage("Calendar Start Date"),expectedIndividualFieldMessage,"SMAB-T638: Validating mandatory fields missing error for 'Calendar Start Date'");
@@ -172,7 +175,13 @@ public class RollYearSettingsTest extends TestBase {
 		objRollYearSettingsPage.enterDate(objRollYearSettingsPage.fiscalEndDate, dataToCreatePastRollYearMap.get("Fiscal End Date"));
 		Thread.sleep(2000);
 		softAssert.assertTrue(objRollYearSettingsPage.duplicateRecord.isDisplayed(), "Validate duplicate error message is displayed as Roll Year record exist");
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.duplicateRecord)),"This record looks like a duplicate.View Duplicates", "SMAB-T638: Validate duplicate error message text");
+		
+		String expectedIndividualFieldMessage = "This record looks like a duplicate.View Duplicates";
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			expectedIndividualFieldMessage = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
+			}
+		
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.duplicateRecord)),expectedIndividualFieldMessage, "SMAB-T638: Validate duplicate error message text");
 		softAssert.assertTrue(objRollYearSettingsPage.viewDuplicateRecord.isDisplayed(), "Validate duplicate error view link is displayed as Roll Year record exist");
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Roll Year screen");
@@ -208,7 +217,7 @@ public class RollYearSettingsTest extends TestBase {
 		objPage.clearFieldValue(objRollYearSettingsPage.calendarEndDateOnDetailEditPage);
 		objPage.clearFieldValue(objRollYearSettingsPage.taxStartDateOnDetailEditPage);
 		objPage.Click(objRollYearSettingsPage.saveButtonOnDetailPage);
-		objPage.Click(objRollYearSettingsPage.saveButtonOnDetailPage);
+		//objPage.Click(objRollYearSettingsPage.saveButtonOnDetailPage);
 				
 		//Step18: Validate the error message appears as a pop-up at the bottom of the screen		
 		Thread.sleep(2000);
@@ -320,16 +329,16 @@ public class RollYearSettingsTest extends TestBase {
 		softAssert.assertTrue(!objPage.verifyElementVisible(objRollYearSettingsPage.newRollYearButton), "SMAB-T638: Validate NEW button is not displayed");
 		
 		//Step4: Create data map for the JSON file (RollYear_DataToCreateRollYearRecord.json)  
-		Map<String, String> dataToCreatePastRollYearMap = objUtil.generateMapFromJsonFile(rollYearData, "DataToCreatePastRollYear");
+		Map<String, String> viewRollYearMap = objUtil.generateMapFromJsonFile(rollYearData, "DataToValidateFieldLevelErrorMessages");
 		
 		//Step5: Search the existing Roll Year record
 		Thread.sleep(1000);
 		objApasGenericFunctions.displayRecords("All");
-		objApasGenericFunctions.searchRecords(dataToCreatePastRollYearMap.get("Roll Year"));
+		objApasGenericFunctions.searchRecords(viewRollYearMap.get("Roll Year"));
 		
 		//Step6: Delete the existing Roll Year record
-		objApasGenericPage.clickShowMoreButtonAndAct("Roll Year Settings", dataToCreatePastRollYearMap.get("Roll Year"), "Delete");
-		//softAssert.assertTrue(!objApasGenericPage.clickShowMoreButtonAndAct("Roll Year Settings", dataToCreatePastRollYearMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate non system admin user is not able to delete the existing Roll Year record");
+		objApasGenericPage.clickShowMoreButtonAndAct("Roll Year Settings", viewRollYearMap.get("Roll Year"), "Delete");
+		//softAssert.assertTrue(!objApasGenericPage.clickShowMoreButtonAndAct("Roll Year Settings", viewRollYearMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate non system admin user is not able to delete the existing Roll Year record");
 		
 		objApasGenericFunctions.logout();
 	}

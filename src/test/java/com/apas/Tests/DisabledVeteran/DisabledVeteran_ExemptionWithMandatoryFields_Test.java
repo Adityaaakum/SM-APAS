@@ -83,6 +83,9 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		//Step4: Validate error messages when no field value is entered and Exemption record is saved
 		String expectedErrorMessageOnTop1 = "These required fields must be completed: Date Application Received, Basis for Claim, Date Acquired Property, Date Occupied/Intend to Occupy Property, Date of Notice of 100% Rating, Effective Date of 100% USDVA Rating, Claimant's Name, Claimant's SSN, APN, Qualification?";
 		String expectedIndividualFieldMessage1 = "Complete this field";
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			expectedIndividualFieldMessage1 = "Complete this field.";
+		}
 		softAssert.assertEquals(objExemptionsPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop1,"SMAB-T523: Validating mandatory fields missing error in Exemption screen.");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date Application Received"),expectedIndividualFieldMessage1,"SMAB-T523: Validating mandatory fields missing error for 'Date Application Received'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("APN"),expectedIndividualFieldMessage1,"SMAB-T523: Validating mandatory fields missing error for 'Parcel'");
@@ -130,6 +133,9 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		//Step9: Validate error messages when few mandatory field values are not present and Exemption record is saved	
 		String expectedErrorMessageOnTop2 = "These required fields must be completed: Date Acquired Property, Effective Date of 100% USDVA Rating, Qualification?, Date of Notice of 100% Rating, Date Occupied/Intend to Occupy Property";
 		String expectedIndividualFieldMessage2 = "Complete this field";
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			expectedIndividualFieldMessage2 = "Complete this field.";
+		}
 		softAssert.assertEquals(objExemptionsPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop2,"SMAB-T523: Validating mandatory fields missing error in Exemption screen.");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date Acquired Property"),expectedIndividualFieldMessage2,"SMAB-T523: Validating mandatory fields missing error for 'Date Acquired Property'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Effective Date of 100% USDVA Rating"),expectedIndividualFieldMessage2,"SMAB-T523: Validating mandatory fields missing error for 'Effective Date of 100% USDVA Rating'");
@@ -139,8 +145,9 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Error messages related to mandatory fields are validated");
 		objExemptionsPage.cancelExemptionRecord();
 				
-		//Step10: Open it again and Validate the values which were initially saved, appear there		
-		objExemptionsPage.openExemptionRecord(exemptionName);
+		//Step10: Open it again and Validate the values which were initially saved, appear there
+		Thread.sleep(1000);
+		objExemptionsPage.openExemptionUsingLocator(recordId, exemptionName);
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.dateAcquiredOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataToCreateExemptionMap.get("Date Acquired Property")), "SMAB-T479: Value for 'Date Acquired Property' is retained post canceling the changes made on Edit Exemption screen");						
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.dateOccupiedOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataToCreateExemptionMap.get("Date Occupied/Intend to Occupy Property")), "SMAB-T479: Value for 'Date Occupied/Intend to Occupy Property' is retained post canceling the changes made on Edit Exemption screen");						
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.dateOfNoticeOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataToCreateExemptionMap.get("Date of Notice of 100% Rating")), "SMAB-T479: Value for 'Date of Notice of 100% Rating' is retained post canceling the changes made on Edit Exemption screen");						
@@ -188,6 +195,9 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		//Step8: Validate error messages when few mandatory field values are not present and Exemption record is saved
 		String expectedErrorMessageOnTop = "These required fields must be completed: Claimant's SSN, Unmarried Spouse of Deceased Veteran?, Date Application Received";
 		String expectedIndividualFieldMessage = "Complete this field";
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			expectedIndividualFieldMessage = "Complete this field.";
+		}
 		softAssert.assertEquals(objExemptionsPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T527: Validating mandatory fields missing error in Exemption screen.");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Claimant's SSN"),expectedIndividualFieldMessage,"SMAB-T527: Validating mandatory fields missing error for 'Claimant's SSN'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Unmarried Spouse of Deceased Veteran?"),expectedIndividualFieldMessage,"SMAB-T527: Validating mandatory fields missing error for 'Unmarried Spouse of Deceased Veteran?'");
@@ -201,6 +211,9 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		//Step10: Validate error messages when some of the mandatory field values are still not present and Exemption record is saved
 		String expectedErrorMessageOnTop1 = "These required fields must be completed: Claimant's SSN, Date Application Received";
 		String expectedIndividualFieldMessage1 = "Complete this field";
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			expectedIndividualFieldMessage1 = "Complete this field.";
+		}
 		softAssert.assertEquals(objExemptionsPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop1,"SMAB-T527: Validating mandatory fields missing error in Exemption screen.");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Claimant's SSN"),expectedIndividualFieldMessage1,"SMAB-T527: Validating mandatory fields missing error for 'Claimant's SSN'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date Application Received"),expectedIndividualFieldMessage1,"SMAB-T527: Validating mandatory fields missing error for 'Date Application Received'");
@@ -236,86 +249,10 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		
 		//Step16: Save the changes and validate it
 		objPage.Click(objExemptionsPage.saveButtonOnDetailPage);
-		Thread.sleep(1000);
+		Thread.sleep(3000);
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), "6781", "SMAB-T522: Validate updated value for 'Veteran SSN' appears in the Exemption record");		
 		
 		objApasGenericFunctions.logout();
 	}
 
-	/**
-	 Below test case is used to validate,
-	 -Mandatory check validations on edit Exemption screen using Edit option on Show More button
-	 -User is able to clear values on edit Exemption screen
-	 -Previous values appear back on canceling the changes made
-	 -Exemption Support staff and RP Business Admin users are able to view and edit an Exemption record
-	 **/
-	
-	/*@Test(description = "SMAB-T523, SMAB-T479, SMAB-T481: Validate that RP Business admin and Exemption Support staff are able to view and edit an Exemption record", groups = {"regression","DisabledVeteranExemption"}, dependsOnMethods = {"verify_DisabledVeteran_CreateExemptionWithMandatoryFields"}, dataProvider = "loginUsers1")
-	public void verify_DisabledVeteran_EditExemptionUsingShowMoreAndMandatoryFieldErrorValidation(String loginUser) throws Exception {
-	if(!failedMethods.contains("verify_DisabledVeteran_CreateExemptionWithMandatoryFields")) {
-		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
-
-		//Step2: Open the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
-
-		//Step3: User is able to view the Exemption record - Search the existing one that was created in above Test and Edit it using EDIT option from Show More button
-		objApasGenericFunctions.displayRecords("All");
-		
-		if (loginUser.equals("exemptionSupportStaff")){
-			objApasGenericFunctions.searchRecords(exemptionName);
-			objExemptionsPage.clickShowMoreButton(recordId, "Edit");
-			softAssert.assertTrue(objExemptionsPage.saveButton.isDisplayed(), "SMAB-T481: Validate user is able to edit an Exemption record");
-		}
-		else {
-			objApasGenericFunctions.searchRecords(exemptionName1);
-			objExemptionsPage.clickShowMoreButton(recordId1, "Edit");
-			softAssert.assertTrue(objExemptionsPage.saveButton.isDisplayed(), "SMAB-T481: Validate user is able to edit an Exemption record");
-		}
-		
-		//Step4: Clear the values from the few mandatory fields and Save the record
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Clear some Date fields and SAVE the record");
-		objExemptionsPage.clearFieldValue(objExemptionsPage.dateAquiredProperty);
-		objExemptionsPage.clearFieldValue(objExemptionsPage.dateOccupiedProperty);
-		objExemptionsPage.clearFieldValue(objExemptionsPage.dateOfNotice);
-		objExemptionsPage.clearFieldValue(objExemptionsPage.effectiveDateOfUSDVA);
-		objExemptionsPage.selectFromDropDown(objExemptionsPage.qualification, "--None--");
-		objExemptionsPage.saveExemptionRecord();
-		
-		//Step5: Validate error messages when few mandatory field values are not present and Exemption record is saved	
-		String expectedErrorMessageOnTop = "These required fields must be completed: Date Acquired Property, Effective Date of 100% USDVA Rating, Qualification?, Date of Notice of 100% Rating, Date Occupied/Intend to Occupy Property";
-		String expectedIndividualFieldMessage = "Complete this field";
-		softAssert.assertEquals(objExemptionsPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T523: Validating mandatory fields missing error in Exemption screen.");
-		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date Acquired Property"),expectedIndividualFieldMessage,"SMAB-T523: Validating mandatory fields missing error for 'Date Acquired Property'");
-		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Effective Date of 100% USDVA Rating"),expectedIndividualFieldMessage,"SMAB-T523: Validating mandatory fields missing error for 'Effective Date of 100% USDVA Rating'");
-		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Qualification?"),expectedIndividualFieldMessage,"SMAB-T523: Validating mandatory fields missing error for 'Qualification?'");
-		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date of Notice of 100% Rating"),expectedIndividualFieldMessage,"SMAB-T523: Validating mandatory fields missing error for 'Date of Notice of 100% Rating'");
-		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date Occupied/Intend to Occupy Property"),expectedIndividualFieldMessage,"SMAB-T523: Validating mandatory fields missing error for 'Date Occupied/Intend to Occupy Property'");
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Error messages related to mandatory fields are validated");
-		objExemptionsPage.cancelExemptionRecord();
-		
-		//Step6: Open it again and Validate the values which were initially saved, appear there
-		if (loginUser.equals("exemptionSupportStaff")){
-		objExemptionsPage.openExemptionRecord(exemptionName);
-		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.dateAcquiredOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataMap1.get("Date Acquired Property")), "SMAB-T479: Value for 'Date Acquired Property' is retained post canceling the changes made on Edit Exemption screen");						
-		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.dateOccupiedOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataMap1.get("Date Occupied/Intend to Occupy Property")), "SMAB-T479: Value for 'Date Occupied/Intend to Occupy Property' is retained post canceling the changes made on Edit Exemption screen");						
-		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.dateOfNoticeOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataMap1.get("Date of Notice of 100% Rating")), "SMAB-T479: Value for 'Date of Notice of 100% Rating' is retained post canceling the changes made on Edit Exemption screen");						
-		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.effectiveDateOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataMap1.get("Effective Date of 100% USDVA Rating")), "SMAB-T479: Value for 'Effective Date of 100% USDVA Rating' is retained post canceling the changes made on Edit Exemption screen");						
-		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.qualificationOnDetailPage)), dataMap1.get("Qualification?"), "SMAB-T479: Value for 'Qualification?' is retained post canceling the changes made on Edit Exemption screen");						
-		}
-		else {
-		objExemptionsPage.openExemptionRecord(exemptionName1);
-		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.dateAcquiredOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataMap2.get("Date Acquired Property")), "SMAB-T479: Value for 'Date Acquired Property' is retained post canceling the changes made on Edit Exemption screen");						
-		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.dateOccupiedOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataMap2.get("Date Occupied/Intend to Occupy Property")), "SMAB-T479: Value for 'Date Occupied/Intend to Occupy Property' is retained post canceling the changes made on Edit Exemption screen");						
-		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.dateOfNoticeOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataMap2.get("Date of Notice of 100% Rating")), "SMAB-T479: Value for 'Date of Notice of 100% Rating' is retained post canceling the changes made on Edit Exemption screen");						
-		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.effectiveDateOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataMap2.get("Effective Date of 100% USDVA Rating")), "SMAB-T479: Value for 'Effective Date of 100% USDVA Rating' is retained post canceling the changes made on Edit Exemption screen");						
-		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.qualificationOnDetailPage)), dataMap2.get("Qualification?"), "SMAB-T479: Value for 'Qualification?' is retained post canceling the changes made on Edit Exemption screen");						
-		}
-		
-		objApasGenericFunctions.logout();
-	}
-	else {
-		softAssert.assertTrue(false, "This Test depends on 'createExemptionWithMandatoryFields' which got failed");	
-	}
-	}*/
 }
