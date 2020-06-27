@@ -314,13 +314,10 @@ public class DataProviders {
         return new Object[][] { { users.RP_BUSINESS_ADMIN }, { users.PRINCIPAL_USER } };
     }
     
-    /**
-	 * Below function will be used to login to application with different users
-	 * @returns: Return the user RP Business Admin and Exemption Support Staff users in an array
-	 **/
-    @DataProvider(name = "loginRpBusinessAdminAndExemptionSupportUsers")
-    public Object[][] dpLoginRpBusinessAdminAndExemptionSupportUsers() {
-        return new Object[][] { { users.RP_BUSINESS_ADMIN }, { users.EXEMPTION_SUPPORT_STAFF } };
+    
+    @DataProvider(name = "loginRPBusinessAdmin")
+    public Object[][] rpBusinessAdmin() {
+        return new Object[][] {{ users.RP_BUSINESS_ADMIN }};
     }
     
 }
