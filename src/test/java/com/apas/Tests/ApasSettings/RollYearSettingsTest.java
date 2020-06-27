@@ -59,7 +59,7 @@ public class RollYearSettingsTest extends TestBase {
 	 -Create Roll Year record for Future Year
 	 **/
 	
-	/*@Test(description = "SMAB-T638: Validate that System Admin is able to create Future Roll Year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T638: Validate that System Admin is able to create Future Roll Year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void verify_RollYear_CreateFutureRecord(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -113,7 +113,7 @@ public class RollYearSettingsTest extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.rollYearOnDetailPage)), dataToCreateFutureRollYearMap.get("Roll Year"), "SMAB-T638: Roll Year record is created successfully");
 		
 		objApasGenericFunctions.logout();
-	}*/
+	}
 	
 	/**
 	 Below test case is used to validate 
@@ -121,7 +121,7 @@ public class RollYearSettingsTest extends TestBase {
 	 -Edit a Roll Year record
 	 **/
 	
-	/*@Test(description = "SMAB-T638: Validate that System Admin is able to create Past Roll Year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T638: Validate that System Admin is able to create Past Roll Year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void verify_RollYear_CreateAndEditPastRecord(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -236,7 +236,7 @@ public class RollYearSettingsTest extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.rollYearOnDetailPage)), dataToEditPastRollYearToFutureMap.get("Roll Year"), "SMAB-T638: Roll Year record is created successfully");
 				
 		objApasGenericFunctions.logout();
-	}*/
+	}
 	
 	/**
 	 Below test case is used to validate 
