@@ -38,8 +38,8 @@ public interface testdata {
     public static final String EXEMPTION_REPORT_DATA = "\\data\\DisabledVeteran\\DVExemptionReport\\DisabledVeteran_DVExemptionReport.json";
     
 
-    public static final String EFILEIMPORT_INVALIDDATA = "\\data\\EFileImportInvalidFiles";
-    public static final String EFILEIMPORT_BPPTRENDSDATA = "\\data\\EFileImportBppTrend";
-    public static final String EFILEIMPORT_BPDATA = "\\data\\EFileImportBP";
+    public static final String EFILEIMPORT_INVALIDDATA = "\\data\\EFileImportInvalidFiles\\";
+    public static final String EFILEIMPORT_BPPTRENDSDATA = "\\data\\EFileImportBppTrend\\";
+    public static final String EFILEIMPORT_BPDATA = "\\data\\EFileImportBP\\";
 
 }

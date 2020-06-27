@@ -323,4 +323,10 @@ public class DataProviders {
         return new Object[][] { { users.RP_BUSINESS_ADMIN }, { users.EXEMPTION_SUPPORT_STAFF } };
     }
     
+    
+    @DataProvider(name = "loginRPBusinessAdmin")
+    public Object[][] rpBusinessAdmin() {
+        return new Object[][] {{ users.RP_BUSINESS_ADMIN }};
+    }
+    
 }

@@ -303,7 +303,7 @@ public class ApasGenericFunctions extends TestBase {
 
     public void selectFromDropDown(WebElement element, String value) throws Exception {
         objPage.Click(element);
-        String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
+        String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "'] | //*[@role='listitem' or @role='listbox']//*[text()='"+value+"']";
         WebElement drpDwnOption = objPage.locateElement(xpathStr, 200);
         drpDwnOption.click();
     }
@@ -327,13 +327,13 @@ public class ApasGenericFunctions extends TestBase {
         //driver.findElement((By) element);
         try {
             if (element.isDisplayed()) {
-                return true;
+                return false;
             }
 
         } catch (org.openqa.selenium.NoSuchElementException e) {
-            return false;
+            return true;
         }
-        return false;
+        return true;
 
     }
 
