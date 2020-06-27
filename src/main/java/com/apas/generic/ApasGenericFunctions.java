@@ -303,7 +303,7 @@ public class ApasGenericFunctions extends TestBase {
 
     public void selectFromDropDown(WebElement element, String value) throws Exception {
         objPage.Click(element);
-        String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "'] | //*[@role='listitem' or @role='listbox']//*[text()='"+value+"']";
+        String xpathStr = "//div[contains(@class, 'left uiMenuList')]//a[text() = '" + value + "']";
         WebElement drpDwnOption = objPage.locateElement(xpathStr, 200);
         drpDwnOption.click();
     }

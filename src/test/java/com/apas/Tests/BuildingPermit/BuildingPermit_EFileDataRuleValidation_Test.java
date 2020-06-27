@@ -32,9 +32,6 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	Util objUtil  = new Util();
 	EFileImportPage objEfileImportPage;
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
-	String athertonBuildingPermitFile;
-	String sanMateoBuildingPermitFile;
-	String unincorporatedBuildingPermitFile;
 
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
@@ -49,9 +46,6 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage = new BuildingPermitPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objEfileImportPage = new EFileImportPage(driver);
-		athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "Import_TestData_ValidAndInvalidScenarios_AT.txt";
-		sanMateoBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "SanMateoBuildingPermitsWithValidAndInvalidData.xlsx";
-		unincorporatedBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_UNINCORPORATED + "WorkDescriptionWithKeywords_UN.txt";
 	}
 	
 	/**
@@ -60,11 +54,18 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	@Test(description = "SMAB-T548: Validate removal of keywords from Work Description from UN File Type", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, enabled = true)
 	public void verify_BuildingPermit_RemoveKeywordFromWorkDescription_UnincorporatedFileType(String loginUser) throws Exception {
 
+		String unincorporatedBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_UNINCORPORATED + "WorkDescriptionWithKeywords_UN.txt";
 		String period = objUtil.getCurrentDate("MMMM YYYY");
 
-		//Reverting the Approved Import logs if any in the system
-		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Unincorporated%' and Status__c = 'Approved' ";
-		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			//Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Unincorporated%' and Status__c = 'Approved' ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		}else{
+			//step1:Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C like '%Unincorporated%' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+		}
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);
@@ -73,7 +74,12 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Unincorporated Building Permit file having error and success records through Efile Intake Import
-		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Unincorporated Building permits", period ,unincorporatedBuildingPermitFile);
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Unincorporated Building permits", period ,unincorporatedBuildingPermitFile);
+		} else{
+			objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Unincorporated Building permits", "WorkDescriptionWithKeywords_UN.txt", unincorporatedBuildingPermitFile);
+		}
+
 
 		//Step4: Waiting for Status of the imported file to be converted to "Imported"
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -105,8 +111,15 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		String period = objUtil.getCurrentDate("MMMM YYYY");
 
 		//Reverting the Approved Import logs if any in the system
-		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
-		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			//Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		}else{
+			//step1:Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C like '%Atherton%' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+		}
 
 		//Step1: Creating temporary file with random building permit number
 		String buildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
@@ -121,7 +134,11 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 
 		//Step4: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
-		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", period ,temporaryFile);
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", period ,temporaryFile);
+		} else{
+			objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", "RetiredParcelAndSitusMismatch.txt", temporaryFile);
+		}
 
 		//Step5: Waiting for Status of the imported file to be converted to "Imported"
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -156,8 +173,15 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		String period = objUtil.getCurrentDate("MMMM YYYY");
 
 		//Reverting the Approved Import logs if any in the system
-		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
-		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			//Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		}else{
+			//step1:Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C like '%Atherton%' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+		}
 
 		//Step1: Creating temporary file with random building permit number
 		String missingAPNBuildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
@@ -172,7 +196,11 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 
 		//Step4: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
-		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", period ,temporaryFile);
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", period ,temporaryFile);
+		} else{
+			objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", "WrongParcelAndSitusTypePopulation.txt", temporaryFile);
+		}
 
 		//Step5: Waiting for Status of the imported file to be converted to "Imported"
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -226,8 +254,15 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		String period = objUtil.getCurrentDate("MMMM YYYY");
 
 		//Reverting the Approved Import logs if any in the system
-		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
-		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			//Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		}else{
+			//step1:Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C like '%Atherton%' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+		}
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);
@@ -236,7 +271,11 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
-		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", period ,athertonBuildingPermitFile);
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", period ,athertonBuildingPermitFile);
+		} else{
+			objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", "OneValidAndTwoInvalidRecordsForPermitValue.txt", athertonBuildingPermitFile);
+		}
 
 		//Step4: Waiting for Status of the imported file to be converted to "Imported"
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -272,8 +311,15 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		String period = objUtil.getCurrentDate("MMMM YYYY");
 
 		//Reverting the Approved Import logs if any in the system
-		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C = 'San Mateo Building permits' and Status__c = 'Approved'";
-		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			//Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C = 'San Mateo Building permits' and Status__c = 'Approved'";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		}else{
+			//step1:Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C = 'San Mateo Building permits' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+		}
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);
@@ -282,7 +328,11 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
-		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "San Mateo Building permits", period ,sanMateoBuildingPermitFile);
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "San Mateo Building permits", period ,sanMateoBuildingPermitFile);
+		} else{
+			objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "San Mateo Building permits", "NonNumericValueSanMateo.xlsx", sanMateoBuildingPermitFile);
+		}
 
 		//Step4: Waiting for Status of the imported file to be converted to "Imported"
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
@@ -314,12 +364,19 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	@Test(description = "SMAB-T315,SMAB-T458,SMAB-T459,SMAB-T619,SMAB-T621,SMAB-T624,SMAB-T625,SMAB-T457,SMAB-T549,SMAB-T460: Error message verification for the imported Atherton Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_ErrorMessageValidation_AthertonTxtFile(String loginUser) throws Exception {
 
-		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "ErrorMessageRecordsAtherton.txt";
+		String buildingPermitFileName = "WrongMessageRecordsAtherton.txt";
+		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "WrongMessageRecordsAtherton.txt";
 		String period = objUtil.getCurrentDate("MMMM YYYY");
 
-		//Reverting the Approved Import logs if any in the system
-		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
-		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			//Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		}else{
+			//step1:Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C like '%Atherton%' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+		}
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);
@@ -328,7 +385,11 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
-		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", period ,athertonBuildingPermitFile);
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", period, athertonBuildingPermitFile);
+		} else{
+			objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", buildingPermitFileName, athertonBuildingPermitFile);
+		}
 
 		//Step4: Waiting for Status of the imported file to be converted to "Imported"
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -360,7 +421,6 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Negative Permit Fee"),"Invalid Permit Fee","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Negative Permit Fee'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid Issue Date Format"),"Invalid Issue Date format","SMAB-T619 : Error Message validation for the scenario 'Invalid Issue Date Format'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid Completion Date Format"),"Invalid Completed Date format","SMAB-T619 : Error Message validation for the scenario 'Invalid Completion Date Format'");
-//		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Duplicate Permit"),"Invalid Square Footage","Error Message validation for the scenario 'Duplicate Permit'");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -372,12 +432,19 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	@Test(description = "SMAB-T362,SMAB-T1406: Error message verification for the imported Belmont Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_ErrorMessageValidation_BelmontTxtFile(String loginUser) throws Exception {
 
-		String burlingameBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_BELMONT + "ErrorMessageRecordsBelmont.txt";
+		String belmontBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_BELMONT + "WrongMessageRecordsBelmont.txt";
 		String period = objUtil.getCurrentDate("MMMM YYYY");
 
 		//Reverting the Approved Import logs if any in the system
-		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Belmont%' and Status__c = 'Approved' ";
-		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			//Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Belmont%' and Status__c = 'Approved' ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		}else{
+			//step1:Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C like '%Belmont%' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+		}
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);
@@ -386,7 +453,11 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Belmont Building Permit file having error and success records through Efile Intake Import
-		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Belmont Building permits", period ,burlingameBuildingPermitFile);
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Belmont Building permits", period ,belmontBuildingPermitFile);
+		} else{
+			objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Belmont Building permits", "WrongMessageRecordsBelmont.txt", belmontBuildingPermitFile);
+		}
 
 		//Step4: Waiting for Status of the imported file to be converted to "Imported"
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -410,12 +481,19 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	@Test(description = "SMAB-T362,SMAB-T1406: Error message verification for the imported Burlingame Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_ErrorMessageValidation_BurlingameTxtFile(String loginUser) throws Exception {
 
-		String burlingameBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_BURLINGAME + "ErrorMessageRecordsBurlingame.txt";
+		String burlingameBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_BURLINGAME + "WrongMessageRecordsBurlingame.txt";
 		String period = objUtil.getCurrentDate("MMMM YYYY");
 
 		//Reverting the Approved Import logs if any in the system
-		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Burlingame%' and Status__c = 'Approved' ";
-		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			//Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Burlingame%' and Status__c = 'Approved' ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		}else{
+			//step1:Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C like '%Burlingame%' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+		}
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);
@@ -424,7 +502,11 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Burlingame Building Permit file having error and success records through Efile Intake Import
-		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Burlingame Building permits", period ,burlingameBuildingPermitFile);
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Burlingame Building permits", period ,burlingameBuildingPermitFile);
+		} else{
+			objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Burlingame Building permits", "WrongMessageRecordsBurlingame.txt", burlingameBuildingPermitFile);
+		}
 
 		//Step4: Waiting for Status of the imported file to be converted to "Imported"
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -449,12 +531,19 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	@Test(description = "SMAB-T362,SMAB-T1406: Error message verification for the imported Unincorporated Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_ErrorMessageValidation_UnincorporatedTxtFile(String loginUser) throws Exception {
 
-		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_UNINCORPORATED + "ErrorMessageRecordsUnincorporated.txt";
+		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_UNINCORPORATED + "WrongMessageRecordsUnincorporated.txt";
 		String period = objUtil.getCurrentDate("MMMM YYYY");
 
 		//Reverting the Approved Import logs if any in the system
-		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Unincorporated%' and Status__c = 'Approved' ";
-		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			//Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Unincorporated%' and Status__c = 'Approved' ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		}else{
+			//step1:Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C like '%Unincorporated%' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+		}
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);
@@ -463,7 +552,12 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Unincorporated Building Permit file having error and success records through Efile Intake Import
-		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Unincorporated Building permits", period ,buildingPermitFile);
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Unincorporated Building permits", period ,buildingPermitFile);
+		} else{
+			objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Unincorporated Building permits", "WrongMessageRecordsUnincorporated.txt", buildingPermitFile);
+		}
+
 
 		//Step4: Waiting for Status of the imported file to be converted to "Imported"
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -490,12 +584,19 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	@Test(description = "SMAB-T315,SMAB-T458,SMAB-T459,SMAB-T619,SMAB-T621,SMAB-T624,SMAB-T625,SMAB-T457,SMAB-T549,SMAB-T1388: Error message verification for the imported San Mateo Building Permit in XLS Format", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_ErrorMessageValidation_SanMateoExcelFile(String loginUser) throws Exception {
 
-		String sanMateoBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "ErrorMessageRecordsSanMateo.xlsx";
+		String sanMateoBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "WrongMessageRecordsSanMateo.xlsx";
 		String period = objUtil.getCurrentDate("MMMM YYYY");
 
 		//Reverting the Approved Import logs if any in the system
-		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C = 'San Mateo Building permits' and Status__c = 'Approved'";
-		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			//Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C = 'San Mateo Building permits' and Status__c = 'Approved'";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+		}else{
+			//step1:Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C = 'San Mateo Building permits' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+		}
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);
@@ -504,7 +605,12 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
-		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "San Mateo Building permits", period ,sanMateoBuildingPermitFile);
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "San Mateo Building permits", period ,sanMateoBuildingPermitFile);
+		} else{
+			objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "San Mateo Building permits", "WrongMessageRecordsSanMateo.xlsx", sanMateoBuildingPermitFile);
+		}
+
 
 		//Step4: Waiting for Status of the imported file to be converted to "Imported"
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
@@ -549,8 +655,16 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		String period = objUtil.getCurrentDate("MMMM YYYY");
 
 		//Reverting the Approved Import logs if any in the system
-		String queryRevertApprove = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
-		salesforceAPI.update("E_File_Import_Log__c",queryRevertApprove,"Status__c","Imported");
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			//Reverting the Approved Import logs if any in the system
+			String queryRevertApprove = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and Import_Period__C='" + period + "' and File_Source__C like '%Atherton%' and Status__c = 'Approved' ";
+			salesforceAPI.update("E_File_Import_Log__c",queryRevertApprove,"Status__c","Imported");
+		}else{
+			//step1:Reverting the Approved Import logs if any in the system
+			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C like '%Atherton%' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
+			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+		}
+
 
 		//Step1: Creating temporary file with building permit number with existing city apn and parcel
 		String buildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
@@ -565,7 +679,12 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 
 		//Step4: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
-		objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", period ,temporaryFile);
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			objEfileImportPage.uploadFileOnEfileIntake("Building Permit", "Atherton Building Permits", period ,temporaryFile);
+		} else{
+			objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", "DuplicateRecordUpsertValidation_AT.txt", temporaryFile);
+		}
+
 
 		//Step5: Waiting for Status of the imported file to be converted to "Imported"
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
