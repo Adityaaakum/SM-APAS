@@ -314,10 +314,10 @@ public class EFileImportPage extends Page {
 	 */
 	public String getErrorMessageFromErrorGrid(String stringValueInRow){
 		String xpath = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table)[1]//tbody//tr[contains(.,'" + stringValueInRow + "')]//th[@data-label='ERROR_MESSAGE']";
-//		if (verifyElementExists(stringValueInRow))
+		if (verifyElementExists(xpath))
 			return getElementText(driver.findElement(By.xpath(xpath)));
-//		else
-//			return "";
+		else
+			return "";
 	}
 
 /*
@@ -333,7 +333,7 @@ public class EFileImportPage extends Page {
 	 * This method will upload the file on Efile Import module
 	 * @param fileType : Value from File Type Drop Down
 	 * @param source: Value from source drop down
-	 * @param period: Period for which the file needs to be uploaded
+	 * @param filename: Period for which the file needs to be uploaded
 	 * @param absoluteFilePath: Absoulte Path of the file with the file name
 	 */
 	public void uploadFileOnEfileIntakeBP(String fileType, String source,String filename, String absoluteFilePath) throws Exception{
@@ -351,7 +351,7 @@ public class EFileImportPage extends Page {
 		Thread.sleep(2000);
 		objPage.waitForElementToBeClickable(doneButton);
 		Thread.sleep(2000);
-		objPage.javascriptClick(doneButton);
+		objPage.Click(doneButton);
 		waitForElementToBeClickable(statusImportedFile,20);
 		objPage.waitForElementTextToBe(statusImportedFile, "In Progress", 120);
 	}
