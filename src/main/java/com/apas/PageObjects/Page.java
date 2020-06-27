@@ -1,5 +1,6 @@
 package com.apas.PageObjects;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -1126,5 +1127,58 @@ public class Page {
 			Click(element);
 		}
 	}
-	
+	/**
+	 * Description: Checks the downloaded file in user's system
+	 * @param folderPath: Path of the directory
+	 * @param fileNameWithExt: Name of the file to be checked in directory
+	 * @return boolean: Return the status true/false on basis of existence of downloaded file
+	 */
+	public boolean verifyFileInGivenFolder(String folderPath, String fileNameWithExt) throws Exception {
+		String fileNameFromDir;
+		File sourceFiles = new File(folderPath);
+		File[] listOfFiles = sourceFiles.listFiles();
+		boolean status = false;
+
+		for (int i = 0; i < listOfFiles.length; i++) {
+			fileNameFromDir = listOfFiles[i].getName().toUpperCase();
+			if(fileNameWithExt.equalsIgnoreCase(fileNameFromDir)) {
+				status = true;
+				break;
+			}
+		}
+		return status;
+	}
+	/**
+	 * Deletes all the files from download directory
+	 * @param directoryPath: Path from where all files are to be deleted
+	 */
+	public void deleteAllFilesFromGivenDirectory(String directoryPath) {
+		File dir = new File(directoryPath);
+		if(dir.listFiles().length > 0) {
+			for(File file: dir.listFiles()) {
+				if (!file.isDirectory())
+					file.delete();
+			}
+		}
+	}
+	/**
+	 * Description: Checks whether element is displayed on the web page
+	 * @param element: WebElement whose availability is to be checked
+	 * @param timeOutInSec: Time out in seconds
+	 * @return boolean: Returns true / false bases on availability of element
+	 * @throws: Exception
+	 */
+	public boolean isElementAvailable(WebElement element, int timeOutInSec) throws Exception {
+		try {
+			waitForElementToBeVisible(element, timeOutInSec);
+			return true;
+		} catch(TimeoutException ex) {
+			return false;
+		} catch(java.util.NoSuchElementException ex) {
+			return false;
+		} catch(StaleElementReferenceException ex) {
+			return false;
+		}
+	}
+
 }

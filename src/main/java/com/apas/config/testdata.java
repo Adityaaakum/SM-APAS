@@ -18,9 +18,9 @@ public interface testdata {
 	public static final String BUILDING_PERMIT_NEW_MANUAL_ENTRY_DATA = "\\data\\BuildingPermit\\SanMateoBuildingPermits\\BuildingPermit_DataToCreateManualEntry.txt";
 	public static final String BUILDING_PERMIT_MANUAL_ENTRY_DATA = "\\data\\BuildingPermit\\SanMateoBuildingPermits\\BuildingPermit_ManualEntryData.json";
 	public static final String BPP_TREND_CALCULATOR = "\\data\\BppTrend\\Valid_Import_Files\\2020_Trend_Factors_Calculator.xlsx";
-	public static final String BPP_TREND_BOE_INDEX_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\BOE Equipment Index Factors and Percent Good Factors 2020.xlsx";
-	public static final String BPP_TREND_CAA_VALUATION_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\CAA Valuation Factors 2020.xlsx";
-	public static final String BPP_TREND_BOE_VALUATION_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\BOE Valuation Factors 2020.xlsx";
+	public static final String BPP_TREND_BOE_INDEX_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\BOE Equipment Index Factors and Percent Good Factors 2021.xlsx";
+	public static final String BPP_TREND_CAA_VALUATION_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\CAA Valuation Factors 2021.xlsx";
+	public static final String BPP_TREND_BOE_VALUATION_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\BOE Valuation Factors 2021.xlsx";
 	public static final String BPP_TREND_DATA = "\\data\\BppTrend\\BppTrendSetupAndBppSettingData.json";
 	
 	public static final String BPP_TREND_BOE_INDEX_FACTORS_CSV = "\\data\\BppTrend\\Invalid_Format_Files\\BOE Equipment Index Factors and Percent Good Factors Sample_CSV_Format.csv";
@@ -39,7 +39,7 @@ public interface testdata {
     
 
     public static final String EFILEIMPORT_INVALIDDATA = "\\data\\EFileImportInvalidFiles\\";
-    public static final String EFILEIMPORT_BPPTRENDSDATA = "\\data\\EFileImportBppTrend\\";
+    public static final String EFILEIMPORT_BPPTRENDSDATA = "\\data\\EFileImportBppTrend";
     public static final String EFILEIMPORT_BPDATA = "\\data\\EFileImportBP\\";
 
 }
