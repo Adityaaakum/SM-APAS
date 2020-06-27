@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.apas.PageObjects.*;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
@@ -16,10 +17,6 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
-import com.apas.PageObjects.ApasGenericPage;
-import com.apas.PageObjects.BppTrendPage;
-import com.apas.PageObjects.BuildingPermitPage;
-import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
@@ -41,7 +38,8 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 	String rollYear;
 	BuildingPermitPage objBuildPermitPage;
 	ApasGenericPage objApasGenericPage;
-	
+	BppTrendSetupPage objBppTrendSetupPage;
+
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
 		
@@ -60,6 +58,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		rollYear = CONFIG.getProperty("rollYear");
 		objBuildPermitPage = new BuildingPermitPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
+		objBppTrendSetupPage = new BppTrendSetupPage (driver);
 	}
 	
 	@AfterMethod
@@ -81,7 +80,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		
 		//Step2: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.CPI_FACTORS);
-		objApasGenericFunctions.selectAllOptionOnGrid();
+		objApasGenericFunctions.displayRecords("All");
 		
 		//Step3: Checking unavailability of new button on grid page
 		softAssert.assertTrue(!objBppTrnPg.isElementAvailable(objBppTrnPg.newBtnViewAllPage, 10), "SMAB-T210: For User "+ loginUser +"-- New button is not visible on grid page");
@@ -96,7 +95,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 			softAssert.assertTrue(!objBppTrnPg.isElementAvailable(objBuildPermit.editLinkUnderShowMore, 5), "SMAB-T210: For User "+ loginUser +"-- Edit link is not visible under show more option on grid");
 			
 			//Step7: Checking unavailability of edit button on details page
-			objBppTrnPg.clickOnEntryNameInGrid(cpiFactorToEdit);
+			objBppTrendSetupPage.clickOnEntryNameInGrid(cpiFactorToEdit);
 			softAssert.assertTrue(!objBppTrnPg.isElementAvailable(objBuildPermit.editBtnDetailsPage, 5), "SMAB-T210: For User "+ loginUser +"-- Edit button is not visible on details page");
 		}
 		else {
@@ -129,8 +128,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		
 		//Step4: Opening the BPP Trend module and set All as the view option in grid
 		objApasGenericFunctions.searchModule(modules.CPI_FACTORS);
-		objApasGenericFunctions.selectAllOptionOnGrid();
-		Thread.sleep(2000);
+		objApasGenericFunctions.displayRecords("All");
 		
 		//Step5: Adding all roll year elements into a list
 		List<WebElement> rollYearsElementsList = objBppTrnPg.rollYears;
@@ -246,10 +244,10 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		objBppTrnPg.Click(objBuildPermitPage.saveButton);
 		
 		//Step18: Validating error message for duplicate entry and clicking cancel button to close the pop up
-		String expErrorMsgOnDuplicatEntry = CONFIG.getProperty("errorMsgOnDulicateCpiFactor");
+		String expErrorMsgOnDuplicateEntry = CONFIG.getProperty("errorMsgOnDuplicateCpiFactor");
 		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.errorMsgOnDuplicateCpiFactor, 10);
-		String actErrorMsgOnDuplicatEntry = objBppTrnPg.getElementText(objBppTrnPg.errorMsgOnDuplicateCpiFactor);
-		softAssert.assertContains(actErrorMsgOnDuplicatEntry, expErrorMsgOnDuplicatEntry, "SMAB-T181: Validation for duplicate entry of CPI Factor");
+		String actErrorMsgOnDuplicateEntry = objBppTrnPg.getElementText(objBppTrnPg.errorMsgOnDuplicateCpiFactor);
+		softAssert.assertContains(actErrorMsgOnDuplicateEntry, expErrorMsgOnDuplicateEntry, "SMAB-T181: Validation for duplicate entry of CPI Factor");
 		
 		objBppTrnPg.Click(objBuildPermitPage.cancelButton);
 		
@@ -261,7 +259,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		objBppTrnPg.enter(objBppTrnPg.cpiFactorInputBox, "0.00");
 		
 		objBppTrnPg.Click(objBuildPermitPage.saveButton);
-		String actMsgInPopUpOnSave = objBppTrnPg.waitForPopUpMsg(10);
+		String actMsgInPopUpOnSave = objBppTrendSetupPage.waitForPopUpMsg(10);
 		boolean isRecordCreated = actMsgInPopUpOnSave.contains("was created");
 		softAssert.assertTrue(isRecordCreated, "SMAB-T180: Validationg message on successfully creating CPI Factor entry. "+ actMsgInPopUpOnSave);
 		
@@ -289,9 +287,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		
 		//Step2: Opening the BPP Trend module and set All as the view option in grid
 		objApasGenericFunctions.searchModule(modules.CPI_FACTORS);
-		objApasGenericFunctions.selectAllOptionOnGrid();
-		Thread.sleep(2000);
-		
+		objApasGenericFunctions.displayRecords("All");	
 		
 		String cpiFactorToEdit = objBppTrnPg.getElementText(objBppTrnPg.firstEntryInGrid);
 
@@ -316,7 +312,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		objBppTrnPg.Click(objBuildPermitPage.closeEntryPopUp);
 		
 		//Step7: Clicking on the CPI Factor name to navigate To details page
-		objBppTrnPg.clickOnEntryNameInGrid(cpiFactorToEdit);
+		objBppTrendSetupPage.clickOnEntryNameInGrid(cpiFactorToEdit);
 		objBppTrnPg.waitForElementToBeClickable(objBuildPermitPage.editButton, 10);
 		
 		//Step8: Clicking edit button on details page

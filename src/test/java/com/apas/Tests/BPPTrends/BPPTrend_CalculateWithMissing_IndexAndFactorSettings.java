@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.apas.PageObjects.BppTrendSetupPage;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -40,7 +41,8 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 	SalesforceAPI objSalesforceAPI;
 	BuildingPermitPage objBuildPermit;
 	SoftAssert objSoftAssert;
-	
+	BppTrendSetupPage objBppTrendSetupPage;
+
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
 		
@@ -60,6 +62,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 		objSalesforceAPI = new SalesforceAPI();
 		objBuildPermit = new BuildingPermitPage(driver);
 		objSoftAssert = new SoftAssert();
+		objBppTrendSetupPage = new BppTrendSetupPage(driver);
 	}
 	
 	@AfterMethod
@@ -83,8 +86,14 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 		//Step2: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		
+		//Step8: Deleting the new BPP Trend Setup created
+		int year = Integer.parseInt(rollYear) + 2;
+		String queryForBppTrendRollYear = "Select Id From BPP_Trend_Roll_Year__c Where Roll_Year__c = '"+ year +"'";
+		new SalesforceAPI().delete("BPP_Trend_Roll_Year__c", queryForBppTrendRollYear);
+
+		
 		//Step3: Creating a new BPP trend setup with no BPP settings, no composite factors settings, no index & goods factor data for future roll year
-		objBppTrnPg.createDummyBppTrendSetupForErrorsValidation("Not Calculated");
+		objBppTrendSetupPage.createDummyBppTrendSetupForErrorsValidation("Not Calculated",year);
 		objApasGenericFunctions.logout();
 		
 		//Step4: Login with given login user
@@ -94,10 +103,10 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Navigating back to BPP Trends page **");
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
 		
-		String rollYear = System.getProperty("rollYearForErrorValidationOnCalculate");
+		String rollYear = objBppTrendSetupPage.rollYearForErrorValidationOnCalculate;
 		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
-		objBppTrnPg.clickOnGivenRollYear(rollYear);
+		objBppTrnPg.clickOnGivenRollYear(Integer.toString(year));
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
 
 		//Step6: Fetch table names from properties file and collect them in a single list
@@ -105,7 +114,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesUnderMoreTab").split(",")));
 		
-		String tableNamesUnderMoreTab = CONFIG.getProperty("compositeTablesUnderMoreTab");
+		//String tableNamesUnderMoreTab = CONFIG.getProperty("compositeTablesUnderMoreTab");
 		String tableName;
 		
 		//Step7: Iterating over the given tables to validate error message on calculate click
@@ -114,8 +123,9 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 			ExtentTestManager.getTest().log(LogStatus.INFO, "** Performing Validations For: '"+ allTables.get(i) +"' Table **");
 			// Clicking on the given table name
 			tableName = allTables.get(i);
-			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(allTables.get(i));
-			objBppTrnPg.clickOnTableOnBppTrendPage(allTables.get(i), isTableUnderMoreTab);
+			//boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(allTables.get(i));
+			//objBppTrnPg.clickOnTableOnBppTrendPage(allTables.get(i), isTableUnderMoreTab);
+			objBppTrnPg.clickOnTableOnBppTrendPage(allTables.get(i));
 			
 			//Click calculate button for given tables individually
 			objBppTrnPg.isCalculateBtnVisible(30, tableName);
@@ -133,14 +143,14 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 		
 		//Step8: Opening the BPP Trend module and set All as the view option in grid
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.selectAllOptionOnGrid();
+		objApasGenericFunctions.displayRecords("All");
 		
 		//Step9: Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
+		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 		
 		//Step10: Create a BPP Setting under selected BPP Trend Setup
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Maximum Equipment Index Factor **");
-		objBppTrnPg.createBppSetting("125");
+		objBppTrendSetupPage.createBppSetting("125");
 		Thread.sleep(2000);
 		
 		//Step11: Navigating to BPP Trend page and selecting given roll year
@@ -170,9 +180,10 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 			}
 			
 			//Clicking on given table name
-			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(allTables.get(i));
-			objBppTrnPg.clickOnTableOnBppTrendPage(allTables.get(i), isTableUnderMoreTab);
-			
+			//boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(allTables.get(i));
+			//objBppTrnPg.clickOnTableOnBppTrendPage(allTables.get(i), isTableUnderMoreTab);
+			objBppTrnPg.clickOnTableOnBppTrendPage(allTables.get(i));
+
 			//Click calculate button for given tables individually
 			objBppTrnPg.isCalculateBtnVisible(30, tableName);
 			objBppTrnPg.clickCalculateBtn(tableName);
@@ -184,79 +195,79 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 		
 		//Step13: Opening the BPP Trend module and set All as the view option in grid
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.selectAllOptionOnGrid();
+		objApasGenericFunctions.displayRecords("All");
 		
 		//Step14: Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objBppTrnPg.clickOnEntryNameInGrid(rollYear);
+		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 		
 		//Step15: Create a BPP Composite Factor Settings
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Clicking on Bpp Composite Factors Settings tab **");	
-		if(objBppTrnPg.moreTabRightSection != null) {
-			objBppTrnPg.clickAction(objBppTrnPg.moreTabRightSection);
-			objBppTrnPg.clickAction(objBppTrnPg.bppCompositeFactorOption);
-        } else {
-        	objBppTrnPg.clickAction(objBppTrnPg.bppCompFactorSettingTab);
-		}
+//		if(objBppTrendSetupPage.moreTabRightSection != null) {
+//			objBppTrnPg.clickAction(objBppTrendSetupPage.moreTabRightSection);
+//			objBppTrnPg.clickAction(objBppTrendSetupPage.bppCompositeFactorOption);
+//        } else {
+        	objBppTrnPg.clickAction(objBppTrendSetupPage.bppCompFactorSettingTab);
+//		}
 		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Commercial property type **");
-		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
+		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
 		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.newBtnToCreateEntry, 20);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBtnToCreateEntry));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
 
-		objBppTrnPg.enterFactorValue("10");
-		objBppTrnPg.enterPropertyType("Commercial");
-		objBppTrnPg.Click(objBppTrnPg.saveBtnInBppSettingPopUp);
+		objBppTrendSetupPage.enterFactorValue("10");
+		objBppTrendSetupPage.enterPropertyType("Commercial");
+		objBppTrnPg.Click(objBppTrendSetupPage.saveBtnInBppSettingPopUp);
 		Thread.sleep(1000);
 		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Industrial property type **");
-		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
+		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
 		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.newBtnToCreateEntry, 20);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBtnToCreateEntry));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
 
-		objBppTrnPg.enterFactorValue("9");
-		objBppTrnPg.enterPropertyType("Industrial");
-		objBppTrnPg.Click(objBppTrnPg.saveBtnInBppSettingPopUp);
+		objBppTrendSetupPage.enterFactorValue("9");
+		objBppTrendSetupPage.enterPropertyType("Industrial");
+		objBppTrendSetupPage.Click(objBppTrendSetupPage.saveBtnInBppSettingPopUp);
 		Thread.sleep(1000);
 		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Agricultural property type **");
-		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
+		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
 		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.newBtnToCreateEntry, 20);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBtnToCreateEntry));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
+		objBppTrnPg.clickAction(objBppTrendSetupPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
 
-		objBppTrnPg.enterFactorValue("11");
-		objBppTrnPg.enterPropertyType("Agricultural");
-		objBppTrnPg.Click(objBppTrnPg.saveBtnInBppSettingPopUp);
+		objBppTrendSetupPage.enterFactorValue("11");
+		objBppTrendSetupPage.enterPropertyType("Agricultural");
+		objBppTrendSetupPage.Click(objBppTrendSetupPage.saveBtnInBppSettingPopUp);
 		Thread.sleep(1000);
 		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Construction property type **");
-		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.dropDownIconBppCompFactorSetting));
-		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.newBtnToCreateEntry, 20);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.newBtnToCreateEntry));
+		objBppTrendSetupPage.waitForElementToBeVisible(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
+		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
 
-		objBppTrnPg.enterFactorValue("10");
-		objBppTrnPg.enterPropertyType("Construction");
-		objBppTrnPg.Click(objBppTrnPg.saveBtnInBppSettingPopUp);
+		objBppTrendSetupPage.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
+		objBppTrendSetupPage.clickAction(objBppTrendSetupPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
+
+		objBppTrendSetupPage.enterFactorValue("10");
+		objBppTrendSetupPage.enterPropertyType("Construction");
+		objBppTrendSetupPage.Click(objBppTrendSetupPage.saveBtnInBppSettingPopUp);
 		Thread.sleep(1000);	
 		
 		//Step16: Navigating to BPP Trend page and selecting given roll year
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Navigating back to BPP Trends page **");
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-		objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
-		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
+		objBppTrendSetupPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
+		objBppTrendSetupPage.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
-		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
+		objBppTrendSetupPage.Click(objBppTrnPg.selectRollYearButton);
 
 		//Step17: Iterating over the given tables to validate error message on calculate button
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Validating error messages on Calculate button click when BPP Percent & Goods Factors are missing **");
@@ -276,9 +287,10 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 			}
 			
 			//Clicking on given table name
-			boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(allTables.get(i));
-			objBppTrnPg.clickOnTableOnBppTrendPage(allTables.get(i), isTableUnderMoreTab);
-			
+			//boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(allTables.get(i));
+			//objBppTrnPg.clickOnTableOnBppTrendPage(allTables.get(i), isTableUnderMoreTab);
+			objBppTrnPg.clickOnTableOnBppTrendPage(allTables.get(i));
+
 			//Click calculate button for given tables individually
 			objBppTrnPg.isCalculateBtnVisible(30, tableName);
 			objBppTrnPg.clickCalculateBtn(tableName);
@@ -292,7 +304,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 		}
 
 		//Step18: Deleting the new BPP Trend Setup created
-		String queryForBppTrendRollYear = "Select Id From BPP_Trend_Roll_Year__c Where Roll_Year__c = '"+ rollYear +"'";
+		queryForBppTrendRollYear = "Select Id From BPP_Trend_Roll_Year__c Where Roll_Year__c = '"+ rollYear +"'";
 		new SalesforceAPI().delete("BPP_Trend_Roll_Year__c", queryForBppTrendRollYear);
 		
 		//Step20: Log out application at end of test case
