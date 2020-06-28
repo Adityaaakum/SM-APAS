@@ -36,12 +36,11 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
-		
-		if(driver==null) {
-			setupTest();
-			driver = BrowserDriver.getBrowserInstance();
-		}
+
+		driver=null;
+		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
+
 		objPage = new Page(driver);
 		objBuildingPermitPage = new BuildingPermitPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);

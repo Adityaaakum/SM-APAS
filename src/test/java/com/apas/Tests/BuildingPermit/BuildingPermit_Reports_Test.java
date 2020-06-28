@@ -30,11 +30,10 @@ public class BuildingPermit_Reports_Test extends TestBase {
 
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception {
-		if(driver==null) {
-			setupTest();
-			driver = BrowserDriver.getBrowserInstance();
-		}
+		driver=null;
+		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
+
 		objPage = new Page(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objReportsPage = new ReportsPage(driver);

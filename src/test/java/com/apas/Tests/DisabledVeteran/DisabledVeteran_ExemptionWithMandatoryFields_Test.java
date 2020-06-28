@@ -38,11 +38,10 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 	
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
-		if(driver==null) {
-			setupTest();
-			driver = BrowserDriver.getBrowserInstance();
-		}
+		driver=null;
+		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
+
 		objPage = new Page(driver);
 		objExemptionsPage = new ExemptionsPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);

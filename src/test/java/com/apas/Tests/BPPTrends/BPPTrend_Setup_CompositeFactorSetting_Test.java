@@ -35,13 +35,11 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 	
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
-		
-		if(driver==null) {
-            setupTest();
-            driver = BrowserDriver.getBrowserInstance();
-        }
-		
+
+		driver=null;
+		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
+
 		objPage = new Page(driver);
 		objBppTrnPg = new BppTrendPage(driver);
 		objBuildPermit = new BuildingPermitPage(driver);

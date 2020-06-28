@@ -41,11 +41,10 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 	
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception {
-		if(driver==null) {
-			setupTest();
-			driver = BrowserDriver.getBrowserInstance();
-		}
+		driver=null;
+		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
+
 		objPage = new Page(driver);
 		objUtil = new Util();
 		objValueAdjustmentPage = new ValueAdjustmentsPage(driver);

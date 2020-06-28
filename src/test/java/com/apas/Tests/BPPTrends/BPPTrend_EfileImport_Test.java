@@ -44,11 +44,10 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
-		
-		if(driver==null) {
-            setupTest();
-            driver = BrowserDriver.getBrowserInstance();
-        }
+
+		driver=null;
+		setupTest();
+		driver = BrowserDriver.getBrowserInstance();
 		
 		objPage = new Page(driver);
 		objBppTrend = new BppTrendPage(driver);

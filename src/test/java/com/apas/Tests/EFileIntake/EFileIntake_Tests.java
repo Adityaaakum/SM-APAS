@@ -50,14 +50,11 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
-		
 
-		if(driver==null) {
-			setupTest();
-			driver = BrowserDriver.getBrowserInstance();
-		}
-		
+		driver=null;
+		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
+
 		objPage = new Page(driver);
 		objLoginPage = new LoginPage(driver);
 		apasGenericObj = new ApasGenericFunctions(driver);
