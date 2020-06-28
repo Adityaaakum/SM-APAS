@@ -39,7 +39,6 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 	BuildingPermitPage objBuildPermitPage;
 	ApasGenericPage objApasGenericPage;
 	BppTrendSetupPage objBppTrendSetupPage;
-
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
 		
@@ -65,7 +64,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 	public void afterMethod() throws Exception {
 		//objApasGenericFunctions.logout();
 	}
-
+	
 	
 	/**
 	 * DESCRIPTION: Performing Following Validations::
@@ -75,6 +74,8 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 	@Test(description = "SMAB-T210: Appraiser and Auditor users unable to create, edit the value of CPI factor and saves, approve table data", groups = {"smoke","regression","BPPTrend"}, dataProvider = "rpApprasierAndBPPAuditor", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_CreateAndEdit_InflationFactor_WithRestrictedUsers(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the given user
+		objBppTrnPg.deleteDuplicateCPI();
+		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
 		objApasGenericFunctions.login(loginUser);
 		
@@ -118,6 +119,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 	@Test(description = "SMAB-T179,SMAB-T180,SMAB-T181,SMAB-T182: Create new CPI Factor", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_Create_CpiFactors(String loginUser) throws Exception {						
 		//Step1: Retrieving a roll year from data base to create CPI Factor value for it
+		objBppTrnPg.deleteDuplicateCPI();
 		String queryForRollYear = "Select Name FROM Roll_Year_Settings__c Where Status__c = 'open' Order By Roll_Year__c Desc LIMIT 1";
 		HashMap<String, ArrayList<String>> dataFromApi = new SalesforceAPI().select(queryForRollYear);
 		String rollYearForCpiFactor = dataFromApi.get("Name").get(0);
@@ -280,7 +282,8 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 	 * 1. Validating business administrator is not able to edit approved inflation factor:: TestCase/JIRA ID: SMAB-T183
 	 */
 	@Test(description = "SMAB-T183: Validating business administrator user is not able to edit the approved inflation factor", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_EditCpiFactors_ByRestrictedUser(String loginUser) throws Exception {		
+	public void verify_BppTrend_EditCpiFactors_ByRestrictedUser(String loginUser) throws Exception {
+		objBppTrnPg.deleteDuplicateCPI();
 		//Step1: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
 		objApasGenericFunctions.login(loginUser);

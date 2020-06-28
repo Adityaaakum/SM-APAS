@@ -46,7 +46,7 @@ public class BppTrendPage extends Page {
 	ApasGenericPage objApasGenericPage;
 	Util objUtil;
 	Page objPage;
-	
+	SalesforceAPI objSFAPI;
     public Map<String, String> trendSettingsOriginalValues;
     Map<String, Integer> trendSettingRowNumbers;
 	String xpathCellData = null;
@@ -59,6 +59,7 @@ public class BppTrendPage extends Page {
 		objApasGenericPage = new ApasGenericPage(driver);
 		objPage = new Page(driver);
 		objUtil = new Util();
+		objSFAPI = new SalesforceAPI();
 	}
 
 	@FindBy(xpath = "//input[@name = 'rollyear']")
@@ -226,7 +227,7 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//span[text() = 'Files']//parent::span[text() = 'View All']") //ancestor::a
 	public WebElement viewAllFiles;
 
-	@FindBy(xpath = "//lightning-spinner[contains(@class, 'slds-spinner_container')]//div[contains(@class, 'slds-spinner')]")
+	@FindBy(xpath = "//lightning-spinner[contains(@class, 'slds-spinner_container')]//div[contains(@class, 'slds-spinner_medium')]")
 	public WebElement statusSpinner;
 
 	@FindBy(xpath = "(//th[@data-label = 'Year Acquired'])[1]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))]")
@@ -1100,6 +1101,18 @@ public class BppTrendPage extends Page {
 					break;		
 				}
 			}
+		}
+	}
+	
+	public void deleteDuplicateCPI() {
+		String queryForRollYearId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '2020'";
+		HashMap<String, ArrayList<String>> rollYearId = objSFAPI.select(queryForRollYearId);
+		
+		String queryForDuplicateCPIFactor = "SELECT Id FROM CPI_Factor__c  Where Roll_Year__c ='"+rollYearId.get("Id").get(0)+"' ORDER BY LastModifiedDate DESC";
+		HashMap<String, ArrayList<String>> duplicateCPI = objSFAPI.select(queryForDuplicateCPIFactor);
+		if(duplicateCPI.get("Id").size()>1) {	
+			objSFAPI.delete("CPI_Factor__c", duplicateCPI.get("Id").get(0));
+			
 		}
 	}
 }
