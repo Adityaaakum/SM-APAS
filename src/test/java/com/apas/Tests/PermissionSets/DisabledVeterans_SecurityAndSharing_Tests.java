@@ -89,15 +89,15 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 			apasGenericObj.searchModule(EXEMPTIONS);
 			
 			//Step3: Verifying new button not available for Rp Apprasier user
-			softAssert.assertEquals(apasGenericObj.isNotDisplayed(exemptionPageObj.newExemptionButton), false, "SMAB-T483: User is not able to see New button to create a new Exemption record");
+			softAssert.assertTrue(apasGenericObj.isNotDisplayed(exemptionPageObj.newExemptionButton), "SMAB-T483: User is not able to see New button to create a new Exemption record");
 			apasGenericObj.globalSearchRecords(exemptionRecord);
-			softAssert.assertEquals(apasGenericObj.isNotDisplayed(exemptionPageObj.editExemption), false, "SMAB-T482: User is not able to edit/delete Exemption record");
+			softAssert.assertTrue(apasGenericObj.isNotDisplayed(exemptionPageObj.editExemption),  "SMAB-T482: User is not able to edit/delete Exemption record");
 			
 			ReportLogger.INFO("Verifying user is not able to see New and Edit button for creating/Editing Value adjustments record");
 			apasGenericObj.searchModule("Value Adjustments");
 			apasGenericObj.globalSearchRecords(vaRecord);
 			//exemptionPageObj.checkForAndSelectRecordsInList();
-			softAssert.assertEquals(apasGenericObj.isNotDisplayed(exemptionPageObj.editExemption), false, "SMAB-T476,SMAB-T477: User is not able to edit/delete VA record");
+			softAssert.assertTrue(apasGenericObj.isNotDisplayed(exemptionPageObj.editExemption), "SMAB-T476,SMAB-T477: User is not able to edit/delete VA record");
 			apasGenericObj.logout();
 		
 	}
@@ -117,9 +117,9 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 			apasGenericObj.searchModule(ROLLYEAR);
 		
 			//Step3: Verifying new button not available for Rp Apprasier user
-			softAssert.assertEquals(apasGenericObj.isNotDisplayed(exemptionPageObj.newExemptionButton), false, "SMAB-T642: User is not able to see New button to create a new Roll Year record");
+			softAssert.assertTrue(apasGenericObj.isNotDisplayed(exemptionPageObj.newExemptionButton),  "SMAB-T642: User is not able to see New button to create a new Roll Year record");
 			apasGenericObj.globalSearchRecords(rollYearRecord);
-			softAssert.assertEquals(apasGenericObj.isNotDisplayed(exemptionPageObj.editExemption), false, "SMAB-T482: User is not able to edit/delete Roll Year record");
+			softAssert.assertTrue(apasGenericObj.isNotDisplayed(exemptionPageObj.editExemption), "SMAB-T482: User is not able to edit/delete Roll Year record");
 			
 			apasGenericObj.logout();
 		

@@ -130,6 +130,12 @@ public class SuiteListener extends TestBase implements ITestListener {
 		}
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 		ExtentManager.getExtentInstance().flush();
+		TearDown();
+//		try {
+//			setupTest();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	/**
@@ -165,7 +171,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 			ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 			ExtentManager.getExtentInstance().flush();
 			TearDown();
-			setupTest();
+//			setupTest();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -186,6 +192,11 @@ public class SuiteListener extends TestBase implements ITestListener {
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 		ExtentManager.getExtentInstance().flush();
 		TearDown();
+//		try {
+//			setupTest();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override

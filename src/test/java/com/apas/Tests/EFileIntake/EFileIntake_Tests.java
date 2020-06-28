@@ -48,7 +48,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	EFileImportTransactionsPage objEFileImportTransactionpage;
 	String EFileinvalidFormatFilepath;
 	
-	@BeforeMethod(alwaysRun=false)
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
 		
 
@@ -569,7 +569,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T102:Verify user is able to see number of records count from file import action on 'E-File Import Logs' screen", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"smoke", "regression","EFileImport" },priority=0)	
+		"smoke", "regression","EFileImport" })
 	public void EFile_VerifyFileTypeAndCorrespondingSources(String loginUser) throws Exception{
 	//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		apasGenericObj.login(loginUser);

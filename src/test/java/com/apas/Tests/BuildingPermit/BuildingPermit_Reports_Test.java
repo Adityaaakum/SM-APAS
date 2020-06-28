@@ -76,7 +76,8 @@ public class BuildingPermit_Reports_Test extends TestBase {
 		//Step5: Validation that Building Permit Number APN columns dispalyed on the report should be links
 		driver.switchTo().frame(0);
 		softAssert.assertTrue(objPage.verifyElementExists(objReportsPage.linkBuildingPermitNumber),"SMAB-T433: Validation that Building Permit Number displayed on report should be a link");
-		softAssert.assertTrue(objPage.verifyElementExists(objReportsPage.linkAPN),"SMAB-T433: Validation that APN displayed on report should be a link");
+		//Removing below validation as APN value can be blank and the report pull the data dynamically
+		//softAssert.assertTrue(objPage.verifyElementExists(objReportsPage.linkAPN),"SMAB-T433: Validation that APN displayed on report should be a link");
 		driver.switchTo().parentFrame();
 
 		//Step5: Opening the Reports module
