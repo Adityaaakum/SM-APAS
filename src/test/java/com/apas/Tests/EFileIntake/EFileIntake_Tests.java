@@ -48,7 +48,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	EFileImportTransactionsPage objEFileImportTransactionpage;
 	String EFileinvalidFormatFilepath;
 	
-	@BeforeMethod(alwaysRun=false)
+	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
 		
 
