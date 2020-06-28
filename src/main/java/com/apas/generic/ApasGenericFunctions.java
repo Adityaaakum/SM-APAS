@@ -303,15 +303,14 @@ public class ApasGenericFunctions extends TestBase {
 
     public void selectFromDropDown(WebElement element, String value) throws Exception {
         objPage.Click(element);
-        String xpathStr = "//div[contains(@class, 'left uiMenuList')]//a[text() = '" + value + "']";
-        WebElement drpDwnOption = objPage.locateElement(xpathStr, 200);
-        drpDwnOption.click();
+        String xpathStr = "//div[contains(@class, 'left uiMenuList') and contains(@class, 'visible positioned')]//a[text() = '"+value+"']";
+        objPage.waitUntilElementIsPresent(xpathStr, 200);
+        objPage.Click(driver.findElement(By.xpath(xpathStr)));
     }
 
     public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
         objPage.enter(element, value);
-        String xpathStr = null;
-            xpathStr = "//div[@title = '" + value + "']";
+        String xpathStr = "//div[@title = '" + value + "']";
         WebElement drpDwnOption = locateElement(xpathStr, 10);
         drpDwnOption.click();
     }
