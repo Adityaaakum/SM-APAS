@@ -28,15 +28,10 @@ import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class EFileImportPage extends Page {
-	
-	ApasGenericFunctions apasGenericObj;
-	
 	Page objPage;
 	public EFileImportPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
-		apasGenericObj=new ApasGenericFunctions(driver);
-		
 		objPage=new Page(driver);
 	}
 

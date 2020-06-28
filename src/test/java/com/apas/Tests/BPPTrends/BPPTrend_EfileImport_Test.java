@@ -108,7 +108,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		//Step5: Uploading the BPP Trend BOE Index Factors file having error and success records
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, fileName);		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 180);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 360);
 		
 		//Step6: Checking the status in import logs
 		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
@@ -127,6 +127,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementToBeClickable(objEfileHomePage.fileTypedropdown, 30);
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Index and Percent Good Factors");
 		objPage.Click(objEfileHomePage.viewLink);
+		Thread.sleep(6000);
 		
 		//Step9: Store columns outside & under more tab in a single list
 		List<String> allTables = new ArrayList<String>();
@@ -259,7 +260,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS;
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, fileName);		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 180);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 360);
 
 		//Step4: Validations for file count, import count and error count before retrying all errorred records
 		Map<String, Object> dataMapWthRowCounts = objEfileHomePage.countOfDifferentRowTypesInExcel(fileName, rollYearForImport);
@@ -276,7 +277,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		
 		//Step5: Click View link to navigate to review & approve page
 		objPage.Click(objEfileHomePage.viewLink);
-		
+		Thread.sleep(6000);
 		//Step6: Store columns / tables outside & under more tab in a single list
 		List<String> allTables = new ArrayList<String>();
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("BoeIndexTablesOutsideMoreTabOnImportPage").split(",")));
@@ -327,7 +328,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementToBeClickable(objEfileHomePage.fileTypedropdown, 30);
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Index and Percent Good Factors");
 		objPage.Click(objEfileHomePage.viewLink);
-		
+		Thread.sleep(6000);
 		int errorredRowsBeforeRetrying = Integer.parseInt(CONFIG.getProperty("errorRecordsCount"));
 		int expImportedRowsBeforeRetrying;
 		
@@ -440,7 +441,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		//Step5: Uploading the Bpp Trend BOE Index Factors file having error and success records
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Valuation Factors", rollYearForImport, fileName);		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 180);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 360);
 		
 		//Step6: Checking the status in import logs page
 		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
@@ -459,7 +460,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementToBeClickable(objEfileHomePage.fileTypedropdown, 30);
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Valuation Factors");
 		objPage.Click(objEfileHomePage.viewLink);
-		
+		Thread.sleep(6000);
 		//Step9: Store columns outside & under more tab in a single list
 		List<String> allTables = new ArrayList<String>();
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("BoeValuationTablesOnImportPage").split(",")));
@@ -609,7 +610,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS;
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Valuation Factors", rollYearForImport, fileName);		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 180);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 360);
 
 		//Step4: Validations for file count, import count and error count before retrying all errorred records
 		Map<String, Object> dataMapWthRowCounts = objEfileHomePage.countOfDifferentRowTypesInExcel(fileName, rollYearForImport);
@@ -629,7 +630,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		
 		//Step5: Click View link to navigate to review & approve page
 		objPage.Click(objEfileHomePage.viewLink);
-		
+		Thread.sleep(6000);
 		//Step6: Store columns / tables in a list
 		List<String> allTables = new ArrayList<String>();
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("BoeValuationTablesOnImportPage").split(",")));
@@ -675,7 +676,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementToBeClickable(objEfileHomePage.fileTypedropdown, 30);
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Valuation Factors");
 		objPage.Click(objEfileHomePage.viewLink);
-		
+		Thread.sleep(6000);
 		int errorredRowsBeforeRetrying = Integer.parseInt(CONFIG.getProperty("errorRecordsCount"));
 		int expImportedRowsBeforeRetrying;
 		
@@ -788,7 +789,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		//Step5: Uploading the Bpp Trend BOE Index Factors file having error and success records
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "CAA - Valuation Factors", rollYearForImport, fileName);		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 180);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 360);
 		
 		//Step6: Checking the status in import logs page
 		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
@@ -817,7 +818,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementToBeClickable(objEfileHomePage.fileTypedropdown, 30);
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "CAA - Valuation Factors");
 		objPage.Click(objEfileHomePage.viewLink);
-		
+		Thread.sleep(6000);
 		//Step9: Store columns outside & under more tab in a single list
 		List<String> allTables = new ArrayList<String>();
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("CaaValuationTablesOnImportPage").split(",")));
@@ -981,7 +982,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VALUATION_FACTORS;
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "CAA - Valuation Factors", rollYearForImport, fileName);	
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 180);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 360);
 		
 		//Step4: Validations for file count, import count and error count before retrying all errorred records
 		Map<String, Object> dataMapWthRowCounts = objEfileHomePage.countOfDifferentRowTypesInExcel(fileName, rollYearForImport);
@@ -1015,7 +1016,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		
 		//Step4: Click View link to navigate to review & approve page
 		objPage.Click(objEfileHomePage.viewLink);
-		
+		Thread.sleep(6000);
 		Map<String, Integer> dataMapForExpImportedRowsCountBeforeRetry = new HashMap<String, Integer>();
 		String importedRowsCount;
 		
@@ -1065,7 +1066,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementToBeClickable(objEfileHomePage.fileTypedropdown, 30);
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "CAA - Valuation Factors");
 		objPage.Click(objEfileHomePage.viewLink);
-		
+		Thread.sleep(6000);
 		int errorredRowsBeforeRetrying = Integer.parseInt(CONFIG.getProperty("errorRecordsCount"));
 		int expImportedRowsBeforeRetrying;
 		
@@ -1188,7 +1189,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementToBeClickable(objEfileHomePage.doneButton);
 		objPage.Click(objEfileHomePage.doneButton);
 		Thread.sleep(5000);
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "File Failed", 120);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "File Failed", 160);
 		String expectedStatus = CONFIG.getProperty("expStatusForXlsFileImport");
 		softAssert.assertEquals(objBppTrend.getElementText(objEfileHomePage.statusImportedFile), expectedStatus, "SMAB-T112: Validation for incorrect file format");
 		
@@ -1261,11 +1262,11 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String bppTrendIndexFactorsFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_TRANSFORMATION_RULES;
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, bppTrendIndexFactorsFile);		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 180);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 360);
 		
 		//Step4: Click View link to navigate to review & approve page
 		objPage.Click(objEfileHomePage.viewLink);
-		
+		Thread.sleep(6000);
 		//Step5: Store columns / tables outside & under more tab in a single list
 		List<String> allTables = new ArrayList<String>();
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("tablesForTransformationRulesOutsideMoreTab").split(",")));

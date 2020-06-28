@@ -1134,6 +1134,7 @@ public class Page {
 	 * @return boolean: Return the status true/false on basis of existence of downloaded file
 	 */
 	public boolean verifyFileInGivenFolder(String folderPath, String fileNameWithExt) throws Exception {
+		Thread.sleep(2000);
 		String fileNameFromDir;
 		File sourceFiles = new File(folderPath);
 		File[] listOfFiles = sourceFiles.listFiles();
@@ -1141,7 +1142,8 @@ public class Page {
 
 		for (int i = 0; i < listOfFiles.length; i++) {
 			fileNameFromDir = listOfFiles[i].getName().toUpperCase();
-			if(fileNameWithExt.equalsIgnoreCase(fileNameFromDir)) {
+			if(fileNameFromDir.startsWith(fileNameWithExt.toUpperCase())){
+			//if(fileNameWithExt.equalsIgnoreCase(fileNameFromDir)) {
 				status = true;
 				break;
 			}

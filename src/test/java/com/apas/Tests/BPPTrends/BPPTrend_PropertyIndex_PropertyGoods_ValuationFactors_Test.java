@@ -131,6 +131,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 	
 		//Step19: Validating Edit button is visible under show more drop down
 		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry(factorTableName);
+		Thread.sleep(2000);
 		objBppTrnPg.waitForElementToBeVisible(objBuildPermitPage.editLinkUnderShowMore, 10);
 		boolean isEditBtnPresent = objBuildPermitPage.editLinkUnderShowMore.isDisplayed();
 		softAssert.assertTrue(isEditBtnPresent, "SMAB-T235: EDIT button is present under show more link");
@@ -379,6 +380,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		
 		//Step14: Opening the pop up again and clicking save button
 		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("Imported Valuation Factors");
+		Thread.sleep(2000);
 		objBppTrnPg.waitForElementToBeVisible(objBuildPermitPage.editLinkUnderShowMore, 10);
 		objBuildPermitPage.clickAction(objBuildPermitPage.editLinkUnderShowMore);
 		objBppTrnPg.Click(objBuildPermitPage.saveButton);

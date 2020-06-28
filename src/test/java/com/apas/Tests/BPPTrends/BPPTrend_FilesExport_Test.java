@@ -133,8 +133,8 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 		objBppTrnPg.switchToParentWindow();
 
 		//Step7: Validating whether files have been downloaded successfully in the download directory
-		boolean isCompositeExcelDownloaded = objBppTrnPg.verifyFileInGivenFolder("C:/Downloads/", "BPP - Composite Factors.xlsx");
-		boolean isValuationExcelDownloaded = objBppTrnPg.verifyFileInGivenFolder("C:/Downloads/", "BPP - Valuation Factors.xlsx");
+		boolean isCompositeExcelDownloaded = objBppTrnPg.verifyFileInGivenFolder("C:/Downloads/", "BPP - Composite Factors");
+		boolean isValuationExcelDownloaded = objBppTrnPg.verifyFileInGivenFolder("C:/Downloads/", "BPP - Valuation Factors");
 
 		if(loginUser.contains("rpBusinessAdmin")) {
 			softAssert.assertTrue(isCompositeExcelDownloaded, "SMAB-T1132: Composite Factor XLSX file downloaded successfully");
