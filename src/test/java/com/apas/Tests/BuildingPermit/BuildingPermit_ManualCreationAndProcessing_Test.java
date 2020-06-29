@@ -230,6 +230,9 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Step4: Validate the error message appeared for mandatory fields
 		String expectedErrorMessageOnTop = "These required fields must be completed: Estimated Project Value, Issue Date, Building Permit Number, APN, Permit City Code, County Strat Code Description, Work Description";
 		String expectedIndividualFieldMessage = "Complete this field";
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			expectedIndividualFieldMessage = "Complete this field.";
+		}
 		softAssert.assertEquals(objBuildingPermitPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error in manual entry pop up header.");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Building Permit Number'");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Parcel'");

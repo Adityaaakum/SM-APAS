@@ -16,7 +16,7 @@ public class ExcelUtils {
       * This method will return the data in hashmap. the table starts in the middle of the sheet so need to give the first cell details of the table
      * @param filePath: Takes the path of the XLSX workbook
      * @param sheetIndex: Takes the names of the Sheet that is be read from given workbook
-     * @return Return a hasj map
+     * @return Return a hash map
      **/
      public static HashMap<String, ArrayList<String>> getExcelSheetData(String filePath, int sheetIndex) throws Exception {
          return getExcelSheetData(filePath,sheetIndex,0,0);
@@ -41,31 +41,14 @@ public class ExcelUtils {
             Row headerRow = sheet.getRow(tableStartRow);
             int totalCells = headerRow.getLastCellNum();
             int rowCount = sheet.getPhysicalNumberOfRows();
-            FormulaEvaluator evaluator = workBook.getCreationHelper().createFormulaEvaluator();
 
             for (int rowNum = (tableStartRow + 1); rowNum < (rowCount-tableStartRow); rowNum++) {
                 Row currentRow = sheet.getRow(rowNum);
                 for (int colNum = tableStartColumn; colNum < (totalCells-tableStartColumn); colNum++) {
                     Cell headerCell = headerRow.getCell(colNum);
-                    String headerValue = headerCell.getStringCellValue();
+                    String headerValue = getCellValue(headerCell);
                     Cell dataCell = currentRow.getCell(colNum);
-                    CellValue cellValue = evaluator.evaluate(dataCell);
-
-                    if (cellValue!= null){
-                        strColumnValue = cellValue.getNumberValue();
-                        switch (cellValue.getCellType()) {
-                            case Cell.CELL_TYPE_STRING:
-                                strColumnValue = cellValue.getStringValue();
-                                break;
-                            case Cell.CELL_TYPE_NUMERIC:
-                                strColumnValue = cellValue.getNumberValue();
-                                break;
-                            case Cell.CELL_TYPE_BLANK:
-                                strColumnValue = "";
-                                break;
-                        }
-                    }else
-                        strColumnValue = "";
+                    strColumnValue = getCellValue(dataCell);
 
                     //This condition is added as blank headers are pulled in some exported files
                     if (!headerValue.equals("")){
@@ -80,6 +63,28 @@ public class ExcelUtils {
         }
 
         return hashMapExcelSheet;
+    }
+
+    /**
+     * This method will return the data cell value from excel
+     * @param cell : Excel cell
+     **/
+    public static String getCellValue(Cell cell){
+
+        String strCellValue;
+
+        switch (cell.getCellType()) {
+            case Cell.CELL_TYPE_STRING:
+                strCellValue = cell.getStringCellValue();
+                break;
+            case Cell.CELL_TYPE_NUMERIC:
+                strCellValue = String.valueOf(cell.getNumericCellValue());
+                break;
+            default:
+                strCellValue = "";
+        }
+
+        return strCellValue;
     }
 
 }
