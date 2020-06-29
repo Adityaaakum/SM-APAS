@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
@@ -21,6 +22,7 @@ import com.apas.PageObjects.ReportsPage;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.ExcelUtils;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
@@ -53,119 +55,57 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		objReportsPage = new ReportsPage(driver);
 	}
 
-	
-	/**
-	 * Below test case will 
-	 * 1. Verify Columns of Report are in expected Order
-	 * 2. Verify if expected column data contain link 
-	 **/
-	@Test(description = "SMAB-T606: Verify the Exemption Support staff is able to generate the report with the Active and deactivated exemptions", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class ,groups = {"regression", "DisabledVeteranExemption" })
-	public void DisabledVeteran_verifyColNamesandLinksInData(String loginUser) throws Exception {
-		
-		// Step1: Login to the APAS application using the credentials passed through		
-		objApasGenericFunctions.login(loginUser);
-		
-		// Step2: Searching Reports Module
-		objApasGenericFunctions.searchModule(modules.REPORTS);
-		
-		// Step3: Navigating to 'DV Exemption Export' Report
-		objReportsPage.navigateToReport("DV Exemption Export");
-		
-		// Step4: Switching to frame to access elements
-		objPage.switchToFrameByIndex(0);
-		
-		// Step5: Waiting for 'DV Exemption Export' Report to be visible on screen
-		objPage.waitForElementToBeClickable(40,objReportsPage.exemptionNameLabel);		
-		//Thread.sleep(2000);
-		boolean flagReportDisplayed = objPage.verifyElementEnabled(objReportsPage.exemptionNameLabel);
-		ReportLogger.INFO("DV Exemption Export Report is visible: "+flagReportDisplayed);
-		if(flagReportDisplayed) {
-			// Step6: Minimizing the browser to 50%
-			objApasGenericFunctions.zoomOutPageContent();			
-			// Step7: Calculating number of columns in report
-			int noOfColumns = objReportsPage.colNames.size();			
-			ReportLogger.INFO("No of columns in DV Exemption Export Report are : "+noOfColumns);
-			
-			// Step8: Fetching data to verify column names in report
-			Map<String, String> exemptionReportDataMap;
-			String exemptionData = System.getProperty("user.dir") + testdata.EXEMPTION_REPORT_DATA;		
-			exemptionReportDataMap = objUtils.generateMapFromJsonFile(exemptionData, "columnNames");
-			String expectedColumnNames = exemptionReportDataMap.get("Column Names");
-			
-			// Step9: Fetch column names displayed in report
-			HashMap<String, ArrayList<String>> getReportDataInActiveExemp = objApasGenericFunctions.getGridDataInLinkedHM(2);
-			List<String> actualColumnNames = new ArrayList<String>(getReportDataInActiveExemp.keySet());
-			//List<String> actualColumnNames = objDVReport.getAllHeaders(getReportDataInActiveExemp);
-			
-			// Step10: Convert AraayList to comma separated string
-			StringBuilder actualColNames =  new StringBuilder();
-			for(String col: actualColumnNames) {
-				col = col.split("_1")[0];
-				actualColNames.append(col);
-				actualColNames.append(",");
-			}			
-			String  actualColumns= actualColNames.substring(0, actualColNames.length()-1);	
-			
-			// Step11: Verify Column Names visible on Report
-			ReportLogger.INFO("Column names in application are : "+actualColumns);
-			softAssert.assertEquals(actualColumns, expectedColumnNames, "SMAB-T606: Verify Column Names in Report");
-			
-			// Step12: Verify data corresponding to Column Names contains link or not
-			if(actualColumns.equals(expectedColumnNames)) {
-			for(int i=1; i<=actualColumnNames.size();i++) {
-				String columnsContainsLink = exemptionReportDataMap.get("Columns contains Link");
-				String column = actualColumnNames.get(i-1);
-				String xpathLink = "";				
-				String columnName = column.split("_1")[0];						
-				column = columnName.split("'")[0];
-				xpathLink = "//table[contains(@class,'full')]//span[contains(text(),'"+column+"')]//ancestor::tr//following-sibling::tr[1]//td["+i+"]//a";
-					
-				boolean fLink = objReportsPage.waitForElementToBeVisible(2,xpathLink);				
-				
-				softAssert.assertEquals(columnsContainsLink.contains(column),fLink,"SMAB-T606: Verify column: " +columnName+" contains link in data");
-			}
-			}
-			else{
-				ReportLogger.FAIL("Verification of Links in data is not executed as Columns Name or Count is not as expected");
-			}
-				
-		}
-		objApasGenericFunctions.zoomInPageContent();
-		objPage.switchBackFromFrame();
-		objApasGenericFunctions.logout();
-	}
-	
-	
 	/**
 	 * Below test case will 
 	 * 1. Verify if user is able to download the report
+	 * 2. Verify Columns of Report are in expected Order
+	 * 3. Verify if expected column data contain link 
+	 * 4. Create Exemptions with status - Active & In Active
+	 * 5. Verify if created Exemptions are visible on Report or not
 	 **/
 	@Test(description = "SMAB-T635: Verify the exemption support staff can export the Report", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class ,groups = {"regression", "DisabledVeteranExemption" })
 	public void DisabledVeteran_verifyExportReport(String loginUser) throws Exception {
 		
-		// Step1: Count No. Of Files with extension '.xlsx' in downloads folder
-		int noOfXLFiles = objUtils.countFilesInFolder("xlsx","C:\\Downloads");	
-		System.out.println("Files b4 download: "+noOfXLFiles);
-		
-		// Step2: Login to the APAS application using the credentials passed through		
+		String downloadLocation = CONFIG.getProperty("downloadFolder");
+		String reportName = "DV Exemption Export";
+		String exportedFileName;
+		ReportLogger.INFO("Download location : " + downloadLocation);
+
+		//Step1: Login to the APAS application using the credentials passed through data provider
 		objApasGenericFunctions.login(loginUser);
-		
-		// Step3: Searching Reports Module
+
+		//Step2: Opening the Reports module
 		objApasGenericFunctions.searchModule(modules.REPORTS);
+
+		//Deleteing all the previously downloaded files
+		objApasGenericFunctions.deleteFilesFromFolder(downloadLocation);
+
+		//Step3: Exporting 'DV Exemption Report' report in Formatted Mode
+		objReportsPage.exportReport(reportName,ReportsPage.FORMATTED_EXPORT);
+		Thread.sleep(15000);
+		File downloadedFile = Objects.requireNonNull(new File(downloadLocation).listFiles())[0];
+		exportedFileName = downloadedFile.getName();
+		softAssert.assertTrue(exportedFileName.contains("DV Exemption Export"), "SMAB-T635: Verify the exemption support staff can export the Report");
+		softAssert.assertEquals(exportedFileName.split("\\.")[1],"xlsx", "SMAB-T635: Exported data formatted report should be in XLSX");
 		
-		// Step4: Navigating to 'DV Exemption Export' Report
-		objReportsPage.exportReport("DV Exemption Export","formatted-export");
+		//Step4: Fetching expected column names
+		Map<String, String> exemptionReportDataMap;
+		String exemptionData = System.getProperty("user.dir") + testdata.EXEMPTION_REPORT_DATA;		
+		exemptionReportDataMap = objUtils.generateMapFromJsonFile(exemptionData, "columnNames");
 		
-		Thread.sleep(10000);
-		// Step5: Count No. Of Files with extension '.xlsx' in downloads folder after downloading DV Exemption Export Report
-		int noOfXLFilesafterDownload = objUtils.countFilesInFolder("xlsx","C:\\Downloads");		
+		//Step5: Columns validation in exported report
+		HashMap<String, ArrayList<String>> hashMapExcelData = ExcelUtils.getExcelSheetData(downloadedFile.getAbsolutePath(),0,13,1);
+		String expectedColumnsInExportedExcel = "["+exemptionReportDataMap.get("Column Names")+"]";
+		softAssert.assertEquals(hashMapExcelData.keySet().toString(),expectedColumnsInExportedExcel,"SMAB-T606: Columns Validation in downloaded DV Exemption report");
 		
-		System.out.println("Files after download: "+noOfXLFilesafterDownload);
+		//Step6: Validation that Building Permit Number APN columns dispalyed on the report should be links
+		driver.switchTo().frame(0);
+		softAssert.assertTrue(objPage.verifyElementExists(objReportsPage.linkAPNDV),"SMAB-T606: Validation that APN Number displayed on report should be a link");
+		softAssert.assertTrue(objPage.verifyElementExists(objReportsPage.linkExemptionName),"SMAB-T606: Validation that Exemption Name displayed on report should be a link");
+		softAssert.assertTrue(objPage.verifyElementExists(objReportsPage.linkClaimantsName),"SMAB-T606: Validation that Claimant's Name displayed on report should be a link");
+		softAssert.assertTrue(objPage.verifyElementExists(objReportsPage.linkRollYearSettings),"SMAB-T606: Validation that Roll Year settings Name displayed on report should be a link");
 		
-		// Step6: Get last modified File Name from Downloads folder 
-		String lastDownloadedFile = objApasGenericFunctions.getLastModifiedFile("C:\\Downloads");
-		ReportLogger.INFO("Last downloaded file name is: "+lastDownloadedFile);
-		softAssert.assertTrue(lastDownloadedFile.contains("DV Exemption Export"), "SMAB-T635: Verify the exemption support staff can export the Report");
+		driver.switchTo().parentFrame();	
 		
 		objApasGenericFunctions.logout();
 	}
@@ -196,7 +136,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		activeExemptionDataMap.put("Veteran Name", activeExemptionDataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		objExemptionsPage.createExemptionWithoutEndDateOfRating(activeExemptionDataMap);
 		String activeExemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
-		System.out.println("active exemption name: "+activeExemptionName);
+		ReportLogger.INFO("Active Exemption Created: "+activeExemptionName);
 		
 		// Step5: Fetching data to verify column names in report
 		Map<String, String> inActiveExemptionDataMap;	
@@ -214,8 +154,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		Thread.sleep(2000);
 		String iNActiveExemptionName = objExemptionsPage.getExemptionNameFromSuccessAlert();
 		String inActiveExemptionName = "EXMPTN-"+iNActiveExemptionName;
-		System.out.println("In active exemption name: "+inActiveExemptionName);
-		
+		ReportLogger.INFO("In Active Exemption Created: "+inActiveExemptionName);	
 		
 		// Step8: Searching Reports Module
 		objApasGenericFunctions.searchModule(modules.REPORTS);
@@ -227,14 +166,13 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		objPage.switchToFrameByIndex(0);
 		
 		// Step11: Waiting for 'DV Exemption Export' Report to be visible on screen
-		objReportsPage.waitForElementToBeClickable(40,objReportsPage.exemptionNameLabel);		
-		Thread.sleep(2000);
+		objReportsPage.waitForElementToBeClickable(60,objReportsPage.exemptionNameLabel);		
 		boolean flagReportDisplayed = objPage.verifyElementEnabled(objReportsPage.exemptionNameLabel);
 		
 		ReportLogger.INFO("DV Exemption Export Report is visible: "+flagReportDisplayed);
 		if(flagReportDisplayed) {
 		// Step12: Minimizing the browser to 50%
-			objApasGenericFunctions.zoomOutPageContent();				
+			//objApasGenericFunctions.zoomOutPageContent();				
 			
 			// Step13: Sort the column "Exemption: Exemption Name" in Descending Order
 			objReportsPage.sortReportColumn("Exemption: Exemption Name");
@@ -252,7 +190,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 			softAssert.assertEquals(actualActiveExemption, activeExemptionName, "SMAB-T606:Verify Active Exemption created is visible in report");
 			
 	}	 
-		objApasGenericFunctions.zoomInPageContent();
+		//objApasGenericFunctions.zoomInPageContent();
 		objPage.switchBackFromFrame();
 		objApasGenericFunctions.logout();
 	}

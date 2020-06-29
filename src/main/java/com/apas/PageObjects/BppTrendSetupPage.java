@@ -543,7 +543,7 @@ public class BppTrendSetupPage extends Page {
 		} else {
 			xpath = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = '"+factorTableName+"']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr[1]//a[@role = 'button']";
 		}
-
+		Thread.sleep(2000);
 		WebElement showMoreDropDown = locateElement(xpath, 30);
 		if(showMoreDropDown == null) {
 			showMoreDropDown = locateElement(xpath, 30);

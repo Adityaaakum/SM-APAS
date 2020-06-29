@@ -300,6 +300,8 @@ public class BppTrendPage extends Page {
 	
 	public String xpathRollYear = "//input[@name = 'rollyear']";
 	
+	public String xpathAlreadyApprovedLabel = "//div[text()='Already approved']";
+	
 	
 	/**
 	 * Description: This will select the roll year from the drop down

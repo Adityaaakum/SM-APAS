@@ -36,18 +36,23 @@ public class ExcelUtils {
         XSSFWorkbook workBook = new XSSFWorkbook(file);
         Object strColumnValue;
         XSSFSheet sheet = workBook.getSheetAt(sheetIndex);
+        boolean flag=false;
 
         try {
             Row headerRow = sheet.getRow(tableStartRow);
             int totalCells = headerRow.getLastCellNum();
             int rowCount = sheet.getPhysicalNumberOfRows();
             FormulaEvaluator evaluator = workBook.getCreationHelper().createFormulaEvaluator();
-
+            
             for (int rowNum = (tableStartRow + 1); rowNum < (rowCount-tableStartRow); rowNum++) {
                 Row currentRow = sheet.getRow(rowNum);
                 for (int colNum = tableStartColumn; colNum < (totalCells-tableStartColumn); colNum++) {
                     Cell headerCell = headerRow.getCell(colNum);
                     String headerValue = headerCell.getStringCellValue();
+                  //Status column exists twice in Report and below check will add both as keys
+        			if(headerValue.equals("Status") && flag == true) {
+        				headerValue=headerValue + "_1";
+        			}
                     Cell dataCell = currentRow.getCell(colNum);
                     CellValue cellValue = evaluator.evaluate(dataCell);
 
@@ -71,6 +76,9 @@ public class ExcelUtils {
                     if (!headerValue.equals("")){
                         hashMapExcelSheet.computeIfAbsent(headerValue, k -> new ArrayList<>());
                         hashMapExcelSheet.get(headerValue).add(strColumnValue.toString());
+                        if(headerValue.equals("Status")){
+        					flag = true;
+        				}
                     }
                 }
             }

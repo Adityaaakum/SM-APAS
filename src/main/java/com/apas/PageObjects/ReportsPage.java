@@ -46,7 +46,12 @@ public class ReportsPage extends Page {
 
 	public String linkBuildingPermitNumber = "//table[contains(@class,'data-grid-full-table')]//tbody//tr//th[@data-row-index='3']/../td[@data-column-index='2']//a[contains(@href,'')]";
 	public String linkAPN = "//table[contains(@class,'data-grid-full-table')]//tbody//tr//th[@data-row-index='3']/../td[@data-column-index='3']//a[contains(@href,'')]";
-
+	public String linkAPNDV = "//table[contains(@class,'full')]//span[contains(text(),'APN')]//ancestor::tr//following-sibling::tr[1]//td[1]//a";
+	public String linkExemptionName = "//table[contains(@class,'full')]//span[contains(text(),'Exemption: Exemption Name')]//ancestor::tr//following-sibling::tr[1]//td[1]//a";
+	public String linkClaimantsName = "//table[contains(@class,'full')]//span[contains(text(),'Claimant')]//ancestor::tr//following-sibling::tr[1]//td[1]//a";
+	public String linkRollYearSettings = "//table[contains(@class,'full')]//span[contains(text(),'Roll Year Settings')]//ancestor::tr//following-sibling::tr[1]//td[1]//a";
+	
+	
 	/**
 	 * Description: This method will export the report in the way passed in the parameter reportType
 	 * @param reportType: Type of Report, Refer to class variables, it can be either FORMATTED_EXPORT or DATA_EXPORT
@@ -91,18 +96,18 @@ public class ReportsPage extends Page {
 	 * @param reportName: Name of the Report
 	 */
 	public void navigateToReport(String reportName) throws IOException, InterruptedException {
+		// Opening all reports screen
 		ReportLogger.INFO("Opening All Reports Screen");
 		Click(linkAllReports);
-		//Opening the report
-		ReportLogger.INFO("Opening the report " + reportName);
-		//Added this wait as report was taking sometime to open
 		Thread.sleep(3000);
-		JavascriptExecutor executor = driver;
+	
+		//Opening the report passed in the parameter report name
 		//Using the JavaScriptExecutor as CLICK method is not working
+		ReportLogger.INFO("Opening the report " + reportName);
+		JavascriptExecutor executor = driver;
 		WebElement webElement =  driver.findElement(By.xpath("//a[@title='" + reportName + "']"));
 		executor.executeScript("arguments[0].click();", webElement);
-		waitUntilPageisReady(driver);
-		Thread.sleep(3000);
+		Thread.sleep(30000);
 	}
 	
 	/**
@@ -117,7 +122,7 @@ public class ReportsPage extends Page {
 		WebElement sortDescendingBtn = locateElement(xpathSortDescendingBtn,30);
 		javascriptClick(sortDescendingBtn);
 		waitUntilPageisReady(driver);
-		Thread.sleep(3000);		
+		Thread.sleep(5000);		
 		locateElement(xPathsortArrowBtn,30);
 	}
 }

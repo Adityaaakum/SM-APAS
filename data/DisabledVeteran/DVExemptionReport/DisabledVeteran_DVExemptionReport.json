@@ -30,8 +30,7 @@
 		},
 		
 	 "columnNames": {
-		"Column Names": "APN,Exemption: Exemption Name,Status,Claimant's Name,Roll Year Settings: Roll Year Settings,Status,Start Date,End Date,Number of days,Exemption Amount Calculated,Penalty Amount Calculated,Penalty Amount - User Adjusted,Net Exemption Amount,Determination,Value Adjustments: Last Modified Date"
-		"Columns contains Link" : "APN,Exemption: Exemption Name,Claimant's Name,Roll Year Settings: Roll Year Settings"
+		"Column Names": "APN, Exemption: Exemption Name, Status, Claimant's Name, Roll Year Settings: Roll Year Settings, Status_1, Start Date, End Date, Number of days, Exemption Amount Calculated, Penalty Amount Calculated, Penalty Amount - User Adjusted, Net Exemption Amount, Determination, Value Adjustments: Last Modified Date"
        }          	   
        
                   	

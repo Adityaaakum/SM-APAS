@@ -174,6 +174,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 				objBppTrnPg.javascriptClick(objBppTrnPg.confirmBtnInApproveTabPopUp);
 
 				//Step15: Waiting for pop up message to display and the message displayed above table to update
+				objPage.waitUntilElementIsPresent(objBppTrnPg.xpathAlreadyApprovedLabel, 40);
 				objPage.verifyElementVisible(objBppTrnPg.alreadyApprovedLabel);
 				//objBppTrnPg.waitForPopUpMsgOnApproveClick(60);
 
@@ -208,6 +209,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 				objBppTrnPg.clickApproveButton(tableName);
 				
 				//Step19: Waiting for pop up message to display and the message displayed above table to update
+				objPage.waitUntilElementIsPresent(objBppTrnPg.xpathAlreadyApprovedLabel, 40);
 				objPage.verifyElementVisible(objBppTrnPg.alreadyApprovedLabel);
 				//objBppTrnPg.waitForPopUpMsgOnApproveClick(60);
 
