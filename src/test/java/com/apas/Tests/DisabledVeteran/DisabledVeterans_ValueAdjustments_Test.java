@@ -41,14 +41,10 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
-		
-
-		if(driver==null) {
-			setupTest();
-			driver = BrowserDriver.getBrowserInstance();
-		}
-		
+		driver=null;
+		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
+
 		objPage = new Page(driver);
 		objLoginPage = new LoginPage(driver);
 		apasGenericObj = new ApasGenericFunctions(driver);

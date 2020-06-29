@@ -39,11 +39,10 @@ public class RollYearSettingsTest extends TestBase {
 	
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
-		if(driver==null) {
-			setupTest();
-			driver = BrowserDriver.getBrowserInstance();
-		}
+		driver=null;
+		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
+
 		objPage = new Page(driver);
 		objRollYearSettingsPage = new RollYearSettingsPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);

@@ -41,13 +41,10 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
-		if(driver==null) {
-			setupTest();
-			driver = BrowserDriver.getBrowserInstance();
-		}
-		System.out.println("invoking Before method");
-		
-		driver = BrowserDriver.getBrowserInstance();		
+		driver=null;
+		setupTest();
+		driver = BrowserDriver.getBrowserInstance();
+
 		objPage = new Page(driver);
 		objLoginPage = new LoginPage(driver);
 		apasGenericObj = new ApasGenericFunctions(driver);

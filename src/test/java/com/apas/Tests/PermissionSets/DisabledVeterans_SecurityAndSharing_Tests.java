@@ -47,13 +47,11 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
-		
-		if(driver==null) {
-			setupTest();
-			driver = BrowserDriver.getBrowserInstance();
-		}
-		System.out.println("invoking Before method");
+
+		driver=null;
+		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
+
 		vaPageObj=new ValueAdjustmentsPage(driver);
 		exemptionPageObj=new ExemptionsPage(driver);
 		objPage = new Page(driver);

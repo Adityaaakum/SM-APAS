@@ -35,13 +35,11 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 	
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
-		
-		if(driver==null) {
-            setupTest();
-            driver = BrowserDriver.getBrowserInstance();
-        }
-		
+
+		driver=null;
+		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
+
 		objPage = new Page(driver);
 		objBppTrnPg = new BppTrendPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);

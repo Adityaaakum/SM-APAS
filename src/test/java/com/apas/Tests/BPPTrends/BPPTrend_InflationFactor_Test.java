@@ -41,13 +41,11 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 	BppTrendSetupPage objBppTrendSetupPage;
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
-		
-		if(driver==null) {
-            setupTest();
-            driver = BrowserDriver.getBrowserInstance();
-        }
-		
+
+		driver=null;
+		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
+
 		objPage = new Page(driver);
 		objBppTrnPg = new BppTrendPage(driver);
 		objBuildPermit = new BuildingPermitPage(driver);
@@ -59,12 +57,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		objApasGenericPage = new ApasGenericPage(driver);
 		objBppTrendSetupPage = new BppTrendSetupPage (driver);
 	}
-	
-	@AfterMethod
-	public void afterMethod() throws Exception {
-		//objApasGenericFunctions.logout();
-	}
-	
+
 	
 	/**
 	 * DESCRIPTION: Performing Following Validations::

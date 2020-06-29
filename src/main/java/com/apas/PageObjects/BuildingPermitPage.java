@@ -43,7 +43,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 	//Below objects are for Building Permit Module Screen
 
-	@FindBy(xpath = "//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']")
 	public WebElement newButton;
 
 	@FindBy(xpath = "//legend[text() = 'Select a record type']")
@@ -194,7 +194,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(.,'View Duplicates')]/button[@title='Close this window']")
 	public WebElement closeViewDuplicatePopUpButton;
 	
-	@FindBy(xpath = "//li[text() = 'Complete this field']")
+	@FindBy(xpath = "//li[contains(text(),'Complete this field')]")
 	public List<WebElement> errorMsgUnderLabels;
 	
 	@FindBy(xpath = "//div[contains(@class, 'forceModalActionContainer')]//button[@title = 'Save']//span[text() = 'Save']")
