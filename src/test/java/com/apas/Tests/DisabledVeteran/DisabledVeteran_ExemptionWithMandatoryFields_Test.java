@@ -109,7 +109,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionMap);
 		String recordId = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
-		softAssert.assertTrue(exemptionName.contains("EXMPTN"),"SMAB-T480: Validate " + loginUser + " user is able to create Exemption with mandatory fields'");
+		softAssert.assertTrue(exemptionName.contains("EXMPTN"),"SMAB-T480,SMAB-T522: Validate " + loginUser + " user is able to create Exemption with mandatory fields'");
 	
 		//Step6: Open the Exemption module
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);

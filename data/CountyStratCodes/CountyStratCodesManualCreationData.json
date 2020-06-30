@@ -1,0 +1,10 @@
+{
+	"CountyStratCodesManualCreationData": {
+		"Strat Code Reference Number": "777",
+		"Strat Code Description": "CountyStratCodeValidationTest",
+		"Status": "Active",
+		"Processing Status": "No Process",
+		"Permit Value Operator": "Less Than",
+		"Permit Value Limit": "7000"
+	}
+}

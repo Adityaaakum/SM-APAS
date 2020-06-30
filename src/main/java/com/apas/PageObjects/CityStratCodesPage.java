@@ -1,15 +1,11 @@
 package com.apas.PageObjects;
 
-import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
-import com.relevantcodes.extentreports.LogStatus;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-
-import java.util.Map;
 
 public class CityStratCodesPage extends Page {
 
@@ -121,42 +117,5 @@ public class CityStratCodesPage extends Page {
 		Click(newButton);
 		waitForElementToBeVisible(newEntryPopUp, 10);
 	}
-
-//	/**
-//	 * Description: This method enter values in given fields in new entry pop up
-//	 * @param dataMap: Data map containing keys as field names and values as their values
-//	 */
-//	public void enterCityStratCodeDetails(Map<String, String> dataMap) throws Exception {
-//		openNewEntry();
-//		Thread.sleep(1000);
-//		objApasGenericPage.searchAndSelectOptionFromDropDown(countyStratCodeEditBox, dataMap.get("County Strat Code"));
-//		objApasGenericPage.selectOptionFromDropDown(cityCodeDropDown, dataMap.get("City Code"));
-//		enter(cityStratCodeEditBox, dataMap.get("City Strat Code"));
-//		objApasGenericPage.selectOptionFromDropDown(statusDropDown, dataMap.get("Status"));
-//	}
-
-//	/**
-//	 * Description: This method will add a new city strat code
-//	 * @param dataMap: Map containing field names as keys and values as their values
-//	 * @return String: returns the text message of success alert
-//	 */
-//	public String addAndSaveCityStratCode(Map<String, String> dataMap) throws Exception {
-//		enterCityStratCodeDetails(dataMap);
-//		Click(saveButton);
-//		waitForElementToBeVisible(successAlert,20);
-//		return getElementText(successAlertText);
-//	}
-//
-//	/**
-//	 * Description: This method will edit the values in existing entry
-//	 * @param updatedCountyStratCodes: Updated value of County Strat Cides
-//	 * @param updatedCityStratCodes
-//	 */
-//	public void editExistingCityStratEntry(String updatedCountyStratCodes, String updatedCityStratCodes) throws Exception {
-//		Click(crossButtonToClearCountyStratField);
-//		objApasGenericPage.searchAndSelectOptionFromDropDown(countyStratCodeEditBox, updatedCountyStratCodes);
-//		waitForElementToBeVisible(cityStratCodeEditBox, 10);
-//		enter(cityStratCodeEditBox, updatedCityStratCodes);
-//	}
 
 }
