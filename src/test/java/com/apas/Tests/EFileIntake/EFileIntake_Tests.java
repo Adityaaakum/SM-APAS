@@ -629,10 +629,11 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.Click(objEFileImport.nextButton);
 		objPage.enter(objEFileImport.fileNameInputBox, "SanMateoBuildingPermitsWithValidAndInvalidData6.xlsx");
 		objPage.Click(objEFileImport.fileNameNext);
-		softAssert.assertEquals(objEFileImport.getElementText(objEFileImport.fileAlreadyApprovedMsg), "File already in progress", "SMAB-T1144:Verify that user is not able to upload a file if a file is already 'In Progress' status for the selected 'File type' ,'Source' and 'Period'");
-		
+		softAssert.assertTrue(apasGenericObj.isNotDisplayed(objEFileImport.confirmButton), "SMAB-T1144:Verify that user is not able to upload a file if a file is already 'In Progress' status for the selected 'File type' ,'Source' and 'Period'");
+		softAssert.assertTrue(objEFileImport.fileAlreadyInProgressMsg.isDisplayed(), "SMAB-T1144:Verify that user is not able to upload a file if a file is already 'In Progress' status for the selected 'File type' ,'Source' and 'Period'");
+		objPage.Click(objEFileImport.closeButton);
+
 		apasGenericObj.logout();
-		
 	}
 	
 	

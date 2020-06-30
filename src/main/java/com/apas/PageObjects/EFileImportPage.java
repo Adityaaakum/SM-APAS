@@ -41,6 +41,9 @@ public class EFileImportPage extends Page {
 	@FindBy(xpath = "//*[@name='docType']")
 	public WebElement fileTypedropdown;
 
+	@FindBy(xpath = "//*[@class='warning']//h2[contains(.,'This is already in In Progress')]")
+	public WebElement fileAlreadyInProgressMsg;
+
 	@FindBy(xpath = "//lightning-spinner")
 	public WebElement spinner;
 
