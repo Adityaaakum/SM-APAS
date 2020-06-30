@@ -121,20 +121,4 @@ public class CountyStratCodesPage extends ApasGenericPage {
 		return getElementText(successAlertText);
 	}
 
-//	/**
-//	 * Description: This method enter values in given fields in new entry pop up
-//	 * @param dataMap: Data map containing keys as field names and values as their values
-//	 */
-//	public String enterCityStratCodeDetailsOnCountyCodeDetailsPage(Map<String, String> dataMap) throws Exception {
-//		searchAndSelectOptionFromDropDown(objCityStratCodesPage.countyStratCodeEditBox, dataMap.get("County Strat Code"));
-//		selectOptionFromDropDown(objCityStratCodesPage.cityCodeDropDown, dataMap.get("City Code"));
-//		enter(objCityStratCodesPage.cityStratCodeEditBox, dataMap.get("City Strat Code"));
-//		selectOptionFromDropDown(objCityStratCodesPage.statusDropDown, dataMap.get("Status"));
-//
-//		Click(objCityStratCodesPage.saveButton);
-//		waitForElementToBeVisible(objCityStratCodesPage.successAlert,20);
-//		return getElementText(objCityStratCodesPage.successAlertText);
-//	}
-//
-
 }
