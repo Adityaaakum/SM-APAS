@@ -143,9 +143,8 @@ public class SalesforceAPI extends TestBase {
             if (statusCode == 200) {
                 responseString = EntityUtils.toString(response.getEntity());
             } else {
-                System.out.println("Query was unsuccessful. Status code returned is " + statusCode);
-                System.out.println("An error has occurred. Http status: " + response.getStatusLine().getStatusCode());
-                System.exit(-1);
+                ReportLogger.FAIL("Query was unsuccessful. Status code returned is " + statusCode);
+                ReportLogger.FAIL("An error has occurred. Http status: " + response.getStatusLine().getStatusCode());
             }
         } catch (IOException | NullPointerException ioe) {
             ioe.printStackTrace();
