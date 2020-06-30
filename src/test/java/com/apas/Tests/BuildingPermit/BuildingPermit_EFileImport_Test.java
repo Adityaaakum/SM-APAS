@@ -129,8 +129,14 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		//Step9: Validating the warning message for the approved buildling permit records and user should not be allowed to re-import the approved building permit records
 		objPage.scrollToTop();
 		objPage.Click(objEfileImportPage.nextButton);
-		objPage.Click(objEfileImportPage.periodDropdown);
-		objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			objPage.Click(objEfileImportPage.periodDropdown);
+			objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
+		}else{
+			objPage.enter(objEfileImportPage.fileNameInputBox, "OneValidAndTwoInvalidRecordsForPermitValue.txt");
+			objPage.Click(objEfileImportPage.fileNameNext);
+		}
+
 		softAssert.assertContains(objPage.getElementText(objEfileImportPage.warning),"This file has been already approved by","SMAB-T435: Warning message validation once user tries to re-import approved building permits");
 		softAssert.assertTrue(!objPage.verifyElementVisible(objEfileImportPage.confirmButton),"SMAB-T435: Validation that user should not be able to re-import the approved file by clicking on Confirm button i.e. confirm button should not be visible");
 		softAssert.assertTrue(!objPage.verifyElementVisible(objEfileImportPage.cancelButton),"SMAB-T435: Validation that cancel button should not be displayed when trying to re-import the approved file");
@@ -405,8 +411,14 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		//Validation of error message when trying to re-import the already imported file
 		objPage.scrollToTop();
 		objPage.Click(objEfileImportPage.nextButton);
-		objPage.Click(objEfileImportPage.periodDropdown);
-		objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			objPage.Click(objEfileImportPage.periodDropdown);
+			objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
+		}else{
+			objPage.enter(objEfileImportPage.fileNameInputBox, "OneValidAndTwoInvalidRecordsForPermitValue.txt");
+			objPage.Click(objEfileImportPage.fileNameNext);
+		}
+
 		softAssert.assertContains(objPage.getElementText(objEfileImportPage.warning),"This file has been already imported by","SMAB-T435: Warning message validation once user tries to re-import imported building permits");
 		softAssert.assertTrue(objPage.verifyElementVisible(objEfileImportPage.confirmButton),"SMAB-T435: Validation that user should be able to re-import the imported file by clicking on Confirm button i.e. confirm button should be visible");
 		softAssert.assertTrue(objPage.verifyElementVisible(objEfileImportPage.cancelButton),"SMAB-T435: Validation that cancel button should be displayed when trying to re-import the already imported file");

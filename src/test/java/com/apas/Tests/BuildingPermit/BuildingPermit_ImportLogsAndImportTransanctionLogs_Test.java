@@ -62,6 +62,7 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
 		}else{
 			//step1:Reverting the Approved Import logs if any in the system
+			period = "Adhoc";
 			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C like '%Atherton%' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
 			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 		}
@@ -137,6 +138,7 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
 		}else{
 			//step1:Reverting the Approved Import logs if any in the system
+			period = "Adhoc";
 			String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C like '%San Mateo%' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
 			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 		}
