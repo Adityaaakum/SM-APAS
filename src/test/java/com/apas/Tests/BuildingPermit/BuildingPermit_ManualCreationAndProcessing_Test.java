@@ -509,6 +509,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
+		Thread.sleep(3000);
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -689,14 +690,13 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Validation for mandatory fields
 		objPage.Click(objBuildingPermitPage.saveButton);
-		String expectedErrorMessageOnTop = "These required fields must be completed: Estimated Project Value, Issue Date, Building Permit Number, Owner Name, APN, Permit City Code, Work Description";
+		String expectedErrorMessageOnTop = "These required fields must be completed: Estimated Project Value, Issue Date, Building Permit Number, Owner Name, Permit City Code, Work Description";
 		String expectedIndividualFieldMessage = "Complete this field";
 		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
 			expectedIndividualFieldMessage = "Complete this field.";
 		}
 		softAssert.assertEquals(objBuildingPermitPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T345: Validating mandatory fields missing error in manual entry pop up header.");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Building Permit Number'");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Parcel'");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Estimated Project Value"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Estimated Project Value'");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Issue Date"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Issue Date'");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Work Description"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Work Description'");

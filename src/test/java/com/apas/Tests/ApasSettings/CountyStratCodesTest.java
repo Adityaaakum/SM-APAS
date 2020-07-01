@@ -222,7 +222,7 @@ public class CountyStratCodesTest extends TestBase {
 		objPage.Click(objCityStratCodesPage.saveButton);
 		objPage.waitForElementToBeClickable(objCityStratCodesPage.successAlert,15);
 		String actualSuccessAlertText = objPage.getElementText(objCityStratCodesPage.successAlert);
-		String expectedSuccessAlertText = "success City Strat Code "+ cityStratCode +" was created. Close";
+		String expectedSuccessAlertText = "success\nCity Strat Code "+ cityStratCode +" was created.\nClose";
 		softAssert.assertEquals(actualSuccessAlertText, expectedSuccessAlertText, "SMAB-T436: Validating the pop message on successful creation of City Strat Code entry from County Strat details page");
 
 		//Step8: Logout at the end of the test

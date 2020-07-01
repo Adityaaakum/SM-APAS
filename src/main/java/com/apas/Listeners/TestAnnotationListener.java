@@ -28,8 +28,8 @@ public class TestAnnotationListener extends TestBase implements IClassListener {
 	@Override
 	public void onAfterClass(ITestClass testClass) {
 		try {
-			System.out.println("Tear Down (After Class) step for class " + testClass.getName());
-			TearDown();
+//			System.out.println("Tear Down (After Class) step for class " + testClass.getName());
+//			TearDown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
