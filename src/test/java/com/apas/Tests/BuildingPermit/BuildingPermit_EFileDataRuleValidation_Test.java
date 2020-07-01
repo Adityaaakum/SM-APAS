@@ -568,12 +568,16 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Step5: Comparing the data from the error row table with the expected data
 		ReportLogger.INFO("Error Message Validation of Error Row Records on Review and Approve Data Page");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with DPW"),"No Process for DPW, INF, SWN, REV & M & Non-BLD permits","SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with DPW'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with INF"),"No Process for DPW, INF, SWN, REV & M & Non-BLD permits","SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with INF'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with SWN"),"No Process for DPW, INF, SWN, REV & M & Non-BLD permits","SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with SWN'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with REV"),"No Process for DPW, INF, SWN, REV & M & Non-BLD permits","SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with REV'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with M"),"No Process for DPW, INF, SWN, REV & M & Non-BLD permits","SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with M'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number without BLD"),"No Process for DPW, INF, SWN, REV & M & Non-BLD permits","SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number without BLD'");
+		String expectedErrorMessage = "No Process for DPW, INF, SWN, REV & M & Non-BLD permits";
+		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
+			expectedErrorMessage = "No Process for DPW, INF, SWN, REV & M permits";
+		}
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with DPW"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with DPW'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with INF"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with INF'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with SWN"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with SWN'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with REV"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with REV'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with M"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with M'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number without BLD"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number without BLD'");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
