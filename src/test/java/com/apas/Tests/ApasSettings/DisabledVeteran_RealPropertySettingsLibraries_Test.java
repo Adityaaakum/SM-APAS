@@ -300,8 +300,8 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		String expectedDvLowIncomeExemptionAmountMessage = "Low Income Exemption Amount should be greater than 0";
 		String expectedDvBasicIncomeExemptionAmountMessage = "Basic Exemption Amount should be greater than 0";
 		String expectedDvLowIncomeHouseholdLimitMessage = "Low Income Household Limit should be greater than 0";		
-		String expectedDVAnnualLowIncomeDueDateMessage = "DV Annual Due Date's year must be the same as the associated roll year.";
-		String expectedDVAnnualLowIncomeDueDate2Message = "DV Annual Due Date 2's year must be the same as the associated roll year.";
+		String expectedDVAnnualLowIncomeDueDateMessage = "Due Date's year must be the same as the associated roll year.";
+		String expectedDVAnnualLowIncomeDueDate2Message = "Due Date 2's year must be the same as the associated roll year.";
 			
 		softAssert.assertEquals(objRPSLPage.getIndividualFieldErrorMessage("DV Low Income Exemption Amount"),expectedDvLowIncomeExemptionAmountMessage,"SMAB-T538: Verify the User is not able to create Exemption limit record with $0 values");
 		softAssert.assertEquals(objRPSLPage.getIndividualFieldErrorMessage("DV Basic Exemption Amount"),expectedDvBasicIncomeExemptionAmountMessage,"SMAB-T538: Verify the User is not able to create Exemption limit record with $0 values");

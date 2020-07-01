@@ -183,7 +183,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 
 		//Step21: Retrieving column names of table from UI
 		Map<String, List<Object>> dataMapFromUI = objBppTrnPg.retrieveDataFromGridForGivenTable(tableName);
-		dataMapFromUI.remove(rollYear);
+		//dataMapFromUI.remove(rollYear);
 		//Step22: Comparing the UI grid data after Calculate button click against the data in excel file
 		//System.setProperty("isElementHighlightedDueToFailre", "false");
 		boolean isDataMatched = true;

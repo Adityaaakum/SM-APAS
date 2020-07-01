@@ -526,10 +526,15 @@ public class BppTrendPage extends Page {
 		String xpathTableData = "//td[(not(contains(@data-label, 'Year Acquired'))) "
 				+ "and (not(contains(@data-label, 'Year Acquired')) and not (contains(@data-label, 'Rounded')))]";
 		List<WebElement> tableRows = locateElements(xpathTableRows, 30);
-		
-		for(int i = 0; i < tableRows.size(); i++) {
+		for(int i = 0; i < tableRows.size(); i++) {			
 			int rowNum = i + 1;
-			String xpathYearAcq = "("+ xpathTableRows +")["+ rowNum +"]//th";
+			String xpathYearAcq;
+			if(!tableName.contains("BPP Prop 13 Factors")) {
+				xpathYearAcq = "("+ xpathTableRows +")["+ rowNum +"]//th";				
+			}
+			else {
+				xpathYearAcq = "("+ xpathTableRows +")["+ rowNum +"]//td[3]";
+			}
 			WebElement yearAcquiredElement = locateElement(xpathYearAcq, 30);
 			String yearAcquiredTxt = getElementText(yearAcquiredElement);
 			
@@ -544,7 +549,7 @@ public class BppTrendPage extends Page {
 				}
 				else {
 					cellData = (int)Math.round(Double.parseDouble(getElementText(yearAcquiredDataElements.get(j))));
-					
+
 				}
 				yearAcquiredData.add(cellData);
 				
@@ -625,7 +630,7 @@ public class BppTrendPage extends Page {
                 List<Object> currentRowData = new ArrayList<>();
                 String yearAcquired = null;
 
-                FormulaEvaluator evaluator = workBook.getCreationHelper().createFormulaEvaluator();                
+                FormulaEvaluator evaluator = workBook.getCreationHelper().createFormulaEvaluator();
                 for(int j = 0; j < totalCells; j++) {
                 	if(j != cellIndexToSkip) {
                 		Cell cell = currentRow.getCell(j);
@@ -640,9 +645,9 @@ public class BppTrendPage extends Page {
                 		        strValue = cellValue.getNumberValue();
                 		        break;
                 		}
-                		                		
+                		
                 		if(j != cellIndexForYearAcq) {
-                			int intValue = (int) Math.round((double)strValue);
+                			int intValue = (int) Math.round((double)strValue);                			
                 			currentRowData.add(intValue);
                 		} else {
                 			yearAcquired = strValue.toString().substring(0, strValue.toString().indexOf("."));

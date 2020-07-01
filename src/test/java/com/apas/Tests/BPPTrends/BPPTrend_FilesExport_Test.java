@@ -67,7 +67,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 	 * 4. Validating whether files have been successfully downloaded in the system at given path:: Test Case/JIRA ID: SMAB-T303
 	 * 5. Deleting the files once verification is done
 	 */
-	@Test(description = "SMAB-T303,SMAB-T266,SMAB-T313,SMAB-T1132: Verifying download functionality for excel files", dataProvider = "loginRpBusinessAdminAndPrincipalUsers", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T303,SMAB-T266,SMAB-T313,SMAB-T1132: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_DownloadCompositeAndValuationExcelFiles(String loginUser) throws Exception {
 		//Resetting the composite factor tables status
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));

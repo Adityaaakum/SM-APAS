@@ -2,6 +2,8 @@ package com.apas.Tests.BuildingPermit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -578,6 +580,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with REV"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with REV'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with M"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with M'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number without BLD"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number without BLD'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Duplicate Record"),"Record is duplicate of another entry within the same file","SMAB-T1566 : Error Message validation for the scenario 'Building Permit Starts With MISC'");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -586,7 +589,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	/**
 	 Below test case is used to validate error message for San Mateo file import
 	 **/
-	@Test(description = "SMAB-T315,SMAB-T458,SMAB-T459,SMAB-T619,SMAB-T621,SMAB-T624,SMAB-T625,SMAB-T457,SMAB-T549,SMAB-T1388: Error message verification for the imported San Mateo Building Permit in XLS Format", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T315,SMAB-T458,SMAB-T459,SMAB-T619,SMAB-T621,SMAB-T624,SMAB-T625,SMAB-T457,SMAB-T549,SMAB-T1388,SMAB-T1566: Error message verification for the imported San Mateo Building Permit in XLS Format", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
 	public void verify_BuildingPermit_ErrorMessageValidation_SanMateoExcelFile(String loginUser) throws Exception {
 
 		String sanMateoBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "WrongMessageRecordsSanMateo.xlsx";
@@ -646,6 +649,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid Completion Date Format"),"Invalid Completed Date format","SMAB-T619 : Error Message validation for the scenario 'Invalid Completion Date Format'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permit Starts With ST"),"No Process for ST & MISC permits","SMAB-T1388 : Error Message validation for the scenario 'Building Permit Starts With ST'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permit Starts With MISC"),"No Process for ST & MISC permits","SMAB-T1388 : Error Message validation for the scenario 'Building Permit Starts With MISC'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Duplicate Record"),"Record is duplicate of another entry within the same file","SMAB-T1566 : Error Message validation for the scenario 'Building Permit Starts With MISC'");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -670,12 +674,22 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 		}
 
-
 		//Step1: Creating temporary file with building permit number with existing city apn and parcel
 		String buildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
 		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "DuplicateRecordUpsertValidation_AT.txt";
 		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "DuplicateRecordUpsertValidation_AT.txt";
 		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",buildingPermitNumber,temporaryFile);
+
+		//Updating the existing record in system with predefined values
+		String buildingPermitUpdateQuery = "SELECT Id FROM Building_Permit__c where city_apn__C ='060241050' and situs_city_code__c='AT' limit 1";
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("Name",buildingPermitNumber);
+		jsonObject.put("Issue_Date__C","2018-12-12");
+		jsonObject.put("completion_date__c","2018-12-15");
+		jsonObject.put("city_strat_code__c","ADDITION");
+		jsonObject.put("building_permit_fee__C","1000");
+		jsonObject.put("estimated_project_value__C","2000");
+		salesforceAPI.update("Building_Permit__c",buildingPermitUpdateQuery,jsonObject);
 
 		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);
