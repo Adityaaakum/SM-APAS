@@ -230,21 +230,21 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 
 		objBppTrnPg.Click(objBuildPermitPage.cancelButton);
 		
-		//Step16: Clicking new button to open pop up
-		objBppTrnPg.Click(objBuildPermit.newButton);
-		
-		//Step17: Entering roll year and an existing value for selected roll year and clicking save button
-		objApasGenericPage.searchAndSelectOptionFromDropDown(objBppTrnPg.rollYearForCpiFactor, rollYear);
-		objBppTrnPg.enter(objBppTrnPg.cpiFactorInputBox, "1.02000");
-		objBppTrnPg.Click(objBuildPermitPage.saveButton);
-		
-		//Step18: Validating error message for duplicate entry and clicking cancel button to close the pop up
-		String expErrorMsgOnDuplicateEntry = CONFIG.getProperty("errorMsgOnDuplicateCpiFactor");
-		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.errorMsgOnDuplicateCpiFactor, 10);
-		String actErrorMsgOnDuplicateEntry = objBppTrnPg.getElementText(objBppTrnPg.errorMsgOnDuplicateCpiFactor);
-		softAssert.assertContains(actErrorMsgOnDuplicateEntry, expErrorMsgOnDuplicateEntry, "SMAB-T181: Validation for duplicate entry of CPI Factor");
-		
-		objBppTrnPg.Click(objBuildPermitPage.cancelButton);
+//		//Step16: Clicking new button to open pop up
+//		objBppTrnPg.Click(objBuildPermit.newButton);
+//		
+//		//Step17: Entering roll year and an existing value for selected roll year and clicking save button
+//		objApasGenericPage.searchAndSelectOptionFromDropDown(objBppTrnPg.rollYearForCpiFactor, rollYear);
+//		objBppTrnPg.enter(objBppTrnPg.cpiFactorInputBox, "1.02000");
+//		objBppTrnPg.Click(objBuildPermitPage.saveButton);
+//		
+//		//Step18: Validating error message for duplicate entry and clicking cancel button to close the pop up
+//		String expErrorMsgOnDuplicateEntry = CONFIG.getProperty("errorMsgOnDuplicateCpiFactor");
+//		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.errorMsgOnDuplicateCpiFactor, 10);
+//		String actErrorMsgOnDuplicateEntry = objBppTrnPg.getElementText(objBppTrnPg.errorMsgOnDuplicateCpiFactor);
+//		softAssert.assertContains(actErrorMsgOnDuplicateEntry, expErrorMsgOnDuplicateEntry, "SMAB-T181: Validation for duplicate entry of CPI Factor");
+//		
+//		objBppTrnPg.Click(objBuildPermitPage.cancelButton);
 		
 		//Step19: Clicking new button to open pop up
 		objBppTrnPg.Click(objBuildPermit.newButton);
