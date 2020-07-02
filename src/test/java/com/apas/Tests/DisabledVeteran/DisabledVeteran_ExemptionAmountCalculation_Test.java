@@ -78,7 +78,13 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		
 		ReportLogger.INFO("Exemption: "+exemptionName + "is created");
-		objPage.waitUntilPageisReady(driver);		
+		objPage.waitUntilPageisReady(driver);	
+		
+		String endDateOfrating=objExemptionsPage.endDateOfRatingOnExemption.getText();
+		String maxDate=DateUtil.determineMaxDate(objExemptionsPage.dateAquiredPropertyExemptionDetails.getText(),objExemptionsPage.dateOccupyPropertyExemptionDetails.getText(),objExemptionsPage.effectiveDateOfUSDVAExemptionDetails.getText());
+		String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
+		String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
+		int actualVAtoBeCreated=objValueAdjustmentPage.verifyValueAdjustments(maxDate, endDateOfrating, currentRollYear);	
 		
 		//Step4: Selecting the Value Adjustment Related List Tab		
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
@@ -86,7 +92,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		//Step5: Calculate and verify Total number of Value Adjustments in an Exemption		
 		 objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
 		 int noOfVAs =  objValueAdjustmentPage.numberOfValueAdjustments.size();  
-		 softAssert.assertEquals(noOfVAs, 3, "Verify Number of Value Adjustments");	  
+		 softAssert.assertEquals(noOfVAs, actualVAtoBeCreated, "Verify Number of Value Adjustments");	  
 		   
 		  //Step6: Looping through each Value Adjustments to calculate Exemption Amount 
 		  for (int VARowNo = 0; VARowNo<noOfVAs; VARowNo++) { 			 				  

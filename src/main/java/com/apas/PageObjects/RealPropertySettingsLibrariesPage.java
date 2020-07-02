@@ -149,19 +149,19 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	 * @param DVAnnualLowIncomeDueDate2: DV Annual Low Income Due Date 2
 	 * @param status: Status
 	 */
-	public void enterRealPropertySettingsDetails(Map<String, String> dataMap) throws Exception {
+	public void enterRealPropertySettingsDetails(Map<String, String> dataMap, String rollYear) throws Exception {
 		ReportLogger.INFO("Clicking on New Button");
 		Click(newButton);
 		//selectRecordType("Exemption Limits");
 		ReportLogger.INFO("Entering details for Real Property Settings record");
-		enter(rpSettingNameEditBox,dataMap.get("Roll Year Settings"));
+		enter(rpSettingNameEditBox,rollYear);
 		selectFromDropDown(statusDropDown,dataMap.get("Status"));
-		searchAndSelectFromDropDown(searchRollYearSettingsLookup,dataMap.get("Roll Year Settings"));
+		searchAndSelectFromDropDown(searchRollYearSettingsLookup,rollYear);
 		enter(dvLowIncomeExemptionAmountEditBox,dataMap.get("DV Low Income Exemption Amount"));
 		enter(dvBasicIncomeExemptionAmountEditBox,dataMap.get("DV Basic Exemption Amount"));
 		enter(dvLowIncomeHouseholdLimitEditBox,dataMap.get("DV Low Income Household Limit Amount"));
-		enter(dvLowIncomeHouseholdLimitDatePicker, dataMap.get("DV Annual Low Income Due Date"));
-		enter(dvAnnualLowIncomeDueDate2DatePicker, dataMap.get("DV Annual Low Income Due Date2"));	
+		enter(dvLowIncomeHouseholdLimitDatePicker, dataMap.get("DV Annual Low Income Due Date")+"/"+rollYear);
+		enter(dvAnnualLowIncomeDueDate2DatePicker, dataMap.get("DV Annual Low Income Due Date2")+"/"+rollYear);	
 	}
 	
 	/**
@@ -201,9 +201,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		 * @param dataMap: Data with which RPSL is created
 		 * @throws Exception
 		 */
-	 public String createRPSL(Map<String, String> dataMap) throws Exception {			
-		 String strRollYear = dataMap.get("Roll Year Settings");
-		 
+	 public String createRPSL(Map<String, String> dataMap, String rollYear) throws Exception {			 
 		//Step1: Opening the Real Property Settings Libraries module
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
@@ -211,11 +209,11 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		objApasGenericFunctions.displayRecords("All");
 		
 		//Step3: Delete current Roll Year's RPSL if it already exists	
-		removeRealPropertySettingEntry(strRollYear);
+		removeRealPropertySettingEntry(rollYear);
 		 		
 		//Step4: Creating the RPSL record for current year
 		ReportLogger.INFO("Adding current year's 'Real Property Settings' record with following details: "+ dataMap);
-		enterRealPropertySettingsDetails(dataMap);
+		enterRealPropertySettingsDetails(dataMap,rollYear);
 		
 		//Step7: Clicking on Save button & Verifying the RPSL record for current year after creation		
 		String strSuccessAlertMessage = saveRealPropertySettings();	

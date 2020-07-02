@@ -12,10 +12,12 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.RealPropertySettingsLibrariesPage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
@@ -72,15 +74,18 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		//Step3: Fetching Data to create RPSL record			
 		String manualEntryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
 		Map<String, String> createRPSLDataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToCreateFututreRPSLEntry");
-		String strRPSLName = "Exemption Limits - " + createRPSLDataMap.get("Roll Year Settings");
-		String strRPSL = createRPSLDataMap.get("Roll Year Settings");
 		
-		//Step4: Delete this Roll Year's RPSL if it already exists	
+		//Step4: Determine & Delete this Roll Year's RPSL if it already exists	
+		String date = DateUtil.getCurrentDate("MM/dd/yyyy");
+		String strRollYear = ExemptionsPage.determineRollYear(date);
+		int futureRollYear = Integer.parseInt(strRollYear)+2;
+		String strRPSL = String.valueOf(futureRollYear);
+		String strRPSLName = "Exemption Limits - " + strRPSL;
 		objRPSLPage.removeRealPropertySettingEntry(strRPSL);
 		
 		//Step5: Adding a new record	
 		ReportLogger.INFO("Adding a new Future 'Real Prpoerty Settings' record");		
-		objRPSLPage.enterRealPropertySettingsDetails(createRPSLDataMap);
+		objRPSLPage.enterRealPropertySettingsDetails(createRPSLDataMap,strRPSL);
 		
 		//Step6: Clicking on Save button and verifying Success Message
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
@@ -90,7 +95,7 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step8: Create RPSL again for same Roll Year
-		objRPSLPage.enterRealPropertySettingsDetails(createRPSLDataMap);
+		objRPSLPage.enterRealPropertySettingsDetails(createRPSLDataMap,strRPSL);
 		
 		//Step9: Clicking on Save button
 		objPage.Click(objRPSLPage.saveButton);
@@ -136,13 +141,14 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		String manualEntryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
 		Map<String, String> createRPSLDataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToCreateCurrentRPSLEntry");
 		
-		//Step5: Delete current Roll Year's RPSL if it already exists	
-		String strRPSL = createRPSLDataMap.get("Roll Year Settings");
+		//Step5: Determine current Roll Year & Delete current Roll Year's RPSL if it already exists	
+		String date = DateUtil.getCurrentDate("MM/dd/yyyy");
+		String strRPSL = ExemptionsPage.determineRollYear(date);
 		objRPSLPage.removeRealPropertySettingEntry(strRPSL);
 		
 		//Step6: Creating the RPSL record for current year
 		ReportLogger.INFO("Adding current year's 'Real Property Settings' record");
-		objRPSLPage.enterRealPropertySettingsDetails(createRPSLDataMap);
+		objRPSLPage.enterRealPropertySettingsDetails(createRPSLDataMap,strRPSL);
 		
 		//Step7: Clicking on Save button & Verifying the RPSL record for current year after creation
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
@@ -153,7 +159,7 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		
 		//Step9: Create RPSL again for current Roll Year
 		ReportLogger.INFO("Again adding current year's 'Real Property Settings' record");
-		objRPSLPage.enterRealPropertySettingsDetails(createRPSLDataMap);
+		objRPSLPage.enterRealPropertySettingsDetails(createRPSLDataMap,strRPSL);
 		
 		//Step10: Clicking on Save button
 		objPage.Click(objRPSLPage.saveButton);		
@@ -174,7 +180,7 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		objApasGenericFunctions.displayRecords("All");
 		
 		//Step13: Search value of RPSL created above
-		String strRPSLName = "Exemption Limits - " + createRPSLDataMap.get("Roll Year Settings");
+		String strRPSLName = "Exemption Limits - " + strRPSL;
 		objApasGenericFunctions.searchRecords(strRPSLName);
 		
 		//Step14: Selecting the RPSL
@@ -258,10 +264,13 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		ReportLogger.INFO("Adding a new 'Real Proerty Settings' record");
 		String manualEntryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
 		Map<String, String> createRPSLdataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToCreateFututreRPSLEntry");
-		String strRPSL = createRPSLdataMap.get("Roll Year Settings");
+		String date = DateUtil.getCurrentDate("MM/dd/yyyy");
+		String strRollYear = ExemptionsPage.determineRollYear(date);
+		int futureRollYear = Integer.parseInt(strRollYear)+2;
+		String strRPSL = String.valueOf(futureRollYear);
 		
 		//Step4: Clicking on 'New' button & entering the details
-		objRPSLPage.enterRealPropertySettingsDetails(createRPSLdataMap);
+		objRPSLPage.enterRealPropertySettingsDetails(createRPSLdataMap,strRPSL);
 		
 		//Step5: Clicking on Cancel Button and verifying that record is not created
 		objPage.Click(objRPSLPage.cancelButton);
@@ -288,10 +297,15 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		ReportLogger.INFO("Adding a new 'Real Proerty Settings' record");
 		String manualEntryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
 		Map<String, String> createRPSLdataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToCreateRPSLEntryWithZeroAmt");
+		String date = DateUtil.getCurrentDate("MM/dd/yyyy");
+		String strRollYear = ExemptionsPage.determineRollYear(date);
+		int futureRollYear = Integer.parseInt(strRollYear)+2;
+		String strRPSL = String.valueOf(futureRollYear);
 		
 		//Step4: Adding a new record
-		objRPSLPage.enterRealPropertySettingsDetails(createRPSLdataMap);
-		
+		objRPSLPage.enterRealPropertySettingsDetails(createRPSLdataMap,strRPSL);
+		objPage.enter(objRPSLPage.dvLowIncomeHouseholdLimitDatePicker, "2/15/2020");
+		objPage.enter(objRPSLPage.dvAnnualLowIncomeDueDate2DatePicker,"12/12/2020");	
 		//Step5: Clicking on Save button
 		objPage.Click(objRPSLPage.saveButton);
 		Thread.sleep(2000);
@@ -332,18 +346,21 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		String manualEntryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
 		Map<String, String> createRPSLdataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToCreateRPSLEntryForValidation");
 		
-		//Step4: Delete current Roll Year's RPSL if it already exists	
-		String strRPSLName = "Exemption Limits - " + createRPSLdataMap.get("Roll Year Settings");
-		String strRPSL = createRPSLdataMap.get("Roll Year Settings");
+		//Step4: Delete Roll Year's RPSL if it already exists	
+		String date = DateUtil.getCurrentDate("MM/dd/yyyy");
+		String strRollYear = ExemptionsPage.determineRollYear(date);
+		int futureRollYear = Integer.parseInt(strRollYear)+3;
+		String strRPSL = String.valueOf(futureRollYear);
+		String strRPSLName = "Exemption Limits - " + strRPSL;
 		objRPSLPage.removeRealPropertySettingEntry(strRPSL);
 		
 		//Step5: Creating the RPSL record for current year
 		ReportLogger.INFO("Adding current year's 'Real Property Settings' record");
-		objRPSLPage.enterRealPropertySettingsDetails(createRPSLdataMap);
+		objRPSLPage.enterRealPropertySettingsDetails(createRPSLdataMap,strRPSL);
 		
 		//Step6: Clicking on Save button & Verifying the RPSL record for current year after creation
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
-		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSL + "\" was created.","Verify the User is able to create Exemption limit record for the current roll year");	
+		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSL + "\" was created.","Verify the User is able to create Exemption limit record");	
 		
 		//Step7: Selecting module & 'All' List View
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);

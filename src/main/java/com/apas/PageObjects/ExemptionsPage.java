@@ -592,7 +592,7 @@ public void enterExemptionDataWithMandatoryField(Map<String, String> dataMap) th
 
 public void enterExemptionData(Map<String, String> dataMap) throws Exception {
 	String assesseeName = fetchAssesseeName();
-	searchAndSelectFromDropDown(apn, dataMap.get("APN"));
+	searchAndSelectFromDropDown(apn, fetchActiveAPN());
 	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
 	searchAndSelectFromDropDown(claimantName, assesseeName);
 	enter(claimantSSN, dataMap.get("Claimant SSN"));
@@ -613,7 +613,7 @@ public void enterExemptionData(Map<String, String> dataMap) throws Exception {
 
 public void enterExemptionDataWithEndDateOfRating(Map<String, String> dataMap) throws Exception {
 	String assesseeName = fetchAssesseeName();
-	searchAndSelectFromDropDown(apn, dataMap.get("APN"));
+	searchAndSelectFromDropDown(apn,  fetchActiveAPN());
 	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
 	searchAndSelectFromDropDown(claimantName, assesseeName);
 	enter(claimantSSN, dataMap.get("Claimant SSN"));
