@@ -113,6 +113,7 @@ public class CountyStratCodesTest extends TestBase {
 		stratCodeDerscription = stratCodeDerscription + "Updated";
 		objPage.enter(objCountyStratCodesPage.stratCodeDescInputField, stratCodeDerscription);
 		objPage.Click(objCountyStratCodesPage.saveButton);
+		objPage.waitForElementToBeVisible(objCountyStratCodesPage.successAlert,20);
 
 		//Step11: Checking the pop up message on editing and saving the existing entry.
 		ReportLogger.INFO("Validating pop up message on editing the existing entry.");
