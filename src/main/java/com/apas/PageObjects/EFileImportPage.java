@@ -348,8 +348,8 @@ public class EFileImportPage extends Page {
 		uploadFileInputBox.sendKeys(absoluteFilePath);
 		Thread.sleep(2000);
 		objPage.waitForElementToBeClickable(doneButton);
-		Thread.sleep(2000);
-		objPage.Click(doneButton);
+		Thread.sleep(5000);
+		objPage.javascriptClick(doneButton);
 		waitForElementToBeClickable(statusImportedFile,20);
 		objPage.waitForElementTextToBe(statusImportedFile, "In Progress", 120);
 	}

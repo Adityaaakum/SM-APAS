@@ -134,6 +134,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, "Qualified");
 		apasGenericObj.selectFromDropDown(exemptionPageObj.reasonNotQualified, "--None--");
 		objPage.Click(ExemptionsPage.saveButton);
+		Thread.sleep(50000);
 		ReportLogger.INFO("Updated Qualification from Not Qualified to Qualified ");
 		apasGenericObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
 		objPage.Click(exemptionPageObj.exemptionDetailsTab);
