@@ -50,6 +50,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 
 		driver=null;
 		setupTest();
+
 		driver = BrowserDriver.getBrowserInstance();
 
 		vaPageObj=new ValueAdjustmentsPage(driver);

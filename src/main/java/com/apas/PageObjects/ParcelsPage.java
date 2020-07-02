@@ -20,6 +20,10 @@ public class ParcelsPage extends Page {
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
 
+	@FindBy(xpath = "//*[text()='More']")
+	public WebElement moratab;
+
+	
 	/**
 	 * Description: This method will open the parcel with the APN passed in the parameter
 	 * @param APN: Value in the APN column
