@@ -49,8 +49,6 @@ public class SalesforceAPI extends TestBase {
             System.out.println("Decrypting the password : " + password);
             password = PasswordUtils.decrypt(password, "");
         }
-        System.out.println("password is: "+password);
-
         String passwordWithSecurityToken = password + securityToken;
 
         // Assemble the login request URL
