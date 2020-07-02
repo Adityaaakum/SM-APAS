@@ -973,16 +973,5 @@ public String fetchAssesseeName() {
 		waitUntilElementIsPresent(xpath,20);
 		return getElementText(driver.findElement(By.xpath(xpath)));
 	}
-	public String fetchAssesseeSSN() {
-		//This AssesseeName is temporarily hard coded for PreUAT environment as there is some code deference in preuat and qa
-	   String assesseeSSN = "SMtestPerson";
-	   if (!System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-		   SalesforceAPI objSalesforceAPI = new SalesforceAPI();
-		   String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type = 'Person' OR Type = 'Business'";
-		   HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
-		   assesseeSSN = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
-	   }
-       ReportLogger.INFO("Assessee Name fetched through Salesforce API : " + assesseeSSN);
-       return assesseeSSN;
-   }
+
 }
