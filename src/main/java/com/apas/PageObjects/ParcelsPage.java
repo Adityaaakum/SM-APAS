@@ -20,7 +20,7 @@ public class ParcelsPage extends Page {
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
 
-	@FindBy(xpath = "//*[text()='More']")
+	@FindBy(xpath = "//li[not(contains(@style,'visibility: hidden'))]//*[@title='More Tabs']")
 	public WebElement moratab;
 
 	
