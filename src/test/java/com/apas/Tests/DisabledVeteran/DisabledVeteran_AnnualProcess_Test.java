@@ -2,6 +2,7 @@ package com.apas.Tests.DisabledVeteran;
 
 import java.util.Map;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -18,6 +19,7 @@ import com.apas.PageObjects.ValueAdjustmentsPage;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
@@ -74,10 +76,10 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 			
 		//Step2: Fetching data for roll year to delete
 		String manualEntryData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;		
-		Map<String, String> rollYearAndStartDateDataMap = objUtils.generateMapFromJsonFile(manualEntryData, "RollYearAndStartDate");
-				
-		//Step3: Delete current Roll Year's RPSL
-		String strRollYear = rollYearAndStartDateDataMap.get("Roll Year Settings");
+		String date = DateUtil.getCurrentDate("MM/dd/yyyy");
+		String strRollYear = ExemptionsPage.determineRollYear(date);
+		
+		//Step3: Delete current Roll Year's RPSL		
 		objRPSLPage.removeRealPropertySettingEntry(strRollYear);
 		
 		//Step4: Open the Exemption module
@@ -100,11 +102,13 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		//Step6: Navigate to Value Adjustment List View in Exemption
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
-		//Step7: Click on 2020 Roll Year's Value Adjustment
-		String vaLinkName = objPage.getElementText(objValueAdjustmentPage.vAforRY2020);
-		objPage.waitForElementToBeClickable(50, objValueAdjustmentPage.vAforRY2020);
+		//Step7: Click on current Roll Year's Value Adjustment
+		String xpath = "//div[contains(@class,'windowViewMode-normal')]//tr[1]//span[contains(text(),'Start Date')]//..//..//parent::th//parent::tr//..//..//tbody//span[text()='7/1/"+strRollYear+"']//..//..//preceding-sibling::th//a";
+		WebElement vAforCurrentRY = objPage.waitForElementToBeClickable(50, xpath);
+		String vaLinkName = objPage.getElementText(vAforCurrentRY);
+		objPage.waitForElementToBeClickable(50, vAforCurrentRY);
 		ReportLogger.INFO("Clicking on Value Adjustment Link: "+ vaLinkName);
-		objPage.Click(objValueAdjustmentPage.vAforRY2020);
+		objPage.Click(vAforCurrentRY);
 		softAssert.assertContains(vaLinkName, "VALADJMT-","Verify that when the 'Annual Batch process' runs 'Value Adjustment Record's gets created for all the Active Exemption records");
 		
 		//Step8: Verify RPSL values are blank in current Roll Year's VA
@@ -137,7 +141,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		Map<String, String> RPSLCreationDataMap = objUtils.generateMapFromJsonFile(entryData, "DataToCreateCurrentRPSLEntry");
 
 		//Step10: Create new RPSL record
-		objRPSLPage.createRPSL(RPSLCreationDataMap);
+		objRPSLPage.createRPSL(RPSLCreationDataMap,strRollYear);
 	
 		//Step11: Search and Select Active Exemption created in previous Test	
 		objApasGenericFunctions.globalSearchRecords(activeExemptionName);		
@@ -145,11 +149,11 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		//Step12: Navigate to Value Adjustment List View in Exemption
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
-		//Step13: Click on 2020 Roll Year's Value Adjustment
-		String vALinkName = objPage.getElementText(objValueAdjustmentPage.vAforRY2020);
-		objPage.waitForElementToBeClickable(50, objValueAdjustmentPage.vAforRY2020);
-		ReportLogger.INFO("Clicking on Value Adjustment Link: "+ vALinkName);
-		objPage.Click(objValueAdjustmentPage.vAforRY2020);
+		//Step13: Click on current Roll Year's Value Adjustment
+		xpath = "//div[contains(@class,'windowViewMode-normal')]//tr[1]//span[contains(text(),'Start Date')]//..//..//parent::th//parent::tr//..//..//tbody//span[text()='7/1/"+strRollYear+"']//..//..//preceding-sibling::th//a";
+		vAforCurrentRY = objPage.waitForElementToBeClickable(50, xpath);
+		ReportLogger.INFO("Clicking on Value Adjustment Link: "+ vAforCurrentRY);
+		objPage.Click(vAforCurrentRY);
 		
 		//Step14: Verify RPSL values are updated in selected VA from Active Exemption	
 		Map<String, String> verifyDataWithUnApprovedRPSLDataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToVerifyForDeletedRPSL");
@@ -194,10 +198,10 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 			
 		//Step2: Fetching data for roll year to delete
 		String manualEntryData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;		
-		Map<String, String> rollYearAndStartDateDataMap = objUtils.generateMapFromJsonFile(manualEntryData, "RollYearAndStartDate");
+		String date = DateUtil.getCurrentDate("MM/dd/yyyy");
+		String strRollYear = ExemptionsPage.determineRollYear(date);
 		
 		//Step3: Delete current Roll Year's RPSL
-		String strRollYear = rollYearAndStartDateDataMap.get("Roll Year Settings");
 		objRPSLPage.removeRealPropertySettingEntry(strRollYear);
 		
 		//Step4: Open the Exemption module
@@ -225,8 +229,9 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		//Step7: Navigate to Value Adjustment List View in Exemption
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
-		//Step8: verify 2020 Roll Year's Value Adjustment is not created
-		boolean fVACreated = objPage.verifyElementVisible(objValueAdjustmentPage.vAforRY2020);
+		//Step8: verify current Roll Year's Value Adjustment is not created
+		String xpath = "//div[contains(@class,'windowViewMode-normal')]//tr[1]//span[contains(text(),'Start Date')]//..//..//parent::th//parent::tr//..//..//tbody//span[text()='7/1/"+strRollYear+"']//..//..//preceding-sibling::th//a";
+		boolean fVACreated = objPage.waitForElementToBeVisible(50, xpath);
 		softAssert.assertEquals(fVACreated,false,"SMAB-T1380:Verify when RPSL record is missing, for In-Active Exemption records 'VA' does not get created");
 		
 		//Step9: Fetching data to create new RPSL record
@@ -234,7 +239,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		Map<String, String> createRPSLDataMap = objUtils.generateMapFromJsonFile(entryData, "DataToCreateCurrentRPSLEntry");
 
 		//Step10: Create new RPSL record
-		objRPSLPage.createRPSL(createRPSLDataMap);
+		objRPSLPage.createRPSL(createRPSLDataMap,strRollYear);
 				
 		//Step11: Search and Select In-Active Exemption created in previous Test
 		objApasGenericFunctions.globalSearchRecords(inActiveExemptionName);
@@ -243,7 +248,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
 		//Step13: verify 2020 Roll Year's Value Adjustment does not exist for In-Active Exemption
-		fVACreated = objPage.verifyElementVisible(objValueAdjustmentPage.vAforRY2020);
+		fVACreated = objPage.waitForElementToBeVisible(50, xpath);
 		softAssert.assertEquals(fVACreated,false,"SMAB-T510:Verify when 'Annual Batch process' runs for In-Active Exemption record 'VAR' for working Tax Year is not created if status of RPSL is other than 'Approved'");
 		
 		objApasGenericFunctions.logout();
@@ -265,16 +270,16 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 
 		//Step2: Fetching data for Working Roll Year
 		String manualEntryData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;		
-		Map<String, String> rollYearAndStartDateDataMap = objUtils.generateMapFromJsonFile(manualEntryData, "RollYearAndStartDate");
+		String date = DateUtil.getCurrentDate("MM/dd/yyyy");
+		String strRollYear = ExemptionsPage.determineRollYear(date);
 		
 		//Step3: Delete current Roll Year's RPSL if it already exists	
-		String strRollYear = rollYearAndStartDateDataMap.get("Roll Year Settings");
 		objRPSLPage.removeRealPropertySettingEntry(strRollYear);
 				
 		//Step4: Fetching data and create new RPSL record
 		String entryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
 		Map<String, String> createRPSLDataMap = objUtils.generateMapFromJsonFile(entryData, "DataToCreateCurrentRPSLEntry");
-		String strSuccessAlertMessage = objRPSLPage.createRPSL(createRPSLDataMap);
+		String strSuccessAlertMessage = objRPSLPage.createRPSL(createRPSLDataMap,strRollYear);
 		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRollYear + "\" was created.","Verify the User is able to create Exemption limit record for the current roll year");
 		
 		//Step5: Opening the Real Property Settings Libraries module
@@ -303,10 +308,12 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
 		//Step11: Click on 2020 Roll Year's Value Adjustment
-		String vaLinkName = objPage.getElementText(objValueAdjustmentPage.vAforRY2020);
-		objPage.waitForElementToBeClickable(50, objValueAdjustmentPage.vAforRY2020);
+		String xpath = "//div[contains(@class,'windowViewMode-normal')]//tr[1]//span[contains(text(),'Start Date')]//..//..//parent::th//parent::tr//..//..//tbody//span[text()='7/1/"+strRollYear+"']//..//..//preceding-sibling::th//a";
+		WebElement vAforCurrentRY = objPage.waitForElementToBeClickable(50, xpath);
+		String vaLinkName = objPage.getElementText(vAforCurrentRY);
+		objPage.waitForElementToBeClickable(50, vAforCurrentRY);
 		ReportLogger.INFO("Clicking on Value Adjustment Link: "+ vaLinkName);
-		objPage.Click(objValueAdjustmentPage.vAforRY2020);	
+		objPage.Click(vAforCurrentRY);
 		
 		//Step12: Verify RPSL values are updated in selected VA from Active Exemption
 		Map<String, String> verifyWithUnApprovedRPSLdataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToVerifyForCreatedRPSL");
@@ -332,11 +339,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		String actualvaRollYearLowIncomeLatePenalty2Label = objValueAdjustmentPage.vaRollYearLowIncomeLatePenalty2Label.getText().trim();
 		softAssert.assertEquals(actualvaRollYearLowIncomeLatePenalty2Label,verifyWithUnApprovedRPSLdataMap.get("Roll Year LowIncome Penalty2"),"SMAB-T1382: Verify \'Roll Year Low Income Penalty 2\'");		
 				
-		//objApasGenericFunctions.logout();
-		
-		//Step13: Login to the APAS application using the credentials passed through		
-		//objApasGenericFunctions.login(loginUser);
-		
+
 		//Ste14: Search and Select In-Active Exemption created in previous Test
 		objApasGenericFunctions.globalSearchRecords(inActiveExemptionName);
 		
@@ -344,7 +347,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
 		//Step16: verify 2020 Roll Year's Value Adjustment does not exist for In-Active Exemption
-		boolean fVACreated = objPage.verifyElementVisible(objValueAdjustmentPage.vAforRY2020);
+		boolean fVACreated = objPage.waitForElementToBeVisible(50, xpath);
 		softAssert.assertEquals(fVACreated,false,"SMAB-T511: Verify when annual batch process runs VAR does not get created for In-Active Exemption Record");
 		
 		objApasGenericFunctions.logout();
