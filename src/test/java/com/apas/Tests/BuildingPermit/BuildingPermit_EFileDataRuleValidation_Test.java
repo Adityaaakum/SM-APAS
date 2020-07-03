@@ -355,6 +355,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Negative Permit Fee"),"Invalid Permit Fee","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Negative Permit Fee'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid Issue Date Format"),"Invalid Issue Date format","SMAB-T619 : Error Message validation for the scenario 'Invalid Issue Date Format'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid Completion Date Format"),"Invalid Completed Date format","SMAB-T619 : Error Message validation for the scenario 'Invalid Completion Date Format'");
+        softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Duplicate Record"),"Record is duplicate of another entry within the same file","SMAB-T1566 : Error Message validation for the scenario 'Duplicate Record'");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -475,7 +476,6 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with REV"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with REV'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with M"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with M'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number without BLD"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number without BLD'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Duplicate Record"),"Record is duplicate of another entry within the same file","SMAB-T1566 : Error Message validation for the scenario 'Building Permit Starts With MISC'");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -532,7 +532,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid Completion Date Format"),"Invalid Completed Date format","SMAB-T619 : Error Message validation for the scenario 'Invalid Completion Date Format'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permit Starts With ST"),"No Process for ST & MISC permits","SMAB-T1388 : Error Message validation for the scenario 'Building Permit Starts With ST'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permit Starts With MISC"),"No Process for ST & MISC permits","SMAB-T1388 : Error Message validation for the scenario 'Building Permit Starts With MISC'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Duplicate Record"),"Record is duplicate of another entry within the same file","SMAB-T1566 : Error Message validation for the scenario 'Building Permit Starts With MISC'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Duplicate Record"),"Record is duplicate of another entry within the same file","SMAB-T1566 : Error Message validation for the scenario 'Duplicate Record'");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();

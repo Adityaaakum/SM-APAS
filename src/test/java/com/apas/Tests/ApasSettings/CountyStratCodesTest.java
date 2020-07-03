@@ -125,11 +125,16 @@ public class CountyStratCodesTest extends TestBase {
 		objApasGenericFunctions.searchModule(modules.COUNTY_STRAT_CODES);
 
 		//Step12: Checking validation on duplicate entry creation
+		String expectedWarningMessage = "This record looks like a duplicate.View Duplicates";
+		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
+			expectedWarningMessage = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
+		}
+
 		ReportLogger.INFO("Creating duplicate entry to check validation message for duplicate entry creation");
 		manualEntryDataMap.put("Strat Code Description", stratCodeDerscription);
 		objCountyStratCodesPage.openNewEntry();
 		objCountyStratCodesPage.enterCountyStratCodeDetails(manualEntryDataMap);
-		softAssert.assertEquals(objPage.getElementText(objCountyStratCodesPage.errorMsgForDuplicateEntry), "This record looks like a duplicate.View Duplicates", "SMAB-T437: Validating warning message for duplicate entry");
+		softAssert.assertEquals(objPage.getElementText(objCountyStratCodesPage.errorMsgForDuplicateEntry), expectedWarningMessage, "SMAB-T437: Validating warning message for duplicate entry");
 		objPage.Click(objCountyStratCodesPage.cancelButton);
 
 		//Step13: Deleting the newly created entry via Salesforce API
