@@ -592,7 +592,13 @@ public void enterExemptionDataWithMandatoryField(Map<String, String> dataMap) th
 
 public void enterExemptionData(Map<String, String> dataMap) throws Exception {
 	String assesseeName = fetchAssesseeName();
-	searchAndSelectFromDropDown(apn, fetchActiveAPN());
+
+	String apnNumber = fetchActiveAPN();
+	if (dataMap.containsKey("APN") && (dataMap.get("APN").equals("002-072-250") || dataMap.get("APN").equals("002-052-190")) ){
+		apnNumber = dataMap.get("APN");
+	}
+	searchAndSelectFromDropDown(apn, apnNumber);
+
 	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
 	searchAndSelectFromDropDown(claimantName, assesseeName);
 	enter(claimantSSN, dataMap.get("Claimant SSN"));
@@ -613,7 +619,13 @@ public void enterExemptionData(Map<String, String> dataMap) throws Exception {
 
 public void enterExemptionDataWithEndDateOfRating(Map<String, String> dataMap) throws Exception {
 	String assesseeName = fetchAssesseeName();
-	searchAndSelectFromDropDown(apn,  fetchActiveAPN());
+
+	String apnNumber = fetchActiveAPN();
+	if (dataMap.containsKey("APN") && (dataMap.get("APN").equals("002-072-250") || dataMap.get("APN").equals("002-052-190")) ){
+			apnNumber = dataMap.get("APN");
+	}
+	searchAndSelectFromDropDown(apn, apnNumber);
+
 	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
 	searchAndSelectFromDropDown(claimantName, assesseeName);
 	enter(claimantSSN, dataMap.get("Claimant SSN"));
