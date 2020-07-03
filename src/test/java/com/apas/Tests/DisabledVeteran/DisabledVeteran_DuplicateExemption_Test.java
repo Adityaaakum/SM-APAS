@@ -1,6 +1,8 @@
 package com.apas.Tests.DisabledVeteran;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -15,6 +17,7 @@ import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.Page;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
@@ -80,14 +83,18 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String startDate1 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.startDateOnDetailPage));
 		softAssert.assertEquals(veteranName1, dataToCreateExemptionWithVeteranOneMap.get("Veteran Name"), "SMAB-T528: Validate 'Veteran Name' in the Exemption record");
 		softAssert.assertEquals(startDate1, objExemptionsPage.removeZeroInMonthAndDay(dataToCreateExemptionWithVeteranOneMap.get("Date Occupied/Intend to Occupy Property")), "SMAB-T528: Validate 'Start Date' in the Exemption record");
-		softAssert.assertEquals(apn1, dataToCreateExemptionWithVeteranOneMap.get("APN"), "SMAB-T528: Validate 'APN' in the Exemption record");
+		//softAssert.assertEquals(apn1, dataToCreateExemptionWithVeteranOneMap.get("APN"), "SMAB-T528: Validate 'APN' in the Exemption record");
 		
 		//Step6: Navigate back to the Exemption module
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);
 		
-		//Step7: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and append the Veteran Name with some random number to make it unique
+		/*Step7: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
+				Append the Veteran Name with some random number to make it unique
+				Add a key in Map to ensure same APN*/
+		
 		Map<String, String> dataToCreateExemptionWithVeteranTwoMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithVeteranTwo");
 		dataToCreateExemptionWithVeteranTwoMap.put("Veteran Name", dataToCreateExemptionWithVeteranTwoMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
+		dataToCreateExemptionWithVeteranTwoMap.put("Same APN", apn1);
 		
 		//Step8: Create another Exemption
 		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionWithVeteranTwoMap);
@@ -103,12 +110,13 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String startDate2 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.startDateOnDetailPage));
 		softAssert.assertEquals(veteranName2, dataToCreateExemptionWithVeteranTwoMap.get("Veteran Name"), "SMAB-T528: Validate 'Veteran Name' in the Exemption record");
 		softAssert.assertEquals(startDate2, objExemptionsPage.removeZeroInMonthAndDay(dataToCreateExemptionWithVeteranTwoMap.get("Date Acquired Property")), "SMAB-T528: Validate 'Start Date' in the Exemption record");
-		softAssert.assertEquals(apn2, dataToCreateExemptionWithVeteranTwoMap.get("APN"), "SMAB-T528: Validate 'APN' in the Exemption record");
+		//softAssert.assertEquals(apn2, dataToCreateExemptionWithVeteranTwoMap.get("APN"), "SMAB-T528: Validate 'APN' in the Exemption record");
 		
 		//Step10: Validate the 'Veteran Name' and 'Exemption Name' shouldn't match
 		softAssert.assertTrue(exemptionName1 != exemptionName2, "SMAB-T528: Verify user is able to create a same Exemption record with different Veteran Name");
+		softAssert.assertTrue(apn1.equals(apn2), "SMAB-T528: Verify user is able to create Exemption record with different Veteran but on same Parcel");
 		softAssert.assertTrue(veteranName1 != veteranName2, "SMAB-T528: Exemption records with overlapping dates are successfully created but for different Veteran");
-	
+		
 		objApasGenericFunctions.logout();
     }
 	
@@ -149,10 +157,13 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		//Step6: Navigate back to the Exemption module
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);
 		
-		//Step7: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and update the Veteran Name to make it same as above
+		/*Step7: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
+				Update the Veteran Name to make it same as in above exemption record
+				Add a new key in Map to ensure different APN is used*/
 		Map<String, String> dataToCreateExemptionWithParcelTwoMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithParcelTwo");
 		dataToCreateExemptionWithParcelTwoMap.put("Veteran Name", dataToCreateExemptionWithParcelOneMap.get("Veteran Name"));
-				
+		dataToCreateExemptionWithParcelTwoMap.put("Different APN", objExemptionsPage.fetchActiveAPN(2));
+		
 		//Step8: Create another Exemption
 		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionWithParcelTwoMap);
 		
@@ -200,6 +211,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId1 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
+		String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage)), dataToCreateExemptionWithNoEndDateOfRatingMap.get("Veteran Name"), "SMAB-T532: Validate 'Veteran Name' in the Exemption record with no End Date");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithNoEndDateOfRatingMap.get("Veteran SSN").substring(7), "SMAB-T532: Validate last 4 digits of 'Veteran's SSN' in the Exemption record with no End Date");
 		
@@ -209,9 +221,13 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		//Step8: Navigate back to the Exemption module
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);
 		
-		//Step9: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and update the Veteran Name to make it same as above
+		/*Step9: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
+				Update the Veteran Name to make it same as in above exemption record
+				Add a new key in Map to ensure same APN is used*/
+		
 		Map<String, String> dataToCreateExemptionWithEndDateOfRatingMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithEndDateOfRating");
 		dataToCreateExemptionWithEndDateOfRatingMap.put("Veteran Name", dataToCreateExemptionWithNoEndDateOfRatingMap.get("Veteran Name"));
+		dataToCreateExemptionWithEndDateOfRatingMap.put("Same APN", apn1);
 		
 		//Step10: Create another Exemption
 		objExemptionsPage.createExemptionWithEndDateOfRating(dataToCreateExemptionWithEndDateOfRatingMap);
@@ -220,6 +236,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId2 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
+		String apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage)), dataToCreateExemptionWithEndDateOfRatingMap.get("Veteran Name"), "SMAB-T532: Validate 'Veteran Name' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithEndDateOfRatingMap.get("Veteran SSN").substring(7), "SMAB-T532: Validate last 4 digits of 'Veteran's SSN' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
 		
@@ -229,8 +246,9 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		
 		//Step12: Validate the 'Record Ids' and 'Exemption Names' doesn't match for both the Exemptions created
 		softAssert.assertTrue(recordId1 != recordId2, "SMAB-T532: Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
+		softAssert.assertTrue(apn1.equals(apn2), "SMAB-T532: Exemption records on same parcel with non-overlapping dates are created");
 		softAssert.assertTrue(exemptionName1 != exemptionName2, "SMAB-T532: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (having End Date of Rating as Blank");
-	
+		
 		objApasGenericFunctions.logout();
 	}
 	
@@ -262,6 +280,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId1 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
+		String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage)), dataToCreateExemptionWithRequiredFieldsMap.get("Veteran Name"), "SMAB-T609: Validate 'Veteran Name' in the Exemption record");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithRequiredFieldsMap.get("Veteran SSN").substring(7), "SMAB-T609: Validate last 4 digits of 'Veteran's SSN' in the Exemption record");
 		
@@ -271,10 +290,15 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		//Step7: Validate that the 'Status' is read-only field on Exemption record
 		softAssert.assertTrue(objExemptionsPage.editExemptionAndValidateEnabledStatusOnDetailPage("Status", driver).equals("true"), "SMAB-T659: Verify user is not able to view 'Status' field as editable field on Exemption record");
 		
-		//Step8: Navigate back to Exemption module and create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and update the Veteran Name to make it same as above
+		/*Step8: Navigate back to Exemption module
+		 	Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
+			Update the Veteran Name to make it same as in above exemption record
+			Add a new key in Map to ensure same APN is used*/
+		
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);
 		Map<String, String> dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithDatesEarlierThanOriginalRecord");
 		dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap.put("Veteran Name", dataToCreateExemptionWithRequiredFieldsMap.get("Veteran Name"));
+		dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap.put("Same APN", apn1);
 		
 		//Step9: Create another Exemption
 		objExemptionsPage.createExemptionWithEndDateOfRating(dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap);
@@ -283,17 +307,24 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId2 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
+		String apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage)), dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap.get("Veteran Name"), "Validate 'Veteran Name' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap.get("Veteran SSN").substring(7), "Validate last 4 digits of 'Veteran's SSN' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
 		
 		//Step11: Validate the 'Record Ids' and 'Exemption Names' doesn't match for both the Exemptions created
-		softAssert.assertTrue(recordId1 != recordId2, "Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
+		softAssert.assertTrue(recordId1 != recordId2, "SMAB-T533: Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
+		softAssert.assertTrue(apn1.equals(apn2), "SMAB-T533: Exemption records on same parcel with non-overlapping dates are created");
 		softAssert.assertTrue(exemptionName1 != exemptionName2, "SMAB-T533: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (End Date of Rating is not blank)");
-	
-		//Step12: Navigate back to Exemption module and create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and update the Veteran Name to make it same as above
+		
+		/*Step12: Navigate back to Exemption module
+		 		  Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
+				  Update the Veteran Name to make it same as in above exemption record
+				  Add a new key in Map to ensure same APN is used*/
+		
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);
 		Map<String, String> dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRating");
 		dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap.put("Veteran Name", dataToCreateExemptionWithRequiredFieldsMap.get("Veteran Name"));
+		dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap.put("Same APN", apn1);
 		
 		//Step13: Create the third Exemption record
 		objExemptionsPage.createExemptionWithEndDateOfRating(dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap);
@@ -302,11 +333,13 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId3 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName3 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
+		String apn3 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage)), dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap.get("Veteran Name"), "Validate 'Veteran Name' in the Exemption record with Start Date set to a date later than End Date of initial record");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap.get("Veteran SSN").substring(7), "Validate last 4 digits of 'Veteran's SSN' in the Exemption record with Start Date set to a date later than End Date of initial record");
 			
 		//Step15: Validate the 'Record Ids' and 'Exemption Names' doesn't match for 2nd and 3rd Exemption record created
-		softAssert.assertTrue(recordId2 != recordId3, "Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
+		softAssert.assertTrue(recordId2 != recordId3, "SMAB-T534: Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
+		softAssert.assertTrue(apn2.equals(apn3), "SMAB-T534: Exemption records on same parcel with non-overlapping dates are created");
 		softAssert.assertTrue(exemptionName2 != exemptionName3, "SMAB-T534: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record");
 			
 		objApasGenericFunctions.logout();
@@ -338,13 +371,19 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId1 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
+		String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage)), dataToCreateExemptionWithEndDateMap.get("Veteran Name"), "Validate 'Veteran Name' in the Exemption record");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithEndDateMap.get("Veteran SSN").substring(7), "Validate last 4 digits of 'Veteran's SSN' in the Exemption record");
 		
-		//Step6: Navigate back to Exemption module and create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and update the Veteran Name to make it same as above
+		/*Step6: Navigate back to Exemption module
+					Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
+					Update the Veteran Name to make it same as in above exemption record
+					Add a new key in Map to ensure same APN is used*/
+		
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);
 		Map<String, String> dataToCreateExemptionWithoutEndDateMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithoutEndDate");
 		dataToCreateExemptionWithoutEndDateMap.put("Veteran Name", dataToCreateExemptionWithEndDateMap.get("Veteran Name"));
+		dataToCreateExemptionWithoutEndDateMap.put("Same APN", apn1);
 		
 		//Step7: Create another Exemption record
 		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionWithoutEndDateMap);
@@ -353,11 +392,13 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId2 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objExemptionsPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
+		String apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage)), dataToCreateExemptionWithoutEndDateMap.get("Veteran Name"), "Validate 'Veteran Name' in the Exemption detail record with End Date set to a date earlier than Start Date of initial record");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithoutEndDateMap.get("Veteran SSN").substring(7), "Validate last 4 digits of 'Veteran's SSN' in the Exemption detail record with End Date set to a date earlier than Start Date of initial record");
 		
 		//Step9: Validate the 'Record Ids' and 'Exemption Names' doesn't match for both the Exemptions created
-		softAssert.assertTrue(recordId1 != recordId2, "Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
+		softAssert.assertTrue(recordId1 != recordId2, "SMAB-T534: Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
+		softAssert.assertTrue(apn1.equals(apn2), "SMAB-T534: Exemption records on same parcel with non-overlapping dates are created");
 		softAssert.assertTrue(exemptionName1 != exemptionName2, "SMAB-T534: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record)");
 	
 		objApasGenericFunctions.logout();

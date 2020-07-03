@@ -6,8 +6,8 @@
 		"Status" : "Open",
 		"Tax Start Date": "07/01/2020",
 		"Tax End Date": "06/30/2021",
-		"Fiscal Start Date": "07/01/2019",
-		"Fiscal End Date": "06/30/2020",
+		"Open Roll Start Date": "07/01/2019",
+		"Open Roll End Date": "06/30/2020",
 		"Calendar Start Date": "01/01/2020",
 		"Calendar End Date": "12/31/2020"
 		},
@@ -19,8 +19,8 @@
 		"Lien Date": "01/01/2040",
 		"Tax Start Date": "07/01/2040",
 		"Tax End Date": "06/30/2041",
-		"Fiscal Start Date": "07/01/2039",
-		"Fiscal End Date": "06/30/2040",
+		"Open Roll Start Date": "07/01/2039",
+		"Open Roll End Date": "06/30/2040",
 		"Calendar Start Date": "01/01/2040",
 		"Calendar End Date": "12/31/2040"
 		},	
@@ -32,8 +32,8 @@
 		"Lien Date": "01/01/1979",
 		"Tax Start Date": "07/01/1979",
 		"Tax End Date": "06/30/1980",
-		"Fiscal Start Date": "07/01/1978",
-		"Fiscal End Date": "06/30/1979",
+		"Open Roll Start Date": "07/01/1978",
+		"Open Roll End Date": "06/30/1979",
 		"Calendar Start Date": "01/01/1979",
 		"Calendar End Date": "12/31/1979"
 		},
@@ -45,8 +45,8 @@
 		"Lien Date": "01/01/2035",
 		"Tax Start Date": "07/01/2035",
 		"Tax End Date": "06/30/2036",
-		"Fiscal Start Date": "07/01/2034",
-		"Fiscal End Date": "06/30/2035",
+		"Open Roll Start Date": "07/01/2034",
+		"Open Roll End Date": "06/30/2035",
 		"Calendar Start Date": "01/01/2035",
 		"Calendar End Date": "12/31/2035"
 		},
@@ -58,8 +58,8 @@
 		"Lien Date": "01/01/2008",
 		"Tax Start Date": "07/01/2008",
 		"Tax End Date": "06/30/2009",
-		"Fiscal Start Date": "07/01/2009",
-		"Fiscal End Date": "06/30/2010",
+		"Open Roll Start Date": "07/01/2009",
+		"Open Roll End Date": "06/30/2010",
 		"Calendar Start Date": "01/01/2010",
 		"Calendar End Date": "12/31/2009"
 		}					 	                                  	                            	

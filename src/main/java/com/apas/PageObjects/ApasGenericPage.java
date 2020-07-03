@@ -73,6 +73,9 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath = "//span[text()='Delete']")
 	public WebElement deleteConfirmationPostDeleteAction;
+	
+	@FindBy(xpath = "//h2[@class='slds-truncate slds-text-heading_medium']")
+	public WebElement popUpErrorMessageWeHitASnag;
 
 	/*	Sikander Bhambhu:
 	 *	Next 7 locators are for handling date picker
@@ -272,15 +275,17 @@ public class ApasGenericPage extends Page {
 	 * @param screenName: Screen Name
 	 * @param modRecordName: Record Number
 	 * @param action: Action user want to perform - Edit/Delete
+	 * @return: Boolean value
 	 */
-	public void clickShowMoreButtonAndAct(String screenName, String modRecordName, String action) throws Exception {       
+	public boolean clickShowMoreButtonAndAct(String screenName, String modRecordName, String action) throws Exception {       
 		Thread.sleep(1000);
 		String xpathStr1="";
+		Boolean flag=false;
 	    if (screenName == "Roll Year Settings") {
         		xpathStr1 = "//a[@title='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[9]//span//div//a//lightning-icon";
         	}
 	    if (screenName == "Exemptions") {
-    		xpathStr1 = "//a[@data-recordid='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[6]//span//div//a//lightning-icon";
+    			xpathStr1 = "//a[@data-recordid='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[6]//span//div//a//lightning-icon";
     		}
         WebElement showMoreIcon = locateElement(xpathStr1, 3);
         if (showMoreIcon != null){
@@ -293,6 +298,7 @@ public class ApasGenericPage extends Page {
         	if(actionOnShowMoreIcon != null){
         		clickAction(actionOnShowMoreIcon);
         		Thread.sleep(1000);
+        		flag=true;
         		if (action.equals("Delete")){
         			Click(deleteConfirmationPostDeleteAction);
         			ExtentTestManager.getTest().log(LogStatus.INFO, "Existing " + screenName + "record is deleted");
@@ -306,6 +312,63 @@ public class ApasGenericPage extends Page {
         else{
 			ExtentTestManager.getTest().log(LogStatus.INFO, screenName + " record doesn't exist");
 		}
+        
+        return flag;
     }
+	
+	/**
+	 * Description: This method will enter date
+	 * @param element: locator of element where date need to be put in
+	 * @param date: date to enter
+	 */
 
+	public void enterDate(WebElement element, String date) throws Exception {
+		Click(element);
+		selectDateFromDatePicker(date);
+	}
+	
+	/**
+	 * Description: This method will select from dropdown
+	 * @param element: locator of element where date need to be put in
+	 * @param value: field value to enter
+	 */
+
+	/*public void selectFromDropDown(WebElement element, String value) throws Exception {
+		Click(element);
+		String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
+		WebElement drpDwnOption = locateElement(xpathStr, 200);
+		drpDwnOption.click();
+	}*/
+	
+	/*public void selectFromDropDown(WebElement element, String value) throws Exception {
+		Click(element);
+		String xpathStr = "//div[contains(@class, 'left uiMenuList--short')]//a[contains(text(),'" + value + "')]";
+		WebElement drpDwnOption = locateElement(xpathStr, 200);
+		drpDwnOption.click();
+	}*/
+	
+	/*public void selectFromDropDown(WebElement element, String value) throws Exception {
+	Click(element);
+	String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
+	WebElement drpDwnOption = locateElement(xpathStr, 200);
+	drpDwnOption.click();
+}*/
+	
+	
+	/**
+	 * Description: This method will return element from the pop-up error message that appear on Detail page
+	 * @param value: field name
+	 */
+	
+	public WebElement returnElemOnPopUpScreen(String value) throws Exception {
+		String xpathStr = "";
+		if (value.contains("Claimant's") || value.contains("Veteran's")) {
+			xpathStr = "//a[contains(text()," + "\"" + value + "\"" + ")]";
+		}else{
+			xpathStr = "//a[contains(text(),'" + value + "')]";
+		}
+		WebElement elementOnPopUp = locateElement(xpathStr, 200);
+		return elementOnPopUp;
+	}
+	
 }
