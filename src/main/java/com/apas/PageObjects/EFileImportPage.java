@@ -817,19 +817,18 @@ public class EFileImportPage extends Page {
 	public String generateExpectedErrorMsgForTableColumn(String columnName, String columnValue) throws Exception {
 		if("Age".equalsIgnoreCase(columnName)) {
 			if("".equals(columnValue)) {
-				return "Age must be present";
+				return "Age, found blank but expected a number between 1.0 and 40.0";
 			}
 			else {
 				if(isColumnValueOnlyNumeric(columnValue)) {
 					if(Integer.parseInt(columnValue) == 0) {
-						return "Age should be between 1 and 40";
+						return "Field Age, found "+columnValue+" but expected a number between 1.0 and 40.0";
 					} else if(Integer.parseInt(columnValue) > 40) {
-						return "Age must be less than 40";
+						return "Field Age, found "+columnValue+" but expected a number between 1.0 and 40.0";
 					}
 				}
 				else {
-					//return "Field avg, found "+columnValue+" but expected a number greater than 0";
-					return "Age must be numeric without any sign";
+					return "Field Age, found "+columnValue+" but expected a number between 1.0 and 40.0";
 				}
 			}
 		}
@@ -847,7 +846,7 @@ public class EFileImportPage extends Page {
 					}
 				}
 				else {
-					return "Average must be numeric without any sign";
+					return "Field avg, found "+columnValue+" but expected a number greater than 0";
 				}
 			}
 		}
@@ -863,13 +862,13 @@ public class EFileImportPage extends Page {
 							return "DUPLICATE_VALUE:duplicate value found";
 						} else {
 							if(Integer.parseInt(columnValue) < 1974) {
-								return "Year must be greater than 1974";
+								return "Field year, found "+columnValue+" but expected greater than 1973";
 							} else if(Integer.parseInt(columnValue) > Integer.parseInt(TestBase.CONFIG.getProperty("rollYear"))){
 								return "Year must be less than 2020";
 							}
 						}
 					} else {
-						return "Year must be numeric without any sign";
+						return "Field year, found "+columnValue+" but expected a valid year";
 					}
 				}
 				else {
@@ -878,13 +877,13 @@ public class EFileImportPage extends Page {
 							return "DUPLICATE_VALUE:duplicate value found";
 						} else {
 							if(Integer.parseInt(columnValue) < 1974) {
-								return "Year must be greater than 1974";
+								return "Field year, found "+columnValue+" but expected greater than 1973";
 							} else if(Integer.parseInt(columnValue) > Integer.parseInt(TestBase.CONFIG.getProperty("rollYear"))){
 								return "Year must be less than "+ TestBase.CONFIG.getProperty("rollYear");
 							}
 						}
 					} else {
-						return "Year must be numeric without any sign";
+						return "Field year, found "+columnValue+" but expected a valid year";
 					}
 				}
 			}

@@ -52,6 +52,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		objApasGenericPage = new ApasGenericPage(driver);
 		objExemptionsPage = new ExemptionsPage(driver);	
 		objReportsPage = new ReportsPage(driver);
+		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
 	}
 
 	/**

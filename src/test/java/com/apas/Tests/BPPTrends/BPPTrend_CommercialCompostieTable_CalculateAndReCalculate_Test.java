@@ -60,6 +60,7 @@ public class BPPTrend_CommercialCompostieTable_CalculateAndReCalculate_Test exte
 		objBuildPermit = new BuildingPermitPage(driver);
 		objSoftAssert = new SoftAssert();
         objBppTrendSetupPage = new BppTrendSetupPage(driver);
+        objApasGenericFunctions.updateRollYearStatus("Open", "2020");
 	}
 
 	@AfterMethod

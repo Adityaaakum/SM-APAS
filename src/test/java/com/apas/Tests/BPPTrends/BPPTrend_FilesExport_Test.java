@@ -52,6 +52,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 		softAssert = new SoftAssertion();
 		rollYear = CONFIG.getProperty("rollYear");
         objBppTrendSetupPage = new BppTrendSetupPage(driver);
+        objApasGenericFunctions.updateRollYearStatus("Open", "2020");
 	}
 
 	@AfterMethod

@@ -63,6 +63,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 		objBuildPermit = new BuildingPermitPage(driver);
 		objSoftAssert = new SoftAssert();
         objBppTrendSetupPage = new BppTrendSetupPage(driver);
+        objApasGenericFunctions.updateRollYearStatus("Open", "2020");
 	}
 
 	@AfterMethod
