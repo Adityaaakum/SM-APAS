@@ -55,6 +55,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		vaPageObj=new ValueAdjustmentsPage(driver);	
 		objApasGenericPage= new ApasGenericPage(driver);
 		objBuildingPermitPage=new BuildingPermitPage(driver);
+		apasGenericObj.updateRollYearStatus("Closed", "2020");
 
 	}
 

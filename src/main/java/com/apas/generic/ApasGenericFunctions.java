@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.apas.Reports.ReportLogger;
 
+import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -32,6 +33,7 @@ import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.DateUtil;
 import com.apas.Utils.PasswordUtils;
+import com.apas.Utils.SalesforceAPI;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class ApasGenericFunctions extends TestBase {
@@ -548,5 +550,17 @@ public float convertToFloat(Object amount)
         return objPage.getElementText(driver.findElement(By.xpath(xpath)));
     }
 
-  
+    /**
+	 * Description: This will update the status of Roll Year
+	 * @param expectedStatus: Expected status like Open, Closed etc.
+	 * @param rollYear: Roll year for which the status needs to be updated
+	 */
+	public void updateRollYearStatus(String expectedStatus, String rollYear) throws Exception {		
+		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+		//Query to update the status of Roll Year
+		String queryForID = "Select Id From Roll_Year_Settings__c where Roll_Year__c = '"+ rollYear +"'";		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("Status__c", expectedStatus);		
+		objSalesforceAPI.update("Roll_Year_Settings__c", queryForID, jsonObj);
+	}
 }

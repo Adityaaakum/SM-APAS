@@ -55,6 +55,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		exemptionPageObj=new ExemptionsPage(driver);
 		objBuildingPermitPage= new BuildingPermitPage(driver);
 		exemptionFilePath = System.getProperty("user.dir") + testdata.EXEMPTION_DATA;
+		apasGenericObj.updateRollYearStatus("Closed", "2020");
 	  }
 	
 	

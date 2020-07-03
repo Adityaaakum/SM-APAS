@@ -52,6 +52,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		softAssert = new SoftAssertion();
 		objApasGenericPage = new ApasGenericPage(driver);
 		objExemptionsPage = new ExemptionsPage(driver);
+		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
 	}
 	
 	/**

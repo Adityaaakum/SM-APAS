@@ -305,8 +305,8 @@ public class SalesforceAPI extends TestBase {
      * @param jsonObject : List of columns to be updated in form of json object
      */
     public void update(String table, String commaSeparatedIdsORSQLQuery, JSONObject jsonObject) {
-        ReportLogger.INFO("Updating the object " + table + " through Salesforce API for following query or comma separated IDs : " + commaSeparatedIdsORSQLQuery);
-
+    	
+    	ReportLogger.INFO("Updating the object " + table + " through Salesforce API for following query or comma separated IDs : " + commaSeparatedIdsORSQLQuery);    	
         //Creating HTTP Post Connection
         HttpPost httpPost = salesforceCreateConnection();
 

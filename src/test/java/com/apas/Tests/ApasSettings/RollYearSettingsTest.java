@@ -50,6 +50,7 @@ public class RollYearSettingsTest extends TestBase {
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		rollYearData = System.getProperty("user.dir") + testdata.ROLL_YEAR_DATA;
+		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
 	}
 	
 	/**

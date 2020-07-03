@@ -61,6 +61,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBa
 		objBuildPermit = new BuildingPermitPage(driver);
 		objSoftAssert = new SoftAssert();
 		objBppTrendSetupPage = new BppTrendSetupPage(driver);
+		objApasGenericFunctions.updateRollYearStatus("Open", "2020");
 	}
 	
 	@AfterMethod

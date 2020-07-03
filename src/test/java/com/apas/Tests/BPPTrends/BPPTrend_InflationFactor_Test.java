@@ -56,6 +56,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		objBuildPermitPage = new BuildingPermitPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objBppTrendSetupPage = new BppTrendSetupPage (driver);
+		objApasGenericFunctions.updateRollYearStatus("Open", "2020");
 	}
 
 	
