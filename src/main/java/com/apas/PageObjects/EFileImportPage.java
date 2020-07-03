@@ -882,7 +882,10 @@ public class EFileImportPage extends Page {
 								return "Year must be less than "+ TestBase.CONFIG.getProperty("rollYear");
 							}
 						}
-					} else {
+					} else if(columnValue.equalsIgnoreCase("XYZ")) {
+						return "Field year, found "+columnValue+" but expected a valid year"+"\r\n"+"Field year, found "+columnValue+" but expected it to be less than 2021";
+					} 
+					else {
 						return "Field year, found "+columnValue+" but expected a valid year";
 					}
 				}

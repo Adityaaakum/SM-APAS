@@ -1321,7 +1321,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 				
 				//Asserting the expected and the actual error message				
 				String validationMsg = "SMAB-T105: Validating transformation rule for column '"+ columnNameToValidate + "' having value --> "+ valueOfColumn +". Expected Msg:: "+ expErrorMsg +" || Actual Msg: "+ actErrorMsg;
-				softAssert.assertTrue(actErrorMsg.contains(expErrorMsg), validationMsg);
+				softAssert.assertTrue(actErrorMsg.equalsIgnoreCase(expErrorMsg), validationMsg);
 			}
 		}
 		softAssert.assertAll();
