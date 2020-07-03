@@ -302,6 +302,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		softAssert.assertTrue(apasGenericObj.isNotDisplayed(objEFileImport.viewLinkForPreviousImport), "SMAB-T578:Verify user is able to see 'View' button only for the latest Imported file from all 'Imported' status log");
 		//step6: approving the imported file
 		objPage.Click(objEFileImport.viewLinkRecord);
+		ReportLogger.INFO("Approving the imported file : Import_TestData_ValidAndInvalidScenarios_AT2.txt");
 		objPage.waitForElementToBeClickable(objEFileImport.errorRowSection, 20);
 		objPage.waitForElementToBeClickable(objEFileImport.approveButton, 10);
 		objPage.Click(objEFileImport.approveButton);
@@ -313,7 +314,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objEFileImport.selectFileAndSource(fileType,source);
 		objPage.waitForElementToBeClickable(objEFileImport.nextButton, 10);
 		objPage.Click(objEFileImport.nextButton);
-		objPage.enter(objEFileImport.fileNameInputBox, "Import_TestData_ValidAndInvalidScenarios_AT1.txt");
+		objPage.enter(objEFileImport.fileNameInputBox, "Import_TestData_ValidAndInvalidScenarios_AT2.txt");
 		objPage.Click(objEFileImport.fileNameNext);
 		
 		//step8: verifying error message while trying to import file for already approved file type,source and period
