@@ -195,6 +195,8 @@ public class SalesforceAPI extends TestBase {
         sqlQuery = sqlQuery.replace("'", "%27");
         sqlQuery = sqlQuery.replace("=", "%3D");
         sqlQuery = sqlQuery.replace("!", "%21");
+        sqlQuery = sqlQuery.replace("<", "%3C");
+        sqlQuery = sqlQuery.replace(">", "%3E");
         System.out.println("Modified query for URI : " + sqlQuery);
 
         HashMap<String, ArrayList<String>> hashMap = new HashMap<>();
