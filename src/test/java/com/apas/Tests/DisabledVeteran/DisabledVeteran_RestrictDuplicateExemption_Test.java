@@ -47,6 +47,7 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		mandatoryExemptionData = System.getProperty("user.dir") + testdata.EXEMPTION_MANDATORY_FIELDS_ENTRY_DATA;
+		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
 	}
 	
 	/**

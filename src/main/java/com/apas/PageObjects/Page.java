@@ -17,14 +17,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -34,6 +26,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.apas.Reports.ReportLogger;
 import com.google.common.base.Function;
 
 public class Page {
@@ -1182,5 +1175,24 @@ public class Page {
 			return false;
 		}
 	}
+	
+	
+	public boolean compareDropDownvalues(String actualvalues,String expectedSourcesBPP) {
+		String []allexpectedvalues=expectedSourcesBPP.split("\n");
+		String valueNotpresent = "";
+		for(int i=0;i<allexpectedvalues.length;i++)
+		{	if(actualvalues.contains(allexpectedvalues[i]))
+			{}
+			else{valueNotpresent=valueNotpresent+"\n"+allexpectedvalues[i];}
+		}
+		if(!valueNotpresent.isEmpty())
+		{ReportLogger.INFO("Actual values::\n"+actualvalues+"\n||Expected Values::\n"+expectedSourcesBPP+"\n||Values not found::"+valueNotpresent);
+		return false;
+		}else
+		{ReportLogger.INFO("All values are found\n||Actual values::\n"+actualvalues+"\n||Expected Values::\n"+expectedSourcesBPP);
+		 return true;
+		 }
+	}
+	
 
 }

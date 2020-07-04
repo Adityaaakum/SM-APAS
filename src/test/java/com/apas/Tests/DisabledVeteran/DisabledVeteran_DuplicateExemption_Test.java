@@ -49,6 +49,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		mandatoryExemptionData = System.getProperty("user.dir") + testdata.EXEMPTION_MANDATORY_FIELDS_ENTRY_DATA;
+		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
 	}
 	
 
@@ -111,9 +112,9 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertEquals(startDate2, objExemptionsPage.removeZeroInMonthAndDay(dataToCreateExemptionWithVeteranTwoMap.get("Date Acquired Property")), "SMAB-T528: Validate 'Start Date' in the Exemption record");
 		
 		//Step10: Validate the 'Veteran Name' and 'Exemption Name' shouldn't match
-		softAssert.assertTrue(exemptionName1 != exemptionName2, "SMAB-T528: Verify user is able to create a same Exemption record with different Veteran Name");
+		softAssert.assertTrue(!exemptionName1.equals(exemptionName2), "SMAB-T528: Verify user is able to create a same Exemption record with different Veteran Name");
 		softAssert.assertTrue(apn1.equals(apn2), "SMAB-T528: Verify user is able to create Exemption record with different Veteran but on same Parcel");
-		softAssert.assertTrue(veteranName1 != veteranName2, "SMAB-T528: Exemption records with overlapping dates are successfully created but for different Veteran");
+		softAssert.assertTrue(!veteranName1.equals(veteranName2), "SMAB-T528: Exemption records with overlapping dates are successfully created but for different Veteran");
 		
 		objApasGenericFunctions.logout();
     }
@@ -177,8 +178,8 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertEquals(startDate2, objExemptionsPage.removeZeroInMonthAndDay(dataToCreateExemptionWithParcelTwoMap.get("Effective Date of 100% USDVA Rating")), "SMAB-T530: Validate 'Start Date' in the Exemption record");
 		
 		//Step10: Validate the 'APN' and 'Exemption Name' shouldn't match
-		softAssert.assertTrue(exemptionName1 != exemptionName2, "SMAB-T530: Verify user is able to create a same Exemption record with different Parcel");
-		softAssert.assertTrue(apn1 != apn2, "SMAB-T530: Exemption records with overlapping dates are successfully created but with different Parcel Number");
+		softAssert.assertTrue(!exemptionName1.equals(exemptionName2), "SMAB-T530: Verify user is able to create a same Exemption record with different Parcel");
+		softAssert.assertTrue(!apn1.equals(apn2), "SMAB-T530: Exemption records with overlapping dates are successfully created but with different Parcel Number");
 		
 		objApasGenericFunctions.logout();
     }
@@ -241,9 +242,9 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.endDateOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataToCreateExemptionWithEndDateOfRatingMap.get("End Date Of Rating")), "SMAB-T532: Validate 'End Date' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
 		
 		//Step12: Validate the 'Record Ids' and 'Exemption Names' doesn't match for both the Exemptions created
-		softAssert.assertTrue(recordId1 != recordId2, "SMAB-T532: Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
+		softAssert.assertTrue(!recordId1.equals(recordId2), "SMAB-T532: Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
 		softAssert.assertTrue(apn1.equals(apn2), "SMAB-T532: Exemption records on same parcel with non-overlapping dates are created");
-		softAssert.assertTrue(exemptionName1 != exemptionName2, "SMAB-T532: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (having End Date of Rating as Blank");
+		softAssert.assertTrue(!exemptionName1.equals(exemptionName2), "SMAB-T532: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (having End Date of Rating as Blank");
 		
 		objApasGenericFunctions.logout();
 	}
@@ -308,9 +309,9 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap.get("Veteran SSN").substring(7), "Validate last 4 digits of 'Veteran's SSN' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
 		
 		//Step11: Validate the 'Record Ids' and 'Exemption Names' doesn't match for both the Exemptions created
-		softAssert.assertTrue(recordId1 != recordId2, "SMAB-T533: Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
+		softAssert.assertTrue(!recordId1.equals(recordId2), "SMAB-T533: Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
 		softAssert.assertTrue(apn1.equals(apn2), "SMAB-T533: Exemption records on same parcel with non-overlapping dates are created");
-		softAssert.assertTrue(exemptionName1 != exemptionName2, "SMAB-T533: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (End Date of Rating is not blank)");
+		softAssert.assertTrue(!exemptionName1.equals(exemptionName2), "SMAB-T533: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (End Date of Rating is not blank)");
 		
 		/*Step12: Navigate back to Exemption module
 		 		  Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
@@ -334,9 +335,9 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap.get("Veteran SSN").substring(7), "Validate last 4 digits of 'Veteran's SSN' in the Exemption record with Start Date set to a date later than End Date of initial record");
 			
 		//Step15: Validate the 'Record Ids' and 'Exemption Names' doesn't match for 2nd and 3rd Exemption record created
-		softAssert.assertTrue(recordId2 != recordId3, "SMAB-T534: Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
+		softAssert.assertTrue(!recordId2.equals(recordId3), "SMAB-T534: Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
 		softAssert.assertTrue(apn2.equals(apn3), "SMAB-T534: Exemption records on same parcel with non-overlapping dates are created");
-		softAssert.assertTrue(exemptionName2 != exemptionName3, "SMAB-T534: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record");
+		softAssert.assertTrue(!exemptionName2.equals(exemptionName3), "SMAB-T534: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record");
 			
 		objApasGenericFunctions.logout();
 	}
@@ -393,9 +394,9 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithoutEndDateMap.get("Veteran SSN").substring(7), "Validate last 4 digits of 'Veteran's SSN' in the Exemption detail record with End Date set to a date earlier than Start Date of initial record");
 		
 		//Step9: Validate the 'Record Ids' and 'Exemption Names' doesn't match for both the Exemptions created
-		softAssert.assertTrue(recordId1 != recordId2, "SMAB-T534: Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
+		softAssert.assertTrue(!recordId1.equals(recordId2), "SMAB-T534: Exemption records for same Veteran with non-overlapping dates are created with different Record Ids");
 		softAssert.assertTrue(apn1.equals(apn2), "SMAB-T534: Exemption records on same parcel with non-overlapping dates are created");
-		softAssert.assertTrue(exemptionName1 != exemptionName2, "SMAB-T534: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record)");
+		softAssert.assertTrue(!exemptionName1.equals(exemptionName2), "SMAB-T534: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record)");
 	
 		objApasGenericFunctions.logout();
 	}	
