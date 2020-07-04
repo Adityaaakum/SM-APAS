@@ -29,7 +29,7 @@ public class ExtentManager {
 			String buildNumber = "";
 			//This will add Jenkins Build Number in the report name
 			if (System.getProperty("jenkinsbuild") != null){
-				buildNumber = "_Build#" + buildNumber;
+				buildNumber = "_Build#" + System.getProperty("jenkinsbuild");
 			}
 			String resultFile = System.getProperty("user.dir") + "//test-output//AutomationReport//" + SuiteName + "_" + environment + buildNumber + "_" + upDate + ".html";
 			extent = new ExtentReports(resultFile, true);
