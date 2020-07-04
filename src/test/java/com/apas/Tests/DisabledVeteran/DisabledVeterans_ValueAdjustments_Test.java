@@ -1,5 +1,7 @@
 package com.apas.Tests.DisabledVeteran;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -17,6 +19,7 @@ import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ValueAdjustmentsPage;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.DateUtil;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
@@ -38,13 +41,13 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	String exemptionFilePath;
 	ParcelsPage parcelObj;
 	BuildingPermitPage objBuildingPermitPage;
-	
+	String rpslFileDataPath;
+	Map<String, String> rpslData;
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
 		driver=null;
 		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
-
 		objPage = new Page(driver);
 		objLoginPage = new LoginPage(driver);
 		apasGenericObj = new ApasGenericFunctions(driver);
@@ -55,7 +58,10 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		exemptionPageObj=new ExemptionsPage(driver);
 		objBuildingPermitPage= new BuildingPermitPage(driver);
 		exemptionFilePath = System.getProperty("user.dir") + testdata.EXEMPTION_DATA;
-	  }
+		rpslFileDataPath = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;
+		rpslData= objUtil.generateMapFromJsonFile(rpslFileDataPath, "DataToCreateRPSLEntryForValidation");
+		
+	}
 	
 	
 	/**
@@ -101,6 +107,8 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		Map<String, String> noVAData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NotQualifiedToQualifiedData");
 		//Step1: Login to the APAS application using the credentials passed through data provider
 		apasGenericObj.login(loginUser);
+		
+		exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 		
 		//Step2: Opening the Exemption Module
 		apasGenericObj.searchModule(EXEMPTIONS);
@@ -161,6 +169,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 			//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 			apasGenericObj.login(loginUser);
+			exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 			
 			//Step2: Opening the Exemption Module
 			apasGenericObj.searchModule(EXEMPTIONS);
@@ -204,6 +213,8 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		
 			//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 			apasGenericObj.login(loginUser);
+			exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
+			
 			//Step2: Opening the parcels module
 			apasGenericObj.searchModule(EXEMPTIONS);
 			
@@ -270,10 +281,12 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	@Test(description = "SMAB-T562,SMAB-T485,SMAB-T602:Verify only one VA(basic Disabled veteran)is created for Current Roll", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 		"smoke", "regression","DisabledVeteranExemption" })
 	public void verify_DisabledVeteran_OnlyOneVAForCurrentRollyear(String loginUser) throws Exception{
-		
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "onlyOneVAtestData");
 		//Step1: Login to the APAS application using the credentials passed through data provider
 		apasGenericObj.login(loginUser);
+		exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
+		
+		exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 		
 		//Step2: Opening the Exemption Module
 		apasGenericObj.searchModule(EXEMPTIONS);
@@ -310,6 +323,7 @@ public void verify_Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEnd
 		Map<String, String> newExemptionMandatoryData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NoPenaltyData");
 		//Step1: Login to the APAS application using the credentials passed through data provider
 		apasGenericObj.login(loginUser);
+		exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 		
 		//Step2: Opening the Exemption Module
 		apasGenericObj.searchModule(EXEMPTIONS);
@@ -356,6 +370,7 @@ public void verify_Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEnd
 			Map<String, String> newExemptionMandatoryData = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData");
 			//Step1: Login to the APAS application using the credentials passed through data provider
 			apasGenericObj.login(loginUser);
+			exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 			
 			//Step2: Opening the Exemption Module
 			apasGenericObj.searchModule(EXEMPTIONS);
