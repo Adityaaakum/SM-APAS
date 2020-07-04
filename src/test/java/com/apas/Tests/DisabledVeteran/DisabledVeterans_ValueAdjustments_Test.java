@@ -282,9 +282,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		//Step1: Login to the APAS application using the credentials passed through data provider
 		apasGenericObj.login(loginUser);
 		exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
-		
-		exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
-		
+
 		//Step2: Opening the Exemption Module
 		apasGenericObj.searchModule(EXEMPTIONS);
 		

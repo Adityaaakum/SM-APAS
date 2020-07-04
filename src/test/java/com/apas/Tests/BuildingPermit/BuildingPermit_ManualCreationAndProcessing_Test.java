@@ -729,7 +729,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		String queryRecordType ="SELECT Id FROM RecordType where name = 'E-File Building Permit'";
 		HashMap<String, ArrayList<String>> responseRecordType = salesforceAPI.select(queryRecordType);
 		String efileBuildingPermitType = responseRecordType.get("Id").get(0);
-		String queryBuildingPermitEfile ="SELECT Name,City_APN__C,City_strat_code__C FROM Building_Permit__c where RecordTypeId = '" + efileBuildingPermitType + "' and City_APN__C != '' and City_strat_code__C != '' limit 1";
+		String queryBuildingPermitEfile ="SELECT Name,City_APN__C,City_strat_code__C FROM Building_Permit__c where RecordTypeId = '" + efileBuildingPermitType + "' and City_APN__C != '' and calculated_processing_status__C = 'No Process' and City_strat_code__C != '' limit 1";
 		HashMap<String, ArrayList<String>> responseBuildingPermit = salesforceAPI.select(queryBuildingPermitEfile);
 		String buildingPermitNumber = responseBuildingPermit.get("Name").get(0);
 
