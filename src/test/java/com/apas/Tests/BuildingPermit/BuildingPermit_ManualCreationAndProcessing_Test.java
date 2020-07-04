@@ -702,7 +702,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Work Description"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Work Description'");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Permit City Code"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Permit City Code'");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Owner Name"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Owner Name'");
-		softAssert.assertEquals(objBuildingPermitPage.errorMsgUnderLabels.size(),7,"SMAB-T345: Count of Mandatory fields validation while creating efile building permit manually");
+		softAssert.assertEquals(objBuildingPermitPage.errorMsgUnderLabels.size(),6,"SMAB-T345: Count of Mandatory fields validation while creating efile building permit manually");
 
 		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
 		manualBuildingPermitMap.put("Permit City Code","BL");

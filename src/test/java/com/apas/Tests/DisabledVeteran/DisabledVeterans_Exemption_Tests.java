@@ -55,6 +55,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		vaPageObj=new ValueAdjustmentsPage(driver);	
 		objApasGenericPage= new ApasGenericPage(driver);
 		objBuildingPermitPage=new BuildingPermitPage(driver);
+		apasGenericObj.updateRollYearStatus("Closed", "2020");
 
 	}
 
@@ -378,7 +379,37 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			
 		}
 		
-
+	/**
+	 * Below test case will
+	 * 1. Verify error message on saving Exemption when the Claimant SSN value is different than the SSN value that exists on the related Assessee record
+	 **/
+	@Test(description = "SMAB-T1528: Verify user is able to view an error message on saving Exemption when the Claimant SSN value that is entered on the Exemption record is different than the SSN value that exists on the related Assessee record", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption" })
+	public void DisabledVeteran_verifyExemptionwithIncorrectClaimantSSN(String loginUser) throws Exception {
+		
+		//Step1: Login to the APAS application using the credentials passed through		
+		apasGenericObj.login(loginUser);
+	
+		//Step2: Open the Exemption module
+		apasGenericObj.searchModule(modules.EXEMPTION);
+				
+		/*Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
+		 Create Exemption record - Active
+		 Validate the Error message*/		
+		ReportLogger.INFO("Creating Active Exemption");		
+		String manualEntryData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;	
+		Map<String, String> exemptionCreationDataMap = objUtil.generateMapFromJsonFile(manualEntryData, "DataToCreateExemptionWithMandatoryFields");
+		String timeStamp = java.time.LocalDateTime.now().toString();
+		exemptionCreationDataMap.put("Veteran Name", exemptionCreationDataMap.get("Veteran Name").concat(timeStamp));		
+		exemptionCreationDataMap.put("Claimant SSN", "000-00-0000");		
+		exemptionPageObj.createExemptionWithoutEndDateOfRating(exemptionCreationDataMap);
+		
+		//Step4: Verify error message
+		String expectedErrorMessageOnTop = "Claimant's SSN does not match with the SSN on the Claimant's record";
+		softAssert.assertEquals(exemptionPageObj.errorMessage.getText(),expectedErrorMessageOnTop,"SMAB-T1528:Verify user is able to view an error message on saving Exemption when the Claimant SSN value that is entered on the Exemption record is different than the SSN value that exists on the related Assessee record");
+		objPage.Click(exemptionPageObj.cancelButton);
+		
+		apasGenericObj.logout();
+	}
 	
 }
 		

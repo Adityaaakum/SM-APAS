@@ -49,6 +49,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		objBuildPermitPage = new BuildingPermitPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objBppTrendSetupPage = new BppTrendSetupPage(driver);
+		objApasGenericFunctions.updateRollYearStatus("Open", "2020");
 	}
 	
 	@AfterMethod

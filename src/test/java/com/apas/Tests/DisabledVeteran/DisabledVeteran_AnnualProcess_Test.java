@@ -57,6 +57,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		objRYSPage = new RollYearSettingsPage(driver);
 		objRPSLPage = new RealPropertySettingsLibrariesPage(driver);
 		objExemptionsPage = new ExemptionsPage(driver);		
+		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
 	}
 
 	

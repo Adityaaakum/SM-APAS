@@ -61,6 +61,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		//rollYearForImport = rollYear;
 		rollYearForImport = Integer.toString(rollYear);
 		objSalesforceAPI = new SalesforceAPI();
+		objApasGenericFunctions.updateRollYearStatus("Open", "2020");
 	}
 		
 	@AfterMethod
@@ -1261,7 +1262,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String bppTrendIndexFactorsFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_TRANSFORMATION_RULES;
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, bppTrendIndexFactorsFile);		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 360);
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 480);
 		
 		//Step4: Click View link to navigate to review & approve page
 		objPage.Click(objEfileHomePage.viewLink);
@@ -1320,7 +1321,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 				
 				//Asserting the expected and the actual error message				
 				String validationMsg = "SMAB-T105: Validating transformation rule for column '"+ columnNameToValidate + "' having value --> "+ valueOfColumn +". Expected Msg:: "+ expErrorMsg +" || Actual Msg: "+ actErrorMsg;
-				softAssert.assertTrue(actErrorMsg.contains(expErrorMsg), validationMsg);
+				softAssert.assertTrue(actErrorMsg.equalsIgnoreCase(expErrorMsg), validationMsg);
 			}
 		}
 		softAssert.assertAll();

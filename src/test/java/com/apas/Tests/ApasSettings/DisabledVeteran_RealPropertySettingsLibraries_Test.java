@@ -44,6 +44,7 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		objRPSLPage = new RealPropertySettingsLibrariesPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		softAssert = new SoftAssertion();
+		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
 	}
 	
 	/**

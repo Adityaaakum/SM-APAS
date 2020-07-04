@@ -1,7 +1,5 @@
 package com.apas.Tests.DisabledVeteran;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -19,7 +17,6 @@ import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ValueAdjustmentsPage;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.DateUtil;
-import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
@@ -60,8 +57,8 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		exemptionFilePath = System.getProperty("user.dir") + testdata.EXEMPTION_DATA;
 		rpslFileDataPath = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;
 		rpslData= objUtil.generateMapFromJsonFile(rpslFileDataPath, "DataToCreateRPSLEntryForValidation");
-		
-	}
+		apasGenericObj.updateRollYearStatus("Closed", "2020");
+	  }
 	
 	
 	/**

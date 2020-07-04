@@ -622,13 +622,14 @@ public void enterExemptionData(Map<String, String> dataMap) throws Exception {
 
 public void enterExemptionDataWithEndDateOfRating(Map<String, String> dataMap) throws Exception {
 	String assesseeName = fetchAssesseeName();
-	
+
 	String apnNumber = fetchActiveAPN();
 	if (dataMap.containsKey("APN") && (dataMap.get("APN").equals("002-072-250") || dataMap.get("APN").equals("002-052-190")) ){
-		apnNumber = dataMap.get("APN");
+			apnNumber = dataMap.get("APN");
 	}
 	searchAndSelectFromDropDown(apn, apnNumber);
-enter(dateApplicationReceived, dataMap.get("Date Application Received"));
+
+	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
 	searchAndSelectFromDropDown(claimantName, assesseeName);
 	enter(claimantSSN, dataMap.get("Claimant SSN"));
 	enter(nameOfVeteran, dataMap.get("Veteran Name"));
@@ -950,9 +951,9 @@ public String fetchAssesseeName() {
 	public String fetchActiveAPN() {
 		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 		String queryForID = "SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit 1";
-		//if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-		//	queryForID = "SELECT Name FROM Parcel__c where Status__c='Active' limit 1";
-		//}
+//		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
+//			queryForID = "SELECT Name FROM Parcel__c where Status__c='Active' limit 1";
+//		}
 		HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
 		return response.get("Name").get(0);
 	}
@@ -987,6 +988,7 @@ public String fetchAssesseeName() {
 		waitUntilElementIsPresent(xpath,20);
 		return getElementText(driver.findElement(By.xpath(xpath)));
 	}
+
 	
 	
 
@@ -995,33 +997,30 @@ public String fetchAssesseeName() {
  * @description: This method is to create Current Roll Year RPSL if not present and 
  * Approve UnApproved RPSL present in system for past 9 years from current roll year  
  */
-public void checkRPSLCurrentRollYearAndApproveRPSLPastYears(Map<String, String> rpslData) throws Exception {
-String currentDate=DateUtil.getDateInRequiredFormat(java.time.LocalDate.now().toString(),"yyyy-MM-dd","MM/dd/yyyy");
-String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
-System.out.println("returned roll year::"+currentRollYear);
-String lastRolYearToVerify=Integer.toString(Integer.parseInt(currentRollYear)-8);
-System.out.println("returned roll year::"+lastRolYearToVerify);
+	public void checkRPSLCurrentRollYearAndApproveRPSLPastYears(Map<String, String> rpslData) throws Exception {
+		String currentDate=DateUtil.getDateInRequiredFormat(java.time.LocalDate.now().toString(),"yyyy-MM-dd","MM/dd/yyyy");
+		String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
+		String lastRolYearToVerify=Integer.toString(Integer.parseInt(currentRollYear)-8);
+		
+		//verifying if current roll year's RPSL is present or not if not present then create one
+		ReportLogger.INFO("Verifying and creating if Current Roll Year's RPSL is not present");
+		String currentRollYearRPSLQuery="select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name ='"+currentRollYear+"'";
+		HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(currentRollYearRPSLQuery);
+		if(response.size()==0){
+			ReportLogger.INFO("Current Roll Year RPSL is not present hence creating one for ::"+currentRollYear);
+			apasGenericObj.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+			objRPSL.enterRealPropertySettingsDetails(rpslData,currentRollYear);
+			objRPSL.saveRealPropertySettings();
+			}	
 
-//verifying if current roll year's RPSL is present or not if not present then create one
-ReportLogger.INFO("Verifying and creating if Current Roll Year's RPSL is not present");
-String currentRollYearRPSLQuery="select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name ='"+currentRollYear+"'";
-HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(currentRollYearRPSLQuery);
-System.out.println("now if loop");
-if(response.size()==0){
-	ReportLogger.INFO("Current Roll Year RPSL is not present hence creating one for ::"+currentRollYear);
-	apasGenericObj.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
-	objRPSL.enterRealPropertySettingsDetails(rpslData,currentRollYear);
-	objRPSL.saveRealPropertySettings();
-}	
+		//Now verifying if UnApproved RPSL present among past 9 years records and Approve them if so
+		ReportLogger.INFO("Verifying and Approving previous 9 year's unapproved RPSL");
+		String notApprovedRPSLQuery="select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name <='"+currentRollYear+"' and Roll_Year_Settings__r.name >='"+lastRolYearToVerify+"' and Status__c!='Approved' order by Roll_Year_Settings__r.name desc";
+		HashMap<String, ArrayList<String>> response1  = objSalesforceAPI.select(notApprovedRPSLQuery);
+		if(response1.size()>0){
+			objSalesforceAPI.update("Real_Property_Settings_Library__c",notApprovedRPSLQuery,"Status__c","Approved");
+			}
 
-//Now verifying if UnApproved RPSL present among past 9 years records and Approve them if so
-ReportLogger.INFO("Verifying and Approving previous 9 year's unapproved RPSL");
-String notApprovedRPSLQuery="select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name <='"+currentRollYear+"' and Roll_Year_Settings__r.name >='"+lastRolYearToVerify+"' and Status__c!='Approved' order by Roll_Year_Settings__r.name desc";
-HashMap<String, ArrayList<String>> response1  = objSalesforceAPI.select(notApprovedRPSLQuery);
-if(response1.size()>0){
-objSalesforceAPI.update("Real_Property_Settings_Library__c",notApprovedRPSLQuery,"Status__c","Approved");
-}
+		}
 
-}
-	
 }
