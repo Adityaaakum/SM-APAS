@@ -228,9 +228,6 @@ public class ApasGenericPage extends Page {
 	 */
 	public void searchAndSelectOptionFromDropDown(WebElement element, String value) throws Exception {
 		enter(element, value);
-		//String xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
-		//WebElement drpDwnOption = locateElement(xpathStr, 30);
-
 		String xpathStr = "//div[@title='" + value.toUpperCase() + "'] | //mark[text() = '" + value + "']";
 		WebElement drpDwnOption = locateElement(xpathStr, 20);
 		waitForElementToBeVisible(drpDwnOption, 10);
@@ -301,7 +298,7 @@ public class ApasGenericPage extends Page {
         		flag=true;
         		if (action.equals("Delete")){
         			Click(deleteConfirmationPostDeleteAction);
-        			ExtentTestManager.getTest().log(LogStatus.INFO, "Existing " + screenName + "record is deleted");
+        			ExtentTestManager.getTest().log(LogStatus.INFO, "Existing " + screenName + " record is deleted");
         			Thread.sleep(2000);
         		}
         	}
@@ -326,34 +323,6 @@ public class ApasGenericPage extends Page {
 		Click(element);
 		selectDateFromDatePicker(date);
 	}
-	
-	/**
-	 * Description: This method will select from dropdown
-	 * @param element: locator of element where date need to be put in
-	 * @param value: field value to enter
-	 */
-
-	/*public void selectFromDropDown(WebElement element, String value) throws Exception {
-		Click(element);
-		String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 200);
-		drpDwnOption.click();
-	}*/
-	
-	/*public void selectFromDropDown(WebElement element, String value) throws Exception {
-		Click(element);
-		String xpathStr = "//div[contains(@class, 'left uiMenuList--short')]//a[contains(text(),'" + value + "')]";
-		WebElement drpDwnOption = locateElement(xpathStr, 200);
-		drpDwnOption.click();
-	}*/
-	
-	/*public void selectFromDropDown(WebElement element, String value) throws Exception {
-	Click(element);
-	String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-	WebElement drpDwnOption = locateElement(xpathStr, 200);
-	drpDwnOption.click();
-}*/
-	
 	
 	/**
 	 * Description: This method will return element from the pop-up error message that appear on Detail page

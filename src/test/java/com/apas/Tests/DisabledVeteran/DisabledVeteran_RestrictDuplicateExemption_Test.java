@@ -65,11 +65,11 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);
 		
 		//Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and append the Veteran Name with some random number to make it unique
-		Map<String, String> dataToCreateExemptionWithMandatoryFieldsMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields");
-		dataToCreateExemptionWithMandatoryFieldsMap.put("Veteran Name", dataToCreateExemptionWithMandatoryFieldsMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
+		Map<String, String> dataToCreateExemptionWithMandatoryFieldsMapOne = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields1");
+		dataToCreateExemptionWithMandatoryFieldsMapOne.put("Veteran Name", dataToCreateExemptionWithMandatoryFieldsMapOne.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 
 		//Step4: Create Exemption record with some required fields with Veteran details but no End Date of Rating
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionWithMandatoryFieldsMap);
+		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionWithMandatoryFieldsMapOne);
 			
 		//Step5: Capture the record id 
 		String recordId = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
@@ -79,40 +79,42 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);
 		
 		//Step7: Save an Exemption record with overlapping details
-		dataToCreateExemptionWithMandatoryFieldsMap.put("Same APN", apn1);
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionWithMandatoryFieldsMap);
+		dataToCreateExemptionWithMandatoryFieldsMapOne.put("Same APN", apn1);
+		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionWithMandatoryFieldsMapOne);
 			
 		//Step8: Validate error message when Duplicate Exemption is created for same Veteran on same dates but with No End Date of Rating	
 		String expectedDuplicateErrorMsgOnTop1 = "There seems to be an existing record with a blank end date. Please refer to record with id " + recordId + " for details";
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.duplicateErrorMsgWithBlankEndDate)), expectedDuplicateErrorMsgOnTop1, "SMAB-T526: Exemption already exist for the Veteran with no End Date");
-			
-		//Step9: Enter End date of Rating and save the record and validate the error message
-		objExemptionsPage.enterEndDateOfRating(dataToCreateExemptionWithMandatoryFieldsMap);
+		
+		//Step9: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
+		Map<String, String> dataToCreateExemptionWithMandatoryFieldsMapTwo = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields2");
+				
+		//Step10: Enter End date of Rating and save the record and validate the error message
+		objExemptionsPage.enterEndDateOfRating(dataToCreateExemptionWithMandatoryFieldsMapTwo);
 		objExemptionsPage.saveExemptionRecord();
 			
-		//Step10: Validate error message when duplicate Exemption is created for same Veteran with overlapping details	
+		//Step11: Validate error message when duplicate Exemption is created for same Veteran with overlapping details	
 		String expectedDuplicateErrorMsgOnTop2 = "There seems to be an existing record with overlapping details. Please refer to record with id " + recordId + " for details.";
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop2, "SMAB-T526: Exemption already exist for the Veteran with overlapping details");
 			
-		//Step11: Interchange Date Occupied and Effective Date values and save Exemption and validate the error message
-		objExemptionsPage.interchangeOccupiedAndEffectiveDate(dataToCreateExemptionWithMandatoryFieldsMap);
+		//Step12: Interchange Date Occupied and Effective Date values and save Exemption and validate the error message
+		objExemptionsPage.interchangeOccupiedAndEffectiveDate(dataToCreateExemptionWithMandatoryFieldsMapTwo);
 		objExemptionsPage.saveExemptionRecord();
 			
-		//Step12: Validate error message when duplicate Exemption is created for same Veteran with overlapping details	
+		//Step13: Validate error message when duplicate Exemption is created for same Veteran with overlapping details	
 		String expectedDuplicateErrorMsgOnTop3 = "There seems to be an existing record with overlapping details. Please refer to record with id " + recordId + " for details.";
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop3, "SMAB-T526: Exemption still has overlapping details as the Start Date is 'Date Acquired Property' or 'Effective Date of 100% USDVA Rating' or 'Date Occupied/Intend to Occupy Property' (whichever is later)");
 			
-		//Step13: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
+		//Step14: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 		Map<String, String> dataToEditExemptionForQualificationMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToEditExemptionForQualification");
 	   
-		//Step14: Update the Qualification field to 'Unqualified' and save the record and validate the error message
+		//Step15: Update the Qualification field to 'Unqualified' and save the record and validate the error message
 		objExemptionsPage.updateQualifiedData(dataToEditExemptionForQualificationMap);
 		objExemptionsPage.saveExemptionRecord();
 			
-		//Step15: Validate error message when duplicate Exemption is created for same Veteran with overlapping details
+		//Step16: Validate error message when duplicate Exemption is created for same Veteran with overlapping details
 		String expectedDuplicateErrorMsgOnTop4 = "There seems to be an existing record with overlapping details. Please refer to record with id " + recordId + " for details.";
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop4, "SMAB-T526: Exemption already exist for the Veteran with overlapping details");
-		//objExemptionsPage.cancelExemptionRecord();
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Exemption screen");
 		objPage.Click(objExemptionsPage.cancelButton);
 		
@@ -164,7 +166,6 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
     	//Step9: Validate error message when duplicate Exemption is created for same Veteran with overlapping details	
     	String expectedDuplicateErrorMsgOnTop = "There seems to be an existing record with overlapping details. Please refer to record with id " + recordId + " for details.";
     	softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop, "SMAB-T526: Both Exemptions has overlapping dates, hence another Exemption cannot be created for this Veteran");					
-    	//objExemptionsPage.cancelExemptionRecord();
     	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Exemption screen");
 		objPage.Click(objExemptionsPage.cancelButton);
     			
@@ -208,7 +209,6 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 		//Step8: Validate error message when Duplicate Exemption is created for same Veteran on same dates and with End Date of Rating	
 		String expectedDuplicateErrorMsgOnTop1 = "There seems to be an existing record with overlapping details. Please refer to record with id " + recordId + " for details.";
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop1, "SMAB-T526: Exemption already exist for this Veteran with overlapping dates");
-		//objExemptionsPage.cancelExemptionRecord();
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Exemption screen");
 		objPage.Click(objExemptionsPage.cancelButton);
 		
@@ -260,7 +260,6 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.duplicateErrorMsgWithBlankEndDate)), expectedDuplicateErrorMsgOnTop, "SMAB-T526: Validate if a Non Qualified exemption exist, another Qualified Exemption with same details cannot be created");
 	
 		//Step10: Cancel the existing record and then EDIT the Exemption record created initially
-		//objExemptionsPage.cancelExemptionRecord();
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Exemption screen");
 		objPage.Click(objExemptionsPage.cancelButton);
 		objApasGenericPage.clickShowMoreButtonAndAct("Exemptions", recordId, "Edit");
@@ -273,7 +272,7 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 		//Step12: Search the Exemption record and open it using the locator
 		objApasGenericFunctions.displayRecords("All");
 		objApasGenericFunctions.searchRecords(exemptionName);
-		objExemptionsPage.openExemptionUsingLocator(recordId, exemptionName);
+		objExemptionsPage.openExemptionRecord(recordId, exemptionName);
 		
 		//Step13: Validate the changes made are updated in the record and status is changed to 'Active'
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.qualificationOnDetailPage)), "Qualified", "SMAB-T526: Validate 'Qualification?' field in the Exemption record");

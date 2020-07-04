@@ -75,7 +75,6 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to open an Exemption record");
 		Thread.sleep(2000);
 		objPage.Click(objPage.waitForElementToBeClickable(objExemptionsPage.newExemptionButton));
-		//objExemptionsPage.waitForExemptionScreenToLoad();
 		objPage.waitForElementToBeClickable(objExemptionsPage.apn);
 		objPage.waitForElementToBeClickable(objExemptionsPage.claimantName);
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Without entering any data on the Exemption record, click 'Save' button");
@@ -100,7 +99,6 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Claimant's SSN"),expectedIndividualFieldMessage1,"SMAB-T523: Validating mandatory fields missing error for 'Claimant's SSN'");
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Error messages related to mandatory fields are validated");
-		//objExemptionsPage.cancelExemptionRecord();
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Exemption screen");
 		objPage.Click(objExemptionsPage.cancelButton);
 		
@@ -123,7 +121,6 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		//Step7: Search the existing Exemption record that was created and Edit it
 		objApasGenericFunctions.displayRecords("All");
 		objApasGenericFunctions.searchRecords(exemptionName);
-		//objApasGenericPage.clickShowMoreButtonAndAct("Exemptions", recordId, "Edit");
 		softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct("Exemptions", recordId, "Edit"),"SMAB-T481: Validate user is able to edit an Exemption record");
 		softAssert.assertTrue(objExemptionsPage.saveButton.isDisplayed(), "SMAB-T481: Validate user is able to view the edit screen for the Exemption record");
 	
@@ -149,13 +146,12 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date of Notice of 100% Rating"),expectedIndividualFieldMessage2,"SMAB-T523: Validating mandatory fields missing error for 'Date of Notice of 100% Rating'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date Occupied/Intend to Occupy Property"),expectedIndividualFieldMessage2,"SMAB-T523: Validating mandatory fields missing error for 'Date Occupied/Intend to Occupy Property'");
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Error messages related to mandatory fields are validated");
-		//objExemptionsPage.cancelExemptionRecord();
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Exemption screen");
 		objPage.Click(objExemptionsPage.cancelButton);
 				
 		//Step10: Open it again and Validate the values which were initially saved, appear there
 		Thread.sleep(1000);
-		objExemptionsPage.openExemptionUsingLocator(recordId, exemptionName);
+		objExemptionsPage.openExemptionRecord(recordId, exemptionName);
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.dateAcquiredOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataToCreateExemptionMap.get("Date Acquired Property")), "SMAB-T479: Value for 'Date Acquired Property' is retained post canceling the changes made on Edit Exemption screen");						
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.dateOccupiedOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataToCreateExemptionMap.get("Date Occupied/Intend to Occupy Property")), "SMAB-T479: Value for 'Date Occupied/Intend to Occupy Property' is retained post canceling the changes made on Edit Exemption screen");						
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.dateOfNoticeOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataToCreateExemptionMap.get("Date of Notice of 100% Rating")), "SMAB-T479: Value for 'Date of Notice of 100% Rating' is retained post canceling the changes made on Edit Exemption screen");						
@@ -226,7 +222,6 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Claimant's SSN"),expectedIndividualFieldMessage1,"SMAB-T527: Validating mandatory fields missing error for 'Claimant's SSN'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date Application Received"),expectedIndividualFieldMessage1,"SMAB-T527: Validating mandatory fields missing error for 'Date Application Received'");
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Error messages related to mandatory fields are validated");
-		//objExemptionsPage.cancelExemptionRecord();
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Exemption screen");
 		objPage.Click(objExemptionsPage.cancelButton);
 		
@@ -244,8 +239,6 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		objPage.clearFieldValue(objExemptionsPage.claimantSSNOnDetailEditPage);
 		objPage.Click(objExemptionsPage.saveButtonOnDetailPage);
 		Thread.sleep(1500);
-		//softAssert.assertTrue(driver.findElements(By.xpath("//h2[@class='slds-truncate slds-text-heading_medium']")).size() == 1, "SMAB-T527: Validate error message pop-up that appear at the bottom of the page i.e. 'We hit a snag'");
-		//softAssert.assertTrue(driver.findElements(By.xpath("//a[contains(text(), " + "\"" + "Claimant" + "'s" + " SSN" + "\"" + ")]")).size() == 1, "SMAB-T527: Validate that 'Claimant's SSN' appears in error message pop-up");
 		softAssert.assertTrue(objApasGenericPage.popUpErrorMessageWeHitASnag.isDisplayed(), "SMAB-T527: Validate error message pop-up that appear at the bottom of the page i.e. 'We hit a snag'");
 		softAssert.assertTrue(objApasGenericPage.returnElemOnPopUpScreen("Claimant's SSN").isDisplayed(), "SMAB-T527: Validate that 'Claimant's SSN' appears in error message pop-up");
 		

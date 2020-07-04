@@ -137,12 +137,6 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[text() = 'Roll Year']//parent::div//following-sibling::div//lightning-formatted-text")
 	public WebElement rollYearOnDetailPage;
 	
-	/*@FindBy(xpath = "//span[text() = 'Fiscal Start Date']//parent::div//following-sibling::div//lightning-formatted-text")
-	public WebElement fiscalStartDateOnDetailPage;
-	
-	@FindBy(xpath = "//span[text() = 'Fiscal End Date']//parent::div//following-sibling::div//lightning-formatted-text")
-	public WebElement fiscalEndDateOnDetailPage;*/
-	
 	@FindBy(xpath = "//span[text() = 'Calendar Start Date']//parent::div//following-sibling::div//lightning-formatted-text")
 	public WebElement calendarStartDateOnDetailPage;
 	
@@ -213,18 +207,6 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	
 	
 	/**
-	 * Description: This method will enter date
-	 * @param element: locator of element where date need to be put in
-	 * @param date: date to enter
-	 */
-	
-	/*public void enterDate(WebElement element, String date) throws Exception {
-		Click(element);
-		objApasGenericPage.selectDateFromDatePicker(date);
-	}*/
-	
-	
-	/**
 	 * Description: This method will save a Roll Year record with no values entered
 	 */
 	public void saveRollYearRecordWithNoValues() throws Exception {
@@ -237,21 +219,6 @@ public class RollYearSettingsPage extends ApasGenericPage {
 		Click(saveButton);
 		Thread.sleep(1000);
 	}
-	
-	
-	/**
-	 * Description: This method will select from dropdown
-	 * @param element: locator of element where date need to be put in
-	 * @param value: field value to enter
-	 */
-	
-	/*public void selectFromDropDown(WebElement element, String value) throws Exception {
-		Click(element);
-		String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 200);
-		drpDwnOption.click();
-	}*/
-	
 	
 	/**
 	 * Description: This method includes other methods and creates/updates a Roll Year record
@@ -272,7 +239,6 @@ public class RollYearSettingsPage extends ApasGenericPage {
 		Thread.sleep(1000);
 		
 	}
-	
 	
 	/**
 	 * Description: This method will enter mandatory field values in Roll Year screen
@@ -301,7 +267,6 @@ public class RollYearSettingsPage extends ApasGenericPage {
 		Click(driver.findElement(By.xpath("//a[@title='" + rollYearName + "']")));
 		Thread.sleep(3000);
 	}
-	
 	
 	/**
 	 * @description: This method will return the error message appeared against the filed name passed in the parameter
