@@ -50,6 +50,7 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		objBuildPermitPage = new BuildingPermitPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objBppTrendSetupPage = new BppTrendSetupPage(driver);
+		objApasGenericFunctions.updateRollYearStatus("Open", "2020");
 	}
 	
 	@AfterMethod

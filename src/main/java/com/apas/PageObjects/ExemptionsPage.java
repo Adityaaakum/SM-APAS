@@ -26,8 +26,10 @@ import org.openqa.selenium.support.ui.Select;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.config.modules;
+import com.apas.config.testdata;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
@@ -38,8 +40,8 @@ public class ExemptionsPage extends ApasGenericPage {
 	ApasGenericFunctions apasGenericObj;
 	ApasGenericPage objApasGenericPage;
 	String exemptionFileLocation = "";
-	
-	
+	RealPropertySettingsLibrariesPage objRPSL;
+	SalesforceAPI objSalesforceAPI;
 	public ExemptionsPage(RemoteWebDriver driver) {
 		
 		super(driver);
@@ -48,6 +50,10 @@ public class ExemptionsPage extends ApasGenericPage {
 		objPage=new Page(driver);
 		softAssert1=new SoftAssertion();
 		apasGenericObj= new ApasGenericFunctions(driver);
+
+		//objApasGenericPage = new ApasGenericPage(driver);
+		objRPSL=new RealPropertySettingsLibrariesPage(driver);
+
 		
 	}
 
@@ -515,6 +521,7 @@ public String createNewExemptionWithMandatoryData(Map<String, String> newExempti
 
 public void enterExemptionData(Map<String, String> dataMap) throws Exception {
 	String assesseeName = fetchAssesseeName();
+
 	String apnNumber = fetchActiveAPN();
 	if (dataMap.containsKey("Different APN")) apnNumber = dataMap.get("Different APN");
 	if (dataMap.containsKey("Same APN")) apnNumber = dataMap.get("Same APN");
@@ -532,7 +539,7 @@ public void enterExemptionData(Map<String, String> dataMap) throws Exception {
 	apasGenericObj.selectFromDropDown(qualification, dataMap.get("Qualification?"));	
 	if(dataMap.containsKey("Reason for Not Qualified")) apasGenericObj.selectFromDropDown(reasonNotQualified, dataMap.get("Reason for Not Qualified"));;
 	if(dataMap.containsKey("End Date Of Rating")) enterDate(endDateOfRating, dataMap.get("End Date Of Rating"));	
-	if(dataMap.containsKey("End Rating Reason")) apasGenericObj.selectFromDropDown(endRatingReason, dataMap.get("End Rating Reason"));
+	if(dataMap.containsKey("End Rating Reason")) apasGenericObj.selectFromDropDown(endRatingReason, dataMap.get("End Rating Reason"));		
 }
 
 /**
@@ -758,22 +765,13 @@ public String fetchAssesseeName() {
  @return: returns the active APN
 */
 	public String fetchActiveAPN() {
-		return fetchActiveAPN(1);
+		return fetchActiveAPN(1).get(0);
 	}
 
-	public String fetchActiveAPN(int numberOfAPNs) {
+	public 	ArrayList<String> fetchActiveAPN(int numberofAPNs) {
 		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
-		String queryForID = "SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberOfAPNs;
-		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-			queryForID = "SELECT Name FROM Parcel__c where Status__c='Active' limit " + numberOfAPNs;
-		}
-		HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
-		if (numberOfAPNs == 1) {
-			return response.get("Name").get(0);
-		}
-		else{
-			return response.get("Name").get(numberOfAPNs-1);
-		}
+		String queryForID = "SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberofAPNs;
+		return objSalesforceAPI.select(queryForID).get("Name");
 	}
 
 	 /*
@@ -806,4 +804,39 @@ public String fetchAssesseeName() {
 		waitUntilElementIsPresent(xpath,20);
 		return getElementText(driver.findElement(By.xpath(xpath)));
 	}
+
+	
+	
+
+/**
+ * @throws Exception 
+ * @description: This method is to create Current Roll Year RPSL if not present and 
+ * Approve UnApproved RPSL present in system for past 9 years from current roll year  
+ */
+	public void checkRPSLCurrentRollYearAndApproveRPSLPastYears(Map<String, String> rpslData) throws Exception {
+		String currentDate=DateUtil.getDateInRequiredFormat(java.time.LocalDate.now().toString(),"yyyy-MM-dd","MM/dd/yyyy");
+		String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
+		String lastRolYearToVerify=Integer.toString(Integer.parseInt(currentRollYear)-8);
+		
+		//verifying if current roll year's RPSL is present or not if not present then create one
+		ReportLogger.INFO("Verifying and creating if Current Roll Year's RPSL is not present");
+		String currentRollYearRPSLQuery="select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name ='"+currentRollYear+"'";
+		HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(currentRollYearRPSLQuery);
+		if(response.size()==0){
+			ReportLogger.INFO("Current Roll Year RPSL is not present hence creating one for ::"+currentRollYear);
+			apasGenericObj.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+			objRPSL.enterRealPropertySettingsDetails(rpslData,currentRollYear);
+			objRPSL.saveRealPropertySettings();
+			}	
+
+		//Now verifying if UnApproved RPSL present among past 9 years records and Approve them if so
+		ReportLogger.INFO("Verifying and Approving previous 9 year's unapproved RPSL");
+		String notApprovedRPSLQuery="select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name <='"+currentRollYear+"' and Roll_Year_Settings__r.name >='"+lastRolYearToVerify+"' and Status__c!='Approved' order by Roll_Year_Settings__r.name desc";
+		HashMap<String, ArrayList<String>> response1  = objSalesforceAPI.select(notApprovedRPSLQuery);
+		if(response1.size()>0){
+			objSalesforceAPI.update("Real_Property_Settings_Library__c",notApprovedRPSLQuery,"Status__c","Approved");
+			}
+
+		}
+
 }

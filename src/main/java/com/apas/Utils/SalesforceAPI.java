@@ -49,7 +49,6 @@ public class SalesforceAPI extends TestBase {
             System.out.println("Decrypting the password : " + password);
             password = PasswordUtils.decrypt(password, "");
         }
-
         String passwordWithSecurityToken = password + securityToken;
 
         // Assemble the login request URL
@@ -196,6 +195,8 @@ public class SalesforceAPI extends TestBase {
         sqlQuery = sqlQuery.replace("'", "%27");
         sqlQuery = sqlQuery.replace("=", "%3D");
         sqlQuery = sqlQuery.replace("!", "%21");
+        sqlQuery = sqlQuery.replace("<", "%3C");
+        sqlQuery = sqlQuery.replace(">", "%3E");
         System.out.println("Modified query for URI : " + sqlQuery);
 
         HashMap<String, ArrayList<String>> hashMap = new HashMap<>();
@@ -306,8 +307,8 @@ public class SalesforceAPI extends TestBase {
      * @param jsonObject : List of columns to be updated in form of json object
      */
     public void update(String table, String commaSeparatedIdsORSQLQuery, JSONObject jsonObject) {
-        ReportLogger.INFO("Updating the object " + table + " through Salesforce API for following query or comma separated IDs : " + commaSeparatedIdsORSQLQuery);
-
+    	
+    	ReportLogger.INFO("Updating the object " + table + " through Salesforce API for following query or comma separated IDs : " + commaSeparatedIdsORSQLQuery);    	
         //Creating HTTP Post Connection
         HttpPost httpPost = salesforceCreateConnection();
 

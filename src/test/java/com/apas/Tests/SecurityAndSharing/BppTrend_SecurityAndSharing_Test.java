@@ -52,6 +52,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		objSoftAssert = new SoftAssert();
 		objBuildPermitPage = new BuildingPermitPage(driver);
 		objBppTrendSetupPage = new BppTrendSetupPage(driver);
+		objApasGenericFunctions.updateRollYearStatus("Open", "2020");
 	}
 
 	@AfterMethod

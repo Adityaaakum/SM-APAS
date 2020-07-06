@@ -302,6 +302,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		softAssert.assertTrue(apasGenericObj.isNotDisplayed(objEFileImport.viewLinkForPreviousImport), "SMAB-T578:Verify user is able to see 'View' button only for the latest Imported file from all 'Imported' status log");
 		//step6: approving the imported file
 		objPage.Click(objEFileImport.viewLinkRecord);
+		ReportLogger.INFO("Approving the imported file : Import_TestData_ValidAndInvalidScenarios_AT2.txt");
 		objPage.waitForElementToBeClickable(objEFileImport.errorRowSection, 20);
 		objPage.waitForElementToBeClickable(objEFileImport.approveButton, 10);
 		objPage.Click(objEFileImport.approveButton);
@@ -313,11 +314,11 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objEFileImport.selectFileAndSource(fileType,source);
 		objPage.waitForElementToBeClickable(objEFileImport.nextButton, 10);
 		objPage.Click(objEFileImport.nextButton);
-		objPage.enter(objEFileImport.fileNameInputBox, "Import_TestData_ValidAndInvalidScenarios_AT1.txt");
+		objPage.enter(objEFileImport.fileNameInputBox, "Import_TestData_ValidAndInvalidScenarios_AT2.txt");
 		objPage.Click(objEFileImport.fileNameNext);
 		
 		//step8: verifying error message while trying to import file for already approved file type,source and period
-		softAssert.assertEquals(objPage.getElementText(objEFileImport.duplicateFileMsg), "Duplicate filename found in system. Upload new file with different name.", "SMAB-T975:Verify user is not able to import a file for BPP Trends if the previous Import for a particular File Type, File Source and Period was Approved");
+		softAssert.assertContains(objPage.getElementText(objEFileImport.fileAlreadyApprovedMsg), "This file has been already approved", "SMAB-T975:Verify user is not able to import a file for BPP Trends if the previous Import for a particular File Type, File Source and Period was Approved");
 		objPage.Click(objEFileImport.closeButton);
 		
 		apasGenericObj.logout();
@@ -456,7 +457,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	@Test(description = "SMAB-T32,SMAB-T33,SMAB-T36,SMAB-T1403,SMAB-T1402:Verify user is able to see number of records count from file import action on 'E-File Import Logs' screen", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 		"smoke", "regression","EFileImport" })	
 	public void EFileIntake_VerifyImportLogsRecordCount(String loginUser) throws Exception{
-		String uploadedDate = objUtil.getCurrentDate("MMM dd, YYYY");
+		String uploadedDate = objUtil.getCurrentDate("MMM d, YYYY");
 		
 		String period = "Adhoc";
 		String fileType="Building Permit";
@@ -580,7 +581,9 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.waitForElementToBeClickable(objEFileImport.sourceDropdown, 5);
 		objPage.Click(objEFileImport.sourceDropdown);
 		String expectedSourcesBPP = "CAA - Valuation Factors\nBOE - Index and Percent Good Factors\nBOE - Valuation Factors";
-		softAssert.assertEquals(objPage.getElementText(objEFileImport.sourceDropdownOptions),expectedSourcesBPP,"SMAB-T102: Verify user is able to view and select the file types and source for that file type on E-File Import Tool screen");
+		String actualSourcesBPP = objPage.getElementText(objEFileImport.sourceDropdownOptions);
+		//softAssert.assertEquals(objPage.getElementText(objEFileImport.sourceDropdownOptions),expectedSourcesBPP,"SMAB-T102: Verify user is able to view and select the file types and source for that file type on E-File Import Tool screen");
+		softAssert.assertTrue(objPage.compareDropDownvalues(actualSourcesBPP, expectedSourcesBPP), "SMAB-T102: Verify user is able to view and select the file types and source for that file type on E-File Import Tool screen");
 		
 		driver.navigate().refresh();
 		ReportLogger.INFO("Verifying Sources for Building Permit");
@@ -589,9 +592,12 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.waitForElementToBeClickable(objEFileImport.sourceDropdown, 5);
 		objPage.Click(objEFileImport.sourceDropdown);
 		String expectedSourcesBP = "Millbrae Building permits\nUnincorporated Building permits\nBelmont Building permits\nSan Bruno Building permits\nBurlingame Building permits\nHillsborough Building permits\nWoodside Building permits\nSan Mateo Building permits\nSouth San Francisco Building permits\nRedwood City Building permits\nAtherton Building Permits";
-		softAssert.assertEquals(objPage.getElementText(objEFileImport.sourceDropdownOptions),expectedSourcesBP,"SMAB-T102: Verify user is able to view and select the file types and source for that file type on E-File Import Tool screen");
+		String actualSourcesBP = objPage.getElementText(objEFileImport.sourceDropdownOptions);
+		//softAssert.assertEquals(objPage.getElementText(objEFileImport.sourceDropdownOptions),expectedSourcesBP,"SMAB-T102: Verify user is able to view and select the file types and source for that file type on E-File Import Tool screen");
+		softAssert.assertTrue(objPage.compareDropDownvalues(actualSourcesBP, expectedSourcesBP), "SMAB-T102: Verify user is able to view and select the file types and source for that file type on E-File Import Tool screen");
+		
 		driver.navigate().refresh();
-		objPage.waitForElementToBeClickable(objEFileImport.sourceDropdown, 5);
+		objPage.waitForElementToBeClickable(objEFileImport.fileTypedropdown, 10);
 		apasGenericObj.logout();
 		
 	}
@@ -627,12 +633,12 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		//Step6:trying to upload another file and verify msg
 		objPage.scrollToTop();
 		objPage.Click(objEFileImport.nextButton);
-		objPage.enter(objEFileImport.fileNameInputBox, "SanMateoBuildingPermitsWithValidAndInvalidData6.xlsx");
+		objPage.enter(objEFileImport.fileNameInputBox, "SanMateoBuildingPermitsWithValidAndInvalidData5.xlsx");
 		objPage.Click(objEFileImport.fileNameNext);
 		softAssert.assertTrue(apasGenericObj.isNotDisplayed(objEFileImport.confirmButton), "SMAB-T1144:Verify that user is not able to upload a file if a file is already 'In Progress' status for the selected 'File type' ,'Source' and 'Period'");
-		softAssert.assertTrue(objEFileImport.fileAlreadyInProgressMsg.isDisplayed(), "SMAB-T1144:Verify that user is not able to upload a file if a file is already 'In Progress' status for the selected 'File type' ,'Source' and 'Period'");
+		softAssert.assertContains(objPage.getElementText(objEFileImport.fileAlreadyApprovedMsg),"This is already in In Progress" ,"SMAB-T1144:Verify that user is not able to upload a file if a file is already 'In Progress' status for the selected 'File type' ,'Source' and 'Period'");
+		
 		objPage.Click(objEFileImport.closeButton);
-
 		apasGenericObj.logout();
 	}
 	

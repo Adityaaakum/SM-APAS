@@ -702,7 +702,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Work Description"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Work Description'");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Permit City Code"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Permit City Code'");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Owner Name"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Owner Name'");
-		softAssert.assertEquals(objBuildingPermitPage.errorMsgUnderLabels.size(),7,"SMAB-T345: Count of Mandatory fields validation while creating efile building permit manually");
+		softAssert.assertEquals(objBuildingPermitPage.errorMsgUnderLabels.size(),6,"SMAB-T345: Count of Mandatory fields validation while creating efile building permit manually");
 
 		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
 		manualBuildingPermitMap.put("Permit City Code","BL");
@@ -729,7 +729,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		String queryRecordType ="SELECT Id FROM RecordType where name = 'E-File Building Permit'";
 		HashMap<String, ArrayList<String>> responseRecordType = salesforceAPI.select(queryRecordType);
 		String efileBuildingPermitType = responseRecordType.get("Id").get(0);
-		String queryBuildingPermitEfile ="SELECT Name,City_APN__C,City_strat_code__C FROM Building_Permit__c where RecordTypeId = '" + efileBuildingPermitType + "' and City_APN__C != '' and City_strat_code__C != '' limit 1";
+		String queryBuildingPermitEfile ="SELECT Name,City_APN__C,City_strat_code__C FROM Building_Permit__c where RecordTypeId = '" + efileBuildingPermitType + "' and City_APN__C != '' and calculated_processing_status__C = 'No Process' and City_strat_code__C != '' limit 1";
 		HashMap<String, ArrayList<String>> responseBuildingPermit = salesforceAPI.select(queryBuildingPermitEfile);
 		String buildingPermitNumber = responseBuildingPermit.get("Name").get(0);
 

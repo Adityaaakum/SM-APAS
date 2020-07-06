@@ -601,6 +601,23 @@ public String fetchVA() throws Exception {
     ReportLogger.INFO("VAe fetched through Salesforce API : " + vaName);
     return vaName;
 }
+/**
+ * Description: This method will click on VAR for year passed if it exists else it will return false
+ * @throws Exception 
+ */
+public boolean clickVA(String rollYear) throws Exception
+{	
+	boolean fVACreated = false;
+	String xpath = "//div[contains(@class,'windowViewMode-normal')]//tr[1]//span[contains(text(),'Start Date')]//..//..//parent::th//parent::tr//..//..//tbody//span[text()='7/1/"+rollYear+"']//..//..//preceding-sibling::th//a";
+	fVACreated = objPage.waitForElementToBeVisible(50, xpath);
+	if(fVACreated) {
+		WebElement vAforCurrentRY = objPage.waitForElementToBeClickable(50, xpath);
+		String vaLinkName = objPage.getElementText(vAforCurrentRY);
+		ReportLogger.INFO("Clicking on Value Adjustment Link: "+ vaLinkName);
+		objPage.Click(vAforCurrentRY);
+	}
+	return fVACreated;
+	}
 
 
 }

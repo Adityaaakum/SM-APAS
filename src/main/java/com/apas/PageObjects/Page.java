@@ -1120,6 +1120,7 @@ public class Page {
 			Click(element);
 		}
 	}
+
 	/**
 	 * Description: Checks the downloaded file in user's system
 	 * @param folderPath: Path of the directory
@@ -1176,7 +1177,7 @@ public class Page {
 		}
 	}
 	
-	
+
 	public boolean compareDropDownvalues(String actualvalues,String expectedSourcesBPP) {
 		String []allexpectedvalues=expectedSourcesBPP.split("\n");
 		String valueNotpresent = "";
@@ -1194,5 +1195,4 @@ public class Page {
 		 }
 	}
 	
-
 }

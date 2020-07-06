@@ -26,9 +26,12 @@ public class ExtentManager {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
 			String upDate = sdf.format(date);
 			String environment = System.getProperty("region").toUpperCase();
-//			String resultFile = System.getProperty("user.dir") + "//test-output//AutomationReport//" + upDate + "_"
-//					+ TestBase.browserName + SuiteName + ".html";
-			String resultFile = System.getProperty("user.dir") + "//test-output//AutomationReport//" + SuiteName + "_" + environment + "_" + upDate + ".html";
+			String buildNumber = "";
+			//This will add Jenkins Build Number in the report name
+			if (System.getProperty("jenkinsbuild") != null){
+				buildNumber = "_Build#" + System.getProperty("jenkinsbuild");
+			}
+			String resultFile = System.getProperty("user.dir") + "//test-output//AutomationReport//" + SuiteName + "_" + environment + buildNumber + "_" + upDate + ".html";
 			extent = new ExtentReports(resultFile, true);
 			// setEmaildirectoryPath(resultFile);
 			extent.config().reportHeadline(", Env: " + environment);

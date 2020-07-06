@@ -160,7 +160,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 				Add a new key in Map to ensure different APN is used*/
 		Map<String, String> dataToCreateExemptionWithParcelTwoMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithParcelTwo");
 		dataToCreateExemptionWithParcelTwoMap.put("Veteran Name", dataToCreateExemptionWithParcelOneMap.get("Veteran Name"));
-		dataToCreateExemptionWithParcelTwoMap.put("Different APN", objExemptionsPage.fetchActiveAPN(2));
+		dataToCreateExemptionWithParcelTwoMap.put("Different APN", objExemptionsPage.fetchActiveAPN(2).get(1));
 		
 		//Step8: Create another Exemption
 		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionWithParcelTwoMap);

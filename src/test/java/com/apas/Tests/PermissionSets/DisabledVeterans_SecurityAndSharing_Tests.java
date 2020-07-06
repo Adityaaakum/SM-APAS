@@ -62,6 +62,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 		softAssert = new SoftAssertion();
 		exemptionFilePath = System.getProperty("user.dir") + testdata.EXEMPTION_DATA;
 		salesforceAPI = new SalesforceAPI();
+		apasGenericObj.updateRollYearStatus("Closed", "2020");
 
 	}
 
