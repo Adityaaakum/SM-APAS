@@ -498,6 +498,8 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 		objBppTrendSetupPage.createDummyBppTrendSetupForErrorsValidation("Yet to be Imported",year);
 		objApasGenericFunctions.logout();
 
+		Thread.sleep(20000);
+
 		//Step4: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
 		objApasGenericFunctions.login(loginUser);
