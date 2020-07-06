@@ -49,7 +49,7 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = 'BPP Percent Good Factors']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table")
 	public WebElement bppPercentGoodFactorsTableSection;
 
-	@FindBy(xpath = "//div[contains(@class, 'column region-main')]//button[@title = 'More Tabs']")
+	@FindBy(xpath = "//div[contains(@class, 'column region-main')]//li[not(contains(@style,'visibility: hidden'))]//button[@title = 'More Tabs']")
 	public WebElement moreTabLeftSection;
 
 	@FindBy(xpath = "//button[@aria-expanded = 'true']//following-sibling::div//span[text() = 'Imported Valuation Factors']//parent::a")
@@ -539,7 +539,8 @@ public class BppTrendSetupPage extends Page {
 	public void clickShowMoreDropDownForGivenFactorEntry(String factorTableName) throws Exception {
 		String xpath;
 		if(factorTableName.equalsIgnoreCase("BPP Percent Good Factors")) {
-			xpath = "(//span[text() = 'Machinery and Equipment'])[1]//parent::td//following-sibling::td//span[text() = 'Show More'] | (//span[text() = 'Machinery and Equipment'])[1]//parent::td//following-sibling::td//a[@title = 'Show 2 more actions']";
+			xpath = "(//span[text() = 'Machinery and Equipment'])[1]//parent::td//following-sibling::td//a | (//span[text() = 'Machinery and Equipment'])[1]//parent::td//following-sibling::td//a[@title = 'Show 2 more actions']";
+//			xpath = "(//span[text() = 'Machinery and Equipment'])[1]//parent::td//following-sibling::td//span[text() = 'Show More'] | (//span[text() = 'Machinery and Equipment'])[1]//parent::td//following-sibling::td//a[@title = 'Show 2 more actions']";
 		} else {
 			xpath = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = '"+factorTableName+"']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr[1]//a[@role = 'button']";
 		}
