@@ -255,7 +255,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 	 * 2. Verify for Active Exemption record created in above test, Current Year's VA is updated with relevant values from RPSL record
 	 * 3. Verify for In-Active Exemption record created in above test, Current Year's VA is still not created even if RPSL is created
 	 **/
-	@Test(description = "SMAB-T1382, T511: Verify that when the 'Annual Batch process' runs and status of RPSL is 'Approved', VAR for Active Exemption gets updated with relevant values & for In-Active Exemption, does not get created", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption" }, dependsOnMethods = {"DisabledVeteran_verifyActiveExemptionWithDeletedAndUnApprovedRPSL", "DisabledVeteran_verifyInActiveExemptionWithDeletedAndUnApprovedRPSL"})
+	@Test(description = "SMAB-T1382, SMAB-T511, SMAB-T1293: Verify that when the 'Annual Batch process' runs and status of RPSL is 'Approved', VAR for Active Exemption gets updated with relevant values & for In-Active Exemption, does not get created", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption" }, dependsOnMethods = {"DisabledVeteran_verifyActiveExemptionWithDeletedAndUnApprovedRPSL", "DisabledVeteran_verifyInActiveExemptionWithDeletedAndUnApprovedRPSL"})
 	
 	public void DisabledVeteran_verifyVAWithApprovedRPSL(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through		
@@ -308,24 +308,31 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		
 		String actualRollYearBasicRefAmount = objPage.getElementText(objValueAdjustmentPage.vaRollYearBasicRefAmount);
 		softAssert.assertEquals(actualRollYearBasicRefAmount,verifyWithUnApprovedRPSLdataMap.get("Roll Year Basic Ref Amount"),"SMAB-T1382: Verify \'Roll Year Basic Reference Amount\'");
+		softAssert.assertEquals(actualRollYearBasicRefAmount,verifyWithUnApprovedRPSLdataMap.get("Roll Year Basic Ref Amount"),"SMAB-T1293: Verify \'Roll Year Basic Reference Amount\'");
 		
 		String actualRollYearLowIncomeRefAmount = objValueAdjustmentPage.vaRollYearLowIncomeRefAmount.getText().trim();
 		softAssert.assertEquals(actualRollYearLowIncomeRefAmount,verifyWithUnApprovedRPSLdataMap.get("Roll Year LowIncome Ref Amount"),"SMAB-T1382: Verify \'Roll Year Low Income Reference Amount\'");
+		softAssert.assertEquals(actualRollYearLowIncomeRefAmount,verifyWithUnApprovedRPSLdataMap.get("Roll Year LowIncome Ref Amount"),"SMAB-T1293: Verify \'Roll Year Low Income Reference Amount\'");
 		
 		String actualRollYearLowIncomeThreshholdAmount = objValueAdjustmentPage.rollYearLowIncomeThreshholdAmountLabel.getText().trim();
 		softAssert.assertEquals(actualRollYearLowIncomeThreshholdAmount,verifyWithUnApprovedRPSLdataMap.get("Roll Year Threshhold Amount"),"SMAB-T1382: Verify \'Roll Year Low Income Threshhold Amount\'");
+		softAssert.assertEquals(actualRollYearLowIncomeThreshholdAmount,verifyWithUnApprovedRPSLdataMap.get("Roll Year Threshhold Amount"),"SMAB-T1293: Verify \'Roll Year Low Income Threshhold Amount\'");
 		
 		String actualRollYearDueDate = objValueAdjustmentPage.penaltyDate1.getText().trim();
 		softAssert.assertEquals(actualRollYearDueDate,verifyWithUnApprovedRPSLdataMap.get("Roll Year Due Date"),"SMAB-T1382: Verify \'Roll Year Due Date\'");
+		softAssert.assertEquals(actualRollYearDueDate,verifyWithUnApprovedRPSLdataMap.get("Roll Year Due Date"),"SMAB-T1293: Verify \'Roll Year Due Date\'");
 		
 		String actualRollYearDueDate2 = objValueAdjustmentPage.penaltyDate2.getText().trim();
 		softAssert.assertEquals(actualRollYearDueDate2,verifyWithUnApprovedRPSLdataMap.get("Roll Year Due Date2"),"SMAB-T1382: Verify \'Roll Year Due Date 2\'");
+		softAssert.assertEquals(actualRollYearDueDate2,verifyWithUnApprovedRPSLdataMap.get("Roll Year Due Date2"),"SMAB-T1293: Verify \'Roll Year Due Date 2\'");
 		
 		String actualvaRollYearLowIncomeLatePenaltyLabel = objValueAdjustmentPage.vaRollYearLowIncomeLatePenaltyLabel.getText().trim();
 		softAssert.assertEquals(actualvaRollYearLowIncomeLatePenaltyLabel,verifyWithUnApprovedRPSLdataMap.get("Roll Year LowIncome Penalty"),"SMAB-T1382: Verify \'Roll Year Low Income Penalty\'");
+		softAssert.assertEquals(actualvaRollYearLowIncomeLatePenaltyLabel,verifyWithUnApprovedRPSLdataMap.get("Roll Year LowIncome Penalty"),"SMAB-T1293: Verify \'Roll Year Low Income Penalty\'");
 		
 		String actualvaRollYearLowIncomeLatePenalty2Label = objValueAdjustmentPage.vaRollYearLowIncomeLatePenalty2Label.getText().trim();
 		softAssert.assertEquals(actualvaRollYearLowIncomeLatePenalty2Label,verifyWithUnApprovedRPSLdataMap.get("Roll Year LowIncome Penalty2"),"SMAB-T1382: Verify \'Roll Year Low Income Penalty 2\'");		
+		softAssert.assertEquals(actualvaRollYearLowIncomeLatePenalty2Label,verifyWithUnApprovedRPSLdataMap.get("Roll Year LowIncome Penalty2"),"SMAB-T1293: Verify \'Roll Year Low Income Penalty 2\'");
 				
 
 		//Ste14: Search and Select In-Active Exemption created in previous Test
@@ -337,6 +344,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		//Step16: verify 2020 Roll Year's Value Adjustment does not exist for In-Active Exemption
 		boolean fVACreated = objValueAdjustmentPage.clickVA(strRollYear);
 		softAssert.assertEquals(fVACreated,false,"SMAB-T511: Verify when annual batch process runs VAR does not get created for In-Active Exemption Record");
+		softAssert.assertEquals(fVACreated,false,"SMAB-T1293: Verify when annual batch process runs VAR does not get created for In-Active Exemption Record");
 		
 		objApasGenericFunctions.logout();
 				

@@ -215,6 +215,9 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		List<String> tablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(tablesToReset, tableStatus, rollYear);
 		
+		List<String> Prop13TableToReset = Arrays.asList(CONFIG.getProperty("Prop13TableToResetViaApi").split(","));
+		objBppTrnPg.resetTablesStatusForGivenRollYear(Prop13TableToReset, "Calculated", rollYear);
+		
 		//Step2: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with tables status as '"+ tableStatus +"'");
 		objApasGenericFunctions.login(users.BUSINESS_ADMIN);
@@ -550,6 +553,10 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		//Step1: Resetting the status of composite tables
 		List<String> tablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(tablesToReset, tableStatus, rollYear);
+		
+		List<String> Prop13TableToReset = Arrays.asList(CONFIG.getProperty("Prop13TableToResetViaApi").split(","));
+		objBppTrnPg.resetTablesStatusForGivenRollYear(Prop13TableToReset, "Calculated", rollYear);
+
 		
 		//Step2: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with tables status as '"+ tableStatus +"'");
