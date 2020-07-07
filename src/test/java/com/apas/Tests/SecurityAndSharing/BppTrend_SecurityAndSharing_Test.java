@@ -832,19 +832,19 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		boolean isNoActionsOptionAvailable = objBppTrnPg.waitForElementToBeVisible(5, objBppTrnPg.noActionsLinkUnderShowMore);
 		softAssert.assertTrue(isNoActionsOptionAvailable, "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on details page");
 
-		//Step5: Clicking View All link
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.viewAllBppSettings));
-
-		//Step6: Clicking show more link on and again performing above validation on View All table
-		objBppTrnPg.waitForElementToBeVisible(10, objBppTrnPg.showMoreDropDownViewAllPage);
-		objBuildPermitPage.javascriptClick(objBppTrnPg.showMoreDropDownViewAllPage);
-
-		isEditLinkAvailable = objBppTrnPg.waitForElementToBeVisible(5, objBuildPermitPage.editLinkUnderShowMore);
-		softAssert.assertTrue(!isEditLinkAvailable, "SMAB-T270: For User '"+ loginUser +"': Edit option is not visible on View All Grid");
-		isDeleteLinkAvailable = objBppTrnPg.waitForElementToBeVisible(5, objBuildPermitPage.deleteLinkUnderShowMore);
-		softAssert.assertTrue(!isDeleteLinkAvailable, "SMAB-T270: For User '"+ loginUser +"': Delete option is not visible on View All Grid");
-		isNoActionsOptionAvailable = objBppTrnPg.waitForElementToBeVisible(5, objBppTrnPg.noActionsLinkUnderShowMore);
-		softAssert.assertTrue(isNoActionsOptionAvailable, "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on View All Grid");
+//		//Step5: Clicking View All link
+//		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.viewAllBppSettings));
+//
+//		//Step6: Clicking show more link on and again performing above validation on View All table
+//		objBppTrnPg.waitForElementToBeVisible(10, objBppTrnPg.showMoreDropDownViewAllPage);
+//		objBuildPermitPage.javascriptClick(objBppTrnPg.showMoreDropDownViewAllPage);
+//
+//		isEditLinkAvailable = objBppTrnPg.waitForElementToBeVisible(5, objBuildPermitPage.editLinkUnderShowMore);
+//		softAssert.assertTrue(!isEditLinkAvailable, "SMAB-T270: For User '"+ loginUser +"': Edit option is not visible on View All Grid");
+//		isDeleteLinkAvailable = objBppTrnPg.waitForElementToBeVisible(5, objBuildPermitPage.deleteLinkUnderShowMore);
+//		softAssert.assertTrue(!isDeleteLinkAvailable, "SMAB-T270: For User '"+ loginUser +"': Delete option is not visible on View All Grid");
+//		isNoActionsOptionAvailable = objBppTrnPg.waitForElementToBeVisible(5, objBppTrnPg.noActionsLinkUnderShowMore);
+//		softAssert.assertTrue(isNoActionsOptionAvailable, "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on View All Grid");
 
 		objApasGenericFunctions.logout();
 		softAssert.assertAll();
