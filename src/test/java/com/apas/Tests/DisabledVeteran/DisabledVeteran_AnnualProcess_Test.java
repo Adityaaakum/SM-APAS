@@ -319,12 +319,12 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		softAssert.assertEquals(actualRollYearLowIncomeThreshholdAmount,verifyWithUnApprovedRPSLdataMap.get("Roll Year Threshhold Amount"),"SMAB-T1293: Verify \'Roll Year Low Income Threshhold Amount\'");
 		
 		String actualRollYearDueDate = objValueAdjustmentPage.penaltyDate1.getText().trim();
-		softAssert.assertEquals(actualRollYearDueDate,verifyWithUnApprovedRPSLdataMap.get("Roll Year Due Date"),"SMAB-T1382: Verify \'Roll Year Due Date\'");
-		softAssert.assertEquals(actualRollYearDueDate,verifyWithUnApprovedRPSLdataMap.get("Roll Year Due Date"),"SMAB-T1293: Verify \'Roll Year Due Date\'");
+		softAssert.assertEquals(actualRollYearDueDate,verifyWithUnApprovedRPSLdataMap.get("Roll Year Due Date")+"/"+strRollYear,"SMAB-T1382: Verify \'Roll Year Due Date\'");
+		softAssert.assertEquals(actualRollYearDueDate,verifyWithUnApprovedRPSLdataMap.get("Roll Year Due Date")+"/"+strRollYear,"SMAB-T1293: Verify \'Roll Year Due Date\'");
 		
 		String actualRollYearDueDate2 = objValueAdjustmentPage.penaltyDate2.getText().trim();
-		softAssert.assertEquals(actualRollYearDueDate2,verifyWithUnApprovedRPSLdataMap.get("Roll Year Due Date2"),"SMAB-T1382: Verify \'Roll Year Due Date 2\'");
-		softAssert.assertEquals(actualRollYearDueDate2,verifyWithUnApprovedRPSLdataMap.get("Roll Year Due Date2"),"SMAB-T1293: Verify \'Roll Year Due Date 2\'");
+		softAssert.assertEquals(actualRollYearDueDate2,verifyWithUnApprovedRPSLdataMap.get("Roll Year Due Date2")+"/"+strRollYear,"SMAB-T1382: Verify \'Roll Year Due Date 2\'");
+		softAssert.assertEquals(actualRollYearDueDate2,verifyWithUnApprovedRPSLdataMap.get("Roll Year Due Date2")+"/"+strRollYear,"SMAB-T1293: Verify \'Roll Year Due Date 2\'");
 		
 		String actualvaRollYearLowIncomeLatePenaltyLabel = objValueAdjustmentPage.vaRollYearLowIncomeLatePenaltyLabel.getText().trim();
 		softAssert.assertEquals(actualvaRollYearLowIncomeLatePenaltyLabel,verifyWithUnApprovedRPSLdataMap.get("Roll Year LowIncome Penalty"),"SMAB-T1382: Verify \'Roll Year Low Income Penalty\'");
