@@ -27,7 +27,7 @@ import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
-public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings extends TestBase {
+public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends TestBase {
 
 	RemoteWebDriver driver;
 	Page objPage;
