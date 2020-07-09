@@ -42,7 +42,7 @@ public class RollwisePermissionTest extends TestBase {
 	public void BuildingPermit_GenericUserNotHavingAccess() throws Exception {
 
 		//Step1: Login to the APAS application using the General User
-		objApasGenericFunctions.login(users.BPP_AUDITOR);
+		objApasGenericFunctions.login(users.OTHER_COUNTY_STAFF);
 		objPage.Click(objApasGenericPage.appLauncher);
 
 		//Step2: Validating that generic user is not having the access to City Strat Code Module
