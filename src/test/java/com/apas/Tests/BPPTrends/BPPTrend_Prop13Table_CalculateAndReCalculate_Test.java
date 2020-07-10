@@ -83,11 +83,10 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 	 * 8. Validating the presence of Recalculate button for Calculated table
 	 * 9. Validating the absence of Calculate button
 	 * 10. Validating the absence of Submit For Approval button:: TestCase/JIRA ID: SMAB-T442
-	 * 11. Validating Roll Year value is Acquired Year + 1:: TestCase/JIRA ID: SMAB-T577
-	 * 12. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T277
-	 * 13. Validating the status of the table on BPP Trend Setup Page: SMAB-T278
+	 * 11. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T277
+	 * 12. Validating the status of the table on BPP Trend Setup Page: SMAB-T278
 	 */
-	@Test(description = "SMAB-T190,SMAB-T276,SMAB-T277,SMAB-T278,SMAB-T442,SMAB-T577,SMAB-T211: Performing validation on PROP 13 FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T190,SMAB-T276,SMAB-T277,SMAB-T278,SMAB-T442,SMAB-T211: Performing validation on PROP 13 FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_Prop13Factors_CalculateAndCompare(String loginUser) throws Exception {
 		objBppTrnPg.deleteDuplicateCPI();
 		

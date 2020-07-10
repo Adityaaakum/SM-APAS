@@ -436,6 +436,8 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
 		objPage.waitForElementTextToBe(objEFileImport.statusImportedFile, "Imported", 400);
 		apasGenericObj.logout();
+
+		Thread.sleep(20000);
 		
 		//step6:now logging in with different user and verifying 'Revert' button invisibility 
 		apasGenericObj.login(BPP_AUDITOR);

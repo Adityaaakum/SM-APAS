@@ -1,35 +1,22 @@
 package com.apas.PageObjects;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.RandomStringUtils;
-//import org.apache.commons.math3.util.Precision;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-
 import com.apas.Assertions.SoftAssertion;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.config.modules;
-import com.apas.config.testdata;
 import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
@@ -41,7 +28,7 @@ public class ExemptionsPage extends ApasGenericPage {
 	ApasGenericPage objApasGenericPage;
 	String exemptionFileLocation = "";
 	RealPropertySettingsLibrariesPage objRPSL;
-	SalesforceAPI objSalesforceAPI;
+	SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 	public ExemptionsPage(RemoteWebDriver driver) {
 		
 		super(driver);
@@ -750,7 +737,6 @@ public String fetchAssesseeName() {
 		//This AssesseeName is temporarily hard coded for PreUAT environment as there is some code deference in preuat and qa
 	   String assesseeName = "SMtestPerson";
 	   if (!System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-		   SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 		   String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type = 'Person' OR Type = 'Business'";
 		   HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
 		   assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
@@ -769,7 +755,6 @@ public String fetchAssesseeName() {
 	}
 
 	public 	ArrayList<String> fetchActiveAPN(int numberofAPNs) {
-		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 		String queryForID = "SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberofAPNs;
 		return objSalesforceAPI.select(queryForID).get("Name");
 	}
@@ -779,8 +764,8 @@ public String fetchAssesseeName() {
 	   @param: Veteran Name used to create Exemption 
 	   @return: returns the Exemption Name
 	    */
-	 public String fetchExemptionName(String veteranName) throws Exception {
-		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+
+	public String fetchExemptionName(String veteranName) throws Exception {
 		String queryForID = "SELECT Name FROM Exemption__c WHERE Name_of_Veteran__c ='"+veteranName+"'";
 		HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(queryForID);
 		String exemptionName = response.get("Name").get(0);

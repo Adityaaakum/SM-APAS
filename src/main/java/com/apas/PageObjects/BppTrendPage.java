@@ -24,6 +24,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
@@ -388,10 +389,23 @@ public class BppTrendPage extends Page {
 	 * @param tableName: Name of the table for which data needs to be updated
 	 * @throws: Exception
 	 */	
-	public void editCellDataInGridForGivenTable(String tableName, Object data) throws Exception {		
+	public void editCellDataInGridForGivenTable(String tableName, Object data) throws Exception {	
 		String xpathEditTxtBox = "//div//input[@name = 'dt-inline-edit-text']";
-		WebElement editTxtBox = locateElement(xpathEditTxtBox, 30);
-		enter(editTxtBox, String.valueOf(data));
+		WebElement editTxtBox;			
+		editTxtBox = locateElement(xpathEditTxtBox, 30);
+		if(!System.getProperty("region").equalsIgnoreCase("preuat")) {
+			enter(editTxtBox,String.valueOf(data));
+		}else {
+			waitForElementToBeClickable(15, editTxtBox);
+			((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", editTxtBox);		
+			editTxtBox.clear();
+			WebElement editBtn = locateEditButtonInFocusedCell();
+			Click(editBtn);
+			Thread.sleep(1000);
+			editTxtBox = locateElement(xpathEditTxtBox, 30);
+			editTxtBox.sendKeys(String.valueOf(data));
+		}
+		Thread.sleep(1000);		
 
 		String tagAppend;
 		if(tableName.equalsIgnoreCase("BPP Prop 13 Factors")) {

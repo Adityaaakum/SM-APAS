@@ -24,9 +24,7 @@ public class NonRelevantPermitSettingsPage extends Page {
 	@FindBy(xpath = "//span[text() = 'Status']/parent::span/following-sibling::div//a[@class = 'select']")
 	public WebElement statusDrpDown;
 
-	@FindBy(xpath = "//*[text()='This record looks like a duplicate.']")
-	public WebElement messageDuplicateData;
+	@FindBy(xpath = "//lightning-primitive-icon/*[@data-key='warning']/../../../div")
+	public WebElement warningMessage;
 
-	@FindBy(xpath = "//a[text()='View Duplicates']")
-	public WebElement linkViewDuplicates;
 }

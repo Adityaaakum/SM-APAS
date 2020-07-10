@@ -548,20 +548,6 @@ public float convertToFloat(Object amount)
         objPage.waitUntilElementIsPresent(xpath,20);
         return objPage.getElementText(driver.findElement(By.xpath(xpath)));
     }
-    
-    /**
-   	 * Description: This will update the status of Roll Year
-   	 * @param expectedStatus: Expected status like Open, Closed etc.
-   	 * @param rollYear: Roll year for which the status needs to be updated
-   	 */
-   	public void updateRollYearStatus(String expectedStatus, String rollYear) throws Exception {		
-   		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
-   		//Query to update the status of Roll Year
-   		String queryForID = "Select Id From Roll_Year_Settings__c where Roll_Year__c = '"+ rollYear +"'";		
-   		JSONObject jsonObj = new JSONObject();
-   		jsonObj.put("Status__c", expectedStatus);		
-   		objSalesforceAPI.update("Roll_Year_Settings__c", queryForID, jsonObj);
-   	}
 
     /**
 	 * Description: This will update the status of Roll Year

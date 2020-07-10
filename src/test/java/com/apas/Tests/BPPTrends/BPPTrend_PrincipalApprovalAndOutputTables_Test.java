@@ -142,6 +142,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 			softAssert.assertTrue(isApproveBtnDisplayed, "SMAB-T157: Approve button is visible for Calculated table '"+ tableName +"'");
 
 			//Step11: Editing and saving cell data in the table for first & last factor tables specified the list
+			Thread.sleep(2000);
 			WebElement editedCell = objBppTrnPg.locateCellToBeEdited(tableName, 1, 1);
 			int cellDataBeforeEdit;
 			if(tableName.equalsIgnoreCase("BPP Prop 13 Factors")) {
@@ -153,8 +154,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 
 			WebElement editBtn = objBppTrnPg.locateEditButtonInFocusedCell();
 			objBppTrnPg.Click(editedCell);
-			objBppTrnPg.Click(editBtn);
-
+			objBppTrnPg.Click(editBtn);	
 			objBppTrnPg.editCellDataInGridForGivenTable(tableName, (cellDataBeforeEdit + 1));
 			boolean isEditedCellHighlighted = objBppTrnPg.isEditedCellFocused(editedCell);
 			softAssert.assertTrue(isEditedCellHighlighted, "SMAB-T449: Edited cell is highlighted in yellow color for "+ tableName +" table");
