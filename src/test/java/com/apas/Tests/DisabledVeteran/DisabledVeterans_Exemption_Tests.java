@@ -425,7 +425,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
     Below test case is used to verify Exemption is not created for Retired and Invalid PUC code Parcels(APN) from Parcels Exemption related list
     * @throws Exception 
     **/
-   @Test(description = "SMAB-T1515,SMAB-T1516,SMAB-T1517,SMAB-T1518:Verify User is not able to create Exemption for Retired and Invalid PUC Code APN's",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
+   @Test(description = "SMAB-T1515,SMAB-T1516,SMAB-T1517,SMAB-T1518,SMAB-T580:Verify User is not able to create Exemption for Retired and Invalid PUC Code APN's",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
            "smoke", "regression","DisabledVeteranExemption"})    
    public void verify_Disabledveteran_ExemptionNotCreatedForRetiredAndInvalidPUCCodeAPN(String loginUser) throws Exception
    {
@@ -452,7 +452,9 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	       ReportLogger.INFO("Verifying Exemption creation for Parcel:: "+parcel+" with PUC Code");
 	       String parcelsStatus=objPage.getElementText(exemptionPageObj.exemationStatusOnDetails);
 	       objPage.Click(objParcel.moretab);
-	       objPage.Click(objParcel.exemptionRelatedList);       
+	       objPage.waitForElementToBeVisible(objParcel.exemptionRelatedList, 3);
+	       softAssert.assertTrue(objParcel.exemptionRelatedList.isDisplayed(), "SMAB-T580:Verify that user is able to see 'Exemption related List' and related fields on Parcel details page");
+	       objPage.Click(objParcel.exemptionRelatedList); 
 	       objPage.Click(exemptionPageObj.newExemptionButton);
 	       
 	   //Step3: Selecting mandatory details before verifying error message
