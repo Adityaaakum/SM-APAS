@@ -474,14 +474,13 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	    	   softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"You cannot add an Exemption to a retired Parcel or the Property Use Code does not allow an Exemption. Please verify you have the correct Parcel or update the Parcel to proceed.","SMAB-T1517: Verify that user is not able to create Exemption for Retired Parcels from Parcel's related exemptions screen");}
 	       else{
 		       softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"You cannot add an Exemption to a retired Parcel or the Property Use Code does not allow an Exemption. Please verify you have the correct Parcel or update the Parcel to proceed.","SMAB-T1518: Verify that user is not able to create Exemption for Invalid PUC code parcels from Parcel's related exemptions screen");}
-		       objPage.Click(exemptionPageObj.cancelButton);
-       }
+	       
+	       objPage.Click(exemptionPageObj.cancelButton);
 
-       //step4: Verifying Exemption is not created for Retired and Invalid PUC code APN from Exemption page
-       ReportLogger.INFO("Verifying Exemption is not created for Retired and Invalid PUC codes APN from Exemption screen");
-       apasGenericObj.searchModule(EXEMPTIONS);
-       for(String parcel: parcelsToVerify )
-       {
+	       //step4: Verifying Exemption is not created for Retired and Invalid PUC code APN from Exemption page
+	       ReportLogger.INFO("Verifying Exemption is not created for Retired and Invalid PUC codes APN from Exemption screen");
+	       apasGenericObj.searchModule(EXEMPTIONS);
+      
 	       String apnStatusQuery = "SELECT Status__c FROM Parcel__c where Name='"+parcel+"'";
 	       HashMap<String, ArrayList<String>> response3  = salesforceAPI.select(apnStatusQuery);
 	       String apnStatus= response3.get("Status__c").get(0);
@@ -495,8 +494,9 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	           softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"An invalid option has been chosen.","SMAB-T1516: Verify that user is not able to create Exemption for Retired Parcels from Parcel's related exemptions screen");}
 	       else{
 			   softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"An invalid option has been chosen.","SMAB-T1515: Verify that user is not able to create Exemption for Invalid PUC code parcels from Parcel's related exemptions screen");}
-			   objPage.Click(exemptionPageObj.cancelButton);
-       }       
+			   
+	       objPage.Click(exemptionPageObj.cancelButton); 
+   }
        apasGenericObj.logout();
    }
 	
