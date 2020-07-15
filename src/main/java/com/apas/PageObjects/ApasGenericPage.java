@@ -278,12 +278,9 @@ public class ApasGenericPage extends Page {
 		Thread.sleep(1000);
 		String xpathStr1="";
 		Boolean flag=false;
-	    if (screenName == "Roll Year Settings") {
-        		xpathStr1 = "//a[@title='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[9]//span//div//a//lightning-icon";
-        	}
-	    if (screenName == "Exemptions") {
-    			xpathStr1 = "//a[@data-recordid='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[6]//span//div//a//lightning-icon";
-    		}
+	    if (screenName == "Roll Year Settings") xpathStr1 = "//a[@title='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[9]//span//div//a//lightning-icon";
+	    if (screenName == "Exemptions") xpathStr1 = "//a[@data-recordid='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[6]//span//div//a//lightning-icon";
+   
         WebElement showMoreIcon = locateElement(xpathStr1, 3);
         if (showMoreIcon != null){
         	ExtentTestManager.getTest().log(LogStatus.INFO, screenName + " record exist");

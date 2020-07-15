@@ -401,7 +401,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		String timeStamp = java.time.LocalDateTime.now().toString();
 		exemptionCreationDataMap.put("Veteran Name", exemptionCreationDataMap.get("Veteran Name").concat(timeStamp));		
 		exemptionCreationDataMap.put("Claimant SSN", "000-00-0000");		
-		exemptionPageObj.createExemptionWithoutEndDateOfRating(exemptionCreationDataMap);
+		exemptionPageObj.createExemption(exemptionCreationDataMap);
 		
 		//Step4: Verify error message
 		String expectedErrorMessageOnTop = "Claimant's SSN does not match with the SSN on the Claimant's record";

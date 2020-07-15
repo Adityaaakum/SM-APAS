@@ -134,7 +134,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		 Capture the Exemption Name*/		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Active Exemption");
 		activeExemptionDataMap.put("Veteran Name", activeExemptionDataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(activeExemptionDataMap);
+		objExemptionsPage.createExemption(activeExemptionDataMap);
 		String activeExemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		ReportLogger.INFO("Active Exemption Created: "+activeExemptionName);
 		
@@ -150,7 +150,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		 Capture the Exemption Name*/
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating In-Active Exemption");
 		inActiveExemptionDataMap.put("Veteran Name", inActiveExemptionDataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
-		objExemptionsPage.createExemptionWithEndDateOfRating(inActiveExemptionDataMap);
+		objExemptionsPage.createExemption(inActiveExemptionDataMap);
 		Thread.sleep(2000);
 		String iNActiveExemptionName = objExemptionsPage.getExemptionNameFromSuccessAlert();
 		String inActiveExemptionName = "EXMPTN-"+iNActiveExemptionName;

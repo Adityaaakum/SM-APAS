@@ -17,6 +17,7 @@ import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
@@ -73,12 +74,12 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		objApasGenericFunctions.searchModule(modules.EXEMPTION);
 		
 		//Step3: Save an Exemption record without entering any details		
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to open an Exemption record");
+		ReportLogger.INFO("Click 'New' button to open an Exemption record");
 		Thread.sleep(2000);
 		objPage.Click(objPage.waitForElementToBeClickable(objExemptionsPage.newExemptionButton));
 		objPage.waitForElementToBeClickable(objExemptionsPage.apn);
 		objPage.waitForElementToBeClickable(objExemptionsPage.claimantName);
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Without entering any data on the Exemption record, click 'Save' button");
+		ReportLogger.INFO("Without entering any data on the Exemption record, click 'Save' button");
 		objExemptionsPage.saveExemptionRecord();
 		
 		//Step4: Validate error messages when no field value is entered and Exemption record is saved
@@ -99,8 +100,8 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Claimant's Name"),expectedIndividualFieldMessage1,"SMAB-T523: Validating mandatory fields missing error for 'Claimant's Name'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Claimant's SSN"),expectedIndividualFieldMessage1,"SMAB-T523: Validating mandatory fields missing error for 'Claimant's SSN'");
 
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Error messages related to mandatory fields are validated");
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Exemption screen");
+		ReportLogger.INFO("Error messages related to mandatory fields are validated");
+		ReportLogger.INFO("Click 'Cancel' button to move out of the Exemption screen");
 		objPage.Click(objExemptionsPage.cancelButton);
 		
 		/*Step5: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
@@ -110,7 +111,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		Map<String, String> dataToCreateExemptionMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemption");
 		dataToCreateExemptionMap.put("Veteran Name", dataToCreateExemptionMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionMap);
+		objExemptionsPage.createExemption(dataToCreateExemptionMap);
 		
 		String recordId = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
@@ -126,7 +127,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		softAssert.assertTrue(objExemptionsPage.saveButton.isDisplayed(), "SMAB-T481: Validate user is able to view the edit screen for the Exemption record");
 	
 		//Step8: Clear the values from the few mandatory fields and Save the record
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Clear some Date fields and SAVE the record");
+		ReportLogger.INFO("Clear some Date fields and SAVE the record");
 		objPage.clearFieldValue(objExemptionsPage.dateAquiredProperty);
 		objPage.clearFieldValue(objExemptionsPage.dateOccupiedProperty);
 		objPage.clearFieldValue(objExemptionsPage.dateOfNotice);
@@ -146,8 +147,8 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Qualification?"),expectedIndividualFieldMessage2,"SMAB-T523: Validating mandatory fields missing error for 'Qualification?'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date of Notice of 100% Rating"),expectedIndividualFieldMessage2,"SMAB-T523: Validating mandatory fields missing error for 'Date of Notice of 100% Rating'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date Occupied/Intend to Occupy Property"),expectedIndividualFieldMessage2,"SMAB-T523: Validating mandatory fields missing error for 'Date Occupied/Intend to Occupy Property'");
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Error messages related to mandatory fields are validated");
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Exemption screen");
+		ReportLogger.INFO("Error messages related to mandatory fields are validated");
+		ReportLogger.INFO("Click 'Cancel' button to move out of the Exemption screen");
 		objPage.Click(objExemptionsPage.cancelButton);
 				
 		//Step10: Open it again and Validate the values which were initially saved, appear there
@@ -183,7 +184,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 				
 		Map<String, String> dataToCreateExemptionMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemption");
 		dataToCreateExemptionMap.put("Veteran Name", dataToCreateExemptionMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionMap);
+		objExemptionsPage.createExemption(dataToCreateExemptionMap);
 		String recordId = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		softAssert.assertTrue(exemptionName.contains("EXMPTN"),"SMAB-T522: Validate user is able to create Exemption with mandtory fields'");
@@ -207,7 +208,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Claimant's SSN"),expectedIndividualFieldMessage,"SMAB-T527: Validating mandatory fields missing error for 'Claimant's SSN'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Unmarried Spouse of Deceased Veteran?"),expectedIndividualFieldMessage,"SMAB-T527: Validating mandatory fields missing error for 'Unmarried Spouse of Deceased Veteran?'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date Application Received"),expectedIndividualFieldMessage,"SMAB-T527: Validating mandatory fields missing error for 'Date Application Received'");
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Error messages related to mandatory fields are validated");
+		ReportLogger.INFO("Error messages related to mandatory fields are validated");
 				
 		//Step9: Enter the value in 'Unmarried Spouse of Deceased Veteran?' dropdown only and Save the record
 		objApasGenericFunctions.selectFromDropDown(objExemptionsPage.unmarriedSpouseOfDisabledVeteran, "No");
@@ -222,13 +223,16 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		softAssert.assertEquals(objExemptionsPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop1,"SMAB-T527: Validating mandatory fields missing error in Exemption screen.");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Claimant's SSN"),expectedIndividualFieldMessage1,"SMAB-T527: Validating mandatory fields missing error for 'Claimant's SSN'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date Application Received"),expectedIndividualFieldMessage1,"SMAB-T527: Validating mandatory fields missing error for 'Date Application Received'");
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Error messages related to mandatory fields are validated");
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Exemption screen");
+		ReportLogger.INFO("Error messages related to mandatory fields are validated");
+		ReportLogger.INFO("Click 'Cancel' button to move out of the Exemption screen");
 		objPage.Click(objExemptionsPage.cancelButton);
 		
 		//Step11: Edit the record on Detail page using EDIT button and update some details
 		objExemptionsPage.editExemptionRecord();
-		objExemptionsPage.enterEndDateOfRating(dataToCreateExemptionMap);
+		//objExemptionsPage.enterEndDateOfRating(dataToCreateExemptionMap);
+		ReportLogger.INFO("Update some details in the Exemption record i.e. End Date Of Rating :  " + dataToCreateExemptionMap.get("End Date Of Rating") + " and End Rating Reason : " + dataToCreateExemptionMap.get("End Rating Reason"));
+		objExemptionsPage.updateFieldValue("Date", "End Date Of Rating", dataToCreateExemptionMap.get("End Date Of Rating"));
+		objExemptionsPage.updateFieldValue("Dropdown", "End Rating Reason", dataToCreateExemptionMap.get("End Rating Reason"));
 		
 		//Step12: Save the changes and validate the details
 		objExemptionsPage.saveExemptionRecord();
@@ -249,7 +253,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		
 		//Step15: Edit the record again by clicking pencil icon against 'Veteran SSN' field and update the field*
 		objPage.Click(objExemptionsPage.editPencilIconForVeteranSSNOnDetailPage);
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Update the Veteran SSN in the Exemption record to '800-45-6781'");
+		ReportLogger.INFO("Update the Veteran SSN in the Exemption record to '800-45-6781'");
 		Thread.sleep(1000);
 		objExemptionsPage.enter(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailEditPage), "800-45-6781");
 		

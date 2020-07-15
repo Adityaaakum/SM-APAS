@@ -428,7 +428,7 @@ public class ExemptionsPage extends ApasGenericPage {
 
 public String createNewExemption(Map<String,String> newExemptionData) throws Exception {
 
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Entering/Selecting values for New Exemption record");
+	ReportLogger.INFO("Entering/Selecting values for New Exemption record");
 	apasGenericObj.searchAndSelectFromDropDown(apn,fetchActiveAPN());
 	objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
 	apasGenericObj.searchAndSelectFromDropDown(claimantName,fetchAssesseeName());
@@ -467,7 +467,7 @@ public String createNewExemption(Map<String,String> newExemptionData) throws Exc
 
 public String createNewExemptionWithMandatoryData(Map<String, String> newExemptionData) throws Exception {
 	
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Entering/Selecting values for New Exemption record");
+	ReportLogger.INFO("Entering/Selecting values for New Exemption record");
 		apasGenericObj.searchAndSelectFromDropDown(apn,fetchActiveAPN());
 		objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
 		apasGenericObj.searchAndSelectFromDropDown(claimantName,fetchAssesseeName());
@@ -529,29 +529,81 @@ public void enterExemptionData(Map<String, String> dataMap) throws Exception {
 	if(dataMap.containsKey("End Rating Reason")) apasGenericObj.selectFromDropDown(endRatingReason, dataMap.get("End Rating Reason"));		
 }
 
+/*@FindBy(xpath = "//span[contains(.,'Qualification?')]/following-sibling::div[@class='uiMenu']")
+public WebElement qualification;
+
+@FindBy(xpath = "//span[contains(.,'Reason for Not Qualified')]/following-sibling::div[@class='uiMenu']")
+public WebElement reasonNotQualified;
+
+@FindBy(xpath = "//label[contains(.,'Not Qualified Detail')]/following-sibling::textarea")
+public WebElement notQualifiedDetail;
+
+@FindBy(xpath = "//span[@data-aura-class='uiPicklistLabel' and contains(.,'End Rating Reason')]/following::div[1]//div/a")
+public WebElement endRatingReason;
+
+@FindBy(xpath = "//label[contains(.,'End Date of Rating')]/following::input[1]")
+public WebElement endDateOfRating;*/
+
+
+/*public void updateFieldValue(String fieldType, String fieldName, String fieldValue) throws Exception {
+	Thread.sleep(1000);
+	String xpathStr = "";
+	if(fieldType.equals("Date")) {
+		xpathStr = "//label[contains(.,'" + fieldName + "')]/following::input[1]";
+		WebElement elemLocator = locateElement(xpathStr, 30);
+		enterDate(elemLocator, fieldValue);
+	}
+	
+	if(fieldType.equals("Dropdown")) {
+		xpathStr = "//span[contains(.,'" + fieldName + "')]/following-sibling::div[@class='uiMenu']";
+		WebElement elemLocator = locateElement(xpathStr, 30);
+		apasGenericObj.selectFromDropDown(elemLocator, fieldValue);
+	}
+}*/
+
+
+public void updateFieldValue(String fieldType, String fieldName, String fieldValue) throws Exception {
+	Thread.sleep(1000);
+	WebElement elemLocator = findElem(fieldType, fieldName);
+	if(fieldType.equals("Date")) enterDate(elemLocator, fieldValue);
+	if(fieldType.equals("Dropdown")) apasGenericObj.selectFromDropDown(elemLocator, fieldValue);
+}
+
+
+public WebElement findElem(String fieldType, String fieldName) throws Exception {
+	Thread.sleep(1000);
+	String xpathStr = "";
+	if(fieldType.equals("Date")) xpathStr = "//label[contains(.,'" + fieldName + "')]/following::input[1]";
+	if(fieldType.equals("Dropdown")) xpathStr = "//span[contains(.,'" + fieldName + "')]/following-sibling::div[@class='uiMenu']";
+	WebElement elemLocator = locateElement(xpathStr, 30);
+	return elemLocator;
+}
+
+
+
 /**
  * Description: This method will enter only EndDateOfRating
  * @param dataMap: Map that is storing values from JSON file
  */
 
-public void enterEndDateOfRating(Map<String, String> dataMap) throws Exception {
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Update some details in the Exemption record i.e. End Date Of Rating :  " + dataMap.get("End Date Of Rating") + " and End Rating Reason : " + dataMap.get("End Rating Reason"));
+/*public void enterEndDateOfRating(Map<String, String> dataMap) throws Exception {
+	ReportLogger.INFO("Update some details in the Exemption record i.e. End Date Of Rating :  " + dataMap.get("End Date Of Rating") + " and End Rating Reason : " + dataMap.get("End Rating Reason"));
 	Thread.sleep(1000);
 	enterDate(endDateOfRating, dataMap.get("End Date Of Rating"));	
 	Thread.sleep(1000);
 	apasGenericObj.selectFromDropDown(endRatingReason, dataMap.get("End Rating Reason"));
-}
+}*/
 
 /**
  * Description: This method is interchanging Date Occupied and Effective Date
  * @param dataMap: Map that is storing values from JSON file
  */
 
-public void interchangeOccupiedAndEffectiveDate(Map<String, String> dataMap) throws Exception {
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Interchange values of 'Effective Date of 100% USDVA Rating' and 'Date Occupied/Intend to Occupy Property' in the Exemption record i.e. Date Occupied/Intend to Occupy Property :  " + dataMap.get("Effective Date of 100% USDVA Rating") + " and Effective Date of 100% USDVA Rating : " + dataMap.get("Date Occupied/Intend to Occupy Property"));
+/*public void interchangeOccupiedAndEffectiveDate(Map<String, String> dataMap) throws Exception {
+	ReportLogger.INFO("Interchange values of 'Effective Date of 100% USDVA Rating' and 'Date Occupied/Intend to Occupy Property' in the Exemption record i.e. Date Occupied/Intend to Occupy Property :  " + dataMap.get("Effective Date of 100% USDVA Rating") + " and Effective Date of 100% USDVA Rating : " + dataMap.get("Date Occupied/Intend to Occupy Property"));
 	enterDate(dateOccupiedProperty, dataMap.get("Effective Date of 100% USDVA Rating"));
 	enterDate(effectiveDateOfUSDVA, dataMap.get("Date Occupied/Intend to Occupy Property"));	
-}
+}*/
 
 /**
  * Description: This method will click SAVE button on Exemption screen
@@ -565,9 +617,25 @@ public void saveExemptionRecord() throws Exception {
  * Description: This method will click EDIT button on Exemption screen
  */
 public void editExemptionRecord() throws Exception {
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Edit' button to update it");
+	ReportLogger.INFO("Click 'Edit' button to update it");
 	Click(editButton);
 	Thread.sleep(1000);
+}
+
+/**
+ * Description: This method includes other methods and creates an Exemption 
+ * @param dataMap: Map that is storing values from JSON file
+ */
+
+public void createExemption(Map<String, String> dataMap) throws Exception {
+	ReportLogger.INFO("Click 'New' button to fill the following details in the Exemption record : " + dataMap);	
+	Thread.sleep(2000);
+	Click(waitForElementToBeClickable(newExemptionButton));
+	waitForElementToBeClickable(apn);
+	waitForElementToBeClickable(claimantName);
+	enterExemptionData(dataMap);
+	ReportLogger.INFO("Click 'Save' button to save the details entered in Exemption record");
+	saveExemptionRecord();
 }
 
 /**
@@ -575,68 +643,68 @@ public void editExemptionRecord() throws Exception {
  * @param dataMap: Map that is storing values from JSON file
  */
 
-public void createExemptionWithoutEndDateOfRating(Map<String, String> dataMap) throws Exception {
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to fill the following details in the Exemption record : " + dataMap);	
+/*public void createExemptionWithoutEndDateOfRating(Map<String, String> dataMap) throws Exception {
+	ReportLogger.INFO("Click 'New' button to fill the following details in the Exemption record : " + dataMap);	
 	Thread.sleep(2000);
 	Click(waitForElementToBeClickable(newExemptionButton));
 	waitForElementToBeClickable(apn);
 	waitForElementToBeClickable(claimantName);
 	enterExemptionData(dataMap);
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Save' button to save the details entered in Exemption record");
+	ReportLogger.INFO("Click 'Save' button to save the details entered in Exemption record");
 	saveExemptionRecord();
-}
+}*/
 
 /**
  * Description: This method includes other methods and creates an Exemption with limited fields data and with EndDateOfRating
  * @param dataMap: Map that is storing values from JSON file
  */
 
-public void createExemptionWithEndDateOfRating(Map<String, String> dataMap) throws Exception {
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to fill the following details in the Exemption record : " + dataMap);	
+/*public void createExemptionWithEndDateOfRating(Map<String, String> dataMap) throws Exception {
+	ReportLogger.INFO("Click 'New' button to fill the following details in the Exemption record : " + dataMap);	
 	Thread.sleep(2000);
 	Click(waitForElementToBeClickable(newExemptionButton));
 	waitForElementToBeClickable(apn);
 	waitForElementToBeClickable(claimantName);
 	enterExemptionData(dataMap);
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Save' button to save the details in Exemption record");
+	ReportLogger.INFO("Click 'Save' button to save the details in Exemption record");
 	saveExemptionRecord();
-}
+}*/
 
 /**
  * Description: This method includes other methods and creates an Exemption with Non Qualified data
  * @param dataMap: Map that is storing values from JSON file
  */
 
-public void createNonQualifiedExemption(Map<String, String> dataMap) throws Exception {
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to fill the following details in the Exemption record : " + dataMap);	
+/*public void createNonQualifiedExemption(Map<String, String> dataMap) throws Exception {
+	ReportLogger.INFO("Click 'New' button to fill the following details in the Exemption record : " + dataMap);	
 	Thread.sleep(2000);
 	Click(waitForElementToBeClickable(newExemptionButton));
 	waitForElementToBeClickable(apn);
 	waitForElementToBeClickable(claimantName);
 	enterExemptionData(dataMap);
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Save' button to save the details entered in Exemption record");
+	ReportLogger.INFO("Click 'Save' button to save the details entered in Exemption record");
 	saveExemptionRecord();
-}
+}*/
 
 /**
  * Description: This method will fetch the current URL and process it to get the Record Id
  * @param dataMap: Map that is storing values from JSON file
  */
 
-public void updateQualifiedData(Map<String, String> dataMap) throws Exception {
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Update some details in the Exemption record i.e. Qualification? :  " + dataMap.get("Qualification?") + " and Reason for Not Qualified : " + dataMap.get("Reason for Not Qualified"));
+/*public void updateQualifiedData(Map<String, String> dataMap) throws Exception {
+	ReportLogger.INFO("Update some details in the Exemption record i.e. Qualification? :  " + dataMap.get("Qualification?") + " and Reason for Not Qualified : " + dataMap.get("Reason for Not Qualified"));
 	Thread.sleep(1000);
 	apasGenericObj.selectFromDropDown(qualification, dataMap.get("Qualification?"));
 	Thread.sleep(1000);
 	apasGenericObj.selectFromDropDown(reasonNotQualified, dataMap.get("Reason for Not Qualified"));
-}
+}*/
 
 /**
  * Description: This method will open the Exemption Name passed in the argument
  * @param exempName: Takes Exemption Name as an argument
  */
 public void openExemptionRecord(String exempName) throws IOException, InterruptedException {
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Open the Exemption record : " + exempName);
+	ReportLogger.INFO("Open the Exemption record : " + exempName);
 	Click(driver.findElement(By.xpath("//a[@title='" + exempName + "']")));
 	Thread.sleep(3000);
 }
@@ -647,7 +715,7 @@ public void openExemptionRecord(String exempName) throws IOException, Interrupte
  * @param recordId: Takes RecordId as an argument
  */
 public void openExemptionRecord(String recordId, String exempName) throws Exception {
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Open the Exemption record : " + exempName);
+	ReportLogger.INFO("Open the Exemption record : " + exempName);
 	String xpathStr = "//a[@data-recordid='" + recordId + "']";
     WebElement exemptionLocator = locateElement(xpathStr, 30);
     Click(exemptionLocator);
@@ -660,12 +728,12 @@ public void openExemptionRecord(String recordId, String exempName) throws Except
  */
 
 public String removeZeroInMonthAndDay(String dateValue) throws Exception {
-	boolean flag = false;
+	//boolean flag = false;
 	String apnd;
 	
 	if (dateValue.charAt(0) == '0') {
-		dateValue = dateValue.substring(1);
-		flag = true;
+		dateValue = dateValue.substring(1);   
+		//flag = true;
 		
 		if (dateValue.charAt(2) == '0') {
 			apnd = dateValue.substring(0, 2);
@@ -673,12 +741,16 @@ public String removeZeroInMonthAndDay(String dateValue) throws Exception {
 		}
 	}
 	
-	if (!flag){
-			if (dateValue.charAt(3) == '0') {
-				apnd = dateValue.substring(0, 3);
-				dateValue = apnd + dateValue.substring(4);
-			}
+	else{
+		if (dateValue.charAt(3) == '0') {
+			apnd = dateValue.substring(0, 3);
+			dateValue = apnd + dateValue.substring(4);
 		}
+	}
+	
+	//if (!flag){
+			
+	//	}
 	
 	return dateValue;
 }
@@ -703,14 +775,14 @@ public String editExemptionAndValidateEnabledStatusOnDetailPage(String fieldLabe
 	//Get all the read-only elements in a List
 	scrollToElement(statusOnDetailPage);
 	List<WebElement> field_elements = driver.findElements(By.xpath("//div[text() = 'Exemption']//ancestor::div[@class = 'slds-col slds-size_1-of-1 row region-header']//following-sibling::div[contains(@class, 'col slds-size_1-of-1 row')]//slot[@slot = 'outputField']//lightning-formatted-text//ancestor::div[@class = 'slds-form-element__control']//preceding-sibling::div"));
-	ExtentTestManager.getTest().log(LogStatus.INFO, "There are " + field_elements.size() + " read only fields on Exemption record");
+	ReportLogger.INFO("There are " + field_elements.size() + " read only fields on Exemption record");
 	
 	for(WebElement fieldElement: field_elements) 
 	{	
 		String elementName = getElementText(waitForElementToBeVisible(fieldElement));
 		if (elementName.equals(fieldLabel)){
 			flag = "true";
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Validate 'Status' field is read only on Exemption Detail screen");
+			ReportLogger.INFO("Validate 'Status' field is read only on Exemption Detail screen");
 			break;
 		}
 	}

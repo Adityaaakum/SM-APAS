@@ -71,7 +71,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		dataToCreateExemptionWithVeteranOneMap.put("Veteran Name", dataToCreateExemptionWithVeteranOneMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		
 		//Step4: Create an Exemption
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionWithVeteranOneMap);
+		objExemptionsPage.createExemption(dataToCreateExemptionWithVeteranOneMap);
 		
 		//Step5: Capture the Record Id, Veteran Name, Start Date, APN and Exemption Name. Also, validate some of its details
 		String recordId1 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
@@ -97,7 +97,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		dataToCreateExemptionWithVeteranTwoMap.put("Same APN", apn1);
 		
 		//Step8: Create another Exemption
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionWithVeteranTwoMap);
+		objExemptionsPage.createExemption(dataToCreateExemptionWithVeteranTwoMap);
 		
 		//Step9: Capture the Record Id, Veteran Name, Start Date, APN and Exemption Name. Also, validate some of its details
 		String recordId2 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
@@ -138,7 +138,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		dataToCreateExemptionWithParcelOneMap.put("Veteran Name", dataToCreateExemptionWithParcelOneMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 
 		//Step4: Create an Exemption
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionWithParcelOneMap);
+		objExemptionsPage.createExemption(dataToCreateExemptionWithParcelOneMap);
 		
 		//Step5: Capture the Record Id, Parcel Number, Start Date, Veteran Name and Exemption Name. Also, validate some of its details
 		String recordId1 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
@@ -163,7 +163,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		dataToCreateExemptionWithParcelTwoMap.put("Different APN", objExemptionsPage.fetchActiveAPN(2).get(1));
 		
 		//Step8: Create another Exemption
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionWithParcelTwoMap);
+		objExemptionsPage.createExemption(dataToCreateExemptionWithParcelTwoMap);
 		
 		//Step9: Capture the Record Id, Parcel Number, Start Date, Veteran Name and Exemption Name. Also, validate some of its details
 		String recordId2 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
@@ -202,7 +202,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		dataToCreateExemptionWithNoEndDateOfRatingMap.put("Veteran Name", dataToCreateExemptionWithNoEndDateOfRatingMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		
 		//Step4: Create an Exemption
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionWithNoEndDateOfRatingMap);
+		objExemptionsPage.createExemption(dataToCreateExemptionWithNoEndDateOfRatingMap);
 		
 		//Step5: Capture the Record Id and Exemption Name. Also, validate some of its details
 		String recordId1 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
@@ -227,7 +227,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		dataToCreateExemptionWithEndDateOfRatingMap.put("Same APN", apn1);
 		
 		//Step10: Create another Exemption
-		objExemptionsPage.createExemptionWithEndDateOfRating(dataToCreateExemptionWithEndDateOfRatingMap);
+		objExemptionsPage.createExemption(dataToCreateExemptionWithEndDateOfRatingMap);
 		
 		//Step11: Capture the Record Id and Exemption Name. Also, validate some of its details
 		String recordId2 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
@@ -271,7 +271,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		dataToCreateExemptionWithRequiredFieldsMap.put("Veteran Name", dataToCreateExemptionWithRequiredFieldsMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		
 		//Step4: Create an Exemption record
-		objExemptionsPage.createExemptionWithEndDateOfRating(dataToCreateExemptionWithRequiredFieldsMap);
+		objExemptionsPage.createExemption(dataToCreateExemptionWithRequiredFieldsMap);
 		
 		//Step5: Capture the Record Id and Exemption Name. Also, validate some of its details
 		String recordId1 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
@@ -298,7 +298,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap.put("Same APN", apn1);
 		
 		//Step9: Create another Exemption
-		objExemptionsPage.createExemptionWithEndDateOfRating(dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap);
+		objExemptionsPage.createExemption(dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap);
 		
 		//Step10: Capture the Record Id and Exemption Name. Also, validate some of its details
 		String recordId2 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
@@ -324,7 +324,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap.put("Same APN", apn1);
 		
 		//Step13: Create the third Exemption record
-		objExemptionsPage.createExemptionWithEndDateOfRating(dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap);
+		objExemptionsPage.createExemption(dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap);
 				
 		//Step14: Capture the Record Id and Exemption Name. Also, validate some of its details
 		String recordId3 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
@@ -362,7 +362,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		dataToCreateExemptionWithEndDateMap.put("Veteran Name", dataToCreateExemptionWithEndDateMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		
 		//Step4: Create an Exemption record
-		objExemptionsPage.createExemptionWithEndDateOfRating(dataToCreateExemptionWithEndDateMap);
+		objExemptionsPage.createExemption(dataToCreateExemptionWithEndDateMap);
 		
 		//Step5: Capture the Record Id and Exemption Name. Also, validate some of its details
 		String recordId1 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
@@ -383,7 +383,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		dataToCreateExemptionWithoutEndDateMap.put("Same APN", apn1);
 		
 		//Step7: Create another Exemption record
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(dataToCreateExemptionWithoutEndDateMap);
+		objExemptionsPage.createExemption(dataToCreateExemptionWithoutEndDateMap);
 		
 		//Step8: Capture the Record Id and Exemption Name. Also, validate some of its details
 		String recordId2 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");

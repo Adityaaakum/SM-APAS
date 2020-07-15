@@ -17,6 +17,7 @@ import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.RollYearSettingsPage;
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
@@ -87,7 +88,7 @@ public class RollYearSettingsTest extends TestBase {
 		softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage("Open Roll Start Date"),expectedIndividualFieldMessage,"SMAB-T638: Validating mandatory fields missing error for 'Open Roll Start Date'");
 		softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage("Tax End Date"),expectedIndividualFieldMessage,"SMAB-T638: Validating mandatory fields missing error for 'Tax End Date'");
 		softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage("Tax Start Date"),expectedIndividualFieldMessage,"SMAB-T638: Validating mandatory fields missing error for 'Tax Start Date'");
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Roll Year screen");
+		ReportLogger.INFO("Click 'Cancel' button to move out of the Roll Year screen");
 		objPage.Click(objRollYearSettingsPage.cancelButton);
 		
 		//Step5: Create data map for the JSON file (RollYear_DataToCreateRollYearRecord.json)
@@ -157,14 +158,14 @@ public class RollYearSettingsTest extends TestBase {
 		//Step8: Validate the default List View and Create a duplicate record
 		objApasGenericFunctions.searchModule(modules.ROLL_YEAR_SETTINGS);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.recentlyViewedListView)), "Recently Viewed", "SMAB-T638: Default List View is validated successfully");
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to open a Roll Year record");
+		ReportLogger.INFO("Click 'New' button to open a Roll Year record");
 		Thread.sleep(2000);
 		objPage.Click(objPage.waitForElementToBeClickable(objRollYearSettingsPage.newRollYearButton));
 		objPage.waitForElementToBeClickable(objRollYearSettingsPage.rollYearSettings);
 		objPage.waitForElementToBeClickable(objRollYearSettingsPage.rollYear);
 		
 		//Step9: Validate no error message is displayed on entering the Roll Year Settings value
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Enter 'Roll Year Settings' and 'Calendar End Date' values only");
+		ReportLogger.INFO("Enter 'Roll Year Settings' and 'Calendar End Date' values only");
 		objPage.enter(objRollYearSettingsPage.rollYearSettings, dataToCreatePastRollYearMap.get("Roll Year Settings"));
 		objRollYearSettingsPage.enterDate(objRollYearSettingsPage.calendarEndDate, dataToCreatePastRollYearMap.get("Calendar End Date"));
 		Thread.sleep(1000);
@@ -172,7 +173,7 @@ public class RollYearSettingsTest extends TestBase {
 		softAssert.assertTrue(!objPage.verifyElementVisible(objRollYearSettingsPage.viewDuplicateRecord), "Validate no duplicate error view link is displayed");
 		
 		//Step10: Validate the error message is displayed on selecting the duplicate Roll Year
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Enter 'Roll Year' and 'Open Roll End Date' values only");
+		ReportLogger.INFO("Enter 'Roll Year' and 'Open Roll End Date' values only");
 		objApasGenericFunctions.selectFromDropDown(objRollYearSettingsPage.rollYear, dataToCreatePastRollYearMap.get("Roll Year"));
 		objRollYearSettingsPage.enterDate(objRollYearSettingsPage.openRollEndDate, dataToCreatePastRollYearMap.get("Open Roll End Date"));
 		Thread.sleep(2000);
@@ -185,7 +186,7 @@ public class RollYearSettingsTest extends TestBase {
 		
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.duplicateRecord)),expectedIndividualFieldMessage, "SMAB-T638: Validate duplicate error message text");
 		softAssert.assertTrue(objRollYearSettingsPage.viewDuplicateRecord.isDisplayed(), "Validate duplicate error view link is displayed as Roll Year record exist");
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Roll Year screen");
+		ReportLogger.INFO("Click 'Cancel' button to move out of the Roll Year screen");
 		objPage.Click(objRollYearSettingsPage.cancelButton);
 		
 		//Step11: Open the Roll Year Settings module
@@ -210,7 +211,7 @@ public class RollYearSettingsTest extends TestBase {
 		objRollYearSettingsPage.openRollYearRecord(rollYearName);
 				
 		//Step16: Editing this Roll Year record using EDIT button on Roll Year detail screen
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Edit' pencil icon to update it");
+		ReportLogger.INFO("Click 'Edit' pencil icon to update it");
 		objPage.Click(objRollYearSettingsPage.editPencilIconForRollYearOnDetailPage);
 				
 		//Step17: Clear the values from few of the mandatory fields and Save the record
@@ -267,37 +268,78 @@ public class RollYearSettingsTest extends TestBase {
 		
 		//Step6: Validate error messages displayed at field level
 		Thread.sleep(1000);
-		softAssert.assertTrue(objRollYearSettingsPage.errorOnLienDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Lien Date' field : Lien Date year should be same as Roll Year");
+		String errorOnLienDate = "Lien Date year should be same as Roll Year";
+		String errorOnTaxStartDate = "Tax Start Date year should be same as Roll Year";
+		String errorOnTaxEndDate = "Tax End Date's year should be one year greater of selected Roll Year";
+		String errorOnOpenRollStartDate = "Start Date's year should be one year less of selected Roll Year";
+		String errorOnOpenRollEndDate1 = "End Date year should be same as Roll Year";
+		String errorOnOpenRollEndDate2 = "End Date must be greater than Start Date";
+		String errorOnCalendarStartDate = "Calendar Start Date year should be same as Roll Year";
+		String errorOnCalendarEndDate1 = "Calendar End Date must be greater than Calendar Start Date";
+		String errorOnCalendarEndDate2 = "Calendar End Date year should be same as Roll Year";
+		
+		
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnLienDate)), errorOnLienDate, "SMAB-T638: Validate error message is displayed on 'Lien Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnTaxStartDate)), errorOnTaxStartDate, "SMAB-T638: Validate error message is displayed on 'Tax Start Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnTaxEndDate)), errorOnTaxEndDate, "SMAB-T638: Validate error message is displayed on 'Tax End Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnOpenRollStartDate)), errorOnOpenRollStartDate, "SMAB-T638: Validate error message is displayed on 'Open Roll Start Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnOpenRollEndDate1)), errorOnOpenRollEndDate1, "SMAB-T638: Validate error message is displayed on 'Open Roll End Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnCalendarStartDate)), errorOnCalendarStartDate, "SMAB-T638: Validate error message is displayed on 'Calendar Start Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnCalendarEndDate1)), errorOnCalendarEndDate1, "SMAB-T638: Validate error message is displayed on 'Calendar End Date' field");
+		
+		
+		/*softAssert.assertTrue(objRollYearSettingsPage.errorOnLienDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Lien Date' field : Lien Date year should be same as Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnTaxStartDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Tax Start Date' field : Tax Start Date year should be same as Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnTaxEndDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Tax End Date' field : Tax End Date's year should be one year greater of selected Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnOpenRollStartDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Open Roll Start Date' field : Start Date's year should be one year less of selected Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnOpenRollEndDate1.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Open Roll End Date' field : End Date year should be same as Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnCalendarStartDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Calendar Start Date' field : Calendar Start Date year should be same as Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnCalendarEndDate1.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Calendar End Date' field : Calendar End Date must be greater than Calendar Start Date");
+		*/
 		
 		//Step7: Enter a different 'Calendar End Date' and Save the record
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Enter a different value for 'Calendar End Date' i.e. 12/31/2010 and click SAVE button to validate a different error message");
+		ReportLogger.INFO("Enter a different value for 'Calendar End Date' i.e. 12/31/2010 and click SAVE button to validate a different error message");
 		objRollYearSettingsPage.enterDate(objRollYearSettingsPage.calendarEndDate, "12/31/2010");
 		objPage.Click(objRollYearSettingsPage.saveButton);
 		
 		//Step8: Validate error messages again that are displayed at field level
 		Thread.sleep(2000);
-		softAssert.assertTrue(objRollYearSettingsPage.errorOnLienDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Lien Date' field : Lien Date year should be same as Roll Year");
+		
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnLienDate)), errorOnLienDate, "SMAB-T638: Validate error message is displayed on 'Lien Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnTaxStartDate)), errorOnTaxStartDate, "SMAB-T638: Validate error message is displayed on 'Tax Start Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnTaxEndDate)), errorOnTaxEndDate, "SMAB-T638: Validate error message is displayed on 'Tax End Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnOpenRollStartDate)), errorOnOpenRollStartDate, "SMAB-T638: Validate error message is displayed on 'Open Roll Start Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnOpenRollEndDate1)), errorOnOpenRollEndDate1, "SMAB-T638: Validate error message is displayed on 'Open Roll End Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnCalendarStartDate)), errorOnCalendarStartDate, "SMAB-T638: Validate error message is displayed on 'Calendar Start Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnCalendarEndDate2)), errorOnCalendarEndDate2, "SMAB-T638: Validate error message is displayed on 'Calendar End Date' field");
+		
+		/*softAssert.assertTrue(objRollYearSettingsPage.errorOnLienDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Lien Date' field : Lien Date year should be same as Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnTaxStartDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Tax Start Date' field : Tax Start Date year should be same as Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnTaxEndDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Tax End Date' field : Tax End Date's year should be one year greater of selected Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnOpenRollStartDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Open Roll Start Date' field : Start Date's year should be one year less of selected Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnOpenRollEndDate1.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Open Roll End Date' field : End Date year should be same as Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnCalendarStartDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Calendar Start Date' field : Calendar Start Date year should be same as Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnCalendarEndDate2.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Calendar End Date' field : Calendar End Date year should be same as Roll Year");
+		*/
 		
 		//Step9: Enter a different 'Open Roll End Date' and Save the record
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Enter a different value for 'Open Roll End Date' i.e. 12/31/2008 and click SAVE button to validate a different error message");
+		ReportLogger.INFO("Enter a different value for 'Open Roll End Date' i.e. 12/31/2008 and click SAVE button to validate a different error message");
 		objRollYearSettingsPage.enterDate(objRollYearSettingsPage.openRollEndDate, "12/31/2008");
 		objPage.Click(objRollYearSettingsPage.saveButton);
 		
 		//Step10: Validate error messages again that are displayed at field level
 		Thread.sleep(2000);
-		softAssert.assertTrue(objRollYearSettingsPage.errorOnLienDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Lien Date' field : Lien Date year should be same as Roll Year");
+		
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnLienDate)), errorOnLienDate, "SMAB-T638: Validate error message is displayed on 'Lien Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnTaxStartDate)), errorOnTaxStartDate, "SMAB-T638: Validate error message is displayed on 'Tax Start Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnTaxEndDate)), errorOnTaxEndDate, "SMAB-T638: Validate error message is displayed on 'Tax End Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnOpenRollStartDate)), errorOnOpenRollStartDate, "SMAB-T638: Validate error message is displayed on 'Open Roll Start Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnOpenRollEndDate1)), errorOnOpenRollEndDate1, "SMAB-T638: Validate error message is displayed on 'Open Roll End Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnOpenRollEndDate2)), errorOnOpenRollEndDate2, "SMAB-T638: Validate error message is displayed on 'Open Roll End Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnCalendarStartDate)), errorOnCalendarStartDate, "SMAB-T638: Validate error message is displayed on 'Calendar Start Date' field");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.errorOnCalendarEndDate2)), errorOnCalendarEndDate2, "SMAB-T638: Validate error message is displayed on 'Calendar End Date' field");
+		
+		/*softAssert.assertTrue(objRollYearSettingsPage.errorOnLienDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Lien Date' field : Lien Date year should be same as Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnTaxStartDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Tax Start Date' field : Tax Start Date year should be same as Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnTaxEndDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Tax End Date' field : Tax End Date's year should be one year greater of selected Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnOpenRollStartDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Open Roll Start Date' field : Start Date's year should be one year less of selected Roll Year");
@@ -305,9 +347,10 @@ public class RollYearSettingsTest extends TestBase {
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnOpenRollEndDate2.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Open Roll End Date' field : End Date must be greater than Start Date");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnCalendarStartDate.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Calendar Start Date' field : Calendar Start Date year should be same as Roll Year");
 		softAssert.assertTrue(objRollYearSettingsPage.errorOnCalendarEndDate2.isDisplayed(), "SMAB-T638: Validate the following error message is displayed on 'Calendar End Date' field : Calendar End Date year should be same as Roll Year");
+		*/
 		
 		//Step11: Click Cancel button
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Cancel' button to move out of the Roll Year screen");
+		ReportLogger.INFO("Click 'Cancel' button to move out of the Roll Year screen");
 		objPage.Click(objRollYearSettingsPage.cancelButton);
 		
 		objApasGenericFunctions.logout();	

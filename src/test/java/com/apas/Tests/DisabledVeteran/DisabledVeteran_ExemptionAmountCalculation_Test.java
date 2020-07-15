@@ -75,7 +75,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		String mandatoryExemptionData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;	
 		Map<String, String> createExmeptiondataMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields");
 		createExmeptiondataMap.put("Veteran Name", createExmeptiondataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(createExmeptiondataMap);
+		objExemptionsPage.createExemption(createExmeptiondataMap);
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		
 		ReportLogger.INFO("Exemption: "+exemptionName + "is created");
@@ -147,7 +147,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		String mandatoryExemptionData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;	
 		Map<String, String> createExmeptiondataMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields");
 		createExmeptiondataMap.put("Veteran Name", createExmeptiondataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(createExmeptiondataMap);
+		objExemptionsPage.createExemption(createExmeptiondataMap);
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		
 		ReportLogger.INFO("Exemption: "+exemptionName + " is created");
