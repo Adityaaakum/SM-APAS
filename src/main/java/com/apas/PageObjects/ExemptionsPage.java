@@ -395,7 +395,7 @@ public class ExemptionsPage extends ApasGenericPage {
 	
 	public String exemptionNumber = "//lightning-formatted-text[contains(text(),'EXMPTN-')]";
 	
-
+	public String errorMessageOnTop  = "//div[@class='pageLevelErrors']//li";
 	
 	/**
 	 * Description: This method is to determine the Roll Year of any given date(e.g Application received date) 

@@ -21,8 +21,10 @@ public class ParcelsPage extends Page {
 	public WebElement linkPrimarySitus;
 
 	@FindBy(xpath = "//li[not(contains(@style,'visibility: hidden'))]//*[@title='More Tabs']")
-	public WebElement moratab;
+	public WebElement moretab;
 
+    @FindBy(xpath = "//*[@role='menuitem' and contains(.,'Exemptions')]")
+    public WebElement exemptionRelatedList;
 	
 	/**
 	 * Description: This method will open the parcel with the APN passed in the parameter

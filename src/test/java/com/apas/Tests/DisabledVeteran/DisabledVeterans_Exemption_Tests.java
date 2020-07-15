@@ -1,5 +1,7 @@
 package com.apas.Tests.DisabledVeteran;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -14,9 +16,11 @@ import com.apas.PageObjects.BuildingPermitPage;
 import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
+import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.ValueAdjustmentsPage;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.DateUtil;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
@@ -38,6 +42,8 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	String exemptionFilePath;
 	ApasGenericPage objApasGenericPage;
 	BuildingPermitPage objBuildingPermitPage;
+	SalesforceAPI salesforceAPI;
+	ParcelsPage objParcel;
 
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
@@ -55,6 +61,8 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		vaPageObj=new ValueAdjustmentsPage(driver);	
 		objApasGenericPage= new ApasGenericPage(driver);
 		objBuildingPermitPage=new BuildingPermitPage(driver);
+		objParcel = new ParcelsPage(driver);
+		salesforceAPI = new SalesforceAPI();
 		apasGenericObj.updateRollYearStatus("Closed", "2020");
 
 	}
@@ -405,11 +413,92 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		
 		//Step4: Verify error message
 		String expectedErrorMessageOnTop = "Claimant's SSN does not match with the SSN on the Claimant's record";
+		objPage.waitUntilElementIsPresent(exemptionPageObj.errorMessageOnTop,60);
+		objPage.waitForElementToBeClickable(30,exemptionPageObj.errorMessage);
 		softAssert.assertEquals(exemptionPageObj.errorMessage.getText(),expectedErrorMessageOnTop,"SMAB-T1528:Verify user is able to view an error message on saving Exemption when the Claimant SSN value that is entered on the Exemption record is different than the SSN value that exists on the related Assessee record");
 		objPage.Click(exemptionPageObj.cancelButton);
 		
 		apasGenericObj.logout();
 	}
+	
+	   /**
+    Below test case is used to verify Exemption is not created for Retired and Invalid PUC code Parcels(APN) from Parcels Exemption related list
+    * @throws Exception 
+    **/
+   @Test(description = "SMAB-T1515,SMAB-T1516,SMAB-T1517,SMAB-T1518,SMAB-T580:Verify User is not able to create Exemption for Retired and Invalid PUC Code APN's",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
+           "smoke", "regression","DisabledVeteranExemption"})    
+   public void verify_Disabledveteran_ExemptionNotCreatedForRetiredAndInvalidPUCCodeAPN(String loginUser) throws Exception
+   {
+	 //Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)     
+      apasGenericObj.login(loginUser);
+       
+       Map<String, String> fieldData = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData1");
+       fieldData.put("ClaimantName", exemptionPageObj.fetchAssesseeName());       
+       String queryRetiredAPN = "SELECT Name,Status__c FROM Parcel__c where Status__c='Retired' and PUC_Code_Lookup__r.name='99-RETIRED PARCEL' Limit 1";
+       String queryPUCAPN="SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('00-VACANT LAND','06-HOTEL','08-BOARDING HOUSE','09-MOBILEHOME PARK','11-STORE','14-SUPERMARKET') Limit 1";
+       HashMap<String, ArrayList<String>> response  = salesforceAPI.select(queryRetiredAPN);
+       String retiredAPNName= response.get("Name").get(0);       
+       HashMap<String, ArrayList<String>> response1  = salesforceAPI.select(queryPUCAPN);
+       String invalidPUCAPNName= response1.get("Name").get(0);       
+       ArrayList<String> parcelsToVerify=new ArrayList<String>();
+       parcelsToVerify.add(retiredAPNName);
+       parcelsToVerify.add(invalidPUCAPNName);
+       
+       ReportLogger.INFO("Verifying Exemption is not created for Retired and Invalid PUC codes APN from Parcel's related Exemption screen");
+       
+       //step2: Verifying Exemption is not created for Retired and Invalid PUC code APN from APN's related Exemption screen
+       for(String parcel: parcelsToVerify ) {
+	       apasGenericObj.globalSearchRecords(parcel);
+	       ReportLogger.INFO("Verifying Exemption creation for Parcel:: "+parcel+" with PUC Code");
+	       String parcelsStatus=objPage.getElementText(exemptionPageObj.exemationStatusOnDetails);
+	       objPage.Click(objParcel.moretab);
+	       objPage.waitForElementToBeVisible(objParcel.exemptionRelatedList, 3);
+	       softAssert.assertTrue(objParcel.exemptionRelatedList.isDisplayed(), "SMAB-T580:Verify that user is able to see 'Exemption related List' and related fields on Parcel details page");
+	       objPage.Click(objParcel.exemptionRelatedList); 
+	       objPage.Click(exemptionPageObj.newExemptionButton);
+	       
+	   //Step3: Selecting mandatory details before verifying error message
+	       objPage.enter(exemptionPageObj.dateApplicationReceived,fieldData.get("DateApplicationReceived"));
+	       apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.claimantName,fieldData.get("ClaimantName"));
+	       objPage.enter(exemptionPageObj.claimantSSN, fieldData.get("ClaimantSSN"));
+	       objPage.enter(exemptionPageObj.veteranName, fieldData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
+	       objPage.enter(exemptionPageObj.veteranSSN, fieldData.get("VeteranSSN"));
+	       objPage.enter(exemptionPageObj.dateAquiredProperty,fieldData.get("DateAquiredProperty"));
+	       objPage.enter(exemptionPageObj.dateOccupyProperty,fieldData.get("DateOccupyProperty"));
+	       objPage.enter(exemptionPageObj.effectiveDateOfUSDVA,fieldData.get("EffectiveDateOfUSDVA"));
+	       objPage.enter(exemptionPageObj.dateOfNotice,fieldData.get("DateOfNotice"));
+	       apasGenericObj.selectMultipleValues(fieldData.get("BasisForClaim"), "Basis for Claim");
+	       apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, fieldData.get("Qualification"));
+	       objPage.Click(ExemptionsPage.saveButton); 
+	       if(parcelsStatus.equals("Retired")){
+	    	   softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"You cannot add an Exemption to a retired Parcel or the Property Use Code does not allow an Exemption. Please verify you have the correct Parcel or update the Parcel to proceed.","SMAB-T1517: Verify that user is not able to create Exemption for Retired Parcels from Parcel's related exemptions screen");}
+	       else{
+		       softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"You cannot add an Exemption to a retired Parcel or the Property Use Code does not allow an Exemption. Please verify you have the correct Parcel or update the Parcel to proceed.","SMAB-T1518: Verify that user is not able to create Exemption for Invalid PUC code parcels from Parcel's related exemptions screen");}
+	       
+	       objPage.Click(exemptionPageObj.cancelButton);
+
+	       //step4: Verifying Exemption is not created for Retired and Invalid PUC code APN from Exemption page
+	       ReportLogger.INFO("Verifying Exemption is not created for Retired and Invalid PUC codes APN from Exemption screen");
+	       apasGenericObj.searchModule(EXEMPTIONS);
+      
+	       String apnStatusQuery = "SELECT Status__c FROM Parcel__c where Name='"+parcel+"'";
+	       HashMap<String, ArrayList<String>> response3  = salesforceAPI.select(apnStatusQuery);
+	       String apnStatus= response3.get("Status__c").get(0);
+	       
+	       ReportLogger.INFO("Verifying Exemption should not be created for Parcel::"+parcel);
+	       objPage.Click(exemptionPageObj.newExemptionButton);
+	       objPage.enter(exemptionPageObj.apn, parcel);
+	       objPage.enter(exemptionPageObj.dateApplicationReceived,fieldData.get("DateApplicationReceived"));
+	       objPage.Click(ExemptionsPage.saveButton);
+	       if(apnStatus.equals("Retired")){
+	           softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"An invalid option has been chosen.","SMAB-T1516: Verify that user is not able to create Exemption for Retired Parcels from Parcel's related exemptions screen");}
+	       else{
+			   softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"An invalid option has been chosen.","SMAB-T1515: Verify that user is not able to create Exemption for Invalid PUC code parcels from Parcel's related exemptions screen");}
+			   
+	       objPage.Click(exemptionPageObj.cancelButton); 
+   }
+       apasGenericObj.logout();
+   }
 	
 }
 		
