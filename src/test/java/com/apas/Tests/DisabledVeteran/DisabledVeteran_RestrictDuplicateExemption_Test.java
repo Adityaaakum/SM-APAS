@@ -166,7 +166,10 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
     	dataToCreateExemptionWithMandatoryFieldsMapTwo.put("Veteran Name", dataToCreateExemptionWithMandatoryFieldsMapOne.get("Veteran Name"));
     	    
     	//Step7: Enter End date of Rating and save the record
-    	objExemptionsPage.enterEndDateOfRating(dataToCreateExemptionWithMandatoryFieldsMapTwo);
+    	//objExemptionsPage.enterEndDateOfRating(dataToCreateExemptionWithMandatoryFieldsMapTwo);
+    	ReportLogger.INFO("Update some details in the Exemption record i.e. End Date Of Rating :  " + dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Date Of Rating") + " and End Rating Reason : " + dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Rating Reason"));
+		objExemptionsPage.updateFieldValue("Date", "End Date Of Rating", dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Date Of Rating"));
+		objExemptionsPage.updateFieldValue("Dropdown", "End Rating Reason", dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Rating Reason"));
     	objExemptionsPage.saveExemptionRecord();
     		
     	//Step8: Create another Exemption record with overlapping details but no End Date of Rating
