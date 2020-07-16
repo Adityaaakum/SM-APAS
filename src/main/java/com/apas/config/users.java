@@ -14,4 +14,5 @@ public interface users {
 	public static final String EXEMPTION_SUPPORT_STAFF = "exemptionSupportStaff";
 	public static final String RP_BUSINESS_ADMIN = "rpBusinessAdmin";
 	public static final String BPP_BUSINESS_ADMIN = "bppBusinessAdmin";
+	public static final String OTHER_COUNTY_STAFF = "otherCountStaff";
 }

@@ -141,13 +141,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	
 	/**
 	 * Description: This method will only enter the values of Real Property settings Libraries fields on the application
-	 * @param rollYearSettings: Roll Year Settings
-	 * @param DVLowIncomeExemptionAmount: DV Low Income Exemption Amount
-	 * @param DVBasicExemptionAmount: DV Basic Exemption Amount
-	 * @param DVLowIncomeHouseholdLimit: DV Low Income Household Limit
-	 * @param DVAnnualLowIncomeDueDate: DV Annual Low Income Due Date
-	 * @param DVAnnualLowIncomeDueDate2: DV Annual Low Income Due Date 2
-	 * @param status: Status
+	 * @param rollYear: roll year value
 	 */
 	public void enterRealPropertySettingsDetails(Map<String, String> dataMap, String rollYear) throws Exception {
 		ReportLogger.INFO("Clicking on New Button");

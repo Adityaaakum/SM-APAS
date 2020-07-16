@@ -208,7 +208,12 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Permit City Code","Situs Information"), "AT", "SMAB-T356: 'Permit City Code' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs","Situs Information"), "55 MOUNT VERNON LN, AT", "SMAB-T356: 'Situs' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Number","Situs Information"), "55", "SMAB-T356: 'Situs Number' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "55", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
+		//This handling is done as parcel data was created manually in PREUAT and Situs Unit Number is 55 there while its empty in QA as per default data load
+		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
+			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "55", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
+		}else
+			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
+
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Street Name","Situs Information"), "MOUNT VERNON", "SMAB-T356: 'Situs Street Name' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Direction"), "", "SMAB-T356: 'Situs Direction' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Type","Situs Information"), "LN", "SMAB-T356: 'Situs Type' Field Validation in 'Situs Information' section");

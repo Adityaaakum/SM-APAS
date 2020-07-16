@@ -189,6 +189,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 
 		// Step13: Click on 'Save' Button to modify VA
 		objPage.Click(objValueAdjustmentPage.saveButton);	
+		Thread.sleep(2000);
 		
 		// Step14: Get the success alert text after modifying VA
 		String actualSuccessAlertText = objValueAdjustmentPage.successAlretText();
