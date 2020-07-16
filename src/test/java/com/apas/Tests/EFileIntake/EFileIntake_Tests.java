@@ -489,7 +489,10 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		//Step1:Reverting the Approved Import logs if any in the system
 		String query = "Select id From E_File_Import_Log__c where File_type__c = '"+fileType+"' and File_Source__C = '"+source+"' and Import_Period__C='" + period + "' and Status__c in ('Approved','Imported') ";
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
-						
+			
+		String queryToDeleteBpRecords="Select id from Building_Permit__c where Name in ('BD-2020-543Test','BD-2020-589Test','BD-2020-998Test','BD-2020-4515Test')";
+		salesforceAPI.delete("Building_Permit__c", queryToDeleteBpRecords);
+		
 		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		apasGenericObj.login(loginUser);
 
@@ -568,8 +571,6 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileTypedropdown), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.sourceDropdown), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 
-		
-		
 		objPage.waitUntilElementDisplayed(objEFileImport.nextButton, 15);
 		softAssert.assertEquals(objEFileImport.getElementText(objEFileImport.disacrdCount),"1","SMAB-T68:Verify View link is not displayed for records in history table apart from statuses - 'Imported','New' and 'In Progress' and Approved");
 		objPage.Click(objEFileImport.viewLink);
@@ -589,22 +590,13 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		softAssert.assertTrue(apasGenericObj.isNotDisplayed(objEFileImport.discardAllCheckbox), "SMAB-T1403,SMAB-T1402:Verify user is not able to view discarded record(s) for a file that is imported for Building Permit file type");
 		softAssert.assertEquals(errorCountAfterDiscard, "0", "SMAB-T1403,SMAB-T1402:Verify user is not able to view discarded record(s) for a file that is imported for Building Permit file type");
 		
-		//step8a:verifying backward navigation for Imported status with>0 Error records and =0 error records 
-		ReportLogger.INFO("Verifying user gets warning if Error records>0 and user tries navigating backwards by clicking on 'Source Details'");
+		//step8b:verifying user does not get warning pop-up if imported file has no error records
 		objPage.Click(objEFileImport.sourceDetails);
-		softAssert.assertTrue(objEFileImport.continueButton.isDisplayed(), "SMAB-T1513:Verify user gets a warning message when error record>0(on Review and Approve data screen) and user tries to navigate back to EFile import list page by clicking on the backward breadcrumb (Source Details) icon");
-		softAssert.assertEquals(objPage.getElementText(objEFileImport.fileAlreadyApprovedMsg), "You will loose all the changes on the error rows, Are you sure?", "SMAB-T1513:Verify user gets a warning message when error record>0(on Review and Approve data screen) and user tries to navigate back to EFile import list page by clicking on the backward breadcrumb (Source Details) icon");
-		ReportLogger.INFO("Verifying that on cancelling the warning User stays on same page");
-		objPage.Click(objEFileImport.cancelButton);
-		objPage.waitForElementToBeVisible(objEFileImport.errorRowSection, 2);
-		objPage.Click(objEFileImport.sourceDetails);
-		objPage.waitForElementToBeVisible(objEFileImport.continueButton, 3);
-		ReportLogger.INFO("Verifying that on Confirming/Continuing the warning user navigates back to previous page");
-		objPage.Click(objEFileImport.continueButton);
+		softAssert.assertTrue(apasGenericObj.isNotDisplayed(objEFileImport.continueButton), "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 		objPage.waitForElementToBeClickable(objEFileImport.statusImportedFile,30);
 		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileTypedropdown), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.sourceDropdown), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
-		
+				
 		//step9:navigating back to efile import tool screen and verifying the discard count
 		objPage.waitUntilElementDisplayed(objEFileImport.nextButton, 15);
 		softAssert.assertEquals(objPage.getElementText(objEFileImport.disacrdCount),"2","SMAB-T68:Verify View link is not displayed for records in history table apart from statuses - 'Imported','New' and 'In Progress' and Approved");
