@@ -216,6 +216,14 @@ public class EFileImportPage extends Page {
 	@FindBy(xpath = "//lightning-input//div//input[@type = 'text']")
 	public WebElement inputBoxOnImportPage;
 	
+	@FindBy(xpath = "//section[@role='dialog']//*[@role='alert']")
+	public WebElement errorInFileNameMsg;
+	
+	@FindBy(xpath = "//button[@title='Source Details']//*[@data-key='success']")
+	public WebElement sourceDetails;
+	
+	@FindBy(xpath = "//section[@role='dialog']//div[@data-dropdown-element='true']//span[@class='slds-media__body']")
+	public WebElement periodFirstDropDownValue;
 	
 	public String xpathFileTypedrpdwn = "//*[@name='docType']";
 	/**

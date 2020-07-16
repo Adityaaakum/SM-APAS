@@ -990,7 +990,7 @@ public String fetchAssesseeName() {
 		ReportLogger.INFO("Verifying and creating if Current Roll Year's RPSL is not present");
 		String currentRollYearRPSLQuery="select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name ='"+currentRollYear+"'";
 		HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(currentRollYearRPSLQuery);
-		if(response.size()==0){
+		if(response.size()==0 || response==null){
 			ReportLogger.INFO("Current Roll Year RPSL is not present hence creating one for ::"+currentRollYear);
 			apasGenericObj.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 			objRPSL.enterRealPropertySettingsDetails(rpslData,currentRollYear);
@@ -1002,8 +1002,12 @@ public String fetchAssesseeName() {
 		String notApprovedRPSLQuery="select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name <='"+currentRollYear+"' and Roll_Year_Settings__r.name >='"+lastRolYearToVerify+"' and Status__c!='Approved' order by Roll_Year_Settings__r.name desc";
 		HashMap<String, ArrayList<String>> response1  = objSalesforceAPI.select(notApprovedRPSLQuery);
 		if(response1.size()>0){
-			objSalesforceAPI.update("Real_Property_Settings_Library__c",notApprovedRPSLQuery,"Status__c","Approved");
-			}
+		String closedRollYear="Select id From Roll_Year_Settings__c where Status__c = 'Closed' and Roll_Year__c>='"+lastRolYearToVerify+"' and Roll_Year__c<='"+currentRollYear+"' order by name desc";	
+		objSalesforceAPI.update("Roll_Year_Settings__c",closedRollYear,"Status__c","Open");	
+		
+		objSalesforceAPI.update("Real_Property_Settings_Library__c",notApprovedRPSLQuery,"Status__c","Approved");	
+		String openRollYear="Select id From Roll_Year_Settings__c where Status__c = 'Open' and Roll_Year__c!='"+currentRollYear+"' and Roll_Year__c>='"+lastRolYearToVerify+"' and Roll_Year__c<'"+currentRollYear+"' order by name desc";	
+		objSalesforceAPI.update("Roll_Year_Settings__c",openRollYear,"Status__c","Closed");}
 
 		}
 
