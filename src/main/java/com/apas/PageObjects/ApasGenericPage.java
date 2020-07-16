@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.relevantcodes.extentreports.LogStatus;
 
 import java.text.SimpleDateFormat;
@@ -260,7 +261,7 @@ public class ApasGenericPage extends Page {
 		String url = driver.getCurrentUrl();
 		String recordId = url.split("/")[6];
 		driver.navigate().refresh();
-		ExtentTestManager.getTest().log(LogStatus.INFO, Mod + " record id - " + recordId);
+		ReportLogger.INFO(Mod + " record id - " + recordId);
 		Thread.sleep(1000);
 		return recordId;
 	
@@ -283,7 +284,7 @@ public class ApasGenericPage extends Page {
    
         WebElement showMoreIcon = locateElement(xpathStr1, 3);
         if (showMoreIcon != null){
-        	ExtentTestManager.getTest().log(LogStatus.INFO, screenName + " record exist");
+        	ReportLogger.INFO(screenName + " record exist");
         	Click(showMoreIcon);
         	Thread.sleep(1000);
         	String xpathStr2 = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
@@ -295,16 +296,16 @@ public class ApasGenericPage extends Page {
         		flag=true;
         		if (action.equals("Delete")){
         			Click(deleteConfirmationPostDeleteAction);
-        			ExtentTestManager.getTest().log(LogStatus.INFO, "Existing " + screenName + " record is deleted");
+        			ReportLogger.INFO("Existing " + screenName + " record is deleted");
         			Thread.sleep(2000);
         		}
         	}
         	else{
-    			ExtentTestManager.getTest().log(LogStatus.INFO, "'" + action + "' option is not visible for the user");
+    			ReportLogger.INFO("'" + action + "' option is not visible for the user");
     		}	
         } 
         else{
-			ExtentTestManager.getTest().log(LogStatus.INFO, screenName + " record doesn't exist");
+			ReportLogger.INFO(screenName + " record doesn't exist");
 		}
         
         return flag;
