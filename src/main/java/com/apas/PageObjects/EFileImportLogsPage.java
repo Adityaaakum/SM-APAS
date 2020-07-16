@@ -48,6 +48,12 @@ public class EFileImportLogsPage extends Page {
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='View All']")
 	public WebElement viewAlllink;
 	
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//*[@class='test-id__field-label' and text()='Duplicates in File']/parent::div/following-sibling::div//slot[@slot='outputField']")	
+	public WebElement duplicatesInFileImportLog;	
+		
+	@FindBy(xpath = "//button[contains(@title,'Edit')]")	
+	public WebElement inlineEditButton;
+	
 	
 	
 	/**

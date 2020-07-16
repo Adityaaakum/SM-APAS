@@ -3,9 +3,11 @@ package com.apas.Tests.DisabledVeteran;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.Assertions.SoftAssertion;
@@ -44,7 +46,6 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	BuildingPermitPage objBuildingPermitPage;
 	SalesforceAPI salesforceAPI;
 	ParcelsPage objParcel;
-
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
 		driver=null;
@@ -421,6 +422,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		apasGenericObj.logout();
 	}
 	
+
 	   /**
     Below test case is used to verify Exemption is not created for Retired and Invalid PUC code Parcels(APN) from Parcels Exemption related list
     * @throws Exception 
@@ -499,7 +501,6 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
    }
        apasGenericObj.logout();
    }
-	
 }
 		
 		

@@ -43,5 +43,7 @@ public interface testdata {
     public static final String EFILEIMPORT_BPDATA = "\\data\\EFileImportBP\\";
 
     public static final String COUNTY_STRAT_CODES = "\\data\\CountyStratCodes";
+    public static final String BOE_ERRORREOCRDS_COUNT = "\\data\\EFileImportBppTrend\\BOEErrorReocrdsCountFile.json";
+    public static final String BPP_TREND_BOE_VALUATION_FACTORS_VALID_DATA = "\\data\\EFileImportBppTrend\\BOE Valuation Factors 2021.xlsx";
 
 }

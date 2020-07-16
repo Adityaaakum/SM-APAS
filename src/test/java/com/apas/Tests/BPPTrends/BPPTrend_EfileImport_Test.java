@@ -16,10 +16,12 @@ import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.BppTrendPage;
+import com.apas.PageObjects.EFileImportLogsPage;
 import com.apas.PageObjects.EFileImportPage;
 import com.apas.PageObjects.EFileImportTransactionsPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -36,6 +38,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrend;
 	EFileImportPage objEfileHomePage;
+	EFileImportLogsPage objEFileImportLogPage;
 	Util objUtil;
 	SoftAssertion softAssert;
 	int rollYear;
@@ -54,6 +57,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileImportTransactionsPage = new EFileImportTransactionsPage(driver);
 		objEfileHomePage = new EFileImportPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
+		objEFileImportLogPage=new EFileImportLogsPage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		rollYear = Integer.parseInt(CONFIG.getProperty("rollYear"));
@@ -77,7 +81,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 3. Validating revert functionality of error records
 	 * 4. Validating status post reverting error records on history page
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
+	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
 	public void verify_BppTrend_BoeIndexFileImportDiscardErrorRecordsAndRevert(String loginUser) throws Exception {
 		//Step1: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -164,6 +168,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 				//Step13: Validation of number of records in error row section.
 				String numberOfRecordsInErrorRowSection = objEfileHomePage.getCountOfRowsFromErrorRowsSection();
 				softAssert.assertEquals(numberOfRecordsInErrorRowSection, errorRecords, "SMAB-T106: Validation if correct number of records are displayed in Error Row Section after file import");
+				softAssert.assertTrue(isErrorRowSectionDisplayed, "SMAB-T79: Verify on clicking 'View' link, matching data with file uploaded is displayed on 'Review and Import Data' screen");
 			} else {
 				//Step14: Validating if the error row section is coming on review and approve page after clicking "View Link" from history table 
 				softAssert.assertTrue(false, "SMAB-T106: Validation for Error Row Section presence after clicking view link button");	
@@ -173,6 +178,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 				//Step15: Validation of number of records in imported row section. Expected is 1 as 1 record is passed with correct data in the input file
 				String actualImportedRowsCount = objEfileHomePage.getCountOfRowsFromImportedRowsSection();
 				softAssert.assertEquals(actualImportedRowsCount, expectedImportedRowsCount, "SMAB-T111: Validation if correct number of records are displayed in Imported Row Section after file import");
+				softAssert.assertTrue(isErrorRowSectionDisplayed, "SMAB-T79: Verify on clicking 'View' link, matching data with file uploaded is displayed on 'Review and Import Data' screen");
 			} else {
 				//Step16: Validating if the imported row section is coming on review and approve page after clicking "View Link" from history table
 				softAssert.assertTrue(false, "SMAB-T111: Validation for Imported Row Section presence after clicking view link button");	
@@ -582,7 +588,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 5. Approving all records
 	 * 6. Validating status post approving on history page and transaction import logs page
 	 */
-	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
+	@Test(description = "SMAB-T111,SMAB-T91: Correcting error records and retrying an approving them in BOE Valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
 	public void verify_BppTrend_BoeValImportRetryErrorRecordsAndApprove(String loginUser) throws Exception {
 		//Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -669,6 +675,16 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.javascriptClick(objEfileHomePage.retryButton);
 		objBppTrend.waitForPageSpinnerToDisappear(30);
 		
+		//step14a:verifying Transaction object is created for retried records	
+		ReportLogger.INFO("Verifying Transaction record is created after performaing Retry");	
+		objPage.Click(objEfileHomePage.sourceDetails);	
+		objPage.waitForElementToBeClickable(objEfileHomePage.statusImportedFile, 10);	
+		objApasGenericFunctions.openLogRecordForImportedFile("BPP Trend Factors","BOE - Valuation Factors",rollYearForImport,fileName);	
+		objPage.waitForElementToBeClickable(objEFileImportLogPage.logStatus, 10);	
+		objPage.Click(objEfileImportTransactionsPage.transactionsTab);	
+		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);	
+		softAssert.assertEquals(objEfileImportTransactionsPage.transactionsRecords.size(), "2", "SMAB-T91:Verify that admin is able to see Transactions in 'E-File Import Transactions' screen for edited records after file import");
+
 		//Step15: Re navigating to retry and approve page from history page
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		objPage.waitUntilPageisReady(driver);
@@ -1327,4 +1343,163 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertAll();
 		objApasGenericFunctions.logout();
 	}
+	
+	
+
+	/**
+	 * This method is to verify File is not imported for already approved file
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	
+	
+	@Test(description = "SMAB-T974,SMAB-T951,SMAB-T954:Verify user is not able to import a file for BPP Trends if the previous Import for a particular File Type, File Source and Period was Approved", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {
+		"smoke", "regression","EFileImport" })
+	public void BPPTrends_VerifyAlreadyApprovedFileForSamePeriodIsNotImportedAgain(String loginUser) throws Exception{
+		String period = "2021";
+		String fileType="BPP Trend Factors";
+		String source="BOE - Valuation Factors";
+		String boebppTrendIndexFactorsFile=System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS_VALID_DATA;
+		objApasGenericFunctions.login(loginUser);
+
+		//Step1: Delete the existing data from system before importing files
+		String query = "Select id From E_File_Import_Log__c where File_type__c = '"+fileType+"' and Import_Period__C='" + period + "' and File_Source__C ='"+source+"' and (Status__c = 'Imported' Or Status__c = 'Approved')";
+		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
+		objSalesforceAPI.deleteBPPTrendRollYearData(period);
+
+		//Step2: Opening the E FILE IMPORT Module
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		
+		///step3: importing a file
+		objEfileHomePage.uploadFileOnEfileIntake(fileType, source,period,boebppTrendIndexFactorsFile);
+		
+		//Step4: Waiting for Status of the imported file to be converted to "Imported"
+		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 400);
+		
+		//step5: verifying import log and transactions is non editable
+		ReportLogger.INFO("verifying import log generated is non editable");
+		objApasGenericFunctions.openLogRecordForImportedFile(fileType,source,period,boebppTrendIndexFactorsFile);
+		objPage.waitForElementToBeClickable(objEFileImportLogPage.logStatus, 10);
+		softAssert.assertTrue(objApasGenericFunctions.isNotDisplayed(objEFileImportLogPage.inlineEditButton),"SMAB-T954:Verify that User is able to view and not edit the log records after uploading the BPP Trend e-Files");
+		ReportLogger.INFO("verifying transaction log generated is non editable");
+		objPage.Click(objEfileImportTransactionsPage.transactionsTab);
+		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);
+		objPage.javascriptClick(objEfileImportTransactionsPage.transactionsRecords.get(0));
+		objPage.waitForElementToBeClickable(objEfileImportTransactionsPage.statusLabel, 10);
+		softAssert.assertTrue(objApasGenericFunctions.isNotDisplayed(objEFileImportLogPage.inlineEditButton),"SMAB-T951:Verify that User is able to view and not edit the transaction records after uploading the BPP Trend e-Files");
+			
+		
+		//step6: approving the imported file
+		objPage.javascriptClick(objEfileHomePage.efileImportToolLabel);
+		objPage.waitForElementToBeClickable(objEfileHomePage.fileTypedropdown, 10);
+		objEfileHomePage.selectFileAndSource(fileType,source);
+		objPage.waitUntilElementDisplayed(objEfileHomePage.nextButton, 15);
+		objPage.Click(objEfileHomePage.viewLinkRecord);
+		ReportLogger.INFO("Approving the imported file");
+		objPage.waitForElementToBeClickable(objEfileHomePage.errorRowSection, 20);
+		objPage.waitForElementToBeClickable(objEfileHomePage.approveButton, 10);
+		objPage.Click(objEfileHomePage.approveButton);
+		objPage.waitForElementToBeVisible(objEfileHomePage.efileRecordsApproveSuccessMessage, 20);
+		
+		//step7: trying to upload a file for the same file type ,source and period
+		objPage.Click(objEfileHomePage.sourceDetails);
+		objPage.waitForElementToBeClickable(objEfileHomePage.statusImportedFile,30);
+		objPage.Click(objEfileHomePage.nextButton);
+		objApasGenericFunctions.selectFromDropDown(objEfileHomePage.periodDropdown, period);
+		
+		//step8: verifying error message while trying to import file for already approved file type,source and period
+		softAssert.assertContains(objPage.getElementText(objEfileHomePage.fileAlreadyApprovedMsg), "This file has been already approved", "SMAB-T974:Verify user is not able to import a file for BPP Trends if the previous Import for a particular File Type, File Source and Period was Approved");
+		objPage.Click(objEfileHomePage.closeButton);
+		
+		objApasGenericFunctions.logout();
+	}
+	
+	
+
+	/**
+	 * This method is to verify records count in import logs
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	
+	@Test(description = "SMAB-T83,SMAB-T84,SMAB-T1458:Verify user is able to see number of records count from file import action on 'E-File Import Logs' screen", dataProvider = "loginBusinessAdmin",dataProviderClass = DataProviders.class, groups = {
+		"smoke", "regression","EFileImport" })	
+	public void BPPTrends_VerifyImportedLogsTransactionsRecordCountAndTrailFields(String loginUser) throws Exception{
+		String uploadedDate = objUtil.getCurrentDate("MMM d, YYYY");
+		
+		String period = "2021";
+		String fileType="BPP Trend Factors";
+		String source="BOE - Valuation Factors";
+		String boebppTrendIndexFactorsFile=System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS;
+		String boeTableErrorRecords=System.getProperty("user.dir") + testdata.BOE_ERRORREOCRDS_COUNT;
+		Map<String, String> errorRecordsCount = objUtil.generateMapFromJsonFile(boeTableErrorRecords, "ErrorRecordsTableWise");
+		
+		//Step1: Delete the existing data from system before importing files
+		String query = "Select id From E_File_Import_Log__c where File_type__c = '"+fileType+"' and Import_Period__C='" + period + "' and File_Source__C ='"+source+"' and (Status__c = 'Imported' Or Status__c = 'Approved')";
+		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
+		objSalesforceAPI.deleteBPPTrendRollYearData(period);
+				
+		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
+		objApasGenericFunctions.login(loginUser);
+
+		//Step3: Opening the file import intake module
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+
+		
+		//Step4: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
+		objEfileHomePage.uploadFileOnEfileIntake(fileType,source, period ,boebppTrendIndexFactorsFile);
+
+		//Step5: Waiting for Status of the imported file to be converted to "Imported"
+		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
+		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 600);
+		
+		
+		//step6: verify import list record entry and data
+		ReportLogger.INFO("Verifying records count in history list for imported record");
+		
+		HashMap<String, ArrayList<String>> importedEntry=objApasGenericFunctions.getGridDataInHashMap(1, 1);				
+		softAssert.assertEquals(importedEntry.get("Uploaded Date").get(0), uploadedDate, "verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Period").get(0), period, "verify import list history data");
+		softAssert.assertEquals(importedEntry.get("File Count").get(0), errorRecordsCount.get("TotalFileRecords"), "verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Import Count").get(0), errorRecordsCount.get("TotalImportedRecords"), "verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Error Count").get(0), errorRecordsCount.get("TotalErrorRecords"), "verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Discard Count").get(0), "0", "verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Number of Tries").get(0), "1", "verify import list history data");
+				
+		
+		//step7: navigating to EFile import logs screen and verifying the records count
+		ReportLogger.INFO("Verifying Import count,File count, Error count and status of import logs record");
+		objApasGenericFunctions.openLogRecordForImportedFile(fileType,source,period,boebppTrendIndexFactorsFile);
+		objPage.waitForElementToBeClickable(objEFileImportLogPage.logStatus, 10);
+		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.logFileCount),errorRecordsCount.get("TotalFileRecords"), "SMAB-T83:Verify that admin is able to see logs record for file type with status 'Imported' on 'E-File Import Logs' screen");
+		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.logImportCount),errorRecordsCount.get("TotalImportedRecords"), "SMAB-T83:Verify that admin is able to see logs record for file type with status 'Imported' on 'E-File Import Logs' screen");
+		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.logErrorCount),errorRecordsCount.get("TotalErrorRecords"), "SMAB-T83:Verify that admin is able to see logs record for file type with status 'Imported' on 'E-File Import Logs' screen");
+		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.logStatus),"Imported", "SMAB-T83:Verify that admin is able to see logs record for file type with status 'Imported' on 'E-File Import Logs' screen");
+		
+		
+		ReportLogger.INFO("Verifying Import count,File count and Error count in Import Transaction record");
+		objPage.Click(objEfileImportTransactionsPage.transactionsTab);
+		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);
+		String expectedTransactionID=objPage.getElementText(objEfileImportTransactionsPage.transactionsRecords.get(0));
+		objPage.javascriptClick(objEfileImportTransactionsPage.transactionsRecords.get(0));
+		objPage.waitForElementToBeClickable(objEfileImportTransactionsPage.statusLabel, 10);
+		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.transactionErrorCount),errorRecordsCount.get("TotalErrorRecords"), "SMAB-T84:Verify that admin is able to see Transactions record for file type with status 'Imported' on 'E-File Import Transaction' screen");
+		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.statusLabel),"Imported", "SMAB-T84:Verify that admin is able to see Transactions record for file type with status 'Imported' on 'E-File Import Transaction' screen");
+		
+		ReportLogger.INFO("Verifying fileds for Transaction/Audit trail record");
+		objPage.javascriptClick(objEfileImportTransactionsPage.transactionTrailTab);
+		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);
+		objPage.javascriptClick(objEfileImportTransactionsPage.transactionTrailRecords.get(0));
+		objPage.waitForElementToBeClickable(objEfileImportTransactionsPage.statusLabel, 10);
+		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.transactionType), "Transactions", "SMAB-T1458:Verify that User is able to see Transactions trail with updated fields once a BPP file is uploaded via EFile");
+		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.transactionSubType), "E-File Intake", "SMAB-T1458:Verify that User is able to see Transactions trail with updated fields once a BPP file is uploaded via EFile");
+		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.transactionDescription), "Factor uploaded - Electronic File Intake", "SMAB-T1458:Verify that User is able to see Transactions trail with updated fields once a BPP file is uploaded via EFile");		
+		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.efileImportTransactionLookUp), expectedTransactionID, "SMAB-T1458:Verify that User is able to see Transactions trail with updated fields once a BPP file is uploaded via EFile");
+		
+		
+			objApasGenericFunctions.logout();
+	}
+	
+	
 }
