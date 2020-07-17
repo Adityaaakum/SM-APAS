@@ -65,7 +65,7 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 //	 * 3. Validating the user able to update value of 'Minimum. Equip. Index Factor':: TestCase/JIRA ID: SMAB-T185
 //	 */
 //	@Test(description = "SMAB-T186,SMAB-T188,SMAB-T185: Create BPP Composite Factor Setting with invalid and valid min. equip. index factor values", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
-//	public void verify_BppTrend_Create_BppCompositeFactorSetting(String loginUser) throws Exception {		
+//	public void BppTrend_Create_BppCompositeFactorSetting(String loginUser) throws Exception {
 //		//Step1: Resetting the composite factor tables status to Not Calculated
 //		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 //		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Not Calculated", rollYear);
@@ -180,7 +180,7 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 //	 * 1. Validating the user is not able to edit 'Minimum Equip. Index Factor' when calculations are approved:: TestCase/JIRA ID: SMAB-T187
 //	 */
 //	@Test(description = "SMAB-T187: Edit BPP Setting when table calculcations for tables are approved", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
-//	public void verify_BppTrend_CreatAndEdit_BppSetting_WhenCalculationAreAproved(String loginUser) throws Exception {				
+//	public void BppTrend_CreatAndEdit_BppSetting_WhenCalculationAreAproved(String loginUser) throws Exception {
 //		//Step1: Delete the existing BPP composite setting entry for given roll year
 //		objBppTrnPg.removeExistingBppFactorSettingEntry(rollYear);
 //		

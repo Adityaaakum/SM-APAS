@@ -60,7 +60,7 @@ public class RollYearSettingsTest extends TestBase {
 	 **/
 	
 	@Test(description = "SMAB-T638: Validate that System Admin is able to create Future Roll Year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_RollYear_CreateFutureRecord(String loginUser) throws Exception {
+	public void RollYear_CreateFutureRecord(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -122,7 +122,7 @@ public class RollYearSettingsTest extends TestBase {
 	 **/
 	
 	@Test(description = "SMAB-T638: Validate that System Admin is able to create Past Roll Year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_RollYear_CreateAndEditPastRecord(String loginUser) throws Exception {
+	public void RollYear_CreateAndEditPastRecord(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -244,7 +244,7 @@ public class RollYearSettingsTest extends TestBase {
 	 **/
 	
 	@Test(description = "SMAB-T638, SMAB-T1283: Validate field level validations on Roll Year Screen", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_RollYear_FieldLevelValidations(String loginUser) throws Exception {
+	public void RollYear_FieldLevelValidations(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -315,7 +315,7 @@ public class RollYearSettingsTest extends TestBase {
 	 **/
 	
 	@Test(description = "SMAB-T638: Validate RP Business admin and Exemption Support staff are able to view Roll year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_RollYear_ViewRecord(String loginUser) throws Exception {
+	public void RollYear_ViewRecord(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -351,7 +351,7 @@ public class RollYearSettingsTest extends TestBase {
 	 **/
 	
 	/*@Test(description = "SMAB-T638: Validate user is able to create Roll year record for current year", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
-	public void verify_RollYear_CreateCurrentRecord(String loginUser) throws Exception {
+	public void RollYear_CreateCurrentRecord(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
