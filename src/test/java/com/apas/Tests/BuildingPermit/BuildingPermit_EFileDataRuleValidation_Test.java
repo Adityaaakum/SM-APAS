@@ -3,6 +3,7 @@ package com.apas.Tests.BuildingPermit;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.apas.PageObjects.EFileImportLogsPage;
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -33,6 +34,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	SoftAssertion softAssert  = new SoftAssertion();
 	Util objUtil  = new Util();
 	EFileImportPage objEfileImportPage;
+	EFileImportLogsPage objEFileImportLogsPage;
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 
 	@BeforeMethod(alwaysRun=true)
@@ -46,6 +48,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage = new BuildingPermitPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objEfileImportPage = new EFileImportPage(driver);
+		objEFileImportLogsPage  = new EFileImportLogsPage(driver);
 	}
 	
 	/**
@@ -153,9 +156,12 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Step1: Creating temporary file with random building permit number
 		String missingAPNBuildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
+		Thread.sleep(1000);
+		String invalidAPNBuildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
 		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "WrongParcelAndSitusTypePopulation.txt";
 		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "WrongParcelAndSitusTypePopulation.txt";
 		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",missingAPNBuildingPermitNumber,temporaryFile);
+		FileUtils.replaceString(temporaryFile,"<PERMIT-2>",invalidAPNBuildingPermitNumber,temporaryFile);
 
 		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);
@@ -193,12 +199,11 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Permit Situs Street Name","Situs Information"), "MOUNT", "SMAB-374: 'Permit Situs Street Name' Field Validation in 'Situs Information' section for Situs street name having special keyword");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Permit Situs Type","Situs Information"), "BLVD", "SMAB-T374: 'Permit Situs Type' Field Validation in 'Situs Information' section for Situs street name having special keyword");
 
-		String wrongBuildingPermitNumber = "T17-002105";
-		ReportLogger.INFO("Validating the warning message for wrong APN for Building Permit number " + wrongBuildingPermitNumber);
+		ReportLogger.INFO("Validating the warning message for wrong APN for Building Permit number " + invalidAPNBuildingPermitNumber);
 
 		//Step5: Opening the Building Permit with the Building Permit Number imported through Efile import
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
-		objApasGenericFunctions.globalSearchRecords(wrongBuildingPermitNumber);
+		objApasGenericFunctions.globalSearchRecords(invalidAPNBuildingPermitNumber);
 
 		//Step6: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
 		expectedMessage = "Invalid APN.";
@@ -605,6 +610,162 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		//Commenting the validation for city strat code as this validation was removed as part of story#1542
 //		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("City Strat Code", "City and County Information"), "ALTERATION", "SMAB-T549,SMAB-T623: 'County Strat Code Description' Field Validation in 'City and County Information' section for upsert record");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Building Permit Fee", "Building Permit Information"), "$2,222.33", "SMAB-T549,SMAB-T623: 'Building Permit Fee' Field Validation in 'Building Permit Information' section for upsert record");
+
+		//Logout at the end of the test
+		objApasGenericFunctions.logout();
+	}
+
+	/**
+	 Below test case is validate that APN is mandatory at the time of upsert only if processing status = "Process" and the file name is updated in import logs and building permits
+	 Note: APN is mandatory for Processing Status = "Process" only at the time of upsert. At the time of insert the other validation for invalid APN will take priority and building permit will be created with the warning message "Invalid APN"
+	 **/
+	@Test(description = "SMAB-T1536,SMAB-T1564,SMAB-T1565: Validate that APN is mandatory at the time of upsert only if processing status is Process and Import Name field validation", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"regression","buildingPermit"}, alwaysRun = true)
+	public void BuildingPermit_APNMandatoryForProcessDuringUpsert_ImportNameValidation(String loginUser) throws Exception {
+
+		//Pre-requisite: Renaming the building permits(From File to be imported) already in the system to make the record as a fresh record
+		//Creating two files for the same records as the same record processed needs to be processed two times
+		String currentTimestamp = objUtil.getCurrentDate("ddhhmmss");
+		String firstBuildingPermitFileNameWithoutExtension = "SMAB2061_APNRequiredForProcess";
+		String secondBuildingPermitFileNameWithoutExtension = "SMAB2061_APNRequiredForProcessNewName";
+		String buildingPermitFileName = firstBuildingPermitFileNameWithoutExtension + ".txt";
+		String secondBuildingPermitFileName  = secondBuildingPermitFileNameWithoutExtension + ".txt";
+		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + buildingPermitFileName;
+		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + buildingPermitFileName;
+		FileUtils.replaceString(athertonBuildingPermitFile,"<PERMIT>",currentTimestamp,temporaryFile);
+		String secondTemporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + secondBuildingPermitFileName;
+		FileUtils.replaceString(athertonBuildingPermitFile,"<PERMIT>",currentTimestamp,secondTemporaryFile);
+
+		//step1:Reverting the Approved Import logs if any in the system
+		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C like '%Atherton%' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
+		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+
+		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
+		objApasGenericFunctions.login(loginUser);
+
+		//Step2: Opening the file import intake module
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+
+		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
+		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", buildingPermitFileName, temporaryFile);
+
+		//Step4: Waiting for Status of the imported file to be converted to "Imported"
+		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
+		objPage.waitForElementTextToBe(objEfileImportPage.statusImportedFile, "Imported", 120);
+		objPage.Click(objEfileImportPage.viewLink);
+		objPage.waitForElementToBeVisible(objEfileImportPage.errorRowSection,30);
+
+		//Step5: Approve the imported records
+		objPage.Click(objEfileImportPage.approveButton);
+		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
+
+		//Step6: Validate the import file name in the newly processed file. Below building permit is processed in the file uploaded in previous steps
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objApasGenericFunctions.globalSearchRecords("T1" + currentTimestamp);
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name", "Building Permit Information"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation in 'Building Permit Information' section on Building Permit Screen");
+		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
+		objEFileImportLogsPage.openImportLog("Building Permit :Atherton Building Permits :Adhoc");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation on Import Logs Screen");
+
+		//Step6: Searching the efile intake module to reimport the file after approve
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+
+		//Step8: Re-Uploading the Atherton Building Permit file
+		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", secondBuildingPermitFileName, secondTemporaryFile);
+		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
+		objPage.waitForElementTextToBe(objEfileImportPage.statusImportedFile, "Imported", 120);
+		objPage.Click(objEfileImportPage.viewLink);
+		objPage.waitForElementToBeVisible(objEfileImportPage.errorRowSection,30);
+
+		//Step9: Validating that correct number of records are movered in Error Row section
+		ReportLogger.INFO("Validation of error and imported records on Review and Approve Data Screen after import");
+		String numberOfRecordsInErrorRowSection = objPage.getElementText(objEfileImportPage.errorRowSection).split(":")[1].trim();
+		softAssert.assertEquals(numberOfRecordsInErrorRowSection, "2", "SMAB-T1536: Validation if correct number of records are displayed in Error Row Section after import");
+
+		String numberOfRecordsInImportedRowSection = objPage.getElementText(objEfileImportPage.importedRowSection).split(":")[1].trim();
+		softAssert.assertEquals(numberOfRecordsInImportedRowSection, "2", "SMAB-T364: Validation if correct number of records are displayed in Imported Row Section after import");
+
+		//Step10: Comparing the error message when APN is mandatory for the process
+		ReportLogger.INFO("Error Message Validation of Error Row Records on Review and Approve Data Page");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid APN With Process(Permit Value Greater Than 25000 for REPAIR ROOF)"),"APN required for Process","SMAB-T1536 : Error Message validation for the scenario 'Invalid APN With Process(Permit Value Greater Than 25000 for REPAIR ROOF)'");
+		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Blank APN With Process(Permit Value Greater Than 25000 for REPAIR ROOF)"),"APN required for Process","SMAB-T1536 : Error Message validation for the scenario 'Blank APN With Process(Permit Value Greater Than 25000 for REPAIR ROOF)'");
+
+		//Step6: Validate the import file name in the newly processed file. Below building permit is processed in the file uploaded in previous steps
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objApasGenericFunctions.globalSearchRecords("T1" + currentTimestamp);
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name", "Building Permit Information"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation in 'Building Permit Information' section for the file name update once the same record is processed in the new file");
+		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
+		objEFileImportLogsPage.openImportLog("Building Permit :Atherton Building Permits :Adhoc");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation on Import Logs Screen after reprocessing the same record in new file");
+
+		//Logout at the end of the test
+		objApasGenericFunctions.logout();
+	}
+
+	/**
+	 Below test case is validate if file name is updated in import logs and building permits
+	 **/
+	@Test(description = "SMAB-T1564,SMAB-T1565: Validate Import Name field is populated in import logs and building permit", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"regression","buildingPermit"}, alwaysRun = true)
+	public void BuildingPermit_SanMateo_ImportNameValidation(String loginUser) throws Exception {
+
+		//Pre-requisite: Renaming the building permits(From File to be imported) already in the system to make the record as a fresh record
+		//Creating two files for the same records as the same record processed needs to be processed two times
+		String buildingPermitNumber = "ABD-2017-123022";
+		String firstBuildingPermitFileNameWithoutExtension = "SingleValidRecord";
+		String secondBuildingPermitFileNameWithoutExtension = "SingleValidRecordNewName";
+		String firstBuildingPermitFileName = firstBuildingPermitFileNameWithoutExtension + ".xlsx";
+		String secondBuildingPermitFileName  = secondBuildingPermitFileNameWithoutExtension + ".xlsx";
+		String firstBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + firstBuildingPermitFileName;
+		String secondBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + secondBuildingPermitFileName;
+
+		//step1:Reverting the Approved Import logs if any in the system
+		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C = 'San Mateo Building permits' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
+		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+
+		String buildingPermitDeleteQuery = "SELECT Id FROM Building_Permit__c where Name ='" + buildingPermitNumber + "'";
+		salesforceAPI.delete("Building_Permit__c",buildingPermitDeleteQuery);
+
+		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
+		objApasGenericFunctions.login(loginUser);
+
+		//Step2: Opening the file import intake module
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+
+		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
+		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "San Mateo Building permits", firstBuildingPermitFileName, firstBuildingPermitFile);
+
+		//Step4: Waiting for Status of the imported file to be converted to "Imported"
+		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
+		objPage.waitForElementTextToBe(objEfileImportPage.statusImportedFile, "Imported", 120);
+		objPage.Click(objEfileImportPage.viewLink);
+		objPage.waitForElementToBeVisible(objEfileImportPage.errorRowSection,30);
+
+		//Step5: Approve the imported records
+		objPage.Click(objEfileImportPage.approveButton);
+		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
+
+		//Step6: Validate the import file name in the newly processed file. Below building permit is processed in the file uploaded in previous steps
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name", "Building Permit Information"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation in 'Building Permit Information' section on Building Permit Screen");
+		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
+		objEFileImportLogsPage.openImportLog("Building Permit :San Mateo Building permits :Adhoc");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation on Import Logs Screen");
+
+		//Step7: Searching the efile intake module to reimport the file after approve
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+
+		//Step8: Re-Uploading the San Meteo Building Permit file
+		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "San Mateo Building permits", secondBuildingPermitFileName, secondBuildingPermitFile);
+		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
+		objPage.waitForElementTextToBe(objEfileImportPage.statusImportedFile, "Imported", 120);
+
+		//Step9: Validate the import file name in the newly processed file. Below building permit is processed in the file uploaded in previous steps
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name", "Building Permit Information"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation in 'Building Permit Information' section for the file name update once the same record is processed in the new file");
+		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
+		objEFileImportLogsPage.openImportLog("Building Permit :San Mateo Building permits :Adhoc");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation on Import Logs Screen after reprocessing the same record in new file");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
