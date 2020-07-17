@@ -44,7 +44,7 @@ public class BuildingPermit_Reports_Test extends TestBase {
 	 Below test case will validate that user is able to export the report
 	 */
 	@Test(description = "SMAB-T433,SMAB-T373: Validation for Building Permit Reports Export and exported format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression"})
-	public void verify_BuildingPermit_ReportExport(String loginUser) throws Exception {
+	public void BuildingPermit_ReportExport(String loginUser) throws Exception {
 
 		String downloadLocation = CONFIG.getProperty("downloadFolder");
 		String reportName = "Building Permit by City Code";

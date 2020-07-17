@@ -54,8 +54,8 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	/**
 	 Below test case is used to validate the building permit data imported through Efile Intake
 	 **/
-	@Test(description = "SMAB-T548: Validate removal of keywords from Work Description from UN File Type", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, enabled = true)
-	public void verify_BuildingPermit_RemoveKeywordFromWorkDescription_UnincorporatedFileType(String loginUser) throws Exception {
+	@Test(description = "SMAB-T548: Validate removal of keywords from Work Description from UN File Type", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"regression","buildingPermit"}, enabled = true)
+	public void BuildingPermit_RemoveKeywordFromWorkDescription_UnincorporatedFileType(String loginUser) throws Exception {
 
 		String unincorporatedBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_UNINCORPORATED + "WorkDescriptionWithKeywords_UN.txt";
 
@@ -97,7 +97,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	 Below test case is used to validate the building permit warning messages for retired parcel and situs information mismatch imported through Efile Intake
 	 **/
 	@Test(description = "SMAB-T453,SMAB-T455: Validate Retired parcel and situs information mismatch records imported through E-file intake module", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, enabled = true)
-	public void verify_BuildingPermit_ThroughEFileImportTool_WithRetiredParcelAndSitusMismatch(String loginUser) throws Exception {
+	public void BuildingPermit_ThroughEFileImportTool_WithRetiredParcelAndSitusMismatch(String loginUser) throws Exception {
 
 		//Reverting the Approved Import logs if any in the system
 		//step1:Reverting the Approved Import logs if any in the system
@@ -147,7 +147,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	 Below test case is used to validate the warning message for missing/wrong parcel
 	 **/
 	@Test(description = "SMAB-T451,SMAB-T374: Validate Warning message for Missing/Wrong Parcel and Situs Type auto population for the records imported through E-file intake module", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"},enabled = true)
-	public void verify_BuildingPermit_ThroughEFileImportTool_WrongParcelAndSitusTypePopulation(String loginUser) throws Exception {
+	public void BuildingPermit_ThroughEFileImportTool_WrongParcelAndSitusTypePopulation(String loginUser) throws Exception {
 
 		//Reverting the Approved Import logs if any in the system
 		//step1:Reverting the Approved Import logs if any in the system
@@ -217,7 +217,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	 Below test case is used to validate that correct data is displayed after atherton file import
 	 **/
 	@Test(description = "SMAB-T417,SMAB-T456: Data validation after Atherton text file import", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
-	public void verify_BuildingPermit_DataValidationAfterAthertonTxtFileImport(String loginUser) throws Exception {
+	public void BuildingPermit_DataValidationAfterAthertonTxtFileImport(String loginUser) throws Exception {
 
 		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "OneValidAndTwoInvalidRecordsForPermitValue.txt";
 
@@ -263,7 +263,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	 Below test case is used to validate the data is imported correctly for San Mateo in Excel format
 	 **/
 	@Test(description = "SMAB-T417,SMAB-T456,SMAB-T357: Data validation for San Mateo Building Permit Import in XLS format", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
-	public void verify_BuildingPermit_DataValidationAfterSanMateoExcelFileImport(String loginUser) throws Exception {
+	public void BuildingPermit_DataValidationAfterSanMateoExcelFileImport(String loginUser) throws Exception {
 
 		String sanMateoBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "NonNumericValueSanMateo.xlsx";
 
@@ -312,7 +312,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	 Below test case is validate the error message on Atherton file import
 	 **/
 	@Test(description = "SMAB-T315,SMAB-T458,SMAB-T459,SMAB-T619,SMAB-T621,SMAB-T624,SMAB-T625,SMAB-T457,SMAB-T549,SMAB-T460: Error message verification for the imported Atherton Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
-	public void verify_BuildingPermit_ErrorMessageValidation_AthertonTxtFile(String loginUser) throws Exception {
+	public void BuildingPermit_ErrorMessageValidation_AthertonTxtFile(String loginUser) throws Exception {
 
 		String buildingPermitFileName = "WrongMessageRecordsAtherton.txt";
 		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "WrongMessageRecordsAtherton.txt";
@@ -369,8 +369,8 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	/**
 	 Below test case is validate the error message on Belmont file import
 	 **/
-	@Test(description = "SMAB-T362,SMAB-T1406: Error message verification for the imported Belmont Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
-	public void verify_BuildingPermit_ErrorMessageValidation_BelmontTxtFile(String loginUser) throws Exception {
+	@Test(description = "SMAB-T362,SMAB-T1406: Error message verification for the imported Belmont Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"regression","buildingPermit"}, alwaysRun = true, enabled = true)
+	public void BuildingPermit_ErrorMessageValidation_BelmontTxtFile(String loginUser) throws Exception {
 
 		String belmontBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_BELMONT + "WrongMessageRecordsBelmont.txt";
 
@@ -407,8 +407,8 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	/**
 	 Below test case is validate the error message on Burlingame file import
 	 **/
-	@Test(description = "SMAB-T362,SMAB-T1406: Error message verification for the imported Burlingame Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
-	public void verify_BuildingPermit_ErrorMessageValidation_BurlingameTxtFile(String loginUser) throws Exception {
+	@Test(description = "SMAB-T362,SMAB-T1406: Error message verification for the imported Burlingame Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"regression","buildingPermit"}, alwaysRun = true, enabled = true)
+	public void BuildingPermit_ErrorMessageValidation_BurlingameTxtFile(String loginUser) throws Exception {
 
 		String burlingameBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_BURLINGAME + "WrongMessageRecordsBurlingame.txt";
 
@@ -446,8 +446,8 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	/**
 	 Below test case is validate the error message on Unincorporaed file import
 	 **/
-	@Test(description = "SMAB-T362,SMAB-T1406: Error message verification for the imported Unincorporated Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
-	public void verify_BuildingPermit_ErrorMessageValidation_UnincorporatedTxtFile(String loginUser) throws Exception {
+	@Test(description = "SMAB-T362,SMAB-T1406: Error message verification for the imported Unincorporated Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"regression","buildingPermit"}, alwaysRun = true, enabled = true)
+	public void BuildingPermit_ErrorMessageValidation_UnincorporatedTxtFile(String loginUser) throws Exception {
 
 		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_UNINCORPORATED + "WrongMessageRecordsUnincorporated.txt";
 
@@ -490,7 +490,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	 Below test case is used to validate error message for San Mateo file import
 	 **/
 	@Test(description = "SMAB-T315,SMAB-T458,SMAB-T459,SMAB-T619,SMAB-T621,SMAB-T624,SMAB-T625,SMAB-T457,SMAB-T549,SMAB-T1388,SMAB-T1566: Error message verification for the imported San Mateo Building Permit in XLS Format", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
-	public void verify_BuildingPermit_ErrorMessageValidation_SanMateoExcelFile(String loginUser) throws Exception {
+	public void BuildingPermit_ErrorMessageValidation_SanMateoExcelFile(String loginUser) throws Exception {
 
 		String sanMateoBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "WrongMessageRecordsSanMateo.xlsx";
 
@@ -547,7 +547,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	 Below test case is used to validate the duplicate building permit error message on efile import
 	 **/
 	@Test(description = "SMAB-T549,SMAB-T623: Validate the upsert functionality for record with same Permit Number, Parcel and City", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"})
-	public void verify_BuildingPermit_UpsertValidationForDuplicateRecord(String loginUser) throws Exception {
+	public void BuildingPermit_UpsertValidationForDuplicateRecord(String loginUser) throws Exception {
 
 		//Reverting the Approved Import logs if any in the system
 		//step1:Reverting the Approved Import logs if any in the system

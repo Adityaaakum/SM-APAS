@@ -275,7 +275,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating business administrator is not able to edit approved inflation factor:: TestCase/JIRA ID: SMAB-T183
 	 */
-	@Test(description = "SMAB-T183: Validating business administrator user is not able to edit the approved inflation factor", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T183: Validating business administrator user is not able to edit the approved inflation factor", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void verify_BppTrend_EditCpiFactors_ByRestrictedUser(String loginUser) throws Exception {
 		objBppTrnPg.deleteDuplicateCPI();
 		//Step1: Login to the APAS application using the given user
