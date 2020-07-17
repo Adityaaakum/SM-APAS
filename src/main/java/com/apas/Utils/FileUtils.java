@@ -94,7 +94,7 @@ public class FileUtils {
      */
     public static void replaceString(String sourceFile, String stringToBeReplaced, String newTextToReplace,String destinationFile) throws IOException {
         String content = org.apache.commons.io.FileUtils.readFileToString(new File(sourceFile), "UTF-8");
-        content = content.replaceAll("<PERMITNO>", newTextToReplace);
+        content = content.replaceAll(stringToBeReplaced, newTextToReplace);
         File tempFile = new File(destinationFile);
         org.apache.commons.io.FileUtils.writeStringToFile(tempFile, content, "UTF-8");
     }
