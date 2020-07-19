@@ -58,7 +58,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 	 **/
 	
     @Test(description = "SMAB-T528: Validate user is able to create a same Exemption record with different Veteran Name", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_DisabledVeteran_SameExemptionWithDifferentVeteranName(String loginUser) throws Exception {
+	public void DisabledVeteran_SameExemptionWithDifferentVeteranName(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -125,7 +125,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 	 **/
 	
     @Test(description = "SMAB-T530: Validate user is able to create a same Exemption record with different Parcel", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_DisabledVeteran_SameExemptionWithDifferentParcel(String loginUser) throws Exception {
+	public void DisabledVeteran_SameExemptionWithDifferentParcel(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -189,7 +189,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 	 **/
 	
 	@Test(description = "SMAB-T532, SMAB-T649: Validate a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (having End Date of Rating as Blank)", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_DisabledVeteran_SameExemptionWithNonOverlappingDates1(String loginUser) throws Exception {
+	public void DisabledVeteran_SameExemptionWithNonOverlappingDates1(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -258,7 +258,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 	 **/
     
 	@Test(description = "SMAB-T533, SMAB-T534, SMAB-T609, SMAB-T659, SMAB-T643: Validate a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (End Date of Rating is not blank),  Vlaidate a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record), Validate a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of original record and status of original record is marked as Inactive, Validate user is not able to view 'Status' field as editable field on Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_DisabledVeteran_SameExemptionWithNonOverlappingDates2(String loginUser) throws Exception {
+	public void DisabledVeteran_SameExemptionWithNonOverlappingDates2(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -349,7 +349,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 	 **/
 	
 	@Test(description = "SMAB-T534: Validate a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record)", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_DisabledVeteran_SameExemptionWithNonOverlappingDates3(String loginUser) throws Exception {
+	public void DisabledVeteran_SameExemptionWithNonOverlappingDates3(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);

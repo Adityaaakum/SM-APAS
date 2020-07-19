@@ -77,7 +77,7 @@ public class CityStratCodesTest extends TestBase {
 	 * Below test case is used to validate the manual creation of City Strat Code entry
 	 * Checking validations on mandatory fields
 	 **/
-	@Test(description = "SMAB-T390,SMAB-T395: Creating manual entry for City Strat Code", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "buildingPermit"}, alwaysRun = true)
+	@Test(description = "SMAB-T390,SMAB-T395: Creating manual entry for City Strat Code", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "buildingPermit"}, alwaysRun = true)
 	public void CityStratCode_MandatoryFieldValidation(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)

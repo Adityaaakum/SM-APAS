@@ -65,7 +65,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 	 **/
 	
 	@Test(description = "SMAB-T522, SMAB-T523, SMAB-T479, SMAB-T480, SMAB-T481: Validate Exemption Support staff and RP Business Admin is able to view, create and edit Exemption record by filling mandatory fields", groups = {"smoke", "regression", "DisabledVeteranExemption"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_DisabledVeteran_CreateAndEditExemptionAndMandatoryFieldErrorValidation(String loginUser) throws Exception {
+	public void DisabledVeteran_CreateAndEditExemptionAndMandatoryFieldErrorValidation(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -165,7 +165,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 	 **/
 	
 	@Test(description = "SMAB-T522, SMAB-T527: Validate user is not able to edit and save Exemption record when mandatory fields are not entered before saving", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_DisabledVeteran_EditExemptionAndMandatoryFieldErrorValidation(String loginUser) throws Exception {
+	public void DisabledVeteran_EditExemptionAndMandatoryFieldErrorValidation(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);

@@ -58,7 +58,7 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 	 **/
 	
 	@Test(description = "SMAB-T526: Validate user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_DisabledVeteran_DuplicateExemptionIsNotCreated(String loginUser) throws Exception {
+	public void DisabledVeteran_DuplicateExemptionIsNotCreated(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -139,7 +139,7 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 	 **/
 	
     @Test(description = "SMAB-T526: Validate user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_DisabledVeteran_EditExemptionAndDuplicateErrorValidation(String loginUser) throws Exception {
+	public void DisabledVeteran_EditExemptionAndDuplicateErrorValidation(String loginUser) throws Exception {
     	
     	//Step1: Login to the APAS application using the user passed through the data provider
     	objApasGenericFunctions.login(loginUser);
@@ -191,7 +191,7 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 	 **/
 	
 	@Test(description = "SMAB-T526: Validate user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_DisabledVeteran_DuplicateExemptionWithOverlappingDates(String loginUser) throws Exception {
+	public void DisabledVeteran_DuplicateExemptionWithOverlappingDates(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
@@ -234,7 +234,7 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 	 **/
 	
 	@Test(description = "SMAB-T526: Validate user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void verify_DisabledVeteran_NotQualifiedExemptionDuplicateCreation(String loginUser) throws Exception {
+	public void DisabledVeteran_NotQualifiedExemptionDuplicateCreation(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);
