@@ -269,16 +269,61 @@ public class ApasGenericPage extends Page {
 	
 	
 	/**
+	 * @description: Clicks on the show more link displayed against the given entry
+	 * @param entryDetails: Name of the entry displayed on grid which is to be accessed
+	 * @throws Exception
+	 */
+	public Boolean clickShowMoreButton(String modRecordName) throws Exception {		
+		Thread.sleep(2000);
+		String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//th//a[text() = '"+ modRecordName +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
+		WebElement modificationsIcon = locateElement(xpathStr, 30);
+		if (modificationsIcon != null){
+		//if(isElementAvailable(modificationsIcon, 30)) {
+			clickAction(modificationsIcon);
+			ReportLogger.INFO(modRecordName + " record exist and user is able to click Show More button against it");
+			return true;
+		}
+		else{
+			ReportLogger.INFO(modRecordName + " record doesn't exist");
+			return false;
+		}	
+	}
+	
+	/**
 	 * Description: This method will click 'Show More Button' on the Screen
 	 * @param screenName: Screen Name
 	 * @param modRecordName: Record Number
 	 * @param action: Action user want to perform - Edit/Delete
 	 * @return: Boolean value
 	 */
-	public boolean clickShowMoreButtonAndAct(String screenName, String modRecordName, String action) throws Exception {       
+	public Boolean clickShowMoreButtonAndAct(String modRecordName, String action) throws Exception { 
+		Boolean flag=false;
+		if (clickShowMoreButton(modRecordName)){
+			String xpathStr = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
+			WebElement actionElement = locateElement(xpathStr, 30);
+				if (actionElement != null){
+				//if (isElementAvailable(actionElement, 30)){
+					clickAction(actionElement);
+					Thread.sleep(2000);
+					flag=true;
+					if (action.equals("Delete")){
+						Click(deleteConfirmationPostDeleteAction);
+						ReportLogger.INFO("Delete " + modRecordName + " record");
+						Thread.sleep(2000);
+					}
+				}
+		}
+		return flag;
+	}	
+	
+	
+	
+	
+	/*public boolean clickShowMoreButtonAndAct(String screenName, String modRecordName, String action) throws Exception {       
 		Thread.sleep(1000);
 		String xpathStr1="";
 		Boolean flag=false;
+	
 	    if (screenName == "Roll Year Settings") xpathStr1 = "//a[@title='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[9]//span//div//a//lightning-icon";
 	    if (screenName == "Exemptions") xpathStr1 = "//a[@data-recordid='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[6]//span//div//a//lightning-icon";
    
@@ -309,7 +354,7 @@ public class ApasGenericPage extends Page {
 		}
         
         return flag;
-    }
+    }*/
 	
 	/**
 	 * Description: This method will enter date

@@ -84,10 +84,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		
 		//Step4: Validate error messages when no field value is entered and Exemption record is saved
 		String expectedErrorMessageOnTop1 = "These required fields must be completed: Date Application Received, Basis for Claim, Date Acquired Property, Date Occupied/Intend to Occupy Property, Date of Notice of 100% Rating, Effective Date of 100% USDVA Rating, Claimant's Name, Claimant's SSN, APN, Qualification?";
-		String expectedIndividualFieldMessage1 = "Complete this field";
-		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
-			expectedIndividualFieldMessage1 = "Complete this field.";
-		}
+		String expectedIndividualFieldMessage1 = "Complete this field.";
 		softAssert.assertEquals(objExemptionsPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop1,"SMAB-T523: Validating mandatory fields missing error in Exemption screen.");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date Application Received"),expectedIndividualFieldMessage1,"SMAB-T523: Validating mandatory fields missing error for 'Date Application Received'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("APN"),expectedIndividualFieldMessage1,"SMAB-T523: Validating mandatory fields missing error for 'Parcel'");
@@ -123,8 +120,9 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		//Step7: Search the existing Exemption record that was created and Edit it
 		objApasGenericFunctions.displayRecords("All");
 		objApasGenericFunctions.searchRecords(exemptionName);
-		softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct("Exemptions", recordId, "Edit"),"SMAB-T481: Validate user is able to edit an Exemption record");
-		softAssert.assertTrue(objExemptionsPage.saveButton.isDisplayed(), "SMAB-T481: Validate user is able to view the edit screen for the Exemption record");
+		//softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct("Exemptions", recordId, "Edit"),"SMAB-T481: Validate user is able to edit an Exemption record");
+		softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct(exemptionName, "Edit"),"SMAB-T481: Validate user is able to edit the Exemption record : " + exemptionName);
+		softAssert.assertTrue(objExemptionsPage.saveButton.isDisplayed(), "SMAB-T481: Validate user is able to view the edit screen for the Exemption record : " + exemptionName);
 	
 		//Step8: Clear the values from the few mandatory fields and Save the record
 		ReportLogger.INFO("Clear some Date fields and SAVE the record");
@@ -137,10 +135,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 				
 		//Step9: Validate error messages when few mandatory field values are not present and Exemption record is saved	
 		String expectedErrorMessageOnTop2 = "These required fields must be completed: Date Acquired Property, Effective Date of 100% USDVA Rating, Qualification?, Date of Notice of 100% Rating, Date Occupied/Intend to Occupy Property";
-		String expectedIndividualFieldMessage2 = "Complete this field";
-		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
-			expectedIndividualFieldMessage2 = "Complete this field.";
-		}
+		String expectedIndividualFieldMessage2 = "Complete this field.";
 		softAssert.assertEquals(objExemptionsPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop2,"SMAB-T523: Validating mandatory fields missing error in Exemption screen.");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date Acquired Property"),expectedIndividualFieldMessage2,"SMAB-T523: Validating mandatory fields missing error for 'Date Acquired Property'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Effective Date of 100% USDVA Rating"),expectedIndividualFieldMessage2,"SMAB-T523: Validating mandatory fields missing error for 'Effective Date of 100% USDVA Rating'");
@@ -200,10 +195,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		
 		//Step8: Validate error messages when few mandatory field values are not present and Exemption record is saved
 		String expectedErrorMessageOnTop = "These required fields must be completed: Claimant's SSN, Unmarried Spouse of Deceased Veteran?, Date Application Received";
-		String expectedIndividualFieldMessage = "Complete this field";
-		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
-			expectedIndividualFieldMessage = "Complete this field.";
-		}
+		String expectedIndividualFieldMessage = "Complete this field.";
 		softAssert.assertEquals(objExemptionsPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T527: Validating mandatory fields missing error in Exemption screen.");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Claimant's SSN"),expectedIndividualFieldMessage,"SMAB-T527: Validating mandatory fields missing error for 'Claimant's SSN'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Unmarried Spouse of Deceased Veteran?"),expectedIndividualFieldMessage,"SMAB-T527: Validating mandatory fields missing error for 'Unmarried Spouse of Deceased Veteran?'");
@@ -216,10 +208,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		
 		//Step10: Validate error messages when some of the mandatory field values are still not present and Exemption record is saved
 		String expectedErrorMessageOnTop1 = "These required fields must be completed: Claimant's SSN, Date Application Received";
-		String expectedIndividualFieldMessage1 = "Complete this field";
-		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
-			expectedIndividualFieldMessage1 = "Complete this field.";
-		}
+		String expectedIndividualFieldMessage1 = "Complete this field.";
 		softAssert.assertEquals(objExemptionsPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop1,"SMAB-T527: Validating mandatory fields missing error in Exemption screen.");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Claimant's SSN"),expectedIndividualFieldMessage1,"SMAB-T527: Validating mandatory fields missing error for 'Claimant's SSN'");
 		softAssert.assertEquals(objExemptionsPage.getIndividualFieldErrorMessage("Date Application Received"),expectedIndividualFieldMessage1,"SMAB-T527: Validating mandatory fields missing error for 'Date Application Received'");
@@ -229,9 +218,8 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		
 		//Step11: Edit the record on Detail page using EDIT button and update some details
 		objExemptionsPage.editExemptionRecord();
-		//objExemptionsPage.enterEndDateOfRating(dataToCreateExemptionMap);
 		ReportLogger.INFO("Update some details in the Exemption record i.e. End Date Of Rating :  " + dataToCreateExemptionMap.get("End Date Of Rating") + " and End Rating Reason : " + dataToCreateExemptionMap.get("End Rating Reason"));
-		objExemptionsPage.updateFieldValue("Date", "End Date Of Rating", dataToCreateExemptionMap.get("End Date Of Rating"));
+		objExemptionsPage.updateFieldValue("Date", "End Date of Rating", dataToCreateExemptionMap.get("End Date Of Rating"));
 		objExemptionsPage.updateFieldValue("Dropdown", "End Rating Reason", dataToCreateExemptionMap.get("End Rating Reason"));
 		
 		//Step12: Save the changes and validate the details

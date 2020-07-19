@@ -94,7 +94,7 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 		//Step10: Enter End date of Rating and save the record and validate the error message
 		//objExemptionsPage.enterEndDateOfRating(dataToCreateExemptionWithMandatoryFieldsMapTwo);
 		ReportLogger.INFO("Update some details in the Exemption record i.e. End Date Of Rating :  " + dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Date Of Rating") + " and End Rating Reason : " + dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Rating Reason"));
-		objExemptionsPage.updateFieldValue("Date", "End Date Of Rating", dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Date Of Rating"));
+		objExemptionsPage.updateFieldValue("Date", "End Date of Rating", dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Date Of Rating"));
 		objExemptionsPage.updateFieldValue("Dropdown", "End Rating Reason", dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Rating Reason"));
 		objExemptionsPage.saveExemptionRecord();
 			
@@ -103,7 +103,6 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop2, "SMAB-T526: Exemption already exist for the Veteran with overlapping details");
 			
 		//Step12: Interchange Date Occupied and Effective Date values and save Exemption and validate the error message
-		//objExemptionsPage.interchangeOccupiedAndEffectiveDate(dataToCreateExemptionWithMandatoryFieldsMapTwo);
 		ReportLogger.INFO("Interchange values of 'Effective Date of 100% USDVA Rating' and 'Date Occupied/Intend to Occupy Property' in the Exemption record i.e. Date Occupied/Intend to Occupy Property :  " + dataToCreateExemptionWithMandatoryFieldsMapTwo.get("Effective Date of 100% USDVA Rating") + " and Effective Date of 100% USDVA Rating : " + dataToCreateExemptionWithMandatoryFieldsMapTwo.get("Date Occupied/Intend to Occupy Property"));
 		objExemptionsPage.updateFieldValue("Date", "Date Occupied/Intend to Occupy Property", dataToCreateExemptionWithMandatoryFieldsMapTwo.get("Effective Date of 100% USDVA Rating"));
 		objExemptionsPage.updateFieldValue("Date", "Effective Date of 100% USDVA Rating", dataToCreateExemptionWithMandatoryFieldsMapTwo.get("Date Occupied/Intend to Occupy Property"));
@@ -117,7 +116,6 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 		Map<String, String> dataToEditExemptionForQualificationMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToEditExemptionForQualification");
 	   
 		//Step15: Update the Qualification field to 'Unqualified' and save the record and validate the error message
-		//objExemptionsPage.updateQualifiedData(dataToEditExemptionForQualificationMap);
 		ReportLogger.INFO("Update some details in the Exemption record i.e. Qualification? :  " + dataToEditExemptionForQualificationMap.get("Qualification?") + " and Reason for Not Qualified : " + dataToEditExemptionForQualificationMap.get("Reason for Not Qualified"));
 		objExemptionsPage.updateFieldValue("Dropdown", "Qualification?", dataToEditExemptionForQualificationMap.get("Qualification?"));
 		objExemptionsPage.updateFieldValue("Dropdown", "Reason for Not Qualified", dataToEditExemptionForQualificationMap.get("Reason for Not Qualified"));
@@ -166,9 +164,8 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
     	dataToCreateExemptionWithMandatoryFieldsMapTwo.put("Veteran Name", dataToCreateExemptionWithMandatoryFieldsMapOne.get("Veteran Name"));
     	    
     	//Step7: Enter End date of Rating and save the record
-    	//objExemptionsPage.enterEndDateOfRating(dataToCreateExemptionWithMandatoryFieldsMapTwo);
     	ReportLogger.INFO("Update some details in the Exemption record i.e. End Date Of Rating :  " + dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Date Of Rating") + " and End Rating Reason : " + dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Rating Reason"));
-		objExemptionsPage.updateFieldValue("Date", "End Date Of Rating", dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Date Of Rating"));
+		objExemptionsPage.updateFieldValue("Date", "End Date of Rating", dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Date Of Rating"));
 		objExemptionsPage.updateFieldValue("Dropdown", "End Rating Reason", dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Rating Reason"));
     	objExemptionsPage.saveExemptionRecord();
     		
@@ -276,7 +273,7 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 		//Step10: Cancel the existing record and then EDIT the Exemption record created initially
 		ReportLogger.INFO("Click 'Cancel' button to move out of the Exemption screen");
 		objPage.Click(objExemptionsPage.cancelButton);
-		objApasGenericPage.clickShowMoreButtonAndAct("Exemptions", recordId, "Edit");
+		softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct(exemptionName, "Edit"),"SMAB-T481: Validate user is able to edit the Exemption record : " + exemptionName);
 		
 		//Step11: Update the Exemption record to mark it as 'Qualified' and save it
 		objApasGenericFunctions.selectFromDropDown(objExemptionsPage.qualification, "Qualified");

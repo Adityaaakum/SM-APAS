@@ -200,9 +200,9 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			softAssert.assertEquals(exemptionPageObj.errorMessage.getText(),businessValidationdata.get("dvExemptionOnPriorResidenceYesErrorMsg"),"SMAB-T503:Verify Prior Residence Street Address, Prior Residence City,Prior Residence State,Prior Residence County, Date move from Prior Residence are required if 'DV Exemption on Prior Residence' is 'Yes'");
 			
 			//step8:
-		/*
-		  verifying Spouse SSN is required if Spouse Name is not blank
-		*/ ReportLogger.INFO("verifying Spouse SSN is required if Spouse Name is not blank");
+		
+		 // verifying Spouse SSN is required if Spouse Name is not blank
+		 ReportLogger.INFO("verifying Spouse SSN is required if Spouse Name is not blank");
 			objPage.enter(exemptionPageObj.spouseName, businessValidationdata.get("SpouseName"));
 			objPage.Click(ExemptionsPage.saveButton);
 			Thread.sleep(2000);
@@ -394,7 +394,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 				
 		/*Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 		 Create Exemption record - Active
-		 Validate the Error message*/		
+		 Validate the Error message	*/	
 		ReportLogger.INFO("Creating Active Exemption");		
 		String manualEntryData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;	
 		Map<String, String> exemptionCreationDataMap = objUtil.generateMapFromJsonFile(manualEntryData, "DataToCreateExemptionWithMandatoryFields");

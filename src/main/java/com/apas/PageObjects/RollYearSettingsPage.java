@@ -21,6 +21,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -34,6 +35,7 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	ApasGenericPage objApasGenericPage;
 	SalesforceAPI objSalesforceAPI;
 	ApasGenericFunctions apasGenericObj;
+	Page objPage;
 
 	public RollYearSettingsPage(RemoteWebDriver driver) {
 		super(driver);
@@ -42,6 +44,7 @@ public class RollYearSettingsPage extends ApasGenericPage {
 		objApasGenericPage = new ApasGenericPage(driver);
 		objSalesforceAPI = new SalesforceAPI();
 		apasGenericObj= new ApasGenericFunctions(driver);
+		objPage=new Page(driver);
 	}
 	
 	
@@ -189,7 +192,7 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	public WebElement taxStartDateOnDetailEditPage;
 	
 	
-	/*	Next 4 locators are for validating error messages for duplicate Exemption or missing details
+	/*	Next 4 locators are for validating error messages for duplicate Roll Year or missing details
 	 *	These would be moved to common package/class
 	 * */
 	
@@ -210,12 +213,12 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	 * Description: This method will save a Roll Year record with no values entered
 	 */
 	public void saveRollYearRecordWithNoValues() throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to open a Roll Year record");
+		ReportLogger.INFO("Click 'New' button to open a Roll Year record");
 		Thread.sleep(2000);
 		Click(waitForElementToBeClickable(newRollYearButton));
 		waitForElementToBeClickable(rollYearSettings);
 		waitForElementToBeClickable(rollYear);
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Without entering any data on the Roll Year record, click 'Save' button");
+		ReportLogger.INFO("Without entering any data on the Roll Year record, click 'Save' button");
 		Click(saveButton);
 		Thread.sleep(1000);
 	}
@@ -226,7 +229,7 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	 */
 	
 	public void createOrUpdateRollYearRecord(Map<String, String> dataMap, String action) throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click '" + action + "' button to open a Roll Year record");
+		ReportLogger.INFO("Click '" + action + "' button to open a Roll Year record");
 		Thread.sleep(1000);
 		if (action == "New") Click(waitForElementToBeClickable(newRollYearButton));
 		if (action == "Edit") Click(waitForElementToBeClickable(editButton));
@@ -234,9 +237,9 @@ public class RollYearSettingsPage extends ApasGenericPage {
 		waitForElementToBeClickable(rollYearSettings);
 		waitForElementToBeClickable(rollYear);
 		enterRollYearData(dataMap);
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Save' button to save the details entered in Exemption record");
+		ReportLogger.INFO("Click 'Save' button to save the details entered in Roll Year record");
 		Click(saveButton);
-		Thread.sleep(1000);
+		Thread.sleep(3000);
 		
 	}
 	
@@ -246,7 +249,7 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	 */
 	
 	public void enterRollYearData(Map<String, String> dataMap) throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Enter the following values : " + dataMap);
+		ReportLogger.INFO("Enter the following values : " + dataMap);
 		enter(rollYearSettings, dataMap.get("Roll Year Settings"));
 		apasGenericObj.selectFromDropDown(rollYear, dataMap.get("Roll Year"));
 		enterDate(lienDate, dataMap.get("Lien Date"));
@@ -263,8 +266,16 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	 * @param exempName: Takes Roll Year record as an argument
 	 */
 	public void openRollYearRecord(String rollYearName) throws IOException, InterruptedException {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Open the Roll Year record : " + rollYearName);
+		ReportLogger.INFO("Open the Roll Year record : " + rollYearName);
 		Click(driver.findElement(By.xpath("//a[@title='" + rollYearName + "']")));
+		Thread.sleep(3000);
+	}
+	
+	public void openRollYearRecord(String recordId, String rollYearName) throws Exception {
+		ReportLogger.INFO("Open the Roll Year record : " + rollYearName);
+		String xpathStr = "//a[@data-recordid='" + recordId + "']";
+	    WebElement rollYearLocator = objPage.locateElement(xpathStr, 30);
+	    Click(rollYearLocator);
 		Thread.sleep(3000);
 	}
 	
