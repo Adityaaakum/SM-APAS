@@ -557,7 +557,7 @@ public WebElement findElem(String fieldType, String fieldName) throws Exception 
  */
 public void saveExemptionRecord() throws Exception {
 	Click(saveButton);
-	Thread.sleep(3000);
+	Thread.sleep(5000);
 }
 
 /**
