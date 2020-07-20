@@ -132,7 +132,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	 */
 	
 	
-	@Test(description = "SMAB-T15,SMAB-T65,SMAB-T87,SMAB-T100,SMAB-T49,SMAB-T58,SMAB-T88,SMAB-T959,SMAB-T575,SMAB-T915,SMAB-T1155,SMAB-T1550,SMAB-T1511:Verify that Users are able to import e-files through E-File Import Tool for 'New' status records", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T15,SMAB-T65,SMAB-T87,SMAB-T100,SMAB-T49,SMAB-T58,SMAB-T88,SMAB-T959,SMAB-T575,SMAB-T915,SMAB-T1155,SMAB-T1550,SMAB-T1511,SMAB-T1510:Verify that Users are able to import e-files through E-File Import Tool for 'New' status records", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 		"smoke", "regression","EFileImport" })
 	public void EFileImport_VerifyImportForNewStatus_AndApporveImportFile(String loginUser) throws Exception{
 		String period = "Adhoc";
@@ -227,6 +227,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		ReportLogger.INFO("Verify transaction trail record for 'Imported' status record");
 		objPage.javascriptClick(objEFileImportTransactionpage.transactionTrailTab);
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);
+		softAssert.assertEquals(objEFileImportTransactionpage.transactionTrailrecordsCount.size(), 2, "SMAB-T1510:Verify that user is able to see imported records in transaction trail as per insert or update operations");
 		objPage.javascriptClick(objEFileImportTransactionpage.transactionTrailRecords.get(0));
 		objPage.waitForElementToBeClickable(objEFileImportTransactionpage.statusLabel, 10);
 		softAssert.assertEquals(objPage.getElementText(objEFileImportTransactionpage.transactionType), "Transactions", "SMAB-T1155:Verify that User is able to see Transactions trail with updated fields once a BP file is uploaded via EFile");
@@ -713,6 +714,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		//step3:verifying file type and sources
 		ReportLogger.INFO("Verifying Period Drop Down is not displayed for BP EFile import");
 		objEFileImport.selectFileAndSource(fileType,source);
+		objPage.scrollToTop();
 		objPage.Click(objEFileImport.nextButton);
 		ReportLogger.INFO("Verifying Input box for import does not accept file names with error keywords");
 		objPage.enter(objEFileImport.fileNameInputBox, "SanMateoBuildingPermitsWithError.xlsx");
@@ -734,6 +736,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.Click(objEFileImport.closeButton);
 		
 		ReportLogger.INFO("Verifying user is not able to upload same file(same 'FileName') again");
+		objPage.scrollToTop();
 		objPage.Click(objEFileImport.nextButton);
 		objPage.enter(objEFileImport.fileNameInputBox, "SanMateoBuildingPermitsWithValidAndInvalidData4.xlsx");
 		objPage.Click(objEFileImport.fileNameNext);
@@ -745,6 +748,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.Click(objEFileImport.doneButton);
 		objPage.waitForElementToBeClickable(objEFileImport.statusImportedFile,30);
 		objPage.waitForElementTextToBe(objEFileImport.statusImportedFile, "Imported", 200);
+		objPage.scrollToTop();
 		objPage.Click(objEFileImport.nextButton);
 		objPage.enter(objEFileImport.fileNameInputBox, "SanMateoBuildingPermitsWithValidAndInvalidData4.xlsx");
 		objPage.Click(objEFileImport.fileNameNext);

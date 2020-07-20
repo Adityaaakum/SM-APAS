@@ -65,7 +65,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	 Below test case is used to verify that no VA's are created for past dates
 	 * @throws Exception 
 	 **/
-	@Test(description = "SMAB-T633:Verify Zero value adjustments record is created for historic Start Date and End Date", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T633,SMAB-T1613:Verify Zero value adjustments record is created for historic Start Date and End Date", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 			"smoke", "regression","DisabledVeteranExemption" })
 	public void Disabledveteran_NoVACreationBeyondDefaultLimitDatesExemption(String loginUser) throws Exception{
 		
@@ -81,7 +81,9 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 			
 			//Step4: Exemption creation
 			
-			exemptionPageObj.createNewExemptionWithMandatoryData(noVAData);
+			String exemption=exemptionPageObj.createNewExemptionWithMandatoryData(noVAData);
+			softAssert.assertContains(exemption,"EXMPTN", "SMAB-T1613:Verify that user is able to create Exemption for Parcels for specific PUC Codes from Parcels related Exemptions screen");
+			
 			//step4: 
 			/** Verifying corresponding VA's count
 			 **/
@@ -139,7 +141,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, "Qualified");
 		apasGenericObj.selectFromDropDown(exemptionPageObj.reasonNotQualified, "--None--");
 		objPage.Click(ExemptionsPage.saveButton);
-		Thread.sleep(50000);
+		apasGenericObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
 		ReportLogger.INFO("Updated Qualification from Not Qualified to Qualified ");
 		apasGenericObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
 		objPage.Click(exemptionPageObj.exemptionDetailsTab);
