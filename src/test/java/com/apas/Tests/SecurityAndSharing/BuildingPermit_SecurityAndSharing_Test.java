@@ -37,7 +37,7 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 	 Below test case is used to validate that BPP Auditor/Appraiser and BPP Principal should not be able to create/edit/delete building permit
 	 **/
 	@Test(description = "SMAB-T470: Validate that BPP Auditor/Appraiser and BPP Principal should not be able to create/edit/delete building permit", groups = {"smoke","regression","buildingPermit"}, dataProvider = "BPPAuditorAndPrincipal", dataProviderClass = DataProviders.class, alwaysRun = true)
-	public void verify_BuildingPermit_CREDPermissionValidation(String loginUser) throws Exception {
+	public void BuildingPermit_CREDPermissionValidation(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericFunctions.login(loginUser);

@@ -164,12 +164,9 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		Thread.sleep(2000);
 
 		//Step4: Save after entering 'Tree Removal' in Work Description. There should be an error
-		String expectedWorkDescriptionError = "No Process for Work Desc with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
-		String expectedFieldLevelError = "Complete this field";
-		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-			expectedWorkDescriptionError = "Description should not have the following ('Tree Removal', 'public works permits', 'temporary signs/banners')";
-			expectedFieldLevelError = "Complete this field.";
-		}
+		String expectedWorkDescriptionError = "Description should not have the following ('Tree Removal', 'public works permits', 'temporary signs/banners')";
+		String expectedFieldLevelError = "Complete this field.";
+
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.workDescriptionTxtBox,30);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,"Tree Removal");
 		objPage.Click(objBuildingPermitPage.saveButton);
@@ -229,10 +226,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step4: Validate the error message appeared for mandatory fields
 		String expectedErrorMessageOnTop = "These required fields must be completed: Estimated Project Value, Issue Date, Building Permit Number, APN, Permit City Code, County Strat Code Description, Work Description";
-		String expectedIndividualFieldMessage = "Complete this field";
-		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
-			expectedIndividualFieldMessage = "Complete this field.";
-		}
+		String expectedIndividualFieldMessage = "Complete this field.";
 		softAssert.assertEquals(objBuildingPermitPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error in manual entry pop up header.");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Building Permit Number'");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Parcel'");
@@ -280,10 +274,8 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objPage.scrollToElement(objBuildingPermitPage.warningMessage);
         
 		//Step7: Validate the error message appeared for mandatory fields
-		String expectedWarningMessage = "This record looks like a duplicate.View Duplicates";
-		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-			expectedWarningMessage = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
-		}
+		String expectedWarningMessage = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
+
 		softAssert.assertEquals(objBuildingPermitPage.warningMessage.getText(),expectedWarningMessage,"SMAB-T519: Warning Message validation for duplicate fields");
         
 		//Step8: Validation of the building permit after clicking on View Duplicate Link
@@ -701,10 +693,8 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Validation for mandatory fields
 		objPage.Click(objBuildingPermitPage.saveButton);
 		String expectedErrorMessageOnTop = "These required fields must be completed: Estimated Project Value, Issue Date, Building Permit Number, Owner Name, Permit City Code, Work Description";
-		String expectedIndividualFieldMessage = "Complete this field";
-		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-			expectedIndividualFieldMessage = "Complete this field.";
-		}
+		String expectedIndividualFieldMessage = "Complete this field.";
+
 		softAssert.assertEquals(objBuildingPermitPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T345: Validating mandatory fields missing error in manual entry pop up header.");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Building Permit Number'");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Estimated Project Value"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Estimated Project Value'");
@@ -724,10 +714,8 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		Thread.sleep(2000);
 
 		//Step4: Save after entering 'Tree Removal' in Work Description. There should be an error
-		String expectedWorkDescriptionError = "No Process for Work Desc with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
-		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-			expectedWorkDescriptionError = "Description should not have the following ('Tree Removal', 'public works permits', 'temporary signs/banners')";
-		}
+		String expectedWorkDescriptionError = "Description should not have the following ('Tree Removal', 'public works permits', 'temporary signs/banners')";
+
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.errorMsgOnTop),expectedWorkDescriptionError,"SMAB-T327: Warning message validation on the top when 'Work Description' field is having following values 'Tree Removal', 'public works permits', 'temporary signs/banners'");
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.workDescriptionTxtBox,30);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,"abc");
