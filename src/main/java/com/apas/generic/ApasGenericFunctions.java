@@ -306,6 +306,7 @@ public class ApasGenericFunctions extends TestBase {
     }
 
     public void selectFromDropDown(WebElement element, String value) throws Exception {
+        objPage.scrollToElement(element);
         objPage.Click(element);
 //        String xpathStr = "//div[contains(@class, 'left uiMenuList') and contains(@class, 'visible positioned')]//a[text() = '"+value+"']";
         String xpathStr = "//div[contains(@class, 'left uiMenuList') and contains(@class, 'visible positioned')]//a[text() = '"+value+"'] | //*[@role='option']//span[@class='slds-media__body']/span[text()='"+value+"']";

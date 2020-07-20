@@ -84,7 +84,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	
 	
 	@Test(description = "SMAB-T82:Verify the admin user is not able to select file for import with unacceptable formats using Upload button", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"smoke", "regression","EFileImport" })
+		"regression","EFileImport" })
 	public void EFile_verifyInvalidFileTypesNotAllowedToImport(String loginUser)throws Exception{
 
 		File dir=new File(EFileinvalidFormatFilepath);
@@ -352,7 +352,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	 */
 	
 	@Test(description = "SMAB-T68,SMAB-T90,SMAB-T915,SMAB-T101,SMAB-T1512:Verify that user without permission is not able to revert the records from file", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"smoke", "regression","EFileImport" })
+		"regression","EFileImport" })
 	public void EFileIntake_VerifyValidationAfterRevertedStatus(String loginUser) throws Exception{
 		apasGenericObj.login(loginUser);
 		String period = "Adhoc";
@@ -432,7 +432,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	
 	
 	@Test(description = "SMAB-T28:Verify that user without permission is not able to revert the records from file", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"smoke", "regression","EFileImport" })	
+		"regression","EFileImport" })
 	public void EFileIntake_VerifyRevertNotAllowedForUnAssigednUser(String loginUser) throws Exception{
 		
 		//String period = objUtil.getCurrentDate("MMMM YYYY");
@@ -617,7 +617,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T102:Verify user is able to see number of records count from file import action on 'E-File Import Logs' screen", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"smoke", "regression","EFileImport" })
+		"regression","EFileImport" })
 	public void EFileIntake_VerifyFileTypeAndCorrespondingSources(String loginUser) throws Exception{
 	//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		apasGenericObj.login(loginUser);
@@ -656,7 +656,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T1144:Verify that user is not able to upload a file if a file is already 'In Progress' status for the selected 'File type' ,'Source' and 'Period'", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"smoke", "regression","EFileImport" })	
+		"regression","EFileImport" })
 	public void EFileIntake_VerifyFileNotimportedIfAlreadyInProgress(String loginUser) throws Exception{
 		String period = "Adhoc";
 		String fileType="Building Permit";

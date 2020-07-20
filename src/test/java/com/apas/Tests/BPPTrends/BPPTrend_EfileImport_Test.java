@@ -82,7 +82,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 4. Validating status post reverting error records on history page
 	 */
 	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
-	public void verify_BppTrend_BoeIndexFileImportDiscardErrorRecordsAndRevert(String loginUser) throws Exception {
+	public void BppTrend_BoeIndexFileImportDiscardErrorRecordsAndRevert(String loginUser) throws Exception {
 		//Step1: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
@@ -239,7 +239,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 6. Validating status post approving on history page and transaction import logs page
 	 */
 	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
-	public void verify_BppTrend_BoeIndexImportRetryErrorRecordsAndApprove(String loginUser) throws Exception {
+	public void BppTrend_BoeIndexImportRetryErrorRecordsAndApprove(String loginUser) throws Exception {
 		//Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
@@ -416,8 +416,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 3. Validating revert functionality of error records
 	 * 4. Validating status post reverting error records on history page
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111: Discarding error records and reverting import for BOE valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
-	public void verify_BppTrend_BoeValFileImportDiscardErrorRecordsAndRevert(String loginUser) throws Exception {
+	@Test(description = "SMAB-T106,SMAB-T111: Discarding error records and reverting import for BOE valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
+	public void BppTrend_BoeValFileImportDiscardErrorRecordsAndRevert(String loginUser) throws Exception {
 		//Step1: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
@@ -588,8 +588,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 5. Approving all records
 	 * 6. Validating status post approving on history page and transaction import logs page
 	 */
-	@Test(description = "SMAB-T111,SMAB-T91: Correcting error records and retrying an approving them in BOE Valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
-	public void verify_BppTrend_BoeValImportRetryErrorRecordsAndApprove(String loginUser) throws Exception {
+	@Test(description = "SMAB-T111,SMAB-T91: Correcting error records and retrying an approving them in BOE Valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
+	public void BppTrend_BoeValImportRetryErrorRecordsAndApprove(String loginUser) throws Exception {
 		//Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
@@ -774,8 +774,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 4. Validating revert functionality of error records:: TestCase/JIRA ID: SMAB-T955
 	 * 5. Validating status post reverting error records on history page
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T955,SMAB-T956: Discarding error records and reverting import for CAA valuation file", dataProvider = "loginBppAndRpBusinessAdminUsers", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
-	public void verify_BppTrend_CaaValFileImportDiscardErrorRecordsAndRevert(String loginUser) throws Exception {
+	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T955,SMAB-T956: Discarding error records and reverting import for CAA valuation file", dataProvider = "loginBppAndRpBusinessAdminUsers", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
+	public void BppTrend_CaaValFileImportDiscardErrorRecordsAndRevert(String loginUser) throws Exception {
 		//Step1: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
@@ -970,8 +970,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 5. Approving all records:: TestCase/JIRA ID: SMAB-T957
 	 * 6. Validating status post approving on history page and transaction import logs page
 	 */
-	@Test(description = "SMAB-T111,SMAB-T957,SMAB-T958: Correcting error records and retrying an approving them in CAA Valuation file", dataProvider = "loginBppAndRpBusinessAdminUsers", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
-	public void verify_BppTrend_CaaValImportRetryErrorRecordsAndApprove(String loginUser) throws Exception {
+	@Test(description = "SMAB-T111,SMAB-T957,SMAB-T958: Correcting error records and retrying an approving them in CAA Valuation file", dataProvider = "loginBppAndRpBusinessAdminUsers", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
+	public void BppTrend_CaaValImportRetryErrorRecordsAndApprove(String loginUser) throws Exception {
 		//Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
@@ -1186,8 +1186,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Validating the restrictions on uploading file with .TXT format:: TestCase/JIRA ID: SMAB-T112
 	 * 3. Validating the restrictions on uploading file with .XLS format:: TestCase/JIRA ID: SMAB-T112
 	 */
-	@Test(description = "SMAB-T112: Validating restrictions on uploading BPP Trends data files in invalid format", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
-	public void verify_BppTrend_ImportWithInvalidFormat(String loginUser) throws Exception {		
+	@Test(description = "SMAB-T112: Validating restrictions on uploading BPP Trends data files in invalid format", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
+	public void BppTrend_ImportWithInvalidFormat(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business administrator)
 		ExtentTestManager.getTest().log(LogStatus.INFO, "* Log into application with user: "+ loginUser);
 		objApasGenericFunctions.login(loginUser);
@@ -1251,7 +1251,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 		i. Index / Average value beyond range
 	 */
 	@Test(description = "SMAB-T105: Validating transformation rules on BOE Index file import", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
-	public void verify_BppTrend_TransformationRules_On_BoeIndexAndPercentFactors_Import(String loginUser) throws Exception {
+	public void BppTrend_TransformationRules_On_BoeIndexAndPercentFactors_Import(String loginUser) throws Exception {
 		//Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");

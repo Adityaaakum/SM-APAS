@@ -144,7 +144,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	 1. Error appearing if mandatory fields are not filled while editing the existing building permit record
 	 2. Save the record after updating the value in a field
 	 **/
-	@Test(description = "SMAB-T466,SMAB-T349,SMAB-T419: Mandatory Field Validation while editing manual building permit and editing a record", groups = {"smoke","regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T466,SMAB-T349,SMAB-T419: Mandatory Field Validation while editing manual building permit and editing a record", groups = {"regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_EditAndValidateRequiredFieldsValidationsForExistingPermit(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -164,12 +164,9 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		Thread.sleep(2000);
 
 		//Step4: Save after entering 'Tree Removal' in Work Description. There should be an error
-		String expectedWorkDescriptionError = "No Process for Work Desc with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
-		String expectedFieldLevelError = "Complete this field";
-		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-			expectedWorkDescriptionError = "Description should not have the following ('Tree Removal', 'public works permits', 'temporary signs/banners')";
-			expectedFieldLevelError = "Complete this field.";
-		}
+		String expectedWorkDescriptionError = "Description should not have the following ('Tree Removal', 'public works permits', 'temporary signs/banners')";
+		String expectedFieldLevelError = "Complete this field.";
+
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.workDescriptionTxtBox,30);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,"Tree Removal");
 		objPage.Click(objBuildingPermitPage.saveButton);
@@ -229,10 +226,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step4: Validate the error message appeared for mandatory fields
 		String expectedErrorMessageOnTop = "These required fields must be completed: Estimated Project Value, Issue Date, Building Permit Number, APN, Permit City Code, County Strat Code Description, Work Description";
-		String expectedIndividualFieldMessage = "Complete this field";
-		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
-			expectedIndividualFieldMessage = "Complete this field.";
-		}
+		String expectedIndividualFieldMessage = "Complete this field.";
 		softAssert.assertEquals(objBuildingPermitPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error in manual entry pop up header.");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Building Permit Number'");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Parcel'");
@@ -280,10 +274,8 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objPage.scrollToElement(objBuildingPermitPage.warningMessage);
         
 		//Step7: Validate the error message appeared for mandatory fields
-		String expectedWarningMessage = "This record looks like a duplicate.View Duplicates";
-		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-			expectedWarningMessage = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
-		}
+		String expectedWarningMessage = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
+
 		softAssert.assertEquals(objBuildingPermitPage.warningMessage.getText(),expectedWarningMessage,"SMAB-T519: Warning Message validation for duplicate fields");
         
 		//Step8: Validation of the building permit after clicking on View Duplicate Link
@@ -701,10 +693,8 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Validation for mandatory fields
 		objPage.Click(objBuildingPermitPage.saveButton);
 		String expectedErrorMessageOnTop = "These required fields must be completed: Estimated Project Value, Issue Date, Building Permit Number, Owner Name, Permit City Code, Work Description";
-		String expectedIndividualFieldMessage = "Complete this field";
-		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-			expectedIndividualFieldMessage = "Complete this field.";
-		}
+		String expectedIndividualFieldMessage = "Complete this field.";
+
 		softAssert.assertEquals(objBuildingPermitPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T345: Validating mandatory fields missing error in manual entry pop up header.");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Building Permit Number'");
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Estimated Project Value"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Estimated Project Value'");
@@ -724,10 +714,8 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		Thread.sleep(2000);
 
 		//Step4: Save after entering 'Tree Removal' in Work Description. There should be an error
-		String expectedWorkDescriptionError = "No Process for Work Desc with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
-		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-			expectedWorkDescriptionError = "Description should not have the following ('Tree Removal', 'public works permits', 'temporary signs/banners')";
-		}
+		String expectedWorkDescriptionError = "Description should not have the following ('Tree Removal', 'public works permits', 'temporary signs/banners')";
+
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.errorMsgOnTop),expectedWorkDescriptionError,"SMAB-T327: Warning message validation on the top when 'Work Description' field is having following values 'Tree Removal', 'public works permits', 'temporary signs/banners'");
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.workDescriptionTxtBox,30);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,"abc");
@@ -793,6 +781,48 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objPage.waitUntilElementIsPresent(xpathUpdatedBuildingPermit,10);
 		List<WebElement> webElementBuildingPermitAfterUpdate = driver.findElements(By.xpath(xpathUpdatedBuildingPermit));
 		softAssert.assertTrue(webElementBuildingPermitAfterUpdate.size() == 1,"SMAB-T912: Validating that building permit " + updatedBuildingPermitNumber + " should be visible in the system as it has been updated with new building permit number");
+
+		//Logout at the end of the test
+		objApasGenericFunctions.logout();
+	}
+
+	/**
+	 Below test case is used to validate that APN is mandatory only for Processing Status= "Process" while updating Building Permit records imported through E-File
+	 **/
+	@Test(description = "SMAB-T1537: Validation for mandatory APN on building permits imported through e-file when processing status is 'Process'", groups = {"regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class, alwaysRun = true)
+	public void BuildingPermit_ApnMandatoryForProcess(String loginUser) throws Exception {
+
+		//Fetch the APN to be used to create building permit
+		String queryRecordType ="SELECT Id FROM RecordType where name = 'E-File Building Permit'";
+		HashMap<String, ArrayList<String>> responseRecordType = salesforceAPI.select(queryRecordType);
+		String efileBuildingPermitType = responseRecordType.get("Id").get(0);
+		String queryBuildingPermitEfile ="SELECT Name,City_APN__C,City_strat_code__C FROM Building_Permit__c where RecordTypeId = '" + efileBuildingPermitType + "' and City_APN__C = '' and processing_status__C = 'No Process' and City_strat_code__C != '' limit 1";
+		HashMap<String, ArrayList<String>> responseBuildingPermit = salesforceAPI.select(queryBuildingPermitEfile);
+		String buildingPermitNumber = responseBuildingPermit.get("Name").get(0);
+
+		ReportLogger.INFO("Efile Building Permit fetched through Salesforce API : " + buildingPermitNumber);
+
+		//Step1: Login to the APAS application using the user passed through the data provider
+		objApasGenericFunctions.login(loginUser);
+
+		//Step2: Opening the building permit module
+		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+
+		//Step3: Open an existing E-file Building Permit record
+		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
+		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,10);
+		objPage.Click(objBuildingPermitPage.editButton);
+		objPage.waitForElementToBeClickable(objBuildingPermitPage.buildingPermitNumberTxtBox,10);
+
+		//Step4: Update the processing status as "Process" and APN should be mandatory
+		ReportLogger.INFO("Updating processing status as 'Process' in the existing E-File Building Permit record with Building Permit Number : " + buildingPermitNumber);
+		//Step5: Update the values
+		objBuildingPermitPage.selectOptionFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "Process");
+		objPage.Click(objBuildingPermitPage.saveButton);
+
+		String expectedMandatoryAPNError = "APN required for Process";
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),expectedMandatoryAPNError,"SMAB-T1537: Warning message validation at the field level 'Work Description' field is not entered while editing the building permit record");
+		objPage.Click(objBuildingPermitPage.cancelButton);
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();

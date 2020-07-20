@@ -54,7 +54,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 	 3. Status validation of imported file on efile import transaction log screen
 	 **/
 	@Test(description = "SMAB-T362,SMAB-T363,SMAB-T315,SMAB-T417,SMAB-T360,SMAB-T458,SMAB-T459,SMAB-T619,SMAB-T621,SMAB-T624,SMAB-T625,SMAB-T456,SMAB-T457,SMAB-T549,SMAB-T435: Transaction record verification for the imported Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
-	public void verify_BuildingPermit_DiscardAndApprove(String loginUser) throws Exception {
+	public void BuildingPermit_DiscardAndApprove(String loginUser) throws Exception {
 
 		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "OneValidAndTwoInvalidRecordsForPermitValue.txt";
 
@@ -134,7 +134,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 	 Below test case is used to validate the building permit data imported through Efile Intake
 	 **/
 	@Test(description = "SMAB-T354,SMAB-T356,SMAB-T383,SMAB-T440: Validate the data on records imported through E-file intake module", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, enabled = true)
-	public void verify_BuildingPermit_ThroughEFileImportTool(String loginUser) throws Exception {
+	public void BuildingPermit_ThroughEFileImportTool(String loginUser) throws Exception {
 
 		//Reverting the Approved Import logs if any in the system
 		//step1:Reverting the Approved Import logs if any in the system
@@ -249,7 +249,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 	 Below test case is used to validate the revert functionality on the file having the error records
 	 **/
 	@Test(description = "SMAB-T361,SMAB-T358,SMAB-T970,SMAB-T25: Reverting the error records in building permit import", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"},alwaysRun = true, enabled = true)
-	public void verify_BuildingPermit_Revert(String loginUser) throws Exception {
+	public void BuildingPermit_Revert(String loginUser) throws Exception {
 
 		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "OneValidAndTwoInvalidRecordsForPermitValue.txt";
 
@@ -303,7 +303,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 	 Below test case is used to validate the retry functionality after correction on the records in error
 	 **/
 	@Test(description = "SMAB-T364, SMAB-T435,SMAB-T570: Retrying the error records in building permit import", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
-	public void verify_BuildingPermit_RetryErrorRecords(String loginUser) throws Exception {
+	public void BuildingPermit_RetryErrorRecords(String loginUser) throws Exception {
 
 		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "OneValidAndTwoInvalidRecordsForPermitValue.txt";
 
@@ -377,8 +377,8 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 	/**
 	 Below test case is used to validate that building permit should only be visible after approval
 	 **/
-	@Test(description = "SMAB-T661,SMAB-T913: Validation for building permit record creation after import is approved", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, enabled = true)
-	public void verify_BuildingPermit_RecordCreationAfterImportApproved(String loginUser) throws Exception {
+	@Test(description = "SMAB-T661,SMAB-T913: Validation for building permit record creation after import is approved", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"regression","buildingPermit"}, enabled = true)
+	public void BuildingPermit_RecordCreationAfterImportApproved(String loginUser) throws Exception {
 
 		//Step1: Creating temporary file with random building permit number
 		String buildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");

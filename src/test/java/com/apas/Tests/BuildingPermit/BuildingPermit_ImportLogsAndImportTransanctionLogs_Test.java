@@ -50,7 +50,7 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 	 Below test case is used to validate Import Logs of the imported Atherton Building Permit file which in txt format
 	 **/
 	@Test(description = "SMAB-T431,SMAB-T430,SMAB-T662,SMAB-T92,SMAB-T93: Import Logs and Transactions verification for the imported Atherton Building Permit file in txt format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
-	public void verify_ImportLogsAndTransactions_BuildingPermitAtherton(String loginUser) throws Exception {
+	public void ImportLogsAndTransactions_BuildingPermitAtherton(String loginUser) throws Exception {
 
 		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "OneValidAndTwoInvalidRecordsForPermitValue.txt";
 
@@ -114,8 +114,8 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 	/**
 	 Below test case is used to validate Import Logs of the imported San Mateo Building Permit file which in xls format
 	 **/
-	@Test(description = "SMAB-T431,SMAB-T95,SMAB-T96: Import Logs and Transactions verification for the imported San Mateo Building Permit file in xls format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
-	public void verify_ImportLogsAndTransactions_BuildingPermitSanMateo(String loginUser) throws Exception {
+	@Test(description = "SMAB-T431,SMAB-T95,SMAB-T96: Import Logs and Transactions verification for the imported San Mateo Building Permit file in xls format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"regression","buildingPermit"}, alwaysRun = true, enabled = true)
+	public void ImportLogsAndTransactions_BuildingPermitSanMateo(String loginUser) throws Exception {
 		String sanMateoBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "SanMateoBuildingPermitsWithValidAndInvalidData.xlsx";
 
 		//Pre-requisite : Reverting the Approved Import logs if any in the system
