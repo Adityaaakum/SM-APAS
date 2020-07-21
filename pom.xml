@@ -155,12 +155,6 @@
 			<artifactId>commons-csv</artifactId>
 			<version>1.1</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
-		<dependency>
-			<groupId>com.googlecode.json-simple</groupId>
-			<artifactId>json-simple</artifactId>
-			<version>1.1.1</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/ru.yandex.qatools.ashot/ashot -->
 		<dependency>
 			<groupId>ru.yandex.qatools.ashot</groupId>
@@ -214,7 +208,7 @@
 							</property>
 							<property>
 								<name>listener</name>
-								<value>com.apas.Listeners.SuiteListener,com.apas.Listeners.TestAnnotationListener</value>
+								<value>com.apas.Listeners.SuiteListener,com.apas.Listeners.TestAnnotationListener,com.apas.Listeners.RetryListener</value>
 							</property>
 						</properties>
 						<forkCount>0</forkCount>
