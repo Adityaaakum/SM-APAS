@@ -80,8 +80,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		
 		ReportLogger.INFO("Exemption: "+exemptionName + " is created");
 		objPage.waitUntilPageisReady(driver);	
-		
-		String endDateOfrating=objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.endDateOfRatingOnExemption));
+		String endDateOfrating=objExemptionsPage.endDateOfRatingOnExemption.getText();
 		String maxDate=DateUtil.determineMaxDate(objExemptionsPage.dateAquiredPropertyExemptionDetails.getText(),objExemptionsPage.dateOccupyPropertyExemptionDetails.getText(),objExemptionsPage.effectiveDateOfUSDVAExemptionDetails.getText());
 		String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
 		String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
