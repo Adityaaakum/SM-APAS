@@ -278,7 +278,6 @@ public class ApasGenericPage extends Page {
 		String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//th//a[text() = '"+ modRecordName +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
 		WebElement modificationsIcon = locateElement(xpathStr, 30);
 		if (modificationsIcon != null){
-		//if(isElementAvailable(modificationsIcon, 30)) {
 			clickAction(modificationsIcon);
 			ReportLogger.INFO(modRecordName + " record exist and user is able to click Show More button against it");
 			return true;
@@ -302,7 +301,6 @@ public class ApasGenericPage extends Page {
 			String xpathStr = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
 			WebElement actionElement = locateElement(xpathStr, 30);
 				if (actionElement != null){
-				//if (isElementAvailable(actionElement, 30)){
 					clickAction(actionElement);
 					Thread.sleep(2000);
 					flag=true;
@@ -316,45 +314,6 @@ public class ApasGenericPage extends Page {
 		return flag;
 	}	
 	
-	
-	
-	
-	/*public boolean clickShowMoreButtonAndAct(String screenName, String modRecordName, String action) throws Exception {       
-		Thread.sleep(1000);
-		String xpathStr1="";
-		Boolean flag=false;
-	
-	    if (screenName == "Roll Year Settings") xpathStr1 = "//a[@title='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[9]//span//div//a//lightning-icon";
-	    if (screenName == "Exemptions") xpathStr1 = "//a[@data-recordid='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[6]//span//div//a//lightning-icon";
-   
-        WebElement showMoreIcon = locateElement(xpathStr1, 3);
-        if (showMoreIcon != null){
-        	ReportLogger.INFO(screenName + " record exist");
-        	Click(showMoreIcon);
-        	Thread.sleep(1000);
-        	String xpathStr2 = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
-        	WebElement actionOnShowMoreIcon = locateElement(xpathStr2, 3);
-        	
-        	if(actionOnShowMoreIcon != null){
-        		clickAction(actionOnShowMoreIcon);
-        		Thread.sleep(1000);
-        		flag=true;
-        		if (action.equals("Delete")){
-        			Click(deleteConfirmationPostDeleteAction);
-        			ReportLogger.INFO("Existing " + screenName + " record is deleted");
-        			Thread.sleep(2000);
-        		}
-        	}
-        	else{
-    			ReportLogger.INFO("'" + action + "' option is not visible for the user");
-    		}	
-        } 
-        else{
-			ReportLogger.INFO(screenName + " record doesn't exist");
-		}
-        
-        return flag;
-    }*/
 	
 	/**
 	 * Description: This method will enter date
