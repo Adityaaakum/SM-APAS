@@ -138,6 +138,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		
 		
 		objPage.Click(exemptionPageObj.editExemption);
+		objPage.waitForElementToBeClickable(exemptionPageObj.qualification,10);
 		apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, "Qualified");
 		apasGenericObj.selectFromDropDown(exemptionPageObj.reasonNotQualified, "--None--");
 		objPage.Click(ExemptionsPage.saveButton);
@@ -413,6 +414,7 @@ public void Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(St
 			{
 				//verifying Annual form received date should not be less than Application received date
 				ReportLogger.INFO("Verifying Annual Form Received date can not be less than Application received date");	
+				objPage.scrollToTop();
 				objPage.Click(vaPageObj.editButton);
 				objPage.waitForElementToBeClickable(vaPageObj.vaEditDeterminationDropDown, 10);
 				apasGenericObj.selectFromDropDown(vaPageObj.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
