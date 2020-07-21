@@ -81,6 +81,9 @@ public class EFileImportTransactionsPage extends Page {
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(text(),'Total Error Records')]/parent::div/following-sibling::div//lightning-formatted-number")	
 	public WebElement transactionErrorCount;
 	
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//table//tr//a[contains(.,'Trail')]")	
+	public List<WebElement> transactionTrailrecordsCount;
+	
 	/**
 	 * Description: This method will open the Import Transactions with the Name passed in the parameter
 	 * @param name: Name of the Import Log
