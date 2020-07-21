@@ -1007,7 +1007,12 @@ public String fetchAssesseeName() {
 		
 		objSalesforceAPI.update("Real_Property_Settings_Library__c",notApprovedRPSLQuery,"Status__c","Approved");	
 		String openRollYear="Select id From Roll_Year_Settings__c where Status__c = 'Open' and Roll_Year__c!='"+currentRollYear+"' and Roll_Year__c>='"+lastRolYearToVerify+"' and Roll_Year__c<'"+currentRollYear+"' order by name desc";	
-		objSalesforceAPI.update("Roll_Year_Settings__c",openRollYear,"Status__c","Closed");}
+		objSalesforceAPI.update("Roll_Year_Settings__c",openRollYear,"Status__c","Closed");
+		}
+		//Verifying if any previous 9 Year's Roll Year objects are open and if open closing the same
+		String openRollYear="Select id From Roll_Year_Settings__c where Status__c = 'Open' and Roll_Year__c!='"+currentRollYear+"' and Roll_Year__c>='"+lastRolYearToVerify+"' and Roll_Year__c<'"+currentRollYear+"' order by name desc";	
+		objSalesforceAPI.update("Roll_Year_Settings__c",openRollYear,"Status__c","Closed");
+				
 
 		}
 
