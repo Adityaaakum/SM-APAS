@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.relevantcodes.extentreports.LogStatus;
 
 import java.text.SimpleDateFormat;
@@ -73,6 +74,9 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath = "//span[text()='Delete']")
 	public WebElement deleteConfirmationPostDeleteAction;
+	
+	@FindBy(xpath = "//h2[@class='slds-truncate slds-text-heading_medium']")
+	public WebElement popUpErrorMessageWeHitASnag;
 
 	/*	Sikander Bhambhu:
 	 *	Next 7 locators are for handling date picker
@@ -225,9 +229,6 @@ public class ApasGenericPage extends Page {
 	 */
 	public void searchAndSelectOptionFromDropDown(WebElement element, String value) throws Exception {
 		enter(element, value);
-		//String xpathStr = "//mark[text() = '" + value.toUpperCase() + "']";
-		//WebElement drpDwnOption = locateElement(xpathStr, 30);
-
 		String xpathStr = "//div[@title='" + value.toUpperCase() + "'] | //mark[text() = '" + value + "']";
 		WebElement drpDwnOption = locateElement(xpathStr, 20);
 		waitForElementToBeVisible(drpDwnOption, 10);
@@ -260,7 +261,7 @@ public class ApasGenericPage extends Page {
 		String url = driver.getCurrentUrl();
 		String recordId = url.split("/")[6];
 		driver.navigate().refresh();
-		ExtentTestManager.getTest().log(LogStatus.INFO, Mod + " record id - " + recordId);
+		ReportLogger.INFO(Mod + " record id - " + recordId);
 		Thread.sleep(1000);
 		return recordId;
 	
@@ -268,44 +269,77 @@ public class ApasGenericPage extends Page {
 	
 	
 	/**
+	 * @description: Clicks on the show more link displayed against the given entry
+	 * @param entryDetails: Name of the entry displayed on grid which is to be accessed
+	 * @throws Exception
+	 */
+	public Boolean clickShowMoreButton(String modRecordName) throws Exception {		
+		Thread.sleep(2000);
+		String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//th//a[text() = '"+ modRecordName +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
+		WebElement modificationsIcon = locateElement(xpathStr, 30);
+		if (modificationsIcon != null){
+			clickAction(modificationsIcon);
+			ReportLogger.INFO(modRecordName + " record exist and user is able to click Show More button against it");
+			return true;
+		}
+		else{
+			ReportLogger.INFO(modRecordName + " record doesn't exist");
+			return false;
+		}	
+	}
+	
+	/**
 	 * Description: This method will click 'Show More Button' on the Screen
 	 * @param screenName: Screen Name
 	 * @param modRecordName: Record Number
 	 * @param action: Action user want to perform - Edit/Delete
+	 * @return: Boolean value
 	 */
-	public void clickShowMoreButtonAndAct(String screenName, String modRecordName, String action) throws Exception {       
-		Thread.sleep(1000);
-		String xpathStr1="";
-	    if (screenName == "Roll Year Settings") {
-        		xpathStr1 = "//a[@title='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[9]//span//div//a//lightning-icon";
-        	}
-	    if (screenName == "Exemptions") {
-    		xpathStr1 = "//a[@data-recordid='" + modRecordName + "']//parent::span//parent::th//following-sibling::td[6]//span//div//a//lightning-icon";
-    		}
-        WebElement showMoreIcon = locateElement(xpathStr1, 3);
-        if (showMoreIcon != null){
-        	ExtentTestManager.getTest().log(LogStatus.INFO, screenName + " record exist");
-        	Click(showMoreIcon);
-        	Thread.sleep(1000);
-        	String xpathStr2 = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
-        	WebElement actionOnShowMoreIcon = locateElement(xpathStr2, 3);
-        	
-        	if(actionOnShowMoreIcon != null){
-        		clickAction(actionOnShowMoreIcon);
-        		Thread.sleep(1000);
-        		if (action.equals("Delete")){
-        			Click(deleteConfirmationPostDeleteAction);
-        			ExtentTestManager.getTest().log(LogStatus.INFO, "Existing " + screenName + "record is deleted");
-        			Thread.sleep(2000);
-        		}
-        	}
-        	else{
-    			ExtentTestManager.getTest().log(LogStatus.INFO, "'" + action + "' option is not visible for the user");
-    		}	
-        } 
-        else{
-			ExtentTestManager.getTest().log(LogStatus.INFO, screenName + " record doesn't exist");
+	public Boolean clickShowMoreButtonAndAct(String modRecordName, String action) throws Exception { 
+		Boolean flag=false;
+		if (clickShowMoreButton(modRecordName)){
+			String xpathStr = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
+			WebElement actionElement = locateElement(xpathStr, 30);
+				if (actionElement != null){
+					clickAction(actionElement);
+					Thread.sleep(2000);
+					flag=true;
+					if (action.equals("Delete")){
+						Click(deleteConfirmationPostDeleteAction);
+						ReportLogger.INFO("Delete " + modRecordName + " record");
+						Thread.sleep(2000);
+					}
+				}
 		}
-    }
+		return flag;
+	}	
+	
+	
+	/**
+	 * Description: This method will enter date
+	 * @param element: locator of element where date need to be put in
+	 * @param date: date to enter
+	 */
 
+	public void enterDate(WebElement element, String date) throws Exception {
+		Click(element);
+		selectDateFromDatePicker(date);
+	}
+	
+	/**
+	 * Description: This method will return element from the pop-up error message that appear on Detail page
+	 * @param value: field name
+	 */
+	
+	public WebElement returnElemOnPopUpScreen(String value) throws Exception {
+		String xpathStr = "";
+		if (value.contains("Claimant's") || value.contains("Veteran's")) {
+			xpathStr = "//a[contains(text()," + "\"" + value + "\"" + ")]";
+		}else{
+			xpathStr = "//a[contains(text(),'" + value + "')]";
+		}
+		WebElement elementOnPopUp = locateElement(xpathStr, 200);
+		return elementOnPopUp;
+	}
+	
 }

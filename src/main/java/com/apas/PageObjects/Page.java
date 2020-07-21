@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
+
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -1156,6 +1157,7 @@ public class Page {
 			}
 		}
 	}
+	
 	/**
 	 * Description: Checks whether element is displayed on the web page
 	 * @param element: WebElement whose availability is to be checked
@@ -1184,7 +1186,6 @@ public class Page {
 	 * @return boolean: Returns true / false bases on comparison of values	
 	 * @throws: Exception	
 	 */
-	
 	public boolean compareDropDownvalues(String actualvalues,String expectedSourcesBPP) {
 		String []allexpectedvalues=expectedSourcesBPP.split("\n");
 		String valueNotpresent = "";

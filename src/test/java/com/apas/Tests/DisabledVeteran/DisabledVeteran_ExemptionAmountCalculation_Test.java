@@ -75,12 +75,11 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		String mandatoryExemptionData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;	
 		Map<String, String> createExmeptiondataMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields");
 		createExmeptiondataMap.put("Veteran Name", createExmeptiondataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(createExmeptiondataMap);
+		objExemptionsPage.createExemption(createExmeptiondataMap);
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		
-		ReportLogger.INFO("Exemption: "+exemptionName + "is created");
+		ReportLogger.INFO("Exemption: "+exemptionName + " is created");
 		objPage.waitUntilPageisReady(driver);	
-		
 		String endDateOfrating=objExemptionsPage.endDateOfRatingOnExemption.getText();
 		String maxDate=DateUtil.determineMaxDate(objExemptionsPage.dateAquiredPropertyExemptionDetails.getText(),objExemptionsPage.dateOccupyPropertyExemptionDetails.getText(),objExemptionsPage.effectiveDateOfUSDVAExemptionDetails.getText());
 		String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
@@ -147,7 +146,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		String mandatoryExemptionData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;	
 		Map<String, String> createExmeptiondataMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields");
 		createExmeptiondataMap.put("Veteran Name", createExmeptiondataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(createExmeptiondataMap);
+		objExemptionsPage.createExemption(createExmeptiondataMap);
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		
 		ReportLogger.INFO("Exemption: "+exemptionName + " is created");

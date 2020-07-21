@@ -21,9 +21,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
+import com.apas.generic.ApasGenericFunctions;
 import com.gargoylesoftware.htmlunit.javascript.host.dom.Document;
 import com.relevantcodes.extentreports.LogStatus;
 
@@ -32,6 +34,8 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	Util objUtil;
 	ApasGenericPage objApasGenericPage;
 	SalesforceAPI objSalesforceAPI;
+	ApasGenericFunctions apasGenericObj;
+	Page objPage;
 
 	public RollYearSettingsPage(RemoteWebDriver driver) {
 		super(driver);
@@ -39,6 +43,8 @@ public class RollYearSettingsPage extends ApasGenericPage {
 		objUtil = new Util();
 		objApasGenericPage = new ApasGenericPage(driver);
 		objSalesforceAPI = new SalesforceAPI();
+		apasGenericObj= new ApasGenericFunctions(driver);
+		objPage=new Page(driver);
 	}
 	
 	
@@ -57,10 +63,10 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	public WebElement rollYear;
 
 	@FindBy(xpath = "//span[text() = 'Open Roll Start Date']//parent::label//following-sibling::div//input[@class=' input']")
-	public WebElement fiscalStartDate;
+	public WebElement openRollStartDate;
 
 	@FindBy(xpath = "//span[text() = 'Open Roll End Date']//parent::label//following-sibling::div//input[@class=' input']")
-	public WebElement fiscalEndDate;
+	public WebElement openRollEndDate;
 
 	@FindBy(xpath = "//span[text() = 'Calendar Start Date']//parent::label//following-sibling::div//input[@class=' input']")
 	public WebElement calendarStartDate;
@@ -108,13 +114,13 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	public WebElement errorOnTaxEndDate;
 	
 	@FindBy(xpath = "//li[text()= " + "\"" + "Start Date" + "'s" + " year should be one year less of selected Roll Year" + "\"]")
-	public WebElement errorOnFiscalStartDate;
+	public WebElement errorOnOpenRollStartDate;
 	
 	@FindBy(xpath = "//li[text()='End Date year should be same as Roll Year']")
-	public WebElement errorOnFiscalEndDate1;
+	public WebElement errorOnOpenRollEndDate1;
 	
 	@FindBy(xpath = "//li[text()='End Date must be greater than Start Date']")
-	public WebElement errorOnFiscalEndDate2;
+	public WebElement errorOnOpenRollEndDate2;
 	
 	@FindBy(xpath = "//li[text()='Calendar Start Date year should be same as Roll Year']")
 	public WebElement errorOnCalendarStartDate;
@@ -133,12 +139,6 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//span[text() = 'Roll Year']//parent::div//following-sibling::div//lightning-formatted-text")
 	public WebElement rollYearOnDetailPage;
-	
-	@FindBy(xpath = "//span[text() = 'Fiscal Start Date']//parent::div//following-sibling::div//lightning-formatted-text")
-	public WebElement fiscalStartDateOnDetailPage;
-	
-	@FindBy(xpath = "//span[text() = 'Fiscal End Date']//parent::div//following-sibling::div//lightning-formatted-text")
-	public WebElement fiscalEndDateOnDetailPage;
 	
 	@FindBy(xpath = "//span[text() = 'Calendar Start Date']//parent::div//following-sibling::div//lightning-formatted-text")
 	public WebElement calendarStartDateOnDetailPage;
@@ -192,7 +192,7 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	public WebElement taxStartDateOnDetailEditPage;
 	
 	
-	/*	Next 4 locators are for validating error messages for duplicate Exemption or missing details
+	/*	Next 4 locators are for validating error messages for duplicate Roll Year or missing details
 	 *	These would be moved to common package/class
 	 * */
 	
@@ -210,45 +210,18 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	
 	
 	/**
-	 * Description: This method will enter date
-	 * @param element: locator of element where date need to be put in
-	 * @param date: date to enter
-	 */
-	
-	public void enterDate(WebElement element, String date) throws Exception {
-		Click(element);
-		objApasGenericPage.selectDateFromDatePicker(date);
-	}
-	
-	
-	/**
 	 * Description: This method will save a Roll Year record with no values entered
 	 */
 	public void saveRollYearRecordWithNoValues() throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'New' button to open a Roll Year record");
+		ReportLogger.INFO("Click 'New' button to open a Roll Year record");
 		Thread.sleep(2000);
 		Click(waitForElementToBeClickable(newRollYearButton));
 		waitForElementToBeClickable(rollYearSettings);
 		waitForElementToBeClickable(rollYear);
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Without entering any data on the Roll Year record, click 'Save' button");
+		ReportLogger.INFO("Without entering any data on the Roll Year record, click 'Save' button");
 		Click(saveButton);
 		Thread.sleep(1000);
 	}
-	
-	
-	/**
-	 * Description: This method will select from dropdown
-	 * @param element: locator of element where date need to be put in
-	 * @param value: field value to enter
-	 */
-	
-	public void selectFromDropDown(WebElement element, String value) throws Exception {
-		Click(element);
-		String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 200);
-		drpDwnOption.click();
-	}
-	
 	
 	/**
 	 * Description: This method includes other methods and creates/updates a Roll Year record
@@ -256,7 +229,7 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	 */
 	
 	public void createOrUpdateRollYearRecord(Map<String, String> dataMap, String action) throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click '" + action + "' button to open a Roll Year record");
+		ReportLogger.INFO("Click '" + action + "' button to open a Roll Year record");
 		Thread.sleep(1000);
 		if (action == "New") Click(waitForElementToBeClickable(newRollYearButton));
 		if (action == "Edit") Click(waitForElementToBeClickable(editButton));
@@ -264,12 +237,11 @@ public class RollYearSettingsPage extends ApasGenericPage {
 		waitForElementToBeClickable(rollYearSettings);
 		waitForElementToBeClickable(rollYear);
 		enterRollYearData(dataMap);
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Click 'Save' button to save the details entered in Exemption record");
+		ReportLogger.INFO("Click 'Save' button to save the details entered in Roll Year record");
 		Click(saveButton);
-		Thread.sleep(1000);
+		Thread.sleep(3000);
 		
 	}
-	
 	
 	/**
 	 * Description: This method will enter mandatory field values in Roll Year screen
@@ -277,14 +249,14 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	 */
 	
 	public void enterRollYearData(Map<String, String> dataMap) throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Enter the following values : " + dataMap);
+		ReportLogger.INFO("Enter the following values : " + dataMap);
 		enter(rollYearSettings, dataMap.get("Roll Year Settings"));
-		selectFromDropDown(rollYear, dataMap.get("Roll Year"));
+		apasGenericObj.selectFromDropDown(rollYear, dataMap.get("Roll Year"));
 		enterDate(lienDate, dataMap.get("Lien Date"));
 		enterDate(taxStartDate, dataMap.get("Tax Start Date"));
 		enterDate(taxEndDate, dataMap.get("Tax End Date"));
-		enterDate(fiscalStartDate, dataMap.get("Fiscal Start Date"));
-		enterDate(fiscalEndDate, dataMap.get("Fiscal End Date"));
+		enterDate(openRollStartDate, dataMap.get("Open Roll Start Date"));
+		enterDate(openRollEndDate, dataMap.get("Open Roll End Date"));
 		enterDate(calendarStartDate, dataMap.get("Calendar Start Date"));
 		enterDate(calendarEndDate, dataMap.get("Calendar End Date"));	
 	}
@@ -294,11 +266,18 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	 * @param exempName: Takes Roll Year record as an argument
 	 */
 	public void openRollYearRecord(String rollYearName) throws IOException, InterruptedException {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Open the Roll Year record : " + rollYearName);
+		ReportLogger.INFO("Open the Roll Year record : " + rollYearName);
 		Click(driver.findElement(By.xpath("//a[@title='" + rollYearName + "']")));
 		Thread.sleep(3000);
 	}
 	
+	public void openRollYearRecord(String recordId, String rollYearName) throws Exception {
+		ReportLogger.INFO("Open the Roll Year record : " + rollYearName);
+		String xpathStr = "//a[@data-recordid='" + recordId + "']";
+	    WebElement rollYearLocator = objPage.locateElement(xpathStr, 30);
+	    Click(rollYearLocator);
+		Thread.sleep(3000);
+	}
 	
 	/**
 	 * @description: This method will return the error message appeared against the filed name passed in the parameter
