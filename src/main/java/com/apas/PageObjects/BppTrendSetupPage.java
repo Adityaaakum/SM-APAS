@@ -1,8 +1,11 @@
 package com.apas.PageObjects;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.generic.ApasGenericFunctions;
@@ -105,6 +108,23 @@ public class BppTrendSetupPage extends Page {
 	
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
 	public WebElement successAlertText;
+	
+	@FindBy(xpath = "//div[@role='dialog']//button//*[text() = 'Save']")
+	public WebElement saveButton;
+	
+	@FindBy(xpath = "//ul[@class='errorsList']//li")
+	public WebElement errorMsgOnTop;
+	
+	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//div[text() = 'Edit']")
+	public WebElement editLinkUnderShowMore;
+	
+	@FindBy(xpath = "//button[@title='Close this window']")
+	public WebElement closeEntryPopUp;
+	
+	@FindBy(xpath = "//button[@title = 'Close']")
+	public WebElement successAlertCloseBtn;
+	
+	
 	/**
 	 * Description: Creates the BPP Composite Factor Setting on BPP trend status page
 	 * @param propertyType: Takes composite factor setting factor value as
@@ -375,13 +395,15 @@ public class BppTrendSetupPage extends Page {
 
 	/**
 	 * It wait for the pop up message to show up when delete or save button is clicked
-	 * @param timeToLocateElemInSec: Timeout for which pop up message needs to be located
 	 */
-	public String waitForPopUpMsg(int timeToLocateElemInSec) throws Exception {
+	public String getSuccessMsgText() throws Exception {
 		String xpath = "//div[contains(@class, 'toastContent')]//span[contains(@class, 'toastMessage')]";
-		WebElement successAlertText = locateElement("//div[contains(@class, 'toastContent')]//span[contains(@class, 'toastMessage')]",timeToLocateElemInSec);
-		return successAlertText.getText();
-		
+		WebElement successAlertText = locateElement("//div[contains(@class, 'toastContent')]//span[contains(@class, 'toastMessage')]",15);	
+		String alertTxt = successAlertText.getText();
+		if(objPage.verifyElementVisible(successAlertCloseBtn)) {
+			objPage.Click(successAlertCloseBtn);
+		}
+		return alertTxt;
 	}
 	/**
 	 * Description: Retrieves the index value of given column from given factor table
@@ -587,5 +609,105 @@ public class BppTrendSetupPage extends Page {
 		clickAction(waitForElementToBeClickable(newBtnToCreateEntry));
 		enterFactorValue(factorValue);
 		Click(objBuildPermitPage.saveButton);
+	}
+	
+	/**
+	 * Description: Retrieves the current status of the given table from details page under given BPP Trend Setup
+	 * @param tableName: Takes the names of the table
+	 * @return String: Returns the table status
+	 * @throws: Exception
+	 */
+	public String getTableStatus(String tableName,String rollYear) throws Exception {
+		String tableNameForTrendSetupPage;
+		switch(tableName) {
+			case"Commercial Composite Factors":
+				tableName = "Commercial_Trends_Status__c";
+				break;
+			case"Industrial Composite Factors":
+				tableName = "Industrial_Trend_Status__c";
+				break;
+			case"Construction Composite Factors":
+				tableName = "Const_Trends_Status__c";
+				break;
+			case"Construction Mobile Equipment Composite Factors":
+				tableName = "Const_Mobile_Equipment_Trends_Status__c";
+				break;
+			case"Agricultural Mobile Equipment Composite Factors":
+				tableName = "Ag_Mobile_Equipment_Trends_Status__c";
+				break;
+			case"Agricultural Composite Factors":
+				tableName = "Ag_Trends_Status__c";
+				break;
+			case"BPP Prop 13 Factors":
+				tableName = "Prop_13_Factor_Status__c";
+				break;
+			case"Computer Valuation Factors":
+				tableName = "Computer_Trends_Status__c";
+				break;
+			case"Biopharmaceutical Valuation Factors":
+				tableName = "Biopharmaceutical_Trends_Status__c ";
+				break;
+			case"Copier Valuation Factors":
+				tableName = "Copier_Trends_Status__c";
+				break;
+			case"Semiconductor Valuation Factors":
+				tableName = "Semiconductor_Trends_Status__c";
+				break;
+			case"Litho Valuation Factors":
+				tableName = "Litho_Trends_Status__c";
+				break;
+			case"Mechanical Slot Machines Valuation Factors":
+				tableName = "Mechanical_Slot_Machine_Trends_Status__c";
+				break;
+			case"Set-Top Box Valuation Factors":
+				tableName = "Set_Top_Box_Trends_Status__c";
+				break;
+			case"Electrical Slot Machines Valuation Factors":
+				tableName = "Electronic_Slot_Machine_Trends_Status__c";
+				break;
+		}
+		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+		//Query to fetch the status of composite & valuation factor tables
+		String queryForID = "Select "+tableName+" From BPP_Trend_Roll_Year__c where Roll_Year__c = '"+ rollYear +"'";	
+		HashMap<String, ArrayList<String>> tableStatus = objSalesforceAPI.select(queryForID);
+		return tableStatus.get(tableName).get(0);
+	}
+	
+	
+	/**
+	 * Description: This will Click on Edit buttonand fill data in maximum & minimum factor field in bpp trend setting and save it
+	 * @param factorValue: Maximum or minimum factor value like 125%
+	 * @throws: Exception
+	 */
+	public void editSaveFactorValue(String factorValue) throws Exception {
+		objPage.waitForElementToBeClickable(dropDownIconDetailsSection, 10);
+		objPage.clickAction(dropDownIconDetailsSection);
+		objPage.waitForElementToBeClickable(editLinkUnderShowMore, 10);
+		objPage.clickAction(editLinkUnderShowMore);
+		enterFactorValue(factorValue);
+		objPage.Click(saveButton);
+		Thread.sleep(2000);
+	}
+	
+	
+	/**
+	 * Description: This will create maximum equipment index factor settings if it does not exist
+	 * @param rollYear: roll year for which settings will be created
+	 * @throws: Exception
+	 */
+	public void createMaxEquip(String rollYear) throws Exception {
+		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+		//Query to fetch the settings
+		String queryForID = "SELECT Maximum_Equipment_index_Factor__c FROM BPP_Setting__c WHERE BPP_Trend_Roll_Year_Parent__c = '"+ rollYear +"'";	
+		HashMap<String, ArrayList<String>> factorSettings = objSalesforceAPI.select(queryForID);
+		if(!(factorSettings.size()>0)) {
+			objPage.waitForElementToBeClickable(dropDownIconBppSetting, 20);
+			objPage.clickAction(dropDownIconBppSetting);
+			objPage.waitForElementToBeClickable(newBtnToCreateEntry, 20);
+			objPage.clickAction(newBtnToCreateEntry);
+			enterFactorValue("125");
+			objPage.Click(saveButton);
+			Thread.sleep(1000);
+		}
 	}
 }

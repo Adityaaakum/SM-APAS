@@ -388,7 +388,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		objBppTrnPg.Click(objBuildPermitPage.saveButton);
 		
 		//Step15: Validating the pop up message on saving the entry
-		String popUpMsg = objBppTrendSetupPage.waitForPopUpMsg(10);
+		String popUpMsg = objBppTrendSetupPage.getSuccessMsgText();
 		softAssert.assertTrue((popUpMsg.contains("was saved")), "SMAB-T284: Pop up message displayed on editing and saving the entry- "+ popUpMsg);
 				
 		//Step16: Log out from the application
@@ -532,7 +532,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		objBppTrnPg.Click(objBuildPermitPage.saveButton);
 		
 		//Step14: Validating the pop up message on saving the entry
-		String popUpMsg = objBppTrendSetupPage.waitForPopUpMsg(10);
+		String popUpMsg = objBppTrendSetupPage.getSuccessMsgText();
 		softAssert.assertTrue((popUpMsg.contains("was saved")), "SMAB-T283: Pop up message displayed on editing and saving the entry- "+ popUpMsg);
 		softAssert.assertTrue((popUpMsg.contains("was saved")), "SMAB-T285: Pop up message displayed on editing and saving the entry- "+ popUpMsg);
 		softAssert.assertTrue((popUpMsg.contains("was saved")), "SMAB-T288: Pop up message displayed on editing and saving the entry- "+ popUpMsg);
