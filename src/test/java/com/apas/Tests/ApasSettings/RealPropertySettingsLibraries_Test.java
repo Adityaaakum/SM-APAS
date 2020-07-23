@@ -47,15 +47,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
 	}
 	
-	/**
-	 * Below function will be used to login to application with different users
-	 *
-	 * @return Return the user business admin and appraisal support in an array
-	 **/
-	@DataProvider(name = "loginUsers")
-	public Object[][] dataProviderLoginUserMethod() {
-		return new Object[][] { { users.EXEMPTION_SUPPORT_STAFF } };
-	}	    
+	 
     /**
 	 Below test case will validate that 
 	 1. user is able to create Real Property Settings Library for Fututre Roll Year
@@ -432,14 +424,15 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.waitForElementToBeClickable(60, objRPSLPage.approvedRPSLLink);
 		objPage.Click(objRPSLPage.approvedRPSLLink);
 	    
-		//Step6 : Edit status of RPSL to  Approved
+		//Step6 : Edit status of RPSL which is approved followed by Save button
 		ReportLogger.INFO("Clicking on 'Edit' button for record whose status is 'Approved'");
-		objPage.Click(objRPSLPage.editButton);			  
-		objPage.waitUntilElementIsPresent(objRPSLPage.xPathErrorMsg,30);
-		String actualErrorMsgText =  objRPSLPage.errorMsgforEdit.getText();	
+		objPage.Click(objRPSLPage.editButton);
+		objPage.Click(objRPSLPage.saveButton);
+		Thread.sleep(1000);
+		String actualErrorMsgText =  objRPSLPage.errorMsgOnTopForEditRPSL.getText();	
 		
 		//Step6: Verify Error message
-		String expectedErrorMessage = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";
+		String expectedErrorMessage = "Record is locked. Please check with your system administrator.";
 	    softAssert.assertEquals(actualErrorMsgText,expectedErrorMessage,"SMAB-T640:Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'");
 	    softAssert.assertEquals(actualErrorMsgText,expectedErrorMessage,"SMAB-T641:Verify that Non-System Admin users are not able to update a locked 'Real Property Settings' record");
 		
