@@ -32,10 +32,10 @@ public class EFileImportLogsPage extends Page {
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//table")
 	public WebElement importLogRecordsTable;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(text(),'Total Records in File')]/parent::div/following-sibling::div//lightning-formatted-number")
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(text(),'File Count')]/parent::div/following-sibling::div//lightning-formatted-number")
 	public WebElement logFileCount;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(text(),'Successfully imported')]/parent::div/following-sibling::div//lightning-formatted-number")
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(text(),'Import Count')]/parent::div/following-sibling::div//lightning-formatted-number")
 	public WebElement logImportCount;
 	
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(text(),'Error Count')]/parent::div/following-sibling::div//lightning-formatted-number")
