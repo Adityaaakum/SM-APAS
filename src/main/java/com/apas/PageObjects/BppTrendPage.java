@@ -1136,4 +1136,36 @@ public class BppTrendPage extends Page {
 			
 		}
 	}
+	/**
+	 * Description: Waits until the page spinner goes invisible within given timeout
+	 * @param: Takes Xpath as an argument
+	 * @throws: Exception
+	 */
+	public void selectRollYearOnBPPTrends(String rollYear) throws Exception {
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objPage.waitForElementToBeClickable(rollYearDropdown, 30);
+		Click(rollYearDropdown);
+		clickOnGivenRollYear(rollYear);
+		Click(selectRollYearButton);
+		Thread.sleep(2000);	
+	}
+	
+	/**
+	 * Description: This will update the status of tables based on the expected status
+	 * @param expectedStatus: Expected status like Calculated, Not Calculated etc.
+	 * @param rollYear: Roll year for which the status needs to be reset
+	 */
+	public void updateTablesStatusForGivenRollYear(String columnsToReset, String expectedStatus, String rollYear) throws Exception {	
+		List<String> tablesToupdate = Arrays.asList(columnsToReset.split(","));
+		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+		//Query to update the status of composite & valuation factor tables
+		String queryForID = "Select Id From BPP_Trend_Roll_Year__c where Roll_Year__c = '"+ rollYear +"'";
+		
+		JSONObject jsonObj = new JSONObject();
+		for(String columnName : tablesToupdate) {
+			jsonObj.put(columnName, expectedStatus);
+		}
+		objSalesforceAPI.update("BPP_Trend_Roll_Year__c", queryForID, jsonObj);
+	}
+
 }

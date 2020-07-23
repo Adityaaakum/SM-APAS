@@ -336,7 +336,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 		objBppTrnPg.clickSubmitAllFactorsForApprovalBtn();
 
 		//Step12: Retrieve & Assert pop up message displayed at page level
-		String actPopUpMsg = objBppTrendSetupPage.waitForPopUpMsg(30);
+		String actPopUpMsg = objBppTrendSetupPage.getSuccessMsgText();
 		String expPopUpMsg = CONFIG.getProperty("pageLevelMsgAfterSubmitAllForApproval");
 		softAssert.assertEquals(actPopUpMsg, expPopUpMsg, "SMAB-T442: Calculation successfully submitted for approval for all tables");
 
@@ -439,7 +439,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 		objBppTrnPg.clickApproveAllBtn();
 
 		//Step6: Retrieve & Assert pop up message displayed at page level
-		String actPopUpMsg = objBppTrendSetupPage.waitForPopUpMsg(30);
+		String actPopUpMsg = objBppTrendSetupPage.getSuccessMsgText();
 		String expPopUpMsg = CONFIG.getProperty("pageLevelMsgAfterApproveAll");
 		softAssert.assertEquals(actPopUpMsg, expPopUpMsg, "SMAB-T304: Message to validate all tables are successfully approved");
 

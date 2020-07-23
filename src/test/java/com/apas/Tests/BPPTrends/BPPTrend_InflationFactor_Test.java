@@ -255,7 +255,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		objBppTrnPg.enter(objBppTrnPg.cpiFactorInputBox, "0.00");
 		
 		objBppTrnPg.Click(objBuildPermitPage.saveButton);
-		String actMsgInPopUpOnSave = objBppTrendSetupPage.waitForPopUpMsg(10);
+		String actMsgInPopUpOnSave = objBppTrendSetupPage.getSuccessMsgText();
 		boolean isRecordCreated = actMsgInPopUpOnSave.contains("was created");
 		softAssert.assertTrue(isRecordCreated, "SMAB-T180: Validationg message on successfully creating CPI Factor entry. "+ actMsgInPopUpOnSave);
 		
