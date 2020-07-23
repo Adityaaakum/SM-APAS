@@ -392,19 +392,15 @@ public class BppTrendPage extends Page {
 	public void editCellDataInGridForGivenTable(String tableName, Object data) throws Exception {	
 		String xpathEditTxtBox = "//div//input[@name = 'dt-inline-edit-text']";
 		WebElement editTxtBox;			
+		editTxtBox = locateElement(xpathEditTxtBox, 30);		
+		waitForElementToBeClickable(15, editTxtBox);
+		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", editTxtBox);		
+		editTxtBox.clear();
+		WebElement editBtn = locateEditButtonInFocusedCell();
+		Click(editBtn);
+		Thread.sleep(1000);
 		editTxtBox = locateElement(xpathEditTxtBox, 30);
-		if(!System.getProperty("region").equalsIgnoreCase("preuat")) {
-			enter(editTxtBox,String.valueOf(data));
-		}else {
-			waitForElementToBeClickable(15, editTxtBox);
-			((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", editTxtBox);		
-			editTxtBox.clear();
-			WebElement editBtn = locateEditButtonInFocusedCell();
-			Click(editBtn);
-			Thread.sleep(1000);
-			editTxtBox = locateElement(xpathEditTxtBox, 30);
-			editTxtBox.sendKeys(String.valueOf(data));
-		}
+		editTxtBox.sendKeys(String.valueOf(data));
 		Thread.sleep(1000);		
 
 		String tagAppend;
