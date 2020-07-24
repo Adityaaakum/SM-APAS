@@ -126,6 +126,11 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 				
 		// Step3: Fetching data to verify column names in report
 		Map<String, String> activeExemptionDataMap;
+		String currentRollYear = "2021";
+		String previousRollYear = "2020";
+		String removeRollYear = "2019";
+		String removeEntry1 = "6/30/" + previousRollYear;
+		String removeEntry2 = "7/1/" + removeRollYear;
 		String exemptionData = System.getProperty("user.dir") + testdata.EXEMPTION_REPORT_DATA;		
 		activeExemptionDataMap = objUtils.generateMapFromJsonFile(exemptionData, "DataToCreateExemptionWithMandatoryFields");
 		
@@ -151,9 +156,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating In-Active Exemption");
 		inActiveExemptionDataMap.put("Veteran Name", inActiveExemptionDataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		objExemptionsPage.createExemption(inActiveExemptionDataMap);
-		Thread.sleep(2000);
-		String iNActiveExemptionName = objExemptionsPage.getExemptionNameFromSuccessAlert();
-		String inActiveExemptionName = "EXMPTN-"+iNActiveExemptionName;
+		String inActiveExemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		ReportLogger.INFO("In Active Exemption Created: "+inActiveExemptionName);	
 		
 		// Step8: Searching Reports Module
@@ -171,26 +174,31 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		
 		ReportLogger.INFO("DV Exemption Export Report is visible: "+flagReportDisplayed);
 		if(flagReportDisplayed) {
-		// Step12: Minimizing the browser to 50%
-			//objApasGenericFunctions.zoomOutPageContent();				
+
+			// Step12: Update the year values on default filters set
+			ReportLogger.INFO("Update the default filters displayed with correct year values");
+			objPage.Click(objReportsPage.filterIcon);
+			objReportsPage.editFilterAndUpdate("2", removeEntry1, currentRollYear);
+			objReportsPage.editFilterAndUpdate("3", removeEntry2, previousRollYear);
+			objReportsPage.editFilterAndUpdate("4", removeEntry1, currentRollYear);
+			objReportsPage.editFilterAndUpdate("5", removeEntry2, previousRollYear);
 			
 			// Step13: Sort the column "Exemption: Exemption Name" in Descending Order
 			objReportsPage.sortReportColumn("Exemption: Exemption Name");
 			
-			// Step13: Fetch the data from 2nd row of Report
+			// Step14: Fetch the data from 2nd row of Report
 			HashMap<String, ArrayList<String>> getReportDataInActiveExemp = objApasGenericFunctions.getGridDataInLinkedHM(2);
 			String actualInActiveExemption = getReportDataInActiveExemp.get("Exemption: Exemption Name").get(0).replace("[", "").replace("]", "");
 			softAssert.assertEquals(actualInActiveExemption, inActiveExemptionName, "SMAB-T606:Verify In Active Exemption created is visible in report");
 			
-			// Step14: Fetch the data from 4th row of Report
+			// Step15: Fetch the data from 4th row of Report
 			HashMap<String, ArrayList<String>> getReportDataActiveExemp = objApasGenericFunctions.getGridDataInLinkedHM(4);
 
-			// Step15: Verify Exemption with Status 'Active' created above is visible in report
+			// Step16: Verify Exemption with Status 'Active' created above is visible in report
 			String actualActiveExemption = getReportDataActiveExemp.get("Exemption: Exemption Name").get(0).replace("[", "").replace("]", "");
 			softAssert.assertEquals(actualActiveExemption, activeExemptionName, "SMAB-T606:Verify Active Exemption created is visible in report");
 			
-	}	 
-		//objApasGenericFunctions.zoomInPageContent();
+		}	 
 		objPage.switchBackFromFrame();
 		objApasGenericFunctions.logout();
 	}
