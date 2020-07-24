@@ -124,7 +124,8 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//button[@title = 'Close']")
 	public WebElement successAlertCloseBtn;
 	
-	
+	@FindBy(xpath = "//button[text() = 'Edit']")
+	public WebElement editButton;
 	/**
 	 * Description: Creates the BPP Composite Factor Setting on BPP trend status page
 	 * @param propertyType: Takes composite factor setting factor value as
@@ -709,5 +710,16 @@ public class BppTrendSetupPage extends Page {
 			objPage.Click(saveButton);
 			Thread.sleep(1000);
 		}
+	}
+	/**
+	 * @description: Clicks on the show more link displayed against the given entry
+	 * @param entryDetails: Name of the entry displayed on grid which is to be accessed
+	 * @throws Exception
+	 */
+	public void clickShowMoreLink(String entryDetails) throws Exception {		
+		Thread.sleep(3000);
+		String xpathStr = "//table//tbody/tr//th//a[text() = '"+ entryDetails +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
+		WebElement modificationsIcon = locateElement(xpathStr, 60);
+		clickAction(modificationsIcon);
 	}
 }
