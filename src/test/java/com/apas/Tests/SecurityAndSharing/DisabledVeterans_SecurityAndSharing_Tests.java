@@ -124,39 +124,6 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 		
 	}
 	
-	/**
-	 * DESCRIPTION: Performing Following Validations::
-	 * 1. Validating that (Appraiser/Auditor) are not able to create inflation factors records:: TestCase/JIRA ID: SMAB-T210
-	 * 2. Validating that (Appraiser/Auditor) are not able to edit inflation factors records:: TestCase/JIRA ID: SMAB-T210
-	 */
-	@Test(description = "SMAB-T210: Appraiser and Auditor users unable to create, edit the value of CPI factor and saves, approve table data", groups = {"smoke","regression","BPPTrend"}, dataProvider = "rpApprasierAndBPPAuditor", dataProviderClass = DataProviders.class)
-	public void BppTrend_CreateAndEdit_InflationFactor_WithRestrictedUsers(String loginUser) throws Exception {
-		//Step1: Login to the APAS application using the given user
-		objApasGenericFunctions.login(loginUser);
-		
-		//Step2: Opening the BPP Trend module
-		objApasGenericFunctions.searchModule(modules.CPI_FACTORS);
-		objApasGenericFunctions.displayRecords("All");
-		
-		//Step3: Checking unavailability of new button on grid page
-		softAssert.assertTrue(!objBppTrnPg.isElementAvailable(objBppTrnPg.newBtnViewAllPage, 10), "SMAB-T210: For User "+ loginUser +"-- New button is not visible on grid page");
-
-		//Step4: Finding the first entry from the grid to find edit button for it
-		// Clicking show more icon and checking availability of edit link under it
-		String cpiFactorToEdit = objBppTrnPg.getElementText(objBppTrnPg.firstEntryInGrid);			
-		objBppTrendSetupPage.clickShowMoreLink(cpiFactorToEdit);
-
-		//Step5: Checking unavailability of edit link under show more drop down on view all grid
-		softAssert.assertTrue(!objBppTrnPg.isElementAvailable(objBppTrendSetupPage.editLinkUnderShowMore, 5), "SMAB-T210: For User "+ loginUser +"-- Edit link is not visible under show more option on grid");
-		
-		//Step6: Checking unavailability of edit button on details page
-		objBppTrendSetupPage.clickOnEntryNameInGrid(cpiFactorToEdit);
-		softAssert.assertTrue(!objBppTrnPg.isElementAvailable(objBppTrendSetupPage.editButton, 5), "SMAB-T210: For User "+ loginUser +"-- Edit button is not visible on details page");
-		
-		objApasGenericFunctions.logout();
-	}
-	
-	
 }
 		
 		
