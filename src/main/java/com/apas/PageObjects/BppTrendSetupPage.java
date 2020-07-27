@@ -711,15 +711,5 @@ public class BppTrendSetupPage extends Page {
 			Thread.sleep(1000);
 		}
 	}
-	/**
-	 * @description: Clicks on the show more link displayed against the given entry
-	 * @param entryDetails: Name of the entry displayed on grid which is to be accessed
-	 * @throws Exception
-	 */
-	public void clickShowMoreLink(String entryDetails) throws Exception {		
-		Thread.sleep(3000);
-		String xpathStr = "//table//tbody/tr//th//a[text() = '"+ entryDetails +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
-		WebElement modificationsIcon = locateElement(xpathStr, 60);
-		clickAction(modificationsIcon);
-	}
+	
 }

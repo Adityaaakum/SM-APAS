@@ -940,7 +940,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		//Step4: Finding the first entry from the grid to find edit button for it
 		// Clicking show more icon and checking availability of edit link under it
 		String cpiFactorToEdit = objBppTrnPg.getElementText(objBppTrnPg.firstEntryInGrid);			
-		objBppTrendSetupPage.clickShowMoreLink(cpiFactorToEdit);
+		objApasGenericFunctions.clickShowMoreLink(cpiFactorToEdit);
 
 		//Step5: Checking unavailability of edit link under show more drop down on view all grid
 		softAssert.assertTrue(!objBppTrnPg.isElementAvailable(objBppTrendSetupPage.editLinkUnderShowMore, 5), "SMAB-T210: For User "+ loginUser +"-- Edit link is not visible under show more option on grid");

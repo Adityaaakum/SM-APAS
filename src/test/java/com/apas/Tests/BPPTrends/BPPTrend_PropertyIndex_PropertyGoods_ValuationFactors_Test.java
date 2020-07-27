@@ -129,7 +129,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		objBppTrnPg.Click(objBuildPermitPage.cancelButton);
 	
 		//Step19: Validating Edit button is visible under show more drop down
-		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry(factorTableName);
+		objApasGenericFunctions.clickShowMoreLink(entryName);
 		Thread.sleep(2000);
 		objBppTrnPg.waitForElementToBeVisible(objBuildPermitPage.editLinkUnderShowMore, 10);
 		boolean isEditBtnPresent = objBuildPermitPage.editLinkUnderShowMore.isDisplayed();

@@ -129,7 +129,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		
 		//Step4: Click the show more icon and clicking on edit button on grid
 		objApasGenericFunctions.searchRecords(cpiFactorName);
-		objBppTrendSetupPage.clickShowMoreLink(cpiFactorName);
+		objApasGenericFunctions.clickShowMoreLink(cpiFactorName);
 		objBppTrendPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
 		
 		//Step5: Validating the error message on clicking edit button
