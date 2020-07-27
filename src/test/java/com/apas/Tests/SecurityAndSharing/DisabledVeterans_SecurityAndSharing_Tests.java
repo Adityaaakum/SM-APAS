@@ -124,9 +124,6 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 		
 	}
 	
-	
-	
-	
 }
 		
 		
