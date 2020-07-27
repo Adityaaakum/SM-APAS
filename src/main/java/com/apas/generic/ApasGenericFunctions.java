@@ -581,4 +581,16 @@ public float convertToFloat(Object amount)
 		objPage.javascriptClick(driver.findElement(By.xpath("//div[text()='"+logName+"']")));
 	
 	}
+	
+	/**
+	 * @description: Clicks on the show more link displayed against the given entry
+	 * @param entryDetails: Name of the entry displayed on grid which is to be accessed
+	 * @throws Exception
+	 */
+	public void clickShowMoreLink(String entryDetails) throws Exception {		
+		Thread.sleep(3000);
+		String xpathStr = "//table//tbody/tr//th//a[text() = '"+ entryDetails +"']//parent::*//parent::th//following-sibling::td//a[@role = 'button']";
+		WebElement modificationsIcon = locateElement(xpathStr, 60);
+		objPage.clickAction(modificationsIcon);
+	}
 }

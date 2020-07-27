@@ -701,7 +701,7 @@ public class EFileImportPage extends Page {
 	 * @throws Exception
 	 */
 	public void updateCorrectDataInTable(String tableNumber, String updatedValue) throws Exception {
-		String junkDataCellXpath = "(//lightning-tab[@aria-labelledby = '"+tableNumber+"__item']//span[contains(@title,'ERROR ROWS')]//ancestor::div[@class = 'slds-accordion__summary']//following-sibling::div//table//lightning-formatted-text[starts-with(text(), 'Junk_')])";
+		String junkDataCellXpath = "(//lightning-tab[@aria-labelledby = '"+tableNumber+"__item']//span[contains(@title,'ERROR ROWS')]//ancestor::div[@class = 'slds-accordion__summary']//following-sibling::div//table//lightning-base-formatted-text[starts-with(text(), 'Junk_')])";
 		Click(locateElement(junkDataCellXpath, 10));
 
 		String xpathEditIcon = "//lightning-primitive-cell-factory[@class = 'slds-cell-wrap slds-has-focus']//span[text() = 'Edit Average' or text() = 'Edit Factor' or text() = 'Edit Valuation Factor']//ancestor::button//lightning-primitive-icon";
