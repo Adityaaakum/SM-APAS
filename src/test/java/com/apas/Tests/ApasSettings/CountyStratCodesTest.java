@@ -80,10 +80,8 @@ public class CountyStratCodesTest extends TestBase {
 
 		//Step4: Checking validation messages on clicking save button without providing values in mandatory fields
 		String expErrorMsgOnTop = "These required fields must be completed: Strat Code Description, Processing Status, Strat Code Reference Number";
-		String expectedFieldLevelErrorMessage = "Complete this field";
-		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-			expectedFieldLevelErrorMessage = "Complete this field.";
-		}
+		String expectedFieldLevelErrorMessage = "Complete this field.";
+
 		ReportLogger.INFO("Validating the error messages for individual fields");
 		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Strat Code Reference Number"), expectedFieldLevelErrorMessage, "SMAB-T392: Validating error message on not providing Strat Code Reference Number");
 		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Strat Code Description"),expectedFieldLevelErrorMessage, "SMAB-T392: Validating error message on not providing Strat Code Description");
@@ -125,10 +123,7 @@ public class CountyStratCodesTest extends TestBase {
 		objApasGenericFunctions.searchModule(modules.COUNTY_STRAT_CODES);
 
 		//Step12: Checking validation on duplicate entry creation
-		String expectedWarningMessage = "This record looks like a duplicate.View Duplicates";
-		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-			expectedWarningMessage = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
-		}
+		String expectedWarningMessage = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
 
 		ReportLogger.INFO("Creating duplicate entry to check validation message for duplicate entry creation");
 		manualEntryDataMap.put("Strat Code Description", stratCodeDerscription);

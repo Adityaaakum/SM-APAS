@@ -707,7 +707,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Pre-requisite: Renaming the building permits(From File to be imported) already in the system to make the record as a fresh record
 		//Creating two files for the same records as the same record processed needs to be processed two times
-		String buildingPermitNumber = "ABD-2017-123022";
+		String buildingPermitNumber = "ABD-2025-123022";
 		String firstBuildingPermitFileNameWithoutExtension = "SingleValidRecord";
 		String secondBuildingPermitFileNameWithoutExtension = "SingleValidRecordNewName";
 		String firstBuildingPermitFileName = firstBuildingPermitFileNameWithoutExtension + ".xlsx";
