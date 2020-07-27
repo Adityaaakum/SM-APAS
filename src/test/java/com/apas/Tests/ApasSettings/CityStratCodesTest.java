@@ -93,10 +93,7 @@ public class CityStratCodesTest extends TestBase {
 		//Step4: Checking validation messages on clicking save button without providing values in mandatory fields
 		ReportLogger.INFO("Validating the mandatory field error messages");
 		String expectedErrorMessageOnTop = "These required fields must be completed: City Code, County Strat Code, City Strat Code";
-		String expectedFieldLevelErrorMessage = "Complete this field";
-		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
-			expectedFieldLevelErrorMessage = "Complete this field.";
-		}
+		String expectedFieldLevelErrorMessage = "Complete this field.";
 
 		String actualErrorMessageOnTop = objCityStratCodesPage.getElementText(objCityStratCodesPage.errorMsgOnTop);
 
