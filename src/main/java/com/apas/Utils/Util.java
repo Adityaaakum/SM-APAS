@@ -232,6 +232,15 @@ public class Util {
 	}
 
 	/**
+	 * This method will encode the string in Base64 format
+	 * @param string: String to be converted into Base64 format
+	 */
+	public String encodeStringToBase64(String string){
+		return Base64.getEncoder().encodeToString(string.getBytes());
+	}
+
+
+	/**
 	 * @author Sikander Bhambhu
 	 * @Description : It reads the given JSON file and retrieves data from it using the key provided
 	 * @param filePath: Takes the path of the JSON file
