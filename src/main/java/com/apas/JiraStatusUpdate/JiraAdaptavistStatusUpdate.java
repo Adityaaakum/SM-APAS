@@ -23,8 +23,8 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 	 **/
 	public static void updateJiraTestCaseStatus(String jiraTestCaseId, String testCaseStatus) {
 		try {
-			// String username=System.getProperty("user.name");
-			String username = "sikbhamb";
+			String username= CONFIG.getProperty("userNameJira");
+			String authorization = CONFIG.getProperty("authenticationKey");
 
 			// Storing BaseURI
 			RestAssured.baseURI = BASE_URI;
@@ -32,7 +32,7 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 
 			// setting content type to make the API call
 			httpRequest.header("Content-Type", "application/json");
-			httpRequest.header("Authorization", "Basic c2lrYmhhbWI6TkB2eWFAMjIxNw==");
+			httpRequest.header("Authorization", "Basic " + authorization);
 
 			// instantiating pojo class and setting "Status" and "Executed By" fields
 			TestCaseUpdateRequestMainPojo testCaseUpdateRequestMainPojo = new TestCaseUpdateRequestMainPojo();
@@ -59,14 +59,17 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 	 *         cases with null values
 	 **/
 	public static void retrieveJiraTestCases() {
+
 		System.out.println("Retrieving the Test Case Keys for the Cycle : " + testCycle);
+		String authorization = CONFIG.getProperty("authenticationKey");
+
 		// Storing BaseURI
 		RestAssured.baseURI = BASE_URI;
 		RequestSpecification httpRequest = RestAssured.given();
 
 		// setting content type to make the API call
 		httpRequest.header("Content-Type", "application/json");
-		httpRequest.header("Authorization", "Basic c2lrYmhhbWI6TkB2eWFAMjIxNw==");
+		httpRequest.header("Authorization", "Basic " + authorization);
 
 		// passing body to the API call and retrieving the response
 		Response response = httpRequest.get("testrun/" + testCycle);
