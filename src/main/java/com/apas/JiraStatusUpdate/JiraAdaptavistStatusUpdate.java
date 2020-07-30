@@ -1,9 +1,11 @@
 package com.apas.JiraStatusUpdate;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.Util;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -84,7 +86,40 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 		System.out.println("List of Test Cases in the Test Cycle " + testCycle + " is " + testCaseKeys);
 	}
 
-	/**
+
+    /**
+     *  Description : This method makes upload the result file in test cycle in Jira
+     * @param filePath : Path of the file to be uploaded in cycle
+     *
+     **/
+    public static void uploadAttachmentInJira(String filePath) {
+        try {
+			String authorization = CONFIG.getProperty("authenticationKey");
+
+            // Storing BaseURI
+            RestAssured.baseURI = BASE_URI;
+            RequestSpecification httpRequest = RestAssured.given();
+
+            // setting content type to make the API call
+            httpRequest.header("Content-Type", "multipart/form-data");
+            httpRequest.header("Authorization", "Basic " + authorization);
+
+            File attachment = Util.zipFile(filePath);
+
+            httpRequest.multiPart(attachment);
+            Response response = httpRequest.post("testrun/" + testCycle + "/attachments");
+
+            @SuppressWarnings("rawtypes")
+            ResponseBody res = response.getBody();
+            System.out.println("Response body post status update in JIRA: " + res.asString());
+            attachment.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
 	 * @author Sikander Bhambhu
 	 * Method : mapTestCaseStatusToJIRA 
 	 * Description :

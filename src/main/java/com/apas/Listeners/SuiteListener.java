@@ -83,6 +83,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 			System.out.println("Test cases execution status on end of execution: " + JiraAdaptavistStatusUpdate.testStatus);
 			TearDown();
 			JiraAdaptavistStatusUpdate.mapTestCaseStatusToJIRA();
+			JiraAdaptavistStatusUpdate.uploadAttachmentInJira(ExtentManager.resultFile);
 		}
 	}
 
@@ -106,7 +107,6 @@ public class SuiteListener extends TestBase implements ITestListener {
 			System.out.println("Starting the test with method name : " + methodName);
 			String[] arrayClassName = className.split("\\.");
 			String upClassname = arrayClassName[0];
-//			String upClassname = arrayClassName[0].replace("Test", "");
 			upTest.assignCategory(upClassname);
 			System.out.println("Environment URL:" + envURL);
 		} catch (Exception e) {
@@ -132,11 +132,6 @@ public class SuiteListener extends TestBase implements ITestListener {
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 		ExtentManager.getExtentInstance().flush();
 		TearDown();
-//		try {
-//			setupTest();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
 	}
 
 	/**
@@ -193,11 +188,6 @@ public class SuiteListener extends TestBase implements ITestListener {
 		ExtentManager.getExtentInstance().endTest(ExtentTestManager.getTest());
 		ExtentManager.getExtentInstance().flush();
 		TearDown();
-//		try {
-//			setupTest();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
 	}
 
 	@Override

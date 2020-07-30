@@ -495,9 +495,11 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	       if(apnStatus.equals("Retired")){
 	           softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"An invalid option has been chosen.","SMAB-T1516: Verify that user is not able to create Exemption for Retired Parcels from Parcel's related exemptions screen");}
 	       else{
-			   softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"An invalid option has been chosen.","SMAB-T1515: Verify that user is not able to create Exemption for Invalid PUC code parcels from Parcel's related exemptions screen");}
-			   
-	       objPage.Click(exemptionPageObj.cancelButton); 
+			   softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"An invalid option has been chosen.","SMAB-T1515: Verify that user is not able to create Exemption for Invalid PUC code parcels from Parcel's related exemptions screen");
+	       }
+
+	       objPage.Click(exemptionPageObj.cancelButton);
+	       Thread.sleep(2000);
    }
        apasGenericObj.logout();
    }
