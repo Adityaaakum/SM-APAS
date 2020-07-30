@@ -63,8 +63,8 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 	 * 2. Validating the business rules for Year Acquired value:: TestCase/JIRA ID: SMAB-T238
 	 * 3. Validating user is unable to create duplicate entry:: TestCase/JIRA ID: SMAB-T236
 	 */
-	@Test(description = "SMAB-T235,SMAB-T236,SMAB-T238: Edit new factors entry under BPP Property Index factor table having different status of tables before submitting calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "variousStatusOfCompositeTablesBeforeSubmitting", dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_Edit_PropertyIndexFactorEntry_WithDifferentStatusOfTables(String tablesStatus) throws Exception {		
+	@Test(description = "SMAB-T235,SMAB-T236,SMAB-T238: Edit new factors entry under BPP Property Index factor table having different status of tables before submitting calculation", groups = {"regression","BPPTrend"}, dataProvider = "variousStatusOfCompositeTablesBeforeSubmitting", dataProviderClass = DataProviders.class)
+	public void BppTrend_Edit_PropertyIndexFactorEntry_WithDifferentStatusOfTables(String tablesStatus) throws Exception {
 		//Step1: Resetting the composite factor tables status
 		List<String> tablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(tablesToReset, tablesStatus, rollYear);
@@ -129,7 +129,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		objBppTrnPg.Click(objBuildPermitPage.cancelButton);
 	
 		//Step19: Validating Edit button is visible under show more drop down
-		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry(factorTableName);
+		objApasGenericFunctions.clickShowMoreLink(entryName);
 		Thread.sleep(2000);
 		objBppTrnPg.waitForElementToBeVisible(objBuildPermitPage.editLinkUnderShowMore, 10);
 		boolean isEditBtnPresent = objBuildPermitPage.editLinkUnderShowMore.isDisplayed();
@@ -209,8 +209,8 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating user is not able to edit the data once table calculation are submitted or approved:: TestCase/JIRA ID: SMAB-T238
 	 */
-	@Test(description = "SMAB-T238: Edit a new factors entry under BPP Property Index factor table", groups = {"smoke","regression","BPPTrend"}, dataProvider = "variousStatusOfTablesPostSubmittingCalculations", dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_Edit_BppPropertyIndex_PostSubmittingCalculations(String tableStatus) throws Exception {		
+	@Test(description = "SMAB-T238: Edit a new factors entry under BPP Property Index factor table", groups = {"regression","BPPTrend"}, dataProvider = "variousStatusOfTablesPostSubmittingCalculations", dataProviderClass = DataProviders.class)
+	public void BppTrend_Edit_BppPropertyIndex_PostSubmittingCalculations(String tableStatus) throws Exception {
 		//Step1: Resetting the composite factor tables status
 		List<String> tablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(tablesToReset, tableStatus, rollYear);
@@ -310,8 +310,8 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating that user is able to edit an entry:: TestCase/JIRA ID: SMAB-T284
 	 */
-	@Test(description = "SMAB-T284: Edit new factors entry under Valuation factor table having different status of tables before submitting calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "variousStatusOfValuationTablesBeforeSubmitting", dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_Edit_ValuationFactorEntry_WithDifferentStatusOfTables(String tablesStatus) throws Exception {		
+	@Test(description = "SMAB-T284: Edit new factors entry under Valuation factor table having different status of tables before submitting calculation", groups = {"regression","BPPTrend"}, dataProvider = "variousStatusOfValuationTablesBeforeSubmitting", dataProviderClass = DataProviders.class)
+	public void BppTrend_Edit_ValuationFactorEntry_WithDifferentStatusOfTables(String tablesStatus) throws Exception {
 		//Step1: Resetting the valuation factor tables status
 		List<String> tablesToReset = Arrays.asList(CONFIG.getProperty("valuationTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(tablesToReset, tablesStatus, rollYear);
@@ -388,7 +388,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		objBppTrnPg.Click(objBuildPermitPage.saveButton);
 		
 		//Step15: Validating the pop up message on saving the entry
-		String popUpMsg = objBppTrendSetupPage.waitForPopUpMsg(10);
+		String popUpMsg = objBppTrendSetupPage.getSuccessMsgText();
 		softAssert.assertTrue((popUpMsg.contains("was saved")), "SMAB-T284: Pop up message displayed on editing and saving the entry- "+ popUpMsg);
 				
 		//Step16: Log out from the application
@@ -402,8 +402,8 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating user is not able to edit the data once table calculation are submitted or approved:: TestCase/JIRA ID: SMAB-T284
 	 */
-	@Test(description = "SMAB-T284: Edit a new factors entry under Valuation factor table", groups = {"smoke","regression","BPPTrend"}, dataProvider = "variousStatusOfTablesPostSubmittingCalculations", dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_Edit_ValuationIndex_PostSubmittingCalculations(String tableStatus) throws Exception {		
+	@Test(description = "SMAB-T284: Edit a new factors entry under Valuation factor table", groups = {"regression","BPPTrend"}, dataProvider = "variousStatusOfTablesPostSubmittingCalculations", dataProviderClass = DataProviders.class)
+	public void BppTrend_Edit_ValuationIndex_PostSubmittingCalculations(String tableStatus) throws Exception {
 		//Step1: Resetting the status of valuation tables
 		List<String> tablesToReset = Arrays.asList(CONFIG.getProperty("valuationTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(tablesToReset, tableStatus, rollYear);
@@ -460,8 +460,8 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating that user is able to edit an entry:: TestCase/JIRA ID: SMAB-T283, SMAB-T285, SMAB-T288
 	 */
-	@Test(description = "SMAB-T283,SMAB-T285,SMAB-T288: Edit new factors entry under BPP Percent Goods Factors table having different status of tables before submitting calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "variousStatusOfCompositeTablesBeforeSubmitting", dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_Edit_PercentGoodsFactorEntry_WithDifferentStatusOfTables(String tablesStatus) throws Exception {		
+	@Test(description = "SMAB-T283,SMAB-T285,SMAB-T288: Edit new factors entry under BPP Percent Goods Factors table having different status of tables before submitting calculation", groups = {"regression","BPPTrend"}, dataProvider = "variousStatusOfCompositeTablesBeforeSubmitting", dataProviderClass = DataProviders.class)
+	public void BppTrend_Edit_PercentGoodsFactorEntry_WithDifferentStatusOfTables(String tablesStatus) throws Exception {
 		//Step1: Resetting the composite factor tables status
 		List<String> tablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(tablesToReset, tablesStatus, rollYear);
@@ -532,7 +532,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		objBppTrnPg.Click(objBuildPermitPage.saveButton);
 		
 		//Step14: Validating the pop up message on saving the entry
-		String popUpMsg = objBppTrendSetupPage.waitForPopUpMsg(10);
+		String popUpMsg = objBppTrendSetupPage.getSuccessMsgText();
 		softAssert.assertTrue((popUpMsg.contains("was saved")), "SMAB-T283: Pop up message displayed on editing and saving the entry- "+ popUpMsg);
 		softAssert.assertTrue((popUpMsg.contains("was saved")), "SMAB-T285: Pop up message displayed on editing and saving the entry- "+ popUpMsg);
 		softAssert.assertTrue((popUpMsg.contains("was saved")), "SMAB-T288: Pop up message displayed on editing and saving the entry- "+ popUpMsg);
@@ -548,8 +548,8 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating user is not able to edit the data once table calculation are submitted or approved:: TestCase/JIRA ID: SMAB-T285
 	 */
-	@Test(description = "SMAB-T285: Edit a new factors entry under BPP Percent Goods factor table", groups = {"smoke","regression","BPPTrend"}, dataProvider = "variousStatusOfTablesPostSubmittingCalculations", dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_Edit_PercentGoods_PostSubmittingCalculations(String tableStatus) throws Exception {		
+	@Test(description = "SMAB-T285: Edit a new factors entry under BPP Percent Goods factor table", groups = {"regression","BPPTrend"}, dataProvider = "variousStatusOfTablesPostSubmittingCalculations", dataProviderClass = DataProviders.class)
+	public void BppTrend_Edit_PercentGoods_PostSubmittingCalculations(String tableStatus) throws Exception {
 		//Step1: Resetting the status of composite tables
 		List<String> tablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(tablesToReset, tableStatus, rollYear);

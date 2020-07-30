@@ -51,10 +51,8 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 		objPage.Select(objNonRelevantPermitSettingsPage.statusDrpDown,"Active");
 
 		//Step4: Validation of message appearing for duplicate permit
-		String expectedWarningMessage = "This record looks like a duplicate.View Duplicates";
-		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-			expectedWarningMessage = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
-		}
+		String expectedWarningMessage = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
+
 		softAssert.assertEquals(objNonRelevantPermitSettingsPage.warningMessage.getText(),expectedWarningMessage,"SMAB-T398: Validation for existence of duplicate record message after adding the preexisting record");
 		objPage.Click(objNonRelevantPermitSettingsPage.cancelButton);
 

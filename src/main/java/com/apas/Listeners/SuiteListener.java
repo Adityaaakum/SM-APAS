@@ -105,7 +105,8 @@ public class SuiteListener extends TestBase implements ITestListener {
 			upTest = ExtentTestManager.startTest(methodName, "Description: " + description);
 			System.out.println("Starting the test with method name : " + methodName);
 			String[] arrayClassName = className.split("\\.");
-			String upClassname = arrayClassName[0].replace("Test", "");
+			String upClassname = arrayClassName[0];
+//			String upClassname = arrayClassName[0].replace("Test", "");
 			upTest.assignCategory(upClassname);
 			System.out.println("Environment URL:" + envURL);
 		} catch (Exception e) {

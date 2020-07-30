@@ -65,9 +65,9 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	 Below test case is used to verify that no VA's are created for past dates
 	 * @throws Exception 
 	 **/
-	@Test(description = "SMAB-T633:Verify Zero value adjustments record is created for historic Start Date and End Date", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T633,SMAB-T1613:Verify Zero value adjustments record is created for historic Start Date and End Date", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 			"smoke", "regression","DisabledVeteranExemption" })
-	public void verify_Disabledveteran_NoVACreationBeyondDefaultLimitDatesExemption(String loginUser) throws Exception{
+	public void Disabledveteran_NoVACreationBeyondDefaultLimitDatesExemption(String loginUser) throws Exception{
 		
 		Map<String, String> noVAData = objUtil.generateMapFromJsonFile(exemptionFilePath, "noVAData");
 			//Step1: Login to the APAS application using the credentials passed through data provider
@@ -81,7 +81,9 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 			
 			//Step4: Exemption creation
 			
-			exemptionPageObj.createNewExemptionWithMandatoryData(noVAData);
+			String exemption=exemptionPageObj.createNewExemptionWithMandatoryData(noVAData);
+			softAssert.assertContains(exemption,"EXMPTN", "SMAB-T1613:Verify that user is able to create Exemption for Parcels for specific PUC Codes from Parcels related Exemptions screen");
+			
 			//step4: 
 			/** Verifying corresponding VA's count
 			 **/
@@ -100,7 +102,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	@Test(description = "SMAB-T1261:verify user is able to see new VAs Getting Created After Updating a Not Qualified Exemption To Qualified",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 			"smoke", "regression","DisabledVeteranExemption" })
 	
-	public void verify_Disabledveteran_VAsGetsCreatedAfterUpdatingNotQualifiedExemptionToQualified(String loginUser) throws Exception{
+	public void Disabledveteran_VAsGetsCreatedAfterUpdatingNotQualifiedExemptionToQualified(String loginUser) throws Exception{
 		Map<String, String> noVAData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NotQualifiedToQualifiedData");
 		//Step1: Login to the APAS application using the credentials passed through data provider
 		apasGenericObj.login(loginUser);
@@ -136,10 +138,11 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		
 		
 		objPage.Click(exemptionPageObj.editExemption);
+		objPage.waitForElementToBeClickable(exemptionPageObj.qualification,10);
 		apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, "Qualified");
 		apasGenericObj.selectFromDropDown(exemptionPageObj.reasonNotQualified, "--None--");
 		objPage.Click(ExemptionsPage.saveButton);
-		Thread.sleep(50000);
+		apasGenericObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
 		ReportLogger.INFO("Updated Qualification from Not Qualified to Qualified ");
 		apasGenericObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
 		objPage.Click(exemptionPageObj.exemptionDetailsTab);
@@ -161,8 +164,8 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	 **/
 
 	@Test(description = "SMAB-T473,SMAB-T524,SMAB-T531,SMAB-T555,SMAB-T583,SMAB-T1222,SMAB-T1280,SMAB-T516:Verify User is able to see correct VA's after creating an Exemption",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-			"smoke", "regression","DisabledVeteranExemption" })
-	public void verify_Disabledveteran_createExemptionRecordAndVerifyAllVAAreBasicByDefault(String loginUser) throws Exception{
+			"regression","DisabledVeteranExemption" })
+	public void Disabledveteran_createExemptionRecordAndVerifyAllVAAreBasicByDefault(String loginUser) throws Exception{
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 			//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 			apasGenericObj.login(loginUser);
@@ -205,7 +208,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	 **/
 	@Test(description = "SMAB-T499,SMAB-T601,SMAB-T485,SMAB-T602,SMAB-T1281,SMAB-T486: Verify future dated VA's are DEACTIVATED with Status Not Active when end date of rating is entered",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 			"smoke", "regression","DisabledVeteranExemption" })
-	public void verify_Disabledveteran_UpdatingEndDateOfRating_DeletesFutureVA_CreatesNewVA_DeActivesVA(String loginUser) throws Exception	{
+	public void Disabledveteran_UpdatingEndDateOfRating_DeletesFutureVA_CreatesNewVA_DeActivesVA(String loginUser) throws Exception	{
 		Map<String, String> endDateOfRatingData = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData1");
 		
 			//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -276,8 +279,8 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	
 	
 	@Test(description = "SMAB-T562,SMAB-T485,SMAB-T602:Verify only one VA(basic Disabled veteran)is created for Current Roll", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"smoke", "regression","DisabledVeteranExemption" })
-	public void verify_DisabledVeteran_OnlyOneVAForCurrentRollyear(String loginUser) throws Exception{
+		"regression","DisabledVeteranExemption" })
+	public void DisabledVeteran_OnlyOneVAForCurrentRollyear(String loginUser) throws Exception{
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "onlyOneVAtestData");
 		//Step1: Login to the APAS application using the credentials passed through data provider
 		apasGenericObj.login(loginUser);
@@ -314,7 +317,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 
 	@Test(description = "SMAB-T1276:Verify No penalty is applied to all VA's if application is submitted before Grace end date", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 		"smoke", "regression","DisabledVeteranExemption" })
-public void verify_Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(String loginUser) throws Exception{
+public void Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(String loginUser) throws Exception{
 		Map<String, String> newExemptionMandatoryData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NoPenaltyData");
 		//Step1: Login to the APAS application using the credentials passed through data provider
 		apasGenericObj.login(loginUser);
@@ -361,7 +364,7 @@ public void verify_Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEnd
 	 **/
 	@Test(description = "SMAB-T1365,SMAB-T1387,SMAB-T1375,SMAB-T1290,SMAB-T1277,SMAB-T1291:Verify correct penlaty percenatge is applied to all VA's", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 			"smoke", "regression","DisabledVeteranExemption"})
-	public void verify_Disabledveteran_PenlatyPercentageForAllVAs(String loginUser) throws Exception{
+	public void Disabledveteran_PenlatyPercentageForAllVAs(String loginUser) throws Exception{
 			Map<String, String> newExemptionMandatoryData = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData");
 			//Step1: Login to the APAS application using the credentials passed through data provider
 			apasGenericObj.login(loginUser);
@@ -411,6 +414,7 @@ public void verify_Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEnd
 			{
 				//verifying Annual form received date should not be less than Application received date
 				ReportLogger.INFO("Verifying Annual Form Received date can not be less than Application received date");	
+				objPage.scrollToTop();
 				objPage.Click(vaPageObj.editButton);
 				objPage.waitForElementToBeClickable(vaPageObj.vaEditDeterminationDropDown, 10);
 				apasGenericObj.selectFromDropDown(vaPageObj.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");

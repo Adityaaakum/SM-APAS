@@ -524,9 +524,9 @@ public float calculateNetExemptionAmount(float exemptionAmountCalculated) throws
 	if("".equals(penaltyAmtCalculated) && "".equals(penaltyAmtUserAdjust)) {
 		penaltyAmt = (float) 0.00;	
 	}else if("".equals(penaltyAmtUserAdjust) && !("".equals(penaltyAmtCalculated))) {
-		penaltyAmt = apasGenericObj.convertToFloat(penaltyAmtCalculated);
+		penaltyAmt = Math.round(apasGenericObj.convertToFloat(penaltyAmtCalculated));
 	}else {
-		penaltyAmt = apasGenericObj.convertToFloat(penaltyAmtUserAdjust);
+		penaltyAmt = Math.round(apasGenericObj.convertToFloat(penaltyAmtUserAdjust));
 	}
     netExemptionAmountCalculated = exemptionAmountCalculated - penaltyAmt;
 	return netExemptionAmountCalculated;

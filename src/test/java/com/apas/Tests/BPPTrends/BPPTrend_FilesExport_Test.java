@@ -69,7 +69,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 	 * 5. Deleting the files once verification is done
 	 */
 	@Test(description = "SMAB-T303,SMAB-T266,SMAB-T313,SMAB-T1132: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_DownloadCompositeAndValuationExcelFiles(String loginUser) throws Exception {
+	public void BppTrend_DownloadCompositeAndValuationExcelFiles(String loginUser) throws Exception {
 		//Resetting the composite factor tables status
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Approved", rollYear);
@@ -160,7 +160,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 	 * 4. Deleting the file once verification is done
 	 */
 	@Test(description = "SMAB-T206,T1130: Verifying download functionality for PDF files", dataProvider = "loginBppAndRpBusinessAdminAndPrincipalUsers", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_DownloadBppTrendPdfFile(String loginUser) throws Exception {
+	public void BppTrend_DownloadBppTrendPdfFile(String loginUser) throws Exception {
 		//Resetting the composite factor tables status
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Approved", rollYear);
@@ -221,7 +221,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 	 * 3. Deleting the file once verification is done
 	 */
 	@Test(description = "SMAB-T206,SMAB-T207: Verifying download functionality for PDF file from Bpp Trend Setup page", dataProvider = "loginBusinessAndPrincipalUsers", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_DownloadBppTrendPdfFile_From_BppTrendSetupPage(String loginUser) throws Exception {
+	public void BppTrend_DownloadBppTrendPdfFile_From_BppTrendSetupPage(String loginUser) throws Exception {
 		//Resetting the composite factor tables status
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Approved", rollYear);
@@ -274,7 +274,7 @@ public class BPPTrend_FilesExport_Test extends TestBase {
 	 * 1. Validating unavailability of buttons to download composite and valuation excel file from BPP Trend Setup:: Test Case/JIRA ID: SMAB-T312
 	 */
 	@Test(description = "SMAB-T312: Verifying unavailablity of buttons to download valuation and composite excel files from Bpp Trend Setup page", dataProvider = "loginBusinessAdmin", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_Download_CompositeAndValuation_ExcelFiles_From_BppTrendSetupPage(String loginUser) throws Exception {
+	public void BppTrend_Download_CompositeAndValuation_ExcelFiles_From_BppTrendSetupPage(String loginUser) throws Exception {
 		//Resetting the composite factor tables status
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Approved", rollYear);

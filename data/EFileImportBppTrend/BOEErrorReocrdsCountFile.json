@@ -1,0 +1,12 @@
+{
+	"ErrorRecordsTableWise": {
+		"ComputerValFactors": "2",
+		"SemiconductorValFactors": "2",
+		"BiopharmaceuticalValFactors": "2",
+		"CopierValFactors": "2",
+		"LithoValFactors": "2",
+		"TotalErrorRecords":"10",
+		"TotalFileRecords":"410",
+		"TotalImportedRecords":"400",
+	}
+}

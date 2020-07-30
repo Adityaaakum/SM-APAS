@@ -63,6 +63,27 @@ public class EFileImportTransactionsPage extends Page {
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//*[@class='test-id__field-label' and text()='Description']/parent::div/following-sibling::div//lightning-formatted-text")
 	public WebElement transactionDescription;
 	
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//*[@class='test-id__field-label' and text()='Uploaded File']/parent::div/following-sibling::div//a")	
+	public WebElement uploadedFileInAuditTrail;	
+		
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//*[@class='test-id__field-label' and text()='Duplicate Count']/parent::div/following-sibling::div//slot[@slot='outputField']")	
+	public WebElement duplicateCountTransaction;	
+			
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//a[@title='Download']")	
+	public WebElement downloadButtonTransactionTrail;	
+		
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(text(),'File Count')]/parent::div/following-sibling::div//lightning-formatted-number")	
+	public WebElement transactionFileCount;	
+		
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(text(),'Total Records Imported')]/parent::div/following-sibling::div//lightning-formatted-number")	
+	public WebElement transactionImportCount;	
+		
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(text(),'Total Error Records')]/parent::div/following-sibling::div//lightning-formatted-number")	
+	public WebElement transactionErrorCount;
+	
+	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//table//tr//a[contains(.,'Trail')]")	
+	public List<WebElement> transactionTrailrecordsCount;
+	
 	/**
 	 * Description: This method will open the Import Transactions with the Name passed in the parameter
 	 * @param name: Name of the Import Log

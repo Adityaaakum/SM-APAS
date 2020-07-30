@@ -24,7 +24,7 @@ import com.apas.config.testdata;
 import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
 
-public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase {
+public class RealPropertySettingsLibraries_Test extends TestBase {
 	private RemoteWebDriver driver;
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
@@ -47,15 +47,7 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
 	}
 	
-	/**
-	 * Below function will be used to login to application with different users
-	 *
-	 * @return Return the user business admin and appraisal support in an array
-	 **/
-	@DataProvider(name = "loginUsers")
-	public Object[][] dataProviderLoginUserMethod() {
-		return new Object[][] { { users.EXEMPTION_SUPPORT_STAFF } };
-	}	    
+	 
     /**
 	 Below test case will validate that 
 	 1. user is able to create Real Property Settings Library for Fututre Roll Year
@@ -102,13 +94,7 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		objPage.Click(objRPSLPage.saveButton);
 		
 		//Step10: Verify Duplicate Future Roll Year cannot be created
-		String expectedWarningMessageOnTop;
-		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
-			expectedWarningMessageOnTop = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
-		}
-		else {
-			expectedWarningMessageOnTop = "This record looks like a duplicate.View Duplicates";			
-		}
+		String expectedWarningMessageOnTop = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
 		objPage.waitForElementToBeVisible(objRPSLPage.warningMsgOnTop, 30);
 		softAssert.assertEquals(objRPSLPage.warningMsgOnTop.getText(),expectedWarningMessageOnTop,"SMAB-T540:Verify the User is not able to create duplicate Exemption limit record for any random roll year");
 		softAssert.assertEquals(objRPSLPage.warningMsgOnTop.getText(),expectedWarningMessageOnTop,"SMAB-T541:Verify the User is not able to create duplicate Exemption limit record for a roll year whose entry already exists");
@@ -166,13 +152,7 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		objPage.Click(objRPSLPage.saveButton);		
 		
 		//Step11: Verify Duplicate Current Roll Year cannot be created
-		String expectedWarningMessageOnTop;
-		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
-			expectedWarningMessageOnTop = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
-		}
-		else {
-			expectedWarningMessageOnTop = "This record looks like a duplicate.View Duplicates";			
-		}
+		String expectedWarningMessageOnTop = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
 		objPage.waitForElementToBeVisible(objRPSLPage.warningMsgOnTop, 30);
 		softAssert.assertEquals(objRPSLPage.warningMsgOnTop.getText(),expectedWarningMessageOnTop,"SMAB-T539:Verify the User is not able to create duplicate Exemption limit record for current roll year");
 		objPage.Click(objRPSLPage.cancelButton);
@@ -226,13 +206,7 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		//Step4: Validate the error message appeared for mandatory fields
 		String expectedErrorMessageOnTop = "These required fields must be completed: DV Basic Exemption Amount, DV Low Income Exemption Amount, DV Low Income Household Limit, RP Setting Name, Roll Year Settings, Status";
 		
-		String expectedIndividualFieldMessage;
-		if(System.getProperty("region").equalsIgnoreCase("preuat")) {
-			expectedIndividualFieldMessage = "Complete this field.";
-		}
-		else {
-			expectedIndividualFieldMessage  = "Complete this field";
-		}	
+		String expectedIndividualFieldMessage = "Complete this field.";
 		objPage.waitUntilElementIsPresent("//ul[@class='errorsList']//li", 60);
 		objPage.waitForElementToBeVisible(objRPSLPage.errorMsgOnTop, 30);
 		softAssert.assertEquals(objRPSLPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T544: Validating mandatory fields missing error in manual entry pop up header.");
@@ -450,14 +424,15 @@ public class DisabledVeteran_RealPropertySettingsLibraries_Test extends TestBase
 		objPage.waitForElementToBeClickable(60, objRPSLPage.approvedRPSLLink);
 		objPage.Click(objRPSLPage.approvedRPSLLink);
 	    
-		//Step6 : Edit status of RPSL to  Approved
+		//Step6 : Edit status of RPSL which is approved followed by Save button
 		ReportLogger.INFO("Clicking on 'Edit' button for record whose status is 'Approved'");
-		objPage.Click(objRPSLPage.editButton);			  
-		objPage.waitUntilElementIsPresent(objRPSLPage.xPathErrorMsg,30);
-		String actualErrorMsgText =  objRPSLPage.errorMsgforEdit.getText();	
+		objPage.Click(objRPSLPage.editButton);
+		objPage.Click(objRPSLPage.saveButton);
+		Thread.sleep(1000);
+		String actualErrorMsgText =  objRPSLPage.errorMsgOnTopForEditRPSL.getText();	
 		
 		//Step6: Verify Error message
-		String expectedErrorMessage = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";
+		String expectedErrorMessage = "Record is locked. Please check with your system administrator.";
 	    softAssert.assertEquals(actualErrorMsgText,expectedErrorMessage,"SMAB-T640:Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'");
 	    softAssert.assertEquals(actualErrorMsgText,expectedErrorMessage,"SMAB-T641:Verify that Non-System Admin users are not able to update a locked 'Real Property Settings' record");
 		

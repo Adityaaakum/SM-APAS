@@ -1,7 +1,6 @@
 package com.apas.DataProviders;
 
 import org.testng.annotations.DataProvider;
-
 import com.apas.config.testdata;
 import com.apas.config.users;
 
@@ -70,7 +69,10 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "loginBusinessAndPrincipalUsers")
     public Object[][] dpLoginBusinessAndPrincipalUsers() {
-        return new Object[][] { { users.BUSINESS_ADMIN }, { users.PRINCIPAL_USER } };
+        if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+            return new Object[][] { { users.PRINCIPAL_USER } };
+        else
+            return new Object[][] { { users.BUSINESS_ADMIN }, { users.PRINCIPAL_USER } };
     }
     
 	/**
@@ -79,7 +81,10 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "loginBusinessAndAppraisalUsers")
     public Object[][] dpLoginBusinessAndAppraisalUsers() {
-        return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
+        if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+            return new Object[][] { { users.APPRAISAL_SUPPORT } };
+        else
+            return new Object[][] { { users.BUSINESS_ADMIN }, { users.APPRAISAL_SUPPORT } };
     }
     
 	/**
@@ -88,7 +93,11 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "loginBusinessAdminAndPrincipalUserAndBppAuditor")
     public Object[][] dpLoginBusinessAdminAndPrincipalUserAndBppAuditor() {
-        return new Object[][] { { users.BUSINESS_ADMIN }, { users.PRINCIPAL_USER }, { users.BPP_AUDITOR } };
+        if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+            return new Object[][] { { users.BPP_AUDITOR } };
+        else
+            return new Object[][] { { users.BUSINESS_ADMIN }, { users.PRINCIPAL_USER }, { users.BPP_AUDITOR } };
+
     }
     
 	/**
@@ -176,7 +185,10 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "usersAllowedToDownloadPdfFile")
     public Object[][] dpUsersAllowedToDownloadPdfFile() {
-        return new Object[][] { { users.BUSINESS_ADMIN }, { users.PRINCIPAL_USER } };
+        if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+            return new Object[][] { { users.BUSINESS_ADMIN }};
+        else
+            return new Object[][] { { users.BUSINESS_ADMIN }, { users.PRINCIPAL_USER }  };
     }
     
 	/**
@@ -250,7 +262,10 @@ public class DataProviders {
     
 	@DataProvider(name = "rpApprasierAndBPPAuditor")
 	public Object[][] dataProviderLoginUserMethodForUser() {
-		return new Object[][] { { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
+        if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+		    return new Object[][] { { users.BPP_AUDITOR } };
+        else
+            return new Object[][] { { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
 	}
 
 	/**
@@ -263,7 +278,10 @@ public class DataProviders {
 
     @DataProvider(name = "BPPAuditorAndPrincipal")
     public Object[][] dataBPPAuditorAndPricipalUser() {
-        return new Object[][] { { users.PRINCIPAL_USER }, { users.BPP_AUDITOR }};
+        if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+            return new Object[][] { { users.PRINCIPAL_USER }};
+        else
+            return new Object[][] { { users.PRINCIPAL_USER }, { users.BPP_AUDITOR }};
     }
     
     
@@ -293,7 +311,10 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "loginBppAndRpBusinessAdminUsers")
     public Object[][] dpLoginBppAndRpBusinessAdminUsers() {
-        return new Object[][] { { users.RP_BUSINESS_ADMIN }, { users.BUSINESS_ADMIN } };
+        if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+            return new Object[][] { { users.RP_BUSINESS_ADMIN }};
+        else
+            return new Object[][] { { users.RP_BUSINESS_ADMIN }, { users.BUSINESS_ADMIN } };
     }
  
 	/**
@@ -302,7 +323,10 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "loginBppAndRpBusinessAdminAndPrincipalUsers")
     public Object[][] dpLoginBppAndRpBusinessAdminAndPrincipalUsers() {
-        return new Object[][] { { users.RP_BUSINESS_ADMIN }, { users.BUSINESS_ADMIN }, { users.PRINCIPAL_USER } };
+        if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+            return new Object[][] { { users.PRINCIPAL_USER } };
+        else
+            return new Object[][] { { users.RP_BUSINESS_ADMIN }, { users.BUSINESS_ADMIN }, { users.PRINCIPAL_USER } };
     }
     
 	/**
@@ -311,7 +335,10 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "loginRpBusinessAdminAndPrincipalUsers")
     public Object[][] dpLoginRpBusinessAdminAndPrincipalUsers() {
-        return new Object[][] { { users.RP_BUSINESS_ADMIN }, { users.PRINCIPAL_USER } };
+        if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+            return new Object[][] { { users.RP_BUSINESS_ADMIN }};
+        else
+            return new Object[][] { { users.RP_BUSINESS_ADMIN }, { users.PRINCIPAL_USER } };
     }
     
     /**
@@ -320,7 +347,10 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "loginRpBusinessAdminAndExemptionSupportUsers")
     public Object[][] dpLoginRpBusinessAdminAndExemptionSupportUsers() {
-        return new Object[][] { { users.RP_BUSINESS_ADMIN }, { users.EXEMPTION_SUPPORT_STAFF } };
+        if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+            return new Object[][] { { users.EXEMPTION_SUPPORT_STAFF } };
+        else
+            return new Object[][] { { users.RP_BUSINESS_ADMIN }, { users.EXEMPTION_SUPPORT_STAFF } };
     }
     
     

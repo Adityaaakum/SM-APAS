@@ -43,6 +43,12 @@ public class ReportsPage extends Page {
 	
 	@FindBy(xpath = "//table[contains(@class,'full')]//span[text()='Exemption: Exemption Name']")
 	public WebElement exemptionNameLabel;
+	
+	@FindBy(xpath="//button[@class='action-bar-action-toggleFilter reportAction report-action-toggleFilter slds-button slds-not-selected slds-button_icon-border']")
+	public WebElement filterIcon;
+	
+	@FindBy(xpath="//div[@class='filter-button-group']//button[contains(text(),'Apply')]")
+	public WebElement filterApply;
 
 	public String linkBuildingPermitNumber = "//table[contains(@class,'data-grid-full-table')]//tbody//tr//th[@data-row-index='3']/../td[@data-column-index='2']//a[contains(@href,'')]";
 	public String linkAPN = "//table[contains(@class,'data-grid-full-table')]//tbody//tr//th[@data-row-index='3']/../td[@data-column-index='3']//a[contains(@href,'')]";
@@ -125,4 +131,22 @@ public class ReportsPage extends Page {
 		Thread.sleep(5000);		
 		locateElement(xPathsortArrowBtn,30);
 	}
+	
+	/**
+	 * Description: This method will update the filters with current roll year values
+	 * @param filterNumber: Takes the position of the filter in the default view
+	 * @param removeEntry: Takes current filter value to locate that element
+	 * @param updateRollYear: Takes year value to be updated
+	 */
+	public void editFilterAndUpdate(String filterNumber, String removeEntry, String updateRollYear) throws Exception {
+		String xpathStr1 = "//ul//li//div[@class='filter-card-index'][contains(text(),'" + filterNumber + "')]/parent::div//div//div//button";
+		WebElement filterLocator = locateElement(xpathStr1, 30);
+	    Click(filterLocator);
+	    String xpathStr2 = "//div[@class='slds-form-element__control slds-input-has-icon slds-input-has-icon_right']//input[@class='slds-input'][@value='" + removeEntry + "']";
+	    WebElement dateLocator = locateElement(xpathStr2, 30);
+	    if (removeEntry.length() == 9) enter(dateLocator, removeEntry.substring(0, 5).concat(updateRollYear));
+	    if (removeEntry.length() == 8) enter(dateLocator, removeEntry.substring(0, 4).concat(updateRollYear));
+	    Click(filterApply);
+	    Thread.sleep(5000);	
+	}	
 }

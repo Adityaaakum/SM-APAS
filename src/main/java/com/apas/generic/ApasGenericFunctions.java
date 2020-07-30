@@ -42,12 +42,13 @@ public class ApasGenericFunctions extends TestBase {
     Page objPage;
     LoginPage objLoginPage;
     ApasGenericPage objApasGenericPage;
-
+    SalesforceAPI objSalesforceAPI;
     public ApasGenericFunctions(RemoteWebDriver driver) {
         this.driver = driver;
         objPage = new Page(this.driver);
         objLoginPage = new LoginPage(this.driver);
         objApasGenericPage = new ApasGenericPage(this.driver);
+        objSalesforceAPI= new SalesforceAPI();
     }
 
     /**
@@ -305,8 +306,8 @@ public class ApasGenericFunctions extends TestBase {
     }
 
     public void selectFromDropDown(WebElement element, String value) throws Exception {
-        objPage.Click(element);
-//        String xpathStr = "//div[contains(@class, 'left uiMenuList') and contains(@class, 'visible positioned')]//a[text() = '"+value+"']";
+    	objPage.scrollToElement(element);
+        objPage.Click(element); 
         String xpathStr = "//div[contains(@class, 'left uiMenuList') and contains(@class, 'visible positioned')]//a[text() = '"+value+"'] | //*[@role='option']//span[@class='slds-media__body']/span[text()='"+value+"']";
         objPage.waitUntilElementIsPresent(xpathStr, 200);
         objPage.Click(driver.findElement(By.xpath(xpathStr)));
@@ -556,11 +557,40 @@ public float convertToFloat(Object amount)
 	 * @param rollYear: Roll year for which the status needs to be updated
 	 */
 	public void updateRollYearStatus(String expectedStatus, String rollYear) throws Exception {		
-		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 		//Query to update the status of Roll Year
 		String queryForID = "Select Id From Roll_Year_Settings__c where Roll_Year__c = '"+ rollYear +"'";		
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("Status__c", expectedStatus);		
 		objSalesforceAPI.update("Roll_Year_Settings__c", queryForID, jsonObj);
+	}
+	
+	/**
+	 * Description: this function is to open the imported log created
+	 * @param: filtyepe, Source and period values
+	 * @throws IOException 
+	 * @throws Exception 
+	 */
+	public void openLogRecordForImportedFile(String fileType, String source,String period,String filepath) throws IOException {
+		String logName=fileType+" :"+source+" :"+period;
+		String filename=filepath.substring(filepath.lastIndexOf("\\")+1, filepath.lastIndexOf("."));
+		objPage.javascriptClick(driver.findElement(By.xpath("(//a[text()='"+filename+"'])[1]")));
+		
+		for (String winHandle : driver.getWindowHandles()) {
+			   driver.switchTo().window(winHandle);
+			 }
+		objPage.javascriptClick(driver.findElement(By.xpath("//div[text()='"+logName+"']")));
+	
+	}
+	
+	/**
+	 * @description: Clicks on the show more link displayed against the given entry
+	 * @param entryDetails: Name of the entry displayed on grid which is to be accessed
+	 * @throws Exception
+	 */
+	public void clickShowMoreLink(String entryDetails) throws Exception {		
+		Thread.sleep(3000);
+		String xpathStr = "//table//tbody/tr//th//a[text() = '"+ entryDetails +"']//parent::*//parent::th//following-sibling::td//a[@role = 'button']";
+		WebElement modificationsIcon = locateElement(xpathStr, 60);
+		objPage.clickAction(modificationsIcon);
 	}
 }

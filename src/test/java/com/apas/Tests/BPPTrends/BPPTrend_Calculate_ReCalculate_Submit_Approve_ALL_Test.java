@@ -81,8 +81,8 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 	 * 5. Checking unavailability of Calculate button for valuation factor tables:: Test Case/JIRA ID: SMAB-T247
 	 * 6. Checking the status of all tables in BPP Trends page
 	 */
-	@Test(description = "SMAB-T191,SMAB-T247,SMAB-T313: Perform calculation for all factor tables in one go", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_CalculateAll(String loginUser) throws Exception {
+	@Test(description = "SMAB-T191,SMAB-T247,SMAB-T313: Perform calculation for all factor tables in one go", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	public void BppTrend_CalculateAll(String loginUser) throws Exception {
 		//Step1: Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Not Calculated", rollYear);
@@ -182,7 +182,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 	 * 5. Checking the status of all tables in BPP Trends page
 	 */
 	@Test(description = "SMAB-T197: Perform ReCalculation for all factor tables in one go", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_ReCalculateAll(String loginUser) throws Exception {
+	public void BppTrend_ReCalculateAll(String loginUser) throws Exception {
 		//Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Calculated", rollYear);
@@ -280,7 +280,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 	 * 8. Validating the status of all the valuation factor table on BPP Trend Setup age:: Test Case/JIRA ID: SMAB-T442, SMAB-T247
 	 */
 	@Test(description = "SMAB-T250,SMAB-T442,SMAB-T247,SMAB-T211: Sumbit calculations for approval for all factor tables in one go",groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_SubmitAllFactorForApproval(String loginUser) throws Exception {
+	public void BppTrend_SubmitAllFactorForApproval(String loginUser) throws Exception {
 		//Step1: Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Calculated", rollYear);
@@ -336,7 +336,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 		objBppTrnPg.clickSubmitAllFactorsForApprovalBtn();
 
 		//Step12: Retrieve & Assert pop up message displayed at page level
-		String actPopUpMsg = objBppTrendSetupPage.waitForPopUpMsg(30);
+		String actPopUpMsg = objBppTrendSetupPage.getSuccessMsgText();
 		String expPopUpMsg = CONFIG.getProperty("pageLevelMsgAfterSubmitAllForApproval");
 		softAssert.assertEquals(actPopUpMsg, expPopUpMsg, "SMAB-T442: Calculation successfully submitted for approval for all tables");
 
@@ -409,8 +409,8 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 	 * 1. Validation to approve all tables in one go using Approving all button:: Test Case/JIRA ID: SMAB-T304
 	 * 1. Validation to check download and export buttons once table are approved:: Test Case/JIRA ID: SMAB-T304
 	 */
-	@Test(description = "SMAB-T304: Aproving all factor tables in one go using ApproveAll button", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_ApproveAll(String loginUser) throws Exception {
+	@Test(description = "SMAB-T304: Aproving all factor tables in one go using ApproveAll button", groups = {"regression","BPPTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class)
+	public void BppTrend_ApproveAll(String loginUser) throws Exception {
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Submitted for Approval", rollYear);
@@ -439,7 +439,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 		objBppTrnPg.clickApproveAllBtn();
 
 		//Step6: Retrieve & Assert pop up message displayed at page level
-		String actPopUpMsg = objBppTrendSetupPage.waitForPopUpMsg(30);
+		String actPopUpMsg = objBppTrendSetupPage.getSuccessMsgText();
 		String expPopUpMsg = CONFIG.getProperty("pageLevelMsgAfterApproveAll");
 		softAssert.assertEquals(actPopUpMsg, expPopUpMsg, "SMAB-T304: Message to validate all tables are successfully approved");
 
@@ -481,8 +481,8 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 	 * DESCRIPTION: Performing following for table: <ALL APPROVED FACTORS TABLES>
 	 * 1. Validating absence of Calculate all and Calculate button:: Test Case/JIRA ID: SMAB-T1145
 	 */
-	@Test(description = "SMAB-T1145: Check availlbility of calculate button when BPP trend files are not imported", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
-	public void verify_BppTrend_Calculate_When_InputFiles_NotImported(String loginUser) throws Exception {
+	@Test(description = "SMAB-T1145: Check availlbility of calculate button when BPP trend files are not imported", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	public void BppTrend_Calculate_When_InputFiles_NotImported(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
 		objApasGenericFunctions.login(users.SYSTEM_ADMIN);
 

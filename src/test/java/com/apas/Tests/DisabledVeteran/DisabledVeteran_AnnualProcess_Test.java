@@ -93,7 +93,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		Map<String, String> exemptionCreationDataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToCreateExemptionWithMandatoryFields");
 		String timeStamp = java.time.LocalDateTime.now().toString();
 		exemptionCreationDataMap.put("Veteran Name", exemptionCreationDataMap.get("Veteran Name").concat(timeStamp));
-		objExemptionsPage.createExemptionWithoutEndDateOfRating(exemptionCreationDataMap);
+		objExemptionsPage.createExemption(exemptionCreationDataMap);
 		
 		objPage.waitUntilElementIsPresent(objExemptionsPage.exemptionNumber,30);
 		activeExemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
@@ -207,7 +207,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		Map<String, String> exemptionCreationDataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToCreateExemptionWithEndDate");
 		String timeStamp = java.time.LocalDateTime.now().toString();
 		exemptionCreationDataMap.put("Veteran Name", exemptionCreationDataMap.get("Veteran Name").concat(timeStamp));
-		objExemptionsPage.createExemptionWithEndDateOfRating(exemptionCreationDataMap);
+		objExemptionsPage.createExemption(exemptionCreationDataMap);
 		objPage.waitUntilElementIsPresent(objExemptionsPage.exemptionNumber,30);
 		inActiveExemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 			

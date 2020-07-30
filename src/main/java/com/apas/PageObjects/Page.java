@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
+
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -1156,6 +1157,7 @@ public class Page {
 			}
 		}
 	}
+	
 	/**
 	 * Description: Checks whether element is displayed on the web page
 	 * @param element: WebElement whose availability is to be checked
@@ -1177,8 +1179,13 @@ public class Page {
 	}
 	
 	
-	
-	
+	/**	
+	 * Description: this function is to compare all drop down values with set of values in no order	
+	 * @param actualvalues: actual values present in drop down	
+	 * @param expectedSourcesBPP: expected values to be compared	
+	 * @return boolean: Returns true / false bases on comparison of values	
+	 * @throws: Exception	
+	 */
 	public boolean compareDropDownvalues(String actualvalues,String expectedSourcesBPP) {
 		String []allexpectedvalues=expectedSourcesBPP.split("\n");
 		String valueNotpresent = "";
@@ -1194,6 +1201,20 @@ public class Page {
 		{ReportLogger.INFO("All values are found\n||Actual values::\n"+actualvalues+"\n||Expected Values::\n"+expectedSourcesBPP);
 		 return true;
 		 }
+	}
+	
+	/**	
+	 * Description: this function is to return the currently selected value of drop down	
+	 * @param dropDown: drop down element to be verified	
+	 * @return String: Returns the currently selected value of drop down	
+	 * @throws Exception 	
+	 */	
+	public String getSelectedDropDownValue(WebElement dropDown) throws Exception {	
+		waitForElementToBeVisible(dropDown, 30);	
+		Click(dropDown);	
+		String value=driver.findElement(By.xpath("//div[@aria-expanded='true']//lightning-base-combobox-item//*[@data-key='check']//ancestor::span/following-sibling::span")).getText();	
+		Click(dropDown);	
+		return value;	
 	}
 	
 }

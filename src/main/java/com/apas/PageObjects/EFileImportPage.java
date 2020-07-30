@@ -216,6 +216,14 @@ public class EFileImportPage extends Page {
 	@FindBy(xpath = "//lightning-input//div//input[@type = 'text']")
 	public WebElement inputBoxOnImportPage;
 	
+	@FindBy(xpath = "//section[@role='dialog']//*[@role='alert']")
+	public WebElement errorInFileNameMsg;
+	
+	@FindBy(xpath = "//button[@title='Source Details']//*[@data-key='success']")
+	public WebElement sourceDetails;
+	
+	@FindBy(xpath = "//section[@role='dialog']//div[@data-dropdown-element='true']//span[@class='slds-media__body']")
+	public WebElement periodFirstDropDownValue;
 	
 	public String xpathFileTypedrpdwn = "//*[@name='docType']";
 	/**
@@ -708,7 +716,7 @@ public class EFileImportPage extends Page {
 	 * @throws Exception
 	 */
 	public void updateCorrectDataInTable(String tableNumber, String updatedValue) throws Exception {
-		String junkDataCellXpath = "(//lightning-tab[@aria-labelledby = '"+tableNumber+"__item']//span[contains(@title,'ERROR ROWS')]//ancestor::div[@class = 'slds-accordion__summary']//following-sibling::div//table//lightning-formatted-text[starts-with(text(), 'Junk_')])";
+		String junkDataCellXpath = "(//lightning-tab[@aria-labelledby = '"+tableNumber+"__item']//span[contains(@title,'ERROR ROWS')]//ancestor::div[@class = 'slds-accordion__summary']//following-sibling::div//table//lightning-base-formatted-text[starts-with(text(), 'Junk_')])";
 		Click(locateElement(junkDataCellXpath, 10));
 
 		String xpathEditIcon = "//lightning-primitive-cell-factory[@class = 'slds-cell-wrap slds-has-focus']//span[text() = 'Edit Average' or text() = 'Edit Factor' or text() = 'Edit Valuation Factor']//ancestor::button//lightning-primitive-icon";

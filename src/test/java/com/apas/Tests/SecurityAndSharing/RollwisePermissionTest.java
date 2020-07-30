@@ -1,4 +1,4 @@
-package com.apas.Tests.ApasSettings;
+package com.apas.Tests.SecurityAndSharing;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;

@@ -111,8 +111,8 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//tr//span[text()='Approved']//..//..//preceding-sibling::th//a")
 	public WebElement approvedRPSLLink;
 	
-	public String xPathErrorMsg = "//div[@class='uiBlock']//p[@class='detail']//span";
-	
+	@FindBy(xpath = "//li[contains(text(), 'Record is locked. Please check with your system administrator')]")
+	public WebElement errorMsgOnTopForEditRPSL;
 	
 	/**
 	 * @Description: This method is to handle fields like Status
