@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
@@ -284,4 +286,32 @@ public class Util {
 		  }	
 		return totalExcelFiles;
 	}
+
+	/**
+	 * Description: This method will zip the file
+	 * @param filePath : Path of the file to be zipped
+	 */
+	public static File zipFile(String filePath) throws InterruptedException {
+		try {
+			File file = new File(filePath);
+			String zipFileName = file.getName().concat(".zip");
+			FileOutputStream fos = new FileOutputStream(file.getParent() + "//" + zipFileName);
+			ZipOutputStream zos = new ZipOutputStream(fos);
+
+			zos.putNextEntry(new ZipEntry(file.getName()));
+
+			byte[] bytes = Files.readAllBytes(Paths.get(filePath));
+			zos.write(bytes, 0, bytes.length);
+			zos.closeEntry();
+			zos.close();
+
+		} catch (FileNotFoundException ex) {
+			System.err.format("The file %s does not exist", filePath);
+		} catch (IOException ex) {
+			System.err.println("I/O error: " + ex);
+		}
+		Thread.sleep(5000);
+		return new File(filePath + ".zip");
+	}
+
 }
