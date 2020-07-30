@@ -43,5 +43,7 @@ public interface testdata {
     public static final String EFILEIMPORT_BPDATA = "\\data\\EFileImportBP\\";
 
     public static final String COUNTY_STRAT_CODES = "\\data\\CountyStratCodes";
+    
+    public static final String LOAD_Test = "\\data\\LoadTest";
 
 }

@@ -216,10 +216,12 @@
 								<name>listener</name>
 								<value>com.apas.Listeners.SuiteListener,com.apas.Listeners.TestAnnotationListener</value>
 							</property>
+							
 						</properties>
 						<forkCount>0</forkCount>
 						<!-- <reuseForks>true</reuseForks> -->
-						<!-- <parallel>classes</parallel> <threadCount>5</threadCount> -->
+						<parallel>methods</parallel> 
+						<threadCount>10</threadCount>
 						<!-- <includes>
 						
 						         <include>BuildingPermit_Manual_Test.java</include>

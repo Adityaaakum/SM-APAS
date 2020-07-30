@@ -225,10 +225,13 @@ public class EFileImportPage extends Page {
 	 */
 	public void selectFileAndSource(String fileType, String source) throws IOException, InterruptedException {
 		System.out.println("File type is:" + fileType + " and Source is:" + source);
+		Thread.sleep(3000);
 		Click(fileTypedropdown);
-		Thread.sleep(2000);
+		Thread.sleep(3000);
 		Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + fileType + "')]")));
+		Thread.sleep(3000);
 		Click(sourceDropdown);
+		Thread.sleep(3000);
 		WebElement webElementSourceOption = driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]"));
 		scrollToElement(webElementSourceOption);
 		Click(webElementSourceOption);
@@ -241,14 +244,26 @@ public class EFileImportPage extends Page {
 	 * @param period: Period for which the file needs to be uploaded
 	 * @param absoluteFilePath: Absoulte Path of the file with the file name
 	 */
-	public void uploadFileOnEfileIntake(String fileType, String source,String period, String absoluteFilePath) throws Exception{
+	public void uploadFileOnEfileIntake(String fileType, String source,String fileImport, String absoluteFilePath) throws Exception{
 		ReportLogger.INFO("Uploading " +  absoluteFilePath + " file");
 		selectFileAndSource(fileType, source);
 		objPage.waitUntilElementDisplayed(nextButton, 15);
 		objPage.scrollToTop();
 		objPage.Click(nextButton);
-		objPage.Click(periodDropdown);
-		objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
+		
+		if(fileType.equals("BPP Trend Factors")) {
+			
+			objPage.Click(periodDropdown);
+			objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + fileImport + "')]")));		
+			
+		}
+		else if(fileType.equals("Building Permit")) {
+			
+			objPage.enter(fileNameInputBox, fileImport);
+			objPage.Click(fileNameNext);
+			
+		}
+		objPage.waitForElementToBeClickable(confirmButton, 15);
 		objPage.Click(confirmButton);
 		Thread.sleep(2000);
 		uploadFileInputBox.sendKeys(absoluteFilePath);
@@ -334,7 +349,7 @@ public class EFileImportPage extends Page {
 	 * @param filename: Period for which the file needs to be uploaded
 	 * @param absoluteFilePath: Absoulte Path of the file with the file name
 	 */
-	public void uploadFileOnEfileIntakeBP(String fileType, String source,String filename, String absoluteFilePath) throws Exception{
+	public void uploadFileOnEfileIntakeBP(String fileType, String source, String filename, String absoluteFilePath) throws Exception{
 		ReportLogger.INFO("Uploading " +  absoluteFilePath + " file");
 		selectFileAndSource(fileType, source);
 		objPage.waitUntilElementDisplayed(nextButton, 15);

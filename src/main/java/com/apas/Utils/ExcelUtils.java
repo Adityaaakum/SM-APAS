@@ -8,6 +8,9 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 public class ExcelUtils {
@@ -93,6 +96,29 @@ public class ExcelUtils {
         }
 
         return strCellValue;
+    }
+    
+    
+    public void setCellValueAndCopy(String srcFile, String newTextToReplace, String tmpFile) throws IOException {
+    	
+    	FileInputStream file = new FileInputStream(new File(srcFile));
+        XSSFWorkbook workBook = new XSSFWorkbook(file);
+        XSSFSheet sheet = workBook.getSheetAt(0);
+        
+        Cell cell = sheet.getRow(1).getCell(1);
+        cell.setCellValue(newTextToReplace);
+        
+        workBook.getCreationHelper().createFormulaEvaluator().evaluateAll();
+        
+        file.close();        
+        
+        FileOutputStream out = new FileOutputStream(tmpFile, false);
+        workBook.write(out);
+        out.close();
+        
+        
+    	
+    	
     }
 
 }
