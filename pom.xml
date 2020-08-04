@@ -214,8 +214,8 @@
 						</properties>
 						<forkCount>0</forkCount>
 						<!-- <reuseForks>true</reuseForks> -->
-						<parallel>methods</parallel> 
-						<threadCount>10</threadCount>
+						<!-- <parallel>methods</parallel> 
+						<threadCount>10</threadCount> -->
 						<!-- <includes>
 						
 						         <include>BuildingPermit_Manual_Test.java</include>
