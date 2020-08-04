@@ -13,6 +13,7 @@ import com.relevantcodes.extentreports.ExtentReports;
 
 public class ExtentManager {
 	public static ExtentReports extent;
+	public static String resultFile;
 	int iCounter = 0;
 	public static ITestContext context;
 	public static ThreadLocal<ExtentReports> dr = new ThreadLocal<ExtentReports>();
@@ -31,7 +32,7 @@ public class ExtentManager {
 			if (System.getProperty("jenkinsbuild") != null){
 				buildNumber = "_Build#" + System.getProperty("jenkinsbuild");
 			}
-			String resultFile = System.getProperty("user.dir") + "//test-output//AutomationReport//" + SuiteName + "_" + environment + buildNumber + "_" + upDate + ".html";
+			resultFile = System.getProperty("user.dir") + "//test-output//AutomationReport//" + SuiteName + "_" + environment + buildNumber + "_" + upDate + ".html";
 			extent = new ExtentReports(resultFile, true);
 			// setEmaildirectoryPath(resultFile);
 			extent.config().reportHeadline(", Env: " + environment);
