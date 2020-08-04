@@ -752,7 +752,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.Click(objEFileImport.nextButton);
 		objPage.enter(objEFileImport.fileNameInputBox, "SanMateoBuildingPermitsWithValidAndInvalidData4.xlsx");
 		objPage.Click(objEFileImport.fileNameNext);
-		softAssert.assertContains(objPage.getElementText(objEFileImport.fileAlreadyApprovedMsg), "This file has been already imported by", "SMAB-T1571:Verify user is not able to upload same file(same filename) again if already imported");
+		softAssert.assertContains(objPage.getElementText(objEFileImport.fileAlreadyApprovedMsg), "This file has been previously imported by", "SMAB-T1571:Verify user is not able to upload same file(same filename) again if already imported");
 		objPage.Click(objEFileImport.closeButton);
 		
 		apasGenericObj.logout();
