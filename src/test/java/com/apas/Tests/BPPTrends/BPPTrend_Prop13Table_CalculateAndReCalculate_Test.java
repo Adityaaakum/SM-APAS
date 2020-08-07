@@ -88,7 +88,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 	 */
 	@Test(description = "SMAB-T190,SMAB-T276,SMAB-T277,SMAB-T278,SMAB-T442,SMAB-T211: Performing validation on PROP 13 FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_Prop13Factors_CalculateAndCompare(String loginUser) throws Exception {
-		objBppTrnPg.deleteDuplicateCPI();
+		objBppTrnPg.deleteDuplicateCPI(rollYear);
 		
 		//Step1: Resetting the status of all composite factor tables to "Not Calculated" through SalesForce API
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
@@ -251,7 +251,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 	 */
 	@Test(description = "SMAB-T302,SMAB-T195,SMAB-T196,SMAB-T442,SMAB-T577: Performing validation on PROP 13 COMPOSITE FACTORS before and after calculation", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_Prop13Factors_ReCalculateAndCompare(String loginUser) throws Exception {
-		objBppTrnPg.deleteDuplicateCPI();
+		objBppTrnPg.deleteDuplicateCPI(rollYear);
 		//Step1: Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Calculated", rollYear);

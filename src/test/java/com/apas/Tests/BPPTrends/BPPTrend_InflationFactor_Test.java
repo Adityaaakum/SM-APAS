@@ -103,7 +103,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		softAssert.assertTrue(isRecordCreated, "SMAB-T180: Validationg message on successfully creating CPI Factor entry. "+ actMsgInPopUpOnSave);
 		
 		//Step8: Deleting Duplicate CPI record Create
-		objBppTrendPage.deleteDuplicateCPI();
+		objBppTrendPage.deleteDuplicateCPI(rollYear);
 		
 		objApasGenericFunctions.logout();
 	}
