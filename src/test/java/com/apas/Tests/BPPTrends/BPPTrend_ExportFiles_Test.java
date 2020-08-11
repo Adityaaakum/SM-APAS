@@ -63,7 +63,8 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
         objApasGenericFunctions.updateRollYearStatus("Open", "2020");
 	}
 	/* DESCRIPTION: Performing following once all tables are APPROVED:
-		 * 1. Validate Export Valuation & Composite Factors buttons visibility only after status is 'Approved':: Test Case/JIRA ID: SMAB-T266, SMAB-T303, SMAB-T313
+		 * 1. Validate Export Valuation & Composite Factors buttons are not visible before status of all the Factor Tables is 'Approved':: Test Case/JIRA ID: SMAB-T266, SMAB-T303, SMAB-T313
+		 * 2. Validate Export Valuation & Composite Factors buttons are visible after status of all the Factor Tables is 'Approved':: Test Case/JIRA ID: SMAB-T266, SMAB-T303, SMAB-T313
 		 */
 	@Test(description = "SMAB-T266,SMAB-T303,SMAB-T313: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
 	public void BppTrend_Verify_Export_CompositeAndValuationButtons_Visible(String loginUser) throws Exception {
@@ -152,7 +153,7 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 	}
 	
 	/* DESCRIPTION: Performing following once all tables are APPROVED:
-	 * 1. Validate Export Valuation & Composite Factors buttons visibility only after status is 'Approved':: Test Case/JIRA ID: SMAB-T266, SMAB-T303, SMAB-T313
+	 * 1. Validate BPP Trends File is downloaded successfully in Excel format on clicking Download button:: Test Case/JIRA ID: SMAB-T206
 	 */
 	@Test(description = "SMAB-T206: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
 	public void BppTrend_Verify_Download(String loginUser) throws Exception {
@@ -183,10 +184,11 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		String exportedFileName = downloadedFile.getName();
 		softAssert.assertTrue(exportedFileName.contains("BPP Trends Details " + rollYear + ".pdf"), "SMAB-T206: Verify Principal User/Business admin are able to export Output tables in PDF format");
 		
+		objApasGenericFunctions.logout();
 	}
 	
 	/* DESCRIPTION: Performing following once all tables are APPROVED:
-	 * 1. Validate Export Valuation & Composite Factors buttons visibility only after status is 'Approved':: Test Case/JIRA ID: SMAB-T266, SMAB-T303, SMAB-T313
+	 * 1. Validate Excel Files are downloaded on clicking Export Valuation & Composite Factors buttons :: Test Case/JIRA ID: SMAB-T1132
 	 */
 	@Test(description = "SMAB-T1132: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
 	public void BppTrend_Export_CompositeAndValuationFactor_Files(String loginUser) throws Exception {
@@ -230,15 +232,13 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		exportedFileName = downloadedFile.getName();
 		softAssert.assertTrue(exportedFileName.contains("BPP - Valuation Factors by Roll Year-" + rollYear), "SMAB-T1132: Verify downloaded excel file: "+ exportedFileName);
 		
-	
+		objApasGenericFunctions.logout();
 	}
 	
 	
 	/**
 	 * DESCRIPTION: Performing following once all tables are APPROVED:
-	 * 1. Downloading the PDF file from BPP Trend Setup page:: Test Case/JIRA ID: SMAB-T206
-	 * 2. Validating whether PDF file has been successfully downloaded in the system at given path:: Test Case/JIRA ID: SMAB-T206
-	 * 3. Deleting the file once verification is done
+	 * 1. Validate PDF file has been successfully downloaded in the system at given path:: Test Case/JIRA ID: SMAB-T207, SMAB-T1130
 	 */
 	@Test(description = "SMAB-T207,SMAB-T1130: Verifying download functionality for PDF file from Bpp Trend Setup page", dataProvider = "loginBusinessAndPrincipalUsers", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
 	public void BppTrend_DownloadBppTrendPdfFile_From_BppTrendSetupPage(String loginUser) throws Exception {
