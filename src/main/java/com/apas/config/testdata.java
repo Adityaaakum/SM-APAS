@@ -18,16 +18,16 @@ public interface testdata {
 	public static final String BUILDING_PERMIT_NEW_MANUAL_ENTRY_DATA = "\\data\\BuildingPermit\\SanMateoBuildingPermits\\BuildingPermit_DataToCreateManualEntry.txt";
 	public static final String BUILDING_PERMIT_MANUAL_ENTRY_DATA = "\\data\\BuildingPermit\\SanMateoBuildingPermits\\BuildingPermit_ManualEntryData.json";
 	public static final String BPP_TREND_CALCULATOR = "\\data\\BppTrend\\Valid_Import_Files\\2020_Trend_Factors_Calculator.xlsx";
-	public static final String BPP_TREND_BOE_INDEX_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\BOE Equipment Index Factors and Percent Good Factors 2021.xlsx";
-	public static final String BPP_TREND_CAA_VALUATION_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\CAA Valuation Factors 2021.xlsx";
-	public static final String BPP_TREND_BOE_VALUATION_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\BOE Valuation Factors 2021.xlsx";
+	public static final String BPP_TREND_BOE_INDEX_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\";
+	public static final String BPP_TREND_CAA_VALUATION_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\";
+	public static final String BPP_TREND_BOE_VALUATION_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\";
 	public static final String BPP_TREND_DATA = "\\data\\BppTrend\\BppTrendSetupAndBppSettingData.json";
 	
 	public static final String BPP_TREND_BOE_INDEX_FACTORS_CSV = "\\data\\BppTrend\\Invalid_Format_Files\\BOE Equipment Index Factors and Percent Good Factors Sample_CSV_Format.csv";
 	public static final String BPP_TREND_BOE_INDEX_FACTORS_TXT = "\\data\\BppTrend\\Invalid_Format_Files\\BOE Equipment Index Factors and Percent Good Factors Sample_TXT_Format.txt";
 	public static final String BPP_TREND_BOE_INDEX_FACTORS_XLS = "\\data\\BppTrend\\Invalid_Format_Files\\BOE Equipment Index Factors and Percent Good Factors Sample_XLS_Format.xls";
 	
-	public static final String BPP_TREND_BOE_INDEX_FACTORS_TRANSFORMATION_RULES= "\\data\\BppTrend\\Transformation_Validation_Files\\BOE Equipment Index Factors and Percent Good Factors Sample_Transformation Rules.xlsx";
+	public static final String BPP_TREND_BOE_INDEX_FACTORS_TRANSFORMATION_RULES= "\\data\\BppTrend\\Transformation_Validation_Files\\";
 	public static final String BPP_TREND_BOE_VALUATION_FACTORS_TRANSFORMATION_RULES= "\\data\\BppTrend\\Transformation_Validation_Files\\BOE Valuation Factors 2020_Transformation Rules.xlsx";
 	public static final String BPP_TREND_CAA_VALUATION_FACTORS_TRANSFORMATION_RULES= "\\data\\BppTrend\\Transformation_Validation_Files\\CAA Valuation Factors 2020_Transformation Rules.xlsx";
 	public static final String BPP_TREND_CALCULATOR_WITH_UPDATED_MIN_EQIP_INDEX_FACTOR = "\\data\\BppTrend\\Updated_Trend_Calculator_For_ReCalculation\\2020_Trend_Factors_Calculator.xlsx";
@@ -49,5 +49,7 @@ public interface testdata {
     public static final String BOE_ERRORREOCRDS_COUNT = "\\data\\EFileImportBppTrend\\BOEErrorReocrdsCountFile.json";
     public static final String BPP_TREND_BOE_VALUATION_FACTORS_VALID_DATA = "\\data\\EFileImportBppTrend\\BOE Valuation Factors 2021.xlsx";
 
-
+    public static final String BPP_TREND_BOE_INDEX_FACTORS_VALID = "\\data\\BppTrend\\Valid_Import_Files\\";
+    public static final String BPP_TREND_BOE_VAL_FACTORS_VALID = "\\data\\BppTrend\\Valid_Import_Files\\";
+    public static final String BPP_TREND_CAA_VAL_FACTORS_VALID = "\\data\\BppTrend\\Valid_Import_Files\\";
 }
