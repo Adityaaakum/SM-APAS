@@ -1014,42 +1014,15 @@ public class Page {
     }
     
     /**
-	 * Sets the parent window handle property with parent window's handle
-	 */
-	public void setParentWindowHandle() {
-		System.setProperty("parentWindowHandle", driver.getWindowHandle());
-	}
-	
-	/**
 	 * Switches the focus on the new window
 	 */
-	public void switchToNewWindow() throws Exception {		
-		Set<String> windowHandles = driver.getWindowHandles();
-		for(int i = 0; i < 200; i++) {
-			windowHandles = driver.getWindowHandles();
-			if(windowHandles.size() > 1) {
-				break;
-			} else {
-				Thread.sleep(250);
+	public void switchToNewWindow(String parentWinHandle) throws Exception {	
+		for (String winHandle : driver.getWindowHandles()) {
+			if(!winHandle.equalsIgnoreCase(parentWinHandle)) {
+			   driver.switchTo().window(winHandle);
 			}
 		}
-
-		Iterator<String> itr = windowHandles.iterator();
-		while(itr.hasNext()) {
-			String currentHandle = itr.next();
-			if(!(currentHandle.equals(System.getProperty("parentWindowHandle")))) {
-				driver.switchTo().window(currentHandle);
-				waitUntilPageisReady(driver);
-			}
-		}
-		wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(0));
-	}
-	
-	/**
-	 * Switches the focus on the parent window
-	 */
-	public void switchToParentWindow() {
-		driver.switchTo().window(System.getProperty("parentWindowHandle"));
+		waitUntilPageisReady(driver);
 	}
     
 	/**

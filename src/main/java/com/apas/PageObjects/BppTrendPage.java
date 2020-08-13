@@ -297,11 +297,33 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//div[text()='Already approved']")
 	public WebElement alreadyApprovedLabel;
 	
+	@FindBy(xpath = "//button[text() = 'Export Composite Factors']")
+	public WebElement exportCompositeFactorsBtn;
+	
+	@FindBy(xpath = "//button[text() = 'Export Valuation Factors']")
+	public WebElement exportValuationFactorsBtn;
+	
+	@FindBy(xpath = "//div[@role='group']/button[text()='Edit']/../div/button")
+	public WebElement arrowButton;
+
+	@FindBy(xpath = "//a[@role='menuitem']/span[@title='Export']")
+	public WebElement linkExport;
+	
 	public String xPathBPPSettingName = "//span[contains(text(), 'BPP Settings')]//ancestor::div[contains(@class, 'forceRelatedListCardHeader')]//following-sibling::div//h3//a";
 	
 	public String xpathRollYear = "//input[@name = 'rollyear']";
 	
 	public String xpathAlreadyApprovedLabel = "//div[text()='Already approved']";
+	
+	public String xPathExportCompositeFactorsButton = "//button[text() = 'Export Composite Factors']";
+	
+	public String xPathExportValuationFactorsButton = "//button[text() = 'Export Valuation Factors']";
+	
+	public String xPathCalculateAllBtn = "//button[@title = 'Calculate all']";
+	
+	public String xPathCalculateBtn = "//lightning-tab[contains(@class,'slds-show')]//button[@title = 'Calculate']";
+	
+	public String xPathReCalculateBtn = "//lightning-tab[contains(@class,'slds-show')]//button[@title = 'Recalculate']";
 	
 	
 	/**
@@ -508,20 +530,36 @@ public class BppTrendPage extends Page {
 	}
 
 	/**
-	 * Description: Exports the valuation & composite factors excel files
+	 * Description: Exports the valuation or composite factors excel files based on parameter passed
+	 * @param: fileType: Type of File. For e.g. Composite or Valuation Factors
 	 * @throws: Exception
 	 */
-	public void exportBppTrendFactorsExcelFiles() throws Exception {
-		// Clicking MoreAction button and then selecting Export option from drop down to open export option window
-		javascriptClick(waitForElementToBeClickable(moreActionsBtn));
-		clickAction(waitForElementToBeClickable(exportLinkUnderMoreActions));
+	public void exportCompositeOrValuationFactorsFiles(String fileType) throws Exception {
+		// Click on Export button corresponding to File Type
+		String parentwindow = driver.getWindowHandle();
+		
+		if(fileType.equalsIgnoreCase("Composite")) {
+			objPage.Click(exportCompositeFactorsBtn);
+		}else {
+			objPage.Click(exportValuationFactorsBtn);
+		}
+		Thread.sleep(15000);
+		// After clicking on 'export' button, new tab is opened 
+		switchToNewWindow(parentwindow); // Switch to new tab opened
+		
+		// Clicking more action button and then selecting Export option from drop down to open export option window
+		Thread.sleep(3000);
+		driver.switchTo().frame(0);
+		System.out.println("after: "+arrowButton.getText());
+		Click(arrowButton);
+		Click(linkExport);
+		driver.switchTo().defaultContent();
 		
 		// Selecting the export option and clicking export button to initiate export
-		driver.switchTo().defaultContent();
-		javascriptClick(waitForElementToBeClickable(formattedReportOption));
-		javascriptClick(waitForElementToBeClickable(exportButton));
-		
+		javascriptClick(formattedReportOption);
+		javascriptClick(exportButton);		
 		Thread.sleep(10000);
+		driver.close();
 	}
 	
 	/**
