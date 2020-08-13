@@ -409,6 +409,10 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	 **/
 	@Test(description = "SMAB-T640,SMAB-T641: Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class)
 	public void DisabledVeteran_verifyEditRPSLUsersAccess(String loginUser) throws Exception {		
+		
+		String currentRollYear="2021";
+		String pastRollYear="2015";
+		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
 		objApasGenericFunctions.login(loginUser);
 
@@ -419,26 +423,47 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		ReportLogger.INFO("Selecting 'All' List View");
 		objApasGenericFunctions.displayRecords("All");
 		
-		//Step5 : Click on Approved RPSL
-		ReportLogger.INFO("Clicking on Approved RPSL Link");
-		objPage.waitForElementToBeClickable(60, objRPSLPage.approvedRPSLLink);
-		objPage.Click(objRPSLPage.approvedRPSLLink);
-	    
-		//Step6 : Edit status of RPSL which is approved followed by Save button
+		//Step4 : Click on Approved RPSL for past Roll Year
+		ReportLogger.INFO("Clicking on Approved RPSL Link for past Roll Year i.e. " + pastRollYear);
+		objPage.Click(objRPSLPage.getRPSLRecord(pastRollYear));
+		
+		//Step5 : Click on EDIT button for the record and retrieve the error message
+		ReportLogger.INFO("Clicking on 'Edit' button for record whose status is 'Approved'");
+		objPage.Click(objRPSLPage.editButton);
+		objPage.waitUntilElementIsPresent(objRPSLPage.xPathErrorMsg,30);
+		String actualErrorMsgText1 =  objRPSLPage.errorMsgforEdit.getText();	
+		String expectedErrorMessage1 = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";
+	
+		//Step6: Verify Error message
+		softAssert.assertEquals(actualErrorMsgText1,expectedErrorMessage1,"SMAB-T640:Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'");
+		softAssert.assertEquals(actualErrorMsgText1,expectedErrorMessage1,"SMAB-T641:Verify that Non-System Admin users are not able to update a locked 'Real Property Settings' record");
+		
+		//Step7: Closing the Error Pop-Up
+	    Thread.sleep(3000);
+	    objPage.Click(objRPSLPage.closeErrorPopUp);
+		
+		//Step8 : Click on Approved RPSL for current Roll Year
+	  	objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+	  	ReportLogger.INFO("Selecting 'All' List View");
+	  	objApasGenericFunctions.displayRecords("All");
+		ReportLogger.INFO("Clicking on Approved RPSL Link for current Roll Year i.e. " + currentRollYear);
+		objPage.Click(objRPSLPage.getRPSLRecord(currentRollYear));
+		
+		//Step9 : Click on EDIT button for the record and retrieve the error message after clicking SAVE button
 		ReportLogger.INFO("Clicking on 'Edit' button for record whose status is 'Approved'");
 		objPage.Click(objRPSLPage.editButton);
 		objPage.Click(objRPSLPage.saveButton);
 		Thread.sleep(1000);
-		String actualErrorMsgText =  objRPSLPage.errorMsgOnTopForEditRPSL.getText();	
+		String actualErrorMsgText2 =  objRPSLPage.errorMsgOnTopForEditRPSL.getText();	
+		String expectedErrorMessage2 = "Record is locked. Please check with your system administrator.";
 		
-		//Step6: Verify Error message
-		String expectedErrorMessage = "Record is locked. Please check with your system administrator.";
-	    softAssert.assertEquals(actualErrorMsgText,expectedErrorMessage,"SMAB-T640:Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'");
-	    softAssert.assertEquals(actualErrorMsgText,expectedErrorMessage,"SMAB-T641:Verify that Non-System Admin users are not able to update a locked 'Real Property Settings' record");
-		
-	    //Step7: Closing the Error Pop-Up
-	    Thread.sleep(3000);
-	    objPage.Click(objRPSLPage.closeErrorPopUp);
+		//Step10: Verify Error message
+		softAssert.assertEquals(actualErrorMsgText2,expectedErrorMessage2,"SMAB-T640:Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'");
+		softAssert.assertEquals(actualErrorMsgText2,expectedErrorMessage2,"SMAB-T641:Verify that Non-System Admin users are not able to update a locked 'Real Property Settings' record");
+				
+	    //Step11: Closing the Screen
+	    Thread.sleep(1000);
+	    objPage.Click(objRPSLPage.cancelButton);
 	    
 	    objApasGenericFunctions.logout();
 	}
@@ -483,7 +508,5 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 			objApasGenericFunctions.logout();
 			
 	}
-	
-	
 
 }
