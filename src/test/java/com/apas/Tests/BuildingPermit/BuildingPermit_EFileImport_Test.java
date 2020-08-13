@@ -365,7 +365,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objPage.enter(objEfileImportPage.fileNameInputBox, "OneValidAndTwoInvalidRecordsForPermitValue.txt");
 		objPage.Click(objEfileImportPage.fileNameNext);
 
-		softAssert.assertContains(objPage.getElementText(objEfileImportPage.warning),"This file has been already imported by","SMAB-T435: Warning message validation once user tries to re-import imported building permits");
+		softAssert.assertContains(objPage.getElementText(objEfileImportPage.warning),"This file has been previously imported by","SMAB-T435: Warning message validation once user tries to re-import imported building permits");
 		softAssert.assertTrue(objPage.verifyElementVisible(objEfileImportPage.confirmButton),"SMAB-T435: Validation that user should be able to re-import the imported file by clicking on Confirm button i.e. confirm button should be visible");
 		softAssert.assertTrue(objPage.verifyElementVisible(objEfileImportPage.cancelButton),"SMAB-T435: Validation that cancel button should be displayed when trying to re-import the already imported file");
 		objPage.Click(objEfileImportPage.closeButton);

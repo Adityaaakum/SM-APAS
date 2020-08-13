@@ -407,7 +407,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	 1. 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'
 	 2. Non-System Admin users are not able to update a locked 'Real Property Settings' record
 	 **/
-	@Test(description = "SMAB-T640,641: Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T640,SMAB-T641: Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class)
 	public void DisabledVeteran_verifyEditRPSLUsersAccess(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
 		objApasGenericFunctions.login(loginUser);
