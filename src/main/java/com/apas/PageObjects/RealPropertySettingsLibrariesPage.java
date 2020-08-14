@@ -114,6 +114,9 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//li[contains(text(), 'Record is locked. Please check with your system administrator')]")
 	public WebElement errorMsgOnTopForEditRPSL;
 	
+	public String xPathErrorMsg = "//div[@class='uiBlock']//p[@class='detail']//span";
+	
+	
 	/**
 	 * @Description: This method is to handle fields like Status
 	 * by clicking the web element and then selecting the given value from drop down
@@ -214,5 +217,14 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		return strSuccessAlertMessage;
 	 }
 	 
-	 	 
+	 /**
+		 * @description: It will locate and return RPSL record
+		 * @param rollYear: RPSL record based on the roll year
+		 * @return RPSL record
+		 */
+		public WebElement getRPSLRecord(String rollYear) throws Exception {		
+			Thread.sleep(2000);
+			String xpathStr = "//a[@title='Exemption Limits - " + rollYear + "']";
+			return locateElement(xpathStr, 30);
+		}	 
 }
