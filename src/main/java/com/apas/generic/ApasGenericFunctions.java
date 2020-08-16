@@ -110,10 +110,9 @@ public class ApasGenericFunctions extends TestBase {
      * @param expectedValue:    Modified value to be updated in the cell
      */
     public void editGridCellValue(String columnNameOnGrid, String expectedValue) throws IOException, AWTException, InterruptedException {
-        WebElement webelement = driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button"));
-//        objPage.scrollToElement(webelement);
+    	String xPath =  "//lightning-tab[contains(@class,'slds-show')]//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button";
+        WebElement webelement = driver.findElement(By.xpath(xPath));
         objPage.Click(webelement);
-
         WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
         webelementInput.clear();
         webelementInput.sendKeys(expectedValue);
@@ -122,6 +121,7 @@ public class ApasGenericFunctions extends TestBase {
         robot.keyRelease(KeyEvent.VK_ENTER);
         Thread.sleep(2000);
     }
+
 
     /**
      * Description: This method will display all the records on the grid

@@ -120,5 +120,44 @@ public class ExcelUtils {
     	
     	
     }
-
+    /**
+   	 * Description : Reads given excel file to retrieve total rows in each sheet the data into a map.
+   	 * @param filePath: Takes the path of the XLSX workbook
+   	 * @param sheetName: Sheet from which row count is returned
+   	 * @return int: Return row Count
+        * @throws Exception 
+   	 **/
+   	public static int getRowCountFromExcelSheet(String filePath, String sheetName, boolean containsHeaderFlag) throws Exception {
+   		FileInputStream file = null;
+   		XSSFWorkbook workBook = null;
+   		int rowCount=0;
+   		try {
+   			file = new FileInputStream(new File(filePath));
+   			workBook = new XSSFWorkbook(file);
+   			XSSFSheet sheet = workBook.getSheet(sheetName);
+   			rowCount = sheet.getPhysicalNumberOfRows();	
+   			if(containsHeaderFlag) {
+   				rowCount = rowCount -1;
+   			}
+   		}  catch (Exception ex) {
+   			ex.printStackTrace();
+   		} finally {
+   			workBook.close();
+   			file.close();
+   		}							
+   		return rowCount;
+   	}
+   	
+   	/**
+   	 * Description : Reads given excel file to retrieve total rows in each sheet the data into a map.
+   	 * @param filePath: Takes the path of the XLSX workbook
+   	 * @param sheetName: Sheet from which row count is returned
+   	 * @return int: Return row Count
+        * @throws Exception 
+   	 **/
+   	public static int getRowCountFromExcelSheet(String filePath, String sheetName) throws Exception {
+   		int rowCount = getRowCountFromExcelSheet(filePath,sheetName,true);		
+   		return rowCount;
+   		
+   	}
 }
