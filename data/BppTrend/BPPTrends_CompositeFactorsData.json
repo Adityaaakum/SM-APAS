@@ -1,0 +1,15 @@
+{
+	"MessagesOnTable" : {
+		"tableMsgBeforeCalculation" : "Yet to be calculated"
+		"tableMsgBeforeReCalculation" : "Needs Recalculation"
+		"popUpMsgPostCalculation" : "Data calculated successfully"
+		"tableMsgPostCalculation" : "Yet to be submitted for approval"
+		"tableMsgBeforeApproval" : "Yet to be approved"
+		"tableMsgAfterApproval" : "Already approved"
+		"recalculatePopUpMsg" : "The new calculations will overwrite the previously made calculations for the roll year"
+		"approveTabDataMsg" : "Your updates are not Saved , Do you want to Approve"
+
+	}
+       
+                            	
+}

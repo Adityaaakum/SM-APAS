@@ -309,6 +309,18 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//a[@role='menuitem']/span[@title='Export']")
 	public WebElement linkExport;
 	
+	@FindBy(xpath = "//lightning-tab[contains(@class,'slds-show')]//button[@title = 'Calculate']")
+	public WebElement calculateBtn;	
+	
+	@FindBy(xpath = "//lightning-tab[contains(@class,'slds-show')]//button[@title = 'Recalculate']")
+	public WebElement reCalculateBtn;
+	
+	@FindBy(xpath = "//lightning-tab[contains(@class,'slds-show')]//div[@class = 'hightlight-tab-message']")
+	public WebElement tableMessage;
+	
+	@FindBy(xpath = "//div[contains(@class, 'windowViewMode-normal')]//div[@class='warning']//h2")
+	public WebElement reCalculateWarningMessage;
+	
 	public String xPathBPPSettingName = "//span[contains(text(), 'BPP Settings')]//ancestor::div[contains(@class, 'forceRelatedListCardHeader')]//following-sibling::div//h3//a";
 	
 	public String xpathRollYear = "//input[@name = 'rollyear']";
@@ -321,10 +333,17 @@ public class BppTrendPage extends Page {
 	
 	public String xPathCalculateAllBtn = "//button[@title = 'Calculate all']";
 	
+	public String xPathReCalculateAllBtn = "//button[@title = 'ReCalculate all']";
+	
 	public String xPathCalculateBtn = "//lightning-tab[contains(@class,'slds-show')]//button[@title = 'Calculate']";
 	
 	public String xPathReCalculateBtn = "//lightning-tab[contains(@class,'slds-show')]//button[@title = 'Recalculate']";
 	
+	public String xpathErrorMsgPopUp = "//span[@class = 'toastMessage forceActionsText']";
+	
+	public String xpathSuccessMsgPopUp = "//div[contains(@class, 'toastContent')]//span[text() = 'Data calculated successfully']";
+	
+	public String  xpathTableMessage = "//lightning-tab[contains(@class,'slds-show')]//div[@class = 'hightlight-tab-message']";
 	
 	/**
 	 * Description: This will select the roll year from the drop down
@@ -713,83 +732,7 @@ public class BppTrendPage extends Page {
 		return dataMap;
 	}
 	
-	/**
-	 * @Description: Updates the existing trend setting data into excel
-	 * @param propertyType: Name of the property to update
-	 * @param propertyValue: Updated value of the property
-	 * @throws: Throws Exception          
-	 **/
-	public void updateTrendSettingInExcel(String propertyType, String propertyValue) throws Exception {
-		String temporaryFile = System.getProperty("user.dir") + TestBase.CONFIG.get("temporaryFolderPath") + "Trend_Factors_Calculator.xlsx";
-		String sheetNameForExcel = "Trends Settings";
-
-		File file;
-		FileInputStream inputStream = null;
-		FileOutputStream outputStream = null;
-		Workbook wb = null;
-		
-		try {
-			//Create an object of File class to open file
-	        file = new File(temporaryFile);
-	        //Create an object of FileInputStream class to read excel file
-	        inputStream = new FileInputStream(file);
-	        
-	        wb = new XSSFWorkbook(inputStream);
-	        Sheet sheet = wb.getSheet(sheetNameForExcel);
 	
-	        //Get the current count of rows in excel file
-	        int totalRows = sheet.getPhysicalNumberOfRows();
-	
-	        //Retrieving original values of trend settings from excel file before updating them and finding row number of trend settings
-	        trendSettingsOriginalValues = new HashMap<String, String>();
-	        trendSettingRowNumbers = new HashMap<String, Integer>();
-	        for(int rowNum = 0; rowNum < totalRows; rowNum++) {
-	            Row currentRow = sheet.getRow(rowNum);
-	        	String trendSettingName = currentRow.getCell(0).getStringCellValue();
-	        	String trendSettingData = null;
-	        	
-	        	switch (currentRow.getCell(1).getCellType()) {
-    		    	case Cell.CELL_TYPE_STRING:
-    		    		trendSettingData = currentRow.getCell(1).getStringCellValue();
-    		    		break;
-    		    	case Cell.CELL_TYPE_NUMERIC:
-    		    		int cellData = (int)currentRow.getCell(1).getNumericCellValue();
-    		    		trendSettingData = Integer.toString(cellData);
-    		    		break;
-	        	}
-	        	
-	        	if(trendSettingName.contains("Industrial")) {
-	        		trendSettingRowNumbers.put("Industrial", rowNum);
-	        		trendSettingsOriginalValues.put("Industrial", trendSettingData);
-	        	} else if(trendSettingName.contains("Commercial")) {
-	        		trendSettingRowNumbers.put("Commercial", rowNum);
-	        		trendSettingsOriginalValues.put("Commercial", trendSettingData);
-	        	} else if(trendSettingName.contains("Agricultural")) {
-	        		trendSettingRowNumbers.put("Agricultural", rowNum);
-	        		trendSettingsOriginalValues.put("Agricultural", trendSettingData);
-	        	} else if(trendSettingName.contains("Construction")) {
-	        		trendSettingRowNumbers.put("Construction", rowNum);
-	        		trendSettingsOriginalValues.put("Construction", trendSettingData);
-	        	}
-	        }
-	        
-	        Cell cell = sheet.getRow(trendSettingRowNumbers.get(propertyType)).getCell(1);
-        	int updatedCellValue = Integer.parseInt(propertyValue);
-        	cell.setCellValue(updatedCellValue);
-	        
-	        //Create an object of FileOutputStream class to create write data in excel file
-	        outputStream = new FileOutputStream(file);
-	        //write data in the excel file
-	        wb.write(outputStream);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		} finally {
-			//close input stream, workbook and output stream
-			inputStream.close();
-			wb.close();
-			outputStream.close();
-		}
-	}
 
 	/**
 	 * Description: Return the list containing the names of columns visible of UI
@@ -1027,24 +970,6 @@ public class BppTrendPage extends Page {
 	}
 	
 	/**
-	 * Clicks the Export Composite Factors button
-	 * @throws: Exception
-	 */
-	public void clickExportCompositeFactorsBtn() throws Exception {
-		String xpath = "//button[text() = 'Export Composite Factors']";
-		Click(locateElement(xpath, 20));
-	}
-	
-	/**
-	 * Clicks the Export Valuation Factors button
-	 * @throws: Exception
-	 */
-	public void clickExportValuationFactorsBtn() throws Exception {
-		String xpath = "//button[text() = 'Export Valuation Factors']";
-		Click(locateElement(xpath, 20));
-	}
-	
-	/**
 	 * Close button to close the pop up message.
 	 */
 	public void closePageLevelMsgPopUp() {
@@ -1080,7 +1005,28 @@ public class BppTrendPage extends Page {
 		closePageLevelMsgPopUp();
 		return popUpMsg;
 	}
-
+	
+	/**
+	 * Description: Retrieve the error message displayed in pop up on Calculate button's click
+	 * @param timeToLocateElemInSec:
+	 * @return String: Return the error message displayed in pop up
+	 * @throws: Exception
+	 */
+	public String getErrorMsgFromPopUp(int timeToLocateElemInSec) throws Exception {
+		String popUpMsg = getElementText(locateElement(xpathErrorMsgPopUp, timeToLocateElemInSec));
+		closePageLevelMsgPopUp();
+		return popUpMsg;
+	}
+	
+	/**
+	 * It wait for the pop up message to show up when calculate button is clicked
+	 * @param timeToLocateElemInSec: Timeout for which pop up message needs to be located
+	 */
+	public String getSuccessMessageFromPopUp(int timeToLocateElemInSec) throws Exception {
+		String popUpMsg = getElementText(locateElement(xpathSuccessMsgPopUp, timeToLocateElemInSec));
+		closePageLevelMsgPopUp();
+		return popUpMsg;
+	}
 	/**
 	 * It wait for the pop up message to show up when approve button is clicked
 	 * @param timeToLocateElemInSec: Timeout for which pop up message needs to be located
@@ -1158,17 +1104,17 @@ public class BppTrendPage extends Page {
 			}
 		}
 	}
-
+	
 	public void deleteDuplicateCPI(String rollYear) {
 		String queryForRollYearId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '"+rollYear+"'";
-		HashMap<String, ArrayList<String>> rollYearId = objSFAPI.select(queryForRollYearId);
+		HashMap<String, ArrayList<String>> rollYearId = objSFAPI.select(queryForRollYearId);		
 		String queryForDuplicateCPIFactor = "SELECT Id FROM CPI_Factor__c  Where Roll_Year__c ='"+rollYearId.get("Id").get(0)+"'  AND Status__c<>'Approved'";
-		objSFAPI.delete("CPI_Factor__c", queryForDuplicateCPIFactor);
+		objSFAPI.delete("CPI_Factor__c", queryForDuplicateCPIFactor);	
 	}
-
+	
 	/**
-	 * Description: Waits until the page spinner goes invisible within given timeout
-	 * @param: Takes Xpath as an argument
+	 * Description: Searches module BPP Trends module and Select the Roll Year passed as an argument
+	 * @param: Takes roll year to be selected as an argument
 	 * @throws: Exception
 	 */
 	public void selectRollYearOnBPPTrends(String rollYear) throws Exception {
@@ -1197,5 +1143,5 @@ public class BppTrendPage extends Page {
 		}
 		objSalesforceAPI.update("BPP_Trend_Roll_Year__c", queryForID, jsonObj);
 	}
-
+	
 }

@@ -245,9 +245,19 @@ public class ApasGenericFunctions extends TestBase {
 
         //Converting the grid data into hashmap
         for (WebElement webElementRow : webElementsRows) {
+        	int yearAcquiredKeyCounter = 0;
             List<WebElement> webElementsCells = webElementRow.findElements(By.xpath(".//td | .//th"));
             for (int gridCellCount = 0; gridCellCount < webElementsHeaders.size(); gridCellCount++) {
                 key = webElementsHeaders.get(gridCellCount).getAttribute("aria-label");
+              //Year Acquired Column appears twice in Commercial and Industrial Composite Factors table
+                //Below code will not add column in hashmap appearing twice
+                if(key.equalsIgnoreCase("Year Acquired")) {
+                	if(yearAcquiredKeyCounter<1) {
+                		yearAcquiredKeyCounter = yearAcquiredKeyCounter + 1;
+                	}else 
+                    	key=null;
+                }
+                
                 if (key != null) {
                     //"replace("Edit "+ key,"").trim()" code is user to remove the text \nEdit as few cells have edit button and the text of edit button is also returned with getText()
                     value = webElementsCells.get(gridCellCount).getText();
