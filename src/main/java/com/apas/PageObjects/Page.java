@@ -83,17 +83,13 @@ public class Page {
 	 *            the element
 	 */
 	public boolean verifyElementEnabled(WebElement element) {
-		boolean flag = false;
 		try {
-
-			if (element.isEnabled()) {
-				flag = true;
-			}
+			if (element.isEnabled()) return true;
 		} catch (Exception e) {
 			logger.info("Element: " + element + "is not getting enabled.");
 			System.out.println("Element is not enabled");
 		}
-		return flag;
+		return false;
 	}
 
 	/**
@@ -125,17 +121,13 @@ public class Page {
 	 * @return true, if successful
 	 */
 	public boolean verifyElementVisible(WebElement elem) {
-		boolean flag = false;
 		try {
-
-			if (elem.isDisplayed()) {
-				flag = true;
-			}
+			if (elem.isDisplayed()) return true;
 		} catch (Exception e) {
 			logger.info("Element: " + elem + "is not getting dispayed.");
 			System.out.println("Element is not visible :" + elem);
 		}
-		return flag;
+		return false;
 	}
 
 	public boolean verifyElementExists(String xpath) {
@@ -147,6 +139,26 @@ public class Page {
 		return true;
 	}
 
+
+	/**
+	 * Description: This method is to check unavailbility of an element
+	 *
+	 * @param element: xpath of the element
+	 * @return : true if element not found
+	 */
+	public boolean isNotDisplayed(WebElement element) {
+		//driver.findElement((By) element);
+		try {
+			if (element.isDisplayed()) {
+				return false;
+			}
+
+		} catch (org.openqa.selenium.NoSuchElementException e) {
+			return true;
+		}
+		return true;
+
+	}
 
 	/**
 	 * Function will return true if element is not visible.

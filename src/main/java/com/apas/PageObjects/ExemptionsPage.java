@@ -205,6 +205,9 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath="//div[@class='windowViewMode-normal oneContent active lafPageHost']//button[@name='Edit']")
 	public WebElement editExemption;
 
+	@FindBy(xpath="//div[@class='windowViewMode-normal oneContent active lafPageHost']//button[@name='Delete']")
+	public WebElement deleteExemption;
+
 	@FindBy(xpath="//div[@class='windowViewMode-normal oneContent active lafPageHost']//button[@title='Edit End Date of Rating']/preceding-sibling::span//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement endDateOfRatingOnExemption;
 	

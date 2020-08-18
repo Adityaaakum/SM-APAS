@@ -207,6 +207,12 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//button[text() = 'Recalculate all'] | //button[@title = 'ReCalculate all']")
 	public WebElement reCalculateAllBtn;
 
+	@FindBy(xpath = "//button[text() = 'Submit All Factors for Approval'] | //button[@title = 'Submit All Factors for Approval']")
+	public WebElement submitAllFactorForApprovalButton;
+
+	@FindBy(xpath = "//button[text() = 'Approve All'] | //button[@title = 'Approve All']")
+	public WebElement approveAllButton;
+
 	@FindBy(xpath = "//span[text() = 'BPP Trend Roll Year']//parent::label//following-sibling::div//input")
 	public WebElement bppTrendRollYearTxtBox;
 
@@ -343,17 +349,17 @@ public class BppTrendPage extends Page {
 	 * @param tableName: Name of the table
 	 * @throws: Exception
 	 */
-	public WebElement clickOnTableOnBppTrendPage(String tableName) throws Exception {
-		Thread.sleep(2000);
+	public void clickOnTableOnBppTrendPage(String tableName) throws Exception {
+//		Thread.sleep(2000);
 		String xpath = "//a[text() = '"+ tableName +"']";
-		WebElement givenTable = locateElement(xpath, 10);
-		if(givenTable == null) {
+
+		if (verifyElementExists(xpath)){
+			Click(driver.findElement(By.xpath(xpath)));
+		}else{
 			Click(moreTab);
 			xpath = "//span[contains(text(), '"+ tableName +"')]";
-			givenTable = locateElement(xpath, 10);
+			Click(driver.findElement(By.xpath(xpath)));
 		}
-		Click(givenTable);
-		return givenTable;
 	}
 
 	/**
@@ -838,7 +844,26 @@ public class BppTrendPage extends Page {
 		String xpath = "//lightning-tab[@data-id = '"+ tableName + "']//button[@title = 'Calculate']";
 		return locateElement(xpath, timeToLocateBtn) != null;
 	}
-	
+
+
+	/**
+	 * Checks whether calculate button is visible on BPP trend page for selected table
+	 * @param tableName: Table for which the button needs to be checked
+	 * @return boolean: Returns the status as true / false based on visibility of the button
+	 */
+	public boolean isCalculateButtonVisible(String tableName) throws Exception {
+		return isCalculateBtnVisible(5,tableName);
+	}
+
+	/**
+	 * Checks whether re-calculate button is visible on BPP trend page for selected table
+	 * @param tableName: Table for which the button needs to be checked
+	 * @return boolean: Returns the status as true / false based on visibility of the button
+	 */
+	public boolean isReCalculateButtonVisible(String tableName) throws Exception {
+		return isReCalculateBtnVisible(5,tableName);
+	}
+
 	/**
 	 * Checks whether calculate all button is visible on BPP trend page
 	 * @param timeToLocateBtn: Timeout in seconds for driver should wait until button is located
@@ -883,7 +908,17 @@ public class BppTrendPage extends Page {
 		String xpath = "//button[@title = 'Submit All Factors for Approval']";
 		return locateElement(xpath, timeToLocateBtn) != null;
 	}
-	
+
+	/**
+	 * Checks whether approve button is visible on BPP trend page for selected table
+	 * @param tableName: Table for which the button needs to be checked
+	 * @return boolean: Returns the status as true / false based on presence / visibility of the button
+	 * @throws: Exception
+	 */
+	public boolean isApproveButtonVisible(String tableName) throws Exception {
+		return isApproveBtnVisible(5,tableName);
+	}
+
 	/**
 	 * Checks whether approve button is visible on BPP trend page for selected table
 	 * @param tableName: Table for which the button needs to be checked

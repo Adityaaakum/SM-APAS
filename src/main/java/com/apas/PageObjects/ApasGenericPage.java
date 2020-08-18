@@ -78,6 +78,8 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//h2[@class='slds-truncate slds-text-heading_medium']")
 	public WebElement popUpErrorMessageWeHitASnag;
 
+	public String menuList = "//div[contains(@class,'uiMenuList--default visible positioned')]";
+
 	/*	Sikander Bhambhu:
 	 *	Next 7 locators are for handling date picker
 	 * */
