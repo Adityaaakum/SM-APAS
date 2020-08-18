@@ -89,7 +89,10 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//button[text() = 'Edit']")
     public WebElement editButton;
-	
+
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//button[text() = 'Delete']")
+	public WebElement deleteButton;
+
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text() = 'Status']//..//following-sibling::div//lightning-formatted-text")
 	public WebElement statusLabelValueDropDown;
 	

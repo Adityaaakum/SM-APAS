@@ -37,6 +37,12 @@ public class BppTrendSetupPage extends Page {
 		objUtil = new Util();
 	}
 
+	@FindBy(xpath = "//a[@title = 'New'")
+	public WebElement newButton;
+
+	@FindBy(xpath = "//a[text()='No actions available']")
+	public WebElement NoActionAvailableMenuItem;
+
 	@FindBy(xpath = "//span[text() = 'BPP Composite Factors Settings']//parent::a")
 	public WebElement bppCompositeFactorOption;
 
@@ -126,6 +132,10 @@ public class BppTrendSetupPage extends Page {
 	
 	@FindBy(xpath = "//button[text() = 'Edit']")
 	public WebElement editButton;
+
+	@FindBy(xpath = "//button[text() = 'Delete']")
+	public WebElement deleteButton;
+
 	/**
 	 * Description: Creates the BPP Composite Factor Setting on BPP trend status page
 	 * @param propertyType: Takes composite factor setting factor value as
@@ -560,6 +570,8 @@ public class BppTrendSetupPage extends Page {
 	 * @throws: Exception
 	 */
 	public void clickShowMoreDropDownForGivenFactorEntry(String factorTableName) throws Exception {
+		//This condition is added as Factor Table Name and Title are different
+		if (factorTableName.equals("Composite Factors")) factorTableName = "BPP " + factorTableName;
 		String xpath;
 		if(factorTableName.equalsIgnoreCase("BPP Percent Good Factors")) {
 			xpath = "(//span[text() = 'Machinery and Equipment'])[1]//parent::td//following-sibling::td//a | (//span[text() = 'Machinery and Equipment'])[1]//parent::td//following-sibling::td//a[@title = 'Show 2 more actions']";
@@ -573,6 +585,7 @@ public class BppTrendSetupPage extends Page {
 			showMoreDropDown = locateElement(xpath, 30);
 		}
 		clickAction(showMoreDropDown);
+		Thread.sleep(1000);
 	}
 
 	/**
@@ -711,5 +724,21 @@ public class BppTrendSetupPage extends Page {
 			Thread.sleep(1000);
 		}
 	}
-	
+
+	/**
+	 * Description: This will open the tab for Trend Factor passed in the parameter
+	 * @param factorName : Factor tab name to be opened
+	 */
+	public void openFactorTab(String factorName) throws Exception {
+		String xpath = "//a[@data-label='" + factorName + "'][@role='tab']";
+		if (verifyElementExists(xpath)){
+			Click(driver.findElement(By.xpath(xpath)));
+		}else{
+			Click(driver.findElement(By.xpath("//ul[@role='tablist']//*[@title='More Tabs']")));
+			Click(driver.findElement(By.xpath("//a[@role='menuitem']//span[text()='" + factorName + "']")));
+		}
+		waitUntilElementIsPresent("//span[contains(@title,'" + factorName + ")']",10);
+	}
+
+
 }

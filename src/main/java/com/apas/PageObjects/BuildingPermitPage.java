@@ -58,6 +58,12 @@ public class BuildingPermitPage extends ApasGenericPage {
 	@FindBy(xpath = "//a[@role='menuitem'][text()='No actions available']")
 	public WebElement noActionAvailableOption;
 
+	@FindBy(xpath = "//a[@role='menuitem'][@title='Edit']")
+	public WebElement editButtonMenuOption;
+
+	@FindBy(xpath = "//a[@role='menuitem'][@title='Delete']")
+	public WebElement deleteButtonMenuOption;
+
 	@FindBy(xpath = "//button[text() = 'Edit']")
 	public WebElement editButton;
 

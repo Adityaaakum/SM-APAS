@@ -43,12 +43,13 @@ public class ApasGenericFunctions extends TestBase {
     LoginPage objLoginPage;
     ApasGenericPage objApasGenericPage;
     SalesforceAPI objSalesforceAPI;
+
     public ApasGenericFunctions(RemoteWebDriver driver) {
         this.driver = driver;
         objPage = new Page(this.driver);
         objLoginPage = new LoginPage(this.driver);
         objApasGenericPage = new ApasGenericPage(this.driver);
-        objSalesforceAPI= new SalesforceAPI();
+        objSalesforceAPI = new SalesforceAPI();
     }
 
     /**
@@ -252,7 +253,8 @@ public class ApasGenericFunctions extends TestBase {
                     //"replace("Edit "+ key,"").trim()" code is user to remove the text \nEdit as few cells have edit button and the text of edit button is also returned with getText()
                     value = webElementsCells.get(gridCellCount).getText();
                     String[] splitValues = value.split("Edit " + key);
-                    if (splitValues.length > 0) value = splitValues[0]; else value = "";
+                    if (splitValues.length > 0) value = splitValues[0];
+                    else value = "";
                     gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
                     gridDataHashMap.get(key).add(value);
                 }
@@ -265,30 +267,6 @@ public class ApasGenericFunctions extends TestBase {
         return gridDataHashMap;
     }
 
-    /**
-     * Description: This will select the All mode on grid
-     */
-    public void selectAllManualBuildingPermitOptionOnGrid() throws Exception {
-        objPage.Click(objApasGenericPage.selectListViewIcon);
-        objPage.Click(objPage.waitForElementToBeClickable(objApasGenericPage.allManualBuilingdPermitsOption));
-        objPage.Click(objApasGenericPage.pinIcon);
-    }
-
-    /* Description: This will select the All mode on grid
-     */
-    public void selectAllOptionOnGrid() throws Exception {
-        String currentlyVisibleOption = objPage.getElementText(objApasGenericPage.currenltySelectViewOption);
-        if (!(currentlyVisibleOption.equalsIgnoreCase("All"))) {
-            objApasGenericPage.waitForElementToBeClickable(objApasGenericPage.selectListViewIcon, 10);
-            objPage.Click(objApasGenericPage.selectListViewIcon);
-            objApasGenericPage.waitForElementToBeClickable(objApasGenericPage.allOption, 10);
-            objPage.Click(objApasGenericPage.allOption);
-
-            objPage.waitForElementToBeVisible(objApasGenericPage.pinIcon, 10);
-            objPage.waitForElementToBeClickable(objApasGenericPage.pinIcon, 10);
-            objPage.clickAction(objApasGenericPage.pinIcon);
-        }
-    }
 
     public WebElement locateElement(String xpath, int timeoutInSeconds) throws Exception {
         WebElement element = null;
@@ -306,9 +284,9 @@ public class ApasGenericFunctions extends TestBase {
     }
 
     public void selectFromDropDown(WebElement element, String value) throws Exception {
-    	objPage.scrollToElement(element);
-        objPage.Click(element); 
-        String xpathStr = "//div[contains(@class, 'left uiMenuList') and contains(@class, 'visible positioned')]//a[text() = '"+value+"'] | //*[@role='option']//span[@class='slds-media__body']/span[text()='"+value+"']";
+        objPage.scrollToElement(element);
+        objPage.Click(element);
+        String xpathStr = "//div[contains(@class, 'left uiMenuList') and contains(@class, 'visible positioned')]//a[text() = '" + value + "'] | //*[@role='option']//span[@class='slds-media__body']/span[text()='" + value + "']";
         objPage.waitUntilElementIsPresent(xpathStr, 200);
         objPage.Click(driver.findElement(By.xpath(xpathStr)));
     }
@@ -319,7 +297,6 @@ public class ApasGenericFunctions extends TestBase {
         WebElement drpDwnOption = locateElement(xpathStr, 10);
         drpDwnOption.click();
     }
-
 
     /**
      * Description: This method is to check unavailbility of an element
@@ -340,7 +317,6 @@ public class ApasGenericFunctions extends TestBase {
         return true;
 
     }
-
 
     /**
      * Description: This method will select multiple values from left pane to right pane
@@ -370,227 +346,225 @@ public class ApasGenericFunctions extends TestBase {
      * @Description: This method is to edit(enter) a record by clicking on the pencil icon and save it(field level edit)
      */
 
-public void editAndInputFieldData(String fieldName,WebElement field, String data) throws Exception
-{
-objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'Edit "+fieldName+"')]/ancestor::button");
-		objPage.enter(field, data);
-		objPage.Click(ExemptionsPage.saveButton);
-		Thread.sleep(4000);
-	
-}
-   
+    public void editAndInputFieldData(String fieldName, WebElement field, String data) throws Exception {
+        objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'Edit " + fieldName + "')]/ancestor::button");
+        objPage.enter(field, data);
+        objPage.Click(ExemptionsPage.saveButton);
+        Thread.sleep(4000);
+
+    }
+
 
     /**
      * @param fieldName: name of the required field
-     * @param value: the data to be selected from drop down
+     * @param value:     the data to be selected from drop down
      * @throws Exception
      * @Description: This method is to edit(select) a record by clicking on the pencil icon and save it(field level edit)
      */
 
 
-public void editAndSelectFieldData(String fieldName, String value) throws Exception
-{
-		objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'Edit "+fieldName+"')]/ancestor::button");
-		WebElement dropdown=driver.findElement(By.xpath("//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'"+fieldName+"')]//div/input"));
-		//selectFromDropDown(dropdown, value);
-		objPage.Click(dropdown);
-        
-        String xpathStr = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'"+fieldName+"')]//span[@title='"+value+"']";
+    public void editAndSelectFieldData(String fieldName, String value) throws Exception {
+        objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'Edit " + fieldName + "')]/ancestor::button");
+        WebElement dropdown = driver.findElement(By.xpath("//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'" + fieldName + "')]//div/input"));
+        //selectFromDropDown(dropdown, value);
+        objPage.Click(dropdown);
+
+        String xpathStr = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'" + fieldName + "')]//span[@title='" + value + "']";
         WebElement drpDwnOption = locateElement(xpathStr, 3);
         drpDwnOption.click();
-		objPage.Click(ExemptionsPage.saveButton);
-		Thread.sleep(4000);
-	
-}
-/**
- * @Description: This method is to Zoom Out browser Content 
- */
-public void zoomOutPageContent() throws Exception
-{
-	// Step6: Minimizing the browser content to 50%	
-	for (int i = 1; i <6; i++) {
-		Robot robot=new Robot();
-		 robot.keyPress(KeyEvent.VK_CONTROL);		
-		 robot.keyPress(KeyEvent.VK_SUBTRACT);		
-		 robot.keyRelease(KeyEvent.VK_SUBTRACT);		
-		 robot.keyRelease(KeyEvent.VK_CONTROL);				 
-		 robot.keyRelease(KeyEvent.VK_ENTER);
-		 Thread.sleep(1000);
-	}
-	Thread.sleep(1000);
-	
-}
+        objPage.Click(ExemptionsPage.saveButton);
+        Thread.sleep(4000);
 
-/**
-
- * @Description: This method is to Zoom Out browser Content 
- */
-public void zoomInPageContent() throws Exception
-{
-	// Step6: Maximizing the browser content from 50 to 100%
-	Thread.sleep(10);
-	for (int i = 1; i <6; i++) {
-		Robot robot=new Robot();
-		 robot.keyPress(KeyEvent.VK_CONTROL);		
-		 robot.keyPress(KeyEvent.VK_ADD);		
-		 robot.keyRelease(KeyEvent.VK_ADD);		
-		 robot.keyRelease(KeyEvent.VK_CONTROL);				 
-		 robot.keyRelease(KeyEvent.VK_ENTER);
-		 Thread.sleep(1000);
-	}
-	 Thread.sleep(1000);
-}
-
-
-
-/**
- * @Description: This method is to fetch File Name last modified in Downloads Folder
- * @param: Folder Path is passed in which last modified file is to be fetched 
- * @returns: File Name last modified 
- * @throws: Exception
- */
-public String getLastModifiedFile(String path) throws Exception
-{
-	File dir = new File(path);		
-	File[] files = dir.listFiles();
-	String fileName="";  
-	for (int i = 0; i < files.length; i++) {
-	 File lastModifiedFile = files[0];
-      if (lastModifiedFile.lastModified() < files[i].lastModified()) {
-          lastModifiedFile = files[i];
-          fileName= lastModifiedFile.getName();
-      }
-	}
-	return fileName;
-	}
-
-
-/**
- * Description: This method will save the grid data in ArrayList(Headers=value) for the Row Number passed in the argument
- * @param rowNumber: Row Number for which data needs to be fetched
- * @return hashMap: Grid data in ArrayList of type ArrayList<String>
- */
-public HashMap<String, ArrayList<String>> getGridDataInLinkedHM(int rowNumber) {
-	
-	ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
-	//This code is to fetch the data for a particular row in the grid in the table passed in tableIndex
-	String xpathTable = "//table[contains(@class,'data-grid-full-table')]";
-	String xpathHeaders = xpathTable +"//tbody//tr[1]//th//span[contains(@class,'header-value')]";
-	String xpathRows = xpathTable + "//tbody/tr";
-	if (!(rowNumber == -1)) xpathRows = xpathRows + "[" + rowNumber + "]";
-
-	HashMap<String,ArrayList<String>> gridDataHashMap = new LinkedHashMap<>();
-	
-	//Fetching the headers and data web elements from application
-	List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpathHeaders));
-	List<WebElement> webElementsRows = driver.findElements(By.xpath(xpathRows));
-	String key, value;
-	boolean flag=false;
-	//Converting the grid data into hashmap
-	for(WebElement webElementRow : webElementsRows){
-		List<WebElement> webElementsCells = webElementRow.findElements(By.xpath(".//td | .//th | .//td/data-tooltip"));
-		for(int gridCellCount=0; gridCellCount< webElementsHeaders.size(); gridCellCount++){
-			key = webElementsHeaders.get(gridCellCount).getText();
-			//Status column exists twice in Report and below check will add both as keys
-			if(key.equals("Status") && flag == true) {
-				key=key + "_1";
-			}
-			if(!key.equals("")){
-				value = webElementsCells.get(gridCellCount).getText().trim();
-				System.out.println("value: "+value);
-				gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
-				gridDataHashMap.get(key).add(value);
-				if(key.equals("Status")){
-					flag = true;
-				}
-			}
-		}
-	}
-	return gridDataHashMap;
-}
-/**
- * @Description: This method is to check for the disapperance of an element
- * @param element, timeout: webelement to be searched 
- * @param timeOutInSeconds: timeout in seconds
- * @throws Exception
- */
-
-public void waitForElementToDisappear(WebElement element, int timeOutInSeconds) throws Exception {
-        for(int i = 0; i < (timeOutInSeconds * 10); i++) {
-            try {
-                element.isDisplayed();               
-            } catch(NoSuchElementException ex) {
-                break;//ex.printStackTrace();
-            } catch(StaleElementReferenceException ex) {
-                break;//ex.printStackTrace();
-            }
-        		}
-		}
-
-
-/**
- * Description: This method will convert amount of type String to Float
- * @param : Amount Object
- */
-public float convertToFloat(Object amount)
-{	
-	String amt=(String)amount;
-	String finalAmtAsString=(amt.substring(1, amt.length())).replaceAll(",", "");
-	float convertedAmt=Float.parseFloat(finalAmtAsString);	
-	return convertedAmt;		
-
-}
+    }
 
     /**
-     * @description: This method will return the error message appeared against the filed name passed in the parameter
+     * @Description: This method is to Zoom Out browser Content
+     */
+    public void zoomOutPageContent() throws Exception {
+        // Step6: Minimizing the browser content to 50%
+        for (int i = 1; i < 6; i++) {
+            Robot robot = new Robot();
+            robot.keyPress(KeyEvent.VK_CONTROL);
+            robot.keyPress(KeyEvent.VK_SUBTRACT);
+            robot.keyRelease(KeyEvent.VK_SUBTRACT);
+            robot.keyRelease(KeyEvent.VK_CONTROL);
+            robot.keyRelease(KeyEvent.VK_ENTER);
+            Thread.sleep(1000);
+        }
+        Thread.sleep(1000);
+
+    }
+
+    /**
+     * @Description: This method is to Zoom Out browser Content
+     */
+    public void zoomInPageContent() throws Exception {
+        // Step6: Maximizing the browser content from 50 to 100%
+        Thread.sleep(10);
+        for (int i = 1; i < 6; i++) {
+            Robot robot = new Robot();
+            robot.keyPress(KeyEvent.VK_CONTROL);
+            robot.keyPress(KeyEvent.VK_ADD);
+            robot.keyRelease(KeyEvent.VK_ADD);
+            robot.keyRelease(KeyEvent.VK_CONTROL);
+            robot.keyRelease(KeyEvent.VK_ENTER);
+            Thread.sleep(1000);
+        }
+        Thread.sleep(1000);
+    }
+
+
+    /**
+     * @Description: This method is to fetch File Name last modified in Downloads Folder
+     * @param: Folder Path is passed in which last modified file is to be fetched
+     * @returns: File Name last modified
+     * @throws: Exception
+     */
+    public String getLastModifiedFile(String path) throws Exception {
+        File dir = new File(path);
+        File[] files = dir.listFiles();
+        String fileName = "";
+        for (int i = 0; i < files.length; i++) {
+            File lastModifiedFile = files[0];
+            if (lastModifiedFile.lastModified() < files[i].lastModified()) {
+                lastModifiedFile = files[i];
+                fileName = lastModifiedFile.getName();
+            }
+        }
+        return fileName;
+    }
+
+
+    /**
+     * Description: This method will save the grid data in ArrayList(Headers=value) for the Row Number passed in the argument
+     *
+     * @param rowNumber: Row Number for which data needs to be fetched
+     * @return hashMap: Grid data in ArrayList of type ArrayList<String>
+     */
+    public HashMap<String, ArrayList<String>> getGridDataInLinkedHM(int rowNumber) {
+
+        ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
+        //This code is to fetch the data for a particular row in the grid in the table passed in tableIndex
+        String xpathTable = "//table[contains(@class,'data-grid-full-table')]";
+        String xpathHeaders = xpathTable + "//tbody//tr[1]//th//span[contains(@class,'header-value')]";
+        String xpathRows = xpathTable + "//tbody/tr";
+        if (!(rowNumber == -1)) xpathRows = xpathRows + "[" + rowNumber + "]";
+
+        HashMap<String, ArrayList<String>> gridDataHashMap = new LinkedHashMap<>();
+
+        //Fetching the headers and data web elements from application
+        List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpathHeaders));
+        List<WebElement> webElementsRows = driver.findElements(By.xpath(xpathRows));
+        String key, value;
+        boolean flag = false;
+        //Converting the grid data into hashmap
+        for (WebElement webElementRow : webElementsRows) {
+            List<WebElement> webElementsCells = webElementRow.findElements(By.xpath(".//td | .//th | .//td/data-tooltip"));
+            for (int gridCellCount = 0; gridCellCount < webElementsHeaders.size(); gridCellCount++) {
+                key = webElementsHeaders.get(gridCellCount).getText();
+                //Status column exists twice in Report and below check will add both as keys
+                if (key.equals("Status") && flag == true) {
+                    key = key + "_1";
+                }
+                if (!key.equals("")) {
+                    value = webElementsCells.get(gridCellCount).getText().trim();
+                    System.out.println("value: " + value);
+                    gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
+                    gridDataHashMap.get(key).add(value);
+                    if (key.equals("Status")) {
+                        flag = true;
+                    }
+                }
+            }
+        }
+        return gridDataHashMap;
+    }
+
+    /**
+     * @param element,          timeout: webelement to be searched
+     * @param timeOutInSeconds: timeout in seconds
+     * @throws Exception
+     * @Description: This method is to check for the disapperance of an element
+     */
+
+    public void waitForElementToDisappear(WebElement element, int timeOutInSeconds) throws Exception {
+        for (int i = 0; i < (timeOutInSeconds * 10); i++) {
+            try {
+                element.isDisplayed();
+            } catch (NoSuchElementException ex) {
+                break;//ex.printStackTrace();
+            } catch (StaleElementReferenceException ex) {
+                break;//ex.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
+     * Description: This method will convert amount of type String to Float
+     *
+     * @param : Amount Object
+     */
+    public float convertToFloat(Object amount) {
+        String amt = (String) amount;
+        String finalAmtAsString = (amt.substring(1, amt.length())).replaceAll(",", "");
+        float convertedAmt = Float.parseFloat(finalAmtAsString);
+        return convertedAmt;
+
+    }
+
+    /**
      * @param fieldName: field name for which error message needs to be fetched
+     * @description: This method will return the error message appeared against the filed name passed in the parameter
      */
     public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
         String xpath = "//div[@role='listitem']//span[text()='" + fieldName + "']/../../../ul[contains(@data-aura-class,'uiInputDefaultError')]";
-        objPage.waitUntilElementIsPresent(xpath,20);
+        objPage.waitUntilElementIsPresent(xpath, 20);
         return objPage.getElementText(driver.findElement(By.xpath(xpath)));
     }
 
     /**
-	 * Description: This will update the status of Roll Year
-	 * @param expectedStatus: Expected status like Open, Closed etc.
-	 * @param rollYear: Roll year for which the status needs to be updated
-	 */
-	public void updateRollYearStatus(String expectedStatus, String rollYear) throws Exception {		
-		//Query to update the status of Roll Year
-		String queryForID = "Select Id From Roll_Year_Settings__c where Roll_Year__c = '"+ rollYear +"'";		
-		JSONObject jsonObj = new JSONObject();
-		jsonObj.put("Status__c", expectedStatus);		
-		objSalesforceAPI.update("Roll_Year_Settings__c", queryForID, jsonObj);
-	}
-	
-	/**
-	 * Description: this function is to open the imported log created
-	 * @param: filtyepe, Source and period values
-	 * @throws IOException 
-	 * @throws Exception 
-	 */
-	public void openLogRecordForImportedFile(String fileType, String source,String period,String filepath) throws IOException {
-		String logName=fileType+" :"+source+" :"+period;
-		String filename=filepath.substring(filepath.lastIndexOf("\\")+1, filepath.lastIndexOf("."));
-		objPage.javascriptClick(driver.findElement(By.xpath("(//a[text()='"+filename+"'])[1]")));
-		
-		for (String winHandle : driver.getWindowHandles()) {
-			   driver.switchTo().window(winHandle);
-			 }
-		objPage.javascriptClick(driver.findElement(By.xpath("//div[text()='"+logName+"']")));
-	
-	}
-	
-	/**
-	 * @description: Clicks on the show more link displayed against the given entry
-	 * @param entryDetails: Name of the entry displayed on grid which is to be accessed
-	 * @throws Exception
-	 */
-	public void clickShowMoreLink(String entryDetails) throws Exception {		
-		Thread.sleep(3000);
-		String xpathStr = "//table//tbody/tr//th//a[text() = '"+ entryDetails +"']//parent::*//parent::th//following-sibling::td//a[@role = 'button']";
-		WebElement modificationsIcon = locateElement(xpathStr, 60);
-		objPage.clickAction(modificationsIcon);
-	}
+     * Description: This will update the status of Roll Year
+     *
+     * @param expectedStatus: Expected status like Open, Closed etc.
+     * @param rollYear:       Roll year for which the status needs to be updated
+     */
+    public void updateRollYearStatus(String expectedStatus, String rollYear) throws Exception {
+        //Query to update the status of Roll Year
+        String queryForID = "Select Id From Roll_Year_Settings__c where Roll_Year__c = '" + rollYear + "'";
+        JSONObject jsonObj = new JSONObject();
+        jsonObj.put("Status__c", expectedStatus);
+        objSalesforceAPI.update("Roll_Year_Settings__c", queryForID, jsonObj);
+    }
+
+    /**
+     * Description: this function is to open the imported log created
+     *
+     * @throws IOException
+     * @throws Exception
+     * @param: filtyepe, Source and period values
+     */
+    public void openLogRecordForImportedFile(String fileType, String source, String period, String filepath) throws IOException {
+        String logName = fileType + " :" + source + " :" + period;
+        String filename = filepath.substring(filepath.lastIndexOf("\\") + 1, filepath.lastIndexOf("."));
+        objPage.javascriptClick(driver.findElement(By.xpath("(//a[text()='" + filename + "'])[1]")));
+
+        for (String winHandle : driver.getWindowHandles()) {
+            driver.switchTo().window(winHandle);
+        }
+        objPage.javascriptClick(driver.findElement(By.xpath("//div[text()='" + logName + "']")));
+
+    }
+
+    /**
+     * @param entryDetails: Name of the entry displayed on grid which is to be accessed
+     * @throws Exception
+     * @description: Clicks on the show more link displayed against the given entry
+     */
+    public void clickShowMoreLink(String entryDetails) throws Exception {
+        String xpathStr = "//table//tbody/tr//th//a[text() = '" + entryDetails + "']//parent::*//parent::th//following-sibling::td//a[@role = 'button']";
+        WebElement modificationsIcon = locateElement(xpathStr, 60);
+        objPage.clickAction(modificationsIcon);
+        objPage.waitUntilElementIsPresent(objApasGenericPage.menuList, 5);
+    }
 }

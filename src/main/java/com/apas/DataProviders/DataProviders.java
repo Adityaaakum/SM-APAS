@@ -34,7 +34,6 @@ public class DataProviders {
         return new Object[][] { { users.BPP_BUSINESS_ADMIN } };
     }
 
-
     /**
 	 * Below function will be used to login to application with appraisal support user
 	 * @returns: Return the user appraisal support
@@ -124,10 +123,11 @@ public class DataProviders {
 	/**
 	 * Returns users not allowed to access Calculate and Calculate All button
 	 **/
+
     @DataProvider(name = "usersRestrictedToCalculate")
     public Object[][] dpUsersRestrictedToCalculate() {
-        //return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
-    	return new Object[][] { { users.PRINCIPAL_USER } };
+        return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
+//    	return new Object[][] { { users.PRINCIPAL_USER } };
     }
     
 	/**
@@ -143,8 +143,8 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "usersRestrictedToReCalculate")
     public Object[][] dpUsersRestrictedToReCalculate() {
-    	//return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
-    	return new Object[][] { { users.PRINCIPAL_USER } };
+    	return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
+//    	return new Object[][] { { users.PRINCIPAL_USER } };
     }
     
 	/**
@@ -177,7 +177,7 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "usersRestrictedToApprove")
     public Object[][] dpUsersRestrictedToApprove() {
-        return new Object[][] { { users.BUSINESS_ADMIN } };
+        return new Object[][] { { users.BUSINESS_ADMIN },{ users.RP_APPRAISER }, { users.BPP_AUDITOR } };
     }
 
 	/**
@@ -212,7 +212,7 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "usersRestrictedToExportCompFactorsFile")
     public Object[][] dpUsersRestrictedToExportCompFactorsFile() {
-        return new Object[][] { { users.BUSINESS_ADMIN } };
+        return new Object[][] { { users.BUSINESS_ADMIN }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
     }
     
 	/**
@@ -236,8 +236,8 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "usersRestrictedEditTableStatusOnBppTrendPage")
     public Object[][] dpUsersRestrictedEditTableStatusOnBppTrendPage() {
-        //return new Object[][] { { users.PRINCIPAL_USER }, { users.BPP_AUDITOR }, { users.BUSINESS_ADMIN } };
-    	return new Object[][] { { users.PRINCIPAL_USER } };
+        return new Object[][] { { users.PRINCIPAL_USER }, { users.BPP_AUDITOR }, { users.BUSINESS_ADMIN } };
+//    	return new Object[][] { { users.PRINCIPAL_USER } };
     }
     
 	/**
@@ -245,7 +245,7 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "usersRestrictedToModifyMaxEquipIndexFactor")
     public Object[][] dpUsersRestrictedToModifyMaxEquipIndexFactor() {
-        //return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
+//        return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
     	return new Object[][] { { users.PRINCIPAL_USER } };
     }
 
@@ -268,7 +268,15 @@ public class DataProviders {
             return new Object[][] { { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
 	}
 
-	/**
+    /**
+     * Return RP Appraiser User
+     */
+    @DataProvider(name = "RPAppraiser")
+    public Object[][] dataProviderLoginRPAppraiser() {
+        return new Object[][] { { users.RP_APPRAISER }};
+    }
+
+    /**
 	 * Return different status of composite and valuation factor tables
 	 */
     @DataProvider(name = "variousStatusOfCompositeAndValuationTables")
