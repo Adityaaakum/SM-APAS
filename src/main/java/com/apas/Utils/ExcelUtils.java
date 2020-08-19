@@ -80,24 +80,26 @@ public class ExcelUtils {
      * This method will return the data cell value from excel
      * @param cell : Excel cell
      **/
-    public static String getCellValue(Cell cell){
+     public static String getCellValue(Cell cell){
 
-        String strCellValue;
+         String strCellValue;
+         DataFormatter df = new DataFormatter();
+         switch (cell.getCellType()) {
+             case Cell.CELL_TYPE_STRING:
+                 strCellValue = cell.getStringCellValue();
+                 break;
+             case Cell.CELL_TYPE_NUMERIC:
+             	strCellValue = df.formatCellValue(cell);
+                 break;
+             case Cell.CELL_TYPE_FORMULA:
+                 strCellValue = String.valueOf(cell.getStringCellValue());
+                 break;
+             default:
+                 strCellValue = "";
+         }
 
-        switch (cell.getCellType()) {
-            case Cell.CELL_TYPE_STRING:
-                strCellValue = cell.getStringCellValue();
-                break;
-            case Cell.CELL_TYPE_NUMERIC:
-                strCellValue = String.valueOf(cell.getNumericCellValue());
-                break;
-            default:
-                strCellValue = "";
-        }
-
-        return strCellValue;
-    }
-    
+         return strCellValue;
+     }
     
     public void setCellValueAndCopy(String srcFile, String newTextToReplace, String tmpFile) throws IOException {
     	

@@ -17,7 +17,7 @@ public interface testdata {
 
 	public static final String BUILDING_PERMIT_NEW_MANUAL_ENTRY_DATA = "\\data\\BuildingPermit\\SanMateoBuildingPermits\\BuildingPermit_DataToCreateManualEntry.txt";
 	public static final String BUILDING_PERMIT_MANUAL_ENTRY_DATA = "\\data\\BuildingPermit\\SanMateoBuildingPermits\\BuildingPermit_ManualEntryData.json";
-	public static final String BPP_TREND_CALCULATOR = "\\data\\BppTrend\\Valid_Import_Files\\2020_Trend_Factors_Calculator.xlsx";
+	public static final String BPP_TREND_CALCULATOR = "\\data\\BppTrend\\Valid_Import_Files\\";
 	public static final String BPP_TREND_BOE_INDEX_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\";
 	public static final String BPP_TREND_CAA_VALUATION_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\";
 	public static final String BPP_TREND_BOE_VALUATION_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\";
@@ -30,7 +30,7 @@ public interface testdata {
 	public static final String BPP_TREND_BOE_INDEX_FACTORS_TRANSFORMATION_RULES= "\\data\\BppTrend\\Transformation_Validation_Files\\";
 	public static final String BPP_TREND_BOE_VALUATION_FACTORS_TRANSFORMATION_RULES= "\\data\\BppTrend\\Transformation_Validation_Files\\BOE Valuation Factors 2020_Transformation Rules.xlsx";
 	public static final String BPP_TREND_CAA_VALUATION_FACTORS_TRANSFORMATION_RULES= "\\data\\BppTrend\\Transformation_Validation_Files\\CAA Valuation Factors 2020_Transformation Rules.xlsx";
-	public static final String BPP_TREND_CALCULATOR_WITH_UPDATED_MIN_EQIP_INDEX_FACTOR = "\\data\\BppTrend\\Updated_Trend_Calculator_For_ReCalculation\\2020_Trend_Factors_Calculator.xlsx";
+	public static final String BPP_TREND_CALCULATOR_WITH_UPDATED_MIN_EQIP_INDEX_FACTOR = "\\data\\BppTrend\\Updated_Trend_Calculator_For_ReCalculation\\";
     
     public static final String EXEMPTION_DATA = "\\data\\Exemptions\\ExemptionData.json";
     public static final String ANNUAL_PROCESS_DATA = "\\data\\DisabledVeteran\\AnnualProcess\\DisabledVeteran_AnnualProcessData.json";
@@ -52,4 +52,8 @@ public interface testdata {
     public static final String BPP_TREND_BOE_INDEX_FACTORS_VALID = "\\data\\BppTrend\\Valid_Import_Files\\";
     public static final String BPP_TREND_BOE_VAL_FACTORS_VALID = "\\data\\BppTrend\\Valid_Import_Files\\";
     public static final String BPP_TREND_CAA_VAL_FACTORS_VALID = "\\data\\BppTrend\\Valid_Import_Files\\";
+    
+    public static final String BPP_TREND_COMPOSITE_FACTORS_DATA = "\\data\\BppTrend\\BPPTrends_CompositeFactorsData.json";
+    
+    
 }
