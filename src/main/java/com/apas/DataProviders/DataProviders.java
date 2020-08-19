@@ -144,7 +144,6 @@ public class DataProviders {
     @DataProvider(name = "usersRestrictedToReCalculate")
     public Object[][] dpUsersRestrictedToReCalculate() {
     	return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
-//    	return new Object[][] { { users.PRINCIPAL_USER } };
     }
     
 	/**
@@ -237,7 +236,6 @@ public class DataProviders {
     @DataProvider(name = "usersRestrictedEditTableStatusOnBppTrendPage")
     public Object[][] dpUsersRestrictedEditTableStatusOnBppTrendPage() {
         return new Object[][] { { users.PRINCIPAL_USER }, { users.BPP_AUDITOR }, { users.BUSINESS_ADMIN } };
-//    	return new Object[][] { { users.PRINCIPAL_USER } };
     }
     
 	/**

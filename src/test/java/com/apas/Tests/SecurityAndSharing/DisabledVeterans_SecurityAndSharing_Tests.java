@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import com.apas.PageObjects.*;
+import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -194,9 +195,9 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 		//Step2: Verifying the access on Exemption for logged in user
 		ReportLogger.INFO("Verifying user is able to see New and Edit button for creating/Editing Exemptions record");
 		apasGenericObj.searchModule(EXEMPTIONS);
-		softAssert.assertTrue(objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T483: User is able to see New button to create a new Exemption record");
+		softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T483: User is able to see New button to create a new Exemption record");
 		apasGenericObj.globalSearchRecords(exemptionRecord);
-		softAssert.assertTrue(objPage.verifyElementVisible(exemptionPageObj.editExemption),  "SMAB-T482: User is able to edit Exemption record");
+		softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.editExemption),  "SMAB-T482: User is able to edit Exemption record");
 		softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.deleteExemption),  "SMAB-T482: User is not able to delete Exemption record");
 
 		//Step3: Verify the user access on Value Adjustment Record screen
@@ -204,17 +205,17 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 		apasGenericObj.searchModule(VALUE_ADJUSTMENTS);
 		softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T483: User is able to see New button to create a Value Adjustment record");
 		apasGenericObj.globalSearchRecords(vaRecord);
-		softAssert.assertTrue(objPage.verifyElementVisible(exemptionPageObj.editExemption), "SMAB-T476: User is able to edit VA record");
+		softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.editExemption), "SMAB-T476: User is able to edit VA record");
 		softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.deleteExemption), "SMAB-T476: User is not able to delete VA record");
 
 		//Step4: Verify the user access on Real Property Settings Library screen
 		ReportLogger.INFO("Verifying user is able to see New and Edit button for creating/Editing Real Property Settings Library");
 		apasGenericObj.searchModule(REAL_PROPERTY_SETTINGS_LIBRARIES);
-		softAssert.assertTrue(objPage.verifyElementVisible(objRPSLPage.newButton), "SMAB-T483: User is able to see New button to create a Real Property Settings Library record");
+		softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.newButton), "SMAB-T483: User is able to see New button to create a Real Property Settings Library record");
 		apasGenericObj.displayRecords("All");
 		Map<String, ArrayList<String>> manualRPSLGridDataMap = apasGenericObj.getGridDataInHashMap();
 		apasGenericObj.globalSearchRecords(manualRPSLGridDataMap.get("RP Setting Name").get(0));
-		softAssert.assertTrue(objPage.verifyElementVisible(objRPSLPage.editButton), "SMAB-T476: User is able to Edit Real Property Settings Library record");
+		softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.editButton), "SMAB-T476: User is able to Edit Real Property Settings Library record");
 		softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.deleteButton), "SMAB-T476: User is not able to Delete Real Property Settings Library record");
 
 		//Logging out of the application
