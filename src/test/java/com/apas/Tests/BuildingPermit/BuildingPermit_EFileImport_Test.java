@@ -337,10 +337,9 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objPage.scrollToTop();
 		objPage.Click(objEfileImportPage.retryButton);
 		objPage.waitUntilElementIsPresent(objEfileImportPage.xpathSpinner,20);
-		objPage.waitForElementToBeClickable(objEfileImportPage.retryButton,20);
-		objPage.waitForElementToBeVisible(objEfileImportPage.errorRowSection,30);
-		//Waiting for 15 seconds as the grid is taking some time to go after clicking Retry button. This needs to be removed later on based on optimum solution
-		Thread.sleep(15000);
+		objPage.waitForElementToDisappear(objEfileImportPage.xpathSpinner,30);
+		objPage.waitForElementToBeClickable(objEfileImportPage.retryButton,15);
+		objPage.waitForElementToBeVisible(objEfileImportPage.errorRowSection,15);
 
 		//Step7: Validating that corrected records are moved to imported row section after retry.
 		ReportLogger.INFO("Validation of error and imported records on Review and Approve Data Screen after retry");

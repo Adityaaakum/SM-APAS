@@ -2,6 +2,7 @@ package com.apas.Tests.SecurityAndSharing;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import com.apas.PageObjects.BppTrendSetupPage;
 import com.apas.config.BPPTablesData;
@@ -155,7 +156,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 			softAssert.assertTrue(objBppTrendPage.isTableDataVisible(tableName, 10), "SMAB-T249: Data grid for approved table '"+ tableName +"' is visible");
 
 			//Retrieve & Assert message displayed above approved table
-			softAssert.assertEquals(objBppTrendPage.retrieveMsgDisplayedAboveTable(tableName), "Already approved", "SMAB-T249: Message above approve table '" + tableName + "'");
+			softAssert.assertEquals(objBppTrendPage.retrieveMsgDisplayedAboveTable(tableName), "Already submitted for approval", "SMAB-T249: Message above approve table '" + tableName + "'");
 
 			//Step8: Validating unavailability of ReCalculate button at table level after table has been Approved
 			softAssert.assertTrue(!objBppTrendPage.isReCalculateButtonVisible(tableName), "SMAB-T199: ReCalcuate button is not visible for Approved table '"+ tableName +"'");
@@ -212,7 +213,8 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		//Step2: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.displayRecords("All");
-        objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+
+		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 
 		//Step3: Fetch table names from properties file and collect them in a single list
 		List<String> tableStatusFields = new ArrayList<>(Arrays.asList(BPPTablesData.BPP_TREND_SETUP_FACTOR_STATUS_FIELDS.split(",")));
@@ -228,12 +230,13 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		//Step5: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.displayRecords("All");
-        objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 
 		//Step6: Validating absence of Edit pencil icon to edit table status on BPP Trend Setup page
 		for(String tableStatusFieldName : tableStatusFields) {
 			softAssert.assertTrue(!objBppTrendPage.isPencilIconToEditTableStatusVisible(tableStatusFieldName), "SMAB-T171: For User '"+ loginUser +"': Edit pencil icon on BPP Trend Setup page is NOT VISIBLE for table '"+ tableStatusFieldName +"'");
 		}
+
 
 		//Step7: Log out from the application
 		objApasGenericFunctions.logout();
@@ -253,20 +256,25 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		objApasGenericFunctions.searchModule(modules.CPI_FACTORS);
 		objApasGenericFunctions.displayRecords("All");
 
-		//Step3: Checking unavailability of new button on grid page
-		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendPage.newBtnViewAllPage), "SMAB-T210: For User "+ loginUser +"-- New button is not visible on grid page");
+		if (loginUser.equals(users.BPP_AUDITOR)){
+			HashMap<String, ArrayList<String>> cpiFactorTableData  = objApasGenericFunctions.getGridDataInHashMap();
+			softAssert.assertEquals(cpiFactorTableData.size(),0,"BPP Auditor should not see any CPI Factor data hence record count should be zero");
+		}else{
+			//Step3: Checking unavailability of new button on grid page
+			softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendPage.newBtnViewAllPage), "SMAB-T210: For User "+ loginUser +"-- New button is not visible on grid page");
 
-		//Step4: Finding the first entry from the grid to find edit button for it
-		String cpiFactorToEdit = objPage.getElementText(objBppTrendPage.firstEntryInGrid);
-		objApasGenericFunctions.clickShowMoreLink(cpiFactorToEdit);
+			//Step4: Finding the first entry from the grid to find edit button for it
+			String cpiFactorToEdit = objPage.getElementText(objBppTrendPage.firstEntryInGrid);
+			objApasGenericFunctions.clickShowMoreLink(cpiFactorToEdit);
 
-		//Step5: Checking unavailability of edit link under show more drop down on view all grid
-		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.editLinkUnderShowMore), "SMAB-T210: For User "+ loginUser +"-- Edit link is not visible under show more option on grid");
+			//Step5: Checking unavailability of edit link under show more drop down on view all grid
+			softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.editLinkUnderShowMore), "SMAB-T210: For User "+ loginUser +"-- Edit link is not visible under show more option on grid");
 
-		//Step6: Checking unavailability of edit button on details page
-		objBppTrendSetupPage.clickOnEntryNameInGrid(cpiFactorToEdit);
-		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.editButton), "SMAB-T210: For User "+ loginUser +"-- Edit button is not visible on details page");
-		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.deleteButton), "SMAB-T210: For User "+ loginUser +"-- Delete button is not visible on details page");
+			//Step6: Checking unavailability of edit button on details page
+			objBppTrendSetupPage.clickOnEntryNameInGrid(cpiFactorToEdit);
+			softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.editButton), "SMAB-T210: For User "+ loginUser +"-- Edit button is not visible on details page");
+			softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.deleteButton), "SMAB-T210: For User "+ loginUser +"-- Delete button is not visible on details page");
+		}
 
 		//Logging out of the application
 		objApasGenericFunctions.logout();
