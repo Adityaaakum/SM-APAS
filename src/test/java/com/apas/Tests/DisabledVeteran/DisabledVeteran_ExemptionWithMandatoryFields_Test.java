@@ -120,7 +120,6 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		//Step7: Search the existing Exemption record that was created and Edit it
 		objApasGenericFunctions.displayRecords("All");
 		objApasGenericFunctions.searchRecords(exemptionName);
-		//softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct("Exemptions", recordId, "Edit"),"SMAB-T481: Validate user is able to edit an Exemption record");
 		softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct(exemptionName, "Edit"),"SMAB-T481: Validate user is able to edit the Exemption record : " + exemptionName);
 		softAssert.assertTrue(objExemptionsPage.saveButton.isDisplayed(), "SMAB-T481: Validate user is able to view the edit screen for the Exemption record : " + exemptionName);
 	

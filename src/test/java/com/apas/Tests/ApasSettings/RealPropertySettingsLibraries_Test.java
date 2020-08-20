@@ -227,7 +227,6 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	 **/
 	@Test(description = "SMAB-T537: Verify Current Roll Year RPSL not created on clicking Cancel button", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption"})
 	public void DisabledVeteran_verifyCancelRPSLCreation(String loginUser) throws Exception {
-		boolean strSuccessAlert;
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
 		objApasGenericFunctions.login(loginUser);
@@ -453,7 +452,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		ReportLogger.INFO("Clicking on 'Edit' button for record whose status is 'Approved'");
 		objPage.Click(objRPSLPage.editButton);
 		objPage.Click(objRPSLPage.saveButton);
-		Thread.sleep(1000);
+		Thread.sleep(3000);
 		String actualErrorMsgText2 =  objRPSLPage.errorMsgOnTopForEditRPSL.getText();	
 		String expectedErrorMessage2 = "Record is locked. Please check with your system administrator.";
 		
@@ -508,5 +507,4 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 			objApasGenericFunctions.logout();
 			
 	}
-
 }

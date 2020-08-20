@@ -273,19 +273,13 @@ public class ApasGenericPage extends Page {
 	 * @param entryDetails: Name of the entry displayed on grid which is to be accessed
 	 * @throws Exception
 	 */
-	public Boolean clickShowMoreButton(String modRecordName) throws Exception {		
-		Thread.sleep(2000);
+	public void clickShowMoreButton(String modRecordName) throws Exception {		
+		Thread.sleep(1000);
 		String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//th//a[text() = '"+ modRecordName +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
 		WebElement modificationsIcon = locateElement(xpathStr, 30);
-		if (modificationsIcon != null){
-			clickAction(modificationsIcon);
-			ReportLogger.INFO(modRecordName + " record exist and user is able to click Show More button against it");
-			return true;
-		}
-		else{
-			ReportLogger.INFO(modRecordName + " record doesn't exist");
-			return false;
-		}	
+		clickAction(modificationsIcon);
+		ReportLogger.INFO(modRecordName + " record exist and user is able to click Show More button against it");
+		Thread.sleep(1000);
 	}
 	
 	/**
@@ -297,20 +291,20 @@ public class ApasGenericPage extends Page {
 	 */
 	public Boolean clickShowMoreButtonAndAct(String modRecordName, String action) throws Exception { 
 		Boolean flag=false;
-		if (clickShowMoreButton(modRecordName)){
-			String xpathStr = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
-			WebElement actionElement = locateElement(xpathStr, 30);
-				if (actionElement != null){
+		clickShowMoreButton(modRecordName);
+		String xpathStr = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
+		WebElement actionElement = locateElement(xpathStr, 30);
+			if (actionElement != null){
 					clickAction(actionElement);
+					ReportLogger.INFO("User is able to click " + action + " option for " + modRecordName + " record");
 					Thread.sleep(2000);
 					flag=true;
 					if (action.equals("Delete")){
 						Click(deleteConfirmationPostDeleteAction);
-						ReportLogger.INFO("Delete " + modRecordName + " record");
+						ReportLogger.INFO(action + modRecordName + " record");
 						Thread.sleep(2000);
 					}
-				}
-		}
+			 }
 		return flag;
 	}	
 	
