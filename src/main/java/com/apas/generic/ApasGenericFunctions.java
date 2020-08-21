@@ -252,7 +252,7 @@ public class ApasGenericFunctions extends TestBase {
                 key = webElementsHeaders.get(gridCellCount).getAttribute("aria-label");
               //Year Acquired Column appears twice in Commercial and Industrial Composite Factors table
                 //Below code will not add column in hashmap appearing twice
-                if(key.equalsIgnoreCase("Year Acquired")) {
+                if(key != null && key.equalsIgnoreCase("Year Acquired")) {
                 	if(yearAcquiredKeyCounter<1) {
                 		yearAcquiredKeyCounter = yearAcquiredKeyCounter + 1;
                 	}else 
