@@ -105,10 +105,21 @@ public class RollYearSettingsTest extends TestBase {
 		objApasGenericFunctions.displayRecords("Recently Viewed");
 		objRollYearSettingsPage.createOrUpdateRollYearRecord(dataToCreateFutureRollYearMap, "New");
 			
-		//Step9: Capture the record id and Roll Year Settings Name
+		//Step9: Validate the Roll Year record and its status
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.statusOnDetailPage)), dataToCreateFutureRollYearMap.get("Status"), "SMAB-T638: Status of the record is validated successfully");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.rollYearOnDetailPage)), dataToCreateFutureRollYearMap.get("Roll Year"), "SMAB-T638: Roll Year record is created successfully");
 		
+		//Step10: Edit the status on Roll Year record
+		ReportLogger.INFO("Click 'Edit' button to update the status on the Roll Year record");
+		objPage.Click(objPage.waitForElementToBeClickable(objRollYearSettingsPage.editButton));
+		Thread.sleep(1000);
+		objApasGenericFunctions.selectFromDropDown(objRollYearSettingsPage.status, "Closed");
+		objPage.Click(objRollYearSettingsPage.saveButton);
+		
+		//Step11: Validate the status of Roll Year record
+		Thread.sleep(1000);
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.statusOnDetailPage)), "Closed", "SMAB-T638: Status of the record is validated successfully");
+					
 		objApasGenericFunctions.logout();
 	}
 	
@@ -312,7 +323,7 @@ public class RollYearSettingsTest extends TestBase {
 	 -RP Business Admin and Exemption Support Staff are able to only view the Roll Year Record
 	 **/
 	
-	@Test(description = "SMAB-T638: Validate RP Business admin and Exemption Support staff are able to view Roll year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T638: Validate RP Business admin and Exemption Support staff are able to only view the Roll year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void RollYear_ViewRecord(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -329,15 +340,14 @@ public class RollYearSettingsTest extends TestBase {
 		//Step4: Create data map for the JSON file (RollYear_DataToCreateRollYearRecord.json)  
 		Map<String, String> viewRollYearMap = objUtil.generateMapFromJsonFile(rollYearData, "DataToValidateFieldLevelErrorMessages");
 		
-		//Step5: Select ALL from the List view
+		//Step5: Select ALL from the List view and Search the Roll Year record
 		Thread.sleep(1000);
 		objApasGenericFunctions.displayRecords("All");
+		objApasGenericFunctions.searchRecords(viewRollYearMap.get("Roll Year"));
 		
 		//Step6: Search the existing Roll Year record - Delete/Edit options should not be visbile to non-admin users
-		if (objApasGenericFunctions.searchRecords(viewRollYearMap.get("Roll Year")).substring(0, 6).equals("1 item")) {
-			softAssert.assertTrue(!objApasGenericPage.clickShowMoreButtonAndAct(viewRollYearMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate non system admin user is not able to view 'Delete' option to delete the existing Roll Year record : " + viewRollYearMap.get("Roll Year"));
-			softAssert.assertTrue(!objApasGenericPage.clickShowMoreButtonAndAct(viewRollYearMap.get("Roll Year"), "Edit"),"SMAB-T638: Validate non system admin user is not able to view 'Edit' option to update the existing Roll Year record : " + viewRollYearMap.get("Roll Year"));
-		}
+		softAssert.assertTrue(!objApasGenericPage.clickShowMoreButtonAndAct(viewRollYearMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate non system admin user is not able to view 'Delete' option to delete the existing Roll Year record : " + viewRollYearMap.get("Roll Year"));
+		softAssert.assertTrue(!objApasGenericPage.clickShowMoreButtonAndAct(viewRollYearMap.get("Roll Year"), "Edit"),"SMAB-T638: Validate non system admin user is not able to view 'Edit' option to update the existing Roll Year record : " + viewRollYearMap.get("Roll Year"));
 				
 		objApasGenericFunctions.logout();
 	}
