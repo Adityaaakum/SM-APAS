@@ -216,7 +216,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	/**
 	 Below test case is used to validate that correct data is displayed after atherton file import
 	 **/
-	@Test(description = "SMAB-T417,SMAB-T456: Data validation after Atherton text file import", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T417,SMAB-T456,SMAB-T452: Data validation after Atherton text file import", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression","buildingPermit"}, alwaysRun = true, enabled = true)
 	public void BuildingPermit_DataValidationAfterAthertonTxtFileImport(String loginUser) throws Exception {
 
 		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "OneValidAndTwoInvalidRecordsForPermitValue.txt";

@@ -337,7 +337,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objPage.scrollToTop();
 		objPage.Click(objEfileImportPage.retryButton);
 		objPage.waitUntilElementIsPresent(objEfileImportPage.xpathSpinner,20);
-		objPage.waitForElementToDisappear(objEfileImportPage.xpathSpinner,30);
+		objPage.waitForElementToDisappear(objEfileImportPage.xpathSpinner,50);
 		objPage.waitForElementToBeClickable(objEfileImportPage.retryButton,15);
 		objPage.waitForElementToBeVisible(objEfileImportPage.errorRowSection,15);
 

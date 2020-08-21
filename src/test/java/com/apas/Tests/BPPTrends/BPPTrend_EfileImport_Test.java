@@ -298,12 +298,18 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 				objApasGenericFunctions.editGridCellValue("Average","80");
 			}else
 				objApasGenericFunctions.editGridCellValue("Factor","80");
+
+			objPage.Click(objEfileHomePage.rowSelectCheckBox);
+			objEfileHomePage.collapseSection(objEfileHomePage.errorRowSectionExpandButton);
+			objPage.scrollToTop();
+
 		}
 		
 		//Step11: Clicking retry button and waiting for corrected records to move to imported section
 		objPage.waitForElementToBeClickable(objEfileHomePage.retryButton);
 		objPage.javascriptClick(objEfileHomePage.retryButton);
 		objPage.waitUntilElementIsPresent(objEfileHomePage.xpathSpinner,20);
+		objPage.waitForElementToDisappear(objEfileHomePage.xpathSpinner,50);
 		objPage.waitForElementToBeClickable(objEfileHomePage.retryButton,20);
 		objPage.waitForElementToBeVisible(objEfileHomePage.errorRowSection,160);
 		
@@ -617,12 +623,16 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			//Step10: Enter correct data in one of the Error Row 'Cell' 
 			ReportLogger.INFO("Deleting junk data and entering valid data in the table: "+tableName);
 			objApasGenericFunctions.editGridCellValue("Valuation Factor","80");
+			objPage.Click(objEfileHomePage.rowSelectCheckBox);
+			objEfileHomePage.collapseSection(objEfileHomePage.errorRowSectionExpandButton);
+			objPage.scrollToTop();
 		}
 		
 		//Step11: Clicking retry button and waiting for corrected records to move to imported section
 		objPage.waitForElementToBeClickable(objEfileHomePage.retryButton);
 		objPage.javascriptClick(objEfileHomePage.retryButton);
 		objPage.waitUntilElementIsPresent(objEfileHomePage.xpathSpinner,20);
+		objPage.waitForElementToDisappear(objEfileHomePage.xpathSpinner,50);
 		objPage.waitForElementToBeClickable(objEfileHomePage.retryButton,20);
 		objPage.waitForElementToBeVisible(objEfileHomePage.errorRowSection,160);
 		
@@ -948,12 +958,16 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			//Step12: Enter correct data in one of the Error Row 'Cell' 
 			ReportLogger.INFO("Deleting junk data and entering valid data in the table: "+tableName);
 			objApasGenericFunctions.editGridCellValue("Valuation Factor","80");
+			objPage.Click(objEfileHomePage.rowSelectCheckBox);
+			objEfileHomePage.collapseSection(objEfileHomePage.errorRowSectionExpandButton);
+			objPage.scrollToTop();
 		}
 		
 		//Step13: Clicking retry button and waiting for corrected records to move to imported section
 		objPage.waitForElementToBeClickable(objEfileHomePage.retryButton);
 		objPage.javascriptClick(objEfileHomePage.retryButton);
 		objPage.waitUntilElementIsPresent(objEfileHomePage.xpathSpinner,20);
+		objPage.waitForElementToDisappear(objEfileHomePage.xpathSpinner,50);
 		objPage.waitForElementToBeClickable(objEfileHomePage.retryButton,20);
 		objPage.waitForElementToBeVisible(objEfileHomePage.errorRowSection,160);
 		
