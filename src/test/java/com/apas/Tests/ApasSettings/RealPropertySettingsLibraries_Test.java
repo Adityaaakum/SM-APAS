@@ -446,6 +446,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	  	ReportLogger.INFO("Selecting 'All' List View");
 	  	objApasGenericFunctions.displayRecords("All");
 		ReportLogger.INFO("Clicking on Approved RPSL Link for current Roll Year i.e. " + currentRollYear);
+		objPage.scrollToElement(objRPSLPage.getRPSLRecord(currentRollYear));
 		objPage.Click(objRPSLPage.getRPSLRecord(currentRollYear));
 		
 		//Step9 : Click on EDIT button for the record and retrieve the error message after clicking SAVE button
