@@ -95,7 +95,7 @@ public class EFileImportPage extends Page {
 	@FindBy(xpath = "//span[contains(@title,'ERROR ROWS')]")
 	public WebElement errorRowSection;
 
-	@FindBy(xpath = "//button[contains(.,'ERROR ROWS')]")
+	@FindBy(xpath = "//lightning-tab[contains(@class,'slds-show')]//button[contains(.,'ERROR ROWS')]")
 	public WebElement errorRowSectionExpandButton;
 
 	@FindBy(xpath = "//span[contains(@title,'IMPORTED ROWS')]")

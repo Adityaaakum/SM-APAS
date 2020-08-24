@@ -145,17 +145,12 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		objBppTrendSetupPage.clickOnShowMoreLinkInGridForGivenPropertyType("Commercial");
 		objBppTrendPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
 		
-		ReportLogger.INFO("Updating new value and clicking on save button");
-		objBppTrendSetupPage.enterFactorValue("25");
-		objBppTrendSetupPage.enterPropertyType("Commercial");
-		objBppTrendPage.Click(objBppTrendSetupPage.saveButton);
-		
 		//Step21: Validating error message on updating Min. Equipment Index Factor value for approved tables
 		ReportLogger.INFO("Validating error message on updating Min. Equipment Index Factor Value for approved tables");
-		String expectedErrorMessage = "Minimum Good Factor is locked for editing for the Roll Year";
-		String actualErrorMessage = objBppTrendSetupPage.errorMsgUnderMinEquipFactorIndexField();
+		String expectedErrorMessage = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";
+		String actualErrorMessage = objPage.getElementText(objBppTrendSetupPage.accessErrorMsg);
 		softAssert.assertEquals(actualErrorMessage, expectedErrorMessage, "SMAB-T187: Validating error message on editing minimum equip. index value when calculations are approved");
-		objBppTrendPage.Click(objBppTrendSetupPage.cancelBtnInBppSettingPopUp);
+		objBppTrendPage.Click(objBppTrendSetupPage.closeEntryPopUp);
 		
 		objApasGenericFunctions.logout();
 	}

@@ -227,6 +227,7 @@ public class BPPTrend_AgriculturalCompostieTable_CalculateAndReCalculate_Test ex
 		//Step8: Clicking 'Confirm' button in warning pop up to trigger ReCalculation
 		objSoftAssert.assertEquals(objPage.getElementText(objBppTrend.reCalculateWarningMessage),"The new calculations will overwrite the previously made calculations for the roll year. Would you like to proceed?","SMAB-T196: Verify warning message on triggering recalculation");
 		objBppTrend.javascriptClick(objBppTrend.confirmBtnInPopUp);
+		objPage.waitForElementToDisappear(objBppTrend.xpathSpinner, 120);
 		Thread.sleep(5000);
 		
 		//Step9: Waiting for pop up message to display and the message displayed above table to update

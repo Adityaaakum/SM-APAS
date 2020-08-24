@@ -19,6 +19,7 @@ import com.apas.PageObjects.BppTrendPage;
 import com.apas.PageObjects.BuildingPermitPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
@@ -75,6 +76,8 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 	 */
 	@Test(description = "SMAB-T205,SMAB-T155,SMAB-T156,SMAB-T157,SMAB-T250,SMAB-T212: Approve calculations of valuation, composite & prop 13 tables", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class)
 	public void BppTrend_Approve(String loginUser) throws Exception {
+		objApasGenericFunctions.login(loginUser);
+		
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Submitted for Approval", rollYear);
@@ -89,8 +92,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		allTablesBppTrendSetupPage.addAll(Arrays.asList(CONFIG.getProperty("valuationFactorTablesForBppSetupPage").split(",")));
 		String rollYear = CONFIG.getProperty("rollYear");
 
-		//Step2: Check status of the composite & valuation tables on BPP trend status page before approving
-		objApasGenericFunctions.login(loginUser);
+		//Step2: Check status of the composite & valuation tables on BPP trend status page before approving		
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.displayRecords("All");
         objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
@@ -191,7 +193,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 				softAssert.assertEquals(cellDataBeforeEdit, cellDataAfterEdit, "SMAB-T205: Validating table data on clicking approve button without saving the edited data for "+ tableName +" table");
 				softAssert.assertEquals(cellDataBeforeEdit, cellDataAfterEdit, "SMAB-T449: Validating table data on clicking approve button without saving the edited data for "+ tableName +" table");
 			} else {
-				ExtentTestManager.getTest().log(LogStatus.INFO, "** Editing table data and clicking Approve button after saving the data **");
+				ReportLogger.INFO("** Editing table data and clicking Approve button after saving the data **");
 				//Step16: Clicking approve button to approve tab data
 				objBppTrnPg.clickApproveButton(tableName);
 							
@@ -199,16 +201,18 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 				objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.cancelBtnInApproveTabPopUp, 30);
 				objBppTrnPg.Click(objBppTrnPg.cancelBtnInApproveTabPopUp);
 				objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.saveBtnToSaveEditedCellData, 30);
+				ReportLogger.INFO("Clicking on save button");
 				objBppTrnPg.Click(objBppTrnPg.saveBtnToSaveEditedCellData);
-				objPage.waitUntilElementIsPresent(objBppTrnPg.xpathRollYear, 30);
+				objPage.waitUntilElementIsPresent(objBppTrnPg.xpathRollYear, 320);
 		
 				//Step18: Clicking approve button to approve tab data
-				//objBppTrnPg.waitForPageSpinnerToDisappear();
+				objBppTrnPg.waitForPageSpinnerToDisappear();
 				objBppTrnPg.clickOnTableOnBppTrendPage(tableName);
+				ReportLogger.INFO("Clicking on Approve button");
 				objBppTrnPg.clickApproveButton(tableName);
 				
 				//Step19: Waiting for pop up message to display and the message displayed above table to update
-				objPage.waitUntilElementIsPresent(objBppTrnPg.xpathAlreadyApprovedLabel, 40);
+				objPage.waitUntilElementIsPresent(objBppTrnPg.xpathAlreadyApprovedLabel, 320);
 				objPage.verifyElementVisible(objBppTrnPg.alreadyApprovedLabel);
 				//objBppTrnPg.waitForPopUpMsgOnApproveClick(60);
 
