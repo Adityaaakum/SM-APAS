@@ -89,7 +89,7 @@ public class BPPTrend_ConstructionCompostieTable_CalculateAndReCalculate_Test ex
 	 * 11. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T254
 	 * 12. Validating the status of the table on BPP Trend Setup Page: SMAB-T255
 	 */
-	@Test(description = "SMAB-T253,SMAB-T254,SMAB-T255,SMAB-T190,SMAB-T194,SMAB-T198: Performing validation on CONSTRUCTION COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T170,SMAB-T253,SMAB-T254,SMAB-T255,SMAB-T190,SMAB-T194,SMAB-T198: Performing validation on CONSTRUCTION COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_ConstructionCompostieTable_CalculateAndCompare(String loginUser) throws Exception {
 		String tableName = "Construction Composite Factors";
 		
@@ -171,7 +171,7 @@ public class BPPTrend_ConstructionCompostieTable_CalculateAndReCalculate_Test ex
 		objApasGenericFunctions.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 		String statusInBppTrendSetup = objBppTrendSetupPage.getTableStatusFromBppTrendSetupDetailsPage(tableName);
-		softAssert.assertEquals(statusInBppTrendSetup, "Calculated", "SMAB-T255: Table status on Bpp Trend Setup page post calculation");
+		softAssert.assertEquals(statusInBppTrendSetup, "Calculated", "SMAB-T170,SMAB-T255: Table status on Bpp Trend Setup page post calculation");
 
 		//Step22: Log out from the application
 		objApasGenericFunctions.logout();
@@ -190,7 +190,7 @@ public class BPPTrend_ConstructionCompostieTable_CalculateAndReCalculate_Test ex
 	 * 8. Validating the presence of ReCalculate button for Calculated table:: Test Case/JIRA ID: SMAB-T195
 	 * 9. Validating the data of UI table against the Trend Calculator excel file:: Test Case/JIRA ID: SMAB-T195
 	 */
-	@Test(description = "SMAB-T195,SMAB-T196: Performing validation on CONSTRUCTION COMPOSITE FACTORS before and after calculation", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T173,SMAB-T195,SMAB-T196: Performing validation on CONSTRUCTION COMPOSITE FACTORS before and after calculation", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_ConstructionCompostieTable_ReCalculateAndCompare(String loginUser) throws Exception {
 		String tableName = "Construction Composite Factors";
 		
@@ -265,7 +265,14 @@ public class BPPTrend_ConstructionCompostieTable_CalculateAndReCalculate_Test ex
 		//Step17: Comparing the UI grid data after Calculate button click against the data in excel file
 		softAssert.assertEquals(FileUtils.compareHashMaps(actualImportedRowTable,dataMapFromExcel),"","SMAB-T195: Data Comparison validation for Imported Row Table");
 		
-		//Step18: Log out from the application
+		//Step18: Validating the table's status on BPP Trend Setup page
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+		String statusInBppTrendSetup = objBppTrendSetupPage.getTableStatusFromBppTrendSetupDetailsPage(tableName);
+		softAssert.assertEquals(statusInBppTrendSetup, "Calculated", "SMAB-T173: Verify Table status on Bpp Trend Setup page post calculation");
+
+		//Step19: Log out from the application
 		objApasGenericFunctions.logout();
 	}
 }
