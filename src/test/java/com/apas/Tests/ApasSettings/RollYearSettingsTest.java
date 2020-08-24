@@ -92,27 +92,34 @@ public class RollYearSettingsTest extends TestBase {
 		//Step5: Create data map for the JSON file (RollYear_DataToCreateRollYearRecord.json)
 		Map<String, String> dataToCreateFutureRollYearMap = objUtil.generateMapFromJsonFile(rollYearData, "DataToCreateFutureRollYear");
 		
-		//Step6: Search the existing Roll Year record
+		//Step6: Select ALL from the list view
 		Thread.sleep(1000);
 		objApasGenericFunctions.displayRecords("All");
-		objApasGenericFunctions.searchRecords(dataToCreateFutureRollYearMap.get("Roll Year"));
 		
-		//Step7: Delete the existing Roll Year record
-		if (objApasGenericPage.clickShowMoreButtonAndAct(dataToCreateFutureRollYearMap.get("Roll Year"), "Delete")) {
-			softAssert.assertTrue(true,"SMAB-T638: Validate user is able to delete the existing Roll Year record i.e. " + dataToCreateFutureRollYearMap.get("Roll Year"));
-		}
-		else{
-			softAssert.assertTrue(true,"SMAB-T638: Validate user is not able to view delete option for " + dataToCreateFutureRollYearMap.get("Roll Year"));	
+		//Step7: Search the existing Roll Year record and delete if exists
+		if (objApasGenericFunctions.searchRecords(dataToCreateFutureRollYearMap.get("Roll Year")).substring(0, 6).equals("1 item")) {
+			softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct(dataToCreateFutureRollYearMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate user is able to delete the existing Roll Year record i.e. " + dataToCreateFutureRollYearMap.get("Roll Year"));
 		}
 		
 		//Step8: Change the List view and Create Roll Year record
 		objApasGenericFunctions.displayRecords("Recently Viewed");
 		objRollYearSettingsPage.createOrUpdateRollYearRecord(dataToCreateFutureRollYearMap, "New");
 			
-		//Step9: Capture the record id and Roll Year Settings Name
+		//Step9: Validate the Roll Year record and its status
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.statusOnDetailPage)), dataToCreateFutureRollYearMap.get("Status"), "SMAB-T638: Status of the record is validated successfully");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.rollYearOnDetailPage)), dataToCreateFutureRollYearMap.get("Roll Year"), "SMAB-T638: Roll Year record is created successfully");
 		
+		//Step10: Edit the status on Roll Year record
+		ReportLogger.INFO("Click 'Edit' button to update the status on the Roll Year record");
+		objPage.Click(objPage.waitForElementToBeClickable(objRollYearSettingsPage.editButton));
+		Thread.sleep(1000);
+		objApasGenericFunctions.selectFromDropDown(objRollYearSettingsPage.status, "Closed");
+		objPage.Click(objRollYearSettingsPage.saveButton);
+		
+		//Step11: Validate the status of Roll Year record
+		Thread.sleep(1000);
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.statusOnDetailPage)), "Closed", "SMAB-T638: Status of the record is validated successfully");
+					
 		objApasGenericFunctions.logout();
 	}
 	
@@ -134,16 +141,12 @@ public class RollYearSettingsTest extends TestBase {
 		//Step3: Create data map for the JSON file (RollYear_DataToCreateRollYearRecord.json)  
 		Map<String, String> dataToCreatePastRollYearMap = objUtil.generateMapFromJsonFile(rollYearData, "DataToCreatePastRollYear");
 		
-		//Step4: Search the existing Roll Year record
+		//Step4: Select ALL from the list view
 		objApasGenericFunctions.displayRecords("All");
-		objApasGenericFunctions.searchRecords(dataToCreatePastRollYearMap.get("Roll Year"));
 		
-		//Step5: Delete the existing Roll Year record
-		if (objApasGenericPage.clickShowMoreButtonAndAct(dataToCreatePastRollYearMap.get("Roll Year"), "Delete")) {
-			softAssert.assertTrue(true,"SMAB-T638: Validate user is able to delete the existing Roll Year record i.e. " + dataToCreatePastRollYearMap.get("Roll Year"));
-		}
-		else{
-			softAssert.assertTrue(true,"SMAB-T638: Validate user is not able to view delete option for " + dataToCreatePastRollYearMap.get("Roll Year"));	
+		//Step5: Search the existing Roll Year record and delete if exists
+		if (objApasGenericFunctions.searchRecords(dataToCreatePastRollYearMap.get("Roll Year")).substring(0, 6).equals("1 item")) {
+			softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct(dataToCreatePastRollYearMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate user is able to delete the existing Roll Year record i.e. " + dataToCreatePastRollYearMap.get("Roll Year"));
 		}
 		
 		//Step6: Change the List view and Create Roll Year record
@@ -191,29 +194,23 @@ public class RollYearSettingsTest extends TestBase {
 		//Step12: Create data map for the JSON file (RollYear_DataToCreateRollYearRecord.json) 
 		Map<String, String> dataToEditPastRollYearToFutureMap = objUtil.generateMapFromJsonFile(rollYearData, "DataToEditPastRollYearToFuture");
 				
-		//Step13: Search the existing Roll Year record
+		//Step13: Search the existing Roll Year record and delete if exists
 		Thread.sleep(1000);
 		objApasGenericFunctions.displayRecords("All");
-		objApasGenericFunctions.searchRecords(dataToEditPastRollYearToFutureMap.get("Roll Year"));
-					
-		//Step14: Delete the existing Roll Year record
-		if (objApasGenericPage.clickShowMoreButtonAndAct(dataToEditPastRollYearToFutureMap.get("Roll Year"), "Delete")) {
-			softAssert.assertTrue(true,"SMAB-T638: Validate user is able to delete the existing Roll Year record i.e. " + dataToEditPastRollYearToFutureMap.get("Roll Year"));
-		}
-		else{
-			softAssert.assertTrue(true,"SMAB-T638: Validate user is not able to view delete option for " + dataToEditPastRollYearToFutureMap.get("Roll Year"));	
+		if (objApasGenericFunctions.searchRecords(dataToEditPastRollYearToFutureMap.get("Roll Year")).substring(0, 6).equals("1 item")) {
+			softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct(dataToEditPastRollYearToFutureMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate user is able to delete the existing Roll Year record i.e. " + dataToEditPastRollYearToFutureMap.get("Roll Year"));
 		}
 		
-		//Step15: Search the existing Roll Year Settings record
+		//Step14: Search the existing Roll Year Settings record
 		objApasGenericFunctions.displayRecords("All");
 		objApasGenericFunctions.searchRecords(rollYearName);
 		objRollYearSettingsPage.openRollYearRecord(recordId, rollYearName);
 				
-		//Step16: Editing this Roll Year record using EDIT button on Roll Year detail screen
+		//Step15: Editing this Roll Year record using EDIT button on Roll Year detail screen
 		ReportLogger.INFO("Click 'Edit' pencil icon to update it");
 		objPage.Click(objRollYearSettingsPage.editPencilIconForRollYearOnDetailPage);
 				
-		//Step17: Clear the values from few of the mandatory fields and Save the record
+		//Step16: Clear the values from few of the mandatory fields and Save the record
 		Thread.sleep(1000);
 		objPage.clearFieldValue(objRollYearSettingsPage.calendarStartDateOnDetailEditPage);
 		objPage.clearFieldValue(objRollYearSettingsPage.calendarEndDateOnDetailEditPage);
@@ -221,19 +218,19 @@ public class RollYearSettingsTest extends TestBase {
 		objPage.Click(objRollYearSettingsPage.saveButtonOnDetailPage);
 		objPage.Click(objRollYearSettingsPage.saveButtonOnDetailPage);
 				
-		//Step18: Validate the error message appears as a pop-up at the bottom of the screen		
+		//Step17: Validate the error message appears as a pop-up at the bottom of the screen		
 		Thread.sleep(2000);
 		softAssert.assertTrue(objApasGenericPage.popUpErrorMessageWeHitASnag.isDisplayed(), "SMAB-T638: Validate error message pop-up that appear at the bottom of the page i.e. 'We hit a snag'");
 		softAssert.assertTrue(objApasGenericPage.returnElemOnPopUpScreen("Calendar Start Date").isDisplayed(), "SMAB-T638: Validate that 'Calendar Start Date' appears in error message pop-up");
 		softAssert.assertTrue(objApasGenericPage.returnElemOnPopUpScreen("Calendar End Date").isDisplayed(), "SMAB-T638: Validate that 'Calendar End Date' appears in error message pop-up");
 		softAssert.assertTrue(objApasGenericPage.returnElemOnPopUpScreen("Tax Start Date").isDisplayed(), "SMAB-T638: Validate that 'Tax Start Date' appears in error message pop-up");
 				
-		//Step19: Click CANCEL button and edit the record
+		//Step18: Click CANCEL button and edit the record
 		objPage.Click(objRollYearSettingsPage.cancelButtonOnDetailPage);
 		Thread.sleep(1000);
 		objRollYearSettingsPage.createOrUpdateRollYearRecord(dataToEditPastRollYearToFutureMap, "Edit");
 					
-		//Step20: Validate the details post the record is updated and saved
+		//Step19: Validate the details post the record is updated and saved
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.statusOnDetailPage)), dataToEditPastRollYearToFutureMap.get("Status"), "SMAB-T638: Status of the record is validated successfully");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.rollYearOnDetailPage)), dataToEditPastRollYearToFutureMap.get("Roll Year"), "SMAB-T638: Roll Year record is created successfully");
 				
@@ -326,7 +323,7 @@ public class RollYearSettingsTest extends TestBase {
 	 -RP Business Admin and Exemption Support Staff are able to only view the Roll Year Record
 	 **/
 	
-	@Test(description = "SMAB-T638: Validate RP Business admin and Exemption Support staff are able to view Roll year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T638: Validate RP Business admin and Exemption Support staff are able to only view the Roll year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void RollYear_ViewRecord(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -343,15 +340,15 @@ public class RollYearSettingsTest extends TestBase {
 		//Step4: Create data map for the JSON file (RollYear_DataToCreateRollYearRecord.json)  
 		Map<String, String> viewRollYearMap = objUtil.generateMapFromJsonFile(rollYearData, "DataToValidateFieldLevelErrorMessages");
 		
-		//Step5: Search the existing Roll Year record
+		//Step5: Select ALL from the List view and Search the Roll Year record
 		Thread.sleep(1000);
 		objApasGenericFunctions.displayRecords("All");
 		objApasGenericFunctions.searchRecords(viewRollYearMap.get("Roll Year"));
 		
-		//Step6: Delete the existing Roll Year record
+		//Step6: Search the existing Roll Year record - Delete/Edit options should not be visbile to non-admin users
 		softAssert.assertTrue(!objApasGenericPage.clickShowMoreButtonAndAct(viewRollYearMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate non system admin user is not able to view 'Delete' option to delete the existing Roll Year record : " + viewRollYearMap.get("Roll Year"));
 		softAssert.assertTrue(!objApasGenericPage.clickShowMoreButtonAndAct(viewRollYearMap.get("Roll Year"), "Edit"),"SMAB-T638: Validate non system admin user is not able to view 'Edit' option to update the existing Roll Year record : " + viewRollYearMap.get("Roll Year"));
-		
+				
 		objApasGenericFunctions.logout();
 	}
 	
