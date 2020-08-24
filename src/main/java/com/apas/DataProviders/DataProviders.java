@@ -126,8 +126,7 @@ public class DataProviders {
 
     @DataProvider(name = "usersRestrictedToCalculate")
     public Object[][] dpUsersRestrictedToCalculate() {
-        return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
-//    	return new Object[][] { { users.PRINCIPAL_USER } };
+    	return new Object[][] { { users.PRINCIPAL_USER } };
     }
     
 	/**
@@ -143,7 +142,7 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "usersRestrictedToReCalculate")
     public Object[][] dpUsersRestrictedToReCalculate() {
-    	return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
+    	return new Object[][] { { users.PRINCIPAL_USER }};
     }
     
 	/**
@@ -176,7 +175,7 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "usersRestrictedToApprove")
     public Object[][] dpUsersRestrictedToApprove() {
-        return new Object[][] { { users.BUSINESS_ADMIN },{ users.RP_APPRAISER }, { users.BPP_AUDITOR } };
+        return new Object[][] { { users.BUSINESS_ADMIN }};
     }
 
 	/**
@@ -235,7 +234,7 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "usersRestrictedEditTableStatusOnBppTrendPage")
     public Object[][] dpUsersRestrictedEditTableStatusOnBppTrendPage() {
-        return new Object[][] { { users.PRINCIPAL_USER }, { users.BPP_AUDITOR }, { users.BUSINESS_ADMIN } };
+        return new Object[][] { { users.PRINCIPAL_USER }, { users.BUSINESS_ADMIN } };
     }
     
 	/**
@@ -243,7 +242,6 @@ public class DataProviders {
 	 **/
     @DataProvider(name = "usersRestrictedToModifyMaxEquipIndexFactor")
     public Object[][] dpUsersRestrictedToModifyMaxEquipIndexFactor() {
-//        return new Object[][] { { users.PRINCIPAL_USER }, { users.RP_APPRAISER }, { users.BPP_AUDITOR } };
     	return new Object[][] { { users.PRINCIPAL_USER } };
     }
 

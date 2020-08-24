@@ -80,6 +80,12 @@ public class ApasGenericPage extends Page {
 
 	public String menuList = "//div[contains(@class,'uiMenuList--default visible positioned')]";
 
+	@FindBy(xpath = "//lightning-spinner")
+	public WebElement spinner;
+
+	public String xpathSpinner = "//lightning-spinner";
+
+
 	/*	Sikander Bhambhu:
 	 *	Next 7 locators are for handling date picker
 	 * */

@@ -560,7 +560,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 4. Validating retry functionality of error records
 	 * 5. Validating no of records in Error and Imported rows section post retrying
 	 */
-	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
+	@Test(description = "SMAB-T111,SMAB-T91: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
 	public void BppTrend_BOEValImportAndRetryErrorRecords(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);				
@@ -895,7 +895,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 4. Validating retry functionality of error records
 	 * 5. Validating no of records in Error and Imported rows section post retrying
 	 */
-	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
+	@Test(description = "SMAB-T111,SMAB-T958: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
 	public void BppTrend_CAAValImportAndRetryErrorRecords(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);				

@@ -130,11 +130,11 @@ public class ApasGenericFunctions extends TestBase {
     public void displayRecords(String displayOption) throws Exception {
         ExtentTestManager.getTest().log(LogStatus.INFO, "Displaying all the records on the grid");
         objPage.Click(objApasGenericPage.selectListViewButton);
-        String xpathDisplayOption = "//a[@role='option']//span[text()='" + displayOption + "']";
+        String xpathDisplayOption = "//div[contains(@class,'list uiAbstractList')]//a[@role='option']//span[text()='" + displayOption + "']";
         objPage.waitUntilElementIsPresent(xpathDisplayOption, 10);
         objPage.Click(driver.findElement(By.xpath(xpathDisplayOption)));
-        //objPage.waitForElementToBeClickable(objApasGenericPage.dataGrid);
-        Thread.sleep(6000);
+        Thread.sleep(3000);
+        objPage.waitForElementToBeClickable(objApasGenericPage.searchListEditBox,15);
     }
 
     /**

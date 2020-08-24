@@ -257,10 +257,8 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
 		objApasGenericFunctions.displayRecords("All");
 		softAssert.assertTrue(objPage.verifyElementVisible(objBuildingPermitPage.newButton),"SMAB-T1820 : Building Permit Screen - Validation that 'New' button should be visible to " + loginUser);
-		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.newButton),"SMAB-T1820 : Building Permit Screen - Validation that 'New' button should be Enabled to " + loginUser);
 		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objApasGenericFunctions.getGridDataInHashMap();
 		objApasGenericFunctions.clickShowMoreLink(manualBuildingPermitGridDataMap.get("Building Permit Number").get(0));
-		softAssert.assertTrue(objPage.verifyElementVisible(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : Building Permit Screen - Validation that 'Edit' button should be visible to " + loginUser);
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : Building Permit Screen - Validation that 'Edit' button should be enabled to " + loginUser);
 		softAssert.assertTrue(!objPage.verifyElementVisible(objBuildingPermitPage.deleteButtonMenuOption),"SMAB-T1820 : Building Permit Screen - Validation that 'Delete' button should not be visible to " + loginUser);
 
