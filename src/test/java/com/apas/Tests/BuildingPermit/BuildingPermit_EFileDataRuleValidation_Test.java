@@ -298,6 +298,9 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		ReportLogger.INFO("Data Validation of Imported Row Records on Review and Approve Data Page");
 		HashMap<String, ArrayList<String>> actualImportedRowTable  = objApasGenericFunctions.getGridDataInHashMap(2);
 		String expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "NonNumericValueSanMateo_ExpectedImportedRecords.csv";
+		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
+			expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "NonNumericValueSanMateo_ExpectedImportedRecords_PREUAT.csv";
+		}
 
 		HashMap<String, ArrayList<String>> expectedImportedRowTable = FileUtils.getCSVData(expectedImportedRowTableFile);
 		softAssert.assertEquals(FileUtils.compareHashMaps(actualImportedRowTable,expectedImportedRowTable),"","SMAB-T417,SMAB-T456,SMAB-T357:Data Comparison validation for Imported Row Table");

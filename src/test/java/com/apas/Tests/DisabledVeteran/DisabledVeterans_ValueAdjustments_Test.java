@@ -135,8 +135,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		/** step6: updating qualification to Qualified and
 		Verifying corresponding VA's count should be as per the dates
 		 **/
-		
-		
+		Thread.sleep(2000);  //To handle regression failure as Qualified field hides behind the Exemption creation pop-up
 		objPage.Click(exemptionPageObj.editExemption);
 		objPage.waitForElementToBeClickable(exemptionPageObj.qualification,10);
 		apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, "Qualified");
