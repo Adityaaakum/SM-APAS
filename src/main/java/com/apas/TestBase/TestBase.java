@@ -36,17 +36,7 @@ public class TestBase extends BrowserDriver {
 		try {
 			CONFIG = new Properties();
 			TestBase.loadPropertyFiles();
-			if (region.equalsIgnoreCase("dev")) {
-				envURL = CONFIG.getProperty("URL_dev");
-			}else if (region.equalsIgnoreCase("qa")) {
-				envURL = CONFIG.getProperty("URL_qa");
-			} else if (region.equalsIgnoreCase("sit")) {
-				envURL = CONFIG.getProperty("URL_sit");
-			} else if (region.equalsIgnoreCase("uat")) {
-				envURL = CONFIG.getProperty("URL_uat");
-			} else if (region.equalsIgnoreCase("preuat")) {
-				envURL = CONFIG.getProperty("URL_preuat");
-			}
+			envURL = CONFIG.getProperty("URL_" + region.toLowerCase());
 			ldriver.get(envURL);
 
 			//Temp folder is to create temporary file during tests so that those can be deleted at the end if required
