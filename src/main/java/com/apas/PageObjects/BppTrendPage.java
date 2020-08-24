@@ -389,8 +389,7 @@ public class BppTrendPage extends Page {
 	 */
 	public boolean isTableDataVisible(String tableName, int timeOut) throws Exception {
 		String tableXpath = "//lightning-tab[@data-id = '"+ tableName +"']//table";
-		WebElement tableContent = locateElement(tableXpath, timeOut);
-		return tableContent.isDisplayed();
+		return verifyElementVisible(tableXpath);
 	}
 
 	/**
