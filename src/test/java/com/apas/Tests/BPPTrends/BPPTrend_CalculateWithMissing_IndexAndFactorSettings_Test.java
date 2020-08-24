@@ -99,10 +99,10 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		objApasGenericFunctions.login(loginUser);
 		
 		//Step5: Navigating to BPP Trend page and selecting given roll year
-		ExtentTestManager.getTest().log(LogStatus.INFO, "** Navigating back to BPP Trends page **");
+		ExtentTestManager.getTest().log(LogStatus.INFO, "** Navigating to BPP Trends page **");
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
 		
-		String rollYear = objBppTrendSetupPage.rollYearForErrorValidationOnCalculate;
+		String rollYear = Integer.toString(year);
 		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(Integer.toString(year));

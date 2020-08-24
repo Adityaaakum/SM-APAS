@@ -135,6 +135,9 @@ public class BppTrendSetupPage extends Page {
 
 	@FindBy(xpath = "//button[text() = 'Delete']")
 	public WebElement deleteButton;
+	
+	@FindBy(xpath = "//p[@class='detail']")
+	public WebElement accessErrorMsg;
 
 	/**
 	 * Description: Creates the BPP Composite Factor Setting on BPP trend status page

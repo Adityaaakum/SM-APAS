@@ -351,6 +351,7 @@ public class BppTrendPage extends Page {
 	
 	public String  xpathTableMessage = "//lightning-tab[contains(@class,'slds-show')]//div[@class = 'hightlight-tab-message']";
 	
+	public String xpathSpinner = "//lightning-spinner";
 	/**
 	 * Description: This will select the roll year from the drop down
 	 * @param rollYear: Roll Year to select from drop down

@@ -197,10 +197,13 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 			objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, status, rollYear);
 			
 			//Step7: Edit the newly created entry on details page and save the factor value	
-			objBppTrendSetupPage.editSaveFactorValue("150");
-	
-			String expectedErrorMessage = "Maximum Equipment index Factor is locked for editing for the Roll Year";
-			String errorMsgOnClickingSaveBtn = objBppTrendPage.getElementText(objBppTrendSetupPage.errorMsgOnTop);
+			objPage.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconDetailsSection, 10);
+			objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
+			objPage.waitForElementToBeClickable(objBppTrendSetupPage.editLinkUnderShowMore, 10);
+			objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
+			
+			String expectedErrorMessage = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";
+			String actualErrorMessage = objPage.getElementText(objBppTrendSetupPage.accessErrorMsg);
 			
 			//Step8: Selecting Test Case Id to Map based on status: 'Submitted For approval'/'Approved'
 			String TCMapingID;
@@ -209,7 +212,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 			else
 				TCMapingID = "SMAB-T274";
 			
-			softAssert.assertEquals(errorMsgOnClickingSaveBtn, expectedErrorMessage, TCMapingID+": Validating error message on editing and saving max. equip. index value when calculations are :"+status);
+			softAssert.assertEquals(actualErrorMessage, expectedErrorMessage, TCMapingID+": Validating error message on editing and saving max. equip. index value when calculations are :"+status);
 			objPage.Click(objBppTrendSetupPage.closeEntryPopUp);
 		}
 		objApasGenericFunctions.logout();

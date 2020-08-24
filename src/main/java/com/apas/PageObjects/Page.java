@@ -387,7 +387,8 @@ public class Page {
 	 * @throws IOException
 	 */
 	public void javascriptClick(WebElement element) throws IOException {
-
+		waitForElementToBeVisible(20, element);
+		waitForElementToBeClickable(20, element);
 		JavascriptExecutor ex = (JavascriptExecutor) driver;
 		ex.executeScript("arguments[0].click();", element);
 		waitUntilPageisReady(driver);
