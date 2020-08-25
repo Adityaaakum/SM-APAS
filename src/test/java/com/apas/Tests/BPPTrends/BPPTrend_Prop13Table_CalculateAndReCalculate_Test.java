@@ -136,9 +136,11 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		objBppTrnPg.enter(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.cpiFactorTxtBox), CONFIG.getProperty("cpiFactorFirstValue"));
 		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Calculate' Button");
 		objBppTrnPg.clickCalculateBtn(tableName);
+		objPage.waitForElementToDisappear(objBppTrnPg.xpathSpinner, 120);
+		Thread.sleep(5000);
 
 		//Step10: Waiting for pop up message to display and the message displayed above table to update
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+		//objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
 
 		//Step11: Validation to check whether calculation is successfully and table data appears for given table
 		boolean isTableVisible = objBppTrnPg.isTableDataVisible(tableName, 30);
@@ -331,15 +333,19 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		//Step10: Edit the CPI factor value and click ReCalculate button and validating the warning message on ReCalculate click
 		objBppTrnPg.enter(objBppTrnPg.waitForElementToBeClickable(objBppTrnPg.cpiFactorTxtBox), CONFIG.getProperty("cpiFactorFirstValue"));
 		objBppTrnPg.clickReCalculateBtn(tableName);
+		
 		String actWarningMsgInPopUp = objBppTrnPg.retrieveReCalculatePopUpMessage();
 		String expWarningMsgInPopUp = CONFIG.getProperty("recalculatePopUpMsg");
 		softAssert.assertContains(actWarningMsgInPopUp, expWarningMsgInPopUp, "SMAB-T196: Warning / Pop up message dislayed when 'ReCalculate' button is clicked");
 
 		//Step11: Clicking 'Confirm' button in warning pop up to trigger ReCalculation
+		Thread.sleep(2000);
 		objBppTrnPg.javascriptClick(objBppTrnPg.confirmBtnInPopUp);
-
+		objPage.waitForElementToDisappear(objBppTrnPg.xpathSpinner, 120);
+		Thread.sleep(5000);
+		
 		//Step12: Waiting for pop up message to display and the message displayed above table to update
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+		//objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
 
 		//Step13: Validation to check whether ReCalculation is successful and table data appears for given table
 		boolean isTableVisible = objBppTrnPg.isTableDataVisible(tableName, 30);
@@ -360,7 +366,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		objBppTrnPg.javascriptClick(objBppTrnPg.confirmBtnInPopUp);
 
 		//Step12: Waiting for pop up message to display and the message displayed above table to update
-		objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
+		//objBppTrnPg.waitForSuccessPopUpMsgOnCalculateClick(60);
 
 		//Step13: Validation to check whether ReCalculation is successful and table data appears for given table
 		isTableVisible = objBppTrnPg.isTableDataVisible(tableName, 30);
