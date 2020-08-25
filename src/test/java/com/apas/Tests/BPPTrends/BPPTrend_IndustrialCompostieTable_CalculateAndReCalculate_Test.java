@@ -128,7 +128,8 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 		//Step8: Clicking on calculate button to initiate calculation
 		ReportLogger.INFO("* Clicking 'Calculate' Button");
 		objPage.Click(objBppTrend.calculateBtn);
-
+		objPage.waitForElementToDisappear(objBppTrend.xpathSpinner, 120);
+		Thread.sleep(5000);
 		//Step9: Waiting for pop up message to display and the message displayed above table to update
 		//softAssert.assertContains(objBppTrend.getErrorMsgFromPopUp(30), tableMessagesDataMap.get("popUpMsgPostCalculation"), "SMAB-T190: Validating pop up message on calculating the table data");
 

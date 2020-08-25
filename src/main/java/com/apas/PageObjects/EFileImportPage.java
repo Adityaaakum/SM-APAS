@@ -122,7 +122,7 @@ public class EFileImportPage extends Page {
 	@FindBy(xpath = "//input[@class='datatable-select-all'][@type='checkbox']/..//span[@class='slds-checkbox_faux']")
 	public WebElement selectAllCheckBox;
 
-	@FindBy(xpath = "//td//span[@class='slds-checkbox_faux']")
+	@FindBy(xpath = "//lightning-tab[contains(@class,'slds-show')]//td//span[@class='slds-checkbox_faux']")
 	public WebElement rowSelectCheckBox;
 
 	@FindBy(xpath = "//button[text()='Approve']")
