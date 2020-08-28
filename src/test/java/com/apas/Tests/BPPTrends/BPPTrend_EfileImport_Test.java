@@ -1193,6 +1193,10 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String period = "2021";
 		String fileType="BPP Trend Factors";
 		String source="BOE - Valuation Factors";
+
+		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.COMPOSITE_TABLES_API_NAMES, "Not Calculated", period);
+		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Yet to submit for Approval", period);
+
 		String boebppTrendIndexFactorsFile=System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS_VALID_DATA+"BOE Valuation Factors 2021.xlsx";
 		objApasGenericFunctions.login(loginUser);
 
@@ -1266,7 +1270,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileType="BPP Trend Factors";
 		String source="BOE - Valuation Factors";
 		String boebppTrendIndexFactorsFile=System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS+"BOE Valuation Factors 2021.xlsx";
-		String boeTableErrorRecords=System.getProperty("user.dir") + testdata.BOE_ERRORREOCRDS_COUNT;
+		String boeTableErrorRecords=System.getProperty("user.dir") + testdata.BOE_ERRORREOCRDS_COUNT+"BOEErrorReocrdsCountFile.json";
+
 		Map<String, String> errorRecordsCount = objUtil.generateMapFromJsonFile(boeTableErrorRecords, "ErrorRecordsTableWise");
 		
 		//Step1: Delete the existing data from system before importing files

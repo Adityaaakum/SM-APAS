@@ -43,6 +43,11 @@ public interface testdata {
     public static final String EFILEIMPORT_BPDATA = "\\data\\EFileImportBP\\";
 
     public static final String COUNTY_STRAT_CODES = "\\data\\CountyStratCodes";
+<<<<<<< HEAD
+=======
+    public static final String BOE_ERRORREOCRDS_COUNT = "\\data\\EFileImportBppTrend\\";
+    public static final String BPP_TREND_BOE_VALUATION_FACTORS_VALID_DATA = "\\data\\EFileImportBppTrend\\";
+>>>>>>> d52ec2d... staging fixes for BPP trends
     
     public static final String LOAD_Test = "\\data\\LoadTest";
 
