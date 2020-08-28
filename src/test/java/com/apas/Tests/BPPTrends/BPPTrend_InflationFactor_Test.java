@@ -51,62 +51,62 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		objApasGenericFunctions.updateRollYearStatus("Open", "2020");
 	}
 	
-	/**
-	 * DESCRIPTION: Performing Following Validations::
-	 * 1. Validating that 'Inflation Factor' is >= 0 and <=1.02:: TestCase/JIRA ID: SMAB-T182
-	 * 2. Validate that user is able to create a new Inflation Factors for a year with valid data:: TestCase/JIRA ID: SMAB-T180
-	 */
-	@Test(description = "SMAB-T180,SMAB-T182: Create new CPI Factor", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
-	public void BppTrend_Create_CpiFactors(String loginUser) throws Exception {
-		String rollYear = "2019";
-		//Step1: Login to the APAS application using the given user
-		objApasGenericFunctions.login(loginUser);
-		
-		//Step2: Opening the BPP Trend module and set All as the view option in grid
-		objApasGenericFunctions.searchModule(modules.CPI_FACTORS);
-		objApasGenericFunctions.displayRecords("All");
-	
-		//Step3: Create CPI Factor with value : -1 
-		objBppTrendPage.Click(objBppTrendSetupPage.newBtnToCreateEntry);
-		objApasGenericPage.searchAndSelectOptionFromDropDown(objBppTrendPage.rollYearForCpiFactor, rollYear);
-		objBppTrendPage.enter(objBppTrendPage.cpiFactorInputBox, "-1");
-		objBppTrendPage.Click(objBppTrendSetupPage.saveButton);
-		
-		//Step4: Validating the error message on providing invalid CPI factor value and canceling the pop up window
-		String expErrorMsgForLessThanMinValue = "CPI Factor could not be less than 0";
-		objBppTrendPage.waitForElementToBeVisible(objBppTrendPage.errorMsgForInvalidCpiFactorValue, 10);
-		String actErrorMsgForLessThanMinValue = objBppTrendPage.getElementText(objBppTrendPage.errorMsgForInvalidCpiFactorValue);
-		softAssert.assertContains(actErrorMsgForLessThanMinValue, expErrorMsgForLessThanMinValue, "SMAB-T182: Validation for CPI Factor value less than minimum range");		
-		objBppTrendPage.Click(objBppTrendSetupPage.cancelBtnInBppSettingPopUp);
-		
-		//Step5: Create CPI Factor with value : 1.22
-		objBppTrendPage.Click(objBppTrendSetupPage.newBtnToCreateEntry);
-		objApasGenericPage.searchAndSelectOptionFromDropDown(objBppTrendPage.rollYearForCpiFactor, rollYear);		
-		objBppTrendPage.enter(objBppTrendPage.cpiFactorInputBox, "1.22000");
-		objBppTrendPage.Click(objBppTrendSetupPage.saveButton);
-		
-		//Step6: Validating the error message on providing invalid CPI factor value and canceling the pop up
-		String expErrorMsgForMoreThanMaxValue = "CPI Factor cannot be more than 1.02";
-		objBppTrendPage.waitForElementToBeVisible(objBppTrendPage.errorMsgForInvalidCpiFactorValue, 10);
-		String actErrorMsgForMoreThanMaxValue = objBppTrendPage.getElementText(objBppTrendPage.errorMsgForInvalidCpiFactorValue);
-		softAssert.assertContains(actErrorMsgForMoreThanMaxValue, expErrorMsgForMoreThanMaxValue, "SMAB-T182: Validation for CPI Factor value more than maximum range");
-		objBppTrendPage.Click(objBppTrendSetupPage.cancelBtnInBppSettingPopUp);
-		
-
-		//Step7: Create CPI Factor with valid value : 1.02 and verify success message
-		objBppTrendPage.Click(objBppTrendSetupPage.newBtnToCreateEntry);		
-		objApasGenericPage.searchAndSelectOptionFromDropDown(objBppTrendPage.rollYearForCpiFactor, rollYear);
-		objBppTrendPage.enter(objBppTrendPage.cpiFactorInputBox, "1.02");
-		objBppTrendPage.Click(objBppTrendSetupPage.saveButton);
-		String actMsgInPopUpOnSave = objBppTrendSetupPage.getSuccessMsgText();
-		boolean isRecordCreated = actMsgInPopUpOnSave.contains("was created");
-		softAssert.assertTrue(isRecordCreated, "SMAB-T180: Validationg message on successfully creating CPI Factor entry. "+ actMsgInPopUpOnSave);
-		
-		//Step8: Deleting Duplicate CPI record Create
-		objBppTrendPage.deleteDuplicateCPI(rollYear);
-		
-		objApasGenericFunctions.logout();
-	}
+//	/**
+//	 * DESCRIPTION: Performing Following Validations::
+//	 * 1. Validating that 'Inflation Factor' is >= 0 and <=1.02:: TestCase/JIRA ID: SMAB-T182
+//	 * 2. Validate that user is able to create a new Inflation Factors for a year with valid data:: TestCase/JIRA ID: SMAB-T180
+//	 */
+//	@Test(description = "SMAB-T180,SMAB-T182: Create new CPI Factor", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+//	public void BppTrend_Create_CpiFactors(String loginUser) throws Exception {
+//		String rollYear = "2019";
+//		//Step1: Login to the APAS application using the given user
+//		objApasGenericFunctions.login(loginUser);
+//		
+//		//Step2: Opening the BPP Trend module and set All as the view option in grid
+//		objApasGenericFunctions.searchModule(modules.CPI_FACTORS);
+//		objApasGenericFunctions.displayRecords("All");
+//	
+//		//Step3: Create CPI Factor with value : -1 
+//		objBppTrendPage.Click(objBppTrendSetupPage.newBtnToCreateEntry);
+//		objApasGenericPage.searchAndSelectOptionFromDropDown(objBppTrendPage.rollYearForCpiFactor, rollYear);
+//		objBppTrendPage.enter(objBppTrendPage.cpiFactorInputBox, "-1");
+//		objBppTrendPage.Click(objBppTrendSetupPage.saveButton);
+//		
+//		//Step4: Validating the error message on providing invalid CPI factor value and canceling the pop up window
+//		String expErrorMsgForLessThanMinValue = "CPI Factor could not be less than 0";
+//		objBppTrendPage.waitForElementToBeVisible(objBppTrendPage.errorMsgForInvalidCpiFactorValue, 10);
+//		String actErrorMsgForLessThanMinValue = objBppTrendPage.getElementText(objBppTrendPage.errorMsgForInvalidCpiFactorValue);
+//		softAssert.assertContains(actErrorMsgForLessThanMinValue, expErrorMsgForLessThanMinValue, "SMAB-T182: Validation for CPI Factor value less than minimum range");		
+//		objBppTrendPage.Click(objBppTrendSetupPage.cancelBtnInBppSettingPopUp);
+//		
+//		//Step5: Create CPI Factor with value : 1.22
+//		objBppTrendPage.Click(objBppTrendSetupPage.newBtnToCreateEntry);
+//		objApasGenericPage.searchAndSelectOptionFromDropDown(objBppTrendPage.rollYearForCpiFactor, rollYear);		
+//		objBppTrendPage.enter(objBppTrendPage.cpiFactorInputBox, "1.22000");
+//		objBppTrendPage.Click(objBppTrendSetupPage.saveButton);
+//		
+//		//Step6: Validating the error message on providing invalid CPI factor value and canceling the pop up
+//		String expErrorMsgForMoreThanMaxValue = "CPI Factor cannot be more than 1.02";
+//		objBppTrendPage.waitForElementToBeVisible(objBppTrendPage.errorMsgForInvalidCpiFactorValue, 10);
+//		String actErrorMsgForMoreThanMaxValue = objBppTrendPage.getElementText(objBppTrendPage.errorMsgForInvalidCpiFactorValue);
+//		softAssert.assertContains(actErrorMsgForMoreThanMaxValue, expErrorMsgForMoreThanMaxValue, "SMAB-T182: Validation for CPI Factor value more than maximum range");
+//		objBppTrendPage.Click(objBppTrendSetupPage.cancelBtnInBppSettingPopUp);
+//		
+//
+//		//Step7: Create CPI Factor with valid value : 1.02 and verify success message
+//		objBppTrendPage.Click(objBppTrendSetupPage.newBtnToCreateEntry);		
+//		objApasGenericPage.searchAndSelectOptionFromDropDown(objBppTrendPage.rollYearForCpiFactor, rollYear);
+//		objBppTrendPage.enter(objBppTrendPage.cpiFactorInputBox, "1.02");
+//		objBppTrendPage.Click(objBppTrendSetupPage.saveButton);
+//		String actMsgInPopUpOnSave = objBppTrendSetupPage.getSuccessMsgText();
+//		boolean isRecordCreated = actMsgInPopUpOnSave.contains("was created");
+//		softAssert.assertTrue(isRecordCreated, "SMAB-T180: Validationg message on successfully creating CPI Factor entry. "+ actMsgInPopUpOnSave);
+//		
+//		//Step8: Deleting Duplicate CPI record Create
+//		objBppTrendPage.deleteDuplicateCPI(rollYear);
+//		
+//		objApasGenericFunctions.logout();
+//	}
 	
 	
 	/**

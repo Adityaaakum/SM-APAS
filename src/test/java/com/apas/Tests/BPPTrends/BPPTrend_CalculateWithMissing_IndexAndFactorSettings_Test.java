@@ -125,6 +125,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 			tableName = allTables.get(i);
 			//boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(allTables.get(i));
 			//objBppTrnPg.clickOnTableOnBppTrendPage(allTables.get(i), isTableUnderMoreTab);
+			Thread.sleep(1000);
 			objBppTrnPg.clickOnTableOnBppTrendPage(allTables.get(i));
 			
 			//Click calculate button for given tables individually

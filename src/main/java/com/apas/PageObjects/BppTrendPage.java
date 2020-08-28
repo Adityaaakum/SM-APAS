@@ -1139,14 +1139,14 @@ public class BppTrendPage extends Page {
 			}
 		}
 	}
-	
-	public void deleteDuplicateCPI(String rollYear) {
-		String queryForRollYearId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '"+rollYear+"'";
-		HashMap<String, ArrayList<String>> rollYearId = objSFAPI.select(queryForRollYearId);		
-		String queryForDuplicateCPIFactor = "SELECT Id FROM CPI_Factor__c  Where Roll_Year__c ='"+rollYearId.get("Id").get(0)+"'  AND Status__c<>'Approved'";
-		objSFAPI.delete("CPI_Factor__c", queryForDuplicateCPIFactor);	
-	}
-	
+
+//	public void deleteDuplicateCPI(String rollYear) {
+//		String queryForRollYearId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '"+rollYear+"'";
+//		HashMap<String, ArrayList<String>> rollYearId = objSFAPI.select(queryForRollYearId);
+//		String queryForDuplicateCPIFactor = "SELECT Id FROM CPI_Factor__c  Where Roll_Year__c ='"+rollYearId.get("Id").get(0)+"'  AND Status__c<>'Approved'";
+//		objSFAPI.delete("CPI_Factor__c", queryForDuplicateCPIFactor);
+//	}
+
 	/**
 	 * Description: Searches module BPP Trends module and Select the Roll Year passed as an argument
 	 * @param: Takes roll year to be selected as an argument

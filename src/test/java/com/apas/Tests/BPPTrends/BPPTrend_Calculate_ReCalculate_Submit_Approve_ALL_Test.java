@@ -112,6 +112,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 		List<String> valuationFactorTablesList = Arrays.asList(CONFIG.getProperty("valuationTablesUnderMoreTab").split(","));
 		for(int i = 0; i < valuationFactorTablesList.size(); i++) {
 			tableName = valuationFactorTablesList.get(i);
+			Thread.sleep(1000);
 			objBppTrnPg.clickOnTableOnBppTrendPage(tableName);
 			isCalculateBtnVisible = objBppTrnPg.isCalculateBtnVisible(5, tableName);
 			softAssert.assertTrue(!isCalculateBtnVisible, "SMAB-T247: Calculate button under '"+ tableName +"' table is not visible");
@@ -363,6 +364,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 
 		//Step16: Navigating on BPP Prop 13 tables to validate CPI Factor input field is disabled
 		ExtentTestManager.getTest().log(LogStatus.INFO, "* Navigating on BPP Prop 13 tables to validate CPI Factor input field is disabled");
+		Thread.sleep(1000);
 		objBppTrnPg.clickOnTableOnBppTrendPage("BPP Prop 13 Factors");
 		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.disabledCpiInputField, 10);
 		softAssert.assertTrue((objBppTrnPg.disabledCpiInputField != null), "SMAB-T211: CPI Factor filed is locked for editing after table data is submitted for approval");

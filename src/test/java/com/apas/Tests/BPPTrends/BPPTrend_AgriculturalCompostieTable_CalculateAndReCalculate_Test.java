@@ -110,6 +110,7 @@ public class BPPTrend_AgriculturalCompostieTable_CalculateAndReCalculate_Test ex
 		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathCalculateAllBtn, 20)), "SMAB-T166: Calculate all button is visible at page level");
 		
 		//Step4: Clicking on the given table
+		Thread.sleep(1000);
 		objBppTrend.clickOnTableOnBppTrendPage(tableName);
 
 		//Step5: Validating presence of Calculate Button for given tables individually
@@ -212,6 +213,7 @@ public class BPPTrend_AgriculturalCompostieTable_CalculateAndReCalculate_Test ex
 		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateAllBtn, 20)), "ReCalcuate all button is visible");
 
 		//Step4: Clicking on the given table
+		Thread.sleep(1000);
 		objBppTrend.clickOnTableOnBppTrendPage(tableName);
 
 		//Step5: Validating availability of ReCalculate button at table level before performing calculation

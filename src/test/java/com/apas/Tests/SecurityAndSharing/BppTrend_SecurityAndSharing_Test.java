@@ -77,6 +77,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 
 		//Step6: Iterating over the given tables
 		for (String tableName : allTables){
+			Thread.sleep(1000);
 			objBppTrendPage.clickOnTableOnBppTrendPage(tableName);
 			softAssert.assertTrue(!objBppTrendPage.isCalculateButtonVisible(tableName), "SMAB-T174,SMAB-T175: For User '" + loginUser + "': Calcuate button is not visible");
 		}
@@ -110,6 +111,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 
 		//Step6: Iterating over the given tables
 		for (String tableName : allTables){
+			Thread.sleep(1000);
 			objBppTrendPage.clickOnTableOnBppTrendPage(tableName);
 			softAssert.assertTrue(!objBppTrendPage.isReCalculateButtonVisible(tableName), "SMAB-T174,SMAB-T175: For User '"+ loginUser +"': ReCalculate button is not visible");
 		}
@@ -146,7 +148,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 
 		//Step6: Iterating over the given tables
 		for (String tableName : allTables){
-
+			Thread.sleep(1000);
 			objBppTrendPage.clickOnTableOnBppTrendPage(tableName);
 
 			//Validation that Approve button should not be visible

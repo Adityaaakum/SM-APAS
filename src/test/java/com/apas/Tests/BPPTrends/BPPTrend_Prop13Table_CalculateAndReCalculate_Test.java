@@ -88,7 +88,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 	 */
 	@Test(description = "SMAB-T190,SMAB-T276,SMAB-T277,SMAB-T278,SMAB-T442,SMAB-T211: Performing validation on PROP 13 FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_Prop13Factors_CalculateAndCompare(String loginUser) throws Exception {
-		objBppTrnPg.deleteDuplicateCPI(rollYear);
+		//objBppTrnPg.deleteDuplicateCPI(rollYear);
 		
 		//Step1: Resetting the status of all composite factor tables to "Not Calculated" through SalesForce API
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
@@ -110,6 +110,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		softAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T166: Calculate all button is visible at page level");
 
 		//Step4: Clicking on the given table
+		Thread.sleep(2000);
 		objBppTrnPg.clickOnTableOnBppTrendPage(tableName);
 
 		//Step5: Validating presence of calculate button for given tables individually
@@ -253,7 +254,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 	 */
 	@Test(description = "SMAB-T302,SMAB-T195,SMAB-T196,SMAB-T442,SMAB-T577,SMAB-T569: Performing validation on PROP 13 COMPOSITE FACTORS before and after calculation", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_Prop13Factors_ReCalculateAndCompare(String loginUser) throws Exception {
-		objBppTrnPg.deleteDuplicateCPI(rollYear);
+		
 		//Step1: Resetting the composite factor tables status to Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Calculated", rollYear);
@@ -287,6 +288,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "ReCalcuate all button is visible");
 
 		//Step5: Clicking on the given table
+		Thread.sleep(1000);
 		objBppTrnPg.clickOnTableOnBppTrendPage(tableName);
 
 		//Step6: Validating availability of ReCalculate button at table level before performing calculation
@@ -399,6 +401,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		objSalesforceAPI.update("BPP_Trend_Roll_Year__c", queryForID, "Prop_13_Factor_Status_New__c", "Approved");
 
 		//Step20: Again searching the BPP Prop 13 table
+		Thread.sleep(2000);
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
 		objPage.waitUntilElementIsPresent(60, objBppTrnPg.xpathRollYear);
 		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);

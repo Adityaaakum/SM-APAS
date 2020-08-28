@@ -131,6 +131,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 			ExtentTestManager.getTest().log(LogStatus.INFO, "**** Performing Validations For: '"+ tableName +"' Table ****");
 			//Step8: Clicking on the given table name
 			isTableUnderMoreTab = tableNamesUnderMoreTab.contains(tableName);
+			Thread.sleep(1000);
 			objBppTrnPg.clickOnTableOnBppTrendPage(tableName);
 
 			//Step9: Retrieve & Assert message displayed above table before clicking Approve button
