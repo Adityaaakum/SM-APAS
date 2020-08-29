@@ -300,6 +300,8 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		String expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "NonNumericValueSanMateo_ExpectedImportedRecords.csv";
 		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
 			expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "NonNumericValueSanMateo_ExpectedImportedRecords_PREUAT.csv";
+		}else if (System.getProperty("region").toUpperCase().trim().equals("STAGING")) {
+			expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "NonNumericValueSanMateo_ExpectedImportedRecords_STAGING.csv";
 		}
 
 		HashMap<String, ArrayList<String>> expectedImportedRowTable = FileUtils.getCSVData(expectedImportedRowTableFile);
@@ -355,13 +357,14 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Exponential Permit Fee"),"Invalid Permit Fee","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Exponential Permit Fee'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Blank City Code"),"City Code value must be AT","SMAB-T624 : Error Message validation for the scenario 'Blank City Code'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Wrong City Code"),"City Code value must be AT","SMAB-T624 : Error Message validation for the scenario 'Wrong City Code'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Zero Permit Value"),"Invalid Permit Value","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Zero Permit Value'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Negative Permit Value"),"Invalid Permit Value","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Negative Permit Value'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Zero Permit Fee"),"Invalid Permit Fee","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Zero Permit Fee'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Negative Permit Fee"),"Invalid Permit Fee","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Negative Permit Fee'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid Issue Date Format"),"Invalid Issue Date format","SMAB-T619 : Error Message validation for the scenario 'Invalid Issue Date Format'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid Completion Date Format"),"Invalid Completed Date format","SMAB-T619 : Error Message validation for the scenario 'Invalid Completion Date Format'");
         softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Duplicate Record"),"Record is duplicate of another entry within the same file","SMAB-T1566 : Error Message validation for the scenario 'Duplicate Record'");
+//      As per story SMAB-4193 records with zero permit fee and value will be successful now, hence commenting out these 2 validations
+//		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Zero Permit Fee"),"Invalid Permit Fee","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Zero Permit Fee'");
+//      softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Zero Permit Value"),"Invalid Permit Value","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Zero Permit Value'");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -530,15 +533,16 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("String Permit Fee"),"Invalid Permit Fee","SMAB-T625 : Error Message validation for the scenario 'String Permit Fee'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Blank City Code"),"City Code value must be SM","SMAB-T624 : Error Message validation for the scenario 'Blank City Code'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Wrong City Code"),"City Code value must be SM","SMAB-T624 : Error Message validation for the scenario 'Wrong City Code'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Zero Permit Value"),"Invalid Permit Value","SMAB-T625 : Error Message validation for the scenario 'Zero Permit Value'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Negative Permit Value"),"Invalid Permit Value","SMAB-T625 : Error Message validation for the scenario 'Negative Permit Value'");
-		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Zero Permit Fee"),"Invalid Permit Fee","SMAB-T625 : Error Message validation for the scenario 'Zero Permit Fee'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Negative Permit Fee"),"Invalid Permit Fee","SMAB-T625 : Error Message validation for the scenario 'Negative Permit Fee'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid Issue Date Format"),"Invalid Issue Date format","SMAB-T619 : Error Message validation for the scenario 'Invalid Issue Date Format'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Invalid Completion Date Format"),"Invalid Completed Date format","SMAB-T619 : Error Message validation for the scenario 'Invalid Completion Date Format'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permit Starts With ST"),"No Process for ST & MISC permits","SMAB-T1388 : Error Message validation for the scenario 'Building Permit Starts With ST'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permit Starts With MISC"),"No Process for ST & MISC permits","SMAB-T1388 : Error Message validation for the scenario 'Building Permit Starts With MISC'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Duplicate Record"),"Record is duplicate of another entry within the same file","SMAB-T1566 : Error Message validation for the scenario 'Duplicate Record'");
+//      As per story SMAB-4193 records with zero permit fee and value will be successful now, hence commenting out these 2 validations
+//		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Zero Permit Fee"),"Invalid Permit Fee","SMAB-T625 : Error Message validation for the scenario 'Zero Permit Fee'");
+//      softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Zero Permit Value"),"Invalid Permit Value","SMAB-T625 : Error Message validation for the scenario 'Zero Permit Value'");
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();

@@ -235,6 +235,7 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 		softAssert.assertTrue(objPage.verifyElementVisible(objBuildingPermitPage.noActionAvailableOption),"SMAB-T1820 : County Strat Code Screen - Validation that " + loginUser + " should see the option 'No Action Available' as user is not able to edit/delete Situs");
 
 		//Step4: validation of the user access on Non Relevant Permit Setting screen
+		objPage.Click(objApasGenericPage.appLauncher);
 		objPage.enter(objApasGenericPage.appLauncherSearchBox, modules.NON_RELEVANT_PERMIT_SETTINGS);
 		softAssert.assertEquals(objPage.getElementText(objApasGenericPage.appsListBox),"No results","SMAB-T1820 : Validation that search module didn't return any 'Non Relevant Permit Settings' apps for logged in generic user");
 		softAssert.assertEquals(objPage.getElementText(objApasGenericPage.itemsListBox),"No results","SMAB-T1820 : Validation that search module didn't return any 'Non Relevant Permit Settings' items for logged in generic user");
@@ -287,12 +288,11 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 		softAssert.assertTrue(objPage.verifyElementVisible(objBuildingPermitPage.noActionAvailableOption),"SMAB-T1820 : County Strat Code Screen - Validation that " + loginUser + " should see the option 'No Action Available' as user is not able to edit/delete Situs");
 
 		//Step6: validation of the user access on Non Relevant Permit Setting screen
-		objApasGenericFunctions.searchModule(modules.NON_RELEVANT_PERMIT_SETTINGS);
-		objApasGenericFunctions.displayRecords("All");
-		softAssert.assertTrue(!objPage.verifyElementVisible(objBuildingPermitPage.newButton),"SMAB-T1820 : Non Relevant Permit Screen - Validation that 'New' button should not be visible to " + loginUser);
-		Map<String, ArrayList<String>> nonRelevantPermitSettingsGridDataMap = objApasGenericFunctions.getGridDataInHashMap();
-		objApasGenericFunctions.clickShowMoreLink(nonRelevantPermitSettingsGridDataMap.get("Non Relevant Permit Setting Name").get(0));
-		softAssert.assertTrue(objPage.verifyElementVisible(objBuildingPermitPage.noActionAvailableOption),"SMAB-T1820 : Non Relevant Permit Screen Screen - Validation that " + loginUser + " should see the option 'No Action Available' as user is not able to edit/delete Situs");
+		objPage.Click(objApasGenericPage.appLauncher);
+		objPage.enter(objApasGenericPage.appLauncherSearchBox, modules.NON_RELEVANT_PERMIT_SETTINGS);
+		softAssert.assertEquals(objPage.getElementText(objApasGenericPage.appsListBox),"No results","SMAB-T1820 : Validation that search module didn't return any 'Non Relevant Permit Settings' apps for logged in generic user");
+		softAssert.assertEquals(objPage.getElementText(objApasGenericPage.itemsListBox),"No results","SMAB-T1820 : Validation that search module didn't return any 'Non Relevant Permit Settings' items for logged in generic user");
+		objPage.Click(objApasGenericPage.searchClearButton);
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -349,6 +349,7 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 		softAssert.assertTrue(!objPage.verifyElementVisible(objBuildingPermitPage.deleteButtonMenuOption),"SMAB-T1820 : County Strat Code Screen - Validation that 'Delete' button should not be visible to " + loginUser);
 
 		//Step6: validation of the user access on Non Relevant Permit Setting screen
+		objPage.Click(objApasGenericPage.appLauncher);
 		objPage.enter(objApasGenericPage.appLauncherSearchBox, modules.NON_RELEVANT_PERMIT_SETTINGS);
 		softAssert.assertEquals(objPage.getElementText(objApasGenericPage.appsListBox),"No results","SMAB-T1820 : Validation that search module didn't return any 'Non Relevant Permit Settings' apps for logged in generic user");
 		softAssert.assertEquals(objPage.getElementText(objApasGenericPage.itemsListBox),"No results","SMAB-T1820 : Validation that search module didn't return any 'Non Relevant Permit Settings' items for logged in generic user");

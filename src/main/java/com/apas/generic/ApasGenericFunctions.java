@@ -133,8 +133,12 @@ public class ApasGenericFunctions extends TestBase {
         String xpathDisplayOption = "//div[contains(@class,'list uiAbstractList')]//a[@role='option']//span[text()='" + displayOption + "']";
         objPage.waitUntilElementIsPresent(xpathDisplayOption, 10);
         objPage.Click(driver.findElement(By.xpath(xpathDisplayOption)));
-        Thread.sleep(3000);
-        objPage.waitForElementToBeClickable(objApasGenericPage.searchListEditBox,15);
+        Thread.sleep(2000);
+        if (objPage.verifyElementExists(objApasGenericPage.xpathSpinner)){
+            objPage.waitForElementToDisappear(objApasGenericPage.xpathSpinner,15);
+        }
+        objPage.waitForElementToBeClickable(objApasGenericPage.countSortedByFilteredBy,15);
+        Thread.sleep(2000);
     }
 
     /**
@@ -498,15 +502,7 @@ public class ApasGenericFunctions extends TestBase {
      */
 
     public void waitForElementToDisappear(WebElement element, int timeOutInSeconds) throws Exception {
-        for (int i = 0; i < (timeOutInSeconds * 10); i++) {
-            try {
-                element.isDisplayed();
-            } catch (NoSuchElementException ex) {
-                break;//ex.printStackTrace();
-            } catch (StaleElementReferenceException ex) {
-                break;//ex.printStackTrace();
-            }
-        }
+        objPage.waitForElementToDisappear(element,timeOutInSeconds);
     }
 
 

@@ -55,7 +55,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[contains(text(), 'E-File Building Permit')]//parent::div//preceding-sibling::div//input[@type = 'radio']/..")
 	public WebElement efileRadioButton;
 
-	@FindBy(xpath = "//a[@role='menuitem'][text()='No actions available']")
+	@FindBy(xpath = "//div[contains(@class,'visible positioned')]//a[@role='menuitem'][text()='No actions available']")
 	public WebElement noActionAvailableOption;
 
 	@FindBy(xpath = "//a[@role='menuitem'][@title='Edit']")
