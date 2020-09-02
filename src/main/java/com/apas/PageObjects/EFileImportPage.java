@@ -271,6 +271,7 @@ public class EFileImportPage extends Page {
 		Thread.sleep(2000);
 		objPage.Click(doneButton);
 		waitForElementToBeClickable(statusImportedFile,20);
+		objPage.scrollToBottom();
 		objPage.waitForElementTextToBe(statusImportedFile, "In Progress", 120);
 	}
 	
@@ -355,6 +356,7 @@ public class EFileImportPage extends Page {
 		Thread.sleep(2000);
 		objPage.Click(doneButton);
 		waitForElementToBeClickable(statusImportedFile,20);
+		objPage.scrollToBottom();
 		objPage.waitForElementTextToBe(statusImportedFile, "In Progress", 120);
 	}
 	/**
