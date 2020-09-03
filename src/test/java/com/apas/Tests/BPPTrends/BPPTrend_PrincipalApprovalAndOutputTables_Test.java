@@ -112,6 +112,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
+		Thread.sleep(2000);
 
 		//Step5: Validating presence of Approve all button at page level.
 		boolean isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(20);
@@ -268,6 +269,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
+		Thread.sleep(2000);
 
 		//Step26: Checking whether edit button in table's cell data is visible after table data is approved
 		for(int i = 0; i < allTables.size(); i++) {

@@ -588,7 +588,6 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		objBppTrnPg.waitForElementToBeVisible(objBuildPermitPage.editLinkUnderShowMore, 10);
 		boolean isEditBtnPresent = objBuildPermitPage.editLinkUnderShowMore.isDisplayed();
 		softAssert.assertTrue(isEditBtnPresent, "SMAB-T285: EDIT button is present under show more link");
-		softAssert.assertTrue(isEditBtnPresent, "SMAB-T285: EDIT button is present under show more link");
 				
 		//Step7: Editing and saving the newly created entry by updating name and index factor value as 0
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Editing the newly created entry");
