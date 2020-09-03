@@ -147,7 +147,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		objApasGenericFunctions.displayRecords("All");
 		
 		//Step9: Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+		objBppTrendSetupPage.clickOnEntryNameInGrid(Integer.toString(year));
 		
 		//Step10: Create a BPP Setting under selected BPP Trend Setup
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Maximum Equipment Index Factor **");
@@ -159,9 +159,10 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
 		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
-		objBppTrnPg.clickOnGivenRollYear(rollYear);
+		objBppTrnPg.clickOnGivenRollYear(Integer.toString(year));
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
-
+		Thread.sleep(2000);
+		
 		//Step12: Iterating over the given tables to validate error message on calculate button
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Validating error messages on Calculate button click when BPP Composite Factor Setting is missing **");
 		for (int i = 0; i < allTables.size() - 1; i++) {
@@ -199,7 +200,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		objApasGenericFunctions.displayRecords("All");
 		
 		//Step14: Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+		objBppTrendSetupPage.clickOnEntryNameInGrid(Integer.toString(year));
 		
 		//Step15: Create a BPP Composite Factor Settings
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Clicking on Bpp Composite Factors Settings tab **");	
@@ -267,9 +268,10 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
 		objBppTrendSetupPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrendSetupPage.Click(objBppTrnPg.rollYearDropdown);
-		objBppTrnPg.clickOnGivenRollYear(rollYear);
+		objBppTrnPg.clickOnGivenRollYear(Integer.toString(year));
 		objBppTrendSetupPage.Click(objBppTrnPg.selectRollYearButton);
-
+		Thread.sleep(2000);
+		
 		//Step17: Iterating over the given tables to validate error message on calculate button
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Validating error messages on Calculate button click when BPP Percent & Goods Factors are missing **");
 		for (int i = 0; i < allTables.size() - 1; i++) {
@@ -305,7 +307,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		}
 
 		//Step18: Deleting the new BPP Trend Setup created
-		queryForBppTrendRollYear = "Select Id From BPP_Trend_Roll_Year__c Where Roll_Year__c = '"+ rollYear +"'";
+		queryForBppTrendRollYear = "Select Id From BPP_Trend_Roll_Year__c Where Roll_Year__c = '"+ year +"'";
 		new SalesforceAPI().delete("BPP_Trend_Roll_Year__c", queryForBppTrendRollYear);
 		
 		//Step20: Log out application at end of test case
