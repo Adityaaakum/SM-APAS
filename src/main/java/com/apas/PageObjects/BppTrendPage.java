@@ -112,7 +112,10 @@ public class BppTrendPage extends Page {
 	
 	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//a[text() = 'No actions available']")
 	public WebElement noActionsLinkUnderShowMore;
-	
+
+	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//div[@class='forceActionLink'][@role='button'][text()='Edit']")
+	public WebElement editLinkUnderShowMore;
+
 	@FindBy(xpath = "(//h1[text() = 'BPP Settings']//ancestor::div[contains(@class, 'slds-page-header')]//following-sibling::div//table//tbody/tr//th//a[1])//parent::span//parent::th//following-sibling::td//a[@role = 'button']")
 	public WebElement showMoreDropDownViewAllPage;
 	
