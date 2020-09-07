@@ -94,6 +94,14 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//button[@title = 'Cancel']//span[text() = 'Cancel']")
 	public WebElement cancelBtnInBppSettingPopUp;
 
+	public String xPathErrorMsg = "//div[@class='uiBlock']//p[@class='detail']//span";
+
+	@FindBy(xpath = "//div[@class='uiBlock']//p[@class='detail']//span")
+	public WebElement errorMsgforEdit;
+
+	@FindBy(xpath = "//span[text()='Close this window']//ancestor::button")
+	public WebElement closeErrorPopUp;
+
 	@FindBy(xpath = "//a[@class = 'deleteAction']")
 	public WebElement deleteIconForPrePopulatedRollYear;
 

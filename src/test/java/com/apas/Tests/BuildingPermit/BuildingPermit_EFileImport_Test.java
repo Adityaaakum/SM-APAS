@@ -194,10 +194,10 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 
 		//Validation for the fields in the section 'City and County information'
 		//Strat Code reference Number can be fetched from the County Strat Code Screen of the code choosen while creating the building permit
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("County Strat Code Description", "City and County Information"), "ADDITION", "SMAB-T356: 'City Strat Code Lookup' Field Validation in 'City and County Information' section");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("City Strat Code Lookup", "City and County Information"), "ADDITION", "SMAB-T356: 'City Strat Code Lookup' Field Validation in 'City and County Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("County Strat Code Description", "City and County Information"), "ADDITION", "SMAB-T356: 'County Strat Code Description' Field Validation in 'City and County Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("City Strat Code", "City and County Information"), "ADDITION", "SMAB-T356: 'County Strat Code Description' Field Validation in 'City and County Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Strat Code Reference Number","City and County Information"), "20", "SMAB-T356: 'Record Type' Field Validation in 'City and County Information' section");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Strat Code Reference Number","City and County Information"), "20", "SMAB-T356: 'Strat Code Reference Number' Field Validation in 'City and County Information' section");
 
 		//Validation for the fields auto populated in the section 'Situs Information'
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Permit Situs Number","Situs Information"), "94", "SMAB-T356: 'Permit Situs Number' Field Validation in 'Situs Information' section");
@@ -209,10 +209,10 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs","Situs Information"), "55 MOUNT VERNON LN, AT", "SMAB-T356: 'Situs' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Number","Situs Information"), "55", "SMAB-T356: 'Situs Number' Field Validation in 'Situs Information' section");
 		//This handling is done as parcel data was created manually in PREUAT and Situs Unit Number is 55 there while its empty in QA as per default data load
-		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "55", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
-		}else
+		if (System.getProperty("region").toUpperCase().trim().equals("QA")) {
 			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
+		}else
+			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "55", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
 
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Street Name","Situs Information"), "MOUNT VERNON", "SMAB-T356: 'Situs Street Name' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Direction"), "", "SMAB-T356: 'Situs Direction' Field Validation in 'Situs Information' section");

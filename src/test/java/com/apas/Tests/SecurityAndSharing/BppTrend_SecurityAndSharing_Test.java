@@ -317,23 +317,32 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("BPP Property Index Factors");
 		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Action Available' option is displayed for BPP Property Index Factors");
 
-		//Step6: Validating that user doesn't have the access to create/edit BPP Percent Good Factors
+		//Step7: Validating that user doesn't have the access to create/edit BPP Percent Good Factors
 		objBppTrendSetupPage.openFactorTab("BPP Percent Good Factors");
 		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for BPP Percent Good Factors");
 		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("BPP Percent Good Factors");
 		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Action Available' option is displayed for BPP Percent Good Factors");
 
-		//Step6: Validating that user doesn't have the access to create/edit Imported Valuation Factors
+		//Step8: Validating that user doesn't have the access to create/edit Imported Valuation Factors
+		String expectedErrorMessage = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";
 		objBppTrendSetupPage.openFactorTab("Imported Valuation Factors");
 		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Imported Valuation Factors");
 		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("Imported Valuation Factors");
-		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Action Available' option is displayed for Imported Valuation Factors");
+		objPage.javascriptClick(objBppTrendPage.editLinkUnderShowMore);
+		objPage.waitUntilElementIsPresent(objBppTrendSetupPage.xPathErrorMsg,30);
+		String actualErrorMsg =  objBppTrendSetupPage.errorMsgforEdit.getText();
+		softAssert.assertEquals(actualErrorMsg,expectedErrorMessage, "SMAB-T270: User is not able to Edit Real Property Settings Library record");
+		objPage.Click(objBppTrendSetupPage.closeErrorPopUp);
 
-		//Step6: Validating that user doesn't have the access to create/edit Composite Factors
+		//Step9: Validating that user doesn't have the access to create/edit Composite Factors
 		objBppTrendSetupPage.openFactorTab("Composite Factors");
 		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Composite Factors");
 		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("Composite Factors");
-		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Action Available' option is displayed for Composite Factors");
+		objPage.javascriptClick(objBppTrendPage.editLinkUnderShowMore);
+		objPage.waitUntilElementIsPresent(objBppTrendSetupPage.xPathErrorMsg,30);
+		actualErrorMsg =  objBppTrendSetupPage.errorMsgforEdit.getText();
+		softAssert.assertEquals(actualErrorMsg,expectedErrorMessage, "SMAB-T270: User is not able to Edit Real Property Settings Library record");
+		objPage.Click(objBppTrendSetupPage.closeErrorPopUp);
 
 		//Logging out of the application
 		objApasGenericFunctions.logout();
