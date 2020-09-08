@@ -42,7 +42,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	EFileImportLogsPage objEFileImportLogPage;
 	Util objUtil;
 	SoftAssertion softAssert;
-	String rollYearForImport;
+	String rollYearForImport;// In PreUat & Staging environment, Period dropdown has values '2019 & 2020' but in QA they're '2020 & 2021'
 	SalesforceAPI objSalesforceAPI;
 	
 	@BeforeMethod(alwaysRun = true)
@@ -1157,7 +1157,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		
 		ReportLogger.INFO("Error Message Validation of Error Row Records in table: 'Agricultural Index' on Review and Approve Data Page");
 		objBppTrend.clickOnTableOnBppTrendPage("Agricultural Index");
-		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("XYZ"),"Field year, found XYZ but expected a valid year\r\nField year, found XYZ but expected it to be less than 2021","SMAB-T105 : Error Message validation for the scenario 'Alphabets in Year'");
+		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("XYZ"),"Field year, found XYZ but expected a valid year"+"\n"+"Field year, found XYZ but expected it to be less than 2019","SMAB-T105 : Error Message validation for the scenario 'Alphabets in Year'");
 		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("%_&#"),"Field year, found %_&# but expected a valid year","SMAB-T105 : Error Message validation for the scenario 'Special Characters in Year'");
 		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("20"),"Field year, found 20 but expected greater than 1973","SMAB-T105 : Error Message validation for the scenario 'Numbers in Year'");
 		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("-2014"),"Field year, found -2014 but expected a valid year","SMAB-T105 : Error Message validation for the scenario 'Negative Number in Year'");
@@ -1169,7 +1169,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objBppTrend.clickOnTableOnBppTrendPage("Agricultural ME Good Factors");
 		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("0"),"Field Age, found 0 but expected a number between 1.0 and 40.0","SMAB-T105 : Error Message validation for the scenario '0 Number in Age'");
 		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("41"),"Field Age, found 41 but expected a number between 1.0 and 40.0","SMAB-T105 : Error Message validation for the scenario 'Number greater than 40 in Age'");
-		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid(""),"Age, found blank but expected a number between 1.0 and 40.0","SMAB-T105 : Error Message validation for the scenario 'Blank Value in Age'");
+		softAssert.assertEquals(objEfileHomePage.getColumnValueFromErrorGrid("Age, found blank but expected a number between 1.0 and 40.0","Age"),"","SMAB-T105 : Error Message validation for the scenario 'Blank Value in Age'");
 		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("-4"),"Field Age, found -4 but expected a number between 1.0 and 40.0","SMAB-T105 : Error Message validation for the scenario 'Negative Number in Age'");
 		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("A"),"Field Age, found A but expected a number between 1.0 and 40.0","SMAB-T105 : Error Message validation for the scenario 'Alphabets in Age'");
 		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("#$"),"Field Age, found #$ but expected a number between 1.0 and 40.0","SMAB-T105 : Error Message validation for the scenario 'Special Characters in Age'");
