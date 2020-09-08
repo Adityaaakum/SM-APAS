@@ -215,9 +215,12 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 	 */
 	@Test(description = "SMAB-T238: Edit a new factors entry under BPP Property Index factor table", groups = {"regression","BPPTrend"}, dataProvider = "variousStatusOfTablesPostSubmittingCalculations", dataProviderClass = DataProviders.class)
 	public void BppTrend_Edit_BppPropertyIndex_PostSubmittingCalculations(String tableStatus) throws Exception {
-		//Step1: Resetting the composite factor tables status
+		//Step1: Resetting the composite and valuation factor tables status
 		List<String> tablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(tablesToReset, tableStatus, rollYear);
+
+		List<String> valTablesToReset = Arrays.asList(CONFIG.getProperty("valuationTablesToResetViaApi").split(","));
+		objBppTrnPg.resetTablesStatusForGivenRollYear(valTablesToReset, "Yet to submit for Approval", rollYear);
 		
 		List<String> Prop13TableToReset = Arrays.asList(CONFIG.getProperty("Prop13TableToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(Prop13TableToReset, "Calculated", rollYear);
@@ -558,13 +561,15 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 	 */
 	@Test(description = "SMAB-T285: Edit a new factors entry under BPP Percent Goods factor table", groups = {"regression","BPPTrend"}, dataProvider = "variousStatusOfTablesPostSubmittingCalculations", dataProviderClass = DataProviders.class)
 	public void BppTrend_Edit_PercentGoods_PostSubmittingCalculations(String tableStatus) throws Exception {
-		//Step1: Resetting the status of composite tables
+		//Step1: Resetting the composite and valuation factor tables status
 		List<String> tablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(tablesToReset, tableStatus, rollYear);
-		
+
+		List<String> valTablesToReset = Arrays.asList(CONFIG.getProperty("valuationTablesToResetViaApi").split(","));
+		objBppTrnPg.resetTablesStatusForGivenRollYear(valTablesToReset, "Yet to submit for Approval", rollYear);
+			
 		List<String> Prop13TableToReset = Arrays.asList(CONFIG.getProperty("Prop13TableToResetViaApi").split(","));
 		objBppTrnPg.resetTablesStatusForGivenRollYear(Prop13TableToReset, "Calculated", rollYear);
-
 		
 		//Step2: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with tables status as '"+ tableStatus +"'");

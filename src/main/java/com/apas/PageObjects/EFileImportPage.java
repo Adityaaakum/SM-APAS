@@ -324,7 +324,7 @@ public class EFileImportPage extends Page {
 	 * @param stringValueInRow : Value of the work description
 	 */
 	public String getErrorMessageFromErrorGrid(String stringValueInRow){
-		String xpath = "//lightning-tab[contains(@class,'slds-show')]//lightning-base-formatted-text[.='" + stringValueInRow + "']//..//..//..//..//preceding-sibling::td[@data-label='Error Message']//lightning-base-formatted-text | "
+		String xpath = "(//lightning-tab[contains(@class,'slds-show')]//table)[1]//tbody//tr//lightning-base-formatted-text[text()='" + stringValueInRow + "']//..//..//..//..//parent::tr//td[@data-label='Error Message'] | "
 				+ "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table)[1]//tbody//tr[contains(.,'" + stringValueInRow + "')]//th[@data-label='ERROR_MESSAGE']";
 		if (verifyElementExists(xpath))
 			return getElementText(driver.findElement(By.xpath(xpath)));
@@ -443,6 +443,20 @@ public class EFileImportPage extends Page {
 			}
 			
 			return rowCount;
+		}
+		/**
+		 * This method will return the column value from error grid with Error Message and Column Name having the values passed in parameter
+		 * @param ErrorMsg : Error Message corresponding to which column value is required
+		 * @param columnName : Column Name for which value is required
+		 */
+		public String getColumnValueFromErrorGrid(String ErrorMsg,String columnName){
+			String xpath = "(//lightning-tab[contains(@class,'slds-show')]//table)[1]//tbody//tr[contains(.,'" + ErrorMsg + "')]//td[@data-label='" + columnName + "']//lightning-base-formatted-text";
+			if (verifyElementExists(xpath)) {
+				WebElement ele = driver.findElement(By.xpath(xpath));
+				return ele.getText();
+			}
+			else
+				return "";		
 		}
 	
 }
