@@ -156,8 +156,9 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		ReportLogger.INFO("Verify user has ability to view and verify more than 10 records in History table ");
 		softAssert.assertEquals(objEFileImport.historyListItems.size(), 10, "SMAB-T15:Verify user has ability to view and verify more than 10 records in History table");
 		ReportLogger.INFO("Verify user is able to see More button");
+		objPage.scrollToBottomOfPage();
 		objPage.Click(objEFileImport.moreButton);
-		objPage.scrollToTop();
+		objPage.scrollToTopOfPage();
 		
 		//step4:creating an entry with New Status
 		objPage.Click(objEFileImport.nextButton);
