@@ -24,6 +24,9 @@ public class ApasGenericPage extends Page {
 		PageFactory.initElements(driver, this);
 	}
 
+	@FindBy(xpath = "//button[@title='Save']")
+	public WebElement saveButton;
+
 	@FindBy(xpath = "//one-app-launcher-header/button[contains(@class,'slds-button')] | //nav[@class='appLauncher slds-context-bar__icon-action']//div[@class='slds-icon-waffle']")
 	public WebElement appLauncher;
 

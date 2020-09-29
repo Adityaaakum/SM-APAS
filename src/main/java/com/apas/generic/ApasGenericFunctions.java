@@ -359,15 +359,26 @@ public class ApasGenericFunctions extends TestBase {
      * @throws Exception
      * @Description: This method is to edit(enter) a record by clicking on the pencil icon and save it(field level edit)
      */
-
     public void editAndInputFieldData(String fieldName, WebElement field, String data) throws Exception {
         objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'Edit " + fieldName + "')]/ancestor::button");
+        if (field == null){
+            field = driver.findElement(By.xpath("//label[contains(.,'" + fieldName + "')]/following::input[1]"));
+        }
         objPage.enter(field, data);
-        objPage.Click(ExemptionsPage.saveButton);
+        objPage.Click(objApasGenericPage.saveButton);
         Thread.sleep(4000);
 
     }
 
+
+    /**
+     * This method is to edit(enter) a record by clicking on the pencil icon and save it(field level edit)
+     * @param fieldName: name of the required field
+     * @param data:      the data to be entered in text box
+     */
+    public void editAndInputFieldData(String fieldName, String data) throws Exception {
+        editAndInputFieldData(fieldName,null,data);
+    }
 
     /**
      * @param fieldName: name of the required field
@@ -375,8 +386,6 @@ public class ApasGenericFunctions extends TestBase {
      * @throws Exception
      * @Description: This method is to edit(select) a record by clicking on the pencil icon and save it(field level edit)
      */
-
-
     public void editAndSelectFieldData(String fieldName, String value) throws Exception {
         objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'Edit " + fieldName + "')]/ancestor::button");
         WebElement dropdown = driver.findElement(By.xpath("//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'" + fieldName + "')]//div/input"));
@@ -573,4 +582,5 @@ public class ApasGenericFunctions extends TestBase {
         objPage.clickAction(modificationsIcon);
         objPage.waitUntilElementIsPresent(objApasGenericPage.menuList, 5);
     }
+
 }
