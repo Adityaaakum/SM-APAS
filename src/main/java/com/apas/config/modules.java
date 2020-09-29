@@ -14,6 +14,7 @@ public interface modules {
 	public static final String COUNTY_STRAT_CODES = "County Strat Codes";
 	public static final String REPORTS = "Reports";
 	public static final String PARCELS = "Parcels";
+	public static final String HOME = "Home";
 
 	public static final String CPI_FACTORS = "CPI Factors";
 

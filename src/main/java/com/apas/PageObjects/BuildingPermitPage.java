@@ -359,7 +359,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 		String xpath = "//a[@title='" + buildingPermitNum + "']";
 		waitUntilElementIsPresent(xpath,15);
 		waitForElementToBeClickable(driver.findElement(By.xpath(xpath)),10);
-		Click(driver.findElement(By.xpath(xpath)));
+		javascriptClick(driver.findElement(By.xpath(xpath)));
 		Thread.sleep(3000);
 	}
 
