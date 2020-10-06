@@ -35,8 +35,6 @@ public class SoftAssertion {
         if (!message.contains(":: Expected:"))
             message = message + " :: Expected: true" + " || " + "Actual: " + condition;
 
- 
-
         String testCaseKey = JiraAdaptavistStatusUpdate.extractTestCaseKey(message);
         if (condition) {
             ExtentTestManager.getTest().log(LogStatus.PASS, message);

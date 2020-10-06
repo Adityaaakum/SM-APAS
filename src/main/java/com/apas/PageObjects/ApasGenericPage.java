@@ -82,7 +82,10 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//lightning-spinner")
 	public WebElement spinner;
-
+	
+	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
+	public WebElement successAlertText;
+	
 	public String xpathSpinner = "//lightning-spinner";
 
 

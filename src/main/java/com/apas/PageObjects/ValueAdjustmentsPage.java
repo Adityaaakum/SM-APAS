@@ -532,7 +532,6 @@ public float calculateNetExemptionAmount(float exemptionAmountCalculated) throws
 	return netExemptionAmountCalculated;
 }
 
-
 /**
  * @description: This method will return the Low Income Exemption Amount Calculated
  * @return : returns the Basic Exemption Amount Calculated

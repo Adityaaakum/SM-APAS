@@ -41,7 +41,6 @@ public class ExemptionsPage extends ApasGenericPage {
 
 		
 	}
-
 	
 	@FindBy(xpath = "//div[@class='pageLevelErrors']//li")
 	public WebElement errorMessage;
