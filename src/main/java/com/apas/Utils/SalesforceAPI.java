@@ -29,6 +29,9 @@ public class SalesforceAPI extends TestBase {
     private static String baseUri;
     private static Header oauthHeader;
     private static Header prettyPrintHeader = new BasicHeader("X-PrettyPrint", "1");
+    public static String REMINDER_WI_CODE_DV = "new+DisabledVeteransAnnualReminderWIService().createReminderWorkItems(ApexUtility.getCurrentRollYear());";
+    public static String REMINDER_WI_CODE_BPP = "";
+
 
     /**
      * This method will create HTTP Post connection with Salesforce
@@ -385,6 +388,42 @@ public class SalesforceAPI extends TestBase {
 
         delete("Transaction_Trail__c",queryTransactionTrails);
         delete("E_File_Import_Log__c",queryImportLogs);
+    }
+
+
+    /**
+     * This method will trigger the job to generate reminder work items
+     */
+    public void generateReminderWorkItems(String reminderWorkItemCode) throws IOException {
+
+        ReportLogger.INFO("Generating Disabled Veteran Reminder Work Items");
+        //Creating HTTP Post Connection
+        HttpPost httpPost = salesforceCreateConnection();
+
+        //Authenticating the HTTP Post connection
+        if (salesforceAuthentication(httpPost)){
+            HttpClient httpClient = HttpClientBuilder.create().build();
+            String uri = baseUri + "/tooling/executeAnonymous/?anonymousBody=" + reminderWorkItemCode ;
+            System.out.println("URL: " + uri);
+            HttpGet httpGet = new HttpGet(uri);
+            httpGet.addHeader(oauthHeader);
+            httpGet.addHeader(prettyPrintHeader);
+
+            // Make the request.
+            HttpResponse response = httpClient.execute(httpGet);
+
+            // Process the result
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 200) {
+                ReportLogger.PASS("Reminder Work Item Job Triggered Successfully" + EntityUtils.toString(response.getEntity()));
+            } else {
+                ReportLogger.FAIL("Reminder Work Item Job Was Unsuccessful. Status code returned is " + statusCode);
+                ReportLogger.FAIL("An error has occurred. Http status: " + response.getStatusLine().getStatusCode());
+            }
+        }
+
+        //Release HTTP Post connection
+        salesforceReleaseConnection(httpPost);
     }
 
 }
