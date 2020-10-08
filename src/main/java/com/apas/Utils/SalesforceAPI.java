@@ -30,9 +30,9 @@ public class SalesforceAPI extends TestBase {
     private static Header oauthHeader;
     private static Header prettyPrintHeader = new BasicHeader("X-PrettyPrint", "1");
     public static String REMINDER_WI_CODE_DV = "new+DisabledVeteransAnnualReminderWIService().createReminderWorkItems(ApexUtility.getCurrentRollYear());";
-    public static String REMINDER_WI_CODE_BPP = "";
-
-
+    public static String REMINDER_WI_CODE_BPP_ANNUAL_FACTORS = "new+BPPTrendsAnnualFactorWorkItemService().createBppTrendsAnnualFactorsWI(ApexUtility.getCurrentRollYear());";
+    public static String REMINDER_WI_CODE_BPP_EFILE = "new+BPPTrendsImportReminderWorkItemService().createReminderWorkItemsForEFile(ApexUtility.getCurrentRollYear());";
+    
     /**
      * This method will create HTTP Post connection with Salesforce
      @return Http Post Connection
