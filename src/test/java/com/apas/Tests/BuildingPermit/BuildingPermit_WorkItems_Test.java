@@ -3,12 +3,10 @@ package com.apas.Tests.BuildingPermit;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
-import com.apas.PageObjects.BuildingPermitPage;
-import com.apas.PageObjects.EFileImportPage;
-import com.apas.PageObjects.Page;
-import com.apas.PageObjects.WorkItemHomePage;
+import com.apas.PageObjects.*;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.ExcelUtils;
 import com.apas.Utils.Util;
 import com.apas.config.BPFileSource;
 import com.apas.config.fileTypes;
@@ -23,6 +21,7 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class BuildingPermit_WorkItems_Test extends TestBase {
 
@@ -34,6 +33,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
     SoftAssertion softAssert = new SoftAssertion();
     Util objUtil = new Util();
     EFileImportPage objEfileImportPage;
+    ReportsPage objReportsPage;
 
     @BeforeMethod(alwaysRun = true)
     public void beforeMethod() throws Exception {
@@ -47,15 +47,21 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         objApasGenericFunctions = new ApasGenericFunctions(driver);
         objEfileImportPage = new EFileImportPage(driver);
         objWorkItemHomePage = new WorkItemHomePage(driver);
+        objReportsPage = new ReportsPage(driver);
     }
-
 
     /**
      * This test case is to validate work item creation functionality and the work item flow after file is approved
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and RP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1890, SMAB-T1892, SMAB-T1900, SMAB-T1901, SMAB-T1902,SMAB-T1903: Validation for work item generation after building permit file import and approve", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "buildingPermit"}, alwaysRun = true)
+    @Test(description = "SMAB-T1890, SMAB-T1892, SMAB-T1900, SMAB-T1901, SMAB-T1902,SMAB-T1903: Validation for work item generation after building permit file import and approve", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BP"}, alwaysRun = true)
     public void BuildingPermit_WorkItemAfterImportAndApprove(String loginUser) throws Exception {
+
+        String downloadLocation = testdata.DOWNLOAD_FOLDER;
+        ReportLogger.INFO("Download location : " + downloadLocation);
+
+        //Deleting all the previously downloaded files
+        objApasGenericFunctions.deleteFilesFromFolder(downloadLocation);
 
         //Creating a temporary copy of the file to be processed to create unique name
         String timeStamp = objUtil.getCurrentDate("ddhhmmss");
@@ -149,20 +155,40 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Step15: Open the work item
         objPage.scrollToBottom();
-        objWorkItemHomePage.openWorkItem(finalReviewWorkItem);
+        objWorkItemHomePage.openRelatedActionRecord(finalReviewWorkItem);
 
-        //Step16: Validate that report is opened for the linked building permit records
-        objWorkItemHomePage.openRelatedActionRecord(importReviewWorkItem);
+        //Step16: Report data validation for linked building permit records
+        Thread.sleep(5000);
+        parentWindow = driver.getWindowHandle();
+        objPage.switchToNewWindow(parentWindow);
+        //Switching the frame as the generated report is in different frame
+        driver.switchTo().frame(0);
+        objPage.Click(objReportsPage.arrowButton);
+        objPage.Click(objReportsPage.linkExport);
+        //Switching back to parent frame to export the report
+        driver.switchTo().parentFrame();
+        objPage.Click(objReportsPage.formattedExportLabel);
+        objPage.Click(objReportsPage.exportButton);
+        //Added this wait to allow the file to download
+        Thread.sleep(10000);
+        File downloadedFile = Objects.requireNonNull(new File(downloadLocation).listFiles())[0];
 
-        //Step16: Complete the final review work item
+        //Step17: Columns validation in exported report
+        HashMap<String, ArrayList<String>> hashMapExcelData = ExcelUtils.getExcelSheetData(downloadedFile.getAbsolutePath(),0,10,1);
+        String expectedColumnsInExportedExcel = "[Created Date, Permit City Code, Building Permit Number, APN: APN, Issue Date(YYYYMMDD), Completion Date(YYYYMMDD), Reissue, City APN, City Strat Code, Building Permit Fee, Work Description, Square Footage, Estimated Project Value, Application Name, Owner Name, Owner Address Line 1, Owner Address Line 2, Owner Address Line 3, Owner State, Owner Zip Code, Owner Phone Number, Contractor Name, Contractor Phone]";
+        softAssert.assertEquals(hashMapExcelData.keySet().toString(),expectedColumnsInExportedExcel,"SMAB-T1900: Columns Validation in downloaded building permit report");
+
+        driver.switchTo().window(parentWindow);
+
+        //Step18: Complete the final review work item
         String successMessageText = objWorkItemHomePage.completeWorkItem();
         softAssert.assertEquals(successMessageText, "success\nStatus changed successfully.\nClose", "SMAB-T1903,SMAB-T1902,SMAB-T1901: Validation that status of the efile logs linked with work item is reverted");
 
-        //Step17: Open Home Page
+        //Step19: Open Home Page
         objApasGenericFunctions.searchModule(modules.HOME);
         objPage.Click(objWorkItemHomePage.chkShowRP);
 
-        //Step18: Close "Final Review" Work Item
+        //Step20: Close "Final Review" Work Item
         completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
         softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(finalReviewWorkItem), "SMAB-T1903: Validation that Final Review work item moved to Completed status after Final Review work item is manually completed");
 
@@ -175,7 +201,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
      * This test case is to validate work item creation functionality and the work item flow after file is reverted
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and RP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1890, SMAB-T1899: Validation for work item generation after building permit file import and revert", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "buildingPermit"}, alwaysRun = true)
+    @Test(description = "SMAB-T1890, SMAB-T1899: Validation for work item generation after building permit file import and revert", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BP"}, alwaysRun = true)
     public void BuildingPermit_WorkItemAfterImportAndRevert(String loginUser) throws Exception {
 
         //Creating a temporary copy of the file to be processed to create unique name

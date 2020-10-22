@@ -66,7 +66,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 	@Test(description = "SMAB-T635: Verify the exemption support staff can export the Report", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class ,groups = {"regression", "DisabledVeteranExemption" })
 	public void DisabledVeteran_verifyExportReport(String loginUser) throws Exception {
 		
-		String downloadLocation = CONFIG.getProperty("downloadFolder");
+		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		String reportName = "DV Exemption Export";
 		String exportedFileName;
 		ReportLogger.INFO("Download location : " + downloadLocation);

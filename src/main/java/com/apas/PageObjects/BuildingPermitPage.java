@@ -135,7 +135,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[@role='dialog']//button//*[text() = 'Cancel']")
 	public WebElement cancelButton;
 
-	@FindBy(xpath = "//div[@role='dialog']//button//*[text() = 'Save']")
+	@FindBy(xpath = "//div[@class='inlineFooter']//button//*[text()='Save']")
 	public WebElement saveButton;
 
 	@FindBy(xpath = "//lightning-primitive-icon/*[@data-key='warning']/../../../div")

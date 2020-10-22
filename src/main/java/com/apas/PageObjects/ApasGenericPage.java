@@ -27,7 +27,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//button[@title='Save']")
 	public WebElement saveButton;
 
-	@FindBy(xpath = "//one-app-launcher-header/button[contains(@class,'slds-button')] | //nav[@class='appLauncher slds-context-bar__icon-action']//div[@class='slds-icon-waffle']")
+	@FindBy(xpath = "//div[contains(.,'App Launcher')]//*[@class='slds-icon-waffle']")
 	public WebElement appLauncher;
 
 	@FindBy(xpath = "//table[@role='grid']//thead/tr//th")

@@ -49,7 +49,7 @@ public class WorkItemHomePage extends Page {
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//button[contains(.,'Mark as Current Status')]")
     public WebElement markAsCurrentStatusButton;
 
-    @FindBy(xpath = "//a[@role='tab'][@data-label='Details']")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//a[@role='tab'][@data-label='Details']")
     public WebElement detailsTab;
 
     @FindBy(xpath = "//a[@role='tab'][@data-label='In Progress']")
@@ -58,7 +58,7 @@ public class WorkItemHomePage extends Page {
     @FindBy(xpath = "//a[@role='tab'][@data-label='In Pool']")
     public WebElement inPoolTab;
 
-    @FindBy(xpath = "//force-record-layout-item[contains(.,'Related Action')]//a[@target='_blank'][text()='Review']")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//force-record-layout-item[contains(.,'Related Action')]//a[@target='_blank']")
     public WebElement reviewLink;
 
     public String linkedItemEFileIntakeLogs = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'E File Intake Logs')]";

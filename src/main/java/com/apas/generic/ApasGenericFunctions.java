@@ -82,6 +82,7 @@ public class ApasGenericFunctions extends TestBase {
     public void searchModule(String moduleToSearch) throws Exception {
         ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
         objPage.waitForElementToBeClickable(objApasGenericPage.appLauncher, 60);
+        Thread.sleep(2000);
         objPage.Click(objApasGenericPage.appLauncher);
         objPage.waitForElementToBeClickable(objApasGenericPage.appLauncherSearchBox, 60);
         objPage.enter(objApasGenericPage.appLauncherSearchBox, moduleToSearch);

@@ -249,11 +249,11 @@ public class EFileImportPage extends Page {
         objPage.waitForElementToBeClickable(fileTypedropdown, 30);
         Click(fileTypedropdown);
         Thread.sleep(2000);
-        Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + fileType + "')]")));
+        javascriptClick(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + fileType + "')]")));
         Click(sourceDropdown);
         WebElement webElementSourceOption = driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]"));
         scrollToElement(webElementSourceOption);
-        Click(webElementSourceOption);
+        javascriptClick(webElementSourceOption);
     }
 
     /**
@@ -373,7 +373,7 @@ public class EFileImportPage extends Page {
         ReportLogger.INFO("Uploading " + absoluteFilePath + " file");
         selectFileAndSource(fileType, source);
         objPage.waitUntilElementDisplayed(nextButton, 15);
-        objPage.scrollToTop();
+        objPage.scrollToElement(nextButton);
         objPage.Click(nextButton);
         objPage.enter(fileNameInputBox, filename);
         objPage.Click(fileNameNext);
