@@ -115,8 +115,9 @@ public class WorkItemHomePage extends Page {
     public void acceptWorkItem(String workItem) throws Exception {
         ReportLogger.INFO("Accepting the work item: " + workItem);
         WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
-        scrollToBottom();
+        scrollToElement(webElementCheckBox);
         Click(webElementCheckBox);
+        scrollToElement(acceptWorkItemButton);
         Click(acceptWorkItemButton);
         waitForElementToBeVisible(successAlert, 20);
         waitForElementToDisappear(successAlert, 10);
@@ -134,5 +135,17 @@ public class WorkItemHomePage extends Page {
         waitForElementToDisappear(successAlert, 10);
         return messageText;
     }
-
+    /**
+     * This method will open record under Action link for the specified work item
+     *
+     * @param workItem: Work item number linked with the item
+     **/
+    public void openActionLink(String workItem) throws Exception {
+        ReportLogger.INFO("Clicking on Action Link of the work item : " + workItem);
+        String xpath = "//a[@title='" + workItem + "']//ancestor::th//following-sibling::td//a";
+        waitUntilElementIsPresent(xpath, 15);
+        waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
+        javascriptClick(driver.findElement(By.xpath(xpath)));
+        Thread.sleep(4000);
+    }
 }

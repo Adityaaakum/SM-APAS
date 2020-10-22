@@ -233,6 +233,9 @@ public class EFileImportPage extends Page {
     @FindBy(xpath = "(//td[@data-label='Error Count'])[1]")
     public WebElement errorRecordsImportedFile;
 
+    @FindBy(xpath = "//span[contains(.,'Upload Files')]")
+    public WebElement uploadFilesButton;
+
     public String xpathFileTypedrpdwn = "//*[@name='docType']";
 
     /**
@@ -527,5 +530,33 @@ public class EFileImportPage extends Page {
         objPage.Click(approveButton);
         objPage.waitForElementToBeVisible(efileRecordsApproveSuccessMessage, 20);
         ReportLogger.INFO("Imported file approved");
+    }
+
+    /**
+     * This method will upload the file after File Type and Source are already selected
+     * @param absoluteFilePath: Absoulte Path of the file with the file name
+     */
+    public void uploadFile(String absoluteFilePath) throws Exception {
+        objPage.waitForElementToBeVisible(uploadFilesButton,120);
+        uploadFileInputBox.sendKeys(absoluteFilePath);
+        Thread.sleep(2000);
+        objPage.waitForElementToBeClickable(doneButton);
+        Thread.sleep(2000);
+        objPage.Click(doneButton);
+        waitForElementToBeClickable(statusImportedFile, 20);
+        objPage.scrollToBottom();
+        objPage.waitForElementTextToBe(statusImportedFile, "In Progress", 120);
+        ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
+        objPage.waitForElementTextToBe(statusImportedFile, "Imported", 360);
+    }
+
+    /**
+     * This method will revert the 'Imported & Approved' Logs and delete the existing data from system before importing files
+     * @param rollYear: Roll Year for which data needs to be deleted
+     */
+    public void deleteImportedRecords(String fileType, String fileSource, String rollYear){
+        String query = "Select id From E_File_Import_Log__c where File_type__c = '" + fileType + "' and Import_Period__C='" + rollYear + "' and File_Source__C like '" + fileSource + "' and (Status__c = 'Imported' Or Status__c = 'Approved')";
+        salesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
+        salesforceAPI.deleteBPPTrendRollYearData(rollYear);
     }
 }
