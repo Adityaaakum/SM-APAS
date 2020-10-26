@@ -2,7 +2,9 @@ package com.apas.Tests.BPPTrends;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
+import com.apas.PageObjects.*;
 import com.apas.Utils.SalesforceAPI;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -11,10 +13,6 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
-import com.apas.PageObjects.BuildingPermitPage;
-import com.apas.PageObjects.EFileImportPage;
-import com.apas.PageObjects.Page;
-import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
@@ -33,6 +31,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
     Util objUtil = new Util();
     EFileImportPage objEfileImportPage;
     SalesforceAPI objSalesforceAPI;
+    BppTrendPage objBppTrendPage;
     String rollYear;
 
     @BeforeMethod(alwaysRun = true)
@@ -48,6 +47,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         objEfileImportPage = new EFileImportPage(driver);
         objWorkItemHomePage = new WorkItemHomePage(driver);
         objSalesforceAPI = new SalesforceAPI();
+        objBppTrendPage = new BppTrendPage(driver);
         rollYear = "2021";
     }
 
@@ -63,7 +63,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         //Step1: Delete the existing data from system before importing files
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors","%Factors%",rollYear);
 
-        //Step2: Delete the existing data from system before importing files
+        //Step2: Delete the existing WI from system before importing files
         String query = "select id from Work_Item__c where Reference__c = 'BOE - Index and Percent Good Factors'";
         objSalesforceAPI.delete("Work_Item__c",query);
 
@@ -146,7 +146,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         //Step1: Delete the existing data from system before importing files
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors","%Factors%",rollYear);
 
-        //Step2: Delete the existing data from system before importing files
+        //Step2: Delete the existing WI from system before importing files
         String query = "select id from Work_Item__c where Reference__c = 'BOE - Index and Percent Good Factors'";
         objSalesforceAPI.delete("Work_Item__c",query);
 
@@ -239,7 +239,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         //Step1: Delete the existing data from system before importing files
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors","%Factors%",rollYear);
 
-        //Step2: Delete the existing data from system before importing files
+        //Step2: Delete the existing WI from system before importing files
         String query = "select id from Work_Item__c where Reference__c = 'BOE Valuation Factors'";
         objSalesforceAPI.delete("Work_Item__c",query);
 
@@ -322,7 +322,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         //Step1: Delete the existing data from system before importing files
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors","%Factors%",rollYear);
 
-        //Step2: Delete the existing data from system before importing files
+        //Step2: Delete the existing WI from system before importing files
         String query = "select id from Work_Item__c where Reference__c = 'BOE Valuation Factors'";
         objSalesforceAPI.delete("Work_Item__c",query);
 
@@ -415,7 +415,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         //Step1: Delete the existing data from system before importing files
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors","%Factors%",rollYear);
 
-        //Step2: Delete the existing data from system before importing files
+        //Step2: Delete the existing WI from system before importing files
         String query = "select id from Work_Item__c where Reference__c = 'CAA Valuation Factors'";
         objSalesforceAPI.delete("Work_Item__c",query);
 
@@ -498,7 +498,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         //Step1: Delete the existing data from system before importing files
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors","%Factors%",rollYear);
 
-        //Step2: Delete the existing data from system before importing files
+        //Step2: Delete the existing WI from system before importing files
         String query = "select id from Work_Item__c where Reference__c = 'CAA Valuation Factors'";
         objSalesforceAPI.delete("Work_Item__c",query);
 
@@ -578,5 +578,124 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - CAA Valuation Factors", "SMAB-T1742: Import Work Item Name validation");
         softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1742: Work Pool Name Validation for Import Work Item");
         softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1742: Imported work item count validation");
+    }
+    /**
+     * This test case is to validate Perform Calculations work item creation after BOE Index & Goods Factor is approved
+     * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
+     **/
+    @Test(description = "SMAB-T1736: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "BPPTrends"}, alwaysRun = true)
+    public void BPPTrends_PerformCalculations_WorkItemGeneration(String loginUser) throws Exception {
+        //Step1: Validate reminder work item creation and the work item flow for approved file
+        BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser);
+
+        //Step2: "Perform Calculations" Work Item generation validation
+        HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
+        int importWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Perform Calculations - BPP Composite Factors")).count();
+        int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
+
+        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Perform Calculations - BPP Composite Factors", "SMAB-T1736: Import Work Item Name validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1736: Work Pool Name Validation for Import Work Item");
+        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1736: Imported work item count validation");
+
+    }
+
+    /**
+     * This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
+     * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
+     **/
+    @Test(description = "SMAB-T1761: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "BPPTrends"}, alwaysRun = true)
+    public void BPPTrends_verifySubmitAllFactorForApprovalBtnNotVisible_whenImportWINotCompleted(String loginUser) throws Exception {
+        //Step1: Delete the existing 'Annual Factor Settings' WIs before generating
+        String query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings'";
+        objSalesforceAPI.delete("Work_Item__c",query);
+
+        //Step2: Delete the existing 'Import' WIs before generating
+        query = "select id from Work_Item__c where Sub_Type__c = 'Import'";
+        objSalesforceAPI.delete("Work_Item__c",query);
+
+        //Step3: Generate Annual Factor Settings Reminder Work Items
+        objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_ANNUAL_FACTORS);
+
+        //Step4: Validate reminder work item creation and the work item flow for approved file
+        BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser);
+
+        //Step5: Update 'Annual Factor Status' & WI status to Completed
+        query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings' OR Reference__c = 'BOE Valuation Factors'";
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "In Progress");
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
+
+        query = "SELECT id FROM BPP_Trend_Roll_Year__c WHERE Roll_Year__c = '" +rollYear+ "'";
+        objSalesforceAPI.update("BPP_Trend_Roll_Year__c", query, "Annual_Factor_Status__c", "Reviewed by Admin");
+
+        //Step6: "Perform Calculations" Work Item generation validation
+        HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
+        int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
+        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+
+        //Step7: Accepting the work item and opening the link under 'Action' Column
+        objWorkItemHomePage.acceptWorkItem(importWorkItem);
+        objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
+        objWorkItemHomePage.openActionLink(importWorkItem);
+        String parentwindow = driver.getWindowHandle();
+        objPage.switchToNewWindow(parentwindow);
+
+        //Step8: Trigger Calculations by clicking 'Calculate All' Button
+        objPage.waitForElementToBeVisible(objBppTrendPage.calculateAllBtn,120);
+        objPage.waitForElementToBeClickable(objBppTrendPage.calculateAllBtn,120);
+        objPage.Click(objBppTrendPage.calculateAllBtn);
+        objPage.waitForElementToDisappear(objBppTrendPage.xpathSpinner, 480);
+        objPage.waitUntilElementIsPresent(objBppTrendPage.xpathTableMessage, 420);
+        softAssert.assertEquals(objPage.getElementText(objBppTrendPage.tableMessage), "Yet to be submitted for approval", "SMAB-T1761: Message displayed above the table after Calculation is completed");
+
+        //Step9: Validating unavailability of Submit All Factors For Approval button
+        softAssert.assertTrue(Objects.isNull(objPage.locateElement(objBppTrendPage.xpathSubmitAllFactorsForApprovalBtn, 20)), "SMAB-T1761: Submit All Factors For Approval button is not visible");
+    }
+    /**
+     * This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
+     * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
+     **/
+    @Test(description = "SMAB-T2196: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "BPPTrends"}, alwaysRun = true)
+    public void BPPTrends_verifyErrorMsg_whenAnnualSettingsWINotCompleted(String loginUser) throws Exception {
+
+        //Step1: Delete the existing WIs before generating
+        String query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings'";
+        objSalesforceAPI.delete("Work_Item__c",query);
+
+        //Step2: Delete the existing WIs before generating
+        query = "select id from Work_Item__c where Sub_Type__c = 'Import'";
+        objSalesforceAPI.delete("Work_Item__c",query);
+
+        //Step3: Generate Reminder Work Items
+        objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_ANNUAL_FACTORS);
+
+        //Step4: Validate reminder work item creation and the work item flow for approved file
+        BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser);
+
+        //Step5: Update WI status to Completed
+        query = "select id from Work_Item__c where Reference__c = 'BOE Valuation Factors' OR Reference__c = 'CAA Valuation Factors'";
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "In Progress");
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
+
+        //Step6: "Perform Calculations" Work Item generation validation
+        HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
+        int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
+        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+
+        //Step7: Accepting the work item and opening the link under 'Action' Column
+        objWorkItemHomePage.acceptWorkItem(importWorkItem);
+        objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
+        objWorkItemHomePage.openActionLink(importWorkItem);
+        String parentwindow = driver.getWindowHandle();
+        objPage.switchToNewWindow(parentwindow);
+
+        //Step8: Trigger Calculations by clicking 'Calculate All' Button
+        objPage.waitForElementToBeVisible(objBppTrendPage.calculateAllBtn,320);
+        objPage.waitForElementToBeClickable(objBppTrendPage.calculateAllBtn,120);
+        objPage.Click(objBppTrendPage.calculateAllBtn);
+
+        //Step9: Validating Error Message when 'Annual Settings' WI is not Completed and calculations are triggered
+        String actualErrorMessage = objBppTrendPage.waitForErrorPopUpMsgOnCalculateClick(60);
+        softAssert.assertContains(actualErrorMessage,"BPP Annual Factors is not yet completed/reviewed by admin for selected Roll Year", "SMAB-T2196: Verify Error Message when 'Annual Settings' WI is not Completed and calculations are triggered");
+
     }
 }
