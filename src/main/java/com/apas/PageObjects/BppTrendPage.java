@@ -213,7 +213,7 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//button[text() = 'Submit All Factors for Approval'] | //button[@title = 'Submit All Factors for Approval']")
 	public WebElement submitAllFactorForApprovalButton;
 
-	@FindBy(xpath = "//button[text() = 'Approve All'] | //button[@title = 'Approve All']")
+	@FindBy(xpath = "//button[text() = 'Approve all'] | //button[@title = 'Approve all']")
 	public WebElement approveAllButton;
 
 	@FindBy(xpath = "//span[text() = 'BPP Trend Roll Year']//parent::label//following-sibling::div//input")
