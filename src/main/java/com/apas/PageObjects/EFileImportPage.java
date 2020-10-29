@@ -248,7 +248,7 @@ public class EFileImportPage extends Page {
         objPage.waitUntilElementIsPresent(xpathFileTypedrpdwn, 60);
         objPage.waitForElementToBeClickable(fileTypedropdown, 30);
         Click(fileTypedropdown);
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + fileType + "')]")));
         Click(sourceDropdown);
         WebElement webElementSourceOption = driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]"));
@@ -277,7 +277,7 @@ public class EFileImportPage extends Page {
         uploadFileInputBox.sendKeys(absoluteFilePath);
         Thread.sleep(2000);
         objPage.waitForElementToBeClickable(doneButton);
-        Thread.sleep(2000);
+        Thread.sleep(5000);
         objPage.Click(doneButton);
         waitForElementToBeClickable(statusImportedFile, 20);
         objPage.scrollToBottom();
