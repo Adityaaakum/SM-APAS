@@ -275,7 +275,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Adding and saving a new Building Permit manual record");
 		openNewForm();
 		enterManualEntryData(dataMap);
-		Click(getButtonWebElement("Save"));
+		Click(getButtonWithText("Save"));
 	}
 
 	/**

@@ -26,13 +26,14 @@ public class BPPTrends_WorkItems_Test extends TestBase {
     RemoteWebDriver driver;
     Page objPage;
     ApasGenericFunctions objApasGenericFunctions;
-    BuildingPermitPage objBuildingPermitPage;
-    WorkItemHomePage objWorkItemHomePage;
-    SoftAssertion softAssert = new SoftAssertion();
-    Util objUtil = new Util();
-    EFileImportPage objEfileImportPage;
-    SalesforceAPI objSalesforceAPI;
+    BppTrendSetupPage objBppTrendSetupPage;
     BppTrendPage objBppTrendPage;
+    WorkItemHomePage objWorkItemHomePage;
+    EFileImportPage objEfileImportPage;
+
+    SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+    SoftAssertion softAssert = new SoftAssertion();
+
     String rollYear;
 
     @BeforeMethod(alwaysRun = true)
@@ -43,12 +44,11 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         driver = BrowserDriver.getBrowserInstance();
 
         objPage = new Page(driver);
-        objBuildingPermitPage = new BuildingPermitPage(driver);
         objApasGenericFunctions = new ApasGenericFunctions(driver);
         objEfileImportPage = new EFileImportPage(driver);
         objWorkItemHomePage = new WorkItemHomePage(driver);
-        objSalesforceAPI = new SalesforceAPI();
         objBppTrendPage = new BppTrendPage(driver);
+        objBppTrendSetupPage = new BppTrendSetupPage(driver);
         rollYear = "2021";
     }
 
@@ -789,6 +789,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         //Step14: Log out from the application and log in as BPP Principal
         objApasGenericFunctions.logout();
         Thread.sleep(15000);
+
         objApasGenericFunctions.login(users.PRINCIPAL_USER);
         objApasGenericFunctions.searchModule(modules.HOME);
 
@@ -871,6 +872,8 @@ public class BPPTrends_WorkItems_Test extends TestBase {
 
         //Step10: Log out from the application and log in as BPP Principal
         objApasGenericFunctions.logout();
+        Thread.sleep(15000);
+
         objApasGenericFunctions.login(users.PRINCIPAL_USER);
         objApasGenericFunctions.searchModule(modules.HOME);
 
@@ -888,6 +891,8 @@ public class BPPTrends_WorkItems_Test extends TestBase {
 
         //Step14: Log out from the application and log in again as BPP Admin
         objApasGenericFunctions.logout();
+        Thread.sleep(15000);
+
         objApasGenericFunctions.login(loginUser);
         objApasGenericFunctions.searchModule(modules.HOME);
 
@@ -897,5 +902,124 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         String workItemName = InProgressWorkItems.get("Work Item Number").get(workItemRowNumber);
         softAssert.assertEquals(workItemName, "importWorkItem", "SMAB-T2195: Verify WI returned to user is found in 'In Progress' tab");
 
+    }
+
+
+    /**
+     * DESCRIPTION: Validation of BPP Trend Annual Factors Reminder Work Item workflow
+     */
+    @Test(description = "SMAB-T4503,SMAB-T4523: Validation of BPP Trend Annual Factors Reminder Work Item workflow", groups={"smoke","regression","Work_Item_BPP"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
+    public void BppTrend_AnnualFactors_ReminderWorkItemWorkFlow(String loginUser) throws Exception {
+        String rollYear = "2021";
+
+        //Code to delete current roll year BPP Trend Setup, BPP Settings and Composite Factor Records
+        objBppTrendPage.removeExistingBppSettingEntry(rollYear);
+        objBppTrendPage.removeExistingBppFactorSettingEntry(rollYear);
+        String queryToDeleteBPPTrendSetUp = "SELECT Id FROM BPP_Trend_Roll_Year__c where Name = '" + rollYear + " - BPP Trend Setup'";
+        objSalesforceAPI.delete("BPP_Trend_Roll_Year__c",queryToDeleteBPPTrendSetUp);
+
+        //Delete the existing WI from system before generating the work item
+        String queryToDeleteAnnualFactorSettingsWI = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings'";
+        objSalesforceAPI.delete("Work_Item__c", queryToDeleteAnnualFactorSettingsWI);
+
+        //Generating the Reminder Work Items
+        objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_ANNUAL_FACTORS);
+
+        //Validation for BPP Trend Setup, BPP Settings and Composite Factor Records after generating the reminder work item
+        HashMap<String, ArrayList<String>> BPPSettings = objSalesforceAPI.select("SELECT Id FROM BPP_Setting__c where BPP_Trend_Roll_Year_Parent__c = '"+ rollYear + "'");
+        softAssert.assertEquals(BPPSettings.get("Id").size(),1,"SMAB-T2169: Validation for cloning of prior year BPP Settings on reminder work item generation");
+
+        HashMap<String, ArrayList<String>> BPPFactorSettings = objSalesforceAPI.select("SELECT Name,Property_Type__c FROM BPP_Composite_Factors_Setting__c Where BPP_Trend_Roll_Year_Parent__c = '"+ rollYear + "'");
+        softAssert.assertEquals(BPPFactorSettings.get("Name").size(),4,"SMAB-T2169: Composite Factor Count Validation on reminder work item generation");
+        ReportLogger.INFO("List of Composite Factor : " + BPPFactorSettings.get("Property_Type__c"));
+        softAssert.assertTrue(BPPFactorSettings.get("Property_Type__c").contains("Commercial"),"SMAB-T2169: Validation for cloning of prior year Commercial Composite Factor on reminder work item generation");
+        softAssert.assertTrue(BPPFactorSettings.get("Property_Type__c").contains("Industrial"),"SMAB-T2169: Validation for cloning of prior year Industrial Composite Factor on reminder work item generation");
+        softAssert.assertTrue(BPPFactorSettings.get("Property_Type__c").contains("Construction"),"SMAB-T2169: Validation for cloning of prior year Construction Composite Factor on reminder work item generation");
+        softAssert.assertTrue(BPPFactorSettings.get("Property_Type__c").contains("Agricultural"),"SMAB-T2169: Validation for cloning of prior year Agriculture Composite Factor on reminder work item generation");
+
+        //Step1: Login to the APAS application using the given user
+        objApasGenericFunctions.login(loginUser);
+
+        //Step2: Validation for the cloned annual factor from the prior year
+        objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+        objApasGenericFunctions.displayRecords("All");
+        softAssert.assertTrue(objApasGenericFunctions.getGridDataInHashMap().get("Name").contains("2021 - BPP Trend Setup"),"SMAB-T2168: Validation for cloning of prior year BPP Trend Setup record on reminder work item generation");
+
+        //Stpe3: Open the Work Item Home Page
+        objApasGenericFunctions.searchModule(modules.HOME);
+
+        //Step4: "BPP Trend Annual Factor" Work Item generation validation
+        HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
+        int annualFactorSettingsWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Update and Validate - Annual Factor Settings")).count();
+        int annualFactorSettingsWorkItemRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Update and Validate - Annual Factor Settings");
+        String annualFactorSettingsWorkItemWorkItem = InPoolWorkItems.get("Work Item Number").get(annualFactorSettingsWorkItemRowNumber);
+        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(annualFactorSettingsWorkItemRowNumber), "BPP Trends - Update and Validate - Annual Factor Settings" , "SMAB-T1729: BPP Trend Annual Factor Settings work item name validation in the imported review work item");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(annualFactorSettingsWorkItemRowNumber), "BPP Admin", "SMAB-T1729: BPP Trend Annual Factor pool name validation");
+        softAssert.assertEquals(annualFactorSettingsWorkItemCount, 1, "SMAB-T1729: BPP Trend Annual Factor Settings work item count validation");
+
+        //Step5: Accepting the work item
+        objWorkItemHomePage.acceptWorkItem(annualFactorSettingsWorkItemWorkItem);
+
+        //Step6: Status validation after accepting the work item
+        objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
+        objPage.scrollToBottom();
+        objWorkItemHomePage.openWorkItem(annualFactorSettingsWorkItemWorkItem);
+        objPage.Click(objWorkItemHomePage.detailsTab);
+        Thread.sleep(2000);
+        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Status"), "In Progress", "SMAB-T1729: Validation of annual factor setting work item status after accepting the work item");
+
+        //Step7: Steps to edit and save BPP Trend Setup Record
+        objApasGenericFunctions.searchModule(modules.HOME);
+        objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
+        objPage.scrollToBottom();
+        String parentWindow = driver.getWindowHandle();
+        objWorkItemHomePage.openActionLink(annualFactorSettingsWorkItemWorkItem);
+
+        objPage.switchToNewWindow(parentWindow);
+        Thread.sleep(1000);
+
+        //Step8: Edit the settings
+        objPage.Click(objBppTrendSetupPage.dropDownIconBppSetting);
+        objPage.Click(objBppTrendSetupPage.editLinkUnderShowMore);
+        Thread.sleep(2000);
+        objPage.enter("Maximum Equipment index Factor","124.4");
+        String successMessage = objApasGenericFunctions.saveRecord();
+        softAssert.assertEquals(successMessage,"success\nBPP Setting was saved.\nClose","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
+
+        //Change the status to "Reviewed By Admin"
+        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Annual Factor Status"),"To be Reviewed by Admin","SMAB-T1734 : Validation that new field Annual Factor Status is visible on UI");
+        objApasGenericFunctions.editAndSelectFieldData("Annual Factor Status","Reviewed by Admin");
+
+        driver.switchTo().window(parentWindow);
+
+        // //Step19: Open Home Page
+        driver.navigate().refresh();
+        objApasGenericFunctions.searchModule(modules.HOME);
+
+        //Step20: Completed "Annual Factor Settings" work item validation
+        HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
+        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(annualFactorSettingsWorkItemWorkItem), "SMAB-T1730,SMAB-T1735: Validation that Annual Factor Settings work item moved to Completed status after Annual Factor Status is saved to Reviewed By Admin");
+
+        //Update the settings even after closing the work item
+        objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+        objApasGenericFunctions.displayRecords("All");
+        objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+
+        objPage.Click(objBppTrendSetupPage.dropDownIconBppSetting);
+        objPage.Click(objBppTrendSetupPage.editLinkUnderShowMore);
+        Thread.sleep(2000);
+        objPage.enter("Maximum Equipment index Factor","124.2");
+        successMessage = objApasGenericFunctions.saveRecord();
+        softAssert.assertEquals(successMessage,"success\nBPP Setting was saved.\nClose","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
+
+        //Validation for status even after editing the work BPP Trend set up for completed work item
+        driver.navigate().refresh();
+        objApasGenericFunctions.searchModule(modules.HOME);
+        objWorkItemHomePage.Click(objWorkItemHomePage.completedTab);
+        objWorkItemHomePage.openWorkItem(annualFactorSettingsWorkItemWorkItem);
+        objPage.Click(objWorkItemHomePage.detailsTab);
+        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Status"), "Completed", "SMAB-T2179: Work item status should be completed even after editing the BPP Settings for the completed work item");
+
+        objApasGenericFunctions.logout();
     }
 }
