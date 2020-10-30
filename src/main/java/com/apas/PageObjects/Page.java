@@ -225,8 +225,15 @@ public class Page {
 
 		try{
 			elem.click();
-		}catch (Exception ignored){
-			((JavascriptExecutor) driver).executeScript("arguments[0].click();", elem);
+		}catch (Exception ex){
+			try{
+				((JavascriptExecutor) driver).executeScript("arguments[0].click();", elem);
+			}catch (Exception ignored){
+				actions = new Actions(driver);
+				actions.moveToElement(elem).build().perform();
+				((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", elem);
+				actions.click(elem).build().perform();
+			}
 		}
 
 		waitUntilPageisReady(driver);
@@ -877,7 +884,7 @@ public class Page {
 	 * @param text : text of the button
 	 * @return : button element
 	 */
-	public WebElement getButtonWebElement(String text){
+	public WebElement getButtonWithText(String text){
 		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='" + text + "']";
 		return driver.findElement(By.xpath(xpath));
 	}

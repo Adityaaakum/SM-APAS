@@ -415,10 +415,9 @@ public class SalesforceAPI extends TestBase {
             // Process the result
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == 200) {
-                ReportLogger.PASS("Reminder Work Item Job Triggered Successfully" + EntityUtils.toString(response.getEntity()));
+                ReportLogger.PASS("Reminder Work Item Job Triggered Successfully. Status Code : " + statusCode);
             } else {
                 ReportLogger.FAIL("Reminder Work Item Job Was Unsuccessful. Status code returned is " + statusCode);
-                ReportLogger.FAIL("An error has occurred. Http status: " + response.getStatusLine().getStatusCode());
             }
         }
 
