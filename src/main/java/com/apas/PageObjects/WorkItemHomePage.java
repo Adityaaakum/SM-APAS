@@ -55,6 +55,9 @@ public class WorkItemHomePage extends Page {
     @FindBy(xpath = "//a[@role='tab'][@data-label='In Progress']")
     public WebElement inProgressTab;
 
+    @FindBy(xpath = "//a[@role='tab'][@data-label='Completed']")
+    public WebElement completedTab;
+
     @FindBy(xpath = "//a[@role='tab'][@data-label='In Pool']")
     public WebElement inPoolTab;
 
@@ -138,6 +141,7 @@ public class WorkItemHomePage extends Page {
         waitForElementToDisappear(successAlert, 10);
         return messageText;
     }
+
     /**
      * This method will open record under Action link for the specified work item
      *
