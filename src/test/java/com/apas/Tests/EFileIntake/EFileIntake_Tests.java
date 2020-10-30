@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.File;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -74,7 +75,8 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		sanMateoBuildingPermitFileWithError = System.getProperty("user.dir") + testdata.EFILEIMPORT_BPDATA + "SanMateoBuildingPermitsWithValidAndInvalidData5.xlsx";
 		unincorporatedBuildingPermitFile = System.getProperty("user.dir") + testdata.EFILEIMPORT_BPDATA + "Import_TestData_ValidAndInvalidScenarios_UN.txt";
 		EFileinvalidFormatFilepath =System.getProperty("user.dir") + testdata.EFILEIMPORT_INVALIDDATA ;
-		}
+		
+	}
 	
 	/**
 	 * This method is to verify invalid file types verification on E File import
@@ -141,7 +143,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		String source="San Mateo Building permits";
 		
 		//step1:Reverting the Approved Import logs if any in the system
-		String query = "Select id From E_File_Import_Log__c where File_type__c = '"+fileType+"' and File_Source__C = '"+source+"' and Import_Period__C='" + period + "' and Status__c in ('Approved','Imported') ";
+		String query = "Select id From E_File_Import_Log__c where File_type__c = '"+fileType+"' and File_Source__C = '"+source+"' and Import_Period__C='" + period + "' and Status__c in ('Approved','Imported','New') ";
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		
@@ -168,6 +170,23 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.Click(objEFileImport.confirmButton);
 		objPage.waitForElementToBeClickable(objEFileImport.uploadFilebutton, 15);
 		objPage.Click(objEFileImport.closeButton);
+		
+		//step4a:try Creating a 'New' status entry again in system
+		objPage.scrollToTop();
+		objPage.Click(objEFileImport.nextButton);
+		objPage.enter(objEFileImport.fileNameInputBox, "SanMateoBuildingPermitsTestdata123.xlsx");
+		objPage.Click(objEFileImport.fileNameNext);
+		objPage.Click(objEFileImport.confirmButton);
+		objPage.waitForElementToBeClickable(objEFileImport.uploadFilebutton, 10);
+		objPage.Click(objEFileImport.closeButton);		
+		
+		//step4b:verifying the count of 'new' status record
+		String newStatusQuery = "Select id From E_File_Import_Log__c where File_type__c = '"+fileType+"' and File_Source__C = '"+source+"' and Status__c ='New'";
+		HashMap<String,ArrayList<String>> response1=salesforceAPI.select(newStatusQuery);
+		int newCountInsystem=response1.get("Id").size();
+		
+		softAssert.assertEquals(newCountInsystem, 1, "SMAB-T1793:Verify user is able to use existing \"New\" entry Import log instead of creating a new \"New\" Import log record while importing a Building Permit file");
+		
 		
 		//step5: verifying View link for New status
 		driver.navigate().refresh();
@@ -207,6 +226,11 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.waitForElementToBeClickable(objEFileImport.statusImportedFile,30);
 		objPage.waitForElementTextToBe(objEFileImport.statusImportedFile, "Imported", 400);
 	
+		//stp7a:verifying New Status entry in system
+		HashMap<String,ArrayList<String>> response2=salesforceAPI.select(newStatusQuery);
+		int newCountInsystemAfterImport=response2.size();
+		softAssert.assertEquals(newCountInsystemAfterImport, 0, "SMAB-T1793:Verify user is able to use existing \"New\" entry Import log instead of creating a new \"New\" Import log record while importing a Building Permit file");
+		
 		
 		//step8:verifying status of file import, view link for imported file and file download link
 		softAssert.assertEquals(objPage.getElementText(objEFileImport.statusImportedFile),"Imported","SMAB-T959:Verify that Users are able to import e-files through E-File Import Tool for 'New' status records");
@@ -759,6 +783,70 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		apasGenericObj.logout();
 	}
 	
+	
+	
+	
+	/**
+	 * This method is to verify only One 'New' entry for BPP Trend Factor File type and Sources
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T1791:Verify user is able to see only One 'new' entry and same is used while importing a BPP Trends File Type ", dataProvider = "loginRPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {
+		"regression","EFileImport" })	
+	public void EFileIntake_VerifyOnlyOneNewStatusRecordForBPPTrends(String loginUser) throws Exception{
+		String period = "2021";
+		String fileType="BPP Trend Factors";
+		String source="CAA - Valuation Factors";
+		
+		//Step1:Reverting the New Import logs if any in the system
+		String query = "Select id From E_File_Import_Log__c where File_type__c = '"+fileType+"' and File_Source__C = '"+source+"' and Import_Period__c='"+period+"' and Status__c in ('New','Approved')";
+		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+		
+		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
+		apasGenericObj.login(loginUser);
+		apasGenericObj.searchModule(modules.EFILE_INTAKE);
+		
+		//step3:Creating a 'New' status entry in system
+		ReportLogger.INFO("Creating a 'New' status entry in system");
+		objEFileImport.selectFileAndSource(fileType,source);
+		objPage.scrollToTop();
+		objPage.Click(objEFileImport.nextButton);
+		objPage.waitForElementToBeClickable(objEFileImport.periodDropdown, 10);
+		apasGenericObj.selectFromDropDown(objEFileImport.periodDropdown, period);
+    	objPage.waitForElementToBeClickable(objEFileImport.confirmButton, 10);
+		objPage.Click(objEFileImport.confirmButton);
+		objPage.waitForElementToBeClickable(objEFileImport.uploadFilebutton, 10);
+		objPage.Click(objEFileImport.closeButton);
+		
+		//step4:try Creating a 'New' status entry again in system
+		objPage.scrollToTop();
+		objPage.Click(objEFileImport.nextButton);
+		objPage.waitForElementToBeClickable(objEFileImport.periodDropdown, 10);
+		apasGenericObj.selectFromDropDown(objEFileImport.periodDropdown, period);
+    	objPage.waitForElementToBeClickable(objEFileImport.confirmButton, 10);
+		objPage.Click(objEFileImport.confirmButton);
+		objPage.waitForElementToBeClickable(objEFileImport.uploadFilebutton, 10);
+		objPage.Click(objEFileImport.closeButton);
+		
+		//step5:Verifying the count of 'New' status entry in system
+		ReportLogger.INFO("Verifying only 1 'New' entry in system and is displayed on top(recently created one)");
+		objPage.waitForElementTextToBe(objEFileImport.statusImportedFile, "New", 120);
+		softAssert.assertEquals(objPage.getElementText(objEFileImport.statusImportedFile), "New", "New status entry cretaed");
+		
+		HashMap<String,ArrayList<String>> response1=salesforceAPI.select(query);
+		int newCountInsystem=response1.get("Id").size();
+		
+		softAssert.assertEquals(newCountInsystem, 1, "SMAB-T1791:Verify user is able to use existing \"New\" entry Import log instead of creating a new \"New\" Import log record while importing a BPP trend Factor file");
+		
+		//step6:importing a file and verifying existing 'new' entry is used for import	
+		objPage.scrollToTop();
+		objEFileImport.uploadFileOnEfileIntake(fileType, source, period, eFileTestDataPath);
+		HashMap<String,ArrayList<String>> response2=salesforceAPI.select(query);
+		int newCountInsystemAfterImport=response2.size();
+		softAssert.assertEquals(newCountInsystemAfterImport, 0, "SMAB-T1791:Verify user is able to use existing \"New\" entry Import log instead of creating a new \"New\" Import log record while importing a BPP trend factor file");
+		
+		apasGenericObj.logout();
+	}
 	
 }
 		

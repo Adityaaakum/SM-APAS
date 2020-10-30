@@ -56,8 +56,8 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objApasGenericFunctions.login(loginUser);
 
 		//Step2: Opening the Parcels module
-		objApasGenericFunctions.searchModule(modules.PARCELS);	
-		
+		objApasGenericFunctions.searchModule(modules.PARCELS);
+
 		//Step3: Search and Open the Parcel
 		objApasGenericFunctions.displayRecords("All Active Parcels");
 		String parcelToSearch = objApasGenericFunctions.getGridDataInHashMap(1).get("APN").get(0);
@@ -167,7 +167,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		String expectedWorkDescriptionError = "No Process for Work Desc with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
 		String expectedFieldLevelError = "Complete this field.";
 
-		objPage.waitForElementToBeClickable(objBuildingPermitPage.workDescriptionTxtBox,30);
+		objPage.waitForElementToBeClickable(30,objBuildingPermitPage.workDescriptionTxtBox);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,"Tree Removal");
 		objPage.Click(objBuildingPermitPage.saveButton);
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.errorMsgOnTop),expectedWorkDescriptionError,"SMAB-T466,SMAB-T349: Warning message validation on the top when 'Work Description' field is having following values 'Tree Removal', 'public works permits', 'temporary signs/banners'");
@@ -461,7 +461,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//step6: Update the estimated project value as less than 25000 and check the status of Calculated processing status field is updated accordingly
 		objPage.Click(objBuildingPermitPage.editButton);
 		ReportLogger.INFO("Updating the value of Estimated Project Value to 25000");
-		objBuildingPermitPage.enterEstimatedProjectValue("25000");
+		objPage.enter(objBuildingPermitPage.estimatedProjectValueTxtBox,"25000");
 		objBuildingPermitPage.saveBuildingPermit();
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T909: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 25000 and county strat code as REPAIR ROOF");
@@ -470,7 +470,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Step7: Update the estimated project value such that value of calculated processing status is switched
 		objPage.Click(objBuildingPermitPage.editButton);
 		ReportLogger.INFO("Updating the value of Estimated Project Value to 7000");
-		objBuildingPermitPage.enterEstimatedProjectValue("7000");
+		objPage.enter(objBuildingPermitPage.estimatedProjectValueTxtBox,"7000");
 		objBuildingPermitPage.saveBuildingPermit();
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400,SMAB-T909: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 7000 and county strat code as REPAIR ROOF");
@@ -481,7 +481,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objPage.Click(objBuildingPermitPage.editButton);
 		objPage.Click(objBuildingPermitPage.deleteRepairRoof);
 		ReportLogger.INFO("Updating the value of County Strat Code to 'SOLAR'");
-		objBuildingPermitPage.searchAndSelectFromDropDown(objBuildingPermitPage.countyStratCodeSearchBox, "SOLAR");
+		objBuildingPermitPage.searchAndSelectOptionFromDropDown(objBuildingPermitPage.countyStratCodeSearchBox, "SOLAR");
 		objBuildingPermitPage.saveBuildingPermit();
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T909: Validation of 'Calculated Processing Status' field when County strat code is changed to SOLAR from REPAIR ROOF");
@@ -489,7 +489,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step9: Update the processing status as No Process and Calculated Processing status should be updated with the same value
 		objPage.Click(objBuildingPermitPage.editButton);
-		objBuildingPermitPage.selectFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "No Process");
+		objBuildingPermitPage.searchAndSelectOptionFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "No Process");
 		objBuildingPermitPage.saveBuildingPermit();
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T403: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
@@ -497,7 +497,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step10: Update the processing status as No Process and Calculated Processing status should be updated with the same value
 		objPage.Click(objBuildingPermitPage.editButton);
-		objBuildingPermitPage.selectFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "Process");
+		objBuildingPermitPage.selectOptionFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "Process");
 		objBuildingPermitPage.saveBuildingPermit();
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'Process' from 'No Process'");
@@ -531,18 +531,18 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		softAssert.assertEquals(objBuildingPermitPage.errorMsgOnTop.getText(),"Invalid Permit Value or Fee","SMAB-T630: Error message validation when 'Estimated Project Value' is less than zero");
 
 		//Step5: Future Issue Date Error validation (SMAB-T627)
-		objBuildingPermitPage.enterDate(objBuildingPermitPage.issueDateCalender, "11/10/2039");
+		objBuildingPermitPage.enter(objBuildingPermitPage.issueDateCalender, "11/10/2039");
 		objPage.Click(objBuildingPermitPage.saveButton);
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Issue Date"),"Issue Date is greater than Current Date","SMAB-T627: 'Issue Date' error validation when data is selected in future");
 
 		//This step is captured as part of implementation of SMAB-2007 for revised error messages
-		objBuildingPermitPage.enterDate(objBuildingPermitPage.completionDateCalender, "11/10/2039");
+		objBuildingPermitPage.enter(objBuildingPermitPage.completionDateCalender, "11/10/2039");
 		objPage.Click(objBuildingPermitPage.saveButton);
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Completion Date"),"Completion Date is greater than Current Date","SMAB-T627: 'Issue Date' error validation when data is selected in future");
 
 		//Step6: Completion Date Less Than Issue Date Error validation (SMAB-T628)
-		objBuildingPermitPage.enterDate(objBuildingPermitPage.issueDateCalender, "11/10/2019");
-		objBuildingPermitPage.enterDate(objBuildingPermitPage.completionDateCalender, "11/08/2019");
+		objBuildingPermitPage.enter(objBuildingPermitPage.issueDateCalender, "11/10/2019");
+		objBuildingPermitPage.enter(objBuildingPermitPage.completionDateCalender, "11/08/2019");
 		objPage.Click(objBuildingPermitPage.saveButton);
 		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Completion Date"),"Completion Date is less than Issue Date","SMAB-T628: Completion Date Less Than Issue Date Error message validation");
 
@@ -577,7 +577,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objBuildingPermitPage.openNewForm();
 
 		//Step4: Permit City Code values validation for manual building permit
-		objPage.Click(objBuildingPermitPage.permitCityCodeDrpDown);
+		objPage.Click(objPage.getWebElementWithLabel(objBuildingPermitPage.permitCityCodeDrpDown));
 		String expectedPermitCityCodeValues = "--None--\nBR\nCL\nDC\nEG\nEH\nEP\nFC\nHM\nLH\nLM\nMB\nMO\nMP\nPC\nPR\nPV\nSC\nSG";
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.permitCityCodeDrpDownOptions),expectedPermitCityCodeValues,"SMAB-T506: Validation for Permit City Code values population for manual building permit");
 		objPage.Click(objBuildingPermitPage.cancelButton);
@@ -676,7 +676,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objBuildingPermitPage.openNewForm("E-File Building Permit");
 
 		//Step4: Permit City Code values validation for manual building permit
-		objPage.Click(objBuildingPermitPage.permitCityCodeDrpDown);
+		objPage.Click(objPage.getWebElementWithLabel(objBuildingPermitPage.permitCityCodeDrpDown));
 		String expectedPermitCityCodeValues = "--None--\nAT\nBG\nBL\nHB\nML\nRC\nSB\nSM\nSS\nUN\nWD";
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.permitCityCodeDrpDownOptions),expectedPermitCityCodeValues,"SMAB-T517: Validation for Permit City Code values population for building permit for cities providing e-files");
 
@@ -707,7 +707,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		String expectedWorkDescriptionError = "No Process for work desc with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
 
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.errorMsgOnTop),expectedWorkDescriptionError,"SMAB-T327: Warning message validation on the top when 'Work Description' field is having following values 'Tree Removal', 'public works permits', 'temporary signs/banners'");
-		objPage.waitForElementToBeClickable(objBuildingPermitPage.workDescriptionTxtBox,30);
+		objPage.waitForElementToBeClickable(30,objBuildingPermitPage.workDescriptionTxtBox);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,"abc");
 		String actualSuccessMessage = objBuildingPermitPage.saveBuildingPermit();
 
@@ -744,7 +744,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,10);
 		objPage.Click(objBuildingPermitPage.editButton);
-		objPage.waitForElementToBeClickable(objBuildingPermitPage.buildingPermitNumberTxtBox,10);
+		objPage.waitForElementToBeClickable(10,objBuildingPermitPage.buildingPermitNumberTxtBox);
 
 		//Step4: Update the work description and building permit number on efile building permit number and save the record
 		ReportLogger.INFO("Editing the existing E-File Building Permit record with Building Permit Number : " + buildingPermitNumber);
@@ -800,7 +800,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,10);
 		objPage.Click(objBuildingPermitPage.editButton);
-		objPage.waitForElementToBeClickable(objBuildingPermitPage.buildingPermitNumberTxtBox,10);
+		objPage.waitForElementToBeClickable(10,objBuildingPermitPage.buildingPermitNumberTxtBox);
 
 		//Step4: Update the processing status as "Process" and APN should be mandatory
 		ReportLogger.INFO("Updating processing status as 'Process' in the existing E-File Building Permit record with Building Permit Number : " + buildingPermitNumber);

@@ -410,8 +410,8 @@ public class ExemptionsPage extends ApasGenericPage {
 	{	
 		System.out.println("Determining Roll year for::"+date);
 		String[] appRcvddate=date.split("/");
-		String month=appRcvddate[0].replaceAll("0", "");
-		int appMonth=Integer.parseInt(month);
+		//String month=appRcvddate[0].replaceAll("0", "");
+		int appMonth=Integer.parseInt(appRcvddate[0]);
 		int rollYear=Integer.parseInt(appRcvddate[2]);
 		if(appMonth>=7)
 		{
