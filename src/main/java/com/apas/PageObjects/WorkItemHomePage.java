@@ -12,23 +12,26 @@ import org.openqa.selenium.support.PageFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class WorkItemHomePage extends Page {
 
     public final String TAB_IN_PROGRESS = "In Progress";
     public final String TAB_IN_POOL = "In Pool";
-    public final String TAB_MY_SUBMITTED_FOR_APPROVAL = "";
-    public final String TAB_NEED_MY_APPROVAL = "";
+    public final String TAB_MY_SUBMITTED_FOR_APPROVAL = "Submitted for Approval";
+    public final String TAB_NEED_MY_APPROVAL = "Needs My Approval";
     public final String TAB_COMPLETED = "Completed";
 
     ApasGenericPage objApasGenericPage;
     ApasGenericFunctions objApasGenericFunctions;
+    Page objPageObj;
 
     public WorkItemHomePage(RemoteWebDriver driver) {
         super(driver);
         PageFactory.initElements(driver, this);
         objApasGenericPage = new ApasGenericPage(driver);
         objApasGenericFunctions = new ApasGenericFunctions(driver);
+        objPageObj=new Page(driver);
     }
 
     @FindBy(xpath = "//div[@data-key='success'][@role='alert']")
@@ -40,16 +43,16 @@ public class WorkItemHomePage extends Page {
     @FindBy(xpath = "//button[text()='Accept Work Item']")
     public WebElement acceptWorkItemButton;
 
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//a[@data-tab-name='Completed']")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@data-tab-name='Completed']")
     public WebElement dataTabCompleted;
 
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//button[contains(.,'Mark Status as Complete')]")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Mark Status as Complete')]")
     public WebElement markStatusAsCompleteButton;
 
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//button[contains(.,'Mark as Current Status')]")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Mark as Current Status')]")
     public WebElement markAsCurrentStatusButton;
 
-    @FindBy(xpath = "//a[@role='tab'][@data-label='Details']")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Details']")
     public WebElement detailsTab;
 
     @FindBy(xpath = "//a[@role='tab'][@data-label='In Progress']")
@@ -58,13 +61,115 @@ public class WorkItemHomePage extends Page {
     @FindBy(xpath = "//a[@role='tab'][@data-label='In Pool']")
     public WebElement inPoolTab;
 
-    @FindBy(xpath = "//force-record-layout-item[contains(.,'Related Action')]//a[@target='_blank'][text()='Review']")
+    @FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//force-record-layout-item[contains(.,'Related Action')]//a[@target='_blank']")
     public WebElement reviewLink;
 
     public String linkedItemEFileIntakeLogs = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'E File Intake Logs')]";
 
     public String relatedBuildingPermits = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'Related Building Permits')]";
 
+
+    @FindBy(xpath="//a[@title='Home']")
+    public WebElement lnkTABHome;
+    
+    @FindBy(xpath="//a/span[text()='Work Items']")
+    public WebElement lnkTABWorkItems;  
+ 
+                    
+    @FindBy(xpath="//a[@data-label='In Progress']")
+    public WebElement lnkTABInProgress;
+    
+    @FindBy(xpath="//a[@data-label='In Pool']")
+    public WebElement lnkTABInPool;
+    
+    @FindBy(xpath="//a[@data-label='Submitted for Approval']")
+    public WebElement lnkTABMySubmittedforApproval;
+    
+    @FindBy(xpath="//a[@data-label='Completed']")
+    public WebElement lnkTABCompleted;
+    
+    @FindBy(xpath="//input[@placeholder='Search Work Pool']")
+    public WebElement txtSearchWorkPool;
+    
+    @FindBy(xpath="//input[@name='status']")
+    public WebElement selStatus;
+    
+    @FindBy(xpath="//input[@name='type']")
+    public WebElement selType;
+    
+    @FindBy(xpath="//input[@name='action']")
+    public WebElement selAction;
+    
+    @FindBy(xpath="//label[contains(.,'Show RP')]//span[@class='slds-checkbox_faux']")
+    public WebElement toggleBUtton;
+    
+    
+    @FindBy(xpath="//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits')]//parent::tr/th//span")
+    public WebElement reminderWINameLink;
+    
+    @FindBy(xpath="//lightning-tab[@aria-labelledby='In Pool__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/th//span")
+    public List<WebElement> lowIncomeInPoolWILinks;
+    
+    @FindBy(xpath="//lightning-tab[@aria-labelledby='In Pool__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[1]//input[@type='checkbox']/parent::span")
+    public List<WebElement> lowIncomeInPoolWIbox;
+    
+    @FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/th//span")
+    public List<WebElement> lowIncomeInProgressWILinks;
+    
+    @FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[2]//input[@type='checkbox']/parent::span")
+    public List<WebElement> lowIncomeInProgressWIbox;
+    
+    @FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[2]//input[@type='checkbox']/parent::span")
+    public List<WebElement> lowincomeSubmittedWI;
+    
+    
+    @FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//div[@class='slds-truncate']//a")
+    public WebElement linkedItemsRecord;
+    
+    @FindBy(xpath="//button[@title='Accept Work Item']")
+    public WebElement acceptWorkItemBtn;
+  
+    @FindBy(xpath="//div[@class='pageLevelErrors']//ul[1]")
+    public WebElement errorMsg;
+    
+    @FindBy(xpath="//li[@title='Details']//a[@data-label='Details']")
+    public WebElement detailsWI;
+    
+    @FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='Related Action']/parent::div/following-sibling::div//a")
+    public WebElement relatedActionLink;
+    
+	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='Status']/parent::div/following-sibling::div//lightning-formatted-text")
+	public WebElement wiStatusDetailsPage;
+
+	@FindBy(xpath = "//li//a[@aria-selected='true' and @role='option']")
+	public WebElement currenWIStatusonTimeline;
+
+	@FindBy(xpath = "//a[@data-label='Needs My Approval']")
+	public WebElement needsMyApprovalTab;
+
+	@FindBy(xpath = "//div[@class='pageLevelErrors']//li")
+	public WebElement pageLevelErrorMsg;
+	
+	@FindBy(xpath = "//button[contains(.,'Cancel')]")
+	public WebElement cancelBtn;
+	
+	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//button[@name= 'Edit']")
+	public WebElement editBtn;
+	
+	@FindBy(xpath ="//div[@class='windowViewMode-maximized active lafPageHost']//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
+    public WebElement vaRollYear;
+	
+	@FindBy(xpath="//a[@title='Submitted for Approval']//span[text()='Submitted for Approval']")
+	public WebElement submittedforApprovalTimeline;
+	
+	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//button//span[text()='Mark as Current Status']")
+	public WebElement markStatusCompleteBtn;
+	
+	@FindBy(xpath="//a[@title='Exemption Limits - 2021']")
+	public WebElement rpslRecord;
+	
+    
+    
 
     /**
      * This method will return grid data from the work item home page tab passed in the parameter
@@ -77,17 +182,20 @@ public class WorkItemHomePage extends Page {
         WebElement webElement = driver.findElement(By.xpath(xpath));
         Click(webElement);
         Thread.sleep(2000);
-        return objApasGenericFunctions.getGridDataInHashMap(2);
+        return objApasGenericFunctions.getGridDataInHashMap();
     }
 
     /**
      * This method will open the work item passed in the parameter
      *
      * @param workItem: Work item number to be opened
+     * @throws InterruptedException 
      **/
-    public void openWorkItem(String workItem) throws IOException {
+    public void openWorkItem(String workItem) throws IOException, InterruptedException {
         WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[@title='" + workItem + "']"));
         javascriptClick(webElement);
+        Thread.sleep(3000);
+        
     }
 
     /**
@@ -96,15 +204,19 @@ public class WorkItemHomePage extends Page {
      * @param workItem: Work item number linked with the item
      **/
     public void openRelatedActionRecord(String workItem) throws Exception {
-        ReportLogger.INFO("Opening the imported file linked with work item : " + workItem);
+        ReportLogger.INFO("Opening the Related action window linked with work item : " + workItem);
         String xpath = "//a[@title='" + workItem + "']";
         waitUntilElementIsPresent(xpath, 15);
-        waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
+       //waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
         javascriptClick(driver.findElement(By.xpath(xpath)));
         Thread.sleep(3000);
-        Click(detailsTab);
+        //Click(detailsTab);
+        javascriptClick(detailsTab);
         scrollToBottom();
         javascriptClick(reviewLink);
+        Thread.sleep(4000);
+        objPageObj.waitUntilPageisReady(driver);
+        
     }
 
     /**
@@ -116,8 +228,9 @@ public class WorkItemHomePage extends Page {
         ReportLogger.INFO("Accepting the work item: " + workItem);
         WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
         scrollToBottom();
-        Click(webElementCheckBox);
+        javascriptClick(webElementCheckBox);
         Click(acceptWorkItemButton);
+        objApasGenericFunctions.waitForPageSpinnerToDisappear(20);
         waitForElementToBeVisible(successAlert, 20);
         waitForElementToDisappear(successAlert, 10);
     }

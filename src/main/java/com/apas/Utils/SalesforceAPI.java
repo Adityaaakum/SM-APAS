@@ -86,7 +86,7 @@ public class SalesforceAPI extends TestBase {
                 String loginAccessToken = jsonObject.getString("access_token");
                 String loginInstanceUrl = jsonObject.getString("instance_url");
                 String REST_ENDPOINT = "/services/data";
-                String API_VERSION = "/v47.0";
+                String API_VERSION = "/v49.0";
                 baseUri = loginInstanceUrl + REST_ENDPOINT + API_VERSION;
                 oauthHeader = new BasicHeader("Authorization", "OAuth " + loginAccessToken);
 
@@ -386,5 +386,44 @@ public class SalesforceAPI extends TestBase {
         delete("Transaction_Trail__c",queryTransactionTrails);
         delete("E_File_Import_Log__c",queryImportLogs);
     }
+    
+    /**
+     * This method will generate the Annual Reminder Work Items
+     * 
+     */
+    public void generateReminderWorkItems() throws IOException {
+        String jobTriggeringCode = "new+DisabledVeteransAnnualReminderWIService().createReminderWorkItems(ApexUtility.getCurrentRollYear());";
+
+        ReportLogger.INFO("Generating Disabled Veteran Reminder Work Items");
+        //Creating HTTP Post Connection
+        HttpPost httpPost = salesforceCreateConnection();
+
+        //Authenticating the HTTP Post connection
+        if (salesforceAuthentication(httpPost)){
+            HttpClient httpClient = HttpClientBuilder.create().build();
+            String uri = baseUri + "/tooling/executeAnonymous/?anonymousBody=" + jobTriggeringCode ;//+ "%3B";
+            System.out.println("URL: " + uri);
+            HttpGet httpGet = new HttpGet(uri);
+            httpGet.addHeader(oauthHeader);
+            httpGet.addHeader(prettyPrintHeader);
+
+            // Make the request.
+           HttpResponse response = httpClient.execute(httpGet);
+
+            // Process the result
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 200) {
+                ReportLogger.PASS("Reminder Work Item Job Triggered Successfully" + EntityUtils.toString(response.getEntity()));
+            } else {
+                ReportLogger.FAIL("Query was unsuccessful. Status code returned is " + statusCode);
+                ReportLogger.FAIL("An error has occurred. Http status: " + response.getStatusLine().getStatusCode());
+            }
+        }
+
+        //Release HTTP Post connection
+        salesforceReleaseConnection(httpPost);
+    }
+
+
 
 }

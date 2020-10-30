@@ -1117,31 +1117,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//h2[contains(text(), '"+ TestBase.CONFIG.getProperty("approveTabDataMsg") +"')]";
 		return getElementText(locateElement(xpath, 10));
 	}
-	/**
-	 * Description: Waits until the page spinner goes invisible within given timeout
-	 * @param: Takes Xpath as an argument
-	 * @throws: Exception
-	 */
-	public void waitForPageSpinnerToDisappear(int...timeOutInSeconds) throws Exception {
-		String xpath = "//lightning-spinner[contains(@class, 'slds-spinner_container')]//div[contains(@class, 'slds-spinner')]";		
-		WebElement element;
-		if(timeOutInSeconds.length == 0) {
-			element = locateElement(xpath, 30);
-		} else {
-			element = locateElement(xpath, timeOutInSeconds[0]);
-		}
-		
-		if(element != null) {
-			for(int i = 0; i < 500; i++) {
-				try{
-					element = driver.findElement(By.xpath(xpath));
-					Thread.sleep(100);
-				} catch (Exception ex) {
-					break;		
-				}
-			}
-		}
-	}
+	
 
 //	public void deleteDuplicateCPI(String rollYear) {
 //		String queryForRollYearId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '"+rollYear+"'";
@@ -1180,6 +1156,32 @@ public class BppTrendPage extends Page {
 			jsonObj.put(columnName, expectedStatus);
 		}
 		objSalesforceAPI.update("BPP_Trend_Roll_Year__c", queryForID, jsonObj);
+	}
+	
+	/**
+	 * Description: Waits until the page spinner goes invisible within given timeout
+	 * @param: Takes Xpath as an argument
+	 * @throws: Exception
+	 */
+	public void waitForPageSpinnerToDisappear(int...timeOutInSeconds) throws Exception {
+		String xpath = "//lightning-spinner[contains(@class, 'slds-spinner_container')]//div[contains(@class, 'slds-spinner')]";		
+		WebElement element;
+		if(timeOutInSeconds.length == 0) {
+			element = locateElement(xpath, 30);
+		} else {
+			element = locateElement(xpath, timeOutInSeconds[0]);
+		}
+		
+		if(element != null) {
+			for(int i = 0; i < 500; i++) {
+				try{
+					element = driver.findElement(By.xpath(xpath));
+					Thread.sleep(100);
+				} catch (Exception ex) {
+					break;		
+				}
+			}
+		}
 	}
 	
 }

@@ -43,7 +43,6 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	String sanMateoBuildingPermitFile;
 	String sanMateoBuildingPermitFileWithError;
 	String unincorporatedBuildingPermitFile;
-	String sanMateoBuildingPermitFileNew;
 	SalesforceAPI salesforceAPI;
 	EFileImportPage objEFileImport;
 	EFileImportLogsPage objEFileImportLogPage;
@@ -76,7 +75,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		sanMateoBuildingPermitFileWithError = System.getProperty("user.dir") + testdata.EFILEIMPORT_BPDATA + "SanMateoBuildingPermitsWithValidAndInvalidData5.xlsx";
 		unincorporatedBuildingPermitFile = System.getProperty("user.dir") + testdata.EFILEIMPORT_BPDATA + "Import_TestData_ValidAndInvalidScenarios_UN.txt";
 		EFileinvalidFormatFilepath =System.getProperty("user.dir") + testdata.EFILEIMPORT_INVALIDDATA ;
-		sanMateoBuildingPermitFileNew = System.getProperty("user.dir") + testdata.EFILEIMPORT_BPDATA + "SanMateoBuildingPermitsWithdata1234.xlsx";
+		
 	}
 	
 	/**
