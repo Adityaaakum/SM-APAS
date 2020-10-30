@@ -61,6 +61,9 @@ public class WorkItemHomePage extends Page {
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//force-record-layout-item[contains(.,'Related Action')]//a[@target='_blank']")
     public WebElement reviewLink;
 
+    @FindBy(xpath = "//a[@role='tab'][@data-label='Needs My Approval']")
+    public WebElement needsMyApprovalTab;
+
     public String linkedItemEFileIntakeLogs = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'E File Intake Logs')]";
 
     public String relatedBuildingPermits = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'Related Building Permits')]";
