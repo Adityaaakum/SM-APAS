@@ -606,11 +606,14 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         //Step1: Validate reminder work item creation and the work item flow for approved file
         BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
 
-        //Step2: Delete the existing WI from system before importing files
+        //Step2: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
+        objApasGenericFunctions.login(loginUser);
+
+        //Step3: Delete the existing WI from system before importing files
         String query = "select id from Work_Item__c where Reference__c = 'BPP Composite Factors'";
         objSalesforceAPI.delete("Work_Item__c", query);
 
-        //Step3: "Perform Calculations" Work Item generation validation
+        //Step4: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Perform Calculations - BPP Composite Factors")).count();
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
@@ -649,25 +652,28 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         query = "SELECT id FROM BPP_Trend_Roll_Year__c WHERE Roll_Year__c = '" + rollYear + "'";
         objSalesforceAPI.update("BPP_Trend_Roll_Year__c", query, "Annual_Factor_Status__c", "Reviewed by Admin");
 
-        //Step6: "Perform Calculations" Work Item generation validation
+        //Step6: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
+        objApasGenericFunctions.login(loginUser);
+
+        //Step7: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
         String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
 
-        //Step7: Accepting the work item and opening the link under 'Action' Column
+        //Step8: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
         objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
         objWorkItemHomePage.openActionLink(importWorkItem);
         String parentwindow = driver.getWindowHandle();
         objPage.switchToNewWindow(parentwindow);
 
-        //Step8: Trigger Calculations by clicking 'Calculate All' Button
+        //Step9: Trigger Calculations by clicking 'Calculate All' Button
         objPage.Click(objBppTrendPage.calculateAllBtn);
         objPage.waitForElementToDisappear(objBppTrendPage.xpathSpinner, 50);
         objPage.waitUntilElementIsPresent(objBppTrendPage.xpathTableMessage, 10);
         softAssert.assertEquals(objPage.getElementText(objBppTrendPage.tableMessage), "Yet to be submitted for approval", "SMAB-T1761: Message displayed above the table after Calculation is completed");
 
-        //Step9: Validating unavailability of Submit All Factors For Approval button
+        //Step10: Validating unavailability of Submit All Factors For Approval button
         softAssert.assertTrue(Objects.isNull(objPage.locateElement(objBppTrendPage.xpathSubmitAllFactorsForApprovalBtn, 20)), "SMAB-T1761: Submit All Factors For Approval button is not visible");
     }
 
@@ -691,36 +697,40 @@ public class BPPTrends_WorkItems_Test extends TestBase {
 
         //Step4: Validate reminder work item creation and the work item flow for approved file
         BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
+
+        //Step5: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
+        objApasGenericFunctions.login(loginUser);
         objApasGenericFunctions.searchModule(modules.HOME);
 
-        //Step5: Update WI status to Completed
+        //Step6: Update WI status to Completed
         query = "select id from Work_Item__c where Reference__c = 'BOE Valuation Factors' OR Reference__c = 'CAA Valuation Factors'";
         objSalesforceAPI.update("Work_Item__c", query, "Status__c", "In Progress");
         objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
 
-        //Step6: "Perform Calculations" Work Item generation validation
+        //Step7: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
         String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
 
-        //Step7: Accepting the work item and opening the link under 'Action' Column
+        //Step8: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
         objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
         objWorkItemHomePage.openActionLink(importWorkItem);
         String parentwindow = driver.getWindowHandle();
         objPage.switchToNewWindow(parentwindow);
 
-        //Step8: Trigger Calculations by clicking 'Calculate All' Button
+        //Step9: Trigger Calculations by clicking 'Calculate All' Button
         objPage.Click(objBppTrendPage.calculateAllBtn);
 
-        //Step9: Validating Error Message when 'Annual Settings' WI is not Completed and calculations are triggered
+        //Step10: Validating Error Message when 'Annual Settings' WI is not Completed and calculations are triggered
         String actualErrorMessage = objBppTrendPage.waitForErrorPopUpMsgOnCalculateClick(60);
         softAssert.assertContains(actualErrorMessage, "BPP Annual Factors is not yet completed/reviewed by admin for selected Roll Year", "SMAB-T2196: Verify Error Message when 'Annual Settings' WI is not Completed and calculations are triggered");
+
     }
     /** This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SSMAB-T1750,SMAB-T1737: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true)
+    @Test(description = "SSMAB-T1750,SMAB-T1737: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Item_BPP"}, alwaysRun = true)
     public void BPPTrends_verifyPerformCalculationWI_SubmittedForApprovalAndApproval_Status(String loginUser) throws Exception {
 
         //Step1: Delete the existing WIs before generating
@@ -774,7 +784,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         query = "select Status__c from Work_Item__c where Name = '"+ importWorkItem +"'";
         HashMap<String, ArrayList<String>> workItemData = new SalesforceAPI().select(query);
         String actualWIStatus = workItemData.get("Status__c").get(0);
-        softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T1737: Verify status of WI : '' is 'Submitted for Approval'");
+        softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T1737: Verify status of WI : 'Perform Calculations' is 'Submitted for Approval'");
 
         //Step14: Log out from the application and log in as BPP Principal
         objApasGenericFunctions.logout();
@@ -798,6 +808,94 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         query = "select Status__c from Work_Item__c where Name = '"+ importWorkItem +"'";
         workItemData = new SalesforceAPI().select(query);
         actualWIStatus = workItemData.get("Status__c").get(0);
-        softAssert.assertEquals(actualWIStatus, "Completed", "SMAB-T1750: Verify status of WI : '' is 'Completed'");
+        softAssert.assertEquals(actualWIStatus, "Completed", "SMAB-T1750: Verify status of WI : 'Perform Calculations' is 'Completed'");
+    }
+    /** This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
+     * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
+     **/
+    @Test(description = "SMAB-T2195: Verify user is able to submit 'Perform Calculations' WI for Approval", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true)
+    public void BPPTrends_verifyPerformCalculationWI_ReturnedStatus(String loginUser) throws Exception {
+
+        //Step1: Delete the existing WIs before generating
+        String query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings' OR Reference__c = 'BPP Composite Factors'";
+        objSalesforceAPI.delete("Work_Item__c",query);
+
+        //Step2: Delete the existing WIs before generating
+        query = "select id from Work_Item__c where Sub_Type__c = 'Import'";
+        objSalesforceAPI.delete("Work_Item__c",query);
+
+        //Step3: Generate 'Annual Factor Settings' Reminder Work Items
+        objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_ANNUAL_FACTORS);
+
+        //Step10: Update 'Annual Factor Status' & WI status to Completed
+        query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings'";
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "In Progress");
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
+
+        query = "SELECT id FROM BPP_Trend_Roll_Year__c WHERE Roll_Year__c = '" +rollYear+ "'";
+        objSalesforceAPI.update("BPP_Trend_Roll_Year__c", query, "Annual_Factor_Status__c", "Reviewed by Admin");
+
+        //Step4: Validate reminder work item creation and the work item flow for approved file
+        BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
+        BPPTrends_BOEValuation_WorkItemImportAndApprove(loginUser,true);
+        BPPTrends_CAAValuation_WorkItemImportAndApprove(loginUser,true);
+
+        //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
+        objApasGenericFunctions.login(loginUser);
+
+        //Step5: "Perform Calculations" Work Item generation validation
+        HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
+        int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
+        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+
+        //Step6: Accepting the work item and opening the link under 'Action' Column
+        objWorkItemHomePage.acceptWorkItem(importWorkItem);
+        objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
+        objWorkItemHomePage.openActionLink(importWorkItem);
+        String parentwindow = driver.getWindowHandle();
+        objPage.switchToNewWindow(parentwindow);
+
+        //Step7: Trigger Calculations by clicking 'Calculate All' Button
+        objPage.Click(objBppTrendPage.calculateAllBtn);
+        objPage.waitForElementToDisappear(objBppTrendPage.xpathSpinner, 50);
+
+        //Step8: Submit Calculations for Approval
+        objPage.Click(objBppTrendPage.submitAllFactorForApprovalButton);
+        objPage.waitForElementToDisappear(objBppTrendPage.xpathSpinner, 50);
+
+        //Step9: Verify Status of WI 'Perform Calculations' is 'Submitted for Approval'
+        query = "select Status__c from Work_Item__c where Name = '"+ importWorkItem +"'";
+        HashMap<String, ArrayList<String>> workItemData = new SalesforceAPI().select(query);
+        String actualWIStatus = workItemData.get("Status__c").get(0);
+        softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T2195: Verify status of WI : 'Perform Calculations' is 'Submitted for Approval'");
+
+        //Step10: Log out from the application and log in as BPP Principal
+        objApasGenericFunctions.logout();
+        objApasGenericFunctions.login(users.PRINCIPAL_USER);
+        objApasGenericFunctions.searchModule(modules.HOME);
+
+        //Step11: Navigate to 'Needs My Approval' tab and
+        objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
+
+        //Step12: Return the Work Item
+        objWorkItemHomePage.returntWorkItem(importWorkItem,"Test WI Rejection");
+
+        //Step13: Verify Status of WI 'Perform Calculations' is 'Completed'
+        query = "select Status__c from Work_Item__c where Name = '"+ importWorkItem +"'";
+        workItemData = new SalesforceAPI().select(query);
+        actualWIStatus = workItemData.get("Status__c").get(0);
+        softAssert.assertEquals(actualWIStatus, "Returned", "SMAB-T2195: Verify status of WI : 'Perform Calculations' is 'Returned'");
+
+        //Step14: Log out from the application and log in again as BPP Admin
+        objApasGenericFunctions.logout();
+        objApasGenericFunctions.login(loginUser);
+        objApasGenericFunctions.searchModule(modules.HOME);
+
+        //Ste15: Verify WI is present in 'In Progress' tab
+        HashMap<String, ArrayList<String>> InProgressWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_PROGRESS);
+        int workItemRowNumber = InProgressWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
+        String workItemName = InProgressWorkItems.get("Work Item Number").get(workItemRowNumber);
+        softAssert.assertEquals(workItemName, "importWorkItem", "SMAB-T2195: Verify WI returned to user is found in 'In Progress' tab");
+
     }
 }

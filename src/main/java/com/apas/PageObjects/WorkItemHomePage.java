@@ -70,6 +70,15 @@ public class WorkItemHomePage extends Page {
     @FindBy(xpath = "//a[@role='tab'][@data-label='Needs My Approval']")
     public WebElement needsMyApprovalTab;
 
+    @FindBy(xpath = "//button[text()='Return']")
+    public WebElement returnWorkItemButton;
+
+    @FindBy(xpath = "//button[text() = 'Save']")
+    public WebElement saveButton;
+
+    @FindBy(xpath = "//label[text()='Returned Reason']//following-sibling::div//input")
+    public WebElement returnedReasonTxtBox;
+
     public String linkedItemEFileIntakeLogs = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'E File Intake Logs')]";
 
     public String relatedBuildingPermits = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'Related Building Permits')]";
@@ -264,5 +273,23 @@ public class WorkItemHomePage extends Page {
         waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
         javascriptClick(driver.findElement(By.xpath(xpath)));
         Thread.sleep(4000);
+    }
+
+    /**
+     * This method will reject the work item passed in the parameter
+     *
+     * @param workItem: Work item number to be returned
+     **/
+    public void returntWorkItem(String workItem, String returnReason) throws Exception {
+        ReportLogger.INFO("Rejecting the work item: " + workItem);
+        WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
+        scrollToElement(webElementCheckBox);
+        Click(webElementCheckBox);
+        scrollToElement(returnWorkItemButton);
+        Click(returnWorkItemButton);
+        enter(returnedReasonTxtBox,returnReason);
+        Click(saveButton);
+        waitForElementToBeVisible(successAlert, 20);
+        waitForElementToDisappear(successAlert, 10);
     }
 }
