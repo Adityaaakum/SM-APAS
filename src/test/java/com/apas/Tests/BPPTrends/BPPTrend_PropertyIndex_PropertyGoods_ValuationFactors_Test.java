@@ -91,7 +91,8 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		//Step5: Clicking on BPP property index factor tab and validating whether its table is visible
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on BPP Property Index Factors tab on details page");
 		objBppTrnPg.Click(objBppTrendSetupPage.bppPropertyIndexFactorsTab);
-		boolean bppPropIndexFactorTablevisible = objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.bppPropertyIndexFactorsTableSection, 20).isDisplayed();
+		objBppTrnPg.waitForElementToBeVisible(20,objBppTrendSetupPage.bppPropertyIndexFactorsTableSection);
+		boolean bppPropIndexFactorTablevisible = objBppTrnPg.verifyElementVisible(objBppTrendSetupPage.bppPropertyIndexFactorsTableSection);
 		softAssert.assertTrue(bppPropIndexFactorTablevisible, "SMAB-T229: Verify BPP Property Index Factors tab is displayed on BPP Trend setup Page");
 		
 
@@ -245,7 +246,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		//Step5: Clicking on BPP property index factor tab and validating whether its table is visible
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on BPP Property Index Factors tab on details page");
 		objBppTrnPg.Click(objBppTrendSetupPage.bppPropertyIndexFactorsTab);
-		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.bppPropertyIndexFactorsTableSection, 20).isDisplayed();
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.bppPropertyIndexFactorsTableSection, 20);
 
 		//Step6: Retrieve existing values from tables for very first row
 		String factorTableName = "BPP Property Index Factors";
@@ -339,7 +340,8 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Imported Valuation Factors tab on details page");
 		objBppTrnPg.Click(objBppTrendSetupPage.moreTabLeftSection);
 		objBppTrnPg.javascriptClick(objBppTrendSetupPage.dropDownOptionBppImportedValuationFactors);
-		boolean bppImportedValFactorTableVisible = objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.bppImportedValuationFactorsTableSection, 20).isDisplayed();
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.bppImportedValuationFactorsTableSection, 20);
+		boolean bppImportedValFactorTableVisible = objBppTrnPg.verifyElementVisible(objBppTrendSetupPage.bppImportedValuationFactorsTableSection);
 		softAssert.assertTrue(bppImportedValFactorTableVisible, "SMAB-T229: Verify Imported Valuation Factors tab is displayed on BPP Trend setup Page");
 		
 		
@@ -433,7 +435,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Valuation Factors tab on details page");
 		objBppTrnPg.Click(objBppTrendSetupPage.moreTabLeftSection);
 		objBppTrnPg.javascriptClick(objBppTrendSetupPage.dropDownOptionBppImportedValuationFactors);
-		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.bppImportedValuationFactorsTableSection, 20).isDisplayed();
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.bppImportedValuationFactorsTableSection);
 
 		//Step6: Clicking on the show more button and validating presence of Edit button
 		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("Imported Valuation Factors");
@@ -490,7 +492,8 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		//Step5: Clicking on BPP PErcent Goods Factors tab and validating whether its table is visible
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on BPP Percent Goods Factors tab on details page");
 		objBppTrnPg.Click(objBppTrendSetupPage.bppPropertyGoodFactorsTab);
-		boolean bppPercentGoodsFactorTableVisible = objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.bppPercentGoodFactorsTableSection, 20).isDisplayed();
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.bppPercentGoodFactorsTableSection, 20);
+		boolean bppPercentGoodsFactorTableVisible = objBppTrnPg.verifyElementVisible(objBppTrendSetupPage.bppPercentGoodFactorsTableSection);
 		softAssert.assertTrue(bppPercentGoodsFactorTableVisible, "SMAB-T229: Verify BPP Percent Goods Factors tab is displayed on BPP Trend setup Page");
 		
 		
@@ -586,7 +589,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		//Step5: Clicking on BPP Percent Goods Factors tab and validating whether its table is visible
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on BPP Percent Goods Factors tab on details page");
 		objBppTrnPg.Click(objBppTrendSetupPage.bppPropertyGoodFactorsTab);
-		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.bppPercentGoodFactorsTableSection, 20).isDisplayed();
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.bppPercentGoodFactorsTableSection);
 		
 		//Step6: Clicking on the show more button and validating presence of Edit button
 		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("BPP Percent Good Factors");

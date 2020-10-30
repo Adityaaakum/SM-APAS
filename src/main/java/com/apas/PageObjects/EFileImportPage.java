@@ -376,7 +376,7 @@ public class EFileImportPage extends Page {
         ReportLogger.INFO("Uploading " + absoluteFilePath + " file");
         selectFileAndSource(fileType, source);
         objPage.waitUntilElementDisplayed(nextButton, 15);
-        objPage.scrollToElement(nextButton);
+        objPage.scrollToTop();
         objPage.Click(nextButton);
         objPage.enter(fileNameInputBox, filename);
         objPage.Click(fileNameNext);

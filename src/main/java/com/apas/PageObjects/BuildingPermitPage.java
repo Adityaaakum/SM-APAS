@@ -43,6 +43,18 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 	//Below objects are for Building Permit Module Screen
 
+	public String buildingPermitNumberTxtBox = "Building Permit Number";
+	public String parcelsSearchBox = "APN";
+	public String OwnerNameTextBox = "Owner Name";
+	public String processingStatusDrpDown = "Processing Status";
+	public String cityStratCodeTextBox = "City Strat Code";
+	public String countyStratCodeSearchBox = "County Strat Code Description";
+	public String estimatedProjectValueTxtBox = "Estimated Project Value";
+	public String issueDateCalender = "Issue Date";
+	public String completionDateCalender = "Completion Date";
+	public String permitCityCodeDrpDown = "Permit City Code";
+	public String workDescriptionTxtBox = "Work Description";
+
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']")
 	public WebElement newButton;
 
@@ -87,44 +99,11 @@ public class BuildingPermitPage extends ApasGenericPage {
 	@FindBy(xpath = "//button[@title='Close this window']")
 	public WebElement closeEntryPopUp;
 
-	@FindBy(xpath = "//span[text() = 'Building Permit Number']/parent::label/following-sibling::input")
-	public WebElement buildingPermitNumberTxtBox;
-
-	@FindBy(xpath = "//span[text() = 'Owner Name']/parent::label/following-sibling::input")
-	public WebElement OwnerNameTextBox;
-
-	@FindBy(xpath = "//input[@title = 'Search Parcels']")
-	public WebElement parcelsSearchBox;
-
-	@FindBy(xpath = "//span[text() = 'Processing Status']/parent::span/following-sibling::div//a[@class = 'select']")
-	public WebElement processingStatusDrpDown;
-
-	@FindBy(xpath = "//input[@title = 'Search County Strat Codes']")
-	public WebElement countyStratCodeSearchBox;
-
-	@FindBy(xpath = "//span[text() = 'City Strat Code']/parent::label/following-sibling::input")
-	public WebElement cityStratCodeTextBox;
-
 	@FindBy(xpath = "//*[@class='pillContainerListItem'][contains(.,'REPAIR ROOF')]//*[@class='deleteAction']")
 	public WebElement deleteRepairRoof;
 
-	@FindBy(xpath = "//span[text() = 'Estimated Project Value']/parent::label/following-sibling::input")
-	public WebElement estimatedProjectValueTxtBox;
-
-	@FindBy(xpath = "//span[text() = 'Issue Date']/parent::label/following-sibling::div/input")
-	public WebElement issueDateCalender;
-
-	@FindBy(xpath = "//span[text() = 'Completion Date']/parent::label/following-sibling::div/input")
-	public WebElement completionDateCalender;
-
-	@FindBy(xpath = "//span[text() = 'Permit City Code']/parent::span/following-sibling::div//a[@class = 'select']")
-	public WebElement permitCityCodeDrpDown;
-
 	@FindBy(xpath = "//div[@class='select-options']/ul/li/..")
 	public WebElement permitCityCodeDrpDownOptions;
-
-	@FindBy(xpath = "//span[text() = 'Work Description']/parent::label/following-sibling::input")
-	public WebElement workDescriptionTxtBox;
 
 	@FindAll({
 			@FindBy(xpath = "//div[@class = 'actionsContainer']//button[@title = 'Save & New']//span[text() = 'Save & New']"),
@@ -242,8 +221,8 @@ public class BuildingPermitPage extends ApasGenericPage {
 				Click(efileRadioButton);
 			Click(recordTypePopUpNextButton);
 		}
-		waitForElementToBeVisible(buildingPermitNumberTxtBox,30);
-		waitForElementToBeClickable(buildingPermitNumberTxtBox,20);
+		waitForElementToBeVisible(30,buildingPermitNumberTxtBox);
+		waitForElementToBeClickable(20,buildingPermitNumberTxtBox);
 	}
 
 	/**
@@ -267,29 +246,16 @@ public class BuildingPermitPage extends ApasGenericPage {
 		objApasGenericPage.selectOptionFromDropDown(processingStatusDrpDown, dataMap.get("Processing Status"));
 		objApasGenericPage.searchAndSelectOptionFromDropDown(countyStratCodeSearchBox, dataMap.get("County Strat Code Description"));
 		enter(estimatedProjectValueTxtBox, dataMap.get("Estimated Project Value"));
-		enterDate(issueDateCalender, dataMap.get("Issue Date"));
-		enterDate(completionDateCalender, dataMap.get("Completion Date"));
-		objApasGenericPage.selectOptionFromDropDown(permitCityCodeDrpDown, dataMap.get("Permit City Code"));
+		enter(issueDateCalender, dataMap.get("Issue Date"));
+		enter(completionDateCalender, dataMap.get("Completion Date"));
 		enter(workDescriptionTxtBox, dataMap.get("Work Description"));
+		objApasGenericPage.selectOptionFromDropDown(permitCityCodeDrpDown, dataMap.get("Permit City Code"));
 
 		//This text box comes only while adding E-File Building Permit manually
 		if (verifyElementVisible(OwnerNameTextBox)) enter(OwnerNameTextBox,dataMap.get("Owner Name"));
 		if (verifyElementVisible(cityStratCodeTextBox)) enter(cityStratCodeTextBox,dataMap.get("City Strat Code"));
 
 		return buildingPermitNumber;
-	}
-
-	/** @throws InterruptedException 
-	 * @Description: This method will Click Save button on the New Building Permit PopUp Window
-	 */
-	public void clickSaveNewBuildingPermitEntryPopUp() throws IOException, InterruptedException {
-		
-		boolean isNewManualEntryPopUpDisplayed = waitForElementToBeVisible(20, buildingPermitPopUp);
-		if (isNewManualEntryPopUpDisplayed) {
-			Click(waitForElementToBeClickable(saveButton));
-			Thread.sleep(2000);
-		}
-		
 	}
 
 	/* Description: This method will Click Save button and return the text of the confirmation message appeared
@@ -309,8 +275,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Adding and saving a new Building Permit manual record");
 		openNewForm();
 		enterManualEntryData(dataMap);
-		//saveEntryAndOpenNewAndExit();
-		clickSaveNewBuildingPermitEntryPopUp();
+		Click(getButtonWebElement("Save"));
 	}
 
 	/**
@@ -323,31 +288,6 @@ public class BuildingPermitPage extends ApasGenericPage {
 		String xpathStr = "//table//tbody/tr//th//a[text() = '"+ entryDetails +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
 		WebElement modificationsIcon = locateElement(xpathStr, 60);
 		clickAction(modificationsIcon);
-	}
-
-	/**
-	 * @Description: This method is to handle fields like Permit City Code or Processing Status
-	 * by clicking the web element and then selecting the given value from drop down
-	 * @param element: WebElement for required field
-	 * @param value: Like 'Process' or 'No Process' for Processing Status field etc.
-	 * @throws Exception
-	 */
-	public void selectFromDropDown(WebElement element, String value) throws Exception {
-		Click(element);
-		String xpathStr = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 30);
-		drpDwnOption.click();
-	}
-
-	/**
-	 * @Description: This methods particularly handles the issue date and completion date fields
-	 * @param element: WebElement for required field
-	 * @param date
-	 * @throws Exception
-	 */
-	public void enterDate(WebElement element, String date) throws Exception {
-		Click(element);
-		objApasGenericPage.selectDateFromDatePicker(date);
 	}
 
 	/**
@@ -400,14 +340,6 @@ public class BuildingPermitPage extends ApasGenericPage {
 		manualBuildingPermitMap.put("APN",activeAPN);
 
 		return  manualBuildingPermitMap;
-	}
-
-	public void enterEstimatedProjectValue(String value) throws IOException, InterruptedException {
-		waitForElementToBeClickable(estimatedProjectValueTxtBox,15);
-		estimatedProjectValueTxtBox.clear();
-		estimatedProjectValueTxtBox.sendKeys(Keys.chord(Keys.CONTROL,"a", Keys.DELETE));
-		Thread.sleep(3000);
-		estimatedProjectValueTxtBox.sendKeys(value);
 	}
 
 }

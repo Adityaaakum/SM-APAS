@@ -13,9 +13,9 @@
 			</run>
 		</groups>
 		<classes>
-			 <class name="com.apas.Tests.SecurityAndSharing.BppTrend_SecurityAndSharing_Test">
+			 <class name="com.apas.Tests.BuildingPermit.BuildingPermit_ManualCreationAndProcessing_Test">
 				 <methods>
-					 <include name="BppTrend_RestrictionsEditingBPPSettingsBeforeApprove_RestrictedUsers"/>
+					 <include name="BuildingPermit_ManualCreateNewBuildingPermitWithDataValidations"/>
 				 </methods>
 			 </class>
 		</classes>

@@ -120,7 +120,13 @@ public class Page {
 
 		try {
 			if (object instanceof String) {
-				webElement = driver.findElement(By.xpath(object.toString()));
+				//This try catch block is to handle if the string is given as full xpath or just the label of the Element
+				try{
+					webElement = driver.findElement(By.xpath(object.toString()));
+				}catch (Exception ignored){
+					webElement = getWebElementWithLabel(object.toString());
+				}
+
 			} else if (object instanceof By) {
 				webElement = driver.findElement((By) object);
 			} else
@@ -212,21 +218,34 @@ public class Page {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void Click(WebElement elem) throws IOException {
+
 		waitForElementToBeVisible(20, elem);
 		waitForElementToBeClickable(20, elem);
 		((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", elem);
-		elem.click();
+
+		try{
+			elem.click();
+		}catch (Exception ignored){
+			((JavascriptExecutor) driver).executeScript("arguments[0].click();", elem);
+		}
+
 		waitUntilPageisReady(driver);
 	}
 
 	/**
 	 * Function will enter the value in the element.
 	 *
-	 * @param elem  Element in which value needs to be entered
+	 * @param element  Element in which value needs to be entered
 	 * @param value the value needs to be entered
 	 * @throws Exception the exception
 	 */
-	public void enter(WebElement elem, String value) throws Exception {
+	public void enter(Object element, String value) throws Exception {
+		WebElement elem;
+		if (element instanceof String) {
+			elem = getWebElementWithLabel(element.toString());
+		}else
+			elem = (WebElement) element;
+
 		waitForElementToBeClickable(15, elem);
 		((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", elem);
 		elem.clear();
@@ -259,16 +278,7 @@ public class Page {
 	 * @param timeoutInSeconds the timeout in seconds
 	 */
 	public void waitForElementToBeClickable(WebElement element, int timeoutInSeconds) {
-
-		try {
-			flwait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).ignoring(NoSuchElementException.class)
-					.ignoring(org.openqa.selenium.StaleElementReferenceException.class)
-					.until(ExpectedConditions.elementToBeClickable(element));
-			//} catch (org.openqa.selenium.StaleElementReferenceException e) {
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
+		waitForElementToBeClickable(timeoutInSeconds,element);
 	}
 
 	/**
@@ -278,21 +288,24 @@ public class Page {
 	 * @param object           (Xpath, By)
 	 */
 	public WebElement waitForElementToBeClickable(int timeoutInSeconds, Object object) {
-		boolean isElementClickable = false;
 		WebElement element = null;
 		try {
 			if (object instanceof String) {
-				element = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(object.toString()))));
+				//Added this try catch block to handle if the string is passed as xpath or just element label
+				try{
+					element = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(object.toString()))));
+				}catch (Exception ignored){
+					element = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.elementToBeClickable(getWebElementWithLabel(object.toString())));
+				}
+
 			} else if (object instanceof By) {
 				element = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.elementToBeClickable((By) object));
 			} else {
 				element = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.elementToBeClickable((WebElement) object));
 			}
-			isElementClickable = true;
 		} catch (Exception ex) {
-			isElementClickable = false;
 		}
-		//return isElementClickable;
+
 		return element;
 	}
 
@@ -302,13 +315,8 @@ public class Page {
 	 * @param element          the element
 	 * @param timeoutInSeconds the timeout in seconds
 	 */
-	public WebElement waitForElementToBeVisible(WebElement element, int timeoutInSeconds) {
-		try {
-			wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(element));
-		} catch (org.openqa.selenium.StaleElementReferenceException e) {
-			e.printStackTrace();
-		}
-		return element;
+	public void waitForElementToBeVisible(WebElement element, int timeoutInSeconds) {
+		waitForElementToBeVisible(timeoutInSeconds,element);
 	}
 
 	public void waitUntilElementDisplayed(WebElement webElement, int timeoutInSeconds) {
@@ -330,24 +338,6 @@ public class Page {
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 	}
 
-	public void waitUntilElementNotDisplayed(WebElement webElement, int timeoutInSeconds) {
-		WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
-		ExpectedCondition<Boolean> elementIsDisplayed = new ExpectedCondition<Boolean>() {
-			public Boolean apply(WebDriver arg0) {
-				try {
-					webElement.isDisplayed();
-					return false;
-				} catch (NoSuchElementException e) {
-					return true;
-				} catch (StaleElementReferenceException f) {
-					return true;
-				}
-			}
-		};
-		wait.until(elementIsDisplayed);
-	}
-
-
 	/**
 	 * Function will wait for an element to be Visible on the page.
 	 *
@@ -358,7 +348,13 @@ public class Page {
 		boolean isElementVisible = false;
 		try {
 			if (object instanceof String) {
-				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(object.toString()))));
+				//Added this try catch block to handle if the string is passed as xpath or just element label
+				try{
+					wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(object.toString()))));
+				}catch (Exception ignored){
+					wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(getWebElementWithLabel(object.toString())));
+				}
+
 			} else if (object instanceof By) {
 				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOfElementLocated((By) object));
 			} else {
@@ -864,4 +860,25 @@ public class Page {
 
 	}
 
+	/**
+	 * Description: returns the webelement based on the label of the element
+	 *
+	 * @param label : label of the object which needs to be identified
+	 * @return : webelement against the label
+	 */
+	public WebElement getWebElementWithLabel(String label){
+		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()=\"" + label + "\"]/..//input";
+		return driver.findElement(By.xpath(xpath));
+	}
+
+	/**
+	 * Description: returns the web element based on the text of the button
+	 *
+	 * @param text : text of the button
+	 * @return : button element
+	 */
+	public WebElement getButtonWebElement(String text){
+		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='" + text + "']";
+		return driver.findElement(By.xpath(xpath));
+	}
 }
