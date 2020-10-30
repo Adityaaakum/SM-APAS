@@ -79,7 +79,7 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 		salesforceAPI.delete("Real_Property_Settings_Library__c", deleteRPSLQuery);
 
 		// To run the reminder job WI creation query
-		salesforceAPI.generateReminderWorkItems();
+		salesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_DV);
 
 		// Step1: Login to the APAS application using the credentials passed through
 		// data provider
@@ -107,7 +107,7 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 		// verifying that new WI is linked with already existing RPSL--2021
 		String deleteDVWIAgainQuery = "select id from Work_Item__c where Request_Type__c='Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits'";
 		salesforceAPI.delete("Work_Item__c", deleteDVWIAgainQuery);
-		salesforceAPI.generateReminderWorkItems();
+		salesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_DV);
 
 		driver.navigate().refresh();
 		apasGenericObj.searchModule(modules.HOME);
@@ -152,7 +152,7 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 		workItemPageObj.openRelatedActionRecord(reminderWINumber);
 
 		// step4a: editing the record and submitting it
-		apasGenericObj.SwitchToNewlyOpenedWindow();
+		objPage.switchToNewWindow(parentwindow);
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//Thread.sleep(3000);
 		objPage.waitForElementToBeClickable(rpslObj.dvLowIncomeExemptionAmountEditBox, 10);
@@ -248,7 +248,7 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 		// step6: Now staff member submitting the WI again by submitting the RPSL
 		String parentwindow = driver.getWindowHandle();
 		objPage.Click(workItemPageObj.relatedActionLink);
-		apasGenericObj.SwitchToNewlyOpenedWindow();
+		objPage.switchToNewWindow(parentwindow);
 		// Thread.sleep(3000);
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//Thread.sleep(3000);
@@ -286,7 +286,7 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 
 		objPage.Click(workItemPageObj.toggleBUtton);
 		objPage.javascriptClick(workItemPageObj.needsMyApprovalTab);
-		apasGenericObj.waitForPageSpinnerToDisappear(5);
+		objPage.waitForElementToDisappear(objApasGenericPage.xpathSpinner, 10);
 		workItemPageObj.openRelatedActionRecord(reminderAgainSubmittedWINumber);
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//Thread.sleep(3000);
@@ -358,7 +358,7 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "In Progress","SMAB-T1951: Verify that user is able to accept the WI and is able to see correct status of WI");
 		String parentwindow = driver.getWindowHandle();
 		objPage.Click(workItemPageObj.relatedActionLink);
-		apasGenericObj.SwitchToNewlyOpenedWindow();
+		objPage.switchToNewWindow(parentwindow);
 		// step4a: Verifying the WI was created for current Roll Year VA
 		Thread.sleep(3000);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.vaRollYear), "2021","SMAB-T1918,SMAB-T1951: Verify that user is able to navigate to current roll year VA from corresponding WI");
@@ -381,7 +381,7 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 
 		objPage.Click(workItemPageObj.toggleBUtton);
 		objPage.Click(workItemPageObj.lnkTABMySubmittedforApproval);
-		apasGenericObj.waitForPageSpinnerToDisappear(5);
+		objPage.waitForElementToDisappear(objApasGenericPage.xpathSpinner, 10);
 		workItemPageObj.openWorkItem(lowIncomeWIName);
 		objPage.javascriptClick(workItemPageObj.detailsTab);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1952:Verify that user is able to submit the Low Income WI manually from corresponding WI Home page");

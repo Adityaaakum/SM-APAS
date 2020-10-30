@@ -612,46 +612,7 @@ public class ApasGenericFunctions extends TestBase {
     
     
 
-    /**
-     * @param elementThatOpensNewWIndow: element that opens new window once clicked
-     * @throws Exception
-     * @description: Clicks on the given webelement and switches to new window
-     * @return: returns the parent window which user can switch to once done with their actions on new window
-     */
-	public void SwitchToNewlyOpenedWindow() throws Exception{
-		for (String winHandle : driver.getWindowHandles()) {
-			   driver.switchTo().window(winHandle);}
-	}
-	
-	
-	/**
-	 * Description: Waits until the page spinner goes invisible within given timeout
-	 * @param: Takes Xpath as an argument
-	 * @throws: Exception
-	 */
-	public void waitForPageSpinnerToDisappear(int...timeOutInSeconds) throws Exception {
-		String xpath = "//lightning-spinner[contains(@class, 'slds-spinner_container')]//div[contains(@class, 'slds-spinner')]";		
-		WebElement element;
-		if(timeOutInSeconds.length == 0) {
-			element = locateElement(xpath, 30);
-		} else {
-			element = locateElement(xpath, timeOutInSeconds[0]);
-		}
-		
-		if(element != null) {
-			for(int i = 0; i < 500; i++) {
-				try{
-					element = driver.findElement(By.xpath(xpath));
-					Thread.sleep(100);
-				} catch (Exception ex) {
-					break;		
-				}
-			}
-		}
-	}
-	
-	
-	/**
+   	/**
 	 * Description: this method is to sacea record and wait for the success message to disapper
 	 * 
 	 * @throws: Exception

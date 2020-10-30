@@ -234,7 +234,7 @@ public class WorkItemHomePage extends Page {
         Click(webElementCheckBox);
         scrollToElement(acceptWorkItemButton);
         Click(acceptWorkItemButton);
-        objApasGenericFunctions.waitForPageSpinnerToDisappear(20);
+        objPageObj.waitForElementToDisappear(objApasGenericPage.xpathSpinner,20);
         waitForElementToBeVisible(successAlert, 20);
         waitForElementToDisappear(successAlert, 10);
     }

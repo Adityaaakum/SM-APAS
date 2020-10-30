@@ -280,7 +280,7 @@ public class EFileImportPage extends Page {
         uploadFileInputBox.sendKeys(absoluteFilePath);
         Thread.sleep(2000);
         objPage.waitForElementToBeClickable(doneButton);
-        Thread.sleep(5000);
+        Thread.sleep(2000);
         objPage.Click(doneButton);
         waitForElementToBeClickable(statusImportedFile, 20);
         objPage.scrollToBottom();
