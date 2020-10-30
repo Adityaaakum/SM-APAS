@@ -89,7 +89,7 @@ public class SalesforceAPI extends TestBase {
                 String loginAccessToken = jsonObject.getString("access_token");
                 String loginInstanceUrl = jsonObject.getString("instance_url");
                 String REST_ENDPOINT = "/services/data";
-                String API_VERSION = "/v47.0";
+                String API_VERSION = "/v49.0";
                 baseUri = loginInstanceUrl + REST_ENDPOINT + API_VERSION;
                 oauthHeader = new BasicHeader("Authorization", "OAuth " + loginAccessToken);
 
@@ -389,8 +389,8 @@ public class SalesforceAPI extends TestBase {
         delete("Transaction_Trail__c",queryTransactionTrails);
         delete("E_File_Import_Log__c",queryImportLogs);
     }
-
-
+    
+   
     /**
      * This method will trigger the job to generate reminder work items
      */

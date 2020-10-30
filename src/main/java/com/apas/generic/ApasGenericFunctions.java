@@ -21,9 +21,11 @@ import com.apas.Reports.ReportLogger;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
@@ -72,9 +74,29 @@ public class ApasGenericFunctions extends TestBase {
         objPage.enter(objLoginPage.txtpassWord, password);
         objPage.Click(objLoginPage.btnSubmit);
         ReportLogger.INFO("User logged in the application");
+        //closeDefaultOpenTabs();
     }
 
-    /**
+    private void closeDefaultOpenTabs() throws Exception {
+    	ReportLogger.INFO("Closing all default tabs");
+    	
+    	objPage.waitForElementToBeClickable(objApasGenericPage.appLauncher, 10);
+    	/*Robot rb=new Robot();
+    	rb.keyPress(KeyEvent.VK_SHIFT);
+    	rb.keyPress(KeyEvent.VK_W);
+    	rb.keyRelease(KeyEvent.VK_W);
+    	rb.keyRelease(KeyEvent.VK_SHIFT);
+		*/
+		  Actions objAction=new Actions(driver);
+		  objAction.keyDown(Keys.SHIFT).sendKeys("w").keyUp(Keys.SHIFT).perform();
+		 
+		if(objPage.verifyElementVisible(objApasGenericPage.closeAllBtn))
+			{objPage.javascriptClick(objApasGenericPage.closeAllBtn);}
+		Thread.sleep(3000);
+		
+	}
+
+	/**
      * Description: This method will search the module in APAS based on the parameter passed
      *
      * @param moduleToSearch : Module Name to search and open
@@ -236,7 +258,11 @@ public class ApasGenericFunctions extends TestBase {
     public HashMap<String, ArrayList<String>> getGridDataInHashMap(int tableIndex, int rowNumber) {
         ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
         //This code is to fetch the data for a particular row in the grid in the table passed in tableIndex
+        String xpath="(//*[@class='slds-tabs_scoped__content slds-show']//table)[" + tableIndex + "]";
         String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table)[" + tableIndex + "]";
+        if(objPage.verifyElementVisible(xpath))
+        {xpathTable=xpath;}
+        
         String xpathHeaders = xpathTable + "//thead/tr/th";
         String xpathRows = xpathTable + "//tbody/tr";
         if (!(rowNumber == -1)) xpathRows = xpathRows + "[" + rowNumber + "]";
@@ -583,5 +609,20 @@ public class ApasGenericFunctions extends TestBase {
         objPage.clickAction(modificationsIcon);
         objPage.waitUntilElementIsPresent(objApasGenericPage.menuList, 5);
     }
+    
+    
+
+   	/**
+	 * Description: this method is to sacea record and wait for the success message to disapper
+	 * 
+	 * @throws: Exception
+	 */
+	public String saveRecord() throws Exception {
+		   objPage.Click(objApasGenericPage.saveButton);
+		   objPage.waitForElementToBeClickable(objApasGenericPage.successAlert,20);
+		   String messageOnAlert = objPage.getElementText(objApasGenericPage.successAlert);
+		   waitForElementToDisappear(objApasGenericPage.successAlert,10);
+		   return messageOnAlert;
+		}
 
 }

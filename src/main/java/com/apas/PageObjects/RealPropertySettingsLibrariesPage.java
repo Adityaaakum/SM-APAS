@@ -42,19 +42,26 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//label/span[text() = 'RP Setting Name']/../../input")
 	public WebElement rpSettingNameEditBox;
 
-	@FindBy(xpath = "//span[text() = 'Status']/parent::span/following-sibling::div//a[@class = 'select']")
+	/*
+	 * @FindBy(xpath =
+	 * "//span[text() = 'Status']/parent::span/following-sibling::div//a[@class = 'select']"
+	 * ) public WebElement statusDropDown;
+	 */
+	
+	@FindBy(xpath = "//*[@aria-hidden='false']//*[text() = 'Status']//following-sibling::div//input")
 	public WebElement statusDropDown;
+	
 	
 	@FindBy(xpath = "//input[@title='Search Roll Year Settings']")
 	public WebElement searchRollYearSettingsLookup;
 	
-	@FindBy(xpath = "//label/span[text()='DV Low Income Exemption Amount']/../../input")
+	@FindBy(xpath = "//*[@aria-hidden='false']//*[text()='DV Low Income Exemption Amount']//following-sibling::div//input")
 	public WebElement dvLowIncomeExemptionAmountEditBox;
 
-	@FindBy(xpath = "//label/span[text()='DV Basic Exemption Amount']/../../input")
+	@FindBy(xpath = "//*[@aria-hidden='false']//*[text()='DV Basic Exemption Amount']//following-sibling::div//input")
 	public WebElement dvBasicIncomeExemptionAmountEditBox;
 	
-	@FindBy(xpath = "//label/span[text()='DV Low Income Household Limit']/../../input")
+	@FindBy(xpath = "//*[@aria-hidden='false']//*[text()='DV Low Income Household Limit']//following-sibling::div//input")
 	public WebElement dvLowIncomeHouseholdLimitEditBox;
 	
 	@FindBy(xpath = "//label/span[text()='DV Annual Due Date']/../following-sibling::div/input")
@@ -118,6 +125,15 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	public WebElement errorMsgOnTopForEditRPSL;
 	
 	public String xPathErrorMsg = "//div[@class='uiBlock']//p[@class='detail']//span";
+	
+	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='DV Low Income Household Limit']/parent::div/following-sibling::div//lightning-formatted-text")
+	public WebElement lowIncomeHouseholdLimitDetails;
+	
+	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='DV Low Income Exemption Amount']/parent::div/following-sibling::div//lightning-formatted-text")
+	public WebElement lowIncomeExemptionAmtDetails;
+	
+	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='DV Basic Exemption Amount']/parent::div/following-sibling::div//lightning-formatted-text")
+	public WebElement basicExemptionAmtDetails;
 	
 	
 	/**

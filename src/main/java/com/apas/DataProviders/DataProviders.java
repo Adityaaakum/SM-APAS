@@ -363,4 +363,10 @@ public class DataProviders {
         return new Object[][] {{ users.RP_BUSINESS_ADMIN }};
     }
     
+    
+    @DataProvider(name = "DVworkPoolSuperviosrUser")
+    public Object[][] workPoolSupervisor() {
+        return new Object[][] {{ users.DATA_ADMIN }};
+    }
+    
 }

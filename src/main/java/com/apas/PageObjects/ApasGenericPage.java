@@ -28,6 +28,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//button[@title='Save']")
 	public WebElement saveButton;
 
+
 	@FindBy(xpath = "//div[contains(.,'App Launcher')]//*[@class='slds-icon-waffle']")
 	public WebElement appLauncher;
 
@@ -136,12 +137,15 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//force-list-view-manager-pin-button//button[contains(@class, 'slds-button slds-button_icon')]//lightning-primitive-icon")
 	public WebElement pinIcon;
 	
+	@FindBy(xpath="//button[text()='Close All']")
+	public WebElement closeAllBtn;
+	
 
 	/**
 	 * Description: This will click on the module name from the drop down
 	 */
 	public void clickNavOptionFromDropDown(String navOption) throws Exception {
-		String xpathStr = "//a[contains(@data-label, '" + navOption + "')]//b[text() = '" + navOption + "']";
+		String xpathStr = "//a[@data-label= '" + navOption + "']//b[text() = '" + navOption + "']";
 		WebElement drpDwnOption = waitForElementToBeClickable(20, xpathStr);
 		drpDwnOption.click();
 	}
