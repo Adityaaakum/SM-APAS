@@ -280,14 +280,14 @@ public class WorkItemHomePage extends Page {
      *
      * @param workItem: Work item number to be returned
      **/
-    public void returntWorkItem(String workItem) throws Exception {
+    public void returntWorkItem(String workItem, String returnReason) throws Exception {
         ReportLogger.INFO("Rejecting the work item: " + workItem);
         WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
         scrollToElement(webElementCheckBox);
         Click(webElementCheckBox);
         scrollToElement(returnWorkItemButton);
         Click(returnWorkItemButton);
-        enter(returnedReasonTxtBox,"Test Reason");
+        enter(returnedReasonTxtBox,returnReason);
         Click(saveButton);
         waitForElementToBeVisible(successAlert, 20);
         waitForElementToDisappear(successAlert, 10);

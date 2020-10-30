@@ -784,7 +784,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         query = "select Status__c from Work_Item__c where Name = '"+ importWorkItem +"'";
         HashMap<String, ArrayList<String>> workItemData = new SalesforceAPI().select(query);
         String actualWIStatus = workItemData.get("Status__c").get(0);
-        softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T1737: Verify status of WI : '' is 'Submitted for Approval'");
+        softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T1737: Verify status of WI : 'Perform Calculations' is 'Submitted for Approval'");
 
         //Step14: Log out from the application and log in as BPP Principal
         objApasGenericFunctions.logout();
@@ -808,12 +808,12 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         query = "select Status__c from Work_Item__c where Name = '"+ importWorkItem +"'";
         workItemData = new SalesforceAPI().select(query);
         actualWIStatus = workItemData.get("Status__c").get(0);
-        softAssert.assertEquals(actualWIStatus, "Completed", "SMAB-T1750: Verify status of WI : '' is 'Completed'");
+        softAssert.assertEquals(actualWIStatus, "Completed", "SMAB-T1750: Verify status of WI : 'Perform Calculations' is 'Completed'");
     }
     /** This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1737: Verify user is able to submit 'Perform Calculations' WI for Approval", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true)
+    @Test(description = "SMAB-T2195: Verify user is able to submit 'Perform Calculations' WI for Approval", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true)
     public void BPPTrends_verifyPerformCalculationWI_ReturnedStatus(String loginUser) throws Exception {
 
         //Step1: Delete the existing WIs before generating
@@ -867,7 +867,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         query = "select Status__c from Work_Item__c where Name = '"+ importWorkItem +"'";
         HashMap<String, ArrayList<String>> workItemData = new SalesforceAPI().select(query);
         String actualWIStatus = workItemData.get("Status__c").get(0);
-        softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T1737: Verify status of WI : '' is 'Submitted for Approval'");
+        softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T2195: Verify status of WI : 'Perform Calculations' is 'Submitted for Approval'");
 
         //Step10: Log out from the application and log in as BPP Principal
         objApasGenericFunctions.logout();
@@ -878,13 +878,13 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
 
         //Step12: Return the Work Item
-        objWorkItemHomePage.returntWorkItem(importWorkItem);
+        objWorkItemHomePage.returntWorkItem(importWorkItem,"Test WI Rejection");
 
         //Step13: Verify Status of WI 'Perform Calculations' is 'Completed'
         query = "select Status__c from Work_Item__c where Name = '"+ importWorkItem +"'";
         workItemData = new SalesforceAPI().select(query);
         actualWIStatus = workItemData.get("Status__c").get(0);
-        softAssert.assertEquals(actualWIStatus, "Returned", "SMAB-T1737: Verify status of WI : '' is 'Returned'");
+        softAssert.assertEquals(actualWIStatus, "Returned", "SMAB-T2195: Verify status of WI : 'Perform Calculations' is 'Returned'");
 
         //Step14: Log out from the application and log in again as BPP Admin
         objApasGenericFunctions.logout();
@@ -895,7 +895,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         HashMap<String, ArrayList<String>> InProgressWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_PROGRESS);
         int workItemRowNumber = InProgressWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
         String workItemName = InProgressWorkItems.get("Work Item Number").get(workItemRowNumber);
-        softAssert.assertEquals(workItemName, "importWorkItem", "SMAB-T1737: Verify WI returned to user found in 'In Progress' tab");
+        softAssert.assertEquals(workItemName, "importWorkItem", "SMAB-T2195: Verify WI returned to user is found in 'In Progress' tab");
 
     }
 }
