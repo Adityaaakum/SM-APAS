@@ -58,11 +58,17 @@ public class WorkItemHomePage extends Page {
     @FindBy(xpath = "//a[@role='tab'][@data-label='In Progress']")
     public WebElement inProgressTab;
 
+    @FindBy(xpath = "//a[@role='tab'][@data-label='Completed']")
+    public WebElement completedTab;
+
     @FindBy(xpath = "//a[@role='tab'][@data-label='In Pool']")
     public WebElement inPoolTab;
 
-    @FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//force-record-layout-item[contains(.,'Related Action')]//a[@target='_blank']")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-item[contains(.,'Related Action')]//a[@target='_blank']")
     public WebElement reviewLink;
+
+    @FindBy(xpath = "//a[@role='tab'][@data-label='Needs My Approval']")
+    public WebElement needsMyApprovalTab;
 
     public String linkedItemEFileIntakeLogs = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'E File Intake Logs')]";
 
@@ -144,9 +150,6 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath = "//li//a[@aria-selected='true' and @role='option']")
 	public WebElement currenWIStatusonTimeline;
 
-	@FindBy(xpath = "//a[@data-label='Needs My Approval']")
-	public WebElement needsMyApprovalTab;
-
 	@FindBy(xpath = "//div[@class='pageLevelErrors']//li")
 	public WebElement pageLevelErrorMsg;
 	
@@ -227,8 +230,9 @@ public class WorkItemHomePage extends Page {
     public void acceptWorkItem(String workItem) throws Exception {
         ReportLogger.INFO("Accepting the work item: " + workItem);
         WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
-        scrollToBottom();
-        javascriptClick(webElementCheckBox);
+        scrollToElement(webElementCheckBox);
+        Click(webElementCheckBox);
+        scrollToElement(acceptWorkItemButton);
         Click(acceptWorkItemButton);
         objApasGenericFunctions.waitForPageSpinnerToDisappear(20);
         waitForElementToBeVisible(successAlert, 20);
@@ -248,4 +252,17 @@ public class WorkItemHomePage extends Page {
         return messageText;
     }
 
+    /**
+     * This method will open record under Action link for the specified work item
+     *
+     * @param workItem: Work item number linked with the item
+     **/
+    public void openActionLink(String workItem) throws Exception {
+        ReportLogger.INFO("Clicking on Action Link of the work item : " + workItem);
+        String xpath = "//a[@title='" + workItem + "']//ancestor::th//following-sibling::td//a";
+        waitUntilElementIsPresent(xpath, 15);
+        waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
+        javascriptClick(driver.findElement(By.xpath(xpath)));
+        Thread.sleep(4000);
+    }
 }

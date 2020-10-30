@@ -9,7 +9,9 @@ import com.apas.PageObjects.ReportsPage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.ExcelUtils;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.config.modules;
+import com.apas.config.testdata;
 import com.apas.generic.ApasGenericFunctions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -46,7 +48,7 @@ public class BuildingPermit_Reports_Test extends TestBase {
 	@Test(description = "SMAB-T433,SMAB-T373: Validation for Building Permit Reports Export and exported format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"smoke","regression"})
 	public void BuildingPermit_ReportExport(String loginUser) throws Exception {
 
-		String downloadLocation = CONFIG.getProperty("downloadFolder");
+		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		String reportName = "Building Permit by City Code";
 		String exportedFileName;
 		ReportLogger.INFO("Download location : " + downloadLocation);

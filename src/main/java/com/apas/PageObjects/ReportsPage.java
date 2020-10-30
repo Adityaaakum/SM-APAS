@@ -1,14 +1,21 @@
 package com.apas.PageObjects;
 
 import com.apas.Reports.ReportLogger;
+import com.apas.Utils.DateUtil;
+import com.apas.Utils.Util;
+import com.apas.config.testdata;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
+import java.util.Objects;
 
 public class ReportsPage extends Page {
 
@@ -64,6 +71,7 @@ public class ReportsPage extends Page {
 	 * @param reportName: Name of the Report
 	 */
 	public void exportReport(String reportName, String reportType) throws IOException, InterruptedException {
+		int initialFileCount = Objects.requireNonNull(new File(testdata.DOWNLOAD_FOLDER).listFiles()).length;
 		// Opening all reports screen
 		ReportLogger.INFO("Opening All Reports Screen");
 		Click(linkAllReports);
@@ -93,8 +101,17 @@ public class ReportsPage extends Page {
 
 		Click(exportButton);
 
+		System.out.println("Start Time : " + new Util().getCurrentDate("ddhhmmss"));
 		//Added this wait to allow the file to download
-		Thread.sleep(10000);
+		for (int i=0; i<300/2;i++){
+			if (Objects.requireNonNull(new File(testdata.DOWNLOAD_FOLDER).listFiles()).length > initialFileCount){
+				break;
+			}else{
+				Thread.sleep(2000);
+			}
+		}
+		System.out.println("End Time : " + new Util().getCurrentDate("ddhhmmss"));
+		Thread.sleep(5000);
 	}
 	
 	/**
