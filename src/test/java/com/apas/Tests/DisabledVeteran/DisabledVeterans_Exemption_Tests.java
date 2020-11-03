@@ -118,13 +118,13 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		//ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying all entered fields show future date error messages");
 		
 		String expected=" can't be a future date";
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date Application Received"),"Date Application Received".concat(expected),"SMAB-T491: Verify Application Date can't be a Future Date");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date of Death of Veteran"),"Date of Death of Veteran".concat(expected),"SMAB-T494: Verify Date Of death of veteran Property can't be a Future Date");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date Acquired Property"),"Date Acquired Property".concat(expected),"SMAB-T492: Verify Date Acquired Property can't be a Future Date");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date Occupied/Intend to Occupy Property"),"Date Occupied/Intend to Occupy Property".concat(expected),"SMAB-T493: Verify Date Occupy Property can't be a Future Date");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Effective Date of 100% USDVA Rating"),"Effective Date of 100% USDVA Rating".concat(expected),"SMAB-T496: Verify Effective Date of 100% USDVA Rating can't be a Future Date");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date of Notice of 100% Rating"),"Date of Notice of 100% Rating".concat(expected),"SMAB-T495: Verify Date of notice of 100% rating can't be a Future Date");
-		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("End Date of Rating"),"End Date of Rating".concat(expected),"SMAB-T488: Verify End Date of rating can't be a Future Date");
+		softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("Date Application Received"),"Date Application Received".concat(expected),"SMAB-T491: Verify Application Date can't be a Future Date");
+		softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("Date of Death of Veteran"),"Date of Death of Veteran".concat(expected),"SMAB-T494: Verify Date Of death of veteran Property can't be a Future Date");
+		softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("Date Acquired Property"),"Date Acquired Property".concat(expected),"SMAB-T492: Verify Date Acquired Property can't be a Future Date");
+		softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("Date Occupied/Intend to Occupy Property"),"Date Occupied/Intend to Occupy Property".concat(expected),"SMAB-T493: Verify Date Occupy Property can't be a Future Date");
+		softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("Effective Date of 100% USDVA Rating"),"Effective Date of 100% USDVA Rating".concat(expected),"SMAB-T496: Verify Effective Date of 100% USDVA Rating can't be a Future Date");
+		softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("Date of Notice of 100% Rating"),"Date of Notice of 100% Rating".concat(expected),"SMAB-T495: Verify Date of notice of 100% rating can't be a Future Date");
+		softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("End Date of Rating"),"End Date of Rating".concat(expected),"SMAB-T488: Verify End Date of rating can't be a Future Date");
 		objPage.Click(objApasGenericPage.crossButton);
 
 		apasGenericObj.logout();
@@ -177,9 +177,9 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			//ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying Effective Date of 100% USDVA Rating can't be greater than Date of Notice of 100% Rating");
 			ReportLogger.INFO("Verifying Effective Date of 100% USDVA Rating can't be greater than Date of Notice of 100% Rating");
 			
-			softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Date of Notice of 100% Rating"),"Date of Notice of 100% Rating cannot be less than the Effective Date of 100% USDVA Rating.","SMAB-T1278: Verify Date of Notice of 100% Rating cannot be less than the Effective Date of 100% USDVA Rating.");
-			softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("End Rating Reason"),"End Rating Reason Is required","SMAB-T498: Verify End Rating Reason is required if End Date of rating is not BLANK");
-			softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("End Date of Rating"),"End Date of Rating must be greater than Effective Date","SMAB-T497,SMAB-T1122: Verify End Date of rating must be greater than Effective Date of 100% USDVA Rating");
+			softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("Date of Notice of 100% Rating"),"Date of Notice of 100% Rating cannot be less than the Effective Date of 100% USDVA Rating.","SMAB-T1278: Verify Date of Notice of 100% Rating cannot be less than the Effective Date of 100% USDVA Rating.");
+			softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("End Rating Reason"),"End Rating Reason Is required","SMAB-T498: Verify End Rating Reason is required if End Date of rating is not BLANK");
+			softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("End Date of Rating"),"End Date of Rating must be greater than Effective Date","SMAB-T497,SMAB-T1122: Verify End Date of rating must be greater than Effective Date of 100% USDVA Rating");
 					
 			
 			//step6:
@@ -473,9 +473,9 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	       apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, fieldData.get("Qualification"));
 	       objPage.Click(ExemptionsPage.saveButton); 
 	       if(parcelsStatus.equals("Retired")){
-	    	   softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"You cannot add an Exemption to a retired Parcel or the Property Use Code does not allow an Exemption. Please verify you have the correct Parcel or update the Parcel to proceed.","SMAB-T1517: Verify that user is not able to create Exemption for Retired Parcels from Parcel's related exemptions screen");}
+	    	   softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("APN"),"You cannot add an Exemption to a retired Parcel or the Property Use Code does not allow an Exemption. Please verify you have the correct Parcel or update the Parcel to proceed.","SMAB-T1517: Verify that user is not able to create Exemption for Retired Parcels from Parcel's related exemptions screen");}
 	       else{
-		       softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"You cannot add an Exemption to a retired Parcel or the Property Use Code does not allow an Exemption. Please verify you have the correct Parcel or update the Parcel to proceed.","SMAB-T1518: Verify that user is not able to create Exemption for Invalid PUC code parcels from Parcel's related exemptions screen");}
+		       softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("APN"),"You cannot add an Exemption to a retired Parcel or the Property Use Code does not allow an Exemption. Please verify you have the correct Parcel or update the Parcel to proceed.","SMAB-T1518: Verify that user is not able to create Exemption for Invalid PUC code parcels from Parcel's related exemptions screen");}
 	       
 	       objPage.Click(exemptionPageObj.cancelButton);
 
@@ -493,9 +493,9 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	       objPage.enter(exemptionPageObj.dateApplicationReceived,fieldData.get("DateApplicationReceived"));
 	       objPage.Click(ExemptionsPage.saveButton);
 	       if(apnStatus.equals("Retired")){
-	           softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"An invalid option has been chosen.","SMAB-T1516: Verify that user is not able to create Exemption for Retired Parcels from Parcel's related exemptions screen");}
+	           softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("APN"),"An invalid option has been chosen.","SMAB-T1516: Verify that user is not able to create Exemption for Retired Parcels from Parcel's related exemptions screen");}
 	       else{
-			   softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),"An invalid option has been chosen.","SMAB-T1515: Verify that user is not able to create Exemption for Invalid PUC code parcels from Parcel's related exemptions screen");
+			   softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("APN"),"An invalid option has been chosen.","SMAB-T1515: Verify that user is not able to create Exemption for Invalid PUC code parcels from Parcel's related exemptions screen");
 	       }
 
 	       objPage.Click(exemptionPageObj.cancelButton);

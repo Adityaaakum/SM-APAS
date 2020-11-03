@@ -86,7 +86,6 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Stpe4: Open the Work Item Home Page
         objApasGenericFunctions.searchModule(modules.HOME);
-        objPage.Click(objWorkItemHomePage.chkShowRP);
 
         //Step5: "Import Review" Work Item generation validation after file is imported
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -110,7 +109,6 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Step7: Open Home Page
         objApasGenericFunctions.searchModule(modules.HOME);
-        objPage.Click(objWorkItemHomePage.chkShowRP);
 
         //Step8: Validation for Import Review work item moved to completed status
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
@@ -151,7 +149,6 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Step14: Open Home Page
         objApasGenericFunctions.searchModule(modules.HOME);
-        objPage.Click(objWorkItemHomePage.chkShowRP);
 
         //Step15: Open the work item
         objPage.scrollToBottom();
@@ -186,7 +183,6 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Step19: Open Home Page
         objApasGenericFunctions.searchModule(modules.HOME);
-        objPage.Click(objWorkItemHomePage.chkShowRP);
 
         //Step20: Close "Final Review" Work Item
         completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
@@ -227,7 +223,6 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Stpe4: Open the Work Item Home Page
         objApasGenericFunctions.searchModule(modules.HOME);
-        objPage.Click(objWorkItemHomePage.chkShowRP);
 
         //Step5: "Import Review" Work Item generation validation after file is imported
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -251,7 +246,6 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Step7: Open Home Page
         objApasGenericFunctions.searchModule(modules.HOME);
-        objPage.Click(objWorkItemHomePage.chkShowRP);
 
         //Step8: Validation for Import Review work item moved to completed status
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);

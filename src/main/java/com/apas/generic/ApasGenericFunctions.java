@@ -104,7 +104,7 @@ public class ApasGenericFunctions extends TestBase {
     public void searchModule(String moduleToSearch) throws Exception {
         ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
         objPage.waitForElementToBeClickable(objApasGenericPage.appLauncher, 60);
-        Thread.sleep(2000);
+        Thread.sleep(5000);
         objPage.Click(objApasGenericPage.appLauncher);
         objPage.waitForElementToBeClickable(objApasGenericPage.appLauncherSearchBox, 60);
         objPage.enter(objApasGenericPage.appLauncherSearchBox, moduleToSearch);
@@ -171,7 +171,11 @@ public class ApasGenericFunctions extends TestBase {
      */
     public void globalSearchRecords(String searchString) throws Exception {
         ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
-        objApasGenericPage.searchAndSelectFromDropDown(objApasGenericPage.globalSearchListEditBox, searchString);
+        objPage.Click(driver.findElement(By.xpath("//div[@data-aura-class='forceSearchAssistant']//button")));
+        objPage.enter(objApasGenericPage.globalSearchListEditBox,searchString);
+        String xpath = "//*[@role='option']//span[@title = '" + searchString + "']";
+        objPage.waitUntilElementIsPresent(xpath,5);
+        objPage.Click(driver.findElement(By.xpath(xpath)));
         Thread.sleep(5000);
     }
 
@@ -556,8 +560,8 @@ public class ApasGenericFunctions extends TestBase {
      * @description: This method will return the error message appeared against the filed name passed in the parameter
      */
     public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
-        String xpath = "//div[@role='listitem']//span[text()='" + fieldName + "']/../../../ul[contains(@data-aura-class,'uiInputDefaultError')]";
-        objPage.waitUntilElementIsPresent(xpath, 20);
+        String xpath = "//label[text()='" + fieldName + "']/../..//*[contains(@class,'__help')]";
+        objPage.waitUntilElementIsPresent(xpath,20);
         return objPage.getElementText(driver.findElement(By.xpath(xpath)));
     }
 
