@@ -161,13 +161,13 @@ public class EFileImportPage extends Page {
     @FindBy(xpath = "//input[@class='slds-input']")
     public WebElement editButtonInput;
 
-    @FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//table//tbody//tr")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody//tr")
     public List<WebElement> historyListItems;
 
     @FindBy(xpath = "//span[contains(@title,'IMPORTED ROWS')]")
     public WebElement successRowSection;
 
-    @FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//table//tbody//td[contains(.,'Reverted')]/following-sibling::td[1]//span[not(contains(.,'View'))]")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody//td[contains(.,'Reverted')]/following-sibling::td[1]//span[not(contains(.,'View'))]")
     public List<WebElement> revertRecordsViewLinkNotVisible;
 
     @FindBy(xpath = "//*[contains(@id,'help')]")
@@ -191,10 +191,11 @@ public class EFileImportPage extends Page {
     @FindBy(xpath = "//button[contains(.,'Cancel')]")
     public WebElement discardCancel;
 
-    @FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(.,'ERROR ROWS')]")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(.,'ERROR ROWS')]")
     public WebElement errorRowCount;
 
-    @FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(.,'IMPORTED ROWS')]")
+    
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(.,'IMPORTED ROWS')]")
     public WebElement importedRowCount;
 
     @FindBy(xpath = "(//td[@data-label='Discard Count'])[1]")
@@ -209,7 +210,7 @@ public class EFileImportPage extends Page {
     @FindBy(xpath = "(//td[@data-label='Action'])[2]//button[@title='Preview' and text()='View']")
     public WebElement viewLinkForPreviousImport;
 
-    @FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//table//tbody//tr//input/parent::span")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody//tr//input/parent::span")
     public List<WebElement> errorRecordsRows;
 
     @FindBy(xpath = "//input[@name='efileName']")

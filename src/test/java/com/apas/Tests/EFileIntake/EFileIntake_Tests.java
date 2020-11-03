@@ -355,9 +355,10 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.waitForElementToBeVisible(objEFileImport.efileRecordsApproveSuccessMessage, 20);
 		
 		//step7: trying to upload a file for the same file type ,source and period
-		objPage.javascriptClick(objEFileImport.efileImportToolLabel);
-		objPage.waitForElementToBeClickable(objEFileImport.fileTypedropdown, 10);
-		objEFileImport.selectFileAndSource(fileType,source);
+		//objPage.javascriptClick(objEFileImport.efileImportToolLabel);
+		//objPage.waitForElementToBeClickable(objEFileImport.fileTypedropdown, 10);
+		//objEFileImport.selectFileAndSource(fileType,source);
+		objPage.Click(objEFileImport.sourceDetails);
 		objPage.waitForElementToBeClickable(objEFileImport.nextButton, 10);
 		objPage.Click(objEFileImport.nextButton);
 		objPage.enter(objEFileImport.fileNameInputBox, "Import_TestData_ValidAndInvalidScenarios_AT2.txt");
@@ -506,7 +507,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	@Test(description = "SMAB-T32,SMAB-T33,SMAB-T36,SMAB-T1403,SMAB-T1402,SMAB-T1511,SMAB-T1513,SMAB-T1566,SMAB-T1600:Verify user is able to see number of records count from file import action on 'E-File Import Logs' screen", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 		"smoke", "regression","EFileImport" })	
 	public void EFileIntake_VerifyImportLogsRecordCount(String loginUser) throws Exception{
-		String uploadedDate = objUtil.getCurrentDate("MMM d, YYYY");
+		String uploadedDate = objUtil.getCurrentDate("MM/dd/YYYY");
 		
 		String period = "Adhoc";
 		String fileType="Building Permit";
