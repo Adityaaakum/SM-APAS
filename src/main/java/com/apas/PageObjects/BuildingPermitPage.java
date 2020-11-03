@@ -304,16 +304,6 @@ public class BuildingPermitPage extends ApasGenericPage {
 	}
 
 	/**
-	 * @description: This method will return the error message appeared against the filed name passed in the parameter
-	 * @param fieldName: field name for which error message needs to be fetched
-	 */
-	public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
-		String xpath = "//div[@role='listitem']//span[text()='" + fieldName + "']/../../../ul[contains(@data-aura-class,'uiInputDefaultError')]";
-		waitUntilElementIsPresent(xpath,20);
-		return getElementText(driver.findElement(By.xpath(xpath)));
-	}
-
-	/**
 	 * @description: This method will return the filed value from the view duplicate screen
 	 * @param fieldName: field name for which error message needs to be fetched
 	 */

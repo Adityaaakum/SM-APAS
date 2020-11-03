@@ -227,6 +227,9 @@ public class EFileImportPage extends Page {
     @FindBy(xpath = "//button[@title='Source Details']//*[@data-key='success']")
     public WebElement sourceDetails;
 
+    @FindBy(xpath = "//button[@title='Source Details']")
+    public WebElement buttonSourceDetails;
+
     @FindBy(xpath = "//section[@role='dialog']//div[@data-dropdown-element='true']//span[@class='slds-media__body']")
     public WebElement periodFirstDropDownValue;
 
