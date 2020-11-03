@@ -28,6 +28,8 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//button[@title='Save']")
 	public WebElement saveButton;
 
+	@FindBy(xpath = "//*[contains(@class,'forceFormPageError')]")
+	public WebElement pageError;
 
 	@FindBy(xpath = "//div[contains(.,'App Launcher')]//*[@class='slds-icon-waffle']")
 	public WebElement appLauncher;
@@ -59,7 +61,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputEntitySelector']//input")
 	public WebElement globalSearchListDropDown;
 
-	@FindBy(xpath = "//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input")
+	@FindBy(xpath = "//label[text()='Search...']/..//input")
 	public WebElement globalSearchListEditBox;
 
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@class='countSortedByFilteredBy']")

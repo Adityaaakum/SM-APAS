@@ -26,13 +26,14 @@ public class BPPTrends_WorkItems_Test extends TestBase {
     RemoteWebDriver driver;
     Page objPage;
     ApasGenericFunctions objApasGenericFunctions;
-    BuildingPermitPage objBuildingPermitPage;
-    WorkItemHomePage objWorkItemHomePage;
-    SoftAssertion softAssert = new SoftAssertion();
-    Util objUtil = new Util();
-    EFileImportPage objEfileImportPage;
-    SalesforceAPI objSalesforceAPI;
+    BppTrendSetupPage objBppTrendSetupPage;
     BppTrendPage objBppTrendPage;
+    WorkItemHomePage objWorkItemHomePage;
+    EFileImportPage objEfileImportPage;
+
+    SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+    SoftAssertion softAssert = new SoftAssertion();
+
     String rollYear;
 
     @BeforeMethod(alwaysRun = true)
@@ -43,12 +44,11 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         driver = BrowserDriver.getBrowserInstance();
 
         objPage = new Page(driver);
-        objBuildingPermitPage = new BuildingPermitPage(driver);
         objApasGenericFunctions = new ApasGenericFunctions(driver);
         objEfileImportPage = new EFileImportPage(driver);
         objWorkItemHomePage = new WorkItemHomePage(driver);
-        objSalesforceAPI = new SalesforceAPI();
         objBppTrendPage = new BppTrendPage(driver);
+        objBppTrendSetupPage = new BppTrendSetupPage(driver);
         rollYear = "2021";
     }
 
@@ -57,7 +57,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
      * This test case is to validate reminder work item creation and the work item flow for approved file
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1731,SMAB-T1732,SMAB-T2175: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true)
+    @Test(description = "SMAB-T1731,SMAB-T1732,SMAB-T2175,SMAB-T1944,SMAB-T1948: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = false)
     public void BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(String loginUser, boolean flagDeleteAndGenerateReminderWI) throws Exception {
         String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_VALID + "BOE Equipment Index Factors and Percent Good Factors 2021.xlsx";
 
@@ -86,7 +86,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - BOE Index and Percent Good Factors");
         String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
 
-        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - BOE Index and Percent Good Factors", "SMAB-T1731: Import Work Item Name validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - BOE Index and Percent Good Factors", "SMAB-T1731,SMAB-T1944: Import Work Item Name validation");
         softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1731: Work Pool Name Validation for Import Work Item");
         softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1731: Imported work item count validation");
 
@@ -115,7 +115,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         int reviewImportRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Review Import - BOE Index and Percent Good Factors");
         String reviewImportWorkItem = InPoolWorkItems.get("Work Item Number").get(reviewImportRowNumber);
 
-        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reviewImportRowNumber), "BPP Trends - Review Import - BOE Index and Percent Good Factors", "SMAB-T2175: Review Work Item Name validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reviewImportRowNumber), "BPP Trends - Review Import - BOE Index and Percent Good Factors", "SMAB-T2175,SMAB-T1948: Review Work Item Name validation");
         softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(reviewImportRowNumber), "BPP Admin", "SMAB-T2175: Work Pool Name Validation for Review Import Work Item");
         softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T2175: Imported work item count validation");
 
@@ -146,7 +146,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
      * This test case is to validate reminder work item creation and the work item flow for reverted file
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1731,SMAB-T1733,SMAB-T2175: Verify auto generated Reminder WI, Revert Imported BOE Index & Goods Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true)
+    @Test(description = "SMAB-T1731,SMAB-T1733,SMAB-T2175: Verify auto generated Reminder WI, Revert Imported BOE Index & Goods Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = false)
     public void BPPTrends_BOEIndexAndGoods_WorkItemImportAndRevert(String loginUser) throws Exception {
         String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_VALID + "BOE Equipment Index Factors and Percent Good Factors 2021.xlsx";
 
@@ -239,7 +239,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
      * This test case is to validate reminder work item creation and the 'BOE Valuation Factors' work item flow for approved file
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1738,SMAB-T1739,SMAB-T1769: Verify auto generated Reminder WI, Approval of Imported BOE Valuation Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true)
+    @Test(description = "SMAB-T1738,SMAB-T1739,SMAB-T1769,SMAB-T1945,SMAB-T1949: Verify auto generated Reminder WI, Approval of Imported BOE Valuation Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = false)
     public void BPPTrends_BOEValuation_WorkItemImportAndApprove(String loginUser, boolean flagDeleteAndGenerateReminderWI) throws Exception {
         String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VAL_FACTORS_VALID + "BOE Valuation Factors 2021.xlsx";
 
@@ -267,7 +267,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - BOE Valuation Factors");
         String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
 
-        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - BOE Valuation Factors", "SMAB-T1738: Import Work Item Name validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - BOE Valuation Factors", "SMAB-T1738,SMAB-T1945: Import Work Item Name validation");
         softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1738: Work Pool Name Validation for Import Work Item");
         softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1738: Imported work item count validation");
 
@@ -296,7 +296,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         int reviewImportRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Review Import - BOE Valuation Factors");
         String reviewImportWorkItem = InPoolWorkItems.get("Work Item Number").get(reviewImportRowNumber);
 
-        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reviewImportRowNumber), "BPP Trends - Review Import - BOE Valuation Factors", "SMAB-T1769: Review Work Item Name validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reviewImportRowNumber), "BPP Trends - Review Import - BOE Valuation Factors", "SMAB-T1769,SMAB-T1949: Review Work Item Name validation");
         softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(reviewImportRowNumber), "BPP Admin", "SMAB-T1769: Work Pool Name Validation for Review Import Work Item");
         softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T1769: Imported work item count validation");
 
@@ -327,7 +327,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
      * This test case is to validate reminder work item creation and the work item flow for reverted file
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1738,SMAB-T1740,SMAB-T1769: Verify auto generated Reminder WI, Revert Imported BOE Valuation Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true)
+    @Test(description = "SMAB-T1738,SMAB-T1740,SMAB-T1769: Verify auto generated Reminder WI, Revert Imported BOE Valuation Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = false)
     public void BPPTrends_BOEValuation_WorkItemImportAndRevert(String loginUser) throws Exception {
         String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VAL_FACTORS_VALID + "BOE Valuation Factors 2021.xlsx";
 
@@ -420,7 +420,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
      * This test case is to validate reminder work item creation and the 'CAA Valuation Factors' work item flow for approved file
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1741,SMAB-T1742,SMAB-T1776: Verify auto generated Reminder WI, Approval of Imported CAA Valuation Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true)
+    @Test(description = "SMAB-T1741,SMAB-T1742,SMAB-T1776,SMAB-T1946,SMAB-T1950: Verify auto generated Reminder WI, Approval of Imported CAA Valuation Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = false)
     public void BPPTrends_CAAValuation_WorkItemImportAndApprove(String loginUser, boolean flagDeleteAndGenerateReminderWI) throws Exception {
         String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VAL_FACTORS_VALID + "CAA Valuation Factors 2021.xlsx";
 
@@ -448,7 +448,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - CAA Valuation Factors");
         String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
 
-        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - CAA Valuation Factors", "SMAB-T1741: Import Work Item Name validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - CAA Valuation Factors", "SMAB-T1741,SMAB-T1946: Import Work Item Name validation");
         softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1741: Work Pool Name Validation for Import Work Item");
         softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1741: Imported work item count validation");
 
@@ -477,7 +477,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         int reviewImportRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Review Import - CAA Valuation Factors");
         String reviewImportWorkItem = InPoolWorkItems.get("Work Item Number").get(reviewImportRowNumber);
 
-        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reviewImportRowNumber), "BPP Trends - Review Import - CAA Valuation Factors", "SMAB-T1776: Review Work Item Name validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reviewImportRowNumber), "BPP Trends - Review Import - CAA Valuation Factors", "SMAB-T1776,SMAB-T1950: Review Work Item Name validation");
         softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(reviewImportRowNumber), "BPP Admin", "SMAB-T1776: Work Pool Name Validation for Review Import Work Item");
         softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T1776: Imported work item count validation");
 
@@ -508,7 +508,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
      * This test case is to validate reminder work item creation and the work item flow for reverted file
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1741,SMAB-T1743,SMAB-T1776: Verify auto generated Reminder WI, Revert Imported CAA Valuation Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true)
+    @Test(description = "SMAB-T1741,SMAB-T1743,SMAB-T1776: Verify auto generated Reminder WI, Revert Imported CAA Valuation Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = false)
     public void BPPTrends_CAAValuation_WorkItemImportAndRevert(String loginUser) throws Exception {
         String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VAL_FACTORS_VALID + "CAA Valuation Factors 2021.xlsx";
 
@@ -601,21 +601,24 @@ public class BPPTrends_WorkItems_Test extends TestBase {
      * This test case is to validate Perform Calculations work item creation after BOE Index & Goods Factor is approved
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1736: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true)
+    @Test(description = "SMAB-T1736,SMAB-T1947: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = false)
     public void BPPTrends_PerformCalculations_WorkItemGeneration(String loginUser) throws Exception {
         //Step1: Validate reminder work item creation and the work item flow for approved file
         BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
 
-        //Step2: Delete the existing WI from system before importing files
+        //Step2: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
+        objApasGenericFunctions.login(loginUser);
+
+        //Step3: Delete the existing WI from system before importing files
         String query = "select id from Work_Item__c where Reference__c = 'BPP Composite Factors'";
         objSalesforceAPI.delete("Work_Item__c", query);
 
-        //Step3: "Perform Calculations" Work Item generation validation
+        //Step4: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Perform Calculations - BPP Composite Factors")).count();
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
 
-        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Perform Calculations - BPP Composite Factors", "SMAB-T1736: Import Work Item Name validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Perform Calculations - BPP Composite Factors", "SMAB-T1736,SMAB-T1947: Import Work Item Name validation");
         softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1736: Work Pool Name Validation for Import Work Item");
         softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1736: Imported work item count validation");
 
@@ -625,7 +628,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
      * This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1761: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true)
+    @Test(description = "SMAB-T1761: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = false)
     public void BPPTrends_verifySubmitAllFactorForApprovalBtnNotVisible_whenImportWINotCompleted(String loginUser) throws Exception {
         //Step1: Delete the existing 'Annual Factor Settings' WIs before generating
         String query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings' OR Reference__c = 'BPP Composite Factors'";
@@ -649,25 +652,28 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         query = "SELECT id FROM BPP_Trend_Roll_Year__c WHERE Roll_Year__c = '" + rollYear + "'";
         objSalesforceAPI.update("BPP_Trend_Roll_Year__c", query, "Annual_Factor_Status__c", "Reviewed by Admin");
 
-        //Step6: "Perform Calculations" Work Item generation validation
+        //Step6: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
+        objApasGenericFunctions.login(loginUser);
+
+        //Step7: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
         String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
 
-        //Step7: Accepting the work item and opening the link under 'Action' Column
+        //Step8: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
         objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
         objWorkItemHomePage.openActionLink(importWorkItem);
         String parentwindow = driver.getWindowHandle();
         objPage.switchToNewWindow(parentwindow);
 
-        //Step8: Trigger Calculations by clicking 'Calculate All' Button
+        //Step9: Trigger Calculations by clicking 'Calculate All' Button
         objPage.Click(objBppTrendPage.calculateAllBtn);
         objPage.waitForElementToDisappear(objBppTrendPage.xpathSpinner, 50);
         objPage.waitUntilElementIsPresent(objBppTrendPage.xpathTableMessage, 10);
         softAssert.assertEquals(objPage.getElementText(objBppTrendPage.tableMessage), "Yet to be submitted for approval", "SMAB-T1761: Message displayed above the table after Calculation is completed");
 
-        //Step9: Validating unavailability of Submit All Factors For Approval button
+        //Step10: Validating unavailability of Submit All Factors For Approval button
         softAssert.assertTrue(Objects.isNull(objPage.locateElement(objBppTrendPage.xpathSubmitAllFactorsForApprovalBtn, 20)), "SMAB-T1761: Submit All Factors For Approval button is not visible");
     }
 
@@ -675,7 +681,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
      * This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T2196: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true)
+    @Test(description = "SMAB-T2196: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = false)
     public void BPPTrends_verifyErrorMsg_whenAnnualSettingsWINotCompleted(String loginUser) throws Exception {
 
         //Step1: Delete the existing WIs before generating
@@ -691,36 +697,40 @@ public class BPPTrends_WorkItems_Test extends TestBase {
 
         //Step4: Validate reminder work item creation and the work item flow for approved file
         BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
+
+        //Step5: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
+        objApasGenericFunctions.login(loginUser);
         objApasGenericFunctions.searchModule(modules.HOME);
 
-        //Step5: Update WI status to Completed
+        //Step6: Update WI status to Completed
         query = "select id from Work_Item__c where Reference__c = 'BOE Valuation Factors' OR Reference__c = 'CAA Valuation Factors'";
         objSalesforceAPI.update("Work_Item__c", query, "Status__c", "In Progress");
         objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
 
-        //Step6: "Perform Calculations" Work Item generation validation
+        //Step7: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
         String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
 
-        //Step7: Accepting the work item and opening the link under 'Action' Column
+        //Step8: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
         objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
         objWorkItemHomePage.openActionLink(importWorkItem);
         String parentwindow = driver.getWindowHandle();
         objPage.switchToNewWindow(parentwindow);
 
-        //Step8: Trigger Calculations by clicking 'Calculate All' Button
+        //Step9: Trigger Calculations by clicking 'Calculate All' Button
         objPage.Click(objBppTrendPage.calculateAllBtn);
 
-        //Step9: Validating Error Message when 'Annual Settings' WI is not Completed and calculations are triggered
+        //Step10: Validating Error Message when 'Annual Settings' WI is not Completed and calculations are triggered
         String actualErrorMessage = objBppTrendPage.waitForErrorPopUpMsgOnCalculateClick(60);
         softAssert.assertContains(actualErrorMessage, "BPP Annual Factors is not yet completed/reviewed by admin for selected Roll Year", "SMAB-T2196: Verify Error Message when 'Annual Settings' WI is not Completed and calculations are triggered");
+
     }
     /** This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SSMAB-T1750,SMAB-T1737: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true)
+    @Test(description = "SSMAB-T1750,SMAB-T1737: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Item_BPP"}, alwaysRun = true, enabled = false)
     public void BPPTrends_verifyPerformCalculationWI_SubmittedForApprovalAndApproval_Status(String loginUser) throws Exception {
 
         //Step1: Delete the existing WIs before generating
@@ -774,11 +784,12 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         query = "select Status__c from Work_Item__c where Name = '"+ importWorkItem +"'";
         HashMap<String, ArrayList<String>> workItemData = new SalesforceAPI().select(query);
         String actualWIStatus = workItemData.get("Status__c").get(0);
-        softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T1737: Verify status of WI : '' is 'Submitted for Approval'");
+        softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T1737: Verify status of WI : 'Perform Calculations' is 'Submitted for Approval'");
 
         //Step14: Log out from the application and log in as BPP Principal
         objApasGenericFunctions.logout();
         Thread.sleep(15000);
+
         objApasGenericFunctions.login(users.PRINCIPAL_USER);
         objApasGenericFunctions.searchModule(modules.HOME);
 
@@ -798,6 +809,217 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         query = "select Status__c from Work_Item__c where Name = '"+ importWorkItem +"'";
         workItemData = new SalesforceAPI().select(query);
         actualWIStatus = workItemData.get("Status__c").get(0);
-        softAssert.assertEquals(actualWIStatus, "Completed", "SMAB-T1750: Verify status of WI : '' is 'Completed'");
+        softAssert.assertEquals(actualWIStatus, "Completed", "SMAB-T1750: Verify status of WI : 'Perform Calculations' is 'Completed'");
+    }
+    /** This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
+     * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
+     **/
+    @Test(description = "SMAB-T2195: Verify user is able to submit 'Perform Calculations' WI for Approval", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = false)
+    public void BPPTrends_verifyPerformCalculationWI_ReturnedStatus(String loginUser) throws Exception {
+
+        //Step1: Delete the existing WIs before generating
+        String query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings' OR Reference__c = 'BPP Composite Factors'";
+        objSalesforceAPI.delete("Work_Item__c",query);
+
+        //Step2: Delete the existing WIs before generating
+        query = "select id from Work_Item__c where Sub_Type__c = 'Import'";
+        objSalesforceAPI.delete("Work_Item__c",query);
+
+        //Step3: Generate 'Annual Factor Settings' Reminder Work Items
+        objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_ANNUAL_FACTORS);
+
+        //Step10: Update 'Annual Factor Status' & WI status to Completed
+        query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings'";
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "In Progress");
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
+
+        query = "SELECT id FROM BPP_Trend_Roll_Year__c WHERE Roll_Year__c = '" +rollYear+ "'";
+        objSalesforceAPI.update("BPP_Trend_Roll_Year__c", query, "Annual_Factor_Status__c", "Reviewed by Admin");
+
+        //Step4: Validate reminder work item creation and the work item flow for approved file
+        BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
+        BPPTrends_BOEValuation_WorkItemImportAndApprove(loginUser,true);
+        BPPTrends_CAAValuation_WorkItemImportAndApprove(loginUser,true);
+
+        //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
+        objApasGenericFunctions.login(loginUser);
+
+        //Step5: "Perform Calculations" Work Item generation validation
+        HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
+        int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
+        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+
+        //Step6: Accepting the work item and opening the link under 'Action' Column
+        objWorkItemHomePage.acceptWorkItem(importWorkItem);
+        objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
+        objWorkItemHomePage.openActionLink(importWorkItem);
+        String parentwindow = driver.getWindowHandle();
+        objPage.switchToNewWindow(parentwindow);
+
+        //Step7: Trigger Calculations by clicking 'Calculate All' Button
+        objPage.Click(objBppTrendPage.calculateAllBtn);
+        objPage.waitForElementToDisappear(objBppTrendPage.xpathSpinner, 50);
+
+        //Step8: Submit Calculations for Approval
+        objPage.Click(objBppTrendPage.submitAllFactorForApprovalButton);
+        objPage.waitForElementToDisappear(objBppTrendPage.xpathSpinner, 50);
+
+        //Step9: Verify Status of WI 'Perform Calculations' is 'Submitted for Approval'
+        query = "select Status__c from Work_Item__c where Name = '"+ importWorkItem +"'";
+        HashMap<String, ArrayList<String>> workItemData = new SalesforceAPI().select(query);
+        String actualWIStatus = workItemData.get("Status__c").get(0);
+        softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T2195: Verify status of WI : 'Perform Calculations' is 'Submitted for Approval'");
+
+        //Step10: Log out from the application and log in as BPP Principal
+        objApasGenericFunctions.logout();
+        Thread.sleep(15000);
+
+        objApasGenericFunctions.login(users.PRINCIPAL_USER);
+        objApasGenericFunctions.searchModule(modules.HOME);
+
+        //Step11: Navigate to 'Needs My Approval' tab and
+        objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
+
+        //Step12: Return the Work Item
+        objWorkItemHomePage.returntWorkItem(importWorkItem,"Test WI Rejection");
+
+        //Step13: Verify Status of WI 'Perform Calculations' is 'Completed'
+        query = "select Status__c from Work_Item__c where Name = '"+ importWorkItem +"'";
+        workItemData = new SalesforceAPI().select(query);
+        actualWIStatus = workItemData.get("Status__c").get(0);
+        softAssert.assertEquals(actualWIStatus, "Returned", "SMAB-T2195: Verify status of WI : 'Perform Calculations' is 'Returned'");
+
+        //Step14: Log out from the application and log in again as BPP Admin
+        objApasGenericFunctions.logout();
+        Thread.sleep(15000);
+
+        objApasGenericFunctions.login(loginUser);
+        objApasGenericFunctions.searchModule(modules.HOME);
+
+        //Ste15: Verify WI is present in 'In Progress' tab
+        HashMap<String, ArrayList<String>> InProgressWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_PROGRESS);
+        int workItemRowNumber = InProgressWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
+        String workItemName = InProgressWorkItems.get("Work Item Number").get(workItemRowNumber);
+        softAssert.assertEquals(workItemName, "importWorkItem", "SMAB-T2195: Verify WI returned to user is found in 'In Progress' tab");
+
+    }
+
+
+    /**
+     * DESCRIPTION: Validation of BPP Trend Annual Factors Reminder Work Item workflow
+     */
+    @Test(description = "SMAB-T4503,SMAB-T4523,SMAB-T1943: Validation of BPP Trend Annual Factors Reminder Work Item workflow", groups={"smoke","regression","Work_Item_BPP"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
+    public void BppTrend_AnnualFactors_ReminderWorkItemWorkFlow(String loginUser) throws Exception {
+        String rollYear = "2021";
+
+        //Code to delete current roll year BPP Trend Setup, BPP Settings and Composite Factor Records
+        objBppTrendPage.removeExistingBppSettingEntry(rollYear);
+        objBppTrendPage.removeExistingBppFactorSettingEntry(rollYear);
+        String queryToDeleteBPPTrendSetUp = "SELECT Id FROM BPP_Trend_Roll_Year__c where Name = '" + rollYear + " - BPP Trend Setup'";
+        objSalesforceAPI.delete("BPP_Trend_Roll_Year__c",queryToDeleteBPPTrendSetUp);
+
+        //Delete the existing WI from system before generating the work item
+        String queryToDeleteAnnualFactorSettingsWI = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings'";
+        objSalesforceAPI.delete("Work_Item__c", queryToDeleteAnnualFactorSettingsWI);
+
+        //Generating the Reminder Work Items
+        objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_ANNUAL_FACTORS);
+
+        //Validation for BPP Trend Setup, BPP Settings and Composite Factor Records after generating the reminder work item
+        HashMap<String, ArrayList<String>> BPPSettings = objSalesforceAPI.select("SELECT Id FROM BPP_Setting__c where BPP_Trend_Roll_Year_Parent__c = '"+ rollYear + "'");
+        softAssert.assertEquals(BPPSettings.get("Id").size(),1,"SMAB-T2169: Validation for cloning of prior year BPP Settings on reminder work item generation");
+
+        HashMap<String, ArrayList<String>> BPPFactorSettings = objSalesforceAPI.select("SELECT Name,Property_Type__c FROM BPP_Composite_Factors_Setting__c Where BPP_Trend_Roll_Year_Parent__c = '"+ rollYear + "'");
+        softAssert.assertEquals(BPPFactorSettings.get("Name").size(),4,"SMAB-T2169: Composite Factor Count Validation on reminder work item generation");
+        ReportLogger.INFO("List of Composite Factor : " + BPPFactorSettings.get("Property_Type__c"));
+        softAssert.assertTrue(BPPFactorSettings.get("Property_Type__c").contains("Commercial"),"SMAB-T2169: Validation for cloning of prior year Commercial Composite Factor on reminder work item generation");
+        softAssert.assertTrue(BPPFactorSettings.get("Property_Type__c").contains("Industrial"),"SMAB-T2169: Validation for cloning of prior year Industrial Composite Factor on reminder work item generation");
+        softAssert.assertTrue(BPPFactorSettings.get("Property_Type__c").contains("Construction"),"SMAB-T2169: Validation for cloning of prior year Construction Composite Factor on reminder work item generation");
+        softAssert.assertTrue(BPPFactorSettings.get("Property_Type__c").contains("Agricultural"),"SMAB-T2169: Validation for cloning of prior year Agriculture Composite Factor on reminder work item generation");
+
+        //Step1: Login to the APAS application using the given user
+        objApasGenericFunctions.login(loginUser);
+
+        //Step2: Validation for the cloned annual factor from the prior year
+        objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+        objApasGenericFunctions.displayRecords("All");
+        softAssert.assertTrue(objApasGenericFunctions.getGridDataInHashMap().get("Name").contains("2021 - BPP Trend Setup"),"SMAB-T2168: Validation for cloning of prior year BPP Trend Setup record on reminder work item generation");
+
+        //Stpe3: Open the Work Item Home Page
+        objApasGenericFunctions.searchModule(modules.HOME);
+
+        //Step4: "BPP Trend Annual Factor" Work Item generation validation
+        HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
+        int annualFactorSettingsWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Update and Validate - Annual Factor Settings")).count();
+        int annualFactorSettingsWorkItemRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Update and Validate - Annual Factor Settings");
+        String annualFactorSettingsWorkItemWorkItem = InPoolWorkItems.get("Work Item Number").get(annualFactorSettingsWorkItemRowNumber);
+        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(annualFactorSettingsWorkItemRowNumber), "BPP Trends - Update and Validate - Annual Factor Settings" , "SMAB-T1729,SMAB-T1943: BPP Trend Annual Factor Settings work item name validation in the imported review work item");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(annualFactorSettingsWorkItemRowNumber), "BPP Admin", "SMAB-T1729: BPP Trend Annual Factor pool name validation");
+        softAssert.assertEquals(annualFactorSettingsWorkItemCount, 1, "SMAB-T1729: BPP Trend Annual Factor Settings work item count validation");
+
+        //Step5: Accepting the work item
+        objWorkItemHomePage.acceptWorkItem(annualFactorSettingsWorkItemWorkItem);
+
+        //Step6: Status validation after accepting the work item
+        objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
+        objPage.scrollToBottom();
+        objWorkItemHomePage.openWorkItem(annualFactorSettingsWorkItemWorkItem);
+        objPage.Click(objWorkItemHomePage.detailsTab);
+        Thread.sleep(2000);
+        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Status"), "In Progress", "SMAB-T1729: Validation of annual factor setting work item status after accepting the work item");
+
+        //Step7: Steps to edit and save BPP Trend Setup Record
+        objApasGenericFunctions.searchModule(modules.HOME);
+        objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
+        objPage.scrollToBottom();
+        String parentWindow = driver.getWindowHandle();
+        objWorkItemHomePage.openActionLink(annualFactorSettingsWorkItemWorkItem);
+
+        objPage.switchToNewWindow(parentWindow);
+        Thread.sleep(1000);
+
+        //Step8: Edit the settings
+        objPage.Click(objBppTrendSetupPage.dropDownIconBppSetting);
+        objPage.Click(objBppTrendSetupPage.editLinkUnderShowMore);
+        Thread.sleep(2000);
+        objPage.enter("Maximum Equipment index Factor","124.4");
+        String successMessage = objApasGenericFunctions.saveRecord();
+        softAssert.assertEquals(successMessage,"success\nBPP Setting was saved.\nClose","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
+
+        //Change the status to "Reviewed By Admin"
+        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Annual Factor Status"),"To be Reviewed by Admin","SMAB-T1734 : Validation that new field Annual Factor Status is visible on UI");
+        objApasGenericFunctions.editAndSelectFieldData("Annual Factor Status","Reviewed by Admin");
+
+        driver.switchTo().window(parentWindow);
+
+        // //Step19: Open Home Page
+        driver.navigate().refresh();
+        objApasGenericFunctions.searchModule(modules.HOME);
+
+        //Step20: Completed "Annual Factor Settings" work item validation
+        HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
+        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(annualFactorSettingsWorkItemWorkItem), "SMAB-T1730,SMAB-T1735: Validation that Annual Factor Settings work item moved to Completed status after Annual Factor Status is saved to Reviewed By Admin");
+
+        //Update the settings even after closing the work item
+        objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+        objApasGenericFunctions.displayRecords("All");
+        objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+
+        objPage.Click(objBppTrendSetupPage.dropDownIconBppSetting);
+        objPage.Click(objBppTrendSetupPage.editLinkUnderShowMore);
+        Thread.sleep(2000);
+        objPage.enter("Maximum Equipment index Factor","124.2");
+        successMessage = objApasGenericFunctions.saveRecord();
+        softAssert.assertEquals(successMessage,"success\nBPP Setting was saved.\nClose","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
+
+        //Validation for status even after editing the work BPP Trend set up for completed work item
+        driver.navigate().refresh();
+        objApasGenericFunctions.searchModule(modules.HOME);
+        objWorkItemHomePage.Click(objWorkItemHomePage.completedTab);
+        objWorkItemHomePage.openWorkItem(annualFactorSettingsWorkItemWorkItem);
+        objPage.Click(objWorkItemHomePage.detailsTab);
+        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Status"), "Completed", "SMAB-T2179: Work item status should be completed even after editing the BPP Settings for the completed work item");
+
+        objApasGenericFunctions.logout();
     }
 }

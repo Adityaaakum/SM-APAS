@@ -111,7 +111,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
 
 		//Step8: Searching the efile intake module to validate the status of the imported file after approve
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objPage.Click(objEfileImportPage.buttonSourceDetails);
 		objEfileImportPage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.statusImportedFile), "Approved", "SMAB-T362: Validation if status of imported file is approved.");
 
@@ -290,7 +290,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 
 		//Step7: Validation of the file status after reverting the imported file
 		ReportLogger.INFO("Validation of file import status after revert");
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objPage.Click(objEfileImportPage.buttonSourceDetails);
 		objEfileImportPage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		//Status of the imported file should be changed to Reverted as the whole file is reverted for reimport
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.statusImportedFile), "Reverted", "SMAB-T361,SMAB-T970,SMAB-T25: Validation if status of imported file is reverted.");
@@ -352,7 +352,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		//Step8: Valiation of import history columns as the value should be updated based on the records retried from error section
 		ReportLogger.INFO("Validation of error and inported records on Import History table after retry");
 		//Opening the Efile intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objPage.Click(objEfileImportPage.buttonSourceDetails);
 		objEfileImportPage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.numberOfTimesTriedRetried), "2", "SMAB-T364,SMAB-T570: Validation if number of times try/retry count is increased by 1 after retrying the error records");
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.totalRecordsInFile), "3", "SMAB-T364: Validation if total number of records remain same on the table");

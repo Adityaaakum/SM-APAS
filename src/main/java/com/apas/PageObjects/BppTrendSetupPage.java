@@ -73,7 +73,7 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//a[text() = 'BPP Composite Factors Settings']")
 	public WebElement bppCompFactorSettingTab;
 
-	@FindBy(xpath = "//span[text() = 'BPP Settings']/ancestor::header//following-sibling::div//a[contains(@class, 'slds-button') and @role = 'button']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//article[contains(.,'BPP Settings -')]//lightning-button-menu")
 	public WebElement dropDownIconBppSetting;
 
 	@FindBy(xpath = "//span[text() = 'BPP Composite Factors Settings']/ancestor::header//following-sibling::div//a[contains(@class, 'slds-button') and @role = 'button']")
