@@ -36,7 +36,7 @@ public class EFileImportTransactionsPage extends Page {
 	@FindBy(xpath = "//a[contains(.,'Import Transaction-00')]")
 	public WebElement importTransactionName;
 
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//a[@data-label='Transactions' and @role='tab']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@data-label='Transactions' and @role='tab']")
 	public WebElement transactionsTab;
 
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//table//tr//a[contains(.,'Import Transaction')]")

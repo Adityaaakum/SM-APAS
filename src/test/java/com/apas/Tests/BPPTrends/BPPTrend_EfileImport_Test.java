@@ -294,7 +294,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			
 			//Step10: Enter correct data in one of the Error Row 'Cell' 
 			ReportLogger.INFO("Deleting junk data and entering valid data in the table: "+tableName);
-			if(!tableName.equalsIgnoreCase("M&E Good Factors")) {
+			if(!tableName.equalsIgnoreCase("M&E Good Factors") || !tableName.equalsIgnoreCase("Construction Index")) {
 				objApasGenericFunctions.editGridCellValue("Average","80");
 			}else
 				objApasGenericFunctions.editGridCellValue("Factor","80");
@@ -374,6 +374,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementToBeVisible(objEfileHomePage.efileRecordsApproveSuccessMessage, 20);
 
 		//Step10: Opening the file import in-take module
+		Thread.sleep(3000);
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		
 		//Step11: Select File Type and File Source
@@ -708,6 +709,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementToBeVisible(objEfileHomePage.efileRecordsApproveSuccessMessage, 20);
 
 		//Step10: Opening the file import in-take module
+		Thread.sleep(3000);
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		
 		//Step11: Select File Type and File Source
@@ -1032,6 +1034,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementToBeVisible(objEfileHomePage.efileRecordsApproveSuccessMessage, 20);
 
 		//Step10: Opening the file import in-take module
+		Thread.sleep(3000);
 		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		
 		//Step11: Select File Type and File Source
