@@ -908,9 +908,11 @@ public class BPPTrends_WorkItems_Test extends TestBase {
     /**
      * DESCRIPTION: Validation of BPP Trend Annual Factors Reminder Work Item workflow
      */
-    @Test(description = "SMAB-T4503,SMAB-T4523,SMAB-T1943: Validation of BPP Trend Annual Factors Reminder Work Item workflow", groups={"smoke","regression","Work_Item_BPP"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
+    @Test(description = "SMAB-T1729,SMAB-T1730,SMAB-T1734,SMAB-T1735,SMAB-T1943,SMAB-T2168,SMAB-T2169,SMAB-T2179: Validation of BPP Trend Annual Factors Reminder Work Item workflow", groups={"smoke","regression","Work_Item_BPP"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
     public void BppTrend_AnnualFactors_ReminderWorkItemWorkFlow(String loginUser) throws Exception {
         String rollYear = "2021";
+        HashMap<String, ArrayList<String>> BPPSettingss = objSalesforceAPI.select("SELECT Id FROM BPP_Setting__c where BPP_Trend_Roll_Year_Parent__c = '"+ rollYear + "'");
+        softAssert.assertEquals(BPPSettingss.get("Id").size(),1,"SMAB-T2169: Validation for cloning of prior year BPP Settings on reminder work item generation");
 
         //Code to delete current roll year BPP Trend Setup, BPP Settings and Composite Factor Records
         objBppTrendPage.removeExistingBppSettingEntry(rollYear);
