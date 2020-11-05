@@ -351,8 +351,12 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 
 		//Step8: Valiation of import history columns as the value should be updated based on the records retried from error section
 		ReportLogger.INFO("Validation of error and inported records on Import History table after retry");
+
 		//Opening the Efile intake module
 		objPage.Click(objEfileImportPage.buttonSourceDetails);
+		//Clicking on Navigation Warning message as pop up will appear to give warning that changes will be lost
+		objPage.Click(objPage.getButtonWithText("Continue"));
+
 		objEfileImportPage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.numberOfTimesTriedRetried), "2", "SMAB-T364,SMAB-T570: Validation if number of times try/retry count is increased by 1 after retrying the error records");
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.totalRecordsInFile), "3", "SMAB-T364: Validation if total number of records remain same on the table");
