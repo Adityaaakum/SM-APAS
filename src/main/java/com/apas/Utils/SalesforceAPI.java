@@ -287,6 +287,85 @@ public class SalesforceAPI extends TestBase {
     }
 
     /**
+     * This method will delete maxmimum 200 records based on object name and ids
+     * @param commaSeparatedIdsORSqlQuery : List of ids separated by comma to be deleted or Select query fetching the IDs to be deleted
+     */
+    public void delete(String commaSeparatedIdsORSqlQuery) {
+        int statusCode;
+
+        if (commaSeparatedIdsORSqlQuery.toUpperCase().trim().startsWith("SELECT")) {
+            //This will delete maximum 200 record in one go as there is a limit of 200 records
+            String commaSeparatedIds = "";
+            HashMap<String, ArrayList<String>> queryDataHashMap = select(commaSeparatedIdsORSqlQuery);
+            if (queryDataHashMap.get("Id") != null){
+                int noOfRecordsToBeDeleted = queryDataHashMap.get("Id").size();
+                int noOfLoops = noOfRecordsToBeDeleted/200;
+                String queryWith200Limit = commaSeparatedIdsORSqlQuery + " limit 200";
+                ReportLogger.INFO("Delete Query : " + queryWith200Limit);
+                for (int i = 0; i<=noOfLoops; i++){
+                    commaSeparatedIds = getCommaSeparatedIds(queryWith200Limit);
+                    statusCode = delete(commaSeparatedIds,0);
+                    if (statusCode == 200)
+                        ReportLogger.PASS("Status Code for Delete Query : " + statusCode);
+                    else
+                        ReportLogger.FAIL("Status Code for Delete Query : " + statusCode);
+                }
+            }
+
+        }else{
+            //This will delete the records if comma separated Ids are passed
+            ReportLogger.INFO("Comma Separated IDs : " + commaSeparatedIdsORSqlQuery);
+            statusCode = delete(commaSeparatedIdsORSqlQuery,0);
+            if (statusCode == 200)
+                ReportLogger.PASS("Status Code for comma separated ids : " + statusCode);
+            else
+                ReportLogger.FAIL("Status Code for comma separated ids : " + statusCode);
+        }
+    }
+
+    /**
+     * This method will delete maxmimum 200 records based on object name and ids
+     * @param commaSeparatedIds : List of ids separated by comma to be deleted or Select query fetching the IDs to be deleted
+     * @param placeHolder : This parameter is just a place holder for future use
+     */
+    private int delete(String commaSeparatedIds, int placeHolder) {
+        int statusCode = 0;
+
+        ReportLogger.INFO("Deleting following comma separated IDs" + commaSeparatedIds);
+
+        //Creating HTTP Post Connection
+        HttpPost httpPost = salesforceCreateConnection();
+
+        //Authenticating the HTTP Post connection
+        if (salesforceAuthentication(httpPost)){
+
+            //Set up the objects necessary to make the request.
+            HttpClient httpClient = HttpClientBuilder.create().build();
+            try {
+                if(!commaSeparatedIds.equals("")) {
+                    String uri = baseUri + "/composite/sobjects?ids=" + commaSeparatedIds.replace(" ","").trim();
+                    System.out.println("URI : " + uri);
+                    HttpDelete httpDelete = new HttpDelete(uri);
+                    httpDelete.addHeader(oauthHeader);
+                    httpDelete.addHeader(prettyPrintHeader);
+
+                    HttpResponse response = httpClient.execute(httpDelete);
+
+                    statusCode = response.getStatusLine().getStatusCode();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //Releasing HTTP Post connection
+        salesforceReleaseConnection(httpPost);
+
+        return statusCode;
+    }
+
+
+    /**
      * This method will update a single column value
      * @param table : Name of the object from where records are to be updated
      * @param commaSeparatedIdsORSQLQuery : Comma Separated IDs of the record to be updated or the SQL query
