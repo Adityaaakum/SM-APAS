@@ -430,10 +430,10 @@ public class ExemptionsPage extends ApasGenericPage {
 public String createNewExemption(Map<String,String> newExemptionData) throws Exception {
 
 	ReportLogger.INFO("Entering/Selecting values for New Exemption record");
-	apasGenericObj.searchAndSelectFromDropDown(apn,fetchActiveAPN());
+	apasGenericObj.searchAndSelectFromDropDown("APN",fetchActiveAPN());
 	objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
 	apasGenericObj.searchAndSelectFromDropDown(claimantName,fetchAssesseeName());
-	objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
+	objPage.enter("Claimant's Name", newExemptionData.get("ClaimantSSN"));
 	objPage.enter(spouseName, newExemptionData.get("SpouseName"));
 	objPage.enter(spouseSSN, newExemptionData.get("SpouseSSN"));
 	apasGenericObj.selectFromDropDown(unmarriedSpouseOfDisabledVeteran, newExemptionData.get("UnmarriedSpouseOfDisabledVeteran"));
@@ -469,9 +469,9 @@ public String createNewExemption(Map<String,String> newExemptionData) throws Exc
 public String createNewExemptionWithMandatoryData(Map<String, String> newExemptionData) throws Exception {
 	
 	ReportLogger.INFO("Entering/Selecting values for New Exemption record");
-		apasGenericObj.searchAndSelectFromDropDown(apn,fetchActiveAPN());
+		apasGenericObj.searchAndSelectFromDropDown("APN",fetchActiveAPN());
 		objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-		apasGenericObj.searchAndSelectFromDropDown(claimantName,fetchAssesseeName());
+		apasGenericObj.searchAndSelectFromDropDown("Claimant's Name",fetchAssesseeName());
 		objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
 		objPage.enter(veteranName, newExemptionData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 		objPage.enter(veteranSSN, newExemptionData.get("VeteranSSN"));

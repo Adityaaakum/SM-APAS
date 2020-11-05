@@ -170,7 +170,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		Click(newButton);
 		//selectRecordType("Exemption Limits");
 		ReportLogger.INFO("Entering details for Real Property Settings record");
-		enter(rpSettingNameEditBox,rollYear);
+		enter("RP Setting Name",rollYear);
 		selectFromDropDown(statusDropDown,dataMap.get("Status"));
 		searchAndSelectFromDropDown(searchRollYearSettingsLookup,rollYear);
 		enter(dvLowIncomeExemptionAmountEditBox,dataMap.get("DV Low Income Exemption Amount"));

@@ -337,7 +337,7 @@ public class ApasGenericFunctions extends TestBase {
         objPage.Click(driver.findElement(By.xpath(xpathStr)));
     }
 
-    public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
+    public void searchAndSelectFromDropDown(Object element, String value) throws Exception {
         objPage.enter(element, value);
         String xpathStr = "//div[@title = '" + value + "']";
         WebElement drpDwnOption = locateElement(xpathStr, 10);
