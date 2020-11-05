@@ -29,26 +29,30 @@ public class EFileImportLogsPage extends Page {
 	@FindBy(xpath = "//a[@data-label='Transactions' and @role='tab']")
 	public WebElement transactionsTab;
 
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//table")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table")
 	public WebElement importLogRecordsTable;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(text(),'File Count')]/parent::div/following-sibling::div//lightning-formatted-number")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(text(),'File Count')]/parent::div/following-sibling::div//lightning-formatted-number")
 	public WebElement logFileCount;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(text(),'Import Count')]/parent::div/following-sibling::div//lightning-formatted-number")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(text(),'Import Count')]/parent::div/following-sibling::div//lightning-formatted-number")
 	public WebElement logImportCount;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(text(),'Error Count')]/parent::div/following-sibling::div//lightning-formatted-number")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(text(),'Error Count')]/parent::div/following-sibling::div//lightning-formatted-number")
 	public WebElement logErrorCount;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(text(),'Status')]/parent::div/following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(text(),'Status')]/parent::div/following-sibling::div//lightning-formatted-text")
 	public WebElement logStatus;
+
+
+
+
 	
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='View All']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='View All']")
 	public WebElement viewAlllink;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//*[@class='test-id__field-label' and text()='Duplicates in File']/parent::div/following-sibling::div//slot[@slot='outputField']")	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@class='test-id__field-label' and text()='Duplicates in File']/parent::div/following-sibling::div//slot[@slot='outputField']")	
 	public WebElement duplicatesInFileImportLog;	
 		
 	@FindBy(xpath = "//button[contains(@title,'Edit')]")	
@@ -80,7 +84,7 @@ public class EFileImportLogsPage extends Page {
 	
 public void clickLogReocrdForParameters(String user,String status) throws Exception{
 		
-		driver.findElements(By.xpath("//div[@class='windowViewMode-normal oneContent active lafPageHost']//table//tbody//th[contains(.,'"+user+"')]/following-sibling::td[contains(.,'"+status+"')]//following-sibling::td//span[contains(.,'View')]")).get(1).click();
+		driver.findElements(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody//th[contains(.,'"+user+"')]/following-sibling::td[contains(.,'"+status+"')]//following-sibling::td//span[contains(.,'View')]")).get(1).click();
 		objPage.waitForElementToBeClickable(objEFileImport.errorRowSection , 20);
 		
 		}

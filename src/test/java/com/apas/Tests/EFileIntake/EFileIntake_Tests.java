@@ -355,9 +355,6 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.waitForElementToBeVisible(objEFileImport.efileRecordsApproveSuccessMessage, 20);
 		
 		//step7: trying to upload a file for the same file type ,source and period
-		//objPage.javascriptClick(objEFileImport.efileImportToolLabel);
-		//objPage.waitForElementToBeClickable(objEFileImport.fileTypedropdown, 10);
-		//objEFileImport.selectFileAndSource(fileType,source);
 		objPage.Click(objEFileImport.sourceDetails);
 		objPage.waitForElementToBeClickable(objEFileImport.nextButton, 10);
 		objPage.Click(objEFileImport.nextButton);
