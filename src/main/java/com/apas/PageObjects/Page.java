@@ -875,6 +875,7 @@ public class Page {
 	 */
 	public WebElement getWebElementWithLabel(String label){
 		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()=\"" + label + "\"]/..//input";
+		waitForElementToBeClickable(10, xpath);
 		return driver.findElement(By.xpath(xpath));
 	}
 

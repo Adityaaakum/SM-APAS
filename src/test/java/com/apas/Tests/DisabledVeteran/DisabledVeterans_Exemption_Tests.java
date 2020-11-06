@@ -92,8 +92,8 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		objPage.Click(exemptionPageObj.newExemptionButton);
 		
 		//Step3: selecting mandatory details before verifying error message
-		apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.apn,fieldData.get("APN"));
-		apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.claimantName,fieldData.get("ClaimantName"));
+		apasGenericObj.searchAndSelectFromDropDown("APN",fieldData.get("APN"));
+		apasGenericObj.searchAndSelectFromDropDown("Claimant's Name",fieldData.get("ClaimantName"));
 		objPage.enter(exemptionPageObj.claimantSSN, fieldData.get("ClaimantSSN"));
 		
 		//step4:
@@ -148,9 +148,9 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			objPage.Click(exemptionPageObj.newExemptionButton);
 			
 			//Step3: selecting mandatory details before verifying error message
-			apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.apn,businessValidationdata.get("APN"));
+			apasGenericObj.searchAndSelectFromDropDown("APN",businessValidationdata.get("APN"));
 			objPage.enter(exemptionPageObj.dateApplicationReceived,businessValidationdata.get("DateApplicationReceived"));
-			apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.claimantName,businessValidationdata.get("ClaimantName"));
+			apasGenericObj.searchAndSelectFromDropDown("Claimant's Name",businessValidationdata.get("ClaimantName"));
 			objPage.enter(exemptionPageObj.claimantSSN, businessValidationdata.get("ClaimantSSN"));
 			objPage.enter(exemptionPageObj.veteranName, businessValidationdata.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 			objPage.enter(exemptionPageObj.dateAquiredProperty,businessValidationdata.get("DateAquiredProperty"));
@@ -461,7 +461,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	       
 	   //Step3: Selecting mandatory details before verifying error message
 	       objPage.enter(exemptionPageObj.dateApplicationReceived,fieldData.get("DateApplicationReceived"));
-	       apasGenericObj.searchAndSelectFromDropDown(exemptionPageObj.claimantName,fieldData.get("ClaimantName"));
+	       apasGenericObj.searchAndSelectFromDropDown("Claimant's Name",fieldData.get("ClaimantName"));
 	       objPage.enter(exemptionPageObj.claimantSSN, fieldData.get("ClaimantSSN"));
 	       objPage.enter(exemptionPageObj.veteranName, fieldData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 	       objPage.enter(exemptionPageObj.veteranSSN, fieldData.get("VeteranSSN"));

@@ -204,17 +204,18 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.sourceDropdown), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 
 		//step6: verifying log created With New status
-		ReportLogger.INFO("Verify log genertared for 'New' status record");
-		apasGenericObj.globalSearchRecords(fileType+" :"+source+" :"+period);
-		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.logStatus),"New", "SMAB-T87:Verify that user is able to see logs record for file type with status 'New' on 'E-File Import Logs' screen");
+		//ReportLogger.INFO("Verify log genertared for 'New' status record");
+		//apasGenericObj.globalSearchRecords(fileType+" :"+source+" :"+period);
+		//softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.logStatus),"New", "SMAB-T87:Verify that user is able to see logs record for file type with status 'New' on 'E-File Import Logs' screen");
 
 		//step7: importing file for New status record from history list table
 		ReportLogger.INFO("Verify File import for 'New' status record");
-		objPage.javascriptClick(objEFileImport.efileImportToolLabel);
-		objPage.waitForElementToBeClickable(objEFileImport.fileTypedropdown, 10);
-		objEFileImport.selectFileAndSource(fileType,source);
-		objPage.waitForElementToBeClickable(objEFileImport.nextButton, 10);
-		objPage.Click(objEFileImport.viewLinkRecord);
+		/*
+		 * objPage.javascriptClick(objEFileImport.efileImportToolLabel);
+		 * objPage.waitForElementToBeClickable(objEFileImport.fileTypedropdown, 10);
+		 * objEFileImport.selectFileAndSource(fileType,source);
+		 * objPage.waitForElementToBeClickable(objEFileImport.nextButton, 10);
+		 */objPage.Click(objEFileImport.viewLinkRecord);
 		ReportLogger.INFO("Verify duplicate messgae does not appear for 'New' status record");
 		objPage.waitForElementToBeClickable(objEFileImport.uploadFilebutton, 10);
 		softAssert.assertTrue(apasGenericObj.isNotDisplayed(objEFileImport.fileAlreadyApprovedMsg), "SMAB-T100:Verify duplicate warning message should not appear for New Status");
