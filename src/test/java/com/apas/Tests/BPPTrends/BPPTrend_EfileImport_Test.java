@@ -294,7 +294,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			
 			//Step10: Enter correct data in one of the Error Row 'Cell' 
 			ReportLogger.INFO("Deleting junk data and entering valid data in the table: "+tableName);
-			if(!tableName.equalsIgnoreCase("M&E Good Factors") || !tableName.equalsIgnoreCase("Construction Index")) {
+
+			if(!tableName.equalsIgnoreCase("M&E Good Factors")) {
 				objApasGenericFunctions.editGridCellValue("Average","80");
 			}else
 				objApasGenericFunctions.editGridCellValue("Factor","80");
@@ -374,8 +375,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementToBeVisible(objEfileHomePage.efileRecordsApproveSuccessMessage, 20);
 
 		//Step10: Opening the file import in-take module
-		Thread.sleep(3000);
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objPage.Click(objEfileHomePage.buttonSourceDetails);
 		
 		//Step11: Select File Type and File Source
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Index and Percent Good Factors");
@@ -709,8 +709,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementToBeVisible(objEfileHomePage.efileRecordsApproveSuccessMessage, 20);
 
 		//Step10: Opening the file import in-take module
-		Thread.sleep(3000);
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objPage.Click(objEfileHomePage.buttonSourceDetails);
 		
 		//Step11: Select File Type and File Source
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Valuation Factors");
@@ -1034,8 +1033,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementToBeVisible(objEfileHomePage.efileRecordsApproveSuccessMessage, 20);
 
 		//Step10: Opening the file import in-take module
-		Thread.sleep(3000);
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objPage.Click(objEfileHomePage.buttonSourceDetails);
 		
 		//Step11: Select File Type and File Source
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "CAA - Valuation Factors");
@@ -1160,7 +1158,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		
 		ReportLogger.INFO("Error Message Validation of Error Row Records in table: 'Agricultural Index' on Review and Approve Data Page");
 		objBppTrend.clickOnTableOnBppTrendPage("Agricultural Index");
-		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("XYZ"),"Field year, found XYZ but expected a valid year"+"\n"+"Field year, found XYZ but expected it to be less than 2019","SMAB-T105 : Error Message validation for the scenario 'Alphabets in Year'");
+		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("XYZ"),"Field year, found XYZ but expected a valid year"+"\n"+"Field year, found XYZ but expected it to be less than "+rollYearForImport,"SMAB-T105 : Error Message validation for the scenario 'Alphabets in Year'");
 		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("%_&#"),"Field year, found %_&# but expected a valid year","SMAB-T105 : Error Message validation for the scenario 'Special Characters in Year'");
 		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("20"),"Field year, found 20 but expected greater than 1973","SMAB-T105 : Error Message validation for the scenario 'Numbers in Year'");
 		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("-2014"),"Field year, found -2014 but expected a valid year","SMAB-T105 : Error Message validation for the scenario 'Negative Number in Year'");
