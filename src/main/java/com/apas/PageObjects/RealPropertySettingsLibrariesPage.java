@@ -144,10 +144,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	 * @throws Exception
 	 */
 	public void selectFromDropDown(WebElement element, String value) throws Exception {
-		Click(element);
-		String xpathStr = "//div[contains(@class, 'uiPopupTarget')]//a[text() = '" + value + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 100);
-		drpDwnOption.click();
+		objApasGenericFunctions.selectFromDropDown(element, value);
 	}
 	
 	/**
