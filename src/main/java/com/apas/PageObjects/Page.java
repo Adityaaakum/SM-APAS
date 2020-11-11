@@ -873,9 +873,9 @@ public class Page {
 	 * @param label : label of the object which needs to be identified
 	 * @return : webelement against the label
 	 */
-	public WebElement getWebElementWithLabel(String label){
+	public WebElement getWebElementWithLabel(String label) throws Exception {
 		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()=\"" + label + "\"]/..//input";
-		waitForElementToBeClickable(10, xpath);
+		waitUntilElementIsPresent(xpath,5);
 		return driver.findElement(By.xpath(xpath));
 	}
 
