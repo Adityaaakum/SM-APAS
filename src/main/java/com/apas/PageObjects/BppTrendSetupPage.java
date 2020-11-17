@@ -440,18 +440,18 @@ public class BppTrendSetupPage extends Page {
 	private String getIndexPositionOfGivenColumnFromGivenFactorTable(String factorName, String columnName) throws Exception {
 		String xpathTableHeader = null;
 		if(factorName.equalsIgnoreCase("BPP Property Index Factors")) {
-			xpathTableHeader = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = 'BPP Property Index Factors']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//thead//tr//th";
+			xpathTableHeader = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text() = 'BPP Property Index Factors']//ancestor::lst-list-view-manager-header//following-sibling::div//table//thead//tr//th";
 		} else if(factorName.equalsIgnoreCase("BPP Percent Good Factors")) {
-			xpathTableHeader = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = 'BPP Percent Good Factors']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//thead//tr//th";
+			xpathTableHeader = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text() = 'BPP Percent Good Factors']//ancestor::lst-list-view-manager-header//following-sibling::div//table//thead//tr//th";
 		} else if(factorName.equalsIgnoreCase("Imported Valuation Factors")) {
-			xpathTableHeader = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = 'Imported Valuation Factors']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//thead//tr//th";
+			xpathTableHeader = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text() = 'Imported Valuation Factors']//ancestor::lst-list-view-manager-header//following-sibling::div//table//thead//tr//th";
 		}
 
 		int indexPositionOfGivenColumn = -1;
 		List <WebElement> tableColumns = locateElements(xpathTableHeader, 30);
 		for(int i = 0; i < tableColumns.size(); i++) {
 			int indexPos = i+1;
-			String colName = getElementText(locateElement("("+ xpathTableHeader +")["+ indexPos +"]", 10));
+			String colName = getAttributeValue(waitUntilElementIsPresent(10,"("+ xpathTableHeader +")["+ indexPos +"]"),"aria-label");
 			if(colName.equalsIgnoreCase(columnName)) {
 				indexPositionOfGivenColumn = i;
 				break;
@@ -470,7 +470,7 @@ public class BppTrendSetupPage extends Page {
 	 */
 	private String getRowNumberToUpdate(String tableName, String rollYear, String propertyName) throws Exception {
 		String expRowHeading = rollYear + "-" + propertyName;
-		String xpath = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = '"+tableName+"']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr//th//a";
+		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[text() = '"+tableName+"']//ancestor::lightning-tab-bar//following-sibling::slot//table//tbody//tr//th//a";
 
 		List<WebElement> rowDetailsList = locateElements(xpath, 10);
 		if(rowDetailsList == null) {

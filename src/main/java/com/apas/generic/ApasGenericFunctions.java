@@ -597,7 +597,7 @@ public class ApasGenericFunctions extends TestBase {
      * @description: Clicks on the show more link displayed against the given entry
      */
     public void clickShowMoreLink(String entryDetails) throws Exception {
-        String xpathStr = "//table//tbody/tr//th//a[text() = '" + entryDetails + "']//parent::*//parent::th//following-sibling::td//a[@role = 'button']";
+        String xpathStr = "//table//tbody/tr//th//a//span[text() = '" + entryDetails + "']//parent::*//ancestor::th//following-sibling::td//button | //table//tbody/tr//th//a[text() ='" + entryDetails + "']//ancestor::th//following-sibling::td//a[@role='button']";
         WebElement modificationsIcon = locateElement(xpathStr, 60);
         objPage.clickAction(modificationsIcon);
         objPage.waitUntilElementIsPresent(objApasGenericPage.menuList, 5);
