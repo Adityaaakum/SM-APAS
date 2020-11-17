@@ -3,6 +3,7 @@ package com.apas.Tests.BPPTrends;
 import java.util.Arrays;
 import java.util.List;
 
+import com.apas.PageObjects.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -11,10 +12,6 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
-import com.apas.PageObjects.ApasGenericPage;
-import com.apas.PageObjects.BppTrendPage;
-import com.apas.PageObjects.BppTrendSetupPage;
-import com.apas.PageObjects.Page;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.BPPTablesData;
@@ -31,6 +28,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 	String rollYear;
 	ApasGenericPage objApasGenericPage;
 	BppTrendSetupPage objBppTrendSetupPage;
+	BuildingPermitPage objBuildPermitPage;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -47,6 +45,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		rollYear = "2019";
 		objApasGenericPage = new ApasGenericPage(driver);
 		objBppTrendSetupPage = new BppTrendSetupPage(driver);
+		objBuildPermitPage = new BuildingPermitPage(driver);
 		objApasGenericFunctions.updateRollYearStatus("Open", "2019");
 	}
 	@AfterMethod
@@ -89,82 +88,82 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		
 		//Step7: Clear the Default Max Equipment index factor value and verify the error message
 		String expectedErrorMessage = "These required fields must be completed: Maximum Equipment index Factor";
-		objBppTrendSetupPage.enterFactorValue("");
-		objPage.Click(objBppTrendSetupPage.saveButton);
-		String actualErrorMsg = objPage.getElementText(objBppTrendSetupPage.errorMsgOnTop);
+		objPage.enter("Maximum Equipment index Factor","");
+		objPage.Click(objPage.getButtonWithText("Save"));
+		String actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
 		softAssert.assertEquals(actualErrorMsg,expectedErrorMessage,"SMAB-T134: Verify error message when 'Maximum Equipment index Factor' is missing");
 		
 		//Step8: Validate error message with factor values less than minimum range : 100b
 		String expectedErrorMsg = "Maximum Equipment index Factor: value outside of valid range on numeric field: 100000000000";
-		objBppTrendSetupPage.enterFactorValue("100b");
-		objPage.Click(objBppTrendSetupPage.saveButton);
-		actualErrorMsg = objBppTrendSetupPage.errorMsgOnIncorrectFactorValue();
+		objPage.enter("Maximum Equipment index Factor","100b");
+		objPage.Click(objPage.getButtonWithText("Save"));
+		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
 		softAssert.assertEquals(actualErrorMsg,expectedErrorMsg,"SMAB-T134: Verify Error message for factor value: 100b");
 		
 		//Step9: Validate error message with factor values less than minimum range : 100b
 		expectedErrorMsg = "Maximum Equipment Factor should be greater than or equal to 100";
-		objBppTrendSetupPage.enterFactorValue("60");
-		objPage.Click(objBppTrendSetupPage.saveButton);
-		actualErrorMsg = objBppTrendSetupPage.errorMsgOnIncorrectFactorValue();
+		objPage.enter("Maximum Equipment index Factor","60");
+		objPage.Click(objPage.getButtonWithText("Save"));
+		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
 		softAssert.assertEquals(actualErrorMsg,expectedErrorMsg,"SMAB-T134: Verify Error message for factor value: 60");
 				
 		//Step10: Validate error message with factor values less than minimum range : 99.4
 		expectedErrorMsg = "Maximum Equipment Factor should be greater than or equal to 100";
-		objBppTrendSetupPage.enterFactorValue("60");
-		objPage.Click(objBppTrendSetupPage.saveButton);
-		actualErrorMsg = objBppTrendSetupPage.errorMsgOnIncorrectFactorValue();
+		objPage.enter("Maximum Equipment index Factor","60");
+		objPage.Click(objPage.getButtonWithText("Save"));
+		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
 		softAssert.assertEquals(actualErrorMsg,expectedErrorMsg,"SMAB-T134: Verify Error message for factor value: 99.4");
 		
 		//Step11: Validate error message with factor values greater than maximum range	
-		expectedErrorMsg = "Maximum Equipment index Factor: value outside of valid range on numeric field";
-		objBppTrendSetupPage.enterFactorValue("1000");
-		objPage.Click(objBppTrendSetupPage.saveButton);
-		actualErrorMsg = objBppTrendSetupPage.errorMsgOnIncorrectFactorValue();
+		expectedErrorMsg = "Maximum Equipment index Factor: value outside of valid range on numeric field: 1000";
+		objPage.enter("Maximum Equipment index Factor","1000");
+		objPage.Click(objPage.getButtonWithText("Save"));
+		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
 		softAssert.assertEquals(actualErrorMsg,expectedErrorMsg+": 1000","SMAB-T134: Verify Error message for factor value: 1000");
 		
 		//Step12: Validate error message with factor values within specified range : 99.5
-		objBppTrendSetupPage.enterFactorValue("99.5");
-		objPage.Click(objBppTrendSetupPage.saveButton);
+		objPage.enter("Maximum Equipment index Factor","99.5");
+		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(2000);
 		String factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();
-		String actualValue = factorValueSaved.substring(0, factorValueSaved.length()-1);			
-		String expectedValue = String.valueOf(Math.round(Float.parseFloat("99.5")));			
+		String actualValue = factorValueSaved.substring(0, factorValueSaved.length()-1);
+		String expectedValue = String.valueOf(Math.round(Float.parseFloat("99.5")));
 		softAssert.assertEquals(actualValue,expectedValue,"SMAB-T134: Verify entered value: 99.5 is saved as "+expectedValue);
 		
 		//Step13: Validate error message with factor values within specified range : 124.4
 		objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
 		Thread.sleep(1000);
 		objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
-		objBppTrendSetupPage.enterFactorValue("124.4");
-		objPage.Click(objBppTrendSetupPage.saveButton);
+		objPage.enter("Maximum Equipment index Factor","124.4");
+		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(2000);
 		factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();
-		actualValue = factorValueSaved.substring(0, factorValueSaved.length()-1);			
-		expectedValue = String.valueOf(Math.round(Float.parseFloat("124.4")));			
+		actualValue = factorValueSaved.substring(0, factorValueSaved.length()-1);
+		expectedValue = String.valueOf(Math.round(Float.parseFloat("124.4")));
 		softAssert.assertEquals(actualValue,expectedValue,"SMAB-T134: Verify entered value: 124.4 is saved as "+expectedValue);
-		
+
 		//Step14: Validate error message with factor values within specified range : 160
 		objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
 		Thread.sleep(1000);
 		objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
-		objBppTrendSetupPage.enterFactorValue("160");
-		objPage.Click(objBppTrendSetupPage.saveButton);
+		objPage.enter("Maximum Equipment index Factor","160");
+		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(2000);
 		factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();
-		actualValue = factorValueSaved.substring(0, factorValueSaved.length()-1);			
-		expectedValue = String.valueOf(Math.round(Float.parseFloat("160")));			
+		actualValue = factorValueSaved.substring(0, factorValueSaved.length()-1);
+		expectedValue = String.valueOf(Math.round(Float.parseFloat("160")));
 		softAssert.assertEquals(actualValue,expectedValue,"SMAB-T134: Verify entered value: 124.4 is saved as "+expectedValue);
-		
+
 		//Step15: Updating the default value : 125
 		objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
 		Thread.sleep(1000);
 		objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
-		objBppTrendSetupPage.enterFactorValue("125");
-		objPage.Click(objBppTrendSetupPage.saveButton);
+		objPage.enter("Maximum Equipment index Factor","125");
+		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(2000);
-		factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();	
+		factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();
 		softAssert.assertEquals(factorValueSaved,"125%","SMAB-T133,SMAB-T135: Verify user is able to edit the Max Equipemnt Index factor value when status of tables is 'Not Calculated'");
-		
+
 		objApasGenericFunctions.logout();
 	}
 	
@@ -195,15 +194,22 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 	
 			//Step6: Updating the valuation factor tables status
 			objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, status, rollYear);
-			
-			//Step7: Edit the newly created entry on details page and save the factor value	
+
+			//Step7: Retrieve Max. Equipment Index factor value and subtract '1' from it
+			String factorValueBeforeEdit = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();
+			factorValueBeforeEdit = factorValueBeforeEdit.substring(0, factorValueBeforeEdit.length()-1);
+			int maxEquipIndexNewValue = Integer.parseInt(factorValueBeforeEdit) - 1;
+
+			//Step8: Edit the newly created entry on details page and save the factor value
 			objPage.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconDetailsSection, 10);
 			objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
 			objPage.waitForElementToBeClickable(objBppTrendSetupPage.editLinkUnderShowMore, 10);
 			objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
+			objPage.enter("Maximum Equipment index Factor",String.valueOf(maxEquipIndexNewValue));
+			objPage.Click(objPage.getButtonWithText("Save"));
 			
 			String expectedErrorMessage = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";
-			String actualErrorMessage = objPage.getElementText(objBppTrendSetupPage.accessErrorMsg);
+			String actualErrorMessage = objPage.getElementText(objBuildPermitPage.pageError);
 			
 			//Step8: Selecting Test Case Id to Map based on status: 'Submitted For approval'/'Approved'
 			String TCMapingID;

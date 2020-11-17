@@ -326,7 +326,7 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//lightning-tab[contains(@class,'slds-show')]//div[@class = 'hightlight-tab-message']")
 	public WebElement tableMessage;
 	
-	@FindBy(xpath = "//div[contains(@class, 'windowViewMode-normal')]//div[@class='warning']//h2")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[@class='warning']//h2")
 	public WebElement reCalculateWarningMessage;
 	
 	public String xPathBPPSettingName = "//span[contains(text(), 'BPP Settings')]//ancestor::div[contains(@class, 'forceRelatedListCardHeader')]//following-sibling::div//h3//a";
