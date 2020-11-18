@@ -208,7 +208,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		
 		//Step10: Validation of the file status after reverting the imported file
 		ReportLogger.INFO("Validation of file import status after revert");
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objPage.Click(objEfileHomePage.buttonSourceDetails);
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Index and Percent Good Factors");
 
 		//Step11: Status of the imported file should be changed to Reverted as the whole file is reverted
@@ -537,7 +537,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		
 		//Step10: Validation of the file status after reverting the imported file
 		ReportLogger.INFO("Validation of file import status after revert");
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objPage.Click(objEfileHomePage.buttonSourceDetails);
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Valuation Factors");
 
 		//Step11: Status of the imported file should be changed to Reverted as the whole file is reverted
@@ -591,9 +591,9 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		//Validation of number of times tried retried column for the imported file. Expected is 1 as it has not be retried/reverted yet
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.numberOfTimesTriedRetried), "1", "SMAB-T111: Validate if number of times try/retry count is correct on file import");			
 		//Validations for Total file count before retrying error records		
-		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsInFile), "410", "SMAB-T111: Validating total records count before retrying errorred records");
+		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsInFile), "400", "SMAB-T111: Validating total records count before retrying errorred records");
 		//Validations for Imported count before retrying error records	
-		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsImportedFile), "400", "SMAB-T111: Validating import count before retrying errorred records");		
+		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsImportedFile), "390", "SMAB-T111: Validating import count before retrying errorred records");
 		//Validations for Error count before retrying error records
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.errorRecordsImportedFile), "10", "SMAB-T111: Validating error count before retrying errorred records");		
 		
@@ -871,7 +871,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		
 		//Step10: Validation of the file status after reverting the imported file
 		ReportLogger.INFO("Validation of file import status after revert");
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objPage.Click(objEfileHomePage.buttonSourceDetails);
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "CAA - Valuation Factors");
 
 		//Step11: Status of the imported file should be changed to Reverted as the whole file is reverted
@@ -926,9 +926,9 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		//Validation of number of times tried retried column for the imported file. Expected is 1 as it has not be retried/reverted yet
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.numberOfTimesTriedRetried), "1", "SMAB-T111: Validate if number of times try/retry count is correct on file import");			
 		//Validations for Total file count before retrying error records		
-		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsInFile), "123", "SMAB-T111: Validating total records count before retrying errorred records");
+		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsInFile), "120", "SMAB-T111: Validating total records count before retrying errorred records");
 		//Validations for Imported count before retrying error records	
-		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsImportedFile), "117", "SMAB-T111: Validating import count before retrying errorred records");		
+		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.totalRecordsImportedFile), "114", "SMAB-T111: Validating import count before retrying errorred records");
 		//Validations for Error count before retrying error records
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.errorRecordsImportedFile), "6", "SMAB-T111: Validating error count before retrying errorred records");		
 		

@@ -477,11 +477,11 @@ public class EFileImportPage extends Page {
         } else if (sheetName.contains("M&E Good Factors")) {
             rowCount = 482;
         } else if (sheetName.contains("Copier Val Factors") || sheetName.contains("Litho Val Factors") || sheetName.contains("Set-Top Box Val Factors") || sheetName.contains("Elec. Slot Machines Val Factors") || sheetName.contains("Mech. Slot Machines Val Factors")) {
-            rowCount = 41; //In Valuation Factors file if data for some years is present, the total imported records will always be 41. Last present record value will be copied for past years i.e. 2020 to 1980 for 2021 roll year
+            rowCount = 40; //In Valuation Factors file if data for some years is present, the total imported records will always be 41. Last present record value will be copied for past years i.e. 2020 to 1980 for 2021 roll year
         } else if (sheetName.contains("Computer Val Factors") || sheetName.contains("Semiconductor Val Factors")) {
-            rowCount = 41 * 2;
+            rowCount = 40 * 2;
         } else if (sheetName.contains("Biopharmaceutical Val Factors")) {
-            rowCount = 41 * 4;
+            rowCount = 40 * 4;
         }
 
         return rowCount;
