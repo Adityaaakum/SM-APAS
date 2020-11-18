@@ -131,26 +131,29 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		objApasGenericFunctions.searchRecords(cpiFactorName);
 		objApasGenericFunctions.clickShowMoreLink(cpiFactorName);
 		objBppTrendPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
-		
+
 		//Step5: Validating the error message on clicking edit button
-		objBppTrendPage.waitForElementToBeVisible(objBppTrendPage.errorMsgOnEditClick, 10);
-		String actualErrorMsg = objBppTrendPage.getElementText(objBppTrendPage.errorMsgOnEditClick);
-		String expectedErrorMsg = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";
+		objBppTrendSetupPage.enter("CPI Factor", "0.01");
+		objPage.Click(objPage.getButtonWithText("Save"));
+		String actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("CPI Factor");
+		String expectedErrorMsg = "CPI Factors can't be updated once Submitted for Approval or Approved";
 		softAssert.assertContains(actualErrorMsg, expectedErrorMsg, "SMAB-T183: Validation for business admin is not able to edit aproved CPI Factor from grid");
-		objBppTrendPage.Click(objBppTrendSetupPage.closeEntryPopUp);
-		
+		objPage.Click(objPage.getButtonWithText("Cancel"));
+
 		//Step6: Clicking on the CPI Factor name to navigate To details page
 		objBppTrendSetupPage.clickOnEntryNameInGrid(cpiFactorName);
 		//objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.editButton, 10);
-		
+
 		//Step7: Clicking edit button on details page
 		objBppTrendPage.Click(objBppTrendSetupPage.editButton);
-		
+
 		//Step8: Validating the error message on clicking edit button
-		objBppTrendPage.waitForElementToBeVisible(objBppTrendPage.errorMsgOnEditClick, 10);
-		actualErrorMsg = objBppTrendPage.getElementText(objBppTrendPage.errorMsgOnEditClick);
-		softAssert.assertContains(actualErrorMsg, expectedErrorMsg, "SMAB-T183: Validation for business admin is not able to edit aproved CPI Factor from details page");
-		objBppTrendPage.Click(objBppTrendSetupPage.closeEntryPopUp);
+		objBppTrendSetupPage.enter("CPI Factor", "0.02");
+		objPage.Click(objPage.getButtonWithText("Save"));
+		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("CPI Factor");
+		expectedErrorMsg = "CPI Factors can't be updated once Submitted for Approval or Approved";
+		softAssert.assertContains(actualErrorMsg, expectedErrorMsg, "SMAB-T183: Validation for business admin is not able to edit aproved CPI Factor from grid");
+		objPage.Click(objPage.getButtonWithText("Cancel"));
 
 		objApasGenericFunctions.logout();
 	}
