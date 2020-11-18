@@ -134,7 +134,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	 */
 	
 	
-	@Test(description = "SMAB-T15,SMAB-T65,SMAB-T87,SMAB-T100,SMAB-T49,SMAB-T58,SMAB-T88,SMAB-T959,SMAB-T575,SMAB-T915,SMAB-T1155,SMAB-T1550,SMAB-T1511,SMAB-T1510:Verify that Users are able to import e-files through E-File Import Tool for 'New' status records", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T15,SMAB-T65,SMAB-T87,SMAB-T100,SMAB-T49,SMAB-T58,SMAB-T88,SMAB-T959,SMAB-T575,SMAB-T915,SMAB-T1155,SMAB-T1550,SMAB-T1511,SMAB-T1510,SMAB-T1793:Verify that Users are able to import e-files through E-File Import Tool for 'New' status records", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 		"smoke", "regression","EFileImport" })
 	public void EFileImport_VerifyImportForNewStatus_AndApporveImportFile(String loginUser) throws Exception{
 		String period = "Adhoc";
@@ -164,7 +164,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		
 		//step4:creating an entry with New Status
 		objPage.Click(objEFileImport.nextButton);
-		objPage.enter(objEFileImport.fileNameInputBox, "SanMateoBuildingPermitsWithValidAndInvalidData4.xlsx");
+		objPage.enter(objEFileImport.fileNameInputBox, "SanMateoBuildingPermitsTestdata123.xlsx");
 		objPage.Click(objEFileImport.fileNameNext);
 		objPage.waitForElementToBeClickable(objEFileImport.confirmButton, 20);
 		objPage.Click(objEFileImport.confirmButton);
@@ -174,7 +174,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		//step4a:try Creating a 'New' status entry again in system
 		objPage.scrollToTop();
 		objPage.Click(objEFileImport.nextButton);
-		objPage.enter(objEFileImport.fileNameInputBox, "SanMateoBuildingPermitsTestdata123.xlsx");
+		objPage.enter(objEFileImport.fileNameInputBox, "SanMateoBuildingPermitsWithValidAndInvalidData4.xlsx");
 		objPage.Click(objEFileImport.fileNameNext);
 		objPage.Click(objEFileImport.confirmButton);
 		objPage.waitForElementToBeClickable(objEFileImport.uploadFilebutton, 10);
@@ -359,7 +359,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		
 		//step7: trying to upload a file for the same file type ,source and period
 		objPage.Click(objEFileImport.sourceDetails);
-		objPage.Click(objEFileImport.continueButton);
+		//objPage.Click(objEFileImport.continueButton);
 		objPage.Click(objEFileImport.nextButton);
 		objPage.enter(objEFileImport.fileNameInputBox, "Import_TestData_ValidAndInvalidScenarios_AT2.txt");
 		objPage.Click(objEFileImport.fileNameNext);
@@ -508,8 +508,8 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	@Test(description = "SMAB-T32,SMAB-T33,SMAB-T36,SMAB-T1403,SMAB-T1402,SMAB-T1511,SMAB-T1513,SMAB-T1566,SMAB-T1600:Verify user is able to see number of records count from file import action on 'E-File Import Logs' screen", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
 		"smoke", "regression","EFileImport" })	
 	public void EFileIntake_VerifyImportLogsRecordCount(String loginUser) throws Exception{
-		String uploadedDate = objUtil.getCurrentDate("MM/dd/YYYY");
-		
+		//String uploadedDate = objUtil.getCurrentDate("MM/dd/YYYY");
+		String converteddate=objUtil.convertCurrentDateISTtoPST("Asia/Kolkata", "America/Los_Angeles","MM/dd/yyyy");
 		String period = "Adhoc";
 		String fileType="Building Permit";
 		String source="San Mateo Building permits";
@@ -538,7 +538,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		//step6: verify import list record entry and data
 		
 				HashMap<String, ArrayList<String>> importedEntry=apasGenericObj.getGridDataInHashMap(1, 1);
-				softAssert.assertEquals(importedEntry.get("Uploaded Date").get(0), uploadedDate, "verify import list history data");
+				softAssert.assertEquals(importedEntry.get("Uploaded Date").get(0), converteddate, "verify import list history data");
 				softAssert.assertEquals(importedEntry.get("Period").get(0), "Adhoc", "verify import list history data");
 				softAssert.assertEquals(importedEntry.get("File Count").get(0), "6", "verify import list history data");
 				softAssert.assertEquals(importedEntry.get("Import Count").get(0), "2", "verify import list history data");

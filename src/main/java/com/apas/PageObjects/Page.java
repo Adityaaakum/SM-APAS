@@ -836,7 +836,7 @@ public class Page {
 	 * @throws Exception
 	 */
 	public String getSelectedDropDownValue(WebElement dropDown) throws Exception {
-		waitForElementToBeVisible(dropDown, 30);
+		waitForElementToBeClickable(5, dropDown);
 		Click(dropDown);
 		String value = driver.findElement(By.xpath("//div[@aria-expanded='true']//lightning-base-combobox-item//*[@data-key='check']//ancestor::span/following-sibling::span")).getText();
 		Click(dropDown);

@@ -280,7 +280,7 @@ public class ApasGenericPage extends Page {
 		} else{
 			webElement = (WebElement) element;
 			//xpathDropDownOption = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-			xpathDropDownOption="//div[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
+			xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox_option_plain')]//*[text() = '" + value + "' or @title= '" + value + "']";
 		}
 
 		scrollToElement(webElement);
