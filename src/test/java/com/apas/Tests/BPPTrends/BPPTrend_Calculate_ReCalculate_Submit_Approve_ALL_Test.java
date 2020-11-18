@@ -145,28 +145,29 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 		boolean isExportCompositeTableBtnVisible = objBppTrnPg.isExportCompositeFactorsBtnVisible(5);
 		objSoftAssert.assertTrue(!isExportCompositeTableBtnVisible, "Export composite factor tables button to export excel file is not visible");
 
-		//Step13: Navigating to BPP Trend Setup page and checking status of the composite & valuation tables
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
-		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+
 
 		//Step14: Fetch composite factor table names from properties file and collect them in a single list
 		List<String> compositeFactorTablesList = new ArrayList<String>();
-		compositeFactorTablesList.addAll(Arrays.asList(CONFIG.getProperty("compositeFactorTablesForBppSetupPage").split(",")));
+		compositeFactorTablesList.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
+		compositeFactorTablesList.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesUnderMoreTab").split(",")));
+
+		List<String> valFactorTablesList = new ArrayList<String>();
+		valFactorTablesList.addAll(Arrays.asList(CONFIG.getProperty("valuationTablesUnderMoreTab").split(",")));
 
 		//Step15: Iterate over composite factor tables list and validate their status BPP trend setup on details page
 		ExtentTestManager.getTest().log(LogStatus.INFO, "****** Validating Status Of Tables On BPP TREND SETUP Screen ******");
 		String currentStatus;
 		for(int i = 0; i < compositeFactorTablesList.size(); i++) {
 			tableName = compositeFactorTablesList.get(i);
-			currentStatus = objBppTrendSetupPage.getTableStatusFromBppTrendSetupDetailsPage(tableName);
+			currentStatus = objBppTrendSetupPage.getTableStatus(tableName,rollYear);
 			objSoftAssert.assertEquals(currentStatus, "Calculated", "Status of "+ tableName +" on Bpp Trend Setup page post calculation");
 		}
 
 		//Step16: Iterate over valuation factor tables list and validate their status BPP trend setup on details page
-		for(int i = 0; i < valuationFactorTablesList.size(); i++) {
-			tableName = valuationFactorTablesList.get(i);
-			currentStatus = objBppTrendSetupPage.getTableStatusFromBppTrendSetupDetailsPage(tableName);
+		for(int j = 0; j < valFactorTablesList.size(); j++) {
+			tableName = valFactorTablesList.get(j);
+			currentStatus = objBppTrendSetupPage.getTableStatus(tableName,rollYear);
 			objSoftAssert.assertEquals(currentStatus, "Yet to submit for Approval", "Status of "+ tableName +" on Bpp Trend Setup page post calculation");
 		}
 		objSoftAssert.assertAll();

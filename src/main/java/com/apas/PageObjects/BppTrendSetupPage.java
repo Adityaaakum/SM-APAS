@@ -667,13 +667,13 @@ public class BppTrendSetupPage extends Page {
 				tableName = "Ag_Trends_Status__c";
 				break;
 			case"BPP Prop 13 Factors":
-				tableName = "Prop_13_Factor_Status__c";
+				tableName = "Prop_13_Factor_Status_New__c";
 				break;
 			case"Computer Valuation Factors":
 				tableName = "Computer_Trends_Status__c";
 				break;
 			case"Biopharmaceutical Valuation Factors":
-				tableName = "Biopharmaceutical_Trends_Status__c ";
+				tableName = "Biopharmaceutical_Trends_Status__c";
 				break;
 			case"Copier Valuation Factors":
 				tableName = "Copier_Trends_Status__c";
