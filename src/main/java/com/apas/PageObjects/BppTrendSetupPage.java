@@ -709,9 +709,9 @@ public class BppTrendSetupPage extends Page {
 	 */
 	public void editSaveFactorValue(String factorValue) throws Exception {
 		objPage.waitForElementToBeClickable(dropDownIconDetailsSection, 10);
-		objPage.clickAction(dropDownIconDetailsSection);
+		objPage.javascriptClick(dropDownIconDetailsSection);
 		objPage.waitForElementToBeClickable(editLinkUnderShowMore, 10);
-		objPage.clickAction(editLinkUnderShowMore);
+		objPage.javascriptClick(editLinkUnderShowMore);
 		enter("Maximum Equipment index Factor",factorValue);
 		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(2000);
@@ -730,11 +730,11 @@ public class BppTrendSetupPage extends Page {
 		HashMap<String, ArrayList<String>> factorSettings = objSalesforceAPI.select(queryForID);
 		if(!(factorSettings.size()>0)) {
 			objPage.waitForElementToBeClickable(dropDownIconBppSetting, 20);
-			objPage.clickAction(dropDownIconBppSetting);
+			objPage.javascriptClick(dropDownIconBppSetting);
 			objPage.waitForElementToBeClickable(newBtnToCreateEntry, 20);
-			objPage.clickAction(newBtnToCreateEntry);
-			enterFactorValue("125");
-			objPage.Click(saveButton);
+			objPage.javascriptClick(newBtnToCreateEntry);
+			enter("Maximum Equipment index Factor","125");
+			objPage.Click(objPage.getButtonWithText("Save"));
 			Thread.sleep(1000);
 		}
 	}
