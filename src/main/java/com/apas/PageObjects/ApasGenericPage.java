@@ -159,7 +159,7 @@ public class ApasGenericPage extends Page {
 	 * @param value: Like Roof Repair or Repairs for strat code field etc.
 	 * @throws Exception
 	 */
-	public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
+	public void searchAndSelectFromDropDown(Object element, String value) throws Exception {
 		searchAndSelectOptionFromDropDown(element, value);
 		}
 	
@@ -248,16 +248,19 @@ public class ApasGenericPage extends Page {
 		String xpathDropDownOption;
 		if (element instanceof String) {
 			webElement = getWebElementWithLabel((String) element);
-			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()='" + element + "']/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
+			//xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()='" + element + "']/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
+			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()=\""+element+"\"]/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
 		} else{
 			webElement = (WebElement) element;
-			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@title='" + value + "']";
+			//xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@title='" + value + "']";
+			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
 		}
 
 		enter(webElement, value);
 		WebElement drpDwnOption = locateElement(xpathDropDownOption, 20);
 		waitForElementToBeVisible(drpDwnOption, 10);
-		drpDwnOption.click();
+		//drpDwnOption.click();
+		Click(drpDwnOption);
 	}
 
 	/**
@@ -272,20 +275,22 @@ public class ApasGenericPage extends Page {
 		String xpathDropDownOption;
 		if (element instanceof String) {
 			webElement = getWebElementWithLabel((String) element);
-			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()='" + element + "']/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
+			//xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()='" + element + "']/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
+			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
 		} else{
 			webElement = (WebElement) element;
-			xpathDropDownOption = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
+			//xpathDropDownOption = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
+			xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox_option_plain')]//*[text() = '" + value + "' or @title= '" + value + "']";
 		}
 
 		scrollToElement(webElement);
-		Click(webElement);
+		javascriptClick(webElement);
 
 		waitUntilElementIsPresent(xpathDropDownOption, 30);
 		WebElement drpDwnOption = driver.findElement(By.xpath(xpathDropDownOption));
 		scrollToElement(drpDwnOption);
 		waitForElementToBeClickable(drpDwnOption, 10);
-		drpDwnOption.click();
+		javascriptClick(drpDwnOption);
 	}
 	
 	/**

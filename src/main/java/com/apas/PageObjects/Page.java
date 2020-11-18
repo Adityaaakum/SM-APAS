@@ -744,10 +744,10 @@ public class Page {
 	 * @param elem: locator of element where field value needs to be cleared
 	 */
 
-	public void clearFieldValue(WebElement elem) throws Exception {
-		waitForElementToBeClickable(15, elem);
+	public void clearFieldValue(Object elem) throws Exception {
+		WebElement element=waitForElementToBeClickable(15, elem);
 		((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", elem);
-		elem.clear();
+		element.clear();
 		Thread.sleep(2000);
 	}
 
@@ -836,7 +836,7 @@ public class Page {
 	 * @throws Exception
 	 */
 	public String getSelectedDropDownValue(WebElement dropDown) throws Exception {
-		waitForElementToBeVisible(dropDown, 30);
+		waitForElementToBeClickable(5, dropDown);
 		Click(dropDown);
 		String value = driver.findElement(By.xpath("//div[@aria-expanded='true']//lightning-base-combobox-item//*[@data-key='check']//ancestor::span/following-sibling::span")).getText();
 		Click(dropDown);
