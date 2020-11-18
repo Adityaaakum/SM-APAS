@@ -131,9 +131,11 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		softAssert.assertEquals(actualValue,expectedValue,"SMAB-T134: Verify entered value: 99.5 is saved as "+expectedValue);
 		
 		//Step13: Validate error message with factor values within specified range : 124.4
-		objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
+//		objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
+//		Thread.sleep(1000);
+//		objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
+		objPage.Click(objPage.getButtonWithText("Edit"));
 		Thread.sleep(1000);
-		objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
 		objPage.enter("Maximum Equipment index Factor","124.4");
 		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(2000);
@@ -143,9 +145,11 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		softAssert.assertEquals(actualValue,expectedValue,"SMAB-T134: Verify entered value: 124.4 is saved as "+expectedValue);
 
 		//Step14: Validate error message with factor values within specified range : 160
-		objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
+//		objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
+//		Thread.sleep(1000);
+//		objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
+		objPage.Click(objPage.getButtonWithText("Edit"));
 		Thread.sleep(1000);
-		objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
 		objPage.enter("Maximum Equipment index Factor","160");
 		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(2000);
@@ -155,9 +159,11 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		softAssert.assertEquals(actualValue,expectedValue,"SMAB-T134: Verify entered value: 124.4 is saved as "+expectedValue);
 
 		//Step15: Updating the default value : 125
-		objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
+//		objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
+//		Thread.sleep(1000);
+//		objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
+		objPage.Click(objPage.getButtonWithText("Edit"));
 		Thread.sleep(1000);
-		objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
 		objPage.enter("Maximum Equipment index Factor","125");
 		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(2000);
@@ -202,9 +208,9 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 
 			//Step8: Edit the newly created entry on details page and save the factor value
 			objPage.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconDetailsSection, 10);
-			objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
+			objPage.javascriptClick(objBppTrendSetupPage.dropDownIconDetailsSection);
 			objPage.waitForElementToBeClickable(objBppTrendSetupPage.editLinkUnderShowMore, 10);
-			objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
+			objPage.javascriptClick(objBppTrendSetupPage.editLinkUnderShowMore);
 			objPage.enter("Maximum Equipment index Factor",String.valueOf(maxEquipIndexNewValue));
 			objPage.Click(objPage.getButtonWithText("Save"));
 			
