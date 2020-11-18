@@ -300,14 +300,15 @@ public class ApasGenericFunctions extends TestBase {
     public void selectFromDropDown(WebElement element, String value) throws Exception {
         objPage.scrollToElement(element);
         objPage.Click(element);
-        String xpathStr = "//div[contains(@class, 'left uiMenuList') and contains(@class, 'visible positioned')]//a[text() = '" + value + "'] | //*[@role='option']//span[@class='slds-media__body']/span[text()='" + value + "']";
+        //String xpathStr = "//div[contains(@class, 'left uiMenuList') and contains(@class, 'visible positioned')]//a[text() = '" + value + "'] | //*[@role='option']//span[@class='slds-media__body']/span[text()='" + value + "']";
+        String xpathStr = "//lightning-base-combobox-item//span[@title='" + value + "']";
         objPage.waitUntilElementIsPresent(xpathStr, 200);
         objPage.Click(driver.findElement(By.xpath(xpathStr)));
     }
 
     public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
         objPage.enter(element, value);
-        String xpathStr = "//div[@title = '" + value + "']";
+        String xpathStr = "//lightning-base-combobox-formatted-text[@title = '" + value + "']";
         WebElement drpDwnOption = locateElement(xpathStr, 10);
         drpDwnOption.click();
     }

@@ -39,28 +39,36 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//button[@title = 'Save']")
 	public WebElement saveButton;
 
-	@FindBy(xpath = "//label/span[text() = 'RP Setting Name']/../../input")
+	//@FindBy(xpath = "//label/span[text() = 'RP Setting Name']/../../input")
+	@FindBy(xpath="//label[text() = 'RP Setting Name']/following-sibling::div/input")
 	public WebElement rpSettingNameEditBox;
 
-	@FindBy(xpath = "//span[text() = 'Status']/parent::span/following-sibling::div//a[@class = 'select']")
+	//@FindBy(xpath = "//span[text() = 'Status']/parent::span/following-sibling::div//a[@class = 'select']")
+	@FindBy(xpath="//label[text()='Status']/following-sibling::div//input")
 	public WebElement statusDropDown;
 	
-	@FindBy(xpath = "//input[@title='Search Roll Year Settings']")
+	//@FindBy(xpath = "//input[@title='Search Roll Year Settings']")
+	@FindBy(xpath="//label[text()='Roll Year Settings']/following-sibling::div//input")
 	public WebElement searchRollYearSettingsLookup;
 	
-	@FindBy(xpath = "//label/span[text()='DV Low Income Exemption Amount']/../../input")
+	//@FindBy(xpath = "//label/span[text()='DV Low Income Exemption Amount']/../../input")
+	@FindBy(xpath="//label[text()='DV Low Income Exemption Amount']/following-sibling::div//input")
 	public WebElement dvLowIncomeExemptionAmountEditBox;
 
-	@FindBy(xpath = "//label/span[text()='DV Basic Exemption Amount']/../../input")
+	//@FindBy(xpath = "//label/span[text()='DV Basic Exemption Amount']/../../input")
+	@FindBy(xpath="//label[text()='DV Basic Exemption Amount']/following-sibling::div//input")
 	public WebElement dvBasicIncomeExemptionAmountEditBox;
 	
-	@FindBy(xpath = "//label/span[text()='DV Low Income Household Limit']/../../input")
+	//@FindBy(xpath = "//label/span[text()='DV Low Income Household Limit']/../../input")
+	@FindBy(xpath="//label[text()='DV Low Income Household Limit']/following-sibling::div//input")
 	public WebElement dvLowIncomeHouseholdLimitEditBox;
 	
-	@FindBy(xpath = "//label/span[text()='DV Annual Due Date']/../following-sibling::div/input")
+	//@FindBy(xpath = "//label/span[text()='DV Annual Due Date']/../following-sibling::div/input")
+	@FindBy(xpath="//label[text()='DV Annual Due Date']/following-sibling::div//input")
 	public WebElement dvLowIncomeHouseholdLimitDatePicker;
 	
-	@FindBy(xpath = "//label/span[text()='DV Annual Due Date 2']/../following-sibling::div/input")
+	//@FindBy(xpath = "//label/span[text()='DV Annual Due Date 2']/../following-sibling::div/input")
+	@FindBy(xpath="//label[text()='DV Annual Due Date 2']/following-sibling::div//input")
 	public WebElement dvAnnualLowIncomeDueDate2DatePicker;
 	
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']")
@@ -129,7 +137,8 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	 */
 	public void selectFromDropDown(WebElement element, String value) throws Exception {
 		Click(element);
-		String xpathStr = "//div[contains(@class, 'uiPopupTarget')]//a[text() = '" + value + "']";
+		String xpathStr = //"//div[contains(@class, 'uiPopupTarget')]//a[text() = '" + value + "']";
+		                  "//lightning-base-combobox-item//span[@title='" + value + "']";
 		WebElement drpDwnOption = locateElement(xpathStr, 100);
 		drpDwnOption.click();
 	}

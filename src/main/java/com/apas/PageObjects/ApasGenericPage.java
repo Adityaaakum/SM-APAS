@@ -24,13 +24,13 @@ public class ApasGenericPage extends Page {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//one-app-launcher-header/button[contains(@class,'slds-button')] | //nav[@class='appLauncher slds-context-bar__icon-action']//div[@class='slds-icon-waffle']")
+	@FindBy(xpath = "//button[contains(@class,'salesforceIdentityAppLauncherHeader')] | //one-app-launcher-header/button[contains(@class,'slds-button')] | //nav[@class='appLauncher slds-context-bar__icon-action']//div[@class='slds-icon-waffle']")
 	public WebElement appLauncher;
 
 	@FindBy(xpath = "//table[@role='grid']//thead/tr//th")
 	public WebElement dataGrid;
 
-	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items')]")
+	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items...')]")
 	public WebElement appLauncherSearchBox;
 
 	@FindBy(xpath = "//input[@placeholder='Search apps and items...']/..//button")

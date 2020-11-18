@@ -61,79 +61,82 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		
 	}
 	
-	@Test(description = "SMAB-T1922 APAS system should generate a WI on new Exemption Creation", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption" })
+	@Test(description = "SMAB-T1922: APAS system should generate a WI on new Exemption Creation", 
+			dataProvider = "loginExemptionSupportStaff", 
+			dataProviderClass = DataProviders.class , 
+			groups = {"regression","WorkItem_Direct_Review_Update" })
 	public void DisabledVeteran_verifyWorkItemGeneratedOnNewExemptionCreation(String loginUser) throws Exception {
-	
-	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
-	//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-	ReportLogger.INFO("Step 1: Login to the Salesforce ");
-	objApasGenericFunctions.login(loginUser);
-	objExemptionsPage.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
-	
-	//Step2: Opening the Exemption Module
-	ReportLogger.INFO("Step 2: Search open Exemption APP. from App Launcher");
-	objApasGenericFunctions.searchModule(modules.EXEMPTIONS);
-	
-	//Step3: create a New Exemption record
-	ReportLogger.INFO("Step 3: Create New Exemption");
-	objPage.Click(objExemptionsPage.newExemptionButton);
-	
-	//Get the WI Name from DB through the newly created Exemption
-	newExemptionName = objExemptionsPage.createNewExemptionWithMandatoryData(newExemptionData);
-	String sqlgetWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
-	HashMap<String, ArrayList<String>> response  = salesforceAPI.select(sqlgetWIDetails);
-    String WIName = response.get("Work_Item__c.Name").get(0);
-    String WIRequestType = response.get("Work_Item__c.Request_Type__c").get(0);
-    
-    //Step4: Opening the Work Item Module
-    ReportLogger.INFO("Step 4: Search open App. module - Work Item Management from App Launcher");
-  	objApasGenericFunctions.searchModule(modules.WORKITEM_MNGMNT);
-  	//Step5: Click on the Main TAB - Home
-  	ReportLogger.INFO("Step 5: Click on the Main TAB - Home");
-  	objPage.Click(objWIHomePage.lnkTABHome);
-  	ReportLogger.INFO("Step 6: Click on the Sub  TAB - Work Items");
-  	objPage.Click(objWIHomePage.lnkTABWorkItems);
-  	ReportLogger.INFO("Step 7: Click on the check box - Show RP");
-  	objPage.Click(objWIHomePage.chkShowRP);
-  	ReportLogger.INFO("Step 8: Click on the SUB TAB - My Submitted for Approval");
-  	objPage.Click(objWIHomePage.lnkTABMySubmittedforApproval);
-  	//Search the Work Item Name in the Grid 1st Column
-  	WebElement actualWIName = objWIHomePage.searchWIinGrid(WIName);
-  	objPage.Click(actualWIName);
-  	objPage.Click(objWIHomePage.lnkLinkedItems);
-  	WebElement actualExemptionName = objWIHomePage.searchLinkedExemption(newExemptionName);
-  	objPage.Click(objWIHomePage.lnkDetails);
-  	WebElement actualRequestTypeName = objWIHomePage.searchRequestTypeNameonWIDetails(WIRequestType);
-  	String RequestTypeName  = "Disabled Veterans - Direct Review and Update - Initial filing/changes";
-  	
-  	ReportLogger.INFO("Step 9: Verifying Work Item is generated , Work Item Request Name , Exemption Link on creation of new Work Item");
-  	
-  	boolean condition_1 = false;
-  	boolean condition_2 = false;
-  	boolean condition_3 = false;
-  	
-  	condition_1 = actualWIName.toString().equals(WIName);
-  	condition_2 = actualExemptionName.toString().equals(newExemptionName);
-  	condition_3 = actualRequestTypeName.toString().equals(RequestTypeName); 	
-  	ReportLogger.INFO("Step 10: Work Item is generated on creation of new Exemption");
-  	
-  	if(condition_1 && condition_2 && condition_3) {
-  		softAssert.assertTrue(true, "SMAB-T1922: verify Work Item is generated on creation of new Exemption");
-  		String updateWIStatus = "SELECT Status__c FROM Work_Item__c where Name = '"+WIName+"'";
-  	    salesforceAPI.update("Work_Item__c", updateWIStatus, "Status__c", "Completed");
-  	}else {
-  		softAssert.assertTrue(false, "SMAB-T1922: verify Work Item is generated on creation of new Exemption");
-  	}
-  	ReportLogger.INFO("Step 11: Logging out from SF");
-  	objApasGenericFunctions.logout();
+		  
+		   Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
+		   //Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
+		   ReportLogger.INFO("Step 1: Login to the Salesforce ");
+		   objApasGenericFunctions.login(loginUser);
+		   objExemptionsPage.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
+		  
+		   //Step2: Opening the Exemption Module
+		   ReportLogger.INFO("Step 2: Search open Exemption APP. from App Launcher");
+		   objApasGenericFunctions.searchModule(modules.EXEMPTIONS);
+		  
+		   //Step3: create a New Exemption record
+		   ReportLogger.INFO("Step 3: Create New Exemption");
+		   objPage.Click(objExemptionsPage.newExemptionButton);
+		  
+		   //Get the WI Name from DB through the newly created Exemption
+		   newExemptionName = objExemptionsPage.createNewExemptionWithMandatoryData(newExemptionData);
+		   HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
+		   
+		    String WIName = getWIDetails.get("Name").get(0);
+		    String WIRequestType = getWIDetails.get("Request_Type__c").get(0);
+		   
+		    //Step4: Opening the Work Item Module
+		    ReportLogger.INFO("Step 4: Search open App. module - Work Item Management from App Launcher");
+		   objApasGenericFunctions.searchModule(modules.WORKITEM_MNGMNT);
 
-  }
+		   //Step5: Click on the Main TAB - Home
+		   ReportLogger.INFO("Step 5: Click on the Main TAB - Home");
+		   objPage.Click(objWIHomePage.lnkTABHome);
+		   ReportLogger.INFO("Step 6: Click on the Sub  TAB - Work Items");
+		   objPage.Click(objWIHomePage.lnkTABWorkItems);
+		   ReportLogger.INFO("Step 7: Click on the check box - Show RP");
+		   objPage.Click(objWIHomePage.chkShowRP);
+		   ReportLogger.INFO("Step 8: Click on the SUB TAB - My Submitted for Approval");
+		   objPage.Click(objWIHomePage.lnkTABMySubmittedforApproval);
 
-	@Test(description = "SMAB-T1923 APAS system should generate a WI on updating the End Date of Rating for Existing Exemption", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption" })
+		   //Search the Work Item Name in the Grid 1st Column
+		   String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
+		
+		   //objPage.Click(actualWIName);
+		   objPage.Click(objWIHomePage.lnkLinkedItems);
+		   String actualExemptionName = objWIHomePage.searchLinkedExemptionOrVA(newExemptionName);
+		   Thread.sleep(2000);
+		   objPage.javascriptClick(objWIHomePage.lnkDetails);
+		   //objPage.Click(objWIHomePage.lnkDetails);
+		   String actualRequestTypeName = objWIHomePage.searchRequestTypeNameonWIDetails(WIRequestType);
+		   String RequestTypeName  = "Disabled Veterans - Direct Review and Update - Initial filing/changes";
+		  
+		   ReportLogger.INFO("Step 9: Verifying Work Item is generated , Work Item Request Name , Exemption Link on creation of new Work Item");
+		  
+		   ReportLogger.INFO("Step 10: Work Item is generated on creation of new Exemption");
+		   softAssert.assertEquals(actualWIName.toString(),WIName,"SMAB-T1922:Verify name of WI generated");
+		   softAssert.assertEquals(actualExemptionName.toString(),newExemptionName,"SMAB-T1922:Verify Exemption Name of WI generated");
+		   softAssert.assertEquals(actualRequestTypeName.toString(),RequestTypeName,"SMAB-T1922:Verify RequestType Name of WI generated");
+
+		   String updateWIStatus = "SELECT Id FROM Work_Item__c where Name = '"+WIName+"'";
+		   salesforceAPI.update("Work_Item__c", updateWIStatus, "Status__c", "Completed");
+
+		   ReportLogger.INFO("Step 11: Logging out from SF");
+		   objApasGenericFunctions.logout();
+
+	}
+	
+	@Test(description = "SMAB-T1923: APAS system should generate a WI on updating the End Date of Rating for Existing Exemption", 
+			dataProvider = "loginExemptionSupportStaff", 
+			dataProviderClass = DataProviders.class , 
+			groups = {"regression","WorkItem_Direct_Review_Update" })
 	public void DisabledVeteran_verifyWorkItemGeneratedOnEnterEndDateRatingExistingExemption(String loginUser) throws Exception {
 	
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
-		Map<String, String> dataToEdit = objUtil.generateMapFromJsonFile(exemptionFilePath, "editExemptionData");
+		Map<String, String> dataToEdit = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		ReportLogger.INFO("Step 1: Login to the Salesforce ");
 		objApasGenericFunctions.login(loginUser);
@@ -150,10 +153,9 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		//Get the WI Name from DB through the newly created Exemption
 		newExemptionName = objExemptionsPage.createNewExemptionWithMandatoryData(newExemptionData);
 		
-		String sqlgetWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
-		HashMap<String, ArrayList<String>> response_1  = salesforceAPI.select(sqlgetWIDetails);
-	    String WIName = response_1.get("Work_Item__c.Name").get(0);
-	    String updateWIStatus = "SELECT Status__c FROM Work_Item__c where Name = '"+WIName+"'";
+		HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
+	    String WIName = getWIDetails.get("Name").get(0);
+	    String updateWIStatus = "SELECT Id FROM Work_Item__c where Name = '"+WIName+"'";
   	    salesforceAPI.update("Work_Item__c", updateWIStatus, "Status__c", "Completed");
 
 		//step3: adding end date of rating
@@ -165,10 +167,9 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		objApasGenericFunctions.selectFromDropDown(objExemptionsPage.endRatingReason, dataToEdit.get("EndRatingReason"));
 		ReportLogger.INFO("Step 7: Click on the SAVE button");
 		objPage.Click(ExemptionsPage.saveButton);
-		
-		sqlgetWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
-		HashMap<String, ArrayList<String>> response_2  = salesforceAPI.select(sqlgetWIDetails);
-	    WIName = response_2.get("Work_Item__c.Name").get(0);
+		HashMap<String, ArrayList<String>> getWIDetailsAfterEndDate = null;
+		getWIDetailsAfterEndDate = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
+	    WIName = getWIDetailsAfterEndDate.get("Name").get(0);
 	    			    
 	    //Step4: Opening the Work Item Module
 	    ReportLogger.INFO("Step 8: Search open App. module - Work Item Management from App Launcher");
@@ -183,17 +184,20 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	  	ReportLogger.INFO("Step 12: Click on the SUB TAB - My Submitted for Approval");
 	  	objPage.Click(objWIHomePage.lnkTABMySubmittedforApproval);
 	  	//Search the Work Item Name in the Grid 1st Column
-	  	WebElement actualWIName = objWIHomePage.searchWIinGrid(WIName);
+	  	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
 	  	ReportLogger.INFO("Step 13: Verifying Work Item is generated on entering/editing the End Date of Rating for an Exemption");
 	  	softAssert.assertEquals(actualWIName, WIName, "SMAB-T1923: Work Item is generated on Entering the End Date of Rating for an Exemption");
-	  	updateWIStatus = "SELECT Status__c FROM Work_Item__c where Name = '"+WIName+"'";
+	  	updateWIStatus = "SELECT Id FROM Work_Item__c where Name = '"+WIName+"'";
   	    salesforceAPI.update("Work_Item__c", updateWIStatus, "Status__c", "Completed");
   	    ReportLogger.INFO("Step 11: Logging out from SF");
   	    objApasGenericFunctions.logout();
 	   	
 	 }
 	
-	@Test(description = "SMAB-T1926 APAS system should not generate a WI on new Exemption having WI opened", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption" })
+	@Test(description = "SMAB-T1926: APAS system should not generate a WI on new Exemption having WI opened", 
+			dataProvider = "loginExemptionSupportStaff", 
+			dataProviderClass = DataProviders.class , 
+			groups = {"regression","WorkItem_OpenWI"})
 	public void DisabledVeteran_verifyWorkItemNotGeneratedOnExemptionWithOpenWI(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -212,9 +216,8 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	
 	//Get the WI Name from DB through the newly created Exemption
 	newExemptionName = objExemptionsPage.createNewExemptionWithMandatoryData(newExemptionData);
-	String sqlgetWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
-	HashMap<String, ArrayList<String>> response_1  = salesforceAPI.select(sqlgetWIDetails);
-    String WIName = response_1.get("Work_Item__c.Name").get(0);
+	HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
+    String WIName = getWIDetails.get("Name").get(0);
     
     //step4: adding end date of rating
     Map<String, String> dataToEdit = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData");
@@ -226,8 +229,15 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 6: Click the SAVE button");
   	objPage.Click(ExemptionsPage.saveButton);
   	ReportLogger.INFO("Step 7: Verifying the Work Item is not generated on Entering the End Date of Rating for an Exemption having opened WI");
-  	HashMap<String, ArrayList<String>> response_2  = salesforceAPI.select(sqlgetWIDetails);
-  	String numWI = String.valueOf(response_2.get("Work_Item__c.Name").size());
+  	
+  	salesforceAPI = new SalesforceAPI();
+    
+  	String slqWork_Item_Id = "Select Work_Item__c from Work_Item_Linkage__c where Exemption__r.Name = '"+newExemptionName+"'";
+    Thread.sleep(2000);
+    HashMap<String, ArrayList<String>> response_2  = salesforceAPI.select(slqWork_Item_Id);
+    
+  	String numWI = String.valueOf(getWIDetails.get("Work_Item__c").size());
+  	
   	softAssert.assertEquals(numWI, "1", "SMAB-T1926: Verify Work Item is not generated on Entering the End Date of Rating for an Exemption having opened WI");
   	String updateWIStatus = "SELECT Status__c FROM Work_Item__c where Name = '"+WIName+"'";
 	salesforceAPI.update("Work_Item__c", updateWIStatus, "Status__c", "Completed");
@@ -235,7 +245,10 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	objApasGenericFunctions.logout();
  }
 
-	@Test(description = "SMAB-T1978 APAS Verify the Supervisor is able to Approve the WI initial filing/changes on new Exemption Creation", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption" })
+	@Test(description = "SMAB-T1978: APAS Verify the Supervisor is able to Approve the WI initial filing/changes on new Exemption Creation", 
+			dataProvider = "loginExemptionSupportStaff", 
+			dataProviderClass = DataProviders.class , 
+			groups = {"regression","WorkItem_Direct_Review_Update"})
 	public void DisabledVeteran_verifyWorkItemExemptionFilingChangesIsApproved(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -254,11 +267,11 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	
 	//Get the WI Name from DB through the newly created Exemption
 	newExemptionName = objExemptionsPage.createNewExemptionWithMandatoryData(newExemptionData);
-	String sqlgetWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
-	HashMap<String, ArrayList<String>> response  = salesforceAPI.select(sqlgetWIDetails);
-    String WIName = response.get("Work_Item__c.Name").get(0);
+	HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
+    String WIName = getWIDetails.get("Name").get(0);
     ReportLogger.INFO("Step 4: Logging Out from SF");
     objApasGenericFunctions.logout();
+    Thread.sleep(10000);
     ReportLogger.INFO("Step 5: Logging In as Approver - Data Admin");
   	objApasGenericFunctions.login(users.DATA_ADMIN);
   	
@@ -277,20 +290,14 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 11: Search for the Work Item and select the checkbox");
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	ReportLogger.INFO("Step 12: Click on the Approve button");
-  	objPage.Click(objWIHomePage.btnApprove);
+  	objPage.javascriptClick(objWIHomePage.btnApprove);
   	
-	/*
-	 * String actualSuccessAlertText =
-	 * objPage.getElementText(objApasGenericPage.successAlert); String
-	 * expectedSuccessAlertText = "Success\n Work item(s) processed successfully!";
-	 * softAssert.assertEquals(actualSuccessAlertText, expectedSuccessAlertText,
-	 * "SMAB-T1978: validating the Success alert on clicking the WI Approve button"
-	 * );
-	 */
   	ReportLogger.INFO("Step 13: Logging Out from SF");
   	objApasGenericFunctions.logout();
+  	Thread.sleep(10000);
   	ReportLogger.INFO("Step 14: Logging IN to SF");
   	objApasGenericFunctions.login(loginUser);
+  	Thread.sleep(5000);
   	
     //Step4: Opening the Work Item Module
     ReportLogger.INFO("Step 15: Search open App. module - Work Item Management from App Launcher");
@@ -304,14 +311,17 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.chkShowRP);
   	ReportLogger.INFO("Step 19: Click on the TAB - Completed");
   	objPage.Click(objWIHomePage.lnkTABCompleted);
-  	WebElement actualWIName = objWIHomePage.searchWIinGrid(WIName);
+  	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
   	ReportLogger.INFO("Step 20: Verifying the Approver has successfully Approved the Work Item");
   	softAssert.assertEquals(actualWIName, WIName, "SMAB-T1978: Approver has successfully Approved the Work Item");
   	objApasGenericFunctions.logout();
   	
   }
 
-	@Test(description = "SMAB-T1981 APAS Verify the Supervisor is able to Return the WI initial filing/changes on new Exemption Creation", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption" })
+	@Test(description = "SMAB-T198: APAS Verify the Supervisor is able to Return the WI initial filing/changes on new Exemption Creation", 
+			dataProvider = "loginExemptionSupportStaff", 
+			dataProviderClass = DataProviders.class , 
+			groups = {"regression","WorkItem_Direct_Review_Update" })
 	public void DisabledVeteran_verifyWorkItemExemptionFilingChangesIsReturned(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -330,11 +340,11 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	
 	//Get the WI Name from DB through the newly created Exemption
 	newExemptionName = objExemptionsPage.createNewExemptionWithMandatoryData(newExemptionData);
-	String sqlgetWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
-	HashMap<String, ArrayList<String>> response  = salesforceAPI.select(sqlgetWIDetails);
-    String WIName = response.get("Work_Item__c.Name").get(0);    
+	HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
+    String WIName = getWIDetails.get("Name").get(0);    
     ReportLogger.INFO("Step 4: Logging OUT of SF");
   	objApasGenericFunctions.logout();
+  	Thread.sleep(10000);
   	ReportLogger.INFO("Step 5: Logging IN as Approver - Data Admin");
   	objApasGenericFunctions.login(users.DATA_ADMIN);
   	
@@ -353,24 +363,18 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 11: Search and select the Work Item checkbox");
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	ReportLogger.INFO("Step 12: Click on the Return TAB");
-  	objPage.Click(objWIHomePage.btnReturn);
+  	objPage.javascriptClick(objWIHomePage.btnReturn);
   	ReportLogger.INFO("Step 13: Enter the Return Reason in the text box");
   	objPage.enter(objWIHomePage.txtReturnedReason, "Return to Assignee");
   	ReportLogger.INFO("Step 14: Click on the SAVE button on the dialogbox");
   	objPage.Click(objWIHomePage.btnSaveOnReturnDlg);
 	
-  	/*
-	 * String actualSuccessAlertText =
-	 * objPage.getElementText(objApasGenericPage.successAlert); String
-	 * expectedSuccessAlertText = "Success\n Work item(s) processed successfully!";
-	 * softAssert.assertEquals(actualSuccessAlertText, expectedSuccessAlertText,
-	 * "SMAB-T1981: validating the Success alert on clicking the WI Return button");
-	 */
   	ReportLogger.INFO("Step 15: Logging OUT from SF");
   	objApasGenericFunctions.logout();
+  	Thread.sleep(10000);
   	ReportLogger.INFO("Step 16: Logging IN SF");
   	objApasGenericFunctions.login(loginUser);
-  	
+  	Thread.sleep(20000);
     //Step4: Opening the Work Item Module
     ReportLogger.INFO("Step 17: Search open App. module - Work Item Management from App Launcher");
   	objApasGenericFunctions.searchModule(modules.WORKITEM_MNGMNT);
@@ -383,10 +387,11 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.chkShowRP);
   	ReportLogger.INFO("Step 21: Click the TAB - In Progress");
   	objPage.Click(objWIHomePage.lnkTABInProgress);
-  	WebElement actualWIName = objWIHomePage.searchWIinGrid(WIName);
+  	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
   	ReportLogger.INFO("Step 22: Verify the  Approver has successfully returned the Work Item to the Asignee");
   	softAssert.assertEquals(actualWIName, WIName, "SMAB-T1981: Approver has successfully returned the Work Item to the Asignee");
   	ReportLogger.INFO("Step 23: Logging OUT");
+  	Thread.sleep(2000);
   	objApasGenericFunctions.logout();
   }	
 }	

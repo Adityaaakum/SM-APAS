@@ -50,10 +50,10 @@ public class ValueAdjustmentsPage extends Page {
 		
 		
 	}
-	@FindBy(xpath="//div[@class='windowViewMode-normal oneContent active lafPageHost']//div//table//tbody//tr//td[1]//following-sibling::th//a")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div//table//tbody//tr//td[1]//following-sibling::th//a")
 	public List<WebElement> VAlist;
 	
-	@FindBy(xpath="//div[@class='windowViewMode-normal oneContent active lafPageHost']//div//table//tbody//tr//td[4]//span/span")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div//table//tbody//tr//td[4]//span/span")
 	public List<WebElement> vaStatusFromList;	
 	
 
@@ -74,19 +74,19 @@ public class ValueAdjustmentsPage extends Page {
 	public WebElement vaTotalAnuualHouseholdIncome;
 		
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Is Initial Filing Exemption?']//parent::label//parent::span//input")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Is Initial Filing Exemption?']//parent::label//parent::span//input")
 	public WebElement vaInitialFilingFlag;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//li[@title='Value Adjustments']//a[contains(.,'Value Adjustments')]")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//li[@title='Value Adjustments']//a[contains(.,'Value Adjustments')]")
 	public WebElement valueAdjustmentTab;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[@title='Value Adjustments']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[@title='Value Adjustments']")
 	public WebElement valueAdjustmentsCountLabel;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Due Date']//parent::div//following-sibling::lightning-helptext/following-sibling::div//span//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Due Date']//parent::div//following-sibling::lightning-helptext/following-sibling::div//span//lightning-formatted-text")
 	public WebElement penaltyDate1;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Due Date 2']//parent::div//following-sibling::lightning-helptext/following-sibling::div//span//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Due Date 2']//parent::div//following-sibling::lightning-helptext/following-sibling::div//span//lightning-formatted-text")
 	public WebElement penaltyDate2;
 	
 	
@@ -96,28 +96,28 @@ public class ValueAdjustmentsPage extends Page {
 	@FindBy(xpath = "//div[starts-with(@class,'windowViewMode-normal oneContent active lafPageHost')]//span[text()='End Date']//parent::div//following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement vaEndDateDetails;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Status']//parent::div//following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Status']//parent::div//following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement vaStatusDetails;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Determination']//parent::div//following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Determination']//parent::div//following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement vaDetermination;
 	
-	@FindBy(xpath = "//span[text() = 'Determination']/parent::span/following-sibling::div//a[@class = 'select']")
+	@FindBy(xpath = "//label[text() = 'Determination']/following-sibling::div/lightning-base-combobox")
 	public WebElement vaEditDeterminationDropDown;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//label[contains(.,'Determination')]/following::input[1]")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[contains(.,'Determination')]/following::input[1]")
 	public WebElement vaDeterminationDropDwon;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Due Date']//parent::div//following-sibling::lightning-helptext/following-sibling::div//span//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Due Date']//parent::div//following-sibling::lightning-helptext/following-sibling::div//span//lightning-formatted-text")
 	public WebElement vaRollYearDueDate;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Due Date 2']//parent::div//following-sibling::lightning-helptext/following-sibling::div//span//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Due Date 2']//parent::div//following-sibling::lightning-helptext/following-sibling::div//span//lightning-formatted-text")
 	public WebElement vaRollYearDueDate2;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
 	public WebElement vaRollYear;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(.,'Penalty Percentage')]/parent::div/following-sibling::div/span//slot[@slot='outputField']//slot/lightning-formatted-number")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(.,'Penalty Percentage')]/parent::div/following-sibling::div/span//slot[@slot='outputField']//slot/lightning-formatted-number")
 	public WebElement vaPenaltyPercentage;
 	
 	@FindBy(xpath = "//span[contains(.,'Net Exemption Amount')]/parent::div/following-sibling::div/span//lightning-formatted-text")
@@ -127,30 +127,30 @@ public class ValueAdjustmentsPage extends Page {
 	public WebElement vaExemptionAmountCalculated;
 	
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(.,'Penalty Amount Calculated')]/parent::div/following-sibling::div/span//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(.,'Penalty Amount Calculated')]/parent::div/following-sibling::div/span//lightning-formatted-text")
 	public WebElement vaPenaltyAmountCalculated;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(.,'Roll Year Basic Reference Amount')]/parent::div/following-sibling::div/span//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(.,'Roll Year Basic Reference Amount')]/parent::div/following-sibling::div/span//lightning-formatted-text")
 	public WebElement vaRollYearBasicRefAmount;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(.,'Roll Year Low Income Reference Amount')]/parent::div/following-sibling::div/span//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(.,'Roll Year Low Income Reference Amount')]/parent::div/following-sibling::div/span//lightning-formatted-text")
 	public WebElement vaRollYearLowIncomeRefAmount;
 	
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(.,'Tax Year Prorated Percentage')]/parent::div/following-sibling::div/span//lightning-formatted-number")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(.,'Tax Year Prorated Percentage')]/parent::div/following-sibling::div/span//lightning-formatted-number")
 	public WebElement vataxYearProratedPercentage;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[contains(.,'Determination')]/parent::div/following-sibling::div/span//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(.,'Determination')]/parent::div/following-sibling::div/span//lightning-formatted-text")
 	public WebElement vaDeterminationType;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Open Roll Start Date']//parent::div/following-sibling::lightning-helptext/following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Open Roll Start Date']//parent::div/following-sibling::lightning-helptext/following-sibling::div//lightning-formatted-text")
 	public WebElement openRollStartDate;
 	
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//div//table//tbody//tr//td[1]//following-sibling::td[1]")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div//table//tbody//tr//td[1]//following-sibling::td[1]")
 	public List<WebElement> vaStartDateFromList;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//div//table//tbody//tr//td[1]//following-sibling::td[2]//span/span")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div//table//tbody//tr//td[1]//following-sibling::td[2]//span/span")
 	public List<WebElement> vaEndDateFromList;
 	
 	@FindBy(xpath = "//div[text()='Value Adjustments")
@@ -174,10 +174,10 @@ public class ValueAdjustmentsPage extends Page {
 	@FindBy(xpath = "//span[contains(.,'Determination Denial Detail')]//following::div[1]//following::input[1]")
 	public WebElement determinationDenialDetail;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//label[contains(.,'Annual Form Received Date')]/following::input[1]")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[contains(.,'Annual Form Received Date')]/following::input[1]")
 	public WebElement annualFormReceivedDate;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Annual Form Received Date']//parent::div/following-sibling::div/span//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Annual Form Received Date']//parent::div/following-sibling::div/span//lightning-formatted-text")
 	public WebElement annualFormReceivedDateOnUI;
 	
 	
@@ -187,13 +187,13 @@ public class ValueAdjustmentsPage extends Page {
 	@FindBy(xpath = "//label[contains(.,'End Date')]/following::input[1]")
 	public WebElement endDate;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//label[contains(.,'Total Annual Household Income')]/following::input[1]")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[contains(.,'Total Annual Household Income')]/following::input[1]")
 	public WebElement totalAnnualHouseholdIncome;
 	
 	@FindBy(xpath = "//label[contains(.,'Penalty Amount - User Adjusted')]/following::input[1]")
 	public WebElement penaltyAmountUserAdjusted;
 	
-	@FindBy(xpath = "//span[text() = 'Penalty Adjustment Reason']/parent::span/following-sibling::div//a[@class = 'select']")
+	@FindBy(xpath = "//label[text() = 'Penalty Adjustment Reason']/following-sibling::div/lightning-base-combobox")
 	public WebElement penaltyAdjustmentReason;
 	
 	@FindBy(xpath = "//label[contains(.,'Penalty Adjustment Other Reason Detail')]/following::textarea[1]")
@@ -204,25 +204,25 @@ public class ValueAdjustmentsPage extends Page {
 	public WebElement searchList;
 
 //--------- Deepika's Locators ----------------
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//table//tbody//tr")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody//tr")
     public List<WebElement> numberOfValueAdjustments;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Start Date']//..//following-sibling::div//slot//slot//*")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Start Date']//..//following-sibling::div//slot//slot//*")
     public WebElement startDateValueLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='End Date']//..//following-sibling::div//slot//slot//*")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='End Date']//..//following-sibling::div//slot//slot//*")
     public WebElement endDateValueLabel;
 
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Basic Reference Amount']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Basic Reference Amount']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement basicReferenceAmountLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Low Income Reference Amount']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Low Income Reference Amount']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement lowIncomeReferenceAmountLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Settings']//parent::div//following-sibling::div//a")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Settings']//parent::div//following-sibling::div//a")
     public WebElement rollYearSettingsLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//button[text() = 'Edit']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text() = 'Edit']")
     public WebElement editButton;
 	
 	@FindBy(xpath = "//label//span[text()='Total Annual Household Income']/../../input")
@@ -234,55 +234,55 @@ public class ValueAdjustmentsPage extends Page {
 	@FindBy(xpath = "//div[contains(@class,'modal-footer')]//button//span[text() = 'Save']")
     public WebElement saveButton;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Low Income Threshold Amount']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Low Income Threshold Amount']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement rollYearLowIncomeThreshholdAmountLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Low Income Due Date']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Low Income Due Date']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement rollYearLowIncomeDueDateLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Determination']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Determination']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement determinationValueLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Number of days']//..//following-sibling::div//lightning-formatted-number")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Number of days']//..//following-sibling::div//lightning-formatted-number")
     public WebElement noOfDaysValueLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Exemption Amount Calculated']//..//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Exemption Amount Calculated']//..//following-sibling::div//lightning-formatted-text")
     public WebElement exemptionAmountCalculatedValueLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Tax Start Date']//..//following-sibling::div//slot//slot//*")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Tax Start Date']//..//following-sibling::div//slot//slot//*")
     public WebElement taxStartDateValueLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Tax End Date']//..//following-sibling::div//slot//slot//*")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Tax End Date']//..//following-sibling::div//slot//slot//*")
     public WebElement taxEndDateValueLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Penalty Amount Calculated']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Penalty Amount Calculated']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement penaltyAmtCalcValueLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Penalty Amount - User Adjusted']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Penalty Amount - User Adjusted']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement penaltyAmtUserAdjustValueLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Net Exemption Amount']//..//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Net Exemption Amount']//..//following-sibling::div//lightning-formatted-text")
     public WebElement netExemptionAmountCalculatedValueLabel;
 	
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
 	public WebElement successAlertText;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//li[@title='Value Adjustments']//a")			
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//li[@title='Value Adjustments']//a")			
     public WebElement valueAdjustmentRelatedListTab;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='View All']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='View All']")
     public WebElement viewAllLink;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Low Income Late Penalty']//parent::div//following-sibling::lightning-helptext/following-sibling::div//lightning-formatted-number")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Low Income Late Penalty']//parent::div//following-sibling::lightning-helptext/following-sibling::div//lightning-formatted-number")
     public WebElement vaRollYearLowIncomeLatePenaltyLabel;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Low Income Late Penalty 2']//parent::div//following-sibling::lightning-helptext/following-sibling::div//lightning-formatted-number")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Low Income Late Penalty 2']//parent::div//following-sibling::lightning-helptext/following-sibling::div//lightning-formatted-number")
     public WebElement vaRollYearLowIncomeLatePenalty2Label;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Name']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Name']")
     public WebElement vAnameLabel;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Name']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Name']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement vAnameValue;
 	
 	@FindBy(xpath = "//div[contains(@role,'listitem')]//span[text()='Start Date']//parent::div//parent::div[contains(@class,'readonly')]")
@@ -306,14 +306,14 @@ public class ValueAdjustmentsPage extends Page {
 	@FindBy(xpath = "//span[text() = 'Determination']/parent::span/following-sibling::div//a[@class = 'select']")
     public WebElement determinationDropDown;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//tr//span[contains(text(),'Active')]//..//parent::td//..//span[contains(text(),'Basic Disabled')]//..//..//preceding-sibling::th//a")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//tr//span[contains(text(),'Active')]//..//parent::td//..//span[contains(text(),'Basic Disabled')]//..//..//preceding-sibling::th//a")
     public WebElement activeBasicDetVA;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//tr[1]//span[contains(text(),'Start Date')]//..//..//parent::th//parent::tr//..//..//tbody//span[text()='7/1/2020']//..//..//preceding-sibling::th//a")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//tr[1]//span[contains(text(),'Start Date')]//..//..//parent::th//parent::tr//..//..//tbody//span[text()='7/1/2020']//..//..//preceding-sibling::th//a")
     public WebElement vAforRY2020;
 	
-	public String xPathStatus = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[@title='Status']";
-	public String xPathRollYearLowIncomeThresholdAmount = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Low Income Threshold Amount']//parent::div//following-sibling::div//lightning-formatted-text";
+	public String xPathStatus = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[@title='Status']";
+	public String xPathRollYearLowIncomeThresholdAmount = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Low Income Threshold Amount']//parent::div//following-sibling::div//lightning-formatted-text";
 //--------- Deepika's Locators ----------------
 	
 
@@ -445,7 +445,7 @@ public boolean verifyIfInitialFilingOrAnnualVA(String applicationdate) throws Ex
  */
 
 public String findVANameBasedOnEndDate(String endDateOfRating) {
-	return driver.findElement(By.xpath("//div[@class='windowViewMode-normal oneContent active lafPageHost']//div//table//tbody//tr//td[3]//span/span[text()='"+endDateOfRating+"']")).getText();
+	return driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div//table//tbody//tr//td[3]//span/span[text()='"+endDateOfRating+"']")).getText();
 }
 
 /**
@@ -457,7 +457,7 @@ public String findVANameBasedOnEndDate(String endDateOfRating) {
 
 
 public int fetchVACountBasedOnParameters(String column,String value) {
-	return driver.findElements(By.xpath("//div[@class='windowViewMode-normal oneContent active lafPageHost']//table//span[text()='"+column+"']//ancestor::table//tbody//tr//span[text()='"+value+"']")).size();
+	return driver.findElements(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//span[text()='"+column+"']//ancestor::table//tbody//tr//span[text()='"+value+"']")).size();
 }
 
 /**
@@ -483,7 +483,7 @@ public double converToDouble(Object amount){
 public float verifyTaxYearProatedPercentage() throws Exception {
 	objPage.waitForElementToBeClickable(60, startDateValueLabel);
 	float numberOfDays = DateUtil.getDateDifference(startDateValueLabel,endDateValueLabel);	
-	locateElement("//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Settings']//parent::div//following-sibling::div//a", 2);
+	locateElement("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Settings']//parent::div//following-sibling::div//a", 2);
 	Click(rollYearSettingsLabel);
 	objPage.waitForElementToBeClickable(60, taxStartDateValueLabel);
 	float totalNoOfDays = DateUtil.getDateDifference(taxStartDateValueLabel,taxEndDateValueLabel);
@@ -561,7 +561,7 @@ public String successAlretText() throws Exception {
  */
 public String selectVAByStartDate(String startDate) throws Exception
 {	
-	String xpath = "//div[contains(@class,'windowViewMode-normal')]//span[contains(text(),'"+startDate+"')]//..//..//preceding-sibling::th//a";
+	String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(text(),'"+startDate+"')]//..//..//preceding-sibling::th//a";
 	waitUntilElementIsPresent(xpath,40);
 	WebElement valueAdjustmentLink = driver.findElement(By.xpath(xpath));
 	String vALinkName = valueAdjustmentLink.getText();
@@ -580,13 +580,13 @@ public void navigateToVAListViewInExemption() throws Exception
 {	
 	//Step1: Selecting the Value Adjustment Related List Tab
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Related List - Value Adjustement Tab");
-	objPage.locateElement("//div[contains(@class,'windowViewMode-normal')]//li[@title='Value Adjustments']//a", 30);
+	objPage.locateElement("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//li[@title='Value Adjustments']//a", 30);
 	waitForElementToBeClickable(valueAdjustmentRelatedListTab);
 	objPage.Click(valueAdjustmentRelatedListTab);
 
 	//Step2: Clicking on 'View All' Link of Value Adjustment Related List Tab
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on View All Link");
-	objPage.locateElement("//div[contains(@class,'windowViewMode-normal')]//span[text()='View All']", 20);
+	objPage.locateElement("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='View All']", 20);
 	waitForElementToBeClickable(viewAllLink);
 	objPage.javascriptClick(viewAllLink);
 	Thread.sleep(3000);
@@ -607,7 +607,7 @@ public String fetchVA() throws Exception {
 public boolean clickVA(String rollYear) throws Exception
 {	
 	boolean fVACreated = false;
-	String xpath = "//div[contains(@class,'windowViewMode-normal')]//tr[1]//span[contains(text(),'Start Date')]//..//..//parent::th//parent::tr//..//..//tbody//span[text()='7/1/"+rollYear+"']//..//..//preceding-sibling::th//a";
+	String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//tr[1]//span[contains(text(),'Start Date')]//..//..//parent::th//parent::tr//..//..//tbody//span[text()='7/1/"+rollYear+"']//..//..//preceding-sibling::th//a";
 	fVACreated = objPage.waitForElementToBeVisible(50, xpath);
 	if(fVACreated) {
 		WebElement vAforCurrentRY = objPage.waitForElementToBeClickable(50, xpath);
