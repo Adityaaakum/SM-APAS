@@ -22,6 +22,12 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	ApasGenericFunctions objApasGenericFunctions;
 	Util objUtils;
 	
+	String dvLowIncomeExemptionAmount = "DV Low Income Exemption Amount";
+	String dvBasicExemptionAmount = "DV Basic Exemption Amount";
+	String dvLowIncomeHouseholdLimit = "DV Low Income Household Limit";
+	String dvAnnualDueDate = "DV Annual Due Date";
+	String dvAnnualDueDate2 = "DV Annual Due Date 2";
+
 	public RealPropertySettingsLibrariesPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
@@ -41,9 +47,6 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 
 	@FindBy(xpath = "//label/span[text() = 'RP Setting Name']/../../input")
 	public WebElement rpSettingNameEditBox;
-	
-	@FindBy(xpath = "//lightning-icon[@title='Error']")
-	public WebElement errorBoxIcon;
 	
 
 	/*
@@ -101,8 +104,9 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input")
 	public WebElement globalSearchListEditBox;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//button[text() = 'Edit']")
-    public WebElement editButton;
+	//@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//button[text() = 'Edit']")
+	@FindBy(xpath = "//div[contains(@class,'oneRecordHomeFlexipage2Wrapper')]//button[text() = 'Edit']")
+	public WebElement editButton;
 
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//button[text() = 'Delete']")
 	public WebElement deleteButton;
@@ -182,12 +186,11 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		enter("RP Setting Name",rollYear);
 		selectOptionFromDropDown("Status",dataMap.get("Status"));
 		searchAndSelectFromDropDown("Roll Year Settings",rollYear);
-		enter("DV Low Income Exemption Amount",dataMap.get("DV Low Income Exemption Amount"));
-		enter("DV Basic Exemption Amount",dataMap.get("DV Basic Exemption Amount"));
-		enter("DV Low Income Household Limit",dataMap.get("DV Low Income Household Limit Amount"));
-		enter("DV Annual Due Date", dataMap.get("DV Annual Low Income Due Date")+"/"+rollYear);
-		enter("DV Annual Due Date 2", dataMap.get("DV Annual Low Income Due Date2")+"/"+rollYear);	
-			
+		enter(dvLowIncomeExemptionAmount,dataMap.get("DV Low Income Exemption Amount"));
+		enter(dvBasicExemptionAmount,dataMap.get("DV Basic Exemption Amount"));
+		enter(dvLowIncomeHouseholdLimit,dataMap.get("DV Low Income Household Limit Amount"));
+		enter(dvAnnualDueDate, dataMap.get("DV Annual Low Income Due Date")+"/"+rollYear);
+		enter(dvAnnualDueDate2, dataMap.get("DV Annual Low Income Due Date2")+"/"+rollYear);
 	}
 	
 	/**

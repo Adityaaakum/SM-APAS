@@ -57,7 +57,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	 2. User is not able to create duplicate Exemption limit record for any random roll year
 	 3. User is not able to create duplicate Exemption limit record for a roll year whose entry already exists	 
 	 **/
-	/*@Test(description = "SMAB-T536,SMAB-T540,SMAB-T541:Test Creation of Future Real Property Settings & duplicate creation", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption"})
+	@Test(description = "SMAB-T536,SMAB-T540,SMAB-T541:Test Creation of Future Real Property Settings & duplicate creation", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption"})
 	public void DisabledVeteran_verifyFututreRPSLCreation(String loginUser) throws Exception {
 		String strSuccessAlertMessage;
 		
@@ -107,7 +107,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.Click(objRPSLPage.cancelButton);
 		
 		objApasGenericFunctions.logout();
-	}*/	
+	}	
 	
 	/**
 	 Below test case will validate that 
@@ -230,7 +230,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	/**
 	 Below test case will validate that user is not able to create Real Property Settings Library if 'Cancel' button is clicked instead of 'Save' button
 	 **/
-	/*@Test(description = "SMAB-T537: Verify Current Roll Year RPSL not created on clicking Cancel button", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption"})
+	@Test(description = "SMAB-T537: Verify Current Roll Year RPSL not created on clicking Cancel button", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption"})
 	public void DisabledVeteran_verifyCancelRPSLCreation(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
@@ -257,7 +257,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 			
 		softAssert.assertEquals(successAlert, false, "SMAB-T537: Verify Exemption limit record for the current roll year is not created when User clicks Cancel button");
 		objApasGenericFunctions.logout();
-	}*/		
+	}		
 	
 	
 	 /**
@@ -368,7 +368,6 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		Thread.sleep(2000);
 
 		//Step13: Validate the error message appeared for Amount fields
-		objPage.Click(objRPSLPage.errorBoxIcon);
 		String expectedDvLowIncomeExemptionAmountMessage = "Low Income Exemption Amount should be greater than 0";
 		String expectedDvBasicIncomeExemptionAmountMessage = "Basic Exemption Amount should be greater than 0";
 		String expectedDvLowIncomeHouseholdLimitMessage = "Low Income Household Limit should be greater than 0";		
@@ -387,7 +386,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	/**
 	 Below test case is used to validate 8 years of Real Property Settings
 	 **/
-	/*@Test(description = "SMAB-T583: Verify user is able to view at least last 8 years of Exemption Limits records", groups = {"smoke","regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class )
+	@Test(description = "SMAB-T583: Verify user is able to view at least last 8 years of Exemption Limits records", groups = {"smoke","regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class )
 	public void DisabledVeteran_verify8YearsRPSL(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
@@ -405,7 +404,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		softAssert.assertTrue(noOfRPSL>=8, "SMAB-T583: Verify user is able to view at least last 8 years of Exemption Limits records");
 		
 		objApasGenericFunctions.logout();
-	}*/
+	}
 	
 	/**
 	 Below test case is used to validate
@@ -433,12 +432,6 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.Click(objRPSLPage.getRPSLRecord(pastRollYear));
 		
 		//Step5 : Click on EDIT button for the record and retrieve the error message
-		/*ReportLogger.INFO("Clicking on 'Edit' button for record whose status is 'Approved'");
-		objPage.Click(objRPSLPage.editButton);
-		objPage.waitUntilElementIsPresent(objRPSLPage.xPathErrorMsg,30);
-		String actualErrorMsgText1 =  objRPSLPage.errorMsgforEdit.getText();	
-		String expectedErrorMessage1 = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";
-		*/
 		ReportLogger.INFO("Clicking on 'Edit' button for record whose status is 'Approved'");
 		objPage.Click(objRPSLPage.editButton);
 		objPage.Click(objRPSLPage.saveButton);
@@ -465,8 +458,6 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.Click(objRPSLPage.editButton);
 		objPage.Click(objRPSLPage.saveButton);
 		Thread.sleep(3000);
-		//String actualErrorMsgText2 =  objRPSLPage.errorMsgOnTopForEditRPSL.getText();	
-		//String expectedErrorMessage2 = "Record is locked. Please check with your system administrator.";
 		String expectedErrorMessageOnTop1 = "Close error dialog\nWe hit a snag.\nReview the errors on this page.\nRecord is locked. Please check with your system administrator.";
 		
 		//Step10: Verify Error message
@@ -485,7 +476,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	/**
 	 Below test case is used to validate user other than Exemption Support Staff is only able to view Exemption limit records
 	 **/
-	/*@Test(description = "SMAB-T545: Verify user other than Exemption Support Staff is only able to view Exemption limit records", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class )
+	@Test(description = "SMAB-T545: Verify user other than Exemption Support Staff is only able to view Exemption limit records", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class )
 	public void DisabledVeteran_verifyViewRPSLUsersAccess(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
 		objApasGenericFunctions.login(loginUser);
@@ -519,5 +510,5 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 			
 			objApasGenericFunctions.logout();
 			
-	}*/
+	}
 }

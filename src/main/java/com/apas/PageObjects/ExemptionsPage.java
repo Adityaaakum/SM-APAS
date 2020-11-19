@@ -137,7 +137,7 @@ public class ExemptionsPage extends ApasGenericPage {
 	public String priorResidenceCounty="Prior Residence County";
 
 	//@FindBy(xpath = "//label[contains(.,'Effective Date of 100% USDVA Rating')]/following::input[1]")
-	public String effectiveDateOfUSDVA="'Effective Date of 100% USDVA Rating";
+	public String effectiveDateOfUSDVA="Effective Date of 100% USDVA Rating";
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Effective Date of 100% USDVA Rating')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement effectiveDateOfUSDVAExemptionDetails;
@@ -581,6 +581,7 @@ public void createExemption(Map<String, String> dataMap) throws Exception {
 	ReportLogger.INFO("Click 'New' button to fill the following details in the Exemption record : " + dataMap);	
 	Thread.sleep(2000);
 	Click(waitForElementToBeClickable(newExemptionButton));
+	Thread.sleep(2000);
 	waitForElementToBeClickable(apn);
 	waitForElementToBeClickable(claimantName);
 	enterExemptionData(dataMap);
