@@ -836,12 +836,6 @@ public class Page {
 	 * @throws Exception
 	 */
 	public String getSelectedDropDownValue(String dropDown) throws Exception {
-		/*
-		 * waitForElementToBeClickable(5, dropDown); Thread.sleep(2000);
-		 * Click(dropDown); String value = driver.findElement(By.xpath(
-		 * "//div[@aria-expanded='true']//lightning-base-combobox-item//*[@data-key='check']//ancestor::span/following-sibling::span"
-		 * )).getText(); Click(dropDown); return value;
-		 */
 		return driver.findElement(By.xpath("//label[text()='"+dropDown+"']/..//lightning-base-combobox-item[@aria-checked='true']//span[@class='slds-truncate']")).getText().trim();
 		
 	}

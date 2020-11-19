@@ -200,8 +200,8 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.Click(objEFileImport.viewLinkRecord);
 		objPage.Click(objEFileImport.sourceDetails);
 		objPage.waitForElementToBeClickable(objEFileImport.statusImportedFile,30);
-		softAssert.assertEquals(objPage.getSelectedDropDownValue("File type"), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
-		softAssert.assertEquals(objPage.getSelectedDropDownValue("Source"), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileType), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.source), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 
 		//step6: verifying log created With New status
 		//ReportLogger.INFO("Verify log genertared for 'New' status record");
@@ -294,8 +294,8 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.Click(objEFileImport.sourceDetails);
 		softAssert.assertTrue(apasGenericObj.isNotDisplayed(objEFileImport.continueButton), "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 		objPage.waitForElementToBeClickable(objEFileImport.statusImportedFile,30);
-		softAssert.assertEquals(objPage.getSelectedDropDownValue("File type"), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
-		softAssert.assertEquals(objPage.getSelectedDropDownValue("Source"), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileType), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.source), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 		
 		//step12:navigating back to efile import tool screen
 		objPage.waitUntilElementDisplayed(objEFileImport.nextButton, 15);
@@ -413,8 +413,8 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.Click(objEFileImport.sourceDetails);
 		softAssert.assertTrue(apasGenericObj.isNotDisplayed(objEFileImport.continueButton), "SMAB-T1512:Verify user is able to navigate backwards from review and Approve screen for Reverted status");
 		objPage.waitForElementToBeClickable(objEFileImport.statusImportedFile,30);
-		softAssert.assertEquals(objPage.getSelectedDropDownValue("File type"), fileType, "SMAB-T1512:Verify user is able to navigate backwards from review and Approve screen for Reverted status");
-		softAssert.assertEquals(objPage.getSelectedDropDownValue("Source"), source, "SMAB-T1512:Verify user is able to navigate backwards from review and Approve screen for Reverted status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileType), fileType, "SMAB-T1512:Verify user is able to navigate backwards from review and Approve screen for Reverted status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.source), source, "SMAB-T1512:Verify user is able to navigate backwards from review and Approve screen for Reverted status");
 		
 		//step7:navigating back to efile import tool screen
 		objPage.waitUntilElementDisplayed(objEFileImport.nextButton, 15);
@@ -605,8 +605,8 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		ReportLogger.INFO("Verifying that on Confirming/Continuing the warning user navigates back to previous page");
 		objPage.Click(objEFileImport.continueButton);
 		objPage.waitForElementToBeClickable(objEFileImport.statusImportedFile,30);
-		softAssert.assertEquals(objPage.getSelectedDropDownValue("File type"), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
-		softAssert.assertEquals(objPage.getSelectedDropDownValue("Source"), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileType), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.source), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 	
 		objPage.waitUntilElementDisplayed(objEFileImport.nextButton, 15);
 		softAssert.assertEquals(objEFileImport.getElementText(objEFileImport.disacrdCount),"1","SMAB-T68:Verify View link is not displayed for records in history table apart from statuses - 'Imported','New' and 'In Progress' and Approved");
@@ -631,8 +631,8 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.Click(objEFileImport.sourceDetails);
 		softAssert.assertTrue(apasGenericObj.isNotDisplayed(objEFileImport.continueButton), "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 		objPage.waitForElementToBeClickable(objEFileImport.statusImportedFile,30);
-		softAssert.assertEquals(objPage.getSelectedDropDownValue("File type"), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
-		softAssert.assertEquals(objPage.getSelectedDropDownValue("Source"), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileType), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.source), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 		
 		
 		//step9: verifying the discard count
