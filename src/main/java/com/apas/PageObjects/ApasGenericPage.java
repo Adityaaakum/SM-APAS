@@ -43,7 +43,7 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//div[contains(.,'App Launcher')]//*[@class='slds-icon-waffle']")
 	public WebElement appLauncher;
-
+	
 	@FindBy(xpath = "//table[@role='grid']//thead/tr//th")
 	public WebElement dataGrid;
 
