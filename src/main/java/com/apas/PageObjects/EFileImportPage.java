@@ -251,16 +251,22 @@ public class EFileImportPage extends Page {
      */
     public void selectFileAndSource(String fileType, String source) throws Exception {
         ReportLogger.INFO("Selecting File type :" + fileType + " and Source :" + source);
-        objPage.waitUntilPageisReady(driver);
-        objPage.waitUntilElementIsPresent(xpathFileTypedrpdwn, 60);
-        objPage.waitForElementToBeClickable(fileTypedropdown, 30);
-        Click(fileTypedropdown);
-        Thread.sleep(2000);
-        javascriptClick(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + fileType + "')]")));
-        Click(sourceDropdown);
-        WebElement webElementSourceOption = driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + source + "')]"));
-        scrollToElement(webElementSourceOption);
-        javascriptClick(webElementSourceOption);
+		/*
+		 * objPage.waitUntilPageisReady(driver);
+		 * //objPage.waitUntilElementIsPresent(xpathFileTypedrpdwn, 60);
+		 * objPage.waitForElementToBeClickable(fileTypedropdown, 30);
+		 * Click(fileTypedropdown); Thread.sleep(2000);
+		 * javascriptClick(driver.findElement(By.xpath(
+		 * "//span[@class='slds-media__body']/span[contains(.,'" + fileType + "')]")));
+		 * Click(sourceDropdown); WebElement webElementSourceOption =
+		 * driver.findElement(By.xpath(
+		 * "//span[@class='slds-media__body']/span[contains(.,'" + source + "')]"));
+		 * scrollToElement(webElementSourceOption);
+		 * javascriptClick(webElementSourceOption);
+		 */
+        objApasGenericFunctions.selectFromDropDown("File type", fileType);
+        objApasGenericFunctions.selectFromDropDown("Source", source);
+        
     }
 
     /**
