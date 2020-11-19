@@ -64,7 +64,7 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//button[@aria-expanded = 'true']//following-sibling::div//span[text() = 'Imported Valuation Factors']//parent::a")
 	public WebElement dropDownOptionBppImportedValuationFactors;
 
-	@FindBy(xpath = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//a[text() = 'Imported Valuation Factors']//ancestor::lightning-tab-bar//following-sibling::slot//table")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Imported Valuation Factors']//ancestor::lst-list-view-manager-header//following-sibling::div//table//span[@title = 'Name (Roll Year - Property Type)']")
 	public WebElement bppImportedValuationFactorsTableSection;
 
 	@FindBy(xpath = "//div[contains(@class, 'column region-sidebar-right')]//button[@title = 'More Tabs']")
@@ -587,15 +587,16 @@ public class BppTrendSetupPage extends Page {
 	public void clickShowMoreDropDownForGivenFactorEntry(String factorTableName) throws Exception {
 		//This condition is added as Factor Table Name and Title are different
 		if (factorTableName.equals("Composite Factors")) factorTableName = "BPP " + factorTableName;
-		String xpath;
+		String xpath,xPathShowMoreButton;
 		if(factorTableName.equalsIgnoreCase("BPP Percent Good Factors")) {
-			xpath = "(//span[text() = 'Machinery and Equipment'])[1]//parent::td//following-sibling::td//a | (//span[text() = 'Machinery and Equipment'])[1]//parent::td//following-sibling::td//a[@title = 'Show 2 more actions']";
-//			xpath = "(//span[text() = 'Machinery and Equipment'])[1]//parent::td//following-sibling::td//span[text() = 'Show More'] | (//span[text() = 'Machinery and Equipment'])[1]//parent::td//following-sibling::td//a[@title = 'Show 2 more actions']";
+			xPathShowMoreButton = "(//lightning-formatted-text[text() = 'Machinery and Equipment'])[1]//..//ancestor::td//following-sibling::td";
+			xpath = xPathShowMoreButton + "//button | " + xPathShowMoreButton +  "//span[text()='Show more actions']//ancestor::a";
 		} else {
-			xpath = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//span[text() = '"+factorTableName+"']//ancestor::div[contains(@class, 'slds-grid slds-page-header')]//following::div//table//tbody//tr[1]//a[@role = 'button']";
+			xPathShowMoreButton = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text() = '"+factorTableName+"']//ancestor::lst-list-view-manager-header//following-sibling::div//table//tbody//tr)[1]";
+			xpath = xPathShowMoreButton + "//lightning-button-menu//button | " + xPathShowMoreButton +  "//span[text()='Show more actions']//ancestor::a";
 		}
 		Thread.sleep(2000);
-		WebElement showMoreDropDown = locateElement(xpath, 30);
+		WebElement showMoreDropDown = waitUntilElementIsPresent(10,xpath);
 		if(showMoreDropDown == null) {
 			showMoreDropDown = locateElement(xpath, 30);
 		}
