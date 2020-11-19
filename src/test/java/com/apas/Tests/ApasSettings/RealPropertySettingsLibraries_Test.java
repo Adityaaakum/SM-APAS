@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.RealPropertySettingsLibrariesPage;
@@ -30,6 +31,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	ApasGenericFunctions objApasGenericFunctions;
 	RealPropertySettingsLibrariesPage objRPSLPage;
 	SoftAssertion softAssert;
+	ApasGenericPage objApasgenericpage;
 	Util objUtils;
 	
 	@BeforeMethod(alwaysRun=true)
@@ -43,6 +45,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objUtils = new Util();
 		objRPSLPage = new RealPropertySettingsLibrariesPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
+		objApasgenericpage=new ApasGenericPage(driver);
 		softAssert = new SoftAssertion();
 		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
 	}
@@ -54,7 +57,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	 2. User is not able to create duplicate Exemption limit record for any random roll year
 	 3. User is not able to create duplicate Exemption limit record for a roll year whose entry already exists	 
 	 **/
-	@Test(description = "SMAB-T536,SMAB-T540,SMAB-T541:Test Creation of Future Real Property Settings & duplicate creation", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption"})
+	/*@Test(description = "SMAB-T536,SMAB-T540,SMAB-T541:Test Creation of Future Real Property Settings & duplicate creation", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption"})
 	public void DisabledVeteran_verifyFututreRPSLCreation(String loginUser) throws Exception {
 		String strSuccessAlertMessage;
 		
@@ -82,7 +85,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		
 		//Step6: Clicking on Save button and verifying Success Message
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
-		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSL + "\" was created.","SMAB-T536: Verify the User is able to create Exemption limit record for a past and future roll year");	
+		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSLName + "\" was created.","SMAB-T536: Verify the User is able to create Exemption limit record for a past and future roll year");	
 				
 		//Step7: Opening the Real Property Settings Libraries module
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
@@ -94,16 +97,17 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.Click(objRPSLPage.saveButton);
 		
 		//Step10: Verify Duplicate Future Roll Year cannot be created
-		String expectedWarningMessageOnTop = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
-		objPage.waitForElementToBeVisible(objRPSLPage.warningMsgOnTop, 30);
-		softAssert.assertEquals(objRPSLPage.warningMsgOnTop.getText(),expectedWarningMessageOnTop,"SMAB-T540:Verify the User is not able to create duplicate Exemption limit record for any random roll year");
-		softAssert.assertEquals(objRPSLPage.warningMsgOnTop.getText(),expectedWarningMessageOnTop,"SMAB-T541:Verify the User is not able to create duplicate Exemption limit record for a roll year whose entry already exists");
+		//String expectedWarningMessageOnTop = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
+		String expectedWarningMessageOnTop = "Close error dialog\nWe hit a snag.\nYou can't save this record because a duplicate record already exists. To save, use different information.\nView Duplicates";
+		//objPage.waitForElementToBeVisible(objRPSLPage.warningMsgOnTop, 30);
+		softAssert.assertEquals(objPage.getElementText(objApasgenericpage.pageError),expectedWarningMessageOnTop,"SMAB-T540,SMAB-T541:Verify the User is not able to create duplicate Exemption limit record for any random roll year");
+		//softAssert.assertEquals(objRPSLPage.warningMsgOnTop.getText(),expectedWarningMessageOnTop,"SMAB-T541:Verify the User is not able to create duplicate Exemption limit record for a roll year whose entry already exists");
 		
 		//Step11: Closing the RPSL creation pop up
 		objPage.Click(objRPSLPage.cancelButton);
 		
 		objApasGenericFunctions.logout();
-	}	
+	}*/	
 	
 	/**
 	 Below test case will validate that 
@@ -139,8 +143,9 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		
 		//Step7: Clicking on Save button & Verifying the RPSL record for current year after creation
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
-		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSL + "\" was created.","SMAB-T535:Verify the User is able to create Exemption limit record for the current roll year");	
-		
+		String strRPSLName = "Exemption Limits - " + strRPSL;
+		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSLName + "\" was created.","SMAB-T535:Verify the User is able to create Exemption limit record for the current roll year");	
+				
 		//Step8: Opening the Real Property Settings Libraries module
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
@@ -152,16 +157,17 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.Click(objRPSLPage.saveButton);		
 		
 		//Step11: Verify Duplicate Current Roll Year cannot be created
-		String expectedWarningMessageOnTop = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
-		objPage.waitForElementToBeVisible(objRPSLPage.warningMsgOnTop, 30);
-		softAssert.assertEquals(objRPSLPage.warningMsgOnTop.getText(),expectedWarningMessageOnTop,"SMAB-T539:Verify the User is not able to create duplicate Exemption limit record for current roll year");
+		//String expectedWarningMessageOnTop = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
+		String expectedWarningMessageOnTop = "Close error dialog\nWe hit a snag.\nYou can't save this record because a duplicate record already exists. To save, use different information.\nView Duplicates";
+		objPage.waitForElementToBeVisible(objApasgenericpage.pageError, 30);
+		softAssert.assertEquals(objPage.getElementText(objApasgenericpage.pageError),expectedWarningMessageOnTop,"SMAB-T539:Verify the User is not able to create duplicate Exemption limit record for current roll year");
 		objPage.Click(objRPSLPage.cancelButton);
 		
 		//Step12: Click on All List View	
 		objApasGenericFunctions.displayRecords("All");
 		
 		//Step13: Search value of RPSL created above
-		String strRPSLName = "Exemption Limits - " + strRPSL;
+		//String strRPSLName = "Exemption Limits - " + strRPSL;
 		objApasGenericFunctions.searchRecords(strRPSLName);
 		
 		//Step14: Selecting the RPSL
@@ -204,14 +210,13 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.Click(objRPSLPage.saveButton);
 
 		//Step4: Validate the error message appeared for mandatory fields
-		String expectedErrorMessageOnTop = "These required fields must be completed: DV Basic Exemption Amount, DV Low Income Exemption Amount, DV Low Income Household Limit, RP Setting Name, Roll Year Settings, Status";
-		
+		//String expectedErrorMessageOnTop = "These required fields must be completed: DV Basic Exemption Amount, DV Low Income Exemption Amount, DV Low Income Household Limit, RP Setting Name, Roll Year Settings, Status";
+		String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the following fields\nRP Setting Name\nRoll Year Settings\nDV Low Income Exemption Amount\nDV Basic Exemption Amount\nDV Low Income Household Limit";
 		String expectedIndividualFieldMessage = "Complete this field.";
-		objPage.waitUntilElementIsPresent("//ul[@class='errorsList']//li", 60);
-		objPage.waitForElementToBeVisible(objRPSLPage.errorMsgOnTop, 30);
-		softAssert.assertEquals(objRPSLPage.errorMsgOnTop.getText(),expectedErrorMessageOnTop,"SMAB-T544: Validating mandatory fields missing error in manual entry pop up header.");
+		//objPage.waitUntilElementIsPresent("//ul[@class='errorsList']//li", 60);
+		//objPage.waitForElementToBeVisible(objRPSLPage.errorMsgOnTop, 30);
+		softAssert.assertEquals(objPage.getElementText(objApasgenericpage.pageError),expectedErrorMessageOnTop,"SMAB-T544: Validating mandatory fields missing error in manual entry pop up header.");
 		softAssert.assertEquals(objRPSLPage.getIndividualFieldErrorMessage("RP Setting Name"),expectedIndividualFieldMessage,"SMAB-T544: Validating mandatory fields missing error for 'RP Setting Name'");
-		softAssert.assertEquals(objRPSLPage.getIndividualFieldErrorMessage("Status"),expectedIndividualFieldMessage,"SMAB-T544: Validating mandatory fields missing error for 'Status'");
 		softAssert.assertEquals(objRPSLPage.getIndividualFieldErrorMessage("Roll Year Settings"),expectedIndividualFieldMessage,"SMAB-T544: Validating mandatory fields missing error for 'Roll Year Settings'");
 		softAssert.assertEquals(objRPSLPage.getIndividualFieldErrorMessage("DV Low Income Exemption Amount"),expectedIndividualFieldMessage,"SMAB-T544: Validating mandatory fields missing error for 'DV Low Income Exemption Amount'");
 		softAssert.assertEquals(objRPSLPage.getIndividualFieldErrorMessage("DV Basic Exemption Amount"),expectedIndividualFieldMessage,"SMAB-T544: Validating mandatory fields missing error for 'DV Basic Exemption Amount'");
@@ -225,7 +230,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	/**
 	 Below test case will validate that user is not able to create Real Property Settings Library if 'Cancel' button is clicked instead of 'Save' button
 	 **/
-	@Test(description = "SMAB-T537: Verify Current Roll Year RPSL not created on clicking Cancel button", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption"})
+	/*@Test(description = "SMAB-T537: Verify Current Roll Year RPSL not created on clicking Cancel button", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption"})
 	public void DisabledVeteran_verifyCancelRPSLCreation(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
@@ -252,7 +257,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 			
 		softAssert.assertEquals(successAlert, false, "SMAB-T537: Verify Exemption limit record for the current roll year is not created when User clicks Cancel button");
 		objApasGenericFunctions.logout();
-	}		
+	}*/		
 	
 	
 	 /**
@@ -334,7 +339,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		
 		//Step6: Clicking on Save button & Verifying the RPSL record for current year after creation
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
-		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSL + "\" was created.","Verify the User is able to create Exemption limit record");	
+		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSLName + "\" was created.","Verify the User is able to create Exemption limit record");	
 		
 		//Step7: Selecting module & 'All' List View
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
@@ -363,6 +368,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		Thread.sleep(2000);
 
 		//Step13: Validate the error message appeared for Amount fields
+		objPage.Click(objRPSLPage.errorBoxIcon);
 		String expectedDvLowIncomeExemptionAmountMessage = "Low Income Exemption Amount should be greater than 0";
 		String expectedDvBasicIncomeExemptionAmountMessage = "Basic Exemption Amount should be greater than 0";
 		String expectedDvLowIncomeHouseholdLimitMessage = "Low Income Household Limit should be greater than 0";		
@@ -381,7 +387,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	/**
 	 Below test case is used to validate 8 years of Real Property Settings
 	 **/
-	@Test(description = "SMAB-T583: Verify user is able to view at least last 8 years of Exemption Limits records", groups = {"smoke","regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class )
+	/*@Test(description = "SMAB-T583: Verify user is able to view at least last 8 years of Exemption Limits records", groups = {"smoke","regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class )
 	public void DisabledVeteran_verify8YearsRPSL(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
@@ -399,7 +405,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		softAssert.assertTrue(noOfRPSL>=8, "SMAB-T583: Verify user is able to view at least last 8 years of Exemption Limits records");
 		
 		objApasGenericFunctions.logout();
-	}
+	}*/
 	
 	/**
 	 Below test case is used to validate
@@ -427,15 +433,20 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.Click(objRPSLPage.getRPSLRecord(pastRollYear));
 		
 		//Step5 : Click on EDIT button for the record and retrieve the error message
-		ReportLogger.INFO("Clicking on 'Edit' button for record whose status is 'Approved'");
+		/*ReportLogger.INFO("Clicking on 'Edit' button for record whose status is 'Approved'");
 		objPage.Click(objRPSLPage.editButton);
 		objPage.waitUntilElementIsPresent(objRPSLPage.xPathErrorMsg,30);
 		String actualErrorMsgText1 =  objRPSLPage.errorMsgforEdit.getText();	
 		String expectedErrorMessage1 = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";
-	
+		*/
+		ReportLogger.INFO("Clicking on 'Edit' button for record whose status is 'Approved'");
+		objPage.Click(objRPSLPage.editButton);
+		objPage.Click(objRPSLPage.saveButton);
+		String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the errors on this page.\ninsufficient access rights on object id";
+		
 		//Step6: Verify Error message
-		softAssert.assertEquals(actualErrorMsgText1,expectedErrorMessage1,"SMAB-T640:Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'");
-		softAssert.assertEquals(actualErrorMsgText1,expectedErrorMessage1,"SMAB-T641:Verify that Non-System Admin users are not able to update a locked 'Real Property Settings' record");
+		softAssert.assertEquals(objPage.getElementText(objApasgenericpage.pageError),expectedErrorMessageOnTop,"SMAB-T640,SMAB-T641:Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'");
+		//softAssert.assertEquals(actualErrorMsgText1,expectedErrorMessage1,"SMAB-T641:Verify that Non-System Admin users are not able to update a locked 'Real Property Settings' record");
 		
 		//Step7: Closing the Error Pop-Up
 	    Thread.sleep(3000);
@@ -454,12 +465,13 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.Click(objRPSLPage.editButton);
 		objPage.Click(objRPSLPage.saveButton);
 		Thread.sleep(3000);
-		String actualErrorMsgText2 =  objRPSLPage.errorMsgOnTopForEditRPSL.getText();	
-		String expectedErrorMessage2 = "Record is locked. Please check with your system administrator.";
+		//String actualErrorMsgText2 =  objRPSLPage.errorMsgOnTopForEditRPSL.getText();	
+		//String expectedErrorMessage2 = "Record is locked. Please check with your system administrator.";
+		String expectedErrorMessageOnTop1 = "Close error dialog\nWe hit a snag.\nReview the errors on this page.\nRecord is locked. Please check with your system administrator.";
 		
 		//Step10: Verify Error message
-		softAssert.assertEquals(actualErrorMsgText2,expectedErrorMessage2,"SMAB-T640:Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'");
-		softAssert.assertEquals(actualErrorMsgText2,expectedErrorMessage2,"SMAB-T641:Verify that Non-System Admin users are not able to update a locked 'Real Property Settings' record");
+		softAssert.assertEquals(objPage.getElementText(objApasgenericpage.pageError),expectedErrorMessageOnTop1,"SMAB-T640,SMAB-T641:Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'");
+		//softAssert.assertEquals(actualErrorMsgText2,expectedErrorMessage2,"SMAB-T641:Verify that Non-System Admin users are not able to update a locked 'Real Property Settings' record");
 				
 	    //Step11: Closing the Screen
 	    Thread.sleep(1000);
@@ -473,7 +485,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	/**
 	 Below test case is used to validate user other than Exemption Support Staff is only able to view Exemption limit records
 	 **/
-	@Test(description = "SMAB-T545: Verify user other than Exemption Support Staff is only able to view Exemption limit records", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class )
+	/*@Test(description = "SMAB-T545: Verify user other than Exemption Support Staff is only able to view Exemption limit records", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class )
 	public void DisabledVeteran_verifyViewRPSLUsersAccess(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
 		objApasGenericFunctions.login(loginUser);
@@ -507,5 +519,5 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 			
 			objApasGenericFunctions.logout();
 			
-	}
+	}*/
 }

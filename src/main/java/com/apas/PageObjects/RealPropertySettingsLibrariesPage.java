@@ -41,6 +41,10 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 
 	@FindBy(xpath = "//label/span[text() = 'RP Setting Name']/../../input")
 	public WebElement rpSettingNameEditBox;
+	
+	@FindBy(xpath = "//lightning-icon[@title='Error']")
+	public WebElement errorBoxIcon;
+	
 
 	/*
 	 * @FindBy(xpath =
@@ -48,8 +52,9 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	 * ) public WebElement statusDropDown;
 	 */
 	
-	@FindBy(xpath = "//*[@aria-hidden='false']//*[text() = 'Status']//following-sibling::div//input")
-	public WebElement statusDropDown;
+	/*@FindBy(xpath = "//*[@aria-hidden='false']//*[text() = 'Status']//following-sibling::div//input")
+	public WebElement statusDropDown;*/
+	public String statusDropDown="Status";
 	
 	
 	@FindBy(xpath = "//input[@title='Search Roll Year Settings']")
@@ -64,11 +69,13 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//*[@aria-hidden='false']//*[text()='DV Low Income Household Limit']//following-sibling::div//input")
 	public WebElement dvLowIncomeHouseholdLimitEditBox;
 	
-	@FindBy(xpath = "//label/span[text()='DV Annual Due Date']/../following-sibling::div/input")
-	public WebElement dvLowIncomeHouseholdLimitDatePicker;
+	/*@FindBy(xpath = "//label/span[text()='DV Annual Due Date']/../following-sibling::div/input")
+	public WebElement dvLowIncomeHouseholdLimitDatePicker;*/
+	public String dvLowIncomeHouseholdLimitDatePicker="DV Annual Due Date";
 	
-	@FindBy(xpath = "//label/span[text()='DV Annual Due Date 2']/../following-sibling::div/input")
-	public WebElement dvAnnualLowIncomeDueDate2DatePicker;
+	/*@FindBy(xpath = "//label/span[text()='DV Annual Due Date 2']/../following-sibling::div/input")
+	public WebElement dvAnnualLowIncomeDueDate2DatePicker;*/
+	public String dvAnnualLowIncomeDueDate2DatePicker="DV Annual Due Date 2";
 	
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']")
 	public WebElement successAlert;
@@ -106,7 +113,8 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//span[text() = 'Next']")
 	public WebElement nextButton;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//table//tbody//tr")
+	//@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//table//tbody//tr")
+	@FindBy(xpath = "//div[contains(@class,'--inactive inlineEditGrid forceInlineEditGrid')]//table//tbody/tr")
     public List<WebElement> numberOfRPSL;
 	
 	@FindBy(xpath = "//div[@class='uiBlock']//p[@class='detail']//span")
@@ -143,8 +151,11 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	 * @param value: Like 'Yet to be submit for Approval or Approved' for Status field etc.
 	 * @throws Exception
 	 */
-	public void selectFromDropDown(WebElement element, String value) throws Exception {
+	/*public void selectFromDropDown(WebElement element, String value) throws Exception {
 		objApasGenericFunctions.selectFromDropDown(element, value);
+	}*/
+	public void selectFromDropDown(Object element, String value) throws Exception {
+		selectOptionFromDropDown(element, value);
 	}
 	
 	/**
@@ -153,8 +164,9 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	 * @throws Exception 
 	 */
 	public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
-		waitUntilElementIsPresent("//*/span[text() = '\" + fieldName + \"']//..//..//..//ul[contains(@class,'has-error')]//li", 2);
-		return getElementText(driver.findElement(By.xpath("//*/span[text() = '" + fieldName + "']//..//..//..//ul[contains(@class,'has-error')]//li")));
+		//waitUntilElementIsPresent("//*/span[text() = '\" + fieldName + \"']//..//..//..//ul[contains(@class,'has-error')]//li", 2);
+		//return getElementText(driver.findElement(By.xpath("//*/span[text() = '" + fieldName + "']//..//..//..//ul[contains(@class,'has-error')]//li")));
+		return objApasGenericFunctions.getIndividualFieldErrorMessage(fieldName);
 	}
 
 	
@@ -168,13 +180,14 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		//selectRecordType("Exemption Limits");
 		ReportLogger.INFO("Entering details for Real Property Settings record");
 		enter("RP Setting Name",rollYear);
-		selectFromDropDown(statusDropDown,dataMap.get("Status"));
-		searchAndSelectFromDropDown(searchRollYearSettingsLookup,rollYear);
-		enter(dvLowIncomeExemptionAmountEditBox,dataMap.get("DV Low Income Exemption Amount"));
-		enter(dvBasicIncomeExemptionAmountEditBox,dataMap.get("DV Basic Exemption Amount"));
-		enter(dvLowIncomeHouseholdLimitEditBox,dataMap.get("DV Low Income Household Limit Amount"));
-		enter(dvLowIncomeHouseholdLimitDatePicker, dataMap.get("DV Annual Low Income Due Date")+"/"+rollYear);
-		enter(dvAnnualLowIncomeDueDate2DatePicker, dataMap.get("DV Annual Low Income Due Date2")+"/"+rollYear);	
+		selectOptionFromDropDown("Status",dataMap.get("Status"));
+		searchAndSelectFromDropDown("Roll Year Settings",rollYear);
+		enter("DV Low Income Exemption Amount",dataMap.get("DV Low Income Exemption Amount"));
+		enter("DV Basic Exemption Amount",dataMap.get("DV Basic Exemption Amount"));
+		enter("DV Low Income Household Limit",dataMap.get("DV Low Income Household Limit Amount"));
+		enter("DV Annual Due Date", dataMap.get("DV Annual Low Income Due Date")+"/"+rollYear);
+		enter("DV Annual Due Date 2", dataMap.get("DV Annual Low Income Due Date2")+"/"+rollYear);	
+			
 	}
 	
 	/**
