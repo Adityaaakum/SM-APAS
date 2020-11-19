@@ -87,7 +87,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		objPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
 		
 		//Step7: Clear the Default Max Equipment index factor value and verify the error message
-		String expectedErrorMessage = "These required fields must be completed: Maximum Equipment index Factor";
+		String expectedErrorMessage = "Complete this field.";
 		objPage.enter("Maximum Equipment index Factor","");
 		objPage.Click(objPage.getButtonWithText("Save"));
 		String actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
@@ -268,10 +268,10 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		Thread.sleep(2000);
 		
 		//Step8: Verify table status when Max. Equipment Index factor Settings value is updated
-		softAssert.assertEquals("Needs Recalculation",objBppTrendSetupPage.getTableStatus("Commercial Composite Factors",rollYear),"SMAB-T172,SMAB-T139: Verify status for Commercial Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
-		softAssert.assertEquals("Needs Recalculation",objBppTrendSetupPage.getTableStatus("Industrial Composite Factors",rollYear),"SMAB-T172,SMAB-T139: Verify status for Industrial Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
-		softAssert.assertEquals("Needs Recalculation",objBppTrendSetupPage.getTableStatus("Construction Composite Factors",rollYear),"SMAB-T172,SMAB-T139: Verify status for Construction Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
-		softAssert.assertEquals("Needs Recalculation",objBppTrendSetupPage.getTableStatus("Agricultural Composite Factors",rollYear),"SMAB-T172,SMAB-T139: Verify status for Agricultural Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
+		softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Commercial Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Commercial Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
+		softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Industrial Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Industrial Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
+		softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Construction Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Construction Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
+		softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Agricultural Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Agricultural Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
 		
 		//Step9: Click on Edit Max. Equipment Index factor Settings and update value when table status is 'Needs Recalculation'
 		objBppTrendSetupPage.editSaveFactorValue("125");

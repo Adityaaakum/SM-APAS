@@ -85,73 +85,102 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		objBppTrendSetupPage.createBppCompositeFactorSetting("Commercial", "10");
 		String popUpMsg = objBppTrendSetupPage.getSuccessMsgText();
 		softAssert.assertTrue((popUpMsg.contains("was created")), "SMAB-T186: Bpp Composite Setting entry for Commercial type created successfully. Pop up message on entry creation- "+ popUpMsg);
-		
-		//Step8: Creating Industrial BPP Composite Factor Settings 
+
+		//Step8: Opening the BPP Trend module and set All as the view option in grid
+		//Clicking on the roll year name in grid to navigate to details page of selected roll year
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+
+		//Step9: Creating Industrial BPP Composite Factor Settings
 		objBppTrendSetupPage.createBppCompositeFactorSetting("Industrial", "9");
 		popUpMsg = objBppTrendSetupPage.getSuccessMsgText();
 		softAssert.assertTrue((popUpMsg.contains("was created")), "SMAB-T186: Bpp Composite Setting entry for Industrial type created successfully. Pop up message on entry creation- "+ popUpMsg);
-		
-		//Step9: Creating Agricultural BPP Composite Factor Settings
+
+		//Step10: Opening the BPP Trend module and set All as the view option in grid
+		//Clicking on the roll year name in grid to navigate to details page of selected roll year
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+
+		//Step11: Creating Agricultural BPP Composite Factor Settings
 		objBppTrendSetupPage.createBppCompositeFactorSetting("Agricultural", "50");
 		popUpMsg = objBppTrendSetupPage.getSuccessMsgText();
 		softAssert.assertTrue((popUpMsg.contains("was created")), "SMAB-T186: Bpp Composite Setting entry for Agricultural type created successfully. Pop up message on entry creation- "+ popUpMsg);
-		
-		//Step10: Creating Construction BPP Composite Factor Settings with incorrect factor value : -1
+
+		//Step12: Opening the BPP Trend module and set All as the view option in grid
+		//Clicking on the roll year name in grid to navigate to details page of selected roll year
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+
+		//Step13: Creating Construction BPP Composite Factor Settings with incorrect factor value : -1
 		objBppTrendSetupPage.createBppCompositeFactorSetting("Construction", "-1");
-		
-		//Step11: Validating the error displayed on entering invalid value
-		String actualErrorMsg = objBppTrendSetupPage.errorMsgUnderMinEquipFactorIndexField();
-		softAssert.assertEquals(actualErrorMsg, "Minimum Good Factor should be greater than 0", "SMAB-T188: Validation on entering factor value less as 0");
-				
-		//Step12: Creating Construction BPP Composite Factor Settings with incorrect factor value : 150
-		objBppTrendSetupPage.enterFactorValue("150");
-		objPage.Click(objBppTrendSetupPage.saveBtnInBppSettingPopUp);
+
+		//Step14: Validating the error displayed on entering invalid value
+		String actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Minimum Good Factor");
+		softAssert.assertContains(actualErrorMsg, "Minimum Good Factor should be greater than 0", "SMAB-T188: Validation on entering factor value less as 0");
+
+		//Step15: Creating Construction BPP Composite Factor Settings with incorrect factor value : 150
+		objBppTrendSetupPage.enter("Minimum Good Factor","150");
+		objBppTrendSetupPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(1000);
-		
-		//Step13: Validating the error displayed on entering invalid value
-		actualErrorMsg = objBppTrendSetupPage.errorMsgUnderMinEquipFactorIndexField();
-		softAssert.assertEquals(actualErrorMsg, "Minimum Good Factor: value outside of valid range on numeric field: 150", "SMAB-T188: Validation on entering factor value less as 150");				
-		
-		//Step14: Creating Construction BPP Composite Factor Settings
-		objBppTrendSetupPage.enterFactorValue("10");
-		objPage.Click(objBppTrendSetupPage.saveBtnInBppSettingPopUp);
+
+		//Step16: Validating the error displayed on entering invalid value
+		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Minimum Good Factor");
+		softAssert.assertContains(actualErrorMsg, "Minimum Good Factor: value outside of valid range on numeric field: 150", "SMAB-T188: Validation on entering factor value less as 150");
+
+		//Step17: Creating Construction BPP Composite Factor Settings
+		objBppTrendSetupPage.enter("Minimum Good Factor","10");
+		objBppTrendSetupPage.Click(objPage.getButtonWithText("Save"));
 		popUpMsg = objBppTrendSetupPage.getSuccessMsgText();
 		softAssert.assertTrue((popUpMsg.contains("was created")), "SMAB-T186: Bpp Composite Setting entry for Construction type created successfully. Pop up message on entry creation- "+ popUpMsg);
-		
-		//Step15: Retrieving the minimum equipment index factor value for Agricultural before editing
-		objBppTrendPage.clickAction(objBppTrendSetupPage.viewAllBppCompositeFactorSettings);
+
+		//Step18: Opening the BPP Trend module and set All as the view option in grid
+		//Clicking on the roll year name in grid to navigate to details page of selected roll year
+		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+
+		//Step19: Retrieving the minimum equipment index factor value for Agricultural before editing
+		objBppTrendPage.scrollToElement(objBppTrendSetupPage.viewAllBppCompositeFactorSettings);
+		objBppTrendPage.javascriptClick(objBppTrendSetupPage.viewAllBppCompositeFactorSettings);
 		String factorValueBeforeEditing = objBppTrendSetupPage.retrieveExistingMinEquipFactorValueFromGrid("Agricultural");
 
-		//Step16: Editing and updating the equipment index factor value
+		//Step20: Editing and updating the equipment index factor value
 		objBppTrendSetupPage.clickOnShowMoreLinkInGridForGivenPropertyType("Agricultural");
 		objBppTrendPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
-		objBppTrendSetupPage.enterFactorValue("11");
-		objBppTrendSetupPage.enterPropertyType("Agricultural");
-		objBppTrendPage.Click(objBppTrendSetupPage.saveButton);
+		objBppTrendSetupPage.enter("Minimum Good Factor","11");
+		objApasGenericPage.selectOptionFromDropDown("Property Type","Agricultural");
+		objBppTrendPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(2000);
-		
-		//Step17: Retrieving and validating the equipment index factor value after editing
+
+		//Step21: Retrieving and validating the equipment index factor value after editing
 		String factorValueAfterEditing = objBppTrendSetupPage.retrieveExistingMinEquipFactorValueFromGrid("Agricultural");
 		softAssert.assertTrue(!(factorValueAfterEditing.equals(factorValueBeforeEditing)), "SMAB-T185: Validation to check mimimum equip index has updated with new value. Value before editing: "+ factorValueBeforeEditing +" || Value after editing: "+ factorValueAfterEditing);
-				
-		//Step18: Updating the composite factor tables status
+
+		//Step22: Updating the composite factor tables status
 		objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.COMPOSITE_TABLES_API_NAMES, "Approved", rollYear);
-	
-		//Step19: Updating the valuation factor tables status
+
+		//Step23: Updating the valuation factor tables status
 		objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Approved", rollYear);
-		
-		//Step20: Editing and updating the equipment index factor value
+
+		//Step24: Editing and updating the equipment index factor value
 		ReportLogger.INFO("Clicking show more drop down and clicking edit button");
 		objBppTrendSetupPage.clickOnShowMoreLinkInGridForGivenPropertyType("Commercial");
 		objBppTrendPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
-		
+
 		//Step21: Validating error message on updating Min. Equipment Index Factor value for approved tables
+		objBppTrendSetupPage.enter("Minimum Good Factor","11");
+		objBppTrendPage.Click(objPage.getButtonWithText("Save"));
+		Thread.sleep(1000);
 		ReportLogger.INFO("Validating error message on updating Min. Equipment Index Factor Value for approved tables");
-		String expectedErrorMessage = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";
-		String actualErrorMessage = objPage.getElementText(objBppTrendSetupPage.accessErrorMsg);
-		softAssert.assertEquals(actualErrorMessage, expectedErrorMessage, "SMAB-T187: Validating error message on editing minimum equip. index value when calculations are approved");
-		objBppTrendPage.Click(objBppTrendSetupPage.closeEntryPopUp);
-		
+		String expectedErrorMessage = "Minimum Good Factor is locked for editing for the Roll Year";
+		String actualErrorMessage = objApasGenericFunctions.getIndividualFieldErrorMessage("Minimum Good Factor");
+		softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T187: Validating error message on editing minimum equip. index value when calculations are approved");
+		objBppTrendPage.Click(objPage.getButtonWithText("Cancel"));
+
+
 		objApasGenericFunctions.logout();
 	}
 }

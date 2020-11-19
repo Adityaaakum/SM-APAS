@@ -137,7 +137,9 @@ public class ApasGenericFunctions extends TestBase {
     	String xPath =  "//lightning-tab[contains(@class,'slds-show')]//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button";
         WebElement webelement = driver.findElement(By.xpath(xPath));
         objPage.Click(webelement);
+        Thread.sleep(1000);
         WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
+
         webelementInput.clear();
         webelementInput.sendKeys(expectedValue);
         Robot robot = new Robot();
@@ -615,4 +617,5 @@ public class ApasGenericFunctions extends TestBase {
         waitForElementToDisappear(objApasGenericPage.successAlert,10);
         return messageOnAlert;
     }
+
 }
