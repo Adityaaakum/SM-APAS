@@ -150,6 +150,8 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//div[contains(@class,'fieldLevelErrors')]//li")
 	public WebElement fieldError;
 
+	public String minGoodFactorEditBox = "Minimum Good Factor";
+
 	/**
 	 * Description: Creates the BPP Composite Factor Setting on BPP trend status page
 	 * @param propertyType: Takes composite factor setting factor value as
@@ -207,8 +209,8 @@ public class BppTrendSetupPage extends Page {
 	public void createBppSetting(String equipIndexFactorValue) throws Exception {
 		clickAction(waitForElementToBeClickable(dropDownIconBppSetting));
 		clickAction(waitForElementToBeClickable(newBtnToCreateEntry));
-		enterFactorValue(equipIndexFactorValue);
-		Click(saveBtnInBppSettingPopUp);
+		enter(objApasGenericPage.maxEquipmentIndexFactor,equipIndexFactorValue);
+		objPage.Click(objPage.getButtonWithText("Save"));
 	}
 
 	/**
@@ -398,23 +400,23 @@ public class BppTrendSetupPage extends Page {
 
 		//Step2: Entering BPP trend setup name and roll year
 		//int year = Integer.parseInt(TestBase.CONFIG.getProperty("rollYear")) + 2;
-		String trendSetupName = rollYear + " " + TestBase.CONFIG.getProperty("bppTrendSetupNameSuffix");
+		String trendSetupName = rollYear + " - BPP Trend Setup";
 
 		this.rollYearForErrorValidationOnCalculate = Integer.toString(rollYear);
-		enter(bppTrendSetupName, trendSetupName);
-		WebElement rollYearField = locateElement("//span[text() = 'Roll Year']//parent::span//following-sibling::div", 10);
-		objApasGenericPage.selectOptionFromDropDown(rollYearField, Integer.toString(rollYear));
+		enter("Name", trendSetupName);
+		//WebElement rollYearField = locateElement("//span[text() = 'Roll Year']//parent::span//following-sibling::div", 10);
+		objApasGenericPage.selectOptionFromDropDown("Roll Year", Integer.toString(rollYear));
 
 		//Step3: Setting the status of composite factor tables to Not Calculated
-		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Commercial Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), compFactorTablesStatus);
-		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Const. Mobile Equipment Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), compFactorTablesStatus);
-		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Industrial Trend Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), compFactorTablesStatus);
-		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Ag. Mobile Equipment Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), compFactorTablesStatus);
-		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Const. Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), compFactorTablesStatus);
-		objApasGenericPage.selectOptionFromDropDown(locateElement("//span[text() = 'Ag. Trends Status']//parent::span//following-sibling::div[@class = 'uiMenu']", 10), compFactorTablesStatus);
+		objApasGenericPage.selectOptionFromDropDown("Commercial Trends Status", compFactorTablesStatus);
+		objApasGenericPage.selectOptionFromDropDown("Const. Mobile Equipment Trends Status",  compFactorTablesStatus);
+		objApasGenericPage.selectOptionFromDropDown("Industrial Trend Status",  compFactorTablesStatus);
+		objApasGenericPage.selectOptionFromDropDown("Ag. Mobile Equipment Trends Status", compFactorTablesStatus);
+		objApasGenericPage.selectOptionFromDropDown("Const. Trends Status", compFactorTablesStatus);
+		objApasGenericPage.selectOptionFromDropDown("Ag. Trends Status", compFactorTablesStatus);
 
 		//Step4: Clicking save button
-		Click(saveBtnInBppSettingPopUp);
+		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(2000);
 		return trendSetupName;
 	}

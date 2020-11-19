@@ -105,6 +105,8 @@ public class ApasGenericPage extends Page {
 
 	public String xpathSpinner = "//lightning-spinner";
 
+	public String maxEquipmentIndexFactor = "Maximum Equipment index Factor";
+
 
 	/*	Sikander Bhambhu:
 	 *	Next 7 locators are for handling date picker
