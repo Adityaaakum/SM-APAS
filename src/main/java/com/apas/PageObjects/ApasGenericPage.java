@@ -25,11 +25,21 @@ public class ApasGenericPage extends Page {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[@title='Save']")
-	public WebElement saveButton;
+
+	@FindBy(xpath = "//button[contains(@class,'page-error-button')]")
+	public WebElement pageErrorButton;
 
 	@FindBy(xpath = "//*[contains(@class,'forceFormPageError')]")
 	public WebElement pageError;
+
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title = 'New']")
+	public WebElement newButton;
+
+	@FindBy(xpath = "//a[@title = 'Edit']")
+	public WebElement editButton;
+
+	@FindBy(xpath = "//button[@title='Save']")
+	public WebElement saveButton;
 
 	@FindBy(xpath = "//div[contains(.,'App Launcher')]//*[@class='slds-icon-waffle']")
 	public WebElement appLauncher;
@@ -63,6 +73,9 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//*[@data-aura-class='forceSearchAssistantDialog']//input[@type='search']")
 	public WebElement globalSearchListEditBox;
+
+	@FindBy(xpath = "//div[@data-aura-class='forceSearchAssistant']//button")
+	public WebElement globalSearchButton;
 
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@class='countSortedByFilteredBy']")
 	public WebElement countSortedByFilteredBy;

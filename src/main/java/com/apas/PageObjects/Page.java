@@ -277,6 +277,15 @@ public class Page {
 		Thread.sleep(2000);
 	}
 
+	/**
+	 * Function will wait for an element to be clicked on the page.
+	 *
+	 * @param object          the element
+	 * @param timeoutInSeconds the timeout in seconds
+	 */
+	public void waitForElementToBeClickable(Object object, int timeoutInSeconds) {
+		waitForElementToBeClickable(timeoutInSeconds,object);
+	}
 
 	/**
 	 * Function will wait for an element to be clicked on the page.

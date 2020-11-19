@@ -76,20 +76,20 @@ public class CountyStratCodesTest extends TestBase {
 		//Step3: Clicking new button and then save button without entering mandatory details
 		ReportLogger.INFO("Opening the new entry pop and clicking save button without providing mandatory field");
 		objCountyStratCodesPage.openNewEntry();
-		objPage.Click(objCountyStratCodesPage.saveButton);
 
 		//Step4: Checking validation messages on clicking save button without providing values in mandatory fields
-		String expErrorMsgOnTop = "These required fields must be completed: Strat Code Description, Processing Status, Strat Code Reference Number";
+		String expErrorMsgOnTop = "Close error dialog\nWe hit a snag.\nReview the following fields\nStrat Code Reference Number\nStrat Code Description\nProcessing Status";
 		String expectedFieldLevelErrorMessage = "Complete this field.";
 
 		ReportLogger.INFO("Validating the error messages for individual fields");
+		String actualErrorMessage = objApasGenericFunctions.saveRecordAndGetError();
 		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Strat Code Reference Number"), expectedFieldLevelErrorMessage, "SMAB-T392: Validating error message on not providing Strat Code Reference Number");
 		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Strat Code Description"),expectedFieldLevelErrorMessage, "SMAB-T392: Validating error message on not providing Strat Code Description");
 		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Processing Status"), expectedFieldLevelErrorMessage, "SMAB-T392: Validating error message on not providing Processing Status");
-		softAssert.assertEquals(objPage.getElementText(objCountyStratCodesPage.errorMsgOnTop), expErrorMsgOnTop, "SMAB-T392: Validating error message displayed on top of the new entry pop up");
+		softAssert.assertEquals(actualErrorMessage, expErrorMsgOnTop, "SMAB-T392: Validating error message displayed on top of the new entry pop up");
 
 		//Step5: Cancelling the pop up by clicking cancel button
-		objPage.Click(objCountyStratCodesPage.cancelButton);
+		objPage.Click(objPage.getButtonWithText("Cancel"));
 
 		//Step6: Prepare a test data to create a new entry
 		String manualEntryData = System.getProperty("user.dir") + testdata.COUNTY_STRAT_CODES + "\\CountyStratCodesManualCreationData.json";
@@ -99,39 +99,35 @@ public class CountyStratCodesTest extends TestBase {
 		//Step7: Adding a new County Start Code
 		ReportLogger.INFO("creating a new count strat code with valid values");
 		String actSuccessAlertText = objCountyStratCodesPage.addAndSaveCountyStratCode(manualEntryDataMap);
-		String expSuccessAlertText = "County Strat Code " + '"' + manualEntryDataMap.get("Strat Code Description") + '"' + " was created.";
+		String expSuccessAlertText = "success\nCounty Strat Code " + '"' + manualEntryDataMap.get("Strat Code Description") + '"' + " was created.\nClose";
 		softAssert.assertEquals(actSuccessAlertText, expSuccessAlertText, "SMAB-T392: Validating the pop message on successful creation of County Strat Code entry");
 
-		objPage.waitForElementToBeClickable(objCountyStratCodesPage.editButton,15);
-		objPage.Click(objCountyStratCodesPage.editButton);
+		objPage.Click(objPage.getButtonWithText("Edit"));
 		Thread.sleep(1000);
 
 		//Step10: Editing the newly created entry on grid page
 		ReportLogger.INFO("Editing the newly created entry from the grid");
 		stratCodeDerscription = stratCodeDerscription + "Updated";
 		objPage.enter(objCountyStratCodesPage.stratCodeDescInputField, stratCodeDerscription);
-		objPage.Click(objCountyStratCodesPage.saveButton);
-		Thread.sleep(2000);
-		objPage.waitForElementToBeVisible(objCountyStratCodesPage.successAlert,20);
 
 		//Step11: Checking the pop up message on editing and saving the existing entry.
 		ReportLogger.INFO("Validating pop up message on editing the existing entry.");
-		expSuccessAlertText = "County Strat Code " + '"' + stratCodeDerscription + '"' + " was saved.";
-		actSuccessAlertText = objPage.getElementText(objCountyStratCodesPage.successAlertText);
+		expSuccessAlertText = "success\nCounty Strat Code " + '"' + stratCodeDerscription + '"' + " was saved.\nClose";
+		actSuccessAlertText = objApasGenericFunctions.saveRecord();
 		softAssert.assertEquals(actSuccessAlertText, expSuccessAlertText, "SMAB-T392: Validating the pop message on successfully editing the County Strat Code entry");
 
 		//Step2: Opening the County Strat Codes module
 		objApasGenericFunctions.searchModule(modules.COUNTY_STRAT_CODES);
 
 		//Step12: Checking validation on duplicate entry creation
-		String expectedWarningMessage = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
+		String expectedWarningMessage = "Close error dialog\nWe hit a snag.\nYou can't save this record because a duplicate record already exists. To save, use different information.\nView Duplicates";
 
 		ReportLogger.INFO("Creating duplicate entry to check validation message for duplicate entry creation");
 		manualEntryDataMap.put("Strat Code Description", stratCodeDerscription);
 		objCountyStratCodesPage.openNewEntry();
 		objCountyStratCodesPage.enterCountyStratCodeDetails(manualEntryDataMap);
-		softAssert.assertEquals(objPage.getElementText(objCountyStratCodesPage.errorMsgForDuplicateEntry), expectedWarningMessage, "SMAB-T437: Validating warning message for duplicate entry");
-		objPage.Click(objCountyStratCodesPage.cancelButton);
+		softAssert.assertEquals(objApasGenericFunctions.saveRecordAndGetError(), expectedWarningMessage, "SMAB-T437: Validating warning message for duplicate entry");
+		objApasGenericFunctions.cancelRecord();
 
 		//Step13: Deleting the newly created entry via Salesforce API
 		ReportLogger.INFO("Deleting the newly created entry via Salesforce API");
@@ -165,25 +161,23 @@ public class CountyStratCodesTest extends TestBase {
 		objCountyStratCodesPage.openNewEntry();
 		objCountyStratCodesPage.enterCountyStratCodeDetails(manualEntryDataMap);
 		objPage.enter(objCountyStratCodesPage.permitValueLimit, manualEntryDataMap.get("Permit Value Limit"));
-		objPage.Click(objCountyStratCodesPage.saveButton);
-		objPage.waitForElementToBeClickable(objCountyStratCodesPage.errorMsgOnTop);
+		String actualErrorMessage = objApasGenericFunctions.saveRecordAndGetError();
 
 		//Step5: Validation the error message on not providing Permit Value Operator value
-		String expectedErrorMsg = "Permit Value Limit and Permit Value Operator should be filled together";
-		softAssert.assertEquals(objPage.getElementText(objCountyStratCodesPage.errorMsgOnTop), expectedErrorMsg, "SMAB-T465: Validating the pop message on successful creation of County Strat Code entry");
-		objPage.Click(objCountyStratCodesPage.cancelButton);
+		String expectedErrorMsg = "Close error dialog\nWe hit a snag.\nReview the errors on this page.\nPermit Value Limit and Permit Value Operator should be filled together";
+		softAssert.assertEquals(actualErrorMessage, expectedErrorMsg, "SMAB-T465: Validating the pop message on successful creation of County Strat Code entry");
+		objApasGenericFunctions.cancelRecord();
 
 		//Step6: Enter values in mandatory fields and Permit Value Operator
 		ReportLogger.INFO("Clicking new button again to create a valid entry with valid values");
 		objCountyStratCodesPage.openNewEntry();
 		objCountyStratCodesPage.enterCountyStratCodeDetails(manualEntryDataMap);
 		objApasGenericPage.selectOptionFromDropDown(objCountyStratCodesPage.permitValueOperatorDropDown, manualEntryDataMap.get("Permit Value Operator"));
-		objPage.Click(objCountyStratCodesPage.saveButton);
-		objPage.waitForElementToBeClickable(objCountyStratCodesPage.errorMsgOnTop);
+		actualErrorMessage = objApasGenericFunctions.saveRecordAndGetError();
 
 		//Step7: Validation the error message on not providing Permit Value Limit value
-		softAssert.assertEquals(objPage.getElementText(objCountyStratCodesPage.errorMsgOnTop), expectedErrorMsg, "SMAB-T465: Validating the pop message on successful creation of County Strat Code entry");
-		objPage.Click(objCountyStratCodesPage.cancelButton);
+		softAssert.assertEquals(actualErrorMessage, expectedErrorMsg, "SMAB-T465: Validating the pop message on successful creation of County Strat Code entry");
+		objApasGenericFunctions.cancelRecord();
 
 		//Step8: Logout at the end of the test
 		objApasGenericFunctions.logout();
@@ -211,20 +205,17 @@ public class CountyStratCodesTest extends TestBase {
 		objApasGenericFunctions.globalSearchRecords(dataMapCountStratCode.get("Name").get(0));
 
 		//Step5: Clicking on the drop down icon and new button to open new entry pop up for city strat code
-		objPage.clickAction(objCountyStratCodesPage.cityStratCodesDropDownIcon);
-		Thread.sleep(2000);
-		objPage.clickAction(objCountyStratCodesPage.cityStratCodesNewOptionToCreateEntry);
+		objApasGenericFunctions.OpenNewEntryFormFromRightHandSidePanel("City Strat Codes");
 
 		//Step7: Create new entry for County Strat Codes
 		String cityStratCode = objUtil.getCurrentDate("YYYYmmDDHHMMSS");
 		objPage.waitForElementToBeClickable(objCityStratCodesPage.cityCodeDropDown,10);
-		objPage.Select(objCityStratCodesPage.cityCodeDropDown,"AT");
+		objCityStratCodesPage.selectOptionFromDropDown(objCityStratCodesPage.cityCodeDropDown,"AT");
 		objPage.enter(objCityStratCodesPage.cityStratCodeEditBox,cityStratCode);
-		objPage.Select(objCityStratCodesPage.statusDropDown,"Inactive");
-		objPage.Click(objCityStratCodesPage.saveButton);
-		objPage.waitForElementToBeClickable(objCityStratCodesPage.successAlert,15);
-		String actualSuccessAlertText = objPage.getElementText(objCityStratCodesPage.successAlert);
-		String expectedSuccessAlertText = "success\nCity Strat Code "+ cityStratCode +" was created.\nClose";
+		objCityStratCodesPage.selectOptionFromDropDown(objCityStratCodesPage.statusDropDown,"Inactive");
+
+		String actualSuccessAlertText = objApasGenericFunctions.saveRecord();
+		String expectedSuccessAlertText = "success\nCity Strat Code \"" + cityStratCode + "\" was created.\nClose";
 		softAssert.assertEquals(actualSuccessAlertText, expectedSuccessAlertText, "SMAB-T436: Validating the pop message on successful creation of City Strat Code entry from County Strat details page");
 
 		//Step8: Logout at the end of the test
