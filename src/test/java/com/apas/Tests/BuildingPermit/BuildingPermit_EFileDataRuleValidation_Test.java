@@ -662,6 +662,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		//Step5: Approve the imported records
 		objPage.Click(objEfileImportPage.approveButton);
 		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
+		objPage.Click(objEfileImportPage.sourceDetails);
 
 		//Step6: Validate the import file name in the newly processed file. Below building permit is processed in the file uploaded in previous steps
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
@@ -747,6 +748,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		//Step5: Approve the imported records
 		objPage.Click(objEfileImportPage.approveButton);
 		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
+		objPage.Click(objEfileImportPage.sourceDetails);
 
 		//Step6: Validate the import file name in the newly processed file. Below building permit is processed in the file uploaded in previous steps
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);

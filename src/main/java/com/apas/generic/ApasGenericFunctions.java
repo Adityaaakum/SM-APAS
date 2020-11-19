@@ -173,7 +173,7 @@ public class ApasGenericFunctions extends TestBase {
      */
     public void globalSearchRecords(String searchString) throws Exception {
         ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
-        objPage.Click(driver.findElement(By.xpath("//div[@data-aura-class='forceSearchAssistant']//button")));
+        objPage.Click(objApasGenericPage.globalSearchButton);
         objPage.enter(objApasGenericPage.globalSearchListEditBox,searchString);
         String xpath = "//*[@role='option']//span[@title = '" + searchString + "']";
         objPage.waitUntilElementIsPresent(xpath,5);
@@ -618,4 +618,53 @@ public class ApasGenericFunctions extends TestBase {
         return messageOnAlert;
     }
 
+    /**
+     * Description: this method is to save record and get the error
+     *
+     * @throws: Exception
+     */
+    public String saveRecordAndGetError() throws Exception {
+        objPage.Click(objPage.getButtonWithText("Save"));
+        objPage.waitForElementToBeClickable(objApasGenericPage.pageError,20);
+        return objPage.getElementText(objApasGenericPage.pageError);
+    }
+
+    /**
+     * Description: this method is to cancel the already opened pop up
+     */
+    public void cancelRecord() throws IOException {
+        objPage.Click(objPage.getButtonWithText("Cancel"));
+    }
+
+    /**
+     * Description: this method is to create a new record based on the object name from right hand side panel
+     * @param : Object name to be created
+     */
+    public void OpenNewEntryFormFromRightHandSidePanel(String objectName) throws IOException, InterruptedException {
+        String xpath = "//article[contains(.,'" + objectName + "')]//a[@title='Show one more action'] |  //article[contains(.,'" + objectName + "')]//*[@data-aura-class='forceDeferredDropDownAction']//a";
+        objPage.Click(driver.findElement(By.xpath(xpath)));
+        Thread.sleep(1000);
+        objPage.Click(driver.findElement(By.xpath("//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'New'][@role='button']")));
+    }
+
+    /**
+     * @description: This method will return the filed value from the view duplicate screen
+     * @param fieldName: field name for which error message needs to be fetched
+     */
+    public String getFieldValueFromViewDuplicateScreen(String fieldName) {
+        return objPage.getElementText(driver.findElement(By.xpath("//*[@class='tableRowGroup'][contains(.,'" + fieldName + "')]//span")));
+    }
+
+    /**
+     * @description: Clicks on the show more link displayed against the given entry
+     * @param entryDetails: Name of the entry displayed on grid which is to be accessed
+     * @throws Exception
+     */
+    public void clickShowMoreLinkOnRecentlyViewedGrid(String entryDetails) throws Exception {
+        Thread.sleep(3000);
+        String xpathStr = "//table//tbody/tr//th//a[text() = '"+ entryDetails +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
+        WebElement modificationsIcon = locateElement(xpathStr, 60);
+        objPage.clickAction(modificationsIcon);
+    }
+    
 }

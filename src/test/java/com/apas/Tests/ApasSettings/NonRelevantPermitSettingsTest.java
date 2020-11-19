@@ -31,10 +31,10 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 	}
 
-    /*
-	 Below test case will validate that user is not allowed to create duplicate Non Relevant Permit Settings
-	 PreCondition: AT City Code with Active status is already added in Non Relevant Permit Settings
-	 */
+	/*
+     Below test case will validate that user is not allowed to create duplicate Non Relevant Permit Settings
+     PreCondition: AT City Code with Active status is already added in Non Relevant Permit Settings
+     */
 	@Test(description = "SMAB-T398: Validation for Duplicate Non Relevant Permit Settings", groups = {"regression","buildingPermit"},dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void NonRelevantPermitSettings_DuplicateNonRelevantSettingsNotAllowed(String loginUser) throws Exception {
 
@@ -47,14 +47,14 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 		//Step3: Adding a preexisting record
 		ReportLogger.INFO("Adding a new non relevant permit setting record with duplicte values");
 		objPage.Click(objNonRelevantPermitSettingsPage.newButton);
-		objPage.Select(objNonRelevantPermitSettingsPage.cityCodeDrpDown,"AT");
-		objPage.Select(objNonRelevantPermitSettingsPage.statusDrpDown,"Active");
+		objNonRelevantPermitSettingsPage.selectOptionFromDropDown(objNonRelevantPermitSettingsPage.cityCodeDrpDown,"AT");
+		objNonRelevantPermitSettingsPage.selectOptionFromDropDown(objNonRelevantPermitSettingsPage.statusDrpDown,"Active");
 
 		//Step4: Validation of message appearing for duplicate permit
-		String expectedWarningMessage = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
+		String expectedWarningMessage = "Close error dialog\nWe hit a snag.\nYou can't save this record because a duplicate record already exists. To save, use different information.\nView Duplicates";
 
-		softAssert.assertEquals(objNonRelevantPermitSettingsPage.warningMessage.getText(),expectedWarningMessage,"SMAB-T398: Validation for existence of duplicate record message after adding the preexisting record");
-		objPage.Click(objNonRelevantPermitSettingsPage.cancelButton);
+		softAssert.assertEquals(objPage.getElementText(objNonRelevantPermitSettingsPage.pageError),expectedWarningMessage,"SMAB-T398: Validation for existence of duplicate record message after adding the preexisting record");
+		objPage.Click(objPage.getButtonWithText("Cancel"));
 
 		//Logout at the end of the test
 		objApasGenericFunctions.logout();

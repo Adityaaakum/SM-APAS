@@ -94,7 +94,7 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 		objApasGenericFunctions.displayRecords("All Imported E-File Building Permits");
 		Map<String, ArrayList<String>> efileBuildingPermitGridDataMap = objApasGenericFunctions.getGridDataInHashMap(1,1);
 		String efileBuildingPermitNumber = efileBuildingPermitGridDataMap.get("Building Permit Number").get(0);
-		objBuildingPermitPage.clickShowMoreLinkOnRecentlyViewedGrid(efileBuildingPermitNumber);
+		objApasGenericFunctions.clickShowMoreLinkOnRecentlyViewedGrid(efileBuildingPermitNumber);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.noActionAvailableOption);
 		softAssert.assertTrue(objPage.verifyElementVisible(objBuildingPermitPage.noActionAvailableOption),"SMAB-T470: Validation that " + loginUser + " should see the option 'No Action Available' on clicking show more button for efile building permit records");
 		objBuildingPermitPage.openBuildingPermit(efileBuildingPermitNumber);
@@ -109,7 +109,7 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 		objApasGenericFunctions.displayRecords("All Manual Building Permits");
 		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objApasGenericFunctions.getGridDataInHashMap(1,1);
 		String manualBuildingPermitNumber = manualBuildingPermitGridDataMap.get("Building Permit Number").get(0);
-		objBuildingPermitPage.clickShowMoreLinkOnRecentlyViewedGrid(manualBuildingPermitNumber);
+		objApasGenericFunctions.clickShowMoreLinkOnRecentlyViewedGrid(manualBuildingPermitNumber);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.noActionAvailableOption);
 		softAssert.assertTrue(objPage.verifyElementVisible(objBuildingPermitPage.noActionAvailableOption),"SMAB-T470: Validation that " + loginUser + " should see the option 'No Action Available' on clicking show more button for manual building permit records");
 		objBuildingPermitPage.openBuildingPermit(manualBuildingPermitNumber);

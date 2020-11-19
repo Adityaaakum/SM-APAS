@@ -390,7 +390,6 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",buildingPermitNumber,temporaryFile);
 
 		//Step2: Reverting the Approved Import logs if any in the system
-		//step1:Reverting the Approved Import logs if any in the system
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C like '%Atherton%' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
@@ -413,6 +412,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 
 		//Step8: Validating the building permit records should not be visible in the system as it has not been approved yet
 		String xpathBuildingPermit = "//*[@role='option']//*[@title='" + buildingPermitNumber + "']";
+		objPage.Click(objBuildingPermitPage.globalSearchButton);
 		objPage.enter(objBuildingPermitPage.globalSearchListEditBox,buildingPermitNumber);
 		List<WebElement> webElementBuildingPermitBeforeApproved = driver.findElements(By.xpath(xpathBuildingPermit));
 		softAssert.assertTrue(webElementBuildingPermitBeforeApproved.size() == 0,"SMAB-T661: Validating that building permit " + buildingPermitNumber + " should not be visible in the system as its not approved yet");
@@ -427,6 +427,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
 
 		//Step11: Validating the building permit records should be visible in the system as it has been approved
+		objPage.Click(objBuildingPermitPage.globalSearchButton);
 		objPage.enter(objBuildingPermitPage.globalSearchListEditBox,buildingPermitNumber);
 		objPage.waitUntilElementIsPresent(xpathBuildingPermit,10);
 		List<WebElement> webElementBuildingPermitAfterApproved = driver.findElements(By.xpath(xpathBuildingPermit));

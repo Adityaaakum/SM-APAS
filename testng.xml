@@ -13,11 +13,13 @@
 			</run>
 		</groups>
 		<classes>
-			 <class name="com.apas.Tests.BuildingPermit.BuildingPermit_ManualCreationAndProcessing_Test">
+			 <class name="com.apas.Tests.BuildingPermit.BuildingPermit_ImportLogsAndImportTransanctionLogs_Test">
+
 				 <methods>
-					 <include name="BuildingPermit_ManualCreateNewBuildingPermitWithDataValidations"/>
+					 <include name="ImportLogsAndTransactions_BuildingPermitSanMateo"/>
 				 </methods>
 			 </class>
+
 		</classes>
 	</test>
 </suite>
