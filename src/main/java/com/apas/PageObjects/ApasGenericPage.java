@@ -279,7 +279,7 @@ public class ApasGenericPage extends Page {
 		}
 
 		scrollToElement(webElement);
-		Click(webElement);
+		javascriptClick(webElement);
 
 		waitUntilElementIsPresent(xpathDropDownOption, 30);
 		WebElement drpDwnOption = driver.findElement(By.xpath(xpathDropDownOption));

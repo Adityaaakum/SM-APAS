@@ -111,7 +111,7 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//span[text() = 'BPP Settings']//parent::span[text() = 'View All']")
 	public WebElement viewAllBppSettings;
 
-	@FindBy(xpath = "//span[text() = 'BPP Composite Factors Settings']//parent::span[text() = 'View All']")
+	@FindBy(xpath = "//span[text()='BPP Composite Factors Settings']//ancestor::lst-common-list//following-sibling::a//span[text() = 'View All']")
 	public WebElement viewAllBppCompositeFactorSettings;
 
 	@FindBy(xpath = "//span[text() = 'Name']//parent::label//following-sibling::input")
@@ -170,9 +170,10 @@ public class BppTrendSetupPage extends Page {
 		clickAction(dropDownIconBppCompFactorSetting);
 		clickAction(newBtnToCreateEntry);
 
-		enterFactorValue(minGoodFactorValue);
-		enterPropertyType(propertyType);
-		Click(saveBtnInBppSettingPopUp);
+		enter("Minimum Good Factor",minGoodFactorValue);
+		objApasGenericPage.selectOptionFromDropDown("Property Type",propertyType);
+		Click(objPage.getButtonWithText("Save"));
+
 		Thread.sleep(1000);
 	}
 
@@ -620,7 +621,7 @@ public class BppTrendSetupPage extends Page {
 	 */
 	public void clickOnEntryNameInGrid(String rollYear) throws Exception {
 		String xpath = "//tbody//tr//th//a[contains(text(), '"+ rollYear +"')]";
-		Click(locateElement(xpath, 20));
+		Click(waitUntilElementIsPresent(20,xpath));
 	}
 	
 	/**
