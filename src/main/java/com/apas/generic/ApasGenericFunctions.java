@@ -615,4 +615,5 @@ public class ApasGenericFunctions extends TestBase {
         waitForElementToDisappear(objApasGenericPage.successAlert,10);
         return messageOnAlert;
     }
+
 }
