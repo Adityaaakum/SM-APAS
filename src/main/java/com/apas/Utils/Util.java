@@ -7,6 +7,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -312,6 +316,32 @@ public class Util {
 		}
 		Thread.sleep(5000);
 		return new File(filePath + ".zip");
+	}
+
+	/***
+	 * function: this method converts current ISt date to specified timezone date
+	 * @param string= fromZone
+	 * @param string2= tozone
+	 * @param string3= dateformat
+	 * @return
+	 */
+	
+	
+	public String convertCurrentDateISTtoPST(String fromZone, String toZone, String dateFormat) {
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+	 	ZoneId fromTimeZone = ZoneId.of(fromZone);    //Source timezone
+        ZoneId toTimeZone = ZoneId.of(toZone);  //Target timezone
+         
+        LocalDateTime today = LocalDateTime.now();          //Current time
+        
+        ZonedDateTime currentISTime = today.atZone(fromTimeZone);       
+        ZonedDateTime currentETime = currentISTime.withZoneSameInstant(toTimeZone);
+        
+        String converted=formatter.format(currentETime);
+        return converted;
+
+
 	}
 
 }

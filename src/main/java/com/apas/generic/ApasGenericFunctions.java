@@ -329,7 +329,7 @@ public class ApasGenericFunctions extends TestBase {
         return element;
     }
 
-    public void selectFromDropDown(WebElement element, String value) throws Exception {
+    public void selectFromDropDown(Object element, String value) throws Exception {
         objApasGenericPage.selectOptionFromDropDown(element, value);
     }
 
@@ -384,7 +384,7 @@ public class ApasGenericFunctions extends TestBase {
      * @throws Exception
      * @Description: This method is to edit(enter) a record by clicking on the pencil icon and save it(field level edit)
      */
-    public void editAndInputFieldData(String fieldName, WebElement field, String data) throws Exception {
+    public void editAndInputFieldData(String fieldName, Object field, String data) throws Exception {
 //        objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'Edit " + fieldName + "')]/ancestor::button");
         if (field == null){
             field = driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit " + fieldName + "')]"));
