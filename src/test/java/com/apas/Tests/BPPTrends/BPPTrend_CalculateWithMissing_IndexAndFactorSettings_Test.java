@@ -105,7 +105,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		//Step5: Navigating to BPP Trend page and selecting given roll year
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Navigating to BPP Trends page **");
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
-		
+
 		String rollYear = Integer.toString(year);
 		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
@@ -116,10 +116,10 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		List<String> allTables = new ArrayList<String>();
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesOutsideMoreTab").split(",")));
 		allTables.addAll(Arrays.asList(CONFIG.getProperty("compositeTablesUnderMoreTab").split(",")));
-		
+
 		//String tableNamesUnderMoreTab = CONFIG.getProperty("compositeTablesUnderMoreTab");
 		String tableName;
-		
+
 		//Step7: Iterating over the given tables to validate error message on calculate click
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Validating error messages on Calculate button click when Maximum Equipment Index Factor is missing **");
 		for (int i = 0; i < allTables.size() - 1; i++) {
@@ -130,11 +130,11 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 			//objBppTrnPg.clickOnTableOnBppTrendPage(allTables.get(i), isTableUnderMoreTab);
 			Thread.sleep(1000);
 			objBppTrnPg.clickOnTableOnBppTrendPage(allTables.get(i));
-			
+
 			//Click calculate button for given tables individually
 			objBppTrnPg.isCalculateBtnVisible(30, tableName);
 			objBppTrnPg.clickCalculateBtn(tableName);
-			
+
 			//Retrieve and return the error message displayed in pop up on clicking calculate button
 			String actErrorMessage = objBppTrnPg.waitForErrorPopUpMsgOnCalculateClick(20);
 			softAssert.assertContains(actErrorMessage, "Maximum Equipment index factor must be specified", "SMAB-T192: Error message on triggering calculation with missing calculation variables(Max. Equip. Index Factor) for "+ tableName + " table");
@@ -142,7 +142,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 				softAssert.assertContains(actErrorMessage, "Maximum Equipment index factor must be specified", "SMAB-T163: Error message encountered when triggered calculation with missing calculation variables(Max Index Factor and Min Good Factor)");
 			}
 		}
-		
+
 		Thread.sleep(2000);
 		
 		//Step8: Opening the BPP Trend module and set All as the view option in grid
@@ -214,7 +214,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
 		
 		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
-		objBppTrnPg.javascriptClick(objBppTrendSetupPage.newBtnToCreateEntry);
+		objBppTrnPg.clickAction(objBppTrendSetupPage.newBtnToCreateEntry);
 
 		objBppTrendSetupPage.enter(objBppTrendSetupPage.minGoodFactorEditBox,"10");
 		objBuildPermit.selectOptionFromDropDown("Property Type","Commercial");
@@ -232,8 +232,8 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
 		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
 		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateCompositeFactorEntry, 20);
+		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateCompositeFactorEntry));
 
 		objBppTrendSetupPage.enter(objBppTrendSetupPage.minGoodFactorEditBox,"9");
 		objBuildPermit.selectOptionFromDropDown("Property Type","Industrial");
@@ -251,8 +251,8 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
 		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
 		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
-		objBppTrnPg.clickAction(objBppTrendSetupPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateCompositeFactorEntry, 20);
+		objBppTrnPg.clickAction(objBppTrendSetupPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateCompositeFactorEntry));
 
 		objBppTrendSetupPage.enter(objBppTrendSetupPage.minGoodFactorEditBox,"11");
 		objBuildPermit.selectOptionFromDropDown("Property Type","Agricultural");
@@ -270,8 +270,8 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
 		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
 
-		objBppTrendSetupPage.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
-		objBppTrendSetupPage.clickAction(objBppTrendSetupPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
+		objBppTrendSetupPage.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateCompositeFactorEntry, 20);
+		objBppTrendSetupPage.clickAction(objBppTrendSetupPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateCompositeFactorEntry));
 
 		objBppTrendSetupPage.enter(objBppTrendSetupPage.minGoodFactorEditBox,"10");
 		objBuildPermit.selectOptionFromDropDown("Property Type","Construction");

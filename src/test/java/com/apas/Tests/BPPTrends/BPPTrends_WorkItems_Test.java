@@ -603,15 +603,15 @@ public class BPPTrends_WorkItems_Test extends TestBase {
      **/
     @Test(description = "SMAB-T1736,SMAB-T1947: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = true)
     public void BPPTrends_PerformCalculations_WorkItemGeneration(String loginUser) throws Exception {
-        //Step1: Validate reminder work item creation and the work item flow for approved file
-        BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
-
-        //Step2: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objApasGenericFunctions.login(loginUser);
-
-        //Step3: Delete the existing WI from system before importing files
+        //Step1: Delete the existing WI from system before importing files
         String query = "select id from Work_Item__c where Reference__c = 'BPP Composite Factors'";
         objSalesforceAPI.delete("Work_Item__c", query);
+
+        //Step2: Validate reminder work item creation and the work item flow for approved file
+        BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
+
+        //Step3: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
+        objApasGenericFunctions.login(loginUser);
 
         //Step4: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -756,6 +756,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
         BPPTrends_BOEValuation_WorkItemImportAndApprove(loginUser,true);
         BPPTrends_CAAValuation_WorkItemImportAndApprove(loginUser,true);
+        Thread.sleep(15000);
 
         //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objApasGenericFunctions.login(loginUser);
