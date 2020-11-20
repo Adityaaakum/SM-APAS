@@ -22,11 +22,11 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	ApasGenericFunctions objApasGenericFunctions;
 	Util objUtils;
 	
-	String dvLowIncomeExemptionAmount = "DV Low Income Exemption Amount";
-	String dvBasicExemptionAmount = "DV Basic Exemption Amount";
-	String dvLowIncomeHouseholdLimit = "DV Low Income Household Limit";
-	String dvAnnualDueDate = "DV Annual Due Date";
-	String dvAnnualDueDate2 = "DV Annual Due Date 2";
+	public String dvLowIncomeExemptionAmount = "DV Low Income Exemption Amount";
+	public String dvBasicExemptionAmount = "DV Basic Exemption Amount";
+	public String dvLowIncomeHouseholdLimit = "DV Low Income Household Limit";
+	public String dvAnnualDueDate = "DV Annual Due Date";
+	public String dvAnnualDueDate2 = "DV Annual Due Date 2";
 
 	public RealPropertySettingsLibrariesPage(RemoteWebDriver driver) {
 		super(driver);
@@ -256,7 +256,8 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		 */
 		public WebElement getRPSLRecord(String rollYear) throws Exception {		
 			Thread.sleep(2000);
-			String xpathStr = "//a[@title='Exemption Limits - " + rollYear + "']";
+			//String xpathStr = "//a[@title='Exemption Limits - " + rollYear + "']";
+			String xpathStr = "//span[contains(@class,'slds-grid slds-grid--align-spread')]/a[@title='Exemption Limits - " + rollYear + "']";
 			return locateElement(xpathStr, 30);
 		}	 
 }

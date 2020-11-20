@@ -222,7 +222,7 @@ public class ValueAdjustmentsPage extends Page {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Settings']//parent::div//following-sibling::div//a")
     public WebElement rollYearSettingsLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//button[text() = 'Edit']")
+	@FindBy(xpath = "//div[contains(@class,'oneRecordHomeFlexipage2Wrapper')]//button[text() = 'Edit']")
     public WebElement editButton;
 	
 	@FindBy(xpath = "//label//span[text()='Total Annual Household Income']/../../input")
@@ -279,10 +279,10 @@ public class ValueAdjustmentsPage extends Page {
 	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Roll Year Low Income Late Penalty 2']//parent::div//following-sibling::lightning-helptext/following-sibling::div//lightning-formatted-number")
     public WebElement vaRollYearLowIncomeLatePenalty2Label;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Name']")
+	@FindBy(xpath = "//div[@class='test-id__field-label-container slds-form-element__label no-utility-icon']//span[text()='Name']")
     public WebElement vAnameLabel;
 	
-	@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//span[text()='Name']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[@class='test-id__field-label-container slds-form-element__label no-utility-icon']//span[text()='Name']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement vAnameValue;
 	
 	@FindBy(xpath = "//div[contains(@role,'listitem')]//span[text()='Start Date']//parent::div//parent::div[contains(@class,'readonly')]")
