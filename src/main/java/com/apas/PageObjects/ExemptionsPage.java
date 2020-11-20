@@ -157,8 +157,9 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//label[contains(.,'Telephone')]/following::input[1]")
 	public WebElement claimantTelephone;
 
-	@FindBy(xpath = "//span[contains(.,'Qualification?')]/following-sibling::div[@class='uiMenu']")
-	public WebElement qualification;
+	//@FindBy(xpath = "//span[contains(.,'Qualification?')]/following-sibling::div[@class='uiMenu']")
+	//public WebElement qualification;
+	public String qualification="Qualification?";
 	
 	@FindBy(xpath = "//span[contains(.,'Reason for Not Qualified')]/following-sibling::div[@class='uiMenu']")
 	public WebElement reasonNotQualified;
@@ -582,8 +583,8 @@ public void createExemption(Map<String, String> dataMap) throws Exception {
 	Thread.sleep(2000);
 	Click(waitForElementToBeClickable(newExemptionButton));
 	Thread.sleep(2000);
-	waitForElementToBeClickable(apn);
-	waitForElementToBeClickable(claimantName);
+	waitForElementToBeClickable(apn,10);
+	waitForElementToBeClickable(claimantName,10);
 	enterExemptionData(dataMap);
 	ReportLogger.INFO("Click 'Save' button to save the details entered in Exemption record");
 	saveExemptionRecord();
