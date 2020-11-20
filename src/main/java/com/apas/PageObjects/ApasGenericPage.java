@@ -295,7 +295,7 @@ public class ApasGenericPage extends Page {
 		} else{
 			webElement = (WebElement) element;
 			//xpathDropDownOption = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-			xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain')]//*[text() = '" + value + "' or @title= '" + value + "']";
+			xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain')or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input')]//*[text() = '" + value + "' or @title= '" + value + "']";
 		}
 
 		scrollToElement(webElement);
@@ -307,7 +307,6 @@ public class ApasGenericPage extends Page {
 		waitForElementToBeClickable(drpDwnOption, 10);
 		javascriptClick(drpDwnOption);
 	}
-	
 	/**
 	 * Description: This method will fetch the current URL and process it to get the Record Id
 	 * @param driver: Driver Instance
