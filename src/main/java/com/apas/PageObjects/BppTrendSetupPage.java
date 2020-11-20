@@ -55,7 +55,7 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[text() = 'BPP Percent Good Factors']")
 	public WebElement bppPropertyGoodFactorsTab;
 
-	@FindBy(xpath = "//div[@class = 'windowViewMode-normal oneContent active lafPageHost']//a[text() = 'BPP Percent Good Factors']//ancestor::lightning-tab-bar//following-sibling::slot//table")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[text() = 'BPP Percent Good Factors']//ancestor::lightning-tab-bar//following-sibling::slot//table")
 	public WebElement bppPercentGoodFactorsTableSection;
 
 	@FindBy(xpath = "//div[contains(@class, 'column region-main')]//li[not(contains(@style,'visibility: hidden'))]//button[@title = 'More Tabs']")
@@ -79,8 +79,11 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a")
 	public WebElement dropDownIconBppCompFactorSetting;
 
-	@FindBy(xpath = "//a[@title = 'New']")
+	@FindBy(xpath = "//div[contains(@class,'actionMenu')]//a[@title = 'New']")
 	public WebElement newBtnToCreateEntry;
+
+	@FindBy(xpath = "(//div[contains(@class,'actionMenu')])[2]//a[@title = 'New']")
+	public WebElement newBtnToCreateCompositeFactorEntry;
 
 	@FindBy(xpath = "//span[contains(text(), 'Roll Year')]//parent::label//following-sibling::div//input[contains(@class, 'uiInputTextForAutocomplete')]")
 	public WebElement rollYearTxtBox;
