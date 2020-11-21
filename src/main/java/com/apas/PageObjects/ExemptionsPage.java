@@ -58,10 +58,8 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title = 'New']")
 	public WebElement newExemptionButton;
 
-	//@FindBy(xpath = "//input[@title='Search Parcels']")
 	public String apn="APN";
 
-	//@FindBy(xpath = "//label[contains(.,'Date Application Received')]/following::input[1]")
 	public String dateApplicationReceived="Date Application Received";
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Date Application Received')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
@@ -70,31 +68,22 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Grace End Date')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement graceEndDateExemptionDetails;
 	
-	//@FindBy(xpath = "//input[@title='Search Assessees']")
 	public String claimantName="Claimant's Name";
 
-	//@FindBy(xpath = "//label[contains(.,\"Claimant's SSN\")]/following::input[1]")
 	public String claimantSSN="Claimant's SSN";
 
-	//@FindBy(xpath = "//label[contains(.,\"Spouse's Name\")]/following::input[1]")
 	public String spouseName="Spouse's Name";
 
-	//@FindBy(xpath = "//label[contains(.,\"Spouse's SSN\")]/following::input[1]")
 	public String spouseSSN="Spouse's SSN";
 
-	//@FindBy(xpath = "//span[@data-aura-class='uiPicklistLabel' and contains(.,'Unmarried Spouse of Deceased Veteran?')]/following::div[1]//div/a")
 	public String unmarriedSpouseOfDisabledVeteran="Unmarried Spouse of Deceased Veteran?";
 
-	//@FindBy(xpath = "//label[contains(.,'Date of Death of Veteran')]/following::input[1]")
 	public String dateOfDeathOfVeteran="Date of Death of Veteran";
 
-	//@FindBy(xpath = "//label[contains(.,\"Veteran's Name\")]/following::input[1]")
 	public String veteranName="Veteran's Name";
 
-	//@FindBy(xpath = "//label[contains(.,\"Veteran's SSN\")]/following::input[1]")
 	public String veteranSSN="Veteran's SSN";
 
-	//@FindBy(xpath = "//label[contains(.,'Date Acquired Property')]/following::input[1]")
 	public String dateAquiredProperty="Date Acquired Property";
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Date Acquired Property')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
@@ -103,13 +92,10 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//li[@title='Details']//a[@data-tab-value='detailTab']")
 	public WebElement exemptionDetailsTab;
 
-	//@FindBy(xpath = "//label[contains(.,'Date Occupied/Intend to Occupy Property')]/following::input[1]")
 	public String dateOccupyProperty="Date Occupied/Intend to Occupy Property";
 	
-	//@FindBy(xpath = "//label[contains(.,'Date of Notice of 100% Rating')]/following::input[1]")
 	public String dateOfNoticeOfRating="Date of Notice of 100% Rating";
 	
-	//@FindBy(xpath = "//label[contains(.,'Date Acquired Property')]/following::input[1]")
 	public String dateAcquiredProperty="Date Acquired Property";
 	
 	@FindBy(xpath = "//button[@title='Save']")
@@ -118,25 +104,18 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Date Occupied/Intend to Occupy Property')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement dateOccupyPropertyExemptionDetails;
 
-	@FindBy(xpath = "//span[@data-aura-class='uiPicklistLabel' and contains(.,'DV Exemption on Prior Residence')]/following::div[1]//div/a")
-	public WebElement dvExemptionOnPriorResidence;
+	public String dvExemptionOnPriorResidence="DV Exemption on Prior Residence";
 
-	//@FindBy(xpath = "//label[contains(.,'Date Moved From Prior Residence')]/following::input[1]")
 	public String dateMoveFromProprResidence="Date Moved From Prior Residence";
 
-	//@FindBy(xpath = "//label[contains(.,'Prior Residence Street Address')]/following::input[1]")
 	public String priorResidenceStreetAddress="Prior Residence Street Address";
 
-	//@FindBy(xpath = "//label[contains(.,'Prior Residence City')]/following::input[1]")
 	public String priorResidenceCity="Prior Residence City";
 
-	@FindBy(xpath = "//span[@data-aura-class='uiPicklistLabel' and contains(.,'Prior Residence State')]/following::div[1]//div/a")
-	public WebElement priorResidenceState;
+	public String priorResidenceState="Prior Residence State";
 
-	//@FindBy(xpath = "//label[contains(.,'Prior Residence County')]/following::input[1]")
 	public String priorResidenceCounty="Prior Residence County";
 
-	//@FindBy(xpath = "//label[contains(.,'Effective Date of 100% USDVA Rating')]/following::input[1]")
 	public String effectiveDateOfUSDVA="Effective Date of 100% USDVA Rating";
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Effective Date of 100% USDVA Rating')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
@@ -148,30 +127,21 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//li[2]//a[contains(.,'All')]")
 	public WebElement allView;
 	
-	@FindBy(xpath = "//label[contains(.,'Date of Notice of 100% Rating')]/following::input[1]")
-	public WebElement dateOfNotice;
+	public String dateOfNotice="Date of Notice of 100% Rating";
 
-	@FindBy(xpath = "//label[contains(.,'Email Address')]/following::input[1]")
-	public WebElement claimanatEmailAddress;
+	public String claimanatEmailAddress="Claimant's Email Address";
 
-	@FindBy(xpath = "//label[contains(.,'Telephone')]/following::input[1]")
-	public WebElement claimantTelephone;
+	public String claimantTelephone="Claimant's Telephone #";
 
-	//@FindBy(xpath = "//span[contains(.,'Qualification?')]/following-sibling::div[@class='uiMenu']")
-	//public WebElement qualification;
 	public String qualification="Qualification?";
 	
-	@FindBy(xpath = "//span[contains(.,'Reason for Not Qualified')]/following-sibling::div[@class='uiMenu']")
-	public WebElement reasonNotQualified;
+	public String reasonNotQualified="Reason for Not Qualified";
 	
-	@FindBy(xpath = "//label[contains(.,'Not Qualified Detail')]/following-sibling::textarea")
-	public WebElement notQualifiedDetail;
+	public String notQualifiedDetail="Not Qualified Detail";
 
-	@FindBy(xpath = "//span[@data-aura-class='uiPicklistLabel' and contains(.,'End Rating Reason')]/following::div[1]//div/a")
-	public WebElement endRatingReason;
-	
-	@FindBy(xpath = "//label[contains(.,'End Date of Rating')]/following::input[1]")
-	public WebElement endDateOfRating;
+	public String endRatingReason="End Rating Reason";
+		
+	public String endDateOfRating="End Date of Rating";
 
 	@FindBy(xpath = "//div[text()='Basis for Claim']//following::button[@title='Move selection to Chosen'][1]")
 	public WebElement basisForClaim;
@@ -224,6 +194,9 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath="//li[@class='form-element__help']")
 	public WebElement fieldErrorMsg;
 	
+	@FindBy(xpath="//div[contains(@id,'error-message')]")
+	public WebElement fieldErrorMessage;
+	
 	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(text(),'Exemption')]//following-sibling::slot/slot/lightning-formatted-text")
 	public WebElement newExemptionNameAftercreation;
 	
@@ -242,17 +215,13 @@ public class ExemptionsPage extends ApasGenericPage {
 	
 	//////////////////////////New locators////////////////////////////////
 	
-	@FindBy(xpath = "//label[contains(.,\"Veteran's Name\")]/following::input[1]")
-	public WebElement nameOfVeteran;
+	public String nameOfVeteran="Veteran's Name";
 
-	@FindBy(xpath = "//label[contains(.,'Email Address')]/following::input[1]")
-	public WebElement emailAddress;
+	public String emailAddress="Email Address";
 
-	@FindBy(xpath = "//label[contains(.,'Telephone')]/following::input[1]")
-	public WebElement telephone;
-	
-	@FindBy(xpath = "//label[contains(.,'Date Occupied/Intend to Occupy Property')]/following::input[1]")
-	public WebElement dateOccupiedProperty;
+	public String telephone="Telephone";
+		
+	public String dateOccupiedProperty="Date Occupied/Intend to Occupy Property";
 
 	@FindBy(xpath = "//span[contains(text(),'Blind In Both Eyes')]")
 	public WebElement basisForClaim1;

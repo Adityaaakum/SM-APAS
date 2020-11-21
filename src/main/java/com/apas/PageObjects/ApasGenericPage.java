@@ -88,7 +88,10 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//button[@title='Close this window']")
 	public WebElement crossButton;
-
+	
+	@FindBy(xpath = "//button[@title='Close error dialog']")
+	public WebElement crossIcon;
+	
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
 	public WebElement successAlert;
 	
