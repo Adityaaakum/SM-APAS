@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class BuildingPermit_WorkItems_Test extends TestBase {
+public class BuildingPermit_WorkItems extends TestBase {
 
     RemoteWebDriver driver;
     Page objPage;
