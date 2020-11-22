@@ -517,12 +517,7 @@ public void updateFieldValue(String fieldType, String fieldName, String fieldVal
 
 
 public WebElement findElem(String fieldType, String fieldName) throws Exception {
-	Thread.sleep(1000);
-	String xpathStr = "";
-	if(fieldType.equals("Date")) xpathStr = "//label[contains(.,'" + fieldName + "')]/following::input[1]";
-	if(fieldType.equals("Dropdown")) xpathStr = "//span[contains(.,'" + fieldName + "')]/following-sibling::div[@class='uiMenu']";
-	WebElement elemLocator = locateElement(xpathStr, 30);
-	return elemLocator;
+	return objPage.getWebElementWithLabel(fieldName);
 }
 
 /**
@@ -539,7 +534,7 @@ public void saveExemptionRecord() throws Exception {
 public void editExemptionRecord() throws Exception {
 	ReportLogger.INFO("Click 'Edit' button to update it");
 	Click(editButton);
-	Thread.sleep(1000);
+	Thread.sleep(2000);
 }
 
 /**
@@ -704,16 +699,7 @@ public String fetchAssesseeName() {
 	 * @param fieldName: field name for which error message needs to be fetched
 	 */
 	public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
-		String xpath;
-		if (fieldName.contains("Claimant's")){
-			 xpath = "//div[@role='listitem']//span[text()=" + "\"" + fieldName + "\"" + "]/../../../ul[contains(@data-aura-class,'uiInputDefaultError')]";
-		}else if(fieldName.equals("Basis for Claim")){
-			 xpath = "//span[@class='slds-has-error slds-form-element__help']";
-		}else{
-			 xpath = "//div[@role='listitem']//span[text()='" + fieldName + "']/../../../ul[contains(@data-aura-class,'uiInputDefaultError')]";
-		}
-		waitUntilElementIsPresent(xpath,20);
-		return getElementText(driver.findElement(By.xpath(xpath)));
+		return apasGenericObj.getIndividualFieldErrorMessage(fieldName);
 	}
 
 /**
