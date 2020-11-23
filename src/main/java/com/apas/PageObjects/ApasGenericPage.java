@@ -272,6 +272,7 @@ public class ApasGenericPage extends Page {
 		} else{
 			webElement = (WebElement) element;
 			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
+			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
 		}
 		
 		enter(webElement, value);
@@ -298,9 +299,8 @@ public class ApasGenericPage extends Page {
             xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
         } else{
             webElement = (WebElement) element;
-            xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain')]//*[text() = '" + value + "' or @title= '" + value + "']";
+            xpathDropDownOption="//div[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";	
         }
-
 
 		scrollToElement(webElement);
 		javascriptClick(webElement);

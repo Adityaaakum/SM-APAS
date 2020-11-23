@@ -746,8 +746,9 @@ public class Page {
 	 */
 
 	public void clearFieldValue(Object elem) throws Exception {
+
 		WebElement element=waitForElementToBeClickable(15, elem);
-		((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", elem);
+		((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", element);
 		element.clear();
 		Thread.sleep(2000);
 	}

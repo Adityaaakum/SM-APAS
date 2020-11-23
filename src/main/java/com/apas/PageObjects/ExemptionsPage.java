@@ -232,7 +232,8 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[text()='Basis for Claim']//following::button[@title='Move selection to Chosen'][1]")
 	public WebElement basisForClaimButton;
 	
-	@FindBy(xpath = "//button[text() = 'Edit']")
+	//@FindBy(xpath = "//button[text() = 'Edit']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@name='Edit']")
 	public WebElement editButton;
 	
 	@FindBy(xpath = "//div[@role='menu']//li[@class='uiMenuItem']/a[@title = 'Edit']")
