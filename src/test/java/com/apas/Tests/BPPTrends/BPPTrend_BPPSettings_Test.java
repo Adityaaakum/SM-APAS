@@ -119,23 +119,10 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		objPage.enter("Maximum Equipment index Factor","1000");
 		objPage.Click(objPage.getButtonWithText("Save"));
 		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
-		softAssert.assertEquals(actualErrorMsg,expectedErrorMsg+": 1000","SMAB-T134: Verify Error message for factor value: 1000");
+		softAssert.assertContains(actualErrorMsg,expectedErrorMsg+": 1000","SMAB-T134: Verify Error message for factor value: 1000");
 		
-//		//Step12: Validate error message with factor values within specified range : 99.5
-//		objPage.enter("Maximum Equipment index Factor","99.5");
-//		objPage.Click(objPage.getButtonWithText("Save"));
-//		Thread.sleep(2000);
-//		String factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();
-//		String actualValue = factorValueSaved.substring(0, factorValueSaved.length()-1);
-//		String expectedValue = String.valueOf(Math.round(Float.parseFloat("99.5")));
-//		softAssert.assertEquals(actualValue,expectedValue,"SMAB-T134: Verify entered value: 99.5 is saved as "+expectedValue);
-//
+
 		//Step13: Validate error message with factor values within specified range : 124.4
-//		objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
-//		Thread.sleep(1000);
-//		objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
-//		objPage.Click(objPage.getButtonWithText("Edit"));
-//		Thread.sleep(1000);
 		objPage.enter("Maximum Equipment index Factor","124.4");
 		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(2000);
@@ -145,9 +132,6 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		softAssert.assertEquals(actualValue,expectedValue,"SMAB-T134: Verify entered value: 124.4 is saved as "+expectedValue);
 
 		//Step14: Validate error message with factor values within specified range : 160
-//		objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
-//		Thread.sleep(1000);
-//		objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
 		objPage.Click(objPage.getButtonWithText("Edit"));
 		Thread.sleep(1000);
 		objPage.enter("Maximum Equipment index Factor","160");
