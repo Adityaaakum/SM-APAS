@@ -31,7 +31,6 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 	String rollYear;
 	ApasGenericPage objApasGenericPage;
 	BppTrendSetupPage objBppTrendSetupPage;
-	BuildingPermitPage objBuildPermit;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -43,7 +42,6 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		objBppTrendPage = new BppTrendPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		softAssert = new SoftAssertion();
-		objBuildPermit = new BuildingPermitPage(driver);
 		// Executing all the methods for Roll year: 2019
 		rollYear = "2019";
 		objApasGenericPage = new ApasGenericPage(driver);
@@ -178,7 +176,7 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		Thread.sleep(1000);
 		ReportLogger.INFO("Validating error message on updating Min. Equipment Index Factor Value for approved tables");
 		String expectedErrorMessage = "insufficient access rights on object id";
-		String actualErrorMessage = objPage.getElementText(objBuildPermit.pageError);
+		String actualErrorMessage = objPage.getElementText(objApasGenericPage.pageError);
 		softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T187: Validating error message on editing minimum equip. index value when calculations are approved");
 		objBppTrendPage.Click(objPage.getButtonWithText("Cancel"));
 
