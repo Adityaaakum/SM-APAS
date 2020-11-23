@@ -18,6 +18,9 @@ import java.util.concurrent.TimeUnit;
 
 import com.apas.Reports.ReportLogger;
 
+import com.apas.Utils.Util;
+import com.apas.config.testdata;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -45,6 +48,7 @@ public class ApasGenericFunctions extends TestBase {
     LoginPage objLoginPage;
     ApasGenericPage objApasGenericPage;
     SalesforceAPI objSalesforceAPI;
+    Util objUtil = new Util();
 
     public ApasGenericFunctions(RemoteWebDriver driver) {
         this.driver = driver;
@@ -173,11 +177,16 @@ public class ApasGenericFunctions extends TestBase {
      */
     public void globalSearchRecords(String searchString) throws Exception {
         ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
-        objPage.Click(objApasGenericPage.globalSearchButton);
-        objPage.enter(objApasGenericPage.globalSearchListEditBox,searchString);
-        String xpath = "//*[@role='option']//span[@title = '" + searchString + "']";
-        objPage.waitUntilElementIsPresent(xpath,5);
-        objPage.Click(driver.findElement(By.xpath(xpath)));
+        if (System.getProperty("region").toUpperCase().equals("E2E")){
+            WebElement element  = driver.findElement(By.xpath("//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input"));
+            objApasGenericPage.searchAndSelectFromDropDown(element, searchString);
+        }else{
+            objPage.Click(objApasGenericPage.globalSearchButton);
+            objPage.enter(objApasGenericPage.globalSearchListEditBox,searchString);
+            String xpath = "//*[@role='option']//span[@title = '" + searchString + "']";
+            objPage.waitUntilElementIsPresent(xpath,5);
+            objPage.Click(driver.findElement(By.xpath(xpath)));
+        }
         Thread.sleep(5000);
     }
 
@@ -212,7 +221,7 @@ public class ApasGenericFunctions extends TestBase {
      * @description: This method will return the value of the field passed in the parameter from the currently open page
      */
     public String getFieldValueFromAPAS(String fieldName, String sectionName) {
-        String sectionXpath = "//force-record-layout-section[contains(.,'" + sectionName + "')]";
+        String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'" + sectionName + "')]";
         String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName + "']/../..//slot[@slot='outputField']";
 
         String fieldXpath = fieldPath + "//force-hoverable-link//a | " +
@@ -666,5 +675,26 @@ public class ApasGenericFunctions extends TestBase {
         WebElement modificationsIcon = locateElement(xpathStr, 60);
         objPage.clickAction(modificationsIcon);
     }
-    
+
+    /**
+     * This methods copies a file to temporary folder
+     * @param filePath: Path of the file to be copied
+     */
+    public File createTempFile(String filePath) throws IOException {
+        return createTempFile(new File(filePath));
+    }
+
+    /**
+     * This methods copies a file to temporary folder
+     * @param file: file to be copied
+     */
+    public File createTempFile(File file) throws IOException {
+        //Creating a temporary copy of the file to be processed to create unique name
+        String timeStamp = objUtil.getCurrentDate("ddhhmmss");
+        String destFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + timeStamp + "_" + file.getName();
+        File tempFile = new File(destFile);
+        FileUtils.copyFile(file, tempFile );
+        return tempFile;
+    }
+
 }
