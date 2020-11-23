@@ -212,7 +212,7 @@ public class ApasGenericFunctions extends TestBase {
      * @description: This method will return the value of the field passed in the parameter from the currently open page
      */
     public String getFieldValueFromAPAS(String fieldName, String sectionName) {
-        String sectionXpath = "//force-record-layout-section[contains(.,'" + sectionName + "')]";
+        String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'" + sectionName + "')]";
         String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName + "']/../..//slot[@slot='outputField']";
 
         String fieldXpath = fieldPath + "//force-hoverable-link//a | " +
@@ -395,7 +395,7 @@ public class ApasGenericFunctions extends TestBase {
     	objPage.Click(driver.findElement(By.xpath(xpath)));
     	Thread.sleep(2000);
         objPage.enter(field, data);
-        objPage.Click(ExemptionsPage.saveButton);
+        objPage.Click(objApasGenericPage.saveButton);
         Thread.sleep(4000);
         
     }
