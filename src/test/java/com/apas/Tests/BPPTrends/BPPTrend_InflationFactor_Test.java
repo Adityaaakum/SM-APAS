@@ -151,8 +151,8 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		//Step8: Validating the error message on clicking edit button
 		objBppTrendSetupPage.enter("CPI Factor", "0.02");
 		objPage.Click(objPage.getButtonWithText("Save"));
-		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("CPI Factor");
-		expectedErrorMsg = "CPI Factors can't be updated once Submitted for Approval or Approved";
+		actualErrorMsg = objPage.getElementText(objBuildPermit.pageError);
+		expectedErrorMsg = "insufficient access rights on object id";
 		softAssert.assertContains(actualErrorMsg, expectedErrorMsg, "SMAB-T183: Validation for business admin is not able to edit aproved CPI Factor from grid");
 		objPage.Click(objPage.getButtonWithText("Cancel"));
 
