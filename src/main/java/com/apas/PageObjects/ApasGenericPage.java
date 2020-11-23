@@ -265,13 +265,15 @@ public class ApasGenericPage extends Page {
 		
 		WebElement webElement;
 		String xpathDropDownOption;
-		if (element instanceof String) {
-			webElement = getWebElementWithLabel((String) element);
-			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()=\""+element+"\"]/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
-		} else{
-			webElement = (WebElement) element;
-			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
-		}
+		
+        if (element instanceof String) {
+                webElement = getWebElementWithLabel((String) element);
+                xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
+                        
+        } else{
+                webElement = (WebElement) element;
+                xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain')]//*[text() = '" + value + "' or @title= '" + value + "']";
+        }
 
 		enter(webElement, value);
 		WebElement drpDwnOption = locateElement(xpathDropDownOption, 20);
