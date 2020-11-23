@@ -182,7 +182,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		objPage.enter(objValueAdjustmentPage.annualFormReceivedDateEditBox,currentDate);
 		
 		// Step12: Enter Low Income Threshold Amount in Total Annual HouseHold Income field to modify VA
-		objValueAdjustmentPage.totalAnnualHouseholdIncomeEditBox.clear();	
+		//objValueAdjustmentPage.totalAnnualHouseholdIncomeEditBox.clear();	
 		objPage.enter(objValueAdjustmentPage.totalAnnualHouseholdIncomeEditBox,totalAnnualHouseHoldIncome);
 		ReportLogger.INFO("Modifying Determination of VA from 'Basic' to 'Low-Income'");	
 
@@ -267,9 +267,9 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		softAssert.assertTrue(detValueFound, "SMAB-T1266: Verify 'Not Qualified' value does not appear in the Determination field of VAR");
 		
 		//Step7: Verify on editing VAR,the user cannot enter a value into the Penalty Adjustment Reason or Penalty Adjustment Other Reason Detail when the Penalty Amount - User Adjusted is blank or $0
-		objPage.Select(objValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
+		objApasGenericPage.selectOptionFromDropDown(objValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
 		objPage.enter(objValueAdjustmentPage.penaltyAdjustmentOtherReasonDetail, "Testing automation");
-		objPage.Click(objValueAdjustmentPage.saveButton);	
+		objPage.Click(objValueAdjustmentPage.saveButton);
 		
 		String expectedPenaltyAdjstmntErrorMsg = "Penalty Adjustment Reason is not allowed when the Penalty Amount - User Adjusted is blank.";
 		objPage.waitForElementToBeClickable(objValueAdjustmentPage.errMsgPenaltyAdjstmntRsn,10);

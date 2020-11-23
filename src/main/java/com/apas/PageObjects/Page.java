@@ -293,9 +293,9 @@ public class Page {
 	 * @param element          the element
 	 * @param timeoutInSeconds the timeout in seconds
 	 */
-	public void waitForElementToBeClickable(WebElement element, int timeoutInSeconds) {
+	/*public void waitForElementToBeClickable(WebElement element, int timeoutInSeconds) {
 		waitForElementToBeClickable(timeoutInSeconds,element);
-	}
+	}*/
 
 	/**
 	 * Function will wait for an element to come in clickable state on the page.
@@ -654,15 +654,7 @@ public class Page {
 	}
 
 	public WebElement waitForElementToBeClickable(Object object) {
-		WebElement element = null;
-		if (object instanceof String) {
-			element = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(object.toString()))));
-		} else if (object instanceof By) {
-			element = wait.until(ExpectedConditions.elementToBeClickable((By) object));
-		} else {
-			element = wait.until(ExpectedConditions.elementToBeClickable((WebElement) object));
-		}
-		return element;
+		return waitForElementToBeClickable(10, object);
 	}
 
 	public void clickElementOnVisiblity(Object object) {

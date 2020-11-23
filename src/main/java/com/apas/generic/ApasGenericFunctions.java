@@ -396,14 +396,17 @@ public class ApasGenericFunctions extends TestBase {
      * @Description: This method is to edit(enter) a record by clicking on the pencil icon and save it(field level edit)
      */
     public void editAndInputFieldData(String fieldName, Object field, String data) throws Exception {
-//        objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'Edit " + fieldName + "')]/ancestor::button");
-        if (field == null){
-            field = driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit " + fieldName + "')]"));
-        }
+    	
+        String xpath="//div//button/span[contains(.,'Edit " + fieldName + "')]/ancestor::button";
+        Thread.sleep(2000);
+    	objPage.scrollToElement(driver.findElement(By.xpath(xpath)));
+    	Thread.sleep(2000);
+    	objPage.Click(driver.findElement(By.xpath(xpath)));
+    	Thread.sleep(2000);
         objPage.enter(field, data);
         objPage.Click(objApasGenericPage.saveButton);
         Thread.sleep(4000);
-
+        
     }
 
     /**
@@ -564,7 +567,7 @@ public class ApasGenericFunctions extends TestBase {
      * @description: This method will return the error message appeared against the filed name passed in the parameter
      */
     public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
-        String xpath = "//label[text()='" + fieldName + "']/../..//*[contains(@class,'__help')]";
+        String xpath = "//label[text()=\""+fieldName+"\"]/../..//*[contains(@class,'__help')] | //div[text()=\""+fieldName+"\"]//following-sibling::div/..//*[contains(@class,'slds-has-error')]";
         objPage.waitUntilElementIsPresent(xpath,20);
         return objPage.getElementText(driver.findElement(By.xpath(xpath)));
     }

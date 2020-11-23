@@ -138,50 +138,50 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 	 Exemption2 : Without End Date of Rating
 	 **/
 	
-    @Test(description = "SMAB-T526: Validate user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+   @Test(description = "SMAB-T526: Validate user is not able to create duplicate Exemption record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void DisabledVeteran_EditExemptionAndDuplicateErrorValidation(String loginUser) throws Exception {
-    	
-    	//Step1: Login to the APAS application using the user passed through the data provider
-    	objApasGenericFunctions.login(loginUser);
-    		
-    	//Step2: Open the Exemption module
-    	objApasGenericFunctions.searchModule(modules.EXEMPTION);
-    	
-    	//Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and append the Veteran Name with some random number to make it unique
-    	Map<String, String> dataToCreateExemptionWithMandatoryFieldsMapOne = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields1");
-    	dataToCreateExemptionWithMandatoryFieldsMapOne.put("Veteran Name", dataToCreateExemptionWithMandatoryFieldsMapOne.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
+   	
+   	//Step1: Login to the APAS application using the user passed through the data provider
+   	objApasGenericFunctions.login(loginUser);
+   		
+   	//Step2: Open the Exemption module
+   	objApasGenericFunctions.searchModule(modules.EXEMPTION);
+   	
+   	//Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and append the Veteran Name with some random number to make it unique
+   	Map<String, String> dataToCreateExemptionWithMandatoryFieldsMapOne = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields1");
+   	dataToCreateExemptionWithMandatoryFieldsMapOne.put("Veteran Name", dataToCreateExemptionWithMandatoryFieldsMapOne.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 
-    	//Step4: Create Exemption record with some required fields with Veteran details but no End Date of Rating
-    	objExemptionsPage.createExemption(dataToCreateExemptionWithMandatoryFieldsMapOne);
-    	String recordId = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
-    	String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
-  
-    	//Step5: Editing this Exemption record
-    	objExemptionsPage.editExemptionRecord();
-    	
-    	//Step6: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and update the Veteran Name to make it similar to the one in above record
-    	Map<String, String> dataToCreateExemptionWithMandatoryFieldsMapTwo = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields2");
-    	dataToCreateExemptionWithMandatoryFieldsMapTwo.put("Veteran Name", dataToCreateExemptionWithMandatoryFieldsMapOne.get("Veteran Name"));
-    	    
-    	//Step7: Enter End date of Rating and save the record
-    	ReportLogger.INFO("Update some details in the Exemption record i.e. End Date Of Rating :  " + dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Date Of Rating") + " and End Rating Reason : " + dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Rating Reason"));
+   	//Step4: Create Exemption record with some required fields with Veteran details but no End Date of Rating
+   	objExemptionsPage.createExemption(dataToCreateExemptionWithMandatoryFieldsMapOne);
+   	String recordId = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
+   	String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
+ 
+   	//Step5: Editing this Exemption record
+   	objExemptionsPage.editExemptionRecord();
+   	
+   	//Step6: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and update the Veteran Name to make it similar to the one in above record
+   	Map<String, String> dataToCreateExemptionWithMandatoryFieldsMapTwo = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields2");
+   	dataToCreateExemptionWithMandatoryFieldsMapTwo.put("Veteran Name", dataToCreateExemptionWithMandatoryFieldsMapOne.get("Veteran Name"));
+   	    
+   	//Step7: Enter End date of Rating and save the record
+   	ReportLogger.INFO("Update some details in the Exemption record i.e. End Date Of Rating :  " + dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Date Of Rating") + " and End Rating Reason : " + dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Rating Reason"));
 		objExemptionsPage.updateFieldValue("Date", "End Date of Rating", dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Date Of Rating"));
 		objExemptionsPage.updateFieldValue("Dropdown", "End Rating Reason", dataToCreateExemptionWithMandatoryFieldsMapTwo.get("End Rating Reason"));
-    	objExemptionsPage.saveExemptionRecord();
-    		
-    	//Step8: Create another Exemption record with overlapping details but no End Date of Rating
-    	objApasGenericFunctions.searchModule(modules.EXEMPTION);
-    	dataToCreateExemptionWithMandatoryFieldsMapTwo.put("Same APN", apn1);
-    	objExemptionsPage.createExemption(dataToCreateExemptionWithMandatoryFieldsMapTwo);
-    				
-    	//Step9: Validate error message when duplicate Exemption is created for same Veteran with overlapping details	
-    	String expectedDuplicateErrorMsgOnTop = "There seems to be an existing record with overlapping details. Please refer to record with id " + recordId + " for details.";
-    	softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop, "SMAB-T526: Both Exemptions has overlapping dates, hence another Exemption cannot be created for this Veteran");					
-    	ReportLogger.INFO("Click 'Cancel' button to move out of the Exemption screen");
+   	objExemptionsPage.saveExemptionRecord();
+   		
+   	//Step8: Create another Exemption record with overlapping details but no End Date of Rating
+   	objApasGenericFunctions.searchModule(modules.EXEMPTION);
+   	dataToCreateExemptionWithMandatoryFieldsMapTwo.put("Same APN", apn1);
+   	objExemptionsPage.createExemption(dataToCreateExemptionWithMandatoryFieldsMapTwo);
+   				
+   	//Step9: Validate error message when duplicate Exemption is created for same Veteran with overlapping details	
+   	String expectedDuplicateErrorMsgOnTop = "There seems to be an existing record with overlapping details. Please refer to record with id " + recordId + " for details.";
+   	softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.duplicateErrorMsgWithOverlappingDetails)), expectedDuplicateErrorMsgOnTop, "SMAB-T526: Both Exemptions has overlapping dates, hence another Exemption cannot be created for this Veteran");					
+   	ReportLogger.INFO("Click 'Cancel' button to move out of the Exemption screen");
 		objPage.Click(objExemptionsPage.cancelButton);
-    			
-    	objApasGenericFunctions.logout();
-    	
+   			
+   	objApasGenericFunctions.logout();
+   	
 	}
 	
 	/**
@@ -273,6 +273,8 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 		//Step10: Cancel the existing record and then EDIT the Exemption record created initially
 		ReportLogger.INFO("Click 'Cancel' button to move out of the Exemption screen");
 		objPage.Click(objExemptionsPage.cancelButton);
+		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericFunctions.displayRecords("All");
 		softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct(exemptionName, "Edit"),"SMAB-T481: Validate user is able to edit the Exemption record : " + exemptionName);
 		
 		//Step11: Update the Exemption record to mark it as 'Qualified' and save it

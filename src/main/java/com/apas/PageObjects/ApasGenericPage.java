@@ -88,7 +88,10 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//button[@title='Close this window']")
 	public WebElement crossButton;
-
+	
+	@FindBy(xpath = "//button[@title='Close error dialog']")
+	public WebElement crossIcon;
+	
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
 	public WebElement successAlert;
 	
@@ -259,24 +262,24 @@ public class ApasGenericPage extends Page {
 	 * @throws Exception
 	 */
 	public void searchAndSelectOptionFromDropDown(Object element, String value) throws Exception {
+		
 		WebElement webElement;
 		String xpathDropDownOption;
+		
 		if (element instanceof String) {
 			webElement = getWebElementWithLabel((String) element);
-			//xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()='" + element + "']/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
 			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()=\""+element+"\"]/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
 		} else{
 			webElement = (WebElement) element;
-			//xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@title='" + value + "']";
 			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
 		}
-
+		
 		enter(webElement, value);
 		WebElement drpDwnOption = locateElement(xpathDropDownOption, 20);
 		waitForElementToBeVisible(drpDwnOption, 10);
-		//drpDwnOption.click();
 		Click(drpDwnOption);
 	}
+	
 
 	/**
 	 * @Description: This method is to handle fields like Permit City Code or Processing Status
@@ -286,21 +289,21 @@ public class ApasGenericPage extends Page {
 	 * @throws Exception
 	 */
 	public void selectOptionFromDropDown(Object element, String value) throws Exception {
+	
 		WebElement webElement;
 		String xpathDropDownOption;
-		if (element instanceof String) {
-			webElement = getWebElementWithLabel((String) element);
-			//xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()='" + element + "']/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
-			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
-		} else{
-			webElement = (WebElement) element;
-			//xpathDropDownOption = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-			xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain')]//*[text() = '" + value + "' or @title= '" + value + "']";
-		}
+		
+        if (element instanceof String) {
+            webElement = getWebElementWithLabel((String) element);
+            xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
+        } else{
+            webElement = (WebElement) element;
+            xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain')]//*[text() = '" + value + "' or @title= '" + value + "']";
+        }
+
 
 		scrollToElement(webElement);
 		javascriptClick(webElement);
-
 		waitUntilElementIsPresent(xpathDropDownOption, 30);
 		WebElement drpDwnOption = driver.findElement(By.xpath(xpathDropDownOption));
 		scrollToElement(drpDwnOption);
