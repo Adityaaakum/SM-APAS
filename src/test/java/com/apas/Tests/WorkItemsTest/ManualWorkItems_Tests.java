@@ -1,26 +1,17 @@
 package com.apas.Tests.WorkItemsTest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
-import java.io.File;
-
-import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import com.apas.Reports.ReportLogger;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.BppTrendPage;
-import com.apas.PageObjects.EFileImportLogsPage;
-import com.apas.PageObjects.EFileImportPage;
-import com.apas.PageObjects.EFileImportTransactionsPage;
 import com.apas.PageObjects.LoginPage;
-import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
+import com.apas.PageObjects.WorkItemHomePage;
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -29,106 +20,100 @@ import com.apas.config.testdata;
 import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
 
-
 public class ManualWorkItems_Tests extends TestBase implements testdata, modules, users {
-
 	private RemoteWebDriver driver;
-	Page objPage;
 	LoginPage objLoginPage;
 	ApasGenericFunctions objApasGenericFunctions;
-	BppTrendPage objBPPTrendPage;
 	ParcelsPage objParcelsPage;
-
+	WorkItemHomePage objWorkItemHomePage;
 	Util objUtil;
 	SoftAssertion softAssert;
-	String eFileTestDataPath;
-	String athertonBuildingPermitFile;
-	String athertonBuildingPermitFile1;
-	String sanMateoBuildingPermitFile;
-	String sanMateoBuildingPermitFileWithError;
-	String unincorporatedBuildingPermitFile;
 	SalesforceAPI salesforceAPI;
-	EFileImportPage objEFileImport;
-	EFileImportLogsPage objEFileImportLogPage;
-	EFileImportTransactionsPage objEFileImportTransactionpage;
-	String EFileinvalidFormatFilepath;
-	
-	@BeforeMethod(alwaysRun=true)
-	public void beforeMethod() throws Exception{
 
-		driver=null;
+	@BeforeMethod(alwaysRun = true)
+	public void beforeMethod() throws Exception {
+		driver = null;
 		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
-
-		objPage = new Page(driver);
 		objLoginPage = new LoginPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
-		objEFileImport=new EFileImportPage(driver);
-		objEFileImportLogPage=new EFileImportLogsPage(driver);
-		objEFileImportTransactionpage=new EFileImportTransactionsPage(driver);
-		objBPPTrendPage= new BppTrendPage(driver);
-		 objParcelsPage= new ParcelsPage(driver);
+		objParcelsPage = new ParcelsPage(driver);
+		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
-		salesforceAPI=new SalesforceAPI();
-		}
+		salesforceAPI = new SalesforceAPI();
+	}
 	
 	/**
-	 * This method is to verify that user is able to view 'Use Code' and 'Street' fields getting automatically populated in the work item record 
-	 * related to the linked Parcel
+	 * This method is to verify that user is able to view 'Use Code' and 'Street fields getting automatically populated in the work item record related to the linked Parcel
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	
-	@Test(description = "SMAB-T1994:verify that user is able to view 'Use Code' and 'Street' fields getting automatically populated in the work item record related to the linked Parcel", dataProvider = "loginRPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {
-		"regression" })
-	public void workItems_verifyUseCode_streetFields(String loginUser)throws Exception{
-
-		String apnValue="002-011-090";
-		//changing the status of Approved Import logs if any in the system in order to import a new file
-		//String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and File_Source__C = 'BOE - Index and Percent Good Factors' and Status__c = 'Approved' ";
-		//salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Imported");
+	@Test(description = "SMAB-T1994:verify that user is able to view 'Use Code' and 'Street' fields getting automatically populated in the work item record related to the linked Parcel", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
+			"regression" })
+	public void WorkItems_VerifyLinkedParcelUseCodeStreetFields(String loginUser) throws Exception {
+		String apnValue = "002-011-040";
+		//String workItemNumber;
+		String puc;
+		String primarySitus;		
+		Map<String, String> workItemFieldsMap;
 		
-		//Step1: Login to the APAS application using the credentials passed through data provider (RP Business Admin)
-
+		// fetching a parcel where PUC and Primary Situs are not blank
+		//String queryActiveAPN = "SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name='99-RETIRED PARCEL' and Limit 1";
+		//HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryActiveAPN);
+		//String activeAPNName= response.get("Name").get(0);
+		
+		// fetching a parcel where PUC is not blank but  Primary Situs is blank
+				//String queryActiveAPN = "SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name='99-RETIRED PARCEL' and Limit 1";
+				//HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryActiveAPN);
+				//String activeAPNName= response.get("Name").get(0);
+				
+		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objApasGenericFunctions.login(loginUser);
-		
-		//Step2: Opening the PARCELS from global search box
+
+		// Step2: Opening the PARCELS page  and searching a parcel where PUC and Primary Situs field (Street) have values saved
 		objApasGenericFunctions.searchModule(PARCELS);
 		objApasGenericFunctions.globalSearchRecords(apnValue);
 
-		//Step 3: Creating Manual work item for a Parcel records using Component Action flow where PUC and Primary Situs field (Street) have values saved
-		Map<String, String> workItemFieldsMap = objParcelsPage.getWorkItemCreationTestData();
-		System.out.print(objParcelsPage.createWorkItem(workItemFieldsMap));
+		// fetching the PUC and Primary Situs fields values of parcel
+		puc = objApasGenericFunctions.getFieldValueFromAPAS("PUC", "Parcel Information");
+		primarySitus = objApasGenericFunctions.getFieldValueFromAPAS("Primary Situs", "Parcel Information");
+
+		// Step 3: Creating Manual work item for the Parcel 
+		ReportLogger.INFO("Work item created is " + objParcelsPage.createWorkItem(objParcelsPage.getWorkItemCreationTestData()));
+		//Step 4:Clicking the  details tab for the work item newly created and fetching the use code and street fields values 
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		Thread.sleep(5000);
+
+		//Step 5: Validating that 'Use Code' and 'Street' fields getting automatically populated in the work item record related to the linked Parcel
+		softAssert.assertEquals(puc, objApasGenericFunctions.getFieldValueFromAPAS("Use Code", "Reference Data Details"),
+				"SMAB-T1994: Validation that 'Use Code' fields getting automatically populated in the work item record related to the linked Parcel");
+		softAssert.assertTrue(primarySitus.contains(objApasGenericFunctions.getFieldValueFromAPAS("Street", "Reference Data Details")),
+				"SMAB-T1994: Validation that 'Street' fields getting automatically populated in the work item record related to the linked Parcel");
+
+		// Scenario 2: searching a parcel where PUC is not blank but  Primary Situs is blank
+		objApasGenericFunctions.globalSearchRecords(apnValue);
+
+		// fetching the PUC and Primary Situs fields values of parcel
+		puc = objApasGenericFunctions.getFieldValueFromAPAS("PUC", "Parcel Information");
+		primarySitus = objApasGenericFunctions.getFieldValueFromAPAS("Primary Situs", "Parcel Information");
+
+		// Creating Manual work item for the Parcel 
+		workItemFieldsMap = objParcelsPage.getWorkItemCreationTestData();
+		ReportLogger.INFO("Work item created is " + objParcelsPage.createWorkItem(workItemFieldsMap));
+
+		//Clicking the  details tab for the work item newly created and fetching the use code and street fields values 
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		Thread.sleep(5000);
 		
-		
-		
-		objEFileImport.selectFileAndSource("BPP Trend Factors", "BOE - Index and Percent Good Factors");
-		objPage.waitForElementToBeClickable(objEFileImport.nextButton, 10);
-		objPage.Click(objEFileImport.nextButton);
-		objPage.Click(objEFileImport.periodDropdown);
-		objPage.clickAction(objEFileImport.periodFirstDropDownValue);
-		//apasGenericObj.selectFromDropDown(objEFileImport.periodDropdown, period);//period drop down xpath needs to be updated
-		objPage.waitForElementToBeClickable(objEFileImport.confirmButton, 10);
-		objPage.Click(objEFileImport.confirmButton);
-		Thread.sleep(2000);
-		
-		  
-        	ReportLogger.INFO("Verify invalid file format not allowed for file:");
-        	objPage.waitForElementToBeClickable(objEFileImport.invalidFileErrorMsg,5);
-        	
-        	//softAssert.assertEquals(objEFileImport.invalidFileErrorMsg.getText(),"Your company doesn't support the following file types: ."+.substring(name.lastIndexOf(".")+1),"SMAB-T82:Verify the admin user is not able to select file for import with unacceptable formats using Upload button");
-    	 
-        objPage.Click(objEFileImport.closeButton);
-        
-       // objApasGenericFunctions.logout();
-	
+		// Validating that 'Use Code' and 'Street' fields getting automatically populated in the work item record related to the linked Parcel
+		softAssert.assertEquals(puc, objApasGenericFunctions.getFieldValueFromAPAS("Use Code", "Reference Data Details"),
+				"SMAB-T1994: Validation that 'Use Code' fields getting automatically populated in the work item record related to the linked Parcel");
+		softAssert.assertTrue(primarySitus.contains(objApasGenericFunctions.getFieldValueFromAPAS("Street", "Reference Data Details")),
+				"SMAB-T1994: Validation that 'Street' fields getting automatically populated in the work item record related to the linked Parcel");
+
+		objApasGenericFunctions.logout();
+
 	}
-	
-	
-	
+
 }
-		
-		
-	
-	

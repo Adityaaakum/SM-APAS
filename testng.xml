@@ -13,10 +13,10 @@
 			</run>
 		</groups>
 		<classes>
-			 <class name="com.apas.Tests.BuildingPermit.BuildingPermit_ImportLogsAndImportTransanctionLogs_Test">
+			 <class name="com.apas.Tests.WorkItemsTest.ManualWorkItems_Tests">
 
 				 <methods>
-					 <include name="ImportLogsAndTransactions_BuildingPermitSanMateo"/>
+					 <include name="WorkItems_VerifyLinkedParcelUseCodeStreetFields"/>
 				 </methods>
 			 </class>
 

@@ -180,10 +180,11 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath="//a[@title='Exemption Limits - 2021']")
 	public WebElement rpslRecord;
 
-	@FindBy(xpath="//force-highlights2//*[text()='Work Item']/following::lightning-formatted-text")
+	@FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
 
-
+	//force-highlights2//*[text()='Work Item']/following::lightning-formatted-text
+	
 
 
 
@@ -305,6 +306,8 @@ public class WorkItemHomePage extends Page {
 	public String getWorkItemNumberDetailView() throws Exception {
 		waitForElementToBeVisible(workItemNumberDetailView);
 		return getElementText(workItemNumberDetailView);
+
+		//return "test";
 
 	}
 }

@@ -19,12 +19,12 @@ import java.util.Map;
 public class ParcelsPage extends ApasGenericPage {
 	Util objUtil;
 	WorkItemHomePage objWorkItemHomePage;
+
 	public ParcelsPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
 		objUtil = new Util();
-		 objWorkItemHomePage= new WorkItemHomePage(driver);
-
+		objWorkItemHomePage = new WorkItemHomePage(driver);
 
 	}
 
@@ -34,106 +34,84 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//li[not(contains(@style,'visibility: hidden'))]//*[@title='More Tabs']")
 	public WebElement moretab;
 
-    @FindBy(xpath = "//*[@role='menuitem' and contains(.,'Exemptions')]")
-    public WebElement exemptionRelatedList;
-    
-    @FindBy(xpath = "//*[contains(@class,'windowViewMode-normal')]//div[text()='Select Option']//following::select")
-    public WebElement selectOptionDropDownComponentsActionsModal;
-    
-    @FindBy(xpath = "//*[contains(@class,'modal-container')]//button[contains(text(),'Next')]")
-    public WebElement nextButtonComponentsActionsModal;
-    
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-norma')]//label[contains(text(),'Work Item Type')]//following::input")
-    public WebElement workItemTypeDropDownComponentsActionsModal;
-        
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-norma')]//label[contains(text(),'Work Item Type')]")
-    public WebElement actionsDropDownComponentsActionsModal;
-    
-    @FindBy(xpath = "//input[@name='Reference']")
-    public WebElement referenceInputTextBoxComponentActionModal;
+	@FindBy(xpath = "//*[@role='menuitem' and contains(.,'Exemptions')]")
+	public WebElement exemptionRelatedList;
 
-    @FindBy(xpath = "//input[@name='Description']")
-    public WebElement descriptionInputTextBoxComponentActionModal;
-    
-    @FindBy(xpath = "//*[contains(@class,'windowViewMode-normal')]//div[text()='Priority']//following::select")
-    public WebElement priorityDropDownComponentsActionsModal;
-    
-    @FindBy(xpath = "//*[contains(@class,'windowViewMode-normal')]//div[text()='Work Item Routing']//following::select")
-    public WebElement workItemRoutingDropDownComponentsActionsModal;
-    
+	@FindBy(xpath = "//*[contains(@class,'windowViewMode-normal')]//div[text()='Select Option']//following::select")
+	public WebElement selectOptionDropDownComponentsActionsModal;
+
+	@FindBy(xpath = "//*[contains(@class,'modal-container')]//button[contains(text(),'Next')]")
+	public WebElement nextButtonComponentsActionsModal;
+
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-norma')]//label[contains(text(),'Work Item Type')]//following::input")
+	public WebElement workItemTypeDropDownComponentsActionsModal;
+
+	@FindBy(xpath = "//input[@name='Reference']")
+	public WebElement referenceInputTextBoxComponentActionModal;
+
+	@FindBy(xpath = "//input[@name='Description']")
+	public WebElement descriptionInputTextBoxComponentActionModal;
+
+	@FindBy(xpath = "//*[contains(@class,'windowViewMode-normal')]//div[text()='Priority']//following::select")
+	public WebElement priorityDropDownComponentsActionsModal;
+
+	@FindBy(xpath = "//*[contains(@class,'windowViewMode-normal')]//div[text()='Work Item Routing']//following::select")
+	public WebElement workItemRoutingDropDownComponentsActionsModal;
+
 	public String componentActionsButtonText = "Component Actions";
-    public String actionsDropDownLabel="Actions";
+	public String actionsDropDownLabel = "Actions";
 
-
-
-	
 	/**
-	 * Description: This method will open the parcel with the APN passed in the parameter
+	 * Description: This method will open the parcel with the APN passed in the
+	 * parameter
+	 * 
 	 * @param APN: Value in the APN column
 	 */
 	public void openParcel(String APN) throws IOException, InterruptedException {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening the parcel with APN : " + APN);
-		Click(driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title='" + APN + "']")));
+		Click(driver.findElement(By.xpath(
+				"//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title='"
+						+ APN + "']")));
 		Thread.sleep(2000);
 	}
-/**
- * @description: This method will return the  data to create work item
- * @return hashMapBuildingPermitData : Test data to create manual building permit
- */
-public Map<String, String> getWorkItemCreationTestData() {
 
-	String workItemCreationData = System.getProperty("user.dir") + testdata.WORK_ITEMS + "\\ManualWorkItem.json";
-	Map<String, String> manualWorkItemMap = objUtil.generateMapFromJsonFile(workItemCreationData, "DataToCreateWorkItemOfTypeRP");
-	
-	System.out.print(manualWorkItemMap);
+	/**
+	 * @Description: This method will return the data to create work item
+	 * @return hashMapmanualWorkItemData : Test data to create manual work item
+	 */
+	public Map<String, String> getWorkItemCreationTestData() {
+		String workItemCreationData = System.getProperty("user.dir") + testdata.WORK_ITEMS + "\\ManualWorkItem.json";
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeRP");
+		return hashMapmanualWorkItemData;
+	}
 
-	return  manualWorkItemMap;
+	/**
+	 * @Description: This method will fill all the fields in manual work item modal and create a work item
+	 * @param dataMap: A data map which contains data to create work item
+	 * @throws Exception
+	 */
+	public String createWorkItem(Map<String, String> dataMap) throws Exception {
+		String workItemType = dataMap.get("Work Item Type");
+		String actions = dataMap.get("Actions");
+		String reference = dataMap.get("Reference");
+		String description = dataMap.get("Description");
+		String priority = dataMap.get("Priority");
+		String workItemRouting = dataMap.get("Work Item Routing");
+
+		Click(getButtonWithText(componentActionsButtonText));
+		waitForElementToBeVisible(selectOptionDropDownComponentsActionsModal);
+		selectOptionFromDropDown(selectOptionDropDownComponentsActionsModal, "Create Work Item");
+		Click(nextButtonComponentsActionsModal);
+		waitForElementToBeVisible(workItemTypeDropDownComponentsActionsModal);
+		selectOptionFromDropDown(workItemTypeDropDownComponentsActionsModal, workItemType);
+		selectOptionFromDropDown(actionsDropDownLabel, actions);
+		enter(referenceInputTextBoxComponentActionModal, reference);
+		enter(descriptionInputTextBoxComponentActionModal, description);
+		selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);
+		selectOptionFromDropDown(workItemRoutingDropDownComponentsActionsModal, workItemRouting);
+		Click(nextButtonComponentsActionsModal);
+
+		return objWorkItemHomePage.getWorkItemNumberDetailView();
+	}
 }
-/**
- * @Description: It fills all the required fields in manual entry pop up
- * @param dataMap: A data map which contains manual entry pop up field names (as keys)
- * and their values (as values)
- * @throws Exception
- */
-public String createWorkItem(Map<String, String> dataMap) throws Exception {
-
-	String workItemType = dataMap.get("Work Item Type");
-	String actions = dataMap.get("Actions");
-	String reference = dataMap.get("Reference");
-	String description = dataMap.get("Description");
-	String priority = dataMap.get("Priority");
-	String workItemRouting = dataMap.get("Work Item Routing");
-	
-	Click(getButtonWithText(componentActionsButtonText));
-	waitForElementToBeVisible(selectOptionDropDownComponentsActionsModal);
-	selectOptionFromDropDown(selectOptionDropDownComponentsActionsModal,"Create Work Item");
-	Click(nextButtonComponentsActionsModal);
-	waitForElementToBeVisible(workItemTypeDropDownComponentsActionsModal);
-
-	selectOptionFromDropDown(workItemTypeDropDownComponentsActionsModal,workItemType);
-	selectOptionFromDropDown(actionsDropDownLabel,actions);
-	enter(referenceInputTextBoxComponentActionModal,reference);
-	enter(descriptionInputTextBoxComponentActionModal,description);
-	selectOptionFromDropDown(priorityDropDownComponentsActionsModal,priority);
-	selectOptionFromDropDown(workItemRoutingDropDownComponentsActionsModal,workItemRouting);
-
-	Click(nextButtonComponentsActionsModal);
-
-	return objWorkItemHomePage.getWorkItemNumberDetailView();
-
-	/*enter(buildingPermitNumberTxtBox, dataMap.get("Building Permit Number"));
-	objApasGenericPage.searchAndSelectOptionFromDropDown(parcelsSearchBox, dataMap.get("APN"));
-	objApasGenericPage.selectOptionFromDropDown(processingStatusDrpDown, dataMap.get("Processing Status"));
-	objApasGenericPage.searchAndSelectOptionFromDropDown(countyStratCodeSearchBox, dataMap.get("County Strat Code Description"));
-	enter(estimatedProjectValueTxtBox, dataMap.get("Estimated Project Value"));
-	enter(issueDateCalender, dataMap.get("Issue Date"));
-	enter(completionDateCalender, dataMap.get("Completion Date"));
-	enter(workDescriptionTxtBox, dataMap.get("Work Description"));
-	objApasGenericPage.selectOptionFromDropDown(permitCityCodeDrpDown, dataMap.get("Permit City Code"));
-
-	//This text box comes only while adding E-File Building Permit manually
-	if (verifyElementVisible(OwnerNameTextBox)) enter(OwnerNameTextBox,dataMap.get("Owner Name"));
-	if (verifyElementVisible(cityStratCodeTextBox)) enter(cityStratCodeTextBox,dataMap.get("City Strat Code"));
-
-	return buildingPermitNumber; */
-}}
