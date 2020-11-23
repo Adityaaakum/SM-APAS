@@ -272,7 +272,6 @@ public class ApasGenericPage extends Page {
 		} else{
 			webElement = (WebElement) element;
 			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
-			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
 		}
 		
 		enter(webElement, value);
