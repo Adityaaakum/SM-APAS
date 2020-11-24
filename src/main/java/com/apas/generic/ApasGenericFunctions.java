@@ -207,6 +207,7 @@ public class ApasGenericFunctions extends TestBase {
      * @param folderPath: path of the folder
      */
     public void deleteFilesFromFolder(String folderPath) {
+        ReportLogger.INFO("Deleting the files from the folder : " + folderPath);
         File dir = new File(folderPath);
         for (File file : Objects.requireNonNull(dir.listFiles())) {
             if (!file.isDirectory())
