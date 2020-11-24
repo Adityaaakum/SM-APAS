@@ -31,7 +31,7 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 	String rollYear;
 	ApasGenericPage objApasGenericPage;
 	BppTrendSetupPage objBppTrendSetupPage;
-	
+
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
 
@@ -175,8 +175,8 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		objBppTrendPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(1000);
 		ReportLogger.INFO("Validating error message on updating Min. Equipment Index Factor Value for approved tables");
-		String expectedErrorMessage = "Minimum Good Factor is locked for editing for the Roll Year";
-		String actualErrorMessage = objApasGenericFunctions.getIndividualFieldErrorMessage("Minimum Good Factor");
+		String expectedErrorMessage = "insufficient access rights on object id";
+		String actualErrorMessage = objPage.getElementText(objApasGenericPage.pageError);
 		softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T187: Validating error message on editing minimum equip. index value when calculations are approved");
 		objBppTrendPage.Click(objPage.getButtonWithText("Cancel"));
 
