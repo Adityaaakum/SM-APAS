@@ -119,8 +119,8 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		objPage.enter("Maximum Equipment index Factor","1000");
 		objPage.Click(objPage.getButtonWithText("Save"));
 		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
-		softAssert.assertContains(actualErrorMsg,expectedErrorMsg+": 1000","SMAB-T134: Verify Error message for factor value: 1000");
-		
+		softAssert.assertContains(actualErrorMsg+": 1000",expectedErrorMsg,"SMAB-T134: Verify Error message for factor value: 1000");
+
 
 		//Step13: Validate error message with factor values within specified range : 124.4
 		objPage.enter("Maximum Equipment index Factor","124.4");
