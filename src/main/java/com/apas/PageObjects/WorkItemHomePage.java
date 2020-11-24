@@ -21,6 +21,10 @@ public class WorkItemHomePage extends Page {
 	public final String TAB_MY_SUBMITTED_FOR_APPROVAL = "Submitted for Approval";
 	public final String TAB_NEED_MY_APPROVAL = "Needs My Approval";
 	public final String TAB_COMPLETED = "Completed";
+	public final String TAB_On_Hold = "On Hold";
+	public final String TAB_StaffInProgress = "Staff - In Progress";
+	public final String TAB_StaffOnHold = "Staff - On Hold";
+	public final String TAB_StaffInPool = "Staff - In Pool";
 
 	ApasGenericPage objApasGenericPage;
 	ApasGenericFunctions objApasGenericFunctions;
@@ -78,12 +82,16 @@ public class WorkItemHomePage extends Page {
 
 	@FindBy(xpath = "//label[text()='Returned Reason']//following-sibling::div//input")
 	public WebElement returnedReasonTxtBox;
+	
+	@FindBy(xpath = "//table[@role='grid']//span[text()='Action']")
+	public WebElement actionColumn;
 
 	public String linkedItemEFileIntakeLogs = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'E File Intake Logs')]";
 
 	public String relatedBuildingPermits = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'Related Building Permits')]";
 
-
+	public String tabXPath="//a[@role='tab'][@data-label='text']";
+	
 	@FindBy(xpath="//a[@title='Home']")
 	public WebElement lnkTABHome;
 
@@ -182,11 +190,6 @@ public class WorkItemHomePage extends Page {
 
 	@FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
-
-	//force-highlights2//*[text()='Work Item']/following::lightning-formatted-text
-	
-
-
 
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
@@ -306,8 +309,6 @@ public class WorkItemHomePage extends Page {
 	public String getWorkItemNumberDetailView() throws Exception {
 		waitForElementToBeVisible(workItemNumberDetailView);
 		return getElementText(workItemNumberDetailView);
-
-		//return "test";
 
 	}
 }

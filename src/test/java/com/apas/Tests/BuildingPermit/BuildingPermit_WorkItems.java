@@ -102,7 +102,7 @@ public class BuildingPermit_WorkItems extends TestBase {
         objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
         objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
         objPage.scrollToBottom();
-        objWorkItemHomePage.openRelatedActionRecord(importReviewWorkItem);
+        objWorkItemHomePage.openActionLink(importReviewWorkItem);
         String parentWindow = driver.getWindowHandle();
         objPage.switchToNewWindow(parentWindow);
         objEfileImportPage.approveImportedFile();
@@ -155,7 +155,7 @@ public class BuildingPermit_WorkItems extends TestBase {
 
         //Step15: Open the work item
         objPage.scrollToBottom();
-        objWorkItemHomePage.openRelatedActionRecord(finalReviewWorkItem);
+        objWorkItemHomePage.openActionLink(finalReviewWorkItem);
 
         //Step16: Report data validation for linked building permit records
         Thread.sleep(5000);
@@ -201,7 +201,7 @@ public class BuildingPermit_WorkItems extends TestBase {
      * This test case is to validate work item creation functionality and the work item flow after file is reverted
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and RP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1890, SMAB-T1899: Validation for work item generation after building permit file import and revert", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BP"}, alwaysRun = true)
+    @Test(description = "SMAB-T1890, SMAB-T1899,SMAB-T2122,SMAB-T2121: Validation for work item generation after building permit file import and revert", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BP"}, alwaysRun = true)
     public void BuildingPermit_WorkItemAfterImportAndRevert(String loginUser) throws Exception {
 
         //Creating a temporary copy of the file to be processed to create unique name
@@ -243,7 +243,7 @@ public class BuildingPermit_WorkItems extends TestBase {
         objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
         objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
         objPage.scrollToBottom();
-        objWorkItemHomePage.openRelatedActionRecord(importReviewWorkItem);
+        objWorkItemHomePage.openActionLink(importReviewWorkItem);
         String parentWindow = driver.getWindowHandle();
         objPage.switchToNewWindow(parentWindow);
         objEfileImportPage.revertImportedFile();
