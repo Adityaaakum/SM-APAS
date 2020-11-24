@@ -77,12 +77,14 @@ public class ParcelsPage extends ApasGenericPage {
 
 	/**
 	 * @Description: This method will return the data to create work item
+	 * @param workItemDataType: Type of work item to be created,this should match the key in data json data file
+	 * 
 	 * @return hashMapmanualWorkItemData : Test data to create manual work item
 	 */
-	public Map<String, String> getWorkItemCreationTestData() {
+	public Map<String, String> getWorkItemCreationTestData(String workItemDataType) {
 		String workItemCreationData = System.getProperty("user.dir") + testdata.WORK_ITEMS + "\\ManualWorkItem.json";
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
-				"DataToCreateWorkItemOfTypeRP");
+				workItemDataType);
 		return hashMapmanualWorkItemData;
 	}
 

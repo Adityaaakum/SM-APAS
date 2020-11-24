@@ -51,15 +51,13 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	@Test(description = "SMAB-T1994:verify that user is able to view 'Use Code' and 'Street' fields getting automatically populated in the work item record related to the linked Parcel", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"regression","work_item_manual" })
 	public void WorkItems_VerifyLinkedParcelUseCodeStreetFields(String loginUser) throws Exception {
-		String apnValue = "002-011-040";
-		//String workItemNumber;
 		String puc;
 		String primarySitus;		
 		
 		// fetching a parcel where PUC and Primary Situs are not blank		
 		String queryAPNValue = "select Name from Parcel__c where PUC_Code_Lookup__c!= null and Primary_Situs__c !=null AND Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
-		String apnValue1= response.get("Name").get(0);
+		String apnValue= response.get("Name").get(0);
 		
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objApasGenericFunctions.login(loginUser);
@@ -73,12 +71,11 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		primarySitus = objApasGenericFunctions.getFieldValueFromAPAS("Primary Situs", "Parcel Information");
 
 		// Step 3: Creating Manual work item for the Parcel 
-		objParcelsPage.createWorkItem(objParcelsPage.getWorkItemCreationTestData());
+		objParcelsPage.createWorkItem(objParcelsPage.getWorkItemCreationTestData("DataToCreateWorkItemOfTypeRP"));
 
 		//Step 4:Clicking the  details tab for the work item newly created and fetching the use code and street fields values 
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
-		//Thread.sleep(5000);
+		objWorkItemHomePage.waitForElementToBeVisible(6000, objWorkItemHomePage.referenceDetailsLabel);
 
 		//Step 5: Validating that 'Use Code' and 'Street' fields getting automatically populated in the work item record related to the linked Parcel
 		softAssert.assertEquals(puc, objApasGenericFunctions.getFieldValueFromAPAS("Use Code", "Reference Data Details"),
@@ -87,7 +84,6 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 				"SMAB-T1994: Validation that 'Street' fields getting automatically populated in the work item record related to the linked Parcel");
 
 		objApasGenericFunctions.logout();
-
 	}
 	
 	/**
@@ -98,14 +94,12 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	@Test(description = "SMAB-T1994:verify that user is able to view 'Use Code' which is  blank but 'Street' field get automatically populated in the work item record related to the linked Parcel", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"regression","work_item_manual"  })
 	public void WorkItems_VerifyLinkedParcelUseCodeBlankStreetFieldNotBlank(String loginUser) throws Exception {
-		String apnValue = "002-011-040";
 		String puc;
-		String primarySitus;		
 		
 		// fetching a parcel where PUC is not blank but  Primary Situs is blank
-		String queryAPNValue = "select Name from Parcel__c where PUC_Code_Lookup__c!= null and Primary_Situs__c ==null and Status__c='Active' limit 1";
+		String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
-		String apnValue1= response.get("Name").get(0);
+		String apnValue= response.get("Name").get(0);
 				
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objApasGenericFunctions.login(loginUser);
@@ -116,19 +110,18 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 
 		// fetching the PUC and Primary Situs fields values of parcel
 		puc = objApasGenericFunctions.getFieldValueFromAPAS("PUC", "Parcel Information");
-		primarySitus = objApasGenericFunctions.getFieldValueFromAPAS("Primary Situs", "Parcel Information");
 
 		// Step 3: Creating Manual work item for the Parcel 
-		objParcelsPage.createWorkItem(objParcelsPage.getWorkItemCreationTestData());
+		objParcelsPage.createWorkItem(objParcelsPage.getWorkItemCreationTestData("DataToCreateWorkItemOfTypeRP"));
 		
 		//Step 4:Clicking the  details tab for the work item newly created and fetching the use code and street fields values 
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-		Thread.sleep(5000);
+		objWorkItemHomePage.waitForElementToBeVisible(6000, objWorkItemHomePage.referenceDetailsLabel);
 
 		//Step 5: Validating that 'Use Code' is blank and 'Street' field gets automatically populated in the work item record related to the linked Parcel
 		softAssert.assertEquals(puc, objApasGenericFunctions.getFieldValueFromAPAS("Use Code", "Reference Data Details"),
 				"SMAB-T1994: Validation that 'Use Code' fields getting automatically populated in the work item record related to the linked Parcel");
-		softAssert.assertTrue(primarySitus.contains(objApasGenericFunctions.getFieldValueFromAPAS("Street", "Reference Data Details")),
+		softAssert.assertTrue(objApasGenericFunctions.getFieldValueFromAPAS("Street", "Reference Data Details").isBlank(),
 				"SMAB-T1994: Validation that 'Street' fields getting automatically populated in the work item record related to the linked Parcel");
 
 		objApasGenericFunctions.logout();

@@ -53,7 +53,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 				"SMAB-T2085: Validation that 'ACTION' column is visible on Need my Approval tab");
 
 		objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
-		softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.actionColumn),
+		softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.actionColumnInProgressTab),
 				"SMAB-T2085: Validation that 'ACTION' column is visible on In Progress tab");
 
 		//Step 4: Navigate to tabs : In pool,On hold ,Submitted for Approval,Staff in progress,Staff on hold,Staff in pool,Completed and  verify that Action column is not visible 

@@ -85,6 +85,9 @@ public class WorkItemHomePage extends Page {
 	
 	@FindBy(xpath = "//table[@role='grid']//span[text()='Action']")
 	public WebElement actionColumn;
+	
+	@FindBy(xpath = "//*[@aria-labelledby='In Progress__item']//span[text()='Action']")
+	public WebElement actionColumnInProgressTab;
 
 	public String linkedItemEFileIntakeLogs = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'E File Intake Logs')]";
 
@@ -97,7 +100,6 @@ public class WorkItemHomePage extends Page {
 
 	@FindBy(xpath="//a/span[text()='Work Items']")
 	public WebElement lnkTABWorkItems;  
-
 
 	@FindBy(xpath="//a[@data-label='In Progress']")
 	public WebElement lnkTABInProgress;
@@ -126,7 +128,6 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath="//label[contains(.,'Show RP')]//span[@class='slds-checkbox_faux']")
 	public WebElement toggleBUtton;
 
-
 	@FindBy(xpath="//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits')]//parent::tr/th//span")
 	public WebElement reminderWINameLink;
 
@@ -144,7 +145,6 @@ public class WorkItemHomePage extends Page {
 
 	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[2]//input[@type='checkbox']/parent::span")
 	public List<WebElement> lowincomeSubmittedWI;
-
 
 	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//div[@class='slds-truncate']//a")
 	public WebElement linkedItemsRecord;
@@ -190,7 +190,10 @@ public class WorkItemHomePage extends Page {
 
 	@FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
-
+	
+	@FindBy(xpath="//span[text()='Reference Data Details']")
+	public WebElement referenceDetailsLabel;
+	
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
 	 *
