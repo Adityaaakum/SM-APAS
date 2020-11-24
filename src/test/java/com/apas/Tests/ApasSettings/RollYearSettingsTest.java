@@ -63,7 +63,7 @@ public class RollYearSettingsTest extends TestBase {
 	@Test(description = "SMAB-T638: Validate that System Admin is able to create Future Roll Year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void RollYear_CreateFutureRecord(String loginUser) throws Exception {
 	
-	//Step1: Login to the APAS application using the user passed through the data provider
+			//Step1: Login to the APAS application using the user passed through the data provider
 			objApasGenericFunctions.login(loginUser);
 			
 			//Step2: Open the Roll Year Settings module

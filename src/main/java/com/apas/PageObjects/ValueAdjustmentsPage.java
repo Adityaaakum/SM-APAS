@@ -199,25 +199,18 @@ public class ValueAdjustmentsPage extends Page {
 	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//table//tbody//tr")
     public List<WebElement> numberOfValueAdjustments;
 	
-	//@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Start Date']//..//following-sibling::div//slot//slot//*")
-    //public WebElement startDateValueLabel;
 	public String startDateValueLabel ="Start Date";
 	
-	//@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='End Date']//..//following-sibling::div//slot//slot//*")
-    //public WebElement endDateValueLabel;
 	public String endDateValueLabel ="End Date";
 
 	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Roll Year Basic Reference Amount']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement basicReferenceAmountLabel;
-	//public String basicReferenceAmountLabel ="Roll Year Basic Reference Amount";
 	
 	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Roll Year Low Income Reference Amount']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement lowIncomeReferenceAmountLabel;
-	//public String lowIncomeReferenceAmountLabel ="Roll Year Low Income Reference Amount";
 	
 	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Roll Year Settings']//parent::div//following-sibling::div//a")
     public WebElement rollYearSettingsLabel;
-	//public String rollYearSettingsLabel ="Roll Year Settings";
 	
 	@FindBy(xpath = "//div[contains(@class,'oneRecordHomeFlexipage2Wrapper')]//button[text() = 'Edit']")
     public WebElement editButton;
@@ -231,43 +224,31 @@ public class ValueAdjustmentsPage extends Page {
 	
 	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Roll Year Low Income Threshold Amount']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement rollYearLowIncomeThreshholdAmountLabel;
-	//public String rollYearLowIncomeThreshholdAmountLabel ="Roll Year Low Income Threshold Amount";
 	
 	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Roll Year Low Income Due Date']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement rollYearLowIncomeDueDateLabel;
-	//public String rollYearLowIncomeDueDateLabel ="Roll Year Low Income Due Date";
 	
 	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Determination']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement determinationValueLabel;
-	//public String determinationValueLabel ="Determination";
 	
 	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Number of days']//..//following-sibling::div//lightning-formatted-number")
     public WebElement noOfDaysValueLabel;
-	//public String noOfDaysValueLabel ="Number of days";
 	
 	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Exemption Amount Calculated']//..//following-sibling::div//lightning-formatted-text")
     public WebElement exemptionAmountCalculatedValueLabel;
-	//public String exemptionAmountCalculatedValueLabel ="Exemption Amount Calculated";
 	
-	//@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Tax Start Date']//..//following-sibling::div//slot//slot//*")
-   // public WebElement taxStartDateValueLabel;
 	public String taxStartDateValueLabel ="Tax Start Date";
 	
-	//@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Tax End Date']//..//following-sibling::div//slot//slot//*")
-   // public WebElement taxEndDateValueLabel;
 	public String taxEndDateValueLabel ="Tax End Date";
 	
 	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Penalty Amount Calculated']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement penaltyAmtCalcValueLabel;
-	//public String penaltyAmtCalcValueLabel ="Penalty Amount Calculated";
 	
 	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Penalty Amount - User Adjusted']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement penaltyAmtUserAdjustValueLabel;
-	//public String penaltyAmtUserAdjustValueLabel ="Penalty Amount - User Adjusted";
 	
 	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Net Exemption Amount']//..//following-sibling::div//lightning-formatted-text")
     public WebElement netExemptionAmountCalculatedValueLabel;
-	//public String netExemptionAmountCalculatedValueLabel ="Net Exemption Amount";
 	
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
 	public WebElement successAlertText;
@@ -280,11 +261,9 @@ public class ValueAdjustmentsPage extends Page {
 	
 	@FindBy(xpath = "//div//span[text()='Roll Year Low Income Late Penalty']//parent::div//following-sibling::lightning-helptext/following-sibling::div//lightning-formatted-number")
     public WebElement vaRollYearLowIncomeLatePenaltyLabel;
-	//public String vaRollYearLowIncomeLatePenaltyLabel ="Roll Year Low Income Late Penalty";
 	
 	@FindBy(xpath = "//div//span[text()='Roll Year Low Income Late Penalty 2']//parent::div//following-sibling::lightning-helptext/following-sibling::div//lightning-formatted-number")
     public WebElement vaRollYearLowIncomeLatePenalty2Label;
-	//public String vaRollYearLowIncomeLatePenalty2Label ="Roll Year Low Income Late Penalty 2";
 	
 	@FindBy(xpath = "//div[@class='test-id__field-label-container slds-form-element__label no-utility-icon']//span[text()='Name']")
     public WebElement vAnameLabel;
