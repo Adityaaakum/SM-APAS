@@ -6,6 +6,7 @@ import com.apas.PageObjects.*;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
@@ -52,6 +53,12 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	@Test(description = "SMAB-T383,SMAB-T520,SMAB-T402,SMAB-T421,SMAB-T416: Creating manual entry for building permit", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"smoke","regression","buildingPermit"}, alwaysRun = true)
 	public void BuildingPermit_ManualCreateNewBuildingPermitWithDataValidations(String loginUser) throws Exception {
 
+
+		//Fetching the Active Parcel
+		String query ="SELECT Primary_Situs__c,Status__C,Name FROM Parcel__c where Status__C='Active' and Primary_Situs__C !='' limit 1";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		String parcelToSearch = response.get("Name").get(0);
+
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objApasGenericFunctions.login(loginUser);
 
@@ -59,11 +66,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objApasGenericFunctions.searchModule(modules.PARCELS);
 
 		//Step3: Search and Open the Parcel
-		objApasGenericFunctions.displayRecords("All Active Parcels");
-		String parcelToSearch = objApasGenericFunctions.getGridDataInHashMap(1).get("APN").get(0);
-		System.out.println("Parcel to be linked with the building permit record : " + parcelToSearch);
-		objApasGenericFunctions.searchRecords(parcelToSearch);
-		objParcelsPage.openParcel(parcelToSearch);
+		objApasGenericFunctions.globalSearchRecords(parcelToSearch);
 
 		//Step4: Opening the Primary Situs Screen using the primary situs link on parcel tab and store the values of "situs code" and "primary situs"
 		objPage.Click(objParcelsPage.linkPrimarySitus);
@@ -163,7 +166,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		Thread.sleep(2000);
 
 		//Step4: Save after entering 'Tree Removal' in Work Description. There should be an error
-		String expectedWorkDescriptionError = "Close error dialog\nWe hit a snag.\nReview the errors on this page.\nNo Process for Work Desc. with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
+		String expectedWorkDescriptionError = "Close error dialog\nWe hit a snag.\nReview the errors on this page.\nNo Process for Work Desc with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
 		String expectedFieldLevelError = "Complete this field.";
 
 		objPage.waitForElementToBeClickable(30,objBuildingPermitPage.workDescriptionTxtBox);
@@ -488,7 +491,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step9: Update the processing status as No Process and Calculated Processing status should be updated with the same value
 		objPage.Click(objBuildingPermitPage.editButton);
-		objBuildingPermitPage.searchAndSelectOptionFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "No Process");
+		objBuildingPermitPage.selectOptionFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "No Process");
 		objApasGenericFunctions.saveRecord();
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T403: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
@@ -681,17 +684,18 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.permitCityCodeDrpDownOptions),expectedPermitCityCodeValues,"SMAB-T517: Validation for Permit City Code values population for building permit for cities providing e-files");
 
 		//Validation for mandatory fields
-		objPage.Click(objBuildingPermitPage.saveButton);
-		String expectedErrorMessageOnTop = "These required fields must be completed: Estimated Project Value, Issue Date, Building Permit Number, Owner Name, Permit City Code, Work Description";
+		String actualErrorMessageOnTop = objApasGenericFunctions.saveRecordAndGetError();
+		String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the following fields\nBuilding Permit Number\nEstimated Project Value\nIssue Date\nWork Description\nPermit City Code\nOwner Name";
 		String expectedIndividualFieldMessage = "Complete this field.";
 
-		softAssert.assertEquals(objBuildingPermitPage.pageError.getText(),expectedErrorMessageOnTop,"SMAB-T345: Validating mandatory fields missing error in manual entry pop up header.");
+		softAssert.assertEquals(actualErrorMessageOnTop,expectedErrorMessageOnTop,"SMAB-T345: Validating mandatory fields missing error in manual entry pop up header.");
 		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Building Permit Number'");
 		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Estimated Project Value"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Estimated Project Value'");
 		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Issue Date"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Issue Date'");
 		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Work Description"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Work Description'");
 		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Permit City Code"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Permit City Code'");
 		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Owner Name"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Owner Name'");
+		objBuildingPermitPage.Click(objBuildingPermitPage.pageErrorButton);
 
 		//Step5: Validation for non relevant keywords in description
 		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
@@ -699,13 +703,11 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		manualBuildingPermitMap.put("City Strat Code",cityStratCode);
 		manualBuildingPermitMap.put("Work Description","Public Work Permit");
 		objBuildingPermitPage.enterManualEntryData(manualBuildingPermitMap);
-		objPage.Click(objBuildingPermitPage.saveButton);
-		Thread.sleep(2000);
 
 		//Step4: Save after entering 'Tree Removal' in Work Description. There should be an error
-		String expectedWorkDescriptionError = "No Process for work desc with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
+		String expectedWorkDescriptionError = "Close error dialog\nWe hit a snag.\nReview the errors on this page.\nNo Process for work desc with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
 
-		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.pageError),expectedWorkDescriptionError,"SMAB-T327: Warning message validation on the top when 'Work Description' field is having following values 'Tree Removal', 'public works permits', 'temporary signs/banners'");
+		softAssert.assertEquals(objApasGenericFunctions.saveRecordAndGetError(),expectedWorkDescriptionError,"SMAB-T327: Warning message validation on the top when 'Work Description' field is having following values 'Tree Removal', 'public works permits', 'temporary signs/banners'");
 		objPage.waitForElementToBeClickable(30,objBuildingPermitPage.workDescriptionTxtBox);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,"abc");
 		String actualSuccessMessage = objApasGenericFunctions.saveRecord();

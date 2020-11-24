@@ -435,7 +435,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		ReportLogger.INFO("Clicking on 'Edit' button for record whose status is 'Approved'");
 		objPage.Click(objRPSLPage.editButton);
 		objPage.Click(objRPSLPage.saveButton);
-		String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the errors on this page.\ninsufficient access rights on object id";
+		String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the errors on this page.\nRecord is locked. Please check with your system administrator.";
 		
 		//Step6: Verify Error message
 		softAssert.assertEquals(objPage.getElementText(objApasgenericpage.pageError),expectedErrorMessageOnTop,"SMAB-T640,SMAB-T641:Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'");

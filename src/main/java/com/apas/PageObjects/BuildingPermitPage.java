@@ -43,10 +43,10 @@ public class BuildingPermitPage extends ApasGenericPage {
 	public String workDescriptionTxtBox = "Work Description";
 
 
-	@FindBy(xpath = "//span[contains(text(), 'Manual Entry Building Permit')]//parent::div//preceding-sibling::div//input[@type = 'radio']/..")
+	@FindBy(xpath = "//label[contains(., 'Manual Entry Building Permit')]//input[@type = 'radio']/..")
 	public WebElement manualEntryRadioBtn;
 
-	@FindBy(xpath = "//span[contains(text(), 'E-File Building Permit')]//parent::div//preceding-sibling::div//input[@type = 'radio']/..")
+	@FindBy(xpath = "//label[contains(., 'E-File Building Permit')]//input[@type = 'radio']/..")
 	public WebElement efileRadioButton;
 
 	@FindBy(xpath = "//div[contains(@class,'visible positioned')]//a[@role='menuitem'][text()='No actions available']")

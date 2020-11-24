@@ -26,6 +26,9 @@ public class ApasGenericPage extends Page {
 	}
 
 
+	@FindBy(xpath = "//button[@title='Close error dialog']")
+	public WebElement crossIcon;
+
 	@FindBy(xpath = "//button[contains(@class,'page-error-button')]")
 	public WebElement pageErrorButton;
 
