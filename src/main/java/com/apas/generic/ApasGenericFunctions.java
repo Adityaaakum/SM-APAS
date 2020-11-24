@@ -176,6 +176,7 @@ public class ApasGenericFunctions extends TestBase {
      * @param searchString: String to search the record
      */
     public void globalSearchRecords(String searchString) throws Exception {
+
         ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
         if (System.getProperty("region").toUpperCase().equals("E2E")){
             WebElement element  = driver.findElement(By.xpath("//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input"));
@@ -187,6 +188,7 @@ public class ApasGenericFunctions extends TestBase {
             objPage.waitUntilElementIsPresent(xpath,5);
             objPage.Click(driver.findElement(By.xpath(xpath)));
         }
+
         Thread.sleep(5000);
     }
 

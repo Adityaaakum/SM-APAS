@@ -68,6 +68,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 
 	}
 
+	
 	/**
 	 below test case is for business validations for Exemption fields
 	 * @throws Exception 
@@ -415,7 +416,6 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		
 		apasGenericObj.logout();
 	}
-	
 
 	   /**
    Below test case is used to verify Exemption is not created for Retired and Invalid PUC code Parcels(APN) from Parcels Exemption related list
@@ -443,6 +443,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
       
       //step2: Verifying Exemption is not created for Retired and Invalid PUC code APN from APN's related Exemption screen
       for(String parcel: parcelsToVerify ) {
+    	   apasGenericObj.searchModule(modules.PARCELS);
 	       apasGenericObj.globalSearchRecords(parcel);
 	       ReportLogger.INFO("Verifying Exemption creation for Parcel:: "+parcel+" with PUC Code");
 	       String parcelsStatus=objPage.getElementText(exemptionPageObj.exemationStatusOnDetails);

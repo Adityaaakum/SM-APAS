@@ -71,11 +71,12 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 				
 		/*Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 		 Create Exemption record
-		 Capture the Exemption Name*/	
+		 Capture the Exemption Name	*/
 		String mandatoryExemptionData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;	
 		Map<String, String> createExmeptiondataMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields");
 		createExmeptiondataMap.put("Veteran Name", createExmeptiondataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		objExemptionsPage.createExemption(createExmeptiondataMap);
+		driver.navigate().refresh();
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		
 		ReportLogger.INFO("Exemption: "+exemptionName + " is created");
@@ -91,23 +92,25 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		
 		//Step5: Calculate and verify Total number of Value Adjustments in an Exemption		
 		 objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
-		 int noOfVAs =  objValueAdjustmentPage.numberOfValueAdjustments.size();  
+		 int noOfVAs =  objValueAdjustmentPage.numberOfValueAdjustments.size(); 
 		 softAssert.assertEquals(noOfVAs, actualVAtoBeCreated, "Verify Number of Value Adjustments");	  
 		   
 		  //Step6: Looping through each Value Adjustments to calculate Exemption Amount 
 		  for (int VARowNo = 0; VARowNo<noOfVAs; VARowNo++) { 			 				  
 			//Step7: Clicking on 'Active' Value Adjustment link
-			String xpPathActiveVA = "//div[contains(@class,'windowViewMode-normal')]//tr["+(VARowNo+1)+"]//span[contains(text(),'Active')]//..//..//preceding-sibling::th//a";
+			driver.navigate().refresh();
+			String xpPathActiveVA = "//div//tr["+(VARowNo+1)+"]//span[contains(text(),'Active')]//..//..//preceding-sibling::th//a";
 			objPage.waitUntilElementIsPresent(xpPathActiveVA,50);
-			WebElement vaLink = objPage.waitForElementToBeClickable(xpPathActiveVA);
+			WebElement vaLink = objPage.locateElement(xpPathActiveVA,10);
+			
 			String vANAme = vaLink.getText();
 			ReportLogger.INFO("Clicking on Value Adjustment Link: "+ vANAme);
 			objPage.Click(vaLink);
 			objPage.waitUntilPageisReady(driver);		
 			
 			//Step8: Calculate Basic Exemption Amount in an 'Active' Value Adjustment					  
-			float expectedExemptionAmount = objValueAdjustmentPage.calculateBasicExemptionAmount();			  
-			String exemptionAmount = objValueAdjustmentPage.exemptionAmountCalculatedValueLabel.getText();			  
+			float expectedExemptionAmount = objValueAdjustmentPage.calculateBasicExemptionAmount();
+			String exemptionAmount = objPage.getElementText(objPage.waitForElementToBeVisible(objValueAdjustmentPage.exemptionAmountCalculatedValueLabel));
 			float actualExemptionAmount = objApasGenericFunctions.convertToFloat(exemptionAmount); 		 
 			ReportLogger.INFO("Verifying Exemption Amount Calculated");
 			softAssert.assertEquals(actualExemptionAmount,expectedExemptionAmount,"SMAB-T1213: Verify Exemption Amount calculated for each eligible year if the Determination is 'Basic'");
@@ -147,6 +150,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		Map<String, String> createExmeptiondataMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields");
 		createExmeptiondataMap.put("Veteran Name", createExmeptiondataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		objExemptionsPage.createExemption(createExmeptiondataMap);
+		driver.navigate().refresh();
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		
 		ReportLogger.INFO("Exemption: "+exemptionName + " is created");
@@ -159,7 +163,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
 				  
 		// Step6: Click on Active VA having Determination "Basic Disabled Veterans" 
-		objPage.waitForElementToBeClickable(objValueAdjustmentPage.activeBasicDetVA);
+		objPage.waitForElementToBeClickable(objValueAdjustmentPage.activeBasicDetVA, 10);
 		String vAName = objValueAdjustmentPage.activeBasicDetVA.getText();
 		objPage.Click(objValueAdjustmentPage.activeBasicDetVA);
 

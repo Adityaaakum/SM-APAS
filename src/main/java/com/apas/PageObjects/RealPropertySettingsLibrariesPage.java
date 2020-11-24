@@ -104,8 +104,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input")
 	public WebElement globalSearchListEditBox;
 	
-	//@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//button[text() = 'Edit']")
-	@FindBy(xpath = "//div[contains(@class,'oneRecordHomeFlexipage2Wrapper')]//button[text() = 'Edit']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text() = 'Edit']")
 	public WebElement editButton;
 
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//button[text() = 'Delete']")
