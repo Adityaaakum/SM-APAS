@@ -458,6 +458,7 @@ public class Page {
 		((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", element);
 		actions.click(element).build().perform();
 		waitUntilPageisReady(driver);
+	
 	}
 
 
@@ -888,4 +889,5 @@ public class Page {
 		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='" + text + "']";
 		return driver.findElement(By.xpath(xpath));
 	}
+
 }

@@ -71,7 +71,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputEntitySelector']//input")
 	public WebElement globalSearchListDropDown;
 
-	@FindBy(xpath = "//*[@data-aura-class='forceSearchAssistantDialog']//input[@type='search']")
+	@FindBy(xpath = "//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input")
 	public WebElement globalSearchListEditBox;
 
 	@FindBy(xpath = "//div[@data-aura-class='forceSearchAssistant']//button")

@@ -172,12 +172,9 @@ public class ApasGenericFunctions extends TestBase {
      * @param searchString: String to search the record
      */
     public void globalSearchRecords(String searchString) throws Exception {
-        ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
-        objPage.Click(objApasGenericPage.globalSearchButton);
-        objPage.enter(objApasGenericPage.globalSearchListEditBox,searchString);
-        String xpath = "//*[@role='option']//span[@title = '" + searchString + "']";
-        objPage.waitUntilElementIsPresent(xpath,5);
-        objPage.Click(driver.findElement(By.xpath(xpath)));
+       
+    	ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
+        objApasGenericPage.searchAndSelectFromDropDown(objApasGenericPage.globalSearchListEditBox, searchString);
         Thread.sleep(5000);
     }
 

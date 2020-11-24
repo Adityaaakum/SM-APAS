@@ -157,13 +157,13 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.Click(objRPSLPage.saveButton);		
 		
 		//Step11: Verify Duplicate Current Roll Year cannot be created
-		//String expectedWarningMessageOnTop = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
 		String expectedWarningMessageOnTop = "Close error dialog\nWe hit a snag.\nYou can't save this record because a duplicate record already exists. To save, use different information.\nView Duplicates";
 		objPage.waitForElementToBeVisible(objApasgenericpage.pageError, 30);
 		softAssert.assertEquals(objPage.getElementText(objApasgenericpage.pageError),expectedWarningMessageOnTop,"SMAB-T539:Verify the User is not able to create duplicate Exemption limit record for current roll year");
 		objPage.Click(objRPSLPage.cancelButton);
 		
-		//Step12: Click on All List View	
+		//Step12: Click on All List View
+		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		objApasGenericFunctions.displayRecords("All");
 		
 		//Step13: Search value of RPSL created above
@@ -211,7 +211,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 
 		//Step4: Validate the error message appeared for mandatory fields
 		//String expectedErrorMessageOnTop = "These required fields must be completed: DV Basic Exemption Amount, DV Low Income Exemption Amount, DV Low Income Household Limit, RP Setting Name, Roll Year Settings, Status";
-		String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the following fields\nRP Setting Name\nRoll Year Settings\nDV Low Income Exemption Amount\nDV Basic Exemption Amount\nDV Low Income Household Limit";
+		String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the following fields\nRP Setting Name\nStatus\nRoll Year Settings\nDV Low Income Exemption Amount\nDV Basic Exemption Amount\nDV Low Income Household Limit";
 		String expectedIndividualFieldMessage = "Complete this field.";
 		//objPage.waitUntilElementIsPresent("//ul[@class='errorsList']//li", 60);
 		//objPage.waitForElementToBeVisible(objRPSLPage.errorMsgOnTop, 30);
@@ -439,7 +439,6 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		
 		//Step6: Verify Error message
 		softAssert.assertEquals(objPage.getElementText(objApasgenericpage.pageError),expectedErrorMessageOnTop,"SMAB-T640,SMAB-T641:Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'");
-		//softAssert.assertEquals(actualErrorMsgText1,expectedErrorMessage1,"SMAB-T641:Verify that Non-System Admin users are not able to update a locked 'Real Property Settings' record");
 		
 		//Step7: Closing the Error Pop-Up
 	    Thread.sleep(3000);
@@ -472,7 +471,6 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	}
 	
 	
-	
 	/**
 	 Below test case is used to validate user other than Exemption Support Staff is only able to view Exemption limit records
 	 **/
@@ -482,6 +480,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objApasGenericFunctions.login(loginUser);
 
 		//Step2: Opening the Real Property Settings Libraries module
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Select All List View
@@ -493,10 +492,10 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		softAssert.assertEquals(flag, false, "SMABT:545 - Verify user cannot create RPSL");
 		
 		// Step5: Clicking on 'first' Exemption Limits record 
-		  objPage.locateElement("//div[contains(@class,'windowViewMode-normal')]//table//tbody//tr[1]//th//a",3);
-		  WebElement exemptionLink = driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal')]//table//tbody//tr[1]//th//a"));		  				  
-		  System.out.println("Exemption Link text: " + exemptionLink.getText());
-		  objPage.Click(exemptionLink);
+		objPage.locateElement("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody//tr[1]//th//a",3);
+		WebElement exemptionLink = driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody//tr[1]//th//a"));		  				  
+		System.out.println("Exemption Link text: " + exemptionLink.getText());
+		objPage.Click(exemptionLink);
 		
 		//Step6: Verify Edit Button is not present
 			flag = objRPSLPage.verifyElementVisible(objRPSLPage.editButton);
