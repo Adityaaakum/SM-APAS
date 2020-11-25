@@ -189,6 +189,18 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath="//span[text()='Reference Data Details']")
 	public WebElement referenceDetailsLabel;
 	
+	@FindBy (xpath="//button[text()='Mark Complete']")
+	public WebElement markCompleteButton;
+	
+	@FindBy (xpath="//button[text()='Approve']")
+	public WebElement approveButton;
+	
+	@FindBy (xpath="//div[@role='alert' and @data-key='error']//span[contains(@class,'toastMessage')]")
+	public WebElement errormsgOnWI;
+	 
+	@FindBy (xpath="//*[@data-key='error']//..//span[text()='Close']")
+    public WebElement closeErrorMsg;
+	
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
 	 *
@@ -298,6 +310,16 @@ public class WorkItemHomePage extends Page {
 		waitForElementToBeVisible(successAlert, 20);
 		waitForElementToDisappear(successAlert, 10);
 	}
-
+	
+	public void selectWorkItemOnHomePage(String workItem) throws IOException{
+        WebElement webElement = driver.findElement(By.xpath("//a[text()='"+workItem+"']/ancestor::tr//td[2]//span[contains(@class,'slds-checkbox_faux')]"));
+        scrollToElement(webElement);
+        Click(webElement);
+    }
+	 
+	 public boolean isWorkItemExists(String workItem) throws IOException{
+        WebElement webElement = driver.findElement(By.xpath("//*[@title='"+workItem+"']"));
+        return waitForElementToBeVisible(20,webElement);         
+    }
 	
 }
