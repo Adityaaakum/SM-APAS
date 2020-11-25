@@ -255,7 +255,9 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 			
 			//step 8: verifying deletedVA, InactiveVA and newly cretaed VA
 			ReportLogger.INFO("Verifying VA for current Roll year should be deleted after entering end date of rating");
+			//Added below two lines as the focus is lost here
 			driver.navigate().refresh();
+			Thread.sleep(1000);
 			objPage.Click(vaPageObj.valueAdjustmentTab);
 			objPage.waitForElementToBeVisible(vaPageObj.viewAllLink, 10);
 			ReportLogger.INFO("Verifying Actual and Expected count of VA after end date of rating Actual::"+vaPageObj.VAlist.size()+"|| Expected::"+(vaCreatedBasedOnDates-1));
@@ -326,6 +328,7 @@ public void Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(St
 		
 		//Step2: Opening the Exemption Module
 		driver.navigate().refresh();
+		Thread.sleep(1000);
 		apasGenericObj.searchModule(EXEMPTIONS);
 		
 		//Step3: Clicking on New button to create a New Exemption record
@@ -417,7 +420,7 @@ public void Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(St
 			{
 				//verifying Annual form received date should not be less than Application received date
 				ReportLogger.INFO("Verifying Annual Form Received date can not be less than Application received date");	
-				//objPage.scrollToTop();
+				objPage.scrollToTop();
 				objPage.Click(vaPageObj.editButton);
 				objPage.waitForElementToBeClickable(vaPageObj.vaEditDeterminationDropDown, 10);
 				apasGenericObj.selectFromDropDown(vaPageObj.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");

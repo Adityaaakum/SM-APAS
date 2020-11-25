@@ -94,7 +94,6 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		String timeStamp = java.time.LocalDateTime.now().toString();
 		exemptionCreationDataMap.put("Veteran Name", exemptionCreationDataMap.get("Veteran Name").concat(timeStamp));
 		objExemptionsPage.createExemption(exemptionCreationDataMap);
-		//objPage.waitUntilElementIsPresent(objExemptionsPage.exemptionNumber,30);
 		
 		//Refreshing the screen as the app looses the focus
 		driver.navigate().refresh();
@@ -212,9 +211,9 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		String timeStamp = java.time.LocalDateTime.now().toString();
 		exemptionCreationDataMap.put("Veteran Name", exemptionCreationDataMap.get("Veteran Name").concat(timeStamp));
 		objExemptionsPage.createExemption(exemptionCreationDataMap);
+		//Added below two line to bring back the focus
 		driver.navigate().refresh();
 		Thread.sleep(1000);
-		//objPage.waitUntilElementIsPresent(objExemptionsPage.exemptionNumber,30);
 		inActiveExemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 			
 		ReportLogger.INFO("Active Exemption Created is: "+ inActiveExemptionName);	
@@ -279,11 +278,8 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		String entryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
 		Map<String, String> createRPSLDataMap = objUtils.generateMapFromJsonFile(entryData, "DataToCreateCurrentRPSLEntry");
 		String strSuccessAlertMessage = objRPSLPage.createRPSL(createRPSLDataMap,strRollYear);
-		//softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRollYear + "\" was created.","Verify the User is able to create Exemption limit record for the current roll year");
 		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + "Exemption Limits -  " + strRollYear + "\" was created.","Verify the User is able to create Exemption limit record for the current roll year");
 		
-		//"Real Property Settings Library \""Exemption Limits -  + strRollYear + "\" was created."
-		//Real Property Settings Library "Exemption Limits - 2021" was created.
 		//Step5: Opening the Real Property Settings Libraries module
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		objApasGenericFunctions.displayRecords("All");
@@ -355,7 +351,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		softAssert.assertEquals(fVACreated,false,"SMAB-T511: Verify when annual batch process runs VAR does not get created for In-Active Exemption Record");
 		softAssert.assertEquals(fVACreated,false,"SMAB-T1293: Verify when annual batch process runs VAR does not get created for In-Active Exemption Record");
 		
-		//Refreshing the screen as the app looses the focus
+		//Refreshing the screen to bring back the focus
 		driver.navigate().refresh();
 		Thread.sleep(1000);
 				
