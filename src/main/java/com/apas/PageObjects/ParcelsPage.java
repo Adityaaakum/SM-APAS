@@ -74,20 +74,6 @@ public class ParcelsPage extends ApasGenericPage {
 						+ APN + "']")));
 		Thread.sleep(2000);
 	}
-
-	/**
-	 * @Description: This method will return the data to create work item
-	 * @param workItemDataType: Type of work item to be created,this should match the key in data json data file
-	 * 
-	 * @return hashMapmanualWorkItemData : Test data to create manual work item
-	 */
-	public Map<String, String> getWorkItemCreationTestData(String workItemDataType) {
-		String workItemCreationData = System.getProperty("user.dir") + testdata.WORK_ITEMS + "\\ManualWorkItem.json";
-		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
-				workItemDataType);
-		return hashMapmanualWorkItemData;
-	}
-
 	/**
 	 * @Description: This method will fill all the fields in manual work item modal and create a work item
 	 * @param dataMap: A data map which contains data to create work item
@@ -114,7 +100,7 @@ public class ParcelsPage extends ApasGenericPage {
 		selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);
 		selectOptionFromDropDown(workItemRoutingDropDownComponentsActionsModal, workItemRouting);
 		Click(nextButtonComponentsActionsModal);
-		workItemNumber=objWorkItemHomePage.getWorkItemNumberDetailView();
+		workItemNumber=getWorkItemNumberDetailView();
 		ReportLogger.INFO("Work item created is " + workItemNumber  );
 		
 		return workItemNumber;

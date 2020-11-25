@@ -92,8 +92,6 @@ public class WorkItemHomePage extends Page {
 	public String linkedItemEFileIntakeLogs = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'E File Intake Logs')]";
 
 	public String relatedBuildingPermits = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'Related Building Permits')]";
-
-	public String tabXPath="//a[@role='tab'][@data-label='text']";
 	
 	@FindBy(xpath="//a[@title='Home']")
 	public WebElement lnkTABHome;
@@ -188,9 +186,6 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath="//a[@title='Exemption Limits - 2021']")
 	public WebElement rpslRecord;
 
-	@FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
-	public WebElement workItemNumberDetailView;
-	
 	@FindBy(xpath="//span[text()='Reference Data Details']")
 	public WebElement referenceDetailsLabel;
 	
@@ -304,14 +299,5 @@ public class WorkItemHomePage extends Page {
 		waitForElementToDisappear(successAlert, 10);
 	}
 
-	/**
-	 * This method will return the work item number for a particular work item from its detail view
-	 *
-	 * @throws Exception 
-	 **/
-	public String getWorkItemNumberDetailView() throws Exception {
-		waitForElementToBeVisible(workItemNumberDetailView);
-		return getElementText(workItemNumberDetailView);
-
-	}
+	
 }

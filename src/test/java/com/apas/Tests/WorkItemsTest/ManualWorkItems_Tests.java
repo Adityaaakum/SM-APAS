@@ -2,6 +2,8 @@ package com.apas.Tests.WorkItemsTest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -59,6 +61,10 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		String apnValue= response.get("Name").get(0);
 		
+		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeRP");
+		
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objApasGenericFunctions.login(loginUser);
 
@@ -71,11 +77,11 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		primarySitus = objApasGenericFunctions.getFieldValueFromAPAS("Primary Situs", "Parcel Information");
 
 		// Step 3: Creating Manual work item for the Parcel 
-		objParcelsPage.createWorkItem(objParcelsPage.getWorkItemCreationTestData("DataToCreateWorkItemOfTypeRP"));
+		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		//Step 4:Clicking the  details tab for the work item newly created and fetching the use code and street fields values 
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-		objWorkItemHomePage.waitForElementToBeVisible(6000, objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 
 		//Step 5: Validating that 'Use Code' and 'Street' fields getting automatically populated in the work item record related to the linked Parcel
 		softAssert.assertEquals(puc, objApasGenericFunctions.getFieldValueFromAPAS("Use Code", "Reference Data Details"),
@@ -100,6 +106,10 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		String apnValue= response.get("Name").get(0);
+		
+		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeRP");
 				
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objApasGenericFunctions.login(loginUser);
@@ -112,11 +122,11 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		puc = objApasGenericFunctions.getFieldValueFromAPAS("PUC", "Parcel Information");
 
 		// Step 3: Creating Manual work item for the Parcel 
-		objParcelsPage.createWorkItem(objParcelsPage.getWorkItemCreationTestData("DataToCreateWorkItemOfTypeRP"));
+		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 		
 		//Step 4:Clicking the  details tab for the work item newly created and fetching the use code and street fields values 
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-		objWorkItemHomePage.waitForElementToBeVisible(6000, objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 
 		//Step 5: Validating that 'Use Code' is blank and 'Street' field gets automatically populated in the work item record related to the linked Parcel
 		softAssert.assertEquals(puc, objApasGenericFunctions.getFieldValueFromAPAS("Use Code", "Reference Data Details"),

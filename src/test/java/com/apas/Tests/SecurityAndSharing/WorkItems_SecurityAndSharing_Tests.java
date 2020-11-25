@@ -1,12 +1,12 @@
 package com.apas.Tests.SecurityAndSharing;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.TestBase.TestBase;
@@ -21,6 +21,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	ApasGenericFunctions objApasGenericFunctions;
 	WorkItemHomePage objWorkItemHomePage;
 	SoftAssertion softAssert;
+	ApasGenericPage objApasGenericPage;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -30,6 +31,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 		objLoginPage = new LoginPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
+		objApasGenericPage=new ApasGenericPage(driver);
 		softAssert = new SoftAssertion();
 	}
 
@@ -61,27 +63,27 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementNotVisible(objWorkItemHomePage.actionColumn),
 				"SMAB-T2085: Validation that 'ACTION' column is not visible on In pool tab");
 
-		objWorkItemHomePage.Click(driver.findElement(By.xpath(objWorkItemHomePage.tabXPath.replace("text", objWorkItemHomePage.TAB_On_Hold))));
+		objApasGenericPage.openTab(objWorkItemHomePage.TAB_On_Hold);
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementNotVisible(objWorkItemHomePage.actionColumn),
 				"SMAB-T2085: Validation that 'ACTION' column is not visible on On hold tab");
 
-		objWorkItemHomePage.Click(driver.findElement(By.xpath(objWorkItemHomePage.tabXPath.replace("text", objWorkItemHomePage.TAB_MY_SUBMITTED_FOR_APPROVAL))));
+		objApasGenericPage.openTab(objWorkItemHomePage.TAB_MY_SUBMITTED_FOR_APPROVAL);
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementNotVisible(objWorkItemHomePage.actionColumn),
 				"SMAB-T2085: Validation that 'ACTION' column is not visible on Submitted for Approval tab");
 
-		objWorkItemHomePage.Click(driver.findElement(By.xpath(objWorkItemHomePage.tabXPath.replace("text", objWorkItemHomePage.TAB_StaffInProgress))));
+		objApasGenericPage.openTab(objWorkItemHomePage.TAB_StaffInProgress);
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementNotVisible(objWorkItemHomePage.actionColumn),
 				"SMAB-T2085: Validation that 'ACTION' column is not visible on Staff in progress tab");
 
-		objWorkItemHomePage.Click(driver.findElement(By.xpath(objWorkItemHomePage.tabXPath.replace("text", objWorkItemHomePage.TAB_StaffOnHold))));
+		objApasGenericPage.openTab(objWorkItemHomePage.TAB_StaffOnHold);
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementNotVisible(objWorkItemHomePage.actionColumn),
 				"SMAB-T2085: Validation that 'ACTION' column is not visible on Staff on hold tab");
 
-		objWorkItemHomePage.Click(driver.findElement(By.xpath(objWorkItemHomePage.tabXPath.replace("text", objWorkItemHomePage.TAB_StaffInPool))));
+		objApasGenericPage.openTab(objWorkItemHomePage.TAB_StaffInPool);
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementNotVisible(objWorkItemHomePage.actionColumn),
 				"SMAB-T2085: Validation that 'ACTION' column is not visible on Staff in pool tab");
 
-		objWorkItemHomePage.Click(driver.findElement(By.xpath(objWorkItemHomePage.tabXPath.replace("text", objWorkItemHomePage.TAB_COMPLETED))));
+		objApasGenericPage.openTab(objWorkItemHomePage.TAB_COMPLETED);
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementNotVisible(objWorkItemHomePage.actionColumn),
 				"SMAB-T2085: Validation that 'ACTION' column is not visible on completed tab");
 
@@ -112,15 +114,15 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementNotVisible(objWorkItemHomePage.actionColumn),
 				"SMAB-T2086: Validation that 'ACTION' column is not visible on In pool tab");
 
-		objWorkItemHomePage.Click(driver.findElement(By.xpath(objWorkItemHomePage.tabXPath.replace("text", objWorkItemHomePage.TAB_On_Hold))));
+		objApasGenericPage.openTab(objWorkItemHomePage.TAB_On_Hold);
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementNotVisible(objWorkItemHomePage.actionColumn),
 				"SMAB-T2086: Validation that 'ACTION' column is not visible on On hold tab");
 
-		objWorkItemHomePage.Click(driver.findElement(By.xpath(objWorkItemHomePage.tabXPath.replace("text", objWorkItemHomePage.TAB_MY_SUBMITTED_FOR_APPROVAL))));
+		objApasGenericPage.openTab(objWorkItemHomePage.TAB_MY_SUBMITTED_FOR_APPROVAL);
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementNotVisible(objWorkItemHomePage.actionColumn),
 				"SMAB-T2086: Validation that 'ACTION' column is not visible on Submitted for Approval tab");
 
-		objWorkItemHomePage.Click(driver.findElement(By.xpath(objWorkItemHomePage.tabXPath.replace("text", objWorkItemHomePage.TAB_COMPLETED))));
+		objApasGenericPage.openTab(objWorkItemHomePage.TAB_COMPLETED);
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementNotVisible(objWorkItemHomePage.actionColumn),
 				"SMAB-T2086: Validation that 'ACTION' column is not visible on completed tab");
 

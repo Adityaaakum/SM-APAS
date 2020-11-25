@@ -100,6 +100,9 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath = "//h2[@class='slds-truncate slds-text-heading_medium']")
 	public WebElement popUpErrorMessageWeHitASnag;
+	
+	@FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab'))]//lightning-formatted-text[contains(text(),'WI')]")
+	public WebElement workItemNumberDetailView;
 
 	public String menuList = "//div[contains(@class,'uiMenuList--default visible positioned')]";
 
@@ -393,6 +396,27 @@ public class ApasGenericPage extends Page {
 		}
 		WebElement elementOnPopUp = locateElement(xpathStr, 200);
 		return elementOnPopUp;
+	}
+
+	/**
+	 * Description: This method will open the tab with name which will be passed a parameter
+	 * @param value: tabName
+	 */
+	
+	public void openTab(String tabName) throws Exception {
+		String tabXPath="//a[@role='tab'][@data-label='"+ tabName +"']";
+		Click(driver.findElementByXPath(tabXPath));
+		
+	}
+	/**
+	 * This method will return the work item number for a particular work item from its detail view
+	 *
+	 * @throws Exception 
+	 **/
+	public String getWorkItemNumberDetailView() throws Exception {
+		waitForElementToBeVisible(workItemNumberDetailView);
+		return getElementText(workItemNumberDetailView);
+
 	}
 
 }
