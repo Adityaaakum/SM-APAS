@@ -209,7 +209,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs","Situs Information"), "55 MOUNT VERNON LN, AT", "SMAB-T356: 'Situs' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Number","Situs Information"), "55", "SMAB-T356: 'Situs Number' Field Validation in 'Situs Information' section");
 		//This handling is done as parcel data was created manually in PREUAT and Situs Unit Number is 55 there while its empty in QA as per default data load
-		if (System.getProperty("region").toUpperCase().trim().equals("QA")) {
+		if (System.getProperty("region").toUpperCase().trim().equals("QA") || System.getProperty("region").toUpperCase().trim().equals("E2E")) {
 			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
 		}else
 			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "55", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
@@ -217,7 +217,8 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Street Name","Situs Information"), "MOUNT VERNON", "SMAB-T356: 'Situs Street Name' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Direction"), "", "SMAB-T356: 'Situs Direction' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Type","Situs Information"), "LN", "SMAB-T356: 'Situs Type' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs City Code","Situs Information"), "AT", "SMAB-T356: 'Situs City Code' Field Validation in 'Situs Information' section");
+		//Validation removed as part of defect#5849
+		//softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs City Code","Situs Information"), "AT", "SMAB-T356: 'Situs City Code' Field Validation in 'Situs Information' section");
 
 		//Validation for the fields auto populated in the section 'Owner Information'
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Owner Name","Owner Information"), "FIRST4 LAST4", "SMAB-T356: 'Owner Name' Field Validation in 'Owner Information' section");
@@ -412,8 +413,14 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 
 		//Step8: Validating the building permit records should not be visible in the system as it has not been approved yet
 		String xpathBuildingPermit = "//*[@role='option']//*[@title='" + buildingPermitNumber + "']";
-		objPage.Click(objBuildingPermitPage.globalSearchButton);
-		objPage.enter(objBuildingPermitPage.globalSearchListEditBox,buildingPermitNumber);
+		if (System.getProperty("region").toUpperCase().equals("E2E")){
+			//This condition is added as Global Search is behaving differently in E2E
+			WebElement element  = driver.findElement(By.xpath("//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input"));
+			objPage.enter(element,buildingPermitNumber);
+		}else{
+			objPage.Click(objBuildingPermitPage.globalSearchButton);
+			objPage.enter(objBuildingPermitPage.globalSearchListEditBox,buildingPermitNumber);
+		}
 		List<WebElement> webElementBuildingPermitBeforeApproved = driver.findElements(By.xpath(xpathBuildingPermit));
 		softAssert.assertTrue(webElementBuildingPermitBeforeApproved.size() == 0,"SMAB-T661: Validating that building permit " + buildingPermitNumber + " should not be visible in the system as its not approved yet");
 
@@ -427,8 +434,14 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
 
 		//Step11: Validating the building permit records should be visible in the system as it has been approved
-		objPage.Click(objBuildingPermitPage.globalSearchButton);
-		objPage.enter(objBuildingPermitPage.globalSearchListEditBox,buildingPermitNumber);
+		if (System.getProperty("region").toUpperCase().equals("E2E")){
+			//This condition is added as Global Search is behaving differently in E2E
+			WebElement element  = driver.findElement(By.xpath("//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input"));
+			objPage.enter(element,buildingPermitNumber);
+		}else{
+			objPage.Click(objBuildingPermitPage.globalSearchButton);
+			objPage.enter(objBuildingPermitPage.globalSearchListEditBox,buildingPermitNumber);
+		}
 		objPage.waitUntilElementIsPresent(xpathBuildingPermit,10);
 		List<WebElement> webElementBuildingPermitAfterApproved = driver.findElements(By.xpath(xpathBuildingPermit));
 		softAssert.assertTrue(webElementBuildingPermitAfterApproved.size() == 1,"SMAB-T661,SMAB-T913: Validating that building permit " + buildingPermitNumber + " should be visible in the system only when import is approved");
