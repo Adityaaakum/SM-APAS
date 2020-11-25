@@ -100,6 +100,9 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath = "//h2[@class='slds-truncate slds-text-heading_medium']")
 	public WebElement popUpErrorMessageWeHitASnag;
+	
+	@FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab'))]//lightning-formatted-text[contains(text(),'WI')]")
+	public WebElement workItemNumberDetailView;
 
 	public String menuList = "//div[contains(@class,'uiMenuList--default visible positioned')]";
 
@@ -297,7 +300,8 @@ public class ApasGenericPage extends Page {
 			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
 		} else{
 			webElement = (WebElement) element;
-			xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
+			xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '\" + value + \"' or @title= '\" + value + \"']";
+
 		}
 
 		scrollToElement(webElement);
@@ -309,7 +313,6 @@ public class ApasGenericPage extends Page {
 		waitForElementToBeClickable(drpDwnOption, 10);
 		javascriptClick(drpDwnOption);
 	}
-	
 	/**
 	 * Description: This method will fetch the current URL and process it to get the Record Id
 	 * @param driver: Driver Instance
@@ -393,6 +396,27 @@ public class ApasGenericPage extends Page {
 		}
 		WebElement elementOnPopUp = locateElement(xpathStr, 200);
 		return elementOnPopUp;
+	}
+
+	/**
+	 * Description: This method will open the tab with name which will be passed a parameter
+	 * @param value: tabName
+	 */
+	
+	public void openTab(String tabName) throws Exception {
+		String tabXPath="//a[@role='tab'][@data-label='"+ tabName +"']";
+		Click(driver.findElementByXPath(tabXPath));
+		
+	}
+	/**
+	 * This method will return the work item number for a particular work item from its detail view
+	 *
+	 * @throws Exception 
+	 **/
+	public String getWorkItemNumberDetailView() throws Exception {
+		waitForElementToBeVisible(workItemNumberDetailView);
+		return getElementText(workItemNumberDetailView);
+
 	}
 
 }

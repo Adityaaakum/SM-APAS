@@ -266,5 +266,4 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         objApasGenericFunctions.logout();
 
     }
-
 }
