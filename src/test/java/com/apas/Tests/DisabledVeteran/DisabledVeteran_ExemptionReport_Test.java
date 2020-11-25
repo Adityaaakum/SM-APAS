@@ -140,6 +140,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Active Exemption");
 		activeExemptionDataMap.put("Veteran Name", activeExemptionDataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		objExemptionsPage.createExemption(activeExemptionDataMap);
+		driver.navigate().refresh();
 		String activeExemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		ReportLogger.INFO("Active Exemption Created: "+activeExemptionName);
 		

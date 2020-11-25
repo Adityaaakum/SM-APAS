@@ -196,22 +196,20 @@ public class ValueAdjustmentsPage extends Page {
 	public WebElement searchList;
 
 //--------- Deepika's Locators ----------------
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//table//tbody//tr")
+	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//table//tbody//tr")
     public List<WebElement> numberOfValueAdjustments;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Start Date']//..//following-sibling::div//slot//slot//*")
-    public WebElement startDateValueLabel;
+	public String startDateValueLabel ="Start Date";
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='End Date']//..//following-sibling::div//slot//slot//*")
-    public WebElement endDateValueLabel;
+	public String endDateValueLabel ="End Date";
 
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Basic Reference Amount']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Roll Year Basic Reference Amount']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement basicReferenceAmountLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Low Income Reference Amount']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Roll Year Low Income Reference Amount']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement lowIncomeReferenceAmountLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Settings']//parent::div//following-sibling::div//a")
+	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Roll Year Settings']//parent::div//following-sibling::div//a")
     public WebElement rollYearSettingsLabel;
 	
 	@FindBy(xpath = "//div[contains(@class,'oneRecordHomeFlexipage2Wrapper')]//button[text() = 'Edit']")
@@ -224,34 +222,32 @@ public class ValueAdjustmentsPage extends Page {
 	@FindBy(xpath = "//div[contains(@class,'modal-footer')]//button//span[text() = 'Save']")
     public WebElement saveButton;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Low Income Threshold Amount']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Roll Year Low Income Threshold Amount']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement rollYearLowIncomeThreshholdAmountLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Low Income Due Date']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Roll Year Low Income Due Date']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement rollYearLowIncomeDueDateLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Determination']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Determination']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement determinationValueLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Number of days']//..//following-sibling::div//lightning-formatted-number")
+	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Number of days']//..//following-sibling::div//lightning-formatted-number")
     public WebElement noOfDaysValueLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Exemption Amount Calculated']//..//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Exemption Amount Calculated']//..//following-sibling::div//lightning-formatted-text")
     public WebElement exemptionAmountCalculatedValueLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Tax Start Date']//..//following-sibling::div//slot//slot//*")
-    public WebElement taxStartDateValueLabel;
+	public String taxStartDateValueLabel ="Tax Start Date";
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Tax End Date']//..//following-sibling::div//slot//slot//*")
-    public WebElement taxEndDateValueLabel;
+	public String taxEndDateValueLabel ="Tax End Date";
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Penalty Amount Calculated']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Penalty Amount Calculated']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement penaltyAmtCalcValueLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Penalty Amount - User Adjusted']//parent::div//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Penalty Amount - User Adjusted']//parent::div//following-sibling::div//lightning-formatted-text")
     public WebElement penaltyAmtUserAdjustValueLabel;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Net Exemption Amount']//..//following-sibling::div//lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'slds-tabs_default')]//span[text()='Net Exemption Amount']//..//following-sibling::div//lightning-formatted-text")
     public WebElement netExemptionAmountCalculatedValueLabel;
 	
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
@@ -472,11 +468,11 @@ public double converToDouble(Object amount){
  */
 public float verifyTaxYearProatedPercentage() throws Exception {
 	objPage.waitForElementToBeClickable(60, startDateValueLabel);
-	float numberOfDays = DateUtil.getDateDifference(startDateValueLabel,endDateValueLabel);	
-	locateElement("//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Settings']//parent::div//following-sibling::div//a", 2);
+	float numberOfDays = DateUtil.getDateDiff(apasGenericObj.getFieldValueFromAPAS(startDateValueLabel),apasGenericObj.getFieldValueFromAPAS(endDateValueLabel));
+	locateElement("//div[contains(@class,'slds-tabs_default')]//span[text()='Roll Year Settings']//parent::div//following-sibling::div//a", 2);
 	Click(rollYearSettingsLabel);
 	objPage.waitForElementToBeClickable(60, taxStartDateValueLabel);
-	float totalNoOfDays = DateUtil.getDateDifference(taxStartDateValueLabel,taxEndDateValueLabel);
+	float totalNoOfDays = DateUtil.getDateDiff(apasGenericObj.getFieldValueFromAPAS(taxStartDateValueLabel),apasGenericObj.getFieldValueFromAPAS(taxEndDateValueLabel));
 	driver.navigate().back();
 	float taxYearProatedPercentage = 0;
 	float taxYearProated = 0;

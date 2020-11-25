@@ -302,6 +302,8 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 			expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "NonNumericValueSanMateo_ExpectedImportedRecords_PREUAT.csv";
 		}else if (System.getProperty("region").toUpperCase().trim().equals("STAGING")) {
 			expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "NonNumericValueSanMateo_ExpectedImportedRecords_STAGING.csv";
+		}else if (System.getProperty("region").toUpperCase().trim().equals("E2E")) {
+			expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "NonNumericValueSanMateo_ExpectedImportedRecords_E2E.csv";
 		}
 
 		HashMap<String, ArrayList<String>> expectedImportedRowTable = FileUtils.getCSVData(expectedImportedRowTableFile);
@@ -477,7 +479,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Step5: Comparing the data from the error row table with the expected data
 		ReportLogger.INFO("Error Message Validation of Error Row Records on Review and Approve Data Page");
-		String expectedErrorMessage = "No Process for DPW, INF, SWN, REV & M permits";
+		String expectedErrorMessage = "No Process for DPW, INF, SWN, REV & M & Non-BLD permits";
 
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with DPW"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with DPW'");
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with INF"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with INF'");
