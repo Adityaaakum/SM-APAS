@@ -255,6 +255,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 			
 			//step 8: verifying deletedVA, InactiveVA and newly cretaed VA
 			ReportLogger.INFO("Verifying VA for current Roll year should be deleted after entering end date of rating");
+			driver.navigate().refresh();
 			objPage.Click(vaPageObj.valueAdjustmentTab);
 			objPage.waitForElementToBeVisible(vaPageObj.viewAllLink, 10);
 			ReportLogger.INFO("Verifying Actual and Expected count of VA after end date of rating Actual::"+vaPageObj.VAlist.size()+"|| Expected::"+(vaCreatedBasedOnDates-1));
@@ -294,11 +295,12 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		//Step4: creating an Exemption creation
 		
 		exemptionPageObj.createNewExemption(newExemptionData);
-	
+		driver.navigate().refresh();
 	//step5:
-	/**
+	/**//**
 	 * Validation No Penalty for any of the VA's as Application is submitted before grace end date 
-	 */
+	 *//*
+*/	
 	objPage.Click(vaPageObj.valueAdjustmentTab);
 	objPage.waitForElementToBeVisible(vaPageObj.viewAllLink, 10);
 	softAssert.assertEquals(vaPageObj.VAlist.size(), 1,"SMAB-T562:Verify only one VA(basic Disabled veteran)is created for Current Roll");
@@ -323,6 +325,7 @@ public void Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(St
 		exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 		
 		//Step2: Opening the Exemption Module
+		driver.navigate().refresh();
 		apasGenericObj.searchModule(EXEMPTIONS);
 		
 		//Step3: Clicking on New button to create a New Exemption record
@@ -352,6 +355,7 @@ public void Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(St
 		softAssert.assertEquals(penaltyAmtUI, 0.0, "SMAB-T1276:Verify late penalty(No Penalty amount) is not applied when the 'Application Received Date' is less than or equal to Grace End date");
 		driver.navigate().back();
 	}
+	
 	apasGenericObj.logout();
 	
 }
@@ -413,7 +417,7 @@ public void Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(St
 			{
 				//verifying Annual form received date should not be less than Application received date
 				ReportLogger.INFO("Verifying Annual Form Received date can not be less than Application received date");	
-				objPage.scrollToTop();
+				//objPage.scrollToTop();
 				objPage.Click(vaPageObj.editButton);
 				objPage.waitForElementToBeClickable(vaPageObj.vaEditDeterminationDropDown, 10);
 				apasGenericObj.selectFromDropDown(vaPageObj.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
@@ -443,7 +447,3 @@ public void Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(St
 	}
 
 }
-		
-		
-	
-	

@@ -109,6 +109,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		Map<String, String> dataToCreateExemptionMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemption");
 		dataToCreateExemptionMap.put("Veteran Name", dataToCreateExemptionMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		
+		objApasGenericFunctions.searchModule(modules.EXEMPTION);
 		objExemptionsPage.createExemption(dataToCreateExemptionMap);
 		
 		String recordId = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
