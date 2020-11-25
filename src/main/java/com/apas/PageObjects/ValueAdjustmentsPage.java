@@ -292,14 +292,14 @@ public class ValueAdjustmentsPage extends Page {
 	@FindBy(xpath = "//label[text() = 'Determination']//following-sibling::div//input")
     public WebElement determinationDropDown;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//tr//span[contains(text(),'Active')]//..//parent::td//..//span[contains(text(),'Basic Disabled')]//..//..//preceding-sibling::th//a")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//tr//span[contains(text(),'Active')]//..//parent::td//..//span[contains(text(),'Basic Disabled')]//..//..//preceding-sibling::th//a")
     public WebElement activeBasicDetVA;
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//tr[1]//span[contains(text(),'Start Date')]//..//..//parent::th//parent::tr//..//..//tbody//span[text()='7/1/2020']//..//..//preceding-sibling::th//a")
     public WebElement vAforRY2020;
 	
 	public String xPathStatus = "//div//span[@title='Status']";
-	public String xPathRollYearLowIncomeThresholdAmount = "//div[contains(@class,'windowViewMode-normal')]//span[text()='Roll Year Low Income Threshold Amount']//parent::div//following-sibling::div//lightning-formatted-text";
+	public String xPathRollYearLowIncomeThresholdAmount = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Low Income Threshold Amount']//parent::div//following-sibling::div//lightning-formatted-text";
 //--------- Deepika's Locators ----------------
 	
 
@@ -566,10 +566,12 @@ public String selectVAByStartDate(String startDate) throws Exception
 public void navigateToVAListViewInExemption() throws Exception
 {	
 	//Step1: Selecting the Value Adjustment Related List Tab
+	Thread.sleep(2000);
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Related List - Value Adjustement Tab");
 	objPage.locateElement("//div//li[@title='Value Adjustments']//a", 30);
 	waitForElementToBeClickable(valueAdjustmentRelatedListTab);
 	objPage.Click(valueAdjustmentRelatedListTab);
+	Thread.sleep(2000);
 
 	//Step2: Clicking on 'View All' Link of Value Adjustment Related List Tab
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on View All Link");
