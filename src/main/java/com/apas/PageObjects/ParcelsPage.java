@@ -18,13 +18,10 @@ import java.util.Map;
 
 public class ParcelsPage extends ApasGenericPage {
 	Util objUtil;
-	WorkItemHomePage objWorkItemHomePage;
-
 	public ParcelsPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
 		objUtil = new Util();
-		objWorkItemHomePage = new WorkItemHomePage(driver);
 
 	}
 
