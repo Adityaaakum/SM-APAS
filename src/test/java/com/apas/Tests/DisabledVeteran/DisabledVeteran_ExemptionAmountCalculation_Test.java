@@ -267,7 +267,8 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		softAssert.assertTrue(detValueFound, "SMAB-T1266: Verify 'Not Qualified' value does not appear in the Determination field of VAR");
 		
 		//Step7: Verify on editing VAR,the user cannot enter a value into the Penalty Adjustment Reason or Penalty Adjustment Other Reason Detail when the Penalty Amount - User Adjusted is blank or $0
-		objPage.Select(objValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
+		//objPage.Select(objValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
+		objApasGenericFunctions.selectFromDropDown(objValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
 		objPage.enter(objValueAdjustmentPage.penaltyAdjustmentOtherReasonDetail, "Testing automation");
 		objPage.Click(objValueAdjustmentPage.saveButton);	
 		

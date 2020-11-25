@@ -111,7 +111,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
 
 		//Step8: Searching the efile intake module to validate the status of the imported file after approve
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objPage.Click(objEfileImportPage.buttonSourceDetails);
 		objEfileImportPage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.statusImportedFile), "Approved", "SMAB-T362: Validation if status of imported file is approved.");
 
@@ -194,10 +194,10 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 
 		//Validation for the fields in the section 'City and County information'
 		//Strat Code reference Number can be fetched from the County Strat Code Screen of the code choosen while creating the building permit
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("County Strat Code Description", "City and County Information"), "ADDITION", "SMAB-T356: 'City Strat Code Lookup' Field Validation in 'City and County Information' section");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("City Strat Code Lookup", "City and County Information"), "ADDITION", "SMAB-T356: 'City Strat Code Lookup' Field Validation in 'City and County Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("County Strat Code Description", "City and County Information"), "ADDITION", "SMAB-T356: 'County Strat Code Description' Field Validation in 'City and County Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("City Strat Code", "City and County Information"), "ADDITION", "SMAB-T356: 'County Strat Code Description' Field Validation in 'City and County Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Strat Code Reference Number","City and County Information"), "20", "SMAB-T356: 'Record Type' Field Validation in 'City and County Information' section");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Strat Code Reference Number","City and County Information"), "20", "SMAB-T356: 'Strat Code Reference Number' Field Validation in 'City and County Information' section");
 
 		//Validation for the fields auto populated in the section 'Situs Information'
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Permit Situs Number","Situs Information"), "94", "SMAB-T356: 'Permit Situs Number' Field Validation in 'Situs Information' section");
@@ -209,10 +209,10 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs","Situs Information"), "55 MOUNT VERNON LN, AT", "SMAB-T356: 'Situs' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Number","Situs Information"), "55", "SMAB-T356: 'Situs Number' Field Validation in 'Situs Information' section");
 		//This handling is done as parcel data was created manually in PREUAT and Situs Unit Number is 55 there while its empty in QA as per default data load
-		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "55", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
-		}else
+		if (System.getProperty("region").toUpperCase().trim().equals("QA")) {
 			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
+		}else
+			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "55", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
 
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Street Name","Situs Information"), "MOUNT VERNON", "SMAB-T356: 'Situs Street Name' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Direction"), "", "SMAB-T356: 'Situs Direction' Field Validation in 'Situs Information' section");
@@ -290,7 +290,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 
 		//Step7: Validation of the file status after reverting the imported file
 		ReportLogger.INFO("Validation of file import status after revert");
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objPage.Click(objEfileImportPage.buttonSourceDetails);
 		objEfileImportPage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		//Status of the imported file should be changed to Reverted as the whole file is reverted for reimport
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.statusImportedFile), "Reverted", "SMAB-T361,SMAB-T970,SMAB-T25: Validation if status of imported file is reverted.");
@@ -351,8 +351,12 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 
 		//Step8: Valiation of import history columns as the value should be updated based on the records retried from error section
 		ReportLogger.INFO("Validation of error and inported records on Import History table after retry");
+
 		//Opening the Efile intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objPage.Click(objEfileImportPage.buttonSourceDetails);
+		//Clicking on Navigation Warning message as pop up will appear to give warning that changes will be lost
+		objPage.Click(objPage.getButtonWithText("Continue"));
+
 		objEfileImportPage.selectFileAndSource("Building Permit", "Atherton Building Permits");
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.numberOfTimesTriedRetried), "2", "SMAB-T364,SMAB-T570: Validation if number of times try/retry count is increased by 1 after retrying the error records");
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.totalRecordsInFile), "3", "SMAB-T364: Validation if total number of records remain same on the table");

@@ -45,8 +45,12 @@ public class ExcelUtils {
             Row headerRow = sheet.getRow(tableStartRow);
             int totalCells = headerRow.getLastCellNum();
             int rowCount = sheet.getPhysicalNumberOfRows();
+
+            //Added this condition to restrict to return 200 records data as converting a lot of data in hashmap gives java memory issue
+            if (rowCount > 200) rowCount = 200;
+
             FormulaEvaluator evaluator = workBook.getCreationHelper().createFormulaEvaluator();
-            for (int rowNum = (tableStartRow + 1); rowNum < (rowCount-tableStartRow); rowNum++) {
+            for (int rowNum = (tableStartRow + 1); rowNum < rowCount; rowNum++) {
                 Row currentRow = sheet.getRow(rowNum);
                 for (int colNum = tableStartColumn; colNum < (totalCells-tableStartColumn); colNum++) {
                     Cell headerCell = headerRow.getCell(colNum);

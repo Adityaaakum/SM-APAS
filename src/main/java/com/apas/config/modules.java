@@ -3,7 +3,7 @@ package com.apas.config;
 public interface modules {
 	
 	//List of all the modules on APAS application
-	public static final String EFILE_INTAKE = "E-File Intake";
+	public static final String EFILE_INTAKE = "E-File Import Tool";
 	public static final String EFILE_IMPORT_TRANSACTIONS = "E-File Import Transactions";
 	public static final String EFILE_IMPORT_LOGS = "E-File Import Logs";
 	public static final String BUILDING_PERMITS = "Building Permits";
@@ -14,6 +14,7 @@ public interface modules {
 	public static final String COUNTY_STRAT_CODES = "County Strat Codes";
 	public static final String REPORTS = "Reports";
 	public static final String PARCELS = "Parcels";
+	public static final String HOME = "Home";
 
 	public static final String CPI_FACTORS = "CPI Factors";
 

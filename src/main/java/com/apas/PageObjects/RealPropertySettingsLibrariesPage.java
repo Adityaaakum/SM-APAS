@@ -22,6 +22,12 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	ApasGenericFunctions objApasGenericFunctions;
 	Util objUtils;
 	
+	public String dvLowIncomeExemptionAmount = "DV Low Income Exemption Amount";
+	public String dvBasicExemptionAmount = "DV Basic Exemption Amount";
+	public String dvLowIncomeHouseholdLimit = "DV Low Income Household Limit";
+	public String dvAnnualDueDate = "DV Annual Due Date";
+	public String dvAnnualDueDate2 = "DV Annual Due Date 2";
+
 	public RealPropertySettingsLibrariesPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
@@ -39,37 +45,40 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//button[@title = 'Save']")
 	public WebElement saveButton;
 
-	//@FindBy(xpath = "//label/span[text() = 'RP Setting Name']/../../input")
-	@FindBy(xpath="//label[text() = 'RP Setting Name']/following-sibling::div/input")
+	@FindBy(xpath = "//label/span[text() = 'RP Setting Name']/../../input")
 	public WebElement rpSettingNameEditBox;
-
-	//@FindBy(xpath = "//span[text() = 'Status']/parent::span/following-sibling::div//a[@class = 'select']")
-	@FindBy(xpath="//label[text()='Status']/following-sibling::div//input")
-	public WebElement statusDropDown;
 	
-	//@FindBy(xpath = "//input[@title='Search Roll Year Settings']")
-	@FindBy(xpath="//label[text()='Roll Year Settings']/following-sibling::div//input")
+
+	/*
+	 * @FindBy(xpath =
+	 * "//span[text() = 'Status']/parent::span/following-sibling::div//a[@class = 'select']"
+	 * ) public WebElement statusDropDown;
+	 */
+	
+	/*@FindBy(xpath = "//*[@aria-hidden='false']//*[text() = 'Status']//following-sibling::div//input")
+	public WebElement statusDropDown;*/
+	public String statusDropDown="Status";
+	
+	
+	@FindBy(xpath = "//input[@title='Search Roll Year Settings']")
 	public WebElement searchRollYearSettingsLookup;
 	
-	//@FindBy(xpath = "//label/span[text()='DV Low Income Exemption Amount']/../../input")
-	@FindBy(xpath="//label[text()='DV Low Income Exemption Amount']/following-sibling::div//input")
+	@FindBy(xpath = "//*[@aria-hidden='false']//*[text()='DV Low Income Exemption Amount']//following-sibling::div//input")
 	public WebElement dvLowIncomeExemptionAmountEditBox;
 
-	//@FindBy(xpath = "//label/span[text()='DV Basic Exemption Amount']/../../input")
-	@FindBy(xpath="//label[text()='DV Basic Exemption Amount']/following-sibling::div//input")
+	@FindBy(xpath = "//*[@aria-hidden='false']//*[text()='DV Basic Exemption Amount']//following-sibling::div//input")
 	public WebElement dvBasicIncomeExemptionAmountEditBox;
 	
-	//@FindBy(xpath = "//label/span[text()='DV Low Income Household Limit']/../../input")
-	@FindBy(xpath="//label[text()='DV Low Income Household Limit']/following-sibling::div//input")
+	@FindBy(xpath = "//*[@aria-hidden='false']//*[text()='DV Low Income Household Limit']//following-sibling::div//input")
 	public WebElement dvLowIncomeHouseholdLimitEditBox;
 	
-	//@FindBy(xpath = "//label/span[text()='DV Annual Due Date']/../following-sibling::div/input")
-	@FindBy(xpath="//label[text()='DV Annual Due Date']/following-sibling::div//input")
-	public WebElement dvLowIncomeHouseholdLimitDatePicker;
+	/*@FindBy(xpath = "//label/span[text()='DV Annual Due Date']/../following-sibling::div/input")
+	public WebElement dvLowIncomeHouseholdLimitDatePicker;*/
+	public String dvLowIncomeHouseholdLimitDatePicker="DV Annual Due Date";
 	
-	//@FindBy(xpath = "//label/span[text()='DV Annual Due Date 2']/../following-sibling::div/input")
-	@FindBy(xpath="//label[text()='DV Annual Due Date 2']/following-sibling::div//input")
-	public WebElement dvAnnualLowIncomeDueDate2DatePicker;
+	/*@FindBy(xpath = "//label/span[text()='DV Annual Due Date 2']/../following-sibling::div/input")
+	public WebElement dvAnnualLowIncomeDueDate2DatePicker;*/
+	public String dvAnnualLowIncomeDueDate2DatePicker="DV Annual Due Date 2";
 	
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']")
 	public WebElement successAlert;
@@ -95,8 +104,8 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input")
 	public WebElement globalSearchListEditBox;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//button[text() = 'Edit']")
-    public WebElement editButton;
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text() = 'Edit']")
+	public WebElement editButton;
 
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//button[text() = 'Delete']")
 	public WebElement deleteButton;
@@ -107,7 +116,8 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//span[text() = 'Next']")
 	public WebElement nextButton;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//table//tbody//tr")
+	//@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal')]//table//tbody//tr")
+	@FindBy(xpath = "//div[contains(@class,'--inactive inlineEditGrid forceInlineEditGrid')]//table//tbody/tr")
     public List<WebElement> numberOfRPSL;
 	
 	@FindBy(xpath = "//div[@class='uiBlock']//p[@class='detail']//span")
@@ -127,6 +137,15 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	
 	public String xPathErrorMsg = "//div[@class='uiBlock']//p[@class='detail']//span";
 	
+	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='DV Low Income Household Limit']/parent::div/following-sibling::div//lightning-formatted-text")
+	public WebElement lowIncomeHouseholdLimitDetails;
+	
+	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='DV Low Income Exemption Amount']/parent::div/following-sibling::div//lightning-formatted-text")
+	public WebElement lowIncomeExemptionAmtDetails;
+	
+	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='DV Basic Exemption Amount']/parent::div/following-sibling::div//lightning-formatted-text")
+	public WebElement basicExemptionAmtDetails;
+	
 	
 	/**
 	 * @Description: This method is to handle fields like Status
@@ -135,12 +154,11 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	 * @param value: Like 'Yet to be submit for Approval or Approved' for Status field etc.
 	 * @throws Exception
 	 */
-	public void selectFromDropDown(WebElement element, String value) throws Exception {
-		Click(element);
-		String xpathStr = //"//div[contains(@class, 'uiPopupTarget')]//a[text() = '" + value + "']";
-		                  "//lightning-base-combobox-item//span[@title='" + value + "']";
-		WebElement drpDwnOption = locateElement(xpathStr, 100);
-		drpDwnOption.click();
+	/*public void selectFromDropDown(WebElement element, String value) throws Exception {
+		objApasGenericFunctions.selectFromDropDown(element, value);
+	}*/
+	public void selectFromDropDown(Object element, String value) throws Exception {
+		selectOptionFromDropDown(element, value);
 	}
 	
 	/**
@@ -149,8 +167,9 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	 * @throws Exception 
 	 */
 	public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
-		waitUntilElementIsPresent("//*/span[text() = '\" + fieldName + \"']//..//..//..//ul[contains(@class,'has-error')]//li", 2);
-		return getElementText(driver.findElement(By.xpath("//*/span[text() = '" + fieldName + "']//..//..//..//ul[contains(@class,'has-error')]//li")));
+		//waitUntilElementIsPresent("//*/span[text() = '\" + fieldName + \"']//..//..//..//ul[contains(@class,'has-error')]//li", 2);
+		//return getElementText(driver.findElement(By.xpath("//*/span[text() = '" + fieldName + "']//..//..//..//ul[contains(@class,'has-error')]//li")));
+		return objApasGenericFunctions.getIndividualFieldErrorMessage(fieldName);
 	}
 
 	
@@ -163,14 +182,14 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		Click(newButton);
 		//selectRecordType("Exemption Limits");
 		ReportLogger.INFO("Entering details for Real Property Settings record");
-		enter(rpSettingNameEditBox,rollYear);
-		selectFromDropDown(statusDropDown,dataMap.get("Status"));
-		searchAndSelectFromDropDown(searchRollYearSettingsLookup,rollYear);
-		enter(dvLowIncomeExemptionAmountEditBox,dataMap.get("DV Low Income Exemption Amount"));
-		enter(dvBasicIncomeExemptionAmountEditBox,dataMap.get("DV Basic Exemption Amount"));
-		enter(dvLowIncomeHouseholdLimitEditBox,dataMap.get("DV Low Income Household Limit Amount"));
-		enter(dvLowIncomeHouseholdLimitDatePicker, dataMap.get("DV Annual Low Income Due Date")+"/"+rollYear);
-		enter(dvAnnualLowIncomeDueDate2DatePicker, dataMap.get("DV Annual Low Income Due Date2")+"/"+rollYear);	
+		enter("RP Setting Name",rollYear);
+		selectOptionFromDropDown("Status",dataMap.get("Status"));
+		searchAndSelectFromDropDown("Roll Year Settings",rollYear);
+		enter(dvLowIncomeExemptionAmount,dataMap.get("DV Low Income Exemption Amount"));
+		enter(dvBasicExemptionAmount,dataMap.get("DV Basic Exemption Amount"));
+		enter(dvLowIncomeHouseholdLimit,dataMap.get("DV Low Income Household Limit Amount"));
+		enter(dvAnnualDueDate, dataMap.get("DV Annual Low Income Due Date")+"/"+rollYear);
+		enter(dvAnnualDueDate2, dataMap.get("DV Annual Low Income Due Date2")+"/"+rollYear);
 	}
 	
 	/**
@@ -236,7 +255,8 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		 */
 		public WebElement getRPSLRecord(String rollYear) throws Exception {		
 			Thread.sleep(2000);
-			String xpathStr = "//a[@title='Exemption Limits - " + rollYear + "']";
+			//String xpathStr = "//a[@title='Exemption Limits - " + rollYear + "']";
+			String xpathStr = "//span[contains(@class,'slds-grid slds-grid--align-spread')]/a[@title='Exemption Limits - " + rollYear + "']";
 			return locateElement(xpathStr, 30);
 		}	 
 }

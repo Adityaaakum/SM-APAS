@@ -69,8 +69,7 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//button[@title=  'Select']")
 	public WebElement selectRollYearButton;
 	
-	//@FindBy(xpath = "//div[@class = 'dv-tab-bppt-container']//button[@title = 'More Tabs']")
-	@FindBy(xpath = "//div[contains(@class, 'windowViewMode-normal')]//button[@title = 'More Tabs']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@title = 'More Tabs']")
 	public WebElement moreTab;
 
 	@FindBy(xpath = "//button[contains(@class, 'slds-button_brand') and text() = 'Cancel']")
@@ -112,7 +111,10 @@ public class BppTrendPage extends Page {
 	
 	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//a[text() = 'No actions available']")
 	public WebElement noActionsLinkUnderShowMore;
-	
+
+	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//div[@class='forceActionLink'][@role='button'][text()='Edit']")
+	public WebElement editLinkUnderShowMore;
+
 	@FindBy(xpath = "(//h1[text() = 'BPP Settings']//ancestor::div[contains(@class, 'slds-page-header')]//following-sibling::div//table//tbody/tr//th//a[1])//parent::span//parent::th//following-sibling::td//a[@role = 'button']")
 	public WebElement showMoreDropDownViewAllPage;
 	
@@ -210,7 +212,7 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//button[text() = 'Submit All Factors for Approval'] | //button[@title = 'Submit All Factors for Approval']")
 	public WebElement submitAllFactorForApprovalButton;
 
-	@FindBy(xpath = "//button[text() = 'Approve All'] | //button[@title = 'Approve All']")
+	@FindBy(xpath = "//button[text() = 'Approve all'] | //button[@title = 'Approve all']")
 	public WebElement approveAllButton;
 
 	@FindBy(xpath = "//span[text() = 'BPP Trend Roll Year']//parent::label//following-sibling::div//input")
@@ -324,7 +326,7 @@ public class BppTrendPage extends Page {
 	@FindBy(xpath = "//lightning-tab[contains(@class,'slds-show')]//div[@class = 'hightlight-tab-message']")
 	public WebElement tableMessage;
 	
-	@FindBy(xpath = "//div[contains(@class, 'windowViewMode-normal')]//div[@class='warning']//h2")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[@class='warning']//h2")
 	public WebElement reCalculateWarningMessage;
 	
 	public String xPathBPPSettingName = "//span[contains(text(), 'BPP Settings')]//ancestor::div[contains(@class, 'forceRelatedListCardHeader')]//following-sibling::div//h3//a";
@@ -352,6 +354,8 @@ public class BppTrendPage extends Page {
 	public String  xpathTableMessage = "//lightning-tab[contains(@class,'slds-show')]//div[@class = 'hightlight-tab-message']";
 	
 	public String xpathSpinner = "//lightning-spinner";
+
+	public String xpathSubmitAllFactorsForApprovalBtn = "//button[text() = 'Submit All Factors for Approval'] | //button[@title = 'Submit All Factors for Approval']";
 	/**
 	 * Description: This will select the roll year from the drop down
 	 * @param rollYear: Roll Year to select from drop down
@@ -1114,31 +1118,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//h2[contains(text(), '"+ TestBase.CONFIG.getProperty("approveTabDataMsg") +"')]";
 		return getElementText(locateElement(xpath, 10));
 	}
-	/**
-	 * Description: Waits until the page spinner goes invisible within given timeout
-	 * @param: Takes Xpath as an argument
-	 * @throws: Exception
-	 */
-	public void waitForPageSpinnerToDisappear(int...timeOutInSeconds) throws Exception {
-		String xpath = "//lightning-spinner[contains(@class, 'slds-spinner_container')]//div[contains(@class, 'slds-spinner')]";		
-		WebElement element;
-		if(timeOutInSeconds.length == 0) {
-			element = locateElement(xpath, 30);
-		} else {
-			element = locateElement(xpath, timeOutInSeconds[0]);
-		}
-		
-		if(element != null) {
-			for(int i = 0; i < 500; i++) {
-				try{
-					element = driver.findElement(By.xpath(xpath));
-					Thread.sleep(100);
-				} catch (Exception ex) {
-					break;		
-				}
-			}
-		}
-	}
+	
 
 //	public void deleteDuplicateCPI(String rollYear) {
 //		String queryForRollYearId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '"+rollYear+"'";
@@ -1177,6 +1157,32 @@ public class BppTrendPage extends Page {
 			jsonObj.put(columnName, expectedStatus);
 		}
 		objSalesforceAPI.update("BPP_Trend_Roll_Year__c", queryForID, jsonObj);
+	}
+	
+	/**
+	 * Description: Waits until the page spinner goes invisible within given timeout
+	 * @param: Takes Xpath as an argument
+	 * @throws: Exception
+	 */
+	public void waitForPageSpinnerToDisappear(int...timeOutInSeconds) throws Exception {
+		String xpath = "//lightning-spinner[contains(@class, 'slds-spinner_container')]//div[contains(@class, 'slds-spinner')]";		
+		WebElement element;
+		if(timeOutInSeconds.length == 0) {
+			element = locateElement(xpath, 30);
+		} else {
+			element = locateElement(xpath, timeOutInSeconds[0]);
+		}
+		
+		if(element != null) {
+			for(int i = 0; i < 500; i++) {
+				try{
+					element = driver.findElement(By.xpath(xpath));
+					Thread.sleep(100);
+				} catch (Exception ex) {
+					break;		
+				}
+			}
+		}
 	}
 	
 }

@@ -289,7 +289,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		
 		//Step8: Update the RPSL Status
 		ReportLogger.INFO("Editing the Status field to 'Approved'");
-		objRPSLPage.selectFromDropDown(objRPSLPage.statusDropDown,"Approved");		
+		objApasGenericFunctions.selectFromDropDown(objRPSLPage.statusDropDown,"Approved");		
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
 		System.out.println("success message is :"+strSuccessAlertMessage);
 		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + value + "\" was saved.","RPSL is edited successfully");

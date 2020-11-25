@@ -32,7 +32,7 @@ public class ParcelsPage extends Page {
 	 */
 	public void openParcel(String APN) throws IOException, InterruptedException {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening the parcel with APN : " + APN);
-		Click(driver.findElement(By.xpath("//a[@title='" + APN + "']")));
+		Click(driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title='" + APN + "']")));
 		Thread.sleep(2000);
 	}
 }

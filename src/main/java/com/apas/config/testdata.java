@@ -1,7 +1,9 @@
 package com.apas.config;
 
 public interface testdata {
-	
+
+	String DOWNLOAD_FOLDER = System.getProperty("user.dir") + "\\downloads";
+
 	//List of test data files used in different test cases
 	public static final String BUILDING_PERMIT_ATHERTON = "\\data\\BuildingPermit\\AthertonBuildingPermits\\";
 	public static final String BUILDING_PERMIT_SAN_MATEO = "\\data\\BuildingPermit\\SanMateoBuildingPermits\\";
@@ -39,7 +41,7 @@ public interface testdata {
 
 
     public static final String EFILEIMPORT_INVALIDDATA = "\\data\\EFileImportInvalidFiles\\";
-    public static final String EFILEIMPORT_BPPTRENDSDATA = "\\data\\EFileImportBppTrend";
+    public static final String EFILEIMPORT_BPPTRENDSDATA = "\\data\\EFileImportBppTrend\\";
     public static final String EFILEIMPORT_BPDATA = "\\data\\EFileImportBP\\";
 
     public static final String COUNTY_STRAT_CODES = "\\data\\CountyStratCodes";

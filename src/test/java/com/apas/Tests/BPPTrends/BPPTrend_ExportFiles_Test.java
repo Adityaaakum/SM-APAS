@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.apas.config.testdata;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
@@ -69,7 +70,7 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 	@Test(description = "SMAB-T266,SMAB-T303,SMAB-T313: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
 	public void BppTrend_Verify_Export_CompositeAndValuationButtons_Visible(String loginUser) throws Exception {
 		
-		String downloadLocation = CONFIG.getProperty("downloadFolder");
+		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		ReportLogger.INFO("Download location : " + downloadLocation);		
 		
 		/*
@@ -158,7 +159,7 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 	@Test(description = "SMAB-T206: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
 	public void BppTrend_Verify_Download(String loginUser) throws Exception {
 		
-		String downloadLocation = CONFIG.getProperty("downloadFolder");
+		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		ReportLogger.INFO("Download location : " + downloadLocation);		
 		
 		/*
@@ -193,7 +194,7 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 	@Test(description = "SMAB-T1132: Verifying download functionality for excel files", dataProvider = "loginPrincipalUser", groups = {"regression","BPPTrend"}, dataProviderClass = DataProviders.class)
 	public void BppTrend_Export_CompositeAndValuationFactor_Files(String loginUser) throws Exception {
 		
-		String downloadLocation = CONFIG.getProperty("downloadFolder");
+		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		ReportLogger.INFO("Download location : " + downloadLocation);		
 		
 		/*
@@ -246,7 +247,7 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		//Step1: Login to the APAS application, Opening the BPP Trend module and selecting the Roll Year
 		objApasGenericFunctions.login(loginUser);
 		
-		String downloadLocation = CONFIG.getProperty("downloadFolder");
+		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		ReportLogger.INFO("Download location : " + downloadLocation);
 		
 		//Step1: Updating the composite factor and Valuation factor tables status

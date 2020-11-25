@@ -57,92 +57,86 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title = 'New']")
 	public WebElement newExemptionButton;
 
-	//@FindBy(xpath = "//input[@placeholder='Search Parcels...']")
-	@FindBy(xpath="//label[text()='APN']/following-sibling::div//input")
-	public WebElement apn;
+	//@FindBy(xpath = "//input[@title='Search Parcels']")
+	public String apn="APN";
 
-	@FindBy(xpath = "//label[contains(.,'Date Application Received')]/following::input[1]")
-	public WebElement dateApplicationReceived;
+	//@FindBy(xpath = "//label[contains(.,'Date Application Received')]/following::input[1]")
+	public String dateApplicationReceived="Date Application Received";
 	
-	//@FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//div[contains(.,'Date Application Received')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
-	@FindBy(xpath = "//div[contains(.,'Date Application Received')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Date Application Received')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement dateApplicationReceivedExemptionDetails;
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Grace End Date')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement graceEndDateExemptionDetails;
 	
-	@FindBy(xpath = "//input[@placeholder='Search Assessees...']")
-	public WebElement claimantName;
+	//@FindBy(xpath = "//input[@title='Search Assessees']")
+	public String claimantName="Claimant's Name";
 
-	@FindBy(xpath = "//label[contains(.,\"Claimant's SSN\")]/following::input[1]")
-	public WebElement claimantSSN;
+	//@FindBy(xpath = "//label[contains(.,\"Claimant's SSN\")]/following::input[1]")
+	public String claimantSSN="Claimant's SSN";
 
-	@FindBy(xpath = "//label[contains(.,\"Spouse's Name\")]/following::input[1]")
-	public WebElement spouseName;
+	//@FindBy(xpath = "//label[contains(.,\"Spouse's Name\")]/following::input[1]")
+	public String spouseName="Spouse's Name";
 
-	@FindBy(xpath = "//label[contains(.,\"Spouse's SSN\")]/following::input[1]")
-	public WebElement spouseSSN;
+	//@FindBy(xpath = "//label[contains(.,\"Spouse's SSN\")]/following::input[1]")
+	public String spouseSSN="Spouse's SSN";
 
-	@FindBy(xpath = "//span[@data-aura-class='uiPicklistLabel' and contains(.,'Unmarried Spouse of Deceased Veteran?')]/following::div[1]//div/a")
-	public WebElement unmarriedSpouseOfDisabledVeteran;
+	//@FindBy(xpath = "//span[@data-aura-class='uiPicklistLabel' and contains(.,'Unmarried Spouse of Deceased Veteran?')]/following::div[1]//div/a")
+	public String unmarriedSpouseOfDisabledVeteran="Unmarried Spouse of Deceased Veteran?";
 
-	@FindBy(xpath = "//label[contains(.,'Date of Death of Veteran')]/following::input[1]")
-	public WebElement dateOfDeathOfVeteran;
+	//@FindBy(xpath = "//label[contains(.,'Date of Death of Veteran')]/following::input[1]")
+	public String dateOfDeathOfVeteran="Date of Death of Veteran";
 
-	@FindBy(xpath = "//label[contains(.,\"Veteran's Name\")]/following::input[1]")
-	public WebElement veteranName;
+	//@FindBy(xpath = "//label[contains(.,\"Veteran's Name\")]/following::input[1]")
+	public String veteranName="Veteran's Name";
 
-	@FindBy(xpath = "//label[contains(.,\"Veteran's SSN\")]/following::input[1]")
-	public WebElement veteranSSN;
+	//@FindBy(xpath = "//label[contains(.,\"Veteran's SSN\")]/following::input[1]")
+	public String veteranSSN="Veteran's SSN";
 
-	@FindBy(xpath = "//label[contains(.,'Date Acquired Property')]/following::input[1]")
-	public WebElement dateAquiredProperty;
+	//@FindBy(xpath = "//label[contains(.,'Date Acquired Property')]/following::input[1]")
+	public String dateAquiredProperty="Date Acquired Property";
 	
-	/*
-	 * @FindBy(xpath = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//div[contains(.,'Date Acquired Property')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text"
-	 * ) public WebElement dateAquiredPropertyExemptionDetails;
-	 */
-	@FindBy(xpath="//span[contains(text(),'Date Acquired Property')]")
-	public static WebElement dateAquiredPropertyExemptionDetails ;
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Date Acquired Property')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
+	public WebElement dateAquiredPropertyExemptionDetails;
 	
 	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//li[@title='Details']//a[@data-tab-value='detailTab']")
 	public WebElement exemptionDetailsTab;
 
-	@FindBy(xpath = "//label[contains(.,'Date Occupied/Intend to Occupy Property')]/following::input[1]")
-	public WebElement dateOccupyProperty;
+	//@FindBy(xpath = "//label[contains(.,'Date Occupied/Intend to Occupy Property')]/following::input[1]")
+	public String dateOccupyProperty="Date Occupied/Intend to Occupy Property";
 	
-	@FindBy(xpath = "//label[contains(.,'Date of Notice of 100% Rating')]/following::input[1]")
-	public WebElement dateOfNoticeOfRating;
+	//@FindBy(xpath = "//label[contains(.,'Date of Notice of 100% Rating')]/following::input[1]")
+	public String dateOfNoticeOfRating="Date of Notice of 100% Rating";
 	
-	@FindBy(xpath = "//label[contains(.,'Date Acquired Property')]/following::input[1]")
-	public WebElement dateAcquiredProperty;
+	//@FindBy(xpath = "//label[contains(.,'Date Acquired Property')]/following::input[1]")
+	public String dateAcquiredProperty="Date Acquired Property";
 	
 	@FindBy(xpath = "//button[@title='Save']")
 	public static WebElement saveButton;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Date Occupied/Intend to Occupy Property')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text") 
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Date Occupied/Intend to Occupy Property')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement dateOccupyPropertyExemptionDetails;
 	
 	@FindBy(xpath = "//span[@data-aura-class='uiPicklistLabel' and contains(.,'DV Exemption on Prior Residence')]/following::div[1]//div/a")
 	public WebElement dvExemptionOnPriorResidence;
 
-	@FindBy(xpath = "//label[contains(.,'Date Moved From Prior Residence')]/following::input[1]")
-	public WebElement dateMoveFromProprResidence;
+	//@FindBy(xpath = "//label[contains(.,'Date Moved From Prior Residence')]/following::input[1]")
+	public String dateMoveFromProprResidence="Date Moved From Prior Residence";
 
-	@FindBy(xpath = "//label[contains(.,'Prior Residence Street Address')]/following::input[1]")
-	public WebElement priorResidenceStreetAddress;
+	//@FindBy(xpath = "//label[contains(.,'Prior Residence Street Address')]/following::input[1]")
+	public String priorResidenceStreetAddress="Prior Residence Street Address";
 
-	@FindBy(xpath = "//label[contains(.,'Prior Residence City')]/following::input[1]")
-	public WebElement priorResidenceCity;
+	//@FindBy(xpath = "//label[contains(.,'Prior Residence City')]/following::input[1]")
+	public String priorResidenceCity="Prior Residence City";
 
 	@FindBy(xpath = "//span[@data-aura-class='uiPicklistLabel' and contains(.,'Prior Residence State')]/following::div[1]//div/a")
 	public WebElement priorResidenceState;
 
-	@FindBy(xpath = "//label[contains(.,'Prior Residence County')]/following::input[1]")
-	public WebElement priorResidenceCounty;
+	//@FindBy(xpath = "//label[contains(.,'Prior Residence County')]/following::input[1]")
+	public String priorResidenceCounty="Prior Residence County";
 
-	@FindBy(xpath = "//label[contains(.,'Effective Date of 100% USDVA Rating')]/following::input[1]")
-	public WebElement effectiveDateOfUSDVA;
+	//@FindBy(xpath = "//label[contains(.,'Effective Date of 100% USDVA Rating')]/following::input[1]")
+	public String effectiveDateOfUSDVA="Effective Date of 100% USDVA Rating";
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Effective Date of 100% USDVA Rating')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement effectiveDateOfUSDVAExemptionDetails;
@@ -163,18 +157,18 @@ public class ExemptionsPage extends ApasGenericPage {
 	public WebElement claimantTelephone;
 
 	//@FindBy(xpath = "//span[contains(.,'Qualification?')]/following-sibling::div[@class='uiMenu']")
-	@FindBy(xpath = "//label[text()='Qualification?']/following-sibling::div/lightning-base-combobox/div/div/input")
-	public WebElement qualification;
+	//@FindBy(xpath = "//label[text()='Qualification?']/following-sibling::div/lightning-base-combobox/div/div/input")
+	public String qualification= "Qualification?";
 	
-	@FindBy(xpath = "//span[contains(.,'Reason for Not Qualified')]/following-sibling::div[@class='uiMenu']")
-	public WebElement reasonNotQualified;
+	//@FindBy(xpath = "//span[contains(.,'Reason for Not Qualified')]/following-sibling::div[@class='uiMenu']")
+	public String reasonNotQualified = "Reason for Not Qualified";
 	
 	@FindBy(xpath = "//label[contains(.,'Not Qualified Detail')]/following-sibling::textarea")
 	public WebElement notQualifiedDetail;
 
 	//@FindBy(xpath = "//span[@data-aura-class='uiPicklistLabel' and contains(.,'End Rating Reason')]/following::div[1]//div/a")
-	@FindBy(xpath = "//label[text()='End Rating Reason']/following-sibling::div/lightning-base-combobox/div/div/input")
-	public WebElement endRatingReason;
+	//@FindBy(xpath = "//label[text()='End Rating Reason']/following-sibling::div/lightning-base-combobox/div/div/input")
+	public String endRatingReason ="End Rating Reason" ;
 	
 	@FindBy(xpath = "//label[contains(.,'End Date of Rating')]/following::input[1]")
 	public WebElement endDateOfRating;
@@ -230,9 +224,7 @@ public class ExemptionsPage extends ApasGenericPage {
 	@FindBy(xpath="//li[@class='form-element__help']")
 	public WebElement fieldErrorMsg;
 	
-	
-    //@FindBy(xpath="//div[@class='windowViewMode-normal oneContent active lafPageHost']//div[contains(text(),'Exemption')]//following-sibling::slot/slot/lightning-formatted-text") 	
-	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(text(),'Exemption')]/..//slot/slot/lightning-formatted-text")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(text(),'Exemption')]//following-sibling::slot/slot/lightning-formatted-text")
 	public WebElement newExemptionNameAftercreation;
 	
 	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(text(),'Status')]/parent::div/following-sibling::div//span//slot[@slot='outputField']//lightning-formatted-text")
@@ -439,10 +431,10 @@ public class ExemptionsPage extends ApasGenericPage {
 public String createNewExemption(Map<String,String> newExemptionData) throws Exception {
 
 	ReportLogger.INFO("Entering/Selecting values for New Exemption record");
-	apasGenericObj.searchAndSelectFromDropDown(apn,fetchActiveAPN());
+	apasGenericObj.searchAndSelectFromDropDown("APN",fetchActiveAPN());
 	objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
 	apasGenericObj.searchAndSelectFromDropDown(claimantName,fetchAssesseeName());
-	objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
+	objPage.enter("Claimant's Name", newExemptionData.get("ClaimantSSN"));
 	objPage.enter(spouseName, newExemptionData.get("SpouseName"));
 	objPage.enter(spouseSSN, newExemptionData.get("SpouseSSN"));
 	apasGenericObj.selectFromDropDown(unmarriedSpouseOfDisabledVeteran, newExemptionData.get("UnmarriedSpouseOfDisabledVeteran"));
@@ -478,9 +470,9 @@ public String createNewExemption(Map<String,String> newExemptionData) throws Exc
 public String createNewExemptionWithMandatoryData(Map<String, String> newExemptionData) throws Exception {
 	
 	ReportLogger.INFO("Entering/Selecting values for New Exemption record");
-		apasGenericObj.searchAndSelectFromDropDown(apn,fetchActiveAPN());
+		apasGenericObj.searchAndSelectFromDropDown("APN",fetchActiveAPN());
 		objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-		apasGenericObj.searchAndSelectFromDropDown(claimantName,fetchAssesseeName());
+		apasGenericObj.searchAndSelectFromDropDown("Claimant's Name",fetchAssesseeName());
 		objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
 		objPage.enter(veteranName, newExemptionData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 		objPage.enter(veteranSSN, newExemptionData.get("VeteranSSN"));
@@ -529,14 +521,14 @@ public void enterExemptionData(Map<String, String> dataMap) throws Exception {
 	enter(claimantSSN, dataMap.get("Claimant SSN"));
 	if(dataMap.containsKey("Veteran Name")) enter(nameOfVeteran, dataMap.get("Veteran Name"));
 	if(dataMap.containsKey("Veteran SSN")) enter(veteranSSN, dataMap.get("Veteran SSN"));
-	enterDate(dateAquiredProperty, dataMap.get("Date Acquired Property"));
-	enterDate(dateOccupiedProperty, dataMap.get("Date Occupied/Intend to Occupy Property"));
-	enterDate(dateOfNotice, dataMap.get("Date of Notice of 100% Rating"));
-	enterDate(effectiveDateOfUSDVA, dataMap.get("Effective Date of 100% USDVA Rating"));
+	enter(dateAquiredProperty, dataMap.get("Date Acquired Property"));
+	enter(dateOccupiedProperty, dataMap.get("Date Occupied/Intend to Occupy Property"));
+	enter(dateOfNotice, dataMap.get("Date of Notice of 100% Rating"));
+	enter(effectiveDateOfUSDVA, dataMap.get("Effective Date of 100% USDVA Rating"));
 	apasGenericObj.selectMultipleValues(dataMap.get("Basis For Claim"), "Basis for Claim");
 	apasGenericObj.selectFromDropDown(qualification, dataMap.get("Qualification?"));	
 	if(dataMap.containsKey("Reason for Not Qualified")) apasGenericObj.selectFromDropDown(reasonNotQualified, dataMap.get("Reason for Not Qualified"));;
-	if(dataMap.containsKey("End Date Of Rating")) enterDate(endDateOfRating, dataMap.get("End Date Of Rating"));	
+	if(dataMap.containsKey("End Date Of Rating")) enter(endDateOfRating, dataMap.get("End Date Of Rating"));	
 	if(dataMap.containsKey("End Rating Reason")) apasGenericObj.selectFromDropDown(endRatingReason, dataMap.get("End Rating Reason"));		
 }
 
@@ -551,7 +543,7 @@ public void updateFieldValue(String fieldType, String fieldName, String fieldVal
 	Thread.sleep(1000);
 	WebElement elemLocator = findElem(fieldType, fieldName);
 	scrollToElement(elemLocator);
-	if(fieldType.equals("Date")) enterDate(elemLocator, fieldValue);
+	if(fieldType.equals("Date")) enter(elemLocator, fieldValue);
 	if(fieldType.equals("Dropdown")) apasGenericObj.selectFromDropDown(elemLocator, fieldValue);
 }
 

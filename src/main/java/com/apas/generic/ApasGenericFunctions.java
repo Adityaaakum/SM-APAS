@@ -21,9 +21,11 @@ import com.apas.Reports.ReportLogger;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
@@ -72,9 +74,29 @@ public class ApasGenericFunctions extends TestBase {
         objPage.enter(objLoginPage.txtpassWord, password);
         objPage.Click(objLoginPage.btnSubmit);
         ReportLogger.INFO("User logged in the application");
+        //closeDefaultOpenTabs();
     }
 
-    /**
+    private void closeDefaultOpenTabs() throws Exception {
+    	ReportLogger.INFO("Closing all default tabs");
+    	
+    	objPage.waitForElementToBeClickable(objApasGenericPage.appLauncher, 10);
+    	/*Robot rb=new Robot();
+    	rb.keyPress(KeyEvent.VK_SHIFT);
+    	rb.keyPress(KeyEvent.VK_W);
+    	rb.keyRelease(KeyEvent.VK_W);
+    	rb.keyRelease(KeyEvent.VK_SHIFT);
+		*/
+		  Actions objAction=new Actions(driver);
+		  objAction.keyDown(Keys.SHIFT).sendKeys("w").keyUp(Keys.SHIFT).perform();
+		 
+		if(objPage.verifyElementVisible(objApasGenericPage.closeAllBtn))
+			{objPage.javascriptClick(objApasGenericPage.closeAllBtn);}
+		Thread.sleep(3000);
+		
+	}
+
+	/**
      * Description: This method will search the module in APAS based on the parameter passed
      *
      * @param moduleToSearch : Module Name to search and open
@@ -82,6 +104,7 @@ public class ApasGenericFunctions extends TestBase {
     public void searchModule(String moduleToSearch) throws Exception {
         ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
         objPage.waitForElementToBeClickable(objApasGenericPage.appLauncher, 60);
+        Thread.sleep(5000);
         objPage.Click(objApasGenericPage.appLauncher);
         objPage.waitForElementToBeClickable(objApasGenericPage.appLauncherSearchBox, 60);
         objPage.enter(objApasGenericPage.appLauncherSearchBox, moduleToSearch);
@@ -148,7 +171,11 @@ public class ApasGenericFunctions extends TestBase {
      */
     public void globalSearchRecords(String searchString) throws Exception {
         ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
-        objApasGenericPage.searchAndSelectFromDropDown(objApasGenericPage.globalSearchListEditBox, searchString);
+        objPage.Click(driver.findElement(By.xpath("//div[@data-aura-class='forceSearchAssistant']//button")));
+        objPage.enter(objApasGenericPage.globalSearchListEditBox,searchString);
+        String xpath = "//*[@role='option']//span[@title = '" + searchString + "']";
+        objPage.waitUntilElementIsPresent(xpath,5);
+        objPage.Click(driver.findElement(By.xpath(xpath)));
         Thread.sleep(5000);
     }
 
@@ -184,12 +211,13 @@ public class ApasGenericFunctions extends TestBase {
      */
     public String getFieldValueFromAPAS(String fieldName, String sectionName) {
         String sectionXpath = "//force-record-layout-section[contains(.,'" + sectionName + "')]";
+        String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName + "']/../..//slot[@slot='outputField']";
 
-        String fieldXpath = sectionXpath + "//force-record-layout-item//span[text()='" + fieldName + "']/../..//slot[@slot='outputField']//force-hoverable-link//a | " +
-                sectionXpath + "//force-record-layout-item//span[text()='" + fieldName + "']/../..//slot[@slot='outputField']//lightning-formatted-text | " +
-                sectionXpath + "//force-record-layout-item//span[text()='" + fieldName + "']/../..//slot[@slot='outputField']//lightning-formatted-number | " +
-                sectionXpath + "//force-record-layout-item//span[text()='" + fieldName + "']/../..//slot[@slot='outputField']//lightning-formatted-rich-text | " +
-                sectionXpath + "//force-record-layout-item//span[text()='" + fieldName + "']/../..//slot[@slot='outputField']//force-record-type//span";
+        String fieldXpath = fieldPath + "//force-hoverable-link//a | " +
+                            fieldPath + "//lightning-formatted-text | " +
+                            fieldPath + "//lightning-formatted-number | " +
+                            fieldPath + "//lightning-formatted-rich-text | " +
+                            fieldPath + "//force-record-type//span";
 
         String fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();
         System.out.println(fieldName + " : " + fieldValue);
@@ -235,7 +263,11 @@ public class ApasGenericFunctions extends TestBase {
     public HashMap<String, ArrayList<String>> getGridDataInHashMap(int tableIndex, int rowNumber) {
         ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
         //This code is to fetch the data for a particular row in the grid in the table passed in tableIndex
+        String xpath="(//*[@class='slds-tabs_scoped__content slds-show']//table)[" + tableIndex + "]";
         String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table)[" + tableIndex + "]";
+        if(objPage.verifyElementVisible(xpath))
+        {xpathTable=xpath;}
+        
         String xpathHeaders = xpathTable + "//thead/tr/th";
         String xpathRows = xpathTable + "//tbody/tr";
         if (!(rowNumber == -1)) xpathRows = xpathRows + "[" + rowNumber + "]";
@@ -297,20 +329,13 @@ public class ApasGenericFunctions extends TestBase {
         return element;
     }
 
-    public void selectFromDropDown(WebElement element, String value) throws Exception {
-        objPage.scrollToElement(element);
-        objPage.Click(element);
-        //String xpathStr = "//div[contains(@class, 'left uiMenuList') and contains(@class, 'visible positioned')]//a[text() = '" + value + "'] | //*[@role='option']//span[@class='slds-media__body']/span[text()='" + value + "']";
-        String xpathStr = "//lightning-base-combobox-item//span[@title='" + value + "']";
-        objPage.waitUntilElementIsPresent(xpathStr, 200);
-        objPage.Click(driver.findElement(By.xpath(xpathStr)));
+
+    public void selectFromDropDown(Object element, String value) throws Exception {
+        objApasGenericPage.selectOptionFromDropDown(element, value);
     }
 
-    public void searchAndSelectFromDropDown(WebElement element, String value) throws Exception {
-        objPage.enter(element, value);
-        String xpathStr = "//lightning-base-combobox-formatted-text[@title = '" + value + "']";
-        WebElement drpDwnOption = locateElement(xpathStr, 10);
-        drpDwnOption.click();
+    public void searchAndSelectFromDropDown(Object element, String value) throws Exception {
+        objApasGenericPage.searchAndSelectOptionFromDropDown(element, value);
     }
 
     /**
@@ -360,15 +385,25 @@ public class ApasGenericFunctions extends TestBase {
      * @throws Exception
      * @Description: This method is to edit(enter) a record by clicking on the pencil icon and save it(field level edit)
      */
-
-    public void editAndInputFieldData(String fieldName, WebElement field, String data) throws Exception {
-        objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'Edit " + fieldName + "')]/ancestor::button");
+    public void editAndInputFieldData(String fieldName, Object field, String data) throws Exception {
+//        objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'Edit " + fieldName + "')]/ancestor::button");
+        if (field == null){
+            field = driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit " + fieldName + "')]"));
+        }
         objPage.enter(field, data);
-        objPage.Click(ExemptionsPage.saveButton);
+        objPage.Click(objApasGenericPage.saveButton);
         Thread.sleep(4000);
 
     }
 
+    /**
+     * This method is to edit(enter) a record by clicking on the pencil icon and save it(field level edit)
+     * @param fieldName: name of the required field
+     * @param data:      the data to be entered in text box
+     */
+    public void editAndInputFieldData(String fieldName, String data) throws Exception {
+        editAndInputFieldData(fieldName,null,data);
+    }
 
     /**
      * @param fieldName: name of the required field
@@ -376,18 +411,12 @@ public class ApasGenericFunctions extends TestBase {
      * @throws Exception
      * @Description: This method is to edit(select) a record by clicking on the pencil icon and save it(field level edit)
      */
-
-
     public void editAndSelectFieldData(String fieldName, String value) throws Exception {
-        objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'Edit " + fieldName + "')]/ancestor::button");
-        WebElement dropdown = driver.findElement(By.xpath("//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'" + fieldName + "')]//div/input"));
-        //selectFromDropDown(dropdown, value);
-        objPage.Click(dropdown);
 
-        String xpathStr = "//div[@class='windowViewMode-normal oneContent active lafPageHost']//lightning-combobox[contains(.,'" + fieldName + "')]//span[@title='" + value + "']";
-        WebElement drpDwnOption = locateElement(xpathStr, 3);
-        drpDwnOption.click();
-        objPage.Click(ExemptionsPage.saveButton);
+        WebElement editButton = driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit " + fieldName + "')]"));
+        objPage.Click(editButton);
+        objApasGenericPage.selectOptionFromDropDown(fieldName,value);
+        objPage.Click(objPage.getButtonWithText("Save"));
         Thread.sleep(4000);
 
     }
@@ -525,8 +554,8 @@ public class ApasGenericFunctions extends TestBase {
      * @description: This method will return the error message appeared against the filed name passed in the parameter
      */
     public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
-        String xpath = "//div[@role='listitem']//span[text()='" + fieldName + "']/../../../ul[contains(@data-aura-class,'uiInputDefaultError')]";
-        objPage.waitUntilElementIsPresent(xpath, 20);
+        String xpath = "//label[text()='" + fieldName + "']/../..//*[contains(@class,'__help')]";
+        objPage.waitUntilElementIsPresent(xpath,20);
         return objPage.getElementText(driver.findElement(By.xpath(xpath)));
     }
 
@@ -569,9 +598,22 @@ public class ApasGenericFunctions extends TestBase {
      * @description: Clicks on the show more link displayed against the given entry
      */
     public void clickShowMoreLink(String entryDetails) throws Exception {
-        String xpathStr = "//table//tbody/tr//th//a[text() = '" + entryDetails + "']//parent::*//parent::th//following-sibling::td//a[@role = 'button']";
+        String xpathStr = "//table//tbody/tr//th//a//span[text() = '" + entryDetails + "']//parent::*//ancestor::th//following-sibling::td//button | //table//tbody/tr//th//a[text() ='" + entryDetails + "']//ancestor::th//following-sibling::td//a[@role='button']";
         WebElement modificationsIcon = locateElement(xpathStr, 60);
         objPage.clickAction(modificationsIcon);
         objPage.waitUntilElementIsPresent(objApasGenericPage.menuList, 5);
+    }
+
+    /**
+     * Description: this method is to sacea record and wait for the success message to disapper
+     *
+     * @throws: Exception
+     */
+    public String saveRecord() throws Exception {
+        objPage.Click(objPage.getButtonWithText("Save"));
+        objPage.waitForElementToBeClickable(objApasGenericPage.successAlert,20);
+        String messageOnAlert = objPage.getElementText(objApasGenericPage.successAlert);
+        waitForElementToDisappear(objApasGenericPage.successAlert,10);
+        return messageOnAlert;
     }
 }

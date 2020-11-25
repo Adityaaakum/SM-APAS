@@ -15,7 +15,8 @@ import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.Page;
-import com.apas.PageObjects.WorkItemMngmntHomePage;
+import com.apas.PageObjects.WorkItemHomePage;
+import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
@@ -36,7 +37,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	Map<String, String> rpslData;
 	String rpslFileDataPath;
 	String newExemptionName;
-	WorkItemMngmntHomePage objWIHomePage;
+	WorkItemHomePage objWIHomePage;
 	SalesforceAPI salesforceAPI;
 	
 	
@@ -50,7 +51,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		objExemptionsPage = new ExemptionsPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
-		objWIHomePage = new WorkItemMngmntHomePage(driver);
+		objWIHomePage = new WorkItemHomePage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		exemptionFilePath = System.getProperty("user.dir") + testdata.EXEMPTION_DATA;
@@ -64,7 +65,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	@Test(description = "SMAB-T1922: APAS system should generate a WI on new Exemption Creation", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","WorkItem_Direct_Review_Update" })
+			groups = {"regression","DV_WorkItem_Exemption"})
 	public void DisabledVeteran_verifyWorkItemGeneratedOnNewExemptionCreation(String loginUser) throws Exception {
 		  
 		   Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -90,7 +91,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		   
 		    //Step4: Opening the Work Item Module
 		    ReportLogger.INFO("Step 4: Search open App. module - Work Item Management from App Launcher");
-		   objApasGenericFunctions.searchModule(modules.WORKITEM_MNGMNT);
+		   objApasGenericFunctions.searchModule(modules.HOME);
 
 		   //Step5: Click on the Main TAB - Home
 		   ReportLogger.INFO("Step 5: Click on the Main TAB - Home");
@@ -132,7 +133,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	@Test(description = "SMAB-T1923: APAS system should generate a WI on updating the End Date of Rating for Existing Exemption", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","WorkItem_Direct_Review_Update" })
+			groups = {"regression","DV_WorkItem_Exemption"})
 	public void DisabledVeteran_verifyWorkItemGeneratedOnEnterEndDateRatingExistingExemption(String loginUser) throws Exception {
 	
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -173,7 +174,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	    			    
 	    //Step4: Opening the Work Item Module
 	    ReportLogger.INFO("Step 8: Search open App. module - Work Item Management from App Launcher");
-	  	objApasGenericFunctions.searchModule(modules.WORKITEM_MNGMNT);
+	  	objApasGenericFunctions.searchModule(modules.HOME);
 	  	//Step5: Click on the Main TAB - Home
 	  	ReportLogger.INFO("Step 9: Click on the Main TAB - Home");
 	  	objPage.Click(objWIHomePage.lnkTABHome);
@@ -197,7 +198,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	@Test(description = "SMAB-T1926: APAS system should not generate a WI on new Exemption having WI opened", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","WorkItem_OpenWI"})
+			groups = {"regression","DV_WorkItem_Exemption"})
 	public void DisabledVeteran_verifyWorkItemNotGeneratedOnExemptionWithOpenWI(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -216,6 +217,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	
 	//Get the WI Name from DB through the newly created Exemption
 	newExemptionName = objExemptionsPage.createNewExemptionWithMandatoryData(newExemptionData);
+	Thread.sleep(5000);
 	HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
     String WIName = getWIDetails.get("Name").get(0);
     
@@ -228,6 +230,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	objApasGenericFunctions.selectFromDropDown(objExemptionsPage.endRatingReason, dataToEdit.get("EndRatingReason"));
   	ReportLogger.INFO("Step 6: Click the SAVE button");
   	objPage.Click(ExemptionsPage.saveButton);
+  	Thread.sleep(5000);
   	ReportLogger.INFO("Step 7: Verifying the Work Item is not generated on Entering the End Date of Rating for an Exemption having opened WI");
   	
   	salesforceAPI = new SalesforceAPI();
@@ -236,7 +239,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
     Thread.sleep(2000);
     HashMap<String, ArrayList<String>> response_2  = salesforceAPI.select(slqWork_Item_Id);
     
-  	String numWI = String.valueOf(getWIDetails.get("Work_Item__c").size());
+  	String numWI = String.valueOf(response_2.get("Work_Item__c").size());
   	
   	softAssert.assertEquals(numWI, "1", "SMAB-T1926: Verify Work Item is not generated on Entering the End Date of Rating for an Exemption having opened WI");
   	String updateWIStatus = "SELECT Status__c FROM Work_Item__c where Name = '"+WIName+"'";
@@ -248,7 +251,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	@Test(description = "SMAB-T1978: APAS Verify the Supervisor is able to Approve the WI initial filing/changes on new Exemption Creation", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","WorkItem_Direct_Review_Update"})
+			groups = {"regression","DV_WorkItem_Exemption"})
 	public void DisabledVeteran_verifyWorkItemExemptionFilingChangesIsApproved(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -269,29 +272,30 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	newExemptionName = objExemptionsPage.createNewExemptionWithMandatoryData(newExemptionData);
 	HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
     String WIName = getWIDetails.get("Name").get(0);
+    
     ReportLogger.INFO("Step 4: Logging Out from SF");
     objApasGenericFunctions.logout();
     Thread.sleep(10000);
     ReportLogger.INFO("Step 5: Logging In as Approver - Data Admin");
-  	objApasGenericFunctions.login(users.DATA_ADMIN);
+  	objApasGenericFunctions.login(users.RP_BUSINESS_ADMIN);
   	
     //Step4: Opening the Work Item Module
     ReportLogger.INFO("Step 6: Search open App. module - Work Item Management from App Launcher");
-  	objApasGenericFunctions.searchModule(modules.WORKITEM_MNGMNT);
+  	objApasGenericFunctions.searchModule(modules.HOME);
   	//Step5: Click on the Main TAB - Home
   	ReportLogger.INFO("Step 7: Click on the Main TAB - Home");
   	objPage.Click(objWIHomePage.lnkTABHome);
   	ReportLogger.INFO("Step 8: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
-  	ReportLogger.INFO("Step 9: Click on the check box - Show RP");
-  	objPage.Click(objWIHomePage.chkShowRP);
+  	//ReportLogger.INFO("Step 9: Click on the check box - Show RP");
+  	//objPage.Click(objWIHomePage.chkShowRP);
   	ReportLogger.INFO("Step 10: Click on Needs My Approval TAB");
   	objPage.Click(objWIHomePage.lnkTABNeedsMyApproval);
   	ReportLogger.INFO("Step 11: Search for the Work Item and select the checkbox");
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	ReportLogger.INFO("Step 12: Click on the Approve button");
   	objPage.javascriptClick(objWIHomePage.btnApprove);
-  	
+  	Thread.sleep(5000);
   	ReportLogger.INFO("Step 13: Logging Out from SF");
   	objApasGenericFunctions.logout();
   	Thread.sleep(10000);
@@ -301,7 +305,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	
     //Step4: Opening the Work Item Module
     ReportLogger.INFO("Step 15: Search open App. module - Work Item Management from App Launcher");
-  	objApasGenericFunctions.searchModule(modules.WORKITEM_MNGMNT);
+  	objApasGenericFunctions.searchModule(modules.HOME);
   	//Step5: Click on the Main TAB - Home
   	ReportLogger.INFO("Step 16: Click on the Main TAB - Home");
   	objPage.Click(objWIHomePage.lnkTABHome);
@@ -314,6 +318,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
   	ReportLogger.INFO("Step 20: Verifying the Approver has successfully Approved the Work Item");
   	softAssert.assertEquals(actualWIName, WIName, "SMAB-T1978: Approver has successfully Approved the Work Item");
+  	Thread.sleep(5000);
   	objApasGenericFunctions.logout();
   	
   }
@@ -321,7 +326,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	@Test(description = "SMAB-T198: APAS Verify the Supervisor is able to Return the WI initial filing/changes on new Exemption Creation", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","WorkItem_Direct_Review_Update" })
+			groups = {"regression","DV_WorkItem_Exemption"})
 	public void DisabledVeteran_verifyWorkItemExemptionFilingChangesIsReturned(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -346,18 +351,18 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	objApasGenericFunctions.logout();
   	Thread.sleep(10000);
   	ReportLogger.INFO("Step 5: Logging IN as Approver - Data Admin");
-  	objApasGenericFunctions.login(users.DATA_ADMIN);
+  	objApasGenericFunctions.login(users.RP_BUSINESS_ADMIN);
   	
     //Step4: Opening the Work Item Module
     ReportLogger.INFO("Step 6: Search open App. module - Work Item Management from App Launcher");
-  	objApasGenericFunctions.searchModule(modules.WORKITEM_MNGMNT);
+  	objApasGenericFunctions.searchModule(modules.HOME);
   	//Step5: Click on the Main TAB - Home
   	ReportLogger.INFO("Step 7: Click on the Main TAB - Home");
   	objPage.Click(objWIHomePage.lnkTABHome);
   	ReportLogger.INFO("Step 8: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
-  	ReportLogger.INFO("Step 9: Click on the check box - Show RP");
-  	objPage.Click(objWIHomePage.chkShowRP);
+  	//ReportLogger.INFO("Step 9: Click on the check box - Show RP");
+  	//objPage.Click(objWIHomePage.chkShowRP);
   	ReportLogger.INFO("Step 10: Click on TAB - Needs My Approval");
   	objPage.Click(objWIHomePage.lnkTABNeedsMyApproval);
   	ReportLogger.INFO("Step 11: Search and select the Work Item checkbox");
@@ -377,7 +382,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	Thread.sleep(20000);
     //Step4: Opening the Work Item Module
     ReportLogger.INFO("Step 17: Search open App. module - Work Item Management from App Launcher");
-  	objApasGenericFunctions.searchModule(modules.WORKITEM_MNGMNT);
+  	objApasGenericFunctions.searchModule(modules.HOME);
   	//Step5: Click on the Main TAB - Home
   	ReportLogger.INFO("Step 18: Click on the Main TAB - Home");
   	objPage.Click(objWIHomePage.lnkTABHome);

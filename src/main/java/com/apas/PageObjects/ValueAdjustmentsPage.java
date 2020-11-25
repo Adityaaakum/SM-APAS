@@ -102,8 +102,8 @@ public class ValueAdjustmentsPage extends Page {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Determination']//parent::div//following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
 	public WebElement vaDetermination;
 	
-	@FindBy(xpath = "//label[text() = 'Determination']/following-sibling::div/lightning-base-combobox")
-	public WebElement vaEditDeterminationDropDown;
+	//@FindBy(xpath = "//label[text() = 'Determination']/following-sibling::div/lightning-base-combobox")
+	public String vaEditDeterminationDropDown="Determination";
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[contains(.,'Determination')]/following::input[1]")
 	public WebElement vaDeterminationDropDwon;
@@ -194,7 +194,7 @@ public class ValueAdjustmentsPage extends Page {
 	public WebElement penaltyAmountUserAdjusted;
 	
 	@FindBy(xpath = "//label[text() = 'Penalty Adjustment Reason']/following-sibling::div/lightning-base-combobox")
-	public WebElement penaltyAdjustmentReason;
+	public String penaltyAdjustmentReason="Penalty Adjustment Reason";
 	
 	@FindBy(xpath = "//label[contains(.,'Penalty Adjustment Other Reason Detail')]/following::textarea[1]")
 	public WebElement penaltyAdjustmentOtherReasonDetail;
