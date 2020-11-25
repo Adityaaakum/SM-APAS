@@ -78,8 +78,9 @@ public class RollYearSettingsPage extends ApasGenericPage {
 
 	public String status="Status";
 	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@title='Save' and text()='Save']")
 	public WebElement saveButton;
-		
+	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@title='Cancel' and text()='Cancel']")
 	public WebElement cancelButton;
 		

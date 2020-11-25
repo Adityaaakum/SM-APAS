@@ -255,6 +255,9 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 			
 			//step 8: verifying deletedVA, InactiveVA and newly cretaed VA
 			ReportLogger.INFO("Verifying VA for current Roll year should be deleted after entering end date of rating");
+			//Added below two lines as the focus is lost here
+			driver.navigate().refresh();
+			Thread.sleep(1000);
 			objPage.Click(vaPageObj.valueAdjustmentTab);
 			objPage.waitForElementToBeVisible(vaPageObj.viewAllLink, 10);
 			ReportLogger.INFO("Verifying Actual and Expected count of VA after end date of rating Actual::"+vaPageObj.VAlist.size()+"|| Expected::"+(vaCreatedBasedOnDates-1));
@@ -294,11 +297,12 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		//Step4: creating an Exemption creation
 		
 		exemptionPageObj.createNewExemption(newExemptionData);
-	
+		driver.navigate().refresh();
 	//step5:
-	/**
+	/**//**
 	 * Validation No Penalty for any of the VA's as Application is submitted before grace end date 
-	 */
+	 *//*
+*/	
 	objPage.Click(vaPageObj.valueAdjustmentTab);
 	objPage.waitForElementToBeVisible(vaPageObj.viewAllLink, 10);
 	softAssert.assertEquals(vaPageObj.VAlist.size(), 1,"SMAB-T562:Verify only one VA(basic Disabled veteran)is created for Current Roll");
@@ -323,6 +327,8 @@ public void Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(St
 		exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 		
 		//Step2: Opening the Exemption Module
+		driver.navigate().refresh();
+		Thread.sleep(1000);
 		apasGenericObj.searchModule(EXEMPTIONS);
 		
 		//Step3: Clicking on New button to create a New Exemption record
@@ -352,6 +358,7 @@ public void Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(St
 		softAssert.assertEquals(penaltyAmtUI, 0.0, "SMAB-T1276:Verify late penalty(No Penalty amount) is not applied when the 'Application Received Date' is less than or equal to Grace End date");
 		driver.navigate().back();
 	}
+	
 	apasGenericObj.logout();
 	
 }
@@ -443,7 +450,3 @@ public void Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(St
 	}
 
 }
-		
-		
-	
-	

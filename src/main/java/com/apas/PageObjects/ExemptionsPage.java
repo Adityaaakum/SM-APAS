@@ -404,7 +404,7 @@ public String createNewExemption(Map<String,String> newExemptionData) throws Exc
 	apasGenericObj.searchAndSelectFromDropDown("APN",fetchActiveAPN());
 	objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
 	apasGenericObj.searchAndSelectFromDropDown(claimantName,fetchAssesseeName());
-	objPage.enter("Claimant's Name", newExemptionData.get("ClaimantSSN"));
+	objPage.enter("Claimant's SSN", newExemptionData.get("ClaimantSSN"));
 	objPage.enter(spouseName, newExemptionData.get("SpouseName"));
 	objPage.enter(spouseSSN, newExemptionData.get("SpouseSSN"));
 	apasGenericObj.selectFromDropDown(unmarriedSpouseOfDisabledVeteran, newExemptionData.get("UnmarriedSpouseOfDisabledVeteran"));
@@ -460,12 +460,16 @@ public String createNewExemptionWithMandatoryData(Map<String, String> newExempti
 			apasGenericObj.selectFromDropDown(endRatingReason, newExemptionData.get("EndRatingReason"));
 		}
 		objPage.Click(saveButton);
-
 		objPage.waitForElementToBeClickable(dateAquiredPropertyExemptionDetails, 20);
-		ReportLogger.INFO("Created "+newExemptionNameAftercreation.getText()+" Exemption with mandatory data");
+		
+		//Added the below code as SCript is loosing the focus from the Exemption screen
+		driver.navigate().refresh();
+		Thread.sleep(2000);
+		String exmpName = objPage.getElementText(objPage.waitForElementToBeVisible(exemptionName));
+		ReportLogger.INFO("Created "+exmpName+" Exemption with mandatory data");
 	
 	
-	return newExemptionNameAftercreation.getText();
+	return exmpName;
 }
 
 
