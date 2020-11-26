@@ -18,6 +18,9 @@ import java.util.concurrent.TimeUnit;
 
 import com.apas.Reports.ReportLogger;
 
+import com.apas.Utils.Util;
+import com.apas.config.testdata;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -45,6 +48,7 @@ public class ApasGenericFunctions extends TestBase {
     LoginPage objLoginPage;
     ApasGenericPage objApasGenericPage;
     SalesforceAPI objSalesforceAPI;
+    Util objUtil = new Util();
 
     public ApasGenericFunctions(RemoteWebDriver driver) {
         this.driver = driver;
@@ -137,7 +141,9 @@ public class ApasGenericFunctions extends TestBase {
     	String xPath =  "//lightning-tab[contains(@class,'slds-show')]//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button";
         WebElement webelement = driver.findElement(By.xpath(xPath));
         objPage.Click(webelement);
+        Thread.sleep(1000);
         WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
+
         webelementInput.clear();
         webelementInput.sendKeys(expectedValue);
         Robot robot = new Robot();
@@ -170,12 +176,19 @@ public class ApasGenericFunctions extends TestBase {
      * @param searchString: String to search the record
      */
     public void globalSearchRecords(String searchString) throws Exception {
+
         ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
-        objPage.Click(driver.findElement(By.xpath("//div[@data-aura-class='forceSearchAssistant']//button")));
-        objPage.enter(objApasGenericPage.globalSearchListEditBox,searchString);
-        String xpath = "//*[@role='option']//span[@title = '" + searchString + "']";
-        objPage.waitUntilElementIsPresent(xpath,5);
-        objPage.Click(driver.findElement(By.xpath(xpath)));
+        if (System.getProperty("region").toUpperCase().equals("E2E")){
+            WebElement element  = driver.findElement(By.xpath("//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input"));
+            objApasGenericPage.searchAndSelectFromDropDown(element, searchString);
+        }else{
+            objPage.Click(objApasGenericPage.globalSearchButton);
+            objPage.enter(objApasGenericPage.globalSearchListEditBox,searchString);
+            String xpath = "//*[@role='option']//span[@title = '" + searchString + "']";
+            objPage.waitUntilElementIsPresent(xpath,5);
+            objPage.Click(driver.findElement(By.xpath(xpath)));
+        }
+
         Thread.sleep(5000);
     }
 
@@ -196,6 +209,7 @@ public class ApasGenericFunctions extends TestBase {
      * @param folderPath: path of the folder
      */
     public void deleteFilesFromFolder(String folderPath) {
+        ReportLogger.INFO("Deleting the files from the folder : " + folderPath);
         File dir = new File(folderPath);
         for (File file : Objects.requireNonNull(dir.listFiles())) {
             if (!file.isDirectory())
@@ -210,7 +224,7 @@ public class ApasGenericFunctions extends TestBase {
      * @description: This method will return the value of the field passed in the parameter from the currently open page
      */
     public String getFieldValueFromAPAS(String fieldName, String sectionName) {
-        String sectionXpath = "//force-record-layout-section[contains(.,'" + sectionName + "')]";
+        String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'" + sectionName + "')]";
         String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName + "']/../..//slot[@slot='outputField']";
 
         String fieldXpath = fieldPath + "//force-hoverable-link//a | " +
@@ -386,14 +400,17 @@ public class ApasGenericFunctions extends TestBase {
      * @Description: This method is to edit(enter) a record by clicking on the pencil icon and save it(field level edit)
      */
     public void editAndInputFieldData(String fieldName, Object field, String data) throws Exception {
-//        objPage.clickElementOnVisiblity("//div[@class='windowViewMode-normal oneContent active lafPageHost']//button/span[contains(.,'Edit " + fieldName + "')]/ancestor::button");
-        if (field == null){
-            field = driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit " + fieldName + "')]"));
-        }
+    	
+        String xpath="//div//button/span[contains(.,'Edit " + fieldName + "')]/ancestor::button";
+        Thread.sleep(2000);
+    	objPage.scrollToElement(driver.findElement(By.xpath(xpath)));
+    	Thread.sleep(2000);
+    	objPage.Click(driver.findElement(By.xpath(xpath)));
+    	Thread.sleep(2000);
         objPage.enter(field, data);
         objPage.Click(objApasGenericPage.saveButton);
         Thread.sleep(4000);
-
+        
     }
 
     /**
@@ -554,7 +571,7 @@ public class ApasGenericFunctions extends TestBase {
      * @description: This method will return the error message appeared against the filed name passed in the parameter
      */
     public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
-        String xpath = "//label[text()='" + fieldName + "']/../..//*[contains(@class,'__help')]";
+        String xpath = "//label[text()=\""+fieldName+"\"]/../..//*[contains(@class,'__help')] | //div[text()=\""+fieldName+"\"]//following-sibling::div/..//*[contains(@class,'slds-has-error')]";
         objPage.waitUntilElementIsPresent(xpath,20);
         return objPage.getElementText(driver.findElement(By.xpath(xpath)));
     }
@@ -616,4 +633,75 @@ public class ApasGenericFunctions extends TestBase {
         waitForElementToDisappear(objApasGenericPage.successAlert,10);
         return messageOnAlert;
     }
+
+    /**
+     * Description: this method is to save record and get the error
+     *
+     * @throws: Exception
+     */
+    public String saveRecordAndGetError() throws Exception {
+        objPage.Click(objPage.getButtonWithText("Save"));
+        objPage.waitForElementToBeClickable(objApasGenericPage.pageError,20);
+        return objPage.getElementText(objApasGenericPage.pageError);
+    }
+
+    /**
+     * Description: this method is to cancel the already opened pop up
+     */
+    public void cancelRecord() throws IOException {
+        objPage.Click(objPage.getButtonWithText("Cancel"));
+    }
+
+    /**
+     * Description: this method is to create a new record based on the object name from right hand side panel
+     * @param : Object name to be created
+     */
+    public void OpenNewEntryFormFromRightHandSidePanel(String objectName) throws IOException, InterruptedException {
+        String xpath = "//article[contains(.,'" + objectName + "')]//a[@title='Show one more action'] |  //article[contains(.,'" + objectName + "')]//*[@data-aura-class='forceDeferredDropDownAction']//a";
+        objPage.Click(driver.findElement(By.xpath(xpath)));
+        Thread.sleep(1000);
+        objPage.Click(driver.findElement(By.xpath("//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'New'][@role='button']")));
+    }
+
+    /**
+     * @description: This method will return the filed value from the view duplicate screen
+     * @param fieldName: field name for which error message needs to be fetched
+     */
+    public String getFieldValueFromViewDuplicateScreen(String fieldName) {
+        return objPage.getElementText(driver.findElement(By.xpath("//*[@class='tableRowGroup'][contains(.,'" + fieldName + "')]//span")));
+    }
+
+    /**
+     * @description: Clicks on the show more link displayed against the given entry
+     * @param entryDetails: Name of the entry displayed on grid which is to be accessed
+     * @throws Exception
+     */
+    public void clickShowMoreLinkOnRecentlyViewedGrid(String entryDetails) throws Exception {
+        Thread.sleep(3000);
+        String xpathStr = "//table//tbody/tr//th//a[text() = '"+ entryDetails +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
+        WebElement modificationsIcon = locateElement(xpathStr, 60);
+        objPage.clickAction(modificationsIcon);
+    }
+
+    /**
+     * This methods copies a file to temporary folder
+     * @param filePath: Path of the file to be copied
+     */
+    public File createTempFile(String filePath) throws IOException {
+        return createTempFile(new File(filePath));
+    }
+
+    /**
+     * This methods copies a file to temporary folder
+     * @param file: file to be copied
+     */
+    public File createTempFile(File file) throws IOException {
+        //Creating a temporary copy of the file to be processed to create unique name
+        String timeStamp = objUtil.getCurrentDate("ddhhmmss");
+        String destFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + timeStamp + "_" + file.getName();
+        File tempFile = new File(destFile);
+        FileUtils.copyFile(file, tempFile );
+        return tempFile;
+    }
+
 }

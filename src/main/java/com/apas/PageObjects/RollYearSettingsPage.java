@@ -56,45 +56,36 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[text()='Recently Viewed']")
 	public WebElement recentlyViewedListView;
 	
-	@FindBy(xpath = "//span[text() = 'Roll Year Settings']//parent::label//following-sibling::input[@class=' input']")
-	public WebElement rollYearSettings;
+	public String rollYearSettings="Roll Year Settings";
 
-	@FindBy(xpath = "//span[text() = 'Roll Year']//parent::span//following-sibling::div[@class='uiMenu']")
-	public WebElement rollYear;
+	public String rollYear="Roll Year";
 
-	@FindBy(xpath = "//span[text() = 'Open Roll Start Date']//parent::label//following-sibling::div//input[@class=' input']")
-	public WebElement openRollStartDate;
+	public String openRollStartDate="Open Roll Start Date";
 
-	@FindBy(xpath = "//span[text() = 'Open Roll End Date']//parent::label//following-sibling::div//input[@class=' input']")
-	public WebElement openRollEndDate;
+	public String openRollEndDate="Open Roll End Date";
 
-	@FindBy(xpath = "//span[text() = 'Calendar Start Date']//parent::label//following-sibling::div//input[@class=' input']")
-	public WebElement calendarStartDate;
+	public String calendarStartDate="Calendar Start Date";
 
-	@FindBy(xpath = "//span[text() = 'Calendar End Date']//parent::label//following-sibling::div//input[@class=' input']")
-	public WebElement calendarEndDate;
-
-	@FindBy(xpath = "//span[text() = 'Lien Date']//parent::label//following-sibling::div//input[@class=' input']")
-	public WebElement lienDate;
-
-	@FindBy(xpath = "//span[text() = 'Tax Start Date']//parent::label//following-sibling::div//input[@class=' input']")
-	public WebElement taxStartDate;
-
-	@FindBy(xpath = "//span[text() = 'Tax End Date']//parent::label//following-sibling::div//input[@class=' input']")
-	public WebElement taxEndDate;
-
-	@FindBy(xpath = "//span[text() = 'Status']//parent::span//following-sibling::div[@class='uiMenu']")
-	public WebElement status;
+	public String calendarEndDate="Calendar End Date";
 	
-	@FindBy(xpath = "//button[@title='Save']//span[text()='Save']")
+	public String annualBatchExecutionDate="Annual Batch Execution Date";
+
+	public String lienDate="Lien Date";
+
+	public String taxStartDate="Tax Start Date";
+
+	public String taxEndDate="Tax End Date";
+
+	public String status="Status";
+	
 	public WebElement saveButton;
-	
-	@FindBy(xpath = "//button[@title='Cancel']//span[text()='Cancel']")
+		
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@title='Cancel' and text()='Cancel']")
 	public WebElement cancelButton;
-	
-	@FindBy(xpath = "//button[text() = 'Edit']")
+		
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text() = 'Edit']")
 	public WebElement editButton;
-	
+		
 	@FindBy(xpath = "//div[@role='menu']//li[@class='uiMenuItem']/a[@title = 'Edit']")
 	public WebElement editMenuItemButton;
 	
@@ -104,33 +95,21 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div//a[text() = 'View Duplicates']")
 	public WebElement viewDuplicateRecord;
 	
-	@FindBy(xpath = "//li[text()='Lien Date year should be same as Roll Year']")
-	public WebElement errorOnLienDate;
-	
-	@FindBy(xpath = "//li[text()='Tax Start Date year should be same as Roll Year']")
-	public WebElement errorOnTaxStartDate;
-	
-	@FindBy(xpath = "//li[text()= " + "\"" + "Tax End Date" + "'s" + " year should be one year greater of selected Roll Year" + "\"]")
-	public WebElement errorOnTaxEndDate;
-	
-	@FindBy(xpath = "//li[text()= " + "\"" + "Start Date" + "'s" + " year should be one year less of selected Roll Year" + "\"]")
-	public WebElement errorOnOpenRollStartDate;
-	
-	@FindBy(xpath = "//li[text()='End Date year should be same as Roll Year']")
-	public WebElement errorOnOpenRollEndDate1;
-	
-	@FindBy(xpath = "//li[text()='End Date must be greater than Start Date']")
-	public WebElement errorOnOpenRollEndDate2;
-	
-	@FindBy(xpath = "//li[text()='Calendar Start Date year should be same as Roll Year']")
-	public WebElement errorOnCalendarStartDate;
-	
+	public String errorOnLienDate="Lien Date";
+		
+	public String errorOnTaxStartDate="Tax Start Date";
+		
+	public String errorOnTaxEndDate="Tax End Date";
+		
+	public String errorOnOpenRollStartDate="Open Roll Start Date";
+		
+	public String errorOnOpenRollEndDate1="Open Roll End Date";
+		
+	public String errorOnCalendarStartDate="Calendar Start Date";
+		
 	@FindBy(xpath = "//li[text()='Calendar End Date must be greater than Calendar Start Date']")
-	public WebElement errorOnCalendarEndDate1;
-	
-	@FindBy(xpath = "//li[text()='Calendar End Date year should be same as Roll Year']")
-	public WebElement errorOnCalendarEndDate2;
-	
+	public String errorOnCalendarEndDate1="Calendar End Date";
+		
 	
 	//Locators added for elements on Roll Years Settings screen - Detail Page
 	
@@ -234,8 +213,8 @@ public class RollYearSettingsPage extends ApasGenericPage {
 		if (action == "New") Click(waitForElementToBeClickable(newRollYearButton));
 		if (action == "Edit") Click(waitForElementToBeClickable(editButton));
 		Thread.sleep(1000);
-		waitForElementToBeClickable(rollYearSettings);
-		waitForElementToBeClickable(rollYear);
+		waitForElementToBeClickable(rollYearSettings, 10);
+		waitForElementToBeClickable(rollYear, 10);
 		enterRollYearData(dataMap);
 		ReportLogger.INFO("Click 'Save' button to save the details entered in Roll Year record");
 		Click(saveButton);
@@ -252,14 +231,17 @@ public class RollYearSettingsPage extends ApasGenericPage {
 		ReportLogger.INFO("Enter the following values : " + dataMap);
 		enter(rollYearSettings, dataMap.get("Roll Year Settings"));
 		apasGenericObj.selectFromDropDown(rollYear, dataMap.get("Roll Year"));
-		enterDate(lienDate, dataMap.get("Lien Date"));
-		enterDate(taxStartDate, dataMap.get("Tax Start Date"));
-		enterDate(taxEndDate, dataMap.get("Tax End Date"));
-		enterDate(openRollStartDate, dataMap.get("Open Roll Start Date"));
-		enterDate(openRollEndDate, dataMap.get("Open Roll End Date"));
-		enterDate(calendarStartDate, dataMap.get("Calendar Start Date"));
-		enterDate(calendarEndDate, dataMap.get("Calendar End Date"));	
+		apasGenericObj.selectFromDropDown(status, dataMap.get("Status"));
+		enter(lienDate, dataMap.get("Lien Date"));
+		enter(taxStartDate, dataMap.get("Tax Start Date"));
+		enter(taxEndDate, dataMap.get("Tax End Date"));
+		enter(openRollStartDate, dataMap.get("Open Roll Start Date"));
+		enter(openRollEndDate, dataMap.get("Open Roll End Date"));
+		enter(calendarStartDate, dataMap.get("Calendar Start Date"));
+		enter(calendarEndDate, dataMap.get("Calendar End Date"));
+		enter(annualBatchExecutionDate, dataMap.get("Annual Batch Execution Date"));
 	}
+
 	
 	/**
 	 * Description: This method will open the Roll Year record passed in the argument
@@ -284,8 +266,6 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	 * @param fieldName: field name for which error message needs to be fetched
 	 */
 	public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
-		String xpath = "//div[@role='listitem']//span[text()='" + fieldName + "']/../../../ul[contains(@data-aura-class,'uiInputDefaultError')]";
-		waitUntilElementIsPresent(xpath,20);
-		return getElementText(driver.findElement(By.xpath(xpath)));
+		return apasGenericObj.getIndividualFieldErrorMessage(fieldName);
 	}
 }

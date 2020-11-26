@@ -277,6 +277,15 @@ public class Page {
 		Thread.sleep(2000);
 	}
 
+	/**
+	 * Function will wait for an element to be clicked on the page.
+	 *
+	 * @param object          the element
+	 * @param timeoutInSeconds the timeout in seconds
+	 */
+	public void waitForElementToBeClickable(Object object, int timeoutInSeconds) {
+		waitForElementToBeClickable(timeoutInSeconds,object);
+	}
 
 	/**
 	 * Function will wait for an element to be clicked on the page.
@@ -284,9 +293,9 @@ public class Page {
 	 * @param element          the element
 	 * @param timeoutInSeconds the timeout in seconds
 	 */
-	public void waitForElementToBeClickable(WebElement element, int timeoutInSeconds) {
+	/*public void waitForElementToBeClickable(WebElement element, int timeoutInSeconds) {
 		waitForElementToBeClickable(timeoutInSeconds,element);
-	}
+	}*/
 
 	/**
 	 * Function will wait for an element to come in clickable state on the page.
@@ -449,6 +458,7 @@ public class Page {
 		((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", element);
 		actions.click(element).build().perform();
 		waitUntilPageisReady(driver);
+	
 	}
 
 
@@ -645,15 +655,7 @@ public class Page {
 	}
 
 	public WebElement waitForElementToBeClickable(Object object) {
-		WebElement element = null;
-		if (object instanceof String) {
-			element = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(object.toString()))));
-		} else if (object instanceof By) {
-			element = wait.until(ExpectedConditions.elementToBeClickable((By) object));
-		} else {
-			element = wait.until(ExpectedConditions.elementToBeClickable((WebElement) object));
-		}
-		return element;
+		return waitForElementToBeClickable(10, object);
 	}
 
 	public void clickElementOnVisiblity(Object object) {
@@ -745,8 +747,9 @@ public class Page {
 	 */
 
 	public void clearFieldValue(Object elem) throws Exception {
+
 		WebElement element=waitForElementToBeClickable(15, elem);
-		((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", elem);
+		((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", element);
 		element.clear();
 		Thread.sleep(2000);
 	}
@@ -835,12 +838,9 @@ public class Page {
 	 * @return String: Returns the currently selected value of drop down
 	 * @throws Exception
 	 */
-	public String getSelectedDropDownValue(WebElement dropDown) throws Exception {
-		waitForElementToBeClickable(5, dropDown);
-		Click(dropDown);
-		String value = driver.findElement(By.xpath("//div[@aria-expanded='true']//lightning-base-combobox-item//*[@data-key='check']//ancestor::span/following-sibling::span")).getText();
-		Click(dropDown);
-		return value;
+	public String getSelectedDropDownValue(String dropDown) throws Exception {
+		return driver.findElement(By.xpath("//label[text()='"+dropDown+"']/..//lightning-base-combobox-item[@aria-checked='true']//span[@class='slds-truncate']")).getText().trim();
+		
 	}
 
 	/**
@@ -889,4 +889,5 @@ public class Page {
 		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='" + text + "']";
 		return driver.findElement(By.xpath(xpath));
 	}
+
 }

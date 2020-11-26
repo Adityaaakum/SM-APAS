@@ -117,7 +117,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	ReportLogger.INFO("Step 10: Select the Annual Form Receive Date :"+dateAfterAppdate);
 	objPage.enter(ObjValueAdjustmentPage.vaAnnualFormReceiveddate,dateAfterAppdate);
 	ReportLogger.INFO("Step 11: Enter the Annual Household income : 10000");
-	objPage.enter(ObjValueAdjustmentPage.vaTotalAnuualHouseholdIncome,"10000");
+	objPage.enter(ObjValueAdjustmentPage.totalAnnualHouseholdIncome,"10000");
 	ReportLogger.INFO("Step 12: Select the Penalty Adjustments Reason:Supervisory Judgement");
 	objApasGenericFunctions.selectFromDropDown(ObjValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
 	ReportLogger.INFO("Step 13: Enter the Penalty Amount User Adjusted : 2000 ");
@@ -146,12 +146,12 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
   	//objPage.Click(actualWIName);
   	ReportLogger.INFO("Step 21: Click on the link - Linked Items");
-  	objPage.Click(objWIHomePage.lnkLinkedItems);
+  	objPage.Click(objWIHomePage.linkedItemsRecord);
   	ReportLogger.INFO("Step 22: Verify the VA linked with the WI :"+vANameValue);
   	Thread.sleep(5000);
   	String actualVAName = objWIHomePage.searchLinkedExemptionOrVA(vANameValue);
   	ReportLogger.INFO("Step 23: Click on the link : Details");
-  	objPage.Click(objWIHomePage.lnkDetails);
+  	objPage.Click(objWIHomePage.detailsWI);
   	String actualRequestTypeName = objWIHomePage.searchRequestTypeNameonWIDetails(WIRequestType);
   	ReportLogger.INFO("Step 24: Verify the Request Type is as per the Naming Convention :"+actualRequestTypeName);
   	Thread.sleep(50000);
@@ -216,7 +216,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 		ReportLogger.INFO("Step 10: Enter the Annual Form Receive Date :"+dateAfterAppdate);
 		objPage.enter(ObjValueAdjustmentPage.vaAnnualFormReceiveddate,dateAfterAppdate);
 		ReportLogger.INFO("Step 11: Enter the Annual household income : 10000");
-		objPage.enter(ObjValueAdjustmentPage.vaTotalAnuualHouseholdIncome,"10000");
+		objPage.enter(ObjValueAdjustmentPage.totalAnnualHouseholdIncome,"10000");
 		ReportLogger.INFO("Step 12: Enter the Penalty Adjustment Reason : Supervisory Judgement");
 		objApasGenericFunctions.selectFromDropDown(ObjValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
 		ReportLogger.INFO("Step 13: Enter the Penalty Amount User Adjusted : 2000");
@@ -234,7 +234,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 		ReportLogger.INFO("Step 17: Enter the Annual Form Received Date : ");
 		objPage.enter(ObjValueAdjustmentPage.vaAnnualFormReceiveddate,"");
 		ReportLogger.INFO("Step 18: Enter the Annual House Hold Income : ");
-		objPage.enter(ObjValueAdjustmentPage.vaTotalAnuualHouseholdIncome,"");
+		objPage.enter(ObjValueAdjustmentPage.totalAnnualHouseholdIncome,"");
 		/*
 		 * ReportLogger.INFO("Step 19: Enter the Penalty Adjustment Reason : --None--");
 		 * objApasGenericFunctions.selectFromDropDown(ObjValueAdjustmentPage.
@@ -306,7 +306,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	ReportLogger.INFO("Step 10: Enter the Annual Form Received Date :"+dateAfterAppdate );
 	objPage.enter(ObjValueAdjustmentPage.vaAnnualFormReceiveddate,dateAfterAppdate);
 	ReportLogger.INFO("Step 11: Enter the Annual House hold Income : 10000" );
-	objPage.enter(ObjValueAdjustmentPage.vaTotalAnuualHouseholdIncome,"10000");
+	objPage.enter(ObjValueAdjustmentPage.totalAnnualHouseholdIncome,"10000");
 	ReportLogger.INFO("Step 12: Enter the Penalty adjustment reason :Supervisory Judgement");
 	objApasGenericFunctions.selectFromDropDown(ObjValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
 	ReportLogger.INFO("Step 13: Enter the Penalty adjustment Amount : 2000");
@@ -332,7 +332,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	ReportLogger.INFO("Step 23: Click on the button Accept the Work Item");
-  	objPage.Click(objWIHomePage.btnAcceptWorkItem);
+  	objPage.Click(objWIHomePage.acceptWorkItemBtn);
   	
   	ReportLogger.INFO("Step 21: Click on the TAB - In Progress");
   	Thread.sleep(50000);
@@ -340,7 +340,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	ReportLogger.INFO("Step 23: Click on the button - Mark Complete");
-  	objPage.Click(objWIHomePage.btnMarkComplete);
+  	objPage.Click(objWIHomePage.markStatusAsCompleteButton);
   	
     ReportLogger.INFO("Step 15: Logging OUT from SF");
     objApasGenericFunctions.logout();
@@ -359,7 +359,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	//ReportLogger.INFO("Step 20: Click on the check box - Show RP");
   	//objPage.Click(objWIHomePage.chkShowRP);
   	ReportLogger.INFO("Step 21: Click on the TAB Needs My Approval");
-  	objPage.Click(objWIHomePage.lnkTABNeedsMyApproval);
+  	objPage.Click(objWIHomePage.needsMyApprovalTab);
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	ReportLogger.INFO("Step 23: Click on the Approve button");
@@ -440,7 +440,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	ReportLogger.INFO("Step 10: Enter the Annual Form Received Date : "+dateAfterAppdate);
 	objPage.enter(ObjValueAdjustmentPage.vaAnnualFormReceiveddate,dateAfterAppdate);
 	ReportLogger.INFO("Step 11: Enter the Annual House Hold Incone : 10000");
-	objPage.enter(ObjValueAdjustmentPage.vaTotalAnuualHouseholdIncome,"10000");
+	objPage.enter(ObjValueAdjustmentPage.totalAnnualHouseholdIncome,"10000");
 	ReportLogger.INFO("Step 12: " );
 	objApasGenericFunctions.selectFromDropDown(ObjValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
 	ReportLogger.INFO("Step 13: Enter the Penalty Amount User Adjusted : 2000" );
@@ -465,7 +465,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	ReportLogger.INFO("Step 23: Click on the button Accept the Work Item");
-  	objPage.Click(objWIHomePage.btnAcceptWorkItem);
+  	objPage.Click(objWIHomePage.acceptWorkItemBtn);
   	
   	ReportLogger.INFO("Step 21: Click on the TAB - In Progress");
   	Thread.sleep(50000);
@@ -473,7 +473,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	ReportLogger.INFO("Step 23: Click on the button - Mark Complete");
-  	objPage.Click(objWIHomePage.btnMarkComplete);
+  	objPage.Click(objWIHomePage.markStatusAsCompleteButton);
     ReportLogger.INFO("Step 15: Logging OUT from SF" );
     objApasGenericFunctions.logout();
     Thread.sleep(5000);
@@ -493,15 +493,15 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	//objPage.Click(objWIHomePage.chkShowRP);
   	
   	ReportLogger.INFO("Step 21: Click on the TAB Needs My Approval" );
-  	objPage.Click(objWIHomePage.lnkTABNeedsMyApproval);
+  	objPage.Click(objWIHomePage.needsMyApprovalTab);
   	ReportLogger.INFO("Step 22: Search and Select the work item from the grid :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	ReportLogger.INFO("Step 23: Click on the Return button" );
-  	objPage.Click(objWIHomePage.btnReturn);
+  	objPage.Click(objWIHomePage.returnWorkItemButton);
   	ReportLogger.INFO("Step 24: Enter the Return Reason : Return to Assignee" );
-  	objPage.enter(objWIHomePage.txtReturnedReason, "Return to Assignee");
+  	objPage.enter(objWIHomePage.returnedReasonTxtBox, "Return to Assignee");
   	ReportLogger.INFO("Step 25: Click on the SAVE button" );
-  	objPage.Click(objWIHomePage.btnSaveOnReturnDlg);
+  	objPage.Click(objWIHomePage.saveButton);
 	
   	ReportLogger.INFO("Step 26: Logging OUT from SF" );
   	objApasGenericFunctions.logout();

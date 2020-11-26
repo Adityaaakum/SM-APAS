@@ -3,64 +3,69 @@
 		"Roll Year Settings": "2020",
 		"Roll Year": "2020",
 		"Lien Date": "01/01/2020",
-		"Status" : "Open",
+		"Status" : "Closed",
 		"Tax Start Date": "07/01/2020",
 		"Tax End Date": "06/30/2021",
 		"Open Roll Start Date": "07/01/2019",
 		"Open Roll End Date": "06/30/2020",
 		"Calendar Start Date": "01/01/2020",
-		"Calendar End Date": "12/31/2020"
+		"Calendar End Date": "12/31/2020",
+		"Annual Batch Execution Date": "9/25/2019"
 		},
 		
 	"DataToCreateFutureRollYear": {
 		"Roll Year Settings": "2040",
 		"Roll Year": "2040",
-		"Status" : "Open",
+		"Status" : "Future",
 		"Lien Date": "01/01/2040",
 		"Tax Start Date": "07/01/2040",
 		"Tax End Date": "06/30/2041",
 		"Open Roll Start Date": "07/01/2039",
 		"Open Roll End Date": "06/30/2040",
 		"Calendar Start Date": "01/01/2040",
-		"Calendar End Date": "12/31/2040"
+		"Calendar End Date": "12/31/2040",
+		"Annual Batch Execution Date": "9/25/2039"
 		},	
 		
 	"DataToCreatePastRollYear": {
 		"Roll Year Settings": "1979",
 		"Roll Year": "1979",
-		"Status" : "Open",
+		"Status" : "Closed",
 		"Lien Date": "01/01/1979",
 		"Tax Start Date": "07/01/1979",
 		"Tax End Date": "06/30/1980",
 		"Open Roll Start Date": "07/01/1978",
 		"Open Roll End Date": "06/30/1979",
 		"Calendar Start Date": "01/01/1979",
-		"Calendar End Date": "12/31/1979"
+		"Calendar End Date": "12/31/1979",
+		"Annual Batch Execution Date": "9/25/1978"
 		},
 	
 	"DataToEditPastRollYearToFuture": {
 		"Roll Year Settings": "2035",
 		"Roll Year": "2035",
-		"Status" : "Open",
+		"Status" : "Future",
 		"Lien Date": "01/01/2035",
 		"Tax Start Date": "07/01/2035",
 		"Tax End Date": "06/30/2036",
 		"Open Roll Start Date": "07/01/2034",
 		"Open Roll End Date": "06/30/2035",
 		"Calendar Start Date": "01/01/2035",
-		"Calendar End Date": "12/31/2035"
+		"Calendar End Date": "12/31/2035",
+		"Annual Batch Execution Date": "9/25/2034"
 		},
 	
 	"DataToValidateFieldLevelErrorMessages": {
 		"Roll Year Settings": "2009",
 		"Roll Year": "2009",
-		"Status" : "Open",
+		"Status" : "Closed",
 		"Lien Date": "01/01/2008",
 		"Tax Start Date": "07/01/2008",
 		"Tax End Date": "06/30/2009",
 		"Open Roll Start Date": "07/01/2009",
 		"Open Roll End Date": "06/30/2010",
 		"Calendar Start Date": "01/01/2010",
-		"Calendar End Date": "12/31/2009"
+		"Calendar End Date": "12/31/2009",
+		"Annual Batch Execution Date": "9/25/2008"
 		}					 	                                  	                            	
 }

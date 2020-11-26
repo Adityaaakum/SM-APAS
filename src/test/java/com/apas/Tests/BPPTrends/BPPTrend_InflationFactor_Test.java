@@ -28,7 +28,6 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 	Page objPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrendPage;
-	BuildingPermitPage objBuildPermit;
 	Util objUtil;
 	SoftAssertion softAssert;
 	ApasGenericPage objApasGenericPage;
@@ -42,7 +41,6 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 
 		objPage = new Page(driver);
 		objBppTrendPage = new BppTrendPage(driver);
-		objBuildPermit = new BuildingPermitPage(driver);
 		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
@@ -135,8 +133,9 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		//Step5: Validating the error message on clicking edit button
 		objBppTrendSetupPage.enter("CPI Factor", "0.01");
 		objPage.Click(objPage.getButtonWithText("Save"));
-		String actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("CPI Factor");
-		String expectedErrorMsg = "CPI Factors can't be updated once Submitted for Approval or Approved";
+		String actualErrorMsg = objPage.getElementText(objApasGenericPage.pageError);
+		//String expectedErrorMsg = "CPI Factors can't be updated once Submitted for Approval or Approved";
+		String expectedErrorMsg ="insufficient access rights on object id";
 		softAssert.assertContains(actualErrorMsg, expectedErrorMsg, "SMAB-T183: Validation for business admin is not able to edit aproved CPI Factor from grid");
 		objPage.Click(objPage.getButtonWithText("Cancel"));
 
@@ -150,16 +149,12 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		//Step8: Validating the error message on clicking edit button
 		objBppTrendSetupPage.enter("CPI Factor", "0.02");
 		objPage.Click(objPage.getButtonWithText("Save"));
-		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("CPI Factor");
-		expectedErrorMsg = "CPI Factors can't be updated once Submitted for Approval or Approved";
+		actualErrorMsg = objPage.getElementText(objApasGenericPage.pageError);
+		expectedErrorMsg = "insufficient access rights on object id";
 		softAssert.assertContains(actualErrorMsg, expectedErrorMsg, "SMAB-T183: Validation for business admin is not able to edit aproved CPI Factor from grid");
 		objPage.Click(objPage.getButtonWithText("Cancel"));
 
 		objApasGenericFunctions.logout();
 	}
-	
-	
-	
-	
-	
+
 }

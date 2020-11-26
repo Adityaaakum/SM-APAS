@@ -107,10 +107,10 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		   String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
 		
 		   //objPage.Click(actualWIName);
-		   objPage.Click(objWIHomePage.lnkLinkedItems);
+		   objPage.Click(objWIHomePage.linkedItemsRecord);
 		   String actualExemptionName = objWIHomePage.searchLinkedExemptionOrVA(newExemptionName);
 		   Thread.sleep(2000);
-		   objPage.javascriptClick(objWIHomePage.lnkDetails);
+		   objPage.javascriptClick(objWIHomePage.detailsWI);
 		   //objPage.Click(objWIHomePage.lnkDetails);
 		   String actualRequestTypeName = objWIHomePage.searchRequestTypeNameonWIDetails(WIRequestType);
 		   String RequestTypeName  = "Disabled Veterans - Direct Review and Update - Initial filing/changes";
@@ -290,7 +290,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	//ReportLogger.INFO("Step 9: Click on the check box - Show RP");
   	//objPage.Click(objWIHomePage.chkShowRP);
   	ReportLogger.INFO("Step 10: Click on Needs My Approval TAB");
-  	objPage.Click(objWIHomePage.lnkTABNeedsMyApproval);
+  	objPage.Click(objWIHomePage.needsMyApprovalTab);
   	ReportLogger.INFO("Step 11: Search for the Work Item and select the checkbox");
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	ReportLogger.INFO("Step 12: Click on the Approve button");
@@ -364,15 +364,15 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	//ReportLogger.INFO("Step 9: Click on the check box - Show RP");
   	//objPage.Click(objWIHomePage.chkShowRP);
   	ReportLogger.INFO("Step 10: Click on TAB - Needs My Approval");
-  	objPage.Click(objWIHomePage.lnkTABNeedsMyApproval);
+  	objPage.Click(objWIHomePage.needsMyApprovalTab);
   	ReportLogger.INFO("Step 11: Search and select the Work Item checkbox");
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	ReportLogger.INFO("Step 12: Click on the Return TAB");
-  	objPage.javascriptClick(objWIHomePage.btnReturn);
+  	objPage.javascriptClick(objWIHomePage.returnWorkItemButton);
   	ReportLogger.INFO("Step 13: Enter the Return Reason in the text box");
-  	objPage.enter(objWIHomePage.txtReturnedReason, "Return to Assignee");
+  	objPage.enter(objWIHomePage.returnedReasonTxtBox, "Return to Assignee");
   	ReportLogger.INFO("Step 14: Click on the SAVE button on the dialogbox");
-  	objPage.Click(objWIHomePage.btnSaveOnReturnDlg);
+  	objPage.Click(objWIHomePage.saveButton);
 	
   	ReportLogger.INFO("Step 15: Logging OUT from SF");
   	objApasGenericFunctions.logout();

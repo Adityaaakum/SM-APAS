@@ -50,7 +50,7 @@ public class CityStratCodesTest extends TestBase {
 		ReportLogger.INFO("Adding a new 'city strat code' record");
 		String strCityStratCode1 = "Test" + objUtils.getCurrentDate("YYYYmmDDHHMMSS");
 		strSuccessAlertMessage = objCityStratCodesPage.addAndSaveCityStratcode("SOLAR", "AT", strCityStratCode1, "Active");
-		softAssert.assertEquals(strSuccessAlertMessage, "City Strat Code \"" + strCityStratCode1 + "\" was created.", "SMAB-T396: Validation of text message on Success Alert");
+		softAssert.assertEquals(strSuccessAlertMessage, "success\nCity Strat Code \"" + strCityStratCode1 + "\" was created.\nClose", "SMAB-T396: Validation of text message on Success Alert");
 
 		//Step4: Opening the City Strat Code module
 		objApasGenericFunctions.searchModule(modules.CITY_STRAT_CODES);
@@ -59,17 +59,15 @@ public class CityStratCodesTest extends TestBase {
 		ReportLogger.INFO("Adding a new 'city strat code' record with the same detail as previous record with different city strat code");
 		String strCityStratCode2 = "Test" + objUtils.getCurrentDate("YYYYmmDDHHMMSS");
 		strSuccessAlertMessage = objCityStratCodesPage.addAndSaveCityStratcode("SOLAR", "AT", strCityStratCode2, "Active");
-		softAssert.assertEquals(strSuccessAlertMessage, "City Strat Code \"" + strCityStratCode2 + "\" was created.", "SMAB-T396: Validation of text nessage on Success Alert");
+		softAssert.assertEquals(strSuccessAlertMessage, "success\nCity Strat Code \"" + strCityStratCode2 + "\" was created.\nClose", "SMAB-T396: Validation of text nessage on Success Alert");
 
 		//Step6: Edit the recently created City strat code
 		objApasGenericFunctions.searchModule(modules.CITY_STRAT_CODES);
 		objApasGenericFunctions.globalSearchRecords(strCityStratCode2);
-		objPage.Click(objCityStratCodesPage.editButton);
-		objPage.waitForElementToBeClickable(objCityStratCodesPage.countyStratCodeEditBox,10);
-		objPage.Select(objCityStratCodesPage.statusDropDown,"Inactive");
-		objPage.Click(objCityStratCodesPage.saveButton);
-		objPage.waitForElementToBeVisible(objCityStratCodesPage.successAlert,20);
-		softAssert.assertEquals(objPage.getElementText(objCityStratCodesPage.successAlertText), "City Strat Code \"" + strCityStratCode2 + "\" was saved.", "SMAB-T396,SMAB-T390: Validation of text nessage on Success Alert");
+		objPage.Click(objPage.getButtonWithText("Edit"));
+		objPage.waitForElementToBeClickable(10, objCityStratCodesPage.countyStratCodeEditBox);
+		objCityStratCodesPage.selectOptionFromDropDown(objCityStratCodesPage.statusDropDown,"Inactive");
+		softAssert.assertEquals(objApasGenericFunctions.saveRecord(), "success\nCity Strat Code \"" + strCityStratCode2 + "\" was saved.\nClose", "SMAB-T396,SMAB-T390: Validation of text nessage on Success Alert");
 	}
 
 
@@ -88,14 +86,14 @@ public class CityStratCodesTest extends TestBase {
 
 		//Step3: Clicking new button and then save button without entering mandatory details
 		objCityStratCodesPage.openNewEntry();
-		objPage.clickAction(objCityStratCodesPage.saveButton);
+		objPage.Click(objPage.getButtonWithText("Save"));
 
 		//Step4: Checking validation messages on clicking save button without providing values in mandatory fields
 		ReportLogger.INFO("Validating the mandatory field error messages");
-		String expectedErrorMessageOnTop = "These required fields must be completed: City Code, County Strat Code, City Strat Code";
+		String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the following fields\nCounty Strat Code\nCity Code\nCity Strat Code";
 		String expectedFieldLevelErrorMessage = "Complete this field.";
 
-		String actualErrorMessageOnTop = objCityStratCodesPage.getElementText(objCityStratCodesPage.errorMsgOnTop);
+		String actualErrorMessageOnTop = objPage.getElementText(objCityStratCodesPage.pageError);
 
 		softAssert.assertEquals(actualErrorMessageOnTop, expectedErrorMessageOnTop, "SMAB-T390,SMAB-T395: Validating error message displayed on top of the new entry pop up");
 		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("County Strat Code"), expectedFieldLevelErrorMessage, "SMAB-T390,SMAB-T395: Validating error message on not providing County Strat Code");
@@ -103,7 +101,7 @@ public class CityStratCodesTest extends TestBase {
 		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("City Strat Code"), expectedFieldLevelErrorMessage, "SMAB-T390,SMAB-T395: Validating error message on not providing City Strat Code");
 
 		//Step5: Cancelling the pop up by clicking cancel button
-		objPage.Click(objCityStratCodesPage.cancelButton);
+		objPage.Click(objPage.getButtonWithText("Cancel"));
 
 		//Step13: Logout at the end of the test
 		objApasGenericFunctions.logout();

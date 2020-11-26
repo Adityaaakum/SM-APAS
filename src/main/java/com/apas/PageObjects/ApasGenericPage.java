@@ -25,15 +25,28 @@ public class ApasGenericPage extends Page {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[@title='Save']")
-	public WebElement saveButton;
+
+	@FindBy(xpath = "//button[@title='Close error dialog']")
+	public WebElement crossIcon;
+
+	@FindBy(xpath = "//button[contains(@class,'page-error-button')]")
+	public WebElement pageErrorButton;
 
 	@FindBy(xpath = "//*[contains(@class,'forceFormPageError')]")
 	public WebElement pageError;
 
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title = 'New']")
+	public WebElement newButton;
+
+	@FindBy(xpath = "//a[@title = 'Edit']")
+	public WebElement editButton;
+
+	@FindBy(xpath = "//button[@title='Save']")
+	public WebElement saveButton;
+
 	@FindBy(xpath = "//div[contains(.,'App Launcher')]//*[@class='slds-icon-waffle']")
 	public WebElement appLauncher;
-
+	
 	@FindBy(xpath = "//table[@role='grid']//thead/tr//th")
 	public WebElement dataGrid;
 
@@ -64,6 +77,9 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//*[@data-aura-class='forceSearchAssistantDialog']//input[@type='search']")
 	public WebElement globalSearchListEditBox;
 
+	@FindBy(xpath = "//div[@data-aura-class='forceSearchAssistant']//button")
+	public WebElement globalSearchButton;
+
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@class='countSortedByFilteredBy']")
 	public WebElement countSortedByFilteredBy;
 
@@ -84,6 +100,9 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath = "//h2[@class='slds-truncate slds-text-heading_medium']")
 	public WebElement popUpErrorMessageWeHitASnag;
+	
+	@FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab'))]//lightning-formatted-text[contains(text(),'WI')]")
+	public WebElement workItemNumberDetailView;
 
 	public String menuList = "//div[contains(@class,'uiMenuList--default visible positioned')]";
 
@@ -94,6 +113,8 @@ public class ApasGenericPage extends Page {
 	public WebElement successAlertText;
 	
 	public String xpathSpinner = "//lightning-spinner";
+
+	public String maxEquipmentIndexFactor = "Maximum Equipment index Factor";
 
 
 	/*	Sikander Bhambhu:
@@ -276,15 +297,13 @@ public class ApasGenericPage extends Page {
 	public void selectOptionFromDropDown(Object element, String value) throws Exception {
 		WebElement webElement;
 		String xpathDropDownOption;
-		
+
 		if (element instanceof String) {
 			webElement = getWebElementWithLabel((String) element);
-			//xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()='" + element + "']/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
-			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
+			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
 		} else{
 			webElement = (WebElement) element;
-			//xpathDropDownOption = "//div[contains(@class, 'left uiMenuList--short visible positioned')]//a[text() = '" + value + "']";
-			xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox_option_plain')]//*[text() = '" + value + "' or @title= '" + value + "']";
+			xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
 		}
 
 		scrollToElement(webElement);
@@ -295,8 +314,8 @@ public class ApasGenericPage extends Page {
 		scrollToElement(drpDwnOption);
 		waitForElementToBeClickable(drpDwnOption, 10);
 		javascriptClick(drpDwnOption);
-		
-  }
+
+	}
 	
 	/**
 	 * Description: This method will fetch the current URL and process it to get the Record Id
@@ -381,6 +400,26 @@ public class ApasGenericPage extends Page {
 		}
 		WebElement elementOnPopUp = locateElement(xpathStr, 200);
 		return elementOnPopUp;
+	}
+
+	/**
+	 * Description: This method will open the tab with name which will be passed a parameter
+	 * @param tabName: tabName
+	 */
+	public void openTab(String tabName) throws Exception {
+		String tabXPath="//a[@role='tab'][@data-label='"+ tabName +"']";
+		Click(driver.findElementByXPath(tabXPath));
+		
+	}
+	/**
+	 * This method will return the work item number for a particular work item from its detail view
+	 *
+	 * @throws Exception 
+	 **/
+	public String getWorkItemNumberDetailView() throws Exception {
+		waitForElementToBeVisible(workItemNumberDetailView);
+		return getElementText(workItemNumberDetailView);
+
 	}
 
 }

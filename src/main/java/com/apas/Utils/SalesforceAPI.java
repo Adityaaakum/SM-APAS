@@ -450,10 +450,10 @@ public class SalesforceAPI extends TestBase {
         String queryBPPTrendValuationFactor = "select id from BPP_Trend_Valuation_Factor__c where Roll_Year__c = '" + rollYear  + "'";
         String queryBPPPropertyGoodFactor = "select id from BPP_Property_Good_Factor__c where Roll_Year__c = '" + rollYear  + "'";
 
-        delete("BPP_Composite_Factor__c",queryBPPCompositeFactor);
-        delete("BPP_Property_Index_Factor__c",queryBPPPropertyIndexFactor);
-        delete("BPP_Trend_Valuation_Factor__c",queryBPPTrendValuationFactor);
-        delete("BPP_Property_Good_Factor__c",queryBPPPropertyGoodFactor);
+        delete(queryBPPCompositeFactor);
+        delete(queryBPPPropertyIndexFactor);
+        delete(queryBPPTrendValuationFactor);
+        delete(queryBPPPropertyGoodFactor);
     }
 
     /**

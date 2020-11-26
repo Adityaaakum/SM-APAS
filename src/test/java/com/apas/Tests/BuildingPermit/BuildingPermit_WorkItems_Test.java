@@ -54,7 +54,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
      * This test case is to validate work item creation functionality and the work item flow after file is approved
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and RP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1890, SMAB-T1892, SMAB-T1900, SMAB-T1901, SMAB-T1902,SMAB-T1903: Validation for work item generation after building permit file import and approve", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BP"}, alwaysRun = true)
+    @Test(description = "SMAB-T1890, SMAB-T1892, SMAB-T1900, SMAB-T1901, SMAB-T1902,SMAB-T1903: Validation for work item generation after building permit file import and approve", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BP"}, alwaysRun = true)
     public void BuildingPermit_WorkItemAfterImportAndApprove(String loginUser) throws Exception {
 
         String downloadLocation = testdata.DOWNLOAD_FOLDER;
@@ -65,18 +65,14 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Creating a temporary copy of the file to be processed to create unique name
         String timeStamp = objUtil.getCurrentDate("ddhhmmss");
-        String sourceFileName = "MultipleValidRecord.xlsx";
-
-        String fileNameWithoutExtension = "MultipleValidRecord" + timeStamp;
-        String fileName = fileNameWithoutExtension + ".xlsx";
-
-        String sourceFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + sourceFileName;
-        String destFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + fileName;
-
-        FileUtils.copyFile(new File(sourceFile), new File(destFile));
+        String sourceFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "MultipleValidRecord.xlsx";
+        File tempFile = objApasGenericFunctions.createTempFile(sourceFile);
+        String destFile = tempFile.getAbsolutePath();
+        String fileName = tempFile.getName();
+        String fileNameWithoutExtension = fileName.split("\\.")[0];
 
         //Step1: Reverting the Approved Import logs if any in the system
-        objEfileImportPage.revertImportedAndApprovedFiles(BPFileSource.ATHERTON);
+        objEfileImportPage.revertImportedAndApprovedFiles(BPFileSource.SAN_MATEO);
 
         //Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
         objApasGenericFunctions.login(loginUser);
@@ -201,20 +197,15 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
      * This test case is to validate work item creation functionality and the work item flow after file is reverted
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and RP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1890, SMAB-T1899: Validation for work item generation after building permit file import and revert", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BP"}, alwaysRun = true)
+    @Test(description = "SMAB-T1890, SMAB-T1899: Validation for work item generation after building permit file import and revert", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BP"}, alwaysRun = true)
     public void BuildingPermit_WorkItemAfterImportAndRevert(String loginUser) throws Exception {
 
         //Creating a temporary copy of the file to be processed to create unique name
-        String timeStamp = objUtil.getCurrentDate("ddhhmmss");
-        String sourceFileName = "SingleValidRecord_AT.txt";
-
-        String fileNameWithoutExtension = "SingleValidRecord_AT_" + timeStamp;
-        String fileName = fileNameWithoutExtension + ".txt";
-
-        String sourceFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + sourceFileName;
-        String destFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + fileName;
-
-        FileUtils.copyFile(new File(sourceFile), new File(destFile));
+        String sourceFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "SingleValidRecord_AT.txt";
+        File tempFile = objApasGenericFunctions.createTempFile(sourceFile);
+        String destFile = tempFile.getAbsolutePath();
+        String fileName = tempFile.getName();
+        String fileNameWithoutExtension = fileName.split("\\.")[0];
 
         //Step1: Reverting the Approved Import logs if any in the system
         objEfileImportPage.revertImportedAndApprovedFiles(BPFileSource.ATHERTON);
@@ -275,5 +266,4 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         objApasGenericFunctions.logout();
 
     }
-
 }

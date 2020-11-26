@@ -418,7 +418,7 @@ public void Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(St
 				//objPage.waitForElementToBeClickable(vaPageObj.vaEditDeterminationDropDown, 10);
 				apasGenericObj.selectFromDropDown(vaPageObj.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
 				objPage.enter(vaPageObj.vaAnnualFormReceiveddate,dateBeforeAppdate);
-				objPage.enter(vaPageObj.vaTotalAnuualHouseholdIncome,"10000");
+				objPage.enter(vaPageObj.totalAnnualHouseholdIncome,"10000");
 				objPage.Click(ExemptionsPage.saveButton);
 				softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("Annual Form Received Date"),"Annual Form Received Date should not be greater than today or less than Exemption's Date Application Received","SMAB-T1291:Verified that Annual Form Received date can't be less than Application Received date");
 				objPage.enter(vaPageObj.vaAnnualFormReceiveddate,dateAfterAppdate);

@@ -1265,7 +1265,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	@Test(description = "SMAB-T83,SMAB-T84,SMAB-T1458:Verify user is able to see number of records count from file import action on 'E-File Import Logs' screen", dataProvider = "loginBusinessAdmin",dataProviderClass = DataProviders.class, groups = {
 		"regression","EFileImport" })	
 	public void BPPTrends_VerifyImportedLogsTransactionsRecordCountAndTrailFields(String loginUser) throws Exception{
-		String uploadedDate = objUtil.getCurrentDate("MMM d, YYYY");
+		//String uploadedDate = objUtil.getCurrentDate("MM/dd/YYYY");
+		String converteddate=objUtil.convertCurrentDateISTtoPST("Asia/Kolkata", "America/Los_Angeles","MM/dd/yyyy");
 		
 		//String rollYearForImport = "2021";
 		String fileType="BPP Trend Factors";
@@ -1299,7 +1300,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		ReportLogger.INFO("Verifying records count in history list for imported record");
 		
 		HashMap<String, ArrayList<String>> importedEntry=objApasGenericFunctions.getGridDataInHashMap(1, 1);				
-		softAssert.assertEquals(importedEntry.get("Uploaded Date").get(0), uploadedDate, "verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Uploaded Date").get(0), converteddate, "verify import list history data");
 		softAssert.assertEquals(importedEntry.get("Period").get(0), rollYearForImport, "verify import list history data");
 		softAssert.assertEquals(importedEntry.get("File Count").get(0), errorRecordsCount.get("TotalFileRecords"), "verify import list history data");
 		softAssert.assertEquals(importedEntry.get("Import Count").get(0), errorRecordsCount.get("TotalImportedRecords"), "verify import list history data");
@@ -1318,7 +1319,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.logStatus),"Imported", "SMAB-T83:Verify that admin is able to see logs record for file type with status 'Imported' on 'E-File Import Logs' screen");
 		
 		
-		ReportLogger.INFO("Verifying Import count,File count and Error count in Import Transaction record");
+		ReportLogger.INFO("Verifying Import count, File count and Error count in Import Transaction record");
 		objPage.Click(objEfileImportTransactionsPage.transactionsTab);
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);
 		String expectedTransactionID=objPage.getElementText(objEfileImportTransactionsPage.transactionsRecords.get(0));

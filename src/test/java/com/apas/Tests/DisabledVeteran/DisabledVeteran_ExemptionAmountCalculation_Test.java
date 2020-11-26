@@ -71,11 +71,12 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 				
 		/*Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 		 Create Exemption record
-		 Capture the Exemption Name*/	
+		 Capture the Exemption Name	*/
 		String mandatoryExemptionData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;	
 		Map<String, String> createExmeptiondataMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields");
 		createExmeptiondataMap.put("Veteran Name", createExmeptiondataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		objExemptionsPage.createExemption(createExmeptiondataMap);
+		driver.navigate().refresh();
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		
 		ReportLogger.INFO("Exemption: "+exemptionName + " is created");
@@ -91,23 +92,25 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		
 		//Step5: Calculate and verify Total number of Value Adjustments in an Exemption		
 		 objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
-		 int noOfVAs =  objValueAdjustmentPage.numberOfValueAdjustments.size();  
+		 int noOfVAs =  objValueAdjustmentPage.numberOfValueAdjustments.size(); 
 		 softAssert.assertEquals(noOfVAs, actualVAtoBeCreated, "Verify Number of Value Adjustments");	  
 		   
 		  //Step6: Looping through each Value Adjustments to calculate Exemption Amount 
 		  for (int VARowNo = 0; VARowNo<noOfVAs; VARowNo++) { 			 				  
 			//Step7: Clicking on 'Active' Value Adjustment link
-			String xpPathActiveVA = "//div[contains(@class,'windowViewMode-normal')]//tr["+(VARowNo+1)+"]//span[contains(text(),'Active')]//..//..//preceding-sibling::th//a";
+			driver.navigate().refresh();
+			String xpPathActiveVA = "//div//tr["+(VARowNo+1)+"]//span[contains(text(),'Active')]//..//..//preceding-sibling::th//a";
 			objPage.waitUntilElementIsPresent(xpPathActiveVA,50);
-			WebElement vaLink = objPage.waitForElementToBeClickable(xpPathActiveVA);
+			WebElement vaLink = objPage.locateElement(xpPathActiveVA,10);
+			
 			String vANAme = vaLink.getText();
 			ReportLogger.INFO("Clicking on Value Adjustment Link: "+ vANAme);
 			objPage.Click(vaLink);
 			objPage.waitUntilPageisReady(driver);		
 			
 			//Step8: Calculate Basic Exemption Amount in an 'Active' Value Adjustment					  
-			float expectedExemptionAmount = objValueAdjustmentPage.calculateBasicExemptionAmount();			  
-			String exemptionAmount = objValueAdjustmentPage.exemptionAmountCalculatedValueLabel.getText();			  
+			float expectedExemptionAmount = objValueAdjustmentPage.calculateBasicExemptionAmount();
+			String exemptionAmount = objPage.getElementText(objPage.waitForElementToBeVisible(objValueAdjustmentPage.exemptionAmountCalculatedValueLabel));
 			float actualExemptionAmount = objApasGenericFunctions.convertToFloat(exemptionAmount); 		 
 			ReportLogger.INFO("Verifying Exemption Amount Calculated");
 			softAssert.assertEquals(actualExemptionAmount,expectedExemptionAmount,"SMAB-T1213: Verify Exemption Amount calculated for each eligible year if the Determination is 'Basic'");
@@ -147,6 +150,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		Map<String, String> createExmeptiondataMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields");
 		createExmeptiondataMap.put("Veteran Name", createExmeptiondataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		objExemptionsPage.createExemption(createExmeptiondataMap);
+		driver.navigate().refresh();
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		
 		ReportLogger.INFO("Exemption: "+exemptionName + " is created");
@@ -159,7 +163,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
 				  
 		// Step6: Click on Active VA having Determination "Basic Disabled Veterans" 
-		objPage.waitForElementToBeClickable(objValueAdjustmentPage.activeBasicDetVA);
+		objPage.waitForElementToBeClickable(objValueAdjustmentPage.activeBasicDetVA, 10);
 		String vAName = objValueAdjustmentPage.activeBasicDetVA.getText();
 		objPage.Click(objValueAdjustmentPage.activeBasicDetVA);
 
@@ -182,7 +186,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		objPage.enter(objValueAdjustmentPage.annualFormReceivedDateEditBox,currentDate);
 		
 		// Step12: Enter Low Income Threshold Amount in Total Annual HouseHold Income field to modify VA
-		objValueAdjustmentPage.totalAnnualHouseholdIncomeEditBox.clear();	
+		//objValueAdjustmentPage.totalAnnualHouseholdIncomeEditBox.clear();	
 		objPage.enter(objValueAdjustmentPage.totalAnnualHouseholdIncomeEditBox,totalAnnualHouseHoldIncome);
 		ReportLogger.INFO("Modifying Determination of VA from 'Basic' to 'Low-Income'");	
 
@@ -267,10 +271,9 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		softAssert.assertTrue(detValueFound, "SMAB-T1266: Verify 'Not Qualified' value does not appear in the Determination field of VAR");
 		
 		//Step7: Verify on editing VAR,the user cannot enter a value into the Penalty Adjustment Reason or Penalty Adjustment Other Reason Detail when the Penalty Amount - User Adjusted is blank or $0
-		//objPage.Select(objValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
-		objApasGenericFunctions.selectFromDropDown(objValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
+		objApasGenericPage.selectOptionFromDropDown(objValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
 		objPage.enter(objValueAdjustmentPage.penaltyAdjustmentOtherReasonDetail, "Testing automation");
-		objPage.Click(objValueAdjustmentPage.saveButton);	
+		objPage.Click(objValueAdjustmentPage.saveButton);
 		
 		String expectedPenaltyAdjstmntErrorMsg = "Penalty Adjustment Reason is not allowed when the Penalty Amount - User Adjusted is blank.";
 		objPage.waitForElementToBeClickable(objValueAdjustmentPage.errMsgPenaltyAdjstmntRsn,10);
