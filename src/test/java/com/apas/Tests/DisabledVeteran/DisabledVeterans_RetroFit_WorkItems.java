@@ -102,7 +102,8 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 		ReportLogger.INFO("verifying Current year RPSL record is created along with Reminder WI");
 		workItemPageObj.openWorkItem(reminderDVWINumber);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.linkedItemsRecord), "Exemption Limits - 2021","SMAB-T1885:Verify that reminder WI 'Disabled Veterans -Update and Validate -Disabled veterans Yearly exemption amounts and income limits' and RPSL for current roll year(if not present) upon job execution");
-
+//my asserion
+		
 		// Step4: Now deleting the reminder WI, executing the Reminder job again and
 		// verifying that new WI is linked with already existing RPSL--2021
 		String deleteDVWIAgainQuery = "select id from Work_Item__c where Request_Type__c='Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits'";
@@ -138,7 +139,9 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(3000);
 		 */
-		apasGenericObj.saveRecord();
+		objPage.Click(workItemPageObj.saveButton);
+		objPage.waitForElementToBeVisible(6, workItemPageObj.pageLevelErrorMsg);
+		String text=workItemPageObj.pageLevelErrorMsg.getText();
 		softAssert.assertContains(workItemPageObj.pageLevelErrorMsg.getText(), "Please accept the WorkItem :","SMAB-T1933:Verify that user is not able to submit the annual setting without claiming the WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits'");
 		objPage.Click(workItemPageObj.cancelBtn);
 		driver.navigate().back();
@@ -352,6 +355,8 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 		objPage.javascriptClick(workItemPageObj.detailsTab);
 		softAssert.assertTrue(objPage.verifyElementVisible(workItemPageObj.relatedActionLink),"SMAB-T1918:Verify that User is able to see the Low income WI under 'In Progress' tab after accpeting it");
 
+		//my assertion
+		
 		objPage.Click(workItemPageObj.detailsWI);
 		//Thread.sleep(3000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage,10);

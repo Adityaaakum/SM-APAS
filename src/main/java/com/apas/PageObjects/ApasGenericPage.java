@@ -101,7 +101,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//h2[@class='slds-truncate slds-text-heading_medium']")
 	public WebElement popUpErrorMessageWeHitASnag;
 	
-	@FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab'))]//lightning-formatted-text[contains(text(),'WI')]")
+	@FindBy(xpath="//img[@title='Work Item']//following::lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
 
 	public String menuList = "//div[contains(@class,'uiMenuList--default visible positioned')]";
@@ -297,10 +297,10 @@ public class ApasGenericPage extends Page {
 
 		if (element instanceof String) {
 			webElement = getWebElementWithLabel((String) element);
-			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
+			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//label[text()='" + element +"']/..//*[@title='" + value + "' or text() = '" + value + "']";
 		} else{
 			webElement = (WebElement) element;
-			xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '\" + value + \"' or @title= '\" + value + \"']";
+			xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
 
 		}
 
@@ -414,7 +414,9 @@ public class ApasGenericPage extends Page {
 	 * @throws Exception 
 	 **/
 	public String getWorkItemNumberDetailView() throws Exception {
-		waitForElementToBeVisible(workItemNumberDetailView);
+		String parentwindow = driver.getWindowHandle();
+       switchToNewWindow(parentwindow);
+        waitForElementToBeVisible(workItemNumberDetailView);
 		return getElementText(workItemNumberDetailView);
 
 	}
