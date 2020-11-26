@@ -301,7 +301,6 @@ public class ApasGenericPage extends Page {
 		} else{
 			webElement = (WebElement) element;
 			xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
-
 		}
 
 		scrollToElement(webElement);
@@ -400,9 +399,8 @@ public class ApasGenericPage extends Page {
 
 	/**
 	 * Description: This method will open the tab with name which will be passed a parameter
-	 * @param value: tabName
+	 * @param tabName: tabName
 	 */
-	
 	public void openTab(String tabName) throws Exception {
 		String tabXPath="//a[@role='tab'][@data-label='"+ tabName +"']";
 		Click(driver.findElementByXPath(tabXPath));
