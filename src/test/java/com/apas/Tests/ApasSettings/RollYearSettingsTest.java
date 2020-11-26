@@ -154,6 +154,8 @@ public class RollYearSettingsTest extends TestBase {
 			
 			//Step6: Change the List view and Create Roll Year record
 			objApasGenericFunctions.displayRecords("Recently Viewed");
+			//Added the below line to bring back the focus to handle regression failure - 11/26
+			driver.navigate().refresh();
 			objRollYearSettingsPage.createOrUpdateRollYearRecord(dataToCreatePastRollYearMap, "New");
 				
 			//Step7: Capture the record id and validate its details
@@ -326,7 +328,7 @@ public class RollYearSettingsTest extends TestBase {
 	 -RP Business Admin and Exemption Support Staff are able to only view the Roll Year Record
 	 **/
 	
-	@Test(description = "SMAB-T638: Validate RP Business admin and Exemption Support staff are able to only view the Roll year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	/*@Test(description = "SMAB-T638: Validate RP Business admin and Exemption Support staff are able to only view the Roll year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void RollYear_ViewRecord(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -353,7 +355,7 @@ public class RollYearSettingsTest extends TestBase {
 		softAssert.assertTrue(!objApasGenericPage.clickShowMoreButtonAndAct(viewRollYearMap.get("Roll Year"), "Edit"),"SMAB-T638: Validate non system admin user is not able to view 'Edit' option to update the existing Roll Year record : " + viewRollYearMap.get("Roll Year"));
 				
 		objApasGenericFunctions.logout();
-	}
+	}*/
 	
 	
 	/**

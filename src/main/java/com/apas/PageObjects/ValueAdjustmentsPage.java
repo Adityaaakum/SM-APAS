@@ -412,6 +412,7 @@ public double calculatePenaltyAmountForVA(double penaltyPercentage, boolean vaTy
  * @throws Exception 
  */
 public boolean verifyIfInitialFilingOrAnnualVA(String applicationdate) throws Exception{
+	Thread.sleep(2000);
 	SimpleDateFormat sdfo = new SimpleDateFormat("MM/dd/yyyy");
 	Date appdate = sdfo.parse(applicationdate);
 	objPage.clickElementOnVisiblity(vaRollYear);
@@ -421,7 +422,6 @@ public boolean verifyIfInitialFilingOrAnnualVA(String applicationdate) throws Ex
 	objPage.waitForElementToBeVisible(vaPenaltyPercentage, 10);
 	return (appdate.compareTo(openRollstartdate)>0);
 }
-
 
 /**
  * @description: This method will return VA name
@@ -566,12 +566,12 @@ public String selectVAByStartDate(String startDate) throws Exception
 public void navigateToVAListViewInExemption() throws Exception
 {	
 	//Step1: Selecting the Value Adjustment Related List Tab
-	Thread.sleep(2000);
+	Thread.sleep(3000); //Added wait to handle regression failure - 11/26
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Related List - Value Adjustement Tab");
 	objPage.locateElement("//div//li[@title='Value Adjustments']//a", 30);
 	waitForElementToBeClickable(valueAdjustmentRelatedListTab);
 	objPage.Click(valueAdjustmentRelatedListTab);
-	Thread.sleep(2000);
+	Thread.sleep(5000);
 
 	//Step2: Clicking on 'View All' Link of Value Adjustment Related List Tab
 	ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on View All Link");
