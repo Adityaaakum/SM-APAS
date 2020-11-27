@@ -104,7 +104,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		
 		//Step6: Navigate to Value Adjustment List View in Exemption
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
-		objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
+		//objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
 		
 		//Step7: Click on current Roll Year's Value Adjustment
 		boolean vaClicked = objValueAdjustmentPage.clickVA(strRollYear);
