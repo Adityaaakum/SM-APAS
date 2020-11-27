@@ -340,7 +340,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	ReportLogger.INFO("Step 23: Click on the button - Mark Complete");
-  	objPage.Click(objWIHomePage.markStatusAsCompleteButton);
+  	objPage.Click(objWIHomePage.btnMarkComplete);
   	
     ReportLogger.INFO("Step 15: Logging OUT from SF");
     objApasGenericFunctions.logout();
@@ -473,7 +473,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	ReportLogger.INFO("Step 23: Click on the button - Mark Complete");
-  	objPage.Click(objWIHomePage.markStatusAsCompleteButton);
+  	objPage.Click(objWIHomePage.btnMarkComplete);
     ReportLogger.INFO("Step 15: Logging OUT from SF" );
     objApasGenericFunctions.logout();
     Thread.sleep(5000);

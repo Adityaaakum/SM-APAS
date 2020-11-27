@@ -185,6 +185,9 @@ public class WorkItemHomePage extends Page {
 
 	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//button//span[text()='Mark as Current Status']")
 	public WebElement markStatusCompleteBtn;
+	
+	@FindBy(xpath="//button[@title='Mark Complete']") 
+	public WebElement btnMarkComplete;
 
 	@FindBy(xpath="//a[@title='Exemption Limits - 2021']")
 	public WebElement rpslRecord;
