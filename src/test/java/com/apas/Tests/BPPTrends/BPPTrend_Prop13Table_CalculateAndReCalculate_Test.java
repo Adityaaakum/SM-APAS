@@ -301,10 +301,8 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		objSoftAssert.assertEquals(actTableMsgBeforeCalc, expTableMsgBeforeCalc, "Message displayed above '"+ tableName +"' before ReCalculation is initiated");
 
 		//Step8: Retrieving roll year and year acquired values to check roll year values are 1 year greater than acquired year values
-        //List<WebElement> rollYears = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//th[@data-label = 'Roll Year']//lightning-formatted-text", 60);
-        //List<WebElement> yearAcquired = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'Year Acquired']//lightning-formatted-text", 60);
-        List<WebElement> rollYears = objBppTrnPg.prop13RollYearColumnList;
-        List<WebElement> yearAcquired = objBppTrnPg.prop13YearAcquiredColumnList;
+        List<WebElement> rollYears = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//th[@data-label = 'Roll Year']//lightning-base-formatted-text", 60);
+        List<WebElement> yearAcquired = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'Year Acquired']//lightning-base-formatted-text", 60);
 
 		for(int i = 0; i < rollYears.size(); i++) {
 			int currentRollYear = Integer.parseInt(objBppTrnPg.getElementText(rollYears.get(i)));
@@ -317,10 +315,8 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		}
 
 		//Step9: Validating Prop13 Rounded and CPI Factors Rounded are displayed to 2 decimal places
-        //List<WebElement> cpiRoundedValuesList = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'CPI Factor (Rounded)']//lightning-formatted-text", 60);
-        //List<WebElement> prop13RoundedValuesList = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'Prop 13 Factor (Rounded)']//lightning-formatted-text", 60);
-        List<WebElement> cpiRoundedValuesList = objBppTrnPg.cpiRoundedValuesList;
-        List<WebElement> prop13RoundedValuesList = objBppTrnPg.prop13RoundedValuesList;
+        List<WebElement> cpiRoundedValuesList = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'CPI Factor (Rounded)']//lightning-base-formatted-text", 60);
+        List<WebElement> prop13RoundedValuesList = objBppTrnPg.locateElements("//lightning-tab[@data-id = 'BPP Prop 13 Factors']//td[@data-label = 'Prop 13 Factor (Rounded)']//lightning-base-formatted-text", 60);
 
 		for(int i = 0; i < cpiRoundedValuesList.size(); i++) {
 			String currentCpiRoundedValue = objBppTrnPg.getElementText(cpiRoundedValuesList.get(i));
