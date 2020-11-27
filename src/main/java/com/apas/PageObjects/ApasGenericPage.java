@@ -50,7 +50,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//table[@role='grid']//thead/tr//th")
 	public WebElement dataGrid;
 
-	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items')]")
+	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items...')]")
 	public WebElement appLauncherSearchBox;
 
 	@FindBy(xpath = "//input[@placeholder='Search apps and items...']/..//button")
@@ -108,7 +108,10 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//lightning-spinner")
 	public WebElement spinner;
-
+	
+	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
+	public WebElement successAlertText;
+	
 	public String xpathSpinner = "//lightning-spinner";
 
 	public String maxEquipmentIndexFactor = "Maximum Equipment index Factor";
@@ -311,7 +314,9 @@ public class ApasGenericPage extends Page {
 		scrollToElement(drpDwnOption);
 		waitForElementToBeClickable(drpDwnOption, 10);
 		javascriptClick(drpDwnOption);
+
 	}
+	
 	/**
 	 * Description: This method will fetch the current URL and process it to get the Record Id
 	 * @param driver: Driver Instance

@@ -154,6 +154,8 @@ public class RollYearSettingsTest extends TestBase {
 			
 			//Step6: Change the List view and Create Roll Year record
 			objApasGenericFunctions.displayRecords("Recently Viewed");
+			//Added the below line to bring back the focus to handle regression failure - 11/26
+			driver.navigate().refresh();
 			objRollYearSettingsPage.createOrUpdateRollYearRecord(dataToCreatePastRollYearMap, "New");
 				
 			//Step7: Capture the record id and validate its details

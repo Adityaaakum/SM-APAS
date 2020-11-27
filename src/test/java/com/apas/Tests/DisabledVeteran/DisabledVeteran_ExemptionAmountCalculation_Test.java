@@ -71,7 +71,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 				
 		/*Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 		 Create Exemption record
-		 Capture the Exemption Name*/	
+		 Capture the Exemption Name	*/
 		String mandatoryExemptionData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;	
 		Map<String, String> createExmeptiondataMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields");
 		createExmeptiondataMap.put("Veteran Name", createExmeptiondataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
@@ -91,7 +91,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
 		//Step5: Calculate and verify Total number of Value Adjustments in an Exemption		
-		 objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
+		 //objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
 		 int noOfVAs =  objValueAdjustmentPage.numberOfValueAdjustments.size(); 
 		 softAssert.assertEquals(noOfVAs, actualVAtoBeCreated, "Verify Number of Value Adjustments");	  
 		   
@@ -123,7 +123,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 			driver.navigate().back();		  
 		  }	 
 		 objApasGenericFunctions.logout();
-	} 
+	}
 	
 	
 	/**
@@ -160,7 +160,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
 		//Step5: Wait for VA List View to be visible	
-		objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
+		//objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
 				  
 		// Step6: Click on Active VA having Determination "Basic Disabled Veterans" 
 		objPage.waitForElementToBeClickable(objValueAdjustmentPage.activeBasicDetVA, 10);
