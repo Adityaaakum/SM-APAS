@@ -71,7 +71,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 				
 		/*Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 		 Create Exemption record
-		 Capture the Exemption Name*/	
+		 Capture the Exemption Name	*/
 		String mandatoryExemptionData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;	
 		Map<String, String> createExmeptiondataMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithMandatoryFields");
 		createExmeptiondataMap.put("Veteran Name", createExmeptiondataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
@@ -123,7 +123,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 			driver.navigate().back();		  
 		  }	 
 		 objApasGenericFunctions.logout();
-	} 
+	}
 	
 	
 	/**

@@ -278,7 +278,8 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		String entryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
 		Map<String, String> createRPSLDataMap = objUtils.generateMapFromJsonFile(entryData, "DataToCreateCurrentRPSLEntry");
 		String strSuccessAlertMessage = objRPSLPage.createRPSL(createRPSLDataMap,strRollYear);
-		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + "Exemption Limits -  " + strRollYear + "\" was created.","Verify the User is able to create Exemption limit record for the current roll year");
+		String recordValue = "Exemption Limits -  " + strRollYear;
+		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + recordValue + "\" was created.","Verify the User is able to create Exemption limit record for the current roll year");
 		
 		//Step5: Opening the Real Property Settings Libraries module
 		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
