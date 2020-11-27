@@ -73,7 +73,6 @@ public class RollYearSettingsTest extends TestBase {
 			objRollYearSettingsPage.saveRollYearRecordWithNoValues();
 			
 			//Step4: Validate error messages when no field value is entered and Roll Year Settings record is saved
-			//String expectedErrorMessageOnTop = "These required fields must be completed: Calendar End Date, Calendar Start Date, Open Roll End Date, Lien Date, Roll Year Settings, Roll Year, Open Roll Start Date, Tax End Date, Tax Start Date";
 			String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the following fields\nRoll Year Settings\nOpen Roll Start Date\nRoll Year\nOpen Roll End Date\nLien Date\nCalendar Start Date\nCalendar End Date\nTax Start Date\nTax End Date\nAnnual Batch Execution Date";
 			String expectedIndividualFieldMessage = "Complete this field.";
 			softAssert.assertEquals(objPage.getElementText(objRollYearSettingsPage.pageError),expectedErrorMessageOnTop,"SMAB-T638: Validating mandatory fields missing error in Roll Year Settings screen.");
@@ -155,6 +154,8 @@ public class RollYearSettingsTest extends TestBase {
 			
 			//Step6: Change the List view and Create Roll Year record
 			objApasGenericFunctions.displayRecords("Recently Viewed");
+			//Added the below line to bring back the focus to handle regression failure - 11/26
+			driver.navigate().refresh();
 			objRollYearSettingsPage.createOrUpdateRollYearRecord(dataToCreatePastRollYearMap, "New");
 				
 			//Step7: Capture the record id and validate its details

@@ -354,9 +354,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	
 			//step5:now updating end date of rating on field level and verifying it should not be updated
 			ReportLogger.INFO("Verifying End date of Rating can't be modified once updated on field level Edit");
-			Thread.sleep(3000);
-			driver.navigate().refresh();
-			Thread.sleep(5000);
+			Thread.sleep(8000);
 			apasGenericObj.editAndInputFieldData("End Date of Rating",exemptionPageObj.endDateOfRating,dataToEdit.get("EnddateOfRatingUpdated"));
 			String erroMsgOnField=vaPageObj.editFieldErrorMsg.getText().trim();
 			softAssert.assertEquals(erroMsgOnField, expectedError,"SMAB-T1218:verified End Date of Rating can't be modified if set once on field level edit.");

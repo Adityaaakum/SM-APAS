@@ -91,7 +91,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
 		//Step5: Calculate and verify Total number of Value Adjustments in an Exemption		
-		 objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
+		 //objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
 		 int noOfVAs =  objValueAdjustmentPage.numberOfValueAdjustments.size(); 
 		 softAssert.assertEquals(noOfVAs, actualVAtoBeCreated, "Verify Number of Value Adjustments");	  
 		   
@@ -123,7 +123,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 			driver.navigate().back();		  
 		  }	 
 		 objApasGenericFunctions.logout();
-	} 
+	}
 	
 	
 	/**
@@ -160,7 +160,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
 		//Step5: Wait for VA List View to be visible	
-		objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
+		//objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
 				  
 		// Step6: Click on Active VA having Determination "Basic Disabled Veterans" 
 		objPage.waitForElementToBeClickable(objValueAdjustmentPage.activeBasicDetVA, 10);
@@ -248,7 +248,6 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		softAssert.assertEquals(vANameValue,VAName,"SMAB-T1134: 'Value Adjustment Name' attribute's value is displayed on VAR");
 		
 		 //Step5: Verify 'Start Date & End Date' fields are read only on VAR
-		
 		 objPage.Click(objValueAdjustmentPage.editButton);
 		 
 		 objPage.waitForElementToBeClickable(objValueAdjustmentPage.startDateReadOnlyField,20);
@@ -259,7 +258,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		 softAssert.assertTrue(endDateReadOnly, "SMAB-T1267: Verify while editing VAR, the End Date field is read-only");
 		  
 		//Step6: Verify "Not Qualified" value does not appear in the Determination field of VAR
-		objPage.Select(objValueAdjustmentPage.determinationDropDown, "Basic Disabled Veterans Exemption");
+		objApasGenericPage.selectOptionFromDropDown("Determination", "Basic Disabled Veterans Exemption");
 		List<WebElement> determinationOptions = objValueAdjustmentPage.determinationFieldValuesList;
 		String expectedDetermination = "Not Qualified";
 		boolean detValueFound = true;
@@ -276,21 +275,17 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		objPage.Click(objValueAdjustmentPage.saveButton);
 		
 		String expectedPenaltyAdjstmntErrorMsg = "Penalty Adjustment Reason is not allowed when the Penalty Amount - User Adjusted is blank.";
-		objPage.waitForElementToBeClickable(objValueAdjustmentPage.errMsgPenaltyAdjstmntRsn,10);
-		String actualPenaltyAdjstmntErrorMsg = objValueAdjustmentPage.errMsgPenaltyAdjstmntRsn.getText();
+		String actualPenaltyAdjstmntErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Penalty Adjustment Reason");
 		softAssert.assertEquals(actualPenaltyAdjstmntErrorMsg, expectedPenaltyAdjstmntErrorMsg, "SMAB-T1268: Verify on editing VAR,the user cannot enter a value into the Penalty Adjustment Reason when the Penalty Amount - User Adjusted is blank or $0");		 
 		
 		String expectedPenaltyAdjstmntReasonDetailErrorMsg = "Penalty Adjustment Other Reason Detail is allowed when the Penalty Adjustment Reason is 'Other'.";
-		String actualPenaltyAdjstmntReasonDetailErrorMsg = objValueAdjustmentPage.errMsgPenaltyAdjstmntOthRsnDetail.getText();
+		String actualPenaltyAdjstmntReasonDetailErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Penalty Adjustment Other Reason Detail");
 		softAssert.assertEquals(actualPenaltyAdjstmntReasonDetailErrorMsg, expectedPenaltyAdjstmntReasonDetailErrorMsg, "SMAB-T1268: Verify on editing VAR,the user cannot enter a value into the Penalty Adjustment Other Reason Detail when the Penalty Amount - User Adjusted is blank or $0");
 		
 		objPage.Click(objValueAdjustmentPage.cancelButton);
 		objApasGenericFunctions.logout();
 	} 
 	
-	
-
-  
 }
   
   
