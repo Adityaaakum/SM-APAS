@@ -91,7 +91,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
 		//Step5: Calculate and verify Total number of Value Adjustments in an Exemption		
-		 objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
+		 //objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
 		 int noOfVAs =  objValueAdjustmentPage.numberOfValueAdjustments.size(); 
 		 softAssert.assertEquals(noOfVAs, actualVAtoBeCreated, "Verify Number of Value Adjustments");	  
 		   
@@ -160,7 +160,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
 		
 		//Step5: Wait for VA List View to be visible	
-		objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
+		//objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
 				  
 		// Step6: Click on Active VA having Determination "Basic Disabled Veterans" 
 		objPage.waitForElementToBeClickable(objValueAdjustmentPage.activeBasicDetVA, 10);

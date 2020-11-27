@@ -46,6 +46,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	BuildingPermitPage objBuildingPermitPage;
 	SalesforceAPI salesforceAPI;
 	ParcelsPage objParcel;
+	
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
 		driver=null;
