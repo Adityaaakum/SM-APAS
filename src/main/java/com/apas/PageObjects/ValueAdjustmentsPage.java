@@ -414,7 +414,7 @@ public double calculatePenaltyAmountForVA(double penaltyPercentage, boolean vaTy
 public boolean verifyIfInitialFilingOrAnnualVA(String applicationdate) throws Exception{
 	SimpleDateFormat sdfo = new SimpleDateFormat("MM/dd/yyyy");
 	Date appdate = sdfo.parse(applicationdate);
-	objPage.clickElementOnVisiblity(vaRollYear);
+	objPage.Click(vaRollYear);
 	objPage.waitForElementToBeVisible(openRollStartDate, 10);
 	Date openRollstartdate=sdfo.parse(openRollStartDate.getText().trim());
 	driver.navigate().back();

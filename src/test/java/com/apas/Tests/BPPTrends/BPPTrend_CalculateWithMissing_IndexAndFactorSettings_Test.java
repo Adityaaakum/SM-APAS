@@ -202,19 +202,19 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		//Step15: Create a BPP Composite Factor Settings
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Clicking on Bpp Composite Factors Settings tab **");	
 		if(objBppTrendSetupPage.moreTabRightSection != null) {
-			objBppTrnPg.clickAction(objBppTrendSetupPage.moreTabRightSection);
-			objBppTrnPg.clickAction(objBppTrendSetupPage.bppCompositeFactorOption);
+			objPage.Click(objBppTrendSetupPage.moreTabRightSection);
+			objPage.Click(objBppTrendSetupPage.bppCompositeFactorOption);
         } else {
-        	objBppTrnPg.clickAction(objBppTrendSetupPage.bppCompFactorSettingTab);
+        	objPage.Click(objBppTrendSetupPage.bppCompFactorSettingTab);
 		}
 		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Commercial property type **");
 		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
 		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
+		objPage.Click(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
 		
 		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
-		objBppTrnPg.clickAction(objBppTrendSetupPage.newBtnToCreateEntry);
+		objPage.Click(objBppTrendSetupPage.newBtnToCreateEntry);
 
 		objBppTrendSetupPage.enter(objBppTrendSetupPage.minGoodFactorEditBox,"10");
 		objBuildPermit.selectOptionFromDropDown("Property Type","Commercial");
@@ -230,10 +230,10 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Industrial property type **");
 		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
 		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
+		objPage.Click(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
 		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateCompositeFactorEntry, 20);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateCompositeFactorEntry));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
+		objPage.Click(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
 
 		objBppTrendSetupPage.enter(objBppTrendSetupPage.minGoodFactorEditBox,"9");
 		objBuildPermit.selectOptionFromDropDown("Property Type","Industrial");
@@ -249,10 +249,10 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Agricultural property type **");
 		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
 		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
+		objPage.Click(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
 		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateCompositeFactorEntry, 20);
-		objBppTrnPg.clickAction(objBppTrendSetupPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateCompositeFactorEntry));
+		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
+		objPage.Click(objBppTrendSetupPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
 
 		objBppTrendSetupPage.enter(objBppTrendSetupPage.minGoodFactorEditBox,"11");
 		objBuildPermit.selectOptionFromDropDown("Property Type","Agricultural");
@@ -268,10 +268,10 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Construction property type **");
 		objBppTrendSetupPage.waitForElementToBeVisible(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
 		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.clickAction(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
+		objPage.Click(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
 
-		objBppTrendSetupPage.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateCompositeFactorEntry, 20);
-		objBppTrendSetupPage.clickAction(objBppTrendSetupPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateCompositeFactorEntry));
+		objBppTrendSetupPage.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
+		objBppTrendSetupPage.clickAction(objBppTrendSetupPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
 
 		objBppTrendSetupPage.enter(objBppTrendSetupPage.minGoodFactorEditBox,"10");
 		objBuildPermit.selectOptionFromDropDown("Property Type","Construction");

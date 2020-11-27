@@ -467,6 +467,7 @@ public String createNewExemptionWithMandatoryData(Map<String, String> newExempti
 		Thread.sleep(2000);
 		String exmpName = objPage.getElementText(objPage.waitForElementToBeVisible(exemptionName));
 		ReportLogger.INFO("Created "+exmpName+" Exemption with mandatory data");
+		objPage.waitForElementToBeClickable(10, dateApplicationReceivedExemptionDetails);
 	
 	
 	return exmpName;
