@@ -85,7 +85,8 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         driver.navigate().refresh();
 
         //Step5: "Import Review" Work Item generation validation after file is imported
-        HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
+        HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData("Building Permit - Review - fileNameWithoutExtension");
+        
         int importReviewWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("Building Permit - Review - " + fileNameWithoutExtension)).count();
         int importReviewRowNumber = InPoolWorkItems.get("Request Type").indexOf("Building Permit - Review - " + fileNameWithoutExtension);
         String importReviewWorkItem = InPoolWorkItems.get("Work Item Number").get(importReviewRowNumber);
@@ -98,6 +99,24 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
         objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
         objPage.scrollToBottom();
+        String parentwindow = driver.getWindowHandle();
+		//opening the action link to validate that link redirects to correct page
+        objWorkItemHomePage.openActionLink(importReviewWorkItem);
+		objPage.switchToNewWindow(parentwindow);
+		objPage.verifyElementVisible(objWorkItemHomePage.editBtn);
+		//objPage.verifyElementVisible(rpslObj.realPropertySettingsLibraryHeaderText);
+		driver.switchTo().window(parentwindow);
+		objWorkItemHomePage.openWorkItem(importReviewWorkItem);
+		//NEWWINDOW
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
+		//Validating that 'Roll Code' field and 'Date' field gets automatically populated in the work item record WHERE date should be date of import and roll code should be SECS
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
+										"SMAB-T2081: Validation that 'Roll Code' fields getting automatically populated in the work item record");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Date", "Information"),objUtil.getCurrentDate("MM/DD/YYYY"),
+										"SMAB-T2081: Validation that 'Date' fields is equal to"+objUtil.getCurrentDate("MM/DD/YYYY"));
+										
+										
         objWorkItemHomePage.openRelatedActionRecord(importReviewWorkItem);
         String parentWindow = driver.getWindowHandle();
         objPage.switchToNewWindow(parentWindow);
