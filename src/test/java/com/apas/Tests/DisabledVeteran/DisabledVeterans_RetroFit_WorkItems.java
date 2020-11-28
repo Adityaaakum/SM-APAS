@@ -150,7 +150,7 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 		ReportLogger.INFO("verifying valiadtion when user tries to submit the RPSL setting without accpeting the WI: "+ reminderWINumber);
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//Thread.sleep(3000);
-		objPage.waitForElementToBeClickable(rpslObj.statusDropDown, 10);
+		//objPage.waitForElementToBeClickable(rpslObj.statusDropDown, 10);
 		apasGenericObj.selectFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(3000);
@@ -179,7 +179,7 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 		objPage.switchToNewWindow(parentwindow);
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//Thread.sleep(3000);
-		objPage.waitForElementToBeClickable(rpslObj.dvLowIncomeExemptionAmountEditBox, 10);
+		//objPage.waitForElementToBeClickable(rpslObj.dvLowIncomeExemptionAmountEditBox, 10);
 		objPage.enter(rpslObj.dvLowIncomeExemptionAmountEditBox, "217910");
 		objPage.enter(rpslObj.dvBasicIncomeExemptionAmountEditBox, "145273");
 		objPage.enter(rpslObj.dvLowIncomeHouseholdLimitEditBox, "65337");
@@ -241,7 +241,7 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 		ReportLogger.INFO("Returning the RPSL setting and verifying the Wi status");
 		workItemPageObj.openRelatedActionRecord(reminderSubmittedWINumber);
 		objPage.javascriptClick(workItemPageObj.editBtn);
-		objPage.waitForElementToBeClickable(rpslObj.statusDropDown, 10);
+		//objPage.waitForElementToBeClickable(rpslObj.statusDropDown, 10);
 		apasGenericObj.selectFromDropDown(rpslObj.statusDropDown, "Returned by Approver");
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(5000);
@@ -279,7 +279,7 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 		// Thread.sleep(3000);
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//Thread.sleep(3000);
-		objPage.waitForElementToBeClickable(rpslObj.statusDropDown,10);
+		//objPage.waitForElementToBeClickable(rpslObj.statusDropDown,10);
 		apasGenericObj.selectFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(5000);
@@ -318,7 +318,7 @@ public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements tes
 		workItemPageObj.openRelatedActionRecord(reminderAgainSubmittedWINumber);
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//Thread.sleep(3000);
-		objPage.waitForElementToBeClickable(rpslObj.statusDropDown, 10);
+		//objPage.waitForElementToBeClickable(rpslObj.statusDropDown, 10);
 		apasGenericObj.selectFromDropDown(rpslObj.statusDropDown, "Approved");
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(5000);
