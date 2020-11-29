@@ -2,6 +2,7 @@ package com.apas.PageObjects;
 
 import android.text.style.ClickableSpan;
 import com.apas.Reports.ReportLogger;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.generic.ApasGenericFunctions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -177,7 +178,7 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath ="//div[@class='windowViewMode-maximized active lafPageHost']//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
 	public WebElement vaRollYear;
 
-	@FindBy(xpath="//a[@title='Submitted for Approval']//span[text()='Submitted for Approval']")
+	@FindBy(xpath="//a[text()='Submitted for Approval']")
 	public WebElement submittedforApprovalTimeline;
 
 	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//button//span[text()='Mark as Current Status']")
@@ -188,6 +189,57 @@ public class WorkItemHomePage extends Page {
 
 	@FindBy(xpath="//span[text()='Reference Data Details']")
 	public WebElement referenceDetailsLabel;
+	
+	@FindBy (xpath="//button[text()='Consolidate']")
+
+    public WebElement ConsolidateButton;
+    
+    @FindBy (xpath="//button[text()='Mark Complete']")
+    public WebElement MarkCompleteButton;
+    
+    @FindBy (xpath="//*[text()='Error']//..//span")
+    public WebElement ErrorMessage;
+    
+    @FindBy (xpath="//label[text()='Select Primary']/following-sibling::div//input")
+    public WebElement SelectPrimaryButton;
+    
+    @FindBy (xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Child Work Items']")
+    public WebElement ChildWorkItemsTab;
+    
+    @FindBy (xpath="//div[@role='alert' and @data-key='error']//span[contains(@class,'toastMessage')]")
+    public WebElement ErrormsgOnWI;
+    
+    @FindBy (xpath="//*[@data-key='error']//..//button[@title='Close']")
+    public WebElement CloseErrorMsg;
+    
+    @FindBy (xpath="//button[text()='Approve']")
+    public WebElement ApproveButton;
+    
+    @FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
+	public WebElement workItemNumberDetailView;
+    /**
+	 * This method will return current status of given work Item
+	 *
+	 * @param workItem : workItem  for which  status to be fetched
+	 **/
+	public String getCurrentStatusOFWI(String WorkItem) {
+    	String query = "select Status__c from Work_Item__c where Name = '"+WorkItem+" '";
+        HashMap<String, ArrayList<String>> workItemData = new SalesforceAPI().select(query);//use sf
+        String actualWIStatus = workItemData.get("Status__c").get(0);
+        
+    	return actualWIStatus;
+    }
+	/**
+	 * This method will select work Item from the work item home page
+	 *
+	 * @param workItem : workItem  which  needs to be Selected
+	 **/
+	public void selectWorkItemOnHomePage(String workItem) throws IOException{
+        WebElement webElement = driver.findElement(By.xpath("//a[text()='"+workItem+"']/ancestor::tr//td[2]//span[contains(@class,'slds-checkbox_faux')]"));
+        scrollToElement(webElement);
+        Click(webElement);
+    }
+     
 	
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
@@ -211,6 +263,7 @@ public class WorkItemHomePage extends Page {
 	 **/
 	public void openWorkItem(String workItem) throws IOException, InterruptedException {
 		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[@title='" + workItem + "']"));
+        scrollToElement(webElement);
 		javascriptClick(webElement);
 		Thread.sleep(3000);
 
