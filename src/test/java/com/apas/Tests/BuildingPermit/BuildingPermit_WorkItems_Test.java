@@ -35,7 +35,6 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
     Util objUtil = new Util();
     EFileImportPage objEfileImportPage;
     ReportsPage objReportsPage;
-	SalesforceAPI salesforceAPI;
 
 
     @BeforeMethod(alwaysRun = true)
@@ -44,15 +43,12 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         driver = null;
         setupTest();
         driver = BrowserDriver.getBrowserInstance();
-
         objPage = new Page(driver);
         objBuildingPermitPage = new BuildingPermitPage(driver);
         objApasGenericFunctions = new ApasGenericFunctions(driver);
         objEfileImportPage = new EFileImportPage(driver);
         objWorkItemHomePage = new WorkItemHomePage(driver);
         objReportsPage = new ReportsPage(driver);
-		salesforceAPI = new SalesforceAPI();
-
     }
 
     /**
@@ -91,7 +87,6 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Step5: "Import Review" Work Item generation validation after file is imported
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
-        System.out.print(InPoolWorkItems);
         int importReviewWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("Building Permit - Review - " + fileNameWithoutExtension)).count();
         int importReviewRowNumber = InPoolWorkItems.get("Request Type").indexOf("Building Permit - Review - " + fileNameWithoutExtension);
         String importReviewWorkItem = InPoolWorkItems.get("Work Item Number").get(importReviewRowNumber);
