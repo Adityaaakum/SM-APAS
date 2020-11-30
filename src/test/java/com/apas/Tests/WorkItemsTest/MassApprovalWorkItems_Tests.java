@@ -96,7 +96,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 		    //Step 5:-Selecting he work items
 	        objWorkItemHomePage.clickCheckBoxForSelectingWI(workItemNumber1); 
 	        objWorkItemHomePage.clickCheckBoxForSelectingWI(workItemNumber2); 
-		    objWorkItemHomePage.Click(objWorkItemHomePage.markCompleteButton);
+		    objWorkItemHomePage.Click(objWorkItemHomePage.btnMarkComplete);
 		    objApasGenericFunctions.logout();
 		    
 		    //Step 6: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
@@ -111,7 +111,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 	        objWorkItemHomePage.clickCheckBoxForSelectingWI(workItemNumber2);
 	        
 	        //Step 9:Click on Approve Button
-	        objWorkItemHomePage.Click(objWorkItemHomePage.approveButton);
+	        objWorkItemHomePage.Click(objWorkItemHomePage.btnApprove);
 	        
 	        //Step 10:Validating the error message that Work items can't be Approved
 	        softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.errormsgOnWI),
@@ -133,7 +133,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 	        objWorkItemHomePage.clickCheckBoxForSelectingWI(workItemNumber2);
 	        
 	        //Step 14: Click on Approve Button
-	        objWorkItemHomePage.Click(objWorkItemHomePage.approveButton);
+	        objWorkItemHomePage.Click(objWorkItemHomePage.btnApprove);
 	        
 	        //Step 15:Validating the success message that Work items are Approved
 	        softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.successAlert),
@@ -158,6 +158,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 				"regression", "work_item_manual" })
 		public void WorkItems_ErrorChangeAsignee(String loginUser) throws Exception {
 			
+			String changeAssignee= "Change Assignee";
            // Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 			objApasGenericFunctions.login(loginUser);
 			
@@ -218,7 +219,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2InPool);
 			
 			//Step4 :Click On Assignee Button
-			objWorkItemHomePage.Click(objWorkItemHomePage.changeAsignee);
+			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(changeAssignee));
 			
 			//Validating error message for Asignee cannot be changed for staff in pool
 			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.errormsgOnWI), 
@@ -234,7 +235,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2InPool);
 			
 			//Step6:Click On Assignee Button
-			objWorkItemHomePage.Click(objWorkItemHomePage.changeAsignee);
+			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(changeAssignee));
 			
 			//Validating error message for Asignee cannot be changed for staff in pool
 			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.errormsgOnWI),
@@ -254,7 +255,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2InProgress);
 			
 			//Step10: Click on Assignee button
-			objWorkItemHomePage.Click(objWorkItemHomePage.changeAsignee);
+			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(changeAssignee));
 			
 			//Validating error message for Asignee cannot be changed for staff in progress
 			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.errormsgOnWI),
@@ -267,6 +268,9 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 		@Test(description = "SMAB-T2010: verify that work pool supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific user or a work pool.", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 				"regression", "work_item_manual" })
 		public void workItems_ChangeAsigneeAndWorkPoolStaffInPool(String loginUser) throws Exception {
+			
+			 String changeWorkPool= "Change Work Pool";
+			 String changeAssignee= "Change Assignee";
 			
 			// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 			objApasGenericFunctions.login(loginUser);
@@ -317,7 +321,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2);
 			
 			// Step6: Clicking on change assignee button to change the assignee and save 
-			objWorkItemHomePage.Click(objWorkItemHomePage.changeAsignee);
+			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(changeAssignee));
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.selectOptionDropDownAsigneeModal);
 			objWorkItemHomePage.Click(objWorkItemHomePage.selectOptionDropDownAsigneeModal);
 			objWorkItemHomePage.selectOptionDropDownAsigneeModal.sendKeys("rp appraiserAUT");
@@ -358,7 +362,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem4);
 			
 			// Step11: Clicking on change workpool button to change the workpool and save 
-			objWorkItemHomePage.Click(objWorkItemHomePage.changeWorkPool);
+			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(changeWorkPool));
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.workPoolModal);
 			objWorkItemHomePage.Click(objWorkItemHomePage.workPoolModal);
 		    objWorkItemHomePage.workPoolModal.sendKeys("RP Lost in Routing");
@@ -396,7 +400,9 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 		@Test(description = "SMAB-T2019:Verify that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific user or a work pool.", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 				"regression", "work_item_manual" })
 		public void workItems_ChangeAsigneeAndWorkPoolStaffInProgress(String loginUser) throws Exception {
-			
+			 String changeWorkPool= "Change Work Pool";
+			 String changeAssignee= "Change Assignee";
+			 
 			// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 			objApasGenericFunctions.login(loginUser);
 			
@@ -443,7 +449,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2);
 			
 			// Step6: Clicking on change assignee button to change the assignee and save 
-			objWorkItemHomePage.Click(objWorkItemHomePage.changeAsignee);
+			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(changeAssignee));
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.selectOptionDropDownAsigneeModal);
 			objWorkItemHomePage.Click(objWorkItemHomePage.selectOptionDropDownAsigneeModal);
 			objWorkItemHomePage.selectOptionDropDownAsigneeModal.sendKeys("rp appraiserAUT");
@@ -484,7 +490,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2);
 			
 			// Step11: Clicking on change workpool button to change the workpool and save 
-			objWorkItemHomePage.Click(objWorkItemHomePage.changeWorkPool);
+			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(changeWorkPool));
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.workPoolModal);
 			objWorkItemHomePage.Click(objWorkItemHomePage.workPoolModal);
 		    objWorkItemHomePage.workPoolModal.sendKeys("RP Lost in Routing");

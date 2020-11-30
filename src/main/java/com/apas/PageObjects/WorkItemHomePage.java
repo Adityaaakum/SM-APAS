@@ -90,12 +90,6 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath = "//table[@role='grid']//span[text()='Action']")
 	public WebElement actionColumn;
 	
-	@FindBy(xpath = "//a[@role='tab'][@data-label='Staff - In Pool']")
-	public WebElement staffInPoolTab;
-	
-	@FindBy(xpath = "//a[@role='tab'][@data-label='Staff - In Progress']")
-	public WebElement staffInProgressTab;
-	
 	@FindBy(xpath = "//*[@aria-labelledby='In Progress__item']//span[text()='Action']")
 	public WebElement actionColumnInProgressTab;
 
@@ -205,29 +199,23 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath="//button[@title='Approve']") 
 	public WebElement btnApprove;
 	
-	@FindBy (xpath="//button[text()='Mark Complete']")
-	public WebElement markCompleteButton;
-	
-	@FindBy (xpath="//button[text()='Approve']")
-	public WebElement approveButton;
-	
+	@FindBy(xpath="//a[@data-label='On Hold']")
+	public WebElement lnkTABOnHold;
+		
 	@FindBy (xpath="//div[@role='alert' and @data-key='error']//span[contains(@class,'toastMessage')]")
 	public WebElement errormsgOnWI;
 	 
 	@FindBy (xpath="//*[@data-key='error']//..//span[text()='Close']")
     public WebElement closeErrorMsg;
 	
-	@FindBy (xpath="//button[text()='Change Work Pool']")
-	public WebElement changeWorkPool;
-	
-	@FindBy (xpath="//button[text()='Change Assignee']")
-	public WebElement changeAsignee;
-	
 	@FindBy (xpath="//*[contains(@title, 'WI')]")
 	public WebElement workItems;
 	
-	@FindBy(xpath="//a[@data-label='On Hold']")
-	public WebElement lnkTABOnHold;
+	@FindBy(xpath = "//a[@role='tab'][@data-label='Staff - In Pool']")
+	public WebElement staffInPoolTab;
+	
+	@FindBy(xpath = "//a[@role='tab'][@data-label='Staff - In Progress']")
+	public WebElement staffInProgressTab;
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//h2[text()='Transfer Work Item']/../following-sibling::div//input[@placeholder='Search Users...']")
 	public WebElement selectOptionDropDownAsigneeModal;
@@ -499,8 +487,7 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 			actualVAName = driver.findElementByXPath("//table/tbody//tr//a[@title='" + ExemptionOrVAName + "']");
 			actualExemptionNameFrmGrid = actualVAName.getAttribute("title");
 	
-		} catch (Exception e) {
-	
+		} catch (Exception e) {	
 			ReportLogger.INFO(e.getMessage());
 		}
 	
@@ -532,16 +519,4 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
         WebElement webElement = driver.findElement(By.xpath("//*[@title='"+workItem+"']"));
         return waitForElementToBeVisible(20,webElement);         
     }
-	
-	 public void changeAssignee() throws Exception
-	 {
-		 waitForElementToBeVisible(selectOptionDropDownAsigneeModal);
-			Click(selectOptionDropDownAsigneeModal);
-			selectOptionDropDownAsigneeModal.sendKeys("rp appraiserAUT");
-			Click(asigneeNameModal);
-			Click(reasonForTransferring);
-			reasonForTransferring.sendKeys("Test");
-			Click(saveButton);
-			
-	 }
 }
