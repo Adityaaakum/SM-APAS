@@ -1,28 +1,31 @@
 package com.apas.Tests.BuildingPermit;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
+
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
-import com.apas.PageObjects.*;
+import com.apas.PageObjects.BuildingPermitPage;
+import com.apas.PageObjects.EFileImportPage;
+import com.apas.PageObjects.Page;
+import com.apas.PageObjects.ReportsPage;
+import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.ExcelUtils;
-import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.BPFileSource;
 import com.apas.config.fileTypes;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.generic.ApasGenericFunctions;
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
 
 public class BuildingPermit_WorkItems_Test extends TestBase {
 
@@ -36,10 +39,8 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
     EFileImportPage objEfileImportPage;
     ReportsPage objReportsPage;
 
-
     @BeforeMethod(alwaysRun = true)
     public void beforeMethod() throws Exception {
-
         driver = null;
         setupTest();
         driver = BrowserDriver.getBrowserInstance();
