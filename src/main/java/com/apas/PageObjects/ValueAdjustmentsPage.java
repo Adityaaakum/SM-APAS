@@ -148,7 +148,7 @@ public class ValueAdjustmentsPage extends Page {
 
 	public List<WebElement> vaEndDateFromList;
 	
-	@FindBy(xpath = "//div[text()='Value Adjustments")
+	@FindBy(xpath = "//div[text()='Value Adjustments']")
 	public WebElement valueAdjustmentViewAll;
 	
 	@FindBy(xpath = "//input[@title='Search Roll Year Settings']")

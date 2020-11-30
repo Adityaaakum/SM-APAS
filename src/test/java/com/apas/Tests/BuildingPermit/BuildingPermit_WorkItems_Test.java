@@ -7,6 +7,7 @@ import com.apas.PageObjects.*;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.ExcelUtils;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.BPFileSource;
 import com.apas.config.fileTypes;
@@ -34,6 +35,8 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
     Util objUtil = new Util();
     EFileImportPage objEfileImportPage;
     ReportsPage objReportsPage;
+	SalesforceAPI salesforceAPI;
+
 
     @BeforeMethod(alwaysRun = true)
     public void beforeMethod() throws Exception {
@@ -48,6 +51,8 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         objEfileImportPage = new EFileImportPage(driver);
         objWorkItemHomePage = new WorkItemHomePage(driver);
         objReportsPage = new ReportsPage(driver);
+		salesforceAPI = new SalesforceAPI();
+
     }
 
     /**
@@ -79,14 +84,14 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Step3: Importing the Building Permit file having all correct records
         objEfileImportPage.importFileOnEfileIntake(fileTypes.BUILDING_PERMITS, BPFileSource.SAN_MATEO, fileName, destFile);
-
+       
         //Stpe4: Open the Work Item Home Page
         objApasGenericFunctions.searchModule(modules.HOME);
         driver.navigate().refresh();
 
         //Step5: "Import Review" Work Item generation validation after file is imported
-        HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData("Building Permit - Review - fileNameWithoutExtension");
-        
+        HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
+        System.out.print(InPoolWorkItems);
         int importReviewWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("Building Permit - Review - " + fileNameWithoutExtension)).count();
         int importReviewRowNumber = InPoolWorkItems.get("Request Type").indexOf("Building Permit - Review - " + fileNameWithoutExtension);
         String importReviewWorkItem = InPoolWorkItems.get("Work Item Number").get(importReviewRowNumber);
@@ -99,28 +104,32 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
         objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
         objPage.scrollToBottom();
-        String parentwindow = driver.getWindowHandle();
+        String parentWindow = driver.getWindowHandle();
 		//opening the action link to validate that link redirects to correct page
         objWorkItemHomePage.openActionLink(importReviewWorkItem);
-		objPage.switchToNewWindow(parentwindow);
-		objPage.verifyElementVisible(objWorkItemHomePage.editBtn);
-		//objPage.verifyElementVisible(rpslObj.realPropertySettingsLibraryHeaderText);
-		driver.switchTo().window(parentwindow);
+		objPage.switchToNewWindow(parentWindow);
+		objPage.verifyElementVisible(objEfileImportPage.approveButton);
+		objPage.verifyElementVisible(objEfileImportPage.errorRowSection);
+		objPage.verifyElementVisible(objEfileImportPage.buildingPermitLabel);
+		objPage.verifyElementVisible(objEfileImportPage.importedRowSection);
+
+		driver.close();
+		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.openWorkItem(importReviewWorkItem);
-		//NEWWINDOW
+		
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 		//Validating that 'Roll Code' field and 'Date' field gets automatically populated in the work item record WHERE date should be date of import and roll code should be SECS
 		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
 										"SMAB-T2081: Validation that 'Roll Code' fields getting automatically populated in the work item record");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Date", "Information"),objUtil.getCurrentDate("MM/DD/YYYY"),
-										"SMAB-T2081: Validation that 'Date' fields is equal to"+objUtil.getCurrentDate("MM/DD/YYYY"));
-										
-										
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Date", "Information"),objUtil.getCurrentDate("MM/dd/yyyy"),
+										"SMAB-T2081: Validation that 'Date' fields is equal to"+objUtil.getCurrentDate("MM/dd/yyyy"));									
+		
+		parentWindow = driver.getWindowHandle();	
         objWorkItemHomePage.openRelatedActionRecord(importReviewWorkItem);
-        String parentWindow = driver.getWindowHandle();
         objPage.switchToNewWindow(parentWindow);
         objEfileImportPage.approveImportedFile();
+		driver.close();
         driver.switchTo().window(parentWindow);
 
         //Step7: Open Home Page
@@ -170,6 +179,13 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Step15: Open the work item
         objPage.scrollToBottom();
+        parentWindow = driver.getWindowHandle();
+		//opening the action link to validate that link redirects to correct page
+        objWorkItemHomePage.openActionLink(finalReviewWorkItem);
+		objPage.switchToNewWindow(parentWindow);
+		objPage.verifyElementVisible(objReportsPage.buildingPermitHeaderText);
+		driver.close();
+		driver.switchTo().window(parentWindow);
         objWorkItemHomePage.openRelatedActionRecord(finalReviewWorkItem);
 
         //Step16: Report data validation for linked building permit records

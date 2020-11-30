@@ -159,6 +159,9 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath="//li[@title='Details']//a[@data-label='Details']")
 	public WebElement detailsWI;
 
+	@FindBy(xpath="//li[@title='Linked Items']//a[@data-label='Linked Items']")
+	public WebElement linkedItemsWI;
+
 	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='Related Action']/parent::div/following-sibling::div//a")
 	public WebElement relatedActionLink;
 
@@ -219,7 +222,7 @@ public class WorkItemHomePage extends Page {
 	 * @throws InterruptedException 
 	 **/
 	public void openWorkItem(String workItem) throws IOException, InterruptedException {
-		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[@title='" + workItem + "']"));
+		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[@title='" + workItem + "' or text()='" + workItem + "']"));
 		javascriptClick(webElement);
 		Thread.sleep(3000);
 
@@ -258,7 +261,7 @@ public class WorkItemHomePage extends Page {
 		Click(webElementCheckBox);
 		scrollToElement(acceptWorkItemButton);
 		Click(acceptWorkItemButton);
-		objPageObj.waitForElementToDisappear(objApasGenericPage.xpathSpinner,20);
+		//objPageObj.waitForElementToDisappear(objApasGenericPage.xpathSpinner,20);
 		waitForElementToBeVisible(successAlert, 20);
 		waitForElementToDisappear(successAlert, 10);
 	}
@@ -283,7 +286,7 @@ public class WorkItemHomePage extends Page {
 	 **/
 	public void openActionLink(String workItem) throws Exception {
 		ReportLogger.INFO("Clicking on Action Link of the work item : " + workItem);
-		String xpath = "//a[@title='" + workItem + "']//ancestor::th//following-sibling::td//a";
+		String xpath = "//a[@title='" + workItem + "' or text()='" + workItem + "']//ancestor::th//following-sibling::td//a";
 		waitUntilElementIsPresent(xpath, 15);
 		waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
 		javascriptClick(driver.findElement(By.xpath(xpath)));
@@ -315,7 +318,7 @@ public class WorkItemHomePage extends Page {
 		List<WebElement> actualWINames = null;
 
 		try {
-			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "']");			
+			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "' or text()='" + WIName + "']");			
 			if(actualWINames.isEmpty()) {				
 				String pageMsg = driver.findElementByXPath("//p[@class='slds-m-vertical_medium content']").getText();
 				pageMsg=pageMsg.replaceAll("\\s","").trim();
@@ -439,7 +442,7 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	    
 		  searchWIinGrid(WIName);
 		
-		  WebElement chkBoxWI = driver.findElementByXPath("//table/tbody//tr/th//a[@title='"+ WIName + "']"
+		  WebElement chkBoxWI = driver.findElementByXPath("//table/tbody//tr/th//a[@title='"+ WIName + "' or text()='"+ WIName + "']"
 		  + "/ancestor::tr/td//input[@type='checkbox']");
 	    
 		//WebElement chkBoxWI = lnkWorkItem.findElement(By.xpath("/ancestor::tr/td//input[@type='checkbox']"));

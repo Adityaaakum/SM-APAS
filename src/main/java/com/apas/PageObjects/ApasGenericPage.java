@@ -101,7 +101,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//h2[@class='slds-truncate slds-text-heading_medium']")
 	public WebElement popUpErrorMessageWeHitASnag;
 	
-	@FindBy(xpath="//img[@title='Work Item']//following::lightning-formatted-text[contains(text(),'WI')]")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//img[@title='Work Item']//following::lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
 
 	public String menuList = "//div[contains(@class,'uiMenuList--default visible positioned')]";

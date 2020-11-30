@@ -22,6 +22,7 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.generic.ApasGenericFunctions;
 import com.apas.config.*;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 
 public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
@@ -69,7 +70,9 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	public void DisabledVeteran_verifyWorkItemGeneratedOnNewExemptionCreation(String loginUser) throws Exception {
 		  
 		   Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
-		   //Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
+		   String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
+			String currentRollYear=ExemptionsPage.determineRollYear(currentDate);	
+			//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		   ReportLogger.INFO("Step 1: Login to the Salesforce ");
 		   objApasGenericFunctions.login(loginUser);
 		   objExemptionsPage.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
@@ -99,22 +102,32 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		   ReportLogger.INFO("Step 6: Click on the Sub  TAB - Work Items");
 		   objPage.Click(objWIHomePage.lnkTABWorkItems);
 		   ReportLogger.INFO("Step 7: Click on the check box - Show RP");
-		   objPage.Click(objWIHomePage.chkShowRP);
+			if(objPage.verifyElementVisible(objWIHomePage.toggleBUtton))
+				objPage.Click(objWIHomePage.chkShowRP);
 		   ReportLogger.INFO("Step 8: Click on the SUB TAB - My Submitted for Approval");
 		   objPage.Click(objWIHomePage.lnkTABMySubmittedforApproval);
-
+			
 		   //Search the Work Item Name in the Grid 1st Column
 		   String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
-		
+			
+		   objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
+		   objPage.Click(objWIHomePage.detailsWI);
+			 //Validating that 'Roll Code' field and 'Date' field gets automatically populated in the work item record
+		   objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
+			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
+							"SMAB-T2080: Validation that 'Roll Code' fields getting automatically populated in the work item record");
+			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
+							"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
+			
+			String actualRequestTypeName = objWIHomePage.searchRequestTypeNameonWIDetails(WIRequestType);
+			String RequestTypeName  = "Disabled Veterans - Direct Review and Update - Initial filing/changes";
+			  
+			objPage.Click(objWIHomePage.linkedItemsWI);
 		   //objPage.Click(actualWIName);
 		   objPage.Click(objWIHomePage.linkedItemsRecord);
 		   String actualExemptionName = objWIHomePage.searchLinkedExemptionOrVA(newExemptionName);
 		   Thread.sleep(2000);
-		   objPage.javascriptClick(objWIHomePage.detailsWI);
-		   //objPage.Click(objWIHomePage.lnkDetails);
-		   String actualRequestTypeName = objWIHomePage.searchRequestTypeNameonWIDetails(WIRequestType);
-		   String RequestTypeName  = "Disabled Veterans - Direct Review and Update - Initial filing/changes";
-		  
+		 		   
 		   ReportLogger.INFO("Step 9: Verifying Work Item is generated , Work Item Request Name , Exemption Link on creation of new Work Item");
 		  
 		   ReportLogger.INFO("Step 10: Work Item is generated on creation of new Exemption");
@@ -126,6 +139,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		   salesforceAPI.update("Work_Item__c", updateWIStatus, "Status__c", "Completed");
 
 		   ReportLogger.INFO("Step 11: Logging out from SF");
+
 		   objApasGenericFunctions.logout();
 
 	}
@@ -293,7 +307,15 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.needsMyApprovalTab);
   	ReportLogger.INFO("Step 11: Search for the Work Item and select the checkbox");
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
-  	ReportLogger.INFO("Step 12: Click on the Approve button");
+  	
+  	String parentwindow = driver.getWindowHandle();
+	//SMAB-T2094 opening the action link to validate that link redirects to correct page 
+  	objWIHomePage.openActionLink(WIName);
+	objPage.switchToNewWindow(parentwindow);
+	objPage.verifyElementVisible(objExemptionsPage.newExemptionNameAftercreation);
+	driver.switchTo().window(parentwindow);
+	
+	ReportLogger.INFO("Step 12: Click on the Approve button");
   	objPage.javascriptClick(objWIHomePage.btnApprove);
   	Thread.sleep(5000);
   	ReportLogger.INFO("Step 13: Logging Out from SF");
@@ -312,6 +334,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 17: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
   	ReportLogger.INFO("Step 18: Click on the check box - Show RP");
+	if(objPage.verifyElementVisible(objWIHomePage.toggleBUtton))
   	objPage.Click(objWIHomePage.chkShowRP);
   	ReportLogger.INFO("Step 19: Click on the TAB - Completed");
   	objPage.Click(objWIHomePage.lnkTABCompleted);
@@ -329,74 +352,74 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 			groups = {"regression","DV_WorkItem_Exemption"})
 	public void DisabledVeteran_verifyWorkItemExemptionFilingChangesIsReturned(String loginUser) throws Exception {
 	
-	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
-	//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-	ReportLogger.INFO("Step 1: Login to the Salesforce ");
-	objApasGenericFunctions.login(loginUser);
-	objExemptionsPage.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
-	
-	//Step2: Opening the Exemption Module
-	ReportLogger.INFO("Step 2: Search open Exemption APP. from App Launcher");
-	objApasGenericFunctions.searchModule(modules.EXEMPTIONS);
-	
-	//Step3: create a New Exemption record
-	ReportLogger.INFO("Step 3: Create New Exemption");
-	objPage.Click(objExemptionsPage.newExemptionButton);
-	
-	//Get the WI Name from DB through the newly created Exemption
-	newExemptionName = objExemptionsPage.createNewExemptionWithMandatoryData(newExemptionData);
-	HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
-    String WIName = getWIDetails.get("Name").get(0);    
-    ReportLogger.INFO("Step 4: Logging OUT of SF");
-  	objApasGenericFunctions.logout();
-  	Thread.sleep(10000);
-  	ReportLogger.INFO("Step 5: Logging IN as Approver - Data Admin");
-  	objApasGenericFunctions.login(users.RP_BUSINESS_ADMIN);
-  	
-    //Step4: Opening the Work Item Module
-    ReportLogger.INFO("Step 6: Search open App. module - Work Item Management from App Launcher");
-  	objApasGenericFunctions.searchModule(modules.HOME);
-  	//Step5: Click on the Main TAB - Home
-  	ReportLogger.INFO("Step 7: Click on the Main TAB - Home");
-  	objPage.Click(objWIHomePage.lnkTABHome);
-  	ReportLogger.INFO("Step 8: Click on the Sub  TAB - Work Items");
-  	objPage.Click(objWIHomePage.lnkTABWorkItems);
-  	//ReportLogger.INFO("Step 9: Click on the check box - Show RP");
-  	//objPage.Click(objWIHomePage.chkShowRP);
-  	ReportLogger.INFO("Step 10: Click on TAB - Needs My Approval");
-  	objPage.Click(objWIHomePage.needsMyApprovalTab);
-  	ReportLogger.INFO("Step 11: Search and select the Work Item checkbox");
-  	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
-  	ReportLogger.INFO("Step 12: Click on the Return TAB");
-  	objPage.javascriptClick(objWIHomePage.returnWorkItemButton);
-  	ReportLogger.INFO("Step 13: Enter the Return Reason in the text box");
-  	objPage.enter(objWIHomePage.returnedReasonTxtBox, "Return to Assignee");
-  	ReportLogger.INFO("Step 14: Click on the SAVE button on the dialogbox");
-  	objPage.Click(objWIHomePage.saveButton);
-	
-  	ReportLogger.INFO("Step 15: Logging OUT from SF");
-  	objApasGenericFunctions.logout();
-  	Thread.sleep(10000);
-  	ReportLogger.INFO("Step 16: Logging IN SF");
-  	objApasGenericFunctions.login(loginUser);
-  	Thread.sleep(20000);
-    //Step4: Opening the Work Item Module
-    ReportLogger.INFO("Step 17: Search open App. module - Work Item Management from App Launcher");
-  	objApasGenericFunctions.searchModule(modules.HOME);
-  	//Step5: Click on the Main TAB - Home
-  	ReportLogger.INFO("Step 18: Click on the Main TAB - Home");
-  	objPage.Click(objWIHomePage.lnkTABHome);
-  	ReportLogger.INFO("Step 19: Click on the Sub  TAB - Work Items");
-  	objPage.Click(objWIHomePage.lnkTABWorkItems);
-  	ReportLogger.INFO("Step 20: Click on the check box - Show RP");
-  	objPage.Click(objWIHomePage.chkShowRP);
-  	ReportLogger.INFO("Step 21: Click the TAB - In Progress");
-  	objPage.Click(objWIHomePage.lnkTABInProgress);
-  	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
-  	ReportLogger.INFO("Step 22: Verify the  Approver has successfully returned the Work Item to the Asignee");
-  	softAssert.assertEquals(actualWIName, WIName, "SMAB-T1981: Approver has successfully returned the Work Item to the Asignee");
-  	ReportLogger.INFO("Step 23: Logging OUT");
-  	Thread.sleep(2000);
-  	objApasGenericFunctions.logout();
+		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
+		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
+		ReportLogger.INFO("Step 1: Login to the Salesforce ");
+		objApasGenericFunctions.login(loginUser);
+		objExemptionsPage.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
+		
+		//Step2: Opening the Exemption Module
+		ReportLogger.INFO("Step 2: Search open Exemption APP. from App Launcher");
+		objApasGenericFunctions.searchModule(modules.EXEMPTIONS);
+		
+		//Step3: create a New Exemption record
+		ReportLogger.INFO("Step 3: Create New Exemption");
+		objPage.Click(objExemptionsPage.newExemptionButton);
+		
+		//Get the WI Name from DB through the newly created Exemption
+		newExemptionName = objExemptionsPage.createNewExemptionWithMandatoryData(newExemptionData);
+		HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
+	    String WIName = getWIDetails.get("Name").get(0);    
+	    ReportLogger.INFO("Step 4: Logging OUT of SF");
+	  	objApasGenericFunctions.logout();
+	  	Thread.sleep(10000);
+	  	ReportLogger.INFO("Step 5: Logging IN as Approver - Data Admin");
+	  	objApasGenericFunctions.login(users.RP_BUSINESS_ADMIN);
+	  	
+	    //Step4: Opening the Work Item Module
+	    ReportLogger.INFO("Step 6: Search open App. module - Work Item Management from App Launcher");
+	  	objApasGenericFunctions.searchModule(modules.HOME);
+	  	//Step5: Click on the Main TAB - Home
+	  	ReportLogger.INFO("Step 7: Click on the Main TAB - Home");
+	  	objPage.Click(objWIHomePage.lnkTABHome);
+	  	ReportLogger.INFO("Step 8: Click on the Sub  TAB - Work Items");
+	  	objPage.Click(objWIHomePage.lnkTABWorkItems);
+	  	//ReportLogger.INFO("Step 9: Click on the check box - Show RP");
+	  	//objPage.Click(objWIHomePage.chkShowRP);
+	  	ReportLogger.INFO("Step 10: Click on TAB - Needs My Approval");
+	  	objPage.Click(objWIHomePage.needsMyApprovalTab);
+	  	ReportLogger.INFO("Step 11: Search and select the Work Item checkbox");
+	  	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
+	  	ReportLogger.INFO("Step 12: Click on the Return TAB");
+	  	objPage.javascriptClick(objWIHomePage.returnWorkItemButton);
+	  	ReportLogger.INFO("Step 13: Enter the Return Reason in the text box");
+	  	objPage.enter(objWIHomePage.returnedReasonTxtBox, "Return to Assignee");
+	  	ReportLogger.INFO("Step 14: Click on the SAVE button on the dialogbox");
+	  	objPage.Click(objWIHomePage.saveButton);
+		
+	  	ReportLogger.INFO("Step 15: Logging OUT from SF");
+	  	objApasGenericFunctions.logout();
+	  	Thread.sleep(10000);
+	  	ReportLogger.INFO("Step 16: Logging IN SF");
+	  	objApasGenericFunctions.login(loginUser);
+	  	Thread.sleep(20000);
+	    //Step4: Opening the Work Item Module
+	    ReportLogger.INFO("Step 17: Search open App. module - Work Item Management from App Launcher");
+	  	objApasGenericFunctions.searchModule(modules.HOME);
+	  	//Step5: Click on the Main TAB - Home
+	  	ReportLogger.INFO("Step 18: Click on the Main TAB - Home");
+	  	objPage.Click(objWIHomePage.lnkTABHome);
+	  	ReportLogger.INFO("Step 19: Click on the Sub  TAB - Work Items");
+	  	objPage.Click(objWIHomePage.lnkTABWorkItems);
+	  	ReportLogger.INFO("Step 20: Click on the check box - Show RP");
+	  	objPage.Click(objWIHomePage.chkShowRP);
+	  	ReportLogger.INFO("Step 21: Click the TAB - In Progress");
+	  	objPage.Click(objWIHomePage.lnkTABInProgress);
+	  	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
+	  	ReportLogger.INFO("Step 22: Verify the  Approver has successfully returned the Work Item to the Asignee");
+	  	softAssert.assertEquals(actualWIName, WIName, "SMAB-T1981: Approver has successfully returned the Work Item to the Asignee");
+	  	ReportLogger.INFO("Step 23: Logging OUT");
+	  	Thread.sleep(2000);
+	  	objApasGenericFunctions.logout();
   }	
 }	
