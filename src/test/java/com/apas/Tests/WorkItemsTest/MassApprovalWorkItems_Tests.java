@@ -260,8 +260,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 			objApasGenericFunctions.login(loginUser);
 			
-			// Step2: Opening Work Item Management Page and redirecting to Home Page
-	     	objApasGenericFunctions.searchModule(WORK_ITEM_MANAGEMENT_CONSOLE);
+			// Step2: Opening Home Page    	
 			objApasGenericFunctions.searchModule(HOME);
 			
 			// Step3: Navigating to staff In Pool Tab

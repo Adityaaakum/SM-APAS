@@ -135,7 +135,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	public void WorkItems_NoMassApproval(String loginUser) throws Exception {
 		objApasGenericFunctions.login(loginUser);
 		 
-	    objApasGenericFunctions.searchModule(WORK_ITEM_MANAGEMENT_CONSOLE);
+		objApasGenericFunctions.searchModule(HOME);
 	    objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABMySubmittedforApproval);
 	    softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.workItems),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval'");
