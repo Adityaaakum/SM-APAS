@@ -129,10 +129,8 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 
 		//Step 5: Validating that 'Use Code' is blank and 'Street' field gets automatically populated in the work item record related to the linked Parcel
-		softAssert.assertEquals(puc, objApasGenericFunctions.getFieldValueFromAPAS("Use Code", "Reference Data Details"),
-				"SMAB-T1994: Validation that 'Use Code' fields getting automatically populated in the work item record related to the linked Parcel");
-		softAssert.assertTrue(objApasGenericFunctions.getFieldValueFromAPAS("Street", "Reference Data Details").isBlank(),
-				"SMAB-T1994: Validation that 'Street' fields getting automatically populated in the work item record related to the linked Parcel");
+		softAssert.assertEquals(puc, objApasGenericFunctions.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SMAB-T1994: Validation that 'Use Code' fields getting automatically populated in the work item record related to the linked Parcel");
+		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Street", "Reference Data Details"),"","SMAB-T1994: Validation that 'Street' fields getting automatically populated in the work item record related to the linked Parcel");
 
 		objApasGenericFunctions.logout();
 	}

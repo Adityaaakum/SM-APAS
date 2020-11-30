@@ -417,12 +417,11 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.source), source, "SMAB-T1512:Verify user is able to navigate backwards from review and Approve screen for Reverted status");
 		
 		//step7:navigating back to efile import tool screen
-		objPage.waitUntilElementDisplayed(objEFileImport.nextButton, 15);
+		objPage.waitUntilElementDisplayed(objEFileImport.statusImportedFile, 15);
 		softAssert.assertTrue(apasGenericObj.isNotDisplayed(objEFileImport.viewLinkRecord),"SMAB-T68:Verify View link is not displayed for records in history table apart from statuses - 'Imported','New' and 'In Progress' and Approved");
 		softAssert.assertTrue(objEFileImport.fileLink.isDisplayed(),"SMAB-T915:Verify 'File' link is displayed for records with status- 'Reverted' in history table");
 			
 		//step8: verifying log for Reverted status record
-		//apasGenericObj.globalSearchRecords(fileType+" :"+source+" :"+period);
 		apasGenericObj.openLogRecordForImportedFile(fileType, source, period, sanMateoBuildingPermitFile);
 		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.logStatus),"Reverted","SMAB-T90:Verify that user is able to see Logs record for file once records has been 'Reverted' on 'E-File Import Logs' screen");
 		
@@ -563,15 +562,15 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.logFileCount),totalRecords, "SMAB-T32:Verify user is able to see number of records count from file import action on 'E-File Import Logs' screen");
 		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.logImportCount),successRecords, "SMAB-T33:Verify user is able to see the number of successful imports completed in 'E-File import Logs' Screen");
 		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.logErrorCount),errorrecords, "SMAB-T36:Verify user is able to track number of error records for the log in 'E-File Import Logs' screen");
-		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.duplicatesInFileImportLog),"4", "SMAB-T1600:Verify user is able to view duplicate records count in efile import logs and efile import transaction records after file import");
+		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.duplicatesInFileImportLog),"2", "SMAB-T1600:Verify user is able to view duplicate records count in efile import logs and efile import transaction records after file import");
 		objPage.Click(objEFileImportTransactionpage.transactionsTab);
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);
 		objPage.javascriptClick(objEFileImportTransactionpage.transactionsRecords.get(0));
 		objPage.waitForElementToBeClickable(objEFileImportTransactionpage.statusLabel, 10);
-		softAssert.assertEquals(objPage.getElementText(objEFileImportTransactionpage.duplicateCountTransaction),"4", "SMAB-T1600:Verify user is able to view duplicate records count in efile import logs and efile import transaction records after file import");
+		softAssert.assertEquals(objPage.getElementText(objEFileImportTransactionpage.duplicateCountTransaction),"2", "SMAB-T1600:Verify user is able to view duplicate records count in efile import logs and efile import transaction records after file import");
 		
 		//step8:verifying the discarded count scenario
-		objPage.javascriptClick(objEFileImport.efileImportToolLabel);
+		apasGenericObj.searchModule(modules.EFILE_INTAKE);
 		objPage.waitForElementToBeClickable(objEFileImport.fileTypedropdown, 10);
 		objEFileImport.selectFileAndSource(fileType,source);
 		objPage.waitForElementToBeClickable(objEFileImport.nextButton, 10);

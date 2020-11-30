@@ -2,6 +2,7 @@ package com.apas.PageObjects;
 
 import android.text.style.ClickableSpan;
 import com.apas.Reports.ReportLogger;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.generic.ApasGenericFunctions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -31,6 +32,7 @@ public class WorkItemHomePage extends Page {
 	ApasGenericPage objApasGenericPage;
 	ApasGenericFunctions objApasGenericFunctions;
 	Page objPageObj;
+	SalesforceAPI salesforceAPI ;
 
 	public WorkItemHomePage(RemoteWebDriver driver) {
 		super(driver);
@@ -190,12 +192,18 @@ public class WorkItemHomePage extends Page {
 
 	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//button//span[text()='Mark as Current Status']")
 	public WebElement markStatusCompleteBtn;
+	
+	@FindBy(xpath="//button[@title='Mark Complete']") 
+	public WebElement btnMarkComplete;
 
 	@FindBy(xpath="//a[@title='Exemption Limits - 2021']")
 	public WebElement rpslRecord;
 
 	@FindBy(xpath="//span[text()='Reference Data Details']")
 	public WebElement referenceDetailsLabel;
+	
+	@FindBy(xpath="//button[@title='Approve']") 
+	public WebElement btnApprove;
 	
 	@FindBy (xpath="//button[text()='Mark Complete']")
 	public WebElement markCompleteButton;
@@ -233,8 +241,6 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//h2[text()='Transfer Work Item']/../following-sibling::div//input[@placeholder='Search Work Pool...']")
 	public WebElement workPoolModal;
 
-	
-	
 	
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
@@ -301,72 +307,6 @@ public class WorkItemHomePage extends Page {
 		waitForElementToDisappear(successAlert, 10);
 	}
 
-	public WebElement searchWIinGrid(String WIName) {
-	    
-        WebElement btnNext = null;
-        List<WebElement> actualWINames = null;
-
- 
-
-        try {
-            actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "']");            
-            if(actualWINames.isEmpty()) {                
-                String pageMsg = driver.findElementByXPath("//p[@class='slds-m-vertical_medium content']").getText();
-                pageMsg=pageMsg.replaceAll("\\s","").trim();
-                //Displaying 1 to 500 of 1128 records. Page 1 of 3.
-                String[] arrSplit = pageMsg.split("\\.");
-                System.out.println(arrSplit[1]);
-                Pattern p = Pattern.compile("\\d");
-                Matcher m = p.matcher(arrSplit[1]);
-                String lastPageNum = null;
-                while(m.find()){ 
-                    System.out.println(m.group());
-                    lastPageNum = m.group();
-                    }                     
-                for(int i = 0 ; i < Integer.valueOf(lastPageNum); i++) {
-                    btnNext = driver.findElementByXPath("//lightning-button/button[text()='Next']");
-                    javascriptClick(btnNext);
-                    Thread.sleep(20000);
-                    actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "']");
-                    if(!actualWINames.isEmpty()) {                                                
-                        break;          
-                    }
-                }
-            }
-         }    
-            catch (Exception e) {
-                ReportLogger.INFO(e.getMessage());
-                        }
-        return actualWINames.get(0);
-    }
-	
-	/*
-     * This method will search for the WI in the TAB GRID and click Open
-     * 
-     * @param WIName : Name of the work item
-     */
-    public String searchandClickWIinGrid(String WIName) throws IOException {
-        
-        String actualWINamefrmGrid = null;
-        WebElement lnlWorkItem = null;
-        
-        lnlWorkItem = searchWIinGrid(WIName);
-        actualWINamefrmGrid = lnlWorkItem.getText();
-        javascriptClick(lnlWorkItem);
-        
-        return actualWINamefrmGrid;
-    }
-    
-    public void clickCheckBoxForSelectingWI(String WIName) throws IOException {
-        
-        searchWIinGrid(WIName);
-     
-        WebElement chkBoxWI = driver.findElementByXPath("//table/tbody//tr/th//a[@title='"+ WIName + "']"
-        + "/ancestor::tr/td//input[@type='checkbox']");
-     
-      //WebElement chkBoxWI = lnkWorkItem.findElement(By.xpath("/ancestor::tr/td//input[@type='checkbox']"));
-      javascriptClick(chkBoxWI);
-  }
 	/**
 	 * This method will completed the work item currently displayed on UI
 	 **/
@@ -411,16 +351,181 @@ public class WorkItemHomePage extends Page {
 		waitForElementToBeVisible(successAlert, 20);
 		waitForElementToDisappear(successAlert, 10);
 	}
+
+	    
+    public WebElement searchWIinGrid(String WIName) {
+    
+		WebElement btnNext = null;
+		List<WebElement> actualWINames = null;
+
+		try {
+			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "']");			
+			if(actualWINames.isEmpty()) {				
+				String pageMsg = driver.findElementByXPath("//p[@class='slds-m-vertical_medium content']").getText();
+				pageMsg=pageMsg.replaceAll("\\s","").trim();
+				//Displaying 1 to 500 of 1128 records. Page 1 of 3.
+				String[] arrSplit = pageMsg.split("\\.");
+				System.out.println(arrSplit[1]);
+				Pattern p = Pattern.compile("\\d");
+		        Matcher m = p.matcher(arrSplit[1]);
+		        String lastPageNum = null;
+				while(m.find()){ 
+					System.out.println(m.group());
+					lastPageNum = m.group();
+					}					 
+		        for(int i = 0 ; i < Integer.valueOf(lastPageNum); i++) {
+		        	btnNext = driver.findElementByXPath("//lightning-button/button[text()='Next']");
+		        	javascriptClick(btnNext);
+		        	Thread.sleep(20000);
+		        	actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "']");
+		        	if(!actualWINames.isEmpty()) {		        				    			
+		    			break;		  
+		        	}
+			    }
+			}
+		 }	
+			catch (Exception e) {
+				ReportLogger.INFO(e.getMessage());
+						}
+    	return actualWINames.get(0);
+    }
+
+	/*
+	 * This method will search for the WI in the TAB GRID and click Open
+	 * 
+	 * @param WIName : Name of the work item
+	 */
+    public String searchandClickWIinGrid(String WIName) throws IOException {
+    	
+    	String actualWINamefrmGrid = null;
+    	WebElement lnlWorkItem = null;
+    	
+    	lnlWorkItem = searchWIinGrid(WIName);
+    	actualWINamefrmGrid = lnlWorkItem.getText();
+    	javascriptClick(lnlWorkItem);
+		
+		return actualWINamefrmGrid;
+	}
+
+
+    
+    public HashMap<String, ArrayList<String>>  getWorkItemDetails(String newExemptionName, String WIStatus, String WIType, String WISubType, String WIReference) throws InterruptedException {
+		
+    	/*
+		 * String query = "Select Work_Item__r.Name,Work_Item__r.Request_Type__c " +
+		 * "from Work_Item_linkage__c " +
+		 * "where Exemption__r.name      = '"+newExemptionName+"' " +
+		 * "and Work_Item__r.Status__c   = '"+WIStatus+"' " +
+		 * "and Work_Item__r.Type__c     = '"+WIType+"' " +
+		 * "and Work_Item__r.Sub_Type__c = '"+WISubType+"' " +
+		 * "and Work_Item__r.Reference__c ='"+WIReference+"'" ;
+		 */
+		 salesforceAPI = new SalesforceAPI();
+        
+		String sqlExemption_Id = "Select Id from Exemption__c where Name = '"+newExemptionName+"'";
+        HashMap<String, ArrayList<String>> response_1  = salesforceAPI.select(sqlExemption_Id);
+        String Exemption_Id = response_1.get("Id").get(0);
+        
+        String slqWork_Item_Id = "Select Work_Item__c from Work_Item_Linkage__c where Exemption__c = '"+Exemption_Id+"'and Work_Item__r.Status__c ='"+WIStatus+"'";
+        Thread.sleep(5000);
+        HashMap<String, ArrayList<String>> response_2  = salesforceAPI.select(slqWork_Item_Id);
+        String WorkItem_Id = response_2.get("Work_Item__c").get(0);
+        
+        String slqWork_Item_Details = "Select Name, Request_Type__c from Work_Item__c "+
+        		                      "where Id = '"+WorkItem_Id+"' "+        		          
+       		                          "and Type__c     = '"+WIType+"' " +
+    		                          "and Sub_Type__c = '"+WISubType+"' " +
+    		                          "and Reference__c ='"+WIReference+"'";
+        HashMap<String, ArrayList<String>> response_3  = salesforceAPI.select(slqWork_Item_Details);
+		return response_3 ;
+         
+     }
+
+public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName, String WIStatus, String WIType,
+		String WISubType, String WIReference) throws InterruptedException {
+
+	/*
+	 * String query = "Select Work_Item__r.Name,Work_Item__r.Request_Type__c " +
+	 * "from Work_Item_linkage__c " +
+	 * "where Value_Adjustments__r.Name  = '"+VAName+"' " +
+	 * "and Work_Item__r.Status__c   = '"+WIStatus+"' " +
+	 * "and Work_Item__r.Type__c     = '"+WIType+"' " +
+	 * "and Work_Item__r.Sub_Type__c = '"+WISubType+"' " +
+	 * "and Work_Item__r.Reference__c ='"+WIReference+"'" ;
+	 */
+	salesforceAPI = new SalesforceAPI();
+
+	String sqlValueAdjustment_Id = "Select Id from Value_Adjustments__c where Name = '" + VAName + "'";
+	HashMap<String, ArrayList<String>> response_1 = salesforceAPI.select(sqlValueAdjustment_Id);
+	String ValueAdjustment_Id = response_1.get("Id").get(0);
+
+	String slqWork_Item_Id = "Select Work_Item__c from Work_Item_Linkage__c where Value_Adjustments__c = '"
+			+ ValueAdjustment_Id + "'";
+	Thread.sleep(2000);
+	HashMap<String, ArrayList<String>> response_2 = salesforceAPI.select(slqWork_Item_Id);
+	String WorkItem_Id = response_2.get("Work_Item__c").get(0);
+
+	String slqWork_Item_Details = "Select Name, Request_Type__c from Work_Item__c " + "where Id = '" + WorkItem_Id
+			+ "' " + "and Status__c   = '" + WIStatus + "' " + "and Type__c     = '" + WIType + "' "
+			+ "and Sub_Type__c = '" + WISubType + "' " + "and Reference__c ='" + WIReference + "'";
+	HashMap<String, ArrayList<String>> response_3 = salesforceAPI.select(slqWork_Item_Details);
+	return response_3;
+
+  }
+
+	public void clickExemptionNameLink(String ExemptionName) throws IOException {
 	
+		WebElement lnkExemptionName = driver.findElementByXPath("//a[text()='" + ExemptionName + "']");
+		objPageObj.Click(lnkExemptionName);
+	}
+	
+	public void clickCheckBoxForSelectingWI(String WIName) throws IOException {
+	    
+		  searchWIinGrid(WIName);
+		
+		  WebElement chkBoxWI = driver.findElementByXPath("//table/tbody//tr/th//a[@title='"+ WIName + "']"
+		  + "/ancestor::tr/td//input[@type='checkbox']");
+	    
+		//WebElement chkBoxWI = lnkWorkItem.findElement(By.xpath("/ancestor::tr/td//input[@type='checkbox']"));
+		javascriptClick(chkBoxWI);
+	}
+	
+	public String searchLinkedExemptionOrVA(String ExemptionOrVAName) {
+	
+		WebElement actualVAName = null;
+		String actualExemptionNameFrmGrid = null;
+	
+		try {
+			actualVAName = driver.findElementByXPath("//table/tbody//tr//a[@title='" + ExemptionOrVAName + "']");
+			actualExemptionNameFrmGrid = actualVAName.getAttribute("title");
+	
+		} catch (Exception e) {
+	
+			ReportLogger.INFO(e.getMessage());
+		}
+	
+		return actualExemptionNameFrmGrid;
+	}
+	
+	public String searchRequestTypeNameonWIDetails(String RequestTypeName) {
+	
+		WebElement actualRequestTypeName = null;
+		String actualRequestTypeNameFrmGrid = null;
+	
+		try {
+			actualRequestTypeName = driver.findElement(By.xpath("//*[text()='" + RequestTypeName + "']"));
+			actualRequestTypeNameFrmGrid = actualRequestTypeName.getText();
+		} catch (Exception e) {
+			ReportLogger.INFO(e.getMessage());
+		}
+		return actualRequestTypeNameFrmGrid;
+	}
+
 	public void selectWorkItemOnHomePage(String workItem) throws IOException{
 		WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
 		scrollToElement(webElementCheckBox);
 		Click(webElementCheckBox);
-		/*
-		 * WebElement webElement = driver.findElement(By.xpath("//a[text()='"+workItem+
-		 * "']/ancestor::tr//td[2]//span[contains(@class,'slds-checkbox_faux')]"));
-		 * scrollToElement(webElement); Click(webElement);
-		 */
+		
     }
 	 
 	 public boolean isWorkItemExists(String workItem) throws IOException{

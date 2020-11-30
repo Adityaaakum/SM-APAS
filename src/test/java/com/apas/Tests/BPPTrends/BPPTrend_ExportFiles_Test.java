@@ -266,7 +266,7 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		//*** Downloading BPP Trends File from BPP Trend Setup Page ***		
 		//Step3: Clicking 1st BPP Trends File Link
 		ReportLogger.INFO("Clicking download button on Bpp Trend Setup Details page");
-		objBppTrend.clickAction(objBppTrend.downloadBtnBppTrendSetupPage);
+		objPage.Click(objBppTrend.downloadBtnBppTrendSetupPage);
 		
 		//Step4: Clicking 'Download' button present on Pop-Up
 		ReportLogger.INFO("Clicking download button In pop up");
