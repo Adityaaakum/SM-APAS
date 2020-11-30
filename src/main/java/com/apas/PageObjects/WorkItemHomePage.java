@@ -509,13 +509,6 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		}
 		return actualRequestTypeNameFrmGrid;
 	}
-
-	public void selectWorkItemOnHomePage(String workItem) throws IOException{
-		WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
-		scrollToElement(webElementCheckBox);
-		Click(webElementCheckBox);
-		
-    }
 	 
 	 public boolean isWorkItemExists(String workItem) throws IOException{
         WebElement webElement = driver.findElement(By.xpath("//*[@title='"+workItem+"']"));
