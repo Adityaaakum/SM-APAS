@@ -130,13 +130,18 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	}
 
 	
-	@Test(description = "SMAB-T2033: verify that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval', 'Approval-On Hold' and 'completed'", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2033: verify that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval', 'Approval-On Hold' and 'completed'", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"regression","work_item_manual"  })
 	public void WorkItems_NoMassApproval(String loginUser) throws Exception {
+		
+		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objApasGenericFunctions.login(loginUser);
 		 
+		//Step2: Navigate to home and submittedForApproval
 		objApasGenericFunctions.searchModule(HOME);
 	    objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABMySubmittedforApproval);
+	    
+	    //Validate that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval'
 	    softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.workItems),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval'");
 	    softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.changeWorkPool),
@@ -144,6 +149,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	    softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.changeAsignee),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval'");
 	    
+	    //Validate that work pool supervisor is not able to mass transfer WI's with status 'Approval-On Hold'
 	    objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABOnHold);
 	    softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.workItems),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'Approval-On Hold'");
@@ -152,6 +158,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	    softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.changeAsignee),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'Approval-On Hold'");
 	    
+	    //Validate that work pool supervisor is not able to mass transfer WI's with status 'completed'
 	    objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABCompleted);
 	    softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.workItems),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'completed'");

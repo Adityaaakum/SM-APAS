@@ -151,11 +151,10 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 	        softAssert.assertTrue(objWorkItemHomePage.isWorkItemExists(workItemNumber2),
 	        		"SMAB-T2241:Validating the approved WI's should be in completed tab");
 	        
-	        //Step17: Logout of the app
 			objApasGenericFunctions.logout();
 		}
 				
-		@Test(description = "SMAB-T2042: verify that work pool supervisor is able to select and approve multiple work items", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
+		@Test(description = "SMAB-T2042: Verify that Work pool Supervisor gets error when user tries to change assignee for WIs with different Work Pools", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 				"regression", "work_item_manual" })
 		public void WorkItems_ErrorChangeAsignee(String loginUser) throws Exception {
 			
@@ -220,8 +219,13 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			
 			//Step4 :Click On Assignee Button
 			objWorkItemHomePage.Click(objWorkItemHomePage.changeAsignee);
-			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.errormsgOnWI), "Co..");
-			objWorkItemHomePage.Click(objWorkItemHomePage.closeErrorMsg);			objApasGenericFunctions.searchModule(HOME);
+			
+			//Validating error message for Asignee cannot be changed for staff in pool
+			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.errormsgOnWI), 
+					"SMAB-T2042: Validating error message for Asignee cannot be changed for in pool");
+			
+			objWorkItemHomePage.Click(objWorkItemHomePage.closeErrorMsg);
+			objApasGenericFunctions.searchModule(HOME);
 			driver.navigate().refresh();
 			objWorkItemHomePage.Click(objWorkItemHomePage.staffInPoolTab);
 			
@@ -231,7 +235,10 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			
 			//Step6:Click On Assignee Button
 			objWorkItemHomePage.Click(objWorkItemHomePage.changeAsignee);
-			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.errormsgOnWI), "Co..");
+			
+			//Validating error message for Asignee cannot be changed for staff in pool
+			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.errormsgOnWI),
+					"SMAB-T2042: Validating error message for Asignee cannot be changed for staff in pool");
 			
 			//Step7: Close the error message
 			objWorkItemHomePage.Click(objWorkItemHomePage.closeErrorMsg);
@@ -245,9 +252,13 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			//Step9: Selecting the work Items
 			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem1InProgress);
 			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2InProgress);
-			objWorkItemHomePage.Click(objWorkItemHomePage.changeAsignee);
-			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.errormsgOnWI), "Co..");
 			
+			//Step10: Click on Assignee button
+			objWorkItemHomePage.Click(objWorkItemHomePage.changeAsignee);
+			
+			//Validating error message for Asignee cannot be changed for staff in progress
+			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.errormsgOnWI),
+					"SMAB-T2042: Validating error message for Asignee cannot be changed for staff in progress");
 			//Step7: Close the error message
 			objWorkItemHomePage.Click(objWorkItemHomePage.closeErrorMsg);
 			objApasGenericFunctions.logout();
