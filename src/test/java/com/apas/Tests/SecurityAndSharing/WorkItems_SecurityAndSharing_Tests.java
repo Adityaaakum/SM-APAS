@@ -129,7 +129,13 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 		objApasGenericFunctions.logout();
 	}
 
-	
+	/**
+	 * This method is to verify that work pool supervisor is not able to mass transfer WI's with status
+	 * 'submitted for approval', 'Approval-On Hold' and 'completed'
+	 * 
+	 * @param loginUser
+	 * @throws Exception
+	 */
 	@Test(description = "SMAB-T2033: verify that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval', 'Approval-On Hold' and 'completed'", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"regression","work_item_manual"  })
 	public void WorkItems_NoMassApproval(String loginUser) throws Exception {

@@ -153,7 +153,14 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 	        
 			objApasGenericFunctions.logout();
 		}
-				
+		
+		/**
+		 * This method is to verify that work pool supervisor gets error
+		 *  when user tries to change assignee for WIs with different Work Pools
+		 * 
+		 * @param loginUser
+		 * @throws Exception
+		 */
 		@Test(description = "SMAB-T2042: Verify that Work pool Supervisor gets error when user tries to change assignee for WIs with different Work Pools", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 				"regression", "work_item_manual" })
 		public void WorkItems_ErrorChangeAsignee(String loginUser) throws Exception {
@@ -265,6 +272,13 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			objApasGenericFunctions.logout();
 		}
 		
+		/**
+		 * This method is to verify that work pool supervisor is able to select multiple 'Staff-In Pool' 
+		 * work items and assign them to a specific user or a work pool
+		 * 
+		 * @param loginUser
+		 * @throws Exception
+		 */
 		@Test(description = "SMAB-T2010: verify that work pool supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific user or a work pool.", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 				"regression", "work_item_manual" })
 		public void workItems_ChangeAsigneeAndWorkPoolStaffInPool(String loginUser) throws Exception {
@@ -397,6 +411,13 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 	        objApasGenericFunctions.logout();
 	}	
 		
+		/**
+		 * This method is to Verify that Work pool Supervisor is able to select multiple 'Staff-In Progress'
+		 * work items and assign them to a specific user or a work pool
+		 * 
+		 * @param loginUser
+		 * @throws Exception
+		 */
 		@Test(description = "SMAB-T2019:Verify that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific user or a work pool.", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 				"regression", "work_item_manual" })
 		public void workItems_ChangeAsigneeAndWorkPoolStaffInProgress(String loginUser) throws Exception {

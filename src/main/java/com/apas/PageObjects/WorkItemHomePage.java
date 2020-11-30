@@ -399,7 +399,7 @@ public class WorkItemHomePage extends Page {
     
     public HashMap<String, ArrayList<String>>  getWorkItemDetails(String newExemptionName, String WIStatus, String WIType, String WISubType, String WIReference) throws InterruptedException {
 		
-    	/*
+		/*
 		 * String query = "Select Work_Item__r.Name,Work_Item__r.Request_Type__c " +
 		 * "from Work_Item_linkage__c " +
 		 * "where Exemption__r.name      = '"+newExemptionName+"' " +
@@ -408,7 +408,7 @@ public class WorkItemHomePage extends Page {
 		 * "and Work_Item__r.Sub_Type__c = '"+WISubType+"' " +
 		 * "and Work_Item__r.Reference__c ='"+WIReference+"'" ;
 		 */
-		 salesforceAPI = new SalesforceAPI();
+		salesforceAPI = new SalesforceAPI();
         
 		String sqlExemption_Id = "Select Id from Exemption__c where Name = '"+newExemptionName+"'";
         HashMap<String, ArrayList<String>> response_1  = salesforceAPI.select(sqlExemption_Id);
@@ -487,7 +487,8 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 			actualVAName = driver.findElementByXPath("//table/tbody//tr//a[@title='" + ExemptionOrVAName + "']");
 			actualExemptionNameFrmGrid = actualVAName.getAttribute("title");
 	
-		} catch (Exception e) {	
+		} catch (Exception e) {
+	
 			ReportLogger.INFO(e.getMessage());
 		}
 	
@@ -503,6 +504,7 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 			actualRequestTypeName = driver.findElement(By.xpath("//*[text()='" + RequestTypeName + "']"));
 			actualRequestTypeNameFrmGrid = actualRequestTypeName.getText();
 		} catch (Exception e) {
+	
 			ReportLogger.INFO(e.getMessage());
 		}
 		return actualRequestTypeNameFrmGrid;

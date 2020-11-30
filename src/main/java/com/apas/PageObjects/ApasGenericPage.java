@@ -305,10 +305,6 @@ public class ApasGenericPage extends Page {
 			webElement = (WebElement) element;
 			xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
 		}
-		
-		
-	    
-
 
 		scrollToElement(webElement);
 		javascriptClick(webElement);
