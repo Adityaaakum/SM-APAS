@@ -1230,10 +1230,10 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			
 		
 		//step6: approving the imported file
-		objPage.javascriptClick(objEfileHomePage.efileImportToolLabel);
+		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
 		objPage.waitForElementToBeClickable(objEfileHomePage.fileTypedropdown, 10);
 		objEfileHomePage.selectFileAndSource(fileType,source);
-		objPage.waitUntilElementDisplayed(objEfileHomePage.nextButton, 15);
+		objPage.waitUntilElementDisplayed(objEfileHomePage.statusImportedFile, 15);
 		objPage.Click(objEfileHomePage.viewLinkRecord);
 		ReportLogger.INFO("Approving the imported file");
 		objPage.waitForElementToBeClickable(objEfileHomePage.errorRowSection, 20);
