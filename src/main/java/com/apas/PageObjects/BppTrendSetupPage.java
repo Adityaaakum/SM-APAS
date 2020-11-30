@@ -79,7 +79,7 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a")
 	public WebElement dropDownIconBppCompFactorSetting;
 
-	@FindBy(xpath = "//div[contains(@class,'actionMenu')]//a[@title = 'New']")
+	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//a[@title = 'New']")
 	public WebElement newBtnToCreateEntry;
 
 	@FindBy(xpath = "(//div[contains(@class,'actionMenu')])[2]//a[@title = 'New']")
@@ -132,7 +132,7 @@ public class BppTrendSetupPage extends Page {
 	@FindBy(xpath = "//ul[@class='errorsList']//li")
 	public WebElement errorMsgOnTop;
 	
-	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//div[text() = 'Edit']")
+	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//a[@title = 'Edit']")
 	public WebElement editLinkUnderShowMore;
 	
 	@FindBy(xpath = "//button[@title='Close this window']")
