@@ -50,7 +50,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//table[@role='grid']//thead/tr//th")
 	public WebElement dataGrid;
 
-	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items')]")
+	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items...')]")
 	public WebElement appLauncherSearchBox;
 
 	@FindBy(xpath = "//input[@placeholder='Search apps and items...']/..//button")
@@ -108,7 +108,10 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//lightning-spinner")
 	public WebElement spinner;
-
+	
+	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
+	public WebElement successAlertText;
+	
 	public String xpathSpinner = "//lightning-spinner";
 
 	public String maxEquipmentIndexFactor = "Maximum Equipment index Factor";
@@ -294,9 +297,6 @@ public class ApasGenericPage extends Page {
 	public void selectOptionFromDropDown(Object element, String value) throws Exception {
         WebElement webElement;
         String xpathDropDownOption;
-
- 
-
         if (element instanceof String) {
             webElement = getWebElementWithLabel((String) element);
             xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
@@ -304,18 +304,8 @@ public class ApasGenericPage extends Page {
             webElement = (WebElement) element;
             xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
         }
-        
-        
-        
-
- 
-
-
         scrollToElement(webElement);
         javascriptClick(webElement);
-
- 
-
         waitUntilElementIsPresent(xpathDropDownOption, 30);
         WebElement drpDwnOption = driver.findElement(By.xpath(xpathDropDownOption));
         scrollToElement(drpDwnOption);
@@ -323,13 +313,11 @@ public class ApasGenericPage extends Page {
         javascriptClick(drpDwnOption);
     }
 
-
 	/**
 	 * Description: This method will fetch the current URL and process it to get the Record Id
 	 * @param driver: Driver Instance
 	 * @return : returns the Record Id
 	 */
-	
 	public String getCurrentRecordId(RemoteWebDriver driver, String Mod) throws Exception {
 		wait.until(ExpectedConditions.urlContains("/view"));
 		String url = driver.getCurrentUrl();

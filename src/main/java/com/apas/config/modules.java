@@ -28,5 +28,6 @@ public interface modules {
 	public static final String RPSL = "Real Property Settings Libraries";
 	public static final String ROLLYEAR = "Roll Year Settings";
 	public static final String VALUE_ADJUSTMENTS = "Value Adjustments";
+	public static final String WORKITEM_MNGMNT = "Work Item Management Console";
 }
 

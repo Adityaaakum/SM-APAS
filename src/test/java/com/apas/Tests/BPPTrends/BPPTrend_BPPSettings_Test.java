@@ -244,7 +244,8 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		factorValueBeforeEdit = factorValueBeforeEdit.substring(0, factorValueBeforeEdit.length()-1);
 		int maxEquipIndexNewValue = Integer.parseInt(factorValueBeforeEdit) - 1;
 		
-		//Step6: Click on Edit Max. Equipment Index factor Settings and update value 
+		//Step6: Click on Edit Max. Equipment Index factor Settings and update value
+		Thread.sleep(1000);
 		objBppTrendSetupPage.editSaveFactorValue(Integer.toString(maxEquipIndexNewValue));
 		
 		//Step7: Verify saved Max. Equipment Index factor Settings value 

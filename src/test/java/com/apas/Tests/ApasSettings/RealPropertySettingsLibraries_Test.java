@@ -97,11 +97,8 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.Click(objRPSLPage.saveButton);
 		
 		//Step10: Verify Duplicate Future Roll Year cannot be created
-		//String expectedWarningMessageOnTop = "You can't save this record because a duplicate record already exists. To save, use different information.View Duplicates";
 		String expectedWarningMessageOnTop = "Close error dialog\nWe hit a snag.\nYou can't save this record because a duplicate record already exists. To save, use different information.\nView Duplicates";
-		//objPage.waitForElementToBeVisible(objRPSLPage.warningMsgOnTop, 30);
 		softAssert.assertEquals(objPage.getElementText(objApasgenericpage.pageError),expectedWarningMessageOnTop,"SMAB-T540,SMAB-T541:Verify the User is not able to create duplicate Exemption limit record for any random roll year");
-		//softAssert.assertEquals(objRPSLPage.warningMsgOnTop.getText(),expectedWarningMessageOnTop,"SMAB-T541:Verify the User is not able to create duplicate Exemption limit record for a roll year whose entry already exists");
 		
 		//Step11: Closing the RPSL creation pop up
 		objPage.Click(objRPSLPage.cancelButton);
@@ -167,7 +164,6 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objApasGenericFunctions.displayRecords("All");
 		
 		//Step13: Search value of RPSL created above
-		//String strRPSLName = "Exemption Limits - " + strRPSL;
 		objApasGenericFunctions.searchRecords(strRPSLName);
 		
 		//Step14: Selecting the RPSL
@@ -175,7 +171,6 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.clickAction(objPage.waitForElementToBeClickable(objRPSLPage.editLinkUnderShowMore));
 
 		//Step15: Fetching the data to edit the RPSL record
-		//String manualEntryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
 		Map<String, String> editRPSDataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToEditRPSLEntry");	
 		
 		//Step16: Edit the RPSL
@@ -253,6 +248,10 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		boolean successAlert = objPage.verifyElementVisible(objRPSLPage.successAlert);
 			
 		softAssert.assertEquals(successAlert, false, "SMAB-T537: Verify Exemption limit record for the current roll year is not created when User clicks Cancel button");
+		
+		//Added the below two lines to bring back the focus to handle regression failure - 11/26
+		driver.navigate().refresh();
+		Thread.sleep(1000);
 		objApasGenericFunctions.logout();
 	}		
 	
@@ -346,6 +345,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		//Step8: Fetching value of RPSL created in above Test case
 		String value = strRPSLName;
 		objApasGenericFunctions.searchRecords(strRPSLName);		
+		
 		// Step9: Searching and selecting the RPSL for Editing
 		ReportLogger.INFO("Selecting RPSL record: '" + value + "' for editing");
 		objRPSLPage.clickShowMoreLink(value);

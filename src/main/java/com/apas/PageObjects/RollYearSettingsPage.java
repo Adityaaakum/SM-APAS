@@ -78,8 +78,9 @@ public class RollYearSettingsPage extends ApasGenericPage {
 
 	public String status="Status";
 	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@title='Save' and text()='Save']")
 	public WebElement saveButton;
-		
+	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@title='Cancel' and text()='Cancel']")
 	public WebElement cancelButton;
 		
@@ -208,8 +209,8 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	 */
 	
 	public void createOrUpdateRollYearRecord(Map<String, String> dataMap, String action) throws Exception {
+		Thread.sleep(2000);
 		ReportLogger.INFO("Click '" + action + "' button to open a Roll Year record");
-		Thread.sleep(1000);
 		if (action == "New") Click(waitForElementToBeClickable(newRollYearButton));
 		if (action == "Edit") Click(waitForElementToBeClickable(editButton));
 		Thread.sleep(1000);
