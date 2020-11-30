@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WorkItemHomePage extends Page {
 
@@ -85,6 +87,12 @@ public class WorkItemHomePage extends Page {
 	
 	@FindBy(xpath = "//table[@role='grid']//span[text()='Action']")
 	public WebElement actionColumn;
+	
+	@FindBy(xpath = "//a[@role='tab'][@data-label='Staff - In Pool']")
+	public WebElement staffInPoolTab;
+	
+	@FindBy(xpath = "//a[@role='tab'][@data-label='Staff - In Progress']")
+	public WebElement staffInProgressTab;
 	
 	@FindBy(xpath = "//*[@aria-labelledby='In Progress__item']//span[text()='Action']")
 	public WebElement actionColumnInProgressTab;
@@ -201,6 +209,33 @@ public class WorkItemHomePage extends Page {
 	@FindBy (xpath="//*[@data-key='error']//..//span[text()='Close']")
     public WebElement closeErrorMsg;
 	
+	@FindBy (xpath="//button[text()='Change Work Pool']")
+	public WebElement changeWorkPool;
+	
+	@FindBy (xpath="//button[text()='Change Assignee']")
+	public WebElement changeAsignee;
+	
+	@FindBy (xpath="//*[contains(@title, 'WI')]")
+	public WebElement workItems;
+	
+	@FindBy(xpath="//a[@data-label='On Hold']")
+	public WebElement lnkTABOnHold;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//h2[text()='Transfer Work Item']/../following-sibling::div//input[@placeholder='Search Users...']")
+	public WebElement selectOptionDropDownAsigneeModal;
+
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[contains(@id,'dropdown-element')]/ul/li[@role='presentation']")
+	public WebElement asigneeNameModal;
+		
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//h2[text()='Transfer Work Item']/../following-sibling::div//label[text()='Reason for Transferring']/following-sibling::div//input")
+	public WebElement reasonForTransferring;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//h2[text()='Transfer Work Item']/../following-sibling::div//input[@placeholder='Search Work Pool...']")
+	public WebElement workPoolModal;
+
+	
+	
+	
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
 	 *
@@ -266,6 +301,72 @@ public class WorkItemHomePage extends Page {
 		waitForElementToDisappear(successAlert, 10);
 	}
 
+	public WebElement searchWIinGrid(String WIName) {
+	    
+        WebElement btnNext = null;
+        List<WebElement> actualWINames = null;
+
+ 
+
+        try {
+            actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "']");            
+            if(actualWINames.isEmpty()) {                
+                String pageMsg = driver.findElementByXPath("//p[@class='slds-m-vertical_medium content']").getText();
+                pageMsg=pageMsg.replaceAll("\\s","").trim();
+                //Displaying 1 to 500 of 1128 records. Page 1 of 3.
+                String[] arrSplit = pageMsg.split("\\.");
+                System.out.println(arrSplit[1]);
+                Pattern p = Pattern.compile("\\d");
+                Matcher m = p.matcher(arrSplit[1]);
+                String lastPageNum = null;
+                while(m.find()){ 
+                    System.out.println(m.group());
+                    lastPageNum = m.group();
+                    }                     
+                for(int i = 0 ; i < Integer.valueOf(lastPageNum); i++) {
+                    btnNext = driver.findElementByXPath("//lightning-button/button[text()='Next']");
+                    javascriptClick(btnNext);
+                    Thread.sleep(20000);
+                    actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "']");
+                    if(!actualWINames.isEmpty()) {                                                
+                        break;          
+                    }
+                }
+            }
+         }    
+            catch (Exception e) {
+                ReportLogger.INFO(e.getMessage());
+                        }
+        return actualWINames.get(0);
+    }
+	
+	/*
+     * This method will search for the WI in the TAB GRID and click Open
+     * 
+     * @param WIName : Name of the work item
+     */
+    public String searchandClickWIinGrid(String WIName) throws IOException {
+        
+        String actualWINamefrmGrid = null;
+        WebElement lnlWorkItem = null;
+        
+        lnlWorkItem = searchWIinGrid(WIName);
+        actualWINamefrmGrid = lnlWorkItem.getText();
+        javascriptClick(lnlWorkItem);
+        
+        return actualWINamefrmGrid;
+    }
+    
+    public void clickCheckBoxForSelectingWI(String WIName) throws IOException {
+        
+        searchWIinGrid(WIName);
+     
+        WebElement chkBoxWI = driver.findElementByXPath("//table/tbody//tr/th//a[@title='"+ WIName + "']"
+        + "/ancestor::tr/td//input[@type='checkbox']");
+     
+      //WebElement chkBoxWI = lnkWorkItem.findElement(By.xpath("/ancestor::tr/td//input[@type='checkbox']"));
+      javascriptClick(chkBoxWI);
+  }
 	/**
 	 * This method will completed the work item currently displayed on UI
 	 **/
@@ -312,9 +413,14 @@ public class WorkItemHomePage extends Page {
 	}
 	
 	public void selectWorkItemOnHomePage(String workItem) throws IOException{
-        WebElement webElement = driver.findElement(By.xpath("//a[text()='"+workItem+"']/ancestor::tr//td[2]//span[contains(@class,'slds-checkbox_faux')]"));
-        scrollToElement(webElement);
-        Click(webElement);
+		WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
+		scrollToElement(webElementCheckBox);
+		Click(webElementCheckBox);
+		/*
+		 * WebElement webElement = driver.findElement(By.xpath("//a[text()='"+workItem+
+		 * "']/ancestor::tr//td[2]//span[contains(@class,'slds-checkbox_faux')]"));
+		 * scrollToElement(webElement); Click(webElement);
+		 */
     }
 	 
 	 public boolean isWorkItemExists(String workItem) throws IOException{
@@ -322,4 +428,15 @@ public class WorkItemHomePage extends Page {
         return waitForElementToBeVisible(20,webElement);         
     }
 	
+	 public void changeAssignee() throws Exception
+	 {
+		 waitForElementToBeVisible(selectOptionDropDownAsigneeModal);
+			Click(selectOptionDropDownAsigneeModal);
+			selectOptionDropDownAsigneeModal.sendKeys("rp appraiserAUT");
+			Click(asigneeNameModal);
+			Click(reasonForTransferring);
+			reasonForTransferring.sendKeys("Test");
+			Click(saveButton);
+			
+	 }
 }
