@@ -258,7 +258,8 @@ public class WorkItemHomePage extends Page {
 	 * @throws InterruptedException 
 	 **/
 	public void openWorkItem(String workItem) throws IOException, InterruptedException {
-		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[@title='" + workItem + "']"));
+		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[text()='" + workItem + "']"));
+		scrollToElement(webElement);
 		javascriptClick(webElement);
 		Thread.sleep(3000);
 

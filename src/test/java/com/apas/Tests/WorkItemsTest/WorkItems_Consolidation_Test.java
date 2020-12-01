@@ -63,7 +63,7 @@ public class WorkItems_Consolidation_Test extends TestBase implements testdata, 
 	}
 
 	@Test(description = "SMAB-T2259,SMAB-T2260,SMAB-T2261: Verify auto generated Reminder WI, Revert Imported BOE Index & Goods Factors, auto generated Import WI again upon revert", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-			"smoke", "regression", "Work_Item_BPP" }, alwaysRun = true)
+			"smoke", "regression", "WorkItemsTest" }, alwaysRun = true)
 	public void WorkItem_Consolidation(String loginUser) throws Exception {
 
 		String PrimaryWorkitem ="WI-00001302";
@@ -73,10 +73,9 @@ public class WorkItems_Consolidation_Test extends TestBase implements testdata, 
 		
 		  // fetching a parcel where PUC is not blank but Primary Situs is blank //
 		  String queryAPNValue =
-		  "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 2"
-		  ;  HashMap<String, ArrayList<String>> response =
-		  salesforceAPI.select(queryAPNValue); String apnValue= "002-011-060";
-		  //response.get("Name").get(0); // 
+		  "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 2" ;  
+		  HashMap<String, ArrayList<String>> response =
+		  salesforceAPI.select(queryAPNValue); String apnValue=response.get("Name").get(0); // 
 		  String apnValue1=
 		  response.get("Name").get(1);
 		  
@@ -89,20 +88,20 @@ public class WorkItems_Consolidation_Test extends TestBase implements testdata, 
 		  
 		  // Step2: Opening the PARCELS page and searching a parcel
 		  objApasGenericFunctions.searchModule("Parcels");
-		  objApasGenericFunctions.globalSearchRecords("'"+apnValue); 
+		  objApasGenericFunctions.globalSearchRecords(apnValue); 
 		  // Step 3: Creating Manual work item for the Parcel 
 		  PrimaryWorkitem =
 		  objParcelsPage.createWorkItem(hashMapmanualWorkItemData); Thread.sleep(2000);
 		  // Step5: Opening the PARCELS page and searching a parcel
 		  objApasGenericFunctions.searchModule("Parcels");
-		  objApasGenericFunctions.globalSearchRecords("'"+apnValue); 
+		  objApasGenericFunctions.globalSearchRecords(apnValue); 
 		  // Step 6: Creating Manual work item for the Parcel 
 		  secondaryWorkitem =objParcelsPage.createWorkItem(hashMapmanualWorkItemData); 
 		  // Step 7: Opening the PARCELS page and searching a parcel //
 		  Map<String, String> hashMapmanualWorkItemData1 =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeDisableveterans");
 		  
 		  objApasGenericFunctions.searchModule("Parcels"); 
-		  objApasGenericFunctions.globalSearchRecords("'"+apnValue1); 
+		  objApasGenericFunctions.globalSearchRecords(apnValue1); 
 		  Workitem=objParcelsPage.createWorkItem(hashMapmanualWorkItemData1); 
 
 		  //wait for 30 sec to load created work item in In progress tab 
@@ -148,10 +147,12 @@ public class WorkItems_Consolidation_Test extends TestBase implements testdata, 
 		  objPage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		  Thread.sleep(2000);
+		  //validation of parent- child relationship and status on child work item
 		  softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Request Type"),"RP - CPI Factor - Test WI","SMAB-T2276 : request type matched RP - CPI Factor - Test WI");
 		  softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Status"),"In Progress","SMAB-T2276 : Status Of Child WI Should be In Progress ");
 		  softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Parent-Child Relationship Type"),"Consolidated Secondary","SMAB-T2276 : parent-Child Relationship Type Of Child WI Should be Consolidated Secondary");
 		  driver.navigate().back();
+		  //validation of can not change status in progress to complete from  work item page 
 		  objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.dataTabCompleted, 5);
 		  objWorkItemHomePage.javascriptClick(objWorkItemHomePage.dataTabCompleted);
 		  objWorkItemHomePage.javascriptClick(objWorkItemHomePage.markAsCurrentStatusButton);
@@ -165,7 +166,7 @@ public class WorkItems_Consolidation_Test extends TestBase implements testdata, 
 		  objWorkItemHomePage.Click(objWorkItemHomePage.submittedforApprovalTimeline);
 		  //validating primary work item should be visible on submitted for approval tab after click on mark complete button 
 		  PrimaryWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_MY_SUBMITTED_FOR_APPROVAL);
-		  softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(PrimaryWorkitem),"SMAB-T2276: Validation that Primary WorkItem should be visible In Submitted for approval Tab On Home page after consolidate " ); 
+		  softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(PrimaryWorkitem),"SMAB-T2276, SMAB-T2287: Validation that Primary WorkItem should be visible In Submitted for approval Tab On Home page after consolidate " ); 
 		  //Login With supervisor 1
 		  objApasGenericFunctions.login(loginUser);
 		  objApasGenericFunctions.searchModule(modules.HOME);
@@ -173,6 +174,7 @@ public class WorkItems_Consolidation_Test extends TestBase implements testdata, 
 		  objWorkItemHomePage.selectWorkItemOnHomePage(PrimaryWorkitem);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.ApproveButton);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.submittedforApprovalTimeline);
+		  // Validation on after approve by first lavel approval work item should be visible in submited for approval tab
 		  PrimaryWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_MY_SUBMITTED_FOR_APPROVAL);
 		  softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(PrimaryWorkitem),"SMAB-T2288: Validation that Primary WorkItem should be visible In Submit For approval tab after first lavel of approval ");  
 		  objApasGenericFunctions.logout();
@@ -185,6 +187,8 @@ public class WorkItems_Consolidation_Test extends TestBase implements testdata, 
 		  objWorkItemHomePage.selectWorkItemOnHomePage(PrimaryWorkitem);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.ApproveButton);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.completedTab);
+		  // Validation on after approve by second lavel approval work item should be visible in completed tab
+
 	      PrimaryWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
           softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(PrimaryWorkitem), "SMAB-T2289: Validation that Primary WorkItem should be visible In completed Tab after after 2nd lavel of approval "); 
 	    objApasGenericFunctions.logout();
