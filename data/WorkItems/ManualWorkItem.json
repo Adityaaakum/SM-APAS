@@ -9,7 +9,7 @@
 		}		 	
 	"DataToCreateWorkItemOfTypeDisableveterans": {
 		"Work Item Type": "Disabled Veterans",
-		"Actions": "Direct Review and Update",
+		"Actions": "Review and Update",
 		"Reference":"test WI",
 		"Description": "Creation of work item",
 		"Priority" : "Urgent",

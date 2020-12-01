@@ -225,18 +225,7 @@ public class WorkItemHomePage extends Page {
     
     @FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
-    /**
-	 * This method will return current status of given work Item
-	 *
-	 * @param workItem : workItem  for which  status to be fetched
-	 **/
-	public String getCurrentStatusOFWI(String WorkItem) {
-    	String query = "select Status__c from Work_Item__c where Name = '"+WorkItem+" '";
-        HashMap<String, ArrayList<String>> workItemData = new SalesforceAPI().select(query);//use sf
-        String actualWIStatus = workItemData.get("Status__c").get(0);
-        
-    	return actualWIStatus;
-    }
+    
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
 	 *
