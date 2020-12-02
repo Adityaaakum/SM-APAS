@@ -120,7 +120,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 	        //Step 10:Validating the error message that Work items can't be Approved
 	        softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.errormsgOnWI),
 	        		"SMAB-T2241:Validating the error message that Work items can't be Approved");
-	        softAssert.assertEquals(objApasGenericFunctions.getAlertMsgText(), "One or more of the selected Work Items are not enabled for mass approval.",
+	        softAssert.assertEquals(objApasGenericFunctions.getAlertMessage(), "One or more of the selected Work Items are not enabled for mass approval.",
 	        		"SMAB-T2241:Validating the error message that Work items can't be Approved");
 	        
 	        objWorkItemHomePage.Click(objWorkItemHomePage.closeErrorMsg);
@@ -145,7 +145,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 	        //Step 15:Validating the success message that Work items are Approved
 	        softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.successAlert),
 	        		"SMAB-T2241:Validating the success message that Work items are Approved");
-	        softAssert.assertEquals(objApasGenericFunctions.getAlertMsgText(), "Work Item(s) process succesfully!",
+	        softAssert.assertEquals(objApasGenericFunctions.getAlertMessage(), "Work Item(s) process succesfully!",
 	        		"SMAB-T2241:Validating the success message that Work items are Approved");
 	        objApasGenericFunctions.logout();
 	        
@@ -246,7 +246,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			//Validating error message for Asignee cannot be changed for staff in pool
 			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.errormsgOnWI), 
 					"SMAB-T2042: Validating error message for Asignee cannot be changed for in pool");
-			softAssert.assertEquals(objApasGenericFunctions.getAlertMsgText(), "Please select the Work Item from same Work Pool.",
+			softAssert.assertEquals(objApasGenericFunctions.getAlertMessage(), "Please select the Work Item from same Work Pool.",
 					"SMAB-T2042: Validating error message for Asignee cannot be changed for in pool");
 			
 			objWorkItemHomePage.Click(objWorkItemHomePage.closeErrorMsg);
@@ -264,7 +264,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			//Validating error message for Asignee cannot be changed for staff in pool
 			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.errormsgOnWI),
 					"SMAB-T2042: Validating error message for Asignee cannot be changed for staff in pool");
-			softAssert.assertEquals(objApasGenericFunctions.getAlertMsgText(), "Please select the Work Item from same Work Pool.",
+			softAssert.assertEquals(objApasGenericFunctions.getAlertMessage(), "Please select the Work Item from same Work Pool.",
 					"SMAB-T2042: Validating error message for Asignee cannot be changed for in pool");
 			
 			//Step7: Close the error message
@@ -286,7 +286,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			//Validating error message for Asignee cannot be changed for staff in progress
 			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.errormsgOnWI),
 					"SMAB-T2042: Validating error message for Asignee cannot be changed for staff in progress");
-			softAssert.assertEquals(objApasGenericFunctions.getAlertMsgText(), "Please select the Work Item from same Work Pool.",
+			softAssert.assertEquals(objApasGenericFunctions.getAlertMessage(), "Please select the Work Item from same Work Pool.",
 					"SMAB-T2042: Validating error message for Asignee cannot be changed for in pool");
 			
 			//Step7: Close the error message
@@ -358,14 +358,13 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			// Step6: Clicking on change assignee button to change the assignee and save 
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeAssignee));
 			objApasGenericPage.searchAndSelectFromDropDown(objWorkItemHomePage.AssignedTo, "rp appraiserAUT");
-			//objWorkItemHomePage.Click(objApasGenericPage.getWebElementWithLabel("Reason for Transferring"));
 			objWorkItemHomePage.enter("Reason for Transferring","Test");
 			objWorkItemHomePage.Click(objWorkItemHomePage.saveButton);
 			
 			// Step7: Validating that Work pool Supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific user."
 			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.successAlert),
 					"SMAB-T2010: Validating that Work pool Supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific user.");
-            softAssert.assertEquals(objApasGenericFunctions.getAlertMsgText(), "Work Item(s) process succesfully!",
+            softAssert.assertEquals(objApasGenericFunctions.getAlertMessage(), "Work Item(s) process succesfully!",
             		"SMAB-T2010: Validating that Work pool Supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific user.");
             
 			// Step8 :Navigate to details tab to validate Assignee
@@ -403,7 +402,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			// Step12: Validating that work pool supervisor is able to select and approve multiple work items"
 		    softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.successAlert),
 		    		"SMAB-T2010: Validating that work pool supervisor is able to select and approve multiple work items");
-		    softAssert.assertEquals(objApasGenericFunctions.getAlertMsgText(), "Work Item(s) process succesfully!",
+		    softAssert.assertEquals(objApasGenericFunctions.getAlertMessage(), "Work Item(s) process succesfully!",
             		"SMAB-T2010: Validating that Work pool Supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific user.");
 		    
 		   // Step13 :Navigate to details tab to validate work pool
@@ -490,7 +489,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			// Step7: Validating that work pool supervisor is able to select and approve multiple work items"
 			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.successAlert),
 					"SMAB-T2019: Validate that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific user");
-			softAssert.assertEquals(objApasGenericFunctions.getAlertMsgText(), "Work Item(s) process succesfully!",
+			softAssert.assertEquals(objApasGenericFunctions.getAlertMessage(), "Work Item(s) process succesfully!",
 					"SMAB-T2019: Validate that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific user");
 			//Step8 :Navigate to details tab to validate Assignee
 			objApasGenericFunctions.globalSearchRecords(workItem1);
@@ -527,7 +526,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			// Step12: Validate that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific work pool"
 		    softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.successAlert),
 		    		"SMAB-T2019: Validate that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific work pool");
-		    softAssert.assertEquals(objApasGenericFunctions.getAlertMsgText(), "Work Item(s) process succesfully!",
+		    softAssert.assertEquals(objApasGenericFunctions.getAlertMessage(), "Work Item(s) process succesfully!",
 					"SMAB-T2019: Validate that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific user");
 		    
 		   // Step13 :Navigate to details tab to validate Assignee
