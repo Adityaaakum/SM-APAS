@@ -313,11 +313,11 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			String query = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name='Disabled Veterans' and Status__c='In Pool' limit 2";
 			HashMap<String, ArrayList<String>> wiValue = salesforceAPI.select(query);
 			
-			String queryNoAssignee = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name!='Disabled Veterans' and Status__c='In Pool' and Assigned_To__c=NULL limit 2";
-			HashMap<String, ArrayList<String>> value = salesforceAPI.select(queryNoAssignee);
+			/**String queryNoAssignee = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name!='Disabled Veterans' and Status__c='In Pool' and Assigned_To__c=NULL limit 2";
+			HashMap<String, ArrayList<String>> value = salesforceAPI.select(queryNoAssignee);**/
 			
 			//Creating Work Items if value returned is null or empty
-			if(wiValue == null || value == null)
+			if(wiValue == null )
 			{
 				// fetching a parcel value				
 				String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
@@ -335,21 +335,53 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 				workItem1=   objParcelsPage.createWorkItem(hashMapmanualWorkItemDataInPool);
 				objApasGenericFunctions.globalSearchRecords(apnValue);
 				workItem2=   objParcelsPage.createWorkItem(hashMapmanualWorkItemDataInPool);
-				objApasGenericFunctions.globalSearchRecords(apnValue);
-				workItem3=   objParcelsPage.createWorkItem(hashMapmanualWorkItemDataInPool);
-				objApasGenericFunctions.globalSearchRecords(apnValue);
-				workItem4=   objParcelsPage.createWorkItem(hashMapmanualWorkItemDataInPool);
-	
+				objApasGenericFunctions.globalSearchRecords(apnValue);	
 			}
 			else {
 			 workItem1 = wiValue.get("Name").get(0);
 			 workItem2 = wiValue.get("Name").get(1);
-			 workItem3 = value.get("Name").get(0);
-		     workItem4 = value.get("Name").get(1);
 			}
 		            
-	        // Step5: Selecting the work items
-		    objWorkItemHomePage.selectWorkItemOnHomePage(workItem1);
+			// Step10: Selecting the work items
+			objWorkItemHomePage.selectWorkItemOnHomePage(workItem1);
+			objWorkItemHomePage.selectWorkItemOnHomePage(workItem2);
+			
+			// Step11: Clicking on change workpool button to change the workpool and save 
+			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeWorkPool));
+			objApasGenericPage.searchAndSelectFromDropDown(objWorkItemHomePage.WorkPool, "RP Lost in Routing");
+			objWorkItemHomePage.enter(objWorkItemHomePage.reasonForTransferring,"Test");
+			objWorkItemHomePage.Click(objWorkItemHomePage.saveButton);
+			
+			// Step12: Validating that work pool supervisor is able to select and approve multiple work items"
+		    softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.successAlert),
+		    		"SMAB-T2010: Validating that work pool supervisor is able to select and approve multiple work items");
+		    softAssert.assertEquals(objApasGenericFunctions.getAlertMessage(), "Work Item(s) process succesfully!",
+            		"SMAB-T2010: Validating that Work pool Supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific user.");
+		    
+		   // Step13 :Navigate to details tab to validate work pool
+		    objApasGenericFunctions.globalSearchRecords(workItem1);
+		    objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		    Thread.sleep(3000);
+		    
+		  //  Validating that Work pool Supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific work pool
+	        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Work Pool"), "RP Lost in Routing",
+	        		"SMAB-T2010: Validating that work pool supervisor is able to select and approve multiple work items");
+	        objApasGenericFunctions.globalSearchRecords(workItem2);
+	        objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			Thread.sleep(3000);
+			 softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Work Pool"), "RP Lost in Routing",
+		        		"SMAB-T2010: Validating that work pool supervisor is able to select and approve multiple work items");
+			
+			//Validating that Work pool Supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific work pool
+	        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Work Pool"), "RP Lost in Routing",
+	        		"SMAB-T2010: Validating that work pool supervisor is able to select and approve multiple work items");
+	        
+	        objApasGenericFunctions.searchModule(HOME);
+			objApasGenericPage.openTab("Staff - In Pool");
+			
+	        objWorkItemHomePage.selectWorkItemOnHomePage(workItem1);
 			objWorkItemHomePage.selectWorkItemOnHomePage(workItem2);
 			
 			// Step6: Clicking on change assignee button to change the assignee and save 
@@ -382,43 +414,6 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 		    softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Assigned To"),"rp appraiserAUT", 
 		    		"SMAB-T2010: Validating that Work pool Supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific user.");
 			
-			// Step9: Navigating to Staff in pool Tab
-			objApasGenericFunctions.searchModule(HOME);
-			objApasGenericPage.openTab("Staff - In Pool");
-			
-			// Step10: Selecting the work items
-			objWorkItemHomePage.selectWorkItemOnHomePage(workItem3);
-			objWorkItemHomePage.selectWorkItemOnHomePage(workItem4);
-			
-			// Step11: Clicking on change workpool button to change the workpool and save 
-			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeWorkPool));
-			objApasGenericPage.searchAndSelectFromDropDown(objWorkItemHomePage.WorkPool, "RP Lost in Routing");
-			objWorkItemHomePage.enter(objWorkItemHomePage.reasonForTransferring,"Test");
-			objWorkItemHomePage.Click(objWorkItemHomePage.saveButton);
-			
-			// Step12: Validating that work pool supervisor is able to select and approve multiple work items"
-		    softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.successAlert),
-		    		"SMAB-T2010: Validating that work pool supervisor is able to select and approve multiple work items");
-		    softAssert.assertEquals(objApasGenericFunctions.getAlertMessage(), "Work Item(s) process succesfully!",
-            		"SMAB-T2010: Validating that Work pool Supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific user.");
-		    
-		   // Step13 :Navigate to details tab to validate work pool
-		    objApasGenericFunctions.globalSearchRecords(workItem3);
-		    objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
-			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-		    Thread.sleep(3000);
-		    
-		  //  Validating that Work pool Supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific work pool
-	        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Work Pool"), "RP Lost in Routing",
-	        		"SMAB-T2010: Validating that work pool supervisor is able to select and approve multiple work items");
-	        objApasGenericFunctions.globalSearchRecords(workItem4);
-	        objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
-			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-			Thread.sleep(3000);
-			
-			//Validating that Work pool Supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific work pool
-	        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Work Pool"), "RP Lost in Routing",
-	        		"SMAB-T2010: Validating that work pool supervisor is able to select and approve multiple work items");
 	        objApasGenericFunctions.logout();
 	}	
 		
