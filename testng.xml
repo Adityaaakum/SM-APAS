@@ -13,11 +13,10 @@
 			</run>
 		</groups>
 		<classes>
-
-			 <class name="com.apas.Tests.BuildingPermit.BuildingPermit_EFileDataRuleValidation_Test">
+ <class name="com.apas.Tests.WorkItemsTest.ManualWorkItems_Tests" >
 
 				 <methods>
-					 <include name="BuildingPermit_APNMandatoryForProcessDuringUpsert_ImportNameValidation"/>
+					 <include name="WorkItems_VerifyLinkedParcelUseCodeBlankStreetFieldNotBlank"/>
 				 </methods>
 			 </class>
 

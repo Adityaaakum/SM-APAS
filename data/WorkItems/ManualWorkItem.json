@@ -6,8 +6,14 @@
 		"Description": "Creation of work item",
 		"Priority" : "Urgent",
 		"Work Item Routing": "Give Work Item to Me",
+		},
+	"DataToCreateWorkItemOfTypeBPP": {
+		"Work Item Type": "BPP",
+		"Actions": "BPP Trends",
+		"Reference": "Test WI",
+		"Description": "Creation of work item",
+		"Priority" : "Urgent",
+		"Work Item Routing": "Give Work Item to Me",
 		}		 	
-		
-		
 		                                  	                            	
 }
