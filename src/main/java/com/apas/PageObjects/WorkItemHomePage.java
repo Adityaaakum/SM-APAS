@@ -42,6 +42,8 @@ public class WorkItemHomePage extends Page {
 		objPageObj=new Page(driver);
 	}
 
+	public String changeWorkPool= "Change Work Pool";
+	public String changeAssignee= "Change Assignee";
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
 	public WebElement successAlert;
 
@@ -156,6 +158,7 @@ public class WorkItemHomePage extends Page {
 
 	@FindBy(xpath="//div[@class='pageLevelErrors']//ul[1]")
 	public WebElement errorMsg;
+
 	@FindBy(xpath="//li[@title='Details']//a[@data-label='Details']")
 	public WebElement detailsWI;
 
@@ -212,7 +215,20 @@ public class WorkItemHomePage extends Page {
     @FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
     
+	@FindBy (xpath="//div[@role='alert' and @data-key='error']//span[contains(@class,'toastMessage')]")
+	public WebElement errormsgOnWI;
+	 
+	@FindBy (xpath="//*[@data-key='error']//..//span[text()='Close']")
+    public WebElement closeErrorMsg;
+	
+	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Assigned To']/..//input")
+	public WebElement AssignedTo;
+	
+	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Work Pool']/..//input")
+	public WebElement WorkPool;
+	
     public String SaveButton="Save";
+    
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
 	 *
@@ -493,15 +509,15 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		}
 		return actualRequestTypeNameFrmGrid;
 	}
-	
-	 /**
-		 * This method will select work item from in progress tab
-		 *
-		 * @param workItem :created workItem
-		 **/
-	public void selectWorkItemOnHomePage(String workItem) throws IOException{
-        WebElement webElement = driver.findElement(By.xpath("//a[text()='"+workItem+"']/ancestor::tr//td[2]//span[contains(@class,'slds-checkbox_faux')]"));
-        scrollToElement(webElement);
-        Click(webElement);
-    }
+	 
+	/**
+	 * This method will select work item from in progress tab
+	 *
+	 * @param workItem :created workItem
+	 **/
+	 public void selectWorkItemOnHomePage(String workItem) throws IOException{
+			WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
+			scrollToElement(webElementCheckBox);
+			Click(webElementCheckBox);			
+	    }
 }

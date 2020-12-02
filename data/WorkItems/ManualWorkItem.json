@@ -6,7 +6,8 @@
 		"Description": "Creation of work item",
 		"Priority" : "Urgent",
 		"Work Item Routing": "Give Work Item to Me",
-		},
+		}
+		
 	"DataToCreateWorkItemOfTypeBPP": {
 		"Work Item Type": "BPP",
 		"Actions": "BPP Trends",
@@ -23,6 +24,49 @@
 		"Priority" : "Urgent",
 		"Work Item Routing": "Give Work Item to Me",
 		}		
-		
+		 "DataToCreateWorkItemOfTypeDVInprogress": {
+		"Work Item Type": "Disabled Veterans",
+		"Actions": "Direct Review and Update",
+		"Reference": "Test WI",
+		"Description": "Creation of work item",
+		"Priority" : "Urgent",
+		"Work Item Routing": "Give Work Item to Someone Else",
+		}
+
+        "DataToCreateWorkItemOfTypeDVInpool": {
+		"Work Item Type": "Disabled Veterans",
+		"Actions": "Direct Review and Update",
+		"Reference": "Test WI",
+		"Description": "Creation of work item",
+		"Priority" : "Urgent",
+		"Work Item Routing": "Give Work Item to Default Work Pool",
+		}
+
+        "DataToCreateWorkItemOfTypeRPInProgress": {
+		"Work Item Type": "RP",
+		"Actions": "CPI Factor",
+		"Reference": "Test WI",
+		"Description": "Creation of work item",
+		"Priority" : "Urgent",
+		"Work Item Routing": "Give Work Item to Someone Else",
+		}
+
+       "DataToCreateWorkItemOfTypeRPInpool": {
+		"Work Item Type": "RP",
+		"Actions": "CPI Factor",
+		"Reference": "Test WI",
+		"Description": "Creation of work item",
+		"Priority" : "Urgent",
+		"Work Item Routing": "Give Work Item to Default Work Pool",
+		}	
+
+       "DataToCreateWorkItemOfTypeDV": {
+		"Work Item Type": "Disabled Veterans",
+		"Actions": "Review and Update",
+		"Description": "Creation of work item",
+		"Priority" : "Urgent",
+		"Work Item Routing": "Give Work Item to Me",
+		}
+       
 		                                  	                            	
 }
