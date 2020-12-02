@@ -42,6 +42,8 @@ public class WorkItemHomePage extends Page {
 		objPageObj=new Page(driver);
 	}
 
+	public String changeWorkPool= "Change Work Pool";
+	public String changeAssignee= "Change Assignee";
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
 	public WebElement successAlert;
 
@@ -198,9 +200,6 @@ public class WorkItemHomePage extends Page {
 	
 	@FindBy(xpath="//button[@title='Approve']") 
 	public WebElement btnApprove;
-	
-	@FindBy(xpath="//a[@data-label='On Hold']")
-	public WebElement lnkTABOnHold;
 		
 	@FindBy (xpath="//div[@role='alert' and @data-key='error']//span[contains(@class,'toastMessage')]")
 	public WebElement errormsgOnWI;
@@ -208,27 +207,11 @@ public class WorkItemHomePage extends Page {
 	@FindBy (xpath="//*[@data-key='error']//..//span[text()='Close']")
     public WebElement closeErrorMsg;
 	
-	@FindBy (xpath="//*[contains(@title, 'WI')]")
-	public WebElement workItems;
+	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Assigned To']/..//input")
+	public WebElement AssignedTo;
 	
-	@FindBy(xpath = "//a[@role='tab'][@data-label='Staff - In Pool']")
-	public WebElement staffInPoolTab;
-	
-	@FindBy(xpath = "//a[@role='tab'][@data-label='Staff - In Progress']")
-	public WebElement staffInProgressTab;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//h2[text()='Transfer Work Item']/../following-sibling::div//input[@placeholder='Search Users...']")
-	public WebElement selectOptionDropDownAsigneeModal;
-
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[contains(@id,'dropdown-element')]/ul/li[@role='presentation']")
-	public WebElement asigneeNameModal;
-		
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//h2[text()='Transfer Work Item']/../following-sibling::div//label[text()='Reason for Transferring']/following-sibling::div//input")
-	public WebElement reasonForTransferring;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//h2[text()='Transfer Work Item']/../following-sibling::div//input[@placeholder='Search Work Pool...']")
-	public WebElement workPoolModal;
-
+	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Work Pool']/..//input")
+	public WebElement WorkPool;
 	
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
@@ -510,8 +493,9 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		return actualRequestTypeNameFrmGrid;
 	}
 	 
-	 public boolean isWorkItemExists(String workItem) throws IOException{
-        WebElement webElement = driver.findElement(By.xpath("//*[@title='"+workItem+"']"));
-        return waitForElementToBeVisible(20,webElement);         
-    }
+	 public void selectWorkItemOnHomePage(String workItem) throws IOException{
+			WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
+			scrollToElement(webElementCheckBox);
+			Click(webElementCheckBox);			
+	    }
 }

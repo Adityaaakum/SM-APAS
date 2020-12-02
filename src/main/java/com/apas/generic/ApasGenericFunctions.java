@@ -704,4 +704,9 @@ public class ApasGenericFunctions extends TestBase {
         return tempFile;
     }
 
+    public String getAlertMsgText() throws Exception {
+		WebElement AlertText = locateElement("//div[contains(@class, 'toastContent')]//span[contains(@class, 'toastMessage')]",15);	
+		String alertTxt = AlertText.getText();
+		return alertTxt;
+	}
 }
