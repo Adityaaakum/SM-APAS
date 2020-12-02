@@ -28,7 +28,7 @@ import com.apas.config.testdata;
 import com.apas.config.users;
 import com.apas.generic.ApasGenericFunctions;
 
-public class DisabledVeterans_RetroFit_WorkItems extends TestBase implements testdata, modules, users {
+public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implements testdata, modules, users {
 
 	private RemoteWebDriver driver;
 
