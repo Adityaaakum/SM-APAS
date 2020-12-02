@@ -84,18 +84,21 @@ public class WorkItems_Consolidation_Test extends TestBase implements testdata, 
 		  objApasGenericFunctions.globalSearchRecords(apnValue); 
 		  // Step 3: Creating Manual work item for the Parcel 
 		  PrimaryWorkitem =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		  
 		  // Step5: Opening the PARCELS page and searching a parcel
 		  objApasGenericFunctions.searchModule(PARCELS);
 		  objApasGenericFunctions.globalSearchRecords(apnValue); 
 		  // Step 6: Creating Manual work item for the Parcel 
 		  secondaryWorkitem =objParcelsPage.createWorkItem(hashMapmanualWorkItemData); 
 		  // Step 7: Opening the PARCELS page and searching a parcel 
+		  
 		  Map<String, String> hashMapmanualWorkItemData1 =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeDisableveterans");
 		  objApasGenericFunctions.searchModule(PARCELS); 
 		  objApasGenericFunctions.globalSearchRecords(apnValue1); 
 		  Workitem=objParcelsPage.createWorkItem(hashMapmanualWorkItemData1); 
 		  //wait for 5 sec to load created work item in In progress tab 
 		  Thread.sleep(5000); 
+		  
 		  //Stpe 8: Open the Work Item Home Page 
 		  driver.navigate().refresh(); 
 		  objApasGenericFunctions.searchModule(HOME);
@@ -106,13 +109,15 @@ public class WorkItems_Consolidation_Test extends TestBase implements testdata, 
 		  objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);
 		  objWorkItemHomePage.Click(objPage.getButtonWithText(objWorkItemHomePage.ConsolidateButton));
 		  softAssert.assertEquals(objApasGenericFunctions.getAlertMessage(),"Please select two or more Work Items from the same Work Pool and having the same APN/Account # to consolidate.","SMAB-T2259,SMAB-T2260 Validation on workitem with diff APN and Work pool can not consolidate "); objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg); 
+		  
 		  //steps 10:select 2 work item with same APn and work pool and consolidate
 		  objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);
 		  objWorkItemHomePage.selectWorkItemOnHomePage(secondaryWorkitem);
 		  objWorkItemHomePage.Click(objPage.getButtonWithText(objWorkItemHomePage.ConsolidateButton));
 		  apasGenericObj.selectOptionFromDropDown("Select Primary",PrimaryWorkitem+" RP - CPI Factor");
 		  objWorkItemHomePage.Click(objPage.getButtonWithText(objWorkItemHomePage.SaveButton));
-          //steps 11: verify primary work item should be visible in in progress tab after consolidation
+          
+		  //steps 11: verify primary work item should be visible in in progress tab after consolidation
 		  Thread.sleep(2000);
 		  HashMap<String, ArrayList<String>> PrimaryWorkItems =objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_PROGRESS);
 		  softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(PrimaryWorkitem),"SMAB-T2261: Validation that Primary WorkItem should be visible In In Progress Tab On Home page after consolidate " ); 
@@ -125,16 +130,17 @@ public class WorkItems_Consolidation_Test extends TestBase implements testdata, 
 		  objPage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		  Thread.sleep(2000);
+		  
 		  //steps 12: validation of parent- child relationship and status on child work item
 		  softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Request Type"),"RP - CPI Factor","SMAB-T2276 : request type matched RP - CPI Factor - Test WI");
 		  softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Status"),"In Progress","SMAB-T2276 : Status Of Child WI Should be In Progress ");
 		  softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Parent-Child Relationship Type"),"Consolidated Secondary","SMAB-T2276 : parent-Child Relationship Type Of Child WI Should be Consolidated Secondary");
 		  driver.navigate().back();
+		 
 		  //steps 13: validation of can not change status in progress to complete from  work item page 
 		  objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.dataTabCompleted, 5);
 		  objWorkItemHomePage.javascriptClick(objWorkItemHomePage.dataTabCompleted);
 		  objWorkItemHomePage.javascriptClick(objWorkItemHomePage.markAsCurrentStatusButton);
-		  //objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.ErrormsgOnWI, 20);
 		  softAssert.assertEquals(objApasGenericFunctions.getAlertMessage(),"Status: You cannot change status from In Progress to Completed","SMAB-T2287 : Error validation You cannot change status from In Progress to Completed On WI page" ); 
 		  objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
 		  driver.navigate().back();
@@ -142,11 +148,13 @@ public class WorkItems_Consolidation_Test extends TestBase implements testdata, 
 		  objWorkItemHomePage.selectWorkItemOnHomePage(PrimaryWorkitem);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.btnMarkComplete);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.submittedforApprovalTimeline);
+		  
 		  //steps 14: validating primary work item should be visible on submitted for approval tab after click on mark complete button 
 		  PrimaryWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_MY_SUBMITTED_FOR_APPROVAL);
 		  softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(PrimaryWorkitem),"SMAB-T2276, SMAB-T2287: Validation that Primary WorkItem should be visible In Submitted for approval Tab On Home page after consolidate " ); 
 		  objApasGenericFunctions.logout();
 		  Thread.sleep(15000);
+		  
 		  //Login With supervisor 1 with rp admin 
 		  objApasGenericFunctions.login(loginUser);
 		  objApasGenericFunctions.searchModule(modules.HOME);
@@ -159,7 +167,8 @@ public class WorkItems_Consolidation_Test extends TestBase implements testdata, 
 		  softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(PrimaryWorkitem),"SMAB-T2288: Validation that Primary WorkItem should be visible In Submit For approval tab after first lavel of approval ");  
 		  objApasGenericFunctions.logout();
 		  Thread.sleep(15000);
-          // Login supervisor 2 users.DATA_ADMIN
+          
+		  // Login supervisor 2 users.DATA_ADMIN
 		  objApasGenericFunctions.login(users.DATA_ADMIN);
 		  objApasGenericFunctions.searchModule(modules.HOME);
           Thread.sleep(2000);
