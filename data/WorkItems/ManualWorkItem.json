@@ -5,8 +5,8 @@
 		"Reference": "Test WI",
 		"Description": "Creation of work item",
 		"Priority" : "Urgent",
-		"Work Item Routing": "Give Work Item to Me",
-		}
+		"Work Item Routing": "Give Work Item to Me"
+		},
 		
 	"DataToCreateWorkItemOfTypeBPP": {
 		"Work Item Type": "BPP",
@@ -14,24 +14,26 @@
 		"Reference": "Test WI",
 		"Description": "Creation of work item",
 		"Priority" : "Urgent",
-		"Work Item Routing": "Give Work Item to Me",
-		}		 	
+		"Work Item Routing": "Give Work Item to Me"
+		},
+		 	
 	"DataToCreateWorkItemOfTypeDisableveterans": {
 		"Work Item Type": "Disabled Veterans",
 		"Actions": "Direct Review and Update",
 		"Reference":"test WI",
 		"Description": "Creation of work item",
 		"Priority" : "Urgent",
-		"Work Item Routing": "Give Work Item to Me",
-		}		
+		"Work Item Routing": "Give Work Item to Me"
+		},
+		
 		 "DataToCreateWorkItemOfTypeDVInprogress": {
 		"Work Item Type": "Disabled Veterans",
 		"Actions": "Direct Review and Update",
 		"Reference": "Test WI",
 		"Description": "Creation of work item",
 		"Priority" : "Urgent",
-		"Work Item Routing": "Give Work Item to Someone Else",
-		}
+		"Work Item Routing": "Give Work Item to Someone Else"
+		},
 
         "DataToCreateWorkItemOfTypeDVInpool": {
 		"Work Item Type": "Disabled Veterans",
@@ -39,8 +41,8 @@
 		"Reference": "Test WI",
 		"Description": "Creation of work item",
 		"Priority" : "Urgent",
-		"Work Item Routing": "Give Work Item to Default Work Pool",
-		}
+		"Work Item Routing": "Give Work Item to Default Work Pool"
+		},
 
         "DataToCreateWorkItemOfTypeRPInProgress": {
 		"Work Item Type": "RP",
@@ -48,8 +50,8 @@
 		"Reference": "Test WI",
 		"Description": "Creation of work item",
 		"Priority" : "Urgent",
-		"Work Item Routing": "Give Work Item to Someone Else",
-		}
+		"Work Item Routing": "Give Work Item to Someone Else"
+		},
 
        "DataToCreateWorkItemOfTypeRPInpool": {
 		"Work Item Type": "RP",
@@ -57,15 +59,15 @@
 		"Reference": "Test WI",
 		"Description": "Creation of work item",
 		"Priority" : "Urgent",
-		"Work Item Routing": "Give Work Item to Default Work Pool",
-		}	
+		"Work Item Routing": "Give Work Item to Default Work Pool"
+		},	
 
        "DataToCreateWorkItemOfTypeDV": {
 		"Work Item Type": "Disabled Veterans",
 		"Actions": "Review and Update",
 		"Description": "Creation of work item",
 		"Priority" : "Urgent",
-		"Work Item Routing": "Give Work Item to Me",
+		"Work Item Routing": "Give Work Item to Me"
 		}
        
 		                                  	                            	
