@@ -299,7 +299,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 		@Test(description = "SMAB-T2010: verify that work pool supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific user or a work pool.", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 				"regression", "work_item_manual" })
 		public void workItems_ChangeAsigneeAndWorkPoolStaffInPool(String loginUser) throws Exception {
-			String workItem1, workItem2, workItem3, workItem4;
+			String workItem1, workItem2;
 			// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 			objApasGenericFunctions.login(loginUser);
 			
