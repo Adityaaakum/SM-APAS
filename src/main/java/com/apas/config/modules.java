@@ -16,7 +16,7 @@ public interface modules {
 	public static final String REPORTS = "Reports";
 	public static final String PARCELS = "Parcels";
 	public static final String HOME = "Home";
-
+	public static final String BPP_ACCOUNTS = "BPP Accounts";
 	public static final String CPI_FACTORS = "CPI Factors";
 
 	public static final String REAL_PROPERTY_SETTINGS_LIBRARIES = "Real Property Settings Libraries";

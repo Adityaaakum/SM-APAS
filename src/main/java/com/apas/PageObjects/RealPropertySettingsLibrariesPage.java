@@ -48,6 +48,11 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//label/span[text() = 'RP Setting Name']/../../input")
 	public WebElement rpSettingNameEditBox;
 	
+	@FindBy(xpath = "//div[text()='Real Property Settings Library']")
+	public WebElement realPropertySettingsLibraryHeaderText;
+	
+	
+
 
 	/*
 	 * @FindBy(xpath =

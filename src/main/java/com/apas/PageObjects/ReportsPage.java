@@ -56,6 +56,10 @@ public class ReportsPage extends Page {
 	
 	@FindBy(xpath="//div[@class='filter-button-group']//button[contains(text(),'Apply')]")
 	public WebElement filterApply;
+	
+	@FindBy(xpath="//*[text()='Report: Custom Building Permit Report']//following::span[text()='Final Review Building Permits']")
+	public WebElement buildingPermitHeaderText;
+	
 
 	public String linkBuildingPermitNumber = "//table[contains(@class,'data-grid-full-table')]//tbody//tr//th[@data-row-index='3']/../td[@data-column-index='2']//a[contains(@href,'')]";
 	public String linkAPN = "//table[contains(@class,'data-grid-full-table')]//tbody//tr//th[@data-row-index='3']/../td[@data-column-index='3']//a[contains(@href,'')]";

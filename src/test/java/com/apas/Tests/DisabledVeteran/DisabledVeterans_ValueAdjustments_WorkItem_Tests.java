@@ -70,13 +70,15 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 		
 	}
 	
-	@Test(description = "SMAB-T2103: APAS system should generate an Annual Exemption amount verification WI on editing/entering few fields in VA", 
+	@Test(description = "SMAB-T2080,SMAB-T2103: APAS system should generate an Annual Exemption amount verification WI on editing/entering few fields in VA", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DV_WorkItem_VA" })
 	public void DisabledVeteran_verifyWorkItemGeneratedOnEditingVAFields(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
+	String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
+	String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
 	//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 	ReportLogger.INFO("Step 1: Login to the Salesforce ");
 	objApasGenericFunctions.login(loginUser);
@@ -139,12 +141,23 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 17: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
   	ReportLogger.INFO("Step 18: Click on the check box - Show RP");
-  	objPage.Click(objWIHomePage.chkShowRP);
+	
   	ReportLogger.INFO("Step 19: Click on the SUB TAB - In POOL");
   	objPage.Click(objWIHomePage.lnkTABInPool);
   	ReportLogger.INFO("Step 20: Search and select the Work Item from the Grid");
   	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
   	//objPage.Click(actualWIName);
+	objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
+	objPage.javascriptClick(objWIHomePage.detailsWI);
+
+   //Validating that 'Roll Code' field and 'Date' field gets automatically populated in the work item record
+   objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
+	softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
+					"SMAB-T2080: Validation that 'Roll Code' fields getting automatically populated in the work item record");
+	softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
+					"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
+		
+	objPage.Click(objWIHomePage.linkedItemsWI);
   	ReportLogger.INFO("Step 21: Click on the link - Linked Items");
   	objPage.Click(objWIHomePage.linkedItemsRecord);
   	ReportLogger.INFO("Step 22: Verify the VA linked with the WI :"+vANameValue);
@@ -152,6 +165,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	String actualVAName = objWIHomePage.searchLinkedExemptionOrVA(vANameValue);
   	ReportLogger.INFO("Step 23: Click on the link : Details");
   	objPage.Click(objWIHomePage.detailsWI);
+  	
   	String actualRequestTypeName = objWIHomePage.searchRequestTypeNameonWIDetails(WIRequestType);
   	ReportLogger.INFO("Step 24: Verify the Request Type is as per the Naming Convention :"+actualRequestTypeName);
   	Thread.sleep(50000);
@@ -257,7 +271,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	  	objApasGenericFunctions.logout();
 	}
 
-	@Test(description = "SMAB-T1979: Approver should be able to Approve the WI - Annual Exemption Amount Verification" , 
+	@Test(description = "SMAB-T2093,SMAB-T1979: Approver should be able to Approve the WI - Annual Exemption Amount Verification" , 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DisabledVeteranExemption", "DV_WorkItem_VA"})
@@ -325,8 +339,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 19: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
   	ReportLogger.INFO("Step 20: Click on the check box - Show RP");
-  	objPage.Click(objWIHomePage.chkShowRP);
-  	
+	
   	ReportLogger.INFO("Step 21: Click on the TAB - In Pool");
   	objPage.Click(objWIHomePage.lnkTABInPool);
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
@@ -339,6 +352,14 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.lnkTABInProgress);
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
+  	String parentwindow = driver.getWindowHandle();
+	//SMAB-T2093 opening the action link to validate that link redirects to Value Adjustment Details page 
+  	objWIHomePage.openActionLink(WIName);
+	objPage.switchToNewWindow(parentwindow);
+	softAssert.assertTrue(objPage.verifyElementVisible(ObjValueAdjustmentPage.valueAdjustmentViewAll),
+			"SMAB-T2093: Validation that Value Adjustment Details label is visible");
+	driver.close();
+	driver.switchTo().window(parentwindow);
   	ReportLogger.INFO("Step 23: Click on the button - Mark Complete");
   	objPage.Click(objWIHomePage.btnMarkComplete);
   	
@@ -362,7 +383,16 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.needsMyApprovalTab);
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
-  	ReportLogger.INFO("Step 23: Click on the Approve button");
+  	
+  	 parentwindow = driver.getWindowHandle();
+	//SMAB-T2093 opening the action link to validate that link redirects to Value Adjustments page 
+  	objWIHomePage.openActionLink(WIName);
+	objPage.switchToNewWindow(parentwindow);
+	softAssert.assertTrue(objPage.verifyElementVisible(ObjValueAdjustmentPage.valueAdjustmentViewAll),
+			"SMAB-T2093: Validation that Value Adjustments label is visible");
+	driver.close();
+	driver.switchTo().window(parentwindow);  	
+	ReportLogger.INFO("Step 23: Click on the Approve button");
   	objPage.Click(objWIHomePage.btnApprove);
   	
   	ReportLogger.INFO("Step 24: Logging OUT from SF");

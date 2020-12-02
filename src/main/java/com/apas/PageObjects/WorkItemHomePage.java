@@ -159,6 +159,9 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath="//li[@title='Details']//a[@data-label='Details']")
 	public WebElement detailsWI;
 
+	@FindBy(xpath="//li[@title='Linked Items']//a[@data-label='Linked Items']")
+	public WebElement linkedItemsWI;
+
 	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='Related Action']/parent::div/following-sibling::div//a")
 	public WebElement relatedActionLink;
 
@@ -200,15 +203,9 @@ public class WorkItemHomePage extends Page {
 	
     public String ConsolidateButton="Consolidate";
     
-    @FindBy (xpath="//label[text()='Select Primary']/following-sibling::div//input")
-    public WebElement SelectPrimaryButton;
-    
     @FindBy (xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Child Work Items']")
     public WebElement ChildWorkItemsTab;
-    
-    @FindBy (xpath="//div[@role='alert' and @data-key='error']//span[contains(@class,'toastMessage')]")
-    public WebElement ErrormsgOnWI;
-    
+   
     @FindBy (xpath="//*[@data-key='error']//..//button[@title='Close']")
     public WebElement CloseErrorMsg;
     
