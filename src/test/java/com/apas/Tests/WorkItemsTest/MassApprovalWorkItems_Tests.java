@@ -313,9 +313,6 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			String query = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name='Disabled Veterans' and Status__c='In Pool' limit 2";
 			HashMap<String, ArrayList<String>> wiValue = salesforceAPI.select(query);
 			
-			/**String queryNoAssignee = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name!='Disabled Veterans' and Status__c='In Pool' and Assigned_To__c=NULL limit 2";
-			HashMap<String, ArrayList<String>> value = salesforceAPI.select(queryNoAssignee);**/
-			
 			//Creating Work Items if value returned is null or empty
 			if(wiValue == null )
 			{
