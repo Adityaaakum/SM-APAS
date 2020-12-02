@@ -180,7 +180,7 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath ="//div[@class='windowViewMode-maximized active lafPageHost']//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
 	public WebElement vaRollYear;
 
-	@FindBy(xpath="//a[@title='Submitted for Approval']//span[text()='Submitted for Approval']")
+	@FindBy(xpath="//a[text()='Submitted for Approval']")
 	public WebElement submittedforApprovalTimeline;
 
 	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//button//span[text()='Mark as Current Status']")
@@ -198,15 +198,7 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath="//button[@title='Approve']") 
 	public WebElement btnApprove;
 	
-	@FindBy (xpath="//button[text()='Consolidate']")
-
-    public WebElement ConsolidateButton;
-    
-    @FindBy (xpath="//button[text()='Mark Complete']")
-    public WebElement MarkCompleteButton;
-    
-    @FindBy (xpath="//*[text()='Error']//..//span")
-    public WebElement ErrorMessage;
+    public String ConsolidateButton="Consolidate";
     
     @FindBy (xpath="//label[text()='Select Primary']/following-sibling::div//input")
     public WebElement SelectPrimaryButton;
@@ -220,12 +212,10 @@ public class WorkItemHomePage extends Page {
     @FindBy (xpath="//*[@data-key='error']//..//button[@title='Close']")
     public WebElement CloseErrorMsg;
     
-    @FindBy (xpath="//button[text()='Approve']")
-    public WebElement ApproveButton;
-    
     @FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
     
+    public String SaveButton="Save";
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
 	 *
@@ -247,7 +237,7 @@ public class WorkItemHomePage extends Page {
 	 * @throws InterruptedException 
 	 **/
 	public void openWorkItem(String workItem) throws IOException, InterruptedException {
-		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[text()='" + workItem + "']"));
+		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[text()='" + workItem + "'] | //div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='"+workItem + "']"));
 		scrollToElement(webElement);
 		javascriptClick(webElement);
 		Thread.sleep(3000);
