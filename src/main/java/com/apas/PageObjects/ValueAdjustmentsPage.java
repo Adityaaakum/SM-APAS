@@ -418,7 +418,7 @@ public boolean verifyIfInitialFilingOrAnnualVA(String applicationdate) throws Ex
 	Thread.sleep(2000);
 	SimpleDateFormat sdfo = new SimpleDateFormat("MM/dd/yyyy");
 	Date appdate = sdfo.parse(applicationdate);
-	objPage.clickElementOnVisiblity(vaRollYear);
+	objPage.Click(vaRollYear);
 	objPage.waitForElementToBeVisible(openRollStartDate, 10);
 	Date openRollstartdate=sdfo.parse(openRollStartDate.getText().trim());
 	driver.navigate().back();

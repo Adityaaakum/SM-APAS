@@ -839,6 +839,7 @@ public class Page {
 	 * @throws Exception
 	 */
 	public String getSelectedDropDownValue(String dropDown) throws Exception {
+		Click(getWebElementWithLabel(dropDown));
 		return driver.findElement(By.xpath("//label[text()='"+dropDown+"']/..//lightning-base-combobox-item[@aria-checked='true']//span[@class='slds-truncate']")).getText().trim();
 		
 	}
