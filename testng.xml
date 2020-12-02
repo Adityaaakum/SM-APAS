@@ -14,9 +14,11 @@
 		</groups>
 		<classes>
 
-			 <class name="com.apas.Tests.WorkItemsTest.WorkItems_Consolidation_Test">
+			 <class name="com.apas.Tests.BuildingPermit.BuildingPermit_EFileDataRuleValidation_Test">
 
-				 
+				 <methods>
+					 <include name="BuildingPermit_APNMandatoryForProcessDuringUpsert_ImportNameValidation"/>
+				 </methods>
 			 </class>
 
 		</classes>
