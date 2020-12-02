@@ -162,6 +162,9 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath="//li[@title='Details']//a[@data-label='Details']")
 	public WebElement detailsWI;
 
+	@FindBy(xpath="//li[@title='Linked Items']//a[@data-label='Linked Items']")
+	public WebElement linkedItemsWI;
+
 	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='Related Action']/parent::div/following-sibling::div//a")
 	public WebElement relatedActionLink;
 
@@ -183,7 +186,7 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath ="//div[@class='windowViewMode-maximized active lafPageHost']//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
 	public WebElement vaRollYear;
 
-	@FindBy(xpath="//a[@title='Submitted for Approval']//span[text()='Submitted for Approval']")
+	@FindBy(xpath="//a[text()='Submitted for Approval']")
 	public WebElement submittedforApprovalTimeline;
 
 	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//button//span[text()='Mark as Current Status']")
@@ -200,7 +203,18 @@ public class WorkItemHomePage extends Page {
 	
 	@FindBy(xpath="//button[@title='Approve']") 
 	public WebElement btnApprove;
-		
+	
+    public String ConsolidateButton="Consolidate";
+    
+    @FindBy (xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Child Work Items']")
+    public WebElement ChildWorkItemsTab;
+   
+    @FindBy (xpath="//*[@data-key='error']//..//button[@title='Close']")
+    public WebElement CloseErrorMsg;
+    
+    @FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
+	public WebElement workItemNumberDetailView;
+    
 	@FindBy (xpath="//div[@role='alert' and @data-key='error']//span[contains(@class,'toastMessage')]")
 	public WebElement errormsgOnWI;
 	 
@@ -213,6 +227,8 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Work Pool']/..//input")
 	public WebElement WorkPool;
 	
+    public String SaveButton="Save";
+    
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
 	 *
@@ -234,7 +250,8 @@ public class WorkItemHomePage extends Page {
 	 * @throws InterruptedException 
 	 **/
 	public void openWorkItem(String workItem) throws IOException, InterruptedException {
-		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[@title='" + workItem + "']"));
+		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[text()='" + workItem + "'] | //div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='"+workItem + "']"));
+		scrollToElement(webElement);
 		javascriptClick(webElement);
 		Thread.sleep(3000);
 
@@ -493,6 +510,11 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		return actualRequestTypeNameFrmGrid;
 	}
 	 
+	/**
+	 * This method will select work item from in progress tab
+	 *
+	 * @param workItem :created workItem
+	 **/
 	 public void selectWorkItemOnHomePage(String workItem) throws IOException{
 			WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
 			scrollToElement(webElementCheckBox);
