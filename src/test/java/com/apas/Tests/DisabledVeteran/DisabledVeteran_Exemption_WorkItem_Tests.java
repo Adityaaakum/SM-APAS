@@ -63,7 +63,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		
 	}
 	
-	@Test(description = "SMAB-T1922: APAS system should generate a WI on new Exemption Creation", 
+	@Test(description = "SMAB-T2080,SMAB-T1922: APAS system should generate a WI on new Exemption Creation", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DV_WorkItem_Exemption"})
@@ -102,8 +102,6 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		   ReportLogger.INFO("Step 6: Click on the Sub  TAB - Work Items");
 		   objPage.Click(objWIHomePage.lnkTABWorkItems);
 		   ReportLogger.INFO("Step 7: Click on the check box - Show RP");
-			if(objPage.verifyElementVisible(objWIHomePage.toggleBUtton))
-				objPage.Click(objWIHomePage.chkShowRP);
 		   ReportLogger.INFO("Step 8: Click on the SUB TAB - My Submitted for Approval");
 		   objPage.Click(objWIHomePage.lnkTABMySubmittedforApproval);
 			
@@ -262,7 +260,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	objApasGenericFunctions.logout();
  }
 
-	@Test(description = "SMAB-T1978: APAS Verify the Supervisor is able to Approve the WI initial filing/changes on new Exemption Creation", 
+	@Test(description = "SMAB-T2094,SMAB-T1978: APAS Verify the Supervisor is able to Approve the WI initial filing/changes on new Exemption Creation", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DV_WorkItem_Exemption"})
@@ -309,10 +307,11 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	
   	String parentwindow = driver.getWindowHandle();
-	//SMAB-T2094 opening the action link to validate that link redirects to correct page 
+	//SMAB-T2094 opening the action link to validate that link redirects to Exemptions page 
   	objWIHomePage.openActionLink(WIName);
 	objPage.switchToNewWindow(parentwindow);
-	objPage.verifyElementVisible(objExemptionsPage.newExemptionNameAftercreation);
+	softAssert.assertTrue(objPage.verifyElementVisible(objExemptionsPage.newExemptionNameAftercreation),
+			"SMAB-T2094: Validation that Exemption label is visible");
 	driver.switchTo().window(parentwindow);
 	
 	ReportLogger.INFO("Step 12: Click on the Approve button");
@@ -334,8 +333,6 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 17: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
   	ReportLogger.INFO("Step 18: Click on the check box - Show RP");
-	if(objPage.verifyElementVisible(objWIHomePage.toggleBUtton))
-  	objPage.Click(objWIHomePage.chkShowRP);
   	ReportLogger.INFO("Step 19: Click on the TAB - Completed");
   	objPage.Click(objWIHomePage.lnkTABCompleted);
   	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);

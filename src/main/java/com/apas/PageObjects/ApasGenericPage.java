@@ -411,17 +411,5 @@ public class ApasGenericPage extends Page {
 		Click(driver.findElementByXPath(tabXPath));
 		
 	}
-	/**
-	 * This method will return the work item number for a particular work item from its detail view
-	 *
-	 * @throws Exception 
-	 **/
-	public String getWorkItemNumberDetailView() throws Exception {
-		String parentwindow = driver.getWindowHandle();
-       switchToNewWindow(parentwindow);
-        waitForElementToBeVisible(workItemNumberDetailView);
-		return getElementText(workItemNumberDetailView);
-
-	}
 
 }

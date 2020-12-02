@@ -70,7 +70,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 		
 	}
 	
-	@Test(description = "SMAB-T2103: APAS system should generate an Annual Exemption amount verification WI on editing/entering few fields in VA", 
+	@Test(description = "SMAB-T2080,SMAB-T2103: APAS system should generate an Annual Exemption amount verification WI on editing/entering few fields in VA", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DV_WorkItem_VA" })
@@ -141,8 +141,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 17: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
   	ReportLogger.INFO("Step 18: Click on the check box - Show RP");
-	if(objPage.verifyElementVisible(objWIHomePage.toggleBUtton))
-  	objPage.Click(objWIHomePage.chkShowRP);
+	
   	ReportLogger.INFO("Step 19: Click on the SUB TAB - In POOL");
   	objPage.Click(objWIHomePage.lnkTABInPool);
   	ReportLogger.INFO("Step 20: Search and select the Work Item from the Grid");
@@ -272,7 +271,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	  	objApasGenericFunctions.logout();
 	}
 
-	@Test(description = "SMAB-T1979: Approver should be able to Approve the WI - Annual Exemption Amount Verification" , 
+	@Test(description = "SMAB-T2093,SMAB-T1979: Approver should be able to Approve the WI - Annual Exemption Amount Verification" , 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DisabledVeteranExemption", "DV_WorkItem_VA"})
@@ -340,9 +339,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 19: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
   	ReportLogger.INFO("Step 20: Click on the check box - Show RP");
-	if(objPage.verifyElementVisible(objWIHomePage.toggleBUtton))
-  	objPage.Click(objWIHomePage.chkShowRP);
-  	
+	
   	ReportLogger.INFO("Step 21: Click on the TAB - In Pool");
   	objPage.Click(objWIHomePage.lnkTABInPool);
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
@@ -356,10 +353,11 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	String parentwindow = driver.getWindowHandle();
-	//SMAB-T2093 opening the action link to validate that link redirects to correct page 
+	//SMAB-T2093 opening the action link to validate that link redirects to Value Adjustment Details page 
   	objWIHomePage.openActionLink(WIName);
 	objPage.switchToNewWindow(parentwindow);
-	objPage.verifyElementVisible(ObjValueAdjustmentPage.valueAdjustmentViewAll);
+	softAssert.assertTrue(objPage.verifyElementVisible(ObjValueAdjustmentPage.valueAdjustmentViewAll),
+			"SMAB-T2093: Validation that Value Adjustment Details label is visible");
 	driver.close();
 	driver.switchTo().window(parentwindow);
   	ReportLogger.INFO("Step 23: Click on the button - Mark Complete");
@@ -387,10 +385,11 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	
   	 parentwindow = driver.getWindowHandle();
-	//SMAB-T2093 opening the action link to validate that link redirects to correct page 
+	//SMAB-T2093 opening the action link to validate that link redirects to Value Adjustments page 
   	objWIHomePage.openActionLink(WIName);
 	objPage.switchToNewWindow(parentwindow);
-	objPage.verifyElementVisible(ObjValueAdjustmentPage.valueAdjustmentViewAll);
+	softAssert.assertTrue(objPage.verifyElementVisible(ObjValueAdjustmentPage.valueAdjustmentViewAll),
+			"SMAB-T2093: Validation that Value Adjustments label is visible");
 	driver.close();
 	driver.switchTo().window(parentwindow);  	
 	ReportLogger.INFO("Step 23: Click on the Approve button");

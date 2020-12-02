@@ -83,7 +83,6 @@ public class ParcelsPage extends ApasGenericPage {
 		String description = dataMap.get("Description");
 		String priority = dataMap.get("Priority");
 		String workItemRouting = dataMap.get("Work Item Routing");
-		String workItemNumber;
 
 		Click(getButtonWithText(componentActionsButtonText));
 		waitForElementToBeVisible(selectOptionDropDownComponentsActionsModal);
@@ -97,7 +96,11 @@ public class ParcelsPage extends ApasGenericPage {
 		selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);
 		selectOptionFromDropDown(workItemRoutingDropDownComponentsActionsModal, workItemRouting);
 		Click(nextButtonComponentsActionsModal);
-		workItemNumber=getWorkItemNumberDetailView();
+		String parentwindow = driver.getWindowHandle();
+	    switchToNewWindow(parentwindow);
+	    waitForElementToBeVisible(workItemNumberDetailView);
+	    String workItemNumber= getElementText(workItemNumberDetailView);
+			
 		ReportLogger.INFO("Work item created is " + workItemNumber  );
 		
 		return workItemNumber;
