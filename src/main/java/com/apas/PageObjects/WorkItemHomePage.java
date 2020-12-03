@@ -44,6 +44,8 @@ public class WorkItemHomePage extends Page {
 
 	public String changeWorkPool= "Change Work Pool";
 	public String changeAssignee= "Change Assignee";
+	public String reasonForTransferring= "Reason for Transferring";
+	
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
 	public WebElement successAlert;
 
@@ -215,12 +217,6 @@ public class WorkItemHomePage extends Page {
     @FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
     
-	@FindBy (xpath="//div[@role='alert' and @data-key='error']//span[contains(@class,'toastMessage')]")
-	public WebElement errormsgOnWI;
-	 
-	@FindBy (xpath="//*[@data-key='error']//..//span[text()='Close']")
-    public WebElement closeErrorMsg;
-	
 	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Assigned To']/..//input")
 	public WebElement AssignedTo;
 	
