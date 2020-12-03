@@ -202,9 +202,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 						"DataToCreateWorkItemOfTypeDVInpool");
 				objApasGenericFunctions.searchModule(PARCELS);
 				objApasGenericFunctions.globalSearchRecords(apnValue);
-			     workItem1InPool= objParcelsPage.createWorkItem(hashMapmanualWorkItemDataDVInPool);
-			     objApasGenericFunctions.globalSearchRecords(apnValue);
-			     
+			     workItem1InPool= objParcelsPage.createWorkItem(hashMapmanualWorkItemDataDVInPool);			     
 			}
 			else {
 				workItem1InPool = valueWIDVInpool.get("Name").get(0);
@@ -234,9 +232,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 						"DataToCreateWorkItemOfTypeDVInprogress");
 				objApasGenericFunctions.searchModule(PARCELS);
 				objApasGenericFunctions.globalSearchRecords(apnValue);
-				 workItem1InProgress= objParcelsPage.createWorkItem(hashMapmanualWorkItemDataDVInProgress);
-			     objApasGenericFunctions.globalSearchRecords(apnValue);
-				
+				 workItem1InProgress= objParcelsPage.createWorkItem(hashMapmanualWorkItemDataDVInProgress);				
 			}
 			
 			else
@@ -252,7 +248,6 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 				objApasGenericFunctions.searchModule(PARCELS);
 				objApasGenericFunctions.globalSearchRecords(apnValue);
 				 workItem2InProgress= objParcelsPage.createWorkItem(hashMapmanualWorkItemDataRPInProgress);
-			     objApasGenericFunctions.globalSearchRecords(apnValue);
 			}
 			else {			
 			 workItem2InProgress = valueWINotDVInProgress.get("Name").get(0);
