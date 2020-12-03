@@ -177,6 +177,14 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 				"regression", "work_item_manual" })
 		public void WorkItems_ErrorChangeAsignee(String loginUser) throws Exception {
 			
+			String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
+			HashMap<String, ArrayList<String>> value = salesforceAPI.select(queryAPNValue);
+			String apnValue= value.get("Name").get(0);
+			
+
+			String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+			
+			
 			String workItem1InProgress ,workItem1InPool, workItem2InProgress, workItem2InPool;
            // Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 			objApasGenericFunctions.login(loginUser);
@@ -187,52 +195,66 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			
 			//fetching the work items in pool
 			String queryWIDVInPool = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name='Disabled Veterans' and Status__c='In Pool'";
-			HashMap<String, ArrayList<String>> valueWIDVInpool = salesforceAPI.select(queryWIDVInPool);			
-			String queryWINotDVInPool = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name!='Disabled Veterans' and (Work_Pool__r.name='RP Admin' or Work_Pool__r.name='RP Lost in Routing') and Status__c='In Pool'";
-			HashMap<String, ArrayList<String>> valueWINotDVInPool = salesforceAPI.select(queryWINotDVInPool);			
-					
-			//fetching the work items in progress
-			String queryWIDVInProgress = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name='Disabled Veterans' and Status__c='In Progress'";
-			HashMap<String, ArrayList<String>> valueWIDVInProgress = salesforceAPI.select(queryWIDVInProgress);			
-			String queryWINotDVInProgress = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name!='Disabled Veterans' and (Work_Pool__r.name='RP Admin' or Work_Pool__r.name='RP Lost in Routing') and Status__c='In Progress'";
-			HashMap<String, ArrayList<String>> valueWINotDVInProgress = salesforceAPI.select(queryWINotDVInProgress);
-			
-			//Creating Work Items if value returned is null or empty
-			if((valueWIDVInProgress == null ||valueWINotDVInProgress == null 
-					|| valueWIDVInpool == null || valueWINotDVInPool == null))
+			HashMap<String, ArrayList<String>> valueWIDVInpool = salesforceAPI.select(queryWIDVInPool);	
+			if(valueWIDVInpool == null )
 			{
-				String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
-				HashMap<String, ArrayList<String>> value = salesforceAPI.select(queryAPNValue);
-				String apnValue= value.get("Name").get(0);
-				
-				String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
-				Map<String, String> hashMapmanualWorkItemDataDVInProgress = objUtil.generateMapFromJsonFile(workItemCreationData,
-						"DataToCreateWorkItemOfTypeDVInprogress");
 				Map<String, String> hashMapmanualWorkItemDataDVInPool = objUtil.generateMapFromJsonFile(workItemCreationData,
 						"DataToCreateWorkItemOfTypeDVInpool");
-				Map<String, String> hashMapmanualWorkItemDataRPInProgress = objUtil.generateMapFromJsonFile(workItemCreationData,
-						"DataToCreateWorkItemOfTypeRPInProgress");
-				Map<String, String> hashMapmanualWorkItemDataRPInPool = objUtil.generateMapFromJsonFile(workItemCreationData,
-						"DataToCreateWorkItemOfTypeRPInpool");
-
-				// Step1: Opening the PARCELS page  and searching a parcel where PUC is blank but Primary Situs field (Street) is not blank
 				objApasGenericFunctions.searchModule(PARCELS);
 				objApasGenericFunctions.globalSearchRecords(apnValue);
-
-			
-				// Step2: Creating Manual work items 
-				 workItem1InProgress= objParcelsPage.createWorkItem(hashMapmanualWorkItemDataDVInProgress);
-			     objApasGenericFunctions.globalSearchRecords(apnValue);
 			     workItem1InPool= objParcelsPage.createWorkItem(hashMapmanualWorkItemDataDVInPool);
 			     objApasGenericFunctions.globalSearchRecords(apnValue);
-			     workItem2InProgress= objParcelsPage.createWorkItem(hashMapmanualWorkItemDataRPInProgress);
-			     objApasGenericFunctions.globalSearchRecords(apnValue);
-			     workItem2InPool=objParcelsPage.createWorkItem(hashMapmanualWorkItemDataRPInPool);
+			     
 			}
 			else {
-			 workItem1InPool = valueWIDVInpool.get("Name").get(0);
-			 workItem2InPool = valueWINotDVInPool.get("Name").get(0);
-			 workItem1InProgress = valueWIDVInProgress.get("Name").get(0);
+				workItem1InPool = valueWIDVInpool.get("Name").get(0);
+			}
+			
+			String queryWINotDVInPool = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name!='Disabled Veterans' and (Work_Pool__r.name='RP Admin' or Work_Pool__r.name='RP Lost in Routing') and Status__c='In Pool'";
+			HashMap<String, ArrayList<String>> valueWINotDVInPool = salesforceAPI.select(queryWINotDVInPool);			
+			if(valueWINotDVInPool == null)
+			{
+				Map<String, String> hashMapmanualWorkItemDataRPInPool = objUtil.generateMapFromJsonFile(workItemCreationData,
+						"DataToCreateWorkItemOfTypeRPInpool");
+				objApasGenericFunctions.searchModule(PARCELS);
+				objApasGenericFunctions.globalSearchRecords(apnValue);
+			     workItem2InPool=objParcelsPage.createWorkItem(hashMapmanualWorkItemDataRPInPool);
+			}
+			else
+			{
+				 workItem2InPool = valueWINotDVInPool.get("Name").get(0);
+			}
+								
+			//fetching the work items in progress
+			String queryWIDVInProgress = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name='Disabled Veterans' and Status__c='In Progress'";
+			HashMap<String, ArrayList<String>> valueWIDVInProgress = salesforceAPI.select(queryWIDVInProgress);
+			if(valueWIDVInProgress == null)
+			{
+				Map<String, String> hashMapmanualWorkItemDataDVInProgress = objUtil.generateMapFromJsonFile(workItemCreationData,
+						"DataToCreateWorkItemOfTypeDVInprogress");
+				objApasGenericFunctions.searchModule(PARCELS);
+				objApasGenericFunctions.globalSearchRecords(apnValue);
+				 workItem1InProgress= objParcelsPage.createWorkItem(hashMapmanualWorkItemDataDVInProgress);
+			     objApasGenericFunctions.globalSearchRecords(apnValue);
+				
+			}
+			
+			else
+			{
+				workItem1InProgress = valueWIDVInProgress.get("Name").get(0);
+			}
+			String queryWINotDVInProgress = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name!='Disabled Veterans' and (Work_Pool__r.name='RP Admin' or Work_Pool__r.name='RP Lost in Routing') and Status__c='In Progress'";
+			HashMap<String, ArrayList<String>> valueWINotDVInProgress = salesforceAPI.select(queryWINotDVInProgress);
+			if(valueWINotDVInProgress == null) 
+			{
+				Map<String, String> hashMapmanualWorkItemDataRPInProgress = objUtil.generateMapFromJsonFile(workItemCreationData,
+						"DataToCreateWorkItemOfTypeRPInProgress");
+				objApasGenericFunctions.searchModule(PARCELS);
+				objApasGenericFunctions.globalSearchRecords(apnValue);
+				 workItem2InProgress= objParcelsPage.createWorkItem(hashMapmanualWorkItemDataRPInProgress);
+			     objApasGenericFunctions.globalSearchRecords(apnValue);
+			}
+			else {			
 			 workItem2InProgress = valueWINotDVInProgress.get("Name").get(0);
 			}
 			
@@ -312,9 +334,9 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			//fetching work items that are of same work pool and are in Staff in pool status
 			String query = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name='Disabled Veterans' and Status__c='In Pool' limit 2";
 			HashMap<String, ArrayList<String>> wiValue = salesforceAPI.select(query);
-			
+	
 			//Creating Work Items if value returned is null or empty
-			if(wiValue == null )
+			if(wiValue == null || wiValue.get("Name").size()!=2)
 			{
 				// fetching a parcel value				
 				String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
@@ -438,7 +460,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			String query="SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name='Disabled Veterans' and Status__c='In Progress' and Assigned_To__r.name!='rp appraiserAUT' limit 2";
 			HashMap<String, ArrayList<String>> wiValue = salesforceAPI.select(query);
 			 //Creating Work Items if value returned is null or empty
-			if(wiValue == null)
+			if(wiValue == null || wiValue.get("Name").size()!=2)
 			{
 				// fetching a parcel value				
 				String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
