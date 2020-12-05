@@ -231,7 +231,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 	 * @throws Exception
 	 */
 
-	@Test(description = "SMAB-T1921,SMAB-T1889,SMAB-T1919,SMAB-T1920:Verify that once supervisor 'Return' the RPSL record then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' is also Returned and once RPSL approved then WI is aloso completed", dataProvider = "DVworkPoolSuperviosrUser", dataProviderClass = DataProviders.class, dependsOnMethods = {
+	@Test(description = "SMAB-T1921,SMAB-T1889,SMAB-T1919,SMAB-T1920:Verify that once supervisor 'Return' the RPSL record then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' is also Returned and once RPSL approved then WI is aloso completed", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, dependsOnMethods = {
 			"Disabledveteran_RPSLandReminderWIClaimSubmitValidations" }, groups = { "regression",
 					"Work_Item_DV" }, alwaysRun = true)
 	public void Disabledveteran_RPSLandReminderWIApprovalRejectionValidations(String loginUser) throws Exception {
@@ -244,7 +244,6 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 
 		// Step3: Navigating to In 'Needs My Approval' section and verifying Linked
 		// record and returning the linked record
-		objPage.javascriptClick(workItemPageObj.toggleBUtton);
 		HashMap<String, ArrayList<String>> needsMyApprovalWI = workItemPageObj.getWorkItemData(workItemPageObj.TAB_NEED_MY_APPROVAL);
 		int reminderSubmittedWIRowNumber = needsMyApprovalWI.get("Request Type").indexOf("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits");
 		String reminderSubmittedWINumber = needsMyApprovalWI.get("Work Item Number").get(reminderSubmittedWIRowNumber);
@@ -295,7 +294,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		apasGenericObj.searchModule(modules.HOME);
 		workItemPageObj.openWorkItem(reminderSubmittedWINumber);
 
-		objPage.Click(workItemPageObj.detailsWI);
+		objPage.Click(workItemPageObj.detailsTab);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage,10);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
@@ -315,7 +314,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		apasGenericObj.saveRecord();
 		driver.switchTo().window(parentwindow);
 		driver.navigate().refresh();
-		objPage.Click(workItemPageObj.detailsWI);
+		objPage.Click(workItemPageObj.detailsTab);
 		//Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage,10);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Submitted for Approval","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
@@ -354,7 +353,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		apasGenericObj.globalSearchRecords(reminderAgainSubmittedWINumber);
 
 		// Step8:Supervisor Verifying that the WI is completed
-		objPage.Click(workItemPageObj.detailsWI);
+		objPage.Click(workItemPageObj.detailsTab);
 		//Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage, 10);
 		
@@ -438,7 +437,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		// step5: now Submitting the Work Item manually
 		driver.navigate().refresh();
 		Thread.sleep(3000);
-		objPage.Click(workItemPageObj.detailsWI);
+		objPage.Click(workItemPageObj.detailsTab);
 		//Thread.sleep(3000);
 		objPage.waitForElementToBeClickable(workItemPageObj.submittedforApprovalTimeline, 10);
 		ReportLogger.INFO("Submitting the WI and verifying the Status :: " + lowIncomeWIName);
