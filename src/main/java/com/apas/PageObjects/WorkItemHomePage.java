@@ -42,6 +42,10 @@ public class WorkItemHomePage extends Page {
 		objPageObj=new Page(driver);
 	}
 
+	public String changeWorkPool= "Change Work Pool";
+	public String changeAssignee= "Change Assignee";
+	public String reasonForTransferring= "Reason for Transferring";
+	
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
 	public WebElement successAlert;
 
@@ -156,6 +160,7 @@ public class WorkItemHomePage extends Page {
 
 	@FindBy(xpath="//div[@class='pageLevelErrors']//ul[1]")
 	public WebElement errorMsg;
+
 	@FindBy(xpath="//li[@title='Details']//a[@data-label='Details']")
 	public WebElement detailsWI;
 
@@ -183,7 +188,7 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath ="//div[@class='windowViewMode-maximized active lafPageHost']//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
 	public WebElement vaRollYear;
 
-	@FindBy(xpath="//a[@title='Submitted for Approval']//span[text()='Submitted for Approval']")
+	@FindBy(xpath="//a[text()='Submitted for Approval']")
 	public WebElement submittedforApprovalTimeline;
 
 	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//button//span[text()='Mark as Current Status']")
@@ -201,6 +206,25 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath="//button[@title='Approve']") 
 	public WebElement btnApprove;
 	
+    public String ConsolidateButton="Consolidate";
+    
+    @FindBy (xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Child Work Items']")
+    public WebElement ChildWorkItemsTab;
+   
+    @FindBy (xpath="//*[@data-key='error']//..//button[@title='Close']")
+    public WebElement CloseErrorMsg;
+    
+    @FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
+	public WebElement workItemNumberDetailView;
+    
+	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Assigned To']/..//input")
+	public WebElement AssignedTo;
+	
+	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Work Pool']/..//input")
+	public WebElement WorkPool;
+	
+    public String SaveButton="Save";
+    
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
 	 *
@@ -222,7 +246,8 @@ public class WorkItemHomePage extends Page {
 	 * @throws InterruptedException 
 	 **/
 	public void openWorkItem(String workItem) throws IOException, InterruptedException {
-		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[@title='" + workItem + "' or text()='" + workItem + "']"));
+		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[text()='" + workItem + "'] | //div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='"+workItem + "']"));
+		scrollToElement(webElement);
 		javascriptClick(webElement);
 		Thread.sleep(3000);
 
@@ -261,7 +286,7 @@ public class WorkItemHomePage extends Page {
 		Click(webElementCheckBox);
 		scrollToElement(acceptWorkItemButton);
 		Click(acceptWorkItemButton);
-		//objPageObj.waitForElementToDisappear(objApasGenericPage.xpathSpinner,20);
+		objPageObj.waitForElementToDisappear(objApasGenericPage.xpathSpinner,20);
 		waitForElementToBeVisible(successAlert, 20);
 		waitForElementToDisappear(successAlert, 10);
 	}
@@ -286,7 +311,7 @@ public class WorkItemHomePage extends Page {
 	 **/
 	public void openActionLink(String workItem) throws Exception {
 		ReportLogger.INFO("Clicking on Action Link of the work item : " + workItem);
-		String xpath = "//a[@title='" + workItem + "' or text()='" + workItem + "']//ancestor::th//following-sibling::td//a";
+		String xpath = "//a[@title='" + workItem + "']//ancestor::th//following-sibling::td//a";
 		waitUntilElementIsPresent(xpath, 15);
 		waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
 		javascriptClick(driver.findElement(By.xpath(xpath)));
@@ -318,7 +343,7 @@ public class WorkItemHomePage extends Page {
 		List<WebElement> actualWINames = null;
 
 		try {
-			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "' or text()='" + WIName + "']");			
+			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "']");			
 			if(actualWINames.isEmpty()) {				
 				String pageMsg = driver.findElementByXPath("//p[@class='slds-m-vertical_medium content']").getText();
 				pageMsg=pageMsg.replaceAll("\\s","").trim();
@@ -442,7 +467,7 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	    
 		  searchWIinGrid(WIName);
 		
-		  WebElement chkBoxWI = driver.findElementByXPath("//table/tbody//tr/th//a[@title='"+ WIName + "' or text()='"+ WIName + "']"
+		  WebElement chkBoxWI = driver.findElementByXPath("//table/tbody//tr/th//a[@title='"+ WIName + "']"
 		  + "/ancestor::tr/td//input[@type='checkbox']");
 	    
 		//WebElement chkBoxWI = lnkWorkItem.findElement(By.xpath("/ancestor::tr/td//input[@type='checkbox']"));
@@ -480,5 +505,15 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		}
 		return actualRequestTypeNameFrmGrid;
 	}
-
+	 
+	/**
+	 * This method will select work item from in progress tab
+	 *
+	 * @param workItem :created workItem
+	 **/
+	 public void selectWorkItemOnHomePage(String workItem) throws IOException{
+			WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
+			scrollToElement(webElementCheckBox);
+			Click(webElementCheckBox);			
+	    }
 }
