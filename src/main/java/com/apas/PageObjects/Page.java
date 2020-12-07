@@ -439,6 +439,12 @@ public class Page {
 		return true;
 	}
 
+	public void SelectByVisibleText(WebElement elem, String value) throws Exception {
+		elem.click();
+		new org.openqa.selenium.support.ui.Select(elem).selectByVisibleText(value);
+		waitUntilPageisReady(driver);
+	}
+
 	/**
 	 * Function will wait until to Max timeout until the webelement is located.
 	 *
@@ -875,8 +881,12 @@ public class Page {
 	 * @return : webelement against the label
 	 */
 	public WebElement getWebElementWithLabel(String label) throws Exception {
-		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()=\"" + label + "\"]/..//input";
-		waitUntilElementIsPresent(xpath,5);
+		String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]";
+		String xpath = commonPath + "//label[text()=\"" + label + "\"]/..//input | " +
+					   commonPath +	"//input[@name='" + label + "'] | " + //this condition was observed on manual work item creation pop up for edit boxes
+				       commonPath + "//*[@class='inputHeader' and contains(.,'" + label + "')]/..//Select"; //This condition was observed for few drop downs of Select Type
+
+		waitUntilElementIsPresent(xpath,3);
 		return driver.findElement(By.xpath(xpath));
 	}
 
@@ -887,7 +897,7 @@ public class Page {
 	 * @return : button element
 	 */
 	public WebElement getButtonWithText(String text){
-		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='" + text + "']";
+		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]//button[text()='" + text + "']";
 		return driver.findElement(By.xpath(xpath));
 	}
 
