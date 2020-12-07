@@ -294,24 +294,31 @@ public class ApasGenericPage extends Page {
 	 * @param value: Like 'Process' or 'No Process' for Processing Status field etc.
 	 * @throws Exception
 	 */
-	
 	public void selectOptionFromDropDown(Object element, String value) throws Exception {
         WebElement webElement;
+		WebElement drpDwnOption;
         String xpathDropDownOption;
         if (element instanceof String) {
-            webElement = getWebElementWithLabel((String) element);
-            xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
+        	webElement = getWebElementWithLabel((String) element);
+			String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]";
+			xpathDropDownOption = commonPath + "//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
         } else{
             webElement = (WebElement) element;
             xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
-        }
-        scrollToElement(webElement);
-        javascriptClick(webElement);
-        waitUntilElementIsPresent(xpathDropDownOption, 30);
-        WebElement drpDwnOption = driver.findElement(By.xpath(xpathDropDownOption));
-        scrollToElement(drpDwnOption);
-        waitForElementToBeClickable(drpDwnOption, 10);
-        javascriptClick(drpDwnOption);
+		}
+        try{
+			scrollToElement(webElement);
+			javascriptClick(webElement);
+			waitUntilElementIsPresent(xpathDropDownOption, 5);
+			drpDwnOption = driver.findElement(By.xpath(xpathDropDownOption));
+			scrollToElement(drpDwnOption);
+			waitForElementToBeClickable(drpDwnOption, 3);
+			javascriptClick(drpDwnOption);
+		}catch (Exception ignore){
+        	//This condition is added as few drop downs are found to be of Select type
+        	SelectByVisibleText(webElement,value);
+		}
+
     }
 
 	/**
@@ -407,15 +414,5 @@ public class ApasGenericPage extends Page {
 		Click(driver.findElementByXPath(tabXPath));
 		
 	}
-	/**
-	 * This method will return the work item number for a particular work item from its detail view
-	 *
-	 * @throws Exception 
-	 **/
-	public String getWorkItemNumberDetailView() throws Exception {
-		waitForElementToBeVisible(workItemNumberDetailView);
-		return getElementText(workItemNumberDetailView);
 
-	}
-	
 }

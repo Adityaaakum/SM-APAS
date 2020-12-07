@@ -709,7 +709,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objBuildingPermitPage.enterManualEntryData(manualBuildingPermitMap);
 
 		//Step4: Save after entering 'Tree Removal' in Work Description. There should be an error
-		String expectedWorkDescriptionError = "Close error dialog\nWe hit a snag.\nReview the errors on this page.\nNo Process for work Desc. with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
+		String expectedWorkDescriptionError = "Close error dialog\nWe hit a snag.\nReview the errors on this page.\nNo Process for Work Desc. with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
 
 		softAssert.assertEquals(objApasGenericFunctions.saveRecordAndGetError(),expectedWorkDescriptionError,"SMAB-T327: Warning message validation on the top when 'Work Description' field is having following values 'Tree Removal', 'public works permits', 'temporary signs/banners'");
 		objPage.waitForElementToBeClickable(30,objBuildingPermitPage.workDescriptionTxtBox);
