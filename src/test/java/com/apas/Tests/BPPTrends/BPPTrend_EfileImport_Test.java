@@ -28,7 +28,6 @@ import com.apas.Utils.Util;
 import com.apas.config.BPPTablesData;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class BPPTrend_EfileImport_Test extends TestBase {
@@ -36,7 +35,6 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	RemoteWebDriver driver;
 	Page objPage;
 	EFileImportTransactionsPage objEfileImportTransactionsPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrend;
 	EFileImportPage objEfileHomePage;
 	EFileImportLogsPage objEFileImportLogPage;
@@ -56,7 +54,6 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objBppTrend = new BppTrendPage(driver);
 		objEfileImportTransactionsPage = new EFileImportTransactionsPage(driver);
 		objEfileHomePage = new EFileImportPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objEFileImportLogPage=new EFileImportLogsPage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
@@ -73,7 +70,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
 	public void BppTrend_BOEIndexFileImportAndDiscardErrorRecords(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objEfileHomePage.login(loginUser);
 		
 		//Step2: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -88,7 +85,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS;		
 				
 		//Step5: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, fileName + "BOE Equipment Index Factors and Percent Good Factors 2021.xlsx");		
@@ -98,25 +95,25 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 360);
 		
 		//Step8: Opening the Efile Import Logs module
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
+		objEfileHomePage.searchModule(modules.EFILE_IMPORT_LOGS);
 		
-		HashMap<String, ArrayList<String>> importLogsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		HashMap<String, ArrayList<String>> importLogsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
 		//Step9: Import Logs grid validation for the imported BOE - Index and Percent Good Factors file
 		softAssert.assertEquals(importLogsGridData.get("Name").get(0),"BPP Trend Factors :BOE - Index and Percent Good Factors :" + rollYearForImport,"SMAB-T111: Validation for name of imported file on import logs page");
 		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Imported", "SMAB-T111: Validation if status of imported file is imported on import logs page");
 		
 		//Step10: Opening the Efile Import Transactions module
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_TRANSACTIONS);
+		objEfileHomePage.searchModule(modules.EFILE_IMPORT_TRANSACTIONS);
 		
-		HashMap<String, ArrayList<String>> importTransactionsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		HashMap<String, ArrayList<String>> importTransactionsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
 		//Step11: Import Transactions grid validation for the imported BOE - Index and Percent Good Factors file
 		softAssert.assertEquals(importTransactionsGridData.get("E-File Import Log").get(0),"BPP Trend Factors :BOE - Index and Percent Good Factors :" + rollYearForImport,"SMAB-T111: Validation for name of imported file on import transactions page");
 		softAssert.assertEquals(importTransactionsGridData.get("Status").get(0),"Imported", "SMAB-T111: Validation if status of imported file is imported on import transactions page");
 		
 		//Step12: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step13: Selecting the File Type and Source and clicking on 'View All' link 
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Index and Percent Good Factors");
@@ -161,7 +158,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			softAssert.assertEquals(actualNoOfErrorRecords, updatedRecordsInErrorRowPostDelete, "SMAB-T111: Validation if correct number of records are displayed in Error Row Section after discarding a record");
 		}
 
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 
 	/**
@@ -173,7 +170,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
 	public void BppTrend_BOEIndexFileImportAndRevert(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objEfileHomePage.login(loginUser);
 				
 		//Step2: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -188,7 +185,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS;		
 				
 		//Step5: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, fileName + "BOE Equipment Index Factors and Percent Good Factors 2021.xlsx");		
@@ -215,14 +212,14 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Reverted", "SMAB-T111: Validation if status of imported file is reverted.");
 
 		//Step12: Checking the status on import logs page
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
+		objEfileHomePage.searchModule(modules.EFILE_IMPORT_LOGS);
 		
-		HashMap<String, ArrayList<String>> importLogsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		HashMap<String, ArrayList<String>> importLogsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
 		softAssert.assertEquals(importLogsGridData.get("Name").get(0),"BPP Trend Factors :BOE - Index and Percent Good Factors :" + rollYearForImport,"SMAB-T111: Validation for name of imported file on import logs page");
 		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Reverted", "SMAB-T111: Validation if status of imported file is reverted on import logs page");
 				
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 
 	/**
@@ -244,10 +241,10 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Yet to submit for Approval", rollYearForImport);
 		
 		//Step3: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);				
+		objEfileHomePage.login(loginUser);				
 		
 		//Step4: Opening the file import in-take module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step5: Uploading the Bpp Trend BOE Index Factors file having error and success records
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS;
@@ -296,9 +293,9 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			ReportLogger.INFO("Deleting junk data and entering valid data in the table: "+tableName);
 
 			if(!tableName.equalsIgnoreCase("M&E Good Factors")) {
-				objApasGenericFunctions.editGridCellValue("Average","80");
+				objEfileHomePage.editGridCellValue("Average","80");
 			}else
-				objApasGenericFunctions.editGridCellValue("Factor","80");
+				objEfileHomePage.editGridCellValue("Factor","80");
 
 			objPage.Click(objEfileHomePage.rowSelectCheckBox);
 			objEfileHomePage.collapseSection(objEfileHomePage.errorRowSectionExpandButton);
@@ -331,7 +328,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			softAssert.assertEquals(actualImportedRowsAfterRetrying, expectedImportedRowCountAfterRetry, "SMAB-T111: Validation if correct number of records are displayed in Imported Row Section under "+ tableName +" after correcting and retrying the error record");
 		}
 		
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 	/**
 	 * DESCRIPTION: Performing Following Validations <E-File Import On BOE INDEX File>
@@ -342,7 +339,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	@Test(description = "SMAB-957,SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
 	public void BppTrend_BOEIndexImportAndApprove(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);	
+		objEfileHomePage.login(loginUser);	
 		
 		//Step2: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -354,7 +351,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Yet to submit for Approval", rollYearForImport);
 	
 		//Step4: Opening the file import in-take module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step5: Uploading the Bpp Trend BOE Index Factors file having error and success records
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_VALID;
@@ -384,13 +381,13 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Approved", "SMAB-T111: Validation if status of imported file is approved.");
 
 		//Step13: Checking the status on import logs page
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);		
-		HashMap<String, ArrayList<String>> importLogsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		objEfileHomePage.searchModule(modules.EFILE_IMPORT_LOGS);		
+		HashMap<String, ArrayList<String>> importLogsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
 		//Step14: Import Logs grid validation for the imported BOE - Index and Percent Good Factors file
 		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Approved", "SMAB-957,SMAB-T111: Validate if status of imported file is approved on import logs page");
 		
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 		
 	
@@ -403,7 +400,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	@Test(description = "SMAB-T106,SMAB-T111: Discarding error records and reverting import for BOE valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
 	public void BppTrend_BOEValFileImportAndDiscardErrorRecords(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objEfileHomePage.login(loginUser);
 				
 		//Step2: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -418,7 +415,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS;		
 				
 		//Step5: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Valuation Factors", rollYearForImport, fileName + "BOE Valuation Factors 2021.xlsx");		
@@ -428,25 +425,25 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 360);
 		
 		//Step8: Opening the Efile Import Logs module
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
+		objEfileHomePage.searchModule(modules.EFILE_IMPORT_LOGS);
 		
-		HashMap<String, ArrayList<String>> importLogsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		HashMap<String, ArrayList<String>> importLogsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
 		//Step9: Import Logs grid validation for the imported BOE - Valuation Factors file
 		softAssert.assertEquals(importLogsGridData.get("Name").get(0),"BPP Trend Factors :BOE - Valuation Factors :" + rollYearForImport,"SMAB-T111: Validation for name of imported file on import logs page");
 		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Imported", "SMAB-T111: Validation if status of imported file is imported on import logs page");
 		
 		//Step10: Opening the Efile Import Transactions module
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_TRANSACTIONS);
+		objEfileHomePage.searchModule(modules.EFILE_IMPORT_TRANSACTIONS);
 		
-		HashMap<String, ArrayList<String>> importTransactionsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		HashMap<String, ArrayList<String>> importTransactionsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
 		//Step11: Import Transactions grid validation for the imported BOE - Valuation Factors file
 		softAssert.assertEquals(importTransactionsGridData.get("E-File Import Log").get(0),"BPP Trend Factors :BOE - Valuation Factors :" + rollYearForImport,"SMAB-T111: Validation for name of imported file on import transactions page");
 		softAssert.assertEquals(importTransactionsGridData.get("Status").get(0),"Imported", "SMAB-T111: Validation if status of imported file is imported on import transactions page");
 		
 		//Step12: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step13: Selecting the File Type and Source and clicking on 'View All' link 
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Valuation Factors");
@@ -491,7 +488,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			softAssert.assertEquals(actualNoOfErrorRecords, updatedRecordsInErrorRowPostDelete, "SMAB-T111: Validation if correct number of records are displayed in Error Row Section after discarding a record");
 		}
 		
-		objApasGenericFunctions.logout();	
+		objEfileHomePage.logout();	
 	}
 	/**
 	 * DESCRIPTION: Performing Following Validations <E-File Import On BOE Valuation Factor File>
@@ -502,7 +499,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
 	public void BppTrend_BOEValFileImportAndRevert(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objEfileHomePage.login(loginUser);
 		
 		//Step2: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -517,7 +514,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS;		
 				
 		//Step5: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Valuation Factors", rollYearForImport, fileName + "BOE Valuation Factors 2021.xlsx");		
@@ -544,14 +541,14 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Reverted", "SMAB-T111: Validation if status of imported file is reverted.");
 
 		//Step12: Checking the status on import logs page
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
+		objEfileHomePage.searchModule(modules.EFILE_IMPORT_LOGS);
 		
-		HashMap<String, ArrayList<String>> importLogsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		HashMap<String, ArrayList<String>> importLogsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
 		softAssert.assertEquals(importLogsGridData.get("Name").get(0),"BPP Trend Factors :BOE - Valuation Factors :" + rollYearForImport,"SMAB-T111: Validation for name of imported file on import logs page");
 		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Reverted", "SMAB-T111: Validation if status of imported file is reverted on import logs page");
 				
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 	
 	/**
@@ -564,7 +561,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	@Test(description = "SMAB-T111,SMAB-T91: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
 	public void BppTrend_BOEValImportAndRetryErrorRecords(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);				
+		objEfileHomePage.login(loginUser);				
 				
 		//Step2: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -576,7 +573,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Yet to submit for Approval", rollYearForImport);
 				
 		//Step4: Opening the file import in-take module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step5: Uploading the Bpp Trend BOE Index Factors file having error and success records
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS;
@@ -623,7 +620,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			
 			//Step10: Enter correct data in one of the Error Row 'Cell' 
 			ReportLogger.INFO("Deleting junk data and entering valid data in the table: "+tableName);
-			objApasGenericFunctions.editGridCellValue("Valuation Factor","80");
+			objEfileHomePage.editGridCellValue("Valuation Factor","80");
 			objPage.Click(objEfileHomePage.rowSelectCheckBox);
 			objEfileHomePage.collapseSection(objEfileHomePage.errorRowSectionExpandButton);
 			objPage.scrollToTop();
@@ -659,13 +656,13 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.Click(objEfileHomePage.sourceDetails);	
 		objPage.Click(objEfileHomePage.continueButton);
 		objPage.waitForElementToBeClickable(objEfileHomePage.statusImportedFile, 10);	
-		objApasGenericFunctions.openLogRecordForImportedFile("BPP Trend Factors","BOE - Valuation Factors",rollYearForImport,fileName + "BOE Valuation Factors 2021.xlsx");	
+		objEfileHomePage.openLogRecordForImportedFile("BPP Trend Factors","BOE - Valuation Factors",rollYearForImport,fileName + "BOE Valuation Factors 2021.xlsx");	
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.logStatus, 10);	
 		objPage.Click(objEfileImportTransactionsPage.transactionsTab);	
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);	
 		softAssert.assertEquals(objEfileImportTransactionsPage.transactionsRecords.size(), "2", "SMAB-T91:Verify that admin is able to see Transactions in 'E-File Import Transactions' screen for edited records after file import");
 		
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 	/**
 	 * DESCRIPTION: Performing Following Validations <E-File Import On BOE Valuation Factor File>
@@ -676,7 +673,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
 	public void BppTrend_BOEValImportAndApprove(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);				
+		objEfileHomePage.login(loginUser);				
 				
 		//Step2: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -688,7 +685,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Yet to submit for Approval", rollYearForImport);
 		
 		//Step4: Opening the file import in-take module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step5: Uploading the Bpp Trend BOE Index Factors file having error and success records
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VAL_FACTORS_VALID;
@@ -718,13 +715,13 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Approved", "SMAB-T111: Validation if status of imported file is approved.");
 
 		//Step13: Checking the status on import logs page
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);		
-		HashMap<String, ArrayList<String>> importLogsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		objEfileHomePage.searchModule(modules.EFILE_IMPORT_LOGS);		
+		HashMap<String, ArrayList<String>> importLogsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
 		//Step14: Import Logs grid validation for the imported BOE - Index and Percent Good Factors file
 		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Approved", "SMAB-T111: Validate if status of imported file is approved on import logs page");
 		
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 
 	/**
@@ -736,7 +733,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
 	public void BppTrend_CAAValFileImportAndDiscardErrorRecords(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objEfileHomePage.login(loginUser);
 				
 		//Step2: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -751,7 +748,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VALUATION_FACTORS;		
 				
 		//Step5: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "CAA - Valuation Factors", rollYearForImport, fileName + "CAA Valuation Factors 2021.xlsx");		
@@ -761,25 +758,25 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 360);
 		
 		//Step8: Opening the Efile Import Logs module
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
+		objEfileHomePage.searchModule(modules.EFILE_IMPORT_LOGS);
 		
-		HashMap<String, ArrayList<String>> importLogsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		HashMap<String, ArrayList<String>> importLogsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
 		//Step9: Import Logs grid validation for the imported BOE - Index and Percent Good Factors file
 		softAssert.assertEquals(importLogsGridData.get("Name").get(0),"BPP Trend Factors :CAA - Valuation Factors :" + rollYearForImport,"SMAB-T111: Validation for name of imported file on import logs page");
 		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Imported", "SMAB-T111: Validation if status of imported file is imported on import logs page");
 		
 		//Step10: Opening the Efile Import Transactions module
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_TRANSACTIONS);
+		objEfileHomePage.searchModule(modules.EFILE_IMPORT_TRANSACTIONS);
 		
-		HashMap<String, ArrayList<String>> importTransactionsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		HashMap<String, ArrayList<String>> importTransactionsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
 		//Step11: Import Transactions grid validation for the imported BOE - Index and Percent Good Factors file
 		softAssert.assertEquals(importTransactionsGridData.get("E-File Import Log").get(0),"BPP Trend Factors :CAA - Valuation Factors :" + rollYearForImport,"SMAB-T111: Validation for name of imported file on import transactions page");
 		softAssert.assertEquals(importTransactionsGridData.get("Status").get(0),"Imported", "SMAB-T111: Validation if status of imported file is imported on import transactions page");
 		
 		//Step12: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step13: Selecting the File Type and Source and clicking on 'View All' link 
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "CAA - Valuation Factors");
@@ -824,7 +821,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			softAssert.assertEquals(actualNoOfErrorRecords, updatedRecordsInErrorRowPostDelete, "SMAB-T956,SMAB-T111: Validation if correct number of records are displayed in Error Row Section after discarding a record");
 		}
 
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 
 	/**
@@ -836,7 +833,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
 	public void BppTrend_CAAValFileImportAndRevert(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objEfileHomePage.login(loginUser);
 				
 		//Step2: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -851,7 +848,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VALUATION_FACTORS;		
 				
 		//Step5: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
 		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "CAA - Valuation Factors", rollYearForImport, fileName + "CAA Valuation Factors 2021.xlsx");		
@@ -878,14 +875,14 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Reverted", "SMAB-T955,SMAB-T956,SMAB-T111: Validation if status of imported file is reverted.");
 
 		//Step12: Checking the status on import logs page
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
+		objEfileHomePage.searchModule(modules.EFILE_IMPORT_LOGS);
 		
-		HashMap<String, ArrayList<String>> importLogsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		HashMap<String, ArrayList<String>> importLogsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
 		softAssert.assertEquals(importLogsGridData.get("Name").get(0),"BPP Trend Factors :CAA - Valuation Factors :" + rollYearForImport,"SMAB-T111: Validation for name of imported file on import logs page");
 		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Reverted", "SMAB-T955,SMAB-T956,SMAB-T111: Validation if status of imported file is reverted on import logs page");
 				
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 
 
@@ -899,7 +896,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	@Test(description = "SMAB-T111,SMAB-T958: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
 	public void BppTrend_CAAValImportAndRetryErrorRecords(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);				
+		objEfileHomePage.login(loginUser);				
 				
 		//Step2: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -911,7 +908,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Yet to submit for Approval", rollYearForImport);
 		
 		//Step4: Opening the file import in-take module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step5: Uploading the Bpp Trend BOE Index Factors file having error and success records
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VALUATION_FACTORS;
@@ -958,7 +955,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			
 			//Step12: Enter correct data in one of the Error Row 'Cell' 
 			ReportLogger.INFO("Deleting junk data and entering valid data in the table: "+tableName);
-			objApasGenericFunctions.editGridCellValue("Valuation Factor","80");
+			objEfileHomePage.editGridCellValue("Valuation Factor","80");
 			objPage.Click(objEfileHomePage.rowSelectCheckBox);
 			objEfileHomePage.collapseSection(objEfileHomePage.errorRowSectionExpandButton);
 			objPage.scrollToTop();
@@ -989,7 +986,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			softAssert.assertEquals(actualImportedRowsAfterRetrying, expectedImportedRowCountAfterRetry, "SMAB-T958,SMAB-T111: Validation if correct number of records are displayed in Imported Row Section under "+ tableName +" after correcting and retrying the error record");
 		}
 		
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 	/**
 	 * DESCRIPTION: Performing Following Validations <E-File Import On CAA - Valuation Factors File>
@@ -1000,7 +997,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
 	public void BppTrend_CAAValImportAndApprove(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);			
+		objEfileHomePage.login(loginUser);			
 				
 		//Step2: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -1012,7 +1009,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Yet to submit for Approval", rollYearForImport);
 		
 		//Step4: Opening the file import in-take module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step5: Uploading the Bpp Trend BOE Index Factors file having error and success records
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VAL_FACTORS_VALID;
@@ -1042,13 +1039,13 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Approved", "SMAB-T111: Validation if status of imported file is approved.");
 
 		//Step13: Checking the status on import logs page
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);		
-		HashMap<String, ArrayList<String>> importLogsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		objEfileHomePage.searchModule(modules.EFILE_IMPORT_LOGS);		
+		HashMap<String, ArrayList<String>> importLogsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
 		//Step14: Import Logs grid validation for the imported CAA - Valuation Factors file
 		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Approved", "SMAB-T111: Validate if status of imported file is approved on import logs page");
 		
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 	
 	/**
@@ -1060,10 +1057,10 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	@Test(description = "SMAB-T112: Validating restrictions on uploading BPP Trends data files in invalid format", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
 	public void BppTrend_ImportWithInvalidFormat(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business administrator)
-		objApasGenericFunctions.login(loginUser);
+		objEfileHomePage.login(loginUser);
 		
 		//Step2: Opening the file import in-take module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step3: Uploading the BPP Trend BOE Index Factors file having invalid format XLS
 		ReportLogger.INFO("* Validating upload for file with XLS format");
@@ -1100,7 +1097,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertEquals(actualMsgFrInvalidFrmat, "Your company doesn't support the following file types: .txt", "SMAB-T112: Validation for incorrect (TXT) file format");
 		objBppTrend.Click(objBppTrend.closeButton);
 		
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 
 	
@@ -1127,10 +1124,10 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Yet to submit for Approval", rollYearForImport);
 		
 		//Step3: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);				
+		objEfileHomePage.login(loginUser);				
 		
 		//Step4: Opening the file import in-take module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step5: Uploading the Bpp Trend BOE Index Factors file having error and success records
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_TRANSFORMATION_RULES;
@@ -1176,7 +1173,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("#$"),"Field Age, found #$ but expected a number between 1.0 and 40.0","SMAB-T105 : Error Message validation for the scenario 'Special Characters in Age'");
 		softAssert.assertEquals(objEfileHomePage.getErrorMessageFromErrorGrid("7B"),"Field Age, found 7B but expected a number between 1.0 and 40.0","SMAB-T105 : Error Message validation for the scenario 'Alpha Numeric characters in Age'");
 		
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 	
 	
@@ -1199,7 +1196,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Yet to submit for Approval", rollYearForImport);
 
 		String boebppTrendIndexFactorsFile=System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS_VALID_DATA+"BOE Valuation Factors 2021.xlsx";
-		objApasGenericFunctions.login(loginUser);
+		objEfileHomePage.login(loginUser);
 
 		//Step1: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = '"+fileType+"' and Import_Period__C='" + rollYearForImport + "' and File_Source__C ='"+source+"' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -1207,7 +1204,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objSalesforceAPI.deleteBPPTrendRollYearData(rollYearForImport);
 
 		//Step2: Opening the E FILE IMPORT Module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		///step3: importing a file
 		objEfileHomePage.uploadFileOnEfileIntake(fileType, source,rollYearForImport,boebppTrendIndexFactorsFile);
@@ -1218,19 +1215,19 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		
 		//step5: verifying import log and transactions is non editable
 		ReportLogger.INFO("verifying import log generated is non editable");
-		objApasGenericFunctions.openLogRecordForImportedFile(fileType,source,rollYearForImport,boebppTrendIndexFactorsFile);
+		objEfileHomePage.openLogRecordForImportedFile(fileType,source,rollYearForImport,boebppTrendIndexFactorsFile);
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.logStatus, 10);
-		softAssert.assertTrue(objApasGenericFunctions.isNotDisplayed(objEFileImportLogPage.inlineEditButton),"SMAB-T954:Verify that User is able to view and not edit the log records after uploading the BPP Trend e-Files");
+		softAssert.assertTrue(objEfileHomePage.isNotDisplayed(objEFileImportLogPage.inlineEditButton),"SMAB-T954:Verify that User is able to view and not edit the log records after uploading the BPP Trend e-Files");
 		ReportLogger.INFO("verifying transaction log generated is non editable");
 		objPage.Click(objEfileImportTransactionsPage.transactionsTab);
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);
 		objPage.javascriptClick(objEfileImportTransactionsPage.transactionsRecords.get(0));
 		objPage.waitForElementToBeClickable(objEfileImportTransactionsPage.statusLabel, 10);
-		softAssert.assertTrue(objApasGenericFunctions.isNotDisplayed(objEFileImportLogPage.inlineEditButton),"SMAB-T951:Verify that User is able to view and not edit the transaction records after uploading the BPP Trend e-Files");
+		softAssert.assertTrue(objEfileHomePage.isNotDisplayed(objEFileImportLogPage.inlineEditButton),"SMAB-T951:Verify that User is able to view and not edit the transaction records after uploading the BPP Trend e-Files");
 			
 		
 		//step6: approving the imported file
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		objPage.waitForElementToBeClickable(objEfileHomePage.fileTypedropdown, 10);
 		objEfileHomePage.selectFileAndSource(fileType,source);
 		objPage.waitUntilElementDisplayed(objEfileHomePage.statusImportedFile, 15);
@@ -1245,13 +1242,13 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.Click(objEfileHomePage.sourceDetails);
 		objPage.waitForElementToBeClickable(objEfileHomePage.statusImportedFile,30);
 		objPage.Click(objEfileHomePage.nextButton);
-		objApasGenericFunctions.selectFromDropDown(objEfileHomePage.periodDropdown, rollYearForImport);
+		objEfileHomePage.selectFromDropDown(objEfileHomePage.periodDropdown, rollYearForImport);
 		
 		//step8: verifying error message while trying to import file for already approved file type,source and rollYearForImport
 		softAssert.assertContains(objPage.getElementText(objEfileHomePage.fileAlreadyApprovedMsg), "This file has been already approved", "SMAB-T974:Verify user is not able to import a file for BPP Trends if the previous Import for a particular File Type, File Source and Period was Approved");
 		objPage.Click(objEfileHomePage.closeButton);
 		
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 	
 	
@@ -1282,10 +1279,10 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objSalesforceAPI.deleteBPPTrendRollYearData(rollYearForImport);
 				
 		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objEfileHomePage.login(loginUser);
 
 		//Step3: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 
 		
 		//Step4: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
@@ -1299,7 +1296,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		//step6: verify import list record entry and data
 		ReportLogger.INFO("Verifying records count in history list for imported record");
 		
-		HashMap<String, ArrayList<String>> importedEntry=objApasGenericFunctions.getGridDataInHashMap(1, 1);				
+		HashMap<String, ArrayList<String>> importedEntry=objEfileHomePage.getGridDataInHashMap(1, 1);				
 		softAssert.assertEquals(importedEntry.get("Uploaded Date").get(0), converteddate, "verify import list history data");
 		softAssert.assertEquals(importedEntry.get("Period").get(0), rollYearForImport, "verify import list history data");
 		softAssert.assertEquals(importedEntry.get("File Count").get(0), errorRecordsCount.get("TotalFileRecords"), "verify import list history data");
@@ -1311,7 +1308,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		
 		//step7: navigating to EFile import logs screen and verifying the records count
 		ReportLogger.INFO("Verifying Import count,File count, Error count and status of import logs record");
-		objApasGenericFunctions.openLogRecordForImportedFile(fileType,source,rollYearForImport,boebppTrendIndexFactorsFile);
+		objEfileHomePage.openLogRecordForImportedFile(fileType,source,rollYearForImport,boebppTrendIndexFactorsFile);
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.logStatus, 10);
 		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.logFileCount),errorRecordsCount.get("TotalFileRecords"), "SMAB-T83:Verify that admin is able to see logs record for file type with status 'Imported' on 'E-File Import Logs' screen");
 		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.logImportCount),errorRecordsCount.get("TotalImportedRecords"), "SMAB-T83:Verify that admin is able to see logs record for file type with status 'Imported' on 'E-File Import Logs' screen");
@@ -1338,7 +1335,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.transactionDescription), "Factor uploaded - Electronic File Intake", "SMAB-T1458:Verify that User is able to see Transactions trail with updated fields once a BPP file is uploaded via EFile");		
 		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.efileImportTransactionLookUp), expectedTransactionID, "SMAB-T1458:Verify that User is able to see Transactions trail with updated fields once a BPP file is uploaded via EFile");
 		
-		objApasGenericFunctions.logout();
+		objEfileHomePage.logout();
 	}
 	
 	

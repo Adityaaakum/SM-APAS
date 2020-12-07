@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import com.apas.TestBase.TestBase;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.*;
@@ -25,7 +27,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.apas.Reports.ReportLogger;
 import com.google.common.base.Function;
 
-public class Page {
+public class Page extends TestBase {
 
 	public static final int MAX_TIMEOUT = 60;
 	public static final int MAX_Element_TIMEOUT = 30;

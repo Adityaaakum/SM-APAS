@@ -19,14 +19,12 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
-import com.apas.generic.ApasGenericFunctions;
 
 
 public class BPPTrend_InflationFactor_Test extends TestBase {
 	
 	RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrendPage;
 	Util objUtil;
 	SoftAssertion softAssert;
@@ -41,12 +39,11 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 
 		objPage = new Page(driver);
 		objBppTrendPage = new BppTrendPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		objApasGenericPage = new ApasGenericPage(driver);
 		objBppTrendSetupPage = new BppTrendSetupPage (driver);
-		objApasGenericFunctions.updateRollYearStatus("Open", "2020");
+		objBppTrendSetupPage.updateRollYearStatus("Open", "2020");
 	}
 	
 //	/**
@@ -58,11 +55,11 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 //	public void BppTrend_Create_CpiFactors(String loginUser) throws Exception {
 //		String rollYear = "2019";
 //		//Step1: Login to the APAS application using the given user
-//		objApasGenericFunctions.login(loginUser);
+//		objBppTrendSetupPage.login(loginUser);
 //		
 //		//Step2: Opening the BPP Trend module and set All as the view option in grid
-//		objApasGenericFunctions.searchModule(modules.CPI_FACTORS);
-//		objApasGenericFunctions.displayRecords("All");
+//		objBppTrendSetupPage.searchModule(modules.CPI_FACTORS);
+//		objBppTrendSetupPage.displayRecords("All");
 //	
 //		//Step3: Create CPI Factor with value : -1 
 //		objBppTrendPage.Click(objBppTrendSetupPage.newBtnToCreateEntry);
@@ -103,7 +100,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 //		//Step8: Deleting Duplicate CPI record Create
 //		objBppTrendPage.deleteDuplicateCPI(rollYear);
 //		
-//		objApasGenericFunctions.logout();
+//		objBppTrendSetupPage.logout();
 //	}
 	
 	
@@ -114,11 +111,11 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 	@Test(description = "SMAB-T183: Validating business administrator user is not able to edit the approved inflation factor", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_EditApprovedCpiFactor(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
-		objApasGenericFunctions.login(loginUser);
+		objBppTrendSetupPage.login(loginUser);
 		
 		//Step2: Opening the BPP Trend module and set All as the view option in grid
-		objApasGenericFunctions.searchModule(modules.CPI_FACTORS);
-		objApasGenericFunctions.displayRecords("All");	
+		objBppTrendSetupPage.searchModule(modules.CPI_FACTORS);
+		objBppTrendSetupPage.displayRecords("All");	
 
 		//Step3: Retrieving CPI Factor to edit using roll year fetched in above step
 		String queryForCpiFactorID = "Select Name FROM CPI_Factor__c Where Status__c = 'Approved'";
@@ -126,8 +123,8 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		String cpiFactorName = cpiFactorData.get("Name").get(0);	
 		
 		//Step4: Click the show more icon and clicking on edit button on grid
-		objApasGenericFunctions.searchRecords(cpiFactorName);
-		objApasGenericFunctions.clickShowMoreLink(cpiFactorName);
+		objBppTrendSetupPage.searchRecords(cpiFactorName);
+		objBppTrendSetupPage.clickShowMoreLink(cpiFactorName);
 		objBppTrendPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
 
 		//Step5: Validating the error message on clicking edit button
@@ -154,7 +151,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		softAssert.assertContains(actualErrorMsg, expectedErrorMsg, "SMAB-T183: Validation for business admin is not able to edit aproved CPI Factor from grid");
 		objPage.Click(objPage.getButtonWithText("Cancel"));
 
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 	}
 
 }

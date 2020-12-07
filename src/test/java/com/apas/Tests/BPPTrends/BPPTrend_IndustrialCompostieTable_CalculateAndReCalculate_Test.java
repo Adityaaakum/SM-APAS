@@ -30,14 +30,11 @@ import com.apas.Utils.Util;
 import com.apas.config.BPPTablesData;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test extends TestBase {
 
 	RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrend;
 	BuildingPermitPage objBuildPermitPage;
 	Util objUtil;
@@ -59,7 +56,6 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 		objPage = new Page(driver);
 		objBppTrend = new BppTrendPage(driver);
 		objBuildPermitPage = new BuildingPermitPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		rollYear = CONFIG.getProperty("rollYear");
@@ -67,12 +63,7 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 		objBuildPermit = new BuildingPermitPage(driver);
 		objSoftAssert = new SoftAssert();
         objBppTrendSetupPage = new BppTrendSetupPage(driver);
-        objApasGenericFunctions.updateRollYearStatus("Open", "2020");
-	}
-
-	@AfterMethod
-	public void afterMethod() throws Exception {
-		//objApasGenericFunctions.logout();
+        objBppTrendSetupPage.updateRollYearStatus("Open", "2020");
 	}
 
 	/**
@@ -106,7 +97,7 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 		objBppTrend.updateMinimumEquipmentIndexFactorValue("Industrial", "9", rollYear);
 
 		//Step2: Login to the APAS application, Opening the BPP Trend module and selecting the Roll Year
-		objApasGenericFunctions.login(loginUser);
+		objBppTrendSetupPage.login(loginUser);
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);
 
 		//Step3: Validating presence of CalculateAll button at page level
@@ -163,20 +154,20 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 		dataMapFromExcel.remove("Age");
 
 		//Step19: Generating data map from the UI grid data
-		HashMap<String, ArrayList<String>> actualImportedRowTable  = objApasGenericFunctions.getGridDataInHashMap(1);
+		HashMap<String, ArrayList<String>> actualImportedRowTable  = objBppTrendSetupPage.getGridDataInHashMap(1);
 
 		//Step20: Comparing the UI grid data after Calculate button click against the data in excel file
 		softAssert.assertEquals(FileUtils.compareHashMaps(actualImportedRowTable,dataMapFromExcel),"","SMAB-T166: Data Comparison validation for Imported Row Table");
 		
 		//Step21: Validating the table's status on BPP Trend Setup page
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 		String statusInBppTrendSetup = objBppTrendSetupPage.getTableStatusFromBppTrendSetupDetailsPage(tableName);
 		softAssert.assertEquals(statusInBppTrendSetup, "Calculated", "SMAB-T170,SMAB-T166: Table status on Bpp Trend Setup page post calculation");
 
 		//Step22: Log out from the application
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 	}
 
 
@@ -209,7 +200,7 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 		objBppTrend.updateMinimumEquipmentIndexFactorValue("Industrial", "50", rollYear);
 
 		//Step2: Login to the APAS application, Opening the BPP Trend module and selecting the Roll Year
-		objApasGenericFunctions.login(loginUser);
+		objBppTrendSetupPage.login(loginUser);
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);
 		
 		//Step3: Validating presence of ReCalculateAll button at page level
@@ -263,19 +254,19 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 		dataMapFromExcel.remove("Age");
 
 		//Step16: Generating data map from the UI grid data
-		HashMap<String, ArrayList<String>> actualImportedRowTable  = objApasGenericFunctions.getGridDataInHashMap(1);
+		HashMap<String, ArrayList<String>> actualImportedRowTable  = objBppTrendSetupPage.getGridDataInHashMap(1);
 
 		//Step17: Comparing the UI grid data after Calculate button click against the data in excel file
 		softAssert.assertEquals(FileUtils.compareHashMaps(actualImportedRowTable,dataMapFromExcel),"","SMAB-T302,SMAB-T164: Data Comparison validation for Imported Row Table");
 		
 		//Step18: Validating the table's status on BPP Trend Setup page
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 		String statusInBppTrendSetup = objBppTrendSetupPage.getTableStatusFromBppTrendSetupDetailsPage(tableName);
 		softAssert.assertEquals(statusInBppTrendSetup, "Calculated", "SMAB-T173: Verify Table status on Bpp Trend Setup page post calculation");
 
 		//Step19: Log out from the application
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 	}
 }

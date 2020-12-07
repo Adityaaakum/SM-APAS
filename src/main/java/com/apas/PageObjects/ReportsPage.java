@@ -17,7 +17,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
 
-public class ReportsPage extends Page {
+public class ReportsPage extends ApasGenericPage {
 
 	public static final String FORMATTED_EXPORT = "formatted-export";
 	public static final String DATA_EXPORT = "data-export";

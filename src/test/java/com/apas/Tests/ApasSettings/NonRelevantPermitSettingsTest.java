@@ -6,7 +6,6 @@ import com.apas.PageObjects.Page;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.config.modules;
-import com.apas.generic.ApasGenericFunctions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -16,7 +15,6 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 
 	private RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	NonRelevantPermitSettingsPage objNonRelevantPermitSettingsPage;
 	SoftAssertion softAssert = new SoftAssertion();
 
@@ -28,7 +26,7 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 
 		objPage = new Page(driver);
 		objNonRelevantPermitSettingsPage = new NonRelevantPermitSettingsPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
+
 	}
 
 	/*
@@ -39,10 +37,10 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 	public void NonRelevantPermitSettings_DuplicateNonRelevantSettingsNotAllowed(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider
-		objApasGenericFunctions.login(loginUser);
+		objNonRelevantPermitSettingsPage.login(loginUser);
 
 		//Step2: Opening the Non Relevant Permit Settings module
-		objApasGenericFunctions.searchModule(modules.NON_RELEVANT_PERMIT_SETTINGS);
+		objNonRelevantPermitSettingsPage.searchModule(modules.NON_RELEVANT_PERMIT_SETTINGS);
 
 		//Step3: Adding a preexisting record
 		ReportLogger.INFO("Adding a new non relevant permit setting record with duplicte values");
@@ -57,6 +55,6 @@ public class NonRelevantPermitSettingsTest extends TestBase {
 		objPage.Click(objPage.getButtonWithText("Cancel"));
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objNonRelevantPermitSettingsPage.logout();
 	}
 }

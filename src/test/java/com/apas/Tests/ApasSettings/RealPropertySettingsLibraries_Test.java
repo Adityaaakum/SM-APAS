@@ -6,9 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
@@ -22,13 +20,10 @@ import com.apas.Utils.DateUtil;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.config.users;
-import com.apas.generic.ApasGenericFunctions;
 
 public class RealPropertySettingsLibraries_Test extends TestBase {
 	private RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	RealPropertySettingsLibrariesPage objRPSLPage;
 	SoftAssertion softAssert;
 	ApasGenericPage objApasgenericpage;
@@ -44,10 +39,9 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage = new Page(driver);
 		objUtils = new Util();
 		objRPSLPage = new RealPropertySettingsLibrariesPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objApasgenericpage=new ApasGenericPage(driver);
 		softAssert = new SoftAssertion();
-		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
+		objRPSLPage.updateRollYearStatus("Closed", "2020");
 	}
 	
 	 
@@ -62,10 +56,10 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		String strSuccessAlertMessage;
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
-		objApasGenericFunctions.login(loginUser);
+		objRPSLPage.login(loginUser);
 
 		//Step2: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Fetching Data to create RPSL record			
 		String manualEntryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
@@ -88,7 +82,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSLName + "\" was created.","SMAB-T536: Verify the User is able to create Exemption limit record for a past and future roll year");	
 				
 		//Step7: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step8: Create RPSL again for same Roll Year
 		objRPSLPage.enterRealPropertySettingsDetails(createRPSLDataMap,strRPSL);
@@ -103,7 +97,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		//Step11: Closing the RPSL creation pop up
 		objPage.Click(objRPSLPage.cancelButton);
 		
-		objApasGenericFunctions.logout();
+		objRPSLPage.logout();
 	}	
 	
 	/**
@@ -117,13 +111,13 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		String strSuccessAlertMessage;
 		
 		// Step1: Login to the APAS application using the credentials passed through		
-		objApasGenericFunctions.login(loginUser);
+		objRPSLPage.login(loginUser);
 
 		//Step2: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Selecting 'All' List View
-		objApasGenericFunctions.displayRecords("All");
+		objRPSLPage.displayRecords("All");
 		
 		//Step4: Fetching data for new record
 		String manualEntryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
@@ -144,7 +138,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSLName + "\" was created.","SMAB-T535:Verify the User is able to create Exemption limit record for the current roll year");	
 				
 		//Step8: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step9: Create RPSL again for current Roll Year
 		ReportLogger.INFO("Again adding current year's 'Real Property Settings' record");
@@ -160,11 +154,11 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.Click(objRPSLPage.cancelButton);
 		
 		//Step12: Click on All List View
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
-		objApasGenericFunctions.displayRecords("All");
+		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		objRPSLPage.displayRecords("All");
 		
 		//Step13: Search value of RPSL created above
-		objApasGenericFunctions.searchRecords(strRPSLName);
+		objRPSLPage.searchRecords(strRPSLName);
 		
 		//Step14: Selecting the RPSL
 		objRPSLPage.clickShowMoreLink(strRPSLName);
@@ -181,7 +175,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
 		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSLName + "\" was saved.","SMAB-T535: Verify the User is able to edit Exemption limit record for the current roll year");			
 		
-		objApasGenericFunctions.logout();
+		objRPSLPage.logout();
 	}
 		
 	/**
@@ -191,10 +185,10 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	public void DisabledVeteran_validateMandatoryFieldErrorsRPSLCreation(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
-		objApasGenericFunctions.login(loginUser);
+		objRPSLPage.login(loginUser);
 
 		//Step2: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 
 		//Step3: Open and save Real Property Settings Libraries form without entering the data
 		ReportLogger.INFO("Clicking on New Button");
@@ -216,7 +210,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 
 		//Step5: Closing the RPSL creation pop up
 		objPage.Click(objRPSLPage.cancelButton);
-		objApasGenericFunctions.logout();
+		objRPSLPage.logout();
 	}
 	
 	/**
@@ -226,10 +220,10 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	public void DisabledVeteran_verifyCancelRPSLCreation(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
-		objApasGenericFunctions.login(loginUser);
+		objRPSLPage.login(loginUser);
 
 		//Step2: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Fetching the data to create RPSL record
 		ReportLogger.INFO("Adding a new 'Real Proerty Settings' record");
@@ -252,7 +246,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		//Added the below two lines to bring back the focus to handle regression failure - 11/26
 		driver.navigate().refresh();
 		Thread.sleep(1000);
-		objApasGenericFunctions.logout();
+		objRPSLPage.logout();
 	}		
 	
 	
@@ -263,10 +257,10 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	public void DisabledVeteran_verifyValidationRulesOnRPSLCreation(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
-		objApasGenericFunctions.login(loginUser);
+		objRPSLPage.login(loginUser);
 
 		//Step2: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Fetching Data to create RPSL record	
 		ReportLogger.INFO("Adding a new 'Real Proerty Settings' record");
@@ -303,7 +297,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		//Step5: Closing the RPSL creation pop up
 		objPage.Click(objRPSLPage.cancelButton);
 		
-		objApasGenericFunctions.logout();
+		objRPSLPage.logout();
 	}
 	
 	/**
@@ -313,10 +307,10 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	public void DisabledVeteran_verifyValidationRulesOnRPSLEditing(String loginUser) throws Exception {
 		String strSuccessAlertMessage;
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
-		objApasGenericFunctions.login(loginUser);
+		objRPSLPage.login(loginUser);
 
 		//Step2: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Fetching data for new record
 		String manualEntryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
@@ -339,12 +333,12 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSLName + "\" was created.","Verify the User is able to create Exemption limit record");	
 		
 		//Step7: Selecting module & 'All' List View
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
-		objApasGenericFunctions.displayRecords("All");
+		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		objRPSLPage.displayRecords("All");
 				
 		//Step8: Fetching value of RPSL created in above Test case
 		String value = strRPSLName;
-		objApasGenericFunctions.searchRecords(strRPSLName);		
+		objRPSLPage.searchRecords(strRPSLName);		
 		
 		// Step9: Searching and selecting the RPSL for Editing
 		ReportLogger.INFO("Selecting RPSL record: '" + value + "' for editing");
@@ -376,7 +370,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		//Step14: Closing the RPSL creation pop up
 		objPage.Click(objRPSLPage.cancelButton);
 		
-		objApasGenericFunctions.logout();
+		objRPSLPage.logout();
 	
 	}
 	
@@ -388,20 +382,20 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	public void DisabledVeteran_verify8YearsRPSL(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
-		objApasGenericFunctions.login(loginUser);
+		objRPSLPage.login(loginUser);
 
 		//Step2: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Select All List View
-		objApasGenericFunctions.displayRecords("All");
+		objRPSLPage.displayRecords("All");
 		
 		//Step4: Verify atleast 8 RPSL are displayed
 		int noOfRPSL = objPage.getElementSize(objRPSLPage.numberOfRPSL);
 		
 		softAssert.assertTrue(noOfRPSL>=8, "SMAB-T583: Verify user is able to view at least last 8 years of Exemption Limits records");
 		
-		objApasGenericFunctions.logout();
+		objRPSLPage.logout();
 	}
 	
 	/**
@@ -416,14 +410,14 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		String pastRollYear="2015";
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
-		objApasGenericFunctions.login(loginUser);
+		objRPSLPage.login(loginUser);
 
 		//Step2: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Select All List View
 		ReportLogger.INFO("Selecting 'All' List View");
-		objApasGenericFunctions.displayRecords("All");
+		objRPSLPage.displayRecords("All");
 		
 		//Step4 : Click on Approved RPSL for past Roll Year
 		ReportLogger.INFO("Clicking on Approved RPSL Link for past Roll Year i.e. " + pastRollYear);
@@ -443,11 +437,11 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	    objPage.Click(objRPSLPage.closeErrorPopUp);
 		
 		//Step8 : Click on Approved RPSL for current Roll Year
-	  	objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+	  	objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 	  	ReportLogger.INFO("Selecting 'All' List View");
-	  	objApasGenericFunctions.displayRecords("All");
+	  	objRPSLPage.displayRecords("All");
 		ReportLogger.INFO("Clicking on Approved RPSL Link for current Roll Year i.e. " + currentRollYear);
-		objApasGenericFunctions.searchRecords("Exemption Limits - " + currentRollYear);
+		objRPSLPage.searchRecords("Exemption Limits - " + currentRollYear);
 		objPage.Click(objRPSLPage.getRPSLRecord(currentRollYear));
 		
 		//Step9 : Click on EDIT button for the record and retrieve the error message after clicking SAVE button
@@ -465,7 +459,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	    Thread.sleep(1000);
 	    objPage.Click(objRPSLPage.cancelButton);
 	    
-	    objApasGenericFunctions.logout();
+	    objRPSLPage.logout();
 	}
 	
 	
@@ -475,14 +469,14 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	@Test(description = "SMAB-T545: Verify user other than Exemption Support Staff is only able to view Exemption limit records", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class )
 	public void DisabledVeteran_verifyViewRPSLUsersAccess(String loginUser) throws Exception {		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
-		objApasGenericFunctions.login(loginUser);
+		objRPSLPage.login(loginUser);
 
 		//Step2: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		objRPSLPage.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
+		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step3: Select All List View
-		objApasGenericFunctions.displayRecords("All");
+		objRPSLPage.displayRecords("All");
 		Thread.sleep(2000);
 		
 		//Step4: Verify New Button is not present
@@ -505,7 +499,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 			//boolean elePresence = objRPSLPage.detailsTabLabel.isDisplayed();
 			softAssert.assertTrue(elePresence, "SMAB-T545: Verify user other than Exemption Support Staff is only able to view Exemption limit records");
 			
-			objApasGenericFunctions.logout();
+			objRPSLPage.logout();
 			
 	}
 }
