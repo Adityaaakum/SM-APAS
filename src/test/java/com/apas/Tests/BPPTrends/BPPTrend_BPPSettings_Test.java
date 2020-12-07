@@ -1,8 +1,5 @@
 package com.apas.Tests.BPPTrends;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.apas.PageObjects.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
@@ -16,12 +13,10 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.BPPTablesData;
 import com.apas.config.modules;
-import com.apas.generic.ApasGenericFunctions;
 
 public class BPPTrend_BPPSettings_Test extends TestBase{
 	RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrendPage;
 	Util objUtil;
 	SoftAssertion softAssert;
@@ -38,7 +33,6 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
 		objBppTrendPage = new BppTrendPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		// Executing all the methods for Roll year: 2019
@@ -46,11 +40,11 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		objApasGenericPage = new ApasGenericPage(driver);
 		objBppTrendSetupPage = new BppTrendSetupPage(driver);
 		objBuildPermitPage = new BuildingPermitPage(driver);
-		objApasGenericFunctions.updateRollYearStatus("Open", "2019");
+		objBppTrendSetupPage.updateRollYearStatus("Open", "2019");
 	}
 	@AfterMethod
 	public void afterMethod() throws Exception {
-		objApasGenericFunctions.updateRollYearStatus("Closed", "2019");
+		objBppTrendSetupPage.updateRollYearStatus("Closed", "2019");
 	}
 	
 	/**
@@ -63,7 +57,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 	public void BppTrend_Verify_BPPSettings_CreationAndValidations(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the given user
-		objApasGenericFunctions.login(loginUser);
+		objBppTrendSetupPage.login(loginUser);
 		
 		//Step2: Updating the composite factor tables status
 		objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.COMPOSITE_TABLES_API_NAMES, "Calculated", rollYear);
@@ -75,8 +69,8 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		objBppTrendPage.removeExistingBppSettingEntry(rollYear);
 		
 		//Step4: Opening the BPP Trend module and set All as the view option in grid
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		
 		//Step5: Clicking on the roll year name in grid to navigate to details page of selected roll year
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
@@ -90,35 +84,35 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		String expectedErrorMessage = "Complete this field.";
 		objPage.enter("Maximum Equipment index Factor","");
 		objPage.Click(objPage.getButtonWithText("Save"));
-		String actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
+		String actualErrorMsg = objBppTrendSetupPage.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
 		softAssert.assertEquals(actualErrorMsg,expectedErrorMessage,"SMAB-T134: Verify error message when 'Maximum Equipment index Factor' is missing");
 		
 		//Step8: Validate error message with factor values less than minimum range : 100b
 		String expectedErrorMsg = "Maximum Equipment index Factor: value outside of valid range on numeric field: 100000000000";
 		objPage.enter("Maximum Equipment index Factor","100b");
 		objPage.Click(objPage.getButtonWithText("Save"));
-		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
+		actualErrorMsg = objBppTrendSetupPage.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
 		softAssert.assertEquals(actualErrorMsg,expectedErrorMsg,"SMAB-T134: Verify Error message for factor value: 100b");
 		
 		//Step9: Validate error message with factor values less than minimum range : 100b
 		expectedErrorMsg = "Maximum Equipment Factor should be greater than or equal to 100";
 		objPage.enter("Maximum Equipment index Factor","60");
 		objPage.Click(objPage.getButtonWithText("Save"));
-		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
+		actualErrorMsg = objBppTrendSetupPage.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
 		softAssert.assertEquals(actualErrorMsg,expectedErrorMsg,"SMAB-T134: Verify Error message for factor value: 60");
 				
 		//Step10: Validate error message with factor values less than minimum range : 99.4
 		expectedErrorMsg = "Maximum Equipment Factor should be greater than or equal to 100";
 		objPage.enter("Maximum Equipment index Factor","60");
 		objPage.Click(objPage.getButtonWithText("Save"));
-		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
+		actualErrorMsg = objBppTrendSetupPage.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
 		softAssert.assertEquals(actualErrorMsg,expectedErrorMsg,"SMAB-T134: Verify Error message for factor value: 99.4");
 		
 		//Step11: Validate error message with factor values greater than maximum range	
 		expectedErrorMsg = "Maximum Equipment index Factor: value outside of valid range on numeric field: 1000: 1000";
 		objPage.enter("Maximum Equipment index Factor","1000");
 		objPage.Click(objPage.getButtonWithText("Save"));
-		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
+		actualErrorMsg = objBppTrendSetupPage.getIndividualFieldErrorMessage("Maximum Equipment index Factor");
 		softAssert.assertContains(actualErrorMsg+": 1000",expectedErrorMsg,"SMAB-T134: Verify Error message for factor value: 1000");
 
 
@@ -154,7 +148,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();
 		softAssert.assertEquals(factorValueSaved,"125%","SMAB-T133,SMAB-T135: Verify user is able to edit the Max Equipemnt Index factor value when status of tables is 'Not Calculated'");
 
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 	}
 	
 	/**
@@ -165,11 +159,11 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 	public void BppTrend_Verify_CreateEditBppSetting_AfterSubmittedAndApprovalOfTableCalculations(String loginUser) throws Exception {		
 		
 		//Step1: Login to the APAS application using the given user
-		objApasGenericFunctions.login(loginUser);
+		objBppTrendSetupPage.login(loginUser);
 		
 		//Step2: Opening the BPP Trend module and set All as the view option in grid
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		
 		//Step3: Clicking on the roll year name in grid to navigate to details page of selected roll year
 		// Create Maximum Equipment index Factor for given roll year if it does not exist
@@ -212,7 +206,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 			softAssert.assertContains(actualErrorMessage, expectedErrorMessage, TCMapingID+": Validating error message on editing and saving max. equip. index value when calculations are :"+status);
 			objPage.Click(objBppTrendSetupPage.closeEntryPopUp);
 		}
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 	}
 	/**
 	 * DESCRIPTION: Performing Following Validations::
@@ -224,7 +218,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 	public void BPPTrend_VerifyTableStatus_ByUpdatingMaxEquipSettings(String loginUser) throws Exception {	
 		
 		//Step1: Login to the APAS application using the given user
-		objApasGenericFunctions.login(loginUser);
+		objBppTrendSetupPage.login(loginUser);
 		
 		//Step2: Updating the composite factor tables status
 		objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.COMPOSITE_TABLES_API_NAMES, "Calculated", rollYear);
@@ -234,8 +228,8 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		
 		//Step4: Navigate to BPP Trend Setup page snd Select roll Year
 		// Create Maximum Equipment index Factor for given roll year if it does not exist
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 		objBppTrendSetupPage.createMaxEquip(rollYear);
 				
@@ -266,7 +260,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();	
 		softAssert.assertEquals(factorValueSaved,"125%","SMAB-T172,SMAB-T272,SMAB-T139: Verify user is able to edit the Max Equipemnt Index factor value when table status is 'Needs Recalculation'");		
 		
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 	}
 
 }

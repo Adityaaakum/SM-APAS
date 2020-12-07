@@ -25,14 +25,11 @@ import com.apas.Utils.DateUtil;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.generic.ApasGenericFunctions;
-
 
 public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 
 	private RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	ValueAdjustmentsPage objValueAdjustmentPage;
 	SoftAssertion softAssert;
 	Util objUtil;
@@ -48,11 +45,10 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		objPage = new Page(driver);
 		objUtil = new Util();
 		objValueAdjustmentPage = new ValueAdjustmentsPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		softAssert = new SoftAssertion();
 		objApasGenericPage = new ApasGenericPage(driver);
 		objExemptionsPage = new ExemptionsPage(driver);
-		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
+		objApasGenericPage.updateRollYearStatus("Closed", "2020");
 	}
 	
 	/**
@@ -64,10 +60,10 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 	public void DisabledVeteran_verifyBasicExemptionAmount(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		
 		//Step2: Open the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 				
 		/*Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 		 Create Exemption record
@@ -111,18 +107,18 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 			//Step8: Calculate Basic Exemption Amount in an 'Active' Value Adjustment					  
 			float expectedExemptionAmount = objValueAdjustmentPage.calculateBasicExemptionAmount();
 			String exemptionAmount = objPage.getElementText(objPage.waitForElementToBeVisible(objValueAdjustmentPage.exemptionAmountCalculatedValueLabel));
-			float actualExemptionAmount = objApasGenericFunctions.convertToFloat(exemptionAmount); 		 
+			float actualExemptionAmount = objApasGenericPage.convertToFloat(exemptionAmount); 		 
 			ReportLogger.INFO("Verifying Exemption Amount Calculated");
 			softAssert.assertEquals(actualExemptionAmount,expectedExemptionAmount,"SMAB-T1213: Verify Exemption Amount calculated for each eligible year if the Determination is 'Basic'");
 			   
 			//Step9: Calculate Net Exemption Amount in an 'Active' Value Adjustment			
 			ReportLogger.INFO("Verifying Net Exemption Amount");
 			float expectedNetExemptionAmount = objValueAdjustmentPage.calculateNetExemptionAmount(actualExemptionAmount);				  
-			float actualNetExemptionAmount = objApasGenericFunctions.convertToFloat(objValueAdjustmentPage.netExemptionAmountCalculatedValueLabel.getText());			 			  
+			float actualNetExemptionAmount = objApasGenericPage.convertToFloat(objValueAdjustmentPage.netExemptionAmountCalculatedValueLabel.getText());			 			  
 			softAssert.assertEquals(actualNetExemptionAmount,expectedNetExemptionAmount,"SMAB-T612: Verify Net Exemption Amount calculated for each eligible year & multiple retroactive years if Penalty is applied");
 			driver.navigate().back();		  
 		  }	 
-		 objApasGenericFunctions.logout();
+		 objApasGenericPage.logout();
 	}
 	
 	
@@ -138,10 +134,10 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
   	public void DisabledVeteran_verifyLowIncomeExemptionAmount(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		
 		// Step2: Opening the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		
 		/*Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 		 Create Exemption record
@@ -203,17 +199,17 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		  
 		// Step16: Calculate and Verify Exemption Amount in an 'Active' Low Income Value Adjustment
 		float expectedExemptionAmount = objValueAdjustmentPage.calculateLowIncomeExemptionAmount();
-		Float actualExemptionAmount = objApasGenericFunctions.convertToFloat(objValueAdjustmentPage.exemptionAmountCalculatedValueLabel.getText());
+		Float actualExemptionAmount = objApasGenericPage.convertToFloat(objValueAdjustmentPage.exemptionAmountCalculatedValueLabel.getText());
 		ReportLogger.INFO("Verifying Exemption Amount Calculated for Low-Income Disabled Veterans Exemption");
 		softAssert.assertEquals(actualExemptionAmount,expectedExemptionAmount,"SMAB-T573: Verify Exemption Amount calculated for eligible years & multiple retroactive years if the effective date of rating is prior to current tax year, Exemption End Date of Rating is Blank & Determination is 'Low Income'");
 			 		  
 		//Step17: Verify Net Exemption Amount for Low Income VAR that results in penalty
 		ReportLogger.INFO("Verifying Net Exemption Amount Calculated for Low-Income Disabled Veterans Exemption that results in penalty");			
 		float expectedNetExemptionAmount = objValueAdjustmentPage.calculateNetExemptionAmount(actualExemptionAmount);					  
-		float actualNetExemptionAmount = objApasGenericFunctions.convertToFloat(objValueAdjustmentPage.netExemptionAmountCalculatedValueLabel.getText());			 			  
+		float actualNetExemptionAmount = objApasGenericPage.convertToFloat(objValueAdjustmentPage.netExemptionAmountCalculatedValueLabel.getText());			 			  
 		softAssert.assertEquals(actualNetExemptionAmount,expectedNetExemptionAmount,"SMAB-T1292: Verify 'Net Exemption Amount' is calculated approapriately when a Low Income VAR is created that results in a penalty");
 		   
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	 }
   
   /**
@@ -228,15 +224,15 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 	public void DisabledVeteran_verifyValidationsOnVA(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		
 		//Step2: Fetch Value Adjustment Name
 		String VAName = objValueAdjustmentPage.fetchVA();
 		Thread.sleep(1000);
 		
 		//Step3: Searching and selecting the Exemption
-		objApasGenericFunctions.searchModule(modules.VALUE_ADJUSTMENTS);
-		objApasGenericFunctions.globalSearchRecords(VAName);		
+		objApasGenericPage.searchModule(modules.VALUE_ADJUSTMENTS);
+		objApasGenericPage.globalSearchRecords(VAName);		
 		
 		//Step4: Verify 'Value Adjustment Name' attribute is displayed on VAR
 		objPage.waitForElementToBeVisible(objValueAdjustmentPage.vAnameLabel,50);
@@ -275,15 +271,15 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		objPage.Click(objValueAdjustmentPage.saveButton);
 		
 		String expectedPenaltyAdjstmntErrorMsg = "Penalty Adjustment Reason is not allowed when the Penalty Amount - User Adjusted is blank.";
-		String actualPenaltyAdjstmntErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Penalty Adjustment Reason");
+		String actualPenaltyAdjstmntErrorMsg = objApasGenericPage.getIndividualFieldErrorMessage("Penalty Adjustment Reason");
 		softAssert.assertEquals(actualPenaltyAdjstmntErrorMsg, expectedPenaltyAdjstmntErrorMsg, "SMAB-T1268: Verify on editing VAR,the user cannot enter a value into the Penalty Adjustment Reason when the Penalty Amount - User Adjusted is blank or $0");		 
 		
 		String expectedPenaltyAdjstmntReasonDetailErrorMsg = "Penalty Adjustment Other Reason Detail is allowed when the Penalty Adjustment Reason is 'Other'.";
-		String actualPenaltyAdjstmntReasonDetailErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Penalty Adjustment Other Reason Detail");
+		String actualPenaltyAdjstmntReasonDetailErrorMsg = objApasGenericPage.getIndividualFieldErrorMessage("Penalty Adjustment Other Reason Detail");
 		softAssert.assertEquals(actualPenaltyAdjstmntReasonDetailErrorMsg, expectedPenaltyAdjstmntReasonDetailErrorMsg, "SMAB-T1268: Verify on editing VAR,the user cannot enter a value into the Penalty Adjustment Other Reason Detail when the Penalty Amount - User Adjusted is blank or $0");
 		
 		objPage.Click(objValueAdjustmentPage.cancelButton);
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	} 
 	
 }

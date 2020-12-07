@@ -22,15 +22,11 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.config.users;
-import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase {
 	
 	private RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
 	ExemptionsPage objExemptionsPage;
 	Util objUtil;
@@ -46,11 +42,10 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		objPage = new Page(driver);
 		objExemptionsPage = new ExemptionsPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		mandatoryExemptionData = System.getProperty("user.dir") + testdata.EXEMPTION_MANDATORY_FIELDS_ENTRY_DATA;
-		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
+		objApasGenericPage.updateRollYearStatus("Closed", "2020");
 	}
 	
 	/**
@@ -68,10 +63,10 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 	public void DisabledVeteran_CreateAndEditExemptionAndMandatoryFieldErrorValidation(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		
 		//Step2: Open the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		
 		//Step3: Save an Exemption record without entering any details		
 		ReportLogger.INFO("Click 'New' button to open an Exemption record");
@@ -109,7 +104,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		Map<String, String> dataToCreateExemptionMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemption");
 		dataToCreateExemptionMap.put("Veteran Name", dataToCreateExemptionMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		objExemptionsPage.createExemption(dataToCreateExemptionMap);
 		
 		String recordId = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
@@ -117,11 +112,11 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		softAssert.assertTrue(exemptionName.contains("EXMPTN"),"SMAB-T480,SMAB-T522: Validate " + loginUser + " user is able to create Exemption with mandatory fields'");
 	
 		//Step6: Open the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 
 		//Step7: Search the existing Exemption record that was created and Edit it
-		objApasGenericFunctions.displayRecords("All");
-		objApasGenericFunctions.searchRecords(exemptionName);
+		objApasGenericPage.displayRecords("All");
+		objApasGenericPage.searchRecords(exemptionName);
 		softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct(exemptionName, "Edit"),"SMAB-T481: Validate user is able to edit the Exemption record : " + exemptionName);
 		softAssert.assertTrue(objExemptionsPage.saveButton.isDisplayed(), "SMAB-T481: Validate user is able to view the edit screen for the Exemption record : " + exemptionName);
 	
@@ -132,7 +127,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		objPage.clearFieldValue(objExemptionsPage.dateOccupiedProperty);
 		objPage.clearFieldValue(objExemptionsPage.dateOfNotice);
 		objPage.clearFieldValue(objExemptionsPage.effectiveDateOfUSDVA);
-		objApasGenericFunctions.selectFromDropDown(objExemptionsPage.qualification, "--None--");
+		objApasGenericPage.selectFromDropDown(objExemptionsPage.qualification, "--None--");
 		objExemptionsPage.saveExemptionRecord();
 				
 		//Step9: Validate error messages when few mandatory field values are not present and Exemption record is saved	
@@ -157,7 +152,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		softAssert.assertEquals(objExemptionsPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.effectiveDateOnDetailPage)), objExemptionsPage.removeZeroInMonthAndDay(dataToCreateExemptionMap.get("Effective Date of 100% USDVA Rating")), "SMAB-T479: Value for 'Effective Date of 100% USDVA Rating' is retained post canceling the changes made on Edit Exemption screen");						
 		softAssert.assertEquals(objExemptionsPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.qualificationOnDetailPage)), dataToCreateExemptionMap.get("Qualification?"), "SMAB-T479: Value for 'Qualification?' is retained post canceling the changes made on Edit Exemption screen");						
 				
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	}
 
 	/**
@@ -170,10 +165,10 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 	public void DisabledVeteran_EditExemptionAndMandatoryFieldErrorValidation(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 				
 		//Step2: Open the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 					
 		/*Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 				 Create Exemption record
@@ -192,7 +187,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		//Step7: Clear the values from few of the mandatory fields and Save the record
 		objPage.clearFieldValue(objExemptionsPage.dateApplicationReceived);
 		objPage.clearFieldValue(objExemptionsPage.claimantSSN);
-		objApasGenericFunctions.selectFromDropDown(objExemptionsPage.unmarriedSpouseOfDisabledVeteran, "--None--");
+		objApasGenericPage.selectFromDropDown(objExemptionsPage.unmarriedSpouseOfDisabledVeteran, "--None--");
 		objExemptionsPage.saveExemptionRecord();
 		
 		//Step8: Validate error messages when few mandatory field values are not present and Exemption record is saved
@@ -205,7 +200,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		ReportLogger.INFO("Error messages related to mandatory fields are validated");
 				
 		//Step9: Enter the value in 'Unmarried Spouse of Deceased Veteran?' dropdown only and Save the record
-		objApasGenericFunctions.selectFromDropDown(objExemptionsPage.unmarriedSpouseOfDisabledVeteran, "No");
+		objApasGenericPage.selectFromDropDown(objExemptionsPage.unmarriedSpouseOfDisabledVeteran, "No");
 		objExemptionsPage.saveExemptionRecord();
 		
 		//Step10: Validate error messages when some of the mandatory field values are still not present and Exemption record is saved
@@ -252,7 +247,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		Thread.sleep(3000);
 		softAssert.assertEquals(objExemptionsPage.getElementText(objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), "6781", "SMAB-T522: Validate updated value for 'Veteran SSN' appears in the Exemption record");		
 		
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	}
 
 }

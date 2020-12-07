@@ -17,14 +17,12 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.users;
-import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends TestBase {
 
 	RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrnPg;
 	Util objUtil;
 	SoftAssertion softAssert;
@@ -42,19 +40,18 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 
 		objPage = new Page(driver);
 		objBppTrnPg = new BppTrendPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		rollYear = CONFIG.getProperty("rollYear");
 		objBuildPermitPage = new BuildingPermitPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objBppTrendSetupPage = new BppTrendSetupPage(driver);
-		objApasGenericFunctions.updateRollYearStatus("Open", "2020");
+		objBppTrendSetupPage.updateRollYearStatus("Open", "2020");
 	}
 
 	@AfterMethod
 	public void afterMethod() throws Exception {
-		//objApasGenericFunctions.logout();
+		//objBppTrendSetupPage.logout();
 	}
 
 	/**
@@ -71,11 +68,11 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 
 		//Step2: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with tables status as status: " + tablesStatus);
-		objApasGenericFunctions.login(users.BUSINESS_ADMIN);
+		objBppTrendSetupPage.login(users.BUSINESS_ADMIN);
 
 		//Step3: Opening the BPP Trend module and set All as the view option in grid
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 
 		//Step4: Clicking on the roll year name in grid to navigate to details page of selected roll year
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on BPP Trend Setup entry in grid to naivgate to details page");
@@ -131,7 +128,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		//Step19: Validating Edit button is visible under show more drop down
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking show more button for property type: "+entryName);
 		Thread.sleep(2000);
-		objApasGenericFunctions.clickShowMoreLink(entryName);
+		objBppTrendSetupPage.clickShowMoreLink(entryName);
 		Thread.sleep(2000);
 		objBppTrnPg.waitForElementToBeVisible(objBuildPermitPage.editLinkUnderShowMore, 10);
 		boolean isEditBtnPresent = objBuildPermitPage.editLinkUnderShowMore.isDisplayed();
@@ -179,8 +176,8 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 
 		if(tablesStatus.equalsIgnoreCase("Calculated")) {
 			//Search the BPP Trend Setup module
-			objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-			objApasGenericFunctions.displayRecords("All");
+			objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+			objBppTrendSetupPage.displayRecords("All");
 
 			//Clicking on the roll year name in grid to navigate to details page of selected roll year
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on BPP Trend Setup entry in grid to naivgate to details page");
@@ -197,7 +194,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		softAssert.assertAll();
 
 		//Step29: Assert all the assertions
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 	}
 
 	/**
@@ -218,11 +215,11 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 
 		//Step2: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with tables status as '"+ tableStatus +"'");
-		objApasGenericFunctions.login(users.BUSINESS_ADMIN);
+		objBppTrendSetupPage.login(users.BUSINESS_ADMIN);
 
 		//Step3: Opening the BPP Trend module and set All as the view option in grid
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 
 		//Step4: Clicking on the roll year name in grid to navigate to details page of selected roll year
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on BPP Trend Setup entry in grid to naivgate to details page");
@@ -297,7 +294,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		Thread.sleep(1000);
 
 		//Step15: Log out from the application
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 
 		//Step16: Assert all the assertions
 		softAssert.assertAll();
@@ -315,11 +312,11 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 
 		//Step2: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with tables status as status: " + tablesStatus);
-		objApasGenericFunctions.login(users.BUSINESS_ADMIN);
+		objBppTrendSetupPage.login(users.BUSINESS_ADMIN);
 
 		//Step3: Opening the BPP Trend module and set All as the view option in grid
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 
 		//Step4: Clicking on the roll year name in grid to navigate to details page of selected roll year
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on BPP Trend Setup entry in grid to naivgate to details page");
@@ -389,7 +386,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		softAssert.assertAll();
 
 		//Step17: Assert all the assertions
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 	}
 
 	/**
@@ -404,11 +401,11 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 
 		//Step2: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with tables status as '"+ tableStatus +"'");
-		objApasGenericFunctions.login(users.BUSINESS_ADMIN);
+		objBppTrendSetupPage.login(users.BUSINESS_ADMIN);
 
 		//Step3: Opening the BPP Trend module and set All as the view option in grid
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 
 		//Step4: Clicking on the roll year name in grid to navigate to details page of selected roll year
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on BPP Trend Setup entry in grid to naivgate to details page");
@@ -444,7 +441,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		Thread.sleep(1000);
 
 		//Step9: Log out from the application
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 
 		//Step10: Assert all the assertions
 		softAssert.assertAll();
@@ -462,11 +459,11 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 
 		//Step2: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with tables status as status: " + tablesStatus);
-		objApasGenericFunctions.login(users.BUSINESS_ADMIN);
+		objBppTrendSetupPage.login(users.BUSINESS_ADMIN);
 
 		//Step3: Opening the BPP Trend module and set All as the view option in grid
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 
 		//Step4: Clicking on the roll year name in grid to navigate to details page of selected roll year
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on BPP Trend Setup entry in grid to naivgate to details page");
@@ -529,7 +526,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		softAssert.assertAll();
 
 		//Step16: Assert all the assertions
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 	}
 
 	/**
@@ -550,11 +547,11 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 
 		//Step2: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with tables status as '"+ tableStatus +"'");
-		objApasGenericFunctions.login(users.BUSINESS_ADMIN);
+		objBppTrendSetupPage.login(users.BUSINESS_ADMIN);
 
 		//Step3: Opening the BPP Trend module and set All as the view option in grid
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 
 		//Step4: Clicking on the roll year name in grid to navigate to details page of selected roll year
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on BPP Trend Setup entry in grid to naivgate to details page");
@@ -588,7 +585,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		Thread.sleep(1000);
 
 		//Step9: Log out from the application
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 
 		//Step10: Assert all the assertions
 		softAssert.assertAll();

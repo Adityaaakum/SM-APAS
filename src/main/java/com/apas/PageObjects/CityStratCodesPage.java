@@ -1,26 +1,19 @@
 package com.apas.PageObjects;
 
 import com.apas.Reports.ReportLogger;
-import com.apas.generic.ApasGenericFunctions;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-//import sun.applet.AppletSecurity;
 
 public class CityStratCodesPage extends ApasGenericPage {
 
 	ApasGenericPage objApasGenericPage;
 	BuildingPermitPage objBuildingPermitPage;
-	ApasGenericFunctions objApasGenericFunctions;
-
+	
 	public CityStratCodesPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objBuildingPermitPage = new BuildingPermitPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 	}
 
 	public String countyStratCodeEditBox = "County Strat Code";
@@ -54,7 +47,7 @@ public class CityStratCodesPage extends ApasGenericPage {
 		Click(newButton);
 		waitForElementToBeClickable(10,countyStratCodeEditBox);
 		enterCityStratCodeDetails(countyStratCode,cityCode,cityStratCode,status);
-		return objApasGenericFunctions.saveRecord();
+		return saveRecord();
 	}
 
 	/**

@@ -15,19 +15,15 @@ import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.PageObjects.BuildingPermitPage;
 import com.apas.PageObjects.EFileImportPage;
 import com.apas.PageObjects.Page;
-import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class BuildingPermit_EFileImport_Test extends TestBase {
 
 	RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	BuildingPermitPage objBuildingPermitPage;
 	SoftAssertion softAssert  = new SoftAssertion();
 	Util objUtil  = new Util();
@@ -43,7 +39,6 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 
 		objPage = new Page(driver);
 		objBuildingPermitPage = new BuildingPermitPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objEfileImportPage = new EFileImportPage(driver);
 	}
 
@@ -64,10 +59,10 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", "OneValidAndTwoInvalidRecordsForPermitValue.txt", athertonBuildingPermitFile);
@@ -127,7 +122,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objPage.Click(objEfileImportPage.closeButton);
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -148,10 +143,10 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",buildingPermitNumber,temporaryFile);
 
 		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step3: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step4: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", "SingleValidRecord_AT.txt", temporaryFile);
@@ -171,79 +166,79 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
 
 		//Step8: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step9: Opening the Building Permit with the Building Permit Number imported through Efile import
-		objApasGenericFunctions.displayRecords("All Imported E-File Building Permits");
-		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
+		objBuildingPermitPage.displayRecords("All Imported E-File Building Permits");
+		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
 
 		ReportLogger.INFO("Validating the field values on building permit created through E-File Intake for Building Permit Number : " + buildingPermitNumber);
 
 		//Step10: Validation for the fields in the section Building Permit Information
 		//Processing and Calculating Processing Status are calculated based on "Processing Status Information" section from "County Strat Code Information"
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Building Permit Number", "Building Permit Information"), buildingPermitNumber, "SMAB-T356: 'Building Permit Number' Field Validation in 'Building Permit Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("APN", "Building Permit Information"), "060-241-050", "SMAB-T356: 'Parcel' Field Validation in 'Building Permit Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Estimated Project Value", "Building Permit Information"), "$1,000", "SMAB-T356: 'Estimated Project Value' Field Validation in 'Building Permit Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("City APN", "Building Permit Information"), "060241050", "SMAB-T356: 'Parcel' Field Validation in 'Building Permit Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Issue Date", "Building Permit Information"), "4/3/2018", "SMAB-T356: 'Issue Date' Field Validation in 'Building Permit Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Completion Date", "Building Permit Information"), "10/1/2019", "SMAB-T356: 'Completion Date' Field Validation in 'Building Permit Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process", "SMAB-T356,SMAB-T354: 'Processing Status' Field Validation in 'Processing Status' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process", "SMAB-T356,SMAB-T354,SMAB-T440: 'Calculated Processing Status' Field Validation in 'Processing Status' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Building Permit Fee", "Building Permit Information"), "$1,983.21", "SMAB-T356: 'Building Permit Fee' Field Validation in 'Building Permit Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Work Description", "Building Permit Information"), "Valid Record REMOVAL OF TREE", "SMAB-T356: 'Work Description' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Building Permit Number", "Building Permit Information"), buildingPermitNumber, "SMAB-T356: 'Building Permit Number' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("APN", "Building Permit Information"), "060-241-050", "SMAB-T356: 'Parcel' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Estimated Project Value", "Building Permit Information"), "$1,000", "SMAB-T356: 'Estimated Project Value' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("City APN", "Building Permit Information"), "060241050", "SMAB-T356: 'Parcel' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Issue Date", "Building Permit Information"), "4/3/2018", "SMAB-T356: 'Issue Date' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Completion Date", "Building Permit Information"), "10/1/2019", "SMAB-T356: 'Completion Date' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process", "SMAB-T356,SMAB-T354: 'Processing Status' Field Validation in 'Processing Status' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process", "SMAB-T356,SMAB-T354,SMAB-T440: 'Calculated Processing Status' Field Validation in 'Processing Status' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Building Permit Fee", "Building Permit Information"), "$1,983.21", "SMAB-T356: 'Building Permit Fee' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Work Description", "Building Permit Information"), "Valid Record REMOVAL OF TREE", "SMAB-T356: 'Work Description' Field Validation in 'Building Permit Information' section");
 
 		//Validation for the fields in the section 'City and County information'
 		//Strat Code reference Number can be fetched from the County Strat Code Screen of the code choosen while creating the building permit
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("City Strat Code Lookup", "City and County Information"), "ADDITION", "SMAB-T356: 'City Strat Code Lookup' Field Validation in 'City and County Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("County Strat Code Description", "City and County Information"), "ADDITION", "SMAB-T356: 'County Strat Code Description' Field Validation in 'City and County Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("City Strat Code", "City and County Information"), "ADDITION", "SMAB-T356: 'County Strat Code Description' Field Validation in 'City and County Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Strat Code Reference Number","City and County Information"), "20", "SMAB-T356: 'Strat Code Reference Number' Field Validation in 'City and County Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("City Strat Code Lookup", "City and County Information"), "ADDITION", "SMAB-T356: 'City Strat Code Lookup' Field Validation in 'City and County Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("County Strat Code Description", "City and County Information"), "ADDITION", "SMAB-T356: 'County Strat Code Description' Field Validation in 'City and County Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("City Strat Code", "City and County Information"), "ADDITION", "SMAB-T356: 'County Strat Code Description' Field Validation in 'City and County Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Strat Code Reference Number","City and County Information"), "20", "SMAB-T356: 'Strat Code Reference Number' Field Validation in 'City and County Information' section");
 
 		//Validation for the fields auto populated in the section 'Situs Information'
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Permit Situs Number","Situs Information"), "94", "SMAB-T356: 'Permit Situs Number' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Permit Situs Unit Number","Situs Information"), "", "SMAB-T356: 'Permit Situs Unit Number' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Permit Situs Street Name","Situs Information"), "VERNON", "SMAB-356: 'Permit Situs Street Name' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Permit Situs Direction","Situs Information"), "", "SMAB-T356: 'Permit Situs Direction' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Permit Situs Type","Situs Information"), "MOUNT", "SMAB-T356: 'Permit Situs Type' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Permit City Code","Situs Information"), "AT", "SMAB-T356: 'Permit City Code' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs","Situs Information"), "55 MOUNT VERNON LN, AT", "SMAB-T356: 'Situs' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Number","Situs Information"), "55", "SMAB-T356: 'Situs Number' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Number","Situs Information"), "94", "SMAB-T356: 'Permit Situs Number' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Unit Number","Situs Information"), "", "SMAB-T356: 'Permit Situs Unit Number' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Street Name","Situs Information"), "VERNON", "SMAB-356: 'Permit Situs Street Name' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Direction","Situs Information"), "", "SMAB-T356: 'Permit Situs Direction' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Type","Situs Information"), "MOUNT", "SMAB-T356: 'Permit Situs Type' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit City Code","Situs Information"), "AT", "SMAB-T356: 'Permit City Code' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs","Situs Information"), "55 MOUNT VERNON LN, AT", "SMAB-T356: 'Situs' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Number","Situs Information"), "55", "SMAB-T356: 'Situs Number' Field Validation in 'Situs Information' section");
 		//This handling is done as parcel data was created manually in PREUAT and Situs Unit Number is 55 there while its empty in QA as per default data load
 		if (System.getProperty("region").toUpperCase().trim().equals("QA") || System.getProperty("region").toUpperCase().trim().equals("E2E")) {
-			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
+			softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
 		}else
-			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "55", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
+			softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "55", "SMAB-T356: 'Situs Unit Number' Field Validation in 'Situs Information' section");
 
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Street Name","Situs Information"), "MOUNT VERNON", "SMAB-T356: 'Situs Street Name' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Direction"), "", "SMAB-T356: 'Situs Direction' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Type","Situs Information"), "LN", "SMAB-T356: 'Situs Type' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Street Name","Situs Information"), "MOUNT VERNON", "SMAB-T356: 'Situs Street Name' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Direction"), "", "SMAB-T356: 'Situs Direction' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Type","Situs Information"), "LN", "SMAB-T356: 'Situs Type' Field Validation in 'Situs Information' section");
 		//Validation removed as part of defect#5849
-		//softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs City Code","Situs Information"), "AT", "SMAB-T356: 'Situs City Code' Field Validation in 'Situs Information' section");
+		//softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs City Code","Situs Information"), "AT", "SMAB-T356: 'Situs City Code' Field Validation in 'Situs Information' section");
 
 		//Validation for the fields auto populated in the section 'Owner Information'
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Owner Name","Owner Information"), "FIRST4 LAST4", "SMAB-T356: 'Owner Name' Field Validation in 'Owner Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Owner Phone Number","Owner Information"), "", "SMAB-T356: 'Owner Phone Number' Field Validation in 'Owner Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Owner Address Line 1","Owner Information"), "55 MOUNT VERNON LN", "SMAB-T356: 'Owner Address Line 1' Field Validation in 'Owner Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Owner Address Line 2","Owner Information"), "", "SMAB-T356: 'Owner Address Line 2' Field Validation in 'Owner Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Owner Address Line 3","Owner Information"), "", "SMAB-T356: 'Owner Address Line 3' Field Validation in 'Owner Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Owner State","Owner Information"), "CA", "SMAB-T356: 'Owner State' Field Validation in 'Owner Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Owner City","Owner Information"), "ATHERTON", "SMAB-T356: 'Owner City' Field Validation in 'Owner Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Owner Zip Code","Owner Information"), "94022", "SMAB-T356: 'Owner Zip Code' Field Validation in 'Owner Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Owner Name","Owner Information"), "FIRST4 LAST4", "SMAB-T356: 'Owner Name' Field Validation in 'Owner Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Owner Phone Number","Owner Information"), "", "SMAB-T356: 'Owner Phone Number' Field Validation in 'Owner Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Owner Address Line 1","Owner Information"), "55 MOUNT VERNON LN", "SMAB-T356: 'Owner Address Line 1' Field Validation in 'Owner Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Owner Address Line 2","Owner Information"), "", "SMAB-T356: 'Owner Address Line 2' Field Validation in 'Owner Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Owner Address Line 3","Owner Information"), "", "SMAB-T356: 'Owner Address Line 3' Field Validation in 'Owner Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Owner State","Owner Information"), "CA", "SMAB-T356: 'Owner State' Field Validation in 'Owner Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Owner City","Owner Information"), "ATHERTON", "SMAB-T356: 'Owner City' Field Validation in 'Owner Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Owner Zip Code","Owner Information"), "94022", "SMAB-T356: 'Owner Zip Code' Field Validation in 'Owner Information' section");
 
 		//Validation for the fields auto populated in the section 'Other Information'
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Fiscal Year","Other Information"), "", "SMAB-T356: 'Fiscal Year' Field Validation in 'Other Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Square Footage","Other Information"), "100", "SMAB-T356: 'Square Footage' Field Validation in 'Other Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Application Name","Other Information"), "ABC APP", "SMAB-T356: 'Application Name' Field Validation in 'Other Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Contractor Phone","Other Information"), "", "SMAB-T356: 'Contractor Phone' Field Validation in 'Other Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Contractor Name","Other Information"), "TEST 4", "SMAB-T356: 'Contractor Name' Field Validation in 'Other Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Reissue","Other Information"), "No", "SMAB-T356: 'Reissue' Field Validation in 'Other Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Fiscal Year","Other Information"), "", "SMAB-T356: 'Fiscal Year' Field Validation in 'Other Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Square Footage","Other Information"), "100", "SMAB-T356: 'Square Footage' Field Validation in 'Other Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Application Name","Other Information"), "ABC APP", "SMAB-T356: 'Application Name' Field Validation in 'Other Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Contractor Phone","Other Information"), "", "SMAB-T356: 'Contractor Phone' Field Validation in 'Other Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Contractor Name","Other Information"), "TEST 4", "SMAB-T356: 'Contractor Name' Field Validation in 'Other Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Reissue","Other Information"), "No", "SMAB-T356: 'Reissue' Field Validation in 'Other Information' section");
 
 		//Validation for the fields auto populated in the section System Information
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Record Type","System Information"), "E-File Building Permit", "SMAB-T356: 'Record Type' Field Validation in 'System Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Status","System Information"), "Import Approved", "SMAB-T356: 'Import Status' Field Validation in 'System Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Record Type","System Information"), "E-File Building Permit", "SMAB-T356: 'Record Type' Field Validation in 'System Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Status","System Information"), "Import Approved", "SMAB-T356: 'Import Status' Field Validation in 'System Information' section");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 	
 	/**
@@ -260,10 +255,10 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", "OneValidAndTwoInvalidRecordsForPermitValue.txt", athertonBuildingPermitFile);
@@ -297,7 +292,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objEfileImportPage.statusImportedFile), "Reverted", "SMAB-T361,SMAB-T970,SMAB-T25: Validation if status of imported file is reverted.");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 	
 	/**
@@ -314,10 +309,10 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", "OneValidAndTwoInvalidRecordsForPermitValue.txt", athertonBuildingPermitFile);
@@ -332,7 +327,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 
 		//Step6: Correcting one of the error record to validate the retry functionality
 		ReportLogger.INFO("Correct the permit value of first failed record to retry");
-		objApasGenericFunctions.editGridCellValue("VALUE", "2000");
+		objBuildingPermitPage.editGridCellValue("VALUE", "2000");
 		objPage.Click(objEfileImportPage.rowSelectCheckBox);
 		objEfileImportPage.collapseSection(objEfileImportPage.errorRowSectionExpandButton);
 		objPage.scrollToTop();
@@ -375,7 +370,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objPage.Click(objEfileImportPage.closeButton);
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -395,10 +390,10 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step3: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step4: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step5: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", "SingleValidRecord_AT.txt", temporaryFile);
@@ -431,7 +426,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
 
 		//Step10: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step11: Validating the building permit records should be visible in the system as it has been approved
 		if (System.getProperty("region").toUpperCase().equals("E2E")){
@@ -445,9 +440,9 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		objPage.waitUntilElementIsPresent(xpathBuildingPermit,10);
 		List<WebElement> webElementBuildingPermitAfterApproved = driver.findElements(By.xpath(xpathBuildingPermit));
 		softAssert.assertTrue(webElementBuildingPermitAfterApproved.size() == 1,"SMAB-T661,SMAB-T913: Validating that building permit " + buildingPermitNumber + " should be visible in the system only when import is approved");
-		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
+		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 }

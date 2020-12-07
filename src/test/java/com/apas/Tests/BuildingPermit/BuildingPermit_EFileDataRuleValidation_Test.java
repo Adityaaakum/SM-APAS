@@ -21,7 +21,6 @@ import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.generic.ApasGenericFunctions;
 import com.apas.DataProviders.DataProviders;
 import com.relevantcodes.extentreports.LogStatus;
 
@@ -29,7 +28,6 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 	
 	RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	BuildingPermitPage objBuildingPermitPage;
 	SoftAssertion softAssert  = new SoftAssertion();
 	Util objUtil  = new Util();
@@ -46,7 +44,6 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		objPage = new Page(driver);
 		objBuildingPermitPage = new BuildingPermitPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objEfileImportPage = new EFileImportPage(driver);
 		objEFileImportLogsPage  = new EFileImportLogsPage(driver);
 	}
@@ -64,10 +61,10 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Unincorporated Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Unincorporated Building permits", "WorkDescriptionWithKeywords_UN.txt", unincorporatedBuildingPermitFile);
@@ -84,13 +81,13 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Step6: Comparing the data from the Imported Row Table with the expected data
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Data Validation of Imported Row Records on Review and Approve Data Page");
-		HashMap<String, ArrayList<String>> actualImportedRowTable  = objApasGenericFunctions.getGridDataInHashMap(1);
+		HashMap<String, ArrayList<String>> actualImportedRowTable  = objBuildingPermitPage.getGridDataInHashMap(1);
 		String expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_UNINCORPORATED + "WorkDescriptionWithKeywords_UN_ExpectedImportedRecords.csv";
 		HashMap<String, ArrayList<String>> expectedImportedRowTable = FileUtils.getCSVData(expectedImportedRowTableFile);
 		softAssert.assertEquals(FileUtils.compareHashMaps(actualImportedRowTable,expectedImportedRowTable),"","SMAB-T548: Data Comparison validation for Imported Row Table");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -111,10 +108,10 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",buildingPermitNumber,temporaryFile);
 
 		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step3: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step4: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", "RetiredParcelAndSitusMismatch.txt", temporaryFile);
@@ -130,17 +127,17 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
 
 		//Step7: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Opening the Building Permit with the Building Permit Number imported through Efile import
-		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
+		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
 
 		//Step8: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
 		String expectedMessage = "APN is retired.\nCity Situs not matching system.";
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag).trim(), expectedMessage, "SMAB-T453,SMAB-T455: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -164,10 +161,10 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		FileUtils.replaceString(temporaryFile,"<PERMIT-2>",invalidAPNBuildingPermitNumber,temporaryFile);
 
 		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step3: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step4: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", "WrongParcelAndSitusTypePopulation.txt", temporaryFile);
@@ -185,10 +182,10 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		ReportLogger.INFO("Validating the warning message for missing APN for Building Permit number " + missingAPNBuildingPermitNumber);
 
 		//Step2: Opening the building permit module to validate warning message for missing APN
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Opening the Building Permit with the Building Permit Number imported through Efile import
-		objApasGenericFunctions.globalSearchRecords(missingAPNBuildingPermitNumber);
+		objBuildingPermitPage.globalSearchRecords(missingAPNBuildingPermitNumber);
 
 		//Step4: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
 		String expectedMessage = "Invalid APN.";
@@ -196,21 +193,21 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Step5: Validation of Situs Type population from Situs Street Name with special keywords
 		ReportLogger.INFO("Validation of Situs Type population from Situs Street Name with special keywords");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Permit Situs Street Name","Situs Information"), "MOUNT", "SMAB-374: 'Permit Situs Street Name' Field Validation in 'Situs Information' section for Situs street name having special keyword");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Permit Situs Type","Situs Information"), "BLVD", "SMAB-T374: 'Permit Situs Type' Field Validation in 'Situs Information' section for Situs street name having special keyword");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Street Name","Situs Information"), "MOUNT", "SMAB-374: 'Permit Situs Street Name' Field Validation in 'Situs Information' section for Situs street name having special keyword");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Type","Situs Information"), "BLVD", "SMAB-T374: 'Permit Situs Type' Field Validation in 'Situs Information' section for Situs street name having special keyword");
 
 		ReportLogger.INFO("Validating the warning message for wrong APN for Building Permit number " + invalidAPNBuildingPermitNumber);
 
 		//Step5: Opening the Building Permit with the Building Permit Number imported through Efile import
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
-		objApasGenericFunctions.globalSearchRecords(invalidAPNBuildingPermitNumber);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.globalSearchRecords(invalidAPNBuildingPermitNumber);
 
 		//Step6: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
 		expectedMessage = "Invalid APN.";
 		softAssert.assertEquals(objBuildingPermitPage.warningMessageWithPriorityFlag.getText().trim(), expectedMessage, "SMAB-T451: Warning message validation for building permit(Imported through E-File Intake module) with wrong APN");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -227,10 +224,10 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", "OneValidAndTwoInvalidRecordsForPermitValue.txt", athertonBuildingPermitFile);
@@ -243,20 +240,20 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Step5: Comparing the data from the error row table with the expected data
 		ReportLogger.INFO("Data Validation of Error Row Records on Review and Approve Data Page");
-		HashMap<String, ArrayList<String>> actualErrorRowTable  = objApasGenericFunctions.getGridDataInHashMap(1);
+		HashMap<String, ArrayList<String>> actualErrorRowTable  = objBuildingPermitPage.getGridDataInHashMap(1);
 		String expectedErrorRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "OneValidAndTwoInvalidRecordsForPermitValue_ExpectedErrorRecords.csv";
 		HashMap<String, ArrayList<String>> expectedErrorRowTable = FileUtils.getCSVData(expectedErrorRowTableFile);
 		softAssert.assertEquals(FileUtils.compareHashMaps(actualErrorRowTable,expectedErrorRowTable),"","SMAB-T417 : Data Comparison validation for Error Row Table");
 
 		//Step6: Comparing the data from the Imported Row Table with the expected data
 		ReportLogger.INFO("Data Validation of Imported Row Records on Review and Approve Data Page");
-		HashMap<String, ArrayList<String>> actualImportedRowTable  = objApasGenericFunctions.getGridDataInHashMap(2);
+		HashMap<String, ArrayList<String>> actualImportedRowTable  = objBuildingPermitPage.getGridDataInHashMap(2);
 		String expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "OneValidAndTwoInvalidRecordsForPermitValue_ExpectedImportedRecords.csv";
 		HashMap<String, ArrayList<String>> expectedImportedRowTable = FileUtils.getCSVData(expectedImportedRowTableFile);
 		softAssert.assertEquals(FileUtils.compareHashMaps(actualImportedRowTable,expectedImportedRowTable),"","SMAB-T417,SMAB-T456,SMAB-T452 : Data Comparison validation for Imported Row Table");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -273,10 +270,10 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "San Mateo Building permits", "NonNumericValueSanMateo.xlsx", sanMateoBuildingPermitFile);
@@ -289,14 +286,14 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Step5: Comparing the data from the error row table with the expected data
 		ReportLogger.INFO("Data Validation of Error Row Records on Review and Approve Data Page");
-		HashMap<String, ArrayList<String>> actualErrorRowTable  = objApasGenericFunctions.getGridDataInHashMap(1);
+		HashMap<String, ArrayList<String>> actualErrorRowTable  = objBuildingPermitPage.getGridDataInHashMap(1);
 		String expectedErrorRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "NonNumericValueSanMateo_ExpectedErrorRecords.csv";
 		HashMap<String, ArrayList<String>> expectedErrorRowTable = FileUtils.getCSVData(expectedErrorRowTableFile);
 		softAssert.assertEquals(FileUtils.compareHashMaps(actualErrorRowTable,expectedErrorRowTable),"","SMAB-T417:Data Comparison validation for Error Row Table");
 
 		//Step6: Comparing the data from the Imported Row Table with the expected data
 		ReportLogger.INFO("Data Validation of Imported Row Records on Review and Approve Data Page");
-		HashMap<String, ArrayList<String>> actualImportedRowTable  = objApasGenericFunctions.getGridDataInHashMap(2);
+		HashMap<String, ArrayList<String>> actualImportedRowTable  = objBuildingPermitPage.getGridDataInHashMap(2);
 		String expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "NonNumericValueSanMateo_ExpectedImportedRecords.csv";
 		if (System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
 			expectedImportedRowTableFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "NonNumericValueSanMateo_ExpectedImportedRecords_PREUAT.csv";
@@ -310,7 +307,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(FileUtils.compareHashMaps(actualImportedRowTable,expectedImportedRowTable),"","SMAB-T417,SMAB-T456,SMAB-T357:Data Comparison validation for Imported Row Table");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -327,10 +324,10 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", buildingPermitFileName, athertonBuildingPermitFile);
@@ -369,7 +366,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 //      softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Zero Permit Value"),"Invalid Permit Value","SMAB-T625,SMAB-T460 : Error Message validation for the scenario 'Zero Permit Value'");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -386,10 +383,10 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Belmont Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Belmont Building permits", "WrongMessageRecordsBelmont.txt", belmontBuildingPermitFile);
@@ -407,7 +404,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with TE"),"No Process for TR, MI & TE permits","SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with TE'");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -424,10 +421,10 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Burlingame Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Burlingame Building permits", "WrongMessageRecordsBurlingame.txt", burlingameBuildingPermitFile);
@@ -446,7 +443,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number starts with REC"),"No Process for PW, SW, PARK & REC permits","SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number starts with REC'");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -463,10 +460,10 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Unincorporated Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Unincorporated Building permits", "WrongMessageRecordsUnincorporated.txt", buildingPermitFile);
@@ -489,7 +486,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Building Permits Number without BLD"),expectedErrorMessage,"SMAB-T1406 : Error Message validation for the scenario 'Building Permits Number without BLD'");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -506,10 +503,10 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "San Mateo Building permits", "WrongMessageRecordsSanMateo.xlsx", sanMateoBuildingPermitFile);
@@ -547,7 +544,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 //      softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Zero Permit Value"),"Invalid Permit Value","SMAB-T625 : Error Message validation for the scenario 'Zero Permit Value'");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -579,10 +576,10 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		salesforceAPI.update("Building_Permit__c",buildingPermitUpdateQuery,jsonObject);
 
 		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step3: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step4: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", "DuplicateRecordUpsertValidation_AT.txt", temporaryFile);
@@ -605,21 +602,21 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
 
 		//Step8: Opening Building Permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step9: Open the building permit record created through above efile intake functionality
-		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
+		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
 
 		//Step10: Validation that value of upserted records are reflected in the building permit
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Issue Date", "Building Permit Information"), "6/3/2018", "SMAB-T549,SMAB-T623: 'Issue Date' Field Validation in 'Building Permit Information' section for upsert record");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Completion Date", "Building Permit Information"), "11/1/2019", "SMAB-T549,SMAB-T623: 'Completion Date' Field Validation in 'Building Permit Information' section for upsert record");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Estimated Project Value"), "$2,300","SMAB-T549,SMAB-T623: 'Estimated Project Value' validation on the data displayed on the grid for upsert record");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Issue Date", "Building Permit Information"), "6/3/2018", "SMAB-T549,SMAB-T623: 'Issue Date' Field Validation in 'Building Permit Information' section for upsert record");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Completion Date", "Building Permit Information"), "11/1/2019", "SMAB-T549,SMAB-T623: 'Completion Date' Field Validation in 'Building Permit Information' section for upsert record");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Estimated Project Value"), "$2,300","SMAB-T549,SMAB-T623: 'Estimated Project Value' validation on the data displayed on the grid for upsert record");
 		//Commenting the validation for city strat code as this validation was removed as part of story#1542
-//		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("City Strat Code", "City and County Information"), "ALTERATION", "SMAB-T549,SMAB-T623: 'County Strat Code Description' Field Validation in 'City and County Information' section for upsert record");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Building Permit Fee", "Building Permit Information"), "$2,222.33", "SMAB-T549,SMAB-T623: 'Building Permit Fee' Field Validation in 'Building Permit Information' section for upsert record");
+//		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("City Strat Code", "City and County Information"), "ALTERATION", "SMAB-T549,SMAB-T623: 'County Strat Code Description' Field Validation in 'City and County Information' section for upsert record");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Building Permit Fee", "Building Permit Information"), "$2,222.33", "SMAB-T549,SMAB-T623: 'Building Permit Fee' Field Validation in 'Building Permit Information' section for upsert record");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -647,10 +644,10 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", buildingPermitFileName, temporaryFile);
@@ -667,15 +664,15 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objPage.Click(objEfileImportPage.sourceDetails);
 
 		//Step6: Validate the import file name in the newly processed file. Below building permit is processed in the file uploaded in previous steps
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
-		objApasGenericFunctions.globalSearchRecords("T1" + currentTimestamp);
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name", "Building Permit Information"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation in 'Building Permit Information' section on Building Permit Screen");
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.globalSearchRecords("T1" + currentTimestamp);
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name", "Building Permit Information"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation in 'Building Permit Information' section on Building Permit Screen");
+		objBuildingPermitPage.searchModule(modules.EFILE_IMPORT_LOGS);
 		objEFileImportLogsPage.openImportLog("Building Permit :Atherton Building Permits :Adhoc");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation on Import Logs Screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation on Import Logs Screen");
 
 		//Step6: Searching the efile intake module to reimport the file after approve
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step8: Re-Uploading the Atherton Building Permit file
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", secondBuildingPermitFileName, secondTemporaryFile);
@@ -698,15 +695,15 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Blank APN With Process(Permit Value Greater Than 25000 for REPAIR ROOF)"),"APN required for Process","SMAB-T1536 : Error Message validation for the scenario 'Blank APN With Process(Permit Value Greater Than 25000 for REPAIR ROOF)'");
 
 		//Step6: Validate the import file name in the newly processed file. Below building permit is processed in the file uploaded in previous steps
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
-		objApasGenericFunctions.globalSearchRecords("T1" + currentTimestamp);
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name", "Building Permit Information"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation in 'Building Permit Information' section for the file name update once the same record is processed in the new file");
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.globalSearchRecords("T1" + currentTimestamp);
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name", "Building Permit Information"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation in 'Building Permit Information' section for the file name update once the same record is processed in the new file");
+		objBuildingPermitPage.searchModule(modules.EFILE_IMPORT_LOGS);
 		objEFileImportLogsPage.openImportLog("Building Permit :Atherton Building Permits :Adhoc");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation on Import Logs Screen after reprocessing the same record in new file");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation on Import Logs Screen after reprocessing the same record in new file");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -733,10 +730,10 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		salesforceAPI.delete("Building_Permit__c",buildingPermitDeleteQuery);
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "San Mateo Building permits", firstBuildingPermitFileName, firstBuildingPermitFile);
@@ -753,15 +750,15 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objPage.Click(objEfileImportPage.sourceDetails);
 
 		//Step6: Validate the import file name in the newly processed file. Below building permit is processed in the file uploaded in previous steps
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
-		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name", "Building Permit Information"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation in 'Building Permit Information' section on Building Permit Screen");
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name", "Building Permit Information"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation in 'Building Permit Information' section on Building Permit Screen");
+		objBuildingPermitPage.searchModule(modules.EFILE_IMPORT_LOGS);
 		objEFileImportLogsPage.openImportLog("Building Permit :San Mateo Building permits :Adhoc");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation on Import Logs Screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation on Import Logs Screen");
 
 		//Step7: Searching the efile intake module to reimport the file after approve
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step8: Re-Uploading the San Meteo Building Permit file
 		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "San Mateo Building permits", secondBuildingPermitFileName, secondBuildingPermitFile);
@@ -769,15 +766,15 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objPage.waitForElementTextToBe(objEfileImportPage.statusImportedFile, "Imported", 120);
 
 		//Step9: Validate the import file name in the newly processed file. Below building permit is processed in the file uploaded in previous steps
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
-		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name", "Building Permit Information"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation in 'Building Permit Information' section for the file name update once the same record is processed in the new file");
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name", "Building Permit Information"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation in 'Building Permit Information' section for the file name update once the same record is processed in the new file");
+		objBuildingPermitPage.searchModule(modules.EFILE_IMPORT_LOGS);
 		objEFileImportLogsPage.openImportLog("Building Permit :San Mateo Building permits :Adhoc");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation on Import Logs Screen after reprocessing the same record in new file");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation on Import Logs Screen after reprocessing the same record in new file");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 }

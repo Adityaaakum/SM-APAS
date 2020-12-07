@@ -1,45 +1,27 @@
 package com.apas.PageObjects;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import com.apas.Reports.ReportLogger;
-import com.apas.TestBase.TestBase;
 import com.apas.Utils.ExcelUtils;
-
 import com.apas.Utils.SalesforceAPI;
 import com.apas.config.modules;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-
 import com.apas.Reports.ExtentTestManager;
-
-import com.apas.generic.ApasGenericFunctions;
-
 import com.relevantcodes.extentreports.LogStatus;
 
-public class EFileImportPage extends Page {
+public class EFileImportPage extends ApasGenericPage {
     Page objPage;
     SalesforceAPI salesforceAPI = new SalesforceAPI();
-    ApasGenericFunctions objApasGenericFunctions;
 
     public EFileImportPage(RemoteWebDriver driver) {
         super(driver);
         PageFactory.initElements(driver, this);
         objPage = new Page(driver);
-        objApasGenericFunctions = new ApasGenericFunctions(driver);
     }
 
     @FindBy(xpath = "//one-app-nav-bar-item-root//a[@title = 'E-File Import Tool']")
@@ -255,8 +237,8 @@ public class EFileImportPage extends Page {
      */
     public void selectFileAndSource(String fileType, String source) throws Exception {
         ReportLogger.INFO("Selecting File type :" + fileType + " and Source :" + source);
-		objApasGenericFunctions.selectFromDropDown("File type", fileType);
-        objApasGenericFunctions.selectFromDropDown("Source", source);
+		selectFromDropDown("File type", fileType);
+        selectFromDropDown("Source", source);
         
     }
 
@@ -359,7 +341,7 @@ public class EFileImportPage extends Page {
      * @param absoluteFilePath: Absolute Path of the file with the file name
      */
     public void importFileOnEfileIntake(String fileType, String source, String filename, String absoluteFilePath) throws Exception {
-        objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+        searchModule(modules.EFILE_INTAKE);
         uploadFileOnEfileIntakeBP(fileType,source,filename,absoluteFilePath);
         ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
         objPage.waitForElementTextToBe(statusImportedFile, "Imported", 120);

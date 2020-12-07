@@ -4,33 +4,22 @@ import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.*;
-import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.FindBy;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class CountyStratCodesTest extends TestBase {
 
 	private RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	CountyStratCodesPage objCountyStratCodesPage;
 	CityStratCodesPage objCityStratCodesPage;
 	SoftAssertion softAssert = new SoftAssertion();
@@ -43,7 +32,6 @@ public class CountyStratCodesTest extends TestBase {
 		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objCountyStratCodesPage = new CountyStratCodesPage(driver);
 		objCityStratCodesPage = new CityStratCodesPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
@@ -68,10 +56,10 @@ public class CountyStratCodesTest extends TestBase {
 		}
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objCountyStratCodesPage.login(loginUser);
 
 		//Step2: Opening the County Strat Codes module
-		objApasGenericFunctions.searchModule(modules.COUNTY_STRAT_CODES);
+		objCountyStratCodesPage.searchModule(modules.COUNTY_STRAT_CODES);
 
 		//Step3: Clicking new button and then save button without entering mandatory details
 		ReportLogger.INFO("Opening the new entry pop and clicking save button without providing mandatory field");
@@ -82,10 +70,10 @@ public class CountyStratCodesTest extends TestBase {
 		String expectedFieldLevelErrorMessage = "Complete this field.";
 
 		ReportLogger.INFO("Validating the error messages for individual fields");
-		String actualErrorMessage = objApasGenericFunctions.saveRecordAndGetError();
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Strat Code Reference Number"), expectedFieldLevelErrorMessage, "SMAB-T392: Validating error message on not providing Strat Code Reference Number");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Strat Code Description"),expectedFieldLevelErrorMessage, "SMAB-T392: Validating error message on not providing Strat Code Description");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Processing Status"), expectedFieldLevelErrorMessage, "SMAB-T392: Validating error message on not providing Processing Status");
+		String actualErrorMessage = objCountyStratCodesPage.saveRecordAndGetError();
+		softAssert.assertEquals(objCountyStratCodesPage.getIndividualFieldErrorMessage("Strat Code Reference Number"), expectedFieldLevelErrorMessage, "SMAB-T392: Validating error message on not providing Strat Code Reference Number");
+		softAssert.assertEquals(objCountyStratCodesPage.getIndividualFieldErrorMessage("Strat Code Description"),expectedFieldLevelErrorMessage, "SMAB-T392: Validating error message on not providing Strat Code Description");
+		softAssert.assertEquals(objCountyStratCodesPage.getIndividualFieldErrorMessage("Processing Status"), expectedFieldLevelErrorMessage, "SMAB-T392: Validating error message on not providing Processing Status");
 		softAssert.assertEquals(actualErrorMessage, expErrorMsgOnTop, "SMAB-T392: Validating error message displayed on top of the new entry pop up");
 
 		//Step5: Cancelling the pop up by clicking cancel button
@@ -113,11 +101,11 @@ public class CountyStratCodesTest extends TestBase {
 		//Step11: Checking the pop up message on editing and saving the existing entry.
 		ReportLogger.INFO("Validating pop up message on editing the existing entry.");
 		expSuccessAlertText = "success\nCounty Strat Code " + '"' + stratCodeDerscription + '"' + " was saved.\nClose";
-		actSuccessAlertText = objApasGenericFunctions.saveRecord();
+		actSuccessAlertText = objCountyStratCodesPage.saveRecord();
 		softAssert.assertEquals(actSuccessAlertText, expSuccessAlertText, "SMAB-T392: Validating the pop message on successfully editing the County Strat Code entry");
 
 		//Step2: Opening the County Strat Codes module
-		objApasGenericFunctions.searchModule(modules.COUNTY_STRAT_CODES);
+		objCountyStratCodesPage.searchModule(modules.COUNTY_STRAT_CODES);
 
 		//Step12: Checking validation on duplicate entry creation
 		String expectedWarningMessage = "Close error dialog\nWe hit a snag.\nYou can't save this record because a duplicate record already exists. To save, use different information.\nView Duplicates";
@@ -126,8 +114,8 @@ public class CountyStratCodesTest extends TestBase {
 		manualEntryDataMap.put("Strat Code Description", stratCodeDerscription);
 		objCountyStratCodesPage.openNewEntry();
 		objCountyStratCodesPage.enterCountyStratCodeDetails(manualEntryDataMap);
-		softAssert.assertEquals(objApasGenericFunctions.saveRecordAndGetError(), expectedWarningMessage, "SMAB-T437: Validating warning message for duplicate entry");
-		objApasGenericFunctions.cancelRecord();
+		softAssert.assertEquals(objCountyStratCodesPage.saveRecordAndGetError(), expectedWarningMessage, "SMAB-T437: Validating warning message for duplicate entry");
+		objCountyStratCodesPage.cancelRecord();
 
 		//Step13: Deleting the newly created entry via Salesforce API
 		ReportLogger.INFO("Deleting the newly created entry via Salesforce API");
@@ -136,7 +124,7 @@ public class CountyStratCodesTest extends TestBase {
 		objSalesforceAPI.delete("County_Strat_Code__c", dataMap.get("Id").get(0));
 
 		//Step14: Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objCountyStratCodesPage.logout();
 	}
 
 
@@ -147,10 +135,10 @@ public class CountyStratCodesTest extends TestBase {
 	public void CountyStratCode_PermitValueFieldsDependency(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objCountyStratCodesPage.login(loginUser);
 
 		//Step2: Opening the County Strat Codes module
-		objApasGenericFunctions.searchModule(modules.COUNTY_STRAT_CODES);
+		objCountyStratCodesPage.searchModule(modules.COUNTY_STRAT_CODES);
 
 		//Step3: Prepare a test data to create a new entry
 		String manualEntryData = System.getProperty("user.dir") + testdata.COUNTY_STRAT_CODES + "\\CountyStratCodesManualCreationData.json";
@@ -161,26 +149,26 @@ public class CountyStratCodesTest extends TestBase {
 		objCountyStratCodesPage.openNewEntry();
 		objCountyStratCodesPage.enterCountyStratCodeDetails(manualEntryDataMap);
 		objPage.enter(objCountyStratCodesPage.permitValueLimit, manualEntryDataMap.get("Permit Value Limit"));
-		String actualErrorMessage = objApasGenericFunctions.saveRecordAndGetError();
+		String actualErrorMessage = objCountyStratCodesPage.saveRecordAndGetError();
 
 		//Step5: Validation the error message on not providing Permit Value Operator value
 		String expectedErrorMsg = "Close error dialog\nWe hit a snag.\nReview the errors on this page.\nPermit Value Limit and Permit Value Operator should be filled together";
 		softAssert.assertEquals(actualErrorMessage, expectedErrorMsg, "SMAB-T465: Validating the pop message on successful creation of County Strat Code entry");
-		objApasGenericFunctions.cancelRecord();
+		objCountyStratCodesPage.cancelRecord();
 
 		//Step6: Enter values in mandatory fields and Permit Value Operator
 		ReportLogger.INFO("Clicking new button again to create a valid entry with valid values");
 		objCountyStratCodesPage.openNewEntry();
 		objCountyStratCodesPage.enterCountyStratCodeDetails(manualEntryDataMap);
 		objApasGenericPage.selectOptionFromDropDown(objCountyStratCodesPage.permitValueOperatorDropDown, manualEntryDataMap.get("Permit Value Operator"));
-		actualErrorMessage = objApasGenericFunctions.saveRecordAndGetError();
+		actualErrorMessage = objCountyStratCodesPage.saveRecordAndGetError();
 
 		//Step7: Validation the error message on not providing Permit Value Limit value
 		softAssert.assertEquals(actualErrorMessage, expectedErrorMsg, "SMAB-T465: Validating the pop message on successful creation of County Strat Code entry");
-		objApasGenericFunctions.cancelRecord();
+		objCountyStratCodesPage.cancelRecord();
 
 		//Step8: Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objCountyStratCodesPage.logout();
 	}
 
 
@@ -196,16 +184,16 @@ public class CountyStratCodesTest extends TestBase {
 		Map<String, ArrayList<String>> dataMapCountStratCode = objSalesforceAPI.select(queryCountyStratCode);
 
 		//Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objCountyStratCodesPage.login(loginUser);
 
 		//Step3: Opening the County Strat Codes module
-		objApasGenericFunctions.searchModule(modules.COUNTY_STRAT_CODES);
+		objCountyStratCodesPage.searchModule(modules.COUNTY_STRAT_CODES);
 
 		//Step4: Open the county strat code fetched thorugh salesforce API
-		objApasGenericFunctions.globalSearchRecords(dataMapCountStratCode.get("Name").get(0));
+		objCountyStratCodesPage.globalSearchRecords(dataMapCountStratCode.get("Name").get(0));
 
 		//Step5: Clicking on the drop down icon and new button to open new entry pop up for city strat code
-		objApasGenericFunctions.OpenNewEntryFormFromRightHandSidePanel("City Strat Codes");
+		objCountyStratCodesPage.OpenNewEntryFormFromRightHandSidePanel("City Strat Codes");
 
 		//Step7: Create new entry for County Strat Codes
 		String cityStratCode = objUtil.getCurrentDate("YYYYmmDDHHMMSS");
@@ -214,11 +202,11 @@ public class CountyStratCodesTest extends TestBase {
 		objPage.enter(objCityStratCodesPage.cityStratCodeEditBox,cityStratCode);
 		objCityStratCodesPage.selectOptionFromDropDown(objCityStratCodesPage.statusDropDown,"Inactive");
 
-		String actualSuccessAlertText = objApasGenericFunctions.saveRecord();
+		String actualSuccessAlertText = objCountyStratCodesPage.saveRecord();
 		String expectedSuccessAlertText = "success\nCity Strat Code \"" + cityStratCode + "\" was created.\nClose";
 		softAssert.assertEquals(actualSuccessAlertText, expectedSuccessAlertText, "SMAB-T436: Validating the pop message on successful creation of City Strat Code entry from County Strat details page");
 
 		//Step8: Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objCountyStratCodesPage.logout();
 	}
 }

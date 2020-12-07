@@ -22,12 +22,10 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
-import com.apas.generic.ApasGenericFunctions;
 
 public class ManualWorkItems_Tests extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
 	LoginPage objLoginPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	ParcelsPage objParcelsPage;
 	WorkItemHomePage objWorkItemHomePage;
 	Util objUtil;
@@ -40,7 +38,6 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
 		objLoginPage = new LoginPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objUtil = new Util();
@@ -69,15 +66,15 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 				"DataToCreateWorkItemOfTypeRP");
 		
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
-		objApasGenericFunctions.login(loginUser);
+		objWorkItemHomePage.login(loginUser);
 
 		// Step2: Opening the PARCELS page  and searching a parcel where PUC and Primary Situs field (Street) have values saved
-		objApasGenericFunctions.searchModule(PARCELS);
-		objApasGenericFunctions.globalSearchRecords(apnValue);
+		objWorkItemHomePage.searchModule(PARCELS);
+		objWorkItemHomePage.globalSearchRecords(apnValue);
 
 		// fetching the PUC and Primary Situs fields values of parcel
-		puc = objApasGenericFunctions.getFieldValueFromAPAS("PUC", "Parcel Information");
-		primarySitus = objApasGenericFunctions.getFieldValueFromAPAS("Primary Situs", "Parcel Information");
+		puc = objWorkItemHomePage.getFieldValueFromAPAS("PUC", "Parcel Information");
+		primarySitus = objWorkItemHomePage.getFieldValueFromAPAS("Primary Situs", "Parcel Information");
 
 		// Step 3: Creating Manual work item for the Parcel 
 		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
@@ -87,12 +84,12 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 
 		//Step 5: Validating that 'Use Code' and 'Street' fields getting automatically populated in the work item record related to the linked Parcel
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Use Code", "Reference Data Details"),puc,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),puc,
 				"SMAB-T1994: Validation that 'Use Code' fields getting automatically populated in the work item record related to the linked Parcel");
-		softAssert.assertTrue(primarySitus.contains(objApasGenericFunctions.getFieldValueFromAPAS("Street", "Reference Data Details")),
+		softAssert.assertTrue(primarySitus.contains(objWorkItemHomePage.getFieldValueFromAPAS("Street", "Reference Data Details")),
 				"SMAB-T1994: Validation that 'Street' fields getting automatically populated in the work item record related to the linked Parcel");
 
-		objApasGenericFunctions.logout();
+		objWorkItemHomePage.logout();
 	}
 	
 	/**
@@ -115,14 +112,14 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 				"DataToCreateWorkItemOfTypeRP");
 				
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
-		objApasGenericFunctions.login(loginUser);
+		objWorkItemHomePage.login(loginUser);
 
 		// Step2: Opening the PARCELS page  and searching a parcel where PUC is blank but Primary Situs field (Street) is not blank
-		objApasGenericFunctions.searchModule(PARCELS);
-		objApasGenericFunctions.globalSearchRecords(apnValue);
+		objWorkItemHomePage.searchModule(PARCELS);
+		objWorkItemHomePage.globalSearchRecords(apnValue);
 
 		// fetching the PUC and Primary Situs fields values of parcel
-		puc = objApasGenericFunctions.getFieldValueFromAPAS("PUC", "Parcel Information");
+		puc = objWorkItemHomePage.getFieldValueFromAPAS("PUC", "Parcel Information");
 
 		// Step 3: Creating Manual work item for the Parcel 
 		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
@@ -132,10 +129,10 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 
 		//Step 5: Validating that 'Street' is blank and 'Use CoDE' field gets automatically populated in the work item record related to the linked Parcel
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Use Code", "Reference Data Details"),puc,"SMAB-T1994: Validation that 'Use Code' fields getting automatically populated in the work item record related to the linked Parcel");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Street", "Reference Data Details"),"","SMAB-T1994: Validation that 'Street' fields getting automatically populated in the work item record related to the linked Parcel");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),puc,"SMAB-T1994: Validation that 'Use Code' fields getting automatically populated in the work item record related to the linked Parcel");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Street", "Reference Data Details"),"","SMAB-T1994: Validation that 'Street' fields getting automatically populated in the work item record related to the linked Parcel");
 
-		objApasGenericFunctions.logout();
+		objWorkItemHomePage.logout();
 	}
 	/**
 	 * This method is to Verify User is able to view 'Roll Code' and 'Date' fields getting automatically populated in the work item record linked to a BPP Account
@@ -161,11 +158,11 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 				"DataToCreateWorkItemOfTypeBPP");
 				
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (BPP Business Admin)
-		objApasGenericFunctions.login(loginUser);
+		objWorkItemHomePage.login(loginUser);
 
 		// Step2: Opening the BPP Accounts page  and searching a BPP Account where Roll code is not blank
-		objApasGenericFunctions.searchModule(BPP_ACCOUNTS);
-		objApasGenericFunctions.globalSearchRecords(bppAccount);
+		objWorkItemHomePage.searchModule(BPP_ACCOUNTS);
+		objWorkItemHomePage.globalSearchRecords(bppAccount);
 
 		// Step 3: Creating Manual work item for the BPP Account 
 		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
@@ -175,12 +172,12 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 
 		//Step 5: Validating that 'Roll Code' field and 'Date' field gets automatically populated in the work item record related to the linked BPP ACCOUNT
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),rollCode,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),rollCode,
 				"SMAB-T2075: Validation that 'Roll Code' fields getting automatically populated in the work item record related to the linked BPP Account");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 				"SMAB-T2075: Validation that 'Date' fields is equal to the 1/1/"+currentRollYear);
 		
-		objApasGenericFunctions.logout();
+		objWorkItemHomePage.logout();
 	}
 
 	/**
@@ -198,11 +195,11 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData, "DOVSequencing");
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
-		objApasGenericFunctions.login(loginUser);
+		objWorkItemHomePage.login(loginUser);
 
 		// Step2: Opening the PARCELS page  and searching a parcel where PUC is blank but Primary Situs field (Street) is not blank
-		objApasGenericFunctions.searchModule(PARCELS);
-		objApasGenericFunctions.globalSearchRecords(apnValue);
+		objWorkItemHomePage.searchModule(PARCELS);
+		objWorkItemHomePage.globalSearchRecords(apnValue);
 
 		// Step3: Creating Manual work item with earlier DOV
 		hashMapmanualWorkItemData.put("DOV","11/21/2020");
@@ -213,7 +210,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		String workItemWithLaterDOV = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		//Step5:Accept the work items created above
-		objApasGenericFunctions.searchModule(HOME);
+		objWorkItemHomePage.searchModule(HOME);
 		objWorkItemHomePage.Click(objWorkItemHomePage.inPoolTab);
 		Thread.sleep(3000);
 
@@ -221,11 +218,11 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		objWorkItemHomePage.acceptWorkItem(workItemWithLaterDOV);
 
 		//Step 5: DOV Sequencing warning message
-		String actualDOVSequencingWarningMessage = objApasGenericFunctions.getAlertMessage();
+		String actualDOVSequencingWarningMessage = objWorkItemHomePage.getAlertMessage();
 		String expectedDOVSequencingWarningMessage = "Other work items exist for this Parcel with an earlier DOV. Please work those Work Items before this one.";
 		softAssert.assertEquals(actualDOVSequencingWarningMessage,expectedDOVSequencingWarningMessage,"SMAB-T2219: Validation for DOV Sequencing warning message");
 
-		objApasGenericFunctions.logout();
+		objWorkItemHomePage.logout();
 	}
 
 	/**
@@ -242,11 +239,11 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
 
 		// Step1: Login to the APAS application using the credentials passed through data provider
-		objApasGenericFunctions.login(loginUser);
+		objWorkItemHomePage.login(loginUser);
 
 		// Step2: Opening the PARCELS page and searching a parcel
-		objApasGenericFunctions.searchModule(PARCELS);
-		objApasGenericFunctions.globalSearchRecords(apnValue);
+		objWorkItemHomePage.searchModule(PARCELS);
+		objWorkItemHomePage.globalSearchRecords(apnValue);
 
 		// Step3: Creating Manual work item with work item routing as "Give Work Item to Someone Else"
 		Map<String, String> hashMapGiveWorkItemToSomeoneElse = objUtil.generateMapFromJsonFile(workItemCreationData, "WorkItemRoutingGiveToSomeoneElse");
@@ -265,37 +262,37 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		Thread.sleep(3000);
 		ReportLogger.INFO("Validations when work item routing is selected as 'Give Work Item To Me'");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Assigned To"),"appraisal supportAUT","SMAB-T1985: Validation that newly created work item is assigned to the logged in user");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("DOV"),hashMapGiveWorkItemToMe.get("DOV"),"SMAB-T1804: Validation that DOV is reflected correctly");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Due Date"),hashMapGiveWorkItemToMe.get("Due Date"),"SMAB-T1804: Validation that Due Date is reflected correctly");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Approver"),"RP Admin","SMAB-T1804: Validation that newly created work item having the correct approver");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Level2 Approver"),"RP Admin","SMAB-T1804: Validation that newly created work item having the correct level2 approver");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Assigned To"),"appraisal supportAUT","SMAB-T1985: Validation that newly created work item is assigned to the logged in user");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("DOV"),hashMapGiveWorkItemToMe.get("DOV"),"SMAB-T1804: Validation that DOV is reflected correctly");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Due Date"),hashMapGiveWorkItemToMe.get("Due Date"),"SMAB-T1804: Validation that Due Date is reflected correctly");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Approver"),"RP Admin","SMAB-T1804: Validation that newly created work item having the correct approver");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Level2 Approver"),"RP Admin","SMAB-T1804: Validation that newly created work item having the correct level2 approver");
 
 		// Step6: Opening the Home Page
-		objApasGenericFunctions.searchModule(HOME);
+		objWorkItemHomePage.searchModule(HOME);
 
 		// Step7: Validation of the work item created for default work pool
-		objApasGenericFunctions.globalSearchRecords(workItemDefaultToWorkPool);
+		objWorkItemHomePage.globalSearchRecords(workItemDefaultToWorkPool);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		Thread.sleep(3000);
 		ReportLogger.INFO("Validations when work item routing is selected as 'Give Work Item To Default Work Pool'");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Assigned To"),"","SMAB-T1989: Validation that newly created work item is not assigned to any work user");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Work Pool"),"RP Admin","SMAB-T1989: Validation that newly created work item is in the default work pool");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Approver"),"RP Admin","SMAB-T1989: Validation that newly created work item having the correct approver");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Level2 Approver"),"RP Admin","SMAB-T1989: Validation that newly created work item having the correct level2 approver");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Assigned To"),"","SMAB-T1989: Validation that newly created work item is not assigned to any work user");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool"),"RP Admin","SMAB-T1989: Validation that newly created work item is in the default work pool");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Approver"),"RP Admin","SMAB-T1989: Validation that newly created work item having the correct approver");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Level2 Approver"),"RP Admin","SMAB-T1989: Validation that newly created work item having the correct level2 approver");
 
 		// Step7: Validation of the work item created for Someone Else
-		objApasGenericFunctions.globalSearchRecords(workItemAssignedToSomeoneElse);
+		objWorkItemHomePage.globalSearchRecords(workItemAssignedToSomeoneElse);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		Thread.sleep(3000);
 		ReportLogger.INFO("Validations when work item routing is selected as 'Give Work Item To Someone Else'");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Assigned To"),hashMapGiveWorkItemToSomeoneElse.get("Work Item Owner"),"SMAB-T1991: Validation that newly created work item is assigned to the selected user in work item routing");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Approver"),"RP Admin","SMAB-T1991: Validation that newly created work item having the correct approver");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Level2 Approver"),"RP Admin","SMAB-T1991: Validation that newly created work item having the correct level2 approver");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Work Pool"),"RP Admin","SMAB-T1991: Validation that newly created work item is in the correct work pool");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Assigned To"),hashMapGiveWorkItemToSomeoneElse.get("Work Item Owner"),"SMAB-T1991: Validation that newly created work item is assigned to the selected user in work item routing");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Approver"),"RP Admin","SMAB-T1991: Validation that newly created work item having the correct approver");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Level2 Approver"),"RP Admin","SMAB-T1991: Validation that newly created work item having the correct level2 approver");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool"),"RP Admin","SMAB-T1991: Validation that newly created work item is in the correct work pool");
 
 		//Logging off the APAS
-		objApasGenericFunctions.logout();
+		objWorkItemHomePage.logout();
 	}
 
 

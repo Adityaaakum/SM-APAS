@@ -22,19 +22,17 @@ import com.apas.PageObjects.Page;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.config.modules;
-import com.apas.generic.ApasGenericFunctions;
 
 public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	private RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrendPage;
 	SoftAssertion softAssert;
 	String rollYear = "2020";
 	SalesforceAPI objSalesforceAPI;
 	SoftAssert objSoftAssert;
 	BuildingPermitPage objBuildPermitPage;
-	BppTrendSetupPage objBppTrendSetupPage;
+	BppTrendSetupPage objApasGenericFunctions;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -44,12 +42,11 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 
 		objPage = new Page(driver);
 		objBppTrendPage = new BppTrendPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		softAssert = new SoftAssertion();
 		objSalesforceAPI = new SalesforceAPI();
 		objSoftAssert = new SoftAssert();
 		objBuildPermitPage = new BuildingPermitPage(driver);
-		objBppTrendSetupPage = new BppTrendSetupPage(driver);
+		objApasGenericFunctions = new BppTrendSetupPage(driver);
 		objApasGenericFunctions.updateRollYearStatus("Open", "2020");
 	}
 
@@ -216,7 +213,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.displayRecords("All");
 
-		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+		objApasGenericFunctions.clickOnEntryNameInGrid(rollYear);
 
 		//Step3: Fetch table names from properties file and collect them in a single list
 		List<String> tableStatusFields = new ArrayList<>(Arrays.asList(BPPTablesData.BPP_TREND_SETUP_FACTOR_STATUS_FIELDS.split(",")));
@@ -232,7 +229,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		//Step5: Opening the BPP Trend module
 		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
 		objApasGenericFunctions.displayRecords("All");
-		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+		objApasGenericFunctions.clickOnEntryNameInGrid(rollYear);
 
 		//Step6: Validating absence of Edit pencil icon to edit table status on BPP Trend Setup page
 		for(String tableStatusFieldName : tableStatusFields) {
@@ -270,12 +267,12 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 			objApasGenericFunctions.clickShowMoreLink(cpiFactorToEdit);
 
 			//Step5: Checking unavailability of edit link under show more drop down on view all grid
-			softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.editLinkUnderShowMore), "SMAB-T210: For User "+ loginUser +"-- Edit link is not visible under show more option on grid");
+			softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.editLinkUnderShowMore), "SMAB-T210: For User "+ loginUser +"-- Edit link is not visible under show more option on grid");
 
 			//Step6: Checking unavailability of edit button on details page
-			objBppTrendSetupPage.clickOnEntryNameInGrid(cpiFactorToEdit);
-			softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.editButton), "SMAB-T210: For User "+ loginUser +"-- Edit button is not visible on details page");
-			softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.deleteButton), "SMAB-T210: For User "+ loginUser +"-- Delete button is not visible on details page");
+			objApasGenericFunctions.clickOnEntryNameInGrid(cpiFactorToEdit);
+			softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.editButton), "SMAB-T210: For User "+ loginUser +"-- Edit button is not visible on details page");
+			softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.deleteButton), "SMAB-T210: For User "+ loginUser +"-- Delete button is not visible on details page");
 		}
 
 		//Logging out of the application
@@ -300,49 +297,49 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		objApasGenericFunctions.displayRecords("All");
 
 		//Step3: Clicking on the roll year name in grid to navigate to details page of selected roll year
-        objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+        objApasGenericFunctions.clickOnEntryNameInGrid(rollYear);
 
 		//Step4: Validating that user doesn't have any option to create/edit BPP Settings
-		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppSetting));
+		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objApasGenericFunctions.dropDownIconBppSetting));
 		softAssert.assertTrue(objBppTrendPage.waitForElementToBeVisible(5, objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on details page");
 
 		//Step5: Validating that user doesn't have the access to create/Edit Composite Factor Settings
-		objPage.Click(objBppTrendSetupPage.bppCompFactorSettingTab);
-		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
+		objPage.Click(objApasGenericFunctions.bppCompFactorSettingTab);
+		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objApasGenericFunctions.dropDownIconBppCompFactorSetting));
 		softAssert.assertTrue(objBppTrendPage.waitForElementToBeVisible(5, objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on details page");
 
 		//Step6: Validating that user doesn't have the access to create/edit BPP Property Index Good Factors
-		objBppTrendSetupPage.openFactorTab("BPP Property Index Factors");
-		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for BPP Property Index Factors");
-		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("BPP Property Index Factors");
+		objApasGenericFunctions.openFactorTab("BPP Property Index Factors");
+		softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for BPP Property Index Factors");
+		objApasGenericFunctions.clickShowMoreDropDownForGivenFactorEntry("BPP Property Index Factors");
 		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Action Available' option is displayed for BPP Property Index Factors");
 
 		//Step7: Validating that user doesn't have the access to create/edit BPP Percent Good Factors
-		objBppTrendSetupPage.openFactorTab("BPP Percent Good Factors");
-		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for BPP Percent Good Factors");
-		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("BPP Percent Good Factors");
+		objApasGenericFunctions.openFactorTab("BPP Percent Good Factors");
+		softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for BPP Percent Good Factors");
+		objApasGenericFunctions.clickShowMoreDropDownForGivenFactorEntry("BPP Percent Good Factors");
 		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Action Available' option is displayed for BPP Percent Good Factors");
 
 		//Step8: Validating that user doesn't have the access to create/edit Imported Valuation Factors
 		String expectedErrorMessage = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";
-		objBppTrendSetupPage.openFactorTab("Imported Valuation Factors");
-		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Imported Valuation Factors");
-		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("Imported Valuation Factors");
+		objApasGenericFunctions.openFactorTab("Imported Valuation Factors");
+		softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Imported Valuation Factors");
+		objApasGenericFunctions.clickShowMoreDropDownForGivenFactorEntry("Imported Valuation Factors");
 		objPage.javascriptClick(objBppTrendPage.editLinkUnderShowMore);
-		objPage.waitUntilElementIsPresent(objBppTrendSetupPage.xPathErrorMsg,30);
-		String actualErrorMsg =  objBppTrendSetupPage.errorMsgforEdit.getText();
+		objPage.waitUntilElementIsPresent(objApasGenericFunctions.xPathErrorMsg,30);
+		String actualErrorMsg =  objApasGenericFunctions.errorMsgforEdit.getText();
 		softAssert.assertEquals(actualErrorMsg,expectedErrorMessage, "SMAB-T270: User is not able to Edit Real Property Settings Library record");
-		objPage.Click(objBppTrendSetupPage.closeErrorPopUp);
+		objPage.Click(objApasGenericFunctions.closeErrorPopUp);
 
 		//Step9: Validating that user doesn't have the access to create/edit Composite Factors
-		objBppTrendSetupPage.openFactorTab("Composite Factors");
-		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Composite Factors");
-		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("Composite Factors");
+		objApasGenericFunctions.openFactorTab("Composite Factors");
+		softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Composite Factors");
+		objApasGenericFunctions.clickShowMoreDropDownForGivenFactorEntry("Composite Factors");
 		objPage.javascriptClick(objBppTrendPage.editLinkUnderShowMore);
-		objPage.waitUntilElementIsPresent(objBppTrendSetupPage.xPathErrorMsg,30);
-		actualErrorMsg =  objBppTrendSetupPage.errorMsgforEdit.getText();
+		objPage.waitUntilElementIsPresent(objApasGenericFunctions.xPathErrorMsg,30);
+		actualErrorMsg =  objApasGenericFunctions.errorMsgforEdit.getText();
 		softAssert.assertEquals(actualErrorMsg,expectedErrorMessage, "SMAB-T270: User is not able to Edit Real Property Settings Library record");
-		objPage.Click(objBppTrendSetupPage.closeErrorPopUp);
+		objPage.Click(objApasGenericFunctions.closeErrorPopUp);
 
 		//Logging out of the application
 		objApasGenericFunctions.logout();
@@ -366,44 +363,44 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		objApasGenericFunctions.displayRecords("All");
 
 		//Step3: Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+		objApasGenericFunctions.clickOnEntryNameInGrid(rollYear);
 
 		//Step4: Validating that user doesn't have any option to create/edit BPP Settings
-		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppSetting));
+		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objApasGenericFunctions.dropDownIconBppSetting));
 		softAssert.assertTrue(objBppTrendPage.waitForElementToBeVisible(5, objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on details page");
 
 		//Step5: Validating that user doesn't have the access to create/Edit Composite Factor Settings
-		objPage.Click(objBppTrendSetupPage.bppCompFactorSettingTab);
-		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
+		objPage.Click(objApasGenericFunctions.bppCompFactorSettingTab);
+		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objApasGenericFunctions.dropDownIconBppCompFactorSetting));
 		softAssert.assertTrue(objBppTrendPage.waitForElementToBeVisible(5, objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on details page");
 
 		//Step6: Validating that user doesn't have the access to create/edit BPP Property Index Good Factors
-		objBppTrendSetupPage.openFactorTab("BPP Property Index Factors");
-		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for BPP Property Index Factors");
-		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("BPP Property Index Factors");
+		objApasGenericFunctions.openFactorTab("BPP Property Index Factors");
+		softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for BPP Property Index Factors");
+		objApasGenericFunctions.clickShowMoreDropDownForGivenFactorEntry("BPP Property Index Factors");
 		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Action Available' option is displayed for BPP Property Index Factors");
 
 		//Step6: Validating that user doesn't have the access to create/edit BPP Percent Good Factors
-		objBppTrendSetupPage.openFactorTab("BPP Percent Good Factors");
-		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for BPP Percent Good Factors");
-		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("BPP Percent Good Factors");
+		objApasGenericFunctions.openFactorTab("BPP Percent Good Factors");
+		softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for BPP Percent Good Factors");
+		objApasGenericFunctions.clickShowMoreDropDownForGivenFactorEntry("BPP Percent Good Factors");
 		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Action Available' option is displayed for BPP Percent Good Factors");
 
 		//Step6: Validating that user doesn't have the access to create/edit Imported Valuation Factors
-		objBppTrendSetupPage.openFactorTab("Imported Valuation Factors");
-		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Imported Valuation Factors");
-		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("Imported Valuation Factors");
+		objApasGenericFunctions.openFactorTab("Imported Valuation Factors");
+		softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Imported Valuation Factors");
+		objApasGenericFunctions.clickShowMoreDropDownForGivenFactorEntry("Imported Valuation Factors");
 		if (loginUser.equals(users.PRINCIPAL_USER))
-			softAssert.assertTrue(objPage.verifyElementVisible(objBppTrendSetupPage.editLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'Edit' option is displayed for Imported Valuation Factors");
+			softAssert.assertTrue(objPage.verifyElementVisible(objApasGenericFunctions.editLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'Edit' option is displayed for Imported Valuation Factors");
 		else
 			softAssert.assertTrue(objPage.verifyElementVisible(objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Action Available' option is displayed for Imported Valuation Factors");
 
 		//Step6: Validating that user doesn't have the access to create/edit Composite Factors
-		objBppTrendSetupPage.openFactorTab("Composite Factors");
-		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrendSetupPage.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Composite Factors");
-		objBppTrendSetupPage.clickShowMoreDropDownForGivenFactorEntry("Composite Factors");
+		objApasGenericFunctions.openFactorTab("Composite Factors");
+		softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Composite Factors");
+		objApasGenericFunctions.clickShowMoreDropDownForGivenFactorEntry("Composite Factors");
 		if (loginUser.equals(users.PRINCIPAL_USER))
-			softAssert.assertTrue(objPage.verifyElementVisible(objBppTrendSetupPage.editLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'Edit' option is displayed for Composite Factors");
+			softAssert.assertTrue(objPage.verifyElementVisible(objApasGenericFunctions.editLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'Edit' option is displayed for Composite Factors");
 		else
 			softAssert.assertTrue(objPage.verifyElementVisible(objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Action Available' option is displayed for Composite Factors");
 

@@ -7,22 +7,16 @@ import java.util.List;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
-import com.apas.config.modules;
-import com.apas.generic.ApasGenericFunctions;
-import org.apache.log4j.Logger;	
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
-public class BppTrendSetupPage extends Page {
+public class BppTrendSetupPage extends ApasGenericPage {
 
-	Logger logger = Logger.getLogger(LoginPage.class);
 	BuildingPermitPage objBuildPermitPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
 	Util objUtil;
 	Page objPage;

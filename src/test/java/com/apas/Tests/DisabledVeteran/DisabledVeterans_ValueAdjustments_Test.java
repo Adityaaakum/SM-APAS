@@ -22,7 +22,6 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 import com.apas.PageObjects.ParcelsPage;
-import com.apas.generic.ApasGenericFunctions;
 
 
 public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements testdata, modules, users {
@@ -30,7 +29,6 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	private RemoteWebDriver driver;
 	Page objPage;
 	LoginPage objLoginPage;
-	ApasGenericFunctions apasGenericObj;
 	ValueAdjustmentsPage vaPageObj;
 	ExemptionsPage exemptionPageObj;
 	Util objUtil;
@@ -47,7 +45,6 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
 		objLoginPage = new LoginPage(driver);
-		apasGenericObj = new ApasGenericFunctions(driver);
 		parcelObj=new ParcelsPage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
@@ -57,7 +54,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		exemptionFilePath = System.getProperty("user.dir") + testdata.EXEMPTION_DATA;
 		rpslFileDataPath = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;
 		rpslData= objUtil.generateMapFromJsonFile(rpslFileDataPath, "DataToCreateRPSLEntryForValidation");
-		apasGenericObj.updateRollYearStatus("Closed", "2020");
+		exemptionPageObj.updateRollYearStatus("Closed", "2020");
 	  }
 	
 	/**
@@ -70,10 +67,10 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		
 		Map<String, String> noVAData = objUtil.generateMapFromJsonFile(exemptionFilePath, "noVAData");
 			//Step1: Login to the APAS application using the credentials passed through data provider
-			apasGenericObj.login(loginUser);
+			exemptionPageObj.login(loginUser);
 			
 			//Step2: Opening the Exemption Module
-			apasGenericObj.searchModule(EXEMPTIONS);
+			exemptionPageObj.searchModule(EXEMPTIONS);
 			
 			//Step3: Clicking on New button to create a New Exemption record
 			objPage.Click(exemptionPageObj.newExemptionButton);
@@ -90,7 +87,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 			objPage.waitForElementToBeVisible(vaPageObj.valueAdjustmentsCountLabel, 5);
 			ReportLogger.INFO("verifying Actual VA count should be 0 Scenario");
 			softAssert.assertEquals(vaPageObj.VAlist.size(), 0, "SMAB-T633: Verify Zero value adjustments record is created for historic Start Date and End Date");
-			apasGenericObj.logout();
+			exemptionPageObj.logout();
 		}
 	
 	/**
@@ -103,12 +100,12 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		public void Disabledveteran_VAsGetsCreatedAfterUpdatingNotQualifiedExemptionToQualified(String loginUser) throws Exception{
 		Map<String, String> noVAData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NotQualifiedToQualifiedData");
 		//Step1: Login to the APAS application using the credentials passed through data provider
-		apasGenericObj.login(loginUser);
+		exemptionPageObj.login(loginUser);
 		
 		exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 		
 		//Step2: Opening the Exemption Module
-		apasGenericObj.searchModule(EXEMPTIONS);
+		exemptionPageObj.searchModule(EXEMPTIONS);
 		
 		//Step3: Clicking on New button to create a New Exemption record
 		objPage.Click(exemptionPageObj.newExemptionButton);
@@ -136,12 +133,12 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		Thread.sleep(2000);  //To handle regression failure as Qualified field hides behind the Exemption creation pop-up
 		objPage.Click(exemptionPageObj.editExemption);
 		//objPage.waitForElementToBeClickable(exemptionPageObj.qualification,10);
-		apasGenericObj.selectFromDropDown(exemptionPageObj.qualification, "Qualified");
-		apasGenericObj.selectFromDropDown(exemptionPageObj.reasonNotQualified, "--None--");
+		exemptionPageObj.selectFromDropDown(exemptionPageObj.qualification, "Qualified");
+		exemptionPageObj.selectFromDropDown(exemptionPageObj.reasonNotQualified, "--None--");
 		objPage.Click(ExemptionsPage.saveButton);
-		apasGenericObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
+		exemptionPageObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
 		ReportLogger.INFO("Updated Qualification from Not Qualified to Qualified ");
-		apasGenericObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
+		exemptionPageObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
 		objPage.Click(exemptionPageObj.exemptionDetailsTab);
 		objPage.waitForElementToBeVisible(exemptionPageObj.dateApplicationReceivedExemptionDetails, 5);
 		softAssert.assertEquals(exemptionPageObj.qualificationOnDetailPage.getText().trim(),"Qualified" , "SMAB-T1261:Qualification is updated to Qualified");
@@ -149,7 +146,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		int actualVAtoBeCreated=vaPageObj.verifyValueAdjustments(maxDate, null, currentRollYear);
 		ReportLogger.INFO("actual VA to be cretaed after updating Qualification to Qualified should be:"+actualVAtoBeCreated);
 		softAssert.assertEquals(vaPageObj.VAlist.size(), actualVAtoBeCreated, "SMAB-T1261:Verify when the Exemption Qualification? is changed from Not Qualified to Qualified then new Value Adjustment records are created");
-		apasGenericObj.logout();
+		exemptionPageObj.logout();
 		
 	}
 	
@@ -164,11 +161,11 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	public void Disabledveteran_createExemptionRecordAndVerifyAllVAAreBasicByDefault(String loginUser) throws Exception{
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 			//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-			apasGenericObj.login(loginUser);
+			exemptionPageObj.login(loginUser);
 			exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 			
 			//Step2: Opening the Exemption Module
-			apasGenericObj.searchModule(EXEMPTIONS);
+			exemptionPageObj.searchModule(EXEMPTIONS);
 			
 			//Step3: create a New Exemption record
 			objPage.Click(exemptionPageObj.newExemptionButton);
@@ -194,7 +191,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 			int basicVAs=vaPageObj.fetchVACountBasedOnParameters("Determination","Basic Disabled Veterans Exemption");
 			softAssert.assertEquals(actualVAtoBeCreated, basicVAs, "SMAB-T516:Verify that all the 'Value Adjustment Records' created for an Exemption Records are of type Basic Disabled Veteran Exemption");
 			
-			apasGenericObj.logout();
+			exemptionPageObj.logout();
 	}
 	
 
@@ -207,11 +204,11 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		Map<String, String> endDateOfRatingData = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData1");
 		
 			//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-			apasGenericObj.login(loginUser);
+			exemptionPageObj.login(loginUser);
 			exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 			
 			//Step2: Opening the parcels module
-			apasGenericObj.searchModule(EXEMPTIONS);
+			exemptionPageObj.searchModule(EXEMPTIONS);
 			
 			//Step3: create a New Exemption record
 			objPage.Click(exemptionPageObj.newExemptionButton);
@@ -243,9 +240,9 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 			objPage.waitForElementToBeClickable(exemptionPageObj.dateApplicationReceivedExemptionDetails, 10);
 			objPage.Click(exemptionPageObj.editExemption);
 			objPage.enter(exemptionPageObj.endDateOfRating, endDateOfRatingData.get("EnddateOfRating")); 
-			apasGenericObj.selectFromDropDown(exemptionPageObj.endRatingReason, endDateOfRatingData.get("EndRatingReason"));
+			exemptionPageObj.selectFromDropDown(exemptionPageObj.endRatingReason, endDateOfRatingData.get("EndRatingReason"));
 			objPage.Click(ExemptionsPage.saveButton);
-			apasGenericObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
+			exemptionPageObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
 			ReportLogger.INFO("Added End date OF Rating::"+endDateOfRatingData.get("EnddateOfRating"));
 			softAssert.assertEquals(exemptionPageObj.exemationStatusOnDetails.getText().trim(),"Inactive", "SMAB-T601:---Verify user can terminate the exemption by entering end date of rating(new created)");
 			String endDateOfRating=exemptionPageObj.endDateOfRatingOnExemption.getText().trim();
@@ -266,7 +263,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 			String newCreatedVA=vaPageObj.findVANameBasedOnEndDate(endDateOfRating);
 			ReportLogger.INFO("newly created VA as per End date oF Ratintg::"+newCreatedVA);
 
-			apasGenericObj.logout();
+			exemptionPageObj.logout();
 				
 	}
 	
@@ -281,11 +278,11 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	public void DisabledVeteran_OnlyOneVAForCurrentRollyear(String loginUser) throws Exception{
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "onlyOneVAtestData");
 		//Step1: Login to the APAS application using the credentials passed through data provider
-		apasGenericObj.login(loginUser);
+		exemptionPageObj.login(loginUser);
 		exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 
 		//Step2: Opening the Exemption Module
-		apasGenericObj.searchModule(EXEMPTIONS);
+		exemptionPageObj.searchModule(EXEMPTIONS);
 		
 		//Step3: Clicking on New button to create a New Exemption record
 		objPage.Click(exemptionPageObj.newExemptionButton);
@@ -306,7 +303,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Determination","Basic Disabled Veterans Exemption"), 1,"SMAB-T562:Verify only one VA(basic Disabled veteran)is created for Current Roll");
 		softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Status","Active"), 1, "SMAB-T485,SMAB-T602:---Verify user can terminate the exemption by entering end date of rating(Active VA)");
 	
-		apasGenericObj.logout();
+		exemptionPageObj.logout();
 	}
 	
 	
@@ -319,13 +316,13 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	public void Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(String loginUser) throws Exception{
 		Map<String, String> newExemptionMandatoryData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NoPenaltyData");
 		//Step1: Login to the APAS application using the credentials passed through data provider
-		apasGenericObj.login(loginUser);
+		exemptionPageObj.login(loginUser);
 		exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 		
 		//Step2: Opening the Exemption Module
 		driver.navigate().refresh();
 		Thread.sleep(1000);
-		apasGenericObj.searchModule(EXEMPTIONS);
+		exemptionPageObj.searchModule(EXEMPTIONS);
 		
 		//Step3: Clicking on New button to create a New Exemption record
 		objPage.Click(exemptionPageObj.newExemptionButton);
@@ -355,7 +352,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 			driver.navigate().back();
 		}
 	
-		apasGenericObj.logout();
+		exemptionPageObj.logout();
 	
 }
 	
@@ -369,11 +366,11 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		Map<String, String> newExemptionMandatoryData = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData");
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider
-		apasGenericObj.login(loginUser);
+		exemptionPageObj.login(loginUser);
 		exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 			
 		//Step2: Opening the Exemption Module
-		apasGenericObj.searchModule(EXEMPTIONS);
+		exemptionPageObj.searchModule(EXEMPTIONS);
 			
 		//Step3: Clicking on New button to create a New Exemption record
 		objPage.Click(exemptionPageObj.newExemptionButton);
@@ -418,14 +415,14 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 				objPage.scrollToTop();
 				objPage.Click(vaPageObj.editButton);
 				//objPage.waitForElementToBeClickable(vaPageObj.vaEditDeterminationDropDown, 10);
-				apasGenericObj.selectFromDropDown(vaPageObj.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
+				exemptionPageObj.selectFromDropDown(vaPageObj.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
 				objPage.enter(vaPageObj.vaAnnualFormReceiveddate,dateBeforeAppdate);
 				objPage.enter(vaPageObj.totalAnnualHouseholdIncome,"10000");
 				objPage.Click(ExemptionsPage.saveButton);
-				softAssert.assertEquals(apasGenericObj.getIndividualFieldErrorMessage("Annual Form Received Date"),"Annual Form Received Date should not be greater than today or less than Exemption's Date Application Received","SMAB-T1291:Verified that Annual Form Received date can't be less than Application Received date");
+				softAssert.assertEquals(exemptionPageObj.getIndividualFieldErrorMessage("Annual Form Received Date"),"Annual Form Received Date should not be greater than today or less than Exemption's Date Application Received","SMAB-T1291:Verified that Annual Form Received date can't be less than Application Received date");
 				objPage.enter(vaPageObj.vaAnnualFormReceiveddate,dateAfterAppdate);
 				objPage.Click(ExemptionsPage.saveButton);
-				apasGenericObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
+				exemptionPageObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
 				String determination1=vaPageObj.vaDetermination.getText().trim();
 				String AnnFormRcvddate=vaPageObj.annualFormReceivedDateOnUI.getText().trim();
 				String penaltyPercentageLowIncomeString=vaPageObj.vaPenaltyPercentage.getText().trim();
@@ -441,7 +438,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 			}
 			driver.navigate().back();
 		}
-		apasGenericObj.logout();
+		exemptionPageObj.logout();
 	}
 	
 }

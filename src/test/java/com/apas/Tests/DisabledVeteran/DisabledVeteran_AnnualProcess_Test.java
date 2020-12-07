@@ -23,15 +23,11 @@ import com.apas.Utils.DateUtil;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
-
 
 public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 
 	private RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	ValueAdjustmentsPage objValueAdjustmentPage;
 	ExemptionsPage objExemptionsPage;
 	SoftAssertion softAssert;
@@ -51,13 +47,12 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		objPage = new Page(driver);
 		objUtils = new Util();
 		objValueAdjustmentPage = new ValueAdjustmentsPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		softAssert = new SoftAssertion();
 		objApasGenericPage = new ApasGenericPage(driver);
 		objRYSPage = new RollYearSettingsPage(driver);
 		objRPSLPage = new RealPropertySettingsLibrariesPage(driver);
 		objExemptionsPage = new ExemptionsPage(driver);		
-		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
+		objApasGenericPage.updateRollYearStatus("Closed", "2020");
 	}
 
 	
@@ -73,7 +68,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 	public void DisabledVeteran_verifyActiveExemptionWithDeletedAndUnApprovedRPSL(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through		
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 			
 		//Step2: Fetching data for roll year to delete
 		String manualEntryData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;		
@@ -84,7 +79,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		objRPSLPage.removeRealPropertySettingEntry(strRollYear);
 		
 		//Step4: Open the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 				
 		/*Step5: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 		 Create Exemption record - Active
@@ -143,7 +138,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		objRPSLPage.createRPSL(RPSLCreationDataMap,strRollYear);
 	
 		//Step11: Search and Select Active Exemption created in previous Test	
-		objApasGenericFunctions.globalSearchRecords(activeExemptionName);		
+		objApasGenericPage.globalSearchRecords(activeExemptionName);		
 		
 		//Step12: Navigate to Value Adjustment List View in Exemption
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
@@ -175,7 +170,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		actualvaRollYearLowIncomeLatePenalty2Label = objValueAdjustmentPage.vaRollYearLowIncomeLatePenalty2Label.getText().trim();
 		softAssert.assertEquals(actualvaRollYearLowIncomeLatePenalty2Label,verifyDataWithUnApprovedRPSLDataMap.get("Roll Year LowIncome Penalty2"),"SMAB-T1381:Verify \'Roll Year Low Income Penalty 2\' is 0.00% when RPSL for current Roll Year is not Approved");		
 				
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	
 }
 	/**
@@ -190,7 +185,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 	public void DisabledVeteran_verifyInActiveExemptionWithDeletedAndUnApprovedRPSL(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through		
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 			
 		//Step2: Fetching data for roll year to delete
 		String manualEntryData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;		
@@ -201,7 +196,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		objRPSLPage.removeRealPropertySettingEntry(strRollYear);
 		
 		//Step4: Open the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 					
 		/*Step5: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 		 Create Exemption record - InActive
@@ -240,7 +235,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		objRPSLPage.createRPSL(createRPSLDataMap,strRollYear);
 				
 		//Step11: Search and Select In-Active Exemption created in previous Test
-		objApasGenericFunctions.globalSearchRecords(inActiveExemptionName);
+		objApasGenericPage.globalSearchRecords(inActiveExemptionName);
 		
 		//Step12: Navigate to Value Adjustment List View in Exemption
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
@@ -249,7 +244,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		fVACreated = objValueAdjustmentPage.clickVA(strRollYear);
 		softAssert.assertEquals(fVACreated,false,"SMAB-T510:Verify when 'Annual Batch process' runs for In-Active Exemption record 'VAR' for working Tax Year is not created if status of RPSL is other than 'Approved'");
 		
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 				
 	}
 	
@@ -264,7 +259,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 	
 	public void DisabledVeteran_verifyVAWithApprovedRPSL(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through		
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 
 		//Step2: Fetching data for Working Roll Year
 		String manualEntryData = System.getProperty("user.dir") + testdata.ANNUAL_PROCESS_DATA;		
@@ -282,26 +277,26 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + recordValue + "\" was created.","Verify the User is able to create Exemption limit record for the current roll year");
 		
 		//Step5: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
-		objApasGenericFunctions.displayRecords("All");
+		objApasGenericPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		objApasGenericPage.displayRecords("All");
 		
 		//Step6: Edit RPSL status	
 		//Step7: Search and click Edit button of RPSL
 		String value = "Exemption Limits - "+ strRollYear;
-		objApasGenericFunctions.searchRecords(value);
+		objApasGenericPage.searchRecords(value);
 		objRPSLPage.clickShowMoreLink(value);
 		objPage.clickAction(objPage.waitForElementToBeClickable(objRPSLPage.editLinkUnderShowMore));
 		objPage.waitUntilPageisReady(driver);
 		
 		//Step8: Update the RPSL Status
 		ReportLogger.INFO("Editing the Status field to 'Approved'");
-		objApasGenericFunctions.selectFromDropDown(objRPSLPage.statusDropDown,"Approved");		
+		objApasGenericPage.selectFromDropDown(objRPSLPage.statusDropDown,"Approved");		
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
 		System.out.println("success message is :"+strSuccessAlertMessage);
 		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + value + "\" was saved.","RPSL is edited successfully");
 	
 		//Step9: Search and Select Active Exemption created in previous Test
-		objApasGenericFunctions.globalSearchRecords(activeExemptionName);
+		objApasGenericPage.globalSearchRecords(activeExemptionName);
 
 		//Step10: Navigate to Value Adjustment List View in Exemption
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
@@ -342,7 +337,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 				
 
 		//Ste14: Search and Select In-Active Exemption created in previous Test
-		objApasGenericFunctions.globalSearchRecords(inActiveExemptionName);
+		objApasGenericPage.globalSearchRecords(inActiveExemptionName);
 		
 		//Step15: Navigate to Value Adjustment List View in Exemption
 		objValueAdjustmentPage.navigateToVAListViewInExemption();
@@ -356,7 +351,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		driver.navigate().refresh();
 		Thread.sleep(1000);
 				
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 				
 	}
 	

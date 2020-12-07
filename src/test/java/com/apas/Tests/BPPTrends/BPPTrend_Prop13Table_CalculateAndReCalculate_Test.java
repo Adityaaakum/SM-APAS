@@ -26,14 +26,12 @@ import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase {
 
 	RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrnPg;
 	BuildingPermitPage objBuildPermitPage;
 	Util objUtil;
@@ -55,7 +53,6 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		objPage = new Page(driver);
 		objBppTrnPg = new BppTrendPage(driver);
 		objBuildPermitPage = new BuildingPermitPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		rollYear = CONFIG.getProperty("rollYear");
@@ -63,12 +60,12 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		objBuildPermit = new BuildingPermitPage(driver);
 		objSoftAssert = new SoftAssert();
         objBppTrendSetupPage = new BppTrendSetupPage(driver);
-        objApasGenericFunctions.updateRollYearStatus("Open", "2020");
+        objBppTrendSetupPage.updateRollYearStatus("Open", "2020");
 	}
 
 	@AfterMethod
 	public void afterMethod() throws Exception {
-		//objApasGenericFunctions.logout();
+		//objBppTrendSetupPage.logout();
 	}
 
 	/**
@@ -95,9 +92,9 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		objBppTrnPg.resetTablesStatusForGivenRollYear(compositeFactorTablesToReset, "Not Calculated", rollYear);
 
 		//Step2: Log into application and navigate to BPP Trend page and select a roll year which has data
-		objApasGenericFunctions.login(loginUser);
+		objBppTrendSetupPage.login(loginUser);
 
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS);
 		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
@@ -224,15 +221,15 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		}
 
 		//Step24: Validating the table's status on BPP Trend Setup page
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
         objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 		String statusInBppTrendSetup = objBppTrendSetupPage.getTableStatusFromBppTrendSetupDetailsPage(tableName);
 		softAssert.assertEquals(statusInBppTrendSetup, "Calculated", "SMAB-T278: Table status on Bpp Trend Setup page post calculation");
 
 		//Step25: Log out from the application
 		softAssert.assertAll();
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 	}
 
 
@@ -272,10 +269,10 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 
 		//Step2: Login with given user & navigate to BPP Trend Setup Page and click on given BPP trend setup
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with user: " + loginUser);
-		objApasGenericFunctions.login(loginUser);
+		objBppTrendSetupPage.login(loginUser);
 
 		//Step3: Opening the BPP Trend module
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS);
 		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
@@ -398,7 +395,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 
 		//Step20: Again searching the BPP Prop 13 table
 		Thread.sleep(2000);
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS);
 		objPage.waitUntilElementIsPresent(60, objBppTrnPg.xpathRollYear);
 		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
@@ -418,6 +415,6 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 
 		//Step22: Log out from the application
 		softAssert.assertAll();
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 	}
 }

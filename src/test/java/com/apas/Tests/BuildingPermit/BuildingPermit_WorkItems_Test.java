@@ -12,8 +12,6 @@ import com.apas.config.BPFileSource;
 import com.apas.config.fileTypes;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.generic.ApasGenericFunctions;
-import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -27,7 +25,6 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
     RemoteWebDriver driver;
     Page objPage;
-    ApasGenericFunctions objApasGenericFunctions;
     BuildingPermitPage objBuildingPermitPage;
     WorkItemHomePage objWorkItemHomePage;
     SoftAssertion softAssert = new SoftAssertion();
@@ -44,7 +41,6 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         
         objPage = new Page(driver);
         objBuildingPermitPage = new BuildingPermitPage(driver);
-        objApasGenericFunctions = new ApasGenericFunctions(driver);
         objEfileImportPage = new EFileImportPage(driver);
         objWorkItemHomePage = new WorkItemHomePage(driver);
         objReportsPage = new ReportsPage(driver);
@@ -61,12 +57,12 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         ReportLogger.INFO("Download location : " + downloadLocation);
 
         //Deleting all the previously downloaded files
-        objApasGenericFunctions.deleteFilesFromFolder(downloadLocation);
+        objBuildingPermitPage.deleteFilesFromFolder(downloadLocation);
 
         //Creating a temporary copy of the file to be processed to create unique name
         String timeStamp = objUtil.getCurrentDate("ddhhmmss");
         String sourceFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "MultipleValidRecord.xlsx";
-        File tempFile = objApasGenericFunctions.createTempFile(sourceFile);
+        File tempFile = objBuildingPermitPage.createTempFile(sourceFile);
         String destFile = tempFile.getAbsolutePath();
         String fileName = tempFile.getName();
         String fileNameWithoutExtension = fileName.split("\\.")[0];
@@ -75,13 +71,13 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         objEfileImportPage.revertImportedAndApprovedFiles(BPFileSource.SAN_MATEO);
 
         //Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-        objApasGenericFunctions.login(loginUser);
+        objBuildingPermitPage.login(loginUser);
 
         //Step3: Importing the Building Permit file having all correct records
         objEfileImportPage.importFileOnEfileIntake(fileTypes.BUILDING_PERMITS, BPFileSource.SAN_MATEO, fileName, destFile);
        
         //Stpe4: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBuildingPermitPage.searchModule(modules.HOME);
         driver.navigate().refresh();
 
         //Step5: "Import Review" Work Item generation validation after file is imported
@@ -119,9 +115,9 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 		//Validating that 'Roll Code' field and 'Date' field gets automatically populated in the work item record WHERE date should be date of import and roll code should be SECS
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
 										"SMAB-T2081: Validation that 'Roll Code' fields getting automatically populated in the work item record");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Date", "Information"),objUtil.getCurrentDate("MM/dd/yyyy"),
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Date", "Information"),objUtil.getCurrentDate("MM/dd/yyyy"),
 										"SMAB-T2081: Validation that 'Date' fields is equal to"+objUtil.getCurrentDate("MM/dd/yyyy"));									
 		
 		parentWindow = driver.getWindowHandle();	
@@ -132,7 +128,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         driver.switchTo().window(parentWindow);
 
         //Step7: Open Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBuildingPermitPage.searchModule(modules.HOME);
         driver.navigate().refresh();
 
         //Step8: Validation for Import Review work item moved to completed status
@@ -157,23 +153,23 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Step11: Validation that E-File logs are linked to the work item and the status of the E-logs is Approved
         softAssert.assertTrue(objPage.verifyElementExists(objWorkItemHomePage.linkedItemEFileIntakeLogs), "SMAB-T1900: Validation that efile logs are linked with work item");
-        HashMap<String, ArrayList<String>> efileImportLogsData = objApasGenericFunctions.getGridDataInHashMap();
+        HashMap<String, ArrayList<String>> efileImportLogsData = objBuildingPermitPage.getGridDataInHashMap();
         softAssert.assertEquals(efileImportLogsData.get("Status").get(0), "Approved", "SMAB-T1900: Validation that status of the efile logs linked with work item is reverted");
 
         //Step12: Validation the building permit records are linked with the work item
         objPage.scrollToBottom();
         softAssert.assertTrue(objPage.verifyElementExists(objWorkItemHomePage.relatedBuildingPermits), "SMAB-T1900: Validation that Building Permit Records are linked with work item");
-        HashMap<String, ArrayList<String>> buildingPermitRecordsData = objApasGenericFunctions.getGridDataInHashMap(2);
+        HashMap<String, ArrayList<String>> buildingPermitRecordsData = objBuildingPermitPage.getGridDataInHashMap(2);
         softAssert.assertEquals(buildingPermitRecordsData.get("Building Permit Number").size(), "3", "SMAB-T1900: Building Permit Records Count validation");
 
         //Step13: Update the building permit record
         objBuildingPermitPage.openBuildingPermit(buildingPermitRecordsData.get("Building Permit Number").get(0));
         objPage.scrollToBottom();
-        objApasGenericFunctions.editAndInputFieldData("Estimated Project Value",timeStamp);
-        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Estimated Project Value").replace(",",""), "$" + timeStamp, "SMAB-T1901: Validation that updated valueis reflected in the building permit");
+        objBuildingPermitPage.editAndInputFieldData("Estimated Project Value",timeStamp);
+        softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Estimated Project Value").replace(",",""), "$" + timeStamp, "SMAB-T1901: Validation that updated valueis reflected in the building permit");
 
         //Step14: Open Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBuildingPermitPage.searchModule(modules.HOME);
         driver.navigate().refresh();
 
         //Step15: Open the work item
@@ -216,7 +212,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         softAssert.assertEquals(successMessageText, "success\nStatus changed successfully.\nClose", "SMAB-T1903,SMAB-T1902,SMAB-T1901: Validation that status of the efile logs linked with work item is reverted");
 
         //Step19: Open Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBuildingPermitPage.searchModule(modules.HOME);
         driver.navigate().refresh();
 
         //Step20: Close "Final Review" Work Item
@@ -224,7 +220,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(finalReviewWorkItem), "SMAB-T1903: Validation that Final Review work item moved to Completed status after Final Review work item is manually completed");
 
         //Logout at the end of the test
-        objApasGenericFunctions.logout();
+        objBuildingPermitPage.logout();
     }
 
 
@@ -237,7 +233,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Creating a temporary copy of the file to be processed to create unique name
         String sourceFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "SingleValidRecord_AT.txt";
-        File tempFile = objApasGenericFunctions.createTempFile(sourceFile);
+        File tempFile = objBuildingPermitPage.createTempFile(sourceFile);
         String destFile = tempFile.getAbsolutePath();
         String fileName = tempFile.getName();
         String fileNameWithoutExtension = fileName.split("\\.")[0];
@@ -246,13 +242,13 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         objEfileImportPage.revertImportedAndApprovedFiles(BPFileSource.ATHERTON);
 
         //Step2: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-        objApasGenericFunctions.login(loginUser);
+        objBuildingPermitPage.login(loginUser);
 
         //Step3: Importing the Building Permit file having all correct records
         objEfileImportPage.importFileOnEfileIntake(fileTypes.BUILDING_PERMITS, BPFileSource.ATHERTON, fileName, destFile);
 
         //Stpe4: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBuildingPermitPage.searchModule(modules.HOME);
         driver.navigate().refresh();
 
         //Step5: "Import Review" Work Item generation validation after file is imported
@@ -276,7 +272,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         driver.switchTo().window(parentWindow);
 
         //Step7: Open Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBuildingPermitPage.searchModule(modules.HOME);
         driver.navigate().refresh();
 
         //Step8: Validation for Import Review work item moved to completed status
@@ -289,16 +285,16 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Step10: Validation that E-File logs are linked to the work item and the status of the E-logs is reverted
         softAssert.assertTrue(objPage.verifyElementExists(objWorkItemHomePage.linkedItemEFileIntakeLogs), "SMAB-T1900: Validation that efile logs are linked with work item");
-        HashMap<String, ArrayList<String>> efileImportLogsData = objApasGenericFunctions.getGridDataInHashMap();
+        HashMap<String, ArrayList<String>> efileImportLogsData = objBuildingPermitPage.getGridDataInHashMap();
         softAssert.assertEquals(efileImportLogsData.get("Status").get(0), "Reverted", "SMAB-T1900: Validation that status of the efile logs linked with work item is reverted");
 
         //Step11: Validating the status should be completed
         objPage.Click(objWorkItemHomePage.detailsTab);
         objPage.scrollToBottom();
-        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Status"), "Completed", "SMAB-T1890: Validation that status of the work item should be completed");
+        softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Status"), "Completed", "SMAB-T1890: Validation that status of the work item should be completed");
 
         //Logout at the end of the test
-        objApasGenericFunctions.logout();
+        objBuildingPermitPage.logout();
 
     }
 }
