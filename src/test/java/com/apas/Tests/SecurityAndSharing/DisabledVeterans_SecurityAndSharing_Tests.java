@@ -17,7 +17,6 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
-import com.apas.generic.ApasGenericFunctions;
 import com.apas.Utils.SalesforceAPI;
 
 public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implements testdata, modules, users{
@@ -25,7 +24,6 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 	private RemoteWebDriver driver;
 	Page objPage = null;
 	LoginPage objLoginPage = null;
-	ApasGenericFunctions apasGenericObj;
 	ValueAdjustmentsPage vaPageObj;
 	ExemptionsPage exemptionPageObj;
 	RealPropertySettingsLibrariesPage objRPSLPage;
@@ -45,14 +43,13 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 		exemptionPageObj=new ExemptionsPage(driver);
 		objPage = new Page(driver);
 		objLoginPage = new LoginPage(driver);
-		apasGenericObj = new ApasGenericFunctions(driver);
 		objRPSLPage = new RealPropertySettingsLibrariesPage(driver);
 		parcelObj=new ParcelsPage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		exemptionFilePath = System.getProperty("user.dir") + testdata.EXEMPTION_DATA;
 		salesforceAPI = new SalesforceAPI();
-		apasGenericObj.updateRollYearStatus("Closed", "2020");
+		exemptionPageObj.updateRollYearStatus("Closed", "2020");
 
 	}
 
@@ -69,39 +66,39 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 		String vaRecord=vaRecordMap.get("Name").get(0);
 
 		//Step1: Login to the APAS application using the credentials passed through data provider
-		apasGenericObj.login(loginInvalidUser);
+		exemptionPageObj.login(loginInvalidUser);
 
 		//Step3: Verifying user is not able to see New and Edit button for creating/Editing Exemption record
 		ReportLogger.INFO("Verifying user is not able to see New and Edit button for creating/Editing Exemption record");
-		apasGenericObj.searchModule(EXEMPTIONS);
+		exemptionPageObj.searchModule(EXEMPTIONS);
 		softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T483: User is not able to see New button to create a new Exemption record");
-		apasGenericObj.globalSearchRecords(exemptionRecord);
+		exemptionPageObj.globalSearchRecords(exemptionRecord);
 		softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.editExemption),  "SMAB-T482: User is not able to edit Exemption record");
 		softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.deleteExemption),  "SMAB-T482: User is not able to delete Exemption record");
 
 		//Step4: Verifying user is not able to see New and Edit button for creating/Editing Value Adjustments record
 		ReportLogger.INFO("Verifying user is not able to see New and Edit button for creating/Editing Value Adjustments record");
 		softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T476,SMAB-T477: User is not able to see New button to create a Value Adjustment record");
-		apasGenericObj.searchModule("Value Adjustments");
-		apasGenericObj.globalSearchRecords(vaRecord);
+		exemptionPageObj.searchModule("Value Adjustments");
+		exemptionPageObj.globalSearchRecords(vaRecord);
 		softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.editExemption), "SMAB-T476,SMAB-T477: User is not able to edit VA record");
 		softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.deleteExemption), "SMAB-T476,SMAB-T477: User is not able to delete VA record");
 
 		//Step4: Verify the user access on Real Property Settings Library screen
 		ReportLogger.INFO("Verifying user is not able to see New and Edit button for creating/Editing Real Property Settings Library");
-		apasGenericObj.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
-		apasGenericObj.searchModule(REAL_PROPERTY_SETTINGS_LIBRARIES);
-		apasGenericObj.displayRecords("All");
-		Map<String, ArrayList<String>> manualRPSLGridDataMap = apasGenericObj.getGridDataInHashMap();
+		exemptionPageObj.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
+		exemptionPageObj.searchModule(REAL_PROPERTY_SETTINGS_LIBRARIES);
+		exemptionPageObj.displayRecords("All");
+		Map<String, ArrayList<String>> manualRPSLGridDataMap = exemptionPageObj.getGridDataInHashMap();
 		
 		//Update the code post SMAB-4044 was fixed
 		softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.newButton), "SMAB-T476,SMAB-T477: User is not able to view 'NEW' button");
-		apasGenericObj.globalSearchRecords(manualRPSLGridDataMap.get("RP Setting Name").get(0));
+		exemptionPageObj.globalSearchRecords(manualRPSLGridDataMap.get("RP Setting Name").get(0));
 		softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.editButton), "SMAB-T476,SMAB-T477: User is not able to view 'EDIT' button");
 		softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.deleteButton), "SMAB-T476,SMAB-T477: User is not able to Delete Real Property Settings Library record");
 
 		//Logging out of the application
-		apasGenericObj.logout();
+		exemptionPageObj.logout();
 
 	}
 
@@ -118,37 +115,37 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 			String vaRecord=vaRecordMap.get("Name").get(0);
 
 			//Step1: Login to the APAS application using the credentials passed through data provider
-			apasGenericObj.login(loginInvalidUser);
+			exemptionPageObj.login(loginInvalidUser);
 
 			//Step3: Verifying user is not able to see New and Edit button for creating/Editing Exemption record
 			ReportLogger.INFO("Verifying user is not able to see New and Edit button for creating/Editing Exemption record");
-			apasGenericObj.searchModule(EXEMPTIONS);
+			exemptionPageObj.searchModule(EXEMPTIONS);
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T483: User is not able to see New button to create a new Exemption record");
-			apasGenericObj.globalSearchRecords(exemptionRecord);
+			exemptionPageObj.globalSearchRecords(exemptionRecord);
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.editExemption),  "SMAB-T482: User is not able to edit Exemption record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.deleteExemption),  "SMAB-T482: User is not able to delete Exemption record");
 
 			//Step4: Verifying user is not able to see New and Edit button for creating/Editing Value Adjustments record
 			ReportLogger.INFO("Verifying user is not able to see New and Edit button for creating/Editing Value Adjustments record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T476,SMAB-T477: User is not able to see New button to create a Value Adjustment record");
-			apasGenericObj.searchModule("Value Adjustments");
-			apasGenericObj.globalSearchRecords(vaRecord);
+			exemptionPageObj.searchModule("Value Adjustments");
+			exemptionPageObj.globalSearchRecords(vaRecord);
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.editExemption), "SMAB-T476,SMAB-T477: User is not able to edit VA record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.deleteExemption), "SMAB-T476,SMAB-T477: User is not able to delete VA record");
 
 			//Step4: Verify the user access on Real Property Settings Library screen
 			ReportLogger.INFO("Verifying user is not able to see New and Edit button for creating/Editing Real Property Settings Library");
-			apasGenericObj.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
-			apasGenericObj.searchModule(REAL_PROPERTY_SETTINGS_LIBRARIES);
+			exemptionPageObj.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
+			exemptionPageObj.searchModule(REAL_PROPERTY_SETTINGS_LIBRARIES);
 			softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.newButton), "SMAB-T476,SMAB-T477: User is not able to see New button to create a Real Property Settings Library record");
-			apasGenericObj.displayRecords("All");
-			Map<String, ArrayList<String>> manualRPSLGridDataMap = apasGenericObj.getGridDataInHashMap();
-			apasGenericObj.globalSearchRecords(manualRPSLGridDataMap.get("RP Setting Name").get(0));
+			exemptionPageObj.displayRecords("All");
+			Map<String, ArrayList<String>> manualRPSLGridDataMap = exemptionPageObj.getGridDataInHashMap();
+			exemptionPageObj.globalSearchRecords(manualRPSLGridDataMap.get("RP Setting Name").get(0));
 			softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.editButton), "SMAB-T476,SMAB-T477: User is not able to Edit Real Property Settings Library record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.deleteButton), "SMAB-T476,SMAB-T477: User is not able to Delete Real Property Settings Library record");
 
 			//Logging out of the application
-			apasGenericObj.logout();
+			exemptionPageObj.logout();
 
 		}
 
@@ -162,16 +159,16 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 			String rollYearRecord=rollYearMap.get("Name").get(0);
 
 			//Step1: Login to the APAS application using the credentials passed through data provider
-			apasGenericObj.login(loginInvalidUser);
+			exemptionPageObj.login(loginInvalidUser);
 			//Step2: Opening the exemption module
-			apasGenericObj.searchModule(ROLLYEAR);
+			exemptionPageObj.searchModule(ROLLYEAR);
 
 			//Step3: Verifying new button not available for Rp Apprasier user
-			softAssert.assertTrue(apasGenericObj.isNotDisplayed(exemptionPageObj.newExemptionButton),  "SMAB-T642: User is not able to see New button to create a new Roll Year record");
-			apasGenericObj.globalSearchRecords(rollYearRecord);
-			softAssert.assertTrue(apasGenericObj.isNotDisplayed(exemptionPageObj.editExemption), "SMAB-T482: User is not able to edit/delete Roll Year record");
+			softAssert.assertTrue(exemptionPageObj.isNotDisplayed(exemptionPageObj.newExemptionButton),  "SMAB-T642: User is not able to see New button to create a new Roll Year record");
+			exemptionPageObj.globalSearchRecords(rollYearRecord);
+			softAssert.assertTrue(exemptionPageObj.isNotDisplayed(exemptionPageObj.editExemption), "SMAB-T482: User is not able to edit/delete Roll Year record");
 
-			apasGenericObj.logout();
+			exemptionPageObj.logout();
 			
 		}
 
@@ -188,37 +185,37 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 			String vaRecord=vaRecordMap.get("Name").get(0);
 
 			//Step1: Login to the APAS application using the credentials passed through data provider
-			apasGenericObj.login(loginUser);
+			exemptionPageObj.login(loginUser);
 
 			//Step2: Verifying the access on Exemption for logged in user
 			ReportLogger.INFO("Verifying user is able to see New and Edit button for creating/Editing Exemptions record");
-			apasGenericObj.searchModule(EXEMPTIONS);
+			exemptionPageObj.searchModule(EXEMPTIONS);
 			softAssert.assertTrue(objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T483: User is able to see New button to create a new Exemption record");
-			apasGenericObj.globalSearchRecords(exemptionRecord);
+			exemptionPageObj.globalSearchRecords(exemptionRecord);
 			softAssert.assertTrue(objPage.verifyElementVisible(exemptionPageObj.editExemption),  "SMAB-T482: User is able to edit Exemption record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.deleteExemption),  "SMAB-T482: User is not able to delete Exemption record");
 
 			//Step3: Verify the user access on Value Adjustment Record screen
 			ReportLogger.INFO("Verifying user is not able to see New and Edit button for creating/Editing Value adjustments record");
-			apasGenericObj.searchModule(VALUE_ADJUSTMENTS);
+			exemptionPageObj.searchModule(VALUE_ADJUSTMENTS);
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T476,SMAB-T477: User is not able to see New button to create a Value Adjustment record");
-			apasGenericObj.globalSearchRecords(vaRecord);
+			exemptionPageObj.globalSearchRecords(vaRecord);
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.editExemption), "SMAB-T476,SMAB-T477: User is not able to edit VA record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.deleteExemption), "SMAB-T476,SMAB-T477: User is not able to delete VA record");
 
 			//Step4: Verify the user access on Real Property Settings Library screen
 			ReportLogger.INFO("Verifying user is able to see New and Edit button for creating/Editing Real Property Settings Library");
-			apasGenericObj.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
-			apasGenericObj.searchModule(REAL_PROPERTY_SETTINGS_LIBRARIES);
+			exemptionPageObj.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
+			exemptionPageObj.searchModule(REAL_PROPERTY_SETTINGS_LIBRARIES);
 			softAssert.assertTrue(objPage.verifyElementVisible(objRPSLPage.newButton), "SMAB-T476,SMAB-T477: User is able to see New button to create a Real Property Settings Library record");
-			apasGenericObj.displayRecords("All");
-			Map<String, ArrayList<String>> manualRPSLGridDataMap = apasGenericObj.getGridDataInHashMap();
-			apasGenericObj.globalSearchRecords(manualRPSLGridDataMap.get("RP Setting Name").get(0));
+			exemptionPageObj.displayRecords("All");
+			Map<String, ArrayList<String>> manualRPSLGridDataMap = exemptionPageObj.getGridDataInHashMap();
+			exemptionPageObj.globalSearchRecords(manualRPSLGridDataMap.get("RP Setting Name").get(0));
 			softAssert.assertTrue(objPage.verifyElementVisible(objRPSLPage.editButton), "SMAB-T476,SMAB-T477: User is able to Edit Real Property Settings Library record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.deleteButton), "SMAB-T476,SMAB-T477: User is not able to Delete Real Property Settings Library record");
 
 			//Logging out of the application
-			apasGenericObj.logout();
+			exemptionPageObj.logout();
 
 		}
 
@@ -235,37 +232,37 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 			String vaRecord=vaRecordMap.get("Name").get(0);
 
 			//Step1: Login to the APAS application using the credentials passed through data provider
-			apasGenericObj.login(loginUser);
+			exemptionPageObj.login(loginUser);
 
 			//Step2: Verifying the access on Exemption for logged in user
 			ReportLogger.INFO("Verifying user is able to see New and Edit button for creating/Editing Exemptions record");
-			apasGenericObj.searchModule(EXEMPTIONS);
+			exemptionPageObj.searchModule(EXEMPTIONS);
 			softAssert.assertTrue(objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T483: User is able to see New button to create a new Exemption record");
-			apasGenericObj.globalSearchRecords(exemptionRecord);
+			exemptionPageObj.globalSearchRecords(exemptionRecord);
 			softAssert.assertTrue(objPage.verifyElementVisible(exemptionPageObj.editExemption),  "SMAB-T482: User is able to edit Exemption record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.deleteExemption),  "SMAB-T482: User is not able to delete Exemption record");
 
 			//Step3: Verify the user access on Value Adjustment Record screen
 			ReportLogger.INFO("Verifying user is not able to see New and Edit button for creating/Editing Value adjustments record");
-			apasGenericObj.searchModule(VALUE_ADJUSTMENTS);
+			exemptionPageObj.searchModule(VALUE_ADJUSTMENTS);
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T476,SMAB-T477: User is not able to see New button to create a Value Adjustment record");
-			apasGenericObj.globalSearchRecords(vaRecord);
+			exemptionPageObj.globalSearchRecords(vaRecord);
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.editExemption), "SMAB-T476,SMAB-T477: User is not able to edit VA record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.deleteExemption), "SMAB-T476,SMAB-T477: User is not able to delete VA record");
 
 			//Step4: Verify the user access on Real Property Settings Library screen
 			ReportLogger.INFO("Verifying user is able to see New and Edit button for creating/Editing Real Property Settings Library");
-			apasGenericObj.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
-			apasGenericObj.searchModule(REAL_PROPERTY_SETTINGS_LIBRARIES);
+			exemptionPageObj.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
+			exemptionPageObj.searchModule(REAL_PROPERTY_SETTINGS_LIBRARIES);
 			softAssert.assertTrue(objPage.verifyElementVisible(objRPSLPage.newButton), "SMAB-T476,SMAB-T477: User is able to see New button to create a Real Property Settings Library record");
-			apasGenericObj.displayRecords("All");
-			Map<String, ArrayList<String>> manualRPSLGridDataMap = apasGenericObj.getGridDataInHashMap();
-			apasGenericObj.globalSearchRecords(manualRPSLGridDataMap.get("RP Setting Name").get(0));
+			exemptionPageObj.displayRecords("All");
+			Map<String, ArrayList<String>> manualRPSLGridDataMap = exemptionPageObj.getGridDataInHashMap();
+			exemptionPageObj.globalSearchRecords(manualRPSLGridDataMap.get("RP Setting Name").get(0));
 			softAssert.assertTrue(objPage.verifyElementVisible(objRPSLPage.editButton), "SMAB-T476,SMAB-T477: User is able to Edit Real Property Settings Library record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.deleteButton), "SMAB-T476,SMAB-T477: User is not able to Delete Real Property Settings Library record");
 
 			//Logging out of the application
-			apasGenericObj.logout();
+			exemptionPageObj.logout();
 
 		}
 
@@ -282,37 +279,37 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 			String vaRecord=vaRecordMap.get("Name").get(0);
 
 			//Step1: Login to the APAS application using the credentials passed through data provider
-			apasGenericObj.login(loginUser);
+			exemptionPageObj.login(loginUser);
 
 			//Step2: Verifying the access on Exemption for logged in user
 			ReportLogger.INFO("Verifying user is able to see New and Edit button for creating/Editing Exemptions record");
-			apasGenericObj.searchModule(EXEMPTIONS);
+			exemptionPageObj.searchModule(EXEMPTIONS);
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T483: User is not able to see New button to create a new Exemption record");
-			apasGenericObj.globalSearchRecords(exemptionRecord);
+			exemptionPageObj.globalSearchRecords(exemptionRecord);
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.editExemption),  "SMAB-T482: User is not able to edit Exemption record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.deleteExemption),  "SMAB-T482: User is not able to delete Exemption record");
 
 			//Step3: Verify the user access on Value Adjustment Record screen
 			ReportLogger.INFO("Verifying user is able to see New and Edit button for creating/Editing Value adjustments record");
-			apasGenericObj.searchModule(VALUE_ADJUSTMENTS);
+			exemptionPageObj.searchModule(VALUE_ADJUSTMENTS);
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T483: User is not able to see New button to create a Value Adjustment record");
-			apasGenericObj.globalSearchRecords(vaRecord);
+			exemptionPageObj.globalSearchRecords(vaRecord);
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.editExemption), "SMAB-T476: User is not able to edit VA record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.deleteExemption), "SMAB-T476: User is not able to delete VA record");
 
 			//Step4: Verify the user access on Real Property Settings Library screen
 			ReportLogger.INFO("Verifying user is able to see New and Edit button for creating/Editing Real Property Settings Library");
-			apasGenericObj.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
-			apasGenericObj.searchModule(REAL_PROPERTY_SETTINGS_LIBRARIES);
+			exemptionPageObj.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
+			exemptionPageObj.searchModule(REAL_PROPERTY_SETTINGS_LIBRARIES);
 			softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.newButton), "SMAB-T483: User is not able to see New button to create a Real Property Settings Library record");
-			apasGenericObj.displayRecords("All");
-			Map<String, ArrayList<String>> manualRPSLGridDataMap = apasGenericObj.getGridDataInHashMap();
-			apasGenericObj.globalSearchRecords(manualRPSLGridDataMap.get("RP Setting Name").get(0));
+			exemptionPageObj.displayRecords("All");
+			Map<String, ArrayList<String>> manualRPSLGridDataMap = exemptionPageObj.getGridDataInHashMap();
+			exemptionPageObj.globalSearchRecords(manualRPSLGridDataMap.get("RP Setting Name").get(0));
 			softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.editButton), "SMAB-T476: User is not able to Edit Real Property Settings Library record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.deleteButton), "SMAB-T476: User is not able to Delete Real Property Settings Library record");
 
 			//Logging out of the application
-			apasGenericObj.logout();
+			exemptionPageObj.logout();
 
 		}
 
@@ -330,37 +327,37 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 			String vaRecord=vaRecordMap.get("Name").get(0);
 
 			//Step1: Login to the APAS application using the credentials passed through data provider
-			apasGenericObj.login(loginUser);
+			exemptionPageObj.login(loginUser);
 
 			//Step2: Verifying the access on Exemption for logged in user
 			ReportLogger.INFO("Verifying user is able to see New and Edit button for creating/Editing Exemptions record");
-			apasGenericObj.searchModule(EXEMPTIONS);
+			exemptionPageObj.searchModule(EXEMPTIONS);
 			softAssert.assertTrue(objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T483: User is able to see New button to create a new Exemption record");
-			apasGenericObj.globalSearchRecords(exemptionRecord);
+			exemptionPageObj.globalSearchRecords(exemptionRecord);
 			softAssert.assertTrue(objPage.verifyElementVisible(exemptionPageObj.editExemption),  "SMAB-T482: User is able to edit Exemption record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.deleteExemption),  "SMAB-T482: User is not able to delete Exemption record");
 
 			//Step3: Verify the user access on Value Adjustment Record screen
 			ReportLogger.INFO("Verifying user is not able to see New and Edit button for creating/Editing Value adjustments record");
-			apasGenericObj.searchModule(VALUE_ADJUSTMENTS);
+			exemptionPageObj.searchModule(VALUE_ADJUSTMENTS);
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.newExemptionButton), "SMAB-T476,SMAB-T477: User is not able to see New button to create a Value Adjustment record");
-			apasGenericObj.globalSearchRecords(vaRecord);
+			exemptionPageObj.globalSearchRecords(vaRecord);
 			softAssert.assertTrue(objPage.verifyElementVisible(exemptionPageObj.editExemption), "SMAB-T476,SMAB-T477: User is not able to edit VA record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(exemptionPageObj.deleteExemption), "SMAB-T476,SMAB-T477: User is not able to delete VA record");
 
 			//Step4: Verify the user access on Real Property Settings Library screen
 			ReportLogger.INFO("Verifying user is able to see New and Edit button for creating/Editing Real Property Settings Library");
-			apasGenericObj.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
-			apasGenericObj.searchModule(REAL_PROPERTY_SETTINGS_LIBRARIES);
+			exemptionPageObj.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
+			exemptionPageObj.searchModule(REAL_PROPERTY_SETTINGS_LIBRARIES);
 			softAssert.assertTrue(objPage.verifyElementVisible(objRPSLPage.newButton), "SMAB-T476,SMAB-T477: User is able to see New button to create a Real Property Settings Library record");
-			apasGenericObj.displayRecords("All");
-			Map<String, ArrayList<String>> manualRPSLGridDataMap = apasGenericObj.getGridDataInHashMap();
-			apasGenericObj.globalSearchRecords(manualRPSLGridDataMap.get("RP Setting Name").get(0));
+			exemptionPageObj.displayRecords("All");
+			Map<String, ArrayList<String>> manualRPSLGridDataMap = exemptionPageObj.getGridDataInHashMap();
+			exemptionPageObj.globalSearchRecords(manualRPSLGridDataMap.get("RP Setting Name").get(0));
 			softAssert.assertTrue(objPage.verifyElementVisible(objRPSLPage.editButton), "SMAB-T476,SMAB-T477: User is able to Edit Real Property Settings Library record");
 			softAssert.assertTrue(!objPage.verifyElementVisible(objRPSLPage.deleteButton), "SMAB-T476,SMAB-T477: User is not able to Delete Real Property Settings Library record");
 
 			//Logging out of the application
-			apasGenericObj.logout();
+			exemptionPageObj.logout();
 
 		}
 

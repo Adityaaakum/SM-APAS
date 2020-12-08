@@ -2,24 +2,18 @@ package com.apas.PageObjects;
 
 import java.util.List;
 import java.util.Map;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-
 import com.apas.Assertions.SoftAssertion;
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
-import com.apas.generic.ApasGenericFunctions;
 
 public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	SoftAssertion softAssert;
-	ApasGenericFunctions objApasGenericFunctions;
 	Util objUtils;
 	
 	public String dvLowIncomeExemptionAmount = "DV Low Income Exemption Amount";
@@ -31,7 +25,6 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	public RealPropertySettingsLibrariesPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
-		objApasGenericFunctions= new ApasGenericFunctions(driver);
 		objUtils = new Util();
 		softAssert = new SoftAssertion();
 	}
@@ -160,7 +153,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	 * @throws Exception
 	 */
 	/*public void selectFromDropDown(WebElement element, String value) throws Exception {
-		objApasGenericFunctions.selectFromDropDown(element, value);
+		selectFromDropDown(element, value);
 	}*/
 	public void selectFromDropDown(Object element, String value) throws Exception {
 		selectOptionFromDropDown(element, value);
@@ -174,7 +167,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
 		//waitUntilElementIsPresent("//*/span[text() = '\" + fieldName + \"']//..//..//..//ul[contains(@class,'has-error')]//li", 2);
 		//return getElementText(driver.findElement(By.xpath("//*/span[text() = '" + fieldName + "']//..//..//..//ul[contains(@class,'has-error')]//li")));
-		return objApasGenericFunctions.getIndividualFieldErrorMessage(fieldName);
+		return getIndividualFieldErrorMessage(fieldName);
 	}
 
 	
@@ -236,10 +229,10 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		 */
 	 public String createRPSL(Map<String, String> dataMap, String rollYear) throws Exception {			 
 		//Step1: Opening the Real Property Settings Libraries module
-		objApasGenericFunctions.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+		searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 		
 		//Step2: Selecting 'All' List View
-		objApasGenericFunctions.displayRecords("All");
+		displayRecords("All");
 		
 		//Step3: Delete current Roll Year's RPSL if it already exists	
 		removeRealPropertySettingEntry(rollYear);

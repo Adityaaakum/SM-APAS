@@ -20,7 +20,6 @@ import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
-import com.apas.generic.ApasGenericFunctions;
 import com.apas.config.*;
 import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
@@ -29,7 +28,6 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	
 	private RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
 	ExemptionsPage objExemptionsPage;
 	Util objUtil;
@@ -51,12 +49,11 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		objPage = new Page(driver);
 		objExemptionsPage = new ExemptionsPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objWIHomePage = new WorkItemHomePage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		exemptionFilePath = System.getProperty("user.dir") + testdata.EXEMPTION_DATA;
-		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
+		objApasGenericPage.updateRollYearStatus("Closed", "2020");
 		rpslFileDataPath = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;
 		rpslData= objUtil.generateMapFromJsonFile(rpslFileDataPath, "DataToCreateRPSLEntryForValidation");
 		salesforceAPI = new SalesforceAPI();
@@ -74,12 +71,12 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 			String currentRollYear=ExemptionsPage.determineRollYear(currentDate);	
 			//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		   ReportLogger.INFO("Step 1: Login to the Salesforce ");
-		   objApasGenericFunctions.login(loginUser);
+		   objApasGenericPage.login(loginUser);
 		   objExemptionsPage.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 		  
 		   //Step2: Opening the Exemption Module
 		   ReportLogger.INFO("Step 2: Search open Exemption APP. from App Launcher");
-		   objApasGenericFunctions.searchModule(modules.EXEMPTIONS);
+		   objApasGenericPage.searchModule(modules.EXEMPTIONS);
 		  
 		   //Step3: create a New Exemption record
 		   ReportLogger.INFO("Step 3: Create New Exemption");
@@ -94,7 +91,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		   
 		    //Step4: Opening the Work Item Module
 		    ReportLogger.INFO("Step 4: Search open App. module - Work Item Management from App Launcher");
-		   objApasGenericFunctions.searchModule(modules.HOME);
+		   objApasGenericPage.searchModule(modules.HOME);
 
 		   //Step5: Click on the Main TAB - Home
 		   ReportLogger.INFO("Step 5: Click on the Main TAB - Home");
@@ -112,9 +109,9 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		   objPage.Click(objWIHomePage.detailsWI);
 			 //Validating that 'Roll Code' field and 'Date' field gets automatically populated in the work item record
 		   objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
-			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
+			softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
 							"SMAB-T2080: Validation that 'Roll Code' fields getting automatically populated in the work item record");
-			softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
+			softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 							"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
 			
 			String actualRequestTypeName = objWIHomePage.searchRequestTypeNameonWIDetails(WIRequestType);
@@ -138,7 +135,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 
 		   ReportLogger.INFO("Step 11: Logging out from SF");
 
-		   objApasGenericFunctions.logout();
+		   objApasGenericPage.logout();
 
 	}
 	
@@ -152,12 +149,12 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		Map<String, String> dataToEdit = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		ReportLogger.INFO("Step 1: Login to the Salesforce ");
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		objExemptionsPage.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 		
 		//Step2: Opening the Exemption Module
 		ReportLogger.INFO("Step 2: Search open Exemption APP. from App Launcher");
-		objApasGenericFunctions.searchModule(modules.EXEMPTIONS);
+		objApasGenericPage.searchModule(modules.EXEMPTIONS);
 		
 		//Step3: create a New Exemption record
 		ReportLogger.INFO("Step 3: Create New Exemption");
@@ -177,7 +174,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		ReportLogger.INFO("Step 5: Enter the End Date of Rating :"+dataToEdit.get("EnddateOfRating"));
 		objPage.enter(objExemptionsPage.endDateOfRating, dataToEdit.get("EnddateOfRating"));
 		ReportLogger.INFO("Step 6: Enter the End Date of Rating Reason :"+dataToEdit.get("EndRatingReason"));
-		objApasGenericFunctions.selectFromDropDown(objExemptionsPage.endRatingReason, dataToEdit.get("EndRatingReason"));
+		objApasGenericPage.selectFromDropDown(objExemptionsPage.endRatingReason, dataToEdit.get("EndRatingReason"));
 		ReportLogger.INFO("Step 7: Click on the SAVE button");
 		objPage.Click(ExemptionsPage.saveButton);
 		HashMap<String, ArrayList<String>> getWIDetailsAfterEndDate = null;
@@ -186,7 +183,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	    			    
 	    //Step4: Opening the Work Item Module
 	    ReportLogger.INFO("Step 8: Search open App. module - Work Item Management from App Launcher");
-	  	objApasGenericFunctions.searchModule(modules.HOME);
+	  	objApasGenericPage.searchModule(modules.HOME);
 	  	//Step5: Click on the Main TAB - Home
 	  	ReportLogger.INFO("Step 9: Click on the Main TAB - Home");
 	  	objPage.Click(objWIHomePage.lnkTABHome);
@@ -203,7 +200,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	  	updateWIStatus = "SELECT Id FROM Work_Item__c where Name = '"+WIName+"'";
   	    salesforceAPI.update("Work_Item__c", updateWIStatus, "Status__c", "Completed");
   	    ReportLogger.INFO("Step 11: Logging out from SF");
-  	    objApasGenericFunctions.logout();
+  	    objApasGenericPage.logout();
 	   	
 	 }
 	
@@ -216,12 +213,12 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 	//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 	ReportLogger.INFO("Step 1: Login to the Salesforce ");
-	objApasGenericFunctions.login(loginUser);
+	objApasGenericPage.login(loginUser);
 	objExemptionsPage.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 	
 	//Step2: Opening the Exemption Module
 	ReportLogger.INFO("Step 2: Search open Exemption APP. from App Launcher");
-	objApasGenericFunctions.searchModule(modules.EXEMPTIONS);
+	objApasGenericPage.searchModule(modules.EXEMPTIONS);
 	
 	//Step3: create a New Exemption record
 	ReportLogger.INFO("Step 3: Create New Exemption");
@@ -239,7 +236,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	objPage.Click(objExemptionsPage.editExemption);
   	objPage.enter(objExemptionsPage.endDateOfRating, dataToEdit.get("EnddateOfRating"));
   	ReportLogger.INFO("Step 5: Adding End date of Rating Reason in the exemption");
-  	objApasGenericFunctions.selectFromDropDown(objExemptionsPage.endRatingReason, dataToEdit.get("EndRatingReason"));
+  	objApasGenericPage.selectFromDropDown(objExemptionsPage.endRatingReason, dataToEdit.get("EndRatingReason"));
   	ReportLogger.INFO("Step 6: Click the SAVE button");
   	objPage.Click(ExemptionsPage.saveButton);
   	Thread.sleep(5000);
@@ -257,7 +254,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	String updateWIStatus = "SELECT Status__c FROM Work_Item__c where Name = '"+WIName+"'";
 	salesforceAPI.update("Work_Item__c", updateWIStatus, "Status__c", "Completed");
 	ReportLogger.INFO("Step 4: Logging Out from SF");
-  	objApasGenericFunctions.logout();
+  	objApasGenericPage.logout();
  }
 
 	@Test(description = "SMAB-T2094,SMAB-T1978: APAS Verify the Supervisor is able to Approve the WI initial filing/changes on new Exemption Creation", 
@@ -269,12 +266,12 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 	//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 	ReportLogger.INFO("Step 1: Login to the Salesforce ");
-	objApasGenericFunctions.login(loginUser);
+	objApasGenericPage.login(loginUser);
 	objExemptionsPage.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 	
 	//Step2: Opening the Exemption Module
 	ReportLogger.INFO("Step 2: Search open Exemption APP. from App Launcher");
-	objApasGenericFunctions.searchModule(modules.EXEMPTIONS);
+	objApasGenericPage.searchModule(modules.EXEMPTIONS);
 	
 	//Step3: create a New Exemption record
 	ReportLogger.INFO("Step 3: Create New Exemption");
@@ -286,14 +283,14 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
     String WIName = getWIDetails.get("Name").get(0);
     
     ReportLogger.INFO("Step 4: Logging Out from SF");
-    objApasGenericFunctions.logout();
+    objApasGenericPage.logout();
     Thread.sleep(10000);
     ReportLogger.INFO("Step 5: Logging In as Approver - Data Admin");
-  	objApasGenericFunctions.login(users.RP_BUSINESS_ADMIN);
+  	objApasGenericPage.login(users.RP_BUSINESS_ADMIN);
   	
     //Step4: Opening the Work Item Module
     ReportLogger.INFO("Step 6: Search open App. module - Work Item Management from App Launcher");
-  	objApasGenericFunctions.searchModule(modules.HOME);
+  	objApasGenericPage.searchModule(modules.HOME);
   	//Step5: Click on the Main TAB - Home
   	ReportLogger.INFO("Step 7: Click on the Main TAB - Home");
   	objPage.Click(objWIHomePage.lnkTABHome);
@@ -318,15 +315,15 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	objPage.javascriptClick(objWIHomePage.btnApprove);
   	Thread.sleep(5000);
   	ReportLogger.INFO("Step 13: Logging Out from SF");
-  	objApasGenericFunctions.logout();
+  	objApasGenericPage.logout();
   	Thread.sleep(10000);
   	ReportLogger.INFO("Step 14: Logging IN to SF");
-  	objApasGenericFunctions.login(loginUser);
+  	objApasGenericPage.login(loginUser);
   	Thread.sleep(5000);
   	
     //Step4: Opening the Work Item Module
     ReportLogger.INFO("Step 15: Search open App. module - Work Item Management from App Launcher");
-  	objApasGenericFunctions.searchModule(modules.HOME);
+  	objApasGenericPage.searchModule(modules.HOME);
   	//Step5: Click on the Main TAB - Home
   	ReportLogger.INFO("Step 16: Click on the Main TAB - Home");
   	objPage.Click(objWIHomePage.lnkTABHome);
@@ -339,7 +336,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 20: Verifying the Approver has successfully Approved the Work Item");
   	softAssert.assertEquals(actualWIName, WIName, "SMAB-T1978: Approver has successfully Approved the Work Item");
   	Thread.sleep(5000);
-  	objApasGenericFunctions.logout();
+  	objApasGenericPage.logout();
   	
   }
 
@@ -352,12 +349,12 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		ReportLogger.INFO("Step 1: Login to the Salesforce ");
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		objExemptionsPage.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
 		
 		//Step2: Opening the Exemption Module
 		ReportLogger.INFO("Step 2: Search open Exemption APP. from App Launcher");
-		objApasGenericFunctions.searchModule(modules.EXEMPTIONS);
+		objApasGenericPage.searchModule(modules.EXEMPTIONS);
 		
 		//Step3: create a New Exemption record
 		ReportLogger.INFO("Step 3: Create New Exemption");
@@ -368,14 +365,14 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
 	    String WIName = getWIDetails.get("Name").get(0);    
 	    ReportLogger.INFO("Step 4: Logging OUT of SF");
-	  	objApasGenericFunctions.logout();
+	  	objApasGenericPage.logout();
 	  	Thread.sleep(10000);
 	  	ReportLogger.INFO("Step 5: Logging IN as Approver - Data Admin");
-	  	objApasGenericFunctions.login(users.RP_BUSINESS_ADMIN);
+	  	objApasGenericPage.login(users.RP_BUSINESS_ADMIN);
 	  	
 	    //Step4: Opening the Work Item Module
 	    ReportLogger.INFO("Step 6: Search open App. module - Work Item Management from App Launcher");
-	  	objApasGenericFunctions.searchModule(modules.HOME);
+	  	objApasGenericPage.searchModule(modules.HOME);
 	  	//Step5: Click on the Main TAB - Home
 	  	ReportLogger.INFO("Step 7: Click on the Main TAB - Home");
 	  	objPage.Click(objWIHomePage.lnkTABHome);
@@ -395,14 +392,14 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	  	objPage.Click(objWIHomePage.saveButton);
 		
 	  	ReportLogger.INFO("Step 15: Logging OUT from SF");
-	  	objApasGenericFunctions.logout();
+	  	objApasGenericPage.logout();
 	  	Thread.sleep(10000);
 	  	ReportLogger.INFO("Step 16: Logging IN SF");
-	  	objApasGenericFunctions.login(loginUser);
+	  	objApasGenericPage.login(loginUser);
 	  	Thread.sleep(20000);
 	    //Step4: Opening the Work Item Module
 	    ReportLogger.INFO("Step 17: Search open App. module - Work Item Management from App Launcher");
-	  	objApasGenericFunctions.searchModule(modules.HOME);
+	  	objApasGenericPage.searchModule(modules.HOME);
 	  	//Step5: Click on the Main TAB - Home
 	  	ReportLogger.INFO("Step 18: Click on the Main TAB - Home");
 	  	objPage.Click(objWIHomePage.lnkTABHome);
@@ -417,6 +414,6 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	  	softAssert.assertEquals(actualWIName, WIName, "SMAB-T1981: Approver has successfully returned the Work Item to the Asignee");
 	  	ReportLogger.INFO("Step 23: Logging OUT");
 	  	Thread.sleep(2000);
-	  	objApasGenericFunctions.logout();
+	  	objApasGenericPage.logout();
   }	
 }	

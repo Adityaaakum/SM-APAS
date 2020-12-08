@@ -1,40 +1,22 @@
 package com.apas.PageObjects;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-
-import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
-import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
-import com.apas.generic.ApasGenericFunctions;
-import com.gargoylesoftware.htmlunit.javascript.host.dom.Document;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class RollYearSettingsPage extends ApasGenericPage {
 	
 	Util objUtil;
 	ApasGenericPage objApasGenericPage;
 	SalesforceAPI objSalesforceAPI;
-	ApasGenericFunctions apasGenericObj;
 	Page objPage;
 
 	public RollYearSettingsPage(RemoteWebDriver driver) {
@@ -43,7 +25,6 @@ public class RollYearSettingsPage extends ApasGenericPage {
 		objUtil = new Util();
 		objApasGenericPage = new ApasGenericPage(driver);
 		objSalesforceAPI = new SalesforceAPI();
-		apasGenericObj= new ApasGenericFunctions(driver);
 		objPage=new Page(driver);
 	}
 	
@@ -231,8 +212,8 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	public void enterRollYearData(Map<String, String> dataMap) throws Exception {
 		ReportLogger.INFO("Enter the following values : " + dataMap);
 		enter(rollYearSettings, dataMap.get("Roll Year Settings"));
-		apasGenericObj.selectFromDropDown(rollYear, dataMap.get("Roll Year"));
-		apasGenericObj.selectFromDropDown(status, dataMap.get("Status"));
+		selectFromDropDown(rollYear, dataMap.get("Roll Year"));
+		selectFromDropDown(status, dataMap.get("Status"));
 		enter(lienDate, dataMap.get("Lien Date"));
 		enter(taxStartDate, dataMap.get("Tax Start Date"));
 		enter(taxEndDate, dataMap.get("Tax End Date"));
@@ -267,6 +248,6 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	 * @param fieldName: field name for which error message needs to be fetched
 	 */
 	public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
-		return apasGenericObj.getIndividualFieldErrorMessage(fieldName);
+		return getIndividualFieldErrorMessage(fieldName);
 	}
 }

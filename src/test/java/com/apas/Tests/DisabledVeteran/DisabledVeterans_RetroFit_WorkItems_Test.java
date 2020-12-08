@@ -26,7 +26,6 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
-import com.apas.generic.ApasGenericFunctions;
 
 public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implements testdata, modules, users {
 
@@ -34,7 +33,6 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 
 	Page objPage;
 	LoginPage objLoginPage;
-	ApasGenericFunctions apasGenericObj;
 	Util objUtil;
 	SoftAssertion softAssert;
 	String exemptionFilePath;
@@ -53,7 +51,6 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 
 		objPage = new Page(driver);
 		objLoginPage = new LoginPage(driver);
-		apasGenericObj = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		exemptionFilePath = System.getProperty("user.dir") + testdata.EXEMPTION_DATA;
@@ -90,10 +87,10 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 
 		// Step1: Login to the APAS application using the credentials passed through
 		// data provider
-		apasGenericObj.login(loginUser);
+		objApasGenericPage.login(loginUser);
 
 		// Step2: Opening the WI Home page
-		apasGenericObj.searchModule(modules.HOME);
+		objApasGenericPage.searchModule(modules.HOME);
 
 		// Step3: Navigating to In Pool section and verifying Linked record and
 		// submitting linked record without accepting the WI
@@ -118,9 +115,9 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		workItemPageObj.waitForElementToBeVisible(6, workItemPageObj.referenceDetailsLabel);
 
 		//Validating that 'Roll Code' field and 'Date' field gets automatically populated in the work item record
-		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
 						"SMAB-T2080: Validation that 'Roll Code' fields getting automatically populated in the work item record");
-		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 						"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
 		
 		// Step4: Now deleting the reminder WI, executing the Reminder job again and
@@ -130,7 +127,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		salesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_DV);
 		 	
 		driver.navigate().refresh();
-		apasGenericObj.searchModule(modules.HOME);
+		objApasGenericPage.searchModule(modules.HOME);
 		objPage.Click(workItemPageObj.inPoolTab);
 
 		// Step3: Now verifying the New reminder WI is linked with existing RPSL
@@ -156,7 +153,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//Thread.sleep(3000);
 		//objPage.waitForElementToBeClickable(rpslObj.statusDropDown, 10);
-		apasGenericObj.selectFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
+		objApasGenericPage.selectFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(3000);
 		 */
@@ -195,11 +192,11 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objPage.enter(rpslObj.dvLowIncomeExemptionAmountEditBox, "217910");
 		objPage.enter(rpslObj.dvBasicIncomeExemptionAmountEditBox, "145273");
 		objPage.enter(rpslObj.dvLowIncomeHouseholdLimitEditBox, "65337");
-		apasGenericObj.selectFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
+		objApasGenericPage.selectFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(5000);
 		 */
-		apasGenericObj.saveRecord();
+		objApasGenericPage.saveRecord();
 		driver.close();
 		driver.switchTo().window(parentwindow);
 
@@ -222,7 +219,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		softAssert.assertEquals(reminderSubmittedWI.get("Request Type").get(reminderSubmittedWIRowNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(reminderSubmittedWI.get("Work Pool Name").get(reminderSubmittedWIRowNumber),"Disabled Veterans","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(reminderSubmittedWINumber, reminderWINumber,"SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
-		apasGenericObj.logout();
+		objApasGenericPage.logout();
 	}
 
 	/**
@@ -237,10 +234,10 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 	public void Disabledveteran_RPSLandReminderWIApprovalRejectionValidations(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
-		apasGenericObj.login(loginUser);
+		objApasGenericPage.login(loginUser);
 
 		// Step2: Opening the WI Home page
-		apasGenericObj.searchModule("Home");
+		objApasGenericPage.searchModule("Home");
 
 		// Step3: Navigating to In 'Needs My Approval' section and verifying Linked
 		// record and returning the linked record
@@ -269,15 +266,15 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objPage.switchToNewWindow(parentwindow);
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//objPage.waitForElementToBeClickable(rpslObj.statusDropDown, 10);
-		apasGenericObj.selectFromDropDown(rpslObj.statusDropDown, "Returned by Approver");
+		objApasGenericPage.selectFromDropDown(rpslObj.statusDropDown, "Returned by Approver");
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(5000);
 		 */
-		apasGenericObj.saveRecord();
+		objApasGenericPage.saveRecord();
 		driver.close();
 		driver.switchTo().window(parentwindow);
 		driver.navigate().back();
-		apasGenericObj.globalSearchRecords(reminderSubmittedWINumber);
+		objApasGenericPage.globalSearchRecords(reminderSubmittedWINumber);
 
 		// Step4:Supervisor Verifying that the WI also gets returned
 		objPage.Click(workItemPageObj.detailsWI);
@@ -285,13 +282,13 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage, 10);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
-		apasGenericObj.logout();
+		objApasGenericPage.logout();
 		Thread.sleep(15000);
 
 //******************************* staff member verifying WI status is returned and is under InProgress********************///////////////
 		ReportLogger.INFO("Now logging in as staff member verifying the returned WI ststus and submitting the WI again");
-		apasGenericObj.login(EXEMPTION_SUPPORT_STAFF);
-		apasGenericObj.searchModule(modules.HOME);
+		objApasGenericPage.login(EXEMPTION_SUPPORT_STAFF);
+		objApasGenericPage.searchModule(modules.HOME);
 		workItemPageObj.openWorkItem(reminderSubmittedWINumber);
 
 		objPage.Click(workItemPageObj.detailsTab);
@@ -307,11 +304,11 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//Thread.sleep(3000);
 		//objPage.waitForElementToBeClickable(rpslObj.statusDropDown,10);
-		apasGenericObj.selectFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
+		objApasGenericPage.selectFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(5000);
 		 */
-		apasGenericObj.saveRecord();
+		objApasGenericPage.saveRecord();
 		driver.switchTo().window(parentwindow);
 		driver.navigate().refresh();
 		objPage.Click(workItemPageObj.detailsTab);
@@ -329,13 +326,13 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 
 		softAssert.assertEquals(reminderSubmittedWIAgain.get("Request Type").get(reminderAgainSubmittedWIRowNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(reminderSubmittedWIAgain.get("Work Pool Name").get(reminderAgainSubmittedWIRowNumber),"Disabled veterans","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
-		apasGenericObj.logout();
+		objApasGenericPage.logout();
 
 //******************** step7: Now supervisor will Approve the RPSl and verify the WI is Completed***************///
 
 		ReportLogger.INFO("Now logging in as Superviosr and approving the RPSL and verifying the corresponding WI status");
-		apasGenericObj.login(loginUser);
-		apasGenericObj.searchModule(modules.HOME);
+		objApasGenericPage.login(loginUser);
+		objApasGenericPage.searchModule(modules.HOME);
 		objPage.Click(workItemPageObj.toggleBUtton);
 
 		objPage.javascriptClick(workItemPageObj.needsMyApprovalTab);
@@ -344,13 +341,13 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//Thread.sleep(3000);
 		//objPage.waitForElementToBeClickable(rpslObj.statusDropDown, 10);
-		apasGenericObj.selectFromDropDown(rpslObj.statusDropDown, "Approved");
+		objApasGenericPage.selectFromDropDown(rpslObj.statusDropDown, "Approved");
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(5000);
 		 */
-		apasGenericObj.saveRecord();
+		objApasGenericPage.saveRecord();
 		driver.navigate().back();
-		apasGenericObj.globalSearchRecords(reminderAgainSubmittedWINumber);
+		objApasGenericPage.globalSearchRecords(reminderAgainSubmittedWINumber);
 
 		// Step8:Supervisor Verifying that the WI is completed
 		objPage.Click(workItemPageObj.detailsTab);
@@ -359,7 +356,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Completed","SMAB-T1919:Verify that supervisor is able to approve the annual limits from WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits'");
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline), "Completed","SMAB-T1919:Verify that supervisor is able to approve the annual limits from WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits'");
-		apasGenericObj.logout();
+		objApasGenericPage.logout();
 	}
 
 	/**
@@ -381,10 +378,10 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
 
 		// Step1: Login to the APAS application using the credentials passed through
-		apasGenericObj.login(loginUser);
+		objApasGenericPage.login(loginUser);
 
 		// Step2: Opening the Exemption Module
-		apasGenericObj.searchModule(modules.HOME);
+		objApasGenericPage.searchModule(modules.HOME);
 
 		// Step3: Navigating to In Pool section and verifying Low income exemption
 		// amount verification WI's for all Active Exemptions
@@ -418,9 +415,9 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		softAssert.assertTrue(objPage.verifyElementVisible(workItemPageObj.relatedActionLink),"SMAB-T1918:Verify that User is able to see the Low income WI under 'In Progress' tab after accpeting it");
 
 		//Validating that 'Roll Code' field and 'Date' field gets automatically populated in the work item record
-		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
 								"SMAB-T2080: Validation that 'Roll Code' fields getting automatically populated in the work item record");
-		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 								"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);		
 		objPage.Click(workItemPageObj.detailsWI);
 		//Thread.sleep(3000);
@@ -455,7 +452,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objPage.javascriptClick(workItemPageObj.detailsTab);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1952:Verify that user is able to submit the Low Income WI manually from corresponding WI Home page");
 
-		apasGenericObj.logout();
+		objApasGenericPage.logout();
 
 	}
 

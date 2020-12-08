@@ -18,14 +18,11 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.BPPTablesData;
 import com.apas.config.modules;
-import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 	
 	RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrendPage;
 	SoftAssertion softAssert;
 	String rollYear;
@@ -40,17 +37,16 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		driver = BrowserDriver.getBrowserInstance();
 		objPage = new Page(driver);
 		objBppTrendPage = new BppTrendPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		softAssert = new SoftAssertion();
 		// Executing all the methods for Roll year: 2019
 		rollYear = "2019";
 		objApasGenericPage = new ApasGenericPage(driver);
 		objBppTrendSetupPage = new BppTrendSetupPage(driver);
-		objApasGenericFunctions.updateRollYearStatus("Open", "2019");
+		objBppTrendSetupPage.updateRollYearStatus("Open", "2019");
 	}
 	@AfterMethod
 	public void afterMethod() throws Exception {
-		objApasGenericFunctions.updateRollYearStatus("Closed", "2019");
+		objBppTrendSetupPage.updateRollYearStatus("Closed", "2019");
 	}
 	
 	/**
@@ -63,7 +59,7 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 	@Test(description = "SMAB-T186,SMAB-T188,SMAB-T185,SMAB-T187: Create BPP Composite Factor Setting with invalid and valid min. equip. index factor values", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_Create_BppCompositeFactorSetting(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
-		objApasGenericFunctions.login(loginUser);
+		objBppTrendSetupPage.login(loginUser);
 				
 		//Step2: Updating the composite factor tables status
 		objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.COMPOSITE_TABLES_API_NAMES, "Not Calculated", rollYear);
@@ -75,8 +71,8 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		objBppTrendPage.removeExistingBppFactorSettingEntry(rollYear);
 		
 		//Step5: Opening the BPP Trend module and set All as the view option in grid
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		
 		//Step6: Clicking on the roll year name in grid to navigate to details page of selected roll year
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
@@ -88,8 +84,8 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 
 		//Step8: Opening the BPP Trend module and set All as the view option in grid
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 
 		//Step9: Creating Industrial BPP Composite Factor Settings
@@ -99,8 +95,8 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 
 		//Step10: Opening the BPP Trend module and set All as the view option in grid
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 
 		//Step11: Creating Agricultural BPP Composite Factor Settings
@@ -110,15 +106,15 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 
 		//Step12: Opening the BPP Trend module and set All as the view option in grid
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 
 		//Step13: Creating Construction BPP Composite Factor Settings with incorrect factor value : -1
 		objBppTrendSetupPage.createBppCompositeFactorSetting("Construction", "-1");
 
 		//Step14: Validating the error displayed on entering invalid value
-		String actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Minimum Good Factor");
+		String actualErrorMsg = objBppTrendSetupPage.getIndividualFieldErrorMessage("Minimum Good Factor");
 		softAssert.assertContains(actualErrorMsg, "Minimum Good Factor should be greater than 0", "SMAB-T188: Validation on entering factor value less as 0");
 
 		//Step15: Creating Construction BPP Composite Factor Settings with incorrect factor value : 150
@@ -127,7 +123,7 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		Thread.sleep(1000);
 
 		//Step16: Validating the error displayed on entering invalid value
-		actualErrorMsg = objApasGenericFunctions.getIndividualFieldErrorMessage("Minimum Good Factor");
+		actualErrorMsg = objBppTrendSetupPage.getIndividualFieldErrorMessage("Minimum Good Factor");
 		softAssert.assertContains(actualErrorMsg, "Minimum Good Factor: value outside of valid range on numeric field: 150", "SMAB-T188: Validation on entering factor value less as 150");
 
 		//Step17: Creating Construction BPP Composite Factor Settings
@@ -138,8 +134,8 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 
 		//Step18: Opening the BPP Trend module and set All as the view option in grid
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 
 		//Step19: Retrieving the minimum equipment index factor value for Agricultural before editing
@@ -181,6 +177,6 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		objBppTrendPage.Click(objPage.getButtonWithText("Cancel"));
 
 
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 	}
 }

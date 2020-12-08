@@ -12,23 +12,18 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import com.apas.Assertions.SoftAssertion;
-import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.config.modules;
-import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class ExemptionsPage extends ApasGenericPage {
 	Logger logger;
 	Page objPage;
 	SoftAssertion softAssert1;
-	ApasGenericFunctions apasGenericObj;
-	ApasGenericPage objApasGenericPage;
-	String exemptionFileLocation = "";
 	RealPropertySettingsLibrariesPage objRPSL;
 	SalesforceAPI objSalesforceAPI = new SalesforceAPI();
+	
 	public ExemptionsPage(RemoteWebDriver driver) {
 		
 		super(driver);
@@ -36,10 +31,7 @@ public class ExemptionsPage extends ApasGenericPage {
 		logger = Logger.getLogger(LoginPage.class);
 		objPage=new Page(driver);
 		softAssert1=new SoftAssertion();
-		apasGenericObj= new ApasGenericFunctions(driver);
 		objRPSL=new RealPropertySettingsLibrariesPage(driver);
-
-		
 	}
 	
 	@FindBy(xpath = "//div[@class='pageLevelErrors']//li")
@@ -400,33 +392,33 @@ public class ExemptionsPage extends ApasGenericPage {
 public String createNewExemption(Map<String,String> newExemptionData) throws Exception {
 
 	ReportLogger.INFO("Entering/Selecting values for New Exemption record");
-	apasGenericObj.searchAndSelectFromDropDown("APN",fetchActiveAPN());
+	searchAndSelectFromDropDown("APN",fetchActiveAPN());
 	objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-	apasGenericObj.searchAndSelectFromDropDown(claimantName,fetchAssesseeName());
+	searchAndSelectFromDropDown(claimantName,fetchAssesseeName());
 	objPage.enter("Claimant's SSN", newExemptionData.get("ClaimantSSN"));
 	objPage.enter(spouseName, newExemptionData.get("SpouseName"));
 	objPage.enter(spouseSSN, newExemptionData.get("SpouseSSN"));
-	apasGenericObj.selectFromDropDown(unmarriedSpouseOfDisabledVeteran, newExemptionData.get("UnmarriedSpouseOfDisabledVeteran"));
+	selectFromDropDown(unmarriedSpouseOfDisabledVeteran, newExemptionData.get("UnmarriedSpouseOfDisabledVeteran"));
 	objPage.enter(dateOfDeathOfVeteran, newExemptionData.get("DateOfDeathOfVeteran"));
 	objPage.enter(veteranName, newExemptionData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 	objPage.enter(veteranSSN, newExemptionData.get("VeteranSSN"));
 	objPage.enter(dateAquiredProperty, newExemptionData.get("DateAquiredProperty"));
 	objPage.enter(dateOccupyProperty, newExemptionData.get("DateOccupyProperty"));
-	apasGenericObj.selectFromDropDown(dvExemptionOnPriorResidence, newExemptionData.get("DVExemptionOnPriorResidence"));
+	selectFromDropDown(dvExemptionOnPriorResidence, newExemptionData.get("DVExemptionOnPriorResidence"));
 	objPage.enter(dateMoveFromProprResidence, newExemptionData.get("DateMovedPriorResidence"));
 	objPage.enter(priorResidenceStreetAddress, newExemptionData.get("PriorResidenceStreet"));
 	objPage.enter(priorResidenceCity, newExemptionData.get("PriorResidenceCity"));
-	apasGenericObj.selectFromDropDown(priorResidenceState, newExemptionData.get("PriorResidenceState"));
+	selectFromDropDown(priorResidenceState, newExemptionData.get("PriorResidenceState"));
 	objPage.enter(priorResidenceCounty, newExemptionData.get("PriorResidenceCounty"));
 	objPage.enter(effectiveDateOfUSDVA, newExemptionData.get("EffectiveDateOfUSDVA"));
 	objPage.enter(dateOfNotice, newExemptionData.get("DateOfNotice"));
-	apasGenericObj.selectMultipleValues(newExemptionData.get("BasisForClaim"), "Basis for Claim");
+	selectMultipleValues(newExemptionData.get("BasisForClaim"), "Basis for Claim");
 	objPage.enter(claimanatEmailAddress, newExemptionData.get("EmailAddress"));
 	objPage.enter(claimantTelephone,newExemptionData.get("Telephone"));
-	apasGenericObj.selectMultipleValues(newExemptionData.get("DeceasedVeteranQualification"), "Deceased Veteran Qualification");
-	apasGenericObj.selectFromDropDown(qualification, newExemptionData.get("Qualification"));
+	selectMultipleValues(newExemptionData.get("DeceasedVeteranQualification"), "Deceased Veteran Qualification");
+	selectFromDropDown(qualification, newExemptionData.get("Qualification"));
 	objPage.enter(endDateOfRating, newExemptionData.get("EnddateOfRating"));
-	apasGenericObj.selectFromDropDown(endRatingReason, newExemptionData.get("EndRatingReason"));
+	selectFromDropDown(endRatingReason, newExemptionData.get("EndRatingReason"));
 	objPage.Click(saveButton);
 	
 	objPage.waitForElementToBeClickable(dateAquiredPropertyExemptionDetails, 20);
@@ -439,9 +431,9 @@ public String createNewExemption(Map<String,String> newExemptionData) throws Exc
 public String createNewExemptionWithMandatoryData(Map<String, String> newExemptionData) throws Exception {
 	
 	ReportLogger.INFO("Entering/Selecting values for New Exemption record");
-		apasGenericObj.searchAndSelectFromDropDown("APN",fetchActiveAPN());
+		searchAndSelectFromDropDown("APN",fetchActiveAPN());
 		objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-		apasGenericObj.searchAndSelectFromDropDown("Claimant's Name",fetchAssesseeName());
+		searchAndSelectFromDropDown("Claimant's Name",fetchAssesseeName());
 		objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
 		objPage.enter(veteranName, newExemptionData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 		objPage.enter(veteranSSN, newExemptionData.get("VeteranSSN"));
@@ -449,14 +441,14 @@ public String createNewExemptionWithMandatoryData(Map<String, String> newExempti
 		objPage.enter(dateOccupyProperty, newExemptionData.get("DateOccupyProperty"));
 		objPage.enter(effectiveDateOfUSDVA, newExemptionData.get("EffectiveDateOfUSDVA"));
 		objPage.enter(dateOfNotice, newExemptionData.get("DateOfNotice"));
-		apasGenericObj.selectMultipleValues(newExemptionData.get("BasisForClaim"), "Basis for Claim");
-		apasGenericObj.selectFromDropDown(qualification, newExemptionData.get("Qualification"));
+		selectMultipleValues(newExemptionData.get("BasisForClaim"), "Basis for Claim");
+		selectFromDropDown(qualification, newExemptionData.get("Qualification"));
 		if(newExemptionData.get("Qualification").contains("Not Qualified")) {
-			apasGenericObj.selectFromDropDown(reasonNotQualified, newExemptionData.get("ReasonForNotQualified"));
+			selectFromDropDown(reasonNotQualified, newExemptionData.get("ReasonForNotQualified"));
 		}
 		if(newExemptionData.containsKey("EnddateOfRatingNeeded")) {
 			objPage.enter(endDateOfRating, newExemptionData.get("EnddateOfRatingNeeded"));
-			apasGenericObj.selectFromDropDown(endRatingReason, newExemptionData.get("EndRatingReason"));
+			selectFromDropDown(endRatingReason, newExemptionData.get("EndRatingReason"));
 		}
 		objPage.Click(saveButton);
 		objPage.waitForElementToBeClickable(dateAquiredPropertyExemptionDetails, 20);
@@ -498,11 +490,11 @@ public void enterExemptionData(Map<String, String> dataMap) throws Exception {
 	enter(dateOccupiedProperty, dataMap.get("Date Occupied/Intend to Occupy Property"));
 	enter(dateOfNotice, dataMap.get("Date of Notice of 100% Rating"));
 	enter(effectiveDateOfUSDVA, dataMap.get("Effective Date of 100% USDVA Rating"));
-	apasGenericObj.selectMultipleValues(dataMap.get("Basis For Claim"), "Basis for Claim");
-	apasGenericObj.selectFromDropDown(qualification, dataMap.get("Qualification?"));	
-	if(dataMap.containsKey("Reason for Not Qualified")) apasGenericObj.selectFromDropDown(reasonNotQualified, dataMap.get("Reason for Not Qualified"));;
+	selectMultipleValues(dataMap.get("Basis For Claim"), "Basis for Claim");
+	selectFromDropDown(qualification, dataMap.get("Qualification?"));	
+	if(dataMap.containsKey("Reason for Not Qualified")) selectFromDropDown(reasonNotQualified, dataMap.get("Reason for Not Qualified"));;
 	if(dataMap.containsKey("End Date Of Rating")) enter(endDateOfRating, dataMap.get("End Date Of Rating"));	
-	if(dataMap.containsKey("End Rating Reason")) apasGenericObj.selectFromDropDown(endRatingReason, dataMap.get("End Rating Reason"));		
+	if(dataMap.containsKey("End Rating Reason")) selectFromDropDown(endRatingReason, dataMap.get("End Rating Reason"));		
 }
 
 /**
@@ -517,7 +509,7 @@ public void updateFieldValue(String fieldType, String fieldName, String fieldVal
 	WebElement elemLocator = findElem(fieldType, fieldName);
 	scrollToElement(elemLocator);
 	if(fieldType.equals("Date")) enter(elemLocator, fieldValue);
-	if(fieldType.equals("Dropdown")) apasGenericObj.selectFromDropDown(elemLocator, fieldValue);
+	if(fieldType.equals("Dropdown")) selectFromDropDown(elemLocator, fieldValue);
 }
 
 
@@ -704,7 +696,7 @@ public String fetchAssesseeName() {
 	 * @param fieldName: field name for which error message needs to be fetched
 	 */
 	public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
-		return apasGenericObj.getIndividualFieldErrorMessage(fieldName);
+		return getIndividualFieldErrorMessage(fieldName);
 	}
 
 /**
@@ -723,7 +715,7 @@ public String fetchAssesseeName() {
 		HashMap<String, ArrayList<String>> response  = objSalesforceAPI.select(currentRollYearRPSLQuery);
 		if(response.size()==0 || response==null){
 			ReportLogger.INFO("Current Roll Year RPSL is not present hence creating one for ::"+currentRollYear);
-			apasGenericObj.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
+			searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
 			objRPSL.enterRealPropertySettingsDetails(rpslData,currentRollYear);
 			objRPSL.saveRealPropertySettings();
 			}	

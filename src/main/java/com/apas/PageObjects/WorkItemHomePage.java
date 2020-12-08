@@ -1,15 +1,12 @@
 package com.apas.PageObjects;
 
-import android.text.style.ClickableSpan;
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
-import com.apas.generic.ApasGenericFunctions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +14,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WorkItemHomePage extends Page {
+public class WorkItemHomePage extends ApasGenericPage {
 
 	public final String TAB_IN_PROGRESS = "In Progress";
 	public final String TAB_IN_POOL = "In Pool";
@@ -30,7 +27,6 @@ public class WorkItemHomePage extends Page {
 	public final String TAB_StaffInPool = "Staff - In Pool";
 
 	ApasGenericPage objApasGenericPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	Page objPageObj;
 	SalesforceAPI salesforceAPI ;
 
@@ -38,7 +34,6 @@ public class WorkItemHomePage extends Page {
 		super(driver);
 		PageFactory.initElements(driver, this);
 		objApasGenericPage = new ApasGenericPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objPageObj=new Page(driver);
 	}
 
@@ -236,7 +231,7 @@ public class WorkItemHomePage extends Page {
 		WebElement webElement = driver.findElement(By.xpath(xpath));
 		Click(webElement);
 		Thread.sleep(2000);
-		return objApasGenericFunctions.getGridDataInHashMap();
+		return getGridDataInHashMap();
 	}
 
 	/**

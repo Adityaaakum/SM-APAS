@@ -28,14 +28,10 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.BPPTablesData;
 import com.apas.config.modules;
-import com.apas.config.users;
-import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class BPPTrend_ExportFiles_Test extends TestBase  {
 	RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
 	BppTrendPage objBppTrend;
 	BuildingPermitPage objBuildPermitPage;
@@ -55,13 +51,12 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		objPage = new Page(driver);
 		objBppTrend = new BppTrendPage(driver);
 		objBuildPermitPage = new BuildingPermitPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		rollYear = "2020";
         objBppTrendSetupPage = new BppTrendSetupPage(driver);
-        objApasGenericFunctions.updateRollYearStatus("Open", "2020");
+        objApasGenericPage.updateRollYearStatus("Open", "2020");
 	}
 	/* DESCRIPTION: Performing following once all tables are APPROVED:
 		 * 1. Validate Export Valuation & Composite Factors buttons are not visible before status of all the Factor Tables is 'Approved':: Test Case/JIRA ID: SMAB-T266, SMAB-T303, SMAB-T313
@@ -83,7 +78,7 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Yet to submit for Approval", rollYear);
 		
 		//Step2: Login to the APAS application, Opening the BPP Trend module and selecting the Roll Year
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);
 		
 		//Step3: Validate Export Composite Factors & Export Valuation Factors buttons are not visible when Status is 'Not Calculated/Yet to be Submit for Approval'
@@ -150,7 +145,7 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		exportValuationFactorButtonVisible = Objects.nonNull(objPage.locateElement(objBppTrend.xPathExportValuationFactorsButton, 20));
 		softAssert.assertTrue(exportValuationFactorButtonVisible, "SMAB-T266,SMAB-T303,SMAB-T313: Verify Export Valuation Factors button is not visible when status is 'Approved'");
 					
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	}
 	
 	/* DESCRIPTION: Performing following once all tables are APPROVED:
@@ -172,10 +167,10 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Approved", rollYear);
 				
 		//Deleteing all the previously downloaded files
-		objApasGenericFunctions.deleteFilesFromFolder(downloadLocation);
+		objApasGenericPage.deleteFilesFromFolder(downloadLocation);
 		
 		//Step2: Login to the APAS application, Opening the BPP Trend module and selecting the Roll Year
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);
 		
 		//Step3: Downloading PDF file by clicking Download button
@@ -185,7 +180,7 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		String exportedFileName = downloadedFile.getName();
 		softAssert.assertTrue(exportedFileName.contains("BPP Trends Details " + rollYear + ".pdf"), "SMAB-T206: Verify Principal User/Business admin are able to export Output tables in PDF format");
 		
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	}
 	
 	/* DESCRIPTION: Performing following once all tables are APPROVED:
@@ -207,10 +202,10 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Approved", rollYear);
 				
 		//Deleteing all the previously downloaded files
-		objApasGenericFunctions.deleteFilesFromFolder(downloadLocation);
+		objApasGenericPage.deleteFilesFromFolder(downloadLocation);
 		
 		//Step2: Login to the APAS application, Opening the BPP Trend module and selecting the Roll Year
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);		
 		
 		//Step3: Downloading Composite Factors Excel file by clicking Export Composite Factors button
@@ -223,7 +218,7 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		softAssert.assertTrue(exportedFileName.contains("BPP - Composite Factors by Roll Year-" + rollYear), "SMAB-T1132: Verify downloaded excel file: "+ exportedFileName);
 		
 		//Deleteing all the previously downloaded files
-		objApasGenericFunctions.deleteFilesFromFolder(downloadLocation);
+		objApasGenericPage.deleteFilesFromFolder(downloadLocation);
 		
 		//Step4: Downloading Valuation Factors Excel file by clicking Export Valuation Factors button
 		objBppTrend.exportCompositeOrValuationFactorsFiles("Valuation");
@@ -233,7 +228,7 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		exportedFileName = downloadedFile.getName();
 		softAssert.assertTrue(exportedFileName.contains("BPP - Valuation Factors by Roll Year-" + rollYear), "SMAB-T1132: Verify downloaded excel file: "+ exportedFileName);
 		
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	}
 	
 	
@@ -245,7 +240,7 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 	public void BppTrend_DownloadBppTrendPdfFile_From_BppTrendSetupPage(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application, Opening the BPP Trend module and selecting the Roll Year
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		
 		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		ReportLogger.INFO("Download location : " + downloadLocation);
@@ -255,11 +250,11 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Approved", rollYear);
 
 		//Deleteing all the previously downloaded files
-		objApasGenericFunctions.deleteFilesFromFolder(downloadLocation);
+		objApasGenericPage.deleteFilesFromFolder(downloadLocation);
 
 		//Step2: Opening the BPP Trend module and selecting the Roll Year
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objApasGenericPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objApasGenericPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 		Thread.sleep(2000);	
 
@@ -281,11 +276,11 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		softAssert.assertTrue(exportedFileName.contains("BPP Trends Details " + rollYear + ".pdf"), "SMAB-T207,SMAB-T1130: Verify Principal User/Business admin are download BPP Trends File in PDF format");
 
 		//Step6: Deleting downloaded files from download directory
-		objApasGenericFunctions.deleteFilesFromFolder(downloadLocation);
+		objApasGenericPage.deleteFilesFromFolder(downloadLocation);
 
 		//Step7: Closing File Download Pop-Up
 		objBppTrend.javascriptClick(objBppTrend.closeBtnFileDownloadPage);
 		
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	}
 }

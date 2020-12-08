@@ -1,22 +1,16 @@
 package com.apas.PageObjects;
 
 import com.apas.Reports.ReportLogger;
-import com.apas.generic.ApasGenericFunctions;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.Map;
 
 public class CountyStratCodesPage extends ApasGenericPage {
-
-	ApasGenericFunctions objApasGenericFunctions;
-
+	
 	public CountyStratCodesPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 	}
 
 	public String processingStatusDrpDown = "Processing Status";
@@ -55,7 +49,7 @@ public class CountyStratCodesPage extends ApasGenericPage {
 		openNewEntry();
 		Thread.sleep(1000);
 		enterCountyStratCodeDetails(dataMap);
-		return objApasGenericFunctions.saveRecord();
+		return saveRecord();
 	}
 
 }

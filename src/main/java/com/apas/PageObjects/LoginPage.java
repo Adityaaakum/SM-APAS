@@ -1,13 +1,11 @@
 package com.apas.PageObjects;
 
-import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 public class LoginPage extends Page {
-	Logger logger = Logger.getLogger(LoginPage.class);
 
 	public LoginPage(RemoteWebDriver driver) {
 		super(driver);
