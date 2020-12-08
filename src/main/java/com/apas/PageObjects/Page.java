@@ -890,5 +890,25 @@ public class Page {
 		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='" + text + "']";
 		return driver.findElement(By.xpath(xpath));
 	}
+	
+	/**
+	 * Description: This method will clear the value from the lookup field
+	 * @param exempName: Takes field name as an argument
+	 */
+	public void clearSelection(String fieldName) throws Exception {
+		String xpathStr = "//label[text()='" + fieldName + "']/parent::lightning-grouped-combobox//span[text()='Clear Selection']";
+		WebElement fieldLocator = locateElement(xpathStr, 30);
+	    Click(fieldLocator);
+	}
+	
+	/**
+	 * Description: This method will clear the value from the lookup field
+	 * @param exempName: Takes field name as an argument
+	 */
+	public void clickElementForFieldValue(String fieldName) throws Exception {
+		String xpathStr = "//span[text()='" + fieldName + "']/parent::div/following-sibling::div//div[@class='slds-grid']//a/span";
+		WebElement fieldValueLocator = locateElement(xpathStr, 30);
+	    Click(fieldValueLocator);
+	}
 
 }

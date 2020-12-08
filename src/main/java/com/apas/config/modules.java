@@ -18,6 +18,8 @@ public interface modules {
 	public static final String HOME = "Home";
 	public static final String BPP_ACCOUNTS = "BPP Accounts";
 	public static final String CPI_FACTORS = "CPI Factors";
+	public static final String WORK_POOL = "Work Pool";
+	public static final String WORK_ITEM = "Work Item";
 
 	public static final String REAL_PROPERTY_SETTINGS_LIBRARIES = "Real Property Settings Libraries";
 	public static final String ROLL_YEAR_SETTINGS = "Roll Year Settings";

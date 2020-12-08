@@ -150,7 +150,7 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[2]//input[@type='checkbox']/parent::span")
 	public List<WebElement> lowincomeSubmittedWI;
 
-	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//div[@class='slds-truncate']//a")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[@class='slds-truncate']//a")
 	public WebElement linkedItemsRecord;
 
 	@FindBy(xpath="//button[@title='Accept Work Item']")
@@ -170,7 +170,13 @@ public class WorkItemHomePage extends Page {
 
 	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='Status']/parent::div/following-sibling::div//lightning-formatted-text")
 	public WebElement wiStatusDetailsPage;
-
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@class='test-id__field-label' and text()='Action']/parent::div/following-sibling::div//lightning-formatted-text")
+	public WebElement wiActionDetailsPage;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@class='test-id__field-label' and text()='Related Action']/parent::div/following-sibling::div//lightning-formatted-text")
+	public WebElement wiRelatedActionDetailsPage;
+	
 	@FindBy(xpath = "//li//a[@aria-selected='true' and @role='option']")
 	public WebElement currenWIStatusonTimeline;
 
@@ -180,15 +186,18 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath = "//button[contains(.,'Cancel')]")
 	public WebElement cancelBtn;
 
-	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//button[@name= 'Edit']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@name= 'Edit']")
 	public WebElement editBtn;
 
 	@FindBy(xpath ="//div[@class='windowViewMode-maximized active lafPageHost']//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
 	public WebElement vaRollYear;
 
-	@FindBy(xpath="//a[text()='Submitted for Approval']")
+	@FindBy(xpath="//span[text()='Submitted for Approval']")
 	public WebElement submittedforApprovalTimeline;
-
+	
+	@FindBy(xpath="//span[text()='Completed']")
+	public WebElement completedTimeline;
+	
 	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//button//span[text()='Mark as Current Status']")
 	public WebElement markStatusCompleteBtn;
 	
@@ -227,8 +236,22 @@ public class WorkItemHomePage extends Page {
 	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Work Pool']/..//input")
 	public WebElement WorkPool;
 	
+	@FindBy(xpath = "//span[text() = 'Value']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]")
+	public WebElement editValueonDetailPage;
+	
     public String SaveButton="Save";
     
+    @FindBy(xpath = "//div[contains(@class,'slds-media__body')]//slot/lightning-formatted-text[contains(text(),'WI-')]")
+	public WebElement getWorkItem;
+    
+	//public String newButton = "New";
+	public String editButton = "Edit";
+	
+	@FindBy(xpath = "//a//div[text()='New']")
+	public WebElement newButton;
+	
+
+	
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
 	 *
