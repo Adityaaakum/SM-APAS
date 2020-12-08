@@ -54,6 +54,7 @@ public interface testdata {
     String BPP_TREND_BOE_VAL_FACTORS_VALID = "\\data\\BppTrend\\Valid_Import_Files\\";
     String BPP_TREND_CAA_VAL_FACTORS_VALID = "\\data\\BppTrend\\Valid_Import_Files\\";
     String MANUAL_WORK_ITEMS = "\\data\\WorkItems\\ManualWorkItem.json";
+	String MANUAL_WORK_ITEMS_BPP_ACCOUNTS = userDirectory + "\\data\\WorkItems\\ManualWorkItemBPPAccount.json";
     String BPP_TREND_COMPOSITE_FACTORS_DATA = "\\data\\BppTrend\\BPPTrends_CompositeFactorsData.json";
 
 }

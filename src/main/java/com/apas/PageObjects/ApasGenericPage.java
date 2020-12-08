@@ -39,6 +39,9 @@ public class ApasGenericPage extends Page {
 		objLoginPage = new LoginPage(driver);
 	}
 
+	public String tabDetails = "Details";
+	public String tabRelated = "Related";
+
 	@FindBy(xpath = "//button[@title='Close error dialog']")
 	public WebElement crossIcon;
 
@@ -412,9 +415,9 @@ public class ApasGenericPage extends Page {
 	 * @param tabName: tabName
 	 */
 	public void openTab(String tabName) throws Exception {
-		String tabXPath="//a[@role='tab'][@data-label='"+ tabName +"']";
+		String tabXPath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='"+ tabName +"']";
 		Click(driver.findElementByXPath(tabXPath));
-		
+		Thread.sleep(3000);
 	}
 
 
@@ -584,8 +587,10 @@ public class ApasGenericPage extends Page {
 	 * @description: This method will return the value of the field passed in the parameter from the currently open page
 	 */
 	public String getFieldValueFromAPAS(String fieldName, String sectionName) {
+		String fieldValue;
 		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'" + sectionName + "')]";
 		String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName + "']/../..//slot[@slot='outputField']";
+		WebElement field = driver.findElement(By.xpath(fieldPath));
 
 		String fieldXpath = fieldPath + "//force-hoverable-link//a | " +
 				fieldPath + "//lightning-formatted-text | " +
@@ -593,7 +598,12 @@ public class ApasGenericPage extends Page {
 				fieldPath + "//lightning-formatted-rich-text | " +
 				fieldPath + "//force-record-type//span";
 
-		String fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();
+		try{
+			fieldValue = field.findElement(By.xpath(fieldXpath)).getText();
+		}catch (Exception ex){
+			fieldValue= "";
+		}
+
 		System.out.println(fieldName + " : " + fieldValue);
 		return fieldValue;
 	}
@@ -899,17 +909,6 @@ public class ApasGenericPage extends Page {
 			}
 		}
 		return gridDataHashMap;
-	}
-
-	/**
-	 * @param element,          timeout: webelement to be searched
-	 * @param timeOutInSeconds: timeout in seconds
-	 * @throws Exception
-	 * @Description: This method is to check for the disapperance of an element
-	 */
-
-	public void waitForElementToDisappear(WebElement element, int timeOutInSeconds) throws Exception {
-		waitForElementToDisappear(element,timeOutInSeconds);
 	}
 
 
