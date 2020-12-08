@@ -9,9 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.math3.util.Precision;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
@@ -25,16 +22,14 @@ import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
-import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
 
-public class ValueAdjustmentsPage extends Page {
+public class ValueAdjustmentsPage extends ApasGenericPage {
 	
 	Logger logger;
 	Page objPage;
 	SoftAssertion softAssert1;
-	ApasGenericFunctions apasGenericObj;
 	BuildingPermitPage objBuildingPermitPage;
 	
 	public ValueAdjustmentsPage(RemoteWebDriver driver) {
@@ -44,11 +39,7 @@ public class ValueAdjustmentsPage extends Page {
 		logger = Logger.getLogger(LoginPage.class);
 		objPage=new Page(driver);
 		softAssert1=new SoftAssertion();
-		apasGenericObj= new ApasGenericFunctions(driver);
 		objBuildingPermitPage=new BuildingPermitPage(driver);
-		
-		
-		
 	}
 
 	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div//table//tbody//tr//td[1]//following-sibling::th//a")
@@ -472,12 +463,12 @@ public double converToDouble(Object amount){
 public float verifyTaxYearProatedPercentage() throws Exception {
 	objPage.waitForElementToBeClickable(60, startDateValueLabel);
 
-    float numberOfDays = DateUtil.getDateDiff(apasGenericObj.getFieldValueFromAPAS(startDateValueLabel),apasGenericObj.getFieldValueFromAPAS(endDateValueLabel));	
+    float numberOfDays = DateUtil.getDateDiff(getFieldValueFromAPAS(startDateValueLabel),getFieldValueFromAPAS(endDateValueLabel));	
 	locateElement("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Settings']//parent::div//following-sibling::div//a", 2);
 
 	Click(rollYearSettingsLabel);
 	objPage.waitForElementToBeClickable(60, taxStartDateValueLabel);
-	float totalNoOfDays = DateUtil.getDateDiff(apasGenericObj.getFieldValueFromAPAS(taxStartDateValueLabel),apasGenericObj.getFieldValueFromAPAS(taxEndDateValueLabel));
+	float totalNoOfDays = DateUtil.getDateDiff(getFieldValueFromAPAS(taxStartDateValueLabel),getFieldValueFromAPAS(taxEndDateValueLabel));
 	driver.navigate().back();
 	float taxYearProatedPercentage = 0;
 	float taxYearProated = 0;
@@ -493,7 +484,7 @@ public float verifyTaxYearProatedPercentage() throws Exception {
  */
 public float calculateBasicExemptionAmount() throws Exception {
 	double taxYearProatedPercentage = verifyTaxYearProatedPercentage();
-	float basicExemptionAmt = apasGenericObj.convertToFloat(basicReferenceAmountLabel.getText());
+	float basicExemptionAmt = convertToFloat(basicReferenceAmountLabel.getText());
 	DecimalFormat d = new DecimalFormat("0.00");					
 	float exemptionAmountCalculated = Float.parseFloat(d.format((basicExemptionAmt*taxYearProatedPercentage)/100));
 	return exemptionAmountCalculated;
@@ -515,9 +506,9 @@ public float calculateNetExemptionAmount(float exemptionAmountCalculated) throws
 	if("".equals(penaltyAmtCalculated) && "".equals(penaltyAmtUserAdjust)) {
 		penaltyAmt = (float) 0.00;	
 	}else if("".equals(penaltyAmtUserAdjust) && !("".equals(penaltyAmtCalculated))) {
-		penaltyAmt = Math.round(apasGenericObj.convertToFloat(penaltyAmtCalculated));
+		penaltyAmt = Math.round(convertToFloat(penaltyAmtCalculated));
 	}else {
-		penaltyAmt = Math.round(apasGenericObj.convertToFloat(penaltyAmtUserAdjust));
+		penaltyAmt = Math.round(convertToFloat(penaltyAmtUserAdjust));
 	}
     netExemptionAmountCalculated = exemptionAmountCalculated - penaltyAmt;
 	return netExemptionAmountCalculated;
@@ -530,7 +521,7 @@ public float calculateNetExemptionAmount(float exemptionAmountCalculated) throws
  */
 public float calculateLowIncomeExemptionAmount() throws Exception {
 	double taxYearProatedPercentage = verifyTaxYearProatedPercentage();
-	float lowIncomeExemptionAmt = apasGenericObj.convertToFloat(lowIncomeReferenceAmountLabel.getText());
+	float lowIncomeExemptionAmt = convertToFloat(lowIncomeReferenceAmountLabel.getText());
 	DecimalFormat d = new DecimalFormat("0.00");
 	Float exemptionAmountCalculated = Float.parseFloat(d.format((lowIncomeExemptionAmt*taxYearProatedPercentage)/100));
 	return exemptionAmountCalculated;

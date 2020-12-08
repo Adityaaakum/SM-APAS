@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import com.apas.TestBase.TestBase;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.*;
@@ -25,7 +27,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.apas.Reports.ReportLogger;
 import com.google.common.base.Function;
 
-public class Page {
+public class Page extends TestBase {
 
 	public static final int MAX_TIMEOUT = 60;
 	public static final int MAX_Element_TIMEOUT = 30;
@@ -437,6 +439,12 @@ public class Page {
 		// new Select(elem).selectByIndex(2);
 		waitUntilPageisReady(driver);
 		return true;
+	}
+
+	public void SelectByVisibleText(WebElement elem, String value) throws Exception {
+		elem.click();
+		new org.openqa.selenium.support.ui.Select(elem).selectByVisibleText(value);
+		waitUntilPageisReady(driver);
 	}
 
 	/**
@@ -875,8 +883,12 @@ public class Page {
 	 * @return : webelement against the label
 	 */
 	public WebElement getWebElementWithLabel(String label) throws Exception {
-		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()=\"" + label + "\"]/..//input";
-		waitUntilElementIsPresent(xpath,5);
+		String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]";
+		String xpath = commonPath + "//label[text()=\"" + label + "\"]/..//input | " +
+					   commonPath +	"//input[@name='" + label + "'] | " + //this condition was observed on manual work item creation pop up for edit boxes
+				       commonPath + "//*[@class='inputHeader' and contains(.,'" + label + "')]/..//Select"; //This condition was observed for few drop downs of Select Type
+
+		waitUntilElementIsPresent(xpath,3);
 		return driver.findElement(By.xpath(xpath));
 	}
 
@@ -887,10 +899,10 @@ public class Page {
 	 * @return : button element
 	 */
 	public WebElement getButtonWithText(String text){
-		String commonxPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]";
+		String commonxPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]";
 		String xpath = commonxPath + "//button[text()='" + text + "'] | " +
 				       commonxPath + "//div[text()='" + text + "']//..";
+
 		return driver.findElement(By.xpath(xpath));
 	}
-
 }

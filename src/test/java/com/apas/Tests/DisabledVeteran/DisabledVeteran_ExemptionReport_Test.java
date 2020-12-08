@@ -26,13 +26,11 @@ import com.apas.Utils.ExcelUtils;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 	private RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	SoftAssertion softAssert;
 	Util objUtils;
 	ExemptionsPage objExemptionsPage;
@@ -47,12 +45,11 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 
 		objPage = new Page(driver);
 		objUtils = new Util();
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		softAssert = new SoftAssertion();
 		objApasGenericPage = new ApasGenericPage(driver);
 		objExemptionsPage = new ExemptionsPage(driver);	
 		objReportsPage = new ReportsPage(driver);
-		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
+		objApasGenericPage.updateRollYearStatus("Closed", "2020");
 	}
 
 	/**
@@ -72,13 +69,13 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		ReportLogger.INFO("Download location : " + downloadLocation);
 
 		//Step1: Login to the APAS application using the credentials passed through data provider
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 
 		//Step2: Opening the Reports module
-		objApasGenericFunctions.searchModule(modules.REPORTS);
+		objApasGenericPage.searchModule(modules.REPORTS);
 
 		//Deleteing all the previously downloaded files
-		objApasGenericFunctions.deleteFilesFromFolder(downloadLocation);
+		objApasGenericPage.deleteFilesFromFolder(downloadLocation);
 
 		//Step3: Exporting 'DV Exemption Report' report in Formatted Mode
 		objReportsPage.exportReport(reportName,ReportsPage.FORMATTED_EXPORT);
@@ -107,7 +104,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		
 		driver.switchTo().parentFrame();	
 		
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	}
 	
 	
@@ -119,10 +116,10 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 	@Test(description = "SMAB-T606: Verify the Exemption Support staff is able to generate the report with the Active and deactivated exemptions", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class ,groups = {"regression", "DisabledVeteranExemption" })
 	public void DisabledVeteran_verifyCreatedExemptionsVisiblityInReport(String loginUser) throws Exception {
 		// Step1: Login to the APAS application using the credentials passed through		
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		
 		//Step2: Open the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 				
 		// Step3: Fetching data to verify column names in report
 		Map<String, String> activeExemptionDataMap;
@@ -149,7 +146,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		inActiveExemptionDataMap = objUtils.generateMapFromJsonFile(exemptionData, "DataToCreateExemptionWithEndDate");
 		
 		//Step6: Open the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		
 		/*Step7: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 		 Create Exemption record - InActive
@@ -162,7 +159,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 		ReportLogger.INFO("In Active Exemption Created: "+inActiveExemptionName);	
 		
 		// Step8: Searching Reports Module
-		objApasGenericFunctions.searchModule(modules.REPORTS);
+		objApasGenericPage.searchModule(modules.REPORTS);
 		
 		// Step9: Navigating to 'DV Exemption Export' Report
 		objReportsPage.navigateToReport("DV Exemption Export");
@@ -189,12 +186,12 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 			objReportsPage.sortReportColumn("Exemption: Exemption Name");
 			
 			// Step14: Fetch the data from 2nd row of Report
-			HashMap<String, ArrayList<String>> getReportDataInActiveExemp = objApasGenericFunctions.getGridDataInLinkedHM(2);
+			HashMap<String, ArrayList<String>> getReportDataInActiveExemp = objApasGenericPage.getGridDataInLinkedHM(2);
 			String actualInActiveExemption = getReportDataInActiveExemp.get("Exemption: Exemption Name").get(0).replace("[", "").replace("]", "");
 			softAssert.assertEquals(actualInActiveExemption, inActiveExemptionName, "SMAB-T606:Verify In Active Exemption created is visible in report");
 			
 			// Step15: Fetch the data from 4th row of Report
-			HashMap<String, ArrayList<String>> getReportDataActiveExemp = objApasGenericFunctions.getGridDataInLinkedHM(4);
+			HashMap<String, ArrayList<String>> getReportDataActiveExemp = objApasGenericPage.getGridDataInLinkedHM(4);
 
 			// Step16: Verify Exemption with Status 'Active' created above is visible in report
 			String actualActiveExemption = getReportDataActiveExemp.get("Exemption: Exemption Name").get(0).replace("[", "").replace("]", "");
@@ -202,7 +199,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 			
 		}	 
 		objPage.switchBackFromFrame();
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	}
 	
 	

@@ -1,15 +1,12 @@
 package com.apas.PageObjects;
 
-import android.text.style.ClickableSpan;
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
-import com.apas.generic.ApasGenericFunctions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +14,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WorkItemHomePage extends Page {
+public class WorkItemHomePage extends ApasGenericPage {
 
 	public final String TAB_IN_PROGRESS = "In Progress";
 	public final String TAB_IN_POOL = "In Pool";
@@ -30,7 +27,6 @@ public class WorkItemHomePage extends Page {
 	public final String TAB_StaffInPool = "Staff - In Pool";
 
 	ApasGenericPage objApasGenericPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	Page objPageObj;
 	SalesforceAPI salesforceAPI ;
 
@@ -38,10 +34,13 @@ public class WorkItemHomePage extends Page {
 		super(driver);
 		PageFactory.initElements(driver, this);
 		objApasGenericPage = new ApasGenericPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objPageObj=new Page(driver);
 	}
 
+	public String changeWorkPool= "Change Work Pool";
+	public String changeAssignee= "Change Assignee";
+	public String reasonForTransferring= "Reason for Transferring";
+	
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
 	public WebElement successAlert;
 
@@ -156,6 +155,7 @@ public class WorkItemHomePage extends Page {
 
 	@FindBy(xpath="//div[@class='pageLevelErrors']//ul[1]")
 	public WebElement errorMsg;
+
 	@FindBy(xpath="//li[@title='Details']//a[@data-label='Details']")
 	public WebElement detailsWI;
 
@@ -212,6 +212,14 @@ public class WorkItemHomePage extends Page {
     @FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
 
+	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Assigned To']/..//input")
+	public WebElement AssignedTo;
+
+	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Work Pool']/..//input")
+	public WebElement WorkPool;
+
+	public String SaveButton="Save";
+
 	public String neighborhoodCodeEditBox="Neighborhood Code";
 	public String neighborhoodDescriptionEditBox="Neighborhood Description";
 	public String primaryAppraiserDropDown="Primary Appraiser";
@@ -231,7 +239,7 @@ public class WorkItemHomePage extends Page {
 		WebElement webElement = driver.findElement(By.xpath(xpath));
 		Click(webElement);
 		Thread.sleep(2000);
-		return objApasGenericFunctions.getGridDataInHashMap();
+		return getGridDataInHashMap();
 	}
 
 	/**
@@ -241,7 +249,7 @@ public class WorkItemHomePage extends Page {
 	 * @throws InterruptedException 
 	 **/
 	public void openWorkItem(String workItem) throws IOException, InterruptedException {
-		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[text()='" + workItem + "'] | //div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='"+workItem + "']"));
+		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[@title='" + workItem + "' or text()='" + workItem + "'] | //div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='"+workItem + "']"));
 		scrollToElement(webElement);
 		javascriptClick(webElement);
 		Thread.sleep(3000);
@@ -306,7 +314,7 @@ public class WorkItemHomePage extends Page {
 	 **/
 	public void openActionLink(String workItem) throws Exception {
 		ReportLogger.INFO("Clicking on Action Link of the work item : " + workItem);
-		String xpath = "//a[@title='" + workItem + "']//ancestor::th//following-sibling::td//a";
+		String xpath = "//a[@title='" + workItem + "' or text()='" + workItem + "']//ancestor::th//following-sibling::td//a";
 		waitUntilElementIsPresent(xpath, 15);
 		waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
 		javascriptClick(driver.findElement(By.xpath(xpath)));
@@ -331,14 +339,14 @@ public class WorkItemHomePage extends Page {
 		waitForElementToDisappear(successAlert, 10);
 	}
 
-	    
+
     public WebElement searchWIinGrid(String WIName) {
     
 		WebElement btnNext = null;
 		List<WebElement> actualWINames = null;
 
 		try {
-			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "']");			
+			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "' or text()='" + WIName + "']");
 			if(actualWINames.isEmpty()) {				
 				String pageMsg = driver.findElementByXPath("//p[@class='slds-m-vertical_medium content']").getText();
 				pageMsg=pageMsg.replaceAll("\\s","").trim();
@@ -462,8 +470,7 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	    
 		  searchWIinGrid(WIName);
 		
-		  WebElement chkBoxWI = driver.findElementByXPath("//table/tbody//tr/th//a[@title='"+ WIName + "']"
-		  + "/ancestor::tr/td//input[@type='checkbox']");
+		  WebElement chkBoxWI = driver.findElementByXPath("//table/tbody//tr/th//a[@title='"+ WIName + "' or text()='"+ WIName + "']"  + "/ancestor::tr/td//input[@type='checkbox']");
 	    
 		//WebElement chkBoxWI = lnkWorkItem.findElement(By.xpath("/ancestor::tr/td//input[@type='checkbox']"));
 		javascriptClick(chkBoxWI);
@@ -500,15 +507,15 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		}
 		return actualRequestTypeNameFrmGrid;
 	}
-	
-	 /**
-		 * This method will select work item from in progress tab
-		 *
-		 * @param workItem :created workItem
-		 **/
-	public void selectWorkItemOnHomePage(String workItem) throws IOException{
-        WebElement webElement = driver.findElement(By.xpath("//a[text()='"+workItem+"']/ancestor::tr//td[2]//span[contains(@class,'slds-checkbox_faux')]"));
-        scrollToElement(webElement);
-        Click(webElement);
-    }
+	 
+	/**
+	 * This method will select work item from in progress tab
+	 *
+	 * @param workItem :created workItem
+	 **/
+	 public void selectWorkItemOnHomePage(String workItem) throws IOException{
+			WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
+			scrollToElement(webElementCheckBox);
+			Click(webElementCheckBox);			
+	    }
 }

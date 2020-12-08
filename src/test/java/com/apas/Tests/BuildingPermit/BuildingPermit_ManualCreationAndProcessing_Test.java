@@ -11,7 +11,6 @@ import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.users;
-import com.apas.generic.ApasGenericFunctions;
 import com.apas.DataProviders.DataProviders;
 import com.relevantcodes.extentreports.LogStatus;
 import org.openqa.selenium.By;
@@ -28,7 +27,6 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 	RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	BuildingPermitPage objBuildingPermitPage;
 	ParcelsPage objParcelsPage;
 	SoftAssertion softAssert = new SoftAssertion();
@@ -43,7 +41,6 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		objPage = new Page(driver);
 		objBuildingPermitPage = new BuildingPermitPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objParcelsPage = new ParcelsPage(driver);
 	}
 
@@ -60,27 +57,27 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		String parcelToSearch = response.get("Name").get(0);
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the Parcels module
-		objApasGenericFunctions.searchModule(modules.PARCELS);
+		objBuildingPermitPage.searchModule(modules.PARCELS);
 
 		//Step3: Search and Open the Parcel
-		objApasGenericFunctions.globalSearchRecords(parcelToSearch);
+		objBuildingPermitPage.globalSearchRecords(parcelToSearch);
 
 		//Step4: Opening the Primary Situs Screen using the primary situs link on parcel tab and store the values of "situs code" and "primary situs"
 		objPage.Click(objParcelsPage.linkPrimarySitus);
 		Thread.sleep(3000);
-		String situsName = objApasGenericFunctions.getFieldValueFromAPAS("Situs Name");
-		String situsCityCode = objApasGenericFunctions.getFieldValueFromAPAS("Situs City Code");
-		String situsType = objApasGenericFunctions.getFieldValueFromAPAS("Situs Type");
-		String situsDirection = objApasGenericFunctions.getFieldValueFromAPAS("Direction");
-		String situsNumber = objApasGenericFunctions.getFieldValueFromAPAS("Situs Number");
-		String situsUnitNumber = objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number");
-		String situsStreetName = objApasGenericFunctions.getFieldValueFromAPAS("Situs Street Name");
+		String situsName = objBuildingPermitPage.getFieldValueFromAPAS("Situs Name");
+		String situsCityCode = objBuildingPermitPage.getFieldValueFromAPAS("Situs City Code");
+		String situsType = objBuildingPermitPage.getFieldValueFromAPAS("Situs Type");
+		String situsDirection = objBuildingPermitPage.getFieldValueFromAPAS("Direction");
+		String situsNumber = objBuildingPermitPage.getFieldValueFromAPAS("Situs Number");
+		String situsUnitNumber = objBuildingPermitPage.getFieldValueFromAPAS("Situs Unit Number");
+		String situsStreetName = objBuildingPermitPage.getFieldValueFromAPAS("Situs Street Name");
 
 		//Step5: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step6: Prepare a test data to create a new building permit
 		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
@@ -91,10 +88,10 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
 
 		//Step8: Opening the Building Permit with the Building Permit Number Passed above and validating the field values
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
-		objApasGenericFunctions.displayRecords("All Manual Building Permits");
-		objApasGenericFunctions.searchRecords(buildingPermitNumber);
-		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objApasGenericFunctions.getGridDataInHashMap();
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.displayRecords("All Manual Building Permits");
+		objBuildingPermitPage.searchRecords(buildingPermitNumber);
+		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objBuildingPermitPage.getGridDataInHashMap();
 		objBuildingPermitPage.openBuildingPermit(buildingPermitNumber);
 
 		//Grid Data validation for the building permit created manually
@@ -110,37 +107,37 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("APN").get(0), parcelToSearch,"SMAB-T383,SMAB-T416: 'Parcel' validation on the data displayed on the grid");
 
 		//Validation for the fields in the section Building Permit Information
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Building Permit Number", "Building Permit Information"), buildingPermitNumber, "SMAB-T383: 'Building Permit Number' Field Validation in 'Building Permit Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("County Strat Code Description", "Building Permit Information"), manualBuildingPermitMap.get("County Strat Code Description"), "SMAB-T383: 'County Strat Code Description' Field Validation in 'Building Permit Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Issue Date", "Building Permit Information"), manualBuildingPermitMap.get("Issue Date"), "SMAB-T383: 'Issue Date' Field Validation in 'Building Permit Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Work Description", "Building Permit Information"), manualBuildingPermitMap.get("Work Description"), "SMAB-T383: 'Work Description' Field Validation in 'Building Permit Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("APN", "Building Permit Information"), parcelToSearch, "SMAB-T383: 'Parcel' Field Validation in 'Building Permit Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Estimated Project Value", "Building Permit Information"), "$" + manualBuildingPermitMap.get("Estimated Project Value"), "SMAB-T383: 'Estimated Project Value' Field Validation in 'Building Permit Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Completion Date", "Building Permit Information"), manualBuildingPermitMap.get("Completion Date"), "SMAB-T383: 'Completion Date' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Building Permit Number", "Building Permit Information"), buildingPermitNumber, "SMAB-T383: 'Building Permit Number' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("County Strat Code Description", "Building Permit Information"), manualBuildingPermitMap.get("County Strat Code Description"), "SMAB-T383: 'County Strat Code Description' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Issue Date", "Building Permit Information"), manualBuildingPermitMap.get("Issue Date"), "SMAB-T383: 'Issue Date' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Work Description", "Building Permit Information"), manualBuildingPermitMap.get("Work Description"), "SMAB-T383: 'Work Description' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("APN", "Building Permit Information"), parcelToSearch, "SMAB-T383: 'Parcel' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Estimated Project Value", "Building Permit Information"), "$" + manualBuildingPermitMap.get("Estimated Project Value"), "SMAB-T383: 'Estimated Project Value' Field Validation in 'Building Permit Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Completion Date", "Building Permit Information"), manualBuildingPermitMap.get("Completion Date"), "SMAB-T383: 'Completion Date' Field Validation in 'Building Permit Information' section");
 
 		//Validation for the fields auto populated in the section Situs Information
 		//Removed Situs City Code as part of Defect#5849
-//		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs City Code","Situs Information"), situsCityCode, "SMAB-T520: 'Situs City Code' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs","Situs Information"), situsName, "SMAB-T520, SMAB-T421: 'Situs' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Type","Situs Information"), situsType, "SMAB-T383: 'Situs Type' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Direction"), situsDirection, "SMAB-T383: 'Situs Direction' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Number","Situs Information"), situsNumber, "SMAB-T383: 'Situs Number' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), situsUnitNumber, "SMAB-T383: 'Situs Unit Number' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Street Name","Situs Information"), situsStreetName, "SMAB-T383: 'Situs Street Name' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Permit City Code","Situs Information"), manualBuildingPermitMap.get("Permit City Code"), "SMAB-T383: 'Permit City Code' Field Validation in 'Situs Information' section");
+//		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs City Code","Situs Information"), situsCityCode, "SMAB-T520: 'Situs City Code' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs","Situs Information"), situsName, "SMAB-T520, SMAB-T421: 'Situs' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Type","Situs Information"), situsType, "SMAB-T383: 'Situs Type' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Direction"), situsDirection, "SMAB-T383: 'Situs Direction' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Number","Situs Information"), situsNumber, "SMAB-T383: 'Situs Number' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), situsUnitNumber, "SMAB-T383: 'Situs Unit Number' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Street Name","Situs Information"), situsStreetName, "SMAB-T383: 'Situs Street Name' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit City Code","Situs Information"), manualBuildingPermitMap.get("Permit City Code"), "SMAB-T383: 'Permit City Code' Field Validation in 'Situs Information' section");
 
 		//Validation for the fields auto populated in the section Processing Status
 		//Processing and Calculating Processing Status are calculated based on "Processing Status Information" section from "County Strat Code Infomration"
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process", "SMAB-T520, SMAB-T402: 'Processing Status' Field Validation in 'Processing Status' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process", "SMAB-T402: 'Calculated Processing Status' Field Validation in 'Processing Status' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process", "SMAB-T520, SMAB-T402: 'Processing Status' Field Validation in 'Processing Status' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process", "SMAB-T402: 'Calculated Processing Status' Field Validation in 'Processing Status' section");
 
 		//Validation for the fields auto populated in the section System Information
 		//Strat Code reference Number can be fetched from the County Strat Code Screen of the code choosen while creating the building permit
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Strat Code Reference Number","System Information"), "42", "SMAB-T383: 'Record Type' Field Validation in 'System Information' section");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Record Type","System Information"), "Manual Entry Building Permit", "SMAB-T383: 'Record Type' Field Validation in 'System Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Strat Code Reference Number","System Information"), "42", "SMAB-T383: 'Record Type' Field Validation in 'System Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Record Type","System Information"), "Manual Entry Building Permit", "SMAB-T383: 'Record Type' Field Validation in 'System Information' section");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 	
 	/**
@@ -152,17 +149,17 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	public void BuildingPermit_EditAndValidateRequiredFieldsValidationsForExistingPermit(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Editing the existing Building Permit without giving all the mandatory fields and validating the error messages appearing
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Editing the existing Building Permit without giving all the mandatory fields");
-		objApasGenericFunctions.displayRecords("All Manual Building Permits");
-		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objApasGenericFunctions.getGridDataInHashMap(1);
+		objBuildingPermitPage.displayRecords("All Manual Building Permits");
+		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objBuildingPermitPage.getGridDataInHashMap(1);
 		String buildingPermitNumber = manualBuildingPermitGridDataMap.get("Building Permit Number").get(0);
-		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
+		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
 		objPage.Click(objBuildingPermitPage.editButton);
 		Thread.sleep(2000);
 
@@ -172,15 +169,15 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		objPage.waitForElementToBeClickable(30,objBuildingPermitPage.workDescriptionTxtBox);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,"Tree Removal");
-		softAssert.assertEquals(objApasGenericFunctions.saveRecordAndGetError(),expectedWorkDescriptionError,"SMAB-T466,SMAB-T349: Warning message validation on the top when 'Work Description' field is having following values 'Tree Removal', 'public works permits', 'temporary signs/banners'");
+		softAssert.assertEquals(objBuildingPermitPage.saveRecordAndGetError(),expectedWorkDescriptionError,"SMAB-T466,SMAB-T349: Warning message validation on the top when 'Work Description' field is having following values 'Tree Removal', 'public works permits', 'temporary signs/banners'");
 		objPage.Click(objBuildingPermitPage.pageErrorButton);
 
 		//Step5: Save after clearing the mandatory work description field
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,"");
 
 		//Step6: Validating the error message on edit pop when mandatory fields are not filled
-		softAssert.assertEquals(objApasGenericFunctions.saveRecordAndGetError(),"Close error dialog\nWe hit a snag.\nReview the following fields\nWork Description","SMAB-T466: Warning message validation on the top when 'Work Description' field is not entered while editing the building permit record");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Work Description"),expectedFieldLevelError,"SMAB-T466: Warning message validation at the field level 'Work Description' field is not entered while editing the building permit record");
+		softAssert.assertEquals(objBuildingPermitPage.saveRecordAndGetError(),"Close error dialog\nWe hit a snag.\nReview the following fields\nWork Description","SMAB-T466: Warning message validation on the top when 'Work Description' field is not entered while editing the building permit record");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Work Description"),expectedFieldLevelError,"SMAB-T466: Warning message validation at the field level 'Work Description' field is not entered while editing the building permit record");
 		objBuildingPermitPage.Click(objBuildingPermitPage.pageErrorButton);
 
 		//Step7: Enter the updated estimated project value and builing permit number and save the record
@@ -192,21 +189,21 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		objPage.enter(objBuildingPermitPage.buildingPermitNumberTxtBox,updatedBuildingPermitNumber);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,updatedWorkDescriptionValue);
-		objApasGenericFunctions.saveRecord();
+		objBuildingPermitPage.saveRecord();
 
 		//Step8: Validation for record with old building permit number exists or not
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step9: Search the building permit number record edited above
-		objApasGenericFunctions.searchRecords(updatedBuildingPermitNumber);
+		objBuildingPermitPage.searchRecords(updatedBuildingPermitNumber);
 
 		//Step10: Validating that new value entered in estimated project value filed is saved
-		Map<String, ArrayList<String>> manualBuildingPermitGridDataMapAfterEdit = objApasGenericFunctions.getGridDataInHashMap(1);
+		Map<String, ArrayList<String>> manualBuildingPermitGridDataMapAfterEdit = objBuildingPermitPage.getGridDataInHashMap(1);
 		softAssert.assertEquals(manualBuildingPermitGridDataMapAfterEdit.get("Work Description").get(0),updatedWorkDescriptionValue,"SMAB-T466,SMAB-T419: Validating the 'Work Description' after editing the record");
 		softAssert.assertEquals(manualBuildingPermitGridDataMapAfterEdit.get("Building Permit Number").get(0),updatedBuildingPermitNumber,"SMAB-T466,SMAB-T419: Validating the 'Building Permit Number' after editing the record");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 	
 	/**
@@ -216,10 +213,10 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	public void BuildingPermit_ManualCreationWithRequiredFieldsValidations(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Open and save building permit manual creation form without entering the data
 		objBuildingPermitPage.openNewForm();
@@ -229,19 +226,19 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the following fields\nBuilding Permit Number\nAPN\nCounty Strat Code Description\nEstimated Project Value\nIssue Date\nWork Description\nPermit City Code";
 		String expectedIndividualFieldMessage = "Complete this field.";
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.pageError),expectedErrorMessageOnTop,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error in manual entry pop up header.");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Building Permit Number'");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("APN"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Parcel'");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("County Strat Code Description"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'County Strat Code Description'");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Estimated Project Value"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Estimated Project Value'");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Issue Date"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Issue Date'");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Work Description"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Work Description'");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Permit City Code"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Permit City Code'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Building Permit Number'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Parcel'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("County Strat Code Description"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'County Strat Code Description'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Estimated Project Value"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Estimated Project Value'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Issue Date"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Issue Date'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Work Description"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Work Description'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Permit City Code"),expectedIndividualFieldMessage,"SMAB-T418,SMAB-T348: Validating mandatory fields missing error for 'Permit City Code'");
 
 		//Step5: Closing the Manual building permit creation pop up
 		objPage.Click(objPage.getButtonWithText("Cancel"));
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -257,10 +254,10 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		System.out.println("Active APN fetched through Salesforce API : " + activeAPN);
 
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step3: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step4: Prepare a test data to create a new building permit
 		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
@@ -270,10 +267,10 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
         
 		//Step6: Create another building permit with the data user above. An error should occur
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 		objBuildingPermitPage.openNewForm();
 		objBuildingPermitPage.enterManualEntryData(manualBuildingPermitMap);
-		String actualErrorMessage = objApasGenericFunctions.saveRecordAndGetError();
+		String actualErrorMessage = objBuildingPermitPage.saveRecordAndGetError();
 
 		//Step7: Validate the error message appeared for mandatory fields
 		String expectedWarningMessage = "Close error dialog\nWe hit a snag.\nYou can't save this record because a duplicate record already exists. To save, use different information.\nView Duplicates";
@@ -286,24 +283,24 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		
 		objPage.waitForElementToBeVisible(objBuildingPermitPage.openBuildingPermitLink);
 		
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromViewDuplicateScreen("Building Permit Number"),manualBuildingPermitMap.get("Building Permit Number"),"SMAB-T519: 'Building Permit Number' field validation on View Duplicate screen");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromViewDuplicateScreen("Permit City Code"),manualBuildingPermitMap.get("Permit City Code"),"SMAB-T519: 'Permit City Code' field validation on View Duplicate screen");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromViewDuplicateScreen("County Strat Code Description"),manualBuildingPermitMap.get("County Strat Code Description"),"SMAB-T519: 'County Strat Code Description' field validation on View Duplicate screen");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromViewDuplicateScreen("Estimated Project Value"),"$" + manualBuildingPermitMap.get("Estimated Project Value"),"SMAB-T519: 'Estimated Project Value' field validation on View Duplicate screen");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromViewDuplicateScreen("Issue Date"),manualBuildingPermitMap.get("Issue Date"),"SMAB-T519: 'Issue Date' field validation on View Duplicate screen");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromViewDuplicateScreen("Calculated Processing Status"),"No Process","SMAB-T519: 'Calculated Processing Status' field validation on View Duplicate screen");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromViewDuplicateScreen("Processing Status"),manualBuildingPermitMap.get("Processing Status"),"SMAB-T519: 'Processing Status' field validation on View Duplicate screen");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromViewDuplicateScreen("Work Description"),manualBuildingPermitMap.get("Work Description"),"SMAB-T519: 'Work Description' field validation on View Duplicate screen");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromViewDuplicateScreen("APN"),manualBuildingPermitMap.get("APN"),"SMAB-T519: 'Parcel' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Building Permit Number"),manualBuildingPermitMap.get("Building Permit Number"),"SMAB-T519: 'Building Permit Number' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Permit City Code"),manualBuildingPermitMap.get("Permit City Code"),"SMAB-T519: 'Permit City Code' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("County Strat Code Description"),manualBuildingPermitMap.get("County Strat Code Description"),"SMAB-T519: 'County Strat Code Description' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Estimated Project Value"),"$" + manualBuildingPermitMap.get("Estimated Project Value"),"SMAB-T519: 'Estimated Project Value' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Issue Date"),manualBuildingPermitMap.get("Issue Date"),"SMAB-T519: 'Issue Date' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Calculated Processing Status"),"No Process","SMAB-T519: 'Calculated Processing Status' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Processing Status"),manualBuildingPermitMap.get("Processing Status"),"SMAB-T519: 'Processing Status' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("Work Description"),manualBuildingPermitMap.get("Work Description"),"SMAB-T519: 'Work Description' field validation on View Duplicate screen");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromViewDuplicateScreen("APN"),manualBuildingPermitMap.get("APN"),"SMAB-T519: 'Parcel' field validation on View Duplicate screen");
 
 		//Step9: Closing the pops opened on the application
 		objPage.Click(objBuildingPermitPage.closeViewDuplicatePopUpButton);
 
-		objApasGenericFunctions.cancelRecord();
+		objBuildingPermitPage.cancelRecord();
 
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -319,10 +316,10 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		ReportLogger.INFO("Retired APN fetched through Salesforce API : " + retiredAPN);
 
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Prepare a test data to create a new building permit with retired parcel
 		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
@@ -333,12 +330,12 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
 
 		//Step5: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Validation for the warning message appearing on the grid
-		objApasGenericFunctions.displayRecords("All Manual Building Permits");
-		objApasGenericFunctions.searchRecords(buildingPermitNumber);
-		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objApasGenericFunctions.getGridDataInHashMap();
+		objBuildingPermitPage.displayRecords("All Manual Building Permits");
+		objBuildingPermitPage.searchRecords(buildingPermitNumber);
+		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objBuildingPermitPage.getGridDataInHashMap();
 		softAssert.assertEquals(manualBuildingPermitGridDataMap.get("Warning Message").get(0), "APN is retired.","SMAB-T626: 'Priority Message' validation on the data displayed on the grid");
 
 		//Step6: open the building permit created with retired parcel
@@ -348,7 +345,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag), "APN is retired.","SMAB-T626: 'Priority Message' validation on building permit details page screen");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -364,10 +361,10 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		System.out.println("Active APN fetched through Salesforce API : " + activeAPN);
 
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Prepare a test data to create a new building permit with active parcel fetched through SQL Query
 		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
@@ -382,11 +379,11 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Below is the rule based on Selected County Strat Code 'REPAIR ROOF'
 		//Processing Status should be populated as 'No Process'
 		//Calculated Processing Status should be populated as 'No Process' as Estimated project value is not satisfying the criteria "Greater Than or Equal to $25,000"
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T399: Validation of 'Calculated Processing Status' field when Process Status was not selected while creating building permit manually");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T399: Validation of 'Processing Status' field when Process Status was not selected while creating building permit manually");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T399: Validation of 'Calculated Processing Status' field when Process Status was not selected while creating building permit manually");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T399: Validation of 'Processing Status' field when Process Status was not selected while creating building permit manually");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -402,10 +399,10 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		System.out.println("Active APN fetched through Salesforce API : " + activeAPN);
 
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Prepare a test data to create a new building permit with retired parcel
 		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
@@ -420,11 +417,11 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Below is the rule based on Selected County Strat Code 'REPAIR ROOF'
 		//Processing Status should be populated as 'Process' as it has been explicitly selected by user
 		//Calculated Processing Status should be populated as 'No Process' as Estimated project value is not satisfying the criteria "Greater Than or Equal to $25,000"
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Process Status was selected while creating building permit manually");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Process Status was selected while creating building permit manually");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Process Status was selected while creating building permit manually");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Process Status was selected while creating building permit manually");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -443,10 +440,10 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		System.out.println("Active APN fetched through Salesforce API : " + activeAPN);
 
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Prepare a test data to create a new building permit with retired parcel
 		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
@@ -460,26 +457,26 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objPage.waitForElementToDisappear(objBuildingPermitPage.successAlert,10);
 		//Step5: validation of process status after adding the building permit
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Estimated Project value is selected 3000 and county strat code as REPAIR ROOF");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 3000 and county strat code as REPAIR ROOF");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Processing Status' field when Estimated Project value is selected 3000 and county strat code as REPAIR ROOF");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 3000 and county strat code as REPAIR ROOF");
 
 		//step6: Update the estimated project value as less than 25000 and check the status of Calculated processing status field is updated accordingly
 		objPage.Click(objBuildingPermitPage.editButton);
 		ReportLogger.INFO("Updating the value of Estimated Project Value to 25000");
 		objPage.enter(objBuildingPermitPage.estimatedProjectValueTxtBox,"25000");
-		objApasGenericFunctions.saveRecord();
+		objBuildingPermitPage.saveRecord();
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T909: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 25000 and county strat code as REPAIR ROOF");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T404,SMAB-T909: Validation of 'Processing Status' field when Estimated Project value is selected 25000 and county strat code as REPAIR ROOF");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T909: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 25000 and county strat code as REPAIR ROOF");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T404,SMAB-T909: Validation of 'Processing Status' field when Estimated Project value is selected 25000 and county strat code as REPAIR ROOF");
 
 		//Step7: Update the estimated project value such that value of calculated processing status is switched
 		objPage.Click(objBuildingPermitPage.editButton);
 		ReportLogger.INFO("Updating the value of Estimated Project Value to 7000");
 		objPage.enter(objBuildingPermitPage.estimatedProjectValueTxtBox,"7000");
-		objApasGenericFunctions.saveRecord();
+		objBuildingPermitPage.saveRecord();
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400,SMAB-T909: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 7000 and county strat code as REPAIR ROOF");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400,SMAB-T909: Validation of 'Processing Status' field when Process Status when Estimated Project value is selected 7000 and county strat code as REPAIR ROOF");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "No Process","SMAB-T400,SMAB-T909: Validation of 'Calculated Processing Status' field when Estimated Project value is selected 7000 and county strat code as REPAIR ROOF");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400,SMAB-T909: Validation of 'Processing Status' field when Process Status when Estimated Project value is selected 7000 and county strat code as REPAIR ROOF");
 
 		//Step8: Update the county strat code such that value of calculated processing status is switched
 		//Following is the condition for SOLAR County Strat Code "'No Process' if estimated project value is Less Than or Equal To 5000
@@ -487,29 +484,29 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objPage.Click(objBuildingPermitPage.deleteRepairRoof);
 		ReportLogger.INFO("Updating the value of County Strat Code to 'SOLAR'");
 		objBuildingPermitPage.searchAndSelectOptionFromDropDown(objBuildingPermitPage.countyStratCodeSearchBox, "SOLAR");
-		objApasGenericFunctions.saveRecord();
+		objBuildingPermitPage.saveRecord();
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T909: Validation of 'Calculated Processing Status' field when County strat code is changed to SOLAR from REPAIR ROOF");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T909: Validation of 'Processing Status' field when County strat code is changed to SOLAR from REPAIR ROOF");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T909: Validation of 'Calculated Processing Status' field when County strat code is changed to SOLAR from REPAIR ROOF");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T909: Validation of 'Processing Status' field when County strat code is changed to SOLAR from REPAIR ROOF");
 
 		//Step9: Update the processing status as No Process and Calculated Processing status should be updated with the same value
 		objPage.Click(objBuildingPermitPage.editButton);
 		objBuildingPermitPage.selectOptionFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "No Process");
-		objApasGenericFunctions.saveRecord();
+		objBuildingPermitPage.saveRecord();
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T403: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400,SMAB-T403: Validation of 'Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T403: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400,SMAB-T403: Validation of 'Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
 
 		//Step10: Update the processing status as No Process and Calculated Processing status should be updated with the same value
 		objPage.Click(objBuildingPermitPage.editButton);
 		objBuildingPermitPage.selectOptionFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "Process");
-		objApasGenericFunctions.saveRecord();
+		objBuildingPermitPage.saveRecord();
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'Process' from 'No Process'");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Processing Status' field when Processing Status is changed to 'Process' from 'No Process'");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'Process' from 'No Process'");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Processing Status' field when Processing Status is changed to 'Process' from 'No Process'");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -519,10 +516,10 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	public void BuildingPermit_Manual_ErrorMessageValidations(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Open the Intake Form to create manual building permit
 		objBuildingPermitPage.openNewForm();
@@ -531,43 +528,43 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step4: Estimated Project Value Error validation for less than zero value (SMAB-T630)
 		objPage.enter(objBuildingPermitPage.estimatedProjectValueTxtBox,"-20");
-		softAssert.assertEquals(objApasGenericFunctions.saveRecordAndGetError(),"Close error dialog\nWe hit a snag.\nReview the errors on this page.\nInvalid Permit Value or Fee","SMAB-T630: Error message validation when 'Estimated Project Value' is less than zero");
+		softAssert.assertEquals(objBuildingPermitPage.saveRecordAndGetError(),"Close error dialog\nWe hit a snag.\nReview the errors on this page.\nInvalid Permit Value or Fee","SMAB-T630: Error message validation when 'Estimated Project Value' is less than zero");
 		objPage.Click(objBuildingPermitPage.pageErrorButton);
 
 		//Step5: Future Issue Date Error validation (SMAB-T627)
 		objBuildingPermitPage.enter(objBuildingPermitPage.issueDateCalender, "11/10/2039");
-		objApasGenericFunctions.saveRecordAndGetError();
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Issue Date"),"Issue Date is greater than Current Date","SMAB-T627: 'Issue Date' error validation when data is selected in future");
+		objBuildingPermitPage.saveRecordAndGetError();
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Issue Date"),"Issue Date is greater than Current Date","SMAB-T627: 'Issue Date' error validation when data is selected in future");
 		objPage.Click(objBuildingPermitPage.pageErrorButton);
 
 		//This step is captured as part of implementation of SMAB-2007 for revised error messages
 		objBuildingPermitPage.enter(objBuildingPermitPage.completionDateCalender, "11/10/2039");
-		objApasGenericFunctions.saveRecordAndGetError();
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Completion Date"),"Completion Date is greater than Current Date","SMAB-T627: 'Issue Date' error validation when data is selected in future");
+		objBuildingPermitPage.saveRecordAndGetError();
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Completion Date"),"Completion Date is greater than Current Date","SMAB-T627: 'Issue Date' error validation when data is selected in future");
 		objPage.Click(objBuildingPermitPage.pageErrorButton);
 
 		//Step6: Completion Date Less Than Issue Date Error validation (SMAB-T628)
 		objBuildingPermitPage.enter(objBuildingPermitPage.issueDateCalender, "11/10/2019");
 		objBuildingPermitPage.enter(objBuildingPermitPage.completionDateCalender, "11/08/2019");
-		objApasGenericFunctions.saveRecordAndGetError();
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Completion Date"),"Completion Date is less than Issue Date","SMAB-T628: Completion Date Less Than Issue Date Error message validation");
+		objBuildingPermitPage.saveRecordAndGetError();
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Completion Date"),"Completion Date is less than Issue Date","SMAB-T628: Completion Date Less Than Issue Date Error message validation");
 		objPage.Click(objBuildingPermitPage.pageErrorButton);
 
 		//Step7: Wrong Format Issue Date Error validation (SMAB-T631)
 		objBuildingPermitPage.enter(objBuildingPermitPage.issueDateCalender, "15/23/2019");
-		objApasGenericFunctions.saveRecordAndGetError();
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Issue Date"),"Your entry does not match the allowed format M/d/yyyy.","SMAB-T631: Issue Date in invalid format Error message validation");
+		objBuildingPermitPage.saveRecordAndGetError();
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Issue Date"),"Your entry does not match the allowed format M/d/yyyy.","SMAB-T631: Issue Date in invalid format Error message validation");
 		objPage.Click(objBuildingPermitPage.pageErrorButton);
 		//Step8: Wrong Format Completion Date Error validation (SMAB-T631)
 		objBuildingPermitPage.enter(objBuildingPermitPage.completionDateCalender, "15/23/2019");
-		objApasGenericFunctions.saveRecordAndGetError();
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Completion Date"),"Your entry does not match the allowed format M/d/yyyy.","SMAB-T631: Completion Date in invalid format Error message validation");
+		objBuildingPermitPage.saveRecordAndGetError();
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Completion Date"),"Your entry does not match the allowed format M/d/yyyy.","SMAB-T631: Completion Date in invalid format Error message validation");
 		objPage.Click(objBuildingPermitPage.pageErrorButton);
 
-		objApasGenericFunctions.cancelRecord();
+		objBuildingPermitPage.cancelRecord();
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -577,10 +574,10 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	public void BuildingPermit_Manual_PermitCityCodeValues(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Open the Intake Form to create manual building permit
 		objBuildingPermitPage.openNewForm();
@@ -589,10 +586,10 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objPage.Click(objPage.getWebElementWithLabel(objBuildingPermitPage.permitCityCodeDrpDown));
 		String expectedPermitCityCodeValues = "--None--\nBR\nCL\nDC\nEG\nEH\nEP\nFC\nHM\nLH\nLM\nMB\nMO\nMP\nPC\nPR\nPV\nSC\nSG";
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.permitCityCodeDrpDownOptions),expectedPermitCityCodeValues,"SMAB-T506: Validation for Permit City Code values population for manual building permit");
-		objApasGenericFunctions.cancelRecord();
+		objBuildingPermitPage.cancelRecord();
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -608,10 +605,10 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		ReportLogger.INFO("Active APN without primary situs fetched through Salesforce API : " + activeAPNWithoutPrimarySitus);
 
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step4: Permit City Code values validation for manual building permit
 		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
@@ -622,16 +619,16 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Validation for the situs fields not auto populated as selected APN doesn't have the primary situs linked
 		ReportLogger.INFO("Validation for the situs fields not auto populated as selected APN " + activeAPNWithoutPrimarySitus + "doesn't have the primary situs linked");
 		//Situs City Code removed as part of Defect#5849
-		//softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs City Code","Situs Information"), "", "SMAB-T424: 'Situs City Code' Field Validation in 'Situs Information' section should be blank");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs","Situs Information"), "", "SMAB-T424: 'Situs' Field Validation in 'Situs Information' section should be blank");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Type","Situs Information"), "", "SMAB-T424: 'Situs Type' Field Validation in 'Situs Information' section should be blank");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Direction"), "", "SMAB-T424: 'Situs Direction' Field Validation in 'Situs Information' section should be blank");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Number","Situs Information"), "", "SMAB-T424: 'Situs Number' Field Validation in 'Situs Information' section should be blank");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "", "SMAB-T424: 'Situs Unit Number' Field Validation in 'Situs Information' section should be blank");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Situs Street Name","Situs Information"), "", "SMAB-T424: 'Situs Street Name' Field Validation in 'Situs Information' section should be blank");
+		//softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs City Code","Situs Information"), "", "SMAB-T424: 'Situs City Code' Field Validation in 'Situs Information' section should be blank");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs","Situs Information"), "", "SMAB-T424: 'Situs' Field Validation in 'Situs Information' section should be blank");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Type","Situs Information"), "", "SMAB-T424: 'Situs Type' Field Validation in 'Situs Information' section should be blank");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Direction"), "", "SMAB-T424: 'Situs Direction' Field Validation in 'Situs Information' section should be blank");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Number","Situs Information"), "", "SMAB-T424: 'Situs Number' Field Validation in 'Situs Information' section should be blank");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Unit Number","Situs Information"), "", "SMAB-T424: 'Situs Unit Number' Field Validation in 'Situs Information' section should be blank");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Street Name","Situs Information"), "", "SMAB-T424: 'Situs Street Name' Field Validation in 'Situs Information' section should be blank");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -641,10 +638,10 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	public void BuildingPermit_Manual_NonRelevantPermitPrefixes(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Add the building permit with Non Relevant Permit Prefixes
 		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
@@ -658,7 +655,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		softAssert.assertEquals(actualSuccessMessage,"success\nBuilding Permit \"" + buildingPermitNumber + "\" was created.\nClose","SMAB-T443: Validation for Permit City Code values population for manual building permit");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -674,10 +671,10 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		ReportLogger.INFO("City Strat Code pulled through APAS Salesforce API : " + cityStratCode);
 
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginSystemAdmin);
+		objBuildingPermitPage.login(loginSystemAdmin);
 
 		//Step2: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Open the Intake Form to create manual building permit
 		objBuildingPermitPage.openNewForm("E-File Building Permit");
@@ -688,17 +685,17 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.permitCityCodeDrpDownOptions),expectedPermitCityCodeValues,"SMAB-T517: Validation for Permit City Code values population for building permit for cities providing e-files");
 
 		//Validation for mandatory fields
-		String actualErrorMessageOnTop = objApasGenericFunctions.saveRecordAndGetError();
+		String actualErrorMessageOnTop = objBuildingPermitPage.saveRecordAndGetError();
 		String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the following fields\nBuilding Permit Number\nEstimated Project Value\nIssue Date\nWork Description\nPermit City Code\nOwner Name";
 		String expectedIndividualFieldMessage = "Complete this field.";
 
 		softAssert.assertEquals(actualErrorMessageOnTop,expectedErrorMessageOnTop,"SMAB-T345: Validating mandatory fields missing error in manual entry pop up header.");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Building Permit Number'");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Estimated Project Value"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Estimated Project Value'");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Issue Date"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Issue Date'");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Work Description"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Work Description'");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Permit City Code"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Permit City Code'");
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("Owner Name"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Owner Name'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Building Permit Number"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Building Permit Number'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Estimated Project Value"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Estimated Project Value'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Issue Date"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Issue Date'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Work Description"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Work Description'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Permit City Code"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Permit City Code'");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("Owner Name"),expectedIndividualFieldMessage,"SMAB-T345: Validating mandatory fields missing error for 'Owner Name'");
 		objBuildingPermitPage.Click(objBuildingPermitPage.pageErrorButton);
 
 		//Step5: Validation for non relevant keywords in description
@@ -709,18 +706,18 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objBuildingPermitPage.enterManualEntryData(manualBuildingPermitMap);
 
 		//Step4: Save after entering 'Tree Removal' in Work Description. There should be an error
-		String expectedWorkDescriptionError = "Close error dialog\nWe hit a snag.\nReview the errors on this page.\nNo Process for work Desc. with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
+		String expectedWorkDescriptionError = "Close error dialog\nWe hit a snag.\nReview the errors on this page.\nNo Process for Work Desc. with \"Tree Removal\", \"Public Works Permits\" & \"Temporary Signs/Banners\"";
 
-		softAssert.assertEquals(objApasGenericFunctions.saveRecordAndGetError(),expectedWorkDescriptionError,"SMAB-T327: Warning message validation on the top when 'Work Description' field is having following values 'Tree Removal', 'public works permits', 'temporary signs/banners'");
+		softAssert.assertEquals(objBuildingPermitPage.saveRecordAndGetError(),expectedWorkDescriptionError,"SMAB-T327: Warning message validation on the top when 'Work Description' field is having following values 'Tree Removal', 'public works permits', 'temporary signs/banners'");
 		objPage.waitForElementToBeClickable(30,objBuildingPermitPage.workDescriptionTxtBox);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,"abc");
-		String actualSuccessMessage = objApasGenericFunctions.saveRecord();
+		String actualSuccessMessage = objBuildingPermitPage.saveRecord();
 
 		//Step5: Validating the building permit is added successfully
 		softAssert.assertEquals(actualSuccessMessage,"success\nBuilding Permit \"" + manualBuildingPermitMap.get("Building Permit Number") + "\" was created.\nClose","SMAB-T345: Validation for successful creation of E-File Building Permit record manually");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -740,13 +737,13 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		ReportLogger.INFO("Efile Building Permit fetched through Salesforce API : " + buildingPermitNumber);
 
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Open an existing E-file Building Permit record
-		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
+		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,10);
 		objPage.Click(objBuildingPermitPage.editButton);
 		objPage.waitForElementToBeClickable(10,objBuildingPermitPage.buildingPermitNumberTxtBox);
@@ -763,12 +760,12 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objPage.enter(objBuildingPermitPage.buildingPermitNumberTxtBox,updatedBuildingPermitNumber);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,updatedWorkDescriptionValue);
 
-		String actualSuccessMessage = objApasGenericFunctions.saveRecord();
+		String actualSuccessMessage = objBuildingPermitPage.saveRecord();
 		softAssert.assertEquals(actualSuccessMessage,"success\nBuilding Permit \"" + updatedBuildingPermitNumber + "\" was saved.\nClose","SMAB-T912: Validation for successful edit of E-File Building Permit record manually");
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,20);
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 	/**
@@ -788,13 +785,13 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		ReportLogger.INFO("Efile Building Permit fetched through Salesforce API : " + buildingPermitNumber);
 
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the building permit module
-		objApasGenericFunctions.searchModule(modules.BUILDING_PERMITS);
+		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Open an existing E-file Building Permit record
-		objApasGenericFunctions.globalSearchRecords(buildingPermitNumber);
+		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,10);
 		objPage.Click(objBuildingPermitPage.editButton);
 		objPage.waitForElementToBeClickable(10,objBuildingPermitPage.buildingPermitNumberTxtBox);
@@ -803,15 +800,15 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		ReportLogger.INFO("Updating processing status as 'Process' in the existing E-File Building Permit record with Building Permit Number : " + buildingPermitNumber);
 		//Step5: Update the values
 		objBuildingPermitPage.selectOptionFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "Process");
-		objApasGenericFunctions.saveRecordAndGetError();
+		objBuildingPermitPage.saveRecordAndGetError();
 
 		String expectedMandatoryAPNError = "APN required for Process";
-		softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage("APN"),expectedMandatoryAPNError,"SMAB-T1537: Warning message validation at the field level 'Work Description' field is not entered while editing the building permit record");
+		softAssert.assertEquals(objBuildingPermitPage.getIndividualFieldErrorMessage("APN"),expectedMandatoryAPNError,"SMAB-T1537: Warning message validation at the field level 'Work Description' field is not entered while editing the building permit record");
 
-		objApasGenericFunctions.cancelRecord();
+		objBuildingPermitPage.cancelRecord();
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objBuildingPermitPage.logout();
 	}
 
 }

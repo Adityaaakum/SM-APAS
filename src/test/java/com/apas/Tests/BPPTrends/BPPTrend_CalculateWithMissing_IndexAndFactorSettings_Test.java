@@ -24,14 +24,13 @@ import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.users;
-import com.apas.generic.ApasGenericFunctions;
+
 import com.relevantcodes.extentreports.LogStatus;
 
 public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends TestBase {
 
 	RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrnPg;
 	BuildingPermitPage objBuildPermitPage;
 	Util objUtil;
@@ -53,7 +52,6 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		objPage = new Page(driver);
 		objBppTrnPg = new BppTrendPage(driver);
 		objBuildPermitPage = new BuildingPermitPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		rollYear = CONFIG.getProperty("rollYear");
@@ -61,12 +59,12 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		objBuildPermit = new BuildingPermitPage(driver);
 		objSoftAssert = new SoftAssert();
 		objBppTrendSetupPage = new BppTrendSetupPage(driver);
-		objApasGenericFunctions.updateRollYearStatus("Open", "2020");
+		objBppTrendSetupPage.updateRollYearStatus("Open", "2020");
 	}
 	
 	@AfterMethod
 	public void afterMethod() throws Exception {
-		//objApasGenericFunctions.logout();
+		//objBppTrendSetupPage.logout();
 	}
 	
 	
@@ -80,10 +78,10 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 	@Test(description = "SMAB-T163,SMAB-T192,SMAB-T193,SMAB-T257: Calculation of INDUSTRIAL COMPOSITE FACTORS with missing calculation variables", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_CompositeFactors_CalculateWithCalculationVariablesMissing(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
-		objApasGenericFunctions.login(users.SYSTEM_ADMIN);
+		objBppTrendSetupPage.login(users.SYSTEM_ADMIN);
 		
 		//Step2: Opening the BPP Trend module
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
 		
 		//Step8: Deleting the new BPP Trend Setup created
 		int year = Integer.parseInt(rollYear) + 2;
@@ -96,15 +94,15 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		String query = "SELECT id FROM BPP_Trend_Roll_Year__c WHERE Roll_Year__c = '" +year+ "'";
 		objSalesforceAPI.update("BPP_Trend_Roll_Year__c", query, "Annual_Factor_Status__c", "Reviewed by Admin");
 
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 		Thread.sleep(20000);
 
 		//Step4: Login with given login user
-		objApasGenericFunctions.login(loginUser);
+		objBppTrendSetupPage.login(loginUser);
 		
 		//Step5: Navigating to BPP Trend page and selecting given roll year
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Navigating to BPP Trends page **");
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS);
 
 		String rollYear = Integer.toString(year);
 		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
@@ -146,8 +144,8 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		Thread.sleep(2000);
 		
 		//Step8: Opening the BPP Trend module and set All as the view option in grid
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		
 		//Step9: Clicking on the roll year name in grid to navigate to details page of selected roll year
 		objBppTrendSetupPage.clickOnEntryNameInGrid(Integer.toString(year));
@@ -193,8 +191,8 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		}
 		
 		//Step13: Opening the BPP Trend module and set All as the view option in grid
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		
 		//Step14: Clicking on the roll year name in grid to navigate to details page of selected roll year
 		objBppTrendSetupPage.clickOnEntryNameInGrid(Integer.toString(year));
@@ -223,8 +221,8 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 
 		//Opening the BPP Trend module and set All as the view option in grid
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(Integer.toString(year));
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Industrial property type **");
@@ -242,8 +240,8 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 
 		//Opening the BPP Trend module and set All as the view option in grid
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(Integer.toString(year));
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Agricultural property type **");
@@ -261,8 +259,8 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 
 		//Opening the BPP Trend module and set All as the view option in grid
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(Integer.toString(year));
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Construction property type **");
@@ -322,7 +320,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		
 		//Step20: Log out application at end of test case
 		softAssert.assertAll();
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 	}
 	
 }

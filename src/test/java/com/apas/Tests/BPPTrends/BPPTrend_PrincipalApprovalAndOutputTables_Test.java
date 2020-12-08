@@ -23,14 +23,12 @@ import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
-import com.apas.generic.ApasGenericFunctions;
 import com.relevantcodes.extentreports.LogStatus;
 
 public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 
 	RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	BppTrendPage objBppTrnPg;
 	BuildingPermitPage objBuildPermitPage;
 	Util objUtil;
@@ -50,17 +48,16 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		objPage = new Page(driver);
 		objBppTrnPg = new BppTrendPage(driver);
 		objBuildPermitPage = new BuildingPermitPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		rollYear = CONFIG.getProperty("rollYear");
         objBppTrendSetupPage = new BppTrendSetupPage(driver);
-        objApasGenericFunctions.updateRollYearStatus("Open", "2020");
+        objBppTrendSetupPage.updateRollYearStatus("Open", "2020");
 	}
 
 	@AfterMethod
 	public void afterMethod() throws Exception {
-		//objApasGenericFunctions.logout();
+		//objBppTrendSetupPage.logout();
 	}
 
 	/**
@@ -76,7 +73,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 	 */
 	@Test(description = "SMAB-T205,SMAB-T155,SMAB-T156,SMAB-T157,SMAB-T250,SMAB-T212: Approve calculations of valuation, composite & prop 13 tables", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class)
 	public void BppTrend_Approve(String loginUser) throws Exception {
-		objApasGenericFunctions.login(loginUser);
+		objBppTrendSetupPage.login(loginUser);
 		
 		//Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
@@ -93,8 +90,8 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		String rollYear = CONFIG.getProperty("rollYear");
 
 		//Step2: Check status of the composite & valuation tables on BPP trend status page before approving		
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
         objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 
 		String tableName;
@@ -105,7 +102,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		}
 
 		//Step3: Opening the BPP Trend module
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS);
 
 		//Step4: Selecting role year from drop down
 		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
@@ -252,8 +249,8 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		}
 
 		//Step24: Navigating to BPP Trend Setup page and checking status of the composite & valuation tables
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-		objApasGenericFunctions.displayRecords("All");
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
         objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 
 		for(int i = 0; i < allTablesBppTrendSetupPage.size(); i++) {
@@ -264,7 +261,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		}
 
 		//Step25: Navigating to BPP Trend page, selecting role year from drop down and clicking select button
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS);
 		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
@@ -294,7 +291,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		}
 
 		softAssert.assertAll();
-		objApasGenericFunctions.logout();
+		objBppTrendSetupPage.logout();
 	}
 
 

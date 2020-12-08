@@ -10,7 +10,6 @@ import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.generic.ApasGenericFunctions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -25,11 +24,9 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 	RemoteWebDriver driver;
 	Page objPage;
 	EFileImportTransactionsPage objEfileImportTransactionsPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	BuildingPermitPage objBuildPermit;
 	EFileImportPage objEfileHomePage;
 	EFileImportLogsPage objEFileImportLogsPage;
-	Util objUtil  = new Util();
 	SoftAssertion softAssert = new SoftAssertion();
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 
@@ -44,7 +41,6 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 		objBuildPermit = new BuildingPermitPage(driver);
 		objEfileImportTransactionsPage = new EFileImportTransactionsPage(driver);
 		objEfileHomePage = new EFileImportPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objEFileImportLogsPage  = new EFileImportLogsPage(driver);
 	}
 
@@ -55,7 +51,7 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 	public void ImportLogsAndTransactions_BuildingPermitAtherton(String loginUser) throws Exception {
 
 		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "OneValidAndTwoInvalidRecordsForPermitValue.txt";
-		File tempFile = objApasGenericFunctions.createTempFile(athertonBuildingPermitFile);
+		File tempFile = objBuildPermit.createTempFile(athertonBuildingPermitFile);
 
 		//Pre-requisite : Reverting the Approved Import logs if any in the system
 		String period = "Adhoc";
@@ -63,10 +59,10 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildPermit.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildPermit.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the San Mateo Building Permit file having error and success records through Efile Intake Import
 		objEfileHomePage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", tempFile.getName(), tempFile.getAbsolutePath());
@@ -75,10 +71,10 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 120);
 
 		//Step5: Opening the Efile Import Logs module
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_LOGS);
-		objApasGenericFunctions.displayRecords("All");
+		objBuildPermit.searchModule(modules.EFILE_IMPORT_LOGS);
+		objBuildPermit.displayRecords("All");
 
-		HashMap<String, ArrayList<String>> importLogsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		HashMap<String, ArrayList<String>> importLogsGridData = objBuildPermit.getGridDataInHashMap(1, 1);
 
 		//Step6: Import Logs grid validation for the imported Atherton Building Permit file
 		ReportLogger.INFO("Validating the data on Import Logs Grid for Atherton Building Permit file");
@@ -95,24 +91,24 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 		objEFileImportLogsPage.openImportLog("Building Permit :Atherton Building Permits :" + period);
 
 		//Import logs Details tab field validation
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Name"), "Building Permit :Atherton Building Permits :" + period, "SMAB-T431,SMAB-T93 : 'Name' Field Validation on Import Logs details tab");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Name"), tempFile.getName().split("\\.")[0], "SMAB-T431,SMAB-T93 : 'Import Name' Field Validation on Import Logs details tab");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("File Type"), "Building Permit", "SMAB-T431,SMAB-T93 : 'File Type' Field Validation on Import Logs details tab");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Period"), period, "SMAB-T431,SMAB-T93 : 'Import Period' Field Validation on Import Logs details tab");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("File Source"), "Atherton Building Permits", "SMAB-T431,SMAB-T93 : 'File Source' Field Validation on Import Logs details tab");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Status"), "Imported", "SMAB-T431,SMAB-T93 : 'Status' Field Validation on Import Logs details tab");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("File Count"), "3", "SMAB-T431,SMAB-T93 : 'File Count' Field Validation on Import Logs details tab");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Error Count"), "2", "SMAB-T431,SMAB-T93 : 'Error Count' Field Validation on Import Logs details tab");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Import Count"), "1", "SMAB-T431,SMAB-T93 : 'Import Count' Field Validation on Import Logs details tab");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Allowed File Format"), "txt", "SMAB-T431,SMAB-T93 : 'Allowed File Format' Field Validation on Import Logs details tab");
+		softAssert.assertEquals(objBuildPermit.getFieldValueFromAPAS("Name"), "Building Permit :Atherton Building Permits :" + period, "SMAB-T431,SMAB-T93 : 'Name' Field Validation on Import Logs details tab");
+		softAssert.assertEquals(objBuildPermit.getFieldValueFromAPAS("Import Name"), tempFile.getName().split("\\.")[0], "SMAB-T431,SMAB-T93 : 'Import Name' Field Validation on Import Logs details tab");
+		softAssert.assertEquals(objBuildPermit.getFieldValueFromAPAS("File Type"), "Building Permit", "SMAB-T431,SMAB-T93 : 'File Type' Field Validation on Import Logs details tab");
+		softAssert.assertEquals(objBuildPermit.getFieldValueFromAPAS("Import Period"), period, "SMAB-T431,SMAB-T93 : 'Import Period' Field Validation on Import Logs details tab");
+		softAssert.assertEquals(objBuildPermit.getFieldValueFromAPAS("File Source"), "Atherton Building Permits", "SMAB-T431,SMAB-T93 : 'File Source' Field Validation on Import Logs details tab");
+		softAssert.assertEquals(objBuildPermit.getFieldValueFromAPAS("Status"), "Imported", "SMAB-T431,SMAB-T93 : 'Status' Field Validation on Import Logs details tab");
+		softAssert.assertEquals(objBuildPermit.getFieldValueFromAPAS("File Count"), "3", "SMAB-T431,SMAB-T93 : 'File Count' Field Validation on Import Logs details tab");
+		softAssert.assertEquals(objBuildPermit.getFieldValueFromAPAS("Error Count"), "2", "SMAB-T431,SMAB-T93 : 'Error Count' Field Validation on Import Logs details tab");
+		softAssert.assertEquals(objBuildPermit.getFieldValueFromAPAS("Import Count"), "1", "SMAB-T431,SMAB-T93 : 'Import Count' Field Validation on Import Logs details tab");
+		softAssert.assertEquals(objBuildPermit.getFieldValueFromAPAS("Allowed File Format"), "txt", "SMAB-T431,SMAB-T93 : 'Allowed File Format' Field Validation on Import Logs details tab");
 
 		//Step8: Opening the transaction tab
 		objPage.Click(objEFileImportLogsPage.transactionsTab);
 		Thread.sleep(5000);
-		HashMap<String, ArrayList<String>> importTransactionsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		HashMap<String, ArrayList<String>> importTransactionsGridData = objBuildPermit.getGridDataInHashMap(1, 1);
 		softAssert.assertEquals(importTransactionsGridData.get("Status").get(0),"Imported","SMAB-T430,SMAB-T93 : Status validation on Transactions tab of Import Logs screen");
 
-		objApasGenericFunctions.logout();
+		objBuildPermit.logout();
 	}
 
 
@@ -130,10 +126,10 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-		objApasGenericFunctions.login(loginUser);
+		objBuildPermit.login(loginUser);
 
 		//Step2: Opening the file import intake module
-		objApasGenericFunctions.searchModule(modules.EFILE_INTAKE);
+		objBuildPermit.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the San Mateo Building Permit file having error and success records through Efile Intake Import
 		objEfileHomePage.uploadFileOnEfileIntakeBP("Building Permit", "San Mateo Building permits", "SanMateoBuildingPermitsWithValidAndInvalidData.xlsx", sanMateoBuildingPermitFile);
@@ -142,9 +138,9 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 		objPage.waitForElementTextToBe(objEfileHomePage.statusImportedFile, "Imported", 120);
 
 		//Step5: Opening the Efile Import Transactions module
-		objApasGenericFunctions.searchModule(modules.EFILE_IMPORT_TRANSACTIONS);
+		objBuildPermit.searchModule(modules.EFILE_IMPORT_TRANSACTIONS);
 
-		HashMap<String, ArrayList<String>> importTransactionsGridData = objApasGenericFunctions.getGridDataInHashMap(1, 1);
+		HashMap<String, ArrayList<String>> importTransactionsGridData = objBuildPermit.getGridDataInHashMap(1, 1);
 
 		//Step6: Import Transactions grid validation for the imported San Mateo Building Permit file
 		ReportLogger.INFO("Validating the data on Import Logs Grid for San Mateo Building Permit file");
@@ -157,12 +153,12 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 		Thread.sleep(5000);
 
 		//Step8: Details Tab validation on Import Transactions tab
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Name"), importTransactionsGridData.get("Name").get(0), "SMAB-T431,SMAB-T96 : 'Name' Field Validation on Import Transaction details tab");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("E-File Import Log"), "Building Permit :San Mateo Building permits :" + period, "SMAB-T431,SMAB-T96 : 'E-File Import Log' Field Validation on Import Transactions details tab");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Status"), "Imported", "SMAB-T431,SMAB-T96 : 'Status' Field Validation on Import Transactions details tab");
+		softAssert.assertEquals(objBuildPermit.getFieldValueFromAPAS("Name"), importTransactionsGridData.get("Name").get(0), "SMAB-T431,SMAB-T96 : 'Name' Field Validation on Import Transaction details tab");
+		softAssert.assertEquals(objBuildPermit.getFieldValueFromAPAS("E-File Import Log"), "Building Permit :San Mateo Building permits :" + period, "SMAB-T431,SMAB-T96 : 'E-File Import Log' Field Validation on Import Transactions details tab");
+		softAssert.assertEquals(objBuildPermit.getFieldValueFromAPAS("Status"), "Imported", "SMAB-T431,SMAB-T96 : 'Status' Field Validation on Import Transactions details tab");
 		softAssert.assertTrue(objPage.verifyElementVisible(objEfileImportTransactionsPage.transactionTrailTab), "SMAB-T431,SMAB-T96 : Validation for existence of Transactions Trails tab on Import Transactions Screen");
 
-		objApasGenericFunctions.logout();
+		objBuildPermit.logout();
 	}
 
 }
