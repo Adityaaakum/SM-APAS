@@ -165,7 +165,10 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath="//button[text()='Close All']")
 	public WebElement closeAllBtn;
-	
+
+	public String SaveButton="Save";
+	public String NewButton="New";
+	public String EditButton="Edit";
 
 	/**
 	 * Description: This will click on the module name from the drop down

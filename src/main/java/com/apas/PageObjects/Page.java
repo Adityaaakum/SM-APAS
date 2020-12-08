@@ -887,7 +887,9 @@ public class Page {
 	 * @return : button element
 	 */
 	public WebElement getButtonWithText(String text){
-		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='" + text + "']";
+		String commonxPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]";
+		String xpath = commonxPath + "//button[text()='" + text + "'] | " +
+				       commonxPath + "//div[text()='" + text + "']//..";
 		return driver.findElement(By.xpath(xpath));
 	}
 

@@ -206,13 +206,20 @@ public class WorkItemHomePage extends Page {
     @FindBy (xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Child Work Items']")
     public WebElement ChildWorkItemsTab;
    
-    @FindBy (xpath="//*[@data-key='error']//..//button[@title='Close']")
+    @FindBy (xpath="//*[@data-key='error']//..//button[@title='Close'] | //button[@title='Close error dialog']")
     public WebElement CloseErrorMsg;
     
     @FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
-    
-    public String SaveButton="Save";
+
+	public String neighborhoodCodeEditBox="Neighborhood Code";
+	public String neighborhoodDescriptionEditBox="Neighborhood Description";
+	public String primaryAppraiserDropDown="Primary Appraiser";
+	public String districtDropDown="District";
+	public String territoryNameEditBox="Territory Name";
+	public String primaryAuditorDropDown="Primary Auditor";
+	public String workItemConfigurationDropDown= "Work Item Configuration";
+
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
 	 *
