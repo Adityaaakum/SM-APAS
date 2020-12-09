@@ -9,10 +9,8 @@ import com.apas.PageObjects.ReportsPage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.ExcelUtils;
-import com.apas.Utils.SalesforceAPI;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.generic.ApasGenericFunctions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -25,7 +23,6 @@ public class BuildingPermit_Reports_Test extends TestBase {
 
 	private RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
 	ReportsPage objReportsPage;
 	SoftAssertion softAssert  = new SoftAssertion();
@@ -39,7 +36,6 @@ public class BuildingPermit_Reports_Test extends TestBase {
 		objPage = new Page(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objReportsPage = new ReportsPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 	}
 
 	/*
@@ -54,13 +50,13 @@ public class BuildingPermit_Reports_Test extends TestBase {
 		ReportLogger.INFO("Download location : " + downloadLocation);
 
 		//Step1: Login to the APAS application using the credentials passed through data provider
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 
 		//Step2: Opening the Reports module
-		objApasGenericFunctions.searchModule(modules.REPORTS);
+		objApasGenericPage.searchModule(modules.REPORTS);
 
 		//Deleteing all the previously downloaded files
-		objApasGenericFunctions.deleteFilesFromFolder(downloadLocation);
+		objApasGenericPage.deleteFilesFromFolder(downloadLocation);
 
 		//Step3: Exporting 'Building Permit by City Code' report in Formatted Mode
 		objReportsPage.exportReport(reportName,ReportsPage.FORMATTED_EXPORT);
@@ -82,10 +78,10 @@ public class BuildingPermit_Reports_Test extends TestBase {
 		driver.switchTo().parentFrame();
 
 		//Step5: Opening the Reports module
-		objApasGenericFunctions.searchModule(modules.REPORTS);
+		objApasGenericPage.searchModule(modules.REPORTS);
 
 		//Deleting all the previously downloaded files
-		objApasGenericFunctions.deleteFilesFromFolder(downloadLocation);
+		objApasGenericPage.deleteFilesFromFolder(downloadLocation);
 
 		//Step6: Exporting 'Building Permit by City Code' report in Data Mode
 		objReportsPage.exportReport(reportName,ReportsPage.DATA_EXPORT);
@@ -94,6 +90,6 @@ public class BuildingPermit_Reports_Test extends TestBase {
 		softAssert.assertEquals(exportedFileName.split("\\.")[1],"xls", "SMAB-T433,SMAB-T373: Exported data formatted report should be in XLS");
 
 		//Logout at the end of the test
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	}
 }

@@ -1,8 +1,6 @@
 package com.apas.PageObjects;
 
 import com.apas.Reports.ReportLogger;
-import com.apas.generic.ApasGenericFunctions;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -11,16 +9,14 @@ import org.openqa.selenium.support.PageFactory;
 
 import java.io.IOException;
 
-public class EFileImportLogsPage extends Page {
+public class EFileImportLogsPage extends ApasGenericPage {
 	Page objPage;
-	ApasGenericFunctions apasGenericObj;
 	EFileImportPage objEFileImport;
 	
 
 	public EFileImportLogsPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
-		apasGenericObj=new ApasGenericFunctions(driver);
 		objEFileImport=new EFileImportPage(driver);
 		objPage=new Page(driver);
 	

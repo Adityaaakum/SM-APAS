@@ -13,12 +13,10 @@ import com.apas.TestBase.TestBase;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
-import com.apas.generic.ApasGenericFunctions;
 
 public class WorkItems_SecurityAndSharing_Tests extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
 	LoginPage objLoginPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	WorkItemHomePage objWorkItemHomePage;
 	SoftAssertion softAssert;
 	ApasGenericPage objApasGenericPage;
@@ -29,7 +27,6 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
 		objLoginPage = new LoginPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objApasGenericPage=new ApasGenericPage(driver);
 		softAssert = new SoftAssertion();
@@ -44,10 +41,10 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 			"regression","work_item_manual" })
 	public void WorkItems_VerifySupervisor_ActionColumn(String loginUser) throws Exception {		
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (loginPrincipalUser)
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 
 		//Step2: Open Home Page
-		objApasGenericFunctions.searchModule(modules.HOME);
+		objApasGenericPage.searchModule(modules.HOME);
 
 		//Step 3: Navigate to tabs : Need My approval,In progress and verify that Action column is visible 
 		objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
@@ -87,7 +84,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementNotVisible(objWorkItemHomePage.actionColumn),
 				"SMAB-T2085: Validation that 'ACTION' column is not visible on completed tab");
 
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 
 	}
 	/**
@@ -99,10 +96,10 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 			"regression","work_item_manual"  })
 	public void WorkItems_VerifyStaffUser_ActionColumn(String loginUser) throws Exception {
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (loginBPPBusinessAdmin)
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 
 		//Step2: Open Home Page
-		objApasGenericFunctions.searchModule(modules.HOME);
+		objApasGenericPage.searchModule(modules.HOME);
 
 		//Step 3: Navigate to tabs : In progress and verify that Action column is visible 
 		objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
@@ -126,7 +123,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementNotVisible(objWorkItemHomePage.actionColumn),
 				"SMAB-T2086: Validation that 'ACTION' column is not visible on completed tab");
 
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	}
 
 	/**
@@ -142,10 +139,10 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 		
 		
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		 
 		//Step2: Navigate to home and submittedForApproval
-		objApasGenericFunctions.searchModule(HOME);
+		objApasGenericPage.searchModule(HOME);
 	    objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABMySubmittedforApproval);
 	    
 	    //Validate that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval'
@@ -168,6 +165,6 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	    softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeAssignee)),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'completed'");
 	    
-	    objApasGenericFunctions.logout();
+	    objApasGenericPage.logout();
 	}
 }

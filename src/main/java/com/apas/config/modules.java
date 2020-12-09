@@ -21,15 +21,15 @@ public interface modules {
 	public static final String WORK_POOL = "Work Pool";
 	public static final String WORK_ITEM = "Work Item";
 
-	public static final String REAL_PROPERTY_SETTINGS_LIBRARIES = "Real Property Settings Libraries";
-	public static final String ROLL_YEAR_SETTINGS = "Roll Year Settings";
-	public static final String EXEMPTION = "Exemption";
-	public static final String EXEMPTIONS = "Exemption";
-	public static final String ASSESSEES = "Assessees";
-	public static final String SITUS = "Situs";
-	public static final String RPSL = "Real Property Settings Libraries";
-	public static final String ROLLYEAR = "Roll Year Settings";
-	public static final String VALUE_ADJUSTMENTS = "Value Adjustments";
-	public static final String WORKITEM_MNGMNT = "Work Item Management Console";
+	String REAL_PROPERTY_SETTINGS_LIBRARIES = "Real Property Settings Libraries";
+	String ROLL_YEAR_SETTINGS = "Roll Year Settings";
+	String EXEMPTION = "Exemption";
+	String EXEMPTIONS = "Exemption";
+	String ASSESSEES = "Assessees";
+	String SITUS = "Situs";
+	String RPSL = "Real Property Settings Libraries";
+	String ROLLYEAR = "Roll Year Settings";
+	String VALUE_ADJUSTMENTS = "Value Adjustments";
+	String WORKITEM_MNGMNT = "Work Item Management Console";
 }
 

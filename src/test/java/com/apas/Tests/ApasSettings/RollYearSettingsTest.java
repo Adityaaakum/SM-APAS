@@ -1,37 +1,24 @@
 package com.apas.Tests.ApasSettings;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Map;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.RollYearSettingsPage;
-import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.config.users;
-import com.apas.generic.ApasGenericFunctions;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class RollYearSettingsTest extends TestBase {
 	
 	private RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
 	RollYearSettingsPage objRollYearSettingsPage;
 	Util objUtil;
@@ -48,11 +35,10 @@ public class RollYearSettingsTest extends TestBase {
 		objPage = new Page(driver);
 		objRollYearSettingsPage = new RollYearSettingsPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		rollYearData = System.getProperty("user.dir") + testdata.ROLL_YEAR_DATA;
-		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
+		objRollYearSettingsPage.updateRollYearStatus("Closed", "2020");
 	}
 	
 	/**
@@ -64,10 +50,10 @@ public class RollYearSettingsTest extends TestBase {
 	public void RollYear_CreateFutureRecord(String loginUser) throws Exception {
 	
 			//Step1: Login to the APAS application using the user passed through the data provider
-			objApasGenericFunctions.login(loginUser);
+			objRollYearSettingsPage.login(loginUser);
 			
 			//Step2: Open the Roll Year Settings module
-			objApasGenericFunctions.searchModule(modules.ROLL_YEAR_SETTINGS);
+			objRollYearSettingsPage.searchModule(modules.ROLL_YEAR_SETTINGS);
 			
 			//Step3: Save an Roll Year Settings record without entering any details		
 			objRollYearSettingsPage.saveRollYearRecordWithNoValues();
@@ -94,16 +80,16 @@ public class RollYearSettingsTest extends TestBase {
 			
 			//Step6: Select ALL from the list view
 			Thread.sleep(1000);
-			objApasGenericFunctions.searchModule(modules.ROLL_YEAR_SETTINGS);
-			objApasGenericFunctions.displayRecords("All");
+			objRollYearSettingsPage.searchModule(modules.ROLL_YEAR_SETTINGS);
+			objRollYearSettingsPage.displayRecords("All");
 			
 			//Step7: Search the existing Roll Year record and delete if exists
-			if (objApasGenericFunctions.searchRecords(dataToCreateFutureRollYearMap.get("Roll Year")).substring(0, 6).equals("1 item")) {
+			if (objRollYearSettingsPage.searchRecords(dataToCreateFutureRollYearMap.get("Roll Year")).substring(0, 6).equals("1 item")) {
 				softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct(dataToCreateFutureRollYearMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate user is able to delete the existing Roll Year record i.e. " + dataToCreateFutureRollYearMap.get("Roll Year"));
 			}
 			
 			//Step8: Change the List view and Create Roll Year record
-			objApasGenericFunctions.displayRecords("Recently Viewed");
+			objRollYearSettingsPage.displayRecords("Recently Viewed");
 			objRollYearSettingsPage.createOrUpdateRollYearRecord(dataToCreateFutureRollYearMap, "New");
 				
 			//Step9: Validate the Roll Year record and its status
@@ -115,7 +101,7 @@ public class RollYearSettingsTest extends TestBase {
 			ReportLogger.INFO("Click 'Edit' button to update the status on the Roll Year record");
 			objPage.Click(objPage.waitForElementToBeClickable(objRollYearSettingsPage.editButton));
 			Thread.sleep(1000);
-			objApasGenericFunctions.selectFromDropDown(objRollYearSettingsPage.status, "Closed");
+			objRollYearSettingsPage.selectFromDropDown(objRollYearSettingsPage.status, "Closed");
 			objPage.Click(objRollYearSettingsPage.saveButton);
 			
 			//Step11: Validate the status of Roll Year record
@@ -123,7 +109,7 @@ public class RollYearSettingsTest extends TestBase {
 			driver.navigate().refresh();
 			softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.statusOnDetailPage)), "Closed", "SMAB-T638: Status of the record is validated successfully");
 						
-			objApasGenericFunctions.logout();
+			objRollYearSettingsPage.logout();
 		}
 		
 		/**
@@ -136,24 +122,24 @@ public class RollYearSettingsTest extends TestBase {
 		public void RollYear_CreateAndEditPastRecord(String loginUser) throws Exception {
 			
 			//Step1: Login to the APAS application using the user passed through the data provider
-			objApasGenericFunctions.login(loginUser);
+			objRollYearSettingsPage.login(loginUser);
 			
 			//Step2: Open the Roll Year Settings module
-			objApasGenericFunctions.searchModule(modules.ROLL_YEAR_SETTINGS);
+			objRollYearSettingsPage.searchModule(modules.ROLL_YEAR_SETTINGS);
 			
 			//Step3: Create data map for the JSON file (RollYear_DataToCreateRollYearRecord.json)  
 			Map<String, String> dataToCreatePastRollYearMap = objUtil.generateMapFromJsonFile(rollYearData, "DataToCreatePastRollYear");
 			
 			//Step4: Select ALL from the list view
-			objApasGenericFunctions.displayRecords("All");
+			objRollYearSettingsPage.displayRecords("All");
 			
 			//Step5: Search the existing Roll Year record and delete if exists
-			if (objApasGenericFunctions.searchRecords(dataToCreatePastRollYearMap.get("Roll Year")).substring(0, 6).equals("1 item")) {
+			if (objRollYearSettingsPage.searchRecords(dataToCreatePastRollYearMap.get("Roll Year")).substring(0, 6).equals("1 item")) {
 				softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct(dataToCreatePastRollYearMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate user is able to delete the existing Roll Year record i.e. " + dataToCreatePastRollYearMap.get("Roll Year"));
 			}
 			
 			//Step6: Change the List view and Create Roll Year record
-			objApasGenericFunctions.displayRecords("Recently Viewed");
+			objRollYearSettingsPage.displayRecords("Recently Viewed");
 			//Added the below line to bring back the focus to handle regression failure - 11/26
 			driver.navigate().refresh();
 			objRollYearSettingsPage.createOrUpdateRollYearRecord(dataToCreatePastRollYearMap, "New");
@@ -165,7 +151,7 @@ public class RollYearSettingsTest extends TestBase {
 			String rollYearName = objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.rollYearOnDetailPage));
 			
 			//Step8: Validate the default List View and Create a duplicate record
-			objApasGenericFunctions.searchModule(modules.ROLL_YEAR_SETTINGS);
+			objRollYearSettingsPage.searchModule(modules.ROLL_YEAR_SETTINGS);
 			softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.recentlyViewedListView)), "Recently Viewed", "SMAB-T638: Default List View is validated successfully");
 			ReportLogger.INFO("Click 'New' button to open a Roll Year record");
 			Thread.sleep(2000);
@@ -183,7 +169,7 @@ public class RollYearSettingsTest extends TestBase {
 			
 			//Step10: Validate the error message is displayed on selecting the duplicate Roll Year
 			ReportLogger.INFO("Enter 'Roll Year' and 'Open Roll End Date' values only");
-			objApasGenericFunctions.selectFromDropDown(objRollYearSettingsPage.rollYear, dataToCreatePastRollYearMap.get("Roll Year"));
+			objRollYearSettingsPage.selectFromDropDown(objRollYearSettingsPage.rollYear, dataToCreatePastRollYearMap.get("Roll Year"));
 			objApasGenericPage.enter(objRollYearSettingsPage.openRollEndDate, dataToCreatePastRollYearMap.get("Open Roll End Date"));
 			Thread.sleep(2000);
 			//softAssert.assertTrue(objRollYearSettingsPage.duplicateRecord.isDisplayed(), "Validate duplicate error message is displayed as Roll Year record exist");
@@ -194,21 +180,21 @@ public class RollYearSettingsTest extends TestBase {
 			objPage.Click(objRollYearSettingsPage.cancelButton);
 			
 			//Step11: Open the Roll Year Settings module
-			objApasGenericFunctions.searchModule(modules.ROLL_YEAR_SETTINGS);
+			objRollYearSettingsPage.searchModule(modules.ROLL_YEAR_SETTINGS);
 					
 			//Step12: Create data map for the JSON file (RollYear_DataToCreateRollYearRecord.json) 
 			Map<String, String> dataToEditPastRollYearToFutureMap = objUtil.generateMapFromJsonFile(rollYearData, "DataToEditPastRollYearToFuture");
 					
 			//Step13: Search the existing Roll Year record and delete if exists
 			Thread.sleep(1000);
-			objApasGenericFunctions.displayRecords("All");
-			if (objApasGenericFunctions.searchRecords(dataToEditPastRollYearToFutureMap.get("Roll Year")).substring(0, 6).equals("1 item")) {
+			objRollYearSettingsPage.displayRecords("All");
+			if (objRollYearSettingsPage.searchRecords(dataToEditPastRollYearToFutureMap.get("Roll Year")).substring(0, 6).equals("1 item")) {
 				softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct(dataToEditPastRollYearToFutureMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate user is able to delete the existing Roll Year record i.e. " + dataToEditPastRollYearToFutureMap.get("Roll Year"));
 			}
 			
 			//Step14: Search the existing Roll Year Settings record
-			objApasGenericFunctions.displayRecords("All");
-			objApasGenericFunctions.searchRecords(rollYearName);
+			objRollYearSettingsPage.displayRecords("All");
+			objRollYearSettingsPage.searchRecords(rollYearName);
 			objRollYearSettingsPage.openRollYearRecord(recordId, rollYearName);
 					
 			//Step15: Editing this Roll Year record using EDIT button on Roll Year detail screen
@@ -239,7 +225,7 @@ public class RollYearSettingsTest extends TestBase {
 			softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.statusOnDetailPage)), dataToEditPastRollYearToFutureMap.get("Status"), "SMAB-T638: Status of the record is validated successfully");
 			softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.rollYearOnDetailPage)), dataToEditPastRollYearToFutureMap.get("Roll Year"), "SMAB-T638: Roll Year record is created successfully");
 					
-			objApasGenericFunctions.logout();
+			objRollYearSettingsPage.logout();
 		}
 		
 		/**
@@ -251,17 +237,17 @@ public class RollYearSettingsTest extends TestBase {
 		public void RollYear_FieldLevelValidations(String loginUser) throws Exception {
 		
 			//Step1: Login to the APAS application using the user passed through the data provider
-			objApasGenericFunctions.login(loginUser);
+			objRollYearSettingsPage.login(loginUser);
 			
 			//Step2: Open the Roll Year Settings module
-			objApasGenericFunctions.searchModule(modules.ROLL_YEAR_SETTINGS);
+			objRollYearSettingsPage.searchModule(modules.ROLL_YEAR_SETTINGS);
 			
 			//Step3: Create data map for the JSON file (RollYear_DataToCreateRollYearRecord.json)  
 			Map<String, String> dataToValidateFieldLevelErrorMessagesMap = objUtil.generateMapFromJsonFile(rollYearData, "DataToValidateFieldLevelErrorMessages");
 			
 			//Step4: Search the existing Roll Year record
-			objApasGenericFunctions.displayRecords("All");
-			objApasGenericFunctions.searchRecords(dataToValidateFieldLevelErrorMessagesMap.get("Roll Year"));
+			objRollYearSettingsPage.displayRecords("All");
+			objRollYearSettingsPage.searchRecords(dataToValidateFieldLevelErrorMessagesMap.get("Roll Year"));
 			
 			//Step5: Create Roll Year record
 			objRollYearSettingsPage.createOrUpdateRollYearRecord(dataToValidateFieldLevelErrorMessagesMap, "New");
@@ -277,13 +263,13 @@ public class RollYearSettingsTest extends TestBase {
 			String errorOnCalendarEndDate1 = "Calendar End Date must be greater than Calendar Start Date";
 			String errorOnCalendarEndDate2 = "Calendar End Date year should be same as Roll Year";
 			
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnLienDate), errorOnLienDate, "SMAB-T638: Validate error message is displayed on 'Lien Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnTaxStartDate), errorOnTaxStartDate, "SMAB-T638: Validate error message is displayed on 'Tax Start Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnTaxEndDate), errorOnTaxEndDate, "SMAB-T638: Validate error message is displayed on 'Tax End Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnOpenRollStartDate), errorOnOpenRollStartDate, "SMAB-T638: Validate error message is displayed on 'Open Roll Start Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnOpenRollEndDate1), errorOnOpenRollEndDate1, "SMAB-T638: Validate error message is displayed on 'Open Roll End Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnCalendarStartDate), errorOnCalendarStartDate, "SMAB-T638: Validate error message is displayed on 'Calendar Start Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnCalendarEndDate1), errorOnCalendarEndDate1, "SMAB-T638: Validate error message is displayed on 'Calendar End Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnLienDate), errorOnLienDate, "SMAB-T638: Validate error message is displayed on 'Lien Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnTaxStartDate), errorOnTaxStartDate, "SMAB-T638: Validate error message is displayed on 'Tax Start Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnTaxEndDate), errorOnTaxEndDate, "SMAB-T638: Validate error message is displayed on 'Tax End Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnOpenRollStartDate), errorOnOpenRollStartDate, "SMAB-T638: Validate error message is displayed on 'Open Roll Start Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnOpenRollEndDate1), errorOnOpenRollEndDate1, "SMAB-T638: Validate error message is displayed on 'Open Roll End Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnCalendarStartDate), errorOnCalendarStartDate, "SMAB-T638: Validate error message is displayed on 'Calendar Start Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnCalendarEndDate1), errorOnCalendarEndDate1, "SMAB-T638: Validate error message is displayed on 'Calendar End Date' field");
 			
 			//Step7: Enter a different 'Calendar End Date' and Save the record
 			ReportLogger.INFO("Enter a different value for 'Calendar End Date' i.e. 12/31/2010 and click SAVE button to validate a different error message");
@@ -292,13 +278,13 @@ public class RollYearSettingsTest extends TestBase {
 			
 			//Step8: Validate error messages again that are displayed at field level
 			Thread.sleep(2000);
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnLienDate), errorOnLienDate, "SMAB-T638: Validate error message is displayed on 'Lien Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnTaxStartDate), errorOnTaxStartDate, "SMAB-T638: Validate error message is displayed on 'Tax Start Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnTaxEndDate), errorOnTaxEndDate, "SMAB-T638: Validate error message is displayed on 'Tax End Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnOpenRollStartDate), errorOnOpenRollStartDate, "SMAB-T638: Validate error message is displayed on 'Open Roll Start Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnOpenRollEndDate1), errorOnOpenRollEndDate1, "SMAB-T638: Validate error message is displayed on 'Open Roll End Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnCalendarStartDate), errorOnCalendarStartDate, "SMAB-T638: Validate error message is displayed on 'Calendar Start Date' field");
-			softAssert.assertContains(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnCalendarEndDate1), errorOnCalendarEndDate2, "SMAB-T638: Validate error message is displayed on 'Calendar End Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnLienDate), errorOnLienDate, "SMAB-T638: Validate error message is displayed on 'Lien Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnTaxStartDate), errorOnTaxStartDate, "SMAB-T638: Validate error message is displayed on 'Tax Start Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnTaxEndDate), errorOnTaxEndDate, "SMAB-T638: Validate error message is displayed on 'Tax End Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnOpenRollStartDate), errorOnOpenRollStartDate, "SMAB-T638: Validate error message is displayed on 'Open Roll Start Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnOpenRollEndDate1), errorOnOpenRollEndDate1, "SMAB-T638: Validate error message is displayed on 'Open Roll End Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnCalendarStartDate), errorOnCalendarStartDate, "SMAB-T638: Validate error message is displayed on 'Calendar Start Date' field");
+			softAssert.assertContains(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnCalendarEndDate1), errorOnCalendarEndDate2, "SMAB-T638: Validate error message is displayed on 'Calendar End Date' field");
 			
 			//Step9: Enter a different 'Open Roll End Date' and Save the record
 			ReportLogger.INFO("Enter a different value for 'Open Roll End Date' i.e. 12/31/2008 and click SAVE button to validate a different error message");
@@ -307,20 +293,20 @@ public class RollYearSettingsTest extends TestBase {
 			
 			//Step10: Validate error messages again that are displayed at field level
 			Thread.sleep(2000);
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnLienDate), errorOnLienDate, "SMAB-T638: Validate error message is displayed on 'Lien Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnTaxStartDate), errorOnTaxStartDate, "SMAB-T638: Validate error message is displayed on 'Tax Start Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnTaxEndDate), errorOnTaxEndDate, "SMAB-T638: Validate error message is displayed on 'Tax End Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnOpenRollStartDate), errorOnOpenRollStartDate, "SMAB-T638: Validate error message is displayed on 'Open Roll Start Date' field");
-			softAssert.assertContains(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnOpenRollEndDate1), errorOnOpenRollEndDate1, "SMAB-T638: Validate error message is displayed on 'Open Roll End Date' field");
-			softAssert.assertContains(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnOpenRollEndDate1), errorOnOpenRollEndDate2, "SMAB-T638: Validate error message is displayed on 'Open Roll End Date' field");
-			softAssert.assertEquals(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnCalendarStartDate), errorOnCalendarStartDate, "SMAB-T638: Validate error message is displayed on 'Calendar Start Date' field");
-			softAssert.assertContains(objApasGenericFunctions.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnCalendarEndDate1), errorOnCalendarEndDate2, "SMAB-T638: Validate error message is displayed on 'Calendar End Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnLienDate), errorOnLienDate, "SMAB-T638: Validate error message is displayed on 'Lien Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnTaxStartDate), errorOnTaxStartDate, "SMAB-T638: Validate error message is displayed on 'Tax Start Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnTaxEndDate), errorOnTaxEndDate, "SMAB-T638: Validate error message is displayed on 'Tax End Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnOpenRollStartDate), errorOnOpenRollStartDate, "SMAB-T638: Validate error message is displayed on 'Open Roll Start Date' field");
+			softAssert.assertContains(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnOpenRollEndDate1), errorOnOpenRollEndDate1, "SMAB-T638: Validate error message is displayed on 'Open Roll End Date' field");
+			softAssert.assertContains(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnOpenRollEndDate1), errorOnOpenRollEndDate2, "SMAB-T638: Validate error message is displayed on 'Open Roll End Date' field");
+			softAssert.assertEquals(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnCalendarStartDate), errorOnCalendarStartDate, "SMAB-T638: Validate error message is displayed on 'Calendar Start Date' field");
+			softAssert.assertContains(objRollYearSettingsPage.getIndividualFieldErrorMessage(objRollYearSettingsPage.errorOnCalendarEndDate1), errorOnCalendarEndDate2, "SMAB-T638: Validate error message is displayed on 'Calendar End Date' field");
 			
 			//Step11: Click Cancel button
 			ReportLogger.INFO("Click 'Cancel' button to move out of the Roll Year screen");
 			objPage.Click(objRollYearSettingsPage.cancelButton);
 			
-			objApasGenericFunctions.logout();	
+			objRollYearSettingsPage.logout();	
 		}
 	
 	/**
@@ -332,14 +318,14 @@ public class RollYearSettingsTest extends TestBase {
 	public void RollYear_ViewRecord(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objRollYearSettingsPage.login(loginUser);
 		
 		//Step2: Open the Roll Year Settings module
-		objApasGenericFunctions.searchModule(modules.ROLL_YEAR_SETTINGS);
+		objRollYearSettingsPage.searchModule(modules.ROLL_YEAR_SETTINGS);
 		
 		//Step3: Validate NEW button doesn't appear on the screen  
 		softAssert.assertTrue(!objPage.verifyElementVisible(objRollYearSettingsPage.newRollYearButton), "SMAB-T638: Validate NEW button is not displayed");
-		objApasGenericFunctions.displayRecords("All");
+		objRollYearSettingsPage.displayRecords("All");
 		softAssert.assertTrue(!objPage.verifyElementVisible(objRollYearSettingsPage.newRollYearButton), "SMAB-T638: Validate NEW button is not displayed");
 		
 		//Step4: Create data map for the JSON file (RollYear_DataToCreateRollYearRecord.json)  
@@ -347,14 +333,14 @@ public class RollYearSettingsTest extends TestBase {
 		
 		//Step5: Select ALL from the List view and Search the Roll Year record
 		Thread.sleep(1000);
-		objApasGenericFunctions.displayRecords("All");
-		objApasGenericFunctions.searchRecords(viewRollYearMap.get("Roll Year"));
+		objRollYearSettingsPage.displayRecords("All");
+		objRollYearSettingsPage.searchRecords(viewRollYearMap.get("Roll Year"));
 		
 		//Step6: Search the existing Roll Year record - Delete/Edit options should not be visbile to non-admin users
 		softAssert.assertTrue(!objApasGenericPage.clickShowMoreButtonAndAct(viewRollYearMap.get("Roll Year"), "Delete"),"SMAB-T638: Validate non system admin user is not able to view 'Delete' option to delete the existing Roll Year record : " + viewRollYearMap.get("Roll Year"));
 		softAssert.assertTrue(!objApasGenericPage.clickShowMoreButtonAndAct(viewRollYearMap.get("Roll Year"), "Edit"),"SMAB-T638: Validate non system admin user is not able to view 'Edit' option to update the existing Roll Year record : " + viewRollYearMap.get("Roll Year"));
 				
-		objApasGenericFunctions.logout();
+		objRollYearSettingsPage.logout();
 	}
 	
 	
@@ -368,10 +354,10 @@ public class RollYearSettingsTest extends TestBase {
 	public void RollYear_CreateCurrentRecord(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objRollYearSettingsPage.login(loginUser);
 		
 		//Step2: Open the Roll Year Settings module
-		objApasGenericFunctions.searchModule(modules.ROLL_YEAR_SETTINGS);
+		objRollYearSettingsPage.searchModule(modules.ROLL_YEAR_SETTINGS);
 		
 		//Step3: Create data map for the JSON file (RollYear_DataToCreateRollYearRecord.json) and delete the existing Roll Year record
 		//dataMap = objUtil.generateMapFromJsonFile(rollYearData, "DataToCreateCurrentRollYear");
@@ -389,6 +375,6 @@ public class RollYearSettingsTest extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.statusOnDetailPage)), dataToCreateCurrentRollYearMap.get("Status"), "Status of the record is validated successfully");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objRollYearSettingsPage.rollYearOnDetailPage)), dataToCreateCurrentRollYearMap.get("Roll Year"), "Roll Year record is created successfully");
 		
-		objApasGenericFunctions.logout();
+		objRollYearSettingsPage.logout();
 	}*/
 }

@@ -11,7 +11,7 @@ import org.openqa.selenium.support.PageFactory;
 import java.io.IOException;
 import java.util.List;
 
-public class EFileImportTransactionsPage extends Page {
+public class EFileImportTransactionsPage extends ApasGenericPage {
 
 	public EFileImportTransactionsPage(RemoteWebDriver driver) {
 		super(driver);

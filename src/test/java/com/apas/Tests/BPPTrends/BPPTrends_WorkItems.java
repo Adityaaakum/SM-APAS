@@ -19,18 +19,16 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.generic.ApasGenericFunctions;
 
 public class BPPTrends_WorkItems extends TestBase {
 
     RemoteWebDriver driver;
     Page objPage;
-    ApasGenericFunctions objApasGenericFunctions;
     BppTrendSetupPage objBppTrendSetupPage;
     BppTrendPage objBppTrendPage;
     WorkItemHomePage objWorkItemHomePage;
     EFileImportPage objEfileImportPage;
-
+    ApasGenericPage objApasGenericPage;
     SalesforceAPI objSalesforceAPI = new SalesforceAPI();
     SoftAssertion softAssert = new SoftAssertion();
 
@@ -42,9 +40,8 @@ public class BPPTrends_WorkItems extends TestBase {
         driver = null;
         setupTest();
         driver = BrowserDriver.getBrowserInstance();
-
+        objApasGenericPage = new ApasGenericPage(driver);
         objPage = new Page(driver);
-        objApasGenericFunctions = new ApasGenericFunctions(driver);
         objEfileImportPage = new EFileImportPage(driver);
         objWorkItemHomePage = new WorkItemHomePage(driver);
         objBppTrendPage = new BppTrendPage(driver);
@@ -75,10 +72,10 @@ public class BPPTrends_WorkItems extends TestBase {
         }
 
         //Step2: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objApasGenericFunctions.login(loginUser);
+        objBppTrendSetupPage.login(loginUser);
 
         //Step3: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step4: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -101,7 +98,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.uploadFile(sourceFile);
 
         //Step7: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
         driver.navigate().refresh();
         Thread.sleep(5000);
 
@@ -130,7 +127,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.approveImportedFile();
 
         //Stpe12: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
         driver.navigate().refresh();
         Thread.sleep(5000);
 
@@ -139,7 +136,7 @@ public class BPPTrends_WorkItems extends TestBase {
         softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1732: Validation that Review Import work item moved to Completed status after imported file is approved");
 
         //Step14: Log out from the application
-        objApasGenericFunctions.logout();
+        objBppTrendSetupPage.logout();
     }
 
     /**
@@ -161,10 +158,10 @@ public class BPPTrends_WorkItems extends TestBase {
         objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_EFILE);
 
         //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objApasGenericFunctions.login(loginUser);
+        objBppTrendSetupPage.login(loginUser);
 
         //Stpe5: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step6: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -187,7 +184,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.uploadFile(sourceFile);
 
         //Stpe9: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
         driver.navigate().refresh();
         Thread.sleep(5000);
 
@@ -216,7 +213,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.revertImportedFile();
 
         //Stpe14: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
         driver.navigate().refresh();
         Thread.sleep(5000);
 
@@ -256,10 +253,10 @@ public class BPPTrends_WorkItems extends TestBase {
             objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_EFILE);
         }
         //Step2: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objApasGenericFunctions.login(loginUser);
+        objBppTrendSetupPage.login(loginUser);
 
         //Step3: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step4: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -282,7 +279,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.uploadFile(sourceFile);
 
         //Step7: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
         driver.navigate().refresh();
         Thread.sleep(5000);
 
@@ -311,7 +308,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.approveImportedFile();
 
         //Stpe12: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
         driver.navigate().refresh();
         Thread.sleep(5000);
 
@@ -320,7 +317,7 @@ public class BPPTrends_WorkItems extends TestBase {
         softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1739: Validation that Review Import work item moved to Completed status after imported file is approved");
 
         //Step14: Log out from the application
-        objApasGenericFunctions.logout();
+        objBppTrendSetupPage.logout();
     }
 
     /**
@@ -342,10 +339,10 @@ public class BPPTrends_WorkItems extends TestBase {
         objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_EFILE);
 
         //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objApasGenericFunctions.login(loginUser);
+        objBppTrendSetupPage.login(loginUser);
 
         //Stpe5: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step6: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -368,7 +365,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.uploadFile(sourceFile);
 
         //Stpe9: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
         driver.navigate().refresh();
         Thread.sleep(5000);
 
@@ -397,7 +394,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.revertImportedFile();
 
         //Stpe14: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
         driver.navigate().refresh();
         Thread.sleep(5000);
 
@@ -437,10 +434,10 @@ public class BPPTrends_WorkItems extends TestBase {
             objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_EFILE);
         }
         //Step2: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objApasGenericFunctions.login(loginUser);
+        objBppTrendSetupPage.login(loginUser);
 
         //Step3: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step4: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -463,7 +460,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.uploadFile(sourceFile);
 
         //Step7: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
         driver.navigate().refresh();
         Thread.sleep(5000);
 
@@ -492,7 +489,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.approveImportedFile();
 
         //Stpe12: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
         driver.navigate().refresh();
         Thread.sleep(5000);
 
@@ -501,7 +498,7 @@ public class BPPTrends_WorkItems extends TestBase {
         softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1742: Validation that Review Import work item moved to Completed status after imported file is approved");
 
         //Step14: Log out from the application
-        objApasGenericFunctions.logout();
+        objBppTrendSetupPage.logout();
     }
 
     /**
@@ -523,10 +520,10 @@ public class BPPTrends_WorkItems extends TestBase {
         objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_EFILE);
 
         //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objApasGenericFunctions.login(loginUser);
+        objBppTrendSetupPage.login(loginUser);
 
         //Stpe5: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step6: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -549,7 +546,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.uploadFile(sourceFile);
 
         //Step9: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
         driver.navigate().refresh();
         Thread.sleep(5000);
 
@@ -578,7 +575,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.revertImportedFile();
 
         //Stpe14: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
         driver.navigate().refresh();
         Thread.sleep(5000);
 
@@ -611,7 +608,7 @@ public class BPPTrends_WorkItems extends TestBase {
         BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
 
         //Step3: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objApasGenericFunctions.login(loginUser);
+        objBppTrendSetupPage.login(loginUser);
 
         //Step4: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -653,7 +650,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objSalesforceAPI.update("BPP_Trend_Roll_Year__c", query, "Annual_Factor_Status__c", "Reviewed by Admin");
 
         //Step6: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objApasGenericFunctions.login(loginUser);
+        objBppTrendSetupPage.login(loginUser);
 
         //Step7: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -699,8 +696,8 @@ public class BPPTrends_WorkItems extends TestBase {
         BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
 
         //Step5: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objApasGenericFunctions.login(loginUser);
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.login(loginUser);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step6: Update WI status to Completed
         query = "select id from Work_Item__c where Reference__c = 'BOE Valuation Factors' OR Reference__c = 'CAA Valuation Factors'";
@@ -727,6 +724,7 @@ public class BPPTrends_WorkItems extends TestBase {
         softAssert.assertContains(actualErrorMessage, "BPP Annual Factors is not yet completed/reviewed by admin for selected Roll Year", "SMAB-T2196: Verify Error Message when 'Annual Settings' WI is not Completed and calculations are triggered");
 
     }
+    
     /** This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
@@ -759,7 +757,7 @@ public class BPPTrends_WorkItems extends TestBase {
         Thread.sleep(15000);
 
         //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objApasGenericFunctions.login(loginUser);
+        objBppTrendSetupPage.login(loginUser);
 
         //Step6: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -788,11 +786,11 @@ public class BPPTrends_WorkItems extends TestBase {
         softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T1737: Verify status of WI : 'Perform Calculations' is 'Submitted for Approval'");
         
         //Step14: Log out from the application and log in as BPP Principal
-        objApasGenericFunctions.logout();
+        objBppTrendSetupPage.logout();
         Thread.sleep(15000);
 
-        objApasGenericFunctions.login(users.PRINCIPAL_USER);
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.login(users.PRINCIPAL_USER);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step15: Navigate to 'Needs My Approval' tab and
         objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
@@ -812,6 +810,7 @@ public class BPPTrends_WorkItems extends TestBase {
         actualWIStatus = workItemData.get("Status__c").get(0);
         softAssert.assertEquals(actualWIStatus, "Completed", "SMAB-T1750: Verify status of WI : 'Perform Calculations' is 'Completed'");
     }
+    
     /** This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
@@ -843,7 +842,7 @@ public class BPPTrends_WorkItems extends TestBase {
         BPPTrends_CAAValuation_WorkItemImportAndApprove(loginUser,true);
 
         //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objApasGenericFunctions.login(loginUser);
+        objBppTrendSetupPage.login(loginUser);
 
         //Step5: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -872,11 +871,11 @@ public class BPPTrends_WorkItems extends TestBase {
         softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T2195: Verify status of WI : 'Perform Calculations' is 'Submitted for Approval'");
 
         //Step10: Log out from the application and log in as BPP Principal
-        objApasGenericFunctions.logout();
+        objBppTrendSetupPage.logout();
         Thread.sleep(15000);
 
-        objApasGenericFunctions.login(users.PRINCIPAL_USER);
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.login(users.PRINCIPAL_USER);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step11: Navigate to 'Needs My Approval' tab and
         objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
@@ -891,11 +890,11 @@ public class BPPTrends_WorkItems extends TestBase {
         softAssert.assertEquals(actualWIStatus, "Returned", "SMAB-T2195: Verify status of WI : 'Perform Calculations' is 'Returned'");
 
         //Step14: Log out from the application and log in again as BPP Admin
-        objApasGenericFunctions.logout();
+        objBppTrendSetupPage.logout();
         Thread.sleep(15000);
 
-        objApasGenericFunctions.login(loginUser);
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.login(loginUser);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Ste15: Verify WI is present in 'In Progress' tab
         HashMap<String, ArrayList<String>> InProgressWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_PROGRESS);
@@ -939,15 +938,15 @@ public class BPPTrends_WorkItems extends TestBase {
         softAssert.assertTrue(BPPFactorSettings.get("Property_Type__c").contains("Agricultural"),"SMAB-T2169: Validation for cloning of prior year Agriculture Composite Factor on reminder work item generation");
 
         //Step1: Login to the APAS application using the given user
-        objApasGenericFunctions.login(loginUser);
+        objBppTrendSetupPage.login(loginUser);
 
         //Step2: Validation for the cloned annual factor from the prior year
-        objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-        objApasGenericFunctions.displayRecords("All");
-        softAssert.assertTrue(objApasGenericFunctions.getGridDataInHashMap().get("Name").contains("2021 - BPP Trend Setup"),"SMAB-T2168: Validation for cloning of prior year BPP Trend Setup record on reminder work item generation");
+        objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+        objBppTrendSetupPage.displayRecords("All");
+        softAssert.assertTrue(objBppTrendSetupPage.getGridDataInHashMap().get("Name").contains("2021 - BPP Trend Setup"),"SMAB-T2168: Validation for cloning of prior year BPP Trend Setup record on reminder work item generation");
 
         //Stpe3: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step4: "BPP Trend Annual Factor" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -967,10 +966,10 @@ public class BPPTrends_WorkItems extends TestBase {
         objWorkItemHomePage.openWorkItem(annualFactorSettingsWorkItemWorkItem);
         objPage.Click(objWorkItemHomePage.detailsTab);
         Thread.sleep(2000);
-        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Status"), "In Progress", "SMAB-T1729: Validation of annual factor setting work item status after accepting the work item");
+        softAssert.assertEquals(objBppTrendSetupPage.getFieldValueFromAPAS("Status"), "In Progress", "SMAB-T1729: Validation of annual factor setting work item status after accepting the work item");
 
         //Step7: Steps to edit and save BPP Trend Setup Record
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
         objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
         objPage.scrollToBottom();
         String parentWindow = driver.getWindowHandle();
@@ -984,44 +983,44 @@ public class BPPTrends_WorkItems extends TestBase {
         objPage.Click(objBppTrendSetupPage.editLinkUnderShowMore);
         Thread.sleep(2000);
         objPage.enter("Maximum Equipment index Factor","124.4");
-        String successMessage = objApasGenericFunctions.saveRecord();
+        String successMessage = objBppTrendSetupPage.saveRecord();
         softAssert.assertEquals(successMessage,"success\nBPP Setting was saved.\nClose","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
 
         //Change the status to "Reviewed By Admin"
-        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Annual Factor Status"),"To be Reviewed by Admin","SMAB-T1734 : Validation that new field Annual Factor Status is visible on UI");
-        objApasGenericFunctions.editAndSelectFieldData("Annual Factor Status","Reviewed by Admin");
+        softAssert.assertEquals(objBppTrendSetupPage.getFieldValueFromAPAS("Annual Factor Status"),"To be Reviewed by Admin","SMAB-T1734 : Validation that new field Annual Factor Status is visible on UI");
+        objBppTrendSetupPage.editAndSelectFieldData("Annual Factor Status","Reviewed by Admin");
 
         driver.switchTo().window(parentWindow);
 
         // //Step19: Open Home Page
         driver.navigate().refresh();
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step20: Completed "Annual Factor Settings" work item validation
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
         softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(annualFactorSettingsWorkItemWorkItem), "SMAB-T1730,SMAB-T1735: Validation that Annual Factor Settings work item moved to Completed status after Annual Factor Status is saved to Reviewed By Admin");
 
         //Update the settings even after closing the work item
-        objApasGenericFunctions.searchModule(modules.BPP_TRENDS_SETUP);
-        objApasGenericFunctions.displayRecords("All");
+        objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+        objBppTrendSetupPage.displayRecords("All");
         objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 
         objPage.Click(objBppTrendSetupPage.dropDownIconBppSetting);
         objPage.Click(objBppTrendSetupPage.editLinkUnderShowMore);
         Thread.sleep(2000);
         objPage.enter("Maximum Equipment index Factor","124.2");
-        successMessage = objApasGenericFunctions.saveRecord();
+        successMessage = objBppTrendSetupPage.saveRecord();
         softAssert.assertEquals(successMessage,"success\nBPP Setting was saved.\nClose","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
 
         //Validation for status even after editing the work BPP Trend set up for completed work item
         driver.navigate().refresh();
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objBppTrendSetupPage.searchModule(modules.HOME);
         objWorkItemHomePage.Click(objWorkItemHomePage.completedTab);
         objWorkItemHomePage.openWorkItem(annualFactorSettingsWorkItemWorkItem);
         objPage.Click(objWorkItemHomePage.detailsTab);
-        softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Status"), "Completed", "SMAB-T2179: Work item status should be completed even after editing the BPP Settings for the completed work item");
+        softAssert.assertEquals(objBppTrendSetupPage.getFieldValueFromAPAS("Status"), "Completed", "SMAB-T2179: Work item status should be completed even after editing the BPP Settings for the completed work item");
 
-        objApasGenericFunctions.logout();
+        objBppTrendSetupPage.logout();
     }
     
     /**
@@ -1041,10 +1040,10 @@ public class BPPTrends_WorkItems extends TestBase {
         objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_EFILE);
 
         //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objApasGenericFunctions.login(loginUser);
+        objApasGenericPage.login(loginUser);
 
         //Stpe5: Open the Work Item Home Page
-        objApasGenericFunctions.searchModule(modules.HOME);
+        objApasGenericPage.searchModule(modules.HOME);
 
         //Step6: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -1053,8 +1052,8 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step7: Accepting the work item and open it
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
-        objApasGenericFunctions.searchModule(modules.WORK_ITEM);
-        objApasGenericFunctions.globalSearchRecords(importWorkItem);
+        objApasGenericPage.searchModule(modules.WORK_ITEM);
+        objApasGenericPage.globalSearchRecords(importWorkItem);
         
         //Step 8: User submits the Work Item for Approval 
      	ReportLogger.INFO("User submits the Work Item for Approval :: " + importWorkItem);
@@ -1072,14 +1071,14 @@ public class BPPTrends_WorkItems extends TestBase {
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 		
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Status", "Information"),"Completed","SMAB-T1838: Validate user is able to validate the value of 'Status' field");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Type", "Information"),"BPP Trends","SMAB-T1838: Validate user is able to validate the value of 'Type' field");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Action", "Information"),"Import","SMAB-T1838: Validate user is able to validate the value of 'Action' field");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Work Pool", "Information"),"BPP Admin","SMAB-T1838: Validate user is able to validate the value of 'Work Pool' field");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Priority", "Information"),"None","SMAB-T1838: Validate user is able to validate the value of 'Priority' field");
-		softAssert.assertEquals(objApasGenericFunctions.getFieldValueFromAPAS("Reference", "Information"),"BOE Valuation Factors","SMAB-T1838: Validate user is able to validate the value of 'Reference' field");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Status", "Information"),"Completed","SMAB-T1838: Validate user is able to validate the value of 'Status' field");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Type", "Information"),"BPP Trends","SMAB-T1838: Validate user is able to validate the value of 'Type' field");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Action", "Information"),"Import","SMAB-T1838: Validate user is able to validate the value of 'Action' field");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Work Pool", "Information"),"BPP Admin","SMAB-T1838: Validate user is able to validate the value of 'Work Pool' field");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Priority", "Information"),"None","SMAB-T1838: Validate user is able to validate the value of 'Priority' field");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Reference", "Information"),"BOE Valuation Factors","SMAB-T1838: Validate user is able to validate the value of 'Reference' field");
 		
-        objApasGenericFunctions.logout();
+        objApasGenericPage.logout();
     }
     	 
 }

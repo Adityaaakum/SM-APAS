@@ -2,15 +2,11 @@ package com.apas.PageObjects;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -18,16 +14,11 @@ import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
@@ -38,12 +29,10 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
-import com.apas.generic.ApasGenericFunctions;
 
-public class BppTrendPage extends Page {
+public class BppTrendPage extends ApasGenericPage {
 	Logger logger = Logger.getLogger(LoginPage.class);
 	BuildingPermitPage objBuildPermitPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
 	Util objUtil;
 	Page objPage;
@@ -55,7 +44,6 @@ public class BppTrendPage extends Page {
 	public BppTrendPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objBuildPermitPage = new BuildingPermitPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objPage = new Page(driver);
@@ -68,28 +56,28 @@ public class BppTrendPage extends Page {
 
 	@FindBy(xpath = "//button[@title=  'Select']")
 	public WebElement selectRollYearButton;
-	
+
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@title = 'More Tabs']")
 	public WebElement moreTab;
 
 	@FindBy(xpath = "//button[contains(@class, 'slds-button_brand') and text() = 'Cancel']")
 	public WebElement cancelBtnInApproveTabPopUp;
-	
+
 	@FindBy(xpath = "//button[contains(@class, 'slds-button_brand') and text() = 'Confirm']")
 	public WebElement confirmBtnInApproveTabPopUp;
-	
+
 	@FindBy(xpath = "//button[text() = 'Confirm']")
 	public WebElement confirmBtnInPopUp;
 
 	@FindBy(xpath = "//div[contains(@class, 'form-footer')]//button[text() = 'Save']")
 	public WebElement saveBtnToSaveEditedCellData;
-	
+
 	@FindBy(xpath = "//button//span[text() = 'More Actions']")
 	public WebElement moreActionsBtn;
-	
+
 	@FindBy(xpath = "//span[text() = 'Export']//parent::a")
 	public WebElement exportLinkUnderMoreActions;
-	
+
 	@FindBy(xpath = "//div[contains(@class, 'modal-container slds')]//input[@id = 'formatted-export']")
 	public WebElement formattedReportOption;
 
@@ -98,7 +86,7 @@ public class BppTrendPage extends Page {
 
 	@FindBy(xpath = "//center//div//h2")
 	public WebElement pageLevelMsg;
-	
+
 	@FindBy(xpath = "//lightning-tab[contains(@data-id, 'BPP Prop 13 Factor')]//input[@name = 'inputCPIFactor']")
 	public WebElement cpiFactorTxtBox;
 
@@ -108,7 +96,7 @@ public class BppTrendPage extends Page {
 
 	@FindBy(xpath = "//div[contains(@class, 'button-container-inner slds-float_right')]//button//span[text() = 'Save']")
 	public WebElement saveButton;
-	
+
 	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//a[text() = 'No actions available']")
 	public WebElement noActionsLinkUnderShowMore;
 
@@ -117,7 +105,7 @@ public class BppTrendPage extends Page {
 
 	@FindBy(xpath = "(//h1[text() = 'BPP Settings']//ancestor::div[contains(@class, 'slds-page-header')]//following-sibling::div//table//tbody/tr//th//a[1])//parent::span//parent::th//following-sibling::td//a[@role = 'button']")
 	public WebElement showMoreDropDownViewAllPage;
-	
+
 	@FindBy(xpath = "//div[text() = 'Maximum Equipment index Factor:']/following-sibling::div//span")
 	public WebElement maxEquipIndexValueOnDetailsPage;
 
@@ -126,16 +114,16 @@ public class BppTrendPage extends Page {
 
 	@FindBy(xpath = "//td[@class = 'slds-cell-edit cellContainer']//span[@class = 'slds-truncate uiOutputNumber']")
 	public List<WebElement> cpiFactors;
-	
+
 	@FindBy(xpath = "//input[@class = 'input uiInputSmartNumber']")
 	public WebElement cpiFactorInputBox;
-	
+
 	@FindBy(xpath = "//input[@title = 'Search Roll Year Settings']")
 	public WebElement rollYearForCpiFactor;
-	
+
 	@FindBy(xpath = "//ul[contains(@class, 'has-error uiInputDefaultError')]//li")
 	public WebElement errorMsgForInvalidCpiFactorValue;
-	
+
 	@FindBy(xpath = "//div[contains(@class, 'slds-inline_icon_text--warning forceDedupeManager')]//div")
 	public WebElement errorMsgOnDuplicateCpiFactor;
 
@@ -144,16 +132,16 @@ public class BppTrendPage extends Page {
 
 	@FindBy(xpath = "(//div[@data-aura-class='forcePageError']//li)[2]")
 	public WebElement errorMsgOnInvalidPercentGoodsYearAcquired;
-	
+
 	@FindBy(xpath = "//ul[contains(@class, 'has-error uiInputDefaultError')]//li")
 	public WebElement errorMsgOnInvalidValuationFactorYearAcquired;
-	
+
 	@FindBy(xpath = "//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']")
 	public WebElement newBtnViewAllPage;
 
 	@FindBy(xpath = "(//div[@data-aura-class='forcePageError']//li)[1]")
 	public WebElement showMoreLinkForEditPostApprovalOfCalculation;
-	
+
 	@FindBy(xpath = "//div[contains(@id, 'help-message-')]")
 	public WebElement errorMsgOnImportForInvalidFileFormat;
 
@@ -165,16 +153,16 @@ public class BppTrendPage extends Page {
 
 	@FindBy(xpath = "//button[@title = 'Close']")
 	public WebElement closeBtnFileDownloadPage;
-	
+
 	@FindBy(xpath = "(//th[@scope = 'row']//span//a)[1]")
 	public WebElement firstEntryInGrid;
-	
+
 	@FindBy(xpath = "//div[text() = 'Maximum Equipment index Factor:']/following-sibling::div//span")
 	public WebElement factorValue;
-	
+
 	@FindBy(xpath = "//span[contains(text(), 'BPP Settings')]//ancestor::div[contains(@class, 'forceRelatedListCardHeader')]//following-sibling::div//h3//a")
 	public WebElement bppSettingName;
-	
+
 	@FindBy(xpath = "//span[@class = 'toastMessage slds-text-heading--small forceActionsText']")
 	public WebElement popUpSaveBtn;
 
@@ -301,65 +289,65 @@ public class BppTrendPage extends Page {
 
 	@FindBy(xpath = "//lightning-tab[@data-id = 'BPP Prop 13 Factors']//input[@disabled]")
 	public WebElement disabledCpiInputField;
-	
+
 	@FindBy(xpath = "//div[text()='Already approved']")
 	public WebElement alreadyApprovedLabel;
-	
+
 	@FindBy(xpath = "//button[text() = 'Export Composite Factors']")
 	public WebElement exportCompositeFactorsBtn;
-	
+
 	@FindBy(xpath = "//button[text() = 'Export Valuation Factors']")
 	public WebElement exportValuationFactorsBtn;
-	
+
 	@FindBy(xpath = "//div[@role='group']/button[text()='Edit']/../div/button")
 	public WebElement arrowButton;
 
 	@FindBy(xpath = "//a[@role='menuitem']/span[@title='Export']")
 	public WebElement linkExport;
-	
+
 	@FindBy(xpath = "//lightning-tab[contains(@class,'slds-show')]//button[@title = 'Calculate']")
-	public WebElement calculateBtn;	
-	
+	public WebElement calculateBtn;
+
 	@FindBy(xpath = "//lightning-tab[contains(@class,'slds-show')]//button[@title = 'Recalculate']")
 	public WebElement reCalculateBtn;
-	
+
 	@FindBy(xpath = "//lightning-tab[contains(@class,'slds-show')]//div[@class = 'hightlight-tab-message']")
 	public WebElement tableMessage;
-	
+
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[@class='warning']//h2")
 	public WebElement reCalculateWarningMessage;
-	
+
 	public String xPathBPPSettingName = "//span[contains(text(), 'BPP Settings')]//ancestor::div[contains(@class, 'forceRelatedListCardHeader')]//following-sibling::div//h3//a";
-	
+
 	public String xpathRollYear = "//input[@name = 'rollyear']";
-	
+
 	public String xpathAlreadyApprovedLabel = "//div[text()='Already approved']";
-	
+
 	public String xPathExportCompositeFactorsButton = "//button[text() = 'Export Composite Factors']";
-	
+
 	public String xPathExportValuationFactorsButton = "//button[text() = 'Export Valuation Factors']";
-	
+
 	public String xPathCalculateAllBtn = "//button[@title = 'Calculate all']";
-	
+
 	public String xPathReCalculateAllBtn = "//button[@title = 'ReCalculate all']";
-	
+
 	public String xPathCalculateBtn = "//lightning-tab[contains(@class,'slds-show')]//button[@title = 'Calculate']";
-	
+
 	public String xPathReCalculateBtn = "//lightning-tab[contains(@class,'slds-show')]//button[@title = 'Recalculate']";
-	
+
 	public String xpathErrorMsgPopUp = "//span[@class = 'toastMessage forceActionsText']";
-	
+
 	public String xpathSuccessMsgPopUp = "//div[contains(@class, 'toastContent')]//span[text() = 'Data calculated successfully']";
-	
+
 	public String  xpathTableMessage = "//lightning-tab[contains(@class,'slds-show')]//div[@class = 'hightlight-tab-message']";
-	
+
 	public String xpathSpinner = "//lightning-spinner";
 
 	public String xpathSubmitAllFactorsForApprovalBtn = "//button[text() = 'Submit All Factors for Approval'] | //button[@title = 'Submit All Factors for Approval']";
 	/**
 	 * Description: This will select the roll year from the drop down
 	 * @param rollYear: Roll Year to select from drop down
-	 * @throws: Exception 
+	 * @throws: Exception
 	 */
 	public void clickOnGivenRollYear(String rollYear) throws Exception {
 		String xpathStr = "//div[contains(@id,'dropdown-element')]//span[contains(text(),'" + rollYear + "')]";
@@ -367,7 +355,7 @@ public class BppTrendPage extends Page {
 		waitForElementToBeClickable(element, 20);
 		Click(element);
 	}
-			
+
 	/**
 	 * Description: This will click on the given table name
 	 * @param tableName: Name of the table
@@ -398,7 +386,7 @@ public class BppTrendPage extends Page {
 
 	/**
 	 * Description: Locates the cell text box in grid
-	 * @param tableName: Name of the table for which cell text box needs to be located 
+	 * @param tableName: Name of the table for which cell text box needs to be located
 	 * @param rowNum: Row number in the table
 	 * @param cellNum: Cell number in the table
 	 * @return WebElement: Returns the cell data text box element
@@ -406,13 +394,13 @@ public class BppTrendPage extends Page {
 	 */
 	public WebElement locateCellToBeEdited(String tableName, int rowNum, int cellNum) throws Exception {
 		String tagNameToAppend = null;
-		
+
 		if(tableName.equals("BPP Prop 13 Factors")) {
 			tagNameToAppend = "td";
 		} else {
 			tagNameToAppend = "th";
 		}
-		
+
 		xpathCellData = "((//lightning-tab[@data-id = '"+ tableName +"']//"+ tagNameToAppend +"[@data-label = 'Year Acquired'])["+ rowNum +"]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])["+ cellNum +"]";
 		WebElement element = locateElement(xpathCellData, 30);
 		if(element == null) {
@@ -433,26 +421,26 @@ public class BppTrendPage extends Page {
 		editButton = locateElement(xpathEditBtn, 10);
 		return editButton;
 	}
-	
+
 	/**
 	 * Description: Below method is used the edit the cell data in the table displayed for select roll year.
 	 * @param data: Takes the integer / double value to enter in the cell
 	 * @param tableName: Name of the table for which data needs to be updated
 	 * @throws: Exception
-	 */	
-	public void editCellDataInGridForGivenTable(String tableName, Object data) throws Exception {	
+	 */
+	public void editCellDataInGridForGivenTable(String tableName, Object data) throws Exception {
 		String xpathEditTxtBox = "//div//input[@name = 'dt-inline-edit-text']";
-		WebElement editTxtBox;			
-		editTxtBox = locateElement(xpathEditTxtBox, 30);		
+		WebElement editTxtBox;
+		editTxtBox = locateElement(xpathEditTxtBox, 30);
 		waitForElementToBeClickable(15, editTxtBox);
-		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", editTxtBox);		
+		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", editTxtBox);
 		editTxtBox.clear();
 		WebElement editBtn = locateEditButtonInFocusedCell();
 		Click(editBtn);
 		Thread.sleep(1000);
 		editTxtBox = locateElement(xpathEditTxtBox, 30);
 		editTxtBox.sendKeys(String.valueOf(data));
-		Thread.sleep(1000);		
+		Thread.sleep(1000);
 
 		String tagAppend;
 		if(tableName.equalsIgnoreCase("BPP Prop 13 Factors")) {
@@ -460,11 +448,11 @@ public class BppTrendPage extends Page {
 		} else {
 			tagAppend = "th";
 		}
-		
+
 		WebElement year = locateElement("(//lightning-tab[@data-id = '"+ tableName +"']//"+ tagAppend +"[@data-label = 'Year Acquired'])[1]", 20);
 		Click(year);
 	}
-	
+
 	/**
 	 * Description: Checks whether edited cell appears in edit mode
 	 * @return boolean: Return status as true or false
@@ -499,11 +487,11 @@ public class BppTrendPage extends Page {
 	 * @param expectedStatus: Expected status like Calculated, Not Calculated etc.
 	 * @param rollYear: Roll year for which the status needs to be reset
 	 */
-	public void resetTablesStatusForGivenRollYear(List<String> columnsToReset, String expectedStatus, String rollYear) throws Exception {		
+	public void resetTablesStatusForGivenRollYear(List<String> columnsToReset, String expectedStatus, String rollYear) throws Exception {
 		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 		//Query to update the status of composite & valuation factor tables
 		String queryForID = "Select Id From BPP_Trend_Roll_Year__c where Roll_Year__c = '"+ rollYear +"'";
-		
+
 		JSONObject jsonObj = new JSONObject();
 		for(String columnName : columnsToReset) {
 			jsonObj.put(columnName, expectedStatus);
@@ -522,7 +510,7 @@ public class BppTrendPage extends Page {
 		String queryForMaxEquipFactor = "Select Id FROM BPP_Setting__c Where BPP_Trend_Roll_Year_Parent__c = '"+ rollYear +"'";
 		objSalesforceAPI.update("BPP_Setting__c", queryForMaxEquipFactor, "Maximum_Equipment_index_Factor__c", expectedValue);
 	}
-	
+
 	/**
 	 * Description: This will update minimum equipment index factor value
 	 * @param propertyType: Name of the property for which value needs to be updated, like 'Commercial'
@@ -535,7 +523,7 @@ public class BppTrendPage extends Page {
 		String queryForMinGoodsFactor = "Select Id FROM BPP_Composite_Factors_Setting__c Where BPP_Trend_Roll_Year_Parent__c = '"+rollYear+"' and Property_Type__c = '"+propertyType+"'";
 		objSalesforceAPI.update("BPP_Composite_Factors_Setting__c", queryForMinGoodsFactor, "Minimum_Good_Factor__c", expectedValue);
 	}
-	
+
 	/**
 	 * Description: This will delete the existing BPP Setting entry (Max. Equip. Index) for given roll year
 	 * @param rollYear:
@@ -566,16 +554,16 @@ public class BppTrendPage extends Page {
 	public void exportCompositeOrValuationFactorsFiles(String fileType) throws Exception {
 		// Click on Export button corresponding to File Type
 		String parentwindow = driver.getWindowHandle();
-		
+
 		if(fileType.equalsIgnoreCase("Composite")) {
 			objPage.Click(exportCompositeFactorsBtn);
 		}else {
 			objPage.Click(exportValuationFactorsBtn);
 		}
 		Thread.sleep(15000);
-		// After clicking on 'export' button, new tab is opened 
+		// After clicking on 'export' button, new tab is opened
 		switchToNewWindow(parentwindow); // Switch to new tab opened
-		
+
 		// Clicking more action button and then selecting Export option from drop down to open export option window
 		Thread.sleep(3000);
 		driver.switchTo().frame(0);
@@ -583,41 +571,41 @@ public class BppTrendPage extends Page {
 		Click(arrowButton);
 		Click(linkExport);
 		driver.switchTo().defaultContent();
-		
+
 		// Selecting the export option and clicking export button to initiate export
 		javascriptClick(formattedReportOption);
-		javascriptClick(exportButton);		
+		javascriptClick(exportButton);
 		Thread.sleep(10000);
 		driver.close();
 	}
-	
+
 	/**
 	 * Description : Reads tabular grid data from UI
 	 * @param tableName: Takes the name of the table for which data needs to be read
 	 * @return Map: Return a data map
 	 **/
-	public Map<String, List<Object>> retrieveDataFromGridForGivenTable(String tableName) throws Exception {	
+	public Map<String, List<Object>> retrieveDataFromGridForGivenTable(String tableName) throws Exception {
 		Map<String, List<Object>> uiTableDataMap = new LinkedHashMap<String, List<Object>>();
-		
+
 		String xpathTableRows = "//lightning-tab[contains(@data-id, '"+ tableName +"')]//table//tbody//tr";
 		String xpathTableData = "//td[(not(contains(@data-label, 'Year Acquired'))) "
 				+ "and (not(contains(@data-label, 'Year Acquired')) and not (contains(@data-label, 'Rounded')))]";
 		List<WebElement> tableRows = locateElements(xpathTableRows, 30);
-		for(int i = 0; i < tableRows.size(); i++) {			
+		for(int i = 0; i < tableRows.size(); i++) {
 			int rowNum = i + 1;
 			String xpathYearAcq;
 			if(!tableName.contains("BPP Prop 13 Factors")) {
-				xpathYearAcq = "("+ xpathTableRows +")["+ rowNum +"]//th";				
+				xpathYearAcq = "("+ xpathTableRows +")["+ rowNum +"]//th";
 			}
 			else {
 				xpathYearAcq = "("+ xpathTableRows +")["+ rowNum +"]//td[3]";
 			}
 			WebElement yearAcquiredElement = locateElement(xpathYearAcq, 30);
 			String yearAcquiredTxt = getElementText(yearAcquiredElement);
-			
+
 			String xpathYearData = "("+ xpathTableRows +")["+ rowNum +"]"+ xpathTableData;
 			List<WebElement> yearAcquiredDataElements = locateElements(xpathYearData, 10);
-			
+
 			List<Object> yearAcquiredData = new ArrayList<Object>();
 			for(int j = 0; j < yearAcquiredDataElements.size(); j++) {
 				Object cellData;
@@ -629,13 +617,13 @@ public class BppTrendPage extends Page {
 
 				}
 				yearAcquiredData.add(cellData);
-				
+
 			}
 			uiTableDataMap.put(yearAcquiredTxt, yearAcquiredData);
 		}
 		return uiTableDataMap;
 	}
-	
+
 	/**
 	 * Description : Reads given excel file and converts the data into a map.
 	 * @param filePath: Takes the path of the XLSX workbook
@@ -674,10 +662,10 @@ public class BppTrendPage extends Page {
 		XSSFWorkbook workBook = null;
 		try {
             file = new FileInputStream(new File(filePath));
-            workBook = new XSSFWorkbook(file);         
+            workBook = new XSSFWorkbook(file);
             XSSFSheet sheet = workBook.getSheet(sheetNameForExcel);
             DataFormatter dataFormatter = new DataFormatter();
-            
+
             int startingRow;
             Row headerRow;
             if(sheetNameForExcel.equalsIgnoreCase("Ag Mobile Equip Composite")) {
@@ -687,7 +675,7 @@ public class BppTrendPage extends Page {
             	startingRow = 1;
             	headerRow = sheet.getRow(0);
             }
-            
+
             int totalCells = headerRow.getLastCellNum();
             int cellIndexToSkip = -1;
             int cellIndexForYearAcq = 0;
@@ -713,7 +701,7 @@ public class BppTrendPage extends Page {
                 		Cell cell = currentRow.getCell(j);
                 		CellValue cellValue = evaluator.evaluate(cell);
                 		Object strValue = cellValue.getNumberValue();
-                		
+
                 		switch (cellValue.getCellType()) {
                 		    case Cell.CELL_TYPE_STRING:
                 		        strValue = cellValue.getStringValue();
@@ -722,9 +710,9 @@ public class BppTrendPage extends Page {
                 		        strValue = cellValue.getNumberValue();
                 		        break;
                 		}
-                		
+
                 		if(j != cellIndexForYearAcq) {
-                			int intValue = (int) Math.round((double)strValue);                			
+                			int intValue = (int) Math.round((double)strValue);
                 			currentRowData.add(intValue);
                 		} else {
                 			yearAcquired = strValue.toString().substring(0, strValue.toString().indexOf("."));
@@ -741,8 +729,8 @@ public class BppTrendPage extends Page {
         }
 		return dataMap;
 	}
-	
-	
+
+
 
 	/**
 	 * Description: Return the list containing the names of columns visible of UI
@@ -755,7 +743,7 @@ public class BppTrendPage extends Page {
 		String xpathColNames = "//lightning-tab[contains(@data-id, '"+ tableName +"')]"
 				+ "//slot//th[@scope = 'col' and (not(contains(@aria-label, 'Year Acquired')))]//span[@class = 'slds-truncate']";
 		List<WebElement> totalColumnsList = locateElements(xpathColNames, 10);
-		
+
 		for(WebElement column : totalColumnsList) {
 			String columnName = getElementText(column);
 			columnNames.add(columnName);
@@ -821,7 +809,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//button[@title = 'Calculate all']";
 		return locateElement(xpath, timeToLocateBtn) != null;
 	}
-	
+
 	/**
 	 * Checks whether re-calculate button is visible on BPP trend page for selected table
 	 * @param tableName: Table for which the button needs to be checked
@@ -833,7 +821,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//lightning-tab[@data-id = '"+ tableName + "']//button[@title = 'Recalculate']";
 		return locateElement(xpath, timeToLocateBtn) != null;
 	}
-	
+
 	/**
 	 * Checks whether re-calculate all button is visible on BPP trend page
 	 * @param timeToLocateBtn: Timeout in seconds for driver should wait until button is located
@@ -844,7 +832,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//button[@title = 'ReCalculate all']";
 		return locateElement(xpath, timeToLocateBtn) != null;
 	}
-	
+
 	/**
 	 * Checks whether submit all factors for approval button is visible on BPP trend page
 	 * @param timeToLocateBtn: Timeout in seconds for driver should wait until button is located
@@ -899,7 +887,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//button[text() = 'Download']";
 		return locateElement(xpath, timeToLocateBtn) != null;
 	}
-	
+
 	/**
 	 * Checks whether Export Composite Factors button is visible
 	 * @param timeToLocateBtn: Timeout in seconds for driver should wait until button is located
@@ -910,7 +898,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//button[text() = 'Export Composite Factors']";
 		return locateElement(xpath, timeToLocateBtn) != null;
 	}
-	
+
 	/**
 	 * Checks whether Export Valuation Factors button is visible
 	 * @param timeToLocateBtn: Timeout in seconds for driver should wait until button is located
@@ -941,7 +929,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//lightning-tab[@data-id = '"+ tableName + "']//button[@title = 'Calculate']";
 		Click(locateElement(xpath, 5));
 	}
-	
+
 	/**
 	 * Clicks the ReCalculate button for selected table
 	 * @param tableName: Takes the names of table for which button is to be clicked
@@ -951,7 +939,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//lightning-tab[@data-id = '"+ tableName + "']//button[@title = 'Recalculate']";
 		Click(locateElement(xpath, 5));
 	}
-	
+
 	/**
 	 * Clicks the Approve button for selected table
 	 * @param tableName: Takes the names of table for which button is to be clicked
@@ -961,7 +949,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//lightning-tab[@data-id = '"+ tableName + "']//button[@title = 'Approve']";
 		Click(locateElement(xpath, 5));
 	}
-	
+
 	/**
 	 * Clicks the Calculate All button
 	 * @throws: Exception
@@ -970,7 +958,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//button[@title = 'Calculate all']";
 		Click(locateElement(xpath, 20));
 	}
-	
+
 	/**
 	 * Clicks the ReCalculate All button
 	 * @throws: Exception
@@ -979,7 +967,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//button[@title = 'ReCalculate all']";
 		Click(locateElement(xpath, 20));
 	}
-	
+
 	/**
 	 * Clicks the Submit All Factors For Approval button
 	 * @throws: Exception
@@ -988,7 +976,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//button[@title = 'Submit All Factors for Approval']";
 		Click(locateElement(xpath, 20));
 	}
-	
+
 	/**
 	 * Clicks the Approve All button
 	 * @throws: Exception
@@ -997,7 +985,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//button[@title = 'Approve all']";
 		Click(locateElement(xpath, 20));
 	}
-	
+
 	/**
 	 * Clicks the Download button
 	 * @throws: Exception
@@ -1007,7 +995,7 @@ public class BppTrendPage extends Page {
 		Click(locateElement(xpath, 20));
 		Thread.sleep(10000);
 	}
-	
+
 	/**
 	 * Close button to close the pop up message.
 	 */
@@ -1020,7 +1008,7 @@ public class BppTrendPage extends Page {
 			ex.getMessage();
 		}
 	}
-		
+
 	/**
 	 * It wait for the pop up message to show up when calculate button is clicked
 	 * @param timeToLocateElemInSec: Timeout for which pop up message needs to be located
@@ -1044,7 +1032,7 @@ public class BppTrendPage extends Page {
 		closePageLevelMsgPopUp();
 		return popUpMsg;
 	}
-	
+
 	/**
 	 * Description: Retrieve the error message displayed in pop up on Calculate button's click
 	 * @param timeToLocateElemInSec:
@@ -1056,7 +1044,7 @@ public class BppTrendPage extends Page {
 		closePageLevelMsgPopUp();
 		return popUpMsg;
 	}
-	
+
 	/**
 	 * It wait for the pop up message to show up when calculate button is clicked
 	 * @param timeToLocateElemInSec: Timeout for which pop up message needs to be located
@@ -1082,7 +1070,7 @@ public class BppTrendPage extends Page {
 			return getElementText(errorMsg);
 		}
 	}
-	
+
 	/**
 	 * It wait for the pop up message to show up when approve button is clicked
 	 * @param timeToLocateElemInSec: Timeout for which pop up message needs to be located
@@ -1118,7 +1106,7 @@ public class BppTrendPage extends Page {
 		String xpath = "//h2[contains(text(), '"+ TestBase.CONFIG.getProperty("approveTabDataMsg") +"')]";
 		return getElementText(locateElement(xpath, 10));
 	}
-	
+
 
 //	public void deleteDuplicateCPI(String rollYear) {
 //		String queryForRollYearId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '"+rollYear+"'";
@@ -1133,7 +1121,7 @@ public class BppTrendPage extends Page {
 	 * @throws: Exception
 	 */
 	public void selectRollYearOnBPPTrends(String rollYear) throws Exception {
-		objApasGenericFunctions.searchModule(modules.BPP_TRENDS);
+		searchModule(modules.BPP_TRENDS);
 		objPage.waitForElementToBeClickable(rollYearDropdown, 30);
 		Click(rollYearDropdown);
 		clickOnGivenRollYear(rollYear);

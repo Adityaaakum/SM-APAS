@@ -21,14 +21,11 @@ import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
-import com.apas.config.users;
-import com.apas.generic.ApasGenericFunctions;
 
 public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 	
 	private RemoteWebDriver driver;
 	Page objPage;
-	ApasGenericFunctions objApasGenericFunctions;
 	ApasGenericPage objApasGenericPage;
 	ExemptionsPage objExemptionsPage;
 	Util objUtil;
@@ -45,11 +42,10 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		objPage = new Page(driver);
 		objExemptionsPage = new ExemptionsPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
-		objApasGenericFunctions = new ApasGenericFunctions(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		mandatoryExemptionData = System.getProperty("user.dir") + testdata.EXEMPTION_MANDATORY_FIELDS_ENTRY_DATA;
-		objApasGenericFunctions.updateRollYearStatus("Closed", "2020");
+		objApasGenericPage.updateRollYearStatus("Closed", "2020");
 	}
 	
 
@@ -61,10 +57,10 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 	public void DisabledVeteran_SameExemptionWithDifferentVeteranName(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		
 		//Step2: Open the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		
 		//Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and append the Veteran Name with some random number to make it unique
 		Map<String, String> dataToCreateExemptionWithVeteranOneMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithVeteranOne");
@@ -86,7 +82,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertEquals(startDate1, objExemptionsPage.removeZeroInMonthAndDay(dataToCreateExemptionWithVeteranOneMap.get("Date Occupied/Intend to Occupy Property")), "SMAB-T528: Validate 'Start Date' in the Exemption record");
 		
 		//Step6: Navigate back to the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		
 		/*Step7: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 				Append the Veteran Name with some random number to make it unique
@@ -116,7 +112,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertTrue(apn1.equals(apn2), "SMAB-T528: Verify user is able to create Exemption record with different Veteran but on same Parcel");
 		softAssert.assertTrue(!veteranName1.equals(veteranName2), "SMAB-T528: Exemption records with overlapping dates are successfully created but for different Veteran");
 		
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
     }
 	
     
@@ -128,10 +124,10 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 	public void DisabledVeteran_SameExemptionWithDifferentParcel(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		
 		//Step2: Open the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		
 		//Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and append the Veteran Name with some random number to make it unique
 		Map<String, String> dataToCreateExemptionWithParcelOneMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithParcelOne");
@@ -153,7 +149,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertEquals(startDate1, objExemptionsPage.removeZeroInMonthAndDay(dataToCreateExemptionWithParcelOneMap.get("Date Occupied/Intend to Occupy Property")), "SMAB-T530: Validate 'Start Date' in the Exemption record");
 		
 		//Step6: Navigate back to the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		
 		/*Step7: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 				Update the Veteran Name to make it same as in above exemption record
@@ -181,7 +177,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertTrue(!exemptionName1.equals(exemptionName2), "SMAB-T530: Verify user is able to create a same Exemption record with different Parcel");
 		softAssert.assertTrue(!apn1.equals(apn2), "SMAB-T530: Exemption records with overlapping dates are successfully created but with different Parcel Number");
 		
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
     }
 	
 	/** Below test case is used to validate that another Exemption can be created for a Veteran if,
@@ -192,10 +188,10 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 	public void DisabledVeteran_SameExemptionWithNonOverlappingDates1(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		
 		//Step2: Open the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		
 		//Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and append the Veteran Name with some random number to make it unique
 		Map<String, String> dataToCreateExemptionWithNoEndDateOfRatingMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithNoEndDateOfRating");
@@ -216,7 +212,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.statusOnDetailPage)), "Active", "SMAB-T649: Verify that User is able to validate Exemption 'Status' based on the 'End Date of Rating' for the Exemption record");
 				
 		//Step8: Navigate back to the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		
 		/*Step9: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
 				Update the Veteran Name to make it same as in above exemption record
@@ -246,7 +242,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertTrue(apn1.equals(apn2), "SMAB-T532: Exemption records on same parcel with non-overlapping dates are created");
 		softAssert.assertTrue(!exemptionName1.equals(exemptionName2), "SMAB-T532: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (having End Date of Rating as Blank");
 		
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	}
 	
 	
@@ -261,10 +257,10 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 	public void DisabledVeteran_SameExemptionWithNonOverlappingDates2(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		
 		//Step2: Open the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		
 		//Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and append the Veteran Name with some random number to make it unique
 		Map<String, String> dataToCreateExemptionWithRequiredFieldsMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithRequiredFields");
@@ -292,7 +288,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 			Update the Veteran Name to make it same as in above exemption record
 			Add a new key in Map to ensure same APN is used*/
 		
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		Map<String, String> dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithDatesEarlierThanOriginalRecord");
 		dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap.put("Veteran Name", dataToCreateExemptionWithRequiredFieldsMap.get("Veteran Name"));
 		dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap.put("Same APN", apn1);
@@ -318,7 +314,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 				  Update the Veteran Name to make it same as in above exemption record
 				  Add a new key in Map to ensure same APN is used*/
 		
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		Map<String, String> dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRating");
 		dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap.put("Veteran Name", dataToCreateExemptionWithRequiredFieldsMap.get("Veteran Name"));
 		dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap.put("Same APN", apn1);
@@ -339,7 +335,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertTrue(apn2.equals(apn3), "SMAB-T534: Exemption records on same parcel with non-overlapping dates are created");
 		softAssert.assertTrue(!exemptionName2.equals(exemptionName3), "SMAB-T534: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record");
 			
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	}
 	
 	
@@ -352,10 +348,10 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 	public void DisabledVeteran_SameExemptionWithNonOverlappingDates3(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
-		objApasGenericFunctions.login(loginUser);
+		objApasGenericPage.login(loginUser);
 		
 		//Step2: Open the Exemption module
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		
 		//Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json) and append the Veteran Name with some random number to make it unique
 		Map<String, String> dataToCreateExemptionWithEndDateMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithEndDate");
@@ -377,7 +373,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 					Update the Veteran Name to make it same as in above exemption record
 					Add a new key in Map to ensure same APN is used*/
 		
-		objApasGenericFunctions.searchModule(modules.EXEMPTION);
+		objApasGenericPage.searchModule(modules.EXEMPTION);
 		Map<String, String> dataToCreateExemptionWithoutEndDateMap = objUtil.generateMapFromJsonFile(mandatoryExemptionData, "DataToCreateExemptionWithoutEndDate");
 		dataToCreateExemptionWithoutEndDateMap.put("Veteran Name", dataToCreateExemptionWithEndDateMap.get("Veteran Name"));
 		dataToCreateExemptionWithoutEndDateMap.put("Same APN", apn1);
@@ -398,7 +394,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertTrue(apn1.equals(apn2), "SMAB-T534: Exemption records on same parcel with non-overlapping dates are created");
 		softAssert.assertTrue(!exemptionName1.equals(exemptionName2), "SMAB-T534: Verify a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date later than End Date of Rating of original record)");
 	
-		objApasGenericFunctions.logout();
+		objApasGenericPage.logout();
 	}	
 
 }
