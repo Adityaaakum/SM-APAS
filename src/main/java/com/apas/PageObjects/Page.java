@@ -909,6 +909,7 @@ public class Page {
 		String xpathStr = "//span[text()='" + fieldName + "']/parent::div/following-sibling::div//div[@class='slds-grid']//a/span";
 		WebElement fieldValueLocator = locateElement(xpathStr, 30);
 	    Click(fieldValueLocator);
+	    Thread.sleep(1000);
 	}
 
 }
