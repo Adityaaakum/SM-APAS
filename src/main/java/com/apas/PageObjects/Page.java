@@ -848,8 +848,7 @@ public class Page extends TestBase {
 	 */
 	public String getSelectedDropDownValue(String dropDown) throws Exception {
 		Click(getWebElementWithLabel(dropDown));
-		return driver.findElement(By.xpath("//label[text()='"+dropDown+"']/..//lightning-base-combobox-item[@aria-checked='true']//span[@class='slds-truncate']")).getText().trim();
-		
+		return driver.findElement(By.xpath("//label[text()='" + dropDown + "']/..//*[@role='listbox']")).getText().trim();
 	}
 
 	/**
@@ -885,8 +884,8 @@ public class Page extends TestBase {
 	public WebElement getWebElementWithLabel(String label) throws Exception {
 		String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]";
 		String xpath = commonPath + "//label[text()=\"" + label + "\"]/..//input | " +
-					   commonPath +	"//input[@name='" + label + "'] | " + //this condition was observed on manual work item creation pop up for edit boxes
-				       commonPath + "//*[@class='inputHeader' and contains(.,'" + label + "')]/..//Select"; //This condition was observed for few drop downs of Select Type
+					   commonPath +	"//input[@name=\"" + label + "\"] | " + //this condition was observed on manual work item creation pop up for edit boxes
+				       commonPath + "//*[@class='inputHeader' and contains(.,\"" + label + "\")]/..//Select"; //This condition was observed for few drop downs of Select Type
 
 		waitUntilElementIsPresent(xpath,3);
 		return driver.findElement(By.xpath(xpath));
