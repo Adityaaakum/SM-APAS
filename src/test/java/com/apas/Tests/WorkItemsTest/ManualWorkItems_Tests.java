@@ -3,7 +3,6 @@ package com.apas.Tests.WorkItemsTest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import com.apas.Reports.ReportLogger;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -11,7 +10,6 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
-import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.ParcelsPage;
@@ -26,25 +24,21 @@ import com.apas.config.users;
 
 public class ManualWorkItems_Tests extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
-	LoginPage objLoginPage;
+
 	ParcelsPage objParcelsPage;
 	WorkItemHomePage objWorkItemHomePage;
-	Util objUtil;
-	SoftAssertion softAssert;
-	SalesforceAPI salesforceAPI;
-	ApasGenericPage apasGenericObj;
+	Util objUtil = new Util();
+	SoftAssertion softAssert = new SoftAssertion();
+	SalesforceAPI salesforceAPI = new SalesforceAPI();
+
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
 		driver = null;
 		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
-		objLoginPage = new LoginPage(driver);
+
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
-		objUtil = new Util();
-		apasGenericObj = new ApasGenericPage(driver);
-		softAssert = new SoftAssertion();
-		salesforceAPI = new SalesforceAPI();
 	}
 	
 	/**
@@ -415,22 +409,21 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	/**
 	* Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab
 	**/
-    @Test(description = "SMAB-T2466: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-			"smoke", "regression", "Work_Items_Manual" }, alwaysRun = true)
-	public void WorkItem_VerifyWIpresentInCompletedTabOf2nd_LevelApprover(String loginUser) throws Exception {
+    @Test(description = "SMAB-T2466: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual" }, alwaysRun = true)
+	public void WorkItem_WIPresentInCompletedTab_2ndLevelApprover(String loginUser) throws Exception {
 
 		  //fetching a parcel where PUC is not blank but Primary Situs is blank 
 		  String queryAPNValue ="select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1" ;  
 		  HashMap<String, ArrayList<String>> response =salesforceAPI.select(queryAPNValue); 
 		  String apnValue=response.get("Name").get(0); 
-		  String workItemCreationData = System.getProperty("user.dir") +testdata.MANUAL_WORK_ITEMS; 
+		  String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS; 
 		  Map<String, String> hashMapmanualWorkItemData =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeRP");
 		  
 		  // Step 1: Login to the APAS application using the credentials of staff user
-		  apasGenericObj.login(users.EXEMPTION_SUPPORT_STAFF);
+		  objWorkItemHomePage.login(users.EXEMPTION_SUPPORT_STAFF);
 		  // Step 2: Opening the PARCELS page and searching a parcel
-		  apasGenericObj.searchModule(PARCELS);
-		  apasGenericObj.globalSearchRecords(apnValue); 
+		  objWorkItemHomePage.searchModule(PARCELS);
+		  objWorkItemHomePage.globalSearchRecords(apnValue); 
 		  
 		  // Step 3: Creating Manual work item for the Parcel 
 		  String Workitem =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
@@ -439,52 +432,52 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  objWorkItemHomePage.waitUntilPageisReady(driver);
 		  
 		  // Step 4: Update Value in workitem details page to update second level supervisor
-		  apasGenericObj.editAndInputFieldData(objWorkItemHomePage.value,objWorkItemHomePage.value, "21");
+		  objWorkItemHomePage.editAndInputFieldData(objWorkItemHomePage.valueTextBox, "21");
 		  
 		  //Step 5: Open the Work Item Home Page 
 		  driver.navigate().refresh(); 
-		  apasGenericObj.searchModule(HOME);
+		  objWorkItemHomePage.searchModule(HOME);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
 		  objWorkItemHomePage.waitUntilPageisReady(driver);
 		  
 		  //steps 6: select work item from in progress tab and mark complete
 		  objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.btnMarkComplete);
-		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
-		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
-		  apasGenericObj.logout();
+		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.closeButton, 3);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.closeButton);
+		  objWorkItemHomePage.logout();
 		  Thread.sleep(15000);
 		  
 		  //Login With supervisor 1 with rp admin 
-		  apasGenericObj.login(loginUser);
-		  apasGenericObj.searchModule(modules.HOME);
+		  objWorkItemHomePage.login(loginUser);
+		  objWorkItemHomePage.searchModule(modules.HOME);
 		  objWorkItemHomePage.waitUntilPageisReady(driver);
 		  
 		  // steps 7: Approve WI from needs my approval tab
 		  objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
 		  objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.btnApprove);
-		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
-		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
-		  apasGenericObj.logout();
+		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.closeButton, 3);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.closeButton);
+		  objWorkItemHomePage.logout();
 		  Thread.sleep(15000);
 		  
           //Login supervisor 2 users.DATA_ADMIN
-		  apasGenericObj.login(users.DATA_ADMIN);
-		  apasGenericObj.searchModule(modules.HOME);
+		  objWorkItemHomePage.login(users.DATA_ADMIN);
+		  objWorkItemHomePage.searchModule(modules.HOME);
 		  objWorkItemHomePage.waitUntilPageisReady(driver);
 		  
           // steps 8: Approve WI from needs my approval tab
 		  objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
 		  objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.btnApprove);
-		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
-		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.closeButton, 3);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.closeButton);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.completedTab);
 		  
 		  //steps 9: Validation on after approve by second lavel approval work item should be visible in completed tab
 		  HashMap<String, ArrayList<String>> PrimaryWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
           softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(Workitem), "SMAB-T2466: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab"); 
-	      apasGenericObj.logout();
+	      objWorkItemHomePage.logout();
      }
 }
