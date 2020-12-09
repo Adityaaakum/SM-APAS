@@ -425,11 +425,13 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  String apnValue=response.get("Name").get(0); 
 		  String workItemCreationData = System.getProperty("user.dir") +testdata.MANUAL_WORK_ITEMS; 
 		  Map<String, String> hashMapmanualWorkItemData =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeRP");
+		  
 		  // Step 1: Login to the APAS application using the credentials of staff user
 		  apasGenericObj.login(users.EXEMPTION_SUPPORT_STAFF);
 		  // Step 2: Opening the PARCELS page and searching a parcel
 		  apasGenericObj.searchModule(PARCELS);
 		  apasGenericObj.globalSearchRecords(apnValue); 
+		  
 		  // Step 3: Creating Manual work item for the Parcel 
 		  String Workitem =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
@@ -457,6 +459,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  apasGenericObj.login(loginUser);
 		  apasGenericObj.searchModule(modules.HOME);
 		  objWorkItemHomePage.waitUntilPageisReady(driver);
+		  
 		  // steps 7: Approve WI from needs my approval tab
 		  objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
 		  objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);
@@ -479,7 +482,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.completedTab);
 		  
-		  //steps 7: Validation on after approve by second lavel approval work item should be visible in completed tab
+		  //steps 9: Validation on after approve by second lavel approval work item should be visible in completed tab
 		  HashMap<String, ArrayList<String>> PrimaryWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
           softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(Workitem), "SMAB-T2466: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab"); 
 	      apasGenericObj.logout();
