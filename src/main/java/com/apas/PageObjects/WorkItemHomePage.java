@@ -219,6 +219,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public WebElement WorkPool;
 	
     public String SaveButton="Save";
+    public String value="Value";
     
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
