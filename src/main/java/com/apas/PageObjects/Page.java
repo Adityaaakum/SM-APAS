@@ -902,7 +902,7 @@ public class Page {
 	}
 	
 	/**
-	 * Description: This method will clear the value from the lookup field
+	 * Description: This method will click element with hyperlink in the lookup field
 	 * @param exempName: Takes field name as an argument
 	 */
 	public void clickElementForFieldValue(String fieldName) throws Exception {

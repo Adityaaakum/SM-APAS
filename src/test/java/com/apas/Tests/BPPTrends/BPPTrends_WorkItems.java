@@ -787,10 +787,6 @@ public class BPPTrends_WorkItems extends TestBase {
         String actualWIStatus = workItemData.get("Status__c").get(0);
         softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T1737: Verify status of WI : 'Perform Calculations' is 'Submitted for Approval'");
         
-        
-        softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T1737: Verify status of WI : 'Perform Calculations' is 'Submitted for Approval'");
-
-        
         //Step14: Log out from the application and log in as BPP Principal
         objApasGenericFunctions.logout();
         Thread.sleep(15000);
