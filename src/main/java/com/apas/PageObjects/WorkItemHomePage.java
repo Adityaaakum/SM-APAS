@@ -231,7 +231,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public WebElement editValueonDetailPage;
 	
     public String SaveButton="Save";
-    public String value="Value";
+    public String valueTextBox = "Value";
     
     @FindBy(xpath = "//div[contains(@class,'slds-media__body')]//slot/lightning-formatted-text[contains(text(),'WI-')]")
 	public WebElement getWorkItem;

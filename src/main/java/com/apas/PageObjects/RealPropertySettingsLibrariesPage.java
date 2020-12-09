@@ -159,18 +159,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		selectOptionFromDropDown(element, value);
 	}
 	
-	/**
-	 * @description: This method will return the error message appeared against the field name passed in the parameter
-	 * @param fieldName: field name for which error message needs to be fetched
-	 * @throws Exception 
-	 */
-	public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
-		//waitUntilElementIsPresent("//*/span[text() = '\" + fieldName + \"']//..//..//..//ul[contains(@class,'has-error')]//li", 2);
-		//return getElementText(driver.findElement(By.xpath("//*/span[text() = '" + fieldName + "']//..//..//..//ul[contains(@class,'has-error')]//li")));
-		return getIndividualFieldErrorMessage(fieldName);
-	}
 
-	
 	/**
 	 * Description: This method will only enter the values of Real Property settings Libraries fields on the application
 	 * @param rollYear: roll year value
