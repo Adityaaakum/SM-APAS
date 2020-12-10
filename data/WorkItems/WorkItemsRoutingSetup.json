@@ -1,0 +1,18 @@
+{
+  "DataToCreateNeighborhood": {
+    "Neighborhood Code": "01",
+    "Neighborhood Description": "Test",
+    "Primary Appraiser": "rpbusiness adminAUT",
+    "District": "06",
+    "Updated Neighborhood Code": "02",
+  },
+  "DataToCreateTerritory": {
+    "Territory Name": "Test",
+    "Primary Auditor": "bpp adminAUT",
+    "Updated Territory Name": "Test1",
+    },
+  "DataToCreateRoutingAssignment": {
+    "Work Item Sub Type": "Unincorporated File Upload",
+    "Work Pool": "RP Admin",
+  }
+}
