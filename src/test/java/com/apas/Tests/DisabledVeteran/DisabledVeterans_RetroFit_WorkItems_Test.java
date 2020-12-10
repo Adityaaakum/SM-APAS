@@ -215,7 +215,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		String workPoolName = objApasGenericPage.getFieldValueFromAPAS("Work Pool", "Information");
 		String supervisorName = objApasGenericPage.getFieldValueFromAPAS("Approver", "Approval & Supervisor Details");
 		
-		objPage.clickElementForFieldValue("Approver");
+		objPage.clickHyperlinkOnFieldValue("Approver");
 		String supervisorId = objApasGenericPage.getCurrentRecordId(driver,supervisorName);
 		
 		String supervisorNameQuery = "select Supervisor__c from Work_Pool__c where Name = '"+ workPoolName+ "' LIMIT 1";
@@ -224,13 +224,13 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
         
         driver.navigate().back();
 		Thread.sleep(2000);
-		objPage.javascriptClick(workItemPageObj.detailsTab);
+		workItemPageObj.openTab("Details");
 		objPage.scrollToBottom();
-        
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Action", "Information"),"Update and Validate","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Related Action", "Information"),"Update and Validate","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Priority", "Information"),"None","SMAB-T1838: Validate user is able to view the value of 'Priority' field");
+		
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiActionDetailsPage, "Information"),"Update and Validate","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiRelatedActionDetailsPage, "Information"),"Update and Validate","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiDateDetailsPage, "Information"),"1/1/"+currentRollYear,"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiPriorityDetailsPage, "Information"),"None","SMAB-T1838: Validate user is able to view the value of 'Priority' field");
 		softAssert.assertEquals(supervisorId,supervisorIdFromDB,"SMAB-T1838: Validate user is able to view the Id of Supervisor to verify 'Approver' field value");
 		
 		//Step7: Validate user who has submitted the Work Item for Approval is not able to Complete it
@@ -258,7 +258,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		softAssert.assertEquals(reminderSubmittedWI.get("Request Type").get(reminderSubmittedWIRowNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(reminderSubmittedWI.get("Work Pool Name").get(reminderSubmittedWIRowNumber),"Disabled Veterans","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(reminderSubmittedWINumber, reminderWINumber,"SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
-		softAssert.assertEquals(reminderSubmittedWI.get("Date").get(reminderSubmittedWIRowNumber),currentRollYear + "-01-01","SMAB-T1838: Validate user is able to view the date under 'Date' column");
+		softAssert.assertEquals(reminderSubmittedWI.get(workItemPageObj.wiDateDetailsPage).get(reminderSubmittedWIRowNumber),currentRollYear + "-01-01","SMAB-T1838: Validate user is able to view the date under 'Date' column");
 		
 		objApasGenericPage.logout();
 
@@ -316,41 +316,40 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objPage.javascriptClick(driver.findElement(By.xpath(xpath)));
 		Thread.sleep(3000);
 		
-		objPage.javascriptClick(workItemPageObj.detailsTab);
-		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiActionDetailsPage),"Update and Validate","SMAB-T1867: Validate that Supervisor of a WI is able to view value for 'Action' field ");
+		workItemPageObj.openTab("Details");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiActionDetailsPage, "Information"),"Update and Validate","SMAB-T1867: Validate that Supervisor of a WI is able to view value for 'Action' field ");
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.relatedActionLink),"Update and Validate","SMAB-T1867: Validate that Supervisor of a WI is able to view value for 'Related Action' field");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,"SMAB-T1867: Validate that 'Date' field is equal to 1/1/"+currentRollYear);
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiDateDetailsPage, "Information"),"1/1/"+currentRollYear,"SMAB-T1867: Validate that 'Date' field is equal to 1/1/"+currentRollYear);
 		
 		//Step5: Edit the WI and update the details
 		ReportLogger.INFO("Edit the WI and update the details : " + reminderSubmittedWINumber);
 		objPage.javascriptClick(workItemPageObj.editBtn);
-		objPage.enter("Value", "100");
-		objPage.enter("Name", "Test");
-		objPage.enter("DOV", "1/1/"+currentRollYear);
+		objPage.enter(workItemPageObj.wiValueDetailsPage, "100");
+		objPage.enter(workItemPageObj.wiNameDetailsPage, "Test");
+		objPage.enter(workItemPageObj.wiDOVDetailsPage, "1/1/"+currentRollYear);
 		objApasGenericPage.saveRecord();
 		
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Value", "Reference Data Details"),"100.00",
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiValueDetailsPage, "Reference Data Details"),"100.00",
 				"SMAB-T1867: Validate that 'Value' field is updated with expected change");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Name", "Reference Data Details"),"Test",
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiNameDetailsPage, "Reference Data Details"),"Test",
 				"SMAB-T1867: Validate that 'Name' field is updated with expected change");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("DOV", "Information"),"1/1/"+currentRollYear,
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiDOVDetailsPage, "Information"),"1/1/"+currentRollYear,
 				"SMAB-T1867: Validate that 'DOV' field is equal to 1/1/"+currentRollYear);
 		
 		//Step6: Edit the WI again and remove the values entered before
 		ReportLogger.INFO("Edit the WI again and remove the values entered before : " + reminderSubmittedWINumber);
 		objPage.javascriptClick(workItemPageObj.editBtn);
-		objPage.enter("Value", "");
-		objPage.enter("Name", "");
-		objPage.enter("DOV", "");
+		objPage.enter(workItemPageObj.wiValueDetailsPage, "");
+		objPage.enter(workItemPageObj.wiNameDetailsPage, "");
+		objPage.enter(workItemPageObj.wiDOVDetailsPage, "");
 		objApasGenericPage.saveRecord();
 		
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Value", "Reference Data Details"),"",
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiValueDetailsPage, "Reference Data Details"),"",
 				"SMAB-T1867: Validate that 'Value' field is updated with expected change");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Name", "Reference Data Details"),"",
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiNameDetailsPage, "Reference Data Details"),"",
 				"SMAB-T1867: Validate that 'Name' field is updated with expected change");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("DOV", "Information"),"",
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiDOVDetailsPage, "Information"),"",
 				"SMAB-T1867: Validate that 'DOV' field is updated with expected change");
-		
 		
 		//Step7: Change the status of RPSL
 		objPage.javascriptClick(workItemPageObj.reviewLink);

@@ -906,20 +906,20 @@ public class Page extends TestBase {
 	 * Description: This method will clear the value from the lookup field
 	 * @param exempName: Takes field name as an argument
 	 */
-	public void clearSelection(String fieldName) throws Exception {
+	public void clearSelectionFromLookup(String fieldName) throws Exception {
 		String xpathStr = "//label[text()='" + fieldName + "']/parent::lightning-grouped-combobox//span[text()='Clear Selection']";
-		WebElement fieldLocator = locateElement(xpathStr, 30);
-	    Click(fieldLocator);
+		waitUntilElementIsPresent(xpathStr,3);
+		Click(driver.findElement(By.xpath(xpathStr)));
 	}
 	
 	/**
 	 * Description: This method will click element with hyperlink in the lookup field
 	 * @param exempName: Takes field name as an argument
 	 */
-	public void clickElementForFieldValue(String fieldName) throws Exception {
+	public void clickHyperlinkOnFieldValue(String fieldName) throws Exception {
 		String xpathStr = "//span[text()='" + fieldName + "']/parent::div/following-sibling::div//div[@class='slds-grid']//a/span";
-		WebElement fieldValueLocator = locateElement(xpathStr, 30);
-	    Click(fieldValueLocator);
+		waitUntilElementIsPresent(xpathStr,3);
+		Click(driver.findElement(By.xpath(xpathStr)));
 	    Thread.sleep(1000);
 	}
 

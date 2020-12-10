@@ -1,5 +1,6 @@
 package com.apas.PageObjects;
 
+import com.apas.Assertions.SoftAssertion;
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import org.openqa.selenium.By;
@@ -29,6 +30,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	ApasGenericPage objApasGenericPage;
 	Page objPageObj;
 	SalesforceAPI salesforceAPI ;
+	SoftAssertion softAssert = new SoftAssertion();
 
 	public WorkItemHomePage(RemoteWebDriver driver) {
 		super(driver);
@@ -168,12 +170,6 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='Status']/parent::div/following-sibling::div//lightning-formatted-text")
 	public WebElement wiStatusDetailsPage;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@class='test-id__field-label' and text()='Action']/parent::div/following-sibling::div//lightning-formatted-text")
-	public WebElement wiActionDetailsPage;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@class='test-id__field-label' and text()='Related Action']/parent::div/following-sibling::div//lightning-formatted-text")
-	public WebElement wiRelatedActionDetailsPage;
-	
 	@FindBy(xpath = "//li//a[@aria-selected='true' and @role='option']")
 	public WebElement currenWIStatusonTimeline;
 
@@ -236,13 +232,26 @@ public class WorkItemHomePage extends ApasGenericPage {
     @FindBy(xpath = "//div[contains(@class,'slds-media__body')]//slot/lightning-formatted-text[contains(text(),'WI-')]")
 	public WebElement getWorkItem;
     
-	//public String newButton = "New";
 	public String editButton = "Edit";
 	
-	@FindBy(xpath = "//a//div[text()='New']")
-	public WebElement newButton;
+	public String wiActionDetailsPage = "Action";
+	public String wiRelatedActionDetailsPage = "Related Action";
+	public String wiDateDetailsPage = "Date";
+	public String wiValueDetailsPage = "Value";
+	public String wiNameDetailsPage = "Name";
+	public String wiDOVDetailsPage = "DOV";
+	public String wiWorkPoolDetailsPage = "Work Pool";
+	public String wiApproverDetailsPage = "Approver";
+	public String wiPriorityDetailsPage = "Priority";
+	public String wiTypeDetailsPage = "Type";
+	public String wiReferenceDetailsPage = "Reference";
+	public String wiAPNDetailsPage = "APN";
 	
-
+	public String wpSupervisor = "Supervisor";
+	public String wpLevel2Supervisor = "Level2 Supervisor";
+	public String wpLevel2ValueCriteriaSupervisor = "Level2 Value Criteria";
+	public String wpWorkPoolName = "Work Pool Name";
+	
 	
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
@@ -534,4 +543,31 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 			scrollToElement(webElementCheckBox);
 			Click(webElementCheckBox);			
 	    }
+	 
+	 /**
+		 * This method will create a WorkPool
+		 *
+		 * @param workItem :created workItem
+	 **/
+	 
+	 	public String createWorkPool(String poolName, String supervisorName) throws Exception {
+			return createWorkPool(poolName, supervisorName, "", "");
+		}
+	 	
+	 	public String createWorkPool(String poolName, String supervisorName, String level2SupervisorName, String level2ValueCriteria) throws Exception {
+	 		objPageObj.Click(objApasGenericPage.newButton);
+	 		objPageObj.enter(wpWorkPoolName, poolName);
+	 		objApasGenericPage.searchAndSelectFromDropDown(wpSupervisor, supervisorName);
+	 		if(level2SupervisorName != null)objApasGenericPage.searchAndSelectFromDropDown(wpLevel2Supervisor, level2SupervisorName);
+	 		if(level2ValueCriteria != null)objPageObj.enter(wpLevel2ValueCriteriaSupervisor, level2ValueCriteria);
+	 		String successMessage = objApasGenericPage.saveRecord();
+	 		Thread.sleep(1000);
+	 		//objPageObj.Click(objPageObj.getButtonWithText(SaveButton));
+	 		Thread.sleep(1000);
+	 		softAssert.assertEquals(successMessage,"Work Pool \"" + poolName + "\" was created.","SMAB-T1935 : Validate user is able to create a Work Pool" );
+	 		Thread.sleep(1000);
+	 		ReportLogger.INFO("Work Pool record is created :: "+poolName);
+	 		return poolName;
+		}
+
 }

@@ -1068,15 +1068,15 @@ public class BPPTrends_WorkItems extends TestBase {
 		
 		//Step 9: Validate the Work Item details after the Work Item is submitted for approval
 		ReportLogger.INFO("User validates the Work Item details after it is Submitted for Approval");
-		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.openTab("Details");
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 		
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Status", "Information"),"Completed","SMAB-T1838: Validate user is able to validate the value of 'Status' field");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Type", "Information"),"BPP Trends","SMAB-T1838: Validate user is able to validate the value of 'Type' field");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Action", "Information"),"Import","SMAB-T1838: Validate user is able to validate the value of 'Action' field");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Work Pool", "Information"),"BPP Admin","SMAB-T1838: Validate user is able to validate the value of 'Work Pool' field");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Priority", "Information"),"None","SMAB-T1838: Validate user is able to validate the value of 'Priority' field");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Reference", "Information"),"BOE Valuation Factors","SMAB-T1838: Validate user is able to validate the value of 'Reference' field");
+		softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.wiStatusDetailsPage),"Completed","SMAB-T1838: Validate user is able to validate the value of 'Status' field");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage, "Information"),"BPP Trends","SMAB-T1838: Validate user is able to validate the value of 'Type' field");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(objWorkItemHomePage.wiActionDetailsPage, "Information"),"Import","SMAB-T1838: Validate user is able to validate the value of 'Action' field");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(objWorkItemHomePage.wiWorkPoolDetailsPage, "Information"),"BPP Admin","SMAB-T1838: Validate user is able to validate the value of 'Work Pool' field");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(objWorkItemHomePage.wiPriorityDetailsPage, "Information"),"None","SMAB-T1838: Validate user is able to validate the value of 'Priority' field");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(objWorkItemHomePage.wiReferenceDetailsPage, "Information"),"BOE Valuation Factors","SMAB-T1838: Validate user is able to validate the value of 'Reference' field");
 		
         objApasGenericPage.logout();
     }
