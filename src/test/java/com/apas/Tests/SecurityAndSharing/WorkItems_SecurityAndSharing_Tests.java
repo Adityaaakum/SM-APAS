@@ -145,24 +145,31 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 		objApasGenericPage.searchModule(HOME);
 	    objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABMySubmittedforApproval);
 	    
+	    
 	    //Validate that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval'
-	    softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeWorkPool)),
+	    softAssert.assertTrue(objLoginPage.validateAbsenceOfElement(objWorkItemHomePage.changeWorkPool ,10),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval'");
-	    softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeAssignee)),
+	    softAssert.assertTrue(objLoginPage.validateAbsenceOfElement(objWorkItemHomePage.changeAssignee,10),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval'");
 	    
 	    //Validate that work pool supervisor is not able to mass transfer WI's with status 'Approval-On Hold'
+	    objApasGenericPage.searchModule(HOME);
+	    driver.navigate().refresh();
+	    objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.lnkTABMySubmittedforApproval);
 	    objApasGenericPage.openTab("On Hold");
-	    softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeWorkPool)),
+	    softAssert.assertTrue(objLoginPage.validateAbsenceOfElement(objWorkItemHomePage.changeWorkPool ,10),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'Approval-On Hold'");
-	    softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeAssignee)),
+	    softAssert.assertTrue(objLoginPage.validateAbsenceOfElement(objWorkItemHomePage.changeAssignee,10),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'Approval-On Hold'");
 	    
 	    //Validate that work pool supervisor is not able to mass transfer WI's with status 'completed'
+	    objApasGenericPage.searchModule(HOME);
+	    driver.navigate().refresh();
+	    objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.lnkTABCompleted);
 	    objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABCompleted);
-	    softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeWorkPool)),
+	    softAssert.assertTrue(objLoginPage.validateAbsenceOfElement(objWorkItemHomePage.changeWorkPool ,10),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'completed'");
-	    softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeAssignee)),
+	    softAssert.assertTrue(objLoginPage.validateAbsenceOfElement(objWorkItemHomePage.changeAssignee,10),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'completed'");
 	    
 	    objApasGenericPage.logout();
