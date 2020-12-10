@@ -156,9 +156,9 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 	         
 	     // Validating the approved WI's should be in completed tab
 	        softAssert.assertTrue(objWorkItemHomePage.searchWIInGrid(workItemNumber1),
-	        		"SMAB-T2241:Validating the approved WI's should be in completed tab");
+	        		"SMAB-T2241:Validating the approved Work Item 1 :- "+ workItemNumber1 +" should be in completed tab");
 	        softAssert.assertTrue(objWorkItemHomePage.searchWIInGrid(workItemNumber2),
-	        		"SMAB-T2241:Validating the approved WI's should be in completed tab");      	        
+	        		"SMAB-T2241:Validating the approved Work Item 2 :- "+ workItemNumber2 + " should be in completed tab");      	        
 			objWorkItemHomePage.logout();
 		}
 		
