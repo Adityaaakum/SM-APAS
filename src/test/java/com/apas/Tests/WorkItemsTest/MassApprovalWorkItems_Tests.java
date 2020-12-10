@@ -173,11 +173,10 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 				"regression", "work_item_manual" })
 		public void WorkItems_ErrorChangeAsignee(String loginUser) throws Exception {
 			
+			String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
+			HashMap<String, ArrayList<String>> value = salesforceAPI.select(queryAPNValue);
+			String apnValue= value.get("Name").get(0);
 			
-			  String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
-			  HashMap<String, ArrayList<String>> value = salesforceAPI.select(queryAPNValue); String apnValue=
-			  value.get("Name").get(0);
-			 
 
 			String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
 			
@@ -206,7 +205,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 				workItem1InPool = valueWIDVInpool.get("Name").get(0);
 			}
 			
-			String queryWINotDVInPool = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name!='Disabled Veterans' and (Work_Pool__r.name='RP Admin' or Work_Pool__r.name='RP Lost in Routing') and Status__c='In Pool' and Assigned_To__r.name=NULL ";
+			String queryWINotDVInPool = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name!='Disabled Veterans' and (Work_Pool__r.name='RP Admin' or Work_Pool__r.name='RP Lost in Routing') and Status__c='In Pool'";
 			HashMap<String, ArrayList<String>> valueWINotDVInPool = salesforceAPI.select(queryWINotDVInPool);			
 			if(valueWINotDVInPool == null)
 			{

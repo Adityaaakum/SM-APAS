@@ -8,7 +8,6 @@ import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.LoginPage;
-import com.apas.PageObjects.Page;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.TestBase.TestBase;
 import com.apas.config.modules;
