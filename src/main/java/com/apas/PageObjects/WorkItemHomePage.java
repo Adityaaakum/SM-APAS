@@ -218,8 +218,6 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Work Pool']/..//input")
 	public WebElement WorkPool;
 
-	public String SaveButton="Save";
-
 	public String neighborhoodCodeEditBox="Neighborhood Code";
 	public String neighborhoodDescriptionEditBox="Neighborhood Description";
 	public String primaryAppraiserDropDown="Primary Appraiser";
@@ -232,6 +230,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String territoryDescriptionEditBox="Territory Description";
 	public String neighborhoodDropDown= "Neighborhood";
 	public String territoryDropDown= "Territory";
+
+    public String SaveButton="Save";
+    public String valueTextBox = "Value";
 
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter

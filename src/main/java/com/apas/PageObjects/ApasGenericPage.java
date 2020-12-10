@@ -280,7 +280,6 @@ public class ApasGenericPage extends Page {
         String xpathDropDownOption;
         if (element instanceof String) {
             webElement = getWebElementWithLabel((String) element);
-            //xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()='" + element + "']/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
             xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()=\""+element+"\"]/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
         } else{
             webElement = (WebElement) element;
@@ -314,7 +313,11 @@ public class ApasGenericPage extends Page {
             webElement = (WebElement) element;
             xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
 		}
-        try{
+
+        if (webElement.getTagName().equals("select")){
+			//This condition is added as few drop downs are found to be of Select type
+			SelectByVisibleText(webElement,value);
+		}else{
 			scrollToElement(webElement);
 			javascriptClick(webElement);
 			waitUntilElementIsPresent(xpathDropDownOption, 5);
@@ -322,9 +325,6 @@ public class ApasGenericPage extends Page {
 			scrollToElement(drpDwnOption);
 			waitForElementToBeClickable(drpDwnOption, 3);
 			javascriptClick(drpDwnOption);
-		}catch (Exception ignore){
-        	//This condition is added as few drop downs are found to be of Select type
-        	SelectByVisibleText(webElement,value);
 		}
 
     }
@@ -1071,5 +1071,19 @@ public class ApasGenericPage extends Page {
 		String alertTxt = AlertText.getText();
 		return alertTxt;
 	}
-	
+	/**
+	 * Description: this method is to click on New Button and open the create record Pop Up
+	 * @throws InterruptedException
+	 */
+	public void createRecord() throws IOException, InterruptedException {
+		Click(getButtonWithText("New"));
+		Thread.sleep(1000);
+	}
+	/**
+	 * Description: this method is to click on Edit Button and open the Edit record Pop Up
+	 * @throws InterruptedException
+	 */
+	public void editRecord() throws IOException, InterruptedException {
+		Click(getButtonWithText("Edit"));
+	}
 }

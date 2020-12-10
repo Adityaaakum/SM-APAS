@@ -20,9 +20,8 @@ import java.util.Map;
 
 public class WorkItems_RoutingSetup extends TestBase {
     RemoteWebDriver driver;
-    Page objPage;
-    ApasGenericPage apasGenericObj;
     WorkItemHomePage objWorkItemHomePage;
+    WorkItemsRoutingSetupPage objWorkItemsRoutingSetupPage;
     Util objUtil;
     SoftAssertion softAssert = new SoftAssertion();
     SalesforceAPI salesforceAPI = new SalesforceAPI();
@@ -34,23 +33,22 @@ public class WorkItems_RoutingSetup extends TestBase {
         setupTest();
         driver = BrowserDriver.getBrowserInstance();
 
-        objPage = new Page(driver);
-        apasGenericObj = new ApasGenericPage(driver);
         objUtil = new Util();
         objWorkItemHomePage = new WorkItemHomePage(driver);
+        objWorkItemsRoutingSetupPage = new WorkItemsRoutingSetupPage(driver);
     }
 
     @Test(description = "SMAB-T1811,SMAB-T1812,SMAB-T1814,SMAB-T1815: Verify user is able to create,edit Neighborhood reference record with mandatory fields & not able to create duplicate record", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
             "smoke", "regression", "Work_Items_Manual" }, alwaysRun = true)
     public void WorkItem_verify_NeighborhoodReferenceRecordCreation(String loginUser) throws Exception {
-        String workItemCreationData = System.getProperty("user.dir") + testdata.WORK_ITEMS_ROUTING_SETUP;
+        String workItemCreationData = testdata.WORK_ITEMS_ROUTING_SETUP;
         Map<String, String> hashMapNeighborhoodData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateNeighborhood");
 
         //Step1: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        apasGenericObj.login(loginUser);
+        objWorkItemHomePage.login(loginUser);
 
         //Step2: Open the Neighborhoods Page & select all list view
-        apasGenericObj.searchModule(modules.NEIGHBORHOODS);
+        objWorkItemHomePage.searchModule(modules.NEIGHBORHOODS);
         //objApasGenericFunctions.displayRecords("All");
 
         //Step3: Click on New Button and save the record without entering mandatory fields
@@ -58,57 +56,52 @@ public class WorkItems_RoutingSetup extends TestBase {
         String query = "SELECT Id FROM Neighborhood__c WHERE Name  = '"+hashMapNeighborhoodData.get("Neighborhood Code")+"'";
         salesforceAPI.delete("Neighborhood__c",query);
 
-        objPage.Click(objPage.getButtonWithText(apasGenericObj.NewButton));
-        Thread.sleep(1000);
-        objPage.Click(objPage.getButtonWithText(apasGenericObj.SaveButton));
+        objWorkItemHomePage.createRecord();
+        objWorkItemHomePage.saveRecordAndGetError();
 
         //Step4 : Verify Error message for mandatory fields
         String expectedErrorMessage = "Complete this field.";
-        String actualErrorMessage = apasGenericObj.getIndividualFieldErrorMessage(objWorkItemHomePage.neighborhoodCodeEditBox);
+        String actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsRoutingSetupPage.neighborhoodCodeEditBox);
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1811: Verify Neighborhood Code is a mandatory field");
 
-        actualErrorMessage = apasGenericObj.getIndividualFieldErrorMessage(objWorkItemHomePage.neighborhoodDescriptionEditBox);
+        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsRoutingSetupPage.neighborhoodDescriptionEditBox);
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1811: Verify Neighborhood Description is a mandatory field");
 
-        actualErrorMessage = apasGenericObj.getIndividualFieldErrorMessage(objWorkItemHomePage.primaryAppraiserDropDown);
+        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsRoutingSetupPage.primaryAppraiserDropDown);
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1811: Verify Primary Appraiser is a mandatory field");
 
-        actualErrorMessage = apasGenericObj.getIndividualFieldErrorMessage(objWorkItemHomePage.districtDropDown);
+        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsRoutingSetupPage.districtDropDown);
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1811: Verify District is a mandatory field");
 
         //Step5: Create new Neighborhood reference record
-        objPage.Click(objWorkItemHomePage.CloseErrorMsg);
-        objPage.enter(objWorkItemHomePage.neighborhoodCodeEditBox,hashMapNeighborhoodData.get("Neighborhood Code"));
-        objPage.enter(objWorkItemHomePage.neighborhoodDescriptionEditBox,hashMapNeighborhoodData.get("Neighborhood Description"));
-        apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.primaryAppraiserDropDown,hashMapNeighborhoodData.get("Primary Appraiser"));
-        apasGenericObj.selectOptionFromDropDown(objWorkItemHomePage.districtDropDown,hashMapNeighborhoodData.get("District"));
-        String actualSuccessMessage = apasGenericObj.saveRecord();
+        objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+        objWorkItemsRoutingSetupPage.enterNeighborhoodReferenceRecordDetails(hashMapNeighborhoodData);
+        String actualSuccessMessage = objWorkItemHomePage.saveRecord();
         String expectedSuccessMessage="Neighborhood \""+hashMapNeighborhoodData.get("Neighborhood Code") +"\" was created.";
         softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-1812: Verify user is able to create new Neighborhood Reference Record successfully");
 
         //Step6: Edit existing Neighborhood reference record
-        objPage.Click(objPage.getButtonWithText(apasGenericObj.EditButton));
-        objPage.enter(objWorkItemHomePage.neighborhoodCodeEditBox,hashMapNeighborhoodData.get("Updated Neighborhood Code"));
-        actualSuccessMessage = apasGenericObj.saveRecord();
-        expectedSuccessMessage="Neighborhood \""+hashMapNeighborhoodData.get("Updated Neighborhood Code") +"\" was saved.";
+        Map<String, String> hashMapDuplicateNeighborhoodData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateDuplicateNeighborhood");
+
+        objWorkItemHomePage.editRecord();
+        objWorkItemHomePage.enter(objWorkItemsRoutingSetupPage.neighborhoodCodeEditBox,hashMapDuplicateNeighborhoodData.get("Neighborhood Code"));
+        actualSuccessMessage = objWorkItemHomePage.saveRecord();
+        expectedSuccessMessage="Neighborhood \""+hashMapDuplicateNeighborhoodData.get("Neighborhood Code") +"\" was saved.";
         softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-1814: Verify user is able to edit Neighborhood Reference Record successfully");
 
         //Step7: Open the Neighborhoods Page & select all list view
-        apasGenericObj.searchModule(modules.NEIGHBORHOODS);
+        objWorkItemHomePage.searchModule(modules.NEIGHBORHOODS);
         //objApasGenericFunctions.displayRecords("All");
 
         //Step8: Create duplicate Neighborhood reference record
-        objPage.Click(objPage.getButtonWithText(apasGenericObj.NewButton));
-        objPage.enter(objWorkItemHomePage.neighborhoodCodeEditBox,hashMapNeighborhoodData.get("Updated Neighborhood Code"));
-        objPage.enter(objWorkItemHomePage.neighborhoodDescriptionEditBox,hashMapNeighborhoodData.get("Neighborhood Description"));
-        apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.primaryAppraiserDropDown,hashMapNeighborhoodData.get("Primary Appraiser"));
-        apasGenericObj.selectOptionFromDropDown(objWorkItemHomePage.districtDropDown,hashMapNeighborhoodData.get("District"));
-        actualErrorMessage = objPage.getElementText(apasGenericObj.pageError);
+        objWorkItemHomePage.createRecord();
+        objWorkItemsRoutingSetupPage.enterNeighborhoodReferenceRecordDetails(hashMapDuplicateNeighborhoodData);
+        actualErrorMessage = objWorkItemHomePage.saveRecordAndGetError();
         expectedErrorMessage = "You can't save this record because a duplicate record already exists. To save, use different information.";
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1815: Verify user is not able to create duplicate Neighborhood Reference Record");
 
         //Step9: Delete record create above
-        query = "SELECT Id FROM Neighborhood__c WHERE Name  = '"+hashMapNeighborhoodData.get("Updated Neighborhood Code")+"'";
+        query = "SELECT Id FROM Neighborhood__c WHERE Name  = '"+hashMapDuplicateNeighborhoodData.get("Neighborhood Code")+"'";
         salesforceAPI.delete("Neighborhood__c",query);
 
     }
@@ -116,79 +109,78 @@ public class WorkItems_RoutingSetup extends TestBase {
     @Test(description = "SMAB-T1816,SMAB-T1817,SMAB-T1821,SMAB-T1822: Verify user is able to create,edit Territory record with mandatory fields & not able to create duplicate record", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
             "smoke", "regression", "Work_Items_Manual" }, alwaysRun = true)
     public void WorkItem_verify_TerritoryRecordCreation(String loginUser) throws Exception {
-        String workItemCreationData = System.getProperty("user.dir") + testdata.WORK_ITEMS_ROUTING_SETUP;
+        String workItemCreationData = testdata.WORK_ITEMS_ROUTING_SETUP;
         Map<String, String> hashMapTerritoryData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateTerritory");
 
         //Step1: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        apasGenericObj.login(loginUser);
+        objWorkItemHomePage.login(loginUser);
 
         //Step2: Open the Territories Page & select all list view
-        apasGenericObj.searchModule(modules.TERRITORIES);
+        objWorkItemHomePage.searchModule(modules.TERRITORIES);
         //objApasGenericFunctions.displayRecords("All");
 
-        //Step3: Click on New Button and save the record wthout entering mandatory fields
+        //Step3: Click on New Button and save the record without entering mandatory fields
         // Delete existing record before creating new record
         String query = "SELECT Id FROM Territory__c WHERE Name  = '"+hashMapTerritoryData.get("Territory Name")+"'";
         salesforceAPI.delete("Territory__c",query);
 
-        objPage.Click(objPage.getButtonWithText(apasGenericObj.NewButton));
-        Thread.sleep(1000);
-        objPage.Click(objPage.getButtonWithText(apasGenericObj.SaveButton));
+        objWorkItemHomePage.createRecord();
+        objWorkItemHomePage.saveRecordAndGetError();
 
         //Step4 : Verify Error message for mandatory fields
         String expectedErrorMessage = "Complete this field.";
-        String actualErrorMessage = apasGenericObj.getIndividualFieldErrorMessage(objWorkItemHomePage.territoryNameEditBox);
+        String actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsRoutingSetupPage.territoryNameEditBox);
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1816: Verify Territory Name is a mandatory field");
 
-        actualErrorMessage = apasGenericObj.getIndividualFieldErrorMessage(objWorkItemHomePage.primaryAuditorDropDown);
+        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsRoutingSetupPage.primaryAuditorDropDown);
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1816: Verify Primary Auditor is a mandatory field");
 
         //Step5: Create new Territory record
-        objPage.Click(objWorkItemHomePage.CloseErrorMsg);
-        objPage.enter(objWorkItemHomePage.territoryNameEditBox,hashMapTerritoryData.get("Territory Name"));
-        apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.primaryAuditorDropDown,hashMapTerritoryData.get("Primary Auditor"));
-        String actualSuccessMessage = apasGenericObj.saveRecord();
+        objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+        objWorkItemsRoutingSetupPage.enterTerritoryRecordDetails(hashMapTerritoryData);
+        String actualSuccessMessage = objWorkItemHomePage.saveRecord();
 
         String expectedSuccessMessage="Territory \""+hashMapTerritoryData.get("Territory Name") +"\" was created.";
         softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-1817: Verify user is able to create new Territory Record successfully");
 
         //Step6: Edit existing Territory record
-        objPage.Click(objPage.getButtonWithText(apasGenericObj.EditButton));
-        objPage.enter(objWorkItemHomePage.territoryNameEditBox,hashMapTerritoryData.get("Updated Territory Name"));
-        actualSuccessMessage = apasGenericObj.saveRecord();
-        expectedSuccessMessage="Territory \""+hashMapTerritoryData.get("Updated Territory Name") +"\" was saved.";
+        Map<String, String> hashMapDuplicateTerritoryData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateDuplicateTerritory");
+
+        objWorkItemHomePage.editRecord();
+        objWorkItemHomePage.enter(objWorkItemsRoutingSetupPage.territoryNameEditBox,hashMapDuplicateTerritoryData.get("Territory Name"));
+        actualSuccessMessage = objWorkItemHomePage.saveRecord();
+        expectedSuccessMessage="Territory \""+hashMapDuplicateTerritoryData.get("Territory Name") +"\" was saved.";
         softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-1821: Verify user is able to edit Territory Record successfully");
 
         //Step7: Open the Territories Page & select all list view
-        apasGenericObj.searchModule(modules.TERRITORIES);
+        objWorkItemHomePage.searchModule(modules.TERRITORIES);
         //objApasGenericFunctions.displayRecords("All");
 
         //Step8: Create duplicate Territory record
-        objPage.Click(objPage.getButtonWithText(apasGenericObj.NewButton));
-        apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.primaryAuditorDropDown,"bpp adminAUT");
-        objPage.enter(objWorkItemHomePage.territoryNameEditBox,hashMapTerritoryData.get("Updated Territory Name"));
-        objPage.Click(objPage.getButtonWithText(apasGenericObj.SaveButton));
-        actualErrorMessage = objPage.getElementText(apasGenericObj.pageError);
+        objWorkItemHomePage.createRecord();
+        objWorkItemsRoutingSetupPage.enterTerritoryRecordDetails(hashMapDuplicateTerritoryData);
+        actualErrorMessage = objWorkItemHomePage.saveRecordAndGetError();
+
         expectedErrorMessage = "You can't save this record because a duplicate record already exists. To save, use different information.";
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1822: Verify user is not able to create duplicate Territory Record");
 
         //Step9: Delete record create above
-        query = "SELECT Id FROM Territory__c WHERE Name  = '"+hashMapTerritoryData.get("Updated Territory Name")+"'";
+        query = "SELECT Id FROM Territory__c WHERE Name  = '"+hashMapDuplicateTerritoryData.get("Territory Name")+"'";
         salesforceAPI.delete("Territory__c",query);
     }
 
     @Test(description = "SMAB-T1826,SMAB-T1827,SMAB-T1828,SMAB-T1829: Verify user is able to create,edit Routing Assignments record with mandatory fields & not able to create duplicate record", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
             "smoke", "regression", "Work_Items_Manual" }, alwaysRun = true)
     public void WorkItem_verify_RoutingAssignmentRecordCreation(String loginUser) throws Exception {
-        String workItemCreationData = System.getProperty("user.dir") + testdata.WORK_ITEMS_ROUTING_SETUP;
+        String workItemCreationData = testdata.WORK_ITEMS_ROUTING_SETUP;
         Map<String, String> hashMapRoutingAssignmentData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateRoutingAssignment");
 
-        //Step1: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        apasGenericObj.login(loginUser);
+        //Step1: Login to the APAS application using the credentials passed through data provider (RP Business Admin)
+        objWorkItemHomePage.login(loginUser);
 
         //Step2: Open the Routing Assignments Page & select all list view
-        apasGenericObj.searchModule(modules.ROUTING_ASSIGNMENTS);
-        apasGenericObj.displayRecords("All");
+        objWorkItemHomePage.searchModule(modules.ROUTING_ASSIGNMENTS);
+        objWorkItemHomePage.displayRecords("All");
 
         //Step3: Click on New Button and save the record without entering mandatory fields
         //Delete existing record
@@ -197,42 +189,41 @@ public class WorkItems_RoutingSetup extends TestBase {
         String routingAssignmentQuery = "SELECT Id FROM Routing_Assignment__c Where Configuration__c  = '"+workItemCofigurationId+"'";
         salesforceAPI.delete("Routing_Assignment__c",routingAssignmentQuery);
 
-        objPage.Click(objPage.getButtonWithText(apasGenericObj.NewButton));
-        Thread.sleep(1000);
-        objPage.Click(objPage.getButtonWithText(apasGenericObj.SaveButton));
+        objWorkItemHomePage.createRecord();
+        objWorkItemHomePage.saveRecordAndGetError();
 
         //Step4 : Verify Error message for mandatory fields
         String expectedErrorMessage = "Complete this field.";
-        String actualErrorMessage = apasGenericObj.getIndividualFieldErrorMessage(objWorkItemHomePage.workItemConfigurationDropDown);
+        String actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsRoutingSetupPage.workItemConfigurationDropDown);
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1826: Verify Work Item Configuration is a mandatory field");
 
         //Step5: Create new Routing Assignments record
         query = "SELECT Name FROM Work_Item_Configuration__c WHERE Work_Item_Sub_Type__c = '"+hashMapRoutingAssignmentData.get("Work Item Sub Type")+"'";
         String workItemCofiguration = salesforceAPI.select(query).get("Name").get(0);
-        objPage.Click(objWorkItemHomePage.CloseErrorMsg);
-        apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.workItemConfigurationDropDown,workItemCofiguration);
-        String actualSuccessMessage = apasGenericObj.saveRecord();
+        objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+        objWorkItemHomePage.searchAndSelectOptionFromDropDown(objWorkItemsRoutingSetupPage.workItemConfigurationDropDown,workItemCofiguration);
+        String actualSuccessMessage = objWorkItemHomePage.saveRecord();
         String expectedSuccessMessage="was created.";
         softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-T1827: Verify user is able to create new Routing Assignments Record successfully");
 
         //Step6: Edit existing Routing Assignments record
-        objPage.Click(objPage.getButtonWithText(apasGenericObj.EditButton));
-        apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.workPoolDropDown,hashMapRoutingAssignmentData.get("Work Pool"));
-        actualSuccessMessage = apasGenericObj.saveRecord();
+        objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.EditButton));
+        objWorkItemHomePage.searchAndSelectOptionFromDropDown(objWorkItemsRoutingSetupPage.workPoolDropDown,hashMapRoutingAssignmentData.get("Work Pool"));
+        actualSuccessMessage = objWorkItemHomePage.saveRecord();
         expectedSuccessMessage="was saved.";
         softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-T1828: Verify user is able to edit Routing Assignments Record successfully");
 
         //Step7: Open the Routing Assignments Page & select all list view
-        apasGenericObj.searchModule(modules.ROUTING_ASSIGNMENTS);
-        apasGenericObj.displayRecords("All");
+        objWorkItemHomePage.searchModule(modules.ROUTING_ASSIGNMENTS);
+        objWorkItemHomePage.displayRecords("All");
 
         //Step8: Create duplicate Routing Assignments record
-        objPage.Click(objPage.getButtonWithText(apasGenericObj.NewButton));
-        apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.workItemConfigurationDropDown,workItemCofiguration);
-        apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.workPoolDropDown,hashMapRoutingAssignmentData.get("Work Pool"));
-        objPage.Click(objPage.getButtonWithText("Save"));;
+        objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.NewButton));
+        objWorkItemHomePage.searchAndSelectOptionFromDropDown(objWorkItemsRoutingSetupPage.workItemConfigurationDropDown,workItemCofiguration);
+        objWorkItemHomePage.searchAndSelectOptionFromDropDown(objWorkItemsRoutingSetupPage.workPoolDropDown,hashMapRoutingAssignmentData.get("Work Pool"));
+        objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText("Save"));
 
-        actualErrorMessage = objPage.getElementText(apasGenericObj.pageError);
+        actualErrorMessage = objWorkItemHomePage.getElementText(objWorkItemHomePage.pageError);
         expectedErrorMessage = "You can't save this record because a duplicate record already exists. To save, use different information.";
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1829:Verify user is not able to create duplicate Routing Assignments Record");
 

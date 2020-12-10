@@ -46,6 +46,12 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//*[@role='menuitem' and contains(.,'Exemptions')]")
 	public WebElement exemptionRelatedList;
 
+	@FindBy(xpath = "//div[contains(@class,'flowruntime-input-error')]//span")
+	public WebElement descriptionError;
+
+	@FindBy(xpath = "//div[contains(@class,'ErrorText')]")
+	public WebElement workItemTypeAndSubTypeError;
+
 	/**
 	 * Description: This method will open the parcel with the APN passed in the
 	 * parameter
