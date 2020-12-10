@@ -84,6 +84,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 		      
 		    //Step 4:Navigating to home page
 		    objWorkItemHomePage.searchModule(HOME);
+		    driver.navigate().refresh();
 		    
 		    //fetching WIC corresponding to work item
 		    String query="SELECT Work_Item_Configuration__c FROM Work_Item__c Where Name= '"+ workItemNumber2+"'";
@@ -145,22 +146,19 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 	        		"SMAB-T2241:Validating the success message that Work items are Approved");
 	        objWorkItemHomePage.logout();
 	        Thread.sleep(15000);
-	        
+
 	        //Step16: Login to the APAS application using the credentials passed through data provider (Exemption support staff)
 	        objWorkItemHomePage.login(users.EXEMPTION_SUPPORT_STAFF);
 	        objWorkItemHomePage.searchModule(modules.HOME);
 	        objWorkItemHomePage.Click(objWorkItemHomePage.completedTab);
-	        
-	        HashMap<String, ArrayList<String>> PrimaryWorkItems =
-	                objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-	        
-	        // Validating the approved WI's should be in completed tab
-	                softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(workItemNumber1),
-	                		"SMAB-T2241:Validating the approved WI's should be in completed tab");
-	           
-	                softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(workItemNumber2),
-	    	                "SMAB-T2241:Validating the approved WI's should be in completed tab");
-	       	        
+	        driver.navigate().refresh();
+	        objWorkItemHomePage.Click(objWorkItemHomePage.completedTab);
+	         
+	     // Validating the approved WI's should be in completed tab
+	        softAssert.assertTrue(objWorkItemHomePage.searchWIInGrid(workItemNumber1),
+	        		"SMAB-T2241:Validating the approved WI's should be in completed tab");
+	        softAssert.assertTrue(objWorkItemHomePage.searchWIInGrid(workItemNumber2),
+	        		"SMAB-T2241:Validating the approved WI's should be in completed tab");      	        
 			objWorkItemHomePage.logout();
 		}
 		
@@ -175,10 +173,11 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 				"regression", "work_item_manual" })
 		public void WorkItems_ErrorChangeAsignee(String loginUser) throws Exception {
 			
-			String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
-			HashMap<String, ArrayList<String>> value = salesforceAPI.select(queryAPNValue);
-			String apnValue= value.get("Name").get(0);
 			
+			  String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
+			  HashMap<String, ArrayList<String>> value = salesforceAPI.select(queryAPNValue); String apnValue=
+			  value.get("Name").get(0);
+			 
 
 			String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
 			
@@ -189,6 +188,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			
 			//Step2: Navigating to Home and In pool Tab 
 			objWorkItemHomePage.searchModule(HOME);
+			
 			objWorkItemHomePage.Click(objWorkItemHomePage.inPoolTab);
 			
 			//fetching the work items in pool
@@ -206,7 +206,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 				workItem1InPool = valueWIDVInpool.get("Name").get(0);
 			}
 			
-			String queryWINotDVInPool = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name!='Disabled Veterans' and (Work_Pool__r.name='RP Admin' or Work_Pool__r.name='RP Lost in Routing') and Status__c='In Pool'";
+			String queryWINotDVInPool = "SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name!='Disabled Veterans' and (Work_Pool__r.name='RP Admin' or Work_Pool__r.name='RP Lost in Routing') and Status__c='In Pool' and Assigned_To__r.name=NULL ";
 			HashMap<String, ArrayList<String>> valueWINotDVInPool = salesforceAPI.select(queryWINotDVInPool);			
 			if(valueWINotDVInPool == null)
 			{
@@ -252,8 +252,8 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			}
 			
 			//Step3: Selecting the work Items
-			objWorkItemHomePage.selectWorkItemOnHomePage(workItem1InPool);
-			objWorkItemHomePage.selectWorkItemOnHomePage(workItem2InPool);
+			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem1InPool);
+			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2InPool);
 			
 			//Step4 :Click On Assignee Button
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeAssignee));
@@ -266,11 +266,12 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
 			objWorkItemHomePage.searchModule(HOME);
 			driver.navigate().refresh();
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.lnkTABInProgress);					
 			objApasGenericPage.openTab("Staff - In Pool");
 			
 			//Step5: Selecting the work Items
-			objWorkItemHomePage.selectWorkItemOnHomePage(workItem1InPool);
-			objWorkItemHomePage.selectWorkItemOnHomePage(workItem2InPool);
+			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem1InPool);
+			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2InPool);
 			
 			//Step6:Click On Assignee Button
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeAssignee));
@@ -285,12 +286,13 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			//Step8: Navigate to Staff in progress tab
 			objWorkItemHomePage.searchModule(HOME);
 			driver.navigate().refresh();
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.lnkTABInProgress);	
 			objApasGenericPage.openTab("Staff - In Progress");
 			
 			
 			//Step9: Selecting the work Items
-			objWorkItemHomePage.selectWorkItemOnHomePage(workItem1InProgress);
-			objWorkItemHomePage.selectWorkItemOnHomePage(workItem2InProgress);
+			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem1InProgress);
+			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2InProgress);
 			
 			//Step10: Click on Assignee button
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeAssignee));
@@ -353,10 +355,10 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			 workItem1 = wiValue.get("Name").get(0);
 			 workItem2 = wiValue.get("Name").get(1);
 			}
-		            
+
 			// Step10: Selecting the work items
-			objWorkItemHomePage.selectWorkItemOnHomePage(workItem1);
-			objWorkItemHomePage.selectWorkItemOnHomePage(workItem2);
+			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem1);
+			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2);
 			
 			// Step11: Clicking on change workpool button to change the workpool and save 
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeWorkPool));
@@ -393,8 +395,8 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 	        objWorkItemHomePage.searchModule(HOME);
 			objApasGenericPage.openTab("Staff - In Pool");
 			
-	        objWorkItemHomePage.selectWorkItemOnHomePage(workItem1);
-			objWorkItemHomePage.selectWorkItemOnHomePage(workItem2);
+	        objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem1);
+			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2);
 			
 			// Step6: Clicking on change assignee button to change the assignee and save 
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeAssignee));
@@ -448,7 +450,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			
 			// Step3: Navigating to staff In Progress Tab
 			objApasGenericPage.openTab("Staff - In Progress");
-			
+		
 			//fetching work items that are of same work pool and are in Staff in progress status
 			String query="SELECT Name FROM Work_Item__c WHERE Work_Pool__r.name='Disabled Veterans' and Status__c='In Progress' and Assigned_To__r.name!='rp appraiserAUT' limit 2";
 			HashMap<String, ArrayList<String>> wiValue = salesforceAPI.select(query);
@@ -482,8 +484,8 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 		
 		 	        
 	        // Step5: Selecting the work items
-		    objWorkItemHomePage.selectWorkItemOnHomePage(workItem1);
-			objWorkItemHomePage.selectWorkItemOnHomePage(workItem2);
+		    objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem1);
+			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2);
 			
 			// Step6: Clicking on change assignee button to change the assignee and save 
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeAssignee));
@@ -519,8 +521,8 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			objApasGenericPage.openTab("Staff - In Progress");
 			
 			// Step10: Selecting the work items
-			objWorkItemHomePage.selectWorkItemOnHomePage(workItem1);
-			objWorkItemHomePage.selectWorkItemOnHomePage(workItem2);
+			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem1);
+			objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2);
 			
 			// Step11: Clicking on change workpool button to change the workpool and save 
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeWorkPool));
