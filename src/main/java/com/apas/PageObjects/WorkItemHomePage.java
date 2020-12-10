@@ -389,7 +389,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 		        	btnNext = driver.findElementByXPath("//lightning-button/button[text()='Next']");
 		        	javascriptClick(btnNext);
 		        	Thread.sleep(20000);
-		        	actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "']");
+		        	actualWINames = driver.findElementsByXPath("//table//tr[contains(.,'" + WIName + "')]");
 		        	if(!actualWINames.isEmpty()) {		        				    			
 		    			break;		  
 		        	}
@@ -570,4 +570,9 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	 		return poolName;
 		}
 
+	 public boolean searchWIInGrid(String workItem) throws IOException{
+	        WebElement webElement = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]"));
+	        scrollToElement(webElement);
+	        return waitForElementToBeVisible(90,webElement);         
+	    }
 }
