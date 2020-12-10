@@ -218,19 +218,6 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Work Pool']/..//input")
 	public WebElement WorkPool;
 
-	public String neighborhoodCodeEditBox="Neighborhood Code";
-	public String neighborhoodDescriptionEditBox="Neighborhood Description";
-	public String primaryAppraiserDropDown="Primary Appraiser";
-	public String districtDropDown="District";
-	public String territoryNameEditBox="Territory Name";
-	public String primaryAuditorDropDown="Primary Auditor";
-	public String workItemConfigurationDropDown= "Work Item Configuration";
-	public String workPoolDropDown= "Work Pool";
-	public String districtDescriptionEditBox="District Description";
-	public String territoryDescriptionEditBox="Territory Description";
-	public String neighborhoodDropDown= "Neighborhood";
-	public String territoryDropDown= "Territory";
-
     public String SaveButton="Save";
     public String valueTextBox = "Value";
 
@@ -525,64 +512,5 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 			Click(webElementCheckBox);			
 	    }
 
-	/**
-	 * This method will Create Neighborhood Reference Record
-	 *
-	 * @param neighborhoodCode : Neighborhood Code
-	 * @param neighborhoodDescription : Neighborhood Description
-	 * @param primaryAppraiser : Primary Appraiser
-	 * @param district : District
-	 * @param districtDescription : District Description
-	 * @throws Exception
-	 **/
-	public String createNeighborhoodReferenceRecord(String neighborhoodCode, String neighborhoodDescription, String primaryAppraiser, String district, String districtDescription) throws Exception{
-		Click(getButtonWithText(objApasGenericPage.NewButton));
-		enter(neighborhoodCodeEditBox,neighborhoodCode);
-		enter(neighborhoodDescriptionEditBox,neighborhoodDescription);
-		objApasGenericPage.searchAndSelectOptionFromDropDown(primaryAppraiserDropDown,primaryAppraiser);
-		objApasGenericPage.selectOptionFromDropDown(districtDropDown,district);
-		enter(districtDescriptionEditBox,districtDescription);
-		String successMessage = objApasGenericPage.saveRecord();
-		return successMessage;
-	}
 
-	/**
-	 * This method will Create Territory Record
-	 *
-	 * @param territoryName : Territory Name
-	 * @param territoryDescription : Territory Description
-	 * @param primaryAuditor : Primary Auditor
-	 * @throws Exception
-	 **/
-	public String createTerritoryRecord(String territoryName, String territoryDescription, String primaryAuditor) throws Exception{
-		Click(getButtonWithText(objApasGenericPage.NewButton));
-		enter(territoryNameEditBox,territoryName);
-		enter(territoryDescriptionEditBox,territoryDescription);
-		objApasGenericPage.searchAndSelectOptionFromDropDown(primaryAuditorDropDown,primaryAuditor);
-		String successMessage = objApasGenericPage.saveRecord();
-		return successMessage;
-	}
-
-	/**
-	 * This method will Create Routing Assignment Record
-	 *
-	 * @param workItemConfiguration : WorkItem Configuration
-	 * @param workPool : Work Pool
-	 * @param territoryORneighborhood : User will enter Territory or Neighborhood based on Roll Code
-	 * @param BPPRollCode : True Roll Code is BPP else False if Roll Code is RP
-	 * @throws Exception
-	 **/
-	public String createRoutingAssignmentRecord(String workItemConfiguration, String workPool, boolean BPPRollCode, String territoryORneighborhood) throws Exception{
-		Click(getButtonWithText(objApasGenericPage.NewButton));
-		objApasGenericPage.searchAndSelectOptionFromDropDown(workItemConfigurationDropDown,workItemConfiguration);
-		objApasGenericPage.searchAndSelectOptionFromDropDown(workPoolDropDown,workPool);
-		if(BPPRollCode) {
-			objApasGenericPage.searchAndSelectOptionFromDropDown(territoryDropDown,territoryORneighborhood);
-		}
-		else
-			objApasGenericPage.searchAndSelectOptionFromDropDown(neighborhoodDropDown,territoryORneighborhood);
-
-		String successMessage = objApasGenericPage.saveRecord();
-		return successMessage;
-	}
 }

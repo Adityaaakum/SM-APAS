@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WorkItems_RoutingSetup extends TestBase {
+public class WorkItems_RoutingSetupTest extends TestBase {
     RemoteWebDriver driver;
     WorkItemHomePage objWorkItemHomePage;
     WorkItemsRoutingSetupPage objWorkItemsRoutingSetupPage;
