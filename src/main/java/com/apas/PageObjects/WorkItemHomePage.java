@@ -506,9 +506,9 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	 *
 	 * @param workItem :created workItem
 	 **/
-	 public void selectWorkItemOnHomePage(String workItem) throws Exception{
+	 public void selectWorkItemOnHomePage(String workItem) throws IOException{
 			WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
-			scrollToElement(webElementCheckBox);			
+			scrollToElement(webElementCheckBox);
 			Click(webElementCheckBox);			
 	    }
 	 
