@@ -183,6 +183,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath ="//div[@class='windowViewMode-maximized active lafPageHost']//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
 	public WebElement vaRollYear;
 
+	String submittedForApprovalTimeline = "Submitted for Approval";
+
 	@FindBy(xpath="//span[text()='Submitted for Approval']")
 	public WebElement submittedforApprovalTimeline;
 	

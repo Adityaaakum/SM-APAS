@@ -1,5 +1,6 @@
 package com.apas.Tests.BuildingPermit;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -699,6 +700,8 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage.globalSearchRecords("T1" + currentTimestamp);
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name", "Building Permit Information"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation in 'Building Permit Information' section for the file name update once the same record is processed in the new file");
 		objBuildingPermitPage.searchModule(modules.EFILE_IMPORT_LOGS);
+		objBuildingPermitPage.displayRecords("All");
+		objBuildingPermitPage.searchRecords(secondBuildingPermitFileNameWithoutExtension);
 		objEFileImportLogsPage.openImportLog("Building Permit :Atherton Building Permits :Adhoc");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation on Import Logs Screen after reprocessing the same record in new file");
 
@@ -715,12 +718,20 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		//Pre-requisite: Renaming the building permits(From File to be imported) already in the system to make the record as a fresh record
 		//Creating two files for the same records as the same record processed needs to be processed two times
 		String buildingPermitNumber = "ABD-2025-123022";
-		String firstBuildingPermitFileNameWithoutExtension = "SingleValidRecord";
-		String secondBuildingPermitFileNameWithoutExtension = "SingleValidRecordNewName";
-		String firstBuildingPermitFileName = firstBuildingPermitFileNameWithoutExtension + ".xlsx";
-		String secondBuildingPermitFileName  = secondBuildingPermitFileNameWithoutExtension + ".xlsx";
-		String firstBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + firstBuildingPermitFileName;
-		String secondBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + secondBuildingPermitFileName;
+		String firstBuildingPermitFileName = "SingleValidRecord.xlsx";
+		String secondBuildingPermitFileName  = "SingleValidRecordNewName.xlsx";
+		String firstBuildingPermitFilePath = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + firstBuildingPermitFileName;
+		String secondBuildingPermitFilePath = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + secondBuildingPermitFileName;
+
+		File firstBuildingPermitFile = objBuildingPermitPage.createTempFile(firstBuildingPermitFilePath);
+		File secondBuildingPermitFile = objBuildingPermitPage.createTempFile(secondBuildingPermitFilePath);
+
+		firstBuildingPermitFileName = firstBuildingPermitFile.getName();
+		secondBuildingPermitFileName  = secondBuildingPermitFile.getName();
+		firstBuildingPermitFilePath = firstBuildingPermitFile.getAbsolutePath();
+		secondBuildingPermitFilePath = secondBuildingPermitFile.getAbsolutePath();
+		String firstBuildingPermitFileNameWithoutExtension = firstBuildingPermitFile.getName().split("\\.")[0];
+		String secondBuildingPermitFileNameWithoutExtension = secondBuildingPermitFile.getName().split("\\.")[0];
 
 		//step1:Reverting the Approved Import logs if any in the system
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Building Permit' and File_Source__C = 'San Mateo Building permits' and Import_Period__C='Adhoc' and Status__c in ('Approved','Imported') ";
@@ -736,7 +747,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step3: Uploading the Atherton Building Permit file having error and success records through Efile Intake Import
-		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "San Mateo Building permits", firstBuildingPermitFileName, firstBuildingPermitFile);
+		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "San Mateo Building permits", firstBuildingPermitFileName, firstBuildingPermitFilePath);
 
 		//Step4: Waiting for Status of the imported file to be converted to "Imported"
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -754,6 +765,8 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name", "Building Permit Information"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation in 'Building Permit Information' section on Building Permit Screen");
 		objBuildingPermitPage.searchModule(modules.EFILE_IMPORT_LOGS);
+		objBuildingPermitPage.displayRecords("All");
+		objBuildingPermitPage.searchRecords(firstBuildingPermitFileNameWithoutExtension);
 		objEFileImportLogsPage.openImportLog("Building Permit :San Mateo Building permits :Adhoc");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation on Import Logs Screen");
 
@@ -761,7 +774,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage.searchModule(modules.EFILE_INTAKE);
 
 		//Step8: Re-Uploading the San Meteo Building Permit file
-		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "San Mateo Building permits", secondBuildingPermitFileName, secondBuildingPermitFile);
+		objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "San Mateo Building permits", secondBuildingPermitFileName, secondBuildingPermitFilePath);
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
 		objPage.waitForElementTextToBe(objEfileImportPage.statusImportedFile, "Imported", 120);
 
@@ -770,6 +783,8 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name", "Building Permit Information"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation in 'Building Permit Information' section for the file name update once the same record is processed in the new file");
 		objBuildingPermitPage.searchModule(modules.EFILE_IMPORT_LOGS);
+		objBuildingPermitPage.displayRecords("All");
+		objBuildingPermitPage.searchRecords(secondBuildingPermitFileNameWithoutExtension);
 		objEFileImportLogsPage.openImportLog("Building Permit :San Mateo Building permits :Adhoc");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation on Import Logs Screen after reprocessing the same record in new file");
 
