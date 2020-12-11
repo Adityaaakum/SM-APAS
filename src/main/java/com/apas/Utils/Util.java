@@ -142,6 +142,32 @@ public class Util {
 	}
 
 	/**
+	 * This will generate the CSV file from hash map
+	 **/
+	public void writeHashMapToCsv(HashMap<String, String> hashMap, String filePath) {
+		try {
+			File file = new File(filePath);
+			if (file.exists()) file.delete();
+			file.createNewFile();
+
+			FileWriter fileWriter = new FileWriter(filePath);
+			StringBuilder builder = new StringBuilder();
+			for (Map.Entry<String, String> kvp : hashMap.entrySet()) {
+				builder.append(kvp.getKey());
+				builder.append(",");
+				builder.append(kvp.getValue());
+				builder.append("\r\n");
+			}
+
+			fileWriter.write(builder.toString().trim());
+			fileWriter.close();
+		}catch (Exception exception){
+			exception.printStackTrace();
+		}
+
+	}
+
+	/**
 	 * @author Sikander Bhambhu 
 	 * 
 	 * @Description: This method takes an expected format for date and return
@@ -320,9 +346,9 @@ public class Util {
 
 	/***
 	 * function: this method converts current ISt date to specified timezone date
-	 * @param string= fromZone
-	 * @param string2= tozone
-	 * @param string3= dateformat
+	 * @param fromZone
+	 * @param toZone
+	 * @param dateFormat
 	 * @return
 	 */
 	

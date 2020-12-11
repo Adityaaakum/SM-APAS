@@ -212,21 +212,18 @@ public class WorkItemHomePage extends ApasGenericPage {
     @FindBy (xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Child Work Items']")
     public WebElement ChildWorkItemsTab;
    
-    @FindBy (xpath="//*[@data-key='error']//..//button[@title='Close']")
+    @FindBy (xpath="//*[@data-key='error']//..//button[@title='Close'] | //button[@title='Close error dialog']")
     public WebElement CloseErrorMsg;
     
     @FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
-    
+
 	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Assigned To']/..//input")
 	public WebElement AssignedTo;
-	
+
 	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Work Pool']/..//input")
 	public WebElement WorkPool;
-	
-	public String SaveButton="Save";
-    public String valueTextBox = "Value";
-    
+
     @FindBy(xpath = "//div[contains(@class,'slds-media__body')]//slot/lightning-formatted-text[contains(text(),'WI-')]")
 	public WebElement getWorkItem;
     
@@ -249,8 +246,11 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String wpLevel2Supervisor = "Level2 Supervisor";
 	public String wpLevel2ValueCriteriaSupervisor = "Level2 Value Criteria";
 	public String wpWorkPoolName = "Work Pool Name";
-	
-	
+
+    public String SaveButton="Save";
+    public String valueTextBox = "Value";
+
+
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
 	 *
@@ -588,6 +588,7 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 			Thread.sleep(1000);
 		}
 	 
+
 	 public boolean searchWIInGrid(String workItem) throws IOException{
 	        WebElement webElement = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]"));
 	        scrollToElement(webElement);
