@@ -410,11 +410,8 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		apasGenericObj.searchModule(WORK_POOL);
 		ReportLogger.INFO("Create a New Work Pool record");
 		objWorkItemHomePage.createWorkPool(poolName,rpBusinessAdminName,bppBusinessAdminName,"500");
-		//objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.SaveButton));
 		
 		// Step3: Validate the success message after creation of work pool and Value Criteria field
-		//softAssert.assertContains(apasGenericObj.getAlertMessage(),"Work Pool \"" + poolName + "\" was created.","SMAB-T1935 : Validate user is able to create a Work Pool" );
-		//Thread.sleep(1000);
 		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor),"500.00",
 				"SMAB-T1935 : Validate user is able to update Level2 Value Criteria in the Work Pool");
 		
@@ -426,13 +423,10 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record");
 		apasGenericObj.searchAndSelectFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, dataAdminName);
 		objPage.enter(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor, "400");
-		//objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.SaveButton));
 		String successMessage = apasGenericObj.saveRecord();
         
 		// Step5 Validate the success message after saving the work pool and other fields
-		//Thread.sleep(1000);
-		softAssert.assertEquals(successMessage,"Work Pool \"" + poolName + "\" was saved.","SMAB-T1935 : Validate user is able to edit and save the Work Pool" );
-		//Thread.sleep(1000);
+		softAssert.assertContains(successMessage,"Work Pool \"" + poolName + "\" was saved.","SMAB-T1935 : Validate user is able to edit and save the Work Pool" );
 		objWorkItemHomePage.waitForElementToBeVisible(6, objPage.getButtonWithText(objWorkItemHomePage.editButton));
 		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2Supervisor),dataAdminName,
 				"SMAB-T1935 : Validate user is able to update value for Level2 Supervisor in the Work Pool");
@@ -440,8 +434,8 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 				"SMAB-T1936: Validate user is able to update value for Level2 Value Criteria in the Work Pool");
 		
 		// Step6: Edit the work pool record again with same user in Approver & Level2 Supervisor fields
-		Thread.sleep(1000);
 		ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record to keep it same as the Supervisor");
+		Thread.sleep(1000);
 		objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
 		objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
 		apasGenericObj.searchAndSelectFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, rpBusinessAdminName);

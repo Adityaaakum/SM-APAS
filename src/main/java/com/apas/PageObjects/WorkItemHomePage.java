@@ -546,15 +546,23 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	 
 	 /**
 		 * This method will create a WorkPool
-		 *
-		 * @param workItem :created workItem
+		 * @param poolName :Work Pool Name
+		 * @param supervisorName :Supervisor Name
 	 **/
 	 
-	 	public String createWorkPool(String poolName, String supervisorName) throws Exception {
+	 public String createWorkPool(String poolName, String supervisorName) throws Exception {
 			return createWorkPool(poolName, supervisorName, "", "");
 		}
-	 	
-	 	public String createWorkPool(String poolName, String supervisorName, String level2SupervisorName, String level2ValueCriteria) throws Exception {
+	 
+	 /**
+		 * This method will create a WorkPool
+		 * @param poolName :Work Pool Name
+		 * @param supervisorName :Supervisor Name
+		 * @param level2SupervisorName :Level 2 Supervisor Name
+		 * @param level2ValueCriteria :Level 2 Value Criteria
+	 **/
+	 
+	 public String createWorkPool(String poolName, String supervisorName, String level2SupervisorName, String level2ValueCriteria) throws Exception {
 	 		objPageObj.Click(objApasGenericPage.newButton);
 	 		objPageObj.enter(wpWorkPoolName, poolName);
 	 		objApasGenericPage.searchAndSelectFromDropDown(wpSupervisor, supervisorName);
@@ -562,9 +570,7 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	 		if(level2ValueCriteria != null)objPageObj.enter(wpLevel2ValueCriteriaSupervisor, level2ValueCriteria);
 	 		String successMessage = objApasGenericPage.saveRecord();
 	 		Thread.sleep(1000);
-	 		//objPageObj.Click(objPageObj.getButtonWithText(SaveButton));
-	 		Thread.sleep(1000);
-	 		softAssert.assertEquals(successMessage,"Work Pool \"" + poolName + "\" was created.","SMAB-T1935 : Validate user is able to create a Work Pool" );
+	 		softAssert.assertContains(successMessage,"Work Pool \"" + poolName + "\" was created.","SMAB-T1935 : Validate user is able to create a Work Pool" );
 	 		Thread.sleep(1000);
 	 		ReportLogger.INFO("Work Pool record is created :: "+poolName);
 	 		return poolName;
