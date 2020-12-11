@@ -22,6 +22,8 @@ public class WorkItems_RoutingSetupTest extends TestBase {
     RemoteWebDriver driver;
     WorkItemHomePage objWorkItemHomePage;
     WorkItemsRoutingSetupPage objWorkItemsRoutingSetupPage;
+    WorkItemsNeighborhoodsPage objWorkItemsNeighborhoodsPage;
+    WorkItemsTerritoriesPage objWorkItemsTerritoriesPage;
     Util objUtil;
     SoftAssertion softAssert = new SoftAssertion();
     SalesforceAPI salesforceAPI = new SalesforceAPI();
@@ -36,6 +38,8 @@ public class WorkItems_RoutingSetupTest extends TestBase {
         objUtil = new Util();
         objWorkItemHomePage = new WorkItemHomePage(driver);
         objWorkItemsRoutingSetupPage = new WorkItemsRoutingSetupPage(driver);
+        objWorkItemsNeighborhoodsPage = new WorkItemsNeighborhoodsPage(driver);
+        objWorkItemsTerritoriesPage = new WorkItemsTerritoriesPage(driver);
     }
 
     @Test(description = "SMAB-T1811,SMAB-T1812,SMAB-T1814,SMAB-T1815: Verify user is able to create,edit Neighborhood reference record with mandatory fields & not able to create duplicate record", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
@@ -61,21 +65,21 @@ public class WorkItems_RoutingSetupTest extends TestBase {
 
         //Step4 : Verify Error message for mandatory fields
         String expectedErrorMessage = "Complete this field.";
-        String actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsRoutingSetupPage.neighborhoodCodeEditBox);
+        String actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsNeighborhoodsPage.neighborhoodCodeEditBox);
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1811: Verify Neighborhood Code is a mandatory field");
 
-        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsRoutingSetupPage.neighborhoodDescriptionEditBox);
+        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsNeighborhoodsPage.neighborhoodDescriptionEditBox);
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1811: Verify Neighborhood Description is a mandatory field");
 
-        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsRoutingSetupPage.primaryAppraiserDropDown);
+        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsNeighborhoodsPage.primaryAppraiserDropDown);
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1811: Verify Primary Appraiser is a mandatory field");
 
-        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsRoutingSetupPage.districtDropDown);
+        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsNeighborhoodsPage.districtDropDown);
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1811: Verify District is a mandatory field");
 
         //Step5: Create new Neighborhood reference record
         objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-        objWorkItemsRoutingSetupPage.enterNeighborhoodReferenceRecordDetails(hashMapNeighborhoodData);
+        objWorkItemsNeighborhoodsPage.enterNeighborhoodReferenceRecordDetails(hashMapNeighborhoodData);
         String actualSuccessMessage = objWorkItemHomePage.saveRecord();
         String expectedSuccessMessage="Neighborhood \""+hashMapNeighborhoodData.get("Neighborhood Code") +"\" was created.";
         softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-1812: Verify user is able to create new Neighborhood Reference Record successfully");
@@ -84,7 +88,7 @@ public class WorkItems_RoutingSetupTest extends TestBase {
         Map<String, String> hashMapDuplicateNeighborhoodData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateDuplicateNeighborhood");
 
         objWorkItemHomePage.editRecord();
-        objWorkItemHomePage.enter(objWorkItemsRoutingSetupPage.neighborhoodCodeEditBox,hashMapDuplicateNeighborhoodData.get("Neighborhood Code"));
+        objWorkItemHomePage.enter(objWorkItemsNeighborhoodsPage.neighborhoodCodeEditBox,hashMapDuplicateNeighborhoodData.get("Neighborhood Code"));
         actualSuccessMessage = objWorkItemHomePage.saveRecord();
         expectedSuccessMessage="Neighborhood \""+hashMapDuplicateNeighborhoodData.get("Neighborhood Code") +"\" was saved.";
         softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-1814: Verify user is able to edit Neighborhood Reference Record successfully");
@@ -95,7 +99,7 @@ public class WorkItems_RoutingSetupTest extends TestBase {
 
         //Step8: Create duplicate Neighborhood reference record
         objWorkItemHomePage.createRecord();
-        objWorkItemsRoutingSetupPage.enterNeighborhoodReferenceRecordDetails(hashMapDuplicateNeighborhoodData);
+        objWorkItemsNeighborhoodsPage.enterNeighborhoodReferenceRecordDetails(hashMapDuplicateNeighborhoodData);
         actualErrorMessage = objWorkItemHomePage.saveRecordAndGetError();
         expectedErrorMessage = "You can't save this record because a duplicate record already exists. To save, use different information.";
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1815: Verify user is not able to create duplicate Neighborhood Reference Record");
@@ -129,15 +133,15 @@ public class WorkItems_RoutingSetupTest extends TestBase {
 
         //Step4 : Verify Error message for mandatory fields
         String expectedErrorMessage = "Complete this field.";
-        String actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsRoutingSetupPage.territoryNameEditBox);
+        String actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsTerritoriesPage.territoryNameEditBox);
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1816: Verify Territory Name is a mandatory field");
 
-        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsRoutingSetupPage.primaryAuditorDropDown);
+        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsTerritoriesPage.primaryAuditorDropDown);
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1816: Verify Primary Auditor is a mandatory field");
 
         //Step5: Create new Territory record
         objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-        objWorkItemsRoutingSetupPage.enterTerritoryRecordDetails(hashMapTerritoryData);
+        objWorkItemsTerritoriesPage.enterTerritoryRecordDetails(hashMapTerritoryData);
         String actualSuccessMessage = objWorkItemHomePage.saveRecord();
 
         String expectedSuccessMessage="Territory \""+hashMapTerritoryData.get("Territory Name") +"\" was created.";
@@ -147,7 +151,7 @@ public class WorkItems_RoutingSetupTest extends TestBase {
         Map<String, String> hashMapDuplicateTerritoryData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateDuplicateTerritory");
 
         objWorkItemHomePage.editRecord();
-        objWorkItemHomePage.enter(objWorkItemsRoutingSetupPage.territoryNameEditBox,hashMapDuplicateTerritoryData.get("Territory Name"));
+        objWorkItemHomePage.enter(objWorkItemsTerritoriesPage.territoryNameEditBox,hashMapDuplicateTerritoryData.get("Territory Name"));
         actualSuccessMessage = objWorkItemHomePage.saveRecord();
         expectedSuccessMessage="Territory \""+hashMapDuplicateTerritoryData.get("Territory Name") +"\" was saved.";
         softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-1821: Verify user is able to edit Territory Record successfully");
@@ -158,7 +162,7 @@ public class WorkItems_RoutingSetupTest extends TestBase {
 
         //Step8: Create duplicate Territory record
         objWorkItemHomePage.createRecord();
-        objWorkItemsRoutingSetupPage.enterTerritoryRecordDetails(hashMapDuplicateTerritoryData);
+        objWorkItemsTerritoriesPage.enterTerritoryRecordDetails(hashMapDuplicateTerritoryData);
         actualErrorMessage = objWorkItemHomePage.saveRecordAndGetError();
 
         expectedErrorMessage = "You can't save this record because a duplicate record already exists. To save, use different information.";
