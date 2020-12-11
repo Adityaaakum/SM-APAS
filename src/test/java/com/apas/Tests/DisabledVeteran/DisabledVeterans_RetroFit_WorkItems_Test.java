@@ -212,8 +212,8 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		
 		//Step6: Validate the field values after the Work Item is Submitted for Approval
 		ReportLogger.INFO("User is able to access the Work Item details after submitting it for approval");
-		String workPoolName = objApasGenericPage.getFieldValueFromAPAS("Work Pool", "Information");
-		String supervisorName = objApasGenericPage.getFieldValueFromAPAS("Approver", "Approval & Supervisor Details");
+		String workPoolName = objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiWorkPoolDetailsPage, "Information");
+		String supervisorName = objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiApproverDetailsPage, "Approval & Supervisor Details");
 		
 		objPage.clickHyperlinkOnFieldValue("Approver");
 		String supervisorId = objApasGenericPage.getCurrentRecordId(driver,supervisorName);
@@ -235,9 +235,8 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		
 		//Step7: Validate user who has submitted the Work Item for Approval is not able to Complete it
 		ReportLogger.INFO("User is not able to approve the WI :: " + reminderWINumber);
-		objPage.javascriptClick(workItemPageObj.completedTimeline);
-		objPage.javascriptClick(workItemPageObj.markStatusCompleteBtn);
-		softAssert.assertContains(objApasGenericPage.getAlertMessage(),"Status: You cannot change status from Submitted for Approval to Completed","SMAB-T1881 : Validate that after Work Item is submitted for approval, user is not able to mark it 'Complete' manually");
+		workItemPageObj.clickOnTimelineAndMarkComplete(workItemPageObj.completedTimeline);
+		softAssert.assertEquals(objApasGenericPage.getAlertMessage(),"Status: You cannot change status from Submitted for Approval to Completed","SMAB-T1881 : Validate that after Work Item is submitted for approval, user is not able to mark it 'Complete' manually");
 		objPage.Click(workItemPageObj.CloseErrorMsg);
 		
 		ReportLogger.INFO("Validate the status of the Work Item after closing the error message");
@@ -311,11 +310,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		 
 		//Step4: Open the WI record and validate the details in the Detail tab
 		ReportLogger.INFO("Opening the work item : " + reminderSubmittedWINumber);
-		String xpath = "//a[@title='" + reminderSubmittedWINumber + "']";
-		objPage.waitUntilElementIsPresent(xpath, 15);
-		objPage.javascriptClick(driver.findElement(By.xpath(xpath)));
-		Thread.sleep(3000);
-		
+		workItemPageObj.openWorkItem(reminderSubmittedWINumber);
 		workItemPageObj.openTab("Details");
 		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiActionDetailsPage, "Information"),"Update and Validate","SMAB-T1867: Validate that Supervisor of a WI is able to view value for 'Action' field ");
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.relatedActionLink),"Update and Validate","SMAB-T1867: Validate that Supervisor of a WI is able to view value for 'Related Action' field");

@@ -1,6 +1,5 @@
 package com.apas.PageObjects;
 
-import com.apas.Assertions.SoftAssertion;
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import org.openqa.selenium.By;
@@ -30,7 +29,6 @@ public class WorkItemHomePage extends ApasGenericPage {
 	ApasGenericPage objApasGenericPage;
 	Page objPageObj;
 	SalesforceAPI salesforceAPI ;
-	SoftAssertion softAssert = new SoftAssertion();
 
 	public WorkItemHomePage(RemoteWebDriver driver) {
 		super(driver);
@@ -188,11 +186,14 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath="//span[text()='Submitted for Approval']")
 	public WebElement submittedforApprovalTimeline;
 	
-	@FindBy(xpath="//span[text()='Completed']")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Completed']")
 	public WebElement completedTimeline;
 	
-	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//button//span[text()='Mark as Current Status']")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button//span[text()='Mark as Current Status']")
 	public WebElement markStatusCompleteBtn;
+	
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button//span[text()='Mark Status as Complete']")
+	public WebElement markStatusAsCompleteBtn;
 	
 	@FindBy(xpath="//button[@title='Mark Complete']") 
 	public WebElement btnMarkComplete;
@@ -223,10 +224,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Work Pool']/..//input")
 	public WebElement WorkPool;
 	
-	@FindBy(xpath = "//span[text() = 'Value']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]")
-	public WebElement editValueonDetailPage;
-	
-    public String SaveButton="Save";
+	public String SaveButton="Save";
     public String valueTextBox = "Value";
     
     @FindBy(xpath = "//div[contains(@class,'slds-media__body')]//slot/lightning-formatted-text[contains(text(),'WI-')]")
@@ -563,19 +561,33 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	 **/
 	 
 	 public String createWorkPool(String poolName, String supervisorName, String level2SupervisorName, String level2ValueCriteria) throws Exception {
-	 		objPageObj.Click(objApasGenericPage.newButton);
+		 	ReportLogger.INFO("Create a Work Pool record :: "+poolName);	
+		 	objPageObj.Click(objApasGenericPage.newButton);
 	 		objPageObj.enter(wpWorkPoolName, poolName);
 	 		objApasGenericPage.searchAndSelectFromDropDown(wpSupervisor, supervisorName);
 	 		if(level2SupervisorName != null)objApasGenericPage.searchAndSelectFromDropDown(wpLevel2Supervisor, level2SupervisorName);
 	 		if(level2ValueCriteria != null)objPageObj.enter(wpLevel2ValueCriteriaSupervisor, level2ValueCriteria);
-	 		String successMessage = objApasGenericPage.saveRecord();
-	 		Thread.sleep(1000);
-	 		softAssert.assertContains(successMessage,"Work Pool \"" + poolName + "\" was created.","SMAB-T1935 : Validate user is able to create a Work Pool" );
-	 		Thread.sleep(1000);
-	 		ReportLogger.INFO("Work Pool record is created :: "+poolName);
-	 		return poolName;
+	 		return objApasGenericPage.saveRecord();
 		}
-
+	 
+	 /**
+		 * This method will click on Time line option and and then mark it complete
+		 * @param timelineTab :Time Line Option
+	 **/
+	 
+	 public void clickOnTimelineAndMarkComplete(WebElement timelineTab) throws Exception {
+		 	ReportLogger.INFO("Click on the " + objPageObj.getElementText(timelineTab) + " option in Timeline and mark it complete");
+		 	objPageObj.javascriptClick(timelineTab);
+		 	Thread.sleep(1000);
+		 	if (objPageObj.getElementText(timelineTab).equals("In Progress")) {
+		 		objPageObj.javascriptClick(markStatusAsCompleteBtn);
+		 	}
+		 	else{
+		 		objPageObj.javascriptClick(markStatusCompleteBtn);
+		 	}
+			Thread.sleep(1000);
+		}
+	 
 	 public boolean searchWIInGrid(String workItem) throws IOException{
 	        WebElement webElement = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]"));
 	        scrollToElement(webElement);

@@ -97,10 +97,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		driver.navigate().refresh();
 		Thread.sleep(2000);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline, 10);
-		objPage.javascriptClick(objWorkItemHomePage.submittedforApprovalTimeline);
-		Thread.sleep(2000);
-		objPage.javascriptClick(objWorkItemHomePage.markStatusCompleteBtn);
-		Thread.sleep(2000);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedforApprovalTimeline);
 		softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
 		
 		// Step 7: Validate the Work Item details after the Work Item is submitted for approval
@@ -409,9 +406,12 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		// Step2: Opening the Work pool module and create a NEW one
 		apasGenericObj.searchModule(WORK_POOL);
 		ReportLogger.INFO("Create a New Work Pool record");
-		objWorkItemHomePage.createWorkPool(poolName,rpBusinessAdminName,bppBusinessAdminName,"500");
-		
+		String successMessage = objWorkItemHomePage.createWorkPool(poolName,rpBusinessAdminName,bppBusinessAdminName,"500");
+		Thread.sleep(1000); 
+		 				
 		// Step3: Validate the success message after creation of work pool and Value Criteria field
+		softAssert.assertEquals(successMessage,"success\nWork Pool \"" + poolName + "\" was created.\nClose","SMAB-T1935 : Validate success message on creation of the Work Pool" );
+ 		Thread.sleep(1000);
 		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor),"500.00",
 				"SMAB-T1935 : Validate user is able to update Level2 Value Criteria in the Work Pool");
 		
@@ -423,10 +423,10 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record");
 		apasGenericObj.searchAndSelectFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, dataAdminName);
 		objPage.enter(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor, "400");
-		String successMessage = apasGenericObj.saveRecord();
+		successMessage = apasGenericObj.saveRecord();
         
 		// Step5 Validate the success message after saving the work pool and other fields
-		softAssert.assertContains(successMessage,"Work Pool \"" + poolName + "\" was saved.","SMAB-T1935 : Validate user is able to edit and save the Work Pool" );
+		softAssert.assertEquals(successMessage,"success\nWork Pool \"" + poolName + "\" was saved.\nClose","SMAB-T1935 : Validate user is able to edit and save the Work Pool" );
 		objWorkItemHomePage.waitForElementToBeVisible(6, objPage.getButtonWithText(objWorkItemHomePage.editButton));
 		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2Supervisor),dataAdminName,
 				"SMAB-T1935 : Validate user is able to update value for Level2 Supervisor in the Work Pool");

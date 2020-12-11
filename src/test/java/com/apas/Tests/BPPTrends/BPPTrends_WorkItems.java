@@ -28,7 +28,6 @@ public class BPPTrends_WorkItems extends TestBase {
     BppTrendPage objBppTrendPage;
     WorkItemHomePage objWorkItemHomePage;
     EFileImportPage objEfileImportPage;
-    ApasGenericPage objApasGenericPage;
     SalesforceAPI objSalesforceAPI = new SalesforceAPI();
     SoftAssertion softAssert = new SoftAssertion();
 
@@ -40,7 +39,6 @@ public class BPPTrends_WorkItems extends TestBase {
         driver = null;
         setupTest();
         driver = BrowserDriver.getBrowserInstance();
-        objApasGenericPage = new ApasGenericPage(driver);
         objPage = new Page(driver);
         objEfileImportPage = new EFileImportPage(driver);
         objWorkItemHomePage = new WorkItemHomePage(driver);
@@ -1040,10 +1038,10 @@ public class BPPTrends_WorkItems extends TestBase {
         objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_EFILE);
 
         //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objApasGenericPage.login(loginUser);
+        objWorkItemHomePage.login(loginUser);
 
         //Stpe5: Open the Work Item Home Page
-        objApasGenericPage.searchModule(modules.HOME);
+        objWorkItemHomePage.searchModule(modules.HOME);
 
         //Step6: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -1052,18 +1050,15 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step7: Accepting the work item and open it
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
-        objApasGenericPage.searchModule(modules.WORK_ITEM);
-        objApasGenericPage.globalSearchRecords(importWorkItem);
+        objWorkItemHomePage.searchModule(modules.WORK_ITEM);
+        objWorkItemHomePage.globalSearchRecords(importWorkItem);
         
         //Step 8: User submits the Work Item for Approval 
      	ReportLogger.INFO("User submits the Work Item for Approval :: " + importWorkItem);
 		driver.navigate().refresh();
 		Thread.sleep(2000);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline, 10);
-		objPage.javascriptClick(objWorkItemHomePage.submittedforApprovalTimeline);
-		Thread.sleep(2000);
-		objPage.javascriptClick(objWorkItemHomePage.markStatusCompleteBtn);
-		Thread.sleep(2000);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedforApprovalTimeline);
 		softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
 		
 		//Step 9: Validate the Work Item details after the Work Item is submitted for approval
@@ -1072,13 +1067,13 @@ public class BPPTrends_WorkItems extends TestBase {
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 		
 		softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.wiStatusDetailsPage),"Completed","SMAB-T1838: Validate user is able to validate the value of 'Status' field");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage, "Information"),"BPP Trends","SMAB-T1838: Validate user is able to validate the value of 'Type' field");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(objWorkItemHomePage.wiActionDetailsPage, "Information"),"Import","SMAB-T1838: Validate user is able to validate the value of 'Action' field");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(objWorkItemHomePage.wiWorkPoolDetailsPage, "Information"),"BPP Admin","SMAB-T1838: Validate user is able to validate the value of 'Work Pool' field");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(objWorkItemHomePage.wiPriorityDetailsPage, "Information"),"None","SMAB-T1838: Validate user is able to validate the value of 'Priority' field");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(objWorkItemHomePage.wiReferenceDetailsPage, "Information"),"BOE Valuation Factors","SMAB-T1838: Validate user is able to validate the value of 'Reference' field");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage, "Information"),"BPP Trends","SMAB-T1838: Validate user is able to validate the value of 'Type' field");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiActionDetailsPage, "Information"),"Import","SMAB-T1838: Validate user is able to validate the value of 'Action' field");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiWorkPoolDetailsPage, "Information"),"BPP Admin","SMAB-T1838: Validate user is able to validate the value of 'Work Pool' field");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiPriorityDetailsPage, "Information"),"None","SMAB-T1838: Validate user is able to validate the value of 'Priority' field");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiReferenceDetailsPage, "Information"),"BOE Valuation Factors","SMAB-T1838: Validate user is able to validate the value of 'Reference' field");
 		
-        objApasGenericPage.logout();
+		objWorkItemHomePage.logout();
     }
     	 
 }
