@@ -199,7 +199,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.Click(objRPSLPage.saveButton);
 
 		//Step4: Validate the error message appeared for mandatory fields
-		String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the following fields\nRP Setting Name\nStatus\nRoll Year Settings\nDV Low Income Exemption Amount\nDV Basic Exemption Amount\nDV Low Income Household Limit";
+		String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the following fields\nRP Setting Name\nRoll Year Settings\nDV Low Income Exemption Amount\nDV Basic Exemption Amount\nDV Low Income Household Limit";
 		String expectedIndividualFieldMessage = "Complete this field.";
 		softAssert.assertEquals(objPage.getElementText(objApasgenericpage.pageError),expectedErrorMessageOnTop,"SMAB-T544: Validating mandatory fields missing error in manual entry pop up header.");
 		softAssert.assertEquals(objRPSLPage.getIndividualFieldErrorMessage("RP Setting Name"),expectedIndividualFieldMessage,"SMAB-T544: Validating mandatory fields missing error for 'RP Setting Name'");

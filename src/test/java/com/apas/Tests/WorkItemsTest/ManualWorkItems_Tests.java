@@ -10,10 +10,13 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.LoginPage;
+import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
@@ -24,20 +27,24 @@ import com.apas.config.users;
 
 public class ManualWorkItems_Tests extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
-
+	
 	ParcelsPage objParcelsPage;
 	WorkItemHomePage objWorkItemHomePage;
+	Page objPage;
 	Util objUtil = new Util();
 	SoftAssertion softAssert = new SoftAssertion();
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
+	ApasGenericPage apasGenericObj;
+
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
 		driver = null;
 		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
-
+		apasGenericObj = new ApasGenericPage(driver);
 		objParcelsPage = new ParcelsPage(driver);
+		objPage = new Page(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 	}
 	
@@ -46,7 +53,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T1994:verify that user is able to view 'Use Code' and 'Street' fields getting automatically populated in the work item record related to the linked Parcel", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T1994,SMAB-T1838:verify that user is able to view 'Use Code' and 'Street' fields getting automatically populated in the work item record related to the linked Parcel, Verify user is able to view Work Item details after submitting it for approval", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"regression","work_item_manual" })
 	public void WorkItems_VerifyLinkedParcelUseCodeStreetFields(String loginUser) throws Exception {
 		String puc;
@@ -73,7 +80,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		primarySitus = objWorkItemHomePage.getFieldValueFromAPAS("Primary Situs", "Parcel Information");
 
 		// Step 3: Creating Manual work item for the Parcel 
-		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		String WINumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		//Step 4:Clicking the  details tab for the work item newly created and fetching the use code and street fields values 
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -84,7 +91,33 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 				"SMAB-T1994: Validation that 'Use Code' fields getting automatically populated in the work item record related to the linked Parcel");
 		softAssert.assertTrue(primarySitus.contains(objWorkItemHomePage.getFieldValueFromAPAS("Street", "Reference Data Details")),
 				"SMAB-T1994: Validation that 'Street' fields getting automatically populated in the work item record related to the linked Parcel");
-
+		
+		// Step 6: User submits the Work Item for Approval 
+		ReportLogger.INFO("User submits the Work Item for Approval :: " + WINumber);
+		driver.navigate().refresh();
+		Thread.sleep(2000);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline, 10);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedforApprovalTimeline);
+		softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
+		
+		// Step 7: Validate the Work Item details after the Work Item is submitted for approval
+		ReportLogger.INFO("User validates the Work Item details after it is Submitted for Approval");
+		objWorkItemHomePage.openTab("Details");
+		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
+		
+		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS("Use Code", "Reference Data Details"),puc,
+				"SMAB-T1838: Validate user is able to validate the value of 'Use Code'' field");
+		softAssert.assertTrue(primarySitus.contains(apasGenericObj.getFieldValueFromAPAS("Street", "Reference Data Details")),
+				"SMAB-T1838: Validate user is able to validate the value of 'Street' field");
+		
+		softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.wiStatusDetailsPage),"Submitted for Approval","SMAB-T1838: Validate user is able to validate the value of 'Status' field");
+		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage, "Information"),"RP","SMAB-T1838: Validate user is able to validate the value of 'Type' field");
+		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wiActionDetailsPage, "Information"),"CPI Factor","SMAB-T1838: Validate user is able to validate the value of 'Action' field");
+		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wiWorkPoolDetailsPage, "Information"),"Disabled Veterans","SMAB-T1838: Validate user is able to validate the value of 'Work Pool' field");
+		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wiPriorityDetailsPage, "Information"),"Urgent","SMAB-T1838: Validate user is able to validate the value of 'Priority' field");
+		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wiReferenceDetailsPage, "Information"),"Test WI","SMAB-T1838: Validate user is able to validate the value of 'Reference' field");
+		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wiAPNDetailsPage, "Information"),apnValue,"SMAB-T1838: Validate user is able to validate the value of 'APN' field");
+		
 		objWorkItemHomePage.logout();
 	}
 	
@@ -334,6 +367,87 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		//Logging off the APAS
 		objWorkItemHomePage.logout();
 	}
+	
+	/**
+	 * This method is to Verify User is able to create a Work Pool or update an existing Work Pool to indicate if a second level Approver is needed
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T1935,SMAB-T1936,SMAB-T1940:Verify User is able to create a Work Pool or update an existing Work Pool to indicate if a second level Approver is needed,Verify User can designate a value amount for the second level Approver on the Work Pool record,Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor", dataProvider = "loginBppAndRpBusinessAdminUsers", dataProviderClass = DataProviders.class, groups = {
+			"regression","work_item_manual" })
+	public void WorkItems_VerifyWorkPoolCreation(String loginUser) throws Exception {
+		
+		//Step1: Delete the existing Work Pool record
+		ReportLogger.INFO("Delete the existing Work Pool record i.e. Test Work Pool, if that exists");
+		String poolName = "Test Work Pool";
+		String deleteWPQuery1 = "select id from Work_Pool__c where Name = '" + poolName + "'";
+		if(deleteWPQuery1 != null)salesforceAPI.delete("Work_Pool__c", deleteWPQuery1);
+		
+		String dataAdmin = CONFIG.getProperty(users.DATA_ADMIN + "UserName");
+		String rpBusinessAdmin = CONFIG.getProperty(users.RP_BUSINESS_ADMIN + "UserName");
+		String bppBusinessAdmin = CONFIG.getProperty(users.BPP_BUSINESS_ADMIN + "UserName");
+		
+		//Get the user name through queries
+		String rpBusinessAdminNameQuery = "select Name from User where UserName__c = '"+ rpBusinessAdmin + "'";
+		HashMap<String, ArrayList<String>> response1 = new SalesforceAPI().select(rpBusinessAdminNameQuery);
+        String rpBusinessAdminName = response1.get("Name").get(0);
+		
+        String bppBusinessAdminNameQuery = "select Name from User where UserName__c = '"+ bppBusinessAdmin + "'";
+		HashMap<String, ArrayList<String>> response2 = new SalesforceAPI().select(bppBusinessAdminNameQuery);
+        String bppBusinessAdminName = response2.get("Name").get(0);
+        
+        String dataAdminNameQuery = "select Name from User where UserName__c = '"+ dataAdmin + "'";
+		HashMap<String, ArrayList<String>> response3 = new SalesforceAPI().select(dataAdminNameQuery);
+        String dataAdminName = response3.get("Name").get(0);
+				
+		// Step1: Login to the APAS application using the credentials passed through dataprovider 
+        apasGenericObj.login(loginUser);
+
+		// Step2: Opening the Work pool module and create a NEW one
+		apasGenericObj.searchModule(WORK_POOL);
+		ReportLogger.INFO("Create a New Work Pool record");
+		String successMessage = objWorkItemHomePage.createWorkPool(poolName,rpBusinessAdminName,bppBusinessAdminName,"500");
+		Thread.sleep(1000); 
+		 				
+		// Step3: Validate the success message after creation of work pool and Value Criteria field
+		softAssert.assertEquals(successMessage,"success\nWork Pool \"" + poolName + "\" was created.\nClose","SMAB-T1935 : Validate success message on creation of the Work Pool" );
+ 		Thread.sleep(1000);
+		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor),"500.00",
+				"SMAB-T1935 : Validate user is able to update Level2 Value Criteria in the Work Pool");
+		
+		// Step4: Edit the work pool record and update some field values in it
+		ReportLogger.INFO("Update the Work Pool record");
+		objWorkItemHomePage.waitForElementToBeVisible(6, objPage.getButtonWithText(objWorkItemHomePage.editButton));
+		objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
+		objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
+		ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record");
+		apasGenericObj.searchAndSelectFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, dataAdminName);
+		objPage.enter(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor, "400");
+		successMessage = apasGenericObj.saveRecord();
+        
+		// Step5 Validate the success message after saving the work pool and other fields
+		softAssert.assertEquals(successMessage,"success\nWork Pool \"" + poolName + "\" was saved.\nClose","SMAB-T1935 : Validate user is able to edit and save the Work Pool" );
+		objWorkItemHomePage.waitForElementToBeVisible(6, objPage.getButtonWithText(objWorkItemHomePage.editButton));
+		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2Supervisor),dataAdminName,
+				"SMAB-T1935 : Validate user is able to update value for Level2 Supervisor in the Work Pool");
+		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor),"400.00",
+				"SMAB-T1936: Validate user is able to update value for Level2 Value Criteria in the Work Pool");
+		
+		// Step6: Edit the work pool record again with same user in Approver & Level2 Supervisor fields
+		ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record to keep it same as the Supervisor");
+		Thread.sleep(1000);
+		objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
+		objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
+		apasGenericObj.searchAndSelectFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, rpBusinessAdminName);
+		softAssert.assertEquals(apasGenericObj.saveRecordAndGetError(),"Close error dialog\nWe hit a snag.\nReview the errors on this page.\nSupervisor and Level 2 Supervisor should not be same.","SMAB-T1940 : Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor");
+		
+		// Step7: Delete the Work Pool record
+		ReportLogger.INFO("Delete the Work Pool record");
+		String deleteWPQuery2 = "select id from Work_Pool__c where Name = '" + poolName + "'";
+		salesforceAPI.delete("Work_Pool__c", deleteWPQuery2);
+		
+		apasGenericObj.logout();
+	}
 
 	/**
 	 * Verify that work items are routed correctly as per the work item routing drop down for Parcels
@@ -461,7 +575,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  objWorkItemHomePage.Click(objWorkItemHomePage.closeButton);
 		  objWorkItemHomePage.logout();
 		  Thread.sleep(15000);
-		  
+		 
           //Login supervisor 2 users.DATA_ADMIN
 		  objWorkItemHomePage.login(users.DATA_ADMIN);
 		  objWorkItemHomePage.searchModule(modules.HOME);

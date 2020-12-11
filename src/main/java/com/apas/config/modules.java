@@ -18,6 +18,8 @@ public interface modules {
 	String HOME = "Home";
 	String BPP_ACCOUNTS = "BPP Accounts";
 	String CPI_FACTORS = "CPI Factors";
+	String WORK_POOL = "Work Pool";
+	String WORK_ITEM = "Work Item";
 
 	String REAL_PROPERTY_SETTINGS_LIBRARIES = "Real Property Settings Libraries";
 	String ROLL_YEAR_SETTINGS = "Roll Year Settings";
