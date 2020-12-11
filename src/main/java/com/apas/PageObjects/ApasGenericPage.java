@@ -181,7 +181,10 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath="//button[text()='Close All']")
 	public WebElement closeAllBtn;
-	
+
+	public String SaveButton="Save";
+	public String NewButton="New";
+	public String EditButton="Edit";
 
 	/**
 	 * Description: This will click on the module name from the drop down
@@ -1068,5 +1071,19 @@ public class ApasGenericPage extends Page {
 		String alertTxt = AlertText.getText();
 		return alertTxt;
 	}
-	
+	/**
+	 * Description: this method is to click on New Button and open the create record Pop Up
+	 * @throws InterruptedException
+	 */
+	public void createRecord() throws IOException, InterruptedException {
+		Click(getButtonWithText("New"));
+		Thread.sleep(1000);
+	}
+	/**
+	 * Description: this method is to click on Edit Button and open the Edit record Pop Up
+	 * @throws InterruptedException
+	 */
+	public void editRecord() throws IOException, InterruptedException {
+		Click(getButtonWithText("Edit"));
+	}
 }
