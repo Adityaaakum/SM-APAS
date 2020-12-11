@@ -14,6 +14,7 @@ import com.relevantcodes.extentreports.ExtentReports;
 public class ExtentManager {
 	public static ExtentReports extent;
 	public static String resultFile;
+	public static String testCaseMappingFile;
 	int iCounter = 0;
 	public static ITestContext context;
 	public static ThreadLocal<ExtentReports> dr = new ThreadLocal<ExtentReports>();
@@ -33,6 +34,7 @@ public class ExtentManager {
 				buildNumber = "_Build#" + System.getProperty("jenkinsbuild");
 			}
 			resultFile = System.getProperty("user.dir") + "//test-output//AutomationReport//" + SuiteName + "_" + environment + buildNumber + "_" + upDate + ".html";
+			testCaseMappingFile = System.getProperty("user.dir") + "//test-output//AutomationReport//TestCaseMapping.csv";
 			extent = new ExtentReports(resultFile, true);
 			// setEmaildirectoryPath(resultFile);
 			extent.config().reportHeadline(", Env: " + environment);

@@ -81,6 +81,8 @@ public class SuiteListener extends TestBase implements ITestListener {
 		if (flagToUpdateJira && testCycle != null) {
 			//Updating the Jira tickets status at the end of the execution
 			System.out.println("Test cases execution status on end of execution: " + JiraAdaptavistStatusUpdate.testStatus);
+			//This will create the file with the test case execution status
+			objUtils.writeHashMapToCsv(JiraAdaptavistStatusUpdate.testStatus,ExtentManager.testCaseMappingFile);
 			TearDown();
 			JiraAdaptavistStatusUpdate.mapTestCaseStatusToJIRA();
 			JiraAdaptavistStatusUpdate.uploadAttachmentInJira(ExtentManager.resultFile);
