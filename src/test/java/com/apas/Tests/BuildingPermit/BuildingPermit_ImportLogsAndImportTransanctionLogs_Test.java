@@ -73,6 +73,7 @@ public class BuildingPermit_ImportLogsAndImportTransanctionLogs_Test extends Tes
 		//Step5: Opening the Efile Import Logs module
 		objBuildPermit.searchModule(modules.EFILE_IMPORT_LOGS);
 		objBuildPermit.displayRecords("All");
+		objBuildPermit.searchRecords(tempFile.getName().split("\\.")[0]);
 
 		HashMap<String, ArrayList<String>> importLogsGridData = objBuildPermit.getGridDataInHashMap(1, 1);
 

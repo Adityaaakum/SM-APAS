@@ -41,6 +41,7 @@ public class ApasGenericPage extends Page {
 
 	public String tabDetails = "Details";
 	public String tabRelated = "Related";
+	public String tabLinkedItems = "Linked Items";
 
 	@FindBy(xpath = "//button[@title='Close error dialog']")
 	public WebElement crossIcon;
@@ -1059,7 +1060,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public File createTempFile(File file) throws IOException {
 		//Creating a temporary copy of the file to be processed to create unique name
-		String timeStamp = objUtil.getCurrentDate("ddhhmmss");
+		String timeStamp = objUtil.getCurrentDate("yyMMddhhmmss");
 		String destFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + timeStamp + "_" + file.getName();
 		File tempFile = new File(destFile);
 		FileUtils.copyFile(file, tempFile );

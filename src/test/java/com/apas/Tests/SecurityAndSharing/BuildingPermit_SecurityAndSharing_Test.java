@@ -133,7 +133,6 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.newButton),"SMAB-T1820 : Building Permit Screen - Validation that 'New' button should be Enabled to " + loginUser);
 		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objApasGenericPage.getGridDataInHashMap();
 		objApasGenericPage.clickShowMoreLink(manualBuildingPermitGridDataMap.get("Building Permit Number").get(0));
-		softAssert.assertTrue(objPage.verifyElementVisible(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : Building Permit Screen - Validation that 'Edit' button should be visible to " + loginUser);
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : Building Permit Screen - Validation that 'Edit' button should be enabled to " + loginUser);
 		softAssert.assertTrue(!objPage.verifyElementVisible(objBuildingPermitPage.deleteButtonMenuOption),"SMAB-T1820 : Building Permit Screen - Validation that 'Delete' button should not be visible to " + loginUser);
 
@@ -152,7 +151,6 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.newButton),"SMAB-T1820 : City Strat Code Screen - Validation that 'New' button should be enabled to " + loginUser);
 		Map<String, ArrayList<String>> cityStratCodeGridDataMap = objApasGenericPage.getGridDataInHashMap();
 		objApasGenericPage.clickShowMoreLink(cityStratCodeGridDataMap.get("City Strat Code").get(0));
-		softAssert.assertTrue(objPage.verifyElementVisible(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : City Strat Code Screen - Validation that 'Edit' button should be visible to " + loginUser);
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : City Strat Code Screen - Validation that 'Edit' button should be enabled to " + loginUser);
 		softAssert.assertTrue(!objPage.verifyElementVisible(objBuildingPermitPage.deleteButtonMenuOption),"SMAB-T1820 : City Strat Code Screen - Validation that 'Delete' button should not be visible to " + loginUser);
 
@@ -163,7 +161,6 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.newButton),"SMAB-T1820 : County Strat Code Screen - Validation that 'New' button should be visible to " + loginUser);
 		Map<String, ArrayList<String>> countyStratCodeGridDataMap = objApasGenericPage.getGridDataInHashMap();
 		objApasGenericPage.clickShowMoreLink(countyStratCodeGridDataMap.get("Strat Code Description").get(0));
-		softAssert.assertTrue(objPage.verifyElementVisible(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : County Strat Code Screen - Validation that 'Edit' button should be visible to " + loginUser);
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : County Strat Code Screen - Validation that 'Edit' button should be enabled to " + loginUser);
 		softAssert.assertTrue(!objPage.verifyElementVisible(objBuildingPermitPage.deleteButtonMenuOption),"SMAB-T1820 : County Strat Code Screen - Validation that 'Delete' button should not be visible to " + loginUser);
 
@@ -174,7 +171,6 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.newButton),"SMAB-T1820 : Non Relevant Permit Setting Screen - Validation that 'New' button should be enabled to " + loginUser);
 		Map<String, ArrayList<String>> nonRelevantPermitSettingsGridDataMap = objApasGenericPage.getGridDataInHashMap();
 		objApasGenericPage.clickShowMoreLink(nonRelevantPermitSettingsGridDataMap.get("Non Relevant Permit Setting Name").get(0));
-		softAssert.assertTrue(objPage.verifyElementVisible(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : Non Relevant Permit Setting Screen - Validation that 'Edit' button should be visible to " + loginUser);
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : Non Relevant Permit Setting Screen - Validation that 'Edit' button should be enabled to " + loginUser);
 		softAssert.assertTrue(!objPage.verifyElementVisible(objBuildingPermitPage.deleteButtonMenuOption),"SMAB-T1820 : Non Relevant Permit Setting Screen - Validation that 'Delete' button should not be visible to " + loginUser);
 
@@ -311,7 +307,6 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.newButton),"SMAB-T1820 : Building Permit Screen - Validation that 'New' button should be Enabled to " + loginUser);
 		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objApasGenericPage.getGridDataInHashMap();
 		objApasGenericPage.clickShowMoreLink(manualBuildingPermitGridDataMap.get("Building Permit Number").get(0));
-		softAssert.assertTrue(objPage.verifyElementVisible(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : Building Permit Screen - Validation that 'Edit' button should be visible to " + loginUser);
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : Building Permit Screen - Validation that 'Edit' button should be enabled to " + loginUser);
 		softAssert.assertTrue(!objPage.verifyElementVisible(objBuildingPermitPage.deleteButtonMenuOption),"SMAB-T1820 : Building Permit Screen - Validation that 'Delete' button should not be visible to " + loginUser);
 
@@ -330,7 +325,6 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.newButton),"SMAB-T1820 : City Strat Code Screen - Validation that 'New' button should be enabled to " + loginUser);
 		Map<String, ArrayList<String>> cityStratCodeGridDataMap = objApasGenericPage.getGridDataInHashMap();
 		objApasGenericPage.clickShowMoreLink(cityStratCodeGridDataMap.get("City Strat Code").get(0));
-		softAssert.assertTrue(objPage.verifyElementVisible(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : City Strat Code Screen - Validation that 'Edit' button should be visible to " + loginUser);
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : City Strat Code Screen - Validation that 'Edit' button should be enabled to " + loginUser);
 		softAssert.assertTrue(!objPage.verifyElementVisible(objBuildingPermitPage.deleteButtonMenuOption),"SMAB-T1820 : City Strat Code Screen - Validation that 'Delete' button should not be visible to " + loginUser);
 
@@ -341,7 +335,6 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.newButton),"SMAB-T1820 : County Strat Code Screen - Validation that 'New' button should be visible to " + loginUser);
 		Map<String, ArrayList<String>> countyStratCodeGridDataMap = objApasGenericPage.getGridDataInHashMap();
 		objApasGenericPage.clickShowMoreLink(countyStratCodeGridDataMap.get("Strat Code Description").get(0));
-		softAssert.assertTrue(objPage.verifyElementVisible(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : County Strat Code Screen - Validation that 'Edit' button should be visible to " + loginUser);
 		softAssert.assertTrue(objPage.verifyElementEnabled(objBuildingPermitPage.editButtonMenuOption),"SMAB-T1820 : County Strat Code Screen - Validation that 'Edit' button should be enabled to " + loginUser);
 		softAssert.assertTrue(!objPage.verifyElementVisible(objBuildingPermitPage.deleteButtonMenuOption),"SMAB-T1820 : County Strat Code Screen - Validation that 'Delete' button should not be visible to " + loginUser);
 
