@@ -1,7 +1,7 @@
 package com.apas.config;
 
 public interface modules {
-	
+
 	//List of all the modules on APAS application
 	String EFILE_INTAKE = "E-File Import Tool";
 	String EFILE_INTAKE_VIEW = "E-File Intake";
@@ -18,6 +18,8 @@ public interface modules {
 	String HOME = "Home";
 	String BPP_ACCOUNTS = "BPP Accounts";
 	String CPI_FACTORS = "CPI Factors";
+	String WORK_POOL = "Work Pool";
+	String WORK_ITEM = "Work Item";
 
 	String REAL_PROPERTY_SETTINGS_LIBRARIES = "Real Property Settings Libraries";
 	String ROLL_YEAR_SETTINGS = "Roll Year Settings";
@@ -29,5 +31,8 @@ public interface modules {
 	String ROLLYEAR = "Roll Year Settings";
 	String VALUE_ADJUSTMENTS = "Value Adjustments";
 	String WORKITEM_MNGMNT = "Work Item Management Console";
+	public static final String NEIGHBORHOODS = "Neighborhoods";
+	public static final String TERRITORIES = "Territories";
+	public static final String ROUTING_ASSIGNMENTS = "Routing Assignments";
 }
 

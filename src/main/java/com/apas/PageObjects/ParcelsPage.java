@@ -69,9 +69,10 @@ public class ParcelsPage extends ApasGenericPage {
 	 * @throws Exception
 	 */
 	public String createWorkItem(Map<String, String> dataMap) throws Exception {
+		String timeStamp = String.valueOf(System.currentTimeMillis());
 		String workItemType = dataMap.get("Work Item Type");
 		String actions = dataMap.get("Actions");
-		String reference = dataMap.get("Reference");
+		String reference = dataMap.get("Reference") + "_" + timeStamp;
 		String description = dataMap.get("Description");
 		String priority = dataMap.get("Priority");
 		String workItemRouting = dataMap.get("Work Item Routing");
@@ -99,7 +100,7 @@ public class ParcelsPage extends ApasGenericPage {
 
 		Thread.sleep(2000);
 
-		String workItemQuery = "SELECT Name FROM Work_Item__c where type__C = '" + workItemType + "' and sub_type__c='" + actions + "' and Reference__C = '" + reference + "' order by Name desc limit 1";
+		String workItemQuery = "SELECT Name FROM Work_Item__c where Reference__C = '" + reference + "' order by Name desc limit 1";
 		workItemNumber = objSalesforceAPI.select(workItemQuery).get("Name").get(0);
 		ReportLogger.INFO("Work item created is " + workItemNumber  );
 		

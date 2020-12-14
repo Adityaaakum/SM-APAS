@@ -41,6 +41,7 @@ public class ApasGenericPage extends Page {
 
 	public String tabDetails = "Details";
 	public String tabRelated = "Related";
+	public String tabLinkedItems = "Linked Items";
 
 	@FindBy(xpath = "//button[@title='Close error dialog']")
 	public WebElement crossIcon;
@@ -181,7 +182,10 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath="//button[text()='Close All']")
 	public WebElement closeAllBtn;
-	
+
+	public String SaveButton="Save";
+	public String NewButton="New";
+	public String EditButton="Edit";
 
 	/**
 	 * Description: This will click on the module name from the drop down
@@ -304,7 +308,7 @@ public class ApasGenericPage extends Page {
         String xpathDropDownOption;
         if (element instanceof String) {
         	webElement = getWebElementWithLabel((String) element);
-			String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]";
+			String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
 			xpathDropDownOption = commonPath + "//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
         } else{
             webElement = (WebElement) element;
@@ -1056,7 +1060,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public File createTempFile(File file) throws IOException {
 		//Creating a temporary copy of the file to be processed to create unique name
-		String timeStamp = objUtil.getCurrentDate("ddhhmmss");
+		String timeStamp = objUtil.getCurrentDate("yyMMddhhmmss");
 		String destFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + timeStamp + "_" + file.getName();
 		File tempFile = new File(destFile);
 		FileUtils.copyFile(file, tempFile );
@@ -1068,5 +1072,19 @@ public class ApasGenericPage extends Page {
 		String alertTxt = AlertText.getText();
 		return alertTxt;
 	}
-	
+	/**
+	 * Description: this method is to click on New Button and open the create record Pop Up
+	 * @throws InterruptedException
+	 */
+	public void createRecord() throws IOException, InterruptedException {
+		Click(getButtonWithText("New"));
+		Thread.sleep(1000);
+	}
+	/**
+	 * Description: this method is to click on Edit Button and open the Edit record Pop Up
+	 * @throws InterruptedException
+	 */
+	public void editRecord() throws IOException, InterruptedException {
+		Click(getButtonWithText("Edit"));
+	}
 }

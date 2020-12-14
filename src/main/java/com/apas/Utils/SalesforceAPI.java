@@ -333,33 +333,36 @@ public class SalesforceAPI extends TestBase {
 
         ReportLogger.INFO("Deleting following comma separated IDs" + commaSeparatedIds);
 
-        //Creating HTTP Post Connection
-        HttpPost httpPost = salesforceCreateConnection();
+        if (!commaSeparatedIds.trim().equals("")){
+            //Creating HTTP Post Connection
+            HttpPost httpPost = salesforceCreateConnection();
 
-        //Authenticating the HTTP Post connection
-        if (salesforceAuthentication(httpPost)){
+            //Authenticating the HTTP Post connection
+            if (salesforceAuthentication(httpPost)){
 
-            //Set up the objects necessary to make the request.
-            HttpClient httpClient = HttpClientBuilder.create().build();
-            try {
-                if(!commaSeparatedIds.equals("")) {
-                    String uri = baseUri + "/composite/sobjects?ids=" + commaSeparatedIds.replace(" ","").trim();
-                    System.out.println("URI : " + uri);
-                    HttpDelete httpDelete = new HttpDelete(uri);
-                    httpDelete.addHeader(oauthHeader);
-                    httpDelete.addHeader(prettyPrintHeader);
+                //Set up the objects necessary to make the request.
+                HttpClient httpClient = HttpClientBuilder.create().build();
+                try {
+                    if(!commaSeparatedIds.equals("")) {
+                        String uri = baseUri + "/composite/sobjects?ids=" + commaSeparatedIds.replace(" ","").trim();
+                        System.out.println("URI : " + uri);
+                        HttpDelete httpDelete = new HttpDelete(uri);
+                        httpDelete.addHeader(oauthHeader);
+                        httpDelete.addHeader(prettyPrintHeader);
 
-                    HttpResponse response = httpClient.execute(httpDelete);
+                        HttpResponse response = httpClient.execute(httpDelete);
 
-                    statusCode = response.getStatusLine().getStatusCode();
+                        statusCode = response.getStatusLine().getStatusCode();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-        }
 
-        //Releasing HTTP Post connection
-        salesforceReleaseConnection(httpPost);
+            //Releasing HTTP Post connection
+            salesforceReleaseConnection(httpPost);
+
+        }
 
         return statusCode;
     }

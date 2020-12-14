@@ -147,7 +147,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[2]//input[@type='checkbox']/parent::span")
 	public List<WebElement> lowincomeSubmittedWI;
 
-	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//div[@class='slds-truncate']//a")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[@class='slds-truncate']//a")
 	public WebElement linkedItemsRecord;
 
 	@FindBy(xpath="//button[@title='Accept Work Item']")
@@ -167,7 +167,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='Status']/parent::div/following-sibling::div//lightning-formatted-text")
 	public WebElement wiStatusDetailsPage;
-
+	
 	@FindBy(xpath = "//li//a[@aria-selected='true' and @role='option']")
 	public WebElement currenWIStatusonTimeline;
 
@@ -177,17 +177,25 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath = "//button[contains(.,'Cancel')]")
 	public WebElement cancelBtn;
 
-	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//button[@name= 'Edit']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@name= 'Edit']")
 	public WebElement editBtn;
 
 	@FindBy(xpath ="//div[@class='windowViewMode-maximized active lafPageHost']//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
 	public WebElement vaRollYear;
 
-	@FindBy(xpath="//a[text()='Submitted for Approval']")
-	public WebElement submittedforApprovalTimeline;
+	String submittedForApprovalTimeline = "Submitted for Approval";
 
-	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//button//span[text()='Mark as Current Status']")
+	@FindBy(xpath="//span[text()='Submitted for Approval']")
+	public WebElement submittedforApprovalTimeline;
+	
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Completed']")
+	public WebElement completedTimeline;
+	
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button//span[text()='Mark as Current Status']")
 	public WebElement markStatusCompleteBtn;
+	
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button//span[text()='Mark Status as Complete']")
+	public WebElement markStatusAsCompleteBtn;
 	
 	@FindBy(xpath="//button[@title='Mark Complete']") 
 	public WebElement btnMarkComplete;
@@ -206,21 +214,45 @@ public class WorkItemHomePage extends ApasGenericPage {
     @FindBy (xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Child Work Items']")
     public WebElement ChildWorkItemsTab;
    
-    @FindBy (xpath="//*[@data-key='error']//..//button[@title='Close']")
+    @FindBy (xpath="//*[@data-key='error']//..//button[@title='Close'] | //button[@title='Close error dialog']")
     public WebElement CloseErrorMsg;
     
     @FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
-    
+
 	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Assigned To']/..//input")
 	public WebElement AssignedTo;
-	
+
 	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Work Pool']/..//input")
 	public WebElement WorkPool;
+
+    @FindBy(xpath = "//div[contains(@class,'slds-media__body')]//slot/lightning-formatted-text[contains(text(),'WI-')]")
+	public WebElement getWorkItem;
+    
+	public String editButton = "Edit";
 	
+	public String wiActionDetailsPage = "Action";
+	public String wiRelatedActionDetailsPage = "Related Action";
+	public String wiDateDetailsPage = "Date";
+	public String wiValueDetailsPage = "Value";
+	public String wiNameDetailsPage = "Name";
+	public String wiDOVDetailsPage = "DOV";
+	public String wiWorkPoolDetailsPage = "Work Pool";
+	public String wiApproverDetailsPage = "Approver";
+	public String wiPriorityDetailsPage = "Priority";
+	public String wiTypeDetailsPage = "Type";
+	public String wiReferenceDetailsPage = "Reference";
+	public String wiAPNDetailsPage = "APN";
+	
+	public String wpSupervisor = "Supervisor";
+	public String wpLevel2Supervisor = "Level2 Supervisor";
+	public String wpLevel2ValueCriteriaSupervisor = "Level2 Value Criteria";
+	public String wpWorkPoolName = "Work Pool Name";
+
     public String SaveButton="Save";
     public String valueTextBox = "Value";
-    
+
+
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
 	 *
@@ -512,6 +544,53 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 			Click(webElementCheckBox);			
 	    }
 	 
+	 /**
+		 * This method will create a WorkPool
+		 * @param poolName :Work Pool Name
+		 * @param supervisorName :Supervisor Name
+	 **/
+	 
+	 public String createWorkPool(String poolName, String supervisorName) throws Exception {
+			return createWorkPool(poolName, supervisorName, "", "");
+		}
+	 
+	 /**
+		 * This method will create a WorkPool
+		 * @param poolName :Work Pool Name
+		 * @param supervisorName :Supervisor Name
+		 * @param level2SupervisorName :Level 2 Supervisor Name
+		 * @param level2ValueCriteria :Level 2 Value Criteria
+	 **/
+	 
+	 public String createWorkPool(String poolName, String supervisorName, String level2SupervisorName, String level2ValueCriteria) throws Exception {
+		 	ReportLogger.INFO("Create a Work Pool record :: "+poolName);	
+		 	objPageObj.Click(objApasGenericPage.newButton);
+	 		objPageObj.enter(wpWorkPoolName, poolName);
+	 		objApasGenericPage.searchAndSelectFromDropDown(wpSupervisor, supervisorName);
+	 		if(level2SupervisorName != null)objApasGenericPage.searchAndSelectFromDropDown(wpLevel2Supervisor, level2SupervisorName);
+	 		if(level2ValueCriteria != null)objPageObj.enter(wpLevel2ValueCriteriaSupervisor, level2ValueCriteria);
+	 		return objApasGenericPage.saveRecord();
+		}
+	 
+	 /**
+		 * This method will click on Time line option and and then mark it complete
+		 * @param timelineTab :Time Line Option
+	 **/
+	 
+	 public void clickOnTimelineAndMarkComplete(WebElement timelineTab) throws Exception {
+		 	ReportLogger.INFO("Click on the " + objPageObj.getElementText(timelineTab) + " option in Timeline and mark it complete");
+		 	objPageObj.javascriptClick(timelineTab);
+		 	Thread.sleep(1000);
+		 	if (objPageObj.getElementText(timelineTab).equals("In Progress")) {
+		 		objPageObj.javascriptClick(markStatusAsCompleteBtn);
+		 	}
+		 	else{
+		 		objPageObj.javascriptClick(markStatusCompleteBtn);
+		 	}
+			Thread.sleep(1000);
+		}
+	 
+
 	 public boolean searchWIInGrid(String workItem) throws IOException{
 	        WebElement webElement = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]"));
 	        scrollToElement(webElement);

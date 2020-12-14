@@ -157,7 +157,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 */
 	public void createBppCompositeFactorSetting(String propertyType, String minGoodFactorValue) throws Exception {
 		WebElement moreTab = locateElement("//div[contains(@class, 'column region-sidebar-right')]//button[@title = 'More Tabs']", 10);
-		if(moreTab != null) {
+
+		if(verifyElementVisible(moreTab)) {
 			waitForElementToBeClickable(moreTab, 10);
 			clickAction(moreTab);
 			waitForElementToBeVisible(bppCompositeFactorOption, 10);
@@ -166,8 +167,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			clickAction(bppCompFactorSettingTab);
 		}
 
-		clickAction(dropDownIconBppCompFactorSetting);
-		clickAction(newBtnToCreateEntry);
+			clickAction(dropDownIconBppCompFactorSetting);
+			clickAction(newBtnToCreateEntry);
 
 		enter("Minimum Good Factor",minGoodFactorValue);
 		objApasGenericPage.selectOptionFromDropDown("Property Type",propertyType);
@@ -298,7 +299,9 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 */
 	public String retrieveMaxEqipIndexValueFromPopUp() throws Exception {
 		String xpathMaxEquipIndexFactorValue = "//dt[text()='Maximum Equipment index Factor']//following-sibling::dd";
-		return getElementText(waitUntilElementIsPresent(10,xpathMaxEquipIndexFactorValue));
+		WebElement maxEquipIndexFactor = waitUntilElementIsPresent(10,xpathMaxEquipIndexFactorValue);
+		waitForElementToBeClickable(20, maxEquipIndexFactor);
+		return getElementText(maxEquipIndexFactor);
 	}
 
 	/**
@@ -622,6 +625,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public void clickOnEntryNameInGrid(String rollYear) throws Exception {
 		String xpath = "//tbody//tr//th//a[contains(text(), '"+ rollYear +"')]";
 		Click(waitUntilElementIsPresent(20,xpath));
+		Thread.sleep(2000);
 	}
 	
 	/**

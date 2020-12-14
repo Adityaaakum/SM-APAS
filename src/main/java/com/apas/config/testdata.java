@@ -56,5 +56,7 @@ public interface testdata {
     String MANUAL_WORK_ITEMS = "\\data\\WorkItems\\ManualWorkItem.json";
 	String MANUAL_WORK_ITEMS_BPP_ACCOUNTS = userDirectory + "\\data\\WorkItems\\ManualWorkItemBPPAccount.json";
     String BPP_TREND_COMPOSITE_FACTORS_DATA = "\\data\\BppTrend\\BPPTrends_CompositeFactorsData.json";
+	String WORK_ITEMS_ROUTING_SETUP = userDirectory + "\\data\\WorkItems\\WorkItemsRoutingSetup.json";
+    String ONE_TO_ONE_MAPPING_ACTION = "\\data\\MappingActions\\OneToOneMapping.json";
 
 }
