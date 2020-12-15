@@ -137,13 +137,13 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateBtn, 20)), "ReCalculate button is visible for calculated table");
 
 		//Step14: Validating presence of CalculateAll button at page level on performing the calculation
-		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathCalculateAllBtn, 20)), "Calculate all button is visible at page level");
+		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathCalculateAllBtn, 20)), "SMAB-T190: Calculate all button is visible at page level");
 
 		//Step15: Validating presence of ReCalculateAll button at page level on performing the calculation
-		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateAllBtn, 20)),  "ReCalcuateAll button is visible at page level");
+		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateAllBtn, 20)),  "SMAB-T190: ReCalcuateAll button is visible at page level");
 
 		//Step16: Validating absence of Calculate button at table level once calculation is done
-		softAssert.assertTrue(Objects.isNull(objPage.locateElement(objBppTrend.xPathCalculateBtn, 20)), "Calculate button is not available for Calculated table");
+		softAssert.assertTrue(Objects.isNull(objPage.locateElement(objBppTrend.xPathCalculateBtn, 20)), "SMAB-T190: Calculate button is not available for Calculated table");
 
 		ReportLogger.INFO("** Comparing the UI grid data against the data available in Trend Calculator file **");
 		//Step17: Retrieving the path of excel file to read for data comparison on calculate button click
@@ -243,7 +243,7 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateBtn, 20)), "SMAB-T195: ReCalculate button is visible for calculated table");
 
 		//Step13: Validating presence of ReCalculateAll button at page level on performing the calculation
-		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateAllBtn, 20)), "ReCalculateAll button is visible at page level");
+		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateAllBtn, 20)), "SMAB-T195: ReCalculateAll button is visible at page level");
 				
 		ReportLogger.INFO("** Comparing the UI grid data against the data available in Trend Calculator file **");
 		//Step14: Retrieving the path of excel file to read for data comparison on calculate button click

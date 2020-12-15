@@ -162,15 +162,15 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 
 		//Step15: Validating presence of CalculateAll button at page level on performing the calculation
 		isCalculateAllBtnDisplayed = objBppTrnPg.isCalculateAllBtnVisible(30);
-		objSoftAssert.assertTrue(isCalculateAllBtnDisplayed, "CalcuateAll button is visible at page level");
+		objSoftAssert.assertTrue(isCalculateAllBtnDisplayed, "SMAB-T190: CalcuateAll button is visible at page level");
 
 		//Step16: Validating presence of ReCalculateAll button at page level on performing the calculation
 		boolean isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
-		objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "ReCalcuateAll button is visible at page level");
+		objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T190: ReCalcuateAll button is visible at page level");
 
 		//Step17: Validating absence of Calculate button at table level once calculation is done
 		isCalculateBtnDisplayed = objBppTrnPg.isCalculateBtnVisible(2, tableName);
-		objSoftAssert.assertTrue(!isCalculateBtnDisplayed, "Calculate button is not available for Calculated table");
+		objSoftAssert.assertTrue(!isCalculateBtnDisplayed, "SMAB-T190: `Calculate button is not available for Calculated table");
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Comparing the UI grid data against the data available in Trend Calculator file **");
 		//Step18: Retrieving the path of excel file to read for data comparison on calculate button click
@@ -379,7 +379,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 
 		//Step16: Validating presence of ReCalculateAll button at page level on performing the calculation
 		isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
-		objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "ReCalculateAll button is visible at page level");
+		objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T195: ReCalculateAll button is visible at page level");
 
 		//Step17: Retrieve and collect grid CPI Factor data for given roll year in a list
 		List<String> gridDataWithSecondCpiFactor = objBppTrnPg.retrieveTableDataForGivenColumn("CPI Factor", 30);

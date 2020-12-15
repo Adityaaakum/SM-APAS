@@ -133,8 +133,8 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		Thread.sleep(2000);  //To handle regression failure as Qualified field hides behind the Exemption creation pop-up
 		objPage.Click(exemptionPageObj.editExemption);
 		//objPage.waitForElementToBeClickable(exemptionPageObj.qualification,10);
-		exemptionPageObj.selectFromDropDown(exemptionPageObj.qualification, "Qualified");
-		exemptionPageObj.selectFromDropDown(exemptionPageObj.reasonNotQualified, "--None--");
+		exemptionPageObj.selectOptionFromDropDown(exemptionPageObj.qualification, "Qualified");
+		exemptionPageObj.selectOptionFromDropDown(exemptionPageObj.reasonNotQualified, "--None--");
 		objPage.Click(ExemptionsPage.saveButton);
 		exemptionPageObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
 		ReportLogger.INFO("Updated Qualification from Not Qualified to Qualified ");
@@ -240,7 +240,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 			objPage.waitForElementToBeClickable(exemptionPageObj.dateApplicationReceivedExemptionDetails, 10);
 			objPage.Click(exemptionPageObj.editExemption);
 			objPage.enter(exemptionPageObj.endDateOfRating, endDateOfRatingData.get("EnddateOfRating")); 
-			exemptionPageObj.selectFromDropDown(exemptionPageObj.endRatingReason, endDateOfRatingData.get("EndRatingReason"));
+			exemptionPageObj.selectOptionFromDropDown(exemptionPageObj.endRatingReason, endDateOfRatingData.get("EndRatingReason"));
 			objPage.Click(ExemptionsPage.saveButton);
 			exemptionPageObj.waitForElementToDisappear(vaPageObj.editVAPopUp, 10);
 			ReportLogger.INFO("Added End date OF Rating::"+endDateOfRatingData.get("EnddateOfRating"));
@@ -415,7 +415,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 				objPage.scrollToTop();
 				objPage.Click(vaPageObj.editButton);
 				//objPage.waitForElementToBeClickable(vaPageObj.vaEditDeterminationDropDown, 10);
-				exemptionPageObj.selectFromDropDown(vaPageObj.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
+				exemptionPageObj.selectOptionFromDropDown(vaPageObj.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
 				objPage.enter(vaPageObj.vaAnnualFormReceiveddate,dateBeforeAppdate);
 				objPage.enter(vaPageObj.totalAnnualHouseholdIncome,"10000");
 				objPage.Click(ExemptionsPage.saveButton);
