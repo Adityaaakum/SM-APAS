@@ -373,7 +373,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T1935,SMAB-T1936,SMAB-T1940:Verify User is able to create a Work Pool or update an existing Work Pool to indicate if a second level Approver is needed,Verify User can designate a value amount for the second level Approver on the Work Pool record,Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor", dataProvider = "loginBppAndRpBusinessAdminUsers", dataProviderClass = DataProviders.class, groups = {
+	/*@Test(description = "SMAB-T1935,SMAB-T1936,SMAB-T1940:Verify User is able to create a Work Pool or update an existing Work Pool to indicate if a second level Approver is needed,Verify User can designate a value amount for the second level Approver on the Work Pool record,Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor", dataProvider = "loginBppAndRpBusinessAdminUsers", dataProviderClass = DataProviders.class, groups = {
 			"regression","work_item_manual" })
 	public void WorkItems_VerifyWorkPoolCreation(String loginUser) throws Exception {
 		
@@ -447,7 +447,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		salesforceAPI.delete("Work_Pool__c", deleteWPQuery2);
 		
 		apasGenericObj.logout();
-	}
+	}*/
 
 	/**
 	 * Verify that work items are routed correctly as per the work item routing drop down for Parcels
