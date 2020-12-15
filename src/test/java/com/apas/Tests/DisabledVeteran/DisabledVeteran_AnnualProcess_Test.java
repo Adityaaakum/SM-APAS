@@ -103,7 +103,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		
 		//Step7: Click on current Roll Year's Value Adjustment
 		boolean vaClicked = objValueAdjustmentPage.clickVA(strRollYear);
-		softAssert.assertTrue(vaClicked,"Verify that when the 'Annual Batch process' runs 'Value Adjustment Record's gets created for all the Active Exemption records");
+		softAssert.assertTrue(vaClicked,"SMAB-T1381: Verify that when the 'Annual Batch process' runs 'Value Adjustment Record's gets created for all the Active Exemption records");
 		
 		//Step8: Verify RPSL values are blank in current Roll Year's VA
 		Map<String, String> verifyDataWithNoRPSLDataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToVerifyForDeletedRPSL");
@@ -274,7 +274,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		Map<String, String> createRPSLDataMap = objUtils.generateMapFromJsonFile(entryData, "DataToCreateCurrentRPSLEntry");
 		String strSuccessAlertMessage = objRPSLPage.createRPSL(createRPSLDataMap,strRollYear);
 		String recordValue = "Exemption Limits -  " + strRollYear;
-		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + recordValue + "\" was created.","Verify the User is able to create Exemption limit record for the current roll year");
+		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + recordValue + "\" was created.","SMAB-T536 : Verify the User is able to create Exemption limit record for the current roll year");
 		
 		//Step5: Opening the Real Property Settings Libraries module
 		objApasGenericPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
@@ -290,7 +290,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		
 		//Step8: Update the RPSL Status
 		ReportLogger.INFO("Editing the Status field to 'Approved'");
-		objApasGenericPage.selectFromDropDown(objRPSLPage.statusDropDown,"Approved");		
+		objApasGenericPage.selectOptionFromDropDown(objRPSLPage.statusDropDown,"Approved");
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
 		System.out.println("success message is :"+strSuccessAlertMessage);
 		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + value + "\" was saved.","RPSL is edited successfully");

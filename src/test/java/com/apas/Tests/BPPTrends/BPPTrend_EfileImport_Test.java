@@ -1242,7 +1242,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.Click(objEfileHomePage.sourceDetails);
 		objPage.waitForElementToBeClickable(objEfileHomePage.statusImportedFile,30);
 		objPage.Click(objEfileHomePage.nextButton);
-		objEfileHomePage.selectFromDropDown(objEfileHomePage.periodDropdown, rollYearForImport);
+		objEfileHomePage.selectOptionFromDropDown(objEfileHomePage.periodDropdown, rollYearForImport);
 		
 		//step8: verifying error message while trying to import file for already approved file type,source and rollYearForImport
 		softAssert.assertContains(objPage.getElementText(objEfileHomePage.fileAlreadyApprovedMsg), "This file has been already approved", "SMAB-T974:Verify user is not able to import a file for BPP Trends if the previous Import for a particular File Type, File Source and Period was Approved");
@@ -1297,13 +1297,13 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		ReportLogger.INFO("Verifying records count in history list for imported record");
 		
 		HashMap<String, ArrayList<String>> importedEntry=objEfileHomePage.getGridDataInHashMap(1, 1);				
-		softAssert.assertEquals(importedEntry.get("Uploaded Date").get(0), converteddate, "verify import list history data");
-		softAssert.assertEquals(importedEntry.get("Period").get(0), rollYearForImport, "verify import list history data");
-		softAssert.assertEquals(importedEntry.get("File Count").get(0), errorRecordsCount.get("TotalFileRecords"), "verify import list history data");
-		softAssert.assertEquals(importedEntry.get("Import Count").get(0), errorRecordsCount.get("TotalImportedRecords"), "verify import list history data");
-		softAssert.assertEquals(importedEntry.get("Error Count").get(0), errorRecordsCount.get("TotalErrorRecords"), "verify import list history data");
-		softAssert.assertEquals(importedEntry.get("Discard Count").get(0), "0", "verify import list history data");
-		softAssert.assertEquals(importedEntry.get("Number of Tries").get(0), "1", "verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Uploaded Date").get(0), converteddate, "SMAB-T83 : Uploaded Date - verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Period").get(0), rollYearForImport, "SMAB-T83 : Period - verify import list history data");
+		softAssert.assertEquals(importedEntry.get("File Count").get(0), errorRecordsCount.get("TotalFileRecords"), "SMAB-T83 : File Count - verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Import Count").get(0), errorRecordsCount.get("TotalImportedRecords"), "SMAB-T83 : Import Count - verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Error Count").get(0), errorRecordsCount.get("TotalErrorRecords"), "SMAB-T83 : Error Count - verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Discard Count").get(0), "0", "SMAB-T83 : Discard Count - verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Number of Tries").get(0), "1", "SMAB-T83 : Number of Tries - verify import list history data");
 				
 		
 		//step7: navigating to EFile import logs screen and verifying the records count

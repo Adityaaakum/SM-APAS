@@ -169,7 +169,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		
 		//Step16: Edit the RPSL
 		ReportLogger.INFO("Editing the Status field to '"+editRPSDataMap.get("Status") + "'");
-		objRPSLPage.selectFromDropDown(objRPSLPage.statusDropDown,editRPSDataMap.get("Status"));		
+		objRPSLPage.selectOptionFromDropDown(objRPSLPage.statusDropDown,editRPSDataMap.get("Status"));
 		
 		//Step17: Saving the RPSL after editing 'Status' dropdown
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
@@ -330,7 +330,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		
 		//Step6: Clicking on Save button & Verifying the RPSL record for current year after creation
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
-		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSLName + "\" was created.","Verify the User is able to create Exemption limit record");	
+		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSLName + "\" was created.","SMAB-T536 : Verify the User is able to create Exemption limit record");
 		
 		//Step7: Selecting module & 'All' List View
 		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
@@ -481,7 +481,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		
 		//Step4: Verify New Button is not present
 		boolean flag = objRPSLPage.verifyElementVisible(objRPSLPage.newButton);
-		softAssert.assertEquals(flag, false, "SMABT:545 - Verify user cannot create RPSL");
+		softAssert.assertEquals(flag, false, "SMAB-T545:  Verify user cannot create RPSL");
 		
 		// Step5: Clicking on 'first' Exemption Limits record 
 		objPage.locateElement("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody//tr[1]//th//a",3);
@@ -491,7 +491,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		
 		//Step6: Verify Edit Button is not present
 			flag = objRPSLPage.verifyElementVisible(objRPSLPage.editButton);
-			softAssert.assertEquals(flag, false, "SMABT:545 - Verify user cannot edit RPSL");
+			softAssert.assertEquals(flag, false, "SMAB-T545: Verify user cannot edit RPSL");
 	
 		//Step7: Verify User can view ExemptionLimits record
 			Thread.sleep(2000);

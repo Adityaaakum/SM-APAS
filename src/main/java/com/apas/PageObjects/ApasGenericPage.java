@@ -547,7 +547,7 @@ public class ApasGenericPage extends Page {
 		ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
 		if (System.getProperty("region").toUpperCase().equals("E2E")){
 			WebElement element  = driver.findElement(By.xpath("//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input"));
-			searchAndSelectFromDropDown(element, searchString);
+			searchAndSelectOptionFromDropDown(element, searchString);
 		}else{
 			Click(globalSearchButton);
 			enter(globalSearchListEditBox,searchString);
@@ -702,30 +702,6 @@ public class ApasGenericPage extends Page {
 	}
 
 
-	public WebElement locateElement(String xpath, int timeoutInSeconds) throws Exception {
-		WebElement element = null;
-		for (int i = 0; i < timeoutInSeconds; i++) {
-			try {
-				element = driver.findElement(By.xpath(xpath));
-				if (element != null) {
-					break;
-				}
-			} catch (Exception ex) {
-				Thread.sleep(750);
-			}
-		}
-		return element;
-	}
-
-
-	public void selectFromDropDown(Object element, String value) throws Exception {
-		selectOptionFromDropDown(element, value);
-	}
-
-	public void searchAndSelectFromDropDown(Object element, String value) throws Exception {
-		searchAndSelectOptionFromDropDown(element, value);
-	}
-
 	/**
 	 * Description: This method is to check unavailbility of an element
 	 *
@@ -733,17 +709,7 @@ public class ApasGenericPage extends Page {
 	 * @return : true if element not found
 	 */
 	public boolean isNotDisplayed(WebElement element) {
-		//driver.findElement((By) element);
-		try {
-			if (element.isDisplayed()) {
-				return false;
-			}
-
-		} catch (org.openqa.selenium.NoSuchElementException e) {
-			return true;
-		}
-		return true;
-
+		return  !verifyElementVisible(element);
 	}
 
 	/**

@@ -237,8 +237,8 @@ public class EFileImportPage extends ApasGenericPage {
      */
     public void selectFileAndSource(String fileType, String source) throws Exception {
         ReportLogger.INFO("Selecting File type :" + fileType + " and Source :" + source);
-		selectFromDropDown("File type", fileType);
-        selectFromDropDown("Source", source);
+		selectOptionFromDropDown("File type", fileType);
+        selectOptionFromDropDown("Source", source);
         
     }
 

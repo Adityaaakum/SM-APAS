@@ -89,7 +89,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		//Step5: Calculate and verify Total number of Value Adjustments in an Exemption		
 		 //objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
 		 int noOfVAs =  objValueAdjustmentPage.numberOfValueAdjustments.size(); 
-		 softAssert.assertEquals(noOfVAs, actualVAtoBeCreated, "Verify Number of Value Adjustments");	  
+		 softAssert.assertEquals(noOfVAs, actualVAtoBeCreated, "SMAB-T1213 : Verify Number of Value Adjustments");
 		   
 		  //Step6: Looping through each Value Adjustments to calculate Exemption Amount 
 		  for (int VARowNo = 0; VARowNo<noOfVAs; VARowNo++) { 			 				  
