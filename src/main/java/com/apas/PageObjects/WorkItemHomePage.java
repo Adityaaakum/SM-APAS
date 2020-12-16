@@ -566,8 +566,8 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		 	ReportLogger.INFO("Create a Work Pool record :: "+poolName);	
 		 	objPageObj.Click(objApasGenericPage.newButton);
 	 		objPageObj.enter(wpWorkPoolName, poolName);
-	 		objApasGenericPage.searchAndSelectFromDropDown(wpSupervisor, supervisorName);
-	 		if(level2SupervisorName != null)objApasGenericPage.searchAndSelectFromDropDown(wpLevel2Supervisor, level2SupervisorName);
+	 		objApasGenericPage.searchAndSelectOptionFromDropDown(wpSupervisor, supervisorName);
+	 		if(level2SupervisorName != null)objApasGenericPage.searchAndSelectOptionFromDropDown(wpLevel2Supervisor, level2SupervisorName);
 	 		if(level2ValueCriteria != null)objPageObj.enter(wpLevel2ValueCriteriaSupervisor, level2ValueCriteria);
 	 		return objApasGenericPage.saveRecord();
 		}

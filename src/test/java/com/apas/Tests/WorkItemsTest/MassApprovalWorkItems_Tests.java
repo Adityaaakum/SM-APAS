@@ -361,7 +361,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			
 			// Step11: Clicking on change workpool button to change the workpool and save 
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeWorkPool));
-			objApasGenericPage.searchAndSelectFromDropDown(objWorkItemHomePage.WorkPool, "RP Lost in Routing");
+			objApasGenericPage.searchAndSelectOptionFromDropDown(objWorkItemHomePage.WorkPool, "RP Lost in Routing");
 			objWorkItemHomePage.enter(objWorkItemHomePage.reasonForTransferring,"Test");
 			objWorkItemHomePage.Click(objWorkItemHomePage.saveButton);
 			
@@ -399,7 +399,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			
 			// Step6: Clicking on change assignee button to change the assignee and save 
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeAssignee));
-			objApasGenericPage.searchAndSelectFromDropDown(objWorkItemHomePage.AssignedTo, "rp appraiserAUT");
+			objApasGenericPage.searchAndSelectOptionFromDropDown(objWorkItemHomePage.AssignedTo, "rp appraiserAUT");
 			objWorkItemHomePage.enter(objWorkItemHomePage.reasonForTransferring,"Test");
 			objWorkItemHomePage.Click(objWorkItemHomePage.saveButton);
 			
@@ -488,7 +488,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			
 			// Step6: Clicking on change assignee button to change the assignee and save 
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeAssignee));
-			objApasGenericPage.searchAndSelectFromDropDown(objWorkItemHomePage.AssignedTo, "rp appraiserAUT");
+			objApasGenericPage.searchAndSelectOptionFromDropDown(objWorkItemHomePage.AssignedTo, "rp appraiserAUT");
 			objWorkItemHomePage.enter(objWorkItemHomePage.reasonForTransferring,"Test");
 			objWorkItemHomePage.Click(objWorkItemHomePage.saveButton);
 			
@@ -525,7 +525,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			
 			// Step11: Clicking on change workpool button to change the workpool and save 
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeWorkPool));
-			objApasGenericPage.searchAndSelectFromDropDown(objWorkItemHomePage.WorkPool, "RP Lost in Routing");
+			objApasGenericPage.searchAndSelectOptionFromDropDown(objWorkItemHomePage.WorkPool, "RP Lost in Routing");
 			objWorkItemHomePage.enter(objWorkItemHomePage.reasonForTransferring,"Test");
 			objWorkItemHomePage.Click(objWorkItemHomePage.saveButton);
 					

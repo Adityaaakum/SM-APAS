@@ -101,7 +101,7 @@ public class RollYearSettingsTest extends TestBase {
 			ReportLogger.INFO("Click 'Edit' button to update the status on the Roll Year record");
 			objPage.Click(objPage.waitForElementToBeClickable(objRollYearSettingsPage.editButton));
 			Thread.sleep(1000);
-			objRollYearSettingsPage.selectFromDropDown(objRollYearSettingsPage.status, "Closed");
+			objRollYearSettingsPage.selectOptionFromDropDown(objRollYearSettingsPage.status, "Closed");
 			objPage.Click(objRollYearSettingsPage.saveButton);
 			
 			//Step11: Validate the status of Roll Year record
@@ -164,12 +164,12 @@ public class RollYearSettingsTest extends TestBase {
 			objPage.enter(objRollYearSettingsPage.rollYearSettings, dataToCreatePastRollYearMap.get("Roll Year Settings"));
 			objApasGenericPage.enter(objRollYearSettingsPage.calendarEndDate, dataToCreatePastRollYearMap.get("Calendar End Date"));
 			Thread.sleep(1000);
-			softAssert.assertTrue(!objPage.verifyElementVisible(objRollYearSettingsPage.duplicateRecord), "Validate no duplicate error message is displayed");
-			softAssert.assertTrue(!objPage.verifyElementVisible(objRollYearSettingsPage.viewDuplicateRecord), "Validate no duplicate error view link is displayed");
+			softAssert.assertTrue(!objPage.verifyElementVisible(objRollYearSettingsPage.duplicateRecord), "SMAB-T638: Validate no duplicate error message is displayed");
+			softAssert.assertTrue(!objPage.verifyElementVisible(objRollYearSettingsPage.viewDuplicateRecord), "SMAB-T638: Validate no duplicate error view link is displayed");
 			
 			//Step10: Validate the error message is displayed on selecting the duplicate Roll Year
 			ReportLogger.INFO("Enter 'Roll Year' and 'Open Roll End Date' values only");
-			objRollYearSettingsPage.selectFromDropDown(objRollYearSettingsPage.rollYear, dataToCreatePastRollYearMap.get("Roll Year"));
+			objRollYearSettingsPage.selectOptionFromDropDown(objRollYearSettingsPage.rollYear, dataToCreatePastRollYearMap.get("Roll Year"));
 			objApasGenericPage.enter(objRollYearSettingsPage.openRollEndDate, dataToCreatePastRollYearMap.get("Open Roll End Date"));
 			Thread.sleep(2000);
 			//softAssert.assertTrue(objRollYearSettingsPage.duplicateRecord.isDisplayed(), "Validate duplicate error message is displayed as Roll Year record exist");

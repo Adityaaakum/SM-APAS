@@ -212,8 +212,8 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	public void enterRollYearData(Map<String, String> dataMap) throws Exception {
 		ReportLogger.INFO("Enter the following values : " + dataMap);
 		enter(rollYearSettings, dataMap.get("Roll Year Settings"));
-		selectFromDropDown(rollYear, dataMap.get("Roll Year"));
-		selectFromDropDown(status, dataMap.get("Status"));
+		selectOptionFromDropDown(rollYear, dataMap.get("Roll Year"));
+		selectOptionFromDropDown(status, dataMap.get("Status"));
 		enter(lienDate, dataMap.get("Lien Date"));
 		enter(taxStartDate, dataMap.get("Tax Start Date"));
 		enter(taxEndDate, dataMap.get("Tax End Date"));
@@ -242,12 +242,5 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	    Click(rollYearLocator);
 		Thread.sleep(3000);
 	}
-	
-	/**
-	 * @description: This method will return the error message appeared against the filed name passed in the parameter
-	 * @param fieldName: field name for which error message needs to be fetched
-	 */
-	public String getIndividualFieldErrorMessage(String fieldName) throws Exception {
-		return getIndividualFieldErrorMessage(fieldName);
-	}
+
 }

@@ -406,7 +406,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
         // Step4: Opening the Work pool module
 		apasGenericObj.searchModule(WORK_POOL);
 		apasGenericObj.displayRecords("All");
-		
+
 		// Step5.a: Create a Work Pool record if there is no existing record
 		if (apasGenericObj.searchRecords(poolName).substring(0, 6).equals("0 item")) {
 			ReportLogger.INFO("There is no existing Work Pool record with the name :: " + poolName);

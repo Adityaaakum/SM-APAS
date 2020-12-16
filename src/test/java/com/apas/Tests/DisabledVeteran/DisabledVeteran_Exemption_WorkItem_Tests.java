@@ -174,7 +174,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		ReportLogger.INFO("Step 5: Enter the End Date of Rating :"+dataToEdit.get("EnddateOfRating"));
 		objPage.enter(objExemptionsPage.endDateOfRating, dataToEdit.get("EnddateOfRating"));
 		ReportLogger.INFO("Step 6: Enter the End Date of Rating Reason :"+dataToEdit.get("EndRatingReason"));
-		objApasGenericPage.selectFromDropDown(objExemptionsPage.endRatingReason, dataToEdit.get("EndRatingReason"));
+		objApasGenericPage.selectOptionFromDropDown(objExemptionsPage.endRatingReason, dataToEdit.get("EndRatingReason"));
 		ReportLogger.INFO("Step 7: Click on the SAVE button");
 		objPage.Click(ExemptionsPage.saveButton);
 		HashMap<String, ArrayList<String>> getWIDetailsAfterEndDate = null;
@@ -236,7 +236,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	objPage.Click(objExemptionsPage.editExemption);
   	objPage.enter(objExemptionsPage.endDateOfRating, dataToEdit.get("EnddateOfRating"));
   	ReportLogger.INFO("Step 5: Adding End date of Rating Reason in the exemption");
-  	objApasGenericPage.selectFromDropDown(objExemptionsPage.endRatingReason, dataToEdit.get("EndRatingReason"));
+  	objApasGenericPage.selectOptionFromDropDown(objExemptionsPage.endRatingReason, dataToEdit.get("EndRatingReason"));
   	ReportLogger.INFO("Step 6: Click the SAVE button");
   	objPage.Click(ExemptionsPage.saveButton);
   	Thread.sleep(5000);

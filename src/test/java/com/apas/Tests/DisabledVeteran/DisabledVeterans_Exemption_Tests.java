@@ -89,8 +89,8 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		objPage.Click(exemptionPageObj.newExemptionButton);
 		
 		//Step3: selecting mandatory details before verifying error message
-		objApasGenericPage.searchAndSelectFromDropDown("APN",fieldData.get("APN"));
-		objApasGenericPage.searchAndSelectFromDropDown("Claimant's Name",fieldData.get("ClaimantName"));
+		objApasGenericPage.searchAndSelectOptionFromDropDown("APN",fieldData.get("APN"));
+		objApasGenericPage.searchAndSelectOptionFromDropDown("Claimant's Name",fieldData.get("ClaimantName"));
 		objPage.enter(exemptionPageObj.claimantSSN, fieldData.get("ClaimantSSN"));
 		
 		//step4:
@@ -109,7 +109,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		objPage.enter(exemptionPageObj.dateOfNotice,futureDate);
 		objApasGenericPage.selectMultipleValues(fieldData.get("BasisForClaim"), "Basis for Claim");
 		objPage.enter(exemptionPageObj.endDateOfRating,endDateGreaterThanUSDVADate);
-		objApasGenericPage.selectFromDropDown(exemptionPageObj.qualification, fieldData.get("Qualification"));
+		objApasGenericPage.selectOptionFromDropDown(exemptionPageObj.qualification, fieldData.get("Qualification"));
 		objPage.Click(ExemptionsPage.saveButton);
 		Thread.sleep(5000);
 		//ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying all entered fields show future date error messages");
@@ -144,9 +144,9 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			objPage.Click(exemptionPageObj.newExemptionButton);
 			
 			//Step3: selecting mandatory details before verifying error message
-			objApasGenericPage.searchAndSelectFromDropDown("APN",businessValidationdata.get("APN"));
+			objApasGenericPage.searchAndSelectOptionFromDropDown("APN",businessValidationdata.get("APN"));
 			objPage.enter(exemptionPageObj.dateApplicationReceived,businessValidationdata.get("DateApplicationReceived"));
-			objApasGenericPage.searchAndSelectFromDropDown("Claimant's Name",businessValidationdata.get("ClaimantName"));
+			objApasGenericPage.searchAndSelectOptionFromDropDown("Claimant's Name",businessValidationdata.get("ClaimantName"));
 			objPage.enter(exemptionPageObj.claimantSSN, businessValidationdata.get("ClaimantSSN"));
 			objPage.enter(exemptionPageObj.veteranName, businessValidationdata.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 			objPage.enter(exemptionPageObj.dateAquiredProperty,businessValidationdata.get("DateAquiredProperty"));
@@ -155,7 +155,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			objPage.enter(exemptionPageObj.dateOfNotice,businessValidationdata.get("DateOfNotice"));
 			objApasGenericPage.selectMultipleValues(businessValidationdata.get("BasisForClaim"), "Basis for Claim");
 			objPage.enter(exemptionPageObj.endDateOfRating,businessValidationdata.get("EnddateOfRating"));
-			objApasGenericPage.selectFromDropDown(exemptionPageObj.qualification, businessValidationdata.get("Qualification"));
+			objApasGenericPage.selectOptionFromDropDown(exemptionPageObj.qualification, businessValidationdata.get("Qualification"));
 			objPage.Click(ExemptionsPage.saveButton);
 		
 			//step4:
@@ -180,7 +180,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			/**verifying 'Date of Death of Veteran' and 'Deceased Veteran Qualification' are required when 'Unmarried_Spouse_of_Deceased_Veteran__c is 'Yes'
 			**/
 			ReportLogger.INFO("Verifying validation when unmarriedSpouseOfDisabledVeteran is Yes");
-			objApasGenericPage.selectFromDropDown(exemptionPageObj.unmarriedSpouseOfDisabledVeteran, "Yes");
+			objApasGenericPage.selectOptionFromDropDown(exemptionPageObj.unmarriedSpouseOfDisabledVeteran, "Yes");
 			objPage.Click(ExemptionsPage.saveButton);
 			Thread.sleep(2000);
 			softAssert.assertEquals(objApasGenericPage.getIndividualFieldErrorMessage("Date of Death of Veteran"),"Date of Death of Veteran is required","SMAB-T494:Verify 'Date of Death of Veteran' is required field");
@@ -194,7 +194,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			
 			//ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying validation for dvExemptionOnPriorResidence and realted fields");
 			ReportLogger.INFO("Verifying validation for dvExemptionOnPriorResidence and related fields");
-			objApasGenericPage.selectFromDropDown(exemptionPageObj.dvExemptionOnPriorResidence, "Yes");
+			objApasGenericPage.selectOptionFromDropDown(exemptionPageObj.dvExemptionOnPriorResidence, "Yes");
 			objPage.Click(ExemptionsPage.saveButton);
 			Thread.sleep(2000);
 			softAssert.assertContains(objPage.getElementText(objApasGenericPage.pageError),businessValidationdata.get("dvExemptionOnPriorResidenceYesErrorMsg"),"SMAB-T503:Verify Prior Residence Street Address, Prior Residence City,Prior Residence State,Prior Residence County, Date move from Prior Residence are required if 'DV Exemption on Prior Residence' is 'Yes'");
@@ -215,7 +215,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			//ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying validations when 'Qualification' is Not Qualified");
 			ReportLogger.INFO("Verifying error messages when 'Qualification' is Not Qualified");
 			objPage.enter(exemptionPageObj.endDateOfRating, "01/01/2020");
-			objApasGenericPage.selectFromDropDown(exemptionPageObj.qualification, "Not Qualified");
+			objApasGenericPage.selectOptionFromDropDown(exemptionPageObj.qualification, "Not Qualified");
 			objPage.Click(ExemptionsPage.saveButton);
 			Thread.sleep(2000);
 			softAssert.assertEquals(objApasGenericPage.getIndividualFieldErrorMessage("Reason for Not Qualified"), businessValidationdata.get("ReasonForNotQualifiedErrorMsg"), "SMAB-T1223:Verify When Exemption qualification is Not Qualified and the Exemption record is saved, then user is prompted to select a value for Qualification Denial Reason");
@@ -227,7 +227,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			 *
 			 **/
 			ReportLogger.INFO("verifying when 'Qualification' is Not Qualified and 'Reason for not Qualified' is 'Other' then 'Not Qualified Detail' is mandatory");
-			objApasGenericPage.selectFromDropDown(exemptionPageObj.reasonNotQualified, "Other");
+			objApasGenericPage.selectOptionFromDropDown(exemptionPageObj.reasonNotQualified, "Other");
 			objPage.Click(ExemptionsPage.saveButton);
 			Thread.sleep(2000);
 			softAssert.assertEquals(objApasGenericPage.getIndividualFieldErrorMessage("Not Qualified Detail"), businessValidationdata.get("NotQualifiedDetailErrorMsg"), "SMAB-T1262:Verify When Exemption qualification is Not Qualified, Reason for Not Qualified is Other and the Exemption record is saved, then user is prompted to select a value for 'Not Qualified Detail'");
@@ -237,7 +237,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			/**verifying when 'Qualification' is Qualified and 'Reason for not Qualified' is Not Blank then user sees corresponding error message
 			 **/
 			ReportLogger.INFO("verifyin error message when 'Qualification' is Not Qualified and 'Reason for not Qualified' is Not Blank");		
-			objApasGenericPage.selectFromDropDown(exemptionPageObj.qualification, "Qualified");
+			objApasGenericPage.selectOptionFromDropDown(exemptionPageObj.qualification, "Qualified");
 			objPage.Click(ExemptionsPage.saveButton);
 			Thread.sleep(2000);
 			softAssert.assertEquals(objApasGenericPage.getIndividualFieldErrorMessage("Reason for Not Qualified"), "Reason for Not Qualified must be blank", "SMAB-T1263,SMAB-T1264:Verify When the Exemption qualification is Qualified,Reason for Not Qualified is not Blank and the Exemption record is saved, then user is prompted with error message");
@@ -345,7 +345,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			ReportLogger.INFO("Adding End date of Rating in the exemption");
 			objPage.Click(exemptionPageObj.editExemption);
 			objPage.enter(exemptionPageObj.endDateOfRating, dataToEdit.get("EnddateOfRating")); 
-			objApasGenericPage.selectFromDropDown(exemptionPageObj.endRatingReason, dataToEdit.get("EndRatingReason"));
+			objApasGenericPage.selectOptionFromDropDown(exemptionPageObj.endRatingReason, dataToEdit.get("EndRatingReason"));
 			objPage.Click(ExemptionsPage.saveButton);
 	
 			//step5:now updating end date of rating on field level and verifying it should not be updated
@@ -450,7 +450,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	       
 	   //Step3: Selecting mandatory details before verifying error message
 	       objPage.enter(exemptionPageObj.dateApplicationReceived,fieldData.get("DateApplicationReceived"));
-	       objApasGenericPage.searchAndSelectFromDropDown("Claimant's Name",fieldData.get("ClaimantName"));
+	       objApasGenericPage.searchAndSelectOptionFromDropDown("Claimant's Name",fieldData.get("ClaimantName"));
 	       objPage.enter(exemptionPageObj.claimantSSN, fieldData.get("ClaimantSSN"));
 	       objPage.enter(exemptionPageObj.veteranName, fieldData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 	       objPage.enter(exemptionPageObj.veteranSSN, fieldData.get("VeteranSSN"));
@@ -459,7 +459,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	       objPage.enter(exemptionPageObj.effectiveDateOfUSDVA,fieldData.get("EffectiveDateOfUSDVA"));
 	       objPage.enter(exemptionPageObj.dateOfNotice,fieldData.get("DateOfNotice"));
 	       objApasGenericPage.selectMultipleValues(fieldData.get("BasisForClaim"), "Basis for Claim");
-	       objApasGenericPage.selectFromDropDown(exemptionPageObj.qualification, fieldData.get("Qualification"));
+	       objApasGenericPage.selectOptionFromDropDown(exemptionPageObj.qualification, fieldData.get("Qualification"));
 	       objPage.Click(ExemptionsPage.saveButton); 
 	       if(parcelsStatus.equals("Retired")){
 	    	   softAssert.assertEquals(objApasGenericPage.getIndividualFieldErrorMessage("APN"),"You cannot add an Exemption to a retired Parcel or the Property Use Code does not allow an Exemption. Please verify you have the correct Parcel or update the Parcel to proceed.","SMAB-T1517: Verify that user is not able to create Exemption for Retired Parcels from Parcel's related exemptions screen");}
