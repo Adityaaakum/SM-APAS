@@ -20,7 +20,6 @@ import com.apas.Reports.ReportLogger;
 import com.relevantcodes.extentreports.LogStatus;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -592,7 +591,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public String getFieldValueFromAPAS(String fieldName, String sectionName) {
 		String fieldValue;
-		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'" + sectionName + "')]";
+		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'" + sectionName + "')] |//div[contains(@class,'flowruntimeBody')]";//this condition was added to handle fields in mapping action second screen
 		String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName + "']/../..//slot[@slot='outputField']";
 		WebElement field = driver.findElement(By.xpath(fieldPath));
 
@@ -652,7 +651,7 @@ public class ApasGenericPage extends Page {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
 		//This code is to fetch the data for a particular row in the grid in the table passed in tableIndex
 		String xpath="(//*[@class='slds-tabs_scoped__content slds-show']//table)[" + tableIndex + "]";
-		String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table)[" + tableIndex + "]";
+		String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table)[" + tableIndex + "]";
 		if(verifyElementVisible(xpath))
 		{xpathTable=xpath;}
 
