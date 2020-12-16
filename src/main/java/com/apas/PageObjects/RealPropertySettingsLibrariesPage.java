@@ -152,10 +152,10 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	 * @param value: Like 'Yet to be submit for Approval or Approved' for Status field etc.
 	 * @throws Exception
 	 */
-	/*public void selectFromDropDown(WebElement element, String value) throws Exception {
-		selectFromDropDown(element, value);
+	/*public void selectOptionFromDropDown(WebElement element, String value) throws Exception {
+		selectOptionFromDropDown(element, value);
 	}*/
-	public void selectFromDropDown(Object element, String value) throws Exception {
+	public void selectOptionFromDropDown(Object element, String value) throws Exception {
 		selectOptionFromDropDown(element, value);
 	}
 	
@@ -171,7 +171,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		ReportLogger.INFO("Entering details for Real Property Settings record");
 		enter("RP Setting Name",rollYear);
 		selectOptionFromDropDown("Status",dataMap.get("Status"));
-		searchAndSelectFromDropDown("Roll Year Settings",rollYear);
+		searchAndSelectOptionFromDropDown("Roll Year Settings",rollYear);
 		enter(dvLowIncomeExemptionAmount,dataMap.get("DV Low Income Exemption Amount"));
 		enter(dvBasicExemptionAmount,dataMap.get("DV Basic Exemption Amount"));
 		enter(dvLowIncomeHouseholdLimit,dataMap.get("DV Low Income Household Limit Amount"));

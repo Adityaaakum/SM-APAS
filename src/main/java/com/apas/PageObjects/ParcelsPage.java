@@ -95,7 +95,7 @@ public class ParcelsPage extends ApasGenericPage {
 		selectOptionFromDropDown(workItemRoutingDropDownComponentsActionsModal, workItemRouting);
 		if (dueDate != null) enter(dueDateInputTextBox, dueDate);
 		if (dov != null) enter(dovInputTextBox, dov);
-		if (workItemOwner != null) searchAndSelectFromDropDown(workItemOwnerSearchBox,workItemOwner);
+		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
 
 		Thread.sleep(2000);

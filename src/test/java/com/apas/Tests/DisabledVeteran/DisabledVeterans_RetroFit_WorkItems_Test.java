@@ -103,7 +103,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		String reminderDVWINumber = InPoolWorkItems.get("Work Item Number").get(reminderWIRowNumber);
 
 		softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reminderWIRowNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1885:Verify that reminder WI 'Disabled Veterans -Update and Validate -Disabled veterans Yearly exemption amounts and income limits' and RPSL for current roll year(if not present) upon job execution");
-		softAssert.assertEquals(reminderDVWorkItemCount, 1, "DV Reminder WI count is 1");
+		softAssert.assertEquals(reminderDVWorkItemCount, 1, "SMAB-T1885 : DV Reminder WI count is 1");
 
 		ReportLogger.INFO("verifying Current year RPSL record is created along with Reminder WI");
 		workItemPageObj.openWorkItem(reminderDVWINumber);			
@@ -138,7 +138,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		String reminderWINumber = InPoolReminderWorkItems.get("Work Item Number").get(reminderWIRNumber);
 
 		softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reminderWIRNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1993:Verify that reminder WI 'Disabled Veterans -Update and Validate -Disabled veterans Yearly exemption amounts and income limits' and existing RPSL for current roll year is linked to it upon job execution");
-		softAssert.assertEquals(reminderWorkItemCount, 1, "DV Reminder WI count is 1");
+		softAssert.assertEquals(reminderWorkItemCount, 1, "SMAB-T1885 : DV Reminder WI count is 1");
 		workItemPageObj.openWorkItem(reminderWINumber);
 			
 		objPage.waitForElementToBeClickable(workItemPageObj.detailsWI);
@@ -153,7 +153,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//Thread.sleep(3000);
 		//objPage.waitForElementToBeClickable(rpslObj.statusDropDown, 10);
-		objApasGenericPage.selectFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
+		objApasGenericPage.selectOptionFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(3000);
 		 */
@@ -192,7 +192,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objPage.enter(rpslObj.dvLowIncomeExemptionAmountEditBox, "217910");
 		objPage.enter(rpslObj.dvBasicIncomeExemptionAmountEditBox, "145273");
 		objPage.enter(rpslObj.dvLowIncomeHouseholdLimitEditBox, "65337");
-		objApasGenericPage.selectFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
+		objApasGenericPage.selectOptionFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(5000);
 		 */
@@ -353,7 +353,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objPage.switchToNewWindow(parentwindow);
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//objPage.waitForElementToBeClickable(rpslObj.statusDropDown, 10);
-		objApasGenericPage.selectFromDropDown(rpslObj.statusDropDown, "Returned by Approver");
+		objApasGenericPage.selectOptionFromDropDown(rpslObj.statusDropDown, "Returned by Approver");
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(5000);
 		 */
@@ -391,7 +391,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//Thread.sleep(3000);
 		//objPage.waitForElementToBeClickable(rpslObj.statusDropDown,10);
-		objApasGenericPage.selectFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
+		objApasGenericPage.selectOptionFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(5000);
 		 */
@@ -429,7 +429,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//Thread.sleep(3000);
 		//objPage.waitForElementToBeClickable(rpslObj.statusDropDown, 10);
-		objApasGenericPage.selectFromDropDown(rpslObj.statusDropDown, "Approved");
+		objApasGenericPage.selectOptionFromDropDown(rpslObj.statusDropDown, "Approved");
 		/*
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(5000);
 		 */

@@ -373,7 +373,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T1935,SMAB-T1936,SMAB-T1940:Verify User is able to create a Work Pool or update an existing Work Pool to indicate if a second level Approver is needed,Verify User can designate a value amount for the second level Approver on the Work Pool record,Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor", dataProvider = "loginBppAndRpBusinessAdminUsers", dataProviderClass = DataProviders.class, groups = {
+	/*@Test(description = "SMAB-T1935,SMAB-T1936,SMAB-T1940:Verify User is able to create a Work Pool or update an existing Work Pool to indicate if a second level Approver is needed,Verify User can designate a value amount for the second level Approver on the Work Pool record,Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor", dataProvider = "loginBppAndRpBusinessAdminUsers", dataProviderClass = DataProviders.class, groups = {
 			"regression","work_item_manual" })
 	public void WorkItems_VerifyWorkPoolCreation(String loginUser) throws Exception {
 		
@@ -421,7 +421,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
 		objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
 		ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record");
-		apasGenericObj.searchAndSelectFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, dataAdminName);
+		apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, dataAdminName);
 		objPage.enter(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor, "400");
 		successMessage = apasGenericObj.saveRecord();
         
@@ -438,7 +438,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		Thread.sleep(1000);
 		objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
 		objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
-		apasGenericObj.searchAndSelectFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, rpBusinessAdminName);
+		apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, rpBusinessAdminName);
 		softAssert.assertEquals(apasGenericObj.saveRecordAndGetError(),"Close error dialog\nWe hit a snag.\nReview the errors on this page.\nSupervisor and Level 2 Supervisor should not be same.","SMAB-T1940 : Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor");
 		
 		// Step7: Delete the Work Pool record
@@ -447,7 +447,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		salesforceAPI.delete("Work_Pool__c", deleteWPQuery2);
 		
 		apasGenericObj.logout();
-	}
+	}*/
 
 	/**
 	 * Verify that work items are routed correctly as per the work item routing drop down for Parcels
