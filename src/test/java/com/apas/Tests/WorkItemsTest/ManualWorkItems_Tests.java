@@ -697,7 +697,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  //get user name
 		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Current Approver"),rpBusinessAdminName,"SMAB-T2478 : Verify Current Approver should be 1st level supervisor after withdrawthe workitem from 2nd level approval");
 		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Submitted for Approval","SMAB-T2478 : Status Of WI Should be Submitted for Approval ");
-		  
+		  apasGenericObj.logout();
      }
     
     /**
@@ -833,5 +833,6 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
 		  softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Approval - On Hold","SMAB-T2480 :Verify Workitem status should be Approval -On Hold");
 		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2480 :Verify 'Withdraw' Button should be present on Workitem timeline with 'Approval On Hold' status for Level 1 approval",true);
-		 }
+		  apasGenericObj.logout();
+       }
 }
