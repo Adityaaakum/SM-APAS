@@ -55,14 +55,11 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy (xpath= "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]//li[1]//button[@title='Toggle details for work item']")
 	public WebElement ExpendWIOnParcels;
 	
-	@FindBy (xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//flexipage-component2[@data-component-id='tem_workItemTimeline']//li[1]//*[text()='Submit for Approval']")
-    public WebElement SubmittedForApprovalButton;
+    public String SubmittedForApprovalButton="Submit for Approval";
 	
-	@FindBy (xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//flexipage-component2[@data-component-id='tem_workItemTimeline']//li[1]//*[text()='Withdraw']")
-    public WebElement WithdrawButton;
+    public String WithdrawButton="Withdraw";
 	
-	@FindBy (xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//flexipage-component2[@data-component-id='tem_workItemTimeline']//li[1]//*[text()='Approve']")
-    public WebElement ApprovalButton;
+    public String ApprovalButton="Approve";
 	/**
 	 * Description: This method will open the parcel with the APN passed in the
 	 * parameter
@@ -117,14 +114,5 @@ public class ParcelsPage extends ApasGenericPage {
 		
 		return workItemNumber;
 	}
-	public String getFieldvalueFromWITimeLine(String fieldName) {
-		String fieldValue="";
-		String fieldXpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//flexipage-component2[@data-component-id='tem_workItemTimeline']//li[1]//*[text()='"+fieldName+"']/../following-sibling::span";
-		try{
-			fieldValue =driver.findElement(By.xpath(fieldXpath)).getText();
-		}catch (Exception ex){
-			fieldValue= "";
-		}
-		return fieldValue;
-	}
+	
 }

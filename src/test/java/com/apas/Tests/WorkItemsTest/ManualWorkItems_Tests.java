@@ -535,7 +535,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  objWorkItemHomePage.login(users.EXEMPTION_SUPPORT_STAFF);
 		  // Step 2: Opening the PARCELS page and searching a parcel
 		  objWorkItemHomePage.searchModule(PARCELS);
-		  objParcelsPage.openParcel(apnValue);
+		  objWorkItemHomePage.globalSearchRecords(apnValue);		
 		  // Step 3: Creating Manual work item for the Parcel 
 		  String Workitem =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
@@ -623,8 +623,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  
 		  // Step 2: Opening the PARCELS page and searching a parcel
 		  apasGenericObj.searchModule(PARCELS);
-		  objParcelsPage.openParcel(apnValue); 
-		  
+		  objWorkItemHomePage.globalSearchRecords(apnValue);
    		  // Step 3: Creating Manual work item for the Parcel 
 		  String Workitem =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
@@ -654,11 +653,8 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  Thread.sleep(2000);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
 		  objWorkItemHomePage.openWorkItem(Workitem);
-		  ArrayList<String> tabs2 = new ArrayList<String> (driver.getWindowHandles());
-		  driver.switchTo().window(tabs2.get(1));
 		  String parentWindow = driver.getWindowHandle();
-	      objPage.switchToNewWindow(parentWindow);
-	       
+	      objPage.switchToNewWindow(parentWindow);  
 		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		  Thread.sleep(2000);	  
@@ -666,9 +662,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"In Progress","SMAB-T2476,SMAB-T2477 : Status Of WI Should be In Progress ");
 		  driver.close();
 		  driver.switchTo().window(parentWindow);
-
-		  //driver.switchTo().window(tabs2.get(0));
-		  objWorkItemHomePage.clickCheckBoxForSelectingWI(Workitem);
+          objWorkItemHomePage.clickCheckBoxForSelectingWI(Workitem);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.btnMarkComplete);
 		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
 		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
@@ -723,8 +717,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
    		  
    		  // Step 2: Opening the PARCELS page and searching a parcel
    		  apasGenericObj.searchModule(PARCELS);
-   	      objParcelsPage.openParcel(apnValue); 
-   		  
+   		 objWorkItemHomePage.globalSearchRecords(apnValue);
    		  // Step 3: Creating Manual work item for the Parcel 
    		  String Workitem =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
    		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
@@ -737,7 +730,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
    		  // Step 5: Changing the status of workitem from 'In Progress' to 'Submitted For Apporval' On workItem  timeline on parcel page 
    		  objWorkItemHomePage.openTab(objWorkItemHomePage.Tab_WorkItems_ON_parcel);
    		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
-   		  objWorkItemHomePage.Click(objParcelsPage.SubmittedForApprovalButton);
+   		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.SubmittedForApprovalButton));
    		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
    		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
    		  
@@ -745,13 +738,13 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
    		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
    		  softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Submitted for Approval","SMAB-T2479 :Verify Workitem status should be Submitted for Approval");
    		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2479 :Verify 'Withdraw'should be present Workitem timeline with Submitted for Approval status",true);
- 		  objWorkItemHomePage.Click(objParcelsPage.WithdrawButton);
+ 		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton));
  		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
  		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
  		  
    		  // Step 7: Changing the status of workitem from 'In Progress' to 'Submitted For Apporval' On workItem  timeline on parcel page 
  		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
-  		  objWorkItemHomePage.Click(objParcelsPage.SubmittedForApprovalButton);
+  		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.SubmittedForApprovalButton));
   		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
   		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
   		  apasGenericObj.logout();
@@ -774,20 +767,20 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  // Login With staff user 
 		  apasGenericObj.login(users.EXEMPTION_SUPPORT_STAFF);  
    		  apasGenericObj.searchModule(PARCELS);
- 	      objParcelsPage.openParcel(apnValue); 
- 	      objWorkItemHomePage.openTab(objWorkItemHomePage.Tab_WorkItems_ON_parcel);
+   		  objWorkItemHomePage.globalSearchRecords(apnValue); 
+   		  objWorkItemHomePage.openTab(objWorkItemHomePage.Tab_WorkItems_ON_parcel);
   		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
   		  
    		  // Step 9: Verify  'withdraw' button on workItem  timeline on parcel page with Approval On Hold status
           softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Approval - On Hold","SMAB-T2479 :Verify Workitem status should be Approval -On Hold");
   		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2479 :Verify 'Withdraw'should be present Workitem timeline with Approval-on Hold status",true);
-		  objWorkItemHomePage.Click(objParcelsPage.WithdrawButton);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton));
 		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
 		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
 		  
    		  // Step 10: Changing the status of workitem from 'In Progress' to 'Submitted For Apporval' On workItem  timeline on parcel page 
           objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
-   		  objWorkItemHomePage.Click(objParcelsPage.SubmittedForApprovalButton);
+   		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.SubmittedForApprovalButton));
    		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
    		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
    		  apasGenericObj.logout();
@@ -796,10 +789,10 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  //Login With supervisor 1 with rp admin 
  		  apasGenericObj.login(loginUser);
  		  apasGenericObj.searchModule(PARCELS);
-	      objParcelsPage.openParcel(apnValue); 
-	      objWorkItemHomePage.openTab(objWorkItemHomePage.Tab_WorkItems_ON_parcel);
+ 		  objWorkItemHomePage.globalSearchRecords(apnValue);	    
+ 		  objWorkItemHomePage.openTab(objWorkItemHomePage.Tab_WorkItems_ON_parcel);
   		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
-  		  objWorkItemHomePage.Click(objParcelsPage.ApprovalButton);
+  		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.ApprovalButton));
   		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
   		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
   		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
@@ -807,11 +800,11 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
    		  // Step 11: Verify  'withdraw' button on workItem  timeline on parcel page with Submitted for approval status
   		  softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Submitted for Approval","SMAB-T2480 :Verify Workitem status should be Submitted for Approval");
   		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2480 :Verify 'Withdraw'should be present Workitem timeline with Submitted for Approval status",true);
-		  objWorkItemHomePage.Click(objParcelsPage.WithdrawButton);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton));
 		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
 		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
 		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
- 		  objWorkItemHomePage.Click(objParcelsPage.ApprovalButton);
+ 		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.ApprovalButton));
  		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
  		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
  		  apasGenericObj.logout();
@@ -834,8 +827,8 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  
 		  apasGenericObj.login(loginUser);  
  		  apasGenericObj.searchModule(PARCELS);
-	      objParcelsPage.openParcel(apnValue); 
-	      objWorkItemHomePage.openTab(objWorkItemHomePage.Tab_WorkItems_ON_parcel);
+ 		  objWorkItemHomePage.globalSearchRecords(apnValue);
+ 		  objWorkItemHomePage.openTab(objWorkItemHomePage.Tab_WorkItems_ON_parcel);
 	      // step 13: Verify 'Withdraw' Button should be present on Workitem timeline with Approval On Hold status on Level For level 1 approval
 		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
 		  softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Approval - On Hold","SMAB-T2480 :Verify Workitem status should be Approval -On Hold");
