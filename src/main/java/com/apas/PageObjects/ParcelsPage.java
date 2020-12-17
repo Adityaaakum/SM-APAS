@@ -52,6 +52,14 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'ErrorText')]")
 	public WebElement workItemTypeAndSubTypeError;
 
+	@FindBy (xpath= "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]//li[1]//button[@title='Toggle details for work item']")
+	public WebElement ExpendWIOnParcels;
+	
+    public String SubmittedForApprovalButton="Submit for Approval";
+	
+    public String WithdrawButton="Withdraw";
+	
+    public String ApprovalButton="Approve";
 	/**
 	 * Description: This method will open the parcel with the APN passed in the
 	 * parameter
@@ -106,4 +114,5 @@ public class ParcelsPage extends ApasGenericPage {
 		
 		return workItemNumber;
 	}
+	
 }

@@ -900,7 +900,8 @@ public class Page extends TestBase {
 	public WebElement getButtonWithText(String text){
 		String commonxPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]";
 		String xpath = commonxPath + "//button[text()='" + text + "'] | " +
-				       commonxPath + "//div[text()='" + text + "']//..";
+				       commonxPath + "//div[text()='" + text + "']//.. | "+
+				       commonxPath + "//*[contains(@class,'slds-is-open')]//button[text()='"+ text + "']";
 
 		return driver.findElement(By.xpath(xpath));
 	}
