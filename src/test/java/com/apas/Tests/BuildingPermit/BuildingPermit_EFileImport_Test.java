@@ -201,7 +201,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Direction","Situs Information"), "", "SMAB-T356: 'Permit Situs Direction' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Type","Situs Information"), "MOUNT", "SMAB-T356: 'Permit Situs Type' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit City Code","Situs Information"), "AT", "SMAB-T356: 'Permit City Code' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs","Situs Information"), "55 MOUNT VERNON LN, ATHERTON", "SMAB-T356: 'Situs' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs","Situs Information"), "55 MOUNT VERNON LN , ATHERTON", "SMAB-T356: 'Situs' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Situs Number","Situs Information"), "55", "SMAB-T356: 'Situs Number' Field Validation in 'Situs Information' section");
 		//This handling is done as parcel data was created manually in PREUAT and Situs Unit Number is 55 there while its empty in QA as per default data load
 		if (System.getProperty("region").toUpperCase().trim().equals("QA") || System.getProperty("region").toUpperCase().trim().equals("E2E")) {

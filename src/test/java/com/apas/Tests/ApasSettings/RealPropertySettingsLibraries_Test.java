@@ -391,7 +391,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objRPSLPage.displayRecords("All");
 		
 		//Step4: Verify atleast 8 RPSL are displayed
-		int noOfRPSL = objPage.getElementSize(objRPSLPage.numberOfRPSL);
+		int noOfRPSL = objRPSLPage.numberOfRPSL.size();
 		
 		softAssert.assertTrue(noOfRPSL>=8, "SMAB-T583: Verify user is able to view at least last 8 years of Exemption Limits records");
 		

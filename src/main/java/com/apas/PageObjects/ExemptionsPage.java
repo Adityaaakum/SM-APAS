@@ -456,7 +456,8 @@ public class ExemptionsPage extends ApasGenericPage {
         //Added the below code as SCript is loosing the focus from the Exemption screen
         driver.navigate().refresh();
         Thread.sleep(2000);
-        String exmpName = objPage.getElementText(objPage.waitForElementToBeVisible(exemptionName));
+        objPage.waitForElementToBeVisible(exemptionName);
+        String exmpName = objPage.getElementText(exemptionName);
 
         ReportLogger.INFO("Created " + exmpName + " Exemption with mandatory data");
         objPage.waitForElementToBeClickable(10, dateApplicationReceivedExemptionDetails);
@@ -632,7 +633,8 @@ public class ExemptionsPage extends ApasGenericPage {
         ReportLogger.INFO("There are " + field_elements.size() + " read only fields on Exemption record");
 
         for (WebElement fieldElement : field_elements) {
-            String elementName = getElementText(waitForElementToBeVisible(fieldElement));
+            waitForElementToBeVisible(fieldElement);
+            String elementName = getElementText(fieldElement);
             if (elementName.equals(fieldLabel)) {
                 flag = "true";
                 ReportLogger.INFO("Validate 'Status' field is read only on Exemption Detail screen");

@@ -237,10 +237,13 @@ public class ApasGenericPage extends Page {
 				dateToSelect = dateArray[1];
 			}
 
-			Select select = new Select(waitForElementToBeVisible(yearDropDown));
+			waitForElementToBeVisible(yearDropDown);
+			Select select = new Select(yearDropDown);
 			select.selectByValue(yearToSelect);
 
-			WebElement visibleMnth = waitForElementToBeVisible(visibleMonth);
+			waitForElementToBeVisible(visibleMonth);
+
+			WebElement visibleMnth = visibleMonth;
 			String visibleMonthTxt = visibleMnth.getText().toLowerCase();
 			visibleMonthTxt = visibleMonthTxt.substring(0, 1).toUpperCase() + visibleMonthTxt.substring(1).toLowerCase();
 
@@ -251,11 +254,14 @@ public class ApasGenericPage extends Page {
 
 			while(!visibleMonthTxt.equalsIgnoreCase(monthToSelect) || counter > counterIterations) {
 				if(indexOfMonthToSelect < indexOfDefaultMonth) {
-					waitForElementToBeVisible(prevMnth).click();
+					waitForElementToBeVisible(prevMnth);
+					Click(prevMnth);
 				} else {
-					waitForElementToBeVisible(nextMnth).click();
+					waitForElementToBeVisible(nextMnth);
+					Click(nextMnth);
 				}
-				visibleMonthTxt = waitForElementToBeVisible(visibleMonth).getText();
+				waitForElementToBeVisible(visibleMonth);
+				visibleMonthTxt = visibleMonth.getText();
 				counter++;
 			}
 
