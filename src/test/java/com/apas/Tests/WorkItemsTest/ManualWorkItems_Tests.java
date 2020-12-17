@@ -430,7 +430,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
     	objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
     	objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
     	ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record");
-    	apasGenericObj.searchAndSelectFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, dataAdminName);
+    	apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, dataAdminName);
     	objPage.enter(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor, "400");
     	String successMessage = apasGenericObj.saveRecord();
             
@@ -446,7 +446,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
     	ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record to keep it same as the Supervisor");
     	objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
     	objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
-    	apasGenericObj.searchAndSelectFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, rpBusinessAdminName);
+    	apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, rpBusinessAdminName);
     	softAssert.assertEquals(apasGenericObj.saveRecordAndGetError(),"Close error dialog\nWe hit a snag.\nReview the errors on this page.\nSupervisor and Level 2 Supervisor should not be same.","SMAB-T1940 : Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor");
     		
     	apasGenericObj.logout();

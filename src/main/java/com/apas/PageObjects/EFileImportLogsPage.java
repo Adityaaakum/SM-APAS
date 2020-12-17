@@ -62,7 +62,7 @@ public class EFileImportLogsPage extends ApasGenericPage {
 	 */
 	public void openImportLog(String name) throws IOException, InterruptedException {
 		ReportLogger.INFO("Opening the Import Logs with the name : " + name);
-		Click(driver.findElement(By.xpath("//a[@title='" + name + "']")));
+		Click(driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]//a[@title='" + name + "']")));
 		Thread.sleep(5000);
 	}
 

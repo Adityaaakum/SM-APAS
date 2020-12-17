@@ -473,7 +473,7 @@ public class BppTrendPage extends ApasGenericPage {
 		String xpath = "//lightning-spinner//span[text() = 'Loading']";
 		WebElement spinner = locateElement(xpath, 5);
 		if(spinner != null) {
-			validateAbsenceOfElement(xpath, 120);
+			waitForElementToDisappear(xpath, 120);
 		}
 
 		//Locating the message displayed above the table once the loader / spinner becomes invisible

@@ -147,9 +147,9 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	    
 	    
 	    //Validate that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval'
-	    softAssert.assertTrue(objLoginPage.validateAbsenceOfElement(objWorkItemHomePage.changeWorkPool ,10),
+	    softAssert.assertTrue(objLoginPage.waitForElementToBeInVisible(objWorkItemHomePage.changeWorkPool ,10),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval'");
-	    softAssert.assertTrue(objLoginPage.validateAbsenceOfElement(objWorkItemHomePage.changeAssignee,10),
+	    softAssert.assertTrue(objLoginPage.waitForElementToBeInVisible(objWorkItemHomePage.changeAssignee,10),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval'");
 	    
 	    //Validate that work pool supervisor is not able to mass transfer WI's with status 'Approval-On Hold'
@@ -157,9 +157,9 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	    driver.navigate().refresh();
 	    objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.lnkTABMySubmittedforApproval);
 	    objApasGenericPage.openTab("On Hold");
-	    softAssert.assertTrue(objLoginPage.validateAbsenceOfElement(objWorkItemHomePage.changeWorkPool ,10),
+	    softAssert.assertTrue(objLoginPage.waitForElementToBeInVisible(objWorkItemHomePage.changeWorkPool ,10),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'Approval-On Hold'");
-	    softAssert.assertTrue(objLoginPage.validateAbsenceOfElement(objWorkItemHomePage.changeAssignee,10),
+	    softAssert.assertTrue(objLoginPage.waitForElementToBeInVisible(objWorkItemHomePage.changeAssignee,10),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'Approval-On Hold'");
 	    
 	    //Validate that work pool supervisor is not able to mass transfer WI's with status 'completed'
@@ -167,9 +167,9 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	    driver.navigate().refresh();
 	    objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.lnkTABCompleted);
 	    objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABCompleted);
-	    softAssert.assertTrue(objLoginPage.validateAbsenceOfElement(objWorkItemHomePage.changeWorkPool ,10),
+	    softAssert.assertTrue(objLoginPage.waitForElementToBeInVisible(objWorkItemHomePage.changeWorkPool ,10),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'completed'");
-	    softAssert.assertTrue(objLoginPage.validateAbsenceOfElement(objWorkItemHomePage.changeAssignee,10),
+	    softAssert.assertTrue(objLoginPage.waitForElementToBeInVisible(objWorkItemHomePage.changeAssignee,10),
 	    		"SMAB-T2033: Validate that work pool supervisor is not able to mass transfer WI's with status 'completed'");
 	    
 	    objApasGenericPage.logout();
