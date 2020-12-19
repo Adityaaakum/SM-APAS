@@ -373,21 +373,21 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	/*@Test(description = "SMAB-T1935,SMAB-T1936,SMAB-T1940:Verify User is able to create a Work Pool or update an existing Work Pool to indicate if a second level Approver is needed,Verify User can designate a value amount for the second level Approver on the Work Pool record,Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor", dataProvider = "loginBppAndRpBusinessAdminUsers", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T1935,SMAB-T1936,SMAB-T1940:Verify User is able to create a Work Pool or update an existing Work Pool to indicate if a second level Approver is needed,Verify User can designate a value amount for the second level Approver on the Work Pool record,Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor", dataProvider = "loginBppAndRpBusinessAdminUsers", dataProviderClass = DataProviders.class, groups = {
 			"regression","work_item_manual" })
 	public void WorkItems_VerifyWorkPoolCreation(String loginUser) throws Exception {
 		
-		//Step1: Delete the existing Work Pool record
-		ReportLogger.INFO("Delete the existing Work Pool record i.e. Test Work Pool, if that exists");
-		String poolName = "Test Work Pool";
-		String deleteWPQuery1 = "select id from Work_Pool__c where Name = '" + poolName + "'";
-		if(deleteWPQuery1 != null)salesforceAPI.delete("Work_Pool__c", deleteWPQuery1);
-		
+		//Step1: Setup the Work Pool Name
+		String poolName="";
 		String dataAdmin = CONFIG.getProperty(users.DATA_ADMIN + "UserName");
 		String rpBusinessAdmin = CONFIG.getProperty(users.RP_BUSINESS_ADMIN + "UserName");
 		String bppBusinessAdmin = CONFIG.getProperty(users.BPP_BUSINESS_ADMIN + "UserName");
 		
-		//Get the user name through queries
+		if(loginUser.equals(users.RP_BUSINESS_ADMIN))poolName = "Automation_Test_1";
+		if(loginUser.equals(users.BPP_BUSINESS_ADMIN))poolName = "Automation_Test_2";
+		
+		//Step2: Get the user name through queries
+		ReportLogger.INFO("Get the user names through SOQL queries");
 		String rpBusinessAdminNameQuery = "select Name from User where UserName__c = '"+ rpBusinessAdmin + "'";
 		HashMap<String, ArrayList<String>> response1 = new SalesforceAPI().select(rpBusinessAdminNameQuery);
         String rpBusinessAdminName = response1.get("Name").get(0);
@@ -400,54 +400,57 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		HashMap<String, ArrayList<String>> response3 = new SalesforceAPI().select(dataAdminNameQuery);
         String dataAdminName = response3.get("Name").get(0);
 				
-		// Step1: Login to the APAS application using the credentials passed through dataprovider 
+		// Step3: Login to the APAS application using the credentials passed through dataprovider 
         apasGenericObj.login(loginUser);
-
-		// Step2: Opening the Work pool module and create a NEW one
-		apasGenericObj.searchModule(WORK_POOL);
-		ReportLogger.INFO("Create a New Work Pool record");
-		String successMessage = objWorkItemHomePage.createWorkPool(poolName,rpBusinessAdminName,bppBusinessAdminName,"500");
-		Thread.sleep(1000); 
-		 				
-		// Step3: Validate the success message after creation of work pool and Value Criteria field
-		softAssert.assertEquals(successMessage,"success\nWork Pool \"" + poolName + "\" was created.\nClose","SMAB-T1935 : Validate success message on creation of the Work Pool" );
- 		Thread.sleep(1000);
-		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor),"500.00",
-				"SMAB-T1935 : Validate user is able to update Level2 Value Criteria in the Work Pool");
-		
-		// Step4: Edit the work pool record and update some field values in it
-		ReportLogger.INFO("Update the Work Pool record");
-		objWorkItemHomePage.waitForElementToBeVisible(6, objPage.getButtonWithText(objWorkItemHomePage.editButton));
-		objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
-		objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
-		ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record");
-		apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, dataAdminName);
-		objPage.enter(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor, "400");
-		successMessage = apasGenericObj.saveRecord();
         
-		// Step5 Validate the success message after saving the work pool and other fields
-		softAssert.assertEquals(successMessage,"success\nWork Pool \"" + poolName + "\" was saved.\nClose","SMAB-T1935 : Validate user is able to edit and save the Work Pool" );
+        // Step4: Opening the Work pool module
+		apasGenericObj.searchModule(WORK_POOL);
+		apasGenericObj.displayRecords("All");
+
+		// Step5.a: Create a Work Pool record if there is no existing record
+		if (apasGenericObj.searchRecords(poolName).substring(0, 6).equals("0 item")) {
+			ReportLogger.INFO("There is no existing Work Pool record with the name :: " + poolName);
+	    	ReportLogger.INFO("Create a New Work Pool record");
+	    	String successMessage = objWorkItemHomePage.createWorkPool(poolName,rpBusinessAdminName,bppBusinessAdminName,"500"); 
+	    		 				
+	    	// Step5.b: Validate the success message after creation of work pool and Value Criteria field
+	    	softAssert.assertEquals(successMessage,"success\nWork Pool \"" + poolName + "\" was created.\nClose","SMAB-T1935 : Validate success message on creation of the Work Pool" );
+	    	softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor),"500.00",
+	    				"SMAB-T1935 : Validate user is able to enter and save Level2 Value Criteria in the Work Pool");
+	      }
+		// Step6: Open the work pool record if there is an existing record
+		else {
+    	    ReportLogger.INFO("There is an existing Work Pool record with the name :: " + poolName);
+    		ReportLogger.INFO("Update the Work Pool record");
+    		objWorkItemHomePage.globalSearchRecords(poolName);
+		  }
+		
+		// Step7: Edit the work pool record and update field values in it
 		objWorkItemHomePage.waitForElementToBeVisible(6, objPage.getButtonWithText(objWorkItemHomePage.editButton));
-		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2Supervisor),dataAdminName,
-				"SMAB-T1935 : Validate user is able to update value for Level2 Supervisor in the Work Pool");
-		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor),"400.00",
-				"SMAB-T1936: Validate user is able to update value for Level2 Value Criteria in the Work Pool");
-		
-		// Step6: Edit the work pool record again with same user in Approver & Level2 Supervisor fields
-		ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record to keep it same as the Supervisor");
-		Thread.sleep(1000);
-		objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
-		objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
-		apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, rpBusinessAdminName);
-		softAssert.assertEquals(apasGenericObj.saveRecordAndGetError(),"Close error dialog\nWe hit a snag.\nReview the errors on this page.\nSupervisor and Level 2 Supervisor should not be same.","SMAB-T1940 : Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor");
-		
-		// Step7: Delete the Work Pool record
-		ReportLogger.INFO("Delete the Work Pool record");
-		String deleteWPQuery2 = "select id from Work_Pool__c where Name = '" + poolName + "'";
-		salesforceAPI.delete("Work_Pool__c", deleteWPQuery2);
-		
-		apasGenericObj.logout();
-	}*/
+    	objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
+    	objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
+    	ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record");
+    	apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, dataAdminName);
+    	objPage.enter(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor, "400");
+    	String successMessage = apasGenericObj.saveRecord();
+            
+    	// Step8 Validate the success message after saving the work pool and other fields
+    	softAssert.assertEquals(successMessage,"success\nWork Pool \"" + poolName + "\" was saved.\nClose","SMAB-T1935 : Validate user is able to edit and save the Work Pool" );
+    	objWorkItemHomePage.waitForElementToBeVisible(6, objPage.getButtonWithText(objWorkItemHomePage.editButton));
+    	softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2Supervisor),dataAdminName,
+    				"SMAB-T1935 : Validate user is able to update value for Level2 Supervisor in the Work Pool");
+    	softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor),"400.00",
+    				"SMAB-T1936: Validate user is able to update value for Level2 Value Criteria in the Work Pool");
+    		
+    	// Step9: Edit the work pool record again with same user in Approver & Level2 Supervisor fields
+    	ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record to keep it same as the Supervisor");
+    	objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
+    	objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
+    	apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, rpBusinessAdminName);
+    	softAssert.assertEquals(apasGenericObj.saveRecordAndGetError(),"Close error dialog\nWe hit a snag.\nReview the errors on this page.\nSupervisor and Level 2 Supervisor should not be same.","SMAB-T1940 : Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor");
+    		
+    	apasGenericObj.logout();
+	}
 
 	/**
 	 * Verify that work items are routed correctly as per the work item routing drop down for Parcels
@@ -527,9 +530,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	public void WorkItem_WIPresentInCompletedTab_2ndLevelApprover(String loginUser) throws Exception {
 
 		  //fetching a parcel where PUC is not blank but Primary Situs is blank 
-		  String queryAPNValue ="select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1" ;  
-		  HashMap<String, ArrayList<String>> response =salesforceAPI.select(queryAPNValue); 
-		  String apnValue=response.get("Name").get(0); 
+		  String apnValue=apasGenericObj.fetchActiveAPN();
 		  String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS; 
 		  Map<String, String> hashMapmanualWorkItemData =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeRP");
 		  
@@ -537,8 +538,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  objWorkItemHomePage.login(users.EXEMPTION_SUPPORT_STAFF);
 		  // Step 2: Opening the PARCELS page and searching a parcel
 		  objWorkItemHomePage.searchModule(PARCELS);
-		  objWorkItemHomePage.globalSearchRecords(apnValue); 
-		  
+		  objWorkItemHomePage.globalSearchRecords(apnValue);		
 		  // Step 3: Creating Manual work item for the Parcel 
 		  String Workitem =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
@@ -583,6 +583,8 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  
           // steps 8: Approve WI from needs my approval tab
 		  objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.toggleBUtton);
+		  Thread.sleep(3000); 
 		  objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.btnApprove);
 		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.closeButton, 3);
@@ -594,4 +596,246 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
           softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(Workitem), "SMAB-T2466: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab"); 
 	      objWorkItemHomePage.logout();
      }
+    
+    /**
+	* Verify Withdraw' Button on Staff and  level 1 supervisor with  submitted for approval and Approval -On Hold Status
+	**/
+    @Test(description = "SMAB-T2476,SMAB-T2477,SMAB-T2478: Verify Withdraw' Button on Staff and  level 1 supervisor with  submitted for approval and Approval -On Hold Status", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
+			"smoke", "regression", "Work_Items_Manual" }, alwaysRun = true)
+	public void WorkItem_VerifyWithrawButtonOnWI(String loginUser) throws Exception {
+    	  String ExemptionSupport = CONFIG.getProperty(users.EXEMPTION_SUPPORT_STAFF + "UserName");
+		  String rpBusinessAdmin = CONFIG.getProperty(users.RP_BUSINESS_ADMIN + "UserName");
+		
+		  //Get the user name through queries
+          String ExemptionSupportNameQuery = "select Name from User where UserName__c = '"+ ExemptionSupport + "'";
+          HashMap<String, ArrayList<String>> response1 = new SalesforceAPI().select(ExemptionSupportNameQuery);
+		  String rpBusinessAdminName = response1.get("Name").get(0);
+		        
+		  //Get the user name through queries
+	      String rpBusinessAdminNameQuery = "select Name from User where UserName__c = '"+ rpBusinessAdmin + "'";
+		  response1 = new SalesforceAPI().select(rpBusinessAdminNameQuery);
+		  String ExemptionSupportName = response1.get("Name").get(0);
+				
+		  //fetching a parcel where PUC is not blank but Primary Situs is blank 
+		  String apnValue=apasGenericObj.fetchActiveAPN();
+	      String workItemCreationData = System.getProperty("user.dir") +testdata.MANUAL_WORK_ITEMS; 
+		  Map<String, String> hashMapmanualWorkItemData =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeRP");
+		  
+		  // Step 1: Login to the APAS application using the credentials of staff user
+		  apasGenericObj.login(users.EXEMPTION_SUPPORT_STAFF);
+		  
+		  // Step 2: Opening the PARCELS page and searching a parcel
+		  apasGenericObj.searchModule(PARCELS);
+		  objWorkItemHomePage.globalSearchRecords(apnValue);
+   		  // Step 3: Creating Manual work item for the Parcel 
+		  String Workitem =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		  objWorkItemHomePage.waitUntilPageisReady(driver);
+		  
+		  // Step 4: Update Value in workitem details page to update second level supervisor
+		  apasGenericObj.editAndInputFieldData(objWorkItemHomePage.valueTextBox,objWorkItemHomePage.valueTextBox, "21");
+		  
+		  //Step 5: Open the Work Item Home Page 
+		  driver.navigate().refresh(); 
+		  apasGenericObj.searchModule(HOME);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
+		  objWorkItemHomePage.waitUntilPageisReady(driver);
+		  
+		  //steps 6: select work item from in progress tab and mark complete
+		  objWorkItemHomePage.clickCheckBoxForSelectingWI(Workitem);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.btnMarkComplete);
+		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+          Thread.sleep(2000);
+		  objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_MY_SUBMITTED_FOR_APPROVAL);
+          objWorkItemHomePage.clickCheckBoxForSelectingWI(Workitem);
+          objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.WithdrawButton));
+		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+		  Thread.sleep(2000);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
+		  objWorkItemHomePage.openWorkItem(Workitem);
+		  String parentWindow = driver.getWindowHandle();
+	      objPage.switchToNewWindow(parentWindow);  
+		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		  Thread.sleep(2000);	  
+		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Current Approver"),ExemptionSupportName,"SMAB-T2476,SMAB-T2477 : Verify Current Approver should be staff user after 'withdraw' the workitem from supervisor level 1");
+		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"In Progress","SMAB-T2476,SMAB-T2477 : Status Of WI Should be In Progress ");
+		  driver.close();
+		  driver.switchTo().window(parentWindow);
+          objWorkItemHomePage.clickCheckBoxForSelectingWI(Workitem);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.btnMarkComplete);
+		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+          apasGenericObj.logout();
+		  Thread.sleep(15000);
+		  
+		  //Login With supervisor 1 with rp admin 
+		  apasGenericObj.login(loginUser);
+		  apasGenericObj.searchModule(modules.HOME);
+		  objWorkItemHomePage.waitUntilPageisReady(driver);
+		  
+		  // steps 7: Approve WI from needs my approval tab
+		  objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
+		  objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.btnApprove);
+		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+		  objWorkItemHomePage.waitUntilPageisReady(driver);
+		  Thread.sleep(2000);
+		  objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_MY_SUBMITTED_FOR_APPROVAL);
+          objWorkItemHomePage.clickCheckBoxForSelectingWI(Workitem);
+          objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.WithdrawButton));
+		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+		  Thread.sleep(2000);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
+		  objWorkItemHomePage.openWorkItem(Workitem);
+	      objPage.switchToNewWindow(parentWindow);
+          objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		  Thread.sleep(2000);	  
+		  //get user name
+		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Current Approver"),rpBusinessAdminName,"SMAB-T2478 : Verify Current Approver should be 1st level supervisor after withdrawthe workitem from 2nd level approval");
+		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Submitted for Approval","SMAB-T2478 : Status Of WI Should be Submitted for Approval ");
+		  apasGenericObj.logout();
+     }
+    
+    /**
+   	* Verify 'withdraw' button visible on work item timeline on parcel page
+   	**/
+       @Test(description = "SMAB-T2479,SMAB-T2480 : Verify 'withdraw' button visible on work item timeline on parcel page", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
+   			"smoke", "regression", "Work_Items_Manual" }, alwaysRun = true)
+   	public void WorkItem_VerifyWithraw_OnWITimelineOnParcel(String loginUser) throws Exception {
+
+   		  //fetching a parcel where PUC is not blank but Primary Situs is blank 
+    	  String apnValue= apasGenericObj.fetchActiveAPN();
+    	   String workItemCreationData = System.getProperty("user.dir") +testdata.MANUAL_WORK_ITEMS; 
+   		  Map<String, String> hashMapmanualWorkItemData =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeRP");
+   		  
+   		  // Step 1: Login to the APAS application using the credentials of staff user
+   		  apasGenericObj.login(users.EXEMPTION_SUPPORT_STAFF);
+   		  
+   		  // Step 2: Opening the PARCELS page and searching a parcel
+   		  apasGenericObj.searchModule(PARCELS);
+   		 objWorkItemHomePage.globalSearchRecords(apnValue);
+   		  // Step 3: Creating Manual work item for the Parcel 
+   		  String Workitem =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+   		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
+   		  objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+   		  objWorkItemHomePage.waitUntilPageisReady(driver);
+   		  Thread.sleep(2000);
+ 		  // Step 4: Update Value in work Item details page to update second level supervisor
+   		  apasGenericObj.editAndInputFieldData(objWorkItemHomePage.valueTextBox,objWorkItemHomePage.valueTextBox, "21");
+   		  driver.navigate().back();
+   		  // Step 5: Changing the status of workitem from 'In Progress' to 'Submitted For Apporval' On workItem  timeline on parcel page 
+   		  objWorkItemHomePage.openTab(objWorkItemHomePage.Tab_WorkItems_ON_parcel);
+   		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
+   		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.SubmittedForApprovalButton));
+   		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+   		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+   		  
+   		  // Step 6: Verify  'withdraw' button on workItem  timeline on parcel page with Submitted for approval status
+   		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
+   		  softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Submitted for Approval","SMAB-T2479 :Verify Workitem status should be Submitted for Approval");
+   		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2479 :Verify 'Withdraw'should be present Workitem timeline with Submitted for Approval status",true);
+ 		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton));
+ 		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+ 		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+ 		  
+   		  // Step 7: Changing the status of workitem from 'In Progress' to 'Submitted For Apporval' On workItem  timeline on parcel page 
+ 		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
+  		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.SubmittedForApprovalButton));
+  		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+  		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+  		  apasGenericObj.logout();
+  		  Thread.sleep(15000);
+  		  
+  		  // Login With supervisor 1 with rp admin 
+   		  apasGenericObj.login(loginUser);
+   		  apasGenericObj.searchModule(modules.HOME);
+   		  objWorkItemHomePage.waitUntilPageisReady(driver);
+   		  
+   		  // steps 8: Put On Hold the  WI from needs my approval tab of supervisor level 1st
+   		  objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
+   		  objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);
+   		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.PutOnHoldButton));
+   		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+   		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+   		  apasGenericObj.logout();
+		  Thread.sleep(5000);
+		  
+		  // Login With staff user 
+		  apasGenericObj.login(users.EXEMPTION_SUPPORT_STAFF);  
+   		  apasGenericObj.searchModule(PARCELS);
+   		  objWorkItemHomePage.globalSearchRecords(apnValue); 
+   		  objWorkItemHomePage.openTab(objWorkItemHomePage.Tab_WorkItems_ON_parcel);
+  		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
+  		  
+   		  // Step 9: Verify  'withdraw' button on workItem  timeline on parcel page with Approval On Hold status
+          softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Approval - On Hold","SMAB-T2479 :Verify Workitem status should be Approval -On Hold");
+  		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2479 :Verify 'Withdraw'should be present Workitem timeline with Approval-on Hold status",true);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton));
+		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+		  
+   		  // Step 10: Changing the status of workitem from 'In Progress' to 'Submitted For Apporval' On workItem  timeline on parcel page 
+          objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
+   		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.SubmittedForApprovalButton));
+   		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+   		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+   		  apasGenericObj.logout();
+		  Thread.sleep(5000);
+		  
+		  //Login With supervisor 1 with rp admin 
+ 		  apasGenericObj.login(loginUser);
+ 		  apasGenericObj.searchModule(PARCELS);
+ 		  objWorkItemHomePage.globalSearchRecords(apnValue);	    
+ 		  objWorkItemHomePage.openTab(objWorkItemHomePage.Tab_WorkItems_ON_parcel);
+  		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
+  		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.ApprovalButton));
+  		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+  		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+  		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
+  		  
+   		  // Step 11: Verify  'withdraw' button on workItem  timeline on parcel page with Submitted for approval status
+  		  softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Submitted for Approval","SMAB-T2480 :Verify Workitem status should be Submitted for Approval");
+  		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2480 :Verify 'Withdraw'should be present Workitem timeline with Submitted for Approval status",true);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton));
+		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
+ 		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.ApprovalButton));
+ 		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+ 		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+ 		  apasGenericObj.logout();
+ 		  Thread.sleep(5000);
+ 		  
+ 		  // Login supervisor 2 users.DATA_ADMIN
+		  objWorkItemHomePage.login(users.DATA_ADMIN);
+		  objWorkItemHomePage.searchModule(modules.HOME);
+          objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_NEED_MY_APPROVAL);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.toggleBUtton);
+		  Thread.sleep(3000);
+          objWorkItemHomePage.clickCheckBoxForSelectingWI(Workitem);
+          
+   		  // steps 12: Put On Hold the  WI from needs my approval tab of supervisor level 2st
+          objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.PutOnHoldButton));
+   		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
+   		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
+   		  apasGenericObj.logout();
+		  Thread.sleep(5000);
+		  
+		  apasGenericObj.login(loginUser);  
+ 		  apasGenericObj.searchModule(PARCELS);
+ 		  objWorkItemHomePage.globalSearchRecords(apnValue);
+ 		  objWorkItemHomePage.openTab(objWorkItemHomePage.Tab_WorkItems_ON_parcel);
+	      // step 13: Verify 'Withdraw' Button should be present on Workitem timeline with Approval On Hold status on Level For level 1 approval
+		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
+		  softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Approval - On Hold","SMAB-T2480 :Verify Workitem status should be Approval -On Hold");
+		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2480 :Verify 'Withdraw' Button should be present on Workitem timeline with 'Approval On Hold' status for Level 1 approval",true);
+		  apasGenericObj.logout();
+       }
 }

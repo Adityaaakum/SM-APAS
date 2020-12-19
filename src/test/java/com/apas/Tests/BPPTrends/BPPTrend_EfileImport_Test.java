@@ -1230,7 +1230,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		objPage.waitForElementToBeClickable(objEfileHomePage.fileTypedropdown, 10);
 		objEfileHomePage.selectFileAndSource(fileType,source);
-		objPage.waitUntilElementDisplayed(objEfileHomePage.statusImportedFile, 15);
+		objPage.waitForElementToBeVisible(objEfileHomePage.statusImportedFile, 15);
 		objPage.Click(objEfileHomePage.viewLinkRecord);
 		ReportLogger.INFO("Approving the imported file");
 		objPage.waitForElementToBeClickable(objEfileHomePage.errorRowSection, 20);

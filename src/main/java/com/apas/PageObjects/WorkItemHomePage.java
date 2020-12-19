@@ -25,7 +25,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public final String TAB_StaffInProgress = "Staff - In Progress";
 	public final String TAB_StaffOnHold = "Staff - On Hold";
 	public final String TAB_StaffInPool = "Staff - In Pool";
-
+	public final String Tab_WorkItems_ON_parcel="Work Items";
+	
 	ApasGenericPage objApasGenericPage;
 	Page objPageObj;
 	SalesforceAPI salesforceAPI ;
@@ -251,7 +252,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 
     public String SaveButton="Save";
     public String valueTextBox = "Value";
-
+    public String WithdrawButton="Withdraw";
+    public String PutOnHoldButton="Put On Hold";
 
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter

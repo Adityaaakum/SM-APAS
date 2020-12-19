@@ -236,10 +236,13 @@ public class ApasGenericPage extends Page {
 				dateToSelect = dateArray[1];
 			}
 
-			Select select = new Select(waitForElementToBeVisible(yearDropDown));
+			waitForElementToBeVisible(yearDropDown);
+			Select select = new Select(yearDropDown);
 			select.selectByValue(yearToSelect);
 
-			WebElement visibleMnth = waitForElementToBeVisible(visibleMonth);
+			waitForElementToBeVisible(visibleMonth);
+
+			WebElement visibleMnth = visibleMonth;
 			String visibleMonthTxt = visibleMnth.getText().toLowerCase();
 			visibleMonthTxt = visibleMonthTxt.substring(0, 1).toUpperCase() + visibleMonthTxt.substring(1).toLowerCase();
 
@@ -250,11 +253,14 @@ public class ApasGenericPage extends Page {
 
 			while(!visibleMonthTxt.equalsIgnoreCase(monthToSelect) || counter > counterIterations) {
 				if(indexOfMonthToSelect < indexOfDefaultMonth) {
-					waitForElementToBeVisible(prevMnth).click();
+					waitForElementToBeVisible(prevMnth);
+					Click(prevMnth);
 				} else {
-					waitForElementToBeVisible(nextMnth).click();
+					waitForElementToBeVisible(nextMnth);
+					Click(nextMnth);
 				}
-				visibleMonthTxt = waitForElementToBeVisible(visibleMonth).getText();
+				waitForElementToBeVisible(visibleMonth);
+				visibleMonthTxt = visibleMonth.getText();
 				counter++;
 			}
 
@@ -1050,5 +1056,32 @@ public class ApasGenericPage extends Page {
 	 */
 	public void editRecord() throws IOException, InterruptedException {
 		Click(getButtonWithText("Edit"));
+	}
+	
+	/*
+    This method is used to return the first active APN from Salesforce
+    @return: returns the active APN
+   */
+   public String fetchActiveAPN() {
+       return fetchActiveAPN(1).get(0);
+   }
+
+   public ArrayList<String> fetchActiveAPN(int numberofAPNs) {
+       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberofAPNs;
+       return objSalesforceAPI.select(queryForID).get("Name");
+   }
+   
+   /*
+    * Get Field Value from WI TimeLine 
+    */
+   public String getFieldvalueFromWITimeLine(String fieldName) {
+		String fieldValue="";
+		String fieldXpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//flexipage-component2[@data-component-id='tem_workItemTimeline']//li[1]//*[text()='"+fieldName+"']/../following-sibling::span";
+		try{
+			fieldValue =driver.findElement(By.xpath(fieldXpath)).getText();
+		}catch (Exception ex){
+			fieldValue= "";
+		}
+		return fieldValue;
 	}
 }
