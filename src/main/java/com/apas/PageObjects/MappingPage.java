@@ -35,7 +35,7 @@ public class MappingPage extends ApasGenericPage {
 	public String useCodeEditTextBoxSecondScreenLabel = "Use Code";
 
 	public String nextButton = "Next";
-	public String oneToOneParcelButton = "One To One Parcel(s)";
+	public String generateParcelButton = "Generate Parcel";
 	public String editButton = "Edit";
 	public String saveButton = "Save";
 
@@ -106,11 +106,10 @@ public class MappingPage extends ApasGenericPage {
 
 		selectOptionFromDropDown(actionDropDownLabel, action);
 		selectOptionFromDropDown(taxesPaidDropDownLabel, taxesPaid);
-		enter(reasonCodeTextBoxLabel, reasonCode);
-		selectOptionFromDropDown(parcelSizeDropDownLabel, parcelSizeValidation);
+		if (reasonCode != null)enter(reasonCodeTextBoxLabel, reasonCode);
+		if (parcelSizeValidation != null)selectOptionFromDropDown(parcelSizeDropDownLabel, parcelSizeValidation);
 		if (netLandLoss != null)enter(netLandLossTextBoxLabel, netLandLoss);
-		if (netLandGain != null)
-			enter(netLandGainTextBoxLabel, netLandGain);
+		if (netLandGain != null)enter(netLandGainTextBoxLabel, netLandGain);
 		if (firstnonCondoParcelNumber != null)
 			enter(firstNonCondoTextBoxLabel, firstnonCondoParcelNumber);
 		if (legalDescription != null)
@@ -129,6 +128,6 @@ public class MappingPage extends ApasGenericPage {
 	 */
 	public void generateChildParcelsOneToOneMapping(Map<String, String> dataMap) throws Exception {
 		fillOneToOneMappingActionForm(dataMap);
-		Click(getButtonWithText(oneToOneParcelButton));
+		Click(getButtonWithText(generateParcelButton));
 	}
 }

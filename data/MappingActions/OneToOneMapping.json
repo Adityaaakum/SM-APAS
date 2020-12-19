@@ -1,16 +1,11 @@
 {
-  "DataToPerformOneToOneMappingAllFieldsExceptNonCondoEntered": {
+  "DataToPerformOneToOneMappingAction": {
     "Action": "One to One",
     "Are taxes fully paid?": "Yes",
     "Reason code": "PM 85/25-26",
-    "Parcel Size Validation": "Yes",
     "Net Land Loss": "200",
     "Net Land Gain": "300",
-    "First non-Condo Parcel Number": "",
-    "Legal Description": "OF PM 85/25-26",
-    "Situs": "158 WestDale",
     "Comments": "Perform one to one mapping"
-        
-    
+          
   }
 }

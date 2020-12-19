@@ -591,7 +591,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public String getFieldValueFromAPAS(String fieldName, String sectionName) {
 		String fieldValue;
-		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'" + sectionName + "')] |//div[contains(@class,'flowruntimeBody')]";//this condition was added to handle fields in mapping action second screen
+		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'" + sectionName + "')]";
 		String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName + "']/../..//slot[@slot='outputField']";
 		WebElement field = driver.findElement(By.xpath(fieldPath));
 
@@ -891,7 +891,6 @@ public class ApasGenericPage extends Page {
 		String finalAmtAsString = (amt.substring(1, amt.length())).replaceAll(",", "");
 		float convertedAmt = Float.parseFloat(finalAmtAsString);
 		return convertedAmt;
-
 	}
 
 	/**
