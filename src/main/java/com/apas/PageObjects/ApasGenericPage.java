@@ -20,6 +20,7 @@ import com.apas.Reports.ReportLogger;
 import com.relevantcodes.extentreports.LogStatus;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -510,10 +511,13 @@ public class ApasGenericPage extends Page {
 	 * @param expectedValue:    Modified value to be updated in the cell
 	 */
 	public void editGridCellValue(String columnNameOnGrid, String expectedValue) throws IOException, AWTException, InterruptedException {
-		String xPath =  "//lightning-tab[contains(@class,'slds-show')]//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button";
+		String xPath =  "//lightning-tab[contains(@class,'slds-show')]//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button | //div[contains(@class,'flowruntimeBody')]//*[@data-label='" + columnNameOnGrid + "']";
+		
 		WebElement webelement = driver.findElement(By.xpath(xPath));
 		Click(webelement);
 		Thread.sleep(1000);
+		if(verifyElementVisible("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']"))
+		Click(driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")));
 		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
 
 		webelementInput.clear();
@@ -691,7 +695,7 @@ public class ApasGenericPage extends Page {
 				if (key != null) {
 					//"replace("Edit "+ key,"").trim()" code is user to remove the text \nEdit as few cells have edit button and the text of edit button is also returned with getText()
 					value = webElementsCells.get(gridCellCount).getText();
-					String[] splitValues = value.split("Edit " + key);
+					String[] splitValues = value.split("\nEdit " + key);
 					if (splitValues.length > 0) value = splitValues[0];
 					else value = "";
 					gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());

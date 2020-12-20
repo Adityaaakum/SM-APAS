@@ -29,14 +29,20 @@ public class MappingPage extends ApasGenericPage {
 	public String situsTextBoxLabel = "Situs Auto-populate field for Child Parcels";
 	public String commentsTextBoxLabel = "Comments";
 	public String parentAPNTextBoxLabel = "Parent APN(s)";
-	public String legalDescriptionEditTextBoxSecondScreenLabel = "Legal Description";
+	public String legalDescriptionColumnSecondScreen = "Legal Description";
+	public String districtColumnSecondScreen = "District";
+	public String apnColumnSecondScreen = "APN";
+	
+	public String useCodeColumnSecondScreen = "Use Code";
 
 	public String districtEditTextBoxSecondScreenLabel = "District";
 	public String useCodeEditTextBoxSecondScreenLabel = "Use Code";
 
 	public String nextButton = "Next";
 	public String generateParcelButton = "Generate Parcel";
-	public String editButton = "Edit";
+	public String parentAPNEditButton = "Edit";
+	public String previousButton = "Previous";
+
 	public String saveButton = "Save";
 
 	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
@@ -92,7 +98,7 @@ public class MappingPage extends ApasGenericPage {
 	 * @param dataMap: A data map which contains data to perform one to one mapping
 	 * @throws Exception
 	 */
-	public void fillOneToOneMappingActionForm(Map<String, String> dataMap) throws Exception {
+	public void fillMappingActionForm(Map<String, String> dataMap) throws Exception {
 		String action = dataMap.get("Action");
 		String taxesPaid = dataMap.get("Are taxes fully paid?");
 		String reasonCode = dataMap.get("Reason code");
@@ -126,8 +132,28 @@ public class MappingPage extends ApasGenericPage {
 	 *@param dataMap: A data map which contains data to perform one to one mapping
 	 * @throws Exception
 	 */
-	public void generateChildParcelsOneToOneMapping(Map<String, String> dataMap) throws Exception {
-		fillOneToOneMappingActionForm(dataMap);
+	public void generateChildParcelsMappingActions(Map<String, String> dataMap) throws Exception {
+		fillMappingActionForm(dataMap);
 		Click(getButtonWithText(generateParcelButton));
+	}
+	/**
+	 * @Description: This method will enter value in mapping action page fields and return the error message that would be displayed on page
+	 **@param element: ThE element on which validations are needed to be verified
+	 * @throws Exception
+	 */
+	public String verifyMappingActionsFieldsValidation(Object element,String value) throws Exception {
+		enter(element, value);
+		
+		if(verifyElementVisible(saveButton))
+			Click(getButtonWithText(saveButton));
+
+		else
+		Click(getButtonWithText(nextButton));
+		Thread.sleep(6000);
+		if(verifyElementVisible(errorMessageFirstScreen))
+				return  getElementText(errorMessageFirstScreen);
+		else
+			return "No error message is displayed on page";
+		
 	}
 }
