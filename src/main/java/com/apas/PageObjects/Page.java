@@ -751,5 +751,21 @@ public class Page extends TestBase {
         Click(driver.findElement(By.xpath(xpathStr)));
         Thread.sleep(1000);
     }
+    /**
+     * Description: this function is to return the currently selected value of drop down
+     *
+     * @param dropDown: drop down element to be verified
+     * @return String: Returns the currently selected value of drop down
+     * @throws Exception
+     */
+    public String getFirstSelectedDropDownValue(Object element ) throws Exception {
+        if (element instanceof String) 
+
+    	return new org.openqa.selenium.support.ui.Select(getWebElementWithLabel((String)element)).getFirstSelectedOption().getText();
+
+    	else
+        	return new org.openqa.selenium.support.ui.Select((WebElement)element).getFirstSelectedOption().getText();
+
+    	    }
 
 }

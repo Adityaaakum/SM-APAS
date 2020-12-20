@@ -91,6 +91,7 @@ public class ParcelsPage extends ApasGenericPage {
 
 		Click(getButtonWithText(componentActionsButtonText));
 		waitForElementToBeClickable(selectOptionDropDownComponentsActionsModal);
+		Thread.sleep(10000);
 		selectOptionFromDropDown(selectOptionDropDownComponentsActionsModal, "Create Work Item");
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
 		waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);

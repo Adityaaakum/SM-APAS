@@ -54,13 +54,13 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//td[@data-label='Legal Description']//lightning-base-formatted-text")
 	public WebElement legalDescriptionFieldInTable;
 
-	@FindBy(xpath = "//td[@data-label='Legal Description']//button")
+	@FindBy(xpath = "//td[@data-label='Legal Description']//button[@data-action-edit='true']")
 	public WebElement legalDescriptionFieldEditIcon;
 
-	@FindBy(xpath = "//td[@data-label='District']//button")
+	@FindBy(xpath = "//td[@data-label='District']//button[@data-action-edit='true']")
 	public WebElement ditrictFieldEditIcon;
 
-	@FindBy(xpath = "//td[@data-label='Use Code']//button")
+	@FindBy(xpath = "//td[@data-label='Use Code']//button[@data-action-edit='true']")
 	public WebElement useCodeFieldEditIcon;
 
 	@FindBy(xpath = "//td[@data-label='TRA']//lightning-base-formatted-text")
@@ -84,8 +84,8 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//th[@data-label='APN']//lightning-base-formatted-text")
 	public WebElement apnFieldInTable;
 
-	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li")
-	public WebElement errorMessageForParentParcels;
+	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
+	public WebElement errorMessageFirstScreen;
 
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page for one to one mapping action
