@@ -241,10 +241,11 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();	
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-
-		//Step 4: Validation that proper error message is displayed if parent parcel is retired
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapOneToOneMappingData.get("Action"));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
+
+		//Step 4: Validation that proper error message is displayed if parent parcel is retired
+		
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.editButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,retiredAPNValue);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
@@ -265,10 +266,6 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel),"value"),activeParcelToPerformMapping,
 				"SMAB-T2482: Validation that User should be allowed to enter the 9 digit parent APN without the \"-\"");
-
-		
-		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "100234560");
-	String error=	objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen);
 
 		//Step 6: Validation that ReASON CODE is a mandatory field
 
