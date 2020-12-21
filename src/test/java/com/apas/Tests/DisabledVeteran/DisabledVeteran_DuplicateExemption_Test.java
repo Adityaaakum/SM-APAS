@@ -184,7 +184,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 	    -End Date of second Exemption is set to a date earlier than Start Date of original record (Without End Date of Rating)
 	 **/
 	
-	@Test(description = "SMAB-T532, SMAB-T649: Validate a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (having End Date of Rating as Blank)", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T532: Validate a duplicate Exemption record can be created when Effective Date of Rating, Date of Occupancy and End Date of Rating are set to a date earlier than Start Date of original record (having End Date of Rating as Blank)", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void DisabledVeteran_SameExemptionWithNonOverlappingDates1(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -209,7 +209,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithNoEndDateOfRatingMap.get("Veteran SSN").substring(7), "SMAB-T532: Validate last 4 digits of 'Veteran's SSN' in the Exemption record with no End Date");
 		
 		//Step7: Validate that the status of Exemption when 'End Date of Rating' on the Exemption is not saved
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.statusOnDetailPage)), "Active", "SMAB-T649: Verify that User is able to validate Exemption 'Status' based on the 'End Date of Rating' for the Exemption record");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.statusOnDetailPage)), "Active", "SMAB-T532: Verify that User is able to validate Exemption 'Status' based on the 'End Date of Rating' for the Exemption record");
 				
 		//Step8: Navigate back to the Exemption module
 		objApasGenericPage.searchModule(modules.EXEMPTION);

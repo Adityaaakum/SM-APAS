@@ -282,7 +282,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 
 		//Step4: Validating presence of ReCalculateAll button at page level
 		boolean	isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(30);
-		objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "ReCalcuate all button is visible");
+		objSoftAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T195: ReCalcuate all button is visible");
 
 		//Step5: Clicking on the given table
 		Thread.sleep(1000);

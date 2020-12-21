@@ -204,7 +204,7 @@ public class BPPTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);
 		
 		//Step3: Validating presence of ReCalculateAll button at page level
-		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateAllBtn, 20)), "ReCalcuate all button is visible");
+		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateAllBtn, 20)), "SMAB-T195: ReCalcuate all button is visible");
 
 		//Step4: Clicking on the given table
 		Thread.sleep(1000);

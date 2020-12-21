@@ -197,7 +197,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		//Validation for the fields auto populated in the section 'Situs Information'
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Number","Situs Information"), "94", "SMAB-T356: 'Permit Situs Number' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Unit Number","Situs Information"), "", "SMAB-T356: 'Permit Situs Unit Number' Field Validation in 'Situs Information' section");
-		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Street Name","Situs Information"), "VERNON", "SMAB-356: 'Permit Situs Street Name' Field Validation in 'Situs Information' section");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Street Name","Situs Information"), "VERNON", "SMAB-T356: 'Permit Situs Street Name' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Direction","Situs Information"), "", "SMAB-T356: 'Permit Situs Direction' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Type","Situs Information"), "MOUNT", "SMAB-T356: 'Permit Situs Type' Field Validation in 'Situs Information' section");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit City Code","Situs Information"), "AT", "SMAB-T356: 'Permit City Code' Field Validation in 'Situs Information' section");

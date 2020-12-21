@@ -194,7 +194,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Step5: Validation of Situs Type population from Situs Street Name with special keywords
 		ReportLogger.INFO("Validation of Situs Type population from Situs Street Name with special keywords");
-		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Street Name","Situs Information"), "MOUNT", "SMAB-374: 'Permit Situs Street Name' Field Validation in 'Situs Information' section for Situs street name having special keyword");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Street Name","Situs Information"), "MOUNT", "SMAB-T374: 'Permit Situs Street Name' Field Validation in 'Situs Information' section for Situs street name having special keyword");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Permit Situs Type","Situs Information"), "BLVD", "SMAB-T374: 'Permit Situs Type' Field Validation in 'Situs Information' section for Situs street name having special keyword");
 
 		ReportLogger.INFO("Validating the warning message for wrong APN for Building Permit number " + invalidAPNBuildingPermitNumber);
