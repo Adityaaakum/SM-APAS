@@ -18,6 +18,8 @@ public class MappingPage extends ApasGenericPage {
 		objUtil = new Util();
 	}
 
+	@FindBy(xpath = "//td[@data-label='Situs']//lightning-base-formatted-text")
+	public WebElement situsFieldInTable;
 	public String actionDropDownLabel = "Action";
 	public String taxesPaidDropDownLabel = "Are taxes fully paid?";
 	public String reasonCodeTextBoxLabel = "Reason Code";

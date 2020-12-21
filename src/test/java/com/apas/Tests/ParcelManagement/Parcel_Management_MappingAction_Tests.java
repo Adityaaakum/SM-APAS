@@ -51,8 +51,11 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 	public void ParcelManagement_VerifyOneToOneMappingAction(String loginUser) throws Exception {
 		String activeParcelToPerformMapping="002-023-190";
 
+		String query = "Select id From Parcel__c where Name='"+activeParcelToPerformMapping+"'";
+        salesforceAPI.update("Parcel__c",query,"PUC_Code_Lookup__c","a0g35000001GTcIAAW");
+        salesforceAPI.update("Parcel__c",query,"Status__c","Active");
+    
 		// fetching  all data of the active parcel to perform one to one mapping		
-
 		String queryAPNDetails = "select PUC_Code_Lookup__c,Primary_Situs__c ,Short_Legal_Description__c ,District__c, Neighborhood_Reference__c ,TRA__c from Parcel__c where Name='"+activeParcelToPerformMapping+"'";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNDetails);
 
@@ -101,6 +104,8 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapOneToOneMappingData.get("Action"));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
 
+		String text=objMappingPage.getSelectedDropDownValue(objMappingPage.parcelSizeDropDownLabel);
+		
 		//Step 5: Validating that default values of net land loss and net land gain is 0
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.netLandLossTextBoxLabel),"value"),"0",
 				"SMAB-T2481: Validation that default value of net land loss  is 0");
@@ -140,6 +145,8 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		softAssert.assertTrue(childAPNNumber.endsWith("0"),
 				"SMAB-T2488: Validation that child APN number ends with 0");
 
+		
+		objMappingPage.getElementText(objMappingPage.situsFieldInTable);
 		//Step 10: Validation of ALL fields THAT ARE displayed on second screen
 		softAssert.assertEquals(gridDataHashMap.get("Neighborhood Code").get(0),neighborhoodValue,
 				"SMAB-T2481: Validation that  System populates neighborhood Code from the parent parcel");
@@ -198,9 +205,13 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 	@Test(description = "SMAB-T2482,SMAB-T2485,SMAB-T2484,SMAB-T2545,SMAB-T2489:Verify that the One to One Mapping Action can only be performed on Active Parcels ", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyOneToOneMappingActionOnlyOnActiveParcels(String loginUser) throws Exception {
-		String activeParcelToPerformMapping="002-023-240";
+		String activeParcelToPerformMapping="002-023-190";
 		String activeParcelWithoutHyphen=activeParcelToPerformMapping.replace("-","");
 
+		String query = "Select id From Parcel__c where Name='"+activeParcelToPerformMapping+"'";
+        salesforceAPI.update("Parcel__c",query,"PUC_Code_Lookup__c","a0g35000001GTcIAAW");
+        salesforceAPI.update("Parcel__c",query,"Status__c","Active");
+    
 		// fetching  parcel that is retired 		
 		String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
@@ -254,6 +265,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 				"SMAB-T2482: Validation that User should be allowed to enter the 9 digit parent APN without the \"-\"");
 
 		//Step 8: Validation that Reason CODE is a mandatory field
+		objMappingPage.verifyMappingActionsFieldsValidation(objMappingPage.reasonCodeTextBoxLabel,"");
 		softAssert.assertEquals(objMappingPage.verifyMappingActionsFieldsValidation(objMappingPage.reasonCodeTextBoxLabel,""),"Reason Code is Mandatory.",
 				"SMAB-T2545: Validation that reason code is a mandatory field");
 		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel), hashMapOneToOneMappingData.get("Reason code"));
