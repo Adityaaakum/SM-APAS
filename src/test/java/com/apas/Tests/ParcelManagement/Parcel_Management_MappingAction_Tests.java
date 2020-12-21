@@ -47,7 +47,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2490,SMAB-T2493,SMAB-T2532,SMAB-T2535,SMAB-T2531,SMAB-2533:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2490,SMAB-T2493,SMAB-T2532,SMAB-T2535,SMAB-T2531,SMAB-2533:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyRemapMappingAction(String loginUser) throws Exception {
 		String activeParcelToPerformMapping="002-023-190";
@@ -174,7 +174,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 
 	}
 	
-	@Test(description = "SMAB-T2490,SMAB-T2436,SMAB-T2496,Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2490,SMAB-T2436,SMAB-T2496,Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyRemapMappingActionForMultipleParcels(String loginUser) throws Exception {
 		String activeParcelToPerformMapping="002-023-190";
