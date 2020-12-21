@@ -25,7 +25,6 @@ public class MappingPage extends ApasGenericPage {
 	public String parentAPNTextBoxLabel = "Parent APN(s)";
 
 	public String nextButton = "Next";
-	public String generateParcelButton = "Generate Parcel";
 	public String editButton = "Edit";
 	public String saveButton = "Save";
 

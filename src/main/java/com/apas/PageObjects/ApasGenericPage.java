@@ -662,8 +662,6 @@ public class ApasGenericPage extends Page {
 		//This code is to fetch the data for a particular row in the grid in the table passed in tableIndex
 		String xpath="(//*[@class='slds-tabs_scoped__content slds-show']//table)[" + tableIndex + "]";
 		String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table)[" + tableIndex + "]";
-
-		//String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table)[" + tableIndex + "]";
 		if(verifyElementVisible(xpath))
 		{xpathTable=xpath;}
 
@@ -697,7 +695,6 @@ public class ApasGenericPage extends Page {
 				if (key != null) {
 					//"replace("Edit "+ key,"").trim()" code is user to remove the text \nEdit as few cells have edit button and the text of edit button is also returned with getText()
 					value = webElementsCells.get(gridCellCount).getText();
-					//String[] splitValues = value.split("Edit " + key);
 					String[] splitValues = value.split("\nEdit " + key);
 					if (splitValues.length > 0) value = splitValues[0];
 					else value = "";

@@ -712,9 +712,9 @@ public class Page extends TestBase {
 				commonPath + "//*[@class='inputHeader' and contains(.,\"" + label + "\")]/..//Select |"+ //This condition was observed for few drop downs of Select Type
 				commonPath + "//label[text()=\"" + label + "\"]/..//textarea";//this condition was added to handle webelements of type textarea
 
-		waitUntilElementIsPresent(xpath, 3);
-		return driver.findElement(By.xpath(xpath));
-	}
+        waitUntilElementIsPresent(xpath, 3);
+        return driver.findElement(By.xpath(xpath));
+    }
 
     /**
      * Description: returns the web element based on the text of the button
@@ -728,8 +728,8 @@ public class Page extends TestBase {
 				commonxPath + "//div[text()='" + text + "']//.. | " +
 				commonxPath + "//*[contains(@class,'slds-is-open')]//button[text()='" + text + "']";
 
-		return driver.findElement(By.xpath(xpath));
-	}
+        return driver.findElement(By.xpath(xpath));
+    }
 
     /**
      * Description: This method will clear the value from the lookup field
@@ -737,10 +737,10 @@ public class Page extends TestBase {
      * @param fieldName: Takes field name as an argument
      */
     public void clearSelectionFromLookup(String fieldName) throws Exception {
-		String xpathStr = "//label[text()='" + fieldName + "']/parent::lightning-grouped-combobox//span[text()='Clear Selection']";
-		waitUntilElementIsPresent(xpathStr, 3);
-		Click(driver.findElement(By.xpath(xpathStr)));
-	}
+        String xpathStr = "//label[text()='" + fieldName + "']/parent::lightning-grouped-combobox//span[text()='Clear Selection']";
+        waitUntilElementIsPresent(xpathStr, 3);
+        Click(driver.findElement(By.xpath(xpathStr)));
+    }
 
     /**
      * Description: This method will click element with hyperlink in the lookup field
