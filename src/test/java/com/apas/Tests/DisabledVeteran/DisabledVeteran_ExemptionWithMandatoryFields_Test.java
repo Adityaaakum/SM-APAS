@@ -234,7 +234,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		
 		//Step14: Cancel the changes and validate that original value saved for 'Claimant SSN' appears back
 		objPage.Click(objExemptionsPage.cancelButtonOnDetailPage);
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.claimantSSNOnDetailPage)).substring(7), dataToCreateExemptionMap.get("Claimant SSN").substring(7), "Validate last 4 digits of the original 'Claimant's SSN' value saved in the Exemption record");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.claimantSSNOnDetailPage)).substring(7), dataToCreateExemptionMap.get("Claimant SSN").substring(7), "SMAB-T527: Validate last 4 digits of the original 'Claimant's SSN' value saved in the Exemption record");
 		
 		//Step15: Edit the record again by clicking pencil icon against 'Veteran SSN' field and update the field*
 		objPage.Click(objExemptionsPage.editPencilIconForVeteranSSNOnDetailPage);
