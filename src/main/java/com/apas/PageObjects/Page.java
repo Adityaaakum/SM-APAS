@@ -706,14 +706,15 @@ public class Page extends TestBase {
      * @return : webelement against the label
      */
     public WebElement getWebElementWithLabel(String label) throws Exception {
-        String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]";
-        String xpath = commonPath + "//label[text()=\"" + label + "\"]/..//input | " +
-                commonPath + "//input[@name=\"" + label + "\"] | " + //this condition was observed on manual work item creation pop up for edit boxes
-                commonPath + "//*[@class='inputHeader' and contains(.,\"" + label + "\")]/..//Select"; //This condition was observed for few drop downs of Select Type
+		String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]";
+		String xpath = commonPath + "//label[text()=\"" + label + "\"]/..//input | " +
+				commonPath + "//input[@name=\"" + label + "\"] | " + //this condition was observed on manual work item creation pop up for edit boxes
+				commonPath + "//*[@class='inputHeader' and contains(.,\"" + label + "\")]/..//Select |"+ //This condition was observed for few drop downs of Select Type
+				commonPath + "//label[text()=\"" + label + "\"]/..//textarea";//this condition was added to handle webelements of type textarea
 
-        waitUntilElementIsPresent(xpath, 3);
-        return driver.findElement(By.xpath(xpath));
-    }
+		waitUntilElementIsPresent(xpath, 3);
+		return driver.findElement(By.xpath(xpath));
+	}
 
     /**
      * Description: returns the web element based on the text of the button
@@ -722,13 +723,13 @@ public class Page extends TestBase {
      * @return : button element
      */
     public WebElement getButtonWithText(String text) {
-        String commonxPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]";
-        String xpath = commonxPath + "//button[text()='" + text + "'] | " +
-                commonxPath + "//div[text()='" + text + "']//.. | " +
-                commonxPath + "//*[contains(@class,'slds-is-open')]//button[text()='" + text + "']";
+		String commonxPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
+		String xpath = commonxPath + "//button[text()='" + text + "'] | " +
+				commonxPath + "//div[text()='" + text + "']//.. | " +
+				commonxPath + "//*[contains(@class,'slds-is-open')]//button[text()='" + text + "']";
 
-        return driver.findElement(By.xpath(xpath));
-    }
+		return driver.findElement(By.xpath(xpath));
+	}
 
     /**
      * Description: This method will clear the value from the lookup field
@@ -736,10 +737,10 @@ public class Page extends TestBase {
      * @param fieldName: Takes field name as an argument
      */
     public void clearSelectionFromLookup(String fieldName) throws Exception {
-        String xpathStr = "//label[text()='" + fieldName + "']/parent::lightning-grouped-combobox//span[text()='Clear Selection']";
-        waitUntilElementIsPresent(xpathStr, 3);
-        Click(driver.findElement(By.xpath(xpathStr)));
-    }
+		String xpathStr = "//label[text()='" + fieldName + "']/parent::lightning-grouped-combobox//span[text()='Clear Selection']";
+		waitUntilElementIsPresent(xpathStr, 3);
+		Click(driver.findElement(By.xpath(xpathStr)));
+	}
 
     /**
      * Description: This method will click element with hyperlink in the lookup field
