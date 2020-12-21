@@ -18,7 +18,6 @@ public class MappingPage extends ApasGenericPage {
 		objUtil = new Util();
 	}
 
-	@FindBy(xpath = "//td[@data-label='Situs']//lightning-base-formatted-text")
 	public WebElement situsFieldInTable;
 	public String actionDropDownLabel = "Action";
 	public String taxesPaidDropDownLabel = "Are taxes fully paid?";
@@ -34,7 +33,8 @@ public class MappingPage extends ApasGenericPage {
 	public String legalDescriptionColumnSecondScreen = "Legal Description";
 	public String districtColumnSecondScreen = "District";
 	public String apnColumnSecondScreen = "APN";
-	
+	public String reasonCodeColumnSecondScreen = "Reason Code";
+
 	public String useCodeColumnSecondScreen = "Use Code";
 
 	public String districtEditTextBoxSecondScreenLabel = "District";
