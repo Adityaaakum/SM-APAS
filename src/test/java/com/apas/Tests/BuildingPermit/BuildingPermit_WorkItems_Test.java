@@ -108,9 +108,9 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 		
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
-		//Validating that 'Roll Code' field and 'Date' field gets automatically populated in the work item record WHERE date should be date of import and roll code should be SECS
-		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
-										"SMAB-T2081: Validation that 'Roll Code' fields getting automatically populated in the work item record");
+		//Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record WHERE date should be date of import and use code should be SECS
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC",
+										"SMAB-T2081: Validation that 'Use Code' fields getting automatically populated in the work item record");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Date", "Information"),objUtil.getCurrentDate("MM/dd/yyyy"),
 										"SMAB-T2081: Validation that 'Date' fields is equal to"+objUtil.getCurrentDate("MM/dd/yyyy"));									
 		

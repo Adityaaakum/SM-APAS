@@ -147,10 +147,10 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
 	objPage.javascriptClick(objWIHomePage.detailsWI);
 
-   //Validating that 'Roll Code' field and 'Date' field gets automatically populated in the work item record
+   //Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record
    objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
-	softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
-					"SMAB-T2080: Validation that 'Roll Code' fields getting automatically populated in the work item record");
+	softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC",
+					"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
 	softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 					"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
 		

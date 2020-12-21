@@ -57,45 +57,12 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@id,'salesforce-lightning-tooltip-bubble')]")
 	public WebElement helpIconToolTipBubble;
 
-	@FindBy(xpath = "//td[@data-label='Legal Description']//lightning-base-formatted-text")
-	public WebElement legalDescriptionFieldInTable;
-
-	@FindBy(xpath = "//td[@data-label='Legal Description']//button[@data-action-edit='true']")
-	public WebElement legalDescriptionFieldEditIcon;
-
-	@FindBy(xpath = "//td[@data-label='District']//button[@data-action-edit='true']")
-	public WebElement ditrictFieldEditIcon;
-
-	@FindBy(xpath = "//td[@data-label='Use Code']//button[@data-action-edit='true']")
-	public WebElement useCodeFieldEditIcon;
-
-	@FindBy(xpath = "//td[@data-label='TRA']//lightning-base-formatted-text")
-	public WebElement traFieldInTable;
-
-	@FindBy(xpath = "//td[@data-label='Situs']//lightning-base-formatted-text")
-	public WebElement situsFieldInTable;
-
-	@FindBy(xpath = "//td[@data-label='District']//lightning-base-formatted-text")
-	public WebElement districtFieldInTable;
-
-	@FindBy(xpath = "//td[@data-label='Reason Code']//lightning-base-formatted-text")
-	public WebElement reasonCodeFieldInTable;
-
-	@FindBy(xpath = "//td[@data-label='Use Code']//lightning-base-formatted-text")
-	public WebElement useCodeFieldInTable;
-
-	@FindBy(xpath = "//td[@data-label='Neighborhood Code']//lightning-base-formatted-text")
-	public WebElement neighborhoodFieldInTable;
-
-	@FindBy(xpath = "//th[@data-label='APN']//lightning-base-formatted-text")
-	public WebElement apnFieldInTable;
-
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
 	public WebElement errorMessageFirstScreen;
 
 	/**
-	 * @Description: This method will fill  the fields in Mapping Action Page for one to one mapping action
-	 * @param dataMap: A data map which contains data to perform one to one mapping
+	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
+	 * @param dataMap: A data map which contains data to perform  mapping action
 	 * @throws Exception
 	 */
 	public void fillMappingActionForm(Map<String, String> dataMap) throws Exception {
@@ -128,7 +95,7 @@ public class MappingPage extends ApasGenericPage {
 	}
 
 	/**
-	 * @Description: This method will generate child parcels for one to one mapping action 
+	 * @Description: This method will generate child parcels for  mapping action 
 	 *@param dataMap: A data map which contains data to perform one to one mapping
 	 * @throws Exception
 	 */
