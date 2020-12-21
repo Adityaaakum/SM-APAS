@@ -233,7 +233,7 @@ public class RollYearSettingsTest extends TestBase {
 		-Field level validations (error messages)
 		 **/
 		
-		@Test(description = "SMAB-T638, SMAB-T1283: Validate field level validations on Roll Year Screen", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+		@Test(description = "SMAB-T638: Validate field level validations on Roll Year Screen", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 		public void RollYear_FieldLevelValidations(String loginUser) throws Exception {
 		
 			//Step1: Login to the APAS application using the user passed through the data provider

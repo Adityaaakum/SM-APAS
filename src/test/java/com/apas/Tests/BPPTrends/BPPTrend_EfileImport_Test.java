@@ -336,7 +336,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Approving all records
 	 * 3. Validating status post approving on history page and transaction import logs page
 	 */
-	@Test(description = "SMAB-957,SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
+	@Test(description = "SMAB-T957,SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
 	public void BppTrend_BOEIndexImportAndApprove(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);	
@@ -385,7 +385,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		HashMap<String, ArrayList<String>> importLogsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
 		//Step14: Import Logs grid validation for the imported BOE - Index and Percent Good Factors file
-		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Approved", "SMAB-957,SMAB-T111: Validate if status of imported file is approved on import logs page");
+		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Approved", "SMAB-T957,SMAB-T111: Validate if status of imported file is approved on import logs page");
 		
 		objEfileHomePage.logout();
 	}

@@ -82,7 +82,7 @@ public class WorkItems_RoutingSetupTest extends TestBase {
         objWorkItemsNeighborhoodsPage.enterNeighborhoodReferenceRecordDetails(hashMapNeighborhoodData);
         String actualSuccessMessage = objWorkItemHomePage.saveRecord();
         String expectedSuccessMessage="Neighborhood \""+hashMapNeighborhoodData.get("Neighborhood Code") +"\" was created.";
-        softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-1812: Verify user is able to create new Neighborhood Reference Record successfully");
+        softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-T1812: Verify user is able to create new Neighborhood Reference Record successfully");
 
         //Step6: Edit existing Neighborhood reference record
         Map<String, String> hashMapDuplicateNeighborhoodData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateDuplicateNeighborhood");
@@ -91,7 +91,7 @@ public class WorkItems_RoutingSetupTest extends TestBase {
         objWorkItemHomePage.enter(objWorkItemsNeighborhoodsPage.neighborhoodCodeEditBox,hashMapDuplicateNeighborhoodData.get("Neighborhood Code"));
         actualSuccessMessage = objWorkItemHomePage.saveRecord();
         expectedSuccessMessage="Neighborhood \""+hashMapDuplicateNeighborhoodData.get("Neighborhood Code") +"\" was saved.";
-        softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-1814: Verify user is able to edit Neighborhood Reference Record successfully");
+        softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-T1814: Verify user is able to edit Neighborhood Reference Record successfully");
 
         //Step7: Open the Neighborhoods Page & select all list view
         objWorkItemHomePage.searchModule(modules.NEIGHBORHOODS);
@@ -102,7 +102,7 @@ public class WorkItems_RoutingSetupTest extends TestBase {
         objWorkItemsNeighborhoodsPage.enterNeighborhoodReferenceRecordDetails(hashMapDuplicateNeighborhoodData);
         actualErrorMessage = objWorkItemHomePage.saveRecordAndGetError();
         expectedErrorMessage = "You can't save this record because a duplicate record already exists. To save, use different information.";
-        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1815: Verify user is not able to create duplicate Neighborhood Reference Record");
+        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1815: Verify user is not able to create duplicate Neighborhood Reference Record");
 
         //Step9: Delete record create above
         query = "SELECT Id FROM Neighborhood__c WHERE Name  = '"+hashMapDuplicateNeighborhoodData.get("Neighborhood Code")+"'";
@@ -145,7 +145,7 @@ public class WorkItems_RoutingSetupTest extends TestBase {
         String actualSuccessMessage = objWorkItemHomePage.saveRecord();
 
         String expectedSuccessMessage="Territory \""+hashMapTerritoryData.get("Territory Name") +"\" was created.";
-        softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-1817: Verify user is able to create new Territory Record successfully");
+        softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-T1817: Verify user is able to create new Territory Record successfully");
 
         //Step6: Edit existing Territory record
         Map<String, String> hashMapDuplicateTerritoryData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateDuplicateTerritory");

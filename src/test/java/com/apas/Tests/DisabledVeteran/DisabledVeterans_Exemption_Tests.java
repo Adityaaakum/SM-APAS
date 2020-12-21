@@ -129,7 +129,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	}
 	
 	
-	@Test(description = "SMAB-T501,SMAB-T502,SMAB-T503,SMAB-T497,SMAB-T494,SMAB-T498,SMAB-T1278,SMAB-T1122,SMAB-T1223,SMAB-T1263,SMAB-T1262,SMAB-T1264,SMAB-T1221:Verify business validations while creating Exemption records", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption"})
+	@Test(description = "SMAB-T501,SMAB-T502,SMAB-T503,SMAB-T497,SMAB-T494,SMAB-T498,SMAB-T1278,SMAB-T1223,SMAB-T1263,SMAB-T1262,SMAB-T1264,SMAB-T1221:Verify business validations while creating Exemption records", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption"})
 	public void Disabledveteran_BusinessValidationsForExemptionFields(String loginUser) throws Exception{
 			Map<String, String> businessValidationdata = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
 			businessValidationdata.put("ClaimantName", exemptionPageObj.fetchAssesseeName());
@@ -174,7 +174,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			
 			softAssert.assertEquals(objApasGenericPage.getIndividualFieldErrorMessage("Date of Notice of 100% Rating"),"Date of Notice of 100% Rating cannot be less than the Effective Date of 100% USDVA Rating.","SMAB-T1278: Verify Date of Notice of 100% Rating cannot be less than the Effective Date of 100% USDVA Rating.");
 			softAssert.assertEquals(objApasGenericPage.getIndividualFieldErrorMessage("End Rating Reason"),"End Rating Reason Is required","SMAB-T498: Verify End Rating Reason is required if End Date of rating is not BLANK");
-			softAssert.assertEquals(objApasGenericPage.getIndividualFieldErrorMessage("End Date of Rating"),"End Date of Rating must be greater than Effective Date","SMAB-T497,SMAB-T1122: Verify End Date of rating must be greater than Effective Date of 100% USDVA Rating");
+			softAssert.assertEquals(objApasGenericPage.getIndividualFieldErrorMessage("End Date of Rating"),"End Date of Rating must be greater than Effective Date","SMAB-T497: Verify End Date of rating must be greater than Effective Date of 100% USDVA Rating");
 					
 			//step6:
 			/**verifying 'Date of Death of Veteran' and 'Deceased Veteran Qualification' are required when 'Unmarried_Spouse_of_Deceased_Veteran__c is 'Yes'
