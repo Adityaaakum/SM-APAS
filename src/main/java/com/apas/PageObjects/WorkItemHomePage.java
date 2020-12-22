@@ -41,7 +41,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String changeWorkPool= "Change Work Pool";
 	public String changeAssignee= "Change Assignee";
 	public String reasonForTransferring= "Reason for Transferring";
-	
+
+	public String tabPoolAssignment = "Pool Assignment";
+
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
 	public WebElement successAlert;
 

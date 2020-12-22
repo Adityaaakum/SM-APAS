@@ -454,7 +454,7 @@ public class Page extends TestBase {
         return waitUntilElementIsPresent(xpath, timeOutInSec, 500);
     }
 
-    public WebElement waitUntilElementIsPresent(final String xpath, int timeOutInSec, int poolingTimeInSec) {
+    public WebElement waitUntilElementIsPresent(String xpath, int timeOutInSec, int poolingTimeInSec) {
         Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(timeOutInSec))
                 .pollingEvery(Duration.ofSeconds(poolingTimeInSec))
                 .ignoring(NoSuchElementException.class)
