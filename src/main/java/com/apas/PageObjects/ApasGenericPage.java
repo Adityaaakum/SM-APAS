@@ -371,7 +371,7 @@ public class ApasGenericPage extends Page {
 		Boolean flag=false;
 		clickShowMoreButton(modRecordName);
 		String xpathStr = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
-		WebElement actionElement = locateElement(xpathStr, 30);
+		WebElement actionElement = waitForElementToBeClickable(10, xpathStr);
 			if (actionElement != null){
 					clickAction(actionElement);
 					ReportLogger.INFO("User is able to click " + action + " option for " + modRecordName + " record");
