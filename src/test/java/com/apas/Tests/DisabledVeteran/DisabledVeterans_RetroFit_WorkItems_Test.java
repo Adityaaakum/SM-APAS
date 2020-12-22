@@ -285,7 +285,6 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 
 		// Step3: Navigating to In 'Needs My Approval' section and verifying Linked
 		// record and returning the linked record
-		objPage.javascriptClick(workItemPageObj.toggleBUtton);
 		HashMap<String, ArrayList<String>> needsMyApprovalWI = workItemPageObj.getWorkItemData(workItemPageObj.TAB_NEED_MY_APPROVAL);
 		int reminderSubmittedWIRowNumber = needsMyApprovalWI.get("Request Type").indexOf("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits");
 		String reminderSubmittedWINumber = needsMyApprovalWI.get("Work Item Number").get(reminderSubmittedWIRowNumber);
