@@ -31,12 +31,6 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//th[@data-label='APN']//lightning-base-formatted-text")
 	public WebElement apnFieldInTable;
 
-	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li")
-	public WebElement errorMessageForParentParcels;
-	
-	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
-	public WebElement errorMessageFirstScreen;
-
 	public void remapActionForm(Map<String, String> dataMap) throws Exception {
 		String action = dataMap.get("Action");
 		String reasonCode = dataMap.get("Reason code");
@@ -50,26 +44,5 @@ public class MappingPage extends ApasGenericPage {
 		if (comments != null)
 			enter(commentsTextBoxLabel, comments);
 		Click(getButtonWithText(nextButton));
-	}
-	
-	/**
-	 * @Description: This method will enter value in mapping action page fields and return the error message that would be displayed on page
-	 **@param element: ThE element on which validations are needed to be verified
-	 * @throws Exception
-	 */
-	public String verifyMappingActionsFieldsValidation(Object element,String value) throws Exception {
-		enter(element, value);
-		
-		if(verifyElementVisible(saveButton))
-			Click(getButtonWithText(saveButton));
-
-		else
-		Click(getButtonWithText(nextButton));
-		Thread.sleep(6000);
-		if(verifyElementVisible(errorMessageFirstScreen))
-				return  getElementText(errorMessageFirstScreen);
-		else
-			return "No error message is displayed on page";
-		
 	}
 }

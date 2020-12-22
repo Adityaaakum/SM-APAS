@@ -369,4 +369,14 @@ public class DataProviders {
         return new Object[][] {{ users.DATA_ADMIN }};
     }
     
+    /**
+	 * Below function will be used to login to application with mapping staff user
+	 *
+	 * @returns: Return the user mapping staff
+	 **/
+    @DataProvider(name = "loginMappingStaff")
+    public Object[][] mappingStaff() {
+        return new Object[][] { { users.MAPPING_STAFF } };
+    }
+    
 }

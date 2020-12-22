@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.groovy.runtime.dgmimpl.arrays.ObjectArrayPutAtMetaMethod;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -47,10 +48,10 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2490,SMAB-T2493,SMAB-T2532,SMAB-T2535,SMAB-T2531,SMAB-2533:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginmappingStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2490,SMAB-T2493,SMAB-T2532,SMAB-T2535,SMAB-T2531,SMAB-2533:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingStaff", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyRemapMappingAction(String loginUser) throws Exception {
-		String activeParcelToPerformMapping="002-023-190";
+		String activeParcelToPerformMapping=objMappingPage.fetchActiveAPN();
 		String activeParcelWithoutHyphen=activeParcelToPerformMapping.replace("-","");
 		
 		// fetching  parcel that is retired 		
@@ -92,14 +93,14 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.editButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,retiredAPNValue);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageForParentParcels),"-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2532: Validation that proper error message is displayed if parent parcel is retired");
 
 		//Step 6: Validation that proper error message is displayed if parent parcel is in progress
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.editButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,inProgressAPNValue);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageForParentParcels),"-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2532: Validation that proper error message is displayed if parent parcel is in progress status");
 
 		//Step 7: Verifying that User should be allowed to enter the 9 digit APN without the \"-\" in Parent APN field
@@ -117,25 +118,25 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		//Step 9: Verifying that proper error message is displayed if alphanumeric value  is entered in First non condo parcel field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "123-45*-78&");
 		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));		
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"This parcel number is not valid, it should contain 9 digit numeric values.",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
 				"SMAB-T2493: Validation that proper error message is displayed if alphanumeric value  is entered in First non condo parcel field");
 		
 		//Step 10:Verifying that proper error message is displayed if less than 9 disgits are entered in First non condo parcel field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "123-456-78");
 		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));		
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"This parcel number is not valid, it should contain 9 digit numeric values.",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
 				"SMAB-T2493: Validation that proper error message is displayed if less than 9 disgits are entered in First non condo parcel field");
 		
 		//Step 11:Verifying that proper error message is displayed if parcel starting with 100 is entered in First non condo parcel field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "100-456-789");
 		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));		
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Non Condo Parcel Number cannot start with 100 or 134, Please enter valid Parcel Number",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"Non Condo Parcel Number cannot start with 100 or 134, Please enter valid Parcel Number",
 				"SMAB-T2531: Validation that proper error message is displayed if parcel starting with 100 is entered in First non condo parcel field");
 		
 		//Step 12:Verifying that proper error message is displayed if parcel starting with 134 is entered in First non condo parcel field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "134-456-789");
 		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));		
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Non Condo Parcel Number cannot start with 100 or 134, Please enter valid Parcel Number",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"Non Condo Parcel Number cannot start with 100 or 134, Please enter valid Parcel Number",
 				"SMAB-T2531: Validation that proper error message is displayed if parcel starting with 134 is entered in First non condo parcel field");
 		
 		//Step 13: Verifying that User should be allowed to enter the 9 digit APN without the \"-\" in First Non Condo Parcel Field
@@ -174,11 +175,12 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 
 	}
 	
-	@Test(description = "SMAB-T2490,SMAB-T2436,SMAB-T2496,Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginmappingStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2490,SMAB-T2436,SMAB-T2496,Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingStaff", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyRemapMappingActionForMultipleParcels(String loginUser) throws Exception {
-		String activeParcelToPerformMapping="002-023-190";
-		String activeParcelToPerformMapping2="002-021-110";
+       ArrayList<String> APNs=objMappingPage.fetchActiveAPN(2);
+		String activeParcelToPerformMapping=APNs.get(0);
+		String activeParcelToPerformMapping2=APNs.get(1);
 		
 		// fetching  parcel that is retired 		
 		String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
@@ -216,7 +218,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.editButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,retiredAPNValue + ","+ activeParcelToPerformMapping2);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageForParentParcels),"-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2490: Validation that proper error message is displayed if parent parcel is retired");
 		
 	

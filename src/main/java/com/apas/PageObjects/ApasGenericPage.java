@@ -1089,4 +1089,10 @@ public class ApasGenericPage extends Page {
 		}
 		return fieldValue;
 	}
+   
+   public String getErrorMessage() throws Exception {
+		WebElement ErrorText = locateElement("//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
+		String ErrorTxt = ErrorText.getText();
+		return ErrorTxt;
+	}
 }
