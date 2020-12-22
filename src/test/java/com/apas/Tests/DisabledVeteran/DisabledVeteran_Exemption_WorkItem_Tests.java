@@ -340,7 +340,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	
   }
 
-	@Test(description = "SMAB-T198: APAS Verify the Supervisor is able to Return the WI initial filing/changes on new Exemption Creation", 
+	@Test(description = "SMAB-T1981: APAS Verify the Supervisor is able to Return the WI initial filing/changes on new Exemption Creation", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DV_WorkItem_Exemption"})

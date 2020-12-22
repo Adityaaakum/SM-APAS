@@ -305,7 +305,8 @@ public class RollYearSettingsTest extends TestBase {
 			//Step11: Click Cancel button
 			ReportLogger.INFO("Click 'Cancel' button to move out of the Roll Year screen");
 			objPage.Click(objRollYearSettingsPage.cancelButton);
-			
+			Thread.sleep(1000);
+	    	
 			objRollYearSettingsPage.logout();	
 		}
 	
