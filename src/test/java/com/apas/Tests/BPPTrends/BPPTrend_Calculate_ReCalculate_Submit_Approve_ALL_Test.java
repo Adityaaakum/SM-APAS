@@ -107,7 +107,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 			tableName = valuationFactorTablesList.get(i);
 			Thread.sleep(1000);
 			objBppTrnPg.clickOnTableOnBppTrendPage(tableName);
-			isCalculateBtnVisible = objBppTrnPg.isCalculateBtnVisible(5, tableName);
+			isCalculateBtnVisible = objBppTrnPg.isCalculateBtnVisible(10, tableName);
 			softAssert.assertTrue(!isCalculateBtnVisible, "SMAB-T247: Calculate button under '"+ tableName +"' table is not visible");
 		}
 
@@ -344,7 +344,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 
 		//Step14: Validating absence of ReCalculate All & Submit All Factors For Approval buttons at page level on clicking ReCalculate all button
 		ExtentTestManager.getTest().log(LogStatus.INFO, "* Validating absence of ReCalculate All & Submit All Factors For Approval buttons at page level on clicking ReCalculate all button");
-		isSubmitAllFactorsBtnDisplayed = objBppTrnPg.isSubmitAllFactorsForApprovalBtnVisible(5);
+		isSubmitAllFactorsBtnDisplayed = objBppTrnPg.isSubmitAllFactorsForApprovalBtnVisible(10);
 		softAssert.assertTrue(!isSubmitAllFactorsBtnDisplayed, "SMAB-T442: Submit All Factors For Approval button is not visible");
 		boolean isReCalculateAllBtnDisplayed = objBppTrnPg.isReCalculateAllBtnVisible(5);
 		softAssert.assertTrue(!isReCalculateAllBtnDisplayed, "SMAB-T442: ReCalcuateAll button is not visible");
@@ -448,7 +448,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 		softAssert.assertTrue(isExportValuationBtnDisplayed, "SMAB-T304: 'Export Valuation Factors' button is visible");
 
 		//Step8: Validating absence of Approve All button once the submitted calculation has been approved by clicking approve button for given table
-		isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(5);
+		isApproveAllBtnDisplayed = objBppTrnPg.isApproveAllBtnVisible(10);
 		softAssert.assertTrue(!isApproveAllBtnDisplayed, "SMAB-T304: Approve all button is not be visible at page level");
 
 		//Step9: Fetch table names from properties file and collect them in a single list
