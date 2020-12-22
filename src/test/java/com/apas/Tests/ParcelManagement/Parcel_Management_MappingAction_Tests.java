@@ -104,8 +104,6 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapOneToOneMappingData.get("Action"));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
 
-		String text=objMappingPage.getSelectedDropDownValue(objMappingPage.parcelSizeDropDownLabel);
-
 		//Step 5: Validating that default values of net land loss and net land gain is 0
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.netLandLossTextBoxLabel),"value"),"0",
 				"SMAB-T2481: Validation that default value of net land loss  is 0");
@@ -145,8 +143,6 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		softAssert.assertTrue(childAPNNumber.endsWith("0"),
 				"SMAB-T2488: Validation that child APN number ends with 0");
 
-
-		objMappingPage.getElementText(objMappingPage.situsFieldInTable);
 		//Step 10: Validation of ALL fields THAT ARE displayed on second screen
 		softAssert.assertEquals(gridDataHashMap.get("Neighborhood Code").get(0),neighborhoodValue,
 				"SMAB-T2481: Validation that  System populates neighborhood Code from the parent parcel");
