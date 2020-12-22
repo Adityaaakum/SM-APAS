@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.config.users;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -505,6 +506,15 @@ public class SalesforceAPI extends TestBase {
 
         //Release HTTP Post connection
         salesforceReleaseConnection(httpPost);
+    }
+
+    /**
+     * This method will return the user based on the user name
+     */
+    public String getUserName(String user){
+        user = CONFIG.getProperty(user + "UserName");
+        String userName = "select Name from User where UserName__c = '"+ user + "'";
+        return select(userName).get("Name").get(0);
     }
 
 }
