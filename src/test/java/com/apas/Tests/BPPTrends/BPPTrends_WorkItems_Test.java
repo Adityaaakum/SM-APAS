@@ -20,7 +20,7 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 
-public class BPPTrends_WorkItems extends TestBase {
+public class BPPTrends_WorkItems_Test extends TestBase {
 
     RemoteWebDriver driver;
     Page objPage;

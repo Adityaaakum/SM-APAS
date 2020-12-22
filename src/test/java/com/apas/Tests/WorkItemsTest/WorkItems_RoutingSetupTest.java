@@ -66,16 +66,16 @@ public class WorkItems_RoutingSetupTest extends TestBase {
         //Step4 : Verify Error message for mandatory fields
         String expectedErrorMessage = "Complete this field.";
         String actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsNeighborhoodsPage.neighborhoodCodeEditBox);
-        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1811: Verify Neighborhood Code is a mandatory field");
+        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1811: Verify Neighborhood Code is a mandatory field");
 
         actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsNeighborhoodsPage.neighborhoodDescriptionEditBox);
-        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1811: Verify Neighborhood Description is a mandatory field");
+        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1811: Verify Neighborhood Description is a mandatory field");
 
         actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsNeighborhoodsPage.primaryAppraiserDropDown);
-        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1811: Verify Primary Appraiser is a mandatory field");
+        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1811: Verify Primary Appraiser is a mandatory field");
 
         actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsNeighborhoodsPage.districtDropDown);
-        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1811: Verify District is a mandatory field");
+        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1811: Verify District is a mandatory field");
 
         //Step5: Create new Neighborhood reference record
         objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
@@ -128,16 +128,20 @@ public class WorkItems_RoutingSetupTest extends TestBase {
         String query = "SELECT Id FROM Territory__c WHERE Name  = '"+hashMapTerritoryData.get("Territory Name")+"'";
         salesforceAPI.delete("Territory__c",query);
 
+        Map<String, String> hashMapDuplicateTerritoryData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateDuplicateTerritory");
+        String queryToDeleteDuplicate = "SELECT Id FROM Territory__c WHERE Name  = '"+hashMapDuplicateTerritoryData.get("Territory Name")+"'";
+        salesforceAPI.delete("Territory__c",queryToDeleteDuplicate);
+
         objWorkItemHomePage.createRecord();
         objWorkItemHomePage.saveRecordAndGetError();
 
         //Step4 : Verify Error message for mandatory fields
         String expectedErrorMessage = "Complete this field.";
         String actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsTerritoriesPage.territoryNameEditBox);
-        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1816: Verify Territory Name is a mandatory field");
+        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1816: Verify Territory Name is a mandatory field");
 
         actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsTerritoriesPage.primaryAuditorDropDown);
-        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1816: Verify Primary Auditor is a mandatory field");
+        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1816: Verify Primary Auditor is a mandatory field");
 
         //Step5: Create new Territory record
         objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
@@ -148,13 +152,12 @@ public class WorkItems_RoutingSetupTest extends TestBase {
         softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-T1817: Verify user is able to create new Territory Record successfully");
 
         //Step6: Edit existing Territory record
-        Map<String, String> hashMapDuplicateTerritoryData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateDuplicateTerritory");
 
         objWorkItemHomePage.editRecord();
         objWorkItemHomePage.enter(objWorkItemsTerritoriesPage.territoryNameEditBox,hashMapDuplicateTerritoryData.get("Territory Name"));
         actualSuccessMessage = objWorkItemHomePage.saveRecord();
         expectedSuccessMessage="Territory \""+hashMapDuplicateTerritoryData.get("Territory Name") +"\" was saved.";
-        softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-1821: Verify user is able to edit Territory Record successfully");
+        softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-T1821: Verify user is able to edit Territory Record successfully");
 
         //Step7: Open the Territories Page & select all list view
         objWorkItemHomePage.searchModule(modules.TERRITORIES);
@@ -166,7 +169,7 @@ public class WorkItems_RoutingSetupTest extends TestBase {
         actualErrorMessage = objWorkItemHomePage.saveRecordAndGetError();
 
         expectedErrorMessage = "You can't save this record because a duplicate record already exists. To save, use different information.";
-        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-1822: Verify user is not able to create duplicate Territory Record");
+        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1822: Verify user is not able to create duplicate Territory Record");
 
         //Step9: Delete record create above
         query = "SELECT Id FROM Territory__c WHERE Name  = '"+hashMapDuplicateTerritoryData.get("Territory Name")+"'";
