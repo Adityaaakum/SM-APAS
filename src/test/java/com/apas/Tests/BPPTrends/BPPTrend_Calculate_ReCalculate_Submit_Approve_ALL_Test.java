@@ -24,7 +24,6 @@ import com.apas.config.modules;
 import com.apas.config.users;
 import com.relevantcodes.extentreports.LogStatus;
 
-
 public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends TestBase {
 
 	RemoteWebDriver driver;
@@ -544,3 +543,4 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 	}
 
 }
+
