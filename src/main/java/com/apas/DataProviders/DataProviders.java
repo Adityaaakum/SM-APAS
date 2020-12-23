@@ -1,8 +1,5 @@
 package com.apas.DataProviders;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.testng.annotations.DataProvider;
 
 import com.apas.Utils.SalesforceAPI;
@@ -385,8 +382,8 @@ public class DataProviders {
     public Object[][] condoMobileHomeParcels() {
 		return new Object[][]
 		{
-            { users.MAPPING_STAFF , "100-010-010"},
-            { users.MAPPING_STAFF , "134-041-490" }
+            { users.MAPPING_STAFF , "Condo_Parcel"},
+            { users.MAPPING_STAFF , "Mobile_Home_Parcel" }
         };
     }
     

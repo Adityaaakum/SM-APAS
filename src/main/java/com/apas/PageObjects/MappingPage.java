@@ -110,7 +110,7 @@ public class MappingPage extends ApasGenericPage {
 	 **@param element: ThE element on which validations are needed to be verified
 	 * @throws Exception
 	 */
-	public String verifyMappingActionsFieldsValidation(Object element,String value) throws Exception {
+	public String getMappingActionsFieldsErrorMessage(Object element,String value) throws Exception {
 		enter(element, value);
 		
 		if(verifyElementVisible(saveButton))
