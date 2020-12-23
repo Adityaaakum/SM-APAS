@@ -596,4 +596,17 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	        scrollToElement(webElement);
 	        return waitForElementToBeVisible(90,webElement);         
 	    }
+	 
+	 /**
+	     * Description: This method will open the Work Pool record using record name
+	     *
+	     * @param poolName: Takes Work Pool Name as an argument
+	     */
+	    public void openWorkPoolRecord(String poolName) throws Exception {
+	        ReportLogger.INFO("Open the Work Pool record : " + poolName);
+	        String xpathStr = "//span//a[@title='" + poolName + "']";
+	        WebElement poolNameLocator = waitForElementToBeClickable(30, xpathStr);
+	        Click(poolNameLocator);
+	        Thread.sleep(2000);
+	    }
 }

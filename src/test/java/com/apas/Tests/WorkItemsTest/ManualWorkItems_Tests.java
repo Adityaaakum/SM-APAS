@@ -417,20 +417,20 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	    	softAssert.assertEquals(successMessage,"success\nWork Pool \"" + poolName + "\" was created.\nClose","SMAB-T1935 : Validate success message on creation of the Work Pool" );
 	    	softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor),"500.00",
 	    				"SMAB-T1935 : Validate user is able to enter and save Level2 Value Criteria in the Work Pool");
-	      }
+		}
 		// Step6: Open the work pool record if there is an existing record
 		else {
     	    ReportLogger.INFO("There is an existing Work Pool record with the name :: " + poolName);
     		ReportLogger.INFO("Update the Work Pool record");
-    		objWorkItemHomePage.globalSearchRecords(poolName);
-		  }
+    		objWorkItemHomePage.openWorkPoolRecord(poolName);
+		}
 		
 		// Step7: Edit the work pool record and update field values in it
 		objWorkItemHomePage.waitForElementToBeVisible(6, objPage.getButtonWithText(objWorkItemHomePage.editButton));
     	objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
     	objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
     	ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record");
-    	apasGenericObj.searchAndSelectFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, dataAdminName);
+    	apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, dataAdminName);
     	objPage.enter(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor, "400");
     	String successMessage = apasGenericObj.saveRecord();
             
@@ -446,7 +446,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
     	ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record to keep it same as the Supervisor");
     	objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
     	objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
-    	apasGenericObj.searchAndSelectFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, rpBusinessAdminName);
+    	apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, rpBusinessAdminName);
     	softAssert.assertEquals(apasGenericObj.saveRecordAndGetError(),"Close error dialog\nWe hit a snag.\nReview the errors on this page.\nSupervisor and Level 2 Supervisor should not be same.","SMAB-T1940 : Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor");
     		
     	apasGenericObj.logout();
