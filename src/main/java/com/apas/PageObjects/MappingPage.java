@@ -93,6 +93,7 @@ public class MappingPage extends ApasGenericPage {
 			enter(situsTextBoxLabel, situs);
 		if (comments != null)
 			enter(commentsTextBoxLabel, comments);
+		
 		Click(getButtonWithText(nextButton));
 	}
 

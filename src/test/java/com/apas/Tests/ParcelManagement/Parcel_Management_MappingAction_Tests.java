@@ -54,15 +54,17 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
+		
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+		
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 
 		String pucId=salesforceAPI.select("Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active' limit 1").get("PUC_Code_Lookup__c").get(0);	
 		String pucValue  = salesforceAPI.select("SELECT Name  FROM PUC_Code__c where id='"+pucId+"'").get("Name").get(0);
 		String primarySitusId=salesforceAPI.select("SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"'").get("Primary_Situs__c").get(0);
 		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id= '"+ primarySitusId +"'").get("Name").get(0);
-		String neighborhoodValue=salesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1").get("Name").get(0);
-		String neighborhoodId=salesforceAPI.select("SELECT Name ,Id FROM Neighborhood__c where Name !=NULL limit 1").get("Id").get(0);
-		String traValue=salesforceAPI.select("SELECT Name,Id FROM TRA__c limit 1").get("Name").get(0);
-		String traId=salesforceAPI.select("SELECT Name,Id FROM TRA__c limit 1").get("Id").get(0);
 		String legalDescriptionValue=salesforceAPI.select("SELECT Short_Legal_Description__c FROM Parcel__c where Short_Legal_Description__c !=NULL limit 1").get("Short_Legal_Description__c").get(0);
 		String districtValue=salesforceAPI.select("SELECT District__c FROM Parcel__c where District__c !=Null limit 1").get("District__c").get(0);
 
@@ -70,8 +72,8 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		jsonObject.put("Status__c","Active");
 		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
 		jsonObject.put("District__c",districtValue);
-		jsonObject.put("Neighborhood_Reference__c",neighborhoodId);
-		jsonObject.put("TRA__c",traId);
+		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
 
@@ -144,21 +146,21 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 				"SMAB-T2488: Validation that child APN number ends with 0");
 
 		//Step 10: Validation of ALL fields THAT ARE displayed on second screen
-		softAssert.assertEquals(gridDataHashMap.get("Neighborhood Code").get(0),neighborhoodValue,
+		
+		softAssert.assertEquals(gridDataHashMap.get("District").get(0),districtValue,
+				"SMAB-T2481: Validation that  System populates District  from the parent parcel");
+		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue.replaceFirst("\\s", ""),"SMAB-T2481: Validation that  System populates Situs  from the parent parcel");
+		softAssert.assertEquals(gridDataHashMap.get("Neighborhood Code").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2481: Validation that  System populates neighborhood Code from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
 				"SMAB-T2481: Validation that  System populates reason code from before screen");
 		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescriptionValue,
 				"SMAB-T2481: Validation that  System populates Legal Description from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),traValue,
+		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2481: Validation that  System populates TRA from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),pucValue,
 				"SMAB-T2481: Validation that  System populates Use Code  from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("District").get(0),districtValue,
-				"SMAB-T2481: Validation that  System populates District  from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue,
-				"SMAB-T2481: Validation that  System populates Situs  from the parent parcel");
-
+		
 		//Step 11 :Verify that User is able to to create a district, Use Code for the child parcel from the custom screen after performing one to one mapping action
 		objMappingPage.editGridCellValue(objMappingPage.districtColumnSecondScreen,"Distrct 001");
 		objMappingPage.editGridCellValue(objMappingPage.useCodeColumnSecondScreen,"001vacant");
@@ -168,21 +170,21 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		//Step 14: Validation of ALL fields THAT ARE displayed AFTER PARCEL ARE GENERATED
-		softAssert.assertEquals(gridDataHashMap.get("Neighborhood Code").get(0),neighborhoodValue,
+		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue.replaceFirst("\\s", ""),
+				"SMAB-T2481: Validation that  System populates Situs  from the parent parcel");
+		softAssert.assertEquals(gridDataHashMap.get("Neighborhood Code").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2481: Validation that  System populates neighborhood Code from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
 				"SMAB-T2481: Validation that  System populates reason code from parent parcel work item");
 		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescriptionValue,
 				"SMAB-T2481: Validation that  System populates Legal Description from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),traValue,
+		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2481: Validation that  System populates TRA from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),"001vacant",
 				"SMAB-T2486: Verify that User is able to to create a Use Code for the child parcel from the custom screen ");
 		softAssert.assertEquals(gridDataHashMap.get("District").get(0),"Distrct 001",
 				"SMAB-T2486: Verify that User is able to to create a  district for the child parcel from the custom screen ");
-		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue,
-				"SMAB-T2481: Validation that  System populates Situs  from the parent parcel");
-
+		
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 
@@ -311,12 +313,15 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		String queryAPN  = "Select name,ID  From Parcel__c where name like '"+apnPrefix+"%' AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
+		
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+		
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
 		String pucId=salesforceAPI.select("Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active' limit 1").get("PUC_Code_Lookup__c").get(0);	
 		String pucValue  = salesforceAPI.select("SELECT Name  FROM PUC_Code__c where id='"+pucId+"'").get("Name").get(0);
-		String neighborhoodValue=salesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1").get("Name").get(0);
-		String neighborhoodId=salesforceAPI.select("SELECT Name ,Id FROM Neighborhood__c where Name !=NULL limit 1").get("Id").get(0);
-		String traValue=salesforceAPI.select("SELECT Name,Id FROM TRA__c limit 1").get("Name").get(0);
-		String traId=salesforceAPI.select("SELECT Name,Id FROM TRA__c limit 1").get("Id").get(0);
 		String legalDescriptionValue=salesforceAPI.select("SELECT Short_Legal_Description__c FROM Parcel__c where Short_Legal_Description__c !=NULL limit 1").get("Short_Legal_Description__c").get(0);
 		String districtValue=salesforceAPI.select("SELECT District__c FROM Parcel__c where District__c !=Null limit 1").get("District__c").get(0);
 
@@ -324,8 +329,8 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		jsonObject.put("Status__c","Active");
 		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
 		jsonObject.put("District__c",districtValue);
-		jsonObject.put("Neighborhood_Reference__c",neighborhoodId);
-		jsonObject.put("TRA__c",traId);
+		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
 
@@ -384,13 +389,13 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		//Step 9: Validation of ALL fields THAT ARE displayed on second screen
-		softAssert.assertEquals(gridDataHashMap.get("Neighborhood Code").get(0),neighborhoodValue,
+		softAssert.assertEquals(gridDataHashMap.get("Neighborhood Code").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates neighborhood Code from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),hashMapOneToOneMappingData.get("Reason code"),
 				"SMAB-T2544: Validation that  System populates reason code from before screen");
 		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),hashMapOneToOneMappingData.get("Legal Description"),
 				"SMAB-T2544: Validation that  System populates Legal Description from the before screen");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),traValue,
+		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates TRA from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),pucValue,
 				"SMAB-T2544: Validation that  System populates Use Code  from the parent parcel");
@@ -406,13 +411,13 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		//Step 13: Validation of ALL fields THAT ARE displayed AFTER PARCEL ARE GENERATED
-		softAssert.assertEquals(gridDataHashMap.get("Neighborhood Code").get(0),neighborhoodValue,
+		softAssert.assertEquals(gridDataHashMap.get("Neighborhood Code").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates neighborhood Code from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),"ReasonCode Test",
 				"SMAB-T2544: Validation that  reason code is editable field");
 		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),"Legal Description PM/01",
 				"SMAB-T2544: Validation that  Legal Description is editable field");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),traValue,
+		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates TRA from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),pucValue,
 				"SMAB-T2544: Verify that System populates use code  from the parent parcel");
