@@ -69,7 +69,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 	 * @throws Exception
 	 */
 
-	@Test(description = "SMAB-T1888,SMAB-T1889,SMAB-T1933,SMAB-T1885,SMAB-T2087,SMAB-T2080,SMAB-T1993,SMAB-T1838,SMAB-T1881: Verify User is able to Claim the reminder Annual limit(RPSL) work item, enter annual limits and submit for supervisor approval, Verify user is able to access Work Item details after submitting it for approval", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T1888,SMAB-T1889,SMAB-T1933,SMAB-T1885,SMAB-T2087,SMAB-T2080,SMAB-T1993,SMAB-T1838,SMAB-T1881,SMAB-T2040: Verify User is able to Claim the reminder Annual limit(RPSL) work item, enter annual limits and submit for supervisor approval, Verify user is able to access Work Item details after submitting it for approval", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class, groups = {
 			"regression", "Work_Item_DV" }, alwaysRun = true)
 	public void Disabledveteran_RPSLandReminderWIClaimSubmitValidations(String loginUser) throws Exception {
 		// deleting Existing WI from Disabled veterans Work pool and 2021-RPSL from
@@ -285,7 +285,6 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 
 		// Step3: Navigating to In 'Needs My Approval' section and verifying Linked
 		// record and returning the linked record
-		objPage.javascriptClick(workItemPageObj.toggleBUtton);
 		HashMap<String, ArrayList<String>> needsMyApprovalWI = workItemPageObj.getWorkItemData(workItemPageObj.TAB_NEED_MY_APPROVAL);
 		int reminderSubmittedWIRowNumber = needsMyApprovalWI.get("Request Type").indexOf("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits");
 		String reminderSubmittedWINumber = needsMyApprovalWI.get("Work Item Number").get(reminderSubmittedWIRowNumber);
@@ -453,7 +452,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 	 * @throws Exception
 	 */
 
-	@Test(description = "SMAB-T2080,SMAB-T2091,SMAB-T1918:Verify system generates WI 'Disabled Veteran -Review and Update-Annual exemption amount verification' for all active Exemption with low income VA for previous roll year once 'Annual Exemption Limits' for current roll year is approved", dataProvider = "loginExemptionSupportStaff", dependsOnMethods = {
+	@Test(description = "SMAB-T2080,SMAB-T2091,SMAB-T1918,SMAB-T1951, SMAB-T1952:Verify system generates WI 'Disabled Veteran -Review and Update-Annual exemption amount verification' for all active Exemption with low income VA for previous roll year once 'Annual Exemption Limits' for current roll year is approved", dataProvider = "loginExemptionSupportStaff", dependsOnMethods = {
 			"Disabledveteran_RPSLandReminderWIApprovalRejectionValidations" }, dataProviderClass = DataProviders.class, groups = {
 					"regression", "Work_Item_DV" }, alwaysRun = true)
 	public void Disabledveteran_LowIncomeExemptionWIVerification(String loginUser) throws Exception {

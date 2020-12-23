@@ -447,33 +447,32 @@ public class Page extends TestBase {
 	}
 
 	/**
-	 * Function will wait until to Max timeout until the WebElement is located.
-	 *
-	 * @param: Takes xpath to locate element, time out in seconds, pooling time in seconds
-	 * @return: Returns the element
-	 */
-	public void waitUntilElementIsPresent(String xpath, int timeOut) throws Exception {
-		locateElement(xpath, timeOut);
-	}
+     * Function will wait until to Max timeout until the WebElement is located.
+     *
+     * @param: Takes xpath to locate element, time out in seconds, pooling time in seconds
+     * @return: Returns the element
+     */
+    public void waitUntilElementIsPresent(String xpath, int timeOut) throws Exception {
+        locateElement(xpath, timeOut);
+    }
 
-	public WebElement waitUntilElementIsPresent(int timeOutInSec, String xpath) {
-		return waitUntilElementIsPresent(xpath, timeOutInSec, 500);
-	}
+    public WebElement waitUntilElementIsPresent(int timeOutInSec, String xpath) {
+        return waitUntilElementIsPresent(xpath, timeOutInSec, 500);
+    }
 
-	public WebElement waitUntilElementIsPresent(final String xpath, int timeOutInSec, int poolingTimeInSec) {
-		Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(timeOutInSec))
-				.pollingEvery(Duration.ofSeconds(poolingTimeInSec))
-				.ignoring(NoSuchElementException.class)
-				.ignoring(StaleElementReferenceException.class);
+    public WebElement waitUntilElementIsPresent(String xpath, int timeOutInSec, int poolingTimeInSec) {
+        Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(timeOutInSec))
+                .pollingEvery(Duration.ofSeconds(poolingTimeInSec))
+                .ignoring(NoSuchElementException.class)
+                .ignoring(StaleElementReferenceException.class);
 
-		WebElement element = wait.until(new Function<WebDriver, WebElement>() {
-			public WebElement apply(WebDriver driver) {
-				return driver.findElement(By.xpath(xpath));
-			}
-		});
-		return element;
-	}
-
+        WebElement element = wait.until(new Function<WebDriver, WebElement>() {
+            public WebElement apply(WebDriver driver) {
+                return driver.findElement(By.xpath(xpath));
+            }
+        });
+        return element;
+    }
 	/**
 	 * Function will wait for an element to be Invisible on the page.
 	 *

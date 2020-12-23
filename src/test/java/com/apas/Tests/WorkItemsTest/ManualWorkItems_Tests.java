@@ -416,13 +416,13 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	    	softAssert.assertEquals(successMessage,"success\nWork Pool \"" + poolName + "\" was created.\nClose","SMAB-T1935 : Validate success message on creation of the Work Pool" );
 	    	softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor),"500.00",
 	    				"SMAB-T1935 : Validate user is able to enter and save Level2 Value Criteria in the Work Pool");
-	      }
+		}
 		// Step6: Open the work pool record if there is an existing record
 		else {
     	    ReportLogger.INFO("There is an existing Work Pool record with the name :: " + poolName);
     		ReportLogger.INFO("Update the Work Pool record");
-    		objWorkItemHomePage.globalSearchRecords(poolName);
-		  }
+    		objWorkItemHomePage.openWorkPoolRecord(poolName);
+		}
 		
 		// Step7: Edit the work pool record and update field values in it
 		objWorkItemHomePage.waitForElementToBeVisible(6, objPage.getButtonWithText(objWorkItemHomePage.editButton));
