@@ -32,6 +32,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	MappingPage objMappingPage;
 	JSONObject jsonObject= new JSONObject();
+	String apnPrefix=new String();
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -304,7 +305,6 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 	@Test(description = "SMAB-T2544:Verify that Verify that User is able to perform a One to One mapping action for a Parcel (Active) by filling all fields in mapping action form for Condo and mobile home type parcels", dataProvider = "Condo_MobileHome_Parcels", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyOneToOneMappingActionCondoMobileHomeParcels(String loginUser,String parcelType) throws Exception {
-		String apnPrefix="";
 		if(parcelType.equals("Condo_Parcel"))
 			 apnPrefix="100";
 		if(parcelType.equals("Mobile_Home_Parcel"))
