@@ -925,7 +925,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
     /**
      * DESCRIPTION: Validation of BPP Trend Annual Factors Reminder Work Item workflow
      */
-    @Test(description = "SMAB-T1729,SMAB-T1730,SMAB-T1734,SMAB-T1735,SMAB-T1943,SMAB-T2168,SMAB-T2169,SMAB-T2179: Validation of BPP Trend Annual Factors Reminder Work Item workflow", groups={"smoke","regression","Work_Item_BPP"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
+    @Test(description = "SMAB-T1729,SMAB-T1730,SMAB-T1943,SMAB-T2168,SMAB-T2169,SMAB-T2179: Validation of BPP Trend Annual Factors Reminder Work Item workflow", groups={"smoke","regression","Work_Item_BPP"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
     public void BppTrend_AnnualFactors_ReminderWorkItemWorkFlow(String loginUser) throws Exception {
         String rollYear = "2021";
 
@@ -1006,7 +1006,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         softAssert.assertEquals(successMessage,"success\nBPP Setting was saved.\nClose","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
 
         //Change the status to "Reviewed By Admin"
-        softAssert.assertEquals(objBppTrendSetupPage.getFieldValueFromAPAS("Annual Factor Status"),"To be Reviewed by Admin","SMAB-T1734 : Validation that new field Annual Factor Status is visible on UI");
+        softAssert.assertEquals(objBppTrendSetupPage.getFieldValueFromAPAS("Annual Factor Status"),"To be Reviewed by Admin","SMAB-T1730 : Validation that new field Annual Factor Status is visible on UI");
         objBppTrendSetupPage.editAndSelectFieldData("Annual Factor Status","Reviewed by Admin");
 
         driver.switchTo().window(parentWindow);
@@ -1017,7 +1017,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
 
         //Step20: Completed "Annual Factor Settings" work item validation
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(annualFactorSettingsWorkItemWorkItem), "SMAB-T1730,SMAB-T1735: Validation that Annual Factor Settings work item moved to Completed status after Annual Factor Status is saved to Reviewed By Admin");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(annualFactorSettingsWorkItemWorkItem), "SMAB-T1730,SMAB-T1730: Validation that Annual Factor Settings work item moved to Completed status after Annual Factor Status is saved to Reviewed By Admin");
 
         //Update the settings even after closing the work item
         objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
