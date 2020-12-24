@@ -238,6 +238,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		String workItemWithLaterDOV = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		//Step5:Accept the work items created above
+		driver.navigate().refresh();
 		objWorkItemHomePage.searchModule(HOME);
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 
@@ -280,6 +281,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		String workItemWithLaterDOV = objParcelsPage.createWorkItem(hashMapManualWorkItemData);
 
 		//Step5:Accept the work items created above
+		driver.navigate().refresh();
 		objWorkItemHomePage.searchModule(HOME);
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 

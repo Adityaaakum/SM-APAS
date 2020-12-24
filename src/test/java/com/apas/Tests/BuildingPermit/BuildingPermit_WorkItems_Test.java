@@ -79,8 +79,8 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         objEfileImportPage.importFileOnEfileIntake(fileTypes.BUILDING_PERMITS, BPFileSource.SAN_MATEO, fileName, destFile);
        
         //Stpe4: Open the Work Item Home Page
-        objBuildingPermitPage.searchModule(modules.HOME);
         driver.navigate().refresh();
+        objBuildingPermitPage.searchModule(modules.HOME);
 
         //Step5: "Import Review" Work Item generation validation after file is imported
         String queryWorkItem = "SELECT Name FROM Work_Item__c where Request_Type__c = 'Building Permit - Review - " + fileNameWithoutExtension + "'";
@@ -108,12 +108,13 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 		
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
+
 		//Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record WHERE date should be date of import and use code should be SECS
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC",
 										"SMAB-T2081: Validation that 'Use Code' fields getting automatically populated in the work item record");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Date", "Information"),objUtil.getCurrentDate("MM/dd/yyyy"),
 										"SMAB-T2081: Validation that 'Date' fields is equal to"+objUtil.getCurrentDate("MM/dd/yyyy"));									
-		
+
 		parentWindow = driver.getWindowHandle();	
         objWorkItemHomePage.openRelatedActionRecord(importReviewWorkItem);
         objPage.switchToNewWindow(parentWindow);
@@ -172,8 +173,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 		//SMAB-T2122:opening the action link to validate that link redirects to Final Review Building Permits  page
         objWorkItemHomePage.openActionLink(finalReviewWorkItem);
 		objPage.switchToNewWindow(parentWindow);
-		softAssert.assertTrue(objPage.verifyElementVisible(objReportsPage.buildingPermitHeaderText),
-				"SMAB-T2122: Validation that Final Review Building Permits label is visible");
+		softAssert.assertTrue(objPage.verifyElementVisible(objReportsPage.buildingPermitHeaderText), "SMAB-T2122: Validation that Final Review Building Permits label is visible");
 		driver.close();
 		driver.switchTo().window(parentWindow);
         objWorkItemHomePage.openRelatedActionRecord(finalReviewWorkItem);
@@ -206,8 +206,8 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         softAssert.assertEquals(successMessageText, "success\nStatus changed successfully.\nClose", "SMAB-T1903,SMAB-T1902,SMAB-T1901: Validation that status of the efile logs linked with work item is reverted");
 
         //Step19: Open Home Page
-        objBuildingPermitPage.searchModule(modules.HOME);
         driver.navigate().refresh();
+        objBuildingPermitPage.searchModule(modules.HOME);
 
         //Step20: Close "Final Review" Work Item
         completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
@@ -242,8 +242,8 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         objEfileImportPage.importFileOnEfileIntake(fileTypes.BUILDING_PERMITS, BPFileSource.ATHERTON, fileName, destFile);
 
         //Stpe4: Open the Work Item Home Page
-        objBuildingPermitPage.searchModule(modules.HOME);
         driver.navigate().refresh();
+        objBuildingPermitPage.searchModule(modules.HOME);
 
         //Step5: "Import Review" Work Item generation validation after file is imported
         String queryWorkItem = "SELECT Name FROM Work_Item__c where Request_Type__c like '%" + fileNameWithoutExtension + "%'";
@@ -260,8 +260,8 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         softAssert.assertEquals(objWorkItemHomePage.getIndividualFieldErrorMessage("Request Type"), "Building Permit - Review - " + fileNameWithoutExtension, "SMAB-T1890: File Name and Review Work Item Name validation in the imported review work item");
         softAssert.assertEquals(objWorkItemHomePage.getIndividualFieldErrorMessage("Work Pool"), "RP Admin", "SMAB-T1890: Imported review work item pool name validation");
 
-        objBuildingPermitPage.searchModule(modules.HOME);
         driver.navigate().refresh();
+        objBuildingPermitPage.searchModule(modules.HOME);
         objWorkItemHomePage.openRelatedActionRecord(importReviewWorkItem);
         String parentWindow = driver.getWindowHandle();
         objPage.switchToNewWindow(parentWindow);
