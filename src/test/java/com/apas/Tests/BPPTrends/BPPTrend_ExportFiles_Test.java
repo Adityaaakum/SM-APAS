@@ -82,10 +82,10 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);
 		
 		//Step3: Validate Export Composite Factors & Export Valuation Factors buttons are not visible when Status is 'Not Calculated/Yet to be Submit for Approval'
-		boolean exportCompositeFactorButtonVisible = Objects.isNull(objPage.locateElement(objBppTrend.xPathExportCompositeFactorsButton, 10));
+		boolean exportCompositeFactorButtonVisible = !objPage.verifyElementVisible(objBppTrend.xPathExportCompositeFactorsButton);
 		softAssert.assertTrue(exportCompositeFactorButtonVisible, "SMAB-T313: Verify Export Composite Factors button is not visible when status is 'Not Calculated/Yet to be Submit for Approval'");
 		
-		boolean exportValuationFactorButtonVisible = Objects.isNull(objPage.locateElement(objBppTrend.xPathExportValuationFactorsButton, 10));
+		boolean exportValuationFactorButtonVisible = !objPage.verifyElementVisible(objBppTrend.xPathExportValuationFactorsButton);
 		softAssert.assertTrue(exportValuationFactorButtonVisible, "SMAB-T313: Verify Export Valuation Factors button is not visible when status is 'Not Calculated/Yet to be Submit for Approval'");
 		
 		/*
@@ -101,10 +101,10 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);
 		
 		//Step6: Validating presence of Export Composite Factors & Export Valuation Factors buttons
-		exportCompositeFactorButtonVisible = Objects.isNull(objPage.locateElement(objBppTrend.xPathExportCompositeFactorsButton, 10));
+		exportCompositeFactorButtonVisible = !objPage.verifyElementVisible(objBppTrend.xPathExportCompositeFactorsButton);
 		softAssert.assertTrue(exportCompositeFactorButtonVisible, "SMAB-T313: Verify Export Composite Factors button is not visible when status is 'Calculated/Yet to be Submit for Approval'");
 		
-		exportValuationFactorButtonVisible = Objects.isNull(objPage.locateElement(objBppTrend.xPathExportValuationFactorsButton, 10));
+		exportValuationFactorButtonVisible = !objPage.verifyElementVisible(objBppTrend.xPathExportValuationFactorsButton);
 		softAssert.assertTrue(exportValuationFactorButtonVisible, "SMAB-T313: Verify Export Valuation Factors button is not visible when status is 'Calculated/Yet to be Submit for Approval'");
 		
 		/*
@@ -120,10 +120,10 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);
 		
 		//Step9: Validating presence of Export Composite Factors & Export Valuation Factors buttons
-		exportCompositeFactorButtonVisible = Objects.isNull(objPage.locateElement(objBppTrend.xPathExportCompositeFactorsButton, 10));
+		exportCompositeFactorButtonVisible = !objPage.verifyElementVisible(objBppTrend.xPathExportCompositeFactorsButton);
 		softAssert.assertTrue(exportCompositeFactorButtonVisible, "SMAB-T313: Verify Export Composite Factors button is not visible when status is 'Submitted for Approval'");
 		
-		exportValuationFactorButtonVisible = Objects.isNull(objPage.locateElement(objBppTrend.xPathExportValuationFactorsButton, 10));
+		exportValuationFactorButtonVisible = !objPage.verifyElementVisible(objBppTrend.xPathExportValuationFactorsButton);
 		softAssert.assertTrue(exportValuationFactorButtonVisible, "SMAB-T313: Verify Export Valuation Factors button is not visible when status is 'Submitted for Approval'");
 		
 		/*
@@ -139,10 +139,10 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);
 		
 		//Step12: Validating presence of Export Composite Factors & Export Valuation Factors buttons
-		exportCompositeFactorButtonVisible = Objects.nonNull(objPage.locateElement(objBppTrend.xPathExportCompositeFactorsButton, 20));
+		exportCompositeFactorButtonVisible = objPage.verifyElementVisible(objBppTrend.xPathExportCompositeFactorsButton);
 		softAssert.assertTrue(exportCompositeFactorButtonVisible, "SMAB-T266,SMAB-T303,SMAB-T313: Verify Export Composite Factors button is visible when status is 'Approved'");
 		
-		exportValuationFactorButtonVisible = Objects.nonNull(objPage.locateElement(objBppTrend.xPathExportValuationFactorsButton, 20));
+		exportValuationFactorButtonVisible = objPage.verifyElementVisible(objBppTrend.xPathExportValuationFactorsButton);
 		softAssert.assertTrue(exportValuationFactorButtonVisible, "SMAB-T266,SMAB-T303,SMAB-T313: Verify Export Valuation Factors button is not visible when status is 'Approved'");
 					
 		objApasGenericPage.logout();

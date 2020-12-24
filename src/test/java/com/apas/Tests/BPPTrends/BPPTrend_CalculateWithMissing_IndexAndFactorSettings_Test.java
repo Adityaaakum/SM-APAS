@@ -144,6 +144,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		
 		//Step8: Opening the BPP Trend module and set All as the view option in grid
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		Thread.sleep(3000);
 		objBppTrendSetupPage.displayRecords("All");
 		
 		//Step9: Clicking on the roll year name in grid to navigate to details page of selected roll year
@@ -191,6 +192,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		
 		//Step13: Opening the BPP Trend module and set All as the view option in grid
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		Thread.sleep(3000);
 		objBppTrendSetupPage.displayRecords("All");
 		
 		//Step14: Clicking on the roll year name in grid to navigate to details page of selected roll year
@@ -214,7 +216,8 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		//objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
 		//objPage.Click(objBppTrendSetupPage.newBtnToCreateEntry);
 		
-		objBppTrnPg.createRecord();
+		
+		objBppTrnPg.Click(objBppTrendSetupPage.newButton);
 
 		objBppTrendSetupPage.enter(objBppTrendSetupPage.minGoodFactorEditBox,"10");
 		objBuildPermit.selectOptionFromDropDown("Property Type","Commercial");
@@ -224,6 +227,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		//Opening the BPP Trend module and set All as the view option in grid
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		Thread.sleep(3000);
 		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(Integer.toString(year));
 
@@ -240,7 +244,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
 		objPage.Click(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));*/
 		
-		objBppTrnPg.createRecord();
+		objBppTrnPg.Click(objBppTrendSetupPage.newButton);
 
 		objBppTrendSetupPage.enter(objBppTrendSetupPage.minGoodFactorEditBox,"9");
 		objBuildPermit.selectOptionFromDropDown("Property Type","Industrial");
@@ -250,6 +254,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		//Opening the BPP Trend module and set All as the view option in grid
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		Thread.sleep(3000);
 		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(Integer.toString(year));
 
@@ -271,6 +276,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		//Opening the BPP Trend module and set All as the view option in grid
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		Thread.sleep(3000);
 		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(Integer.toString(year));
 
