@@ -61,15 +61,14 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+		
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
 
-		String pucId=salesforceAPI.select("Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active' limit 1").get("PUC_Code_Lookup__c").get(0);	
-		String pucValue  = salesforceAPI.select("SELECT Name  FROM PUC_Code__c where id='"+pucId+"'").get("Name").get(0);
-		String primarySitusId=salesforceAPI.select("SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"'").get("Primary_Situs__c").get(0);
-		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id= '"+ primarySitusId +"'").get("Name").get(0);
+		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"'").get("Name").get(0);
 		String legalDescriptionValue=salesforceAPI.select("SELECT Short_Legal_Description__c FROM Parcel__c where Short_Legal_Description__c !=NULL limit 1").get("Short_Legal_Description__c").get(0);
 		String districtValue=salesforceAPI.select("SELECT District__c FROM Parcel__c where District__c !=Null limit 1").get("District__c").get(0);
 
-		jsonObject.put("PUC_Code_Lookup__c",pucId);
+		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("ID").get(0));
 		jsonObject.put("Status__c","Active");
 		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
 		jsonObject.put("District__c",districtValue);
@@ -159,7 +158,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 				"SMAB-T2481: Validation that  System populates Legal Description from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2481: Validation that  System populates TRA from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),pucValue,
+		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
 				"SMAB-T2481: Validation that  System populates Use Code  from the parent parcel");
 		
 		//Step 11 :Verify that User is able to to create a district, Use Code for the child parcel from the custom screen after performing one to one mapping action
@@ -320,12 +319,13 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 
-		String pucId=salesforceAPI.select("Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active' limit 1").get("PUC_Code_Lookup__c").get(0);	
-		String pucValue  = salesforceAPI.select("SELECT Name  FROM PUC_Code__c where id='"+pucId+"'").get("Name").get(0);
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+
+		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"'").get("Name").get(0);
 		String legalDescriptionValue=salesforceAPI.select("SELECT Short_Legal_Description__c FROM Parcel__c where Short_Legal_Description__c !=NULL limit 1").get("Short_Legal_Description__c").get(0);
 		String districtValue=salesforceAPI.select("SELECT District__c FROM Parcel__c where District__c !=Null limit 1").get("District__c").get(0);
 
-		jsonObject.put("PUC_Code_Lookup__c",pucId);
+		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("ID").get(0));
 		jsonObject.put("Status__c","Active");
 		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
 		jsonObject.put("District__c",districtValue);
@@ -397,7 +397,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 				"SMAB-T2544: Validation that  System populates Legal Description from the before screen");
 		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates TRA from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),pucValue,
+		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates Use Code  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("District").get(0),districtValue,
 				"SMAB-T2544: Validation that  System populates District  from the parent parcel");
@@ -419,7 +419,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 				"SMAB-T2544: Validation that  Legal Description is editable field");
 		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates TRA from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),pucValue,
+		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
 				"SMAB-T2544: Verify that System populates use code  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("District").get(0),districtValue,
 				"SMAB-T2544: Verify that System populates district from the parent parcel ");
