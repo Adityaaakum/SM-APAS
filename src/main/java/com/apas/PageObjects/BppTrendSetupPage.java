@@ -148,6 +148,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public WebElement fieldError;
 
 	public String minGoodFactorEditBox = "Minimum Good Factor";
+	public String moreTabCompositeFactorSettings = "//div[contains(@class, 'column region-sidebar-right')]//button[@title = 'More Tabs']";
 
 	/**
 	 * Description: Creates the BPP Composite Factor Setting on BPP trend status page
@@ -156,9 +157,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 * @throws: Exception
 	 */
 	public void createBppCompositeFactorSetting(String propertyType, String minGoodFactorValue) throws Exception {
-		WebElement moreTab = locateElement("//div[contains(@class, 'column region-sidebar-right')]//button[@title = 'More Tabs']", 10);
-
-		if(verifyElementVisible(moreTab)) {
+		if(verifyElementVisible(moreTabCompositeFactorSettings)) {
+			WebElement moreTab = locateElement(moreTabCompositeFactorSettings, 10);
 			waitForElementToBeClickable(moreTab, 10);
 			clickAction(moreTab);
 			waitForElementToBeVisible(bppCompositeFactorOption, 10);
