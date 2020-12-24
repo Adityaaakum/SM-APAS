@@ -95,7 +95,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		  for (int VARowNo = 0; VARowNo<noOfVAs; VARowNo++) { 			 				  
 			//Step7: Clicking on 'Active' Value Adjustment link
 			driver.navigate().refresh();
-			String xpPathActiveVA = "//div//tr["+(VARowNo+1)+"]//span[contains(text(),'Active')]//..//..//preceding-sibling::th//a";
+			String xpPathActiveVA = "//div//tr["+(VARowNo+1)+"]//*[contains(text(),'Active')]//ancestor:: td[@data-label='Status']//preceding-sibling::th//a";
 			objPage.waitUntilElementIsPresent(xpPathActiveVA,50);
 			WebElement vaLink = objPage.locateElement(xpPathActiveVA,10);
 			

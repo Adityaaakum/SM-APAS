@@ -707,34 +707,22 @@ public class ExemptionsPage extends ApasGenericPage {
             objRPSL.saveRealPropertySettings();
         }
         ReportLogger.INFO("Verifying and Approving previous 9 year's unapproved RPSL");
-        String ApprovedRPSLQuery = "select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name ='" + currentRollYear + "' and Status__c='Approved' order by Roll_Year_Settings__r.name desc";
-        HashMap<String, ArrayList<String>> Approvedresponse = objSalesforceAPI.select(ApprovedRPSLQuery);
-        if(Approvedresponse.size()==0 || Approvedresponse==null) {
-        	//Now verifying if UnApproved RPSL present among past 9 years records and Approve them if so   
-        String notApprovedRPSLQuery = "select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name <='" + currentRollYear + "' and Roll_Year_Settings__r.name >='" + lastRolYearToVerify + "' and Status__c!='Approved' order by Roll_Year_Settings__r.name desc";
-        HashMap<String, ArrayList<String>> response1 = objSalesforceAPI.select(notApprovedRPSLQuery);
-        if (response1.size() > 0) {
-            String closedRollYear = "Select id From Roll_Year_Settings__c where Status__c = 'Closed' and Roll_Year__c>='" + lastRolYearToVerify + "' and Roll_Year__c<='" + currentRollYear + "' order by name desc";
-            objSalesforceAPI.update("Roll_Year_Settings__c", closedRollYear, "Status__c", "Open");
-            objSalesforceAPI.update("Real_Property_Settings_Library__c", notApprovedRPSLQuery, "Status__c", "Approved");
-            String openRollYear = "Select id From Roll_Year_Settings__c where Status__c = 'Open' and Roll_Year__c!='" + currentRollYear + "' and Roll_Year__c>='" + lastRolYearToVerify + "' and Roll_Year__c<'" + currentRollYear + "' order by name desc";
-            objSalesforceAPI.update("Roll_Year_Settings__c", openRollYear, "Status__c", "Closed");
+        //Getting All Roll year which has Approved RPSL 
+        String ApprovedRPSLQuery ="select Name from Roll_Year_Settings__c where id In(select Roll_Year_Settings__c from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name <='" + currentRollYear + "' and Roll_Year_Settings__r.name >='" + lastRolYearToVerify +"' and Status__c='Approved')order by Name desc"; 		
+        HashMap<String, ArrayList<String>> approvedResponse = objSalesforceAPI.select(ApprovedRPSLQuery);
+        ArrayList<String> Approvedrollyear=approvedResponse.get("Name");
+        String ApprovedRPSLrollyear="";
+        for(int i=0;i<Approvedrollyear.size();i++) {	
+        	ApprovedRPSLrollyear=ApprovedRPSLrollyear+"'"+ Approvedrollyear.get(i)+"',";
         }
-        }else {
-            //Now verifying if UnApproved RPSL present among past 9 years records and Approve them if so
-            String notApprovedRPSLQuery = "select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name <'" + currentRollYear + "' and Roll_Year_Settings__r.name >='" + lastRolYearToVerify + "' and Status__c!='Approved' order by Roll_Year_Settings__r.name desc";
-            HashMap<String, ArrayList<String>> response1 = objSalesforceAPI.select(notApprovedRPSLQuery);
-            if (response1.size() > 0) {
-                String closedRollYear = "Select id From Roll_Year_Settings__c where Status__c = 'Closed' and Roll_Year__c>='" + lastRolYearToVerify + "' and Roll_Year__c<'" + currentRollYear + "' order by name desc";
-                objSalesforceAPI.update("Roll_Year_Settings__c", closedRollYear, "Status__c", "Open");
-                objSalesforceAPI.update("Real_Property_Settings_Library__c", notApprovedRPSLQuery, "Status__c", "Approved");
-                String openRollYear = "Select id From Roll_Year_Settings__c where Status__c = 'Open' and Roll_Year__c!='" + currentRollYear + "' and Roll_Year__c>='" + lastRolYearToVerify + "' and Roll_Year__c<'" + currentRollYear + "' order by name desc";
-                objSalesforceAPI.update("Roll_Year_Settings__c", openRollYear, "Status__c", "Closed");
-            }
-            
-        }
-        //Verifying if any previous 9 Year's Roll Year objects are open and if open closing the same
-        String openRollYear = "Select id From Roll_Year_Settings__c where Status__c = 'Open' and Roll_Year__c!='" + currentRollYear + "' and Roll_Year__c>='" + lastRolYearToVerify + "' and Roll_Year__c<'" + currentRollYear + "' order by name desc";
+        ApprovedRPSLrollyear = ApprovedRPSLrollyear.substring(0, ApprovedRPSLrollyear.length() - 1);
+        //Now verifying if UnApproved RPSL present among past 9 years records and Approve them if so   
+        String notApprovedRPSLQuery = "select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name <='" + currentRollYear + "' and Roll_Year_Settings__r.name >='" + lastRolYearToVerify + "' and Roll_Year_Settings__r.name NOT IN("+ApprovedRPSLrollyear+") and Status__c!='Approved' order by Roll_Year_Settings__r.name desc";
+        String closedRollYear = "Select id From Roll_Year_Settings__c where Status__c = 'Closed' and Roll_Year__c>='" + lastRolYearToVerify + "' and Roll_Year__c<='" + currentRollYear + "'and Roll_Year__c NOT IN("+ApprovedRPSLrollyear+") order by name desc";
+        objSalesforceAPI.update("Roll_Year_Settings__c", closedRollYear, "Status__c", "Open");
+        objSalesforceAPI.update("Real_Property_Settings_Library__c", notApprovedRPSLQuery, "Status__c", "Approved");
+        String openRollYear = "Select id From Roll_Year_Settings__c where Status__c = 'Open' and Roll_Year__c!='" + currentRollYear + "' and Roll_Year__c>='" + lastRolYearToVerify + "' and Roll_Year__c<'" + currentRollYear + "'and Roll_Year__c NOT IN("+ApprovedRPSLrollyear+") order by name desc";
         objSalesforceAPI.update("Roll_Year_Settings__c", openRollYear, "Status__c", "Closed");
+        
     }
 }

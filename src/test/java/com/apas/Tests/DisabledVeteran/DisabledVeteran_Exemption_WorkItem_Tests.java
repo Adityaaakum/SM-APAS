@@ -189,9 +189,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	  	objPage.Click(objWIHomePage.lnkTABHome);
 	  	ReportLogger.INFO("Step 10: Click on the Sub  TAB - Work Items");
 	  	objPage.Click(objWIHomePage.lnkTABWorkItems);
-	  	ReportLogger.INFO("Step 11: Click on the check box - Show RP");
-	  	objPage.Click(objWIHomePage.chkShowRP);
-	  	ReportLogger.INFO("Step 12: Click on the SUB TAB - My Submitted for Approval");
+	    ReportLogger.INFO("Step 12: Click on the SUB TAB - My Submitted for Approval");
 	  	objPage.Click(objWIHomePage.lnkTABMySubmittedforApproval);
 	  	//Search the Work Item Name in the Grid 1st Column
 	  	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
@@ -405,8 +403,8 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	  	objPage.Click(objWIHomePage.lnkTABHome);
 	  	ReportLogger.INFO("Step 19: Click on the Sub  TAB - Work Items");
 	  	objPage.Click(objWIHomePage.lnkTABWorkItems);
-	  	ReportLogger.INFO("Step 20: Click on the check box - Show RP");
-	  	objPage.Click(objWIHomePage.chkShowRP);
+	  	//ReportLogger.INFO("Step 20: Click on the check box - Show RP");
+	  	//objPage.Click(objWIHomePage.chkShowRP);
 	  	ReportLogger.INFO("Step 21: Click the TAB - In Progress");
 	  	objPage.Click(objWIHomePage.lnkTABInProgress);
 	  	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
