@@ -14,9 +14,9 @@
 		</groups>
 		<classes>
 
-			 <class name="com.apas.Tests.WorkItemsTest.ManualWorkItems_Tests">
+			 <class name="com.apas.Tests.BuildingPermit.BuildingPermit_WorkItems_Test">
 				 <methods>
-					 <include name="WorkItems_ManualWorkItemRouting"/>
+					 <include name="BuildingPermit_WorkItemAfterImportAndRevert"/>
 				 </methods>
 			 </class>
 
