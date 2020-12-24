@@ -31,8 +31,8 @@ public interface modules {
 	String ROLLYEAR = "Roll Year Settings";
 	String VALUE_ADJUSTMENTS = "Value Adjustments";
 	String WORKITEM_MNGMNT = "Work Item Management Console";
-	public static final String NEIGHBORHOODS = "Neighborhoods";
-	public static final String TERRITORIES = "Territories";
-	public static final String ROUTING_ASSIGNMENTS = "Routing Assignments";
+	String NEIGHBORHOODS = "Neighborhoods";
+	String TERRITORIES = "Territories";
+	String ROUTING_ASSIGNMENTS = "Routing Assignments";
 }
 

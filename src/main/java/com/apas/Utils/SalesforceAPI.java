@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Objects;
 
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.config.users;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -306,7 +308,7 @@ public class SalesforceAPI extends TestBase {
                 for (int i = 0; i<=noOfLoops; i++){
                     commaSeparatedIds = getCommaSeparatedIds(queryWith200Limit);
                     statusCode = delete(commaSeparatedIds,0);
-                    if (statusCode == 200)
+                    if (statusCode == 200 || statusCode==0 )    //When all the Ids are deleted StatusCode returns 0.
                         ReportLogger.PASS("Status Code for Delete Query : " + statusCode);
                     else
                         ReportLogger.FAIL("Status Code for Delete Query : " + statusCode);
