@@ -173,7 +173,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	public void WorkItems_VerifyLinkedBPPAccountUseCode_DateFields(String loginUser) throws Exception {
 		
 		// fetching a BPP account where Roll code  is not blank 
-		String queryBPPAccount = "select Name,Roll_Code__c from BPP_Account__c where Roll_Code__c!=NULL Limit 1";
+		String queryBPPAccount = "select Name,Roll_Code__c from BPP_Account__c where Roll_Code__c!=NULL  and Status__c ='ACTIVE' Limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryBPPAccount);
 		String bppAccount= response.get("Name").get(0);
 		String rollCode= response.get("Roll_Code__c").get(0);
