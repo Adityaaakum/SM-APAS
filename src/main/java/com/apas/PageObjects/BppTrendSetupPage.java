@@ -31,7 +31,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		objUtil = new Util();
 	}
 
-	@FindBy(xpath = "//a[@title = 'New'")
+	@FindBy(xpath = "//a[@title = 'New']")
 	public WebElement newButton;
 
 	@FindBy(xpath = "//a[text()='No actions available']")
@@ -756,7 +756,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			Click(driver.findElement(By.xpath("//ul[@role='tablist']//*[@title='More Tabs']")));
 			Click(driver.findElement(By.xpath("//a[@role='menuitem']//span[text()='" + factorName + "']")));
 		}
-		waitUntilElementIsPresent("//span[contains(@title,'" + factorName + ")']",10);
+		waitUntilElementIsPresent("//span[contains(@title,'" + factorName + "')]",15);
 	}
 
 
