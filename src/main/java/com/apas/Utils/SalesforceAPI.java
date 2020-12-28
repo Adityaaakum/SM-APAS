@@ -395,7 +395,7 @@ public class SalesforceAPI extends TestBase {
      * @param jsonObject : List of columns to be updated in form of json object
      */
     public void update(String table, String commaSeparatedIdsORSQLQuery, JSONObject jsonObject) {
-    	
+
     	ReportLogger.INFO("Updating the object " + table + " through Salesforce API for following query or comma separated IDs : " + commaSeparatedIdsORSQLQuery);    	
         //Creating HTTP Post Connection
         HttpPost httpPost = salesforceCreateConnection();
@@ -519,4 +519,12 @@ public class SalesforceAPI extends TestBase {
         return select(userName).get("Name").get(0);
     }
 
+    /**
+     * This method will delete the work items based on the age of the work item
+     * @param age: Age beyound which work items need to be deleted
+     */
+    public void deleteWorkItemsBasedOnAge(int age){
+        String queryToDeleteWorkItems = "SELECT id FROM Work_Item__c where age__c > " + age ;
+        delete(queryToDeleteWorkItems);
+    }
 }

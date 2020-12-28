@@ -675,10 +675,27 @@ public class Page extends TestBase {
 	 * @return String: Returns the currently selected value of drop down
 	 * @throws Exception
 	 */
-	public String getSelectedDropDownValue(String dropDown) throws Exception {
+	public String getSelectedDropDownValue(WebElement dropDown) throws Exception {
+		waitForElementToBeVisible(dropDown, 30);
+		Click(dropDown);
+		String value = driver.findElement(By.xpath("//div[@aria-expanded='true']//lightning-base-combobox-item//*[@data-key='check']//ancestor::span/following-sibling::span")).getText();
+		Click(dropDown);
+		return value;
+	}
+
+
+	/**
+	 * Description: this function is to return the all the values from the drop down
+	 *
+	 * @param dropDown: drop down element to be verified
+	 * @return String: Returns all the values from drop down
+	 * @throws Exception
+	 */
+	public String getDropDownValue(String dropDown) throws Exception {
 		Click(getWebElementWithLabel(dropDown));
 		return driver.findElement(By.xpath("//label[text()='" + dropDown + "']/..//*[@role='listbox']")).getText().trim();
 	}
+
 
 	/**
 	 * Description: Waits until the element goes invisible within given timeout

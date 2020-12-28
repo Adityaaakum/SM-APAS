@@ -426,6 +426,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public void openTab(String tabName) throws Exception {
 		String tabXPath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='"+ tabName +"']";
+		waitUntilElementIsPresent(tabXPath,5);
 		Click(driver.findElementByXPath(tabXPath));
 		Thread.sleep(3000);
 	}
@@ -695,7 +696,7 @@ public class ApasGenericPage extends Page {
 				if (key != null) {
 					//"replace("Edit "+ key,"").trim()" code is user to remove the text \nEdit as few cells have edit button and the text of edit button is also returned with getText()
 					value = webElementsCells.get(gridCellCount).getText();
-					String[] splitValues = value.split("\nEdit " + key);
+					String[] splitValues = value.split("Edit " + key);
 					if (splitValues.length > 0) value = splitValues[0];
 					else value = "";
 					gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
