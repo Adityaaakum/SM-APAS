@@ -31,7 +31,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		objUtil = new Util();
 	}
 
-	@FindBy(xpath = "//a[@title = 'New'")
+	@FindBy(xpath = "//a[@title = 'New']")
 	public WebElement newButton;
 
 	@FindBy(xpath = "//a[text()='No actions available']")
@@ -148,6 +148,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public WebElement fieldError;
 
 	public String minGoodFactorEditBox = "Minimum Good Factor";
+	public String moreTabCompositeFactorSettings = "//div[contains(@class, 'column region-sidebar-right')]//button[@title = 'More Tabs']";
 
 	/**
 	 * Description: Creates the BPP Composite Factor Setting on BPP trend status page
@@ -156,8 +157,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 * @throws: Exception
 	 */
 	public void createBppCompositeFactorSetting(String propertyType, String minGoodFactorValue) throws Exception {
-		WebElement moreTab = locateElement("//div[contains(@class, 'column region-sidebar-right')]//button[@title = 'More Tabs']", 10);
-		if(moreTab != null) {
+		if(verifyElementVisible(moreTabCompositeFactorSettings)) {
+			WebElement moreTab = locateElement(moreTabCompositeFactorSettings, 10);
 			waitForElementToBeClickable(moreTab, 10);
 			clickAction(moreTab);
 			waitForElementToBeVisible(bppCompositeFactorOption, 10);
@@ -166,8 +167,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			clickAction(bppCompFactorSettingTab);
 		}
 
-		clickAction(dropDownIconBppCompFactorSetting);
-		clickAction(newBtnToCreateEntry);
+			clickAction(dropDownIconBppCompFactorSetting);
+			clickAction(newBtnToCreateEntry);
 
 		enter("Minimum Good Factor",minGoodFactorValue);
 		objApasGenericPage.selectOptionFromDropDown("Property Type",propertyType);
@@ -298,7 +299,9 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 */
 	public String retrieveMaxEqipIndexValueFromPopUp() throws Exception {
 		String xpathMaxEquipIndexFactorValue = "//dt[text()='Maximum Equipment index Factor']//following-sibling::dd";
-		return getElementText(waitUntilElementIsPresent(10,xpathMaxEquipIndexFactorValue));
+		WebElement maxEquipIndexFactor = waitUntilElementIsPresent(10,xpathMaxEquipIndexFactorValue);
+		waitForElementToBeClickable(20, maxEquipIndexFactor);
+		return getElementText(maxEquipIndexFactor);
 	}
 
 	/**
@@ -392,7 +395,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 */
 	public String createDummyBppTrendSetupForErrorsValidation(String compFactorTablesStatus, int rollYear) throws Exception {
 		//Step1: Click New button on the grid to open form / pop up to create new BPP Trend Setup
-		WebElement newButton = objPage.locateElement("//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']", 10);
+		WebElement newButton = objPage.locateElement("//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']", 15);
 		Click(newButton);
 
 		//Step2: Entering BPP trend setup name and roll year
@@ -622,6 +625,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public void clickOnEntryNameInGrid(String rollYear) throws Exception {
 		String xpath = "//tbody//tr//th//a[contains(text(), '"+ rollYear +"')]";
 		Click(waitUntilElementIsPresent(20,xpath));
+		Thread.sleep(2000);
 	}
 	
 	/**
@@ -752,7 +756,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			Click(driver.findElement(By.xpath("//ul[@role='tablist']//*[@title='More Tabs']")));
 			Click(driver.findElement(By.xpath("//a[@role='menuitem']//span[text()='" + factorName + "']")));
 		}
-		waitUntilElementIsPresent("//span[contains(@title,'" + factorName + ")']",10);
+		waitUntilElementIsPresent("//span[contains(@title,'" + factorName + "')]",15);
 	}
 
 

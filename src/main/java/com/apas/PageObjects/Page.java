@@ -2,19 +2,12 @@ package com.apas.PageObjects;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.apas.TestBase.TestBase;
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -23,7 +16,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import com.apas.Reports.ReportLogger;
 import com.google.common.base.Function;
 
@@ -32,8 +24,6 @@ public class Page extends TestBase {
 	public static final int MAX_TIMEOUT = 60;
 	public static final int MAX_Element_TIMEOUT = 30;
 	public static final int PAGE_LOAD_TIMEOUT = 60;
-
-	Logger logger = Logger.getLogger(Page.class);
 
 	public RemoteWebDriver driver = null;
 
@@ -60,19 +50,6 @@ public class Page extends TestBase {
 	}
 
 	/**
-	 * Function will return the size of the list of Webelements
-	 *
-	 * @param elem : The Webelement
-	 * @return the element size
-	 */
-	public int getElementSize(List<WebElement> elem) {
-		int size = 0;
-		size = elem.size();
-		return size;
-
-	}
-
-	/**
 	 * Function will verify whether the element is enabled or not.
 	 *
 	 * @param element the element
@@ -81,8 +58,7 @@ public class Page extends TestBase {
 		try {
 			if (element.isEnabled()) return true;
 		} catch (Exception e) {
-			logger.info("Element: " + element + "is not getting enabled.");
-			System.out.println("Element is not enabled");
+			ReportLogger.INFO("Element: " + element + "is not getting enabled.");
 		}
 		return false;
 	}
@@ -97,8 +73,8 @@ public class Page extends TestBase {
 	}
 
 	/*
-	Description: This method will return true/false based on the existence
-	@Params xpath : Xpath of the element
+    Description: This method will return true/false based on the existence
+    @Params xpath : Xpath of the element
 	 */
 	public boolean verifyElementExists(String xpath) {
 		try {
@@ -123,10 +99,16 @@ public class Page extends TestBase {
 		try {
 			if (object instanceof String) {
 				//This try catch block is to handle if the string is given as full xpath or just the label of the Element
-				try{
+				try {
 					webElement = driver.findElement(By.xpath(object.toString()));
-				}catch (Exception ignored){
-					webElement = getWebElementWithLabel(object.toString());
+				} catch (Exception ignored) {
+					try
+
+					{webElement = getWebElementWithLabel(object.toString());
+					}
+					catch(Exception exception) {
+						webElement = getButtonWithText(object.toString());
+					}
 				}
 
 			} else if (object instanceof By) {
@@ -225,12 +207,12 @@ public class Page extends TestBase {
 		waitForElementToBeClickable(20, elem);
 		((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", elem);
 
-		try{
+		try {
 			elem.click();
-		}catch (Exception ex){
-			try{
+		} catch (Exception ex) {
+			try {
 				((JavascriptExecutor) driver).executeScript("arguments[0].click();", elem);
-			}catch (Exception ignored){
+			} catch (Exception ignored) {
 				actions = new Actions(driver);
 				actions.moveToElement(elem).build().perform();
 				((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", elem);
@@ -244,15 +226,15 @@ public class Page extends TestBase {
 	/**
 	 * Function will enter the value in the element.
 	 *
-	 * @param element  Element in which value needs to be entered
-	 * @param value the value needs to be entered
+	 * @param element Element in which value needs to be entered
+	 * @param value   the value needs to be entered
 	 * @throws Exception the exception
 	 */
 	public void enter(Object element, String value) throws Exception {
 		WebElement elem;
 		if (element instanceof String) {
 			elem = getWebElementWithLabel(element.toString());
-		}else
+		} else
 			elem = (WebElement) element;
 
 		waitForElementToBeClickable(15, elem);
@@ -280,39 +262,26 @@ public class Page extends TestBase {
 	}
 
 	/**
-	 * Function will wait for an element to be clicked on the page.
-	 *
-	 * @param object          the element
-	 * @param timeoutInSeconds the timeout in seconds
-	 */
-	public void waitForElementToBeClickable(Object object, int timeoutInSeconds) {
-		waitForElementToBeClickable(timeoutInSeconds,object);
-	}
-
-	/**
-	 * Function will wait for an element to be clicked on the page.
-	 *
-	 * @param element          the element
-	 * @param timeoutInSeconds the timeout in seconds
-	 */
-	/*public void waitForElementToBeClickable(WebElement element, int timeoutInSeconds) {
-		waitForElementToBeClickable(timeoutInSeconds,element);
-	}*/
-
-	/**
 	 * Function will wait for an element to come in clickable state on the page.
 	 *
-	 * @param timeoutInSeconds the timeout in seconds
-	 * @param object           (Xpath, By)
+	 * @param object (Xpath, By)
 	 */
+	public void waitForElementToBeClickable(Object object, int timeoutInSeconds) {
+		waitForElementToBeClickable(timeoutInSeconds, object);
+	}
+
+	public WebElement waitForElementToBeClickable(Object object) {
+		return waitForElementToBeClickable(10, object);
+	}
+
 	public WebElement waitForElementToBeClickable(int timeoutInSeconds, Object object) {
 		WebElement element = null;
 		try {
 			if (object instanceof String) {
 				//Added this try catch block to handle if the string is passed as xpath or just element label
-				try{
+				try {
 					element = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(object.toString()))));
-				}catch (Exception ignored){
+				} catch (Exception ignored) {
 					element = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.elementToBeClickable(getWebElementWithLabel(object.toString())));
 				}
 
@@ -325,64 +294,6 @@ public class Page extends TestBase {
 		}
 
 		return element;
-	}
-
-	/**
-	 * Function will wait for an element to be visible on the page.
-	 *
-	 * @param element          the element
-	 * @param timeoutInSeconds the timeout in seconds
-	 */
-	public void waitForElementToBeVisible(WebElement element, int timeoutInSeconds) {
-		waitForElementToBeVisible(timeoutInSeconds,element);
-	}
-
-	public void waitUntilElementDisplayed(WebElement webElement, int timeoutInSeconds) {
-		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-		WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
-		ExpectedCondition<Boolean> elementIsDisplayed = new ExpectedCondition<Boolean>() {
-			public Boolean apply(WebDriver arg0) {
-				try {
-					webElement.isDisplayed();
-					return true;
-				} catch (NoSuchElementException e) {
-					return false;
-				} catch (StaleElementReferenceException f) {
-					return false;
-				}
-			}
-		};
-		wait.until(elementIsDisplayed);
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-	}
-
-	/**
-	 * Function will wait for an element to be Visible on the page.
-	 *
-	 * @param timeoutInSeconds the timeout in seconds
-	 * @param object           (Xpath, By)
-	 */
-	public boolean waitForElementToBeVisible(int timeoutInSeconds, Object object) {
-		boolean isElementVisible = false;
-		try {
-			if (object instanceof String) {
-				//Added this try catch block to handle if the string is passed as xpath or just element label
-				try{
-					wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(object.toString()))));
-				}catch (Exception ignored){
-					wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(getWebElementWithLabel(object.toString())));
-				}
-
-			} else if (object instanceof By) {
-				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOfElementLocated((By) object));
-			} else {
-				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf((WebElement) object));
-			}
-			isElementVisible = true;
-		} catch (Exception ex) {
-			isElementVisible = false;
-		}
-		return isElementVisible;
 	}
 
 
@@ -418,21 +329,6 @@ public class Page extends TestBase {
 		waitUntilPageisReady(driver);
 	}
 
-	/**
-	 * Function will select a value from dropdown.
-	 *
-	 * @param elem  the WebElement
-	 * @param value the value need to be selected
-	 * @return true, if successful
-	 * @throws Exception the exception
-	 */
-	public boolean Select(WebElement elem, String value) throws Exception {
-		Click(elem);
-		Click(driver.findElement(By.xpath("//a[@role = 'menuitemradio'][@title='" + value + "']")));
-		waitUntilPageisReady(driver);
-		return true;
-	}
-
 	public boolean SelectByIndex(WebElement elem, int index) throws Exception {
 		elem.click();
 		new org.openqa.selenium.support.ui.Select(elem).selectByIndex(index);
@@ -447,16 +343,6 @@ public class Page extends TestBase {
 		waitUntilPageisReady(driver);
 	}
 
-	/**
-	 * Function will wait until to Max timeout until the webelement is located.
-	 *
-	 * @param xpath   : xpath of the element to be located
-	 * @param timeOut : maximum time to wait for element to be present
-	 */
-	public void waitUntilElementIsPresent(String xpath, int timeOut) throws Exception {
-		locateElement(xpath, timeOut);
-	}
-
 	public void clickAction(WebElement element) throws IOException {
 		waitForElementToBeVisible(element, 10);
 		waitForElementToBeClickable(element, 10);
@@ -466,7 +352,7 @@ public class Page extends TestBase {
 		((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", element);
 		actions.click(element).build().perform();
 		waitUntilPageisReady(driver);
-	
+
 	}
 
 
@@ -513,7 +399,6 @@ public class Page extends TestBase {
 
 	public String generateRandomString(int noOfchar) {
 		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789#@abcdefghijklmnopqrstuvwxyz0";
-		// String randomString = RandomStringUtils.random(noOfchar, true, true);
 
 		String randomString = RandomStringUtils.randomAlphanumeric(10);
 		String randomNumber = RandomStringUtils.randomNumeric(2);
@@ -523,37 +408,14 @@ public class Page extends TestBase {
 		return randomString;
 	}
 
-	public String generateRandomStringWithoutSpecialchar(int noOfchar) {
-		String randomString = RandomStringUtils.random(noOfchar, true, false);
-		return randomString;
+	public String generateRandomStringWithoutSpecialChar(int noOfchar) {
+		return RandomStringUtils.random(noOfchar, true, false);
 	}
 
 	public String generateRandomNumber(String noOfchar) {
-		String randomNumber = RandomStringUtils.randomNumeric(Integer.parseInt(noOfchar));
-		return randomNumber;
+		return RandomStringUtils.randomNumeric(Integer.parseInt(noOfchar));
 	}
 
-
-	public WebElement locateElement(String locatorValue, int timeoutInSeconds) throws Exception {
-		WebElement element = null;
-		wait = new WebDriverWait(driver, timeoutInSeconds);
-		try {
-			element = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(locatorValue)));
-		} catch (Exception ex) {
-
-		}
-
-		if (element != null) {
-			try {
-				element = wait.until(ExpectedConditions.visibilityOf(element));
-				return element;
-			} catch (Exception ex) {
-				return null;
-			}
-		} else {
-			return null;
-		}
-	}
 
 	/**
 	 * Function will find all the elements based on the specified xpath
@@ -574,71 +436,95 @@ public class Page extends TestBase {
 		return elements;
 	}
 
-	/**
-	 * Function will wait until to Max timeout until the WebElement is located.
-	 *
-	 * @param: Takes xpath to locate element, time out in seconds, pooling time in seconds
-	 * @return: Returns the element
-	 */
-	public WebElement waitUntilElementIsPresent(int timeOutInSec, final String xpath) {
-		Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(timeOutInSec))
-				.pollingEvery(Duration.ofSeconds(500))
-				.ignoring(NoSuchElementException.class)
-				.ignoring(StaleElementReferenceException.class);
+	public WebElement locateElement(String locatorValue, int timeoutInSeconds) {
+		WebElement element;
+		wait = new WebDriverWait(driver, timeoutInSeconds);
 
-		WebElement element = wait.until(new Function<WebDriver, WebElement>() {
-			public WebElement apply(WebDriver driver) {
-				return driver.findElement(By.xpath(xpath));
-			}
-		});
+		element = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(locatorValue)));
+		element = wait.until(ExpectedConditions.visibilityOf(element));
+
 		return element;
 	}
 
-	;
-
 	/**
-	 * Function will wait until to Max timeout until the WebElement is located.
-	 *
-	 * @param: Takes xpath to locate element, time out in seconds, pooling time in seconds
-	 * @return: Returns the element
-	 */
-	public WebElement waitUntilElementIsPresent(final String xpath, int timeOutInSec, int poolingTimeInSec) {
-		Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(timeOutInSec))
-				.pollingEvery(Duration.ofSeconds(poolingTimeInSec))
-				.ignoring(NoSuchElementException.class)
-				.ignoring(StaleElementReferenceException.class);
+     * Function will wait until to Max timeout until the WebElement is located.
+     *
+     * @param: Takes xpath to locate element, time out in seconds, pooling time in seconds
+     * @return: Returns the element
+     */
+    public void waitUntilElementIsPresent(String xpath, int timeOut) throws Exception {
+        locateElement(xpath, timeOut);
+    }
 
-		WebElement element = wait.until(new Function<WebDriver, WebElement>() {
-			public WebElement apply(WebDriver driver) {
-				return driver.findElement(By.xpath(xpath));
-			}
-		});
-		return element;
+    public WebElement waitUntilElementIsPresent(int timeOutInSec, String xpath) {
+        return waitUntilElementIsPresent(xpath, timeOutInSec, 500);
+    }
+
+    public WebElement waitUntilElementIsPresent(String xpath, int timeOutInSec, int poolingTimeInSec) {
+        Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(timeOutInSec))
+                .pollingEvery(Duration.ofSeconds(poolingTimeInSec))
+                .ignoring(NoSuchElementException.class)
+                .ignoring(StaleElementReferenceException.class);
+
+        WebElement element = wait.until(new Function<WebDriver, WebElement>() {
+            public WebElement apply(WebDriver driver) {
+                return driver.findElement(By.xpath(xpath));
+            }
+        });
+        return element;
+    }
+	/**
+	 * Function will wait for an element to be Invisible on the page.
+	 *
+	 * @param: Xpath of the element to locate
+	 * @param: timeout in seconds
+	 */
+	public boolean waitForElementToBeInVisible(Object object) {
+		return waitForElementToBeInVisible(object, 15);
 	}
 
-	;
-
-	/**
-	 * Function will wait until to Max timeout until the WebElements are located.
-	 *
-	 * @param: Takes xpath to locate element, time out in seconds, pooling time in seconds
-	 * @return: Returns the elements
-	 */
-	public List<WebElement> waitUntilElementsArePresent(final String xpath, int timeOutInSec, int poolingTimeInSec) {
-		Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(timeOutInSec))
-				.pollingEvery(Duration.ofSeconds(poolingTimeInSec))
-				.ignoring(NoSuchElementException.class)
-				.ignoring(StaleElementReferenceException.class);
-
-		List<WebElement> elements = wait.until(new Function<WebDriver, List<WebElement>>() {
-			public List<WebElement> apply(WebDriver driver) {
-				return driver.findElements(By.xpath(xpath));
-			}
-		});
-		return elements;
+	public boolean waitForElementToBeInVisible(Object object, int timeoutInSeconds) {
+		boolean elementStatus = false;
+		if (object instanceof String) {
+			By by = By.xpath(object.toString());
+			elementStatus = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOfElementLocated(by));
+		} else {
+			elementStatus = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOf((WebElement) object));
+		}
+		return elementStatus;
 	}
 
-	;
+	/**
+	 * Function will wait for an element to be Visible on the page.
+	 *
+	 * @param timeoutInSeconds the timeout in seconds
+	 */
+	public void waitForElementToBeVisible(WebElement element, int timeoutInSeconds) {
+		waitForElementToBeVisible(timeoutInSeconds, element);
+	}
+
+	public boolean waitForElementToBeVisible(int timeoutInSeconds, Object object) {
+		boolean isElementVisible;
+		try {
+			if (object instanceof String) {
+				//Added this try catch block to handle if the string is passed as xpath or just element label
+				try {
+					wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(object.toString()))));
+				} catch (Exception ignored) {
+					wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf(getWebElementWithLabel(object.toString())));
+				}
+
+			} else if (object instanceof By) {
+				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOfElementLocated((By) object));
+			} else {
+				wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.visibilityOf((WebElement) object));
+			}
+			isElementVisible = true;
+		} catch (Exception ex) {
+			isElementVisible = false;
+		}
+		return isElementVisible;
+	}
 
 	public WebElement waitForElementToBeVisible(Object object) {
 		WebElement element = null;
@@ -652,41 +538,6 @@ public class Page extends TestBase {
 		return element;
 	}
 
-	public boolean waitForElementToBeInVisible(Object object) {
-		boolean isElementInvisible = false;
-		if (object instanceof String) {
-			isElementInvisible = wait.until(ExpectedConditions.invisibilityOf(driver.findElement(By.xpath(object.toString()))));
-		} else if (object instanceof By) {
-			isElementInvisible = wait.until(ExpectedConditions.invisibilityOfElementLocated((By) object));
-		}
-		return isElementInvisible;
-	}
-
-	public WebElement waitForElementToBeClickable(Object object) {
-		return waitForElementToBeClickable(10, object);
-	}
-
-	public void clickElementOnVisiblity(Object object) {
-		WebElement element = waitForElementToBeVisible(object);
-		element.click();
-	}
-
-	/**
-	 * Function will wait for an element to be Invisible on the page.
-	 *
-	 * @param: Xpath of the element to locate
-	 * @param: timeout in seconds
-	 */
-	public boolean validateAbsenceOfElement(Object object, int timeoutInSeconds) {
-		boolean elementStatus = false;
-		if (object instanceof String) {
-			By by = By.xpath(object.toString());
-			elementStatus = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOfElementLocated(by));
-		} else {
-			elementStatus = wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.invisibilityOf((WebElement) object));
-		}
-		return elementStatus;
-	}
 
 	/**
 	 * Switches the focus on the new window
@@ -756,7 +607,7 @@ public class Page extends TestBase {
 
 	public void clearFieldValue(Object elem) throws Exception {
 
-		WebElement element=waitForElementToBeClickable(15, elem);
+		WebElement element = waitForElementToBeClickable(15, elem);
 		((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", element);
 		element.clear();
 		Thread.sleep(2000);
@@ -792,28 +643,6 @@ public class Page extends TestBase {
 	}
 
 	/**
-	 * Description: Checks whether element is displayed on the web page
-	 *
-	 * @param element:      WebElement whose availability is to be checked
-	 * @param timeOutInSec: Time out in seconds
-	 * @return boolean: Returns true / false bases on availability of element
-	 * @throws: Exception
-	 */
-	public boolean isElementAvailable(WebElement element, int timeOutInSec) throws Exception {
-		try {
-			waitForElementToBeVisible(element, timeOutInSec);
-			return true;
-		} catch (TimeoutException ex) {
-			return false;
-		} catch (java.util.NoSuchElementException ex) {
-			return false;
-		} catch (StaleElementReferenceException ex) {
-			return false;
-		}
-	}
-
-
-	/**
 	 * Description: this function is to compare all drop down values with set of values in no order
 	 *
 	 * @param actualvalues:       actual values present in drop down
@@ -846,15 +675,32 @@ public class Page extends TestBase {
 	 * @return String: Returns the currently selected value of drop down
 	 * @throws Exception
 	 */
-	public String getSelectedDropDownValue(String dropDown) throws Exception {
+	public String getSelectedDropDownValue(WebElement dropDown) throws Exception {
+		waitForElementToBeVisible(dropDown, 30);
+		Click(dropDown);
+		String value = driver.findElement(By.xpath("//div[@aria-expanded='true']//lightning-base-combobox-item//*[@data-key='check']//ancestor::span/following-sibling::span")).getText();
+		Click(dropDown);
+		return value;
+	}
+
+
+	/**
+	 * Description: this function is to return the all the values from the drop down
+	 *
+	 * @param dropDown: drop down element to be verified
+	 * @return String: Returns all the values from drop down
+	 * @throws Exception
+	 */
+	public String getDropDownValue(String dropDown) throws Exception {
 		Click(getWebElementWithLabel(dropDown));
 		return driver.findElement(By.xpath("//label[text()='" + dropDown + "']/..//*[@role='listbox']")).getText().trim();
 	}
 
+
 	/**
 	 * Description: Waits until the element goes invisible within given timeout
 	 *
-	 * @param object : Object to disappear
+	 * @param object           : Object to disappear
 	 * @param timeOutInSeconds : Max time to wait to disappear
 	 */
 	public void waitForElementToDisappear(Object object, int timeOutInSeconds) throws Exception {
@@ -882,24 +728,50 @@ public class Page extends TestBase {
 	 * @return : webelement against the label
 	 */
 	public WebElement getWebElementWithLabel(String label) throws Exception {
-		String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]";
+		String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]";
 		String xpath = commonPath + "//label[text()=\"" + label + "\"]/..//input | " +
-					   commonPath +	"//input[@name=\"" + label + "\"] | " + //this condition was observed on manual work item creation pop up for edit boxes
-				       commonPath + "//*[@class='inputHeader' and contains(.,\"" + label + "\")]/..//Select"; //This condition was observed for few drop downs of Select Type
+				commonPath + "//input[@name=\"" + label + "\"] | " + //this condition was observed on manual work item creation pop up for edit boxes
+				commonPath + "//*[@class='inputHeader' and contains(.,\"" + label + "\")]/..//Select |"+ //This condition was observed for few drop downs of Select Type
+				commonPath + "//label[text()=\"" + label + "\"]/..//textarea";//this condition was added to handle webelements of type textarea
 
-		waitUntilElementIsPresent(xpath,3);
+		waitUntilElementIsPresent(xpath, 3);
 		return driver.findElement(By.xpath(xpath));
 	}
-
 	/**
 	 * Description: returns the web element based on the text of the button
 	 *
 	 * @param text : text of the button
 	 * @return : button element
 	 */
-	public WebElement getButtonWithText(String text){
-		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]//button[text()='" + text + "']";
+	public WebElement getButtonWithText(String text) {
+		String commonxPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
+		String xpath = commonxPath + "//button[text()='" + text + "'] | " +
+				commonxPath + "//div[text()='" + text + "']//.. | " +
+				commonxPath + "//*[contains(@class,'slds-is-open')]//button[text()='" + text + "']";
+
 		return driver.findElement(By.xpath(xpath));
+	}
+
+	/**
+	 * Description: This method will clear the value from the lookup field
+	 *
+	 * @param fieldName: Takes field name as an argument
+	 */
+	public void clearSelectionFromLookup(String fieldName) throws Exception {
+		String xpathStr = "//label[text()='" + fieldName + "']/parent::lightning-grouped-combobox//span[text()='Clear Selection']";
+		waitUntilElementIsPresent(xpathStr, 3);
+		Click(driver.findElement(By.xpath(xpathStr)));
+	}
+	/**
+	 * Description: This method will click element with hyperlink in the lookup field
+	 *
+	 * @param fieldName: Takes field name as an argument
+	 */
+	public void clickHyperlinkOnFieldValue(String fieldName) throws Exception {
+		String xpathStr = "//span[text()='" + fieldName + "']/parent::div/following-sibling::div//div[@class='slds-grid']//a/span";
+		waitUntilElementIsPresent(xpathStr, 3);
+		Click(driver.findElement(By.xpath(xpathStr)));
+		Thread.sleep(1000);
 	}
 
 }

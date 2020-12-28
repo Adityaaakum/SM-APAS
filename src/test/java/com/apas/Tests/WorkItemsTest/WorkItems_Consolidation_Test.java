@@ -91,7 +91,7 @@ public class WorkItems_Consolidation_Test extends TestBase implements testdata, 
 		  objWorkItemHomePage.selectWorkItemOnHomePage(PrimaryWorkitem);
 		  objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);
 		  objWorkItemHomePage.Click(objPage.getButtonWithText(objWorkItemHomePage.ConsolidateButton));
-		  softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),"Please select two or more Work Items from the same Work Pool and having the same APN/Account # to consolidate.","SMAB-T2259,SMAB-T2260 Validation on workitem with diff APN and Work pool can not consolidate "); objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg); 
+		  softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),"Please select two or more Work Items from the same Work Pool and having the same APN/Account # to consolidate.","SMAB-T2259,SMAB-T2260: Validation on workitem with diff APN and Work pool can not consolidate "); objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
 		  
 		  //steps 10:select 2 work item with same APn and work pool and consolidate
 		  objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);

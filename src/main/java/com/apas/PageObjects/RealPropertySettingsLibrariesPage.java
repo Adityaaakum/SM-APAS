@@ -143,22 +143,6 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	
 	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='DV Basic Exemption Amount']/parent::div/following-sibling::div//lightning-formatted-text")
 	public WebElement basicExemptionAmtDetails;
-	
-	
-	/**
-	 * @Description: This method is to handle fields like Status
-	 * by clicking the web element and then selecting the given value from drop down
-	 * @param element: WebElement for required field
-	 * @param value: Like 'Yet to be submit for Approval or Approved' for Status field etc.
-	 * @throws Exception
-	 */
-	/*public void selectFromDropDown(WebElement element, String value) throws Exception {
-		selectFromDropDown(element, value);
-	}*/
-	public void selectFromDropDown(Object element, String value) throws Exception {
-		selectOptionFromDropDown(element, value);
-	}
-	
 
 	/**
 	 * Description: This method will only enter the values of Real Property settings Libraries fields on the application
@@ -171,7 +155,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		ReportLogger.INFO("Entering details for Real Property Settings record");
 		enter("RP Setting Name",rollYear);
 		selectOptionFromDropDown("Status",dataMap.get("Status"));
-		searchAndSelectFromDropDown("Roll Year Settings",rollYear);
+		searchAndSelectOptionFromDropDown("Roll Year Settings",rollYear);
 		enter(dvLowIncomeExemptionAmount,dataMap.get("DV Low Income Exemption Amount"));
 		enter(dvBasicExemptionAmount,dataMap.get("DV Basic Exemption Amount"));
 		enter(dvLowIncomeHouseholdLimit,dataMap.get("DV Low Income Household Limit Amount"));

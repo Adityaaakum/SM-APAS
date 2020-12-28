@@ -169,7 +169,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		
 		//Step16: Edit the RPSL
 		ReportLogger.INFO("Editing the Status field to '"+editRPSDataMap.get("Status") + "'");
-		objRPSLPage.selectFromDropDown(objRPSLPage.statusDropDown,editRPSDataMap.get("Status"));		
+		objRPSLPage.selectOptionFromDropDown(objRPSLPage.statusDropDown,editRPSDataMap.get("Status"));
 		
 		//Step17: Saving the RPSL after editing 'Status' dropdown
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
@@ -199,7 +199,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.Click(objRPSLPage.saveButton);
 
 		//Step4: Validate the error message appeared for mandatory fields
-		String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the following fields\nRP Setting Name\nStatus\nRoll Year Settings\nDV Low Income Exemption Amount\nDV Basic Exemption Amount\nDV Low Income Household Limit";
+		String expectedErrorMessageOnTop = "Close error dialog\nWe hit a snag.\nReview the following fields\nRP Setting Name\nRoll Year Settings\nDV Low Income Exemption Amount\nDV Basic Exemption Amount\nDV Low Income Household Limit";
 		String expectedIndividualFieldMessage = "Complete this field.";
 		softAssert.assertEquals(objPage.getElementText(objApasgenericpage.pageError),expectedErrorMessageOnTop,"SMAB-T544: Validating mandatory fields missing error in manual entry pop up header.");
 		softAssert.assertEquals(objRPSLPage.getIndividualFieldErrorMessage("RP Setting Name"),expectedIndividualFieldMessage,"SMAB-T544: Validating mandatory fields missing error for 'RP Setting Name'");
@@ -330,7 +330,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		
 		//Step6: Clicking on Save button & Verifying the RPSL record for current year after creation
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
-		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSLName + "\" was created.","Verify the User is able to create Exemption limit record");	
+		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + strRPSLName + "\" was created.","SMAB-T536 : Verify the User is able to create Exemption limit record");
 		
 		//Step7: Selecting module & 'All' List View
 		objRPSLPage.searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
@@ -391,7 +391,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objRPSLPage.displayRecords("All");
 		
 		//Step4: Verify atleast 8 RPSL are displayed
-		int noOfRPSL = objPage.getElementSize(objRPSLPage.numberOfRPSL);
+		int noOfRPSL = objRPSLPage.numberOfRPSL.size();
 		
 		softAssert.assertTrue(noOfRPSL>=8, "SMAB-T583: Verify user is able to view at least last 8 years of Exemption Limits records");
 		
@@ -481,7 +481,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		
 		//Step4: Verify New Button is not present
 		boolean flag = objRPSLPage.verifyElementVisible(objRPSLPage.newButton);
-		softAssert.assertEquals(flag, false, "SMABT:545 - Verify user cannot create RPSL");
+		softAssert.assertEquals(flag, false, "SMAB-T545:  Verify user cannot create RPSL");
 		
 		// Step5: Clicking on 'first' Exemption Limits record 
 		objPage.locateElement("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody//tr[1]//th//a",3);
@@ -491,7 +491,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		
 		//Step6: Verify Edit Button is not present
 			flag = objRPSLPage.verifyElementVisible(objRPSLPage.editButton);
-			softAssert.assertEquals(flag, false, "SMABT:545 - Verify user cannot edit RPSL");
+			softAssert.assertEquals(flag, false, "SMAB-T545: Verify user cannot edit RPSL");
 	
 		//Step7: Verify User can view ExemptionLimits record
 			Thread.sleep(2000);

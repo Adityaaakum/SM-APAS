@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Properties;
 
 import com.apas.Reports.ReportLogger;
+import com.apas.Utils.SalesforceAPI;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -31,7 +32,9 @@ public class SuiteListener extends TestBase implements ITestListener {
 
 	public ExtentReports extent;
 	ExtentTest upTest;
-	Util objUtils = new Util();		
+	Util objUtils = new Util();
+	SalesforceAPI salesforceAPI = new SalesforceAPI();
+
 	protected String getStackTrace(Throwable t) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
@@ -62,6 +65,7 @@ public class SuiteListener extends TestBase implements ITestListener {
 			TestBase.loadPropertyFiles();
 			extent = new ExtentManager().getInstance(context.getSuite().getName());
 			if (flagToUpdateJira && testCycle != null) {
+				salesforceAPI.deleteWorkItemsBasedOnAge(1);
 				JiraAdaptavistStatusUpdate.retrieveJiraTestCases();
 			}
 
@@ -81,6 +85,8 @@ public class SuiteListener extends TestBase implements ITestListener {
 		if (flagToUpdateJira && testCycle != null) {
 			//Updating the Jira tickets status at the end of the execution
 			System.out.println("Test cases execution status on end of execution: " + JiraAdaptavistStatusUpdate.testStatus);
+			//This will create the file with the test case execution status
+			objUtils.writeHashMapToCsv(JiraAdaptavistStatusUpdate.testStatus,ExtentManager.testCaseMappingFile);
 			TearDown();
 			JiraAdaptavistStatusUpdate.mapTestCaseStatusToJIRA();
 			JiraAdaptavistStatusUpdate.uploadAttachmentInJira(ExtentManager.resultFile);

@@ -237,8 +237,8 @@ public class EFileImportPage extends ApasGenericPage {
      */
     public void selectFileAndSource(String fileType, String source) throws Exception {
         ReportLogger.INFO("Selecting File type :" + fileType + " and Source :" + source);
-		selectFromDropDown("File type", fileType);
-        selectFromDropDown("Source", source);
+		selectOptionFromDropDown("File type", fileType);
+        selectOptionFromDropDown("Source", source);
         
     }
 
@@ -253,7 +253,7 @@ public class EFileImportPage extends ApasGenericPage {
     public void uploadFileOnEfileIntake(String fileType, String source, String period, String absoluteFilePath) throws Exception {
         ReportLogger.INFO("Uploading " + absoluteFilePath + " file");
         selectFileAndSource(fileType, source);
-        objPage.waitUntilElementDisplayed(nextButton, 15);
+        objPage.waitForElementToBeVisible(nextButton, 15);
         objPage.scrollToTop();
         objPage.Click(nextButton);
         objPage.Click(periodDropdown);
@@ -281,7 +281,7 @@ public class EFileImportPage extends ApasGenericPage {
     public void uploadInvalidFormatFileOnEfileIntake(String fileType, String source, String period, String absoluteFilePath) throws Exception {
         ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " + absoluteFilePath + " file");
         selectFileAndSource(fileType, source);
-        objPage.waitUntilElementDisplayed(nextButton, 10);
+        objPage.waitForElementToBeVisible(nextButton, 10);
         objPage.scrollToTop();
         objPage.Click(nextButton);
         objPage.Click(periodDropdown);
@@ -358,7 +358,7 @@ public class EFileImportPage extends ApasGenericPage {
     public void uploadFileOnEfileIntakeBP(String fileType, String source, String filename, String absoluteFilePath) throws Exception {
         ReportLogger.INFO("Uploading " + absoluteFilePath + " file");
         selectFileAndSource(fileType, source);
-        objPage.waitUntilElementDisplayed(nextButton, 15);
+        objPage.waitForElementToBeVisible(nextButton, 15);
         objPage.scrollToTop();
         objPage.Click(nextButton);
         objPage.enter(fileNameInputBox, filename);

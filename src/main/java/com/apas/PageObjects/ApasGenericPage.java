@@ -41,6 +41,7 @@ public class ApasGenericPage extends Page {
 
 	public String tabDetails = "Details";
 	public String tabRelated = "Related";
+	public String tabLinkedItems = "Linked Items";
 
 	@FindBy(xpath = "//button[@title='Close error dialog']")
 	public WebElement crossIcon;
@@ -181,7 +182,10 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath="//button[text()='Close All']")
 	public WebElement closeAllBtn;
-	
+
+	public String SaveButton="Save";
+	public String NewButton="New";
+	public String EditButton="Edit";
 
 	/**
 	 * Description: This will click on the module name from the drop down
@@ -233,10 +237,13 @@ public class ApasGenericPage extends Page {
 				dateToSelect = dateArray[1];
 			}
 
-			Select select = new Select(waitForElementToBeVisible(yearDropDown));
+			waitForElementToBeVisible(yearDropDown);
+			Select select = new Select(yearDropDown);
 			select.selectByValue(yearToSelect);
 
-			WebElement visibleMnth = waitForElementToBeVisible(visibleMonth);
+			waitForElementToBeVisible(visibleMonth);
+
+			WebElement visibleMnth = visibleMonth;
 			String visibleMonthTxt = visibleMnth.getText().toLowerCase();
 			visibleMonthTxt = visibleMonthTxt.substring(0, 1).toUpperCase() + visibleMonthTxt.substring(1).toLowerCase();
 
@@ -247,11 +254,14 @@ public class ApasGenericPage extends Page {
 
 			while(!visibleMonthTxt.equalsIgnoreCase(monthToSelect) || counter > counterIterations) {
 				if(indexOfMonthToSelect < indexOfDefaultMonth) {
-					waitForElementToBeVisible(prevMnth).click();
+					waitForElementToBeVisible(prevMnth);
+					Click(prevMnth);
 				} else {
-					waitForElementToBeVisible(nextMnth).click();
+					waitForElementToBeVisible(nextMnth);
+					Click(nextMnth);
 				}
-				visibleMonthTxt = waitForElementToBeVisible(visibleMonth).getText();
+				waitForElementToBeVisible(visibleMonth);
+				visibleMonthTxt = visibleMonth.getText();
 				counter++;
 			}
 
@@ -304,7 +314,7 @@ public class ApasGenericPage extends Page {
         String xpathDropDownOption;
         if (element instanceof String) {
         	webElement = getWebElementWithLabel((String) element);
-			String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]";
+			String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
 			xpathDropDownOption = commonPath + "//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
         } else{
             webElement = (WebElement) element;
@@ -367,7 +377,7 @@ public class ApasGenericPage extends Page {
 		Boolean flag=false;
 		clickShowMoreButton(modRecordName);
 		String xpathStr = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
-		WebElement actionElement = locateElement(xpathStr, 30);
+		WebElement actionElement = waitForElementToBeClickable(10, xpathStr);
 			if (actionElement != null){
 					clickAction(actionElement);
 					ReportLogger.INFO("User is able to click " + action + " option for " + modRecordName + " record");
@@ -416,6 +426,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public void openTab(String tabName) throws Exception {
 		String tabXPath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='"+ tabName +"']";
+		waitUntilElementIsPresent(tabXPath,5);
 		Click(driver.findElementByXPath(tabXPath));
 		Thread.sleep(3000);
 	}
@@ -501,10 +512,13 @@ public class ApasGenericPage extends Page {
 	 * @param expectedValue:    Modified value to be updated in the cell
 	 */
 	public void editGridCellValue(String columnNameOnGrid, String expectedValue) throws IOException, AWTException, InterruptedException {
-		String xPath =  "//lightning-tab[contains(@class,'slds-show')]//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button";
+		String xPath =  "//lightning-tab[contains(@class,'slds-show')]//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button | //div[contains(@class,'flowruntimeBody')]//*[@data-label='" + columnNameOnGrid + "']";
+		
 		WebElement webelement = driver.findElement(By.xpath(xPath));
 		Click(webelement);
 		Thread.sleep(1000);
+		if(verifyElementVisible("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']"))
+		Click(driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")));
 		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
 
 		webelementInput.clear();
@@ -523,7 +537,7 @@ public class ApasGenericPage extends Page {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Displaying all the records on the grid");
 		Click(selectListViewButton);
 		String xpathDisplayOption = "//div[contains(@class,'list uiAbstractList')]//a[@role='option']//span[text()='" + displayOption + "']";
-		waitUntilElementIsPresent(xpathDisplayOption, 10);
+		waitUntilElementIsPresent(xpathDisplayOption, 15);
 		Click(driver.findElement(By.xpath(xpathDisplayOption)));
 		Thread.sleep(2000);
 		if (verifyElementExists(xpathSpinner)){
@@ -543,7 +557,7 @@ public class ApasGenericPage extends Page {
 		ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
 		if (System.getProperty("region").toUpperCase().equals("E2E")){
 			WebElement element  = driver.findElement(By.xpath("//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input"));
-			searchAndSelectFromDropDown(element, searchString);
+			searchAndSelectOptionFromDropDown(element, searchString);
 		}else{
 			Click(globalSearchButton);
 			enter(globalSearchListEditBox,searchString);
@@ -648,7 +662,7 @@ public class ApasGenericPage extends Page {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
 		//This code is to fetch the data for a particular row in the grid in the table passed in tableIndex
 		String xpath="(//*[@class='slds-tabs_scoped__content slds-show']//table)[" + tableIndex + "]";
-		String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table)[" + tableIndex + "]";
+		String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table)[" + tableIndex + "]";
 		if(verifyElementVisible(xpath))
 		{xpathTable=xpath;}
 
@@ -698,30 +712,6 @@ public class ApasGenericPage extends Page {
 	}
 
 
-	public WebElement locateElement(String xpath, int timeoutInSeconds) throws Exception {
-		WebElement element = null;
-		for (int i = 0; i < timeoutInSeconds; i++) {
-			try {
-				element = driver.findElement(By.xpath(xpath));
-				if (element != null) {
-					break;
-				}
-			} catch (Exception ex) {
-				Thread.sleep(750);
-			}
-		}
-		return element;
-	}
-
-
-	public void selectFromDropDown(Object element, String value) throws Exception {
-		selectOptionFromDropDown(element, value);
-	}
-
-	public void searchAndSelectFromDropDown(Object element, String value) throws Exception {
-		searchAndSelectOptionFromDropDown(element, value);
-	}
-
 	/**
 	 * Description: This method is to check unavailbility of an element
 	 *
@@ -729,17 +719,7 @@ public class ApasGenericPage extends Page {
 	 * @return : true if element not found
 	 */
 	public boolean isNotDisplayed(WebElement element) {
-		//driver.findElement((By) element);
-		try {
-			if (element.isDisplayed()) {
-				return false;
-			}
-
-		} catch (org.openqa.selenium.NoSuchElementException e) {
-			return true;
-		}
-		return true;
-
+		return  !verifyElementVisible(element);
 	}
 
 	/**
@@ -922,7 +902,6 @@ public class ApasGenericPage extends Page {
 		String finalAmtAsString = (amt.substring(1, amt.length())).replaceAll(",", "");
 		float convertedAmt = Float.parseFloat(finalAmtAsString);
 		return convertedAmt;
-
 	}
 
 	/**
@@ -1056,7 +1035,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public File createTempFile(File file) throws IOException {
 		//Creating a temporary copy of the file to be processed to create unique name
-		String timeStamp = objUtil.getCurrentDate("ddhhmmss");
+		String timeStamp = objUtil.getCurrentDate("yyMMddhhmmss");
 		String destFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + timeStamp + "_" + file.getName();
 		File tempFile = new File(destFile);
 		FileUtils.copyFile(file, tempFile );
@@ -1068,5 +1047,46 @@ public class ApasGenericPage extends Page {
 		String alertTxt = AlertText.getText();
 		return alertTxt;
 	}
+	/**
+	 * Description: this method is to click on New Button and open the create record Pop Up
+	 * @throws InterruptedException
+	 */
+	public void createRecord() throws IOException, InterruptedException {
+		Click(getButtonWithText("New"));
+		Thread.sleep(1000);
+	}
+	/**
+	 * Description: this method is to click on Edit Button and open the Edit record Pop Up
+	 * @throws InterruptedException
+	 */
+	public void editRecord() throws IOException, InterruptedException {
+		Click(getButtonWithText("Edit"));
+	}
 	
+	/*
+    This method is used to return the first active APN from Salesforce
+    @return: returns the active APN
+   */
+   public String fetchActiveAPN() {
+       return fetchActiveAPN(1).get(0);
+   }
+
+   public ArrayList<String> fetchActiveAPN(int numberofAPNs) {
+       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberofAPNs;
+       return objSalesforceAPI.select(queryForID).get("Name");
+   }
+   
+   /*
+    * Get Field Value from WI TimeLine 
+    */
+   public String getFieldvalueFromWITimeLine(String fieldName) {
+		String fieldValue="";
+		String fieldXpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//flexipage-component2[@data-component-id='tem_workItemTimeline']//li[1]//*[text()='"+fieldName+"']/../following-sibling::span";
+		try{
+			fieldValue =driver.findElement(By.xpath(fieldXpath)).getText();
+		}catch (Exception ex){
+			fieldValue= "";
+		}
+		return fieldValue;
+	}
 }

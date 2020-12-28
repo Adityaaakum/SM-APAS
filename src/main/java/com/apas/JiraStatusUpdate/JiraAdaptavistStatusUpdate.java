@@ -144,11 +144,12 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 			String[] testCaseKeys= testCaseKeyList.split(",");
 			for(String testCaseKey : testCaseKeys){
 				testCaseKey = testCaseKey.trim();
-				String currentStatus = JiraAdaptavistStatusUpdate.testStatus.get(testCaseKey.trim());
+				String currentStatus = JiraAdaptavistStatusUpdate.testStatus.get(testCaseKey);
 				if (currentStatus==null){
-					//System.out.println("Test Case Key " + testCaseKey + " is not part of Test Cycle " + testCycle);
+					//This will help to identify the test cases which are not part of the cycle but executed
+					JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey,"NotInCycle");
 				}else if(!(currentStatus.equalsIgnoreCase("Fail"))) {
-					JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey.trim(), testCaseStatus);
+					JiraAdaptavistStatusUpdate.testStatus.put(testCaseKey, testCaseStatus);
 				}
 			}
 		}

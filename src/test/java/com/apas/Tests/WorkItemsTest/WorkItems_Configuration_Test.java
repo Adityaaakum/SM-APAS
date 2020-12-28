@@ -77,14 +77,14 @@ public class WorkItems_Configuration_Test extends TestBase {
         ArrayList<String> types = new ArrayList<>();
 		workItemTypesHashMap.get("Work_Item_Type__c").stream().distinct().sorted().forEach(type -> types.add(type));
 		String expectedWorkItemTypeValues = types.toString().replace(", ","\n").replace("[","").replace("]","");
-		String actualWorkItemTypeValues = objWorkItemHomePage.getSelectedDropDownValue(objParcelsPage.workItemTypeDropDownComponentsActionsModal);
+		String actualWorkItemTypeValues = objWorkItemHomePage.getDropDownValue(objParcelsPage.workItemTypeDropDownComponentsActionsModal);
 		softAssert.assertEquals(actualWorkItemTypeValues,expectedWorkItemTypeValues,"SMAB-T1782: Work Item Type values validation based on the 'roll code= SEC' and 'Manual Work item Creation flag=Yes'");
 
 		//Step4: Work Item Type values validation for manual work item for Parcels
         ArrayList<String> subTypes = new ArrayList<>();
         actionsHashMap.get("Work_Item_Sub_Type__c").stream().distinct().sorted().forEach(subType -> subTypes.add(subType));
 		String expectedActionsValues = subTypes.toString().replace(", ","\n").replace("[","").replace("]","");
-		String actualActionsValues = objWorkItemHomePage.getSelectedDropDownValue(objParcelsPage.actionsDropDownLabel);
+		String actualActionsValues = objWorkItemHomePage.getDropDownValue(objParcelsPage.actionsDropDownLabel);
 		softAssert.assertEquals(actualActionsValues,expectedActionsValues,"SMAB-T1782: Actions values validation based on the 'roll code= SEC' and 'Manual Work item Creation flag=Yes'");
 
         //Logout of APAS Application
@@ -132,14 +132,14 @@ public class WorkItems_Configuration_Test extends TestBase {
         ArrayList<String> types = new ArrayList<>();
         workItemTypesHashMap.get("Work_Item_Type__c").stream().distinct().sorted().forEach(type -> types.add(type));
         String expectedWorkItemTypeValues = types.toString().replace(", ","\n").replace("[","").replace("]","");
-        String actualWorkItemTypeValues = objWorkItemHomePage.getSelectedDropDownValue(objParcelsPage.workItemTypeDropDownComponentsActionsModal);
+        String actualWorkItemTypeValues = objWorkItemHomePage.getDropDownValue(objParcelsPage.workItemTypeDropDownComponentsActionsModal);
         softAssert.assertEquals(actualWorkItemTypeValues,expectedWorkItemTypeValues,"SMAB-T1783: Work Item Type values validation based on the 'roll code= SEC' and 'Manual Work item Creation flag=Yes'");
 
         //Step4: Work Item Type values validation for manual work item for Parcels
         ArrayList<String> subTypes = new ArrayList<>();
         actionsHashMap.get("Work_Item_Sub_Type__c").stream().distinct().sorted().forEach(subType -> subTypes.add(subType));
         String expectedActionsValues = subTypes.toString().replace(", ","\n").replace("[","").replace("]","");
-        String actualActionsValues = objWorkItemHomePage.getSelectedDropDownValue(objParcelsPage.actionsDropDownLabel);
+        String actualActionsValues = objWorkItemHomePage.getDropDownValue(objParcelsPage.actionsDropDownLabel);
         softAssert.assertEquals(actualActionsValues,expectedActionsValues,"SMAB-T1783: Actions values validation based on the 'roll code= SEC' and 'Manual Work item Creation flag=Yes'");
 
         //Logout of APAS Application

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.apas.PageObjects.BppTrendSetupPage;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -16,6 +15,7 @@ import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.BppTrendPage;
+import com.apas.PageObjects.BppTrendSetupPage;
 import com.apas.PageObjects.BuildingPermitPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ExtentTestManager;
@@ -24,7 +24,6 @@ import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.users;
-
 import com.relevantcodes.extentreports.LogStatus;
 
 public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends TestBase {
@@ -145,6 +144,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		
 		//Step8: Opening the BPP Trend module and set All as the view option in grid
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		Thread.sleep(3000);
 		objBppTrendSetupPage.displayRecords("All");
 		
 		//Step9: Clicking on the roll year name in grid to navigate to details page of selected roll year
@@ -192,6 +192,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		
 		//Step13: Opening the BPP Trend module and set All as the view option in grid
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		Thread.sleep(3000);
 		objBppTrendSetupPage.displayRecords("All");
 		
 		//Step14: Clicking on the roll year name in grid to navigate to details page of selected roll year
@@ -202,17 +203,21 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		if(objBppTrendSetupPage.moreTabRightSection != null) {
 			objPage.Click(objBppTrendSetupPage.moreTabRightSection);
 			objPage.Click(objBppTrendSetupPage.bppCompositeFactorOption);
+			/*objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
+			objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
+			objPage.Click(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
+			*/
         } else {
         	objPage.Click(objBppTrendSetupPage.bppCompFactorSettingTab);
 		}
 		
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Commercial property type **");
-		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
-		objPage.Click(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
 		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
-		objPage.Click(objBppTrendSetupPage.newBtnToCreateEntry);
+		//objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
+		//objPage.Click(objBppTrendSetupPage.newBtnToCreateEntry);
+		
+		
+		objBppTrnPg.Click(objBppTrendSetupPage.newButton);
 
 		objBppTrendSetupPage.enter(objBppTrendSetupPage.minGoodFactorEditBox,"10");
 		objBuildPermit.selectOptionFromDropDown("Property Type","Commercial");
@@ -222,16 +227,24 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		//Opening the BPP Trend module and set All as the view option in grid
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		Thread.sleep(3000);
 		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(Integer.toString(year));
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Industrial property type **");
-		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
-		objPage.Click(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
 		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
-		objPage.Click(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
+		if(objBppTrendSetupPage.moreTabRightSection != null) {
+			objPage.Click(objBppTrendSetupPage.moreTabRightSection);
+			objPage.Click(objBppTrendSetupPage.bppCompositeFactorOption);
+			
+        } else {
+        	objPage.Click(objBppTrendSetupPage.bppCompFactorSettingTab);
+		}
+		/*objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
+		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
+		objPage.Click(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));*/
+		
+		objBppTrnPg.Click(objBppTrendSetupPage.newButton);
 
 		objBppTrendSetupPage.enter(objBppTrendSetupPage.minGoodFactorEditBox,"9");
 		objBuildPermit.selectOptionFromDropDown("Property Type","Industrial");
@@ -241,16 +254,19 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		//Opening the BPP Trend module and set All as the view option in grid
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		Thread.sleep(3000);
 		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(Integer.toString(year));
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Agricultural property type **");
-		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
-		objPage.Click(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
-		
-		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
-		objPage.Click(objBppTrendSetupPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
+		if(objBppTrendSetupPage.moreTabRightSection != null) {
+			objPage.Click(objBppTrendSetupPage.moreTabRightSection);
+			objPage.Click(objBppTrendSetupPage.bppCompositeFactorOption);
+			
+        } else {
+        	objPage.Click(objBppTrendSetupPage.bppCompFactorSettingTab);
+		}
+		objBppTrnPg.createRecord();
 
 		objBppTrendSetupPage.enter(objBppTrendSetupPage.minGoodFactorEditBox,"11");
 		objBuildPermit.selectOptionFromDropDown("Property Type","Agricultural");
@@ -260,16 +276,19 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		//Opening the BPP Trend module and set All as the view option in grid
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		Thread.sleep(3000);
 		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(Integer.toString(year));
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Creating entry for Construction property type **");
-		objBppTrendSetupPage.waitForElementToBeVisible(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
-		objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting, 10);
-		objPage.Click(objBppTrnPg.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppCompFactorSetting));
-
-		objBppTrendSetupPage.waitForElementToBeVisible(objBppTrendSetupPage.newBtnToCreateEntry, 20);
-		objBppTrendSetupPage.clickAction(objBppTrendSetupPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
+		if(objBppTrendSetupPage.moreTabRightSection != null) {
+			objPage.Click(objBppTrendSetupPage.moreTabRightSection);
+			objPage.Click(objBppTrendSetupPage.bppCompositeFactorOption);
+			
+        } else {
+        	objPage.Click(objBppTrendSetupPage.bppCompFactorSettingTab);
+		}
+		objBppTrnPg.createRecord();
 
 		objBppTrendSetupPage.enter(objBppTrendSetupPage.minGoodFactorEditBox,"10");
 		objBuildPermit.selectOptionFromDropDown("Property Type","Construction");

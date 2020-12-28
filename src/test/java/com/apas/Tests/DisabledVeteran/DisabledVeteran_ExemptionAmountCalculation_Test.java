@@ -89,13 +89,13 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		//Step5: Calculate and verify Total number of Value Adjustments in an Exemption		
 		 //objPage.waitUntilElementIsPresent(objValueAdjustmentPage.xPathStatus,50);
 		 int noOfVAs =  objValueAdjustmentPage.numberOfValueAdjustments.size(); 
-		 softAssert.assertEquals(noOfVAs, actualVAtoBeCreated, "Verify Number of Value Adjustments");	  
+		 softAssert.assertEquals(noOfVAs, actualVAtoBeCreated, "SMAB-T1213 : Verify Number of Value Adjustments");
 		   
 		  //Step6: Looping through each Value Adjustments to calculate Exemption Amount 
 		  for (int VARowNo = 0; VARowNo<noOfVAs; VARowNo++) { 			 				  
 			//Step7: Clicking on 'Active' Value Adjustment link
 			driver.navigate().refresh();
-			String xpPathActiveVA = "//div//tr["+(VARowNo+1)+"]//span[contains(text(),'Active')]//..//..//preceding-sibling::th//a";
+			String xpPathActiveVA = "//div//tr["+(VARowNo+1)+"]//*[contains(text(),'Active')]//ancestor:: td[@data-label='Status']//preceding-sibling::th//a";
 			objPage.waitUntilElementIsPresent(xpPathActiveVA,50);
 			WebElement vaLink = objPage.locateElement(xpPathActiveVA,10);
 			
@@ -207,7 +207,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		ReportLogger.INFO("Verifying Net Exemption Amount Calculated for Low-Income Disabled Veterans Exemption that results in penalty");			
 		float expectedNetExemptionAmount = objValueAdjustmentPage.calculateNetExemptionAmount(actualExemptionAmount);					  
 		float actualNetExemptionAmount = objApasGenericPage.convertToFloat(objValueAdjustmentPage.netExemptionAmountCalculatedValueLabel.getText());			 			  
-		softAssert.assertEquals(actualNetExemptionAmount,expectedNetExemptionAmount,"SMAB-T1292: Verify 'Net Exemption Amount' is calculated approapriately when a Low Income VAR is created that results in a penalty");
+		softAssert.assertEquals(actualNetExemptionAmount,expectedNetExemptionAmount,"SMAB-T475: Verify 'Net Exemption Amount' is calculated approapriately when a Low Income VAR is created that results in a penalty");
 		   
 		objApasGenericPage.logout();
 	 }

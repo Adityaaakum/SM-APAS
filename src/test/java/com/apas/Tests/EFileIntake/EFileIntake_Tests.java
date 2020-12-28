@@ -103,7 +103,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.Click(objEFileImport.nextButton);
 		objPage.Click(objEFileImport.periodDropdown);
 		objPage.clickAction(objEFileImport.periodFirstDropDownValue);
-		//objEFileImport.selectFromDropDown(objEFileImport.periodDropdown, period);//period drop down xpath needs to be updated
+		//objEFileImport.selectOptionFromDropDown(objEFileImport.periodDropdown, period);//period drop down xpath needs to be updated
 		objPage.waitForElementToBeClickable(objEFileImport.confirmButton, 10);
 		objPage.Click(objEFileImport.confirmButton);
 		Thread.sleep(2000);
@@ -188,7 +188,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		driver.navigate().refresh();
 		objPage.waitForElementToBeClickable(objEFileImport.fileTypedropdown, 10);
 		objEFileImport.selectFileAndSource(fileType,source);
-		objPage.waitUntilElementDisplayed(objEFileImport.nextButton, 15);
+		objPage.waitForElementToBeVisible(objEFileImport.nextButton, 15);
 		ReportLogger.INFO("Verify View link is displayed for 'New' status record");
 		softAssert.assertEquals(objPage.getElementText(objEFileImport.viewLinkRecord),"View","SMAB-T65:Verify 'View' link is displayed for records with status- 'New' in history table");
 		
@@ -196,8 +196,8 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.Click(objEFileImport.viewLinkRecord);
 		objPage.Click(objEFileImport.sourceDetails);
 		objPage.waitForElementToBeClickable(objEFileImport.statusImportedFile,30);
-		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileType), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
-		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.source), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileTypedropdown), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.sourceDropdown), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 
 		//step6: verifying log created With New status
 		//ReportLogger.INFO("Verify log genertared for 'New' status record");
@@ -276,7 +276,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objEFileImport.searchModule(EFILE_INTAKE);
 		objPage.waitForElementToBeClickable(objEFileImport.fileTypedropdown, 10);
 		objEFileImport.selectFileAndSource(fileType,source);
-		objPage.waitUntilElementDisplayed(objEFileImport.nextButton, 15);
+		objPage.waitForElementToBeVisible(objEFileImport.nextButton, 15);
 		objPage.Click(objEFileImport.viewLinkRecord);
 		objPage.waitForElementToBeClickable(objEFileImport.errorRowSection, 20);
 		softAssert.assertTrue(objEFileImport.errorRowSection.isDisplayed(), "SMAB-T49:Verify Error & Success records are displayed to user");
@@ -290,11 +290,11 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.Click(objEFileImport.sourceDetails);
 		softAssert.assertTrue(objEFileImport.isNotDisplayed(objEFileImport.continueButton), "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 		objPage.waitForElementToBeClickable(objEFileImport.statusImportedFile,30);
-		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileType), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
-		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.source), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileTypedropdown), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.sourceDropdown), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 		
 		//step12:navigating back to efile import tool screen
-		objPage.waitUntilElementDisplayed(objEFileImport.nextButton, 15);
+		objPage.waitForElementToBeVisible(objEFileImport.nextButton, 15);
 		softAssert.assertEquals(objPage.getElementText(objEFileImport.viewLinkRecord),"View","SMAB-T65,SMAB-T575:Verify 'View' link is displayed for records with status- 'Approved' in history table");
 		softAssert.assertEquals(objEFileImport.fileLink.isDisplayed(),true,"SMAB-T915:Verify 'File' link is displayed for records with status- 'Approved' in history table");
 		
@@ -409,11 +409,11 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.Click(objEFileImport.sourceDetails);
 		softAssert.assertTrue(objEFileImport.isNotDisplayed(objEFileImport.continueButton), "SMAB-T1512:Verify user is able to navigate backwards from review and Approve screen for Reverted status");
 		objPage.waitForElementToBeClickable(objEFileImport.statusImportedFile,30);
-		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileType), fileType, "SMAB-T1512:Verify user is able to navigate backwards from review and Approve screen for Reverted status");
-		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.source), source, "SMAB-T1512:Verify user is able to navigate backwards from review and Approve screen for Reverted status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileTypedropdown), fileType, "SMAB-T1512:Verify user is able to navigate backwards from review and Approve screen for Reverted status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.sourceDropdown), source, "SMAB-T1512:Verify user is able to navigate backwards from review and Approve screen for Reverted status");
 		
 		//step7:navigating back to efile import tool screen
-		objPage.waitUntilElementDisplayed(objEFileImport.statusImportedFile, 15);
+		objPage.waitForElementToBeVisible(objEFileImport.statusImportedFile, 15);
 		softAssert.assertTrue(objEFileImport.isNotDisplayed(objEFileImport.viewLinkRecord),"SMAB-T68:Verify View link is not displayed for records in history table apart from statuses - 'Imported','New' and 'In Progress' and Approved");
 		softAssert.assertTrue(objEFileImport.fileLink.isDisplayed(),"SMAB-T915:Verify 'File' link is displayed for records with status- 'Reverted' in history table");
 			
@@ -434,11 +434,11 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objEFileImport.searchModule(EFILE_INTAKE);
 		objPage.waitForElementToBeClickable(objEFileImport.fileTypedropdown, 15);
 		objEFileImport.selectFileAndSource(fileType,source);
-		objPage.waitUntilElementDisplayed(objEFileImport.nextButton, 15);
+		objPage.waitForElementToBeVisible(objEFileImport.nextButton, 15);
 		objPage.scrollToTop();
 		objPage.Click(objEFileImport.nextButton);
 		
-		//objEFileImport.selectFromDropDown(objEFileImport.periodDropdown, period);
+		//objEFileImport.selectOptionFromDropDown(objEFileImport.periodDropdown, period);
 		objPage.enter(objEFileImport.fileNameInputBox, "SanMateoBuildingPermitsWithValidAndInvalidData4.xlsx");
 		objPage.Click(objEFileImport.fileNameNext);
 		softAssert.assertEquals(objPage.getElementText(objEFileImport.fileAlreadyApprovedMsg),"Do you want to import ?","SMAB-T101:Verify duplicate warning message should not appear for Reverted Status from Imported status");
@@ -487,7 +487,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objEFileImport.login(BPP_AUDITOR);
 		objEFileImport.searchModule(modules.EFILE_INTAKE);
 		objEFileImport.selectFileAndSource(fileType,source);
-		objPage.waitUntilElementDisplayed(objEFileImport.nextButton, 15);
+		objPage.waitForElementToBeVisible(objEFileImport.nextButton, 15);
 		objEFileImport.Click(objEFileImport.viewLinkRecord);
 		objPage.waitForElementToBeClickable(objEFileImport.errorRowSection, 20);
 		softAssert.assertTrue(objEFileImport.isNotDisplayed(objEFileImport.revertButton),  "SMAB-T28:Verify that user without permission is not able to revert the records from file");
@@ -533,14 +533,14 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		//step6: verify import list record entry and data
 		
 				HashMap<String, ArrayList<String>> importedEntry=objEFileImport.getGridDataInHashMap(1, 1);
-				softAssert.assertEquals(importedEntry.get("Uploaded Date").get(0), converteddate, "verify import list history data");
-				softAssert.assertEquals(importedEntry.get("Period").get(0), "Adhoc", "verify import list history data");
-				softAssert.assertEquals(importedEntry.get("File Count").get(0), "6", "verify import list history data");
-				softAssert.assertEquals(importedEntry.get("Import Count").get(0), "2", "verify import list history data");
-				softAssert.assertEquals(importedEntry.get("Error Count").get(0), "4", "verify import list history data");
-				softAssert.assertEquals(importedEntry.get("Discard Count").get(0), "0", "verify import list history data");
-				softAssert.assertEquals(importedEntry.get("Number of Tries").get(0), "1", "verify import list history data");
-				softAssert.assertEquals(importedEntry.get("Duplicate in File").get(0), "2", "SMAB-T1566:Verify user is able to view duplicate records in Error rows section and corresponding count in import history logs under 'Duplicate Count' column after file import");
+				softAssert.assertEquals(importedEntry.get("Uploaded Date").get(0), converteddate, "SMAB-T33 : Uploaded Date - verify import list history data");
+				softAssert.assertEquals(importedEntry.get("Period").get(0), "Adhoc", "SMAB-T33 : Period - verify import list history data");
+				softAssert.assertEquals(importedEntry.get("File Count").get(0), "6", "SMAB-T33 : File Count - verify import list history data");
+				softAssert.assertEquals(importedEntry.get("Import Count").get(0), "2", "SMAB-T33 : Import Count - verify import list history data");
+				softAssert.assertEquals(importedEntry.get("Error Count").get(0), "4", "SMAB-T33 : Error Count - verify import list history data");
+				softAssert.assertEquals(importedEntry.get("Discard Count").get(0), "0", "SMAB-T33 : Discard Count - verify import list history data");
+				softAssert.assertEquals(importedEntry.get("Number of Tries").get(0), "1", "SMAB-T33 : Number of Tries - verify import list history data");
+				softAssert.assertEquals(importedEntry.get("Duplicate in File").get(0), "2", "SMAB-T1566: Duplicate In file - Verify user is able to view duplicate records in Error rows section and corresponding count in import history logs under 'Duplicate Count' column after file import");
 				
 		
 		
@@ -572,8 +572,8 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.waitForElementToBeClickable(objEFileImport.nextButton, 10);
 		objEFileImport.Click(objEFileImport.viewLinkRecord);
 		objPage.waitForElementToBeClickable(objEFileImport.errorRowSection, 10);
-		softAssert.assertEquals(Integer.parseInt(errorrecords), "4", "Verify number of error records are same before discard(ERROR ROWS:Count)");
-		softAssert.assertEquals(objEFileImport.errorRecordsRows.size(), "4","Verify number of error records are same before discard(actual records count)");
+		softAssert.assertEquals(Integer.parseInt(errorrecords), "4", "SMAB-T36: Verify number of error records are same before discard(ERROR ROWS:Count)");
+		softAssert.assertEquals(objEFileImport.errorRecordsRows.size(), "4","SMAB-T36: Verify number of error records are same before discard(actual records count)");
 		
 		ReportLogger.INFO("Now discarding an Error record");
 		objPage.Click(objEFileImport.errorRecordsRows.get(0));
@@ -584,8 +584,8 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		Thread.sleep(2000);
 		String errorrecordsAfterDisacrd=objEFileImport.errorRowCount.getText().substring(objEFileImport.errorRowCount.getText().indexOf(":")+1, objEFileImport.errorRowCount.getText().length()).trim();
 
-		softAssert.assertEquals(Integer.parseInt(errorrecordsAfterDisacrd),"3", "Verify number of error records are same after discarding an error record(ERROR ROWS:Count)");
-		softAssert.assertEquals(objEFileImport.errorRecordsRows.size(),"3" ,"Verify number of error records are same after discarding an error record(actual records count)");
+		softAssert.assertEquals(Integer.parseInt(errorrecordsAfterDisacrd),"3", "SMAB-T36: Verify number of error records are same after discarding an error record(ERROR ROWS:Count)");
+		softAssert.assertEquals(objEFileImport.errorRecordsRows.size(),"3" ,"SMAB-T36: Verify number of error records are same after discarding an error record(actual records count)");
 
 		//step8a:verifying backward navigation for Imported status with>0 Error records and =0 error records 
 		ReportLogger.INFO("Verifying user gets warning if Error records>0 and user tries navigating backwards by clicking on 'Source Details'");
@@ -600,16 +600,16 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		ReportLogger.INFO("Verifying that on Confirming/Continuing the warning user navigates back to previous page");
 		objPage.Click(objEFileImport.continueButton);
 		objPage.waitForElementToBeClickable(objEFileImport.statusImportedFile,30);
-		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileType), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
-		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.source), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileTypedropdown), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.sourceDropdown), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 	
-		objPage.waitUntilElementDisplayed(objEFileImport.nextButton, 15);
+		objPage.waitForElementToBeVisible(objEFileImport.nextButton, 15);
 		softAssert.assertEquals(objEFileImport.getElementText(objEFileImport.disacrdCount),"1","SMAB-T68:Verify View link is not displayed for records in history table apart from statuses - 'Imported','New' and 'In Progress' and Approved");
 		objPage.Click(objEFileImport.viewLink);
 		objPage.waitForElementToBeClickable(objEFileImport.errorRowSection, 30);
 		String errorrecordsAfterDisacrd1=objEFileImport.errorRowCount.getText().substring(objEFileImport.errorRowCount.getText().indexOf(":")+1, objEFileImport.errorRowCount.getText().length()).trim();
-		softAssert.assertEquals(Integer.parseInt(errorrecordsAfterDisacrd1),"3", "Verify number of error records are same after discarding an error record(ERROR ROWS:Count)");
-		softAssert.assertEquals(objEFileImport.errorRecordsRows.size(),"3" ,"Verify number of error records are same after discarding an error record(actual records count)");
+		softAssert.assertEquals(Integer.parseInt(errorrecordsAfterDisacrd1),"3", "SMAB-T36 : Verify number of error records are same after discarding an error record(ERROR ROWS:Count)");
+		softAssert.assertEquals(objEFileImport.errorRecordsRows.size(),"3" ,"SMAB-T36 : Verify number of error records are same after discarding an error record(actual records count)");
 		
 		ReportLogger.INFO("Now discarding all error records");
 		objPage.Click(objEFileImport.discardAllCheckbox);
@@ -626,12 +626,12 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.Click(objEFileImport.sourceDetails);
 		softAssert.assertTrue(objEFileImport.isNotDisplayed(objEFileImport.continueButton), "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 		objPage.waitForElementToBeClickable(objEFileImport.statusImportedFile,30);
-		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileType), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
-		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.source), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileTypedropdown), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.sourceDropdown), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 		
 		
 		//step9: verifying the discard count
-		objPage.waitUntilElementDisplayed(objEFileImport.nextButton, 15);
+		objPage.waitForElementToBeVisible(objEFileImport.nextButton, 15);
 		softAssert.assertEquals(objPage.getElementText(objEFileImport.disacrdCount),"4","SMAB-T68:Verify View link is not displayed for records in history table apart from statuses - 'Imported','New' and 'In Progress' and Approved");
 		objEFileImport.logout();
 	}
@@ -653,7 +653,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		
 		//step3:verifying file type and sources
 		ReportLogger.INFO("Verifying Sources for BPP Trend Factors");
-		objEFileImport.selectFromDropDown(objEFileImport.fileTypedropdown, "BPP Trend Factors");
+		objEFileImport.selectOptionFromDropDown(objEFileImport.fileTypedropdown, "BPP Trend Factors");
 		objPage.waitForElementToBeClickable(objEFileImport.sourceDropdown, 5);
 		objPage.Click(objEFileImport.sourceDropdown);
 		String expectedSourcesBPP = "CAA - Valuation Factors\nBOE - Index and Percent Good Factors\nBOE - Valuation Factors";
@@ -663,7 +663,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		driver.navigate().refresh();
 		ReportLogger.INFO("Verifying Sources for Building Permit");
 		objPage.waitForElementToBeClickable(objEFileImport.fileTypedropdown, 15);
-		objEFileImport.selectFromDropDown(objEFileImport.fileTypedropdown, "Building Permit");
+		objEFileImport.selectOptionFromDropDown(objEFileImport.fileTypedropdown, "Building Permit");
 		objPage.waitForElementToBeClickable(objEFileImport.sourceDropdown, 5);
 		objPage.Click(objEFileImport.sourceDropdown);
 		String expectedSourcesBP = "Millbrae Building permits\nUnincorporated Building permits\nBelmont Building permits\nSan Bruno Building permits\nBurlingame Building permits\nHillsborough Building permits\nWoodside Building permits\nSan Mateo Building permits\nSouth San Francisco Building permits\nRedwood City Building permits\nAtherton Building Permits";
@@ -812,7 +812,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.scrollToTop();
 		objPage.Click(objEFileImport.nextButton);
 		objPage.waitForElementToBeClickable(objEFileImport.periodDropdown, 10);
-		objEFileImport.selectFromDropDown(objEFileImport.periodDropdown, period);
+		objEFileImport.selectOptionFromDropDown(objEFileImport.periodDropdown, period);
     	objPage.waitForElementToBeClickable(objEFileImport.confirmButton, 10);
 		objPage.Click(objEFileImport.confirmButton);
 		objPage.waitForElementToBeClickable(objEFileImport.uploadFilebutton, 10);
@@ -822,7 +822,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objPage.scrollToTop();
 		objPage.Click(objEFileImport.nextButton);
 		objPage.waitForElementToBeClickable(objEFileImport.periodDropdown, 10);
-		objEFileImport.selectFromDropDown(objEFileImport.periodDropdown, period);
+		objEFileImport.selectOptionFromDropDown(objEFileImport.periodDropdown, period);
     	objPage.waitForElementToBeClickable(objEFileImport.confirmButton, 10);
 		objPage.Click(objEFileImport.confirmButton);
 		objPage.waitForElementToBeClickable(objEFileImport.uploadFilebutton, 10);
@@ -831,7 +831,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		//step5:Verifying the count of 'New' status entry in system
 		ReportLogger.INFO("Verifying only 1 'New' entry in system and is displayed on top(recently created one)");
 		objPage.waitForElementTextToBe(objEFileImport.statusImportedFile, "New", 120);
-		softAssert.assertEquals(objPage.getElementText(objEFileImport.statusImportedFile), "New", "New status entry cretaed");
+		softAssert.assertEquals(objPage.getElementText(objEFileImport.statusImportedFile), "New", "SMAB-T1791: New status entry cretaed");
 		
 		HashMap<String,ArrayList<String>> response1=salesforceAPI.select(query);
 		int newCountInsystem=response1.get("Id").size();

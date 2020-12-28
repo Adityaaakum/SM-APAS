@@ -111,14 +111,14 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	objPage.Click(ObjValueAdjustmentPage.editButton);
 	//objPage.waitForElementToBeClickable(ObjValueAdjustmentPage.vaEditDeterminationDropDown, 10);
 	ReportLogger.INFO("Step 9: Select the Low-Income Disabled Veterans Exemption option from drop down");
-	objApasGenericPage.selectFromDropDown(ObjValueAdjustmentPage.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
+	objApasGenericPage.selectOptionFromDropDown(ObjValueAdjustmentPage.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
 	String dateAfterAppdate=DateUtil.getFutureORPastDate(applicationDate, 1, "MM/dd/yyyy");
 	ReportLogger.INFO("Step 10: Select the Annual Form Receive Date :"+dateAfterAppdate);
 	objPage.enter(ObjValueAdjustmentPage.vaAnnualFormReceiveddate,dateAfterAppdate);
 	ReportLogger.INFO("Step 11: Enter the Annual Household income : 10000");
 	objPage.enter(ObjValueAdjustmentPage.totalAnnualHouseholdIncome,"10000");
 	ReportLogger.INFO("Step 12: Select the Penalty Adjustments Reason:Supervisory Judgement");
-	objApasGenericPage.selectFromDropDown(ObjValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
+	objApasGenericPage.selectOptionFromDropDown(ObjValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
 	ReportLogger.INFO("Step 13: Enter the Penalty Amount User Adjusted : 2000 ");
 	objPage.enter(ObjValueAdjustmentPage.penaltyAmountUserAdjusted, "2000");
 	ReportLogger.INFO("Step 14: Click on the SAVE button");
@@ -147,10 +147,10 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
 	objPage.javascriptClick(objWIHomePage.detailsWI);
 
-   //Validating that 'Roll Code' field and 'Date' field gets automatically populated in the work item record
+   //Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record
    objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
-	softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
-					"SMAB-T2080: Validation that 'Roll Code' fields getting automatically populated in the work item record");
+	softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC",
+					"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
 	softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 					"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
 		
@@ -222,14 +222,14 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 		objPage.Click(ObjValueAdjustmentPage.editButton);
 		ReportLogger.INFO("Step 9: Select the Lo-Income... option from the drop down");
 		//objPage.waitForElementToBeClickable(ObjValueAdjustmentPage.vaEditDeterminationDropDown, 10);
-		objApasGenericPage.selectFromDropDown(ObjValueAdjustmentPage.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
+		objApasGenericPage.selectOptionFromDropDown(ObjValueAdjustmentPage.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
 		String dateAfterAppdate=DateUtil.getFutureORPastDate(applicationDate, 1, "MM/dd/yyyy");
 		ReportLogger.INFO("Step 10: Enter the Annual Form Receive Date :"+dateAfterAppdate);
 		objPage.enter(ObjValueAdjustmentPage.vaAnnualFormReceiveddate,dateAfterAppdate);
 		ReportLogger.INFO("Step 11: Enter the Annual household income : 10000");
 		objPage.enter(ObjValueAdjustmentPage.totalAnnualHouseholdIncome,"10000");
 		ReportLogger.INFO("Step 12: Enter the Penalty Adjustment Reason : Supervisory Judgement");
-		objApasGenericPage.selectFromDropDown(ObjValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
+		objApasGenericPage.selectOptionFromDropDown(ObjValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
 		ReportLogger.INFO("Step 13: Enter the Penalty Amount User Adjusted : 2000");
 		objPage.enter(ObjValueAdjustmentPage.penaltyAmountUserAdjusted, "2000");
 		ReportLogger.INFO("Step 14: Click on the SAVE button");
@@ -241,14 +241,14 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 		objPage.Click(ObjValueAdjustmentPage.editButton);
 		//objPage.waitForElementToBeClickable(ObjValueAdjustmentPage.vaEditDeterminationDropDown, 10);
 		ReportLogger.INFO("Step 16: Select the Determination option : Basic Disabled Veterans Exemption");
-		objApasGenericPage.selectFromDropDown(ObjValueAdjustmentPage.vaEditDeterminationDropDown,"Basic Disabled Veterans Exemption");
+		objApasGenericPage.selectOptionFromDropDown(ObjValueAdjustmentPage.vaEditDeterminationDropDown,"Basic Disabled Veterans Exemption");
 		ReportLogger.INFO("Step 17: Enter the Annual Form Received Date : ");
 		objPage.enter(ObjValueAdjustmentPage.vaAnnualFormReceiveddate,"");
 		ReportLogger.INFO("Step 18: Enter the Annual House Hold Income : ");
 		objPage.enter(ObjValueAdjustmentPage.totalAnnualHouseholdIncome,"");
 		/*
 		 * ReportLogger.INFO("Step 19: Enter the Penalty Adjustment Reason : --None--");
-		 * objApasGenericPage.selectFromDropDown(ObjValueAdjustmentPage.
+		 * objApasGenericPage.selectOptionFromDropDown(ObjValueAdjustmentPage.
 		 * penaltyAdjustmentReason, "--None--");
 		 * ReportLogger.INFO("Step 20: Enter the Penalty Amount Adjusted : ");
 		 * objPage.enter(ObjValueAdjustmentPage.penaltyAmountUserAdjusted, "");
@@ -312,14 +312,14 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	objPage.Click(ObjValueAdjustmentPage.editButton);
 	//objPage.waitForElementToBeClickable(ObjValueAdjustmentPage.vaEditDeterminationDropDown, 10);
 	ReportLogger.INFO("Step 9: Select from the Determination option : Low-Income ..");
-	objApasGenericPage.selectFromDropDown(ObjValueAdjustmentPage.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
+	objApasGenericPage.selectOptionFromDropDown(ObjValueAdjustmentPage.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
 	String dateAfterAppdate=DateUtil.getFutureORPastDate(applicationDate, 1, "MM/dd/yyyy");
 	ReportLogger.INFO("Step 10: Enter the Annual Form Received Date :"+dateAfterAppdate );
 	objPage.enter(ObjValueAdjustmentPage.vaAnnualFormReceiveddate,dateAfterAppdate);
 	ReportLogger.INFO("Step 11: Enter the Annual House hold Income : 10000" );
 	objPage.enter(ObjValueAdjustmentPage.totalAnnualHouseholdIncome,"10000");
 	ReportLogger.INFO("Step 12: Enter the Penalty adjustment reason :Supervisory Judgement");
-	objApasGenericPage.selectFromDropDown(ObjValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
+	objApasGenericPage.selectOptionFromDropDown(ObjValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
 	ReportLogger.INFO("Step 13: Enter the Penalty adjustment Amount : 2000");
 	objPage.enter(ObjValueAdjustmentPage.penaltyAmountUserAdjusted, "2000");
 	ReportLogger.INFO("Step 14: Click on the SAVE button");
@@ -462,14 +462,14 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	objPage.Click(ObjValueAdjustmentPage.editButton);
 	//objPage.waitForElementToBeClickable(ObjValueAdjustmentPage.vaEditDeterminationDropDown, 10);
 	ReportLogger.INFO("Step 9: Select the Determination option : Low-Income ...");
-	objApasGenericPage.selectFromDropDown(ObjValueAdjustmentPage.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
+	objApasGenericPage.selectOptionFromDropDown(ObjValueAdjustmentPage.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
 	String dateAfterAppdate=DateUtil.getFutureORPastDate(applicationDate, 1, "MM/dd/yyyy");
 	ReportLogger.INFO("Step 10: Enter the Annual Form Received Date : "+dateAfterAppdate);
 	objPage.enter(ObjValueAdjustmentPage.vaAnnualFormReceiveddate,dateAfterAppdate);
 	ReportLogger.INFO("Step 11: Enter the Annual House Hold Incone : 10000");
 	objPage.enter(ObjValueAdjustmentPage.totalAnnualHouseholdIncome,"10000");
 	ReportLogger.INFO("Step 12: " );
-	objApasGenericPage.selectFromDropDown(ObjValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
+	objApasGenericPage.selectOptionFromDropDown(ObjValueAdjustmentPage.penaltyAdjustmentReason, "Supervisory Judgement");
 	ReportLogger.INFO("Step 13: Enter the Penalty Amount User Adjusted : 2000" );
 	objPage.enter(ObjValueAdjustmentPage.penaltyAmountUserAdjusted, "2000");
 	ReportLogger.INFO("Step 14: Click on the SAVE button" );

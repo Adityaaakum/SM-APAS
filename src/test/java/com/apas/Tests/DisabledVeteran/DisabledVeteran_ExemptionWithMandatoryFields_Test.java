@@ -127,7 +127,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		objPage.clearFieldValue(objExemptionsPage.dateOccupiedProperty);
 		objPage.clearFieldValue(objExemptionsPage.dateOfNotice);
 		objPage.clearFieldValue(objExemptionsPage.effectiveDateOfUSDVA);
-		objApasGenericPage.selectFromDropDown(objExemptionsPage.qualification, "--None--");
+		objApasGenericPage.selectOptionFromDropDown(objExemptionsPage.qualification, "--None--");
 		objExemptionsPage.saveExemptionRecord();
 				
 		//Step9: Validate error messages when few mandatory field values are not present and Exemption record is saved	
@@ -187,7 +187,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		//Step7: Clear the values from few of the mandatory fields and Save the record
 		objPage.clearFieldValue(objExemptionsPage.dateApplicationReceived);
 		objPage.clearFieldValue(objExemptionsPage.claimantSSN);
-		objApasGenericPage.selectFromDropDown(objExemptionsPage.unmarriedSpouseOfDisabledVeteran, "--None--");
+		objApasGenericPage.selectOptionFromDropDown(objExemptionsPage.unmarriedSpouseOfDisabledVeteran, "--None--");
 		objExemptionsPage.saveExemptionRecord();
 		
 		//Step8: Validate error messages when few mandatory field values are not present and Exemption record is saved
@@ -200,7 +200,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		ReportLogger.INFO("Error messages related to mandatory fields are validated");
 				
 		//Step9: Enter the value in 'Unmarried Spouse of Deceased Veteran?' dropdown only and Save the record
-		objApasGenericPage.selectFromDropDown(objExemptionsPage.unmarriedSpouseOfDisabledVeteran, "No");
+		objApasGenericPage.selectOptionFromDropDown(objExemptionsPage.unmarriedSpouseOfDisabledVeteran, "No");
 		objExemptionsPage.saveExemptionRecord();
 		
 		//Step10: Validate error messages when some of the mandatory field values are still not present and Exemption record is saved
@@ -234,7 +234,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		
 		//Step14: Cancel the changes and validate that original value saved for 'Claimant SSN' appears back
 		objPage.Click(objExemptionsPage.cancelButtonOnDetailPage);
-		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.claimantSSNOnDetailPage)).substring(7), dataToCreateExemptionMap.get("Claimant SSN").substring(7), "Validate last 4 digits of the original 'Claimant's SSN' value saved in the Exemption record");
+		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.claimantSSNOnDetailPage)).substring(7), dataToCreateExemptionMap.get("Claimant SSN").substring(7), "SMAB-T527: Validate last 4 digits of the original 'Claimant's SSN' value saved in the Exemption record");
 		
 		//Step15: Edit the record again by clicking pencil icon against 'Veteran SSN' field and update the field*
 		objPage.Click(objExemptionsPage.editPencilIconForVeteranSSNOnDetailPage);

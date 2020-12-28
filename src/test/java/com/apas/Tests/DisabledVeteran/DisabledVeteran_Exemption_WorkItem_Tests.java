@@ -107,10 +107,10 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 			
 		   objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
 		   objPage.Click(objWIHomePage.detailsWI);
-			 //Validating that 'Roll Code' field and 'Date' field gets automatically populated in the work item record
+			 //Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record
 		   objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
-			softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Roll Code", "Reference Data Details"),"SEC",
-							"SMAB-T2080: Validation that 'Roll Code' fields getting automatically populated in the work item record");
+			softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC",
+							"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
 			softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 							"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
 			
@@ -174,7 +174,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		ReportLogger.INFO("Step 5: Enter the End Date of Rating :"+dataToEdit.get("EnddateOfRating"));
 		objPage.enter(objExemptionsPage.endDateOfRating, dataToEdit.get("EnddateOfRating"));
 		ReportLogger.INFO("Step 6: Enter the End Date of Rating Reason :"+dataToEdit.get("EndRatingReason"));
-		objApasGenericPage.selectFromDropDown(objExemptionsPage.endRatingReason, dataToEdit.get("EndRatingReason"));
+		objApasGenericPage.selectOptionFromDropDown(objExemptionsPage.endRatingReason, dataToEdit.get("EndRatingReason"));
 		ReportLogger.INFO("Step 7: Click on the SAVE button");
 		objPage.Click(ExemptionsPage.saveButton);
 		HashMap<String, ArrayList<String>> getWIDetailsAfterEndDate = null;
@@ -189,9 +189,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	  	objPage.Click(objWIHomePage.lnkTABHome);
 	  	ReportLogger.INFO("Step 10: Click on the Sub  TAB - Work Items");
 	  	objPage.Click(objWIHomePage.lnkTABWorkItems);
-	  	ReportLogger.INFO("Step 11: Click on the check box - Show RP");
-	  	objPage.Click(objWIHomePage.chkShowRP);
-	  	ReportLogger.INFO("Step 12: Click on the SUB TAB - My Submitted for Approval");
+	    ReportLogger.INFO("Step 12: Click on the SUB TAB - My Submitted for Approval");
 	  	objPage.Click(objWIHomePage.lnkTABMySubmittedforApproval);
 	  	//Search the Work Item Name in the Grid 1st Column
 	  	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
@@ -236,7 +234,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	objPage.Click(objExemptionsPage.editExemption);
   	objPage.enter(objExemptionsPage.endDateOfRating, dataToEdit.get("EnddateOfRating"));
   	ReportLogger.INFO("Step 5: Adding End date of Rating Reason in the exemption");
-  	objApasGenericPage.selectFromDropDown(objExemptionsPage.endRatingReason, dataToEdit.get("EndRatingReason"));
+  	objApasGenericPage.selectOptionFromDropDown(objExemptionsPage.endRatingReason, dataToEdit.get("EndRatingReason"));
   	ReportLogger.INFO("Step 6: Click the SAVE button");
   	objPage.Click(ExemptionsPage.saveButton);
   	Thread.sleep(5000);
@@ -340,7 +338,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
   	
   }
 
-	@Test(description = "SMAB-T198: APAS Verify the Supervisor is able to Return the WI initial filing/changes on new Exemption Creation", 
+	@Test(description = "SMAB-T1981: APAS Verify the Supervisor is able to Return the WI initial filing/changes on new Exemption Creation", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DV_WorkItem_Exemption"})
@@ -405,8 +403,8 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	  	objPage.Click(objWIHomePage.lnkTABHome);
 	  	ReportLogger.INFO("Step 19: Click on the Sub  TAB - Work Items");
 	  	objPage.Click(objWIHomePage.lnkTABWorkItems);
-	  	ReportLogger.INFO("Step 20: Click on the check box - Show RP");
-	  	objPage.Click(objWIHomePage.chkShowRP);
+	  	//ReportLogger.INFO("Step 20: Click on the check box - Show RP");
+	  	//objPage.Click(objWIHomePage.chkShowRP);
 	  	ReportLogger.INFO("Step 21: Click the TAB - In Progress");
 	  	objPage.Click(objWIHomePage.lnkTABInProgress);
 	  	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);

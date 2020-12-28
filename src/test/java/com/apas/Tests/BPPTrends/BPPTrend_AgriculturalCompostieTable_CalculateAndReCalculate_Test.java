@@ -3,16 +3,17 @@ package com.apas.Tests.BPPTrends;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import com.apas.PageObjects.BppTrendSetupPage;
+
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
+
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.BppTrendPage;
+import com.apas.PageObjects.BppTrendSetupPage;
 import com.apas.PageObjects.BuildingPermitPage;
 import com.apas.PageObjects.Page;
 import com.apas.Reports.ReportLogger;
@@ -95,17 +96,18 @@ public class BPPTrend_AgriculturalCompostieTable_CalculateAndReCalculate_Test ex
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);
 
 		//Step3: Validating presence of CalculateAll button at page level
-		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathCalculateAllBtn, 20)), "SMAB-T166: Calculate all button is visible at page level");
+		objBppTrend.waitForElementToBeVisible(30, objBppTrend.xPathCalculateAllBtn);
+		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathCalculateAllBtn), "SMAB-T166: Calculate all button is visible at page level");
 		
 		//Step4: Clicking on the given table
 		Thread.sleep(1000);
 		objBppTrend.clickOnTableOnBppTrendPage(tableName);
 
 		//Step5: Validating presence of Calculate Button for given tables individually
-		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathCalculateBtn, 20)), "SMAB-T190: Calculate button is available above '"+ tableName +"' table");
+		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathCalculateBtn), "SMAB-T190: Calculate button is available above '"+ tableName +"' table");
 
 		//Step6: Validating unavailability of ReCalculate button at table level before performing calculation
-		softAssert.assertTrue(Objects.isNull(objPage.locateElement(objBppTrend.xPathReCalculateBtn, 20)), "SMAB-T198: ReCalcuate button is not visible for Not Calculated table");
+		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrend.xPathReCalculateBtn), "SMAB-T198: ReCalcuate button is not visible for Not Calculated table");
 		
 		//Step7: Retrieve message displayed above table before clicking calculate button
 		objPage.waitUntilElementIsPresent(objBppTrend.xpathTableMessage, 420);
@@ -129,16 +131,18 @@ public class BPPTrend_AgriculturalCompostieTable_CalculateAndReCalculate_Test ex
 
 		ReportLogger.INFO("* Checking status of various buttons at page level and table level");
 		//Step12: Validating presence of ReCalculate button at table level after calculate button is clicked
-		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateBtn, 20)), "ReCalculate button is visible for calculated table");
+		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathReCalculateBtn), "ReCalculate button is visible for calculated table");
 
 		//Step14: Validating presence of CalculateAll button at page level on performing the calculation
-		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathCalculateAllBtn, 20)), "Calculate all button is visible at page level");
+		objBppTrend.waitForElementToBeVisible(20, objBppTrend.xPathCalculateAllBtn);
+		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathCalculateAllBtn), "SMAB-T190: Calculate all button is visible at page level");
 
 		//Step15: Validating presence of ReCalculateAll button at page level on performing the calculation
-		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateAllBtn, 20)),  "ReCalcuateAll button is visible at page level");
+		objBppTrend.waitForElementToBeVisible(20, objBppTrend.xPathReCalculateAllBtn);
+		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathReCalculateAllBtn),  "SMAB-T190: ReCalcuateAll button is visible at page level");
 
 		//Step16: Validating absence of Calculate button at table level once calculation is done
-		softAssert.assertTrue(Objects.isNull(objPage.locateElement(objBppTrend.xPathCalculateBtn, 20)), "Calculate button is not available for Calculated table");
+		softAssert.assertTrue(!objPage.verifyElementVisible(objBppTrend.xPathCalculateBtn), "SMAB-T190: Calculate button is not available for Calculated table");
 
 		ReportLogger.INFO("** Comparing the UI grid data against the data available in Trend Calculator file **");
 		//Step17: Retrieving the path of excel file to read for data comparison on calculate button click
@@ -198,14 +202,14 @@ public class BPPTrend_AgriculturalCompostieTable_CalculateAndReCalculate_Test ex
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);
 		
 		//Step3: Validating presence of ReCalculateAll button at page level
-		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateAllBtn, 20)), "ReCalcuate all button is visible");
+		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathReCalculateAllBtn), "SMAB-T195: ReCalcuate all button is visible");
 
 		//Step4: Clicking on the given table
 		Thread.sleep(1000);
 		objBppTrend.clickOnTableOnBppTrendPage(tableName);
 
 		//Step5: Validating availability of ReCalculate button at table level before performing calculation
-		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateBtn, 20)), "SMAB-T195: ReCalcuate button is visible for Calculated table");
+		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathReCalculateBtn), "SMAB-T195: ReCalcuate button is visible for Calculated table");
 
 		//Step6: Retrieve message displayed above table before clicking calculate button
 		objPage.waitUntilElementIsPresent(objBppTrend.xpathTableMessage, 30);
@@ -234,10 +238,10 @@ public class BPPTrend_AgriculturalCompostieTable_CalculateAndReCalculate_Test ex
 				
 		ReportLogger.INFO("* Checking status of various buttons at page level and table level");
 		//Step12: Validating presence of ReCalculate button at table level after calculate button is clicked
-		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateBtn, 20)), "SMAB-T195: ReCalculate button is visible for calculated table");
+		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathReCalculateBtn), "SMAB-T195: ReCalculate button is visible for calculated table");
 
 		//Step13: Validating presence of ReCalculateAll button at page level on performing the calculation
-		softAssert.assertTrue(Objects.nonNull(objPage.locateElement(objBppTrend.xPathReCalculateAllBtn, 20)), "ReCalculateAll button is visible at page level");
+		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathReCalculateAllBtn), "SMAB-T195: ReCalculateAll button is visible at page level");
 		
 		ReportLogger.INFO("** Comparing the UI grid data against the data available in Trend Calculator file **");
 		//Step14: Retrieving the path of excel file to read for data comparison on calculate button click

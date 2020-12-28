@@ -274,8 +274,8 @@ public class DisabledVeteran_RestrictDuplicateExemption_Test extends TestBase {
 		softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct(exemptionName, "Edit"),"SMAB-T481: Validate user is able to edit the Exemption record : " + exemptionName);
 		
 		//Step11: Update the Exemption record to mark it as 'Qualified' and save it
-		objApasGenericPage.selectFromDropDown(objExemptionsPage.qualification, "Qualified");
-		objApasGenericPage.selectFromDropDown(objExemptionsPage.reasonNotQualified, "--None--");
+		objApasGenericPage.selectOptionFromDropDown(objExemptionsPage.qualification, "Qualified");
+		objApasGenericPage.selectOptionFromDropDown(objExemptionsPage.reasonNotQualified, "--None--");
 		objExemptionsPage.saveExemptionRecord();
 		
 		//Step12: Search the Exemption record and open it using the locator
