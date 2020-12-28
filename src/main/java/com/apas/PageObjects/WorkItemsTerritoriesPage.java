@@ -40,8 +40,8 @@ public class WorkItemsTerritoriesPage extends ApasGenericPage {
      * @throws Exception
      **/
     public void enterTerritoryRecordDetails(Map<String, String> territoryReferenceData) throws Exception{
-        enter(territoryNameEditBox,territoryReferenceData.get("Territory Name"));
         objApasGenericPage.searchAndSelectOptionFromDropDown(primaryAuditorDropDown,territoryReferenceData.get("Primary Auditor"));
+        enter(territoryNameEditBox,territoryReferenceData.get("Territory Name"));
         if(territoryReferenceData.get("Territory Description")!=null)
             enter(territoryDescriptionEditBox,territoryReferenceData.get("Territory Description"));
     }
