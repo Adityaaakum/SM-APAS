@@ -605,8 +605,8 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - CAA Valuation Factors");
         importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
 
-        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - CAA Valuation Factors", "SMAB-T1742: Import Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(importRowNumber), "BPP Admin", "SMAB-T1742: Work Pool Name Validation for Import Work Item");
+        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - CAA Valuation Factors", "SMAB-T1743: Import Work Item Name validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(importRowNumber), "BPP Admin", "SMAB-T1743: Work Pool Name Validation for Import Work Item");
 
     }
 

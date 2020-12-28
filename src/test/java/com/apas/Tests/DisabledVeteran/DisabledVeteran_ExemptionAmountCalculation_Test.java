@@ -130,7 +130,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 	 * 4. Net Exemption Amount of Low Income VAR that results in penalty
 	 **/
 	
-  @Test(description = "SMAB-T573, SMAB-T512, SMAB-T475,SMAB-T1292: Verify Low Income Exemption Amount for each 'Active' Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"regression","DisabledVeteranExemption" })
+  @Test(description = "SMAB-T573, SMAB-T512, SMAB-T475: Verify Low Income Exemption Amount for each 'Active' Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"regression","DisabledVeteranExemption" })
   	public void DisabledVeteran_verifyLowIncomeExemptionAmount(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
@@ -207,7 +207,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		ReportLogger.INFO("Verifying Net Exemption Amount Calculated for Low-Income Disabled Veterans Exemption that results in penalty");			
 		float expectedNetExemptionAmount = objValueAdjustmentPage.calculateNetExemptionAmount(actualExemptionAmount);					  
 		float actualNetExemptionAmount = objApasGenericPage.convertToFloat(objValueAdjustmentPage.netExemptionAmountCalculatedValueLabel.getText());			 			  
-		softAssert.assertEquals(actualNetExemptionAmount,expectedNetExemptionAmount,"SMAB-T1292: Verify 'Net Exemption Amount' is calculated approapriately when a Low Income VAR is created that results in a penalty");
+		softAssert.assertEquals(actualNetExemptionAmount,expectedNetExemptionAmount,"SMAB-T475: Verify 'Net Exemption Amount' is calculated approapriately when a Low Income VAR is created that results in a penalty");
 		   
 		objApasGenericPage.logout();
 	 }
