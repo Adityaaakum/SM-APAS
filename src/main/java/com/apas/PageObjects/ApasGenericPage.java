@@ -520,7 +520,6 @@ public class ApasGenericPage extends Page {
 		Thread.sleep(1000);
 		if(verifyElementVisible("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']"))
 			Click(driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")));
-		Click(driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")));
 		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
 
 		webelementInput.clear();
@@ -698,7 +697,7 @@ public class ApasGenericPage extends Page {
 				if (key != null) {
 					//"replace("Edit "+ key,"").trim()" code is user to remove the text \nEdit as few cells have edit button and the text of edit button is also returned with getText()
 					value = webElementsCells.get(gridCellCount).getText();
-					String[] splitValues = value.split(" Edit " + key);
+					String[] splitValues = value.split("Edit " + key);
 					if (splitValues.length > 0) value = splitValues[0];
 					else value = "";
 					gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
