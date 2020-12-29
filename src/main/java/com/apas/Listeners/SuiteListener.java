@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Properties;
 
 import com.apas.Reports.ReportLogger;
+import com.apas.Utils.SalesforceAPI;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -31,7 +32,9 @@ public class SuiteListener extends TestBase implements ITestListener {
 
 	public ExtentReports extent;
 	ExtentTest upTest;
-	Util objUtils = new Util();		
+	Util objUtils = new Util();
+	SalesforceAPI salesforceAPI = new SalesforceAPI();
+
 	protected String getStackTrace(Throwable t) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
@@ -63,6 +66,10 @@ public class SuiteListener extends TestBase implements ITestListener {
 			extent = new ExtentManager().getInstance(context.getSuite().getName());
 			if (flagToUpdateJira && testCycle != null) {
 				JiraAdaptavistStatusUpdate.retrieveJiraTestCases();
+				if (CONFIG.getProperty("deleteWorkItemsFlag").equals("true")){
+					System.out.println("Deleting the work items for the age greater than 1");
+					salesforceAPI.deleteWorkItemsBasedOnAge(1);
+				}
 			}
 
 			//This will move old report to archive folder

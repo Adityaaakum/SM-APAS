@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Objects;
 
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.config.users;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -305,7 +308,7 @@ public class SalesforceAPI extends TestBase {
                 for (int i = 0; i<=noOfLoops; i++){
                     commaSeparatedIds = getCommaSeparatedIds(queryWith200Limit);
                     statusCode = delete(commaSeparatedIds,0);
-                    if (statusCode == 200)
+                    if (statusCode == 200 || statusCode==0 )    //When all the Ids are deleted StatusCode returns 0.
                         ReportLogger.PASS("Status Code for Delete Query : " + statusCode);
                     else
                         ReportLogger.FAIL("Status Code for Delete Query : " + statusCode);
@@ -392,7 +395,7 @@ public class SalesforceAPI extends TestBase {
      * @param jsonObject : List of columns to be updated in form of json object
      */
     public void update(String table, String commaSeparatedIdsORSQLQuery, JSONObject jsonObject) {
-    	
+
     	ReportLogger.INFO("Updating the object " + table + " through Salesforce API for following query or comma separated IDs : " + commaSeparatedIdsORSQLQuery);    	
         //Creating HTTP Post Connection
         HttpPost httpPost = salesforceCreateConnection();
@@ -507,4 +510,21 @@ public class SalesforceAPI extends TestBase {
         salesforceReleaseConnection(httpPost);
     }
 
+    /**
+     * This method will return the user based on the user name
+     */
+    public String getUserName(String user){
+        user = CONFIG.getProperty(user + "UserName");
+        String userName = "select Name from User where UserName__c = '"+ user + "'";
+        return select(userName).get("Name").get(0);
+    }
+
+    /**
+     * This method will delete the work items based on the age of the work item
+     * @param age: Age beyound which work items need to be deleted
+     */
+    public void deleteWorkItemsBasedOnAge(int age){
+        String queryToDeleteWorkItems = "SELECT id FROM Work_Item__c where age__c > " + age ;
+        delete(queryToDeleteWorkItems);
+    }
 }

@@ -174,7 +174,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	public void openBuildingPermit(String buildingPermitNum) throws Exception {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening the Building Permit with number : " + buildingPermitNum);
 		String xpath = "//a[@title='" + buildingPermitNum + "']";
-		waitUntilElementIsPresent(xpath,15);
+		waitUntilElementIsPresent(15,xpath);
 		waitForElementToBeClickable(driver.findElement(By.xpath(xpath)),10);
 		javascriptClick(driver.findElement(By.xpath(xpath)));
 		Thread.sleep(3000);

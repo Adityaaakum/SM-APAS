@@ -20,7 +20,7 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 
-public class BPPTrends_WorkItems extends TestBase {
+public class BPPTrends_WorkItems_Test extends TestBase {
 
     RemoteWebDriver driver;
     Page objPage;
@@ -78,12 +78,13 @@ public class BPPTrends_WorkItems extends TestBase {
         //Step4: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Import - BOE Index and Percent Good Factors")).count();
+        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1731: Imported work item count validation");
+
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - BOE Index and Percent Good Factors");
-        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+        String importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - BOE Index and Percent Good Factors", "SMAB-T1731,SMAB-T1944: Import Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1731: Work Pool Name Validation for Import Work Item");
-        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1731: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(importRowNumber), "BPP Admin", "SMAB-T1731: Work Pool Name Validation for Import Work Item");
 
         //Step5: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
@@ -102,17 +103,18 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step8: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1731: Validation that import work item moved to Completed status after file is imported");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importWorkItem), "SMAB-T1731: Validation that import work item moved to Completed status after file is imported");
 
         //Step9: Verifying "Review Import" Work Item generation after BOE Index and Goods Factor File is 'Imported'
         InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int reviewImportWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Review Import - BOE Index and Percent Good Factors")).count();
+        softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T2175: Imported work item count validation");
+
         int reviewImportRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Review Import - BOE Index and Percent Good Factors");
-        String reviewImportWorkItem = InPoolWorkItems.get("Work Item Number").get(reviewImportRowNumber);
+        String reviewImportWorkItem = InPoolWorkItems.get("Work item #").get(reviewImportRowNumber);
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reviewImportRowNumber), "BPP Trends - Review Import - BOE Index and Percent Good Factors", "SMAB-T2175,SMAB-T1948: Review Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(reviewImportRowNumber), "BPP Admin", "SMAB-T2175: Work Pool Name Validation for Review Import Work Item");
-        softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T2175: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(reviewImportRowNumber), "BPP Admin", "SMAB-T2175: Work Pool Name Validation for Review Import Work Item");
 
         //Step10: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(reviewImportWorkItem);
@@ -131,7 +133,7 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step13: "Import" Reminder Work Item generation validation
         completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1732: Validation that Review Import work item moved to Completed status after imported file is approved");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importWorkItem), "SMAB-T1732: Validation that Review Import work item moved to Completed status after imported file is approved");
 
         //Step14: Log out from the application
         objBppTrendSetupPage.logout();
@@ -149,7 +151,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYear);
 
         //Step2: Delete the existing WI from system before importing files
-        String query = "select id from Work_Item__c where Reference__c = 'BOE - Index and Percent Good Factors'";
+        String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
         objSalesforceAPI.delete("Work_Item__c", query);
 
         //Step3: Generate Reminder Work Items
@@ -164,12 +166,13 @@ public class BPPTrends_WorkItems extends TestBase {
         //Step6: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Import - BOE Index and Percent Good Factors")).count();
+        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1731: Imported work item count validation");
+
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - BOE Index and Percent Good Factors");
-        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+        String importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - BOE Index and Percent Good Factors", "SMAB-T1731: Import Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1731: Work Pool Name Validation for Import Work Item");
-        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1731: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(importRowNumber), "BPP Admin", "SMAB-T1731: Work Pool Name Validation for Import Work Item");
 
         //Step7: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
@@ -188,17 +191,18 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step10: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1731: Validation that import work item moved to Completed status after file is imported");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importWorkItem), "SMAB-T1731: Validation that import work item moved to Completed status after file is imported");
 
         //Step11: Verifying "Review Import" Work Item generation after BOE Index and Goods Factor File is 'Imported'
         InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int reviewImportWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Review Import - BOE Index and Percent Good Factors")).count();
+        softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T2175: Imported work item count validation");
+
         int reviewImportRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Review Import - BOE Index and Percent Good Factors");
-        String reviewImportWorkItem = InPoolWorkItems.get("Work Item Number").get(reviewImportRowNumber);
+        String reviewImportWorkItem = InPoolWorkItems.get("Work item #").get(reviewImportRowNumber);
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reviewImportRowNumber), "BPP Trends - Review Import - BOE Index and Percent Good Factors", "SMAB-T2175: Review Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(reviewImportRowNumber), "BPP Admin", "SMAB-T2175: Work Pool Name Validation for Review Import Work Item");
-        softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T2175: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(reviewImportRowNumber), "BPP Admin", "SMAB-T2175: Work Pool Name Validation for Review Import Work Item");
 
         //Step12: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(reviewImportWorkItem);
@@ -217,17 +221,19 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step15: "Review Import" Work Item validation
         completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1733: Validation that Review Import work item moved to Completed status after imported file is reverted");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importWorkItem), "SMAB-T1733: Validation that Review Import work item moved to Completed status after imported file is reverted");
 
         //Step16: "Import" Reminder Work Item generation validation
         InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         importWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Import - BOE Index and Percent Good Factors")).count();
+        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1733: Imported work item count validation");
+
         importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - BOE Index and Percent Good Factors");
-        importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+        importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - BOE Index and Percent Good Factors", "SMAB-T1733: Import Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1733: Work Pool Name Validation for Import Work Item");
-        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1733: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(importRowNumber), "BPP Admin", "SMAB-T1733: Work Pool Name Validation for Import Work Item");
+
     }
 
     /**
@@ -259,12 +265,13 @@ public class BPPTrends_WorkItems extends TestBase {
         //Step4: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Import - BOE Valuation Factors")).count();
+        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1738: Imported work item count validation");
+
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - BOE Valuation Factors");
-        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+        String importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - BOE Valuation Factors", "SMAB-T1738,SMAB-T1945: Import Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1738: Work Pool Name Validation for Import Work Item");
-        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1738: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(importRowNumber), "BPP Admin", "SMAB-T1738: Work Pool Name Validation for Import Work Item");
 
         //Step5: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
@@ -283,17 +290,18 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step8: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1769: Validation that import work item moved to Completed status after file is imported");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importWorkItem), "SMAB-T1769: Validation that import work item moved to Completed status after file is imported");
 
         //Step9: Verifying "Review Import" Work Item generation after BOE Valuation Factors File is 'Imported'
         InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int reviewImportWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Review Import - BOE Valuation Factors")).count();
+        softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T1769: Imported work item count validation");
+
         int reviewImportRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Review Import - BOE Valuation Factors");
-        String reviewImportWorkItem = InPoolWorkItems.get("Work Item Number").get(reviewImportRowNumber);
+        String reviewImportWorkItem = InPoolWorkItems.get("Work item #").get(reviewImportRowNumber);
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reviewImportRowNumber), "BPP Trends - Review Import - BOE Valuation Factors", "SMAB-T1769,SMAB-T1949: Review Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(reviewImportRowNumber), "BPP Admin", "SMAB-T1769: Work Pool Name Validation for Review Import Work Item");
-        softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T1769: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(reviewImportRowNumber), "BPP Admin", "SMAB-T1769: Work Pool Name Validation for Review Import Work Item");
 
         //Step10: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(reviewImportWorkItem);
@@ -312,7 +320,7 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step13: "Import" Reminder Work Item generation validation
         completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1739: Validation that Review Import work item moved to Completed status after imported file is approved");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importWorkItem), "SMAB-T1739: Validation that Review Import work item moved to Completed status after imported file is approved");
 
         //Step14: Log out from the application
         objBppTrendSetupPage.logout();
@@ -330,7 +338,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors", "BOE - Valuation Factors", rollYear);
 
         //Step2: Delete the existing WI from system before importing files
-        String query = "select id from Work_Item__c where Reference__c = 'BOE Valuation Factors'";
+        String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
         objSalesforceAPI.delete("Work_Item__c", query);
 
         //Step3: Generate Reminder Work Items
@@ -345,12 +353,13 @@ public class BPPTrends_WorkItems extends TestBase {
         //Step6: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Import - BOE Valuation Factors")).count();
+        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1738: Imported work item count validation");
+
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - BOE Valuation Factors");
-        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+        String importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - BOE Valuation Factors", "SMAB-T1738: Import Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1738: Work Pool Name Validation for Import Work Item");
-        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1738: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(importRowNumber), "BPP Admin", "SMAB-T1738: Work Pool Name Validation for Import Work Item");
 
         //Step7: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
@@ -369,17 +378,18 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step10: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1769: Validation that import work item moved to Completed status after file is imported");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importWorkItem), "SMAB-T1769: Validation that import work item moved to Completed status after file is imported");
 
         //Step11: Verifying "Review Import" Work Item generation after BOE Valuation Factors File is 'Imported'
         InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int reviewImportWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Review Import - BOE Valuation Factors")).count();
+        softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T1769: Imported work item count validation");
+
         int reviewImportRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Review Import - BOE Valuation Factors");
-        String reviewImportWorkItem = InPoolWorkItems.get("Work Item Number").get(reviewImportRowNumber);
+        String reviewImportWorkItem = InPoolWorkItems.get("Work item #").get(reviewImportRowNumber);
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reviewImportRowNumber), "BPP Trends - Review Import - BOE Valuation Factors", "SMAB-T1769: Review Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(reviewImportRowNumber), "BPP Admin", "SMAB-T1769: Work Pool Name Validation for Review Import Work Item");
-        softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T1769: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(reviewImportRowNumber), "BPP Admin", "SMAB-T1769: Work Pool Name Validation for Review Import Work Item");
 
         //Step12: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(reviewImportWorkItem);
@@ -398,17 +408,19 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step15: "Import" Reminder Work Item generation validation
         completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1740: Validation that Review Import work item moved to Completed status after imported file is approved");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importWorkItem), "SMAB-T1740: Validation that Review Import work item moved to Completed status after imported file is approved");
 
         //Step16: "Import" Reminder Work Item generation validation
         InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         importWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Import - BOE Valuation Factors")).count();
+        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1740: Imported work item count validation");
+
         importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - BOE Valuation Factors");
-        importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+        importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - BOE Valuation Factors", "SMAB-T1740: Import Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1740: Work Pool Name Validation for Import Work Item");
-        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1740: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(importRowNumber), "BPP Admin", "SMAB-T1740: Work Pool Name Validation for Import Work Item");
+
     }
 
     /**
@@ -440,12 +452,13 @@ public class BPPTrends_WorkItems extends TestBase {
         //Step4: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Import - CAA Valuation Factors")).count();
+        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1741: Imported work item count validation");
+
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - CAA Valuation Factors");
-        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+        String importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - CAA Valuation Factors", "SMAB-T1741,SMAB-T1946: Import Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1741: Work Pool Name Validation for Import Work Item");
-        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1741: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(importRowNumber), "BPP Admin", "SMAB-T1741: Work Pool Name Validation for Import Work Item");
 
         //Step5: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
@@ -464,17 +477,18 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step8: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1776: Validation that import work item moved to Completed status after file is imported");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importWorkItem), "SMAB-T1776: Validation that import work item moved to Completed status after file is imported");
 
         //Step9: Verifying "Review Import" Work Item generation after CAA Valuation Factors File is 'Imported'
         InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int reviewImportWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Review Import - CAA Valuation Factors")).count();
+        softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T1776: Imported work item count validation");
+
         int reviewImportRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Review Import - CAA Valuation Factors");
-        String reviewImportWorkItem = InPoolWorkItems.get("Work Item Number").get(reviewImportRowNumber);
+        String reviewImportWorkItem = InPoolWorkItems.get("Work item #").get(reviewImportRowNumber);
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reviewImportRowNumber), "BPP Trends - Review Import - CAA Valuation Factors", "SMAB-T1776,SMAB-T1950: Review Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(reviewImportRowNumber), "BPP Admin", "SMAB-T1776: Work Pool Name Validation for Review Import Work Item");
-        softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T1776: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(reviewImportRowNumber), "BPP Admin", "SMAB-T1776: Work Pool Name Validation for Review Import Work Item");
 
         //Step10: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(reviewImportWorkItem);
@@ -493,7 +507,7 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step13: "Import" Reminder Work Item generation validation
         completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1742: Validation that Review Import work item moved to Completed status after imported file is approved");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importWorkItem), "SMAB-T1742: Validation that Review Import work item moved to Completed status after imported file is approved");
 
         //Step14: Log out from the application
         objBppTrendSetupPage.logout();
@@ -511,7 +525,7 @@ public class BPPTrends_WorkItems extends TestBase {
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors", "CAA - Valuation Factors", rollYear);
 
         //Step2: Delete the existing WI from system before importing files
-        String query = "select id from Work_Item__c where Reference__c = 'CAA Valuation Factors'";
+        String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
         objSalesforceAPI.delete("Work_Item__c", query);
 
         //Step3: Generate Reminder Work Items
@@ -526,12 +540,13 @@ public class BPPTrends_WorkItems extends TestBase {
         //Step6: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Import - CAA Valuation Factors")).count();
+        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1741: Imported work item count validation");
+
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - CAA Valuation Factors");
-        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+        String importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - CAA Valuation Factors", "SMAB-T1741: Import Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1741: Work Pool Name Validation for Import Work Item");
-        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1741: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(importRowNumber), "BPP Admin", "SMAB-T1741: Work Pool Name Validation for Import Work Item");
 
         //Step7: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
@@ -550,17 +565,18 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step10: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1776: Validation that import work item moved to Completed status after file is imported");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importWorkItem), "SMAB-T1776: Validation that import work item moved to Completed status after file is imported");
 
         //Step11: Verifying "Review Import" Work Item generation after CAA Valuation Factors File is 'Imported'
         InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int reviewImportWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Review Import - CAA Valuation Factors")).count();
+        softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T1776: Imported work item count validation");
+
         int reviewImportRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Review Import - CAA Valuation Factors");
-        String reviewImportWorkItem = InPoolWorkItems.get("Work Item Number").get(reviewImportRowNumber);
+        String reviewImportWorkItem = InPoolWorkItems.get("Work item #").get(reviewImportRowNumber);
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reviewImportRowNumber), "BPP Trends - Review Import - CAA Valuation Factors", "SMAB-T1776: Review Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(reviewImportRowNumber), "BPP Admin", "SMAB-T1776: Work Pool Name Validation for Review Import Work Item");
-        softAssert.assertEquals(reviewImportWorkItemCount, 1, "SMAB-T1776: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(reviewImportRowNumber), "BPP Admin", "SMAB-T1776: Work Pool Name Validation for Review Import Work Item");
 
         //Step12: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(reviewImportWorkItem);
@@ -579,17 +595,19 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step15: "Import" Reminder Work Item generation validation
         completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(importWorkItem), "SMAB-T1742: Validation that Review Import work item moved to Completed status after imported file is approved");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importWorkItem), "SMAB-T1742: Validation that Review Import work item moved to Completed status after imported file is approved");
 
         //Step16: "Import" Reminder Work Item generation validation
         InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         importWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Import - CAA Valuation Factors")).count();
-        importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - CAA Valuation Factors");
-        importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
-
-        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - CAA Valuation Factors", "SMAB-T1742: Import Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1742: Work Pool Name Validation for Import Work Item");
         softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1742: Imported work item count validation");
+
+        importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - CAA Valuation Factors");
+        importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
+
+        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Import - CAA Valuation Factors", "SMAB-T1743: Import Work Item Name validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(importRowNumber), "BPP Admin", "SMAB-T1743: Work Pool Name Validation for Import Work Item");
+
     }
 
     /**
@@ -611,11 +629,12 @@ public class BPPTrends_WorkItems extends TestBase {
         //Step4: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Perform Calculations - BPP Composite Factors")).count();
+        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1736: Imported work item count validation");
+
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
 
         softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(importRowNumber), "BPP Trends - Perform Calculations - BPP Composite Factors", "SMAB-T1736,SMAB-T1947: Import Work Item Name validation");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(importRowNumber), "BPP Admin", "SMAB-T1736: Work Pool Name Validation for Import Work Item");
-        softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1736: Imported work item count validation");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(importRowNumber), "BPP Admin", "SMAB-T1736: Work Pool Name Validation for Import Work Item");
 
     }
 
@@ -653,7 +672,7 @@ public class BPPTrends_WorkItems extends TestBase {
         //Step7: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
-        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+        String importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
 
         //Step8: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
@@ -680,11 +699,7 @@ public class BPPTrends_WorkItems extends TestBase {
     public void BPPTrends_verifyErrorMsg_whenAnnualSettingsWINotCompleted(String loginUser) throws Exception {
 
         //Step1: Delete the existing WIs before generating
-        String query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings' OR Reference__c = 'BPP Composite Factors'";
-        objSalesforceAPI.delete("Work_Item__c", query);
-
-        //Step2: Delete the existing WIs before generating
-        query = "select id from Work_Item__c where Sub_Type__c = 'Import'";
+        String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
         objSalesforceAPI.delete("Work_Item__c", query);
 
         //Step3: Generate Reminder Work Items
@@ -705,7 +720,7 @@ public class BPPTrends_WorkItems extends TestBase {
         //Step7: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
-        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+        String importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
 
         //Step8: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
@@ -722,7 +737,7 @@ public class BPPTrends_WorkItems extends TestBase {
         softAssert.assertContains(actualErrorMessage, "BPP Annual Factors is not yet completed/reviewed by admin for selected Roll Year", "SMAB-T2196: Verify Error Message when 'Annual Settings' WI is not Completed and calculations are triggered");
 
     }
-    
+
     /** This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
@@ -760,7 +775,7 @@ public class BPPTrends_WorkItems extends TestBase {
         //Step6: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
-        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+        String importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
 
         //Step7: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
@@ -782,7 +797,7 @@ public class BPPTrends_WorkItems extends TestBase {
         HashMap<String, ArrayList<String>> workItemData = new SalesforceAPI().select(query);
         String actualWIStatus = workItemData.get("Status__c").get(0);
         softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T1737: Verify status of WI : 'Perform Calculations' is 'Submitted for Approval'");
-        
+
         //Step14: Log out from the application and log in as BPP Principal
         objBppTrendSetupPage.logout();
         Thread.sleep(15000);
@@ -808,7 +823,7 @@ public class BPPTrends_WorkItems extends TestBase {
         actualWIStatus = workItemData.get("Status__c").get(0);
         softAssert.assertEquals(actualWIStatus, "Completed", "SMAB-T1750: Verify status of WI : 'Perform Calculations' is 'Completed'");
     }
-    
+
     /** This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
@@ -845,7 +860,7 @@ public class BPPTrends_WorkItems extends TestBase {
         //Step5: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
-        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+        String importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
 
         //Step6: Accepting the work item and opening the link under 'Action' Column
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
@@ -897,8 +912,8 @@ public class BPPTrends_WorkItems extends TestBase {
         //Ste15: Verify WI is present in 'In Progress' tab
         HashMap<String, ArrayList<String>> InProgressWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_PROGRESS);
         int workItemRowNumber = InProgressWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
-        String workItemName = InProgressWorkItems.get("Work Item Number").get(workItemRowNumber);
-        softAssert.assertEquals(workItemName, "importWorkItem", "SMAB-T2195: Verify WI returned to user is found in 'In Progress' tab");
+        String workItemName = InProgressWorkItems.get("Work item #").get(workItemRowNumber);
+        softAssert.assertEquals(workItemName, importWorkItem, "SMAB-T2195: Verify WI returned to user is found in 'In Progress' tab");
 
     }
 
@@ -906,7 +921,7 @@ public class BPPTrends_WorkItems extends TestBase {
     /**
      * DESCRIPTION: Validation of BPP Trend Annual Factors Reminder Work Item workflow
      */
-    @Test(description = "SMAB-T1729,SMAB-T1730,SMAB-T1734,SMAB-T1735,SMAB-T1943,SMAB-T2168,SMAB-T2169,SMAB-T2179: Validation of BPP Trend Annual Factors Reminder Work Item workflow", groups={"smoke","regression","Work_Item_BPP"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
+    @Test(description = "SMAB-T1729,SMAB-T1730,SMAB-T1943,SMAB-T2168,SMAB-T2169,SMAB-T2179: Validation of BPP Trend Annual Factors Reminder Work Item workflow", groups={"smoke","regression","Work_Item_BPP"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
     public void BppTrend_AnnualFactors_ReminderWorkItemWorkFlow(String loginUser) throws Exception {
         String rollYear = "2021";
 
@@ -949,11 +964,13 @@ public class BPPTrends_WorkItems extends TestBase {
         //Step4: "BPP Trend Annual Factor" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int annualFactorSettingsWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("BPP Trends - Update and Validate - Annual Factor Settings")).count();
-        int annualFactorSettingsWorkItemRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Update and Validate - Annual Factor Settings");
-        String annualFactorSettingsWorkItemWorkItem = InPoolWorkItems.get("Work Item Number").get(annualFactorSettingsWorkItemRowNumber);
-        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(annualFactorSettingsWorkItemRowNumber), "BPP Trends - Update and Validate - Annual Factor Settings" , "SMAB-T1729,SMAB-T1943: BPP Trend Annual Factor Settings work item name validation in the imported review work item");
-        softAssert.assertEquals(InPoolWorkItems.get("Work Pool Name").get(annualFactorSettingsWorkItemRowNumber), "BPP Admin", "SMAB-T1729: BPP Trend Annual Factor pool name validation");
         softAssert.assertEquals(annualFactorSettingsWorkItemCount, 1, "SMAB-T1729: BPP Trend Annual Factor Settings work item count validation");
+
+        int annualFactorSettingsWorkItemRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Update and Validate - Annual Factor Settings");
+        String annualFactorSettingsWorkItemWorkItem = InPoolWorkItems.get("Work item #").get(annualFactorSettingsWorkItemRowNumber);
+
+        softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(annualFactorSettingsWorkItemRowNumber), "BPP Trends - Update and Validate - Annual Factor Settings" , "SMAB-T1729,SMAB-T1943: BPP Trend Annual Factor Settings work item name validation in the imported review work item");
+        softAssert.assertEquals(InPoolWorkItems.get("Work Pool").get(annualFactorSettingsWorkItemRowNumber), "BPP Admin", "SMAB-T1729: BPP Trend Annual Factor pool name validation");
 
         //Step5: Accepting the work item
         objWorkItemHomePage.acceptWorkItem(annualFactorSettingsWorkItemWorkItem);
@@ -985,7 +1002,7 @@ public class BPPTrends_WorkItems extends TestBase {
         softAssert.assertEquals(successMessage,"success\nBPP Setting was saved.\nClose","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
 
         //Change the status to "Reviewed By Admin"
-        softAssert.assertEquals(objBppTrendSetupPage.getFieldValueFromAPAS("Annual Factor Status"),"To be Reviewed by Admin","SMAB-T1734 : Validation that new field Annual Factor Status is visible on UI");
+        softAssert.assertEquals(objBppTrendSetupPage.getFieldValueFromAPAS("Annual Factor Status"),"To be Reviewed by Admin","SMAB-T1730 : Validation that new field Annual Factor Status is visible on UI");
         objBppTrendSetupPage.editAndSelectFieldData("Annual Factor Status","Reviewed by Admin");
 
         driver.switchTo().window(parentWindow);
@@ -996,7 +1013,7 @@ public class BPPTrends_WorkItems extends TestBase {
 
         //Step20: Completed "Annual Factor Settings" work item validation
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work Item Number").contains(annualFactorSettingsWorkItemWorkItem), "SMAB-T1730,SMAB-T1735: Validation that Annual Factor Settings work item moved to Completed status after Annual Factor Status is saved to Reviewed By Admin");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(annualFactorSettingsWorkItemWorkItem), "SMAB-T1730,SMAB-T1730: Validation that Annual Factor Settings work item moved to Completed status after Annual Factor Status is saved to Reviewed By Admin");
 
         //Update the settings even after closing the work item
         objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
@@ -1020,14 +1037,14 @@ public class BPPTrends_WorkItems extends TestBase {
 
         objBppTrendSetupPage.logout();
     }
-    
+
     /**
      * This test case is to validate Work Item details after submitting it for approval
-    **/
+     **/
     @Test(description = "SMAB-T1838: Verify user is able to view Work Item details after submitting it for approval", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Item_BPP"}, alwaysRun = true, enabled = true)
     public void BPPTrends_VerifyWorkItemDetailsAfterSubmittedForApproval(String loginUser) throws Exception {
-        
-    	//Step1: Delete the existing data from system before importing files
+
+        //Step1: Delete the existing data from system before importing files
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors", "BOE - Valuation Factors", rollYear);
 
         //Step2: Delete the existing WI from system before importing files
@@ -1046,34 +1063,34 @@ public class BPPTrends_WorkItems extends TestBase {
         //Step6: "Import" Reminder Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
         int importRowNumber = InPoolWorkItems.get("Request Type").indexOf("BPP Trends - Import - BOE Valuation Factors");
-        String importWorkItem = InPoolWorkItems.get("Work Item Number").get(importRowNumber);
+        String importWorkItem = InPoolWorkItems.get("Work item #").get(importRowNumber);
 
         //Step7: Accepting the work item and open it
         objWorkItemHomePage.acceptWorkItem(importWorkItem);
         objWorkItemHomePage.searchModule(modules.WORK_ITEM);
         objWorkItemHomePage.globalSearchRecords(importWorkItem);
-        
-        //Step 8: User submits the Work Item for Approval 
-     	ReportLogger.INFO("User submits the Work Item for Approval :: " + importWorkItem);
-		driver.navigate().refresh();
-		Thread.sleep(2000);
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline, 10);
-		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedforApprovalTimeline);
-		softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
-		
-		//Step 9: Validate the Work Item details after the Work Item is submitted for approval
-		ReportLogger.INFO("User validates the Work Item details after it is Submitted for Approval");
-		objWorkItemHomePage.openTab("Details");
-		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
-		
-		softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.wiStatusDetailsPage),"Completed","SMAB-T1838: Validate user is able to validate the value of 'Status' field");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage, "Information"),"BPP Trends","SMAB-T1838: Validate user is able to validate the value of 'Type' field");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiActionDetailsPage, "Information"),"Import","SMAB-T1838: Validate user is able to validate the value of 'Action' field");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiWorkPoolDetailsPage, "Information"),"BPP Admin","SMAB-T1838: Validate user is able to validate the value of 'Work Pool' field");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiPriorityDetailsPage, "Information"),"None","SMAB-T1838: Validate user is able to validate the value of 'Priority' field");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiReferenceDetailsPage, "Information"),"BOE Valuation Factors","SMAB-T1838: Validate user is able to validate the value of 'Reference' field");
-		
-		objWorkItemHomePage.logout();
+
+        //Step 8: User submits the Work Item for Approval
+        ReportLogger.INFO("User submits the Work Item for Approval :: " + importWorkItem);
+        driver.navigate().refresh();
+        Thread.sleep(2000);
+        objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline, 10);
+        objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedforApprovalTimeline);
+        softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
+
+        //Step 9: Validate the Work Item details after the Work Item is submitted for approval
+        ReportLogger.INFO("User validates the Work Item details after it is Submitted for Approval");
+        objWorkItemHomePage.openTab("Details");
+        objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
+
+        softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.wiStatusDetailsPage),"Completed","SMAB-T1838: Validate user is able to validate the value of 'Status' field");
+        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage, "Information"),"BPP Trends","SMAB-T1838: Validate user is able to validate the value of 'Type' field");
+        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiActionDetailsPage, "Information"),"Import","SMAB-T1838: Validate user is able to validate the value of 'Action' field");
+        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiWorkPoolDetailsPage, "Information"),"BPP Admin","SMAB-T1838: Validate user is able to validate the value of 'Work Pool' field");
+        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiPriorityDetailsPage, "Information"),"None","SMAB-T1838: Validate user is able to validate the value of 'Priority' field");
+        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiReferenceDetailsPage, "Information"),"BOE Valuation Factors","SMAB-T1838: Validate user is able to validate the value of 'Reference' field");
+
+        objWorkItemHomePage.logout();
     }
-    	 
+
 }

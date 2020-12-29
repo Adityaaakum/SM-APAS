@@ -378,7 +378,7 @@ public class ApasGenericPage extends Page {
 		Boolean flag=false;
 		clickShowMoreButton(modRecordName);
 		String xpathStr = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
-		WebElement actionElement = locateElement(xpathStr, 30);
+		WebElement actionElement = waitForElementToBeClickable(10, xpathStr);
 			if (actionElement != null){
 					clickAction(actionElement);
 					ReportLogger.INFO("User is able to click " + action + " option for " + modRecordName + " record");
@@ -427,6 +427,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public void openTab(String tabName) throws Exception {
 		String tabXPath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='"+ tabName +"']";
+		waitUntilElementIsPresent(tabXPath,5);
 		Click(driver.findElementByXPath(tabXPath));
 		Thread.sleep(3000);
 	}
@@ -513,11 +514,13 @@ public class ApasGenericPage extends Page {
 	 */
 	public void editGridCellValue(String columnNameOnGrid, String expectedValue) throws IOException, AWTException, InterruptedException {
 		String xPath =  "//lightning-tab[contains(@class,'slds-show')]//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button | //div[contains(@class,'flowruntimeBody')]//*[@data-label='" + columnNameOnGrid + "']";
+
 		WebElement webelement = driver.findElement(By.xpath(xPath));
 		Click(webelement);
 		Thread.sleep(1000);
 		if(verifyElementVisible("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']"))
 			Click(driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")));
+		Click(driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")));
 		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
 
 		webelementInput.clear();
@@ -536,7 +539,7 @@ public class ApasGenericPage extends Page {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Displaying all the records on the grid");
 		Click(selectListViewButton);
 		String xpathDisplayOption = "//div[contains(@class,'list uiAbstractList')]//a[@role='option']//span[text()='" + displayOption + "']";
-		waitUntilElementIsPresent(xpathDisplayOption, 10);
+		waitUntilElementIsPresent(xpathDisplayOption, 15);
 		Click(driver.findElement(By.xpath(xpathDisplayOption)));
 		Thread.sleep(2000);
 		if (verifyElementExists(xpathSpinner)){
@@ -901,7 +904,6 @@ public class ApasGenericPage extends Page {
 		String finalAmtAsString = (amt.substring(1, amt.length())).replaceAll(",", "");
 		float convertedAmt = Float.parseFloat(finalAmtAsString);
 		return convertedAmt;
-
 	}
 
 	/**

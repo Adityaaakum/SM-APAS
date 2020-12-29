@@ -381,6 +381,8 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isTableDataVisible(String tableName, int timeOut) throws Exception {
 		String tableXpath = "//lightning-tab[@data-id = '"+ tableName +"']//table";
+		waitForElementToBeVisible(20, tableXpath);
+		waitForElementToBeClickable(20, tableXpath);
 		return verifyElementVisible(tableXpath);
 	}
 
@@ -402,10 +404,7 @@ public class BppTrendPage extends ApasGenericPage {
 		}
 
 		xpathCellData = "((//lightning-tab[@data-id = '"+ tableName +"']//"+ tagNameToAppend +"[@data-label = 'Year Acquired'])["+ rowNum +"]//following-sibling::td[not (contains(@data-label, 'Year Acquired'))])["+ cellNum +"]";
-		WebElement element = locateElement(xpathCellData, 30);
-		if(element == null) {
-			element = locateElement(xpathCellData, 30);
-		}
+		WebElement element=locateElement(xpathCellData, 30); ;	
 		return element;
 	}
 
@@ -418,7 +417,7 @@ public class BppTrendPage extends ApasGenericPage {
 		WebElement editButton;
 		Click(waitForElementToBeClickable(10, this.xpathCellData));
 		String xpathEditBtn = "//td[contains(@class, 'has-focus')]//button[contains(@class, 'cell-edit')]//lightning-primitive-icon";
-		editButton = locateElement(xpathEditBtn, 10);
+		editButton = waitForElementToBeClickable(xpathEditBtn);
 		return editButton;
 	}
 
@@ -471,10 +470,8 @@ public class BppTrendPage extends ApasGenericPage {
 	public String retrieveMsgDisplayedAboveTable(String tableName) throws Exception {
 		//Waiting for the page spinner to become visible and if visible then wait for it to go invisible
 		String xpath = "//lightning-spinner//span[text() = 'Loading']";
-		WebElement spinner = locateElement(xpath, 5);
-		if(spinner != null) {
-			waitForElementToDisappear(xpath, 120);
-		}
+		if(verifyElementVisible(xpathSpinner))
+		waitForElementToDisappear(xpathSpinner, 50);
 
 		//Locating the message displayed above the table once the loader / spinner becomes invisible
 		xpath = "//lightning-tab[@data-id = '"+ tableName +"']//div[@class = 'hightlight-tab-message']";
@@ -777,7 +774,7 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isCalculateBtnVisible(int timeToLocateBtn, String tableName) throws Exception {
 		String xpath = "//lightning-tab[@data-id = '"+ tableName + "']//button[@title = 'Calculate']";
-		return locateElement(xpath, timeToLocateBtn) != null;
+		return verifyElementVisible(xpath);
 	}
 
 
@@ -807,7 +804,9 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isCalculateAllBtnVisible(int timeToLocateBtn) throws Exception {
 		String xpath = "//button[@title = 'Calculate all']";
-		return locateElement(xpath, timeToLocateBtn) != null;
+		waitForElementToBeVisible(timeToLocateBtn, xpath);
+		waitForElementToBeClickable(timeToLocateBtn, xpath);
+		return verifyElementVisible(xpath);
 	}
 
 	/**
@@ -819,7 +818,7 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isReCalculateBtnVisible(int timeToLocateBtn, String tableName) throws Exception {
 		String xpath = "//lightning-tab[@data-id = '"+ tableName + "']//button[@title = 'Recalculate']";
-		return locateElement(xpath, timeToLocateBtn) != null;
+		return verifyElementVisible(xpath);
 	}
 
 	/**
@@ -830,7 +829,9 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isReCalculateAllBtnVisible(int timeToLocateBtn) throws Exception {
 		String xpath = "//button[@title = 'ReCalculate all']";
-		return locateElement(xpath, timeToLocateBtn) != null;
+		waitForElementToBeVisible(timeToLocateBtn, xpath);
+		waitForElementToBeClickable(timeToLocateBtn, xpath);
+		return verifyElementVisible(xpath);
 	}
 
 	/**
@@ -841,7 +842,9 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isSubmitAllFactorsForApprovalBtnVisible(int timeToLocateBtn) throws Exception {
 		String xpath = "//button[@title = 'Submit All Factors for Approval']";
-		return locateElement(xpath, timeToLocateBtn) != null;
+		waitForElementToBeVisible(timeToLocateBtn, xpath);
+		waitForElementToBeClickable(timeToLocateBtn, xpath);
+		return verifyElementVisible(xpath);
 	}
 
 	/**
@@ -863,7 +866,7 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isApproveBtnVisible(int timeToLocateBtn, String tableName) throws Exception {
 		String xpath = "//lightning-tab[@data-id = '"+ tableName + "']//button[@title = 'Approve']";
-		return locateElement(xpath, timeToLocateBtn) != null;
+		return verifyElementVisible(xpath);
 	}
 
 	/**
@@ -874,7 +877,9 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isApproveAllBtnVisible(int timeToLocateBtn) throws Exception {
 		String xpath = "//button[@title = 'Approve all']";
-		return locateElement(xpath, timeToLocateBtn) != null;
+		waitForElementToBeVisible(timeToLocateBtn, xpath);
+		waitForElementToBeClickable(timeToLocateBtn, xpath);
+		return verifyElementVisible(xpath);
 	}
 
 	/**
@@ -885,7 +890,9 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isDownloadBtnVisible(int timeToLocateBtn) throws Exception {
 		String xpath = "//button[text() = 'Download']";
-		return locateElement(xpath, timeToLocateBtn) != null;
+		waitForElementToBeVisible(timeToLocateBtn, xpath);
+		waitForElementToBeClickable(timeToLocateBtn, xpath);
+		return verifyElementVisible(xpath);
 	}
 
 	/**
@@ -896,7 +903,7 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isExportCompositeFactorsBtnVisible(int timeToLocateBtn) throws Exception {
 		String xpath = "//button[text() = 'Export Composite Factors']";
-		return locateElement(xpath, timeToLocateBtn) != null;
+		return verifyElementVisible(xpath);
 	}
 
 	/**
@@ -907,7 +914,7 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isExportValuationFactorsBtnVisible(int timeToLocateBtn) throws Exception {
 		String xpath = "//button[text() = 'Export Valuation Factors']";
-		return locateElement(xpath, timeToLocateBtn) != null;
+		return verifyElementVisible(xpath);
 	}
 
 	/**
@@ -917,7 +924,7 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isPencilIconToEditTableStatusVisible(String tableName) throws Exception {
 		String xpath = "//span[text() = '"+ tableName +"']//parent::div//following-sibling::div//button[contains(@class, 'test-id__inline-edit-trigger slds-shrink')]";
-		return locateElement(xpath, 10) != null;
+		return verifyElementVisible(xpath);
 	}
 
 	/**
@@ -1060,14 +1067,13 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public String waitForPopUpMsgOnApproveClick(int timeToLocateElemInSec) throws Exception {
 		String xpathErrorMsg = "//div[contains(@class, 'toastContent')]//span[text() = 'Roll year flag name and roll year must be present']";
-		WebElement errorMsg = locateElement(xpathErrorMsg, 5);
-		if(errorMsg == null) {
+		if(!verifyElementVisible(xpathErrorMsg)) {
 			String xpath = "//div[contains(@class, 'toastContent')]//span[text() = 'Data approved successfully']";
 			String popUpMsg = getElementText(locateElement(xpath, timeToLocateElemInSec));
 			closePageLevelMsgPopUp();
 			return popUpMsg;
 		} else {
-			return getElementText(errorMsg);
+			return getElementText(locateElement(xpathErrorMsg, 5));
 		}
 	}
 

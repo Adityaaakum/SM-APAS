@@ -183,9 +183,9 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		//Step7: Enter the updated estimated project value and builing permit number and save the record
 		String updatedWorkDescriptionValue = "New Construction " + objUtil.getCurrentDate("mmss");
 		String updatedBuildingPermitNumber = "LM-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
-		System.out.println("Value to be updated in 'Work Description' field : " + updatedWorkDescriptionValue);
-		System.out.println("Old 'Building Permit Number' value : " + buildingPermitNumber);
-		System.out.println("Value to be updated in 'Building Permit Number' field : " + updatedBuildingPermitNumber);
+		ReportLogger.INFO("Value to be updated in 'Work Description' field : " + updatedWorkDescriptionValue);
+		ReportLogger.INFO("Old 'Building Permit Number' value : " + buildingPermitNumber);
+		ReportLogger.INFO("Value to be updated in 'Building Permit Number' field : " + updatedBuildingPermitNumber);
 
 		objPage.enter(objBuildingPermitPage.buildingPermitNumberTxtBox,updatedBuildingPermitNumber);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,updatedWorkDescriptionValue);

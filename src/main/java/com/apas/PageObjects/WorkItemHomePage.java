@@ -41,7 +41,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String changeWorkPool= "Change Work Pool";
 	public String changeAssignee= "Change Assignee";
 	public String reasonForTransferring= "Reason for Transferring";
-	
+
+	public String tabPoolAssignment = "Pool Assignment";
+
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
 	public WebElement successAlert;
 
@@ -597,5 +599,18 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	        WebElement webElement = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]"));
 	        scrollToElement(webElement);
 	        return waitForElementToBeVisible(90,webElement);         
+	    }
+	 
+	 /**
+	     * Description: This method will open the Work Pool record using record name
+	     *
+	     * @param poolName: Takes Work Pool Name as an argument
+	     */
+	    public void openWorkPoolRecord(String poolName) throws Exception {
+	        ReportLogger.INFO("Open the Work Pool record : " + poolName);
+	        String xpathStr = "//span//a[@title='" + poolName + "']";
+	        WebElement poolNameLocator = waitForElementToBeClickable(30, xpathStr);
+	        Click(poolNameLocator);
+	        Thread.sleep(2000);
 	    }
 }
