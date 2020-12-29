@@ -1,8 +1,6 @@
 package com.apas.DataProviders;
 
 import org.testng.annotations.DataProvider;
-
-import com.apas.Utils.SalesforceAPI;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
@@ -12,8 +10,6 @@ public class DataProviders {
 	 * Below function will be used to login to application with principal user
 	 * @returns: Returns the principal user
 	 **/
-	SalesforceAPI salesforceAPI = new SalesforceAPI();
-
     @DataProvider(name = "loginPrincipalUser")
     public Object[][] dpLoginPrincipalUser() {
         return new Object[][] { { users.PRINCIPAL_USER } };
@@ -386,5 +382,5 @@ public class DataProviders {
             { users.MAPPING_STAFF , "Mobile_Home_Parcel" }
         };
     }
-    
+   
 }
