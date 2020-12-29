@@ -428,7 +428,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 
 	}
 	
-	@Test(description = "SMAB-T2490,SMAB-T2436,SMAB-T2496,Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2490,SMAB-T2436,SMAB-T249:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyRemapMappingActionForMultipleParcels(String loginUser) throws Exception {
        ArrayList<String> APNs=objMappingPage.fetchActiveAPN(2);
@@ -605,8 +605,8 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		//Step 15: Verify that APNs generated must be 9-digits and should end in '0'
-		String childAPNNumber1 =objMappingPage.getElementText(objMappingPage.apnFieldInTable);
-		String childAPNComponents[] = childAPNNumber1.split("-");
+		String childAPNNumber =gridDataHashMap.get("APN").get(0);
+		String childAPNComponents[] = childAPNNumber.split("-");
 		softAssert.assertEquals(childAPNComponents.length,3,
 				"SMAB-T2533: Validation that child APN number contains 3 parts: map book,map page,parcel number");
 		softAssert.assertEquals(childAPNComponents[0].length(),3,
@@ -615,7 +615,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 				"SMAB-T2533: Validation that MAP page of child parcels contains 3 digits");
 		softAssert.assertEquals(childAPNComponents[2].length(),3,
 				"SMAB-T2533: Validation that parcel number of child parcels contains 3 digits");
-		softAssert.assertTrue(childAPNNumber1.endsWith("0"),
+		softAssert.assertTrue(childAPNNumber.endsWith("0"),
 				"SMAB-T2533: Validation that child APN number ends with 0");
 
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();	

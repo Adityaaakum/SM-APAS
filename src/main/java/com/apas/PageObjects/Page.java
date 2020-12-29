@@ -717,13 +717,6 @@ public class Page extends TestBase {
 			else
 				break;
 		}
-
-		for (int i = 0; i < timeOutInSeconds; i++) {
-			if (verifyElementVisible(webElement))
-				Thread.sleep(1000);
-			else
-				break;
-		}
 	}
 	
 	/**
@@ -780,5 +773,4 @@ public class Page extends TestBase {
 		Click(driver.findElement(By.xpath(xpathStr)));
 		Thread.sleep(1000);
 	}
-
 }
