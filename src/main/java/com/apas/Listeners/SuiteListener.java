@@ -65,8 +65,11 @@ public class SuiteListener extends TestBase implements ITestListener {
 			TestBase.loadPropertyFiles();
 			extent = new ExtentManager().getInstance(context.getSuite().getName());
 			if (flagToUpdateJira && testCycle != null) {
-				salesforceAPI.deleteWorkItemsBasedOnAge(1);
 				JiraAdaptavistStatusUpdate.retrieveJiraTestCases();
+				if (CONFIG.getProperty("deleteWorkItemsFlag").equals("true")){
+					System.out.println("Deleting the work items for the age greater than 1");
+					salesforceAPI.deleteWorkItemsBasedOnAge(1);
+				}
 			}
 
 			//This will move old report to archive folder
