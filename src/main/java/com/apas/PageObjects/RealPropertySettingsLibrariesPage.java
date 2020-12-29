@@ -171,7 +171,6 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 		ReportLogger.INFO("Clicking on Save Button");
 		Click(saveButton);
 		//waitForElementToBeVisible(successAlert,30);
-		locateElement("//div[@role='alert'][@data-key='success']",2);
 		locateElement("//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']",2);
 		return getElementText(successAlertText);
 	}

@@ -698,9 +698,13 @@ public class ExemptionsPage extends ApasGenericPage {
         
         //verifying if current roll year's RPSL is present or not if not present then create one
         ReportLogger.INFO("Verifying and creating if Current Roll Year's RPSL is not present");
-        String currentRollYearRPSLQuery = "select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name ='" + currentRollYear + "'";
+        String currentRollYearRPSLQuery = "select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name ='" + currentRollYear + "' and Status__c='Approved'";
         HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(currentRollYearRPSLQuery);
-        if (response.size() == 0 || response == null) {
+        if (response.size() == 0) {
+        	//deleting unapproved RPSL for current year because this is give error when we approved this.
+        	ReportLogger.INFO("Deleting unapproved RPSL for Current Roll Year ::" + currentRollYear);
+            String currentRollYearUnApprovedRPSLQuery = "select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name ='" + currentRollYear + "' and Status__c!='Approved'";
+            objSalesforceAPI.delete(currentRollYearUnApprovedRPSLQuery);
             ReportLogger.INFO("Current Roll Year RPSL is not present hence creating one for ::" + currentRollYear);
             searchModule(modules.REAL_PROPERTY_SETTINGS_LIBRARIES);
             objRPSL.enterRealPropertySettingsDetails(rpslData, currentRollYear);
