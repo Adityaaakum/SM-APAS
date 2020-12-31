@@ -652,7 +652,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		}
 		
 		//step14a:verifying Transaction object is created for retried records	
-		ReportLogger.INFO("Verifying Transaction record is created after performaing Retry");	
+		ReportLogger.INFO("Verifying Transaction record is created after performing Retry");
+		objPage.waitForElementToBeVisible(40, objEfileHomePage.sourceDetails);
 		objPage.Click(objEfileHomePage.sourceDetails);	
 		objPage.Click(objEfileHomePage.continueButton);
 		objPage.waitForElementToBeClickable(objEfileHomePage.statusImportedFile, 10);	
