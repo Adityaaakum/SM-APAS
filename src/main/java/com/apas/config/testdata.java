@@ -58,5 +58,6 @@ public interface testdata {
     String BPP_TREND_COMPOSITE_FACTORS_DATA = "\\data\\BppTrend\\BPPTrends_CompositeFactorsData.json";
 	String WORK_ITEMS_ROUTING_SETUP = userDirectory + "\\data\\WorkItems\\WorkItemsRoutingSetup.json";
     String ONE_TO_ONE_MAPPING_ACTION = "\\data\\MappingActions\\OneToOneMapping.json";
+    String RETIRE_ACTION = "\\data\\MappingActions\\RetireAction.json";
 
 }

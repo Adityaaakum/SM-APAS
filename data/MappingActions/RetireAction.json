@@ -1,0 +1,12 @@
+{
+  "DataToPerformRetireAction": {
+    "Action": "BOE/Mobile Home Retire",
+   	"Split": "Split Parcel",
+   	"Combine": "Combine Parcels",
+   	"ManyToMany": "Many to Many",
+   	"OneToOne": "One to One",
+    "Reason code": "PM 85/25-26",
+    "Comments": "Perform Retire"
+  }
+
+}
