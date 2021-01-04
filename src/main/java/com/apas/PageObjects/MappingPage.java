@@ -131,6 +131,22 @@ public class MappingPage extends ApasGenericPage {
 			return "No error message is displayed on page";
 		
 	}
+
+	public void remapActionForm(Map<String, String> dataMap) throws Exception {
+		String action = dataMap.get("Action");
+		String reasonCode = dataMap.get("Reason code");
+		String firstnonCondoParcelNumber = dataMap.get("First non-Condo Parcel Number");
+		String comments= dataMap.get("Comments");
+
+		selectOptionFromDropDown(actionDropDownLabel, action);
+		if (reasonCode != null)enter(reasonCodeTextBoxLabel, reasonCode);
+		if (firstnonCondoParcelNumber != null)
+			enter(firstNonCondoTextBoxLabel, firstnonCondoParcelNumber);
+		if (comments != null)
+			enter(commentsTextBoxLabel, comments);
+		Click(getButtonWithText(nextButton));
+
+	}
 	
 	/**
 	 * Description: this method is to get the confirmation message after mapping action is completed

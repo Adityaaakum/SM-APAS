@@ -65,10 +65,8 @@ public class SuiteListener extends TestBase implements ITestListener {
 			TestBase.loadPropertyFiles();
 			extent = new ExtentManager().getInstance(context.getSuite().getName());
 			if (flagToUpdateJira && testCycle != null) {
-				salesforceAPI.deleteWorkItemsBasedOnAge(1);
 				JiraAdaptavistStatusUpdate.retrieveJiraTestCases();
 			}
-
 			//This will move old report to archive folder
 			objUtils.migrateOldReportsToAcrhive();;
 		} catch (Exception e1) {
@@ -100,7 +98,11 @@ public class SuiteListener extends TestBase implements ITestListener {
 	@Override
 	public void onTestStart(ITestResult result) {
 		try {
-			
+			if (CONFIG.getProperty("deleteWorkItemsFlag").equals("true")){
+				System.out.println("Deleting the work items for the age greater than 1");
+				salesforceAPI.deleteWorkItemsBasedOnAge(1);
+				CONFIG.setProperty("deleteWorkItemsFlag","false");
+			}
 			//Making isSoftAssertionUsedFlag flag as False to reset soft assertion status
 			SoftAssertion.isSoftAssertionUsedFlag = false;
 			//Updating the system properties with test case properties details

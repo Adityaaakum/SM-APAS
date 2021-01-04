@@ -140,8 +140,6 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 	        objWorkItemHomePage.Click(objWorkItemHomePage.btnApprove);
 	        
 	        //Step 15:Validating the success message that Work items are Approved
-	        softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.successAlert),
-	        		"SMAB-T2241:Validating the success message that Work items are Approved");
 	        softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(), "Work Item(s) process succesfully!",
 	        		"SMAB-T2241:Validating the success message that Work items are Approved");
 	        objWorkItemHomePage.logout();
@@ -169,8 +167,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 		 * @param loginUser
 		 * @throws Exception
 		 */
-		@Test(description = "SMAB-T2042: Verify that Work pool Supervisor gets error when user tries to change assignee for WIs with different Work Pools", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-				"regression", "work_item_manual" })
+		@Test(description = "SMAB-T2042: Verify that Work pool Supervisor gets error when user tries to change assignee for WIs with different Work Pools", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "work_item_manual" }, enabled = false)
 		public void WorkItems_ErrorChangeAsignee(String loginUser) throws Exception {
 			
 			String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
@@ -312,8 +309,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 		 * @param loginUser
 		 * @throws Exception
 		 */
-		@Test(description = "SMAB-T2010: verify that work pool supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific user or a work pool.", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-				"regression", "work_item_manual" })
+		@Test(description = "SMAB-T2010: verify that work pool supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific user or a work pool.", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "work_item_manual" },enabled = false)
 		public void workItems_ChangeAsigneeAndWorkPoolStaffInPool(String loginUser) throws Exception {
 			String workItem1, workItem2;
 			// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
@@ -437,8 +433,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 		 * @param loginUser
 		 * @throws Exception
 		 */
-		@Test(description = "SMAB-T2019:Verify that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific user or a work pool.", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-				"regression", "work_item_manual" })
+		@Test(description = "SMAB-T2019:Verify that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific user or a work pool.", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "work_item_manual" }, enabled = false)
 		public void workItems_ChangeAsigneeAndWorkPoolStaffInProgress(String loginUser) throws Exception {
 			String workItem1 ,workItem2;
 			// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
@@ -493,8 +488,6 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			objWorkItemHomePage.Click(objWorkItemHomePage.saveButton);
 			
 			// Step7: Validating that work pool supervisor is able to select and approve multiple work items"
-			softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.successAlert),
-					"SMAB-T2019: Validate that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific user");
 			softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(), "Work Item(s) process succesfully!",
 					"SMAB-T2019: Validate that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific user");
 			//Step8 :Navigate to details tab to validate Assignee
@@ -530,8 +523,6 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			objWorkItemHomePage.Click(objWorkItemHomePage.saveButton);
 					
 			// Step12: Validate that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific work pool"
-		    softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.successAlert),
-		    		"SMAB-T2019: Validate that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific work pool");
 		    softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(), "Work Item(s) process succesfully!",
 					"SMAB-T2019: Validate that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific user");
 		    

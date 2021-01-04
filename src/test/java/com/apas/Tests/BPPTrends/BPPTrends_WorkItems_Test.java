@@ -151,7 +151,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYear);
 
         //Step2: Delete the existing WI from system before importing files
-        String query = "select id from Work_Item__c where Type__c = 'BPP Trends'";
+        String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
         objSalesforceAPI.delete("Work_Item__c", query);
 
         //Step3: Generate Reminder Work Items
@@ -338,7 +338,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors", "BOE - Valuation Factors", rollYear);
 
         //Step2: Delete the existing WI from system before importing files
-        String query = "select id from Work_Item__c where Type__c = 'BPP Trends'";
+        String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
         objSalesforceAPI.delete("Work_Item__c", query);
 
         //Step3: Generate Reminder Work Items
@@ -525,7 +525,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors", "CAA - Valuation Factors", rollYear);
 
         //Step2: Delete the existing WI from system before importing files
-        String query = "select id from Work_Item__c where where Type__c = 'BPP Trends'";
+        String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
         objSalesforceAPI.delete("Work_Item__c", query);
 
         //Step3: Generate Reminder Work Items
@@ -617,7 +617,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
     @Test(description = "SMAB-T1736,SMAB-T1947: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = true)
     public void BPPTrends_PerformCalculations_WorkItemGeneration(String loginUser) throws Exception {
         //Step1: Delete the existing WI from system before importing files
-        String query = "select id from Work_Item__c where Reference__c = 'BPP Composite Factors'";
+        String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
         objSalesforceAPI.delete("Work_Item__c", query);
 
         //Step2: Validate reminder work item creation and the work item flow for approved file
@@ -645,11 +645,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
     @Test(description = "SMAB-T1761: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = true)
     public void BPPTrends_verifySubmitAllFactorForApprovalBtnNotVisible_whenImportWINotCompleted(String loginUser) throws Exception {
         //Step1: Delete the existing 'Annual Factor Settings' WIs before generating
-        String query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings' OR Reference__c = 'BPP Composite Factors'";
-        objSalesforceAPI.delete("Work_Item__c", query);
-
-        //Step2: Delete the existing 'Import' WIs before generating
-        query = "select id from Work_Item__c where Sub_Type__c = 'Import'";
+        String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
         objSalesforceAPI.delete("Work_Item__c", query);
 
         //Step3: Generate Annual Factor Settings Reminder Work Items
@@ -699,11 +695,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
     public void BPPTrends_verifyErrorMsg_whenAnnualSettingsWINotCompleted(String loginUser) throws Exception {
 
         //Step1: Delete the existing WIs before generating
-        String query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings' OR Reference__c = 'BPP Composite Factors'";
-        objSalesforceAPI.delete("Work_Item__c", query);
-
-        //Step2: Delete the existing WIs before generating
-        query = "select id from Work_Item__c where Sub_Type__c = 'Import'";
+        String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
         objSalesforceAPI.delete("Work_Item__c", query);
 
         //Step3: Generate Reminder Work Items
@@ -917,7 +909,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         HashMap<String, ArrayList<String>> InProgressWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_PROGRESS);
         int workItemRowNumber = InProgressWorkItems.get("Request Type").indexOf("BPP Trends - Perform Calculations - BPP Composite Factors");
         String workItemName = InProgressWorkItems.get("Work item #").get(workItemRowNumber);
-        softAssert.assertEquals(workItemName, "importWorkItem", "SMAB-T2195: Verify WI returned to user is found in 'In Progress' tab");
+        softAssert.assertEquals(workItemName, importWorkItem, "SMAB-T2195: Verify WI returned to user is found in 'In Progress' tab");
 
     }
 

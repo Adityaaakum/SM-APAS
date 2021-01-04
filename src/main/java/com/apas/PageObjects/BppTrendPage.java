@@ -381,6 +381,8 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isTableDataVisible(String tableName, int timeOut) throws Exception {
 		String tableXpath = "//lightning-tab[@data-id = '"+ tableName +"']//table";
+		waitForElementToBeVisible(20, tableXpath);
+		waitForElementToBeClickable(20, tableXpath);
 		return verifyElementVisible(tableXpath);
 	}
 
@@ -415,7 +417,7 @@ public class BppTrendPage extends ApasGenericPage {
 		WebElement editButton;
 		Click(waitForElementToBeClickable(10, this.xpathCellData));
 		String xpathEditBtn = "//td[contains(@class, 'has-focus')]//button[contains(@class, 'cell-edit')]//lightning-primitive-icon";
-		editButton = locateElement(xpathEditBtn, 10);
+		editButton = waitForElementToBeClickable(xpathEditBtn);
 		return editButton;
 	}
 
@@ -802,6 +804,8 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isCalculateAllBtnVisible(int timeToLocateBtn) throws Exception {
 		String xpath = "//button[@title = 'Calculate all']";
+		waitForElementToBeVisible(timeToLocateBtn, xpath);
+		waitForElementToBeClickable(timeToLocateBtn, xpath);
 		return verifyElementVisible(xpath);
 	}
 
@@ -825,6 +829,8 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isReCalculateAllBtnVisible(int timeToLocateBtn) throws Exception {
 		String xpath = "//button[@title = 'ReCalculate all']";
+		waitForElementToBeVisible(timeToLocateBtn, xpath);
+		waitForElementToBeClickable(timeToLocateBtn, xpath);
 		return verifyElementVisible(xpath);
 	}
 
@@ -836,6 +842,8 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isSubmitAllFactorsForApprovalBtnVisible(int timeToLocateBtn) throws Exception {
 		String xpath = "//button[@title = 'Submit All Factors for Approval']";
+		waitForElementToBeVisible(timeToLocateBtn, xpath);
+		waitForElementToBeClickable(timeToLocateBtn, xpath);
 		return verifyElementVisible(xpath);
 	}
 
@@ -869,6 +877,8 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isApproveAllBtnVisible(int timeToLocateBtn) throws Exception {
 		String xpath = "//button[@title = 'Approve all']";
+		waitForElementToBeVisible(timeToLocateBtn, xpath);
+		waitForElementToBeClickable(timeToLocateBtn, xpath);
 		return verifyElementVisible(xpath);
 	}
 
@@ -880,6 +890,8 @@ public class BppTrendPage extends ApasGenericPage {
 	 */
 	public boolean isDownloadBtnVisible(int timeToLocateBtn) throws Exception {
 		String xpath = "//button[text() = 'Download']";
+		waitForElementToBeVisible(timeToLocateBtn, xpath);
+		waitForElementToBeClickable(timeToLocateBtn, xpath);
 		return verifyElementVisible(xpath);
 	}
 

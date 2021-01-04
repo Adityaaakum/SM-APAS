@@ -696,8 +696,7 @@ public class Page extends TestBase {
 		return driver.findElement(By.xpath("//label[text()='" + dropDown + "']/..//*[@role='listbox']")).getText().trim();
 	}
 
-
-	/**
+    /**
 	 * Description: Waits until the element goes invisible within given timeout
 	 *
 	 * @param object           : Object to disappear
@@ -718,9 +717,8 @@ public class Page extends TestBase {
 			else
 				break;
 		}
-
 	}
-
+	
 	/**
 	 * Description: returns the webelement based on the label of the element
 	 *
@@ -754,6 +752,7 @@ public class Page extends TestBase {
 		return driver.findElement(By.xpath(xpath));
 	}
 
+
 	/**
 	 * Description: This method will clear the value from the lookup field
 	 *
@@ -775,5 +774,4 @@ public class Page extends TestBase {
 		Click(driver.findElement(By.xpath(xpathStr)));
 		Thread.sleep(1000);
 	}
-
 }

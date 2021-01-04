@@ -314,8 +314,9 @@ public class ApasGenericPage extends Page {
         String xpathDropDownOption;
         if (element instanceof String) {
         	webElement = getWebElementWithLabel((String) element);
-			String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
+        	String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
 			xpathDropDownOption = commonPath + "//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
+			
         } else{
             webElement = (WebElement) element;
             xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
@@ -513,12 +514,12 @@ public class ApasGenericPage extends Page {
 	 */
 	public void editGridCellValue(String columnNameOnGrid, String expectedValue) throws IOException, AWTException, InterruptedException {
 		String xPath =  "//lightning-tab[contains(@class,'slds-show')]//*[@data-label='" + columnNameOnGrid + "'][@role='gridcell']//button | //div[contains(@class,'flowruntimeBody')]//*[@data-label='" + columnNameOnGrid + "']";
-		
+
 		WebElement webelement = driver.findElement(By.xpath(xPath));
 		Click(webelement);
 		Thread.sleep(1000);
 		if(verifyElementVisible("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']"))
-		Click(driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")));
+			Click(driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")));
 		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
 
 		webelementInput.clear();
@@ -697,7 +698,7 @@ public class ApasGenericPage extends Page {
 					//"replace("Edit "+ key,"").trim()" code is user to remove the text \nEdit as few cells have edit button and the text of edit button is also returned with getText()
 					value = webElementsCells.get(gridCellCount).getText();
 					String[] splitValues = value.split("Edit " + key);
-					if (splitValues.length > 0) value = splitValues[0];
+					if (splitValues.length > 0) value = splitValues[0].trim();
 					else value = "";
 					gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
 					gridDataHashMap.get(key).add(value);
@@ -1088,5 +1089,11 @@ public class ApasGenericPage extends Page {
 			fieldValue= "";
 		}
 		return fieldValue;
+	}
+   
+   public String getErrorMessage() throws Exception {
+		WebElement ErrorText = locateElement("//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
+		String ErrorTxt = ErrorText.getText();
+		return ErrorTxt;
 	}
 }

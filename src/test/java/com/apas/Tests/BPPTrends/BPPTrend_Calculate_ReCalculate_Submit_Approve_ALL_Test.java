@@ -204,7 +204,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 		ExtentTestManager.getTest().log(LogStatus.INFO, "* Clicking 'Recalculate all' button");
 		objBppTrnPg.clickReCalculateAllBtn();
 		objBppTrnPg.waitForElementToBeVisible(objBppTrnPg.confirmBtnInPopUp, 10);
-		softAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T197: Pop up message on recalculae button is visible");
+		softAssert.assertTrue(isReCalculateAllBtnDisplayed, "SMAB-T197: Pop up message on recalculate button is visible");
 
 		String actWarningMsgInPopUp = objBppTrnPg.retrieveReCalculatePopUpMessage();
 		String expWarningMsgInPopUp = CONFIG.getProperty("recalculatePopUpMsg");

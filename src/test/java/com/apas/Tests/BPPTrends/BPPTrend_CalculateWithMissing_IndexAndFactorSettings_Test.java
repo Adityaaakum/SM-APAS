@@ -307,14 +307,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 			tableName = allTables.get(i);
 			
 			//Generating expected error message based on the table name
-			String msgOnMissingPropertyAndGoodsData = "No Goods factor found for type Machinery and Equipment";
-			if(tableName.equalsIgnoreCase("Agricultural Mobile Equipment Composite Factors")) {
-				msgOnMissingPropertyAndGoodsData = "Index factors not found for Agricultural";
-			} else if(tableName.equalsIgnoreCase("Construction Mobile Equipment Composite Factors")) {
-				msgOnMissingPropertyAndGoodsData = "Index factors not found for Construction";
-			} else {
-				msgOnMissingPropertyAndGoodsData = "No Goods factor found for type Machinery and Equipment";
-			}
+			String msgOnMissingPropertyAndGoodsData = "Error Calculating data.";
 			
 			//Clicking on given table name
 			//boolean isTableUnderMoreTab = tableNamesUnderMoreTab.contains(allTables.get(i));
