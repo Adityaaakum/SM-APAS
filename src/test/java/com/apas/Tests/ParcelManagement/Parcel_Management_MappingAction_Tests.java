@@ -64,7 +64,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
 
-		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"'").get("Name").get(0);
+		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"')").get("Name").get(0);
 		String legalDescriptionValue=salesforceAPI.select("SELECT Short_Legal_Description__c FROM Parcel__c where Short_Legal_Description__c !=NULL limit 1").get("Short_Legal_Description__c").get(0);
 		String districtValue=salesforceAPI.select("SELECT District__c FROM Parcel__c where District__c !=Null limit 1").get("District__c").get(0);
 
@@ -499,7 +499,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2490,SMAB-T2493,SMAB-T2532,SMAB-T2535,SMAB-T2531,SMAB-2533:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2490,SMAB-T2493,SMAB-T2532,SMAB-T2535,SMAB-T2531,SMAB-T2533:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyRemapMappingAction(String loginUser) throws Exception {
 		String activeParcelToPerformMapping=objMappingPage.fetchActiveAPN();
@@ -575,7 +575,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		//Step 10:Verifying that proper error message is displayed if less than 9 disgits are entered in First non condo parcel field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "123-456-78");
 		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));		
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"Parcel Number has to be 9 digit, please enter valid parcel number",
 				"SMAB-T2493: Validation that proper error message is displayed if less than 9 disgits are entered in First non condo parcel field");
 		
 		//Step 11:Verifying that proper error message is displayed if parcel starting with 100 is entered in First non condo parcel field
