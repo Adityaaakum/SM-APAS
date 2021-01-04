@@ -71,14 +71,13 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		
 		String activeParcelWithoutHyphen=apn2.replace("-","");
 		String accessorMapParcel = apn1.replace("-", "").substring(0, 5);
-		String taxField = "//label[text()='Are taxes fully paid?']";
 		String expectedIndividualFieldMessage = "Complete this field.";
 		
 		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
 
-		String mappingActionCreationData = System.getProperty("user.dir") + testdata.RETIRE_ACTION;
+		String mappingActionCreationData = testdata.RETIRE_ACTION;
 		Map<String, String> hashMapRetireeMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformRetireAction");
 
@@ -108,7 +107,7 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 
 		// Step 6: Select the Retire value in Action field and validate that 'Are Taxes fully paid?' field isn't visible
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapRetireeMappingData.get("Action"));
-		softAssert.assertTrue(!objMappingPage.verifyElementExists(taxField),
+		softAssert.assertTrue(!objMappingPage.verifyElementExists(objMappingPage.taxField),
 				"SMAB-T2455: Validate that 'Are Taxes fully paid?' field is not visible");
 		
 		// Step 7: Change the value in Action field and validate that 'Are Taxes fully paid?' field is visible
@@ -120,7 +119,7 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		// Step 8: Select the Retire value in Action field and validate that 'Are Taxes fully paid?' field isn't visible
 		ReportLogger.INFO("Select 'Retire' in the Action dropdown field");
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapRetireeMappingData.get("Action"));
-		softAssert.assertTrue(!objMappingPage.verifyElementExists(taxField),
+		softAssert.assertTrue(!objMappingPage.verifyElementExists(objMappingPage.taxField),
 				"SMAB-T2455: Validate that 'Are Taxes fully paid?' field is not visible");
 		
 		// Step 9: Change the value in Action field and validate that 'Are Taxes fully paid?' field is visible
@@ -132,7 +131,7 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		// Step 10: Select the Retire value in Action field and validate that 'Are Taxes fully paid?' field isn't visible
 		ReportLogger.INFO("Select 'Retire' in the Action dropdown field");
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapRetireeMappingData.get("Action"));
-		softAssert.assertTrue(!objMappingPage.verifyElementExists(taxField),
+		softAssert.assertTrue(!objMappingPage.verifyElementExists(objMappingPage.taxField),
 				"SMAB-T2455: Validate that 'Are Taxes fully paid?' field is not visible");
 		
 		// Step 11: Change the value in Action field and validate that 'Are Taxes fully paid?' field is visible
@@ -144,7 +143,7 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		// Step 12: Select the Retire value in Action field and validate that 'Are Taxes fully paid?' field isn't visible
 		ReportLogger.INFO("Select 'Retire' in the Action dropdown field");
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapRetireeMappingData.get("Action"));
-		softAssert.assertTrue(!objMappingPage.verifyElementExists(taxField),
+		softAssert.assertTrue(!objMappingPage.verifyElementExists(objMappingPage.taxField),
 				"SMAB-T2455: Validate that 'Are Taxes fully paid?' field is not visible");
 		
 		// Step 13: Change the value in Action field and validate that 'Are Taxes fully paid?' field is visible
@@ -156,24 +155,21 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		// Step 14: Select the Retire value in Action field and validate that 'Are Taxes fully paid?' field isn't visible
 		ReportLogger.INFO("Select 'Retire' in the Action dropdown field");
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapRetireeMappingData.get("Action"));
-		softAssert.assertTrue(!objMappingPage.verifyElementExists(taxField),
+		softAssert.assertTrue(!objMappingPage.verifyElementExists(objMappingPage.taxField),
 				"SMAB-T2455: Validate that 'Are Taxes fully paid?' field is not visible");
-		
 		
 		//Step 15: Validate the reason code and assessor's map fields are auto populated from parent parcel work item
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
 				"SMAB-T2455: Validate that value of 'Reason Code' field is populated from the parent parcel work item");
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.assessorMapLabel).replace("-", ""),accessorMapParcel,
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.getWebElementWithLabel(objMappingPage.assessorMapLabel)).replace("-", ""),accessorMapParcel,
 				"SMAB-T2455: Validate that value of 'Assessor's Map' field is the first 5 digits of the parent parcel");
 
-		
 		//Step 16: Validate that Reason CODE is a mandatory field
 		ReportLogger.INFO("Remove the value from Reason Code field and click Retire button");
 		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel), "");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
 		softAssert.assertEquals(objMappingPage.getIndividualFieldErrorMessage("Reason Code"),expectedIndividualFieldMessage,
 				"SMAB-T2455: Validate that 'Reason Code' is a mandatory field");
-		
 		
 		//Step 17: Validate that proper error message is displayed if parent parcel is retired
 		ReportLogger.INFO("Enter the Retired parcel in Parent APN field");
@@ -219,7 +215,7 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apn1);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel (s) have been successfully retired!",
+		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel (s) have been successfully retired!",
 				"SMAB-T2455: Validate that User is able to perform Retire action for one active parcel");
 		
 		//Step 24: Validate that the status and PUC of the parcel is updated to Retired
@@ -245,15 +241,17 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyRetireMappingActionForMoreThanOneActiveParcels(String loginUser) throws Exception {
 		
-		//Fetching parcels that are Active 
+		//Fetching Active General parcel 
 		String queryAPN1 = "Select name,ID  From Parcel__c where name like '0%' AND Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails1 = salesforceAPI.select(queryAPN1);
 		String apn1=responseAPNDetails1.get("Name").get(0);
 		
+		//Fetching Active Condo parcel 
 		String queryAPN2 = "Select name,ID  From Parcel__c where name like '100%' AND Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails2 = salesforceAPI.select(queryAPN2);
 		String apn2=responseAPNDetails2.get("Name").get(0);
 		
+		//Fetching Active Mobile home parcel
 		String queryAPN3 = "Select name,ID  From Parcel__c where name like '134%' AND Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails3 = salesforceAPI.select(queryAPN3);
 		String apn3=responseAPNDetails3.get("Name").get(0);
@@ -264,7 +262,7 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
 
-		String mappingActionCreationData = System.getProperty("user.dir") + testdata.RETIRE_ACTION;
+		String mappingActionCreationData = testdata.RETIRE_ACTION;
 		Map<String, String> hashMapRetireeMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformRetireAction");
 

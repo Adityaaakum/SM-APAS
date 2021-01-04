@@ -45,7 +45,8 @@ public class MappingPage extends ApasGenericPage {
 	public String parentAPNEditButton = "Edit";
 	public String previousButton = "Previous";
 	public String retireButton = "Retire Parcel (s)";
-
+	public String assessorMapLabel = "Assessor's Map";
+	public String taxField = "//label[text()='Are taxes fully paid?']";
 	public String saveButton = "Save";
 
 	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
@@ -65,10 +66,6 @@ public class MappingPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//div[@class='body']//div/following-sibling::c-tem_parcel-process-parent-view//div[contains(@class,'message-font slds-align_absolute-center slds-text-color_success')]")
 	public WebElement confirmationMessageOnSecondScreen;
-	
-	@FindBy(xpath = "//label[text()=\"Assessor's Map\"]//parent::div//div//a")
-	public WebElement assessorMapLabel;
-	
 	
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
@@ -133,5 +130,14 @@ public class MappingPage extends ApasGenericPage {
 		else
 			return "No error message is displayed on page";
 		
+	}
+	
+	/**
+	 * Description: this method is to get the confirmation message after mapping action is completed
+	 * 	 
+	 * @throws: Exception
+	 */
+	public String confirmationMsgOnSecondScreen() throws Exception {
+		return getElementText(waitForElementToBeClickable(20, confirmationMessageOnSecondScreen));
 	}
 }
