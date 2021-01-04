@@ -527,7 +527,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	/**
 	* Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab
 	**/
-    @Test(description = "SMAB-T2466: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual" }, alwaysRun = true)
+    @Test(description = "SMAB-T2474,SMAB-T2475: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual" }, alwaysRun = true)
 	public void WorkItem_WIPresentInCompletedTab_2ndLevelApprover(String loginUser) throws Exception {
 
 		  //fetching a parcel where PUC is not blank but Primary Situs is blank 
@@ -594,7 +594,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  
 		  //steps 9: Validation on after approve by second lavel approval work item should be visible in completed tab
 		  HashMap<String, ArrayList<String>> PrimaryWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-          softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(Workitem), "SMAB-T2466: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab"); 
+          softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(Workitem), "SMAB-T2474,SMAB-T2475: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab"); 
 	      objWorkItemHomePage.logout();
      }
     

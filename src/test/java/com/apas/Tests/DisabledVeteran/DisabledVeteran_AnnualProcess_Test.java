@@ -273,7 +273,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		String entryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
 		Map<String, String> createRPSLDataMap = objUtils.generateMapFromJsonFile(entryData, "DataToCreateCurrentRPSLEntry");
 		String strSuccessAlertMessage = objRPSLPage.createRPSL(createRPSLDataMap,strRollYear);
-		String recordValue = "Exemption Limits -  " + strRollYear;
+		String recordValue = "Exemption Limits - " + strRollYear;
 		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + recordValue + "\" was created.","SMAB-T536 : Verify the User is able to create Exemption limit record for the current roll year");
 		
 		//Step5: Opening the Real Property Settings Libraries module
@@ -349,7 +349,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		
 		//Refreshing the screen to bring back the focus
 		driver.navigate().refresh();
-		Thread.sleep(1000);
+		Thread.sleep(5000);
 				
 		objApasGenericPage.logout();
 				

@@ -381,6 +381,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	//SMAB-T2093 opening the action link to validate that link redirects to Value Adjustments page 
   	objWIHomePage.openActionLink(WIName);
 	objPage.switchToNewWindow(parentwindow);
+	Thread.sleep(2000);
 	softAssert.assertTrue(objPage.verifyElementVisible(ObjValueAdjustmentPage.valueAdjustmentViewAll),
 			"SMAB-T2093: Validation that Value Adjustments label is visible");
 	driver.close();
@@ -402,8 +403,6 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.lnkTABHome);
   	ReportLogger.INFO("Step 28: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
-  	ReportLogger.INFO("Step 29: Click on the check box - Show RP");
-  	objPage.Click(objWIHomePage.chkShowRP);
   	ReportLogger.INFO("Step 30: Click on the Completed TAB");
   	objPage.Click(objWIHomePage.lnkTABCompleted);
   	ReportLogger.INFO("Step 31: Search work item under the Completed TAB :"+WIName);
@@ -481,8 +480,6 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.lnkTABHome);
   	ReportLogger.INFO("Step 19: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
-  	ReportLogger.INFO("Step 20: Click on the check box - Show RP");
-  	objPage.Click(objWIHomePage.chkShowRP);
   	ReportLogger.INFO("Step 21: Click on the TAB - In Pool");
   	objPage.Click(objWIHomePage.lnkTABInPool);
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);

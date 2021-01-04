@@ -364,7 +364,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	public void Disabledveteran_PenlatyPercentageForAllVAs(String loginUser) throws Exception{
 		
 		Map<String, String> newExemptionMandatoryData = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData");
-		
+	
 		//Step1: Login to the APAS application using the credentials passed through data provider
 		exemptionPageObj.login(loginUser);
 		exemptionPageObj.checkRPSLCurrentRollYearAndApproveRPSLPastYears(rpslData);
@@ -414,7 +414,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 				ReportLogger.INFO("Verifying Annual Form Received date can not be less than Application received date");	
 				objPage.scrollToTop();
 				objPage.Click(vaPageObj.editButton);
-				//objPage.waitForElementToBeClickable(vaPageObj.vaEditDeterminationDropDown, 10);
+				objPage.waitForElementToBeClickable(vaPageObj.vaEditDeterminationDropDown, 10);
 				exemptionPageObj.selectOptionFromDropDown(vaPageObj.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
 				objPage.enter(vaPageObj.vaAnnualFormReceiveddate,dateBeforeAppdate);
 				objPage.enter(vaPageObj.totalAnnualHouseholdIncome,"10000");
