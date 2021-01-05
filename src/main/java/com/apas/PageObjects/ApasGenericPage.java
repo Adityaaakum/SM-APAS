@@ -712,7 +712,7 @@ public class ApasGenericPage extends Page {
 		return gridDataHashMap;
 	}
 
-
+	
 	/**
 	 * Description: This method is to check unavailbility of an element
 	 *
@@ -1095,5 +1095,27 @@ public class ApasGenericPage extends Page {
 		WebElement ErrorText = locateElement("//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
 		String ErrorTxt = ErrorText.getText();
 		return ErrorTxt;
+	}
+   
+   /**
+	 * Description: This method will save the grid data in hashmap First Table and RowsIndex displayed on UI
+	 *
+	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
+	 */
+	public HashMap<String, ArrayList<String>> getGridDataForRowString(String rowString) {
+		
+		int rowIndex=0 ;			
+		List<WebElement> tableRows = driver.findElementsByXPath("//table/tbody//tr") ;			
+		List<WebElement> actualWINames = null;				
+		
+		for(int i = 0; i < tableRows.size(); i++) {
+			
+			actualWINames = driver.findElementsByXPath("//table/tbody/tr["+i+"]/th//a[@title='" + rowString + "' or text()='" + rowString + "']");
+			if(!actualWINames.isEmpty()) {					
+				rowIndex = i;
+				return getGridDataInHashMap(1,rowIndex);
+			}
+		}
+		return null;			 	
 	}
 }

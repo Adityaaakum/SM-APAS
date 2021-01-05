@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -67,6 +68,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","Work_Item_DV" })
+
 	public void DisabledVeteran_verifyWorkItemGeneratedOnEditingVAFields(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -133,39 +135,22 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.lnkTABHome);
   	ReportLogger.INFO("Step 17: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
-  	ReportLogger.INFO("Step 18: Click on the check box - Show RP");
 	
   	ReportLogger.INFO("Step 19: Click on the SUB TAB - In POOL");
   	objPage.Click(objWIHomePage.lnkTABInPool);
-  	ReportLogger.INFO("Step 20: Search and select the Work Item from the Grid");
-  	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
-  	//objPage.Click(actualWIName);
-	objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
-	objPage.javascriptClick(objWIHomePage.detailsWI);
-
-   //Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record
-   objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
-	softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC",
-					"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
-	softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
-					"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
-		
-	objPage.Click(objWIHomePage.linkedItemsWI);
-  	ReportLogger.INFO("Step 21: Click on the link - Linked Items");
-  	objPage.Click(objWIHomePage.linkedItemsRecord);
-  	ReportLogger.INFO("Step 22: Verify the VA linked with the WI :"+vANameValue);
-  	Thread.sleep(5000);
-  	String actualVAName = objWIHomePage.searchLinkedExemptionOrVA(vANameValue);
-  	ReportLogger.INFO("Step 23: Click on the link : Details");
-  	objPage.Click(objWIHomePage.detailsWI);
+  	ReportLogger.INFO("Step 20: Search and select the Work Item from the Grid : "+WIName);
+  	WebElement actualWIName = objWIHomePage.searchWIinGrid(WIName);
   	
-  	String actualRequestTypeName = objWIHomePage.searchRequestTypeNameonWIDetails(WIRequestType);
+	ReportLogger.INFO("Step : Fetch the Data from the GRID for the Work Item : " +WIName);
+  	HashMap<String, ArrayList<String>> rowData = objWIHomePage.getGridDataForRowString(WIName);
+  	
+  	String actualRequestTypeName = rowData.get("Request Type").get(0) ;
   	ReportLogger.INFO("Step 24: Verify the Request Type is as per the Naming Convention :"+actualRequestTypeName);
   	Thread.sleep(50000);
   	String RequestTypeName  = "Disabled Veterans - Update and Validate - Annual exemption amount verification";
     ReportLogger.INFO("Step 25: Verifying Work Item is generated , Work Item Request Name , VA Link on creation of Work Item");
     softAssert.assertEquals(actualWIName.toString(),WIName,"SMAB-T2103:Verify name of WI generated");
-	softAssert.assertEquals(actualVAName.toString(),vANameValue,"SMAB-T2103:Verify linked VA WI generated");
+	//softAssert.assertEquals(actualVAName.toString(),vANameValue,"SMAB-T2103:Verify linked VA WI generated");
 	softAssert.assertEquals(actualRequestTypeName.toString(),RequestTypeName,"SMAB-T2103:Verify RequestType Name of WI generated");
     String updateWIStatus = "SELECT Status__c FROM Work_Item__c where Name = '"+WIName+"'";
   	salesforceAPI.update("Work_Item__c", updateWIStatus, "Status__c", "Completed");
@@ -331,7 +316,6 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.lnkTABHome);
   	ReportLogger.INFO("Step 19: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
-  	ReportLogger.INFO("Step 20: Click on the check box - Show RP");
 	
   	ReportLogger.INFO("Step 21: Click on the TAB - In Pool");
   	objPage.Click(objWIHomePage.lnkTABInPool);
@@ -370,8 +354,6 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.lnkTABHome);
   	ReportLogger.INFO("Step 19: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
-  	//ReportLogger.INFO("Step 20: Click on the check box - Show RP");
-  	//objPage.Click(objWIHomePage.chkShowRP);
   	ReportLogger.INFO("Step 21: Click on the TAB Needs My Approval");
   	objPage.Click(objWIHomePage.needsMyApprovalTab);
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
@@ -380,11 +362,13 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	 parentwindow = driver.getWindowHandle();
 	//SMAB-T2093 opening the action link to validate that link redirects to Value Adjustments page 
   	objWIHomePage.openActionLink(WIName);
+  	Thread.sleep(5000);
 	objPage.switchToNewWindow(parentwindow);
 	Thread.sleep(2000);
+
 	softAssert.assertTrue(objPage.verifyElementVisible(ObjValueAdjustmentPage.valueAdjustmentViewAll),
 			"SMAB-T2093: Validation that Value Adjustments label is visible");
-	driver.close();
+	//driver.close();
 	driver.switchTo().window(parentwindow);  	
 	ReportLogger.INFO("Step 23: Click on the Approve button");
   	objPage.Click(objWIHomePage.btnApprove);
@@ -509,9 +493,6 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 19: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
   	
-  	//ReportLogger.INFO("Step 20: Click on the check box - Show RP");
-  	//objPage.Click(objWIHomePage.chkShowRP);
-  	
   	ReportLogger.INFO("Step 21: Click on the TAB Needs My Approval" );
   	objPage.Click(objWIHomePage.needsMyApprovalTab);
   	ReportLogger.INFO("Step 22: Search and Select the work item from the grid :"+WIName);
@@ -537,8 +518,10 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.lnkTABHome);
   	ReportLogger.INFO("Step 30: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
-  	ReportLogger.INFO("Step 31: Click on the check box - Show RP");
-  	objPage.Click(objWIHomePage.chkShowRP);
+	/*
+	 * ReportLogger.INFO("Step 31: Click on the check box - Show RP");
+	 * objPage.Click(objWIHomePage.chkShowRP);
+	 */
   	ReportLogger.INFO("Step 32: Click on the TAB - In Progress");
   	objPage.Click(objWIHomePage.lnkTABInProgress);
   	ReportLogger.INFO("Step 33: Search the work item in the Grid :"+WIName);
