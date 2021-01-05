@@ -4,6 +4,7 @@ import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -232,6 +233,9 @@ public class WorkItemHomePage extends ApasGenericPage {
     @FindBy(xpath = "//div[contains(@class,'slds-media__body')]//slot/lightning-formatted-text[contains(text(),'WI-')]")
 	public WebElement getWorkItem;
     
+    @FindBy(xpath = "//table/thead//tr//th[@aria-label='Work item #']//a//span[@title='Work item #']")
+    public WebElement gridColWorkItemNum;
+    
 	public String editButton = "Edit";
 	
 	public String wiActionDetailsPage = "Action";
@@ -375,6 +379,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 		List<WebElement> actualWINames = null;
 
 		try {
+			
 			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "' or text()='" + WIName + "']");
 			if(actualWINames.isEmpty()) {				
 				String pageMsg = driver.findElementByXPath("//p[@class='slds-m-vertical_medium content']").getText();
@@ -613,4 +618,30 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	        Click(poolNameLocator);
 	        Thread.sleep(2000);
 	    }
+	    
+	    
+	    /**
+		 * Description: This method will save the grid data in hashmap First Table and RowsIndex  displayed on UI
+		 *
+		 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
+		 */
+		public HashMap<String, ArrayList<String>> getGridDataForWI(String WIName) {
+			
+			int rowIndex=0 ;			
+			List<WebElement> tableRows = driver.findElementsByXPath("//table/tbody//tr") ;			
+			List<WebElement> actualWINames = null;				
+			
+			for(int i = 0; i < tableRows.size(); i++) {
+				
+				actualWINames = driver.findElementsByXPath("//table/tbody/tr["+i+"]/th//a[@title='" + WIName + "' or text()='" + WIName + "']");
+				if(!actualWINames.isEmpty()) {					
+					rowIndex = i;
+					return getGridDataInHashMap(1,rowIndex);
+				}
+			}
+			return null;			 	
+		}
+
+		
+
 }
