@@ -141,37 +141,8 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 20: Search and select the Work Item from the Grid : "+WIName);
   	WebElement actualWIName = objWIHomePage.searchWIinGrid(WIName);
   	
-	/*
-	 * objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
-	 * objPage.javascriptClick(objWIHomePage.detailsWI);
-	 */
-
-	/*
-	 * //Validating that 'Use Code' field and 'Date' field gets automatically
-	 * populated in the work item record objWIHomePage.waitForElementToBeVisible(10,
-	 * objWIHomePage.referenceDetailsLabel);
-	 * softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code",
-	 * "Reference Data Details"),"SEC",
-	 * "SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record"
-	 * ); softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date",
-	 * "Information"),"1/1/"+currentRollYear,
-	 * "SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear)
-	 * ;
-	 */
-		
-	/*
-	 * objPage.Click(objWIHomePage.linkedItemsWI);
-	 * ReportLogger.INFO("Step 21: Click on the link - Linked Items");
-	 * objPage.Click(objWIHomePage.linkedItemsRecord);
-	 * ReportLogger.INFO("Step 22: Verify the VA linked with the WI :"+vANameValue);
-	 * Thread.sleep(5000); String actualVAName =
-	 * objWIHomePage.searchLinkedExemptionOrVA(vANameValue);
-	 * ReportLogger.INFO("Step 23: Click on the link : Details");
-	 * objPage.Click(objWIHomePage.detailsWI);
-	 */
-  	
-  	ReportLogger.INFO("Step : Fetch the Data from the GRID for the Work Item : " +WIName);
-  	HashMap<String, ArrayList<String>> rowData = objWIHomePage.getGridDataForWI(WIName);
+	ReportLogger.INFO("Step : Fetch the Data from the GRID for the Work Item : " +WIName);
+  	HashMap<String, ArrayList<String>> rowData = objWIHomePage.getGridDataForRowString(WIName);
   	
   	String actualRequestTypeName = rowData.get("Request Type").get(0) ;
   	ReportLogger.INFO("Step 24: Verify the Request Type is as per the Naming Convention :"+actualRequestTypeName);

@@ -102,43 +102,18 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		   objPage.Click(objWIHomePage.lnkTABMySubmittedforApproval);
 			
 		   //Search the Work Item Name in the Grid 1st Column
-		   //String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
 		   WebElement actualWIName = objWIHomePage.searchWIinGrid(WIName);
-		   
-		   //objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
-		   //objPage.javascriptClick(objWIHomePage.detailsWI);
-		   
-			/*
-			 * //Validating that 'Use Code' field and 'Date' field gets automatically
-			 * populated in the work item record objWIHomePage.waitForElementToBeVisible(10,
-			 * objWIHomePage.referenceDetailsLabel);
-			 * softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code",
-			 * "Reference Data Details"),"SEC",
-			 * "SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record"
-			 * ); softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date",
-			 * "Information"),"1/1/"+currentRollYear,
-			 * "SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear)
-			 * ;
-			 */
-			
+		   			
 		     ReportLogger.INFO("Step: Fetching Data for Work Item : " + WIName );
-		     HashMap<String, ArrayList<String>> rowData = objWIHomePage.getGridDataForWI(WIName);
+		     HashMap<String, ArrayList<String>> rowData = objWIHomePage.getGridDataForRowString(WIName);
 		   
 			//String actualRequestTypeName = objWIHomePage.searchRequestTypeNameonWIDetails(WIRequestType);
 			String RequestTypeName  = "Disabled Veterans - Direct Review and Update - Initial filing/changes";
 			String actualRequestTypeName = rowData.get("Request Type").get(0) ;
-			  
-			//objPage.Click(objWIHomePage.linkedItemsWI);
-		   //objPage.Click(actualWIName);
-		   //objPage.Click(objWIHomePage.linkedItemsRecord);
-		   //String actualExemptionName = objWIHomePage.searchLinkedExemptionOrVA(newExemptionName);
-			//String actualExemptionName = null;
-		   //Thread.sleep(2000);
 		 		   
 		   ReportLogger.INFO("Step 9: Verifying on new Exemption creation Work Item '"+actualWIName+"' is generated of Request Type : '"+actualRequestTypeName+"'" );
 		   
 		   softAssert.assertEquals(actualWIName.toString(),WIName,"SMAB-T1922:Verify name of WI generated");
-		   //softAssert.assertEquals(actualExemptionName.toString(),newExemptionName,"SMAB-T1922:Verify Exemption Name of WI generated");
 		   softAssert.assertEquals(actualRequestTypeName.toString(),RequestTypeName,"SMAB-T1922:Verify RequestType Name of WI generated");
 
 		   String updateWIStatus = "SELECT Id FROM Work_Item__c where Name = '"+WIName+"'";

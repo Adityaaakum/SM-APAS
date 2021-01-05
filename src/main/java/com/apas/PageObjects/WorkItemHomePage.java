@@ -620,27 +620,7 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	    }
 	    
 	    
-	    /**
-		 * Description: This method will save the grid data in hashmap First Table and RowsIndex  displayed on UI
-		 *
-		 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
-		 */
-		public HashMap<String, ArrayList<String>> getGridDataForWI(String WIName) {
-			
-			int rowIndex=0 ;			
-			List<WebElement> tableRows = driver.findElementsByXPath("//table/tbody//tr") ;			
-			List<WebElement> actualWINames = null;				
-			
-			for(int i = 0; i < tableRows.size(); i++) {
-				
-				actualWINames = driver.findElementsByXPath("//table/tbody/tr["+i+"]/th//a[@title='" + WIName + "' or text()='" + WIName + "']");
-				if(!actualWINames.isEmpty()) {					
-					rowIndex = i;
-					return getGridDataInHashMap(1,rowIndex);
-				}
-			}
-			return null;			 	
-		}
+	
 
 		
 
