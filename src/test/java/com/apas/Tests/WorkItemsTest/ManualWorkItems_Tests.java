@@ -546,7 +546,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  objWorkItemHomePage.waitUntilPageisReady(driver);
 		  
 		  // Step 4: Update Value in workitem details page to update second level supervisor
-		  objWorkItemHomePage.editAndInputFieldData(objWorkItemHomePage.valueTextBox, "21");
+   		  apasGenericObj.editAndInputFieldData(objWorkItemHomePage.valueTextBox,objWorkItemHomePage.valueTextBox, "21");
 		  
 		  //Step 5: Open the Work Item Home Page 
 		  driver.navigate().refresh(); 
@@ -593,7 +593,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  
 		  //steps 9: Validation on after approve by second lavel approval work item should be visible in completed tab
 		  HashMap<String, ArrayList<String>> PrimaryWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-          softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(Workitem), "SMAB-T2474,SMAB-T2475: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab"); 
+          softAssert.assertTrue(PrimaryWorkItems.get("Work item #").contains(Workitem), "SMAB-T2474,SMAB-T2475: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab"); 
 	      objWorkItemHomePage.logout();
      }
     
@@ -656,15 +656,12 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  Thread.sleep(2000);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
 		  objWorkItemHomePage.openWorkItem(Workitem);
-		  String parentWindow = driver.getWindowHandle();
-	      objPage.switchToNewWindow(parentWindow);  
 		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		  Thread.sleep(2000);	  
-		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Current Approver"),ExemptionSupportName,"SMAB-T2476,SMAB-T2477 : Verify Current Approver should be staff user after 'withdraw' the workitem from supervisor level 1");
 		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"In Progress","SMAB-T2476,SMAB-T2477 : Status Of WI Should be In Progress ");
-		  driver.close();
-		  driver.switchTo().window(parentWindow);
+		  driver.navigate().back();
+		  Thread.sleep(2000);
           objWorkItemHomePage.clickCheckBoxForSelectingWI(Workitem);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.btnMarkComplete);
 		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
@@ -693,7 +690,6 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  Thread.sleep(2000);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
 		  objWorkItemHomePage.openWorkItem(Workitem);
-	      objPage.switchToNewWindow(parentWindow);
           objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		  Thread.sleep(2000);	  
@@ -740,7 +736,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
    		  // Step 6: Verify  'withdraw' button on workItem  timeline on parcel page with Submitted for approval status
    		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
    		  softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Submitted for Approval","SMAB-T2479 :Verify Workitem status should be Submitted for Approval");
-   		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2479 :Verify 'Withdraw'should be present Workitem timeline with Submitted for Approval status",true);
+   		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton)), "SMAB-T2479 :Verify 'Withdraw'should be present Workitem timeline with Submitted for Approval status",true);
  		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton));
  		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
  		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
@@ -776,7 +772,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
   		  
    		  // Step 9: Verify  'withdraw' button on workItem  timeline on parcel page with Approval On Hold status
           softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Approval - On Hold","SMAB-T2479 :Verify Workitem status should be Approval -On Hold");
-  		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2479 :Verify 'Withdraw'should be present Workitem timeline with Approval-on Hold status",true);
+  		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton)), "SMAB-T2479 :Verify 'Withdraw'should be present Workitem timeline with Approval-on Hold status",true);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton));
 		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
 		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
@@ -802,7 +798,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
   		  
    		  // Step 11: Verify  'withdraw' button on workItem  timeline on parcel page with Submitted for approval status
   		  softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Submitted for Approval","SMAB-T2480 :Verify Workitem status should be Submitted for Approval");
-  		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2480 :Verify 'Withdraw'should be present Workitem timeline with Submitted for Approval status",true);
+  		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton)), "SMAB-T2480 :Verify 'Withdraw'should be present Workitem timeline with Submitted for Approval status",true);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton));
 		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
 		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
@@ -835,7 +831,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	      // step 13: Verify 'Withdraw' Button should be present on Workitem timeline with Approval On Hold status on Level For level 1 approval
 		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
 		  softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Approval - On Hold","SMAB-T2480 :Verify Workitem status should be Approval -On Hold");
-		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2480 :Verify 'Withdraw' Button should be present on Workitem timeline with 'Approval On Hold' status for Level 1 approval",true);
+		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton)), "SMAB-T2480 :Verify 'Withdraw' Button should be present on Workitem timeline with 'Approval On Hold' status for Level 1 approval",true);
 		  apasGenericObj.logout();
        }
 }
