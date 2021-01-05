@@ -64,6 +64,9 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
 	public WebElement errorMessageFirstScreen;
 	
+	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Legal Description']")
+	public WebElement legalDescriptionFieldSecondScreen;
+	
 	@FindBy(xpath = "//div[@class='body']//div/following-sibling::c-tem_parcel-process-parent-view//div[contains(@class,'message-font slds-align_absolute-center slds-text-color_success')]")
 	public WebElement confirmationMessageOnSecondScreen;
 	
