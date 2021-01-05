@@ -696,8 +696,7 @@ public class Page extends TestBase {
 		return driver.findElement(By.xpath("//label[text()='" + dropDown + "']/..//*[@role='listbox']")).getText().trim();
 	}
 
-
-	/**
+    /**
 	 * Description: Waits until the element goes invisible within given timeout
 	 *
 	 * @param object           : Object to disappear
@@ -718,9 +717,8 @@ public class Page extends TestBase {
 			else
 				break;
 		}
-
 	}
-
+	
 	/**
 	 * Description: returns the webelement based on the label of the element
 	 *
@@ -732,11 +730,13 @@ public class Page extends TestBase {
 		String xpath = commonPath + "//label[text()=\"" + label + "\"]/..//input | " +
 				commonPath + "//input[@name=\"" + label + "\"] | " + //this condition was observed on manual work item creation pop up for edit boxes
 				commonPath + "//*[@class='inputHeader' and contains(.,\"" + label + "\")]/..//Select |"+ //This condition was observed for few drop downs of Select Type
+				commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//a | " + //this condition was observed on Mapping Action screen for Assessor' Map label
 				commonPath + "//label[text()=\"" + label + "\"]/..//textarea";//this condition was added to handle webelements of type textarea
-
+				
 		waitUntilElementIsPresent(xpath, 3);
 		return driver.findElement(By.xpath(xpath));
 	}
+	
 	/**
 	 * Description: returns the web element based on the text of the button
 	 *
@@ -751,6 +751,7 @@ public class Page extends TestBase {
 
 		return driver.findElement(By.xpath(xpath));
 	}
+
 
 	/**
 	 * Description: This method will clear the value from the lookup field
@@ -773,5 +774,4 @@ public class Page extends TestBase {
 		Click(driver.findElement(By.xpath(xpathStr)));
 		Thread.sleep(1000);
 	}
-
 }

@@ -1,8 +1,6 @@
 package com.apas.Tests.DisabledVeteran;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +16,6 @@ import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ValueAdjustmentsPage;
-import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
@@ -70,7 +67,8 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	@Test(description = "SMAB-T2080,SMAB-T2103: APAS system should generate an Annual Exemption amount verification WI on editing/entering few fields in VA", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DV_WorkItem_VA"})
+			groups = {"regression","Work_Item_DV" })
+
 	public void DisabledVeteran_verifyWorkItemGeneratedOnEditingVAFields(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -192,7 +190,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	@Test(description = "SMAB-T2104: APAS system should not generate an Annual Exemption amount verification WI on editing/entering few fields in VA for already opened WI", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DisabledVeteranExemption","DV_WorkItem_VA"})
+			groups = {"regression","DisabledVeteranExemption","Work_Item_DV"})
 	public void DisabledVeteran_verifyWorkItemNotGeneratedOnEditingVAFieldsWithOpenWI(String loginUser) throws Exception {
 		
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -283,7 +281,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	@Test(description = "SMAB-T2093,SMAB-T1979: Approver should be able to Approve the WI - Annual Exemption Amount Verification" , 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DisabledVeteranExemption", "DV_WorkItem_VA"})
+			groups = {"regression","DisabledVeteranExemption", "Work_Item_DV"})
 	public void DisabledVeteran_verifyAnnualExemptionAmountVerificationWIIsApproved(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -395,7 +393,8 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	objWIHomePage.openActionLink(WIName);
   	Thread.sleep(5000);
 	objPage.switchToNewWindow(parentwindow);
-	
+	Thread.sleep(2000);
+
 	softAssert.assertTrue(objPage.verifyElementVisible(ObjValueAdjustmentPage.valueAdjustmentViewAll),
 			"SMAB-T2093: Validation that Value Adjustments label is visible");
 	//driver.close();
@@ -417,10 +416,6 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.lnkTABHome);
   	ReportLogger.INFO("Step 28: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
-	/*
-	 * ReportLogger.INFO("Step 29: Click on the check box - Show RP");
-	 * objPage.Click(objWIHomePage.chkShowRP);
-	 */
   	ReportLogger.INFO("Step 30: Click on the Completed TAB");
   	objPage.Click(objWIHomePage.lnkTABCompleted);
   	ReportLogger.INFO("Step 31: Search work item under the Completed TAB :"+WIName);
@@ -435,7 +430,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	@Test(description = "SMAB-T1986: Approver should be able to Return the WI - Annual Exemption Amount Verification" ,
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DisabledVeteranExemption","DV_WorkItem_VA"})
+			groups = {"regression","DisabledVeteranExemption","Work_Item_DV"})
 	public void DisabledVeteran_verifyAnnualExemptionAmountVerificationWIIsReturned(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -498,10 +493,6 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.lnkTABHome);
   	ReportLogger.INFO("Step 19: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
-	/*
-	 * ReportLogger.INFO("Step 20: Click on the check box - Show RP");
-	 * objPage.Click(objWIHomePage.chkShowRP);
-	 */
   	ReportLogger.INFO("Step 21: Click on the TAB - In Pool");
   	objPage.Click(objWIHomePage.lnkTABInPool);
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
