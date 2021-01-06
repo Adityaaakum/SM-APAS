@@ -4,6 +4,7 @@ import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -242,6 +243,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public WebElement headerLevel2Approver;
     
     public String warningOnAssignLevel2ApproverScreen = "//div[@class='warning']";
+
+    @FindBy(xpath = "//table/thead//tr//th[@aria-label='Work item #']//a//span[@title='Work item #']")
+    public WebElement gridColWorkItemNum;
     
 	public String editButton = "Edit";
 	
@@ -305,16 +309,18 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 **/
 	public void openRelatedActionRecord(String workItem) throws Exception {
 		ReportLogger.INFO("Opening the Related action window linked with work item : " + workItem);
-		String xpath = "//a[@title='" + workItem + "']";
-		waitUntilElementIsPresent(xpath, 15);
-		//waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
+		String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]";
+		String xpath = commonPath + "//a[@title='" + workItem + "'] | " + commonPath + "//a[text()='" + workItem + "']";
+		waitUntilElementIsPresent(xpath, 50);
+		scrollToElement(driver.findElement(By.xpath(xpath)));
 		javascriptClick(driver.findElement(By.xpath(xpath)));
-		Thread.sleep(3000);
-		//Click(detailsTab);
+		Thread.sleep(5000);
 		javascriptClick(detailsTab);
-		scrollToBottom();
+		Thread.sleep(3000);
+		scrollToElement(reviewLink);
+		Thread.sleep(1000);
 		javascriptClick(reviewLink);
-		Thread.sleep(4000);
+		Thread.sleep(5000);
 		objPageObj.waitUntilPageisReady(driver);
 
 	}
@@ -388,6 +394,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 		List<WebElement> actualWINames = null;
 
 		try {
+			
 			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "' or text()='" + WIName + "']");
 			if(actualWINames.isEmpty()) {				
 				String pageMsg = driver.findElementByXPath("//p[@class='slds-m-vertical_medium content']").getText();
@@ -628,4 +635,10 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	        Click(poolNameLocator);
 	        Thread.sleep(2000);
 	    }
+	    
+	    
+	
+
+		
+
 }
