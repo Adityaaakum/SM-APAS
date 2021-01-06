@@ -403,22 +403,11 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	public void DisabledVeteran_verifyLevel2ApproverIsAbleToAssignWorkItem(String loginUser) throws Exception {
 
 	  	ReportLogger.INFO("Get the user names through SOQL query");
-	  	String rpBusinessAdmin = CONFIG.getProperty(users.RP_BUSINESS_ADMIN + "UserName");
-	  	String rpBusinessAdminNameQuery = "select Name from User where UserName__c = '"+ rpBusinessAdmin + "'";
-		HashMap<String, ArrayList<String>> response = new SalesforceAPI().select(rpBusinessAdminNameQuery);
-	    String rpBusinessAdminName = response.get("Name").get(0);
-	    
-	  	String mappingStaff = CONFIG.getProperty(users.MAPPING_STAFF + "UserName");
-	  	String mappingStaffNameQuery = "select Name from User where UserName__c = '"+ mappingStaff + "'";
-	  	HashMap<String, ArrayList<String>> response1 = new SalesforceAPI().select(mappingStaffNameQuery);
-	    String mappingStaffName = response1.get("Name").get(0);
-	  	
-	    String dataAdmin = CONFIG.getProperty(users.DATA_ADMIN + "UserName");
-	  	String dataAdminQuery = "select Name from User where UserName__c = '"+ dataAdmin + "'";
-	  	HashMap<String, ArrayList<String>> response2 = new SalesforceAPI().select(dataAdminQuery);
-	    String dataAdminName = response2.get("Name").get(0);
-		
-	    String expectedIndividualFieldMessage = "Complete this field.";
+	  	String rpBusinessAdminName = salesforceAPI.getUserName(users.RP_BUSINESS_ADMIN);
+   		String dataAdminName = salesforceAPI.getUserName(users.DATA_ADMIN);
+   		String mappingStaffName = salesforceAPI.getUserName(users.MAPPING_STAFF);
+   		
+	  	String expectedIndividualFieldMessage = "Complete this field.";
 	  	String warningMsgOnAssignLevel2Approver = "warning\nYou are already the 2nd Level approver on one or more of the selected work items. If you want to delegate 2nd Level approval, then select a different user.";
 	  	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 		
@@ -441,7 +430,6 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	    objApasGenericPage.logout();
 	    Thread.sleep(5000);
 	    
-	
 	    //Step5: Login to the APAS application through RP Business Admin
 	    objApasGenericPage.login(users.RP_BUSINESS_ADMIN);
 	  	
@@ -474,15 +462,15 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	    softAssert.assertTrue(!objWIHomePage.verifyElementExists(objWIHomePage.warningOnAssignLevel2ApproverScreen),
 				"SMAB-T2558: Validate the warning message isn't displayed on the pop-up screen");
 	   
-	    objWIHomePage.enter(objWIHomePage.getWebElementWithLabel("Level2 Approver"), "");
+	    objWIHomePage.enter(objWIHomePage.getWebElementWithLabel(objWIHomePage.wiLevel2ApproverDetailsPage), "");
 	    objWIHomePage.Click(objWIHomePage.getButtonWithText(objWIHomePage.SaveButton));
-		softAssert.assertEquals(objWIHomePage.getIndividualFieldErrorMessage("Level2 Approver"),expectedIndividualFieldMessage,
+		softAssert.assertEquals(objWIHomePage.getIndividualFieldErrorMessage(objWIHomePage.wiLevel2ApproverDetailsPage),expectedIndividualFieldMessage,
 				"SMAB-T2556: Validate that 'Level2 Approver' is a mandatory field");
-	    objWIHomePage.searchAndSelectOptionFromDropDown("Level2 Approver", mappingStaffName);
+	    objWIHomePage.searchAndSelectOptionFromDropDown(objWIHomePage.wiLevel2ApproverDetailsPage, mappingStaffName);
 	    
 	    String successMessage = objWIHomePage.saveRecord();
 		softAssert.assertEquals(successMessage,"success\nSuccess\nWork item(s) processed successfully!\nClose","SMAB-T2556 : Validate user is able to assign the WI" );
-		objWIHomePage.waitForElementToBeVisible(6, objPage.getButtonWithText(objWIHomePage.assignLevel2Approver));
+		objWIHomePage.waitForElementToBeClickable(6, objPage.getButtonWithText(objWIHomePage.assignLevel2Approver));
 		
 		//Step11: Verify the Status and Supervisor details in WI
 	  	ReportLogger.INFO("Verify the Status and Supervisor details in WI");
@@ -491,16 +479,16 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	  	objWIHomePage.Click(objWIHomePage.detailsTab);
 	  	objWIHomePage.waitForElementToBeVisible(6, objWIHomePage.referenceDetailsLabel);
 	
-		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS("Status", "Information"),"Submitted for Approval",
+		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS(objWIHomePage.wiStatus, "Information"),"Submitted for Approval",
 						"SMAB-T2554: Validate the status of Work Item");
 		
-		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS("Approver", "Approval & Supervisor Details"),rpBusinessAdminName,
+		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS(objWIHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
 				"SMAB-T2554: Validate the Approver on the Work Item");
 		
-		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS("Level2 Approver", "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS(objWIHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
 				"SMAB-T2554: Validate the Level2 Approver on the Work Item");
 	
-		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS("Current Approver", "Approval & Supervisor Details"),rpBusinessAdminName,
+		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS(objWIHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
 				"SMAB-T2554: Validate the Current Approver on the Work Item");
 		
 		//Step12: Select & Approve the WI
@@ -527,16 +515,16 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	  	objWIHomePage.Click(objWIHomePage.detailsTab);
 	  	objWIHomePage.waitForElementToBeVisible(6, objWIHomePage.referenceDetailsLabel);
 	
-		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS("Status", "Information"),"Submitted for Approval",
+		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS(objWIHomePage.wiStatus, "Information"),"Submitted for Approval",
 				"SMAB-T2556: Validate the status of Work Item");
 
-		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS("Approver", "Approval & Supervisor Details"),rpBusinessAdminName,
+		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS(objWIHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
 				"SMAB-T2556: Validate the Approver on the Work Item");
 
-		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS("Level2 Approver", "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS(objWIHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
 				"SMAB-T2556: Validate the Level2 Approver on the Work Item");
 
-		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS("Current Approver", "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS(objWIHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
 				"SMAB-T2556: Validate the Current Approver on the Work Item");
 		
 		//Step14: Logout from the application
@@ -569,17 +557,17 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 				"SMAB-T2556: Validate the header of the pop-up screen");
 	    softAssert.assertEquals(objPage.getElementText(objWIHomePage.warningOnAssignLevel2Approver),warningMsgOnAssignLevel2Approver,
 				"SMAB-T2558: Validate the warning message is displayed on the pop-up screen");
-	    objWIHomePage.enter(objWIHomePage.getWebElementWithLabel("Level2 Approver"), "");
+	    objWIHomePage.enter(objWIHomePage.getWebElementWithLabel(objWIHomePage.wiLevel2ApproverDetailsPage), "");
 	    objWIHomePage.Click(objWIHomePage.getButtonWithText(objWIHomePage.SaveButton));
-		softAssert.assertEquals(objWIHomePage.getIndividualFieldErrorMessage("Level2 Approver"),expectedIndividualFieldMessage,
+		softAssert.assertEquals(objWIHomePage.getIndividualFieldErrorMessage(objWIHomePage.wiLevel2ApproverDetailsPage),expectedIndividualFieldMessage,
 				"SMAB-T2556: Validate that 'Level2 Approver' is a mandatory field");
 
-	    objWIHomePage.searchAndSelectOptionFromDropDown("Level2 Approver", dataAdminName);
+	    objWIHomePage.searchAndSelectOptionFromDropDown(objWIHomePage.wiLevel2ApproverDetailsPage, dataAdminName);
 	    
 	    String successMessage2 = objWIHomePage.saveRecord();
 		softAssert.assertEquals(successMessage2,"success\nSuccess\nWork item(s) processed successfully!\nClose",
 				"SMAB-T2556 : Validate user is able to assign the WI" );
-		objWIHomePage.waitForElementToBeVisible(6, objPage.getButtonWithText(objWIHomePage.assignLevel2Approver));
+		objWIHomePage.waitForElementToBeClickable(6, objPage.getButtonWithText(objWIHomePage.assignLevel2Approver));
 		
 		//Step20: Search for the Work Item and select the checkbox and then approve it
 		objWIHomePage.clickCheckBoxForSelectingWI(WIName);
@@ -629,16 +617,16 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	  	objWIHomePage.Click(objWIHomePage.detailsTab);
 	  	objWIHomePage.waitForElementToBeVisible(6, objWIHomePage.referenceDetailsLabel);
 		
-		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS("Status", "Information"),"Completed",
+		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS(objWIHomePage.wiStatus, "Information"),"Completed",
 				"SMAB-T2556: Validate the status of Work Item");
 
-		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS("Approver", "Approval & Supervisor Details"),rpBusinessAdminName,
+		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS(objWIHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
 				"SMAB-T2556: Validate the Approver on the Work Item");
 
-		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS("Level2 Approver", "Approval & Supervisor Details"),dataAdminName,
+		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS(objWIHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),dataAdminName,
 				"SMAB-T2556: Validate the Level2 Approver on the Work Item");
 
-		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS("Current Approver", "Approval & Supervisor Details"),dataAdminName,
+		softAssert.assertEquals(objWIHomePage.getFieldValueFromAPAS(objWIHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),dataAdminName,
 				"SMAB-T2556: Validate the Current Approver on the Work Item");
 		
 		
@@ -652,16 +640,25 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	    //Step28: Opening the Work Item Module
 	    objApasGenericPage.searchModule(modules.HOME);
 	    
-	    //Step29: Click on the Main TAB - Home followed by Completed tab
+	    //Step29: Click on the Main TAB - Home
 	  	ReportLogger.INFO("Click on the Main TAB - Home");
 	  	objPage.Click(objWIHomePage.lnkTABHome);
 	  	ReportLogger.INFO("Click on the Sub  TAB - Work Items");
 	  	objPage.Click(objWIHomePage.lnkTABWorkItems);
-	  	ReportLogger.INFO("Click on the check box - Show RP");
+	  	
+	  	//Step30: Verify that the WI is present in the Completed tab
+	  	softAssert.assertTrue(!objWIHomePage.verifyElementExists(objWIHomePage.assignLevel2ApproverBtn),
+	 			"SMAB-T2556: Validate that 'Assign Level2 Approver' button is not visible");
+	  	
+	    //Step31: Click on the Completed tab
 	  	ReportLogger.INFO("Click on the TAB - Completed");
 	  	objPage.Click(objWIHomePage.lnkTABCompleted);
 	  	
-	    //Step30: Verify that the WI is present in the Completed tab
+	  	//Step32: Verify that the WI is present in the Completed tab
+	  	softAssert.assertTrue(!objWIHomePage.verifyElementExists(objWIHomePage.assignLevel2ApproverBtn),
+	 			"SMAB-T2556: Validate that 'Assign Level2 Approver' button is not visible");
+	  	
+	    //Step33: Verify that the WI is present in the Completed tab
 	  	ReportLogger.INFO("Verify that the WI is present in the Completed tab");
 	  	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
 	  	softAssert.assertEquals(actualWIName, WIName, "SMAB-T2556: Validate that the WI is present in the Completed tab");
