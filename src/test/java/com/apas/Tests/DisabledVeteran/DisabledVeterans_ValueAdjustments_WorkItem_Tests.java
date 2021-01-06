@@ -138,6 +138,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	
   	ReportLogger.INFO("Step 19: Click on the SUB TAB - In POOL");
   	objPage.Click(objWIHomePage.lnkTABInPool);
+
   	ReportLogger.INFO("Step 20: Search and select the Work Item from the Grid : "+WIName);
   	WebElement actualWIName = objWIHomePage.searchWIinGrid(WIName);
   	
@@ -518,10 +519,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.lnkTABHome);
   	ReportLogger.INFO("Step 30: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
-	/*
-	 * ReportLogger.INFO("Step 31: Click on the check box - Show RP");
-	 * objPage.Click(objWIHomePage.chkShowRP);
-	 */
+
   	ReportLogger.INFO("Step 32: Click on the TAB - In Progress");
   	objPage.Click(objWIHomePage.lnkTABInProgress);
   	ReportLogger.INFO("Step 33: Search the work item in the Grid :"+WIName);

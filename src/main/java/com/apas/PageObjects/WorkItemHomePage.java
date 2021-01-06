@@ -296,16 +296,18 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 **/
 	public void openRelatedActionRecord(String workItem) throws Exception {
 		ReportLogger.INFO("Opening the Related action window linked with work item : " + workItem);
-		String xpath = "//a[@title='" + workItem + "']";
-		waitUntilElementIsPresent(xpath, 15);
-		//waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
+		String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]";
+		String xpath = commonPath + "//a[@title='" + workItem + "'] | " + commonPath + "//a[text()='" + workItem + "']";
+		waitUntilElementIsPresent(xpath, 50);
+		scrollToElement(driver.findElement(By.xpath(xpath)));
 		javascriptClick(driver.findElement(By.xpath(xpath)));
-		Thread.sleep(3000);
-		//Click(detailsTab);
+		Thread.sleep(5000);
 		javascriptClick(detailsTab);
-		scrollToBottom();
+		Thread.sleep(3000);
+		scrollToElement(reviewLink);
+		Thread.sleep(1000);
 		javascriptClick(reviewLink);
-		Thread.sleep(4000);
+		Thread.sleep(5000);
 		objPageObj.waitUntilPageisReady(driver);
 
 	}
