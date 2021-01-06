@@ -187,6 +187,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public WebElement vaRollYear;
 
 	public String submittedForApprovalTimeline = "Submitted for Approval";
+	
+	@FindBy(xpath = "//div[@class='warning']")
+	public WebElement warningOnAssignLevel2Approver;
 
 	@FindBy(xpath="//span[text()='Submitted for Approval']")
 	public WebElement submittedforApprovalTimeline;
@@ -237,9 +240,6 @@ public class WorkItemHomePage extends ApasGenericPage {
     
     @FindBy(xpath = "//h2[@class='slds-modal__title slds-hyphenate']")
 	public WebElement headerLevel2Approver;
-    
-    @FindBy(xpath = "//div[@class='warning']")
-	public WebElement warningOnAssignLevel2Approver;
     
     public String warningOnAssignLevel2ApproverScreen = "//div[@class='warning']";
     

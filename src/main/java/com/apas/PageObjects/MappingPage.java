@@ -155,4 +155,5 @@ public class MappingPage extends ApasGenericPage {
 	 */
 	public String confirmationMsgOnSecondScreen() throws Exception {
 		return getElementText(waitForElementToBeClickable(20, confirmationMessageOnSecondScreen));
-	}}
+	}
+}
