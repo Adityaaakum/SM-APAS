@@ -4,6 +4,7 @@ import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -232,6 +233,9 @@ public class WorkItemHomePage extends ApasGenericPage {
     @FindBy(xpath = "//div[contains(@class,'slds-media__body')]//slot/lightning-formatted-text[contains(text(),'WI-')]")
 	public WebElement getWorkItem;
     
+    @FindBy(xpath = "//table/thead//tr//th[@aria-label='Work item #']//a//span[@title='Work item #']")
+    public WebElement gridColWorkItemNum;
+    
 	public String editButton = "Edit";
 	
 	public String wiActionDetailsPage = "Action";
@@ -377,6 +381,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 		List<WebElement> actualWINames = null;
 
 		try {
+			
 			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "' or text()='" + WIName + "']");
 			if(actualWINames.isEmpty()) {				
 				String pageMsg = driver.findElementByXPath("//p[@class='slds-m-vertical_medium content']").getText();
@@ -615,4 +620,10 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	        Click(poolNameLocator);
 	        Thread.sleep(2000);
 	    }
+	    
+	    
+	
+
+		
+
 }

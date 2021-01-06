@@ -168,8 +168,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2075:Verify User is able to view 'Roll Code' and 'Date' fields getting automatically populated in the work item record linked to a BPP Account", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-			"regression","work_item_manual"  })
+	@Test(description = "SMAB-T2075:Verify User is able to view 'Roll Code' and 'Date' fields getting automatically populated in the work item record linked to a BPP Account", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"  }, enabled = false)
 	public void WorkItems_VerifyLinkedBPPAccountUseCode_DateFields(String loginUser) throws Exception {
 		
 		// fetching a BPP account where Roll code  is not blank 
@@ -257,7 +256,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	/**
 	 * This method is to verify that user gets prior date of value sequencing restriction warning message for BPP Accounts
 	 */
-	@Test(description = "SMAB-T2220: Verify that user gets the warning message when trying to accept the work item with prior DOV for BPP Accounts", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"})
+	@Test(description = "SMAB-T2220: Verify that user gets the warning message when trying to accept the work item with prior DOV for BPP Accounts", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"}, enabled = false)
 	public void WorkItems_BPPAccounts_PriorDateOfValueSequencing(String loginUser) throws Exception {
 
 		String queryBPPAccountValue = "SELECT Name FROM BPP_Account__c where Status__C = 'Active' limit 1";
@@ -456,7 +455,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	/**
 	 * Verify that work items are routed correctly as per the work item routing drop down for Parcels
 	 */
-	@Test(description = "SMAB-T1987,SMAB-T1990,SMAB-T1991: Verify that work items are routed correctly as per the work item routing drop down for BPP Account", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"})
+	@Test(description = "SMAB-T1987,SMAB-T1990,SMAB-T1991: Verify that work items are routed correctly as per the work item routing drop down for BPP Account", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"}, enabled = false)
 	public void WorkItems_BPPAccount_ManualWorkItemRouting(String loginUser) throws Exception {
 		String workPool = "BPP Admin";
 

@@ -44,7 +44,9 @@ public class MappingPage extends ApasGenericPage {
 	public String generateParcelButton = "Generate Parcel";
 	public String parentAPNEditButton = "Edit";
 	public String previousButton = "Previous";
-
+	public String retireButton = "Retire Parcel (s)";
+	public String assessorMapLabel = "Assessor's Map";
+	public String taxField = "//label[text()='Are taxes fully paid?']";
 	public String saveButton = "Save";
 
 	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
@@ -61,7 +63,13 @@ public class MappingPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
 	public WebElement errorMessageFirstScreen;
-
+	
+	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Legal Description']")
+	public WebElement legalDescriptionFieldSecondScreen;
+	
+	@FindBy(xpath = "//div[@class='body']//div/following-sibling::c-tem_parcel-process-parent-view//div[contains(@class,'message-font slds-align_absolute-center slds-text-color_success')]")
+	public WebElement confirmationMessageOnSecondScreen;
+	
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
 	 * @param dataMap: A data map which contains data to perform  mapping action
@@ -126,7 +134,7 @@ public class MappingPage extends ApasGenericPage {
 			return "No error message is displayed on page";
 		
 	}
-	
+
 	public void remapActionForm(Map<String, String> dataMap) throws Exception {
 		String action = dataMap.get("Action");
 		String reasonCode = dataMap.get("Reason code");
@@ -140,5 +148,15 @@ public class MappingPage extends ApasGenericPage {
 		if (comments != null)
 			enter(commentsTextBoxLabel, comments);
 		Click(getButtonWithText(nextButton));
+
+	}
+	
+	/**
+	 * Description: this method is to get the confirmation message after mapping action is completed
+	 * 	 
+	 * @throws: Exception
+	 */
+	public String confirmationMsgOnSecondScreen() throws Exception {
+		return getElementText(waitForElementToBeClickable(20, confirmationMessageOnSecondScreen));
 	}
 }

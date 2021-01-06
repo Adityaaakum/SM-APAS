@@ -22,7 +22,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class Parcel_Management_MappingAction_Tests extends TestBase implements testdata, modules, users {
+public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
@@ -55,16 +55,16 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
-		
+
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
-		
+
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
-		
+
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
 
-		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"'").get("Name").get(0);
+		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"')").get("Name").get(0);
 		String legalDescriptionValue=salesforceAPI.select("SELECT Short_Legal_Description__c FROM Parcel__c where Short_Legal_Description__c !=NULL limit 1").get("Short_Legal_Description__c").get(0);
 		String districtValue=salesforceAPI.select("SELECT District__c FROM Parcel__c where District__c !=Null limit 1").get("District__c").get(0);
 
@@ -117,6 +117,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 				"SMAB-T2481: Validation that reason code field is auto populated from parent parcel work item");
 
 		//Step 7: Validating help icons
+		objMappingPage.scrollToBottomOfPage();
 		objMappingPage.Click(objMappingPage.helpIconFirstNonCondoParcelNumber);
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use system generated APN, leave as blank.",
 				"SMAB-T2481: Validation that help text is generated on clicking the help icon for First non-Condo Parcel text box");
@@ -146,7 +147,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 				"SMAB-T2488: Validation that child APN number ends with 0");
 
 		//Step 10: Validation of ALL fields THAT ARE displayed on second screen
-		
+
 		softAssert.assertEquals(gridDataHashMap.get("District").get(0),districtValue,
 				"SMAB-T2481: Validation that  System populates District  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue.replaceFirst("\\s", ""),"SMAB-T2481: Validation that  System populates Situs  from the parent parcel");
@@ -160,10 +161,12 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 				"SMAB-T2481: Validation that  System populates TRA from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
 				"SMAB-T2481: Validation that  System populates Use Code  from the parent parcel");
-		
+
 		//Step 11 :Verify that User is able to to create a district, Use Code for the child parcel from the custom screen after performing one to one mapping action
 		objMappingPage.editGridCellValue(objMappingPage.districtColumnSecondScreen,"Distrct 001");
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 		objMappingPage.editGridCellValue(objMappingPage.useCodeColumnSecondScreen,"001vacant");
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 
 		//Step 13 :Clicking generate parcel button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
@@ -184,7 +187,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 				"SMAB-T2486: Verify that User is able to to create a Use Code for the child parcel from the custom screen ");
 		softAssert.assertEquals(gridDataHashMap.get("District").get(0),"Distrct 001",
 				"SMAB-T2486: Verify that User is able to to create a  district for the child parcel from the custom screen ");
-		
+
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 
@@ -268,25 +271,35 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.firstNonCondoTextBoxLabel),"value"),"010-234-561",
 				"SMAB-T2482: Validation that User should be allowed to enter the 9 digit APN without the \"-\" in first non condo number field");
 
+		objMappingPage.scrollToBottomOfPage();
+
 		//Step 10: Validation that proper error message is displayed if a parcel number starting from 100 is entered in non condo number field
-		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"100234561"),"Non Condo Parcel Number cannot start with 100, Please enter valid Parcel Number",
+		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"100-234-561"),"Non Condo Parcel Number cannot start with 100, Please enter valid Parcel Number",
 				"SMAB-T2485: Validation that proper error message is displayed if a parcel number starting from 100 is entered in non condo number field");
 
 		//Step 11: Validation that no error message is displayed if a parcel number starting from 134 is entered in non condo number field
-		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"134234561"),"No error message is displayed on page",
-				"SMAB-T2485: Validation that no error message is displayed if a parcel number starting from 134 is entered in non condo number field");		
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "134-234-561");
+		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.legalDescriptionTextBoxLabel));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		Thread.sleep(6000);
+		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(objMappingPage.previousButton)),
+				"SMAB-T2485: Validation that no error message is displayed on first screen if a parcel number starting from 134 is entered in non condo number field");		
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
 
-		//Step 12: Validation that no error message is displayed if a parcel number starting from 800 is entered in non condo number field
-		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"800234561"),"No error message is displayed on page",
-				"SMAB-T2485: Validation that no error message is displayed if a parcel number starting from 800 is entered in non condo number field");
-		Thread.sleep(10000);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
-
-		//Step 13: Validation that proper  error message is displayed if an alphanummeric parcel number is entered in non condo number field
+		//Step 12: Validation that proper  error message is displayed if an alphanummeric parcel number is entered in non condo number field
+		objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"abc123123abc");
 		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"abc123123abc"),"This parcel number is not valid, it should contain 9 digit numeric values.",
 				"SMAB-T2484: Validation that proper error message is displayed if an alphanummeric parcel number is entered in non condo number field");
+
+		//Step 13: Validation that no error message is displayed if a parcel number starting from 800 is entered in non condo number field
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "800-234-561");
+		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.legalDescriptionTextBoxLabel));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		Thread.sleep(6000);
+		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(objMappingPage.previousButton)),
+				"SMAB-T2485: Validation that no error message is displayed on first screen if a parcel number starting from 800 is entered in non condo number field");		
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
+		objMappingPage.scrollToBottomOfPage();
 
 		//Step 14: Validation that proper  error message is displayed if parcel number  not of Nine digits is entered in non condo number field
 		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"010123"),"This parcel number is not valid, it should contain 9 digit numeric values.",
@@ -305,17 +318,17 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyOneToOneMappingActionCondoMobileHomeParcels(String loginUser,String parcelType) throws Exception {
 		if(parcelType.equals("Condo_Parcel"))
-			 apnPrefix="100";
+			apnPrefix="100";
 		if(parcelType.equals("Mobile_Home_Parcel"))
-			 apnPrefix="134";
+			apnPrefix="134";
 
 		String queryAPN  = "Select name,ID  From Parcel__c where name like '"+apnPrefix+"%' AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
-		
+
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
-		
+
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 
@@ -373,6 +386,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 				"SMAB-T2544: Validation that reason code field is auto populated from parent parcel work item");
 
 		//Step 7: Validating help icons
+		objMappingPage.scrollToBottomOfPage();
 		objMappingPage.Click(objMappingPage.helpIconFirstNonCondoParcelNumber);
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use system generated APN, leave as blank.",
 				"SMAB-T2544: Validation that help text is generated on clicking the help icon for First non-Condo Parcel text box");
@@ -403,7 +417,9 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 
 		//Step 10 :Verify that User is able to to edit reason code and legal description for the child parcel from the custom screen after performing one to one mapping action
 		objMappingPage.editGridCellValue(objMappingPage.legalDescriptionColumnSecondScreen,"Legal Description PM/01");
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 		objMappingPage.editGridCellValue(objMappingPage.reasonCodeColumnSecondScreen,"ReasonCode Test");
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 
 		//Step 12 :Clicking generate parcel button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
@@ -427,20 +443,20 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		objWorkItemHomePage.logout();
 
 	}
-	
+
 	@Test(description = "SMAB-T2490,SMAB-T2436,SMAB-T249:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyRemapMappingActionForMultipleParcels(String loginUser) throws Exception {
-       ArrayList<String> APNs=objMappingPage.fetchActiveAPN(2);
+		ArrayList<String> APNs=objMappingPage.fetchActiveAPN(2);
 		String activeParcelToPerformMapping=APNs.get(0);
 		String activeParcelToPerformMapping2=APNs.get(1);
-		
+
 		// fetching  parcel that is retired 		
 		String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		String retiredAPNValue= response.get("Name").get(0);
 
-				
+
 		String mappingActionCreationData = System.getProperty("user.dir") + testdata.REMAP_MAPPING_ACTION;
 		Map<String, String> remapMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformRemapMappingAction");
@@ -448,7 +464,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
-		
+
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
 
@@ -458,7 +474,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 
 		// Step 3: Creating Manual work item for the Parcel 
 		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
-		
+
 		//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
@@ -473,8 +489,8 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2490: Validation that proper error message is displayed if parent parcel is retired");
-		
-	
+
+
 		//Step 6: entering data in form for remap 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,activeParcelToPerformMapping + ","+ activeParcelToPerformMapping2);
@@ -483,28 +499,28 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();	
-		
+
 		//Step 7: Verifying whether the Remap action is performed for multiple parcels and total number of parcel generated are equal to number of parent parcels
 		softAssert.assertEquals(gridDataHashMap.get("APN").size(),2,
 				"SMAB-T2536: Verify that after remap total number of parcel generated are equal to number of parent parcels");
-        driver.switchTo().window(parentWindow);
-        
-        //Step 8: Logout
-	      objWorkItemHomePage.logout();
+		driver.switchTo().window(parentWindow);
+
+		//Step 8: Logout
+		objWorkItemHomePage.logout();
 
 	}
-	
+
 	/**
 	 * This method is to Verify that User is able to perform a "Remap" mapping action for a Parcel from a work item
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2490,SMAB-T2493,SMAB-T2532,SMAB-T2535,SMAB-T2531,SMAB-2533:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2490,SMAB-T2493,SMAB-T2532,SMAB-T2535,SMAB-T2531,SMAB-T2533:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyRemapMappingAction(String loginUser) throws Exception {
 		String activeParcelToPerformMapping=objMappingPage.fetchActiveAPN();
 		String activeParcelWithoutHyphen=activeParcelToPerformMapping.replace("-","");
-		
+
 		// fetching  parcel that is retired 		
 		String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
@@ -513,7 +529,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		queryAPNValue = "select Name from Parcel__c where Status__c='In Progress' limit 1";
 		response = salesforceAPI.select(queryAPNValue);
 		String inProgressAPNValue= response.get("Name").get(0);	
-				
+
 		String mappingActionCreationData = System.getProperty("user.dir") + testdata.REMAP_MAPPING_ACTION;
 		Map<String, String> remapMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformRemapMappingAction");
@@ -521,7 +537,7 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
-		
+
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
 
@@ -565,37 +581,37 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 		//Step 8: Validating that reason code field is auto populated from parent parcel work item
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
 				"SMAB-T2490: Validation that reason code field is auto populated from parent parcel work item");
-		
+
 		//Step 9: Verifying that proper error message is displayed if alphanumeric value  is entered in First non condo parcel field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "123-45*-78&");
 		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));		
 		softAssert.assertEquals(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
 				"SMAB-T2493: Validation that proper error message is displayed if alphanumeric value  is entered in First non condo parcel field");
-		
+
 		//Step 10:Verifying that proper error message is displayed if less than 9 disgits are entered in First non condo parcel field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "123-456-78");
 		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));		
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"Parcel Number has to be 9 digit, please enter valid parcel number",
 				"SMAB-T2493: Validation that proper error message is displayed if less than 9 disgits are entered in First non condo parcel field");
-		
+
 		//Step 11:Verifying that proper error message is displayed if parcel starting with 100 is entered in First non condo parcel field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "100-456-789");
 		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));		
 		softAssert.assertEquals(objMappingPage.getErrorMessage(),"Non Condo Parcel Number cannot start with 100 or 134, Please enter valid Parcel Number",
 				"SMAB-T2531: Validation that proper error message is displayed if parcel starting with 100 is entered in First non condo parcel field");
-		
+
 		//Step 12:Verifying that proper error message is displayed if parcel starting with 134 is entered in First non condo parcel field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "134-456-789");
 		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));		
 		softAssert.assertEquals(objMappingPage.getErrorMessage(),"Non Condo Parcel Number cannot start with 100 or 134, Please enter valid Parcel Number",
 				"SMAB-T2531: Validation that proper error message is displayed if parcel starting with 134 is entered in First non condo parcel field");
-		
+
 		//Step 13: Verifying that User should be allowed to enter the 9 digit APN without the \"-\" in First Non Condo Parcel Field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, activeParcelWithoutHyphen);
 		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));	
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.firstNonCondoTextBoxLabel),"value"),activeParcelToPerformMapping,
 				"SMAB-T2535: Validation that User should be allowed to enter the 9 digit APN without the \"-\" in First Non Condo Parcel Field");
-	
+
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, " ");
 		//Step 14: entering data in form for remap 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
@@ -619,10 +635,10 @@ public class Parcel_Management_MappingAction_Tests extends TestBase implements t
 				"SMAB-T2533: Validation that child APN number ends with 0");
 
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();	
-        driver.switchTo().window(parentWindow);
-        
-        //Step 16: Logout
-	      objWorkItemHomePage.logout();
+		driver.switchTo().window(parentWindow);
+
+		//Step 16: Logout
+		objWorkItemHomePage.logout();
 
 	}
 }
