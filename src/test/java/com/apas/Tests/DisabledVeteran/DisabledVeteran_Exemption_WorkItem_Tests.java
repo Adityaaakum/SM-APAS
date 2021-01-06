@@ -105,8 +105,8 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		   //Search the Work Item Name in the Grid 1st Column
 		   String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
 			
-		   objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
-		   objPage.Click(objWIHomePage.detailsWI);
+		   objPage.waitForElementToBeClickable(objWIHomePage.detailsTab);
+           objWIHomePage.Click(objWIHomePage.detailsTab);
 			 //Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record
 		   objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
 			softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC",

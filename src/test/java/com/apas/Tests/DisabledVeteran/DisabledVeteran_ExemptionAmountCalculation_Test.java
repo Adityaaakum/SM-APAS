@@ -96,9 +96,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 			
 		//Step7: Clicking on 'Active' Value Adjustment link
 		String xpPathActiveVA = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//tr["+(VARowNo+1)+"]//span[contains(text(),'Active')]//..//..//preceding-sibling::th//a";
-			
-		WebElement vaLink = objPage.waitForElementToBeClickable(20, xpPathActiveVA);
-		
+		WebElement vaLink = objPage.waitForElementToBeClickable(50, xpPathActiveVA);
 		String vANAme = objPage.getElementText(vaLink);
 		ReportLogger.INFO("Clicking on Value Adjustment Link: "+ vANAme);
 		objPage.Click(vaLink);

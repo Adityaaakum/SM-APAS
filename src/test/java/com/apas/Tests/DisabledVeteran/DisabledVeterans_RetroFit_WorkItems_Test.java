@@ -168,27 +168,27 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		workItemPageObj.acceptWorkItem(reminderWINumber);
 		objPage.Click(workItemPageObj.lnkTABInProgress);
 		objPage.scrollToBottom();
-		String parentwindow = driver.getWindowHandle();
+		
 		//SMAB-T2087 opening the action link to validate that link redirects to Exemption Limits Record Details page 
 		workItemPageObj.openActionLink(reminderWINumber);
-		objPage.switchToNewWindow(parentwindow);
 		
 		softAssert.assertTrue(objPage.verifyElementVisible(workItemPageObj.editBtn),
 				"SMAB-T2087: Validation that edit button is visible");
 		softAssert.assertTrue(objPage.verifyElementVisible(rpslObj.realPropertySettingsLibraryHeaderText),
 				"SMAB-T2087: Validation that Real Property Settings Library label is visible");
-		softAssert.assertTrue(objPage.verifyElementVisible(rpslObj.getRPSLRecord("2021")),
+		softAssert.assertTrue(objPage.verifyElementVisible(rpslObj.getExemptionLimitLabelName("2021")),
 				"SMAB-T2087: Validation that Exemption Limits label is present");
 		
-		driver.close();
-		driver.switchTo().window(parentwindow);
-		 parentwindow = driver.getWindowHandle();
+		driver.navigate().back();
+		Thread.sleep(1000);
+		objPage.scrollToBottom();
+		
+		String parentwindow = driver.getWindowHandle();
 		workItemPageObj.openRelatedActionRecord(reminderWINumber);
+		objPage.switchToNewWindow(parentwindow);
 		
 		// step4a: editing the record and submitting it
-		objPage.switchToNewWindow(parentwindow);
 		objPage.javascriptClick(workItemPageObj.editBtn);
-		
 		objPage.enter(rpslObj.dvLowIncomeExemptionAmountEditBox, "217910");
 		objPage.enter(rpslObj.dvBasicIncomeExemptionAmountEditBox, "145273");
 		objPage.enter(rpslObj.dvLowIncomeHouseholdLimitEditBox, "65337");
@@ -204,7 +204,8 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		ReportLogger.INFO("Now verifying that WI is also submitted upon submitting the corresponding RPSL");
 		driver.navigate().refresh();
 		Thread.sleep(5000);
-		objPage.Click(workItemPageObj.detailsWI);
+		objPage.waitForElementToBeClickable(workItemPageObj.detailsTab);
+		workItemPageObj.Click(workItemPageObj.detailsTab);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage, 5);
 		
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Submitted for Approval","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
@@ -246,7 +247,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		
 		driver.navigate().back();
 		driver.navigate().refresh();
-		Thread.sleep(2000);
+		Thread.sleep(3000);
 		
 		//Step8: Validate WI details on the Home Page
 		ReportLogger.INFO("Validate the Work Item details on the Home page");
@@ -255,7 +256,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		String reminderSubmittedWINumber = reminderSubmittedWI.get("Work item #").get(reminderSubmittedWIRowNumber);
 		
 		softAssert.assertEquals(reminderSubmittedWI.get("Request Type").get(reminderSubmittedWIRowNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
-		softAssert.assertEquals(reminderSubmittedWI.get("Work Pool Name").get(reminderSubmittedWIRowNumber),"Disabled Veterans","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
+		softAssert.assertEquals(reminderSubmittedWI.get("Work Pool").get(reminderSubmittedWIRowNumber),"Disabled Veterans","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(reminderSubmittedWINumber, reminderWINumber,"SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(reminderSubmittedWI.get(workItemPageObj.wiDateDetailsPage).get(reminderSubmittedWIRowNumber),currentRollYear + "-01-01","SMAB-T1838: Validate user is able to view the date under 'Date' column");
 		
@@ -291,22 +292,19 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		
 		ReportLogger.INFO("Returning the RPSL setting and verifying the Wi status");
 		
-		String parentwindow = driver.getWindowHandle();
 		//SMAB-T2087 opening the action link to validate that link redirects to correct page
 		workItemPageObj.openActionLink(reminderSubmittedWINumber);
-		objPage.switchToNewWindow(parentwindow);
 		
 		softAssert.assertTrue(objPage.verifyElementVisible(workItemPageObj.editBtn),
 				"SMAB-T2087: Validation that edit button is visible");
 		softAssert.assertTrue(objPage.verifyElementVisible(rpslObj.realPropertySettingsLibraryHeaderText),
 				"SMAB-T2087: Validation that Real Property Settings Library label is visible");
-		softAssert.assertTrue(objPage.verifyElementVisible(rpslObj.getRPSLRecord("2021")),
+		softAssert.assertTrue(objPage.verifyElementVisible(rpslObj.getExemptionLimitLabelName("2021")),
 				"SMAB-T2087: Validation that Exemption Limits label is present");
-		
-		driver.close();
-		driver.switchTo().window(parentwindow);
-		parentwindow = driver.getWindowHandle();
 		 
+		driver.navigate().back();
+		String parentwindow = driver.getWindowHandle();
+		
 		//Step4: Open the WI record and validate the details in the Detail tab
 		ReportLogger.INFO("Opening the work item : " + reminderSubmittedWINumber);
 		workItemPageObj.openWorkItem(reminderSubmittedWINumber);
@@ -346,6 +344,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 				"SMAB-T1867: Validate that 'DOV' field is updated with expected change");
 		
 		//Step7: Change the status of RPSL
+		objPage.scrollToElement(workItemPageObj.reviewLink);
 		objPage.javascriptClick(workItemPageObj.reviewLink);
 		Thread.sleep(4000);
 		objPage.waitUntilPageisReady(driver); 
@@ -367,6 +366,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		//Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage, 10);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
+		objPage.scrollToElement(workItemPageObj.currenWIStatusonTimeline);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
 		objApasGenericPage.logout();
 		Thread.sleep(15000);
@@ -380,6 +380,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objPage.Click(workItemPageObj.detailsWI);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage,10);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
+		Thread.sleep(1000);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
 
 		// step9: Now staff member submitting the WI again by submitting the RPSL
@@ -404,6 +405,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		driver.navigate().back();
 		driver.navigate().refresh();
+		Thread.sleep(2000);
 		
 		HashMap<String, ArrayList<String>> reminderSubmittedWIAgain = workItemPageObj.getWorkItemData(workItemPageObj.TAB_MY_SUBMITTED_FOR_APPROVAL);
 
@@ -411,7 +413,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		String reminderAgainSubmittedWINumber = reminderSubmittedWIAgain.get("Work item #").get(reminderAgainSubmittedWIRowNumber);
 
 		softAssert.assertEquals(reminderSubmittedWIAgain.get("Request Type").get(reminderAgainSubmittedWIRowNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
-		softAssert.assertEquals(reminderSubmittedWIAgain.get("Work Pool Name").get(reminderAgainSubmittedWIRowNumber),"Disabled veterans","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
+		softAssert.assertEquals(reminderSubmittedWIAgain.get("Work Pool").get(reminderAgainSubmittedWIRowNumber),"Disabled Veterans","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		
 		objApasGenericPage.logout();
 
@@ -420,11 +422,13 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		ReportLogger.INFO("Now logging in as Superviosr and approving the RPSL and verifying the corresponding WI status");
 		objApasGenericPage.login(loginUser);
 		objApasGenericPage.searchModule(modules.HOME);
-		objPage.Click(workItemPageObj.toggleBUtton);
-
+	
 		objPage.javascriptClick(workItemPageObj.needsMyApprovalTab);
-		objPage.waitForElementToDisappear(objApasGenericPage.xpathSpinner, 10);
+		Thread.sleep(5000);
+		parentwindow = driver.getWindowHandle();
 		workItemPageObj.openRelatedActionRecord(reminderAgainSubmittedWINumber);
+		objPage.switchToNewWindow(parentwindow);
+
 		objPage.javascriptClick(workItemPageObj.editBtn);
 		//Thread.sleep(3000);
 		//objPage.waitForElementToBeClickable(rpslObj.statusDropDown, 10);
@@ -433,6 +437,8 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		 * objPage.Click(rpslObj.saveButton); Thread.sleep(5000);
 		 */
 		objApasGenericPage.saveRecord();
+		driver.close();
+		driver.switchTo().window(parentwindow);
 		driver.navigate().back();
 		objApasGenericPage.globalSearchRecords(reminderAgainSubmittedWINumber);
 
@@ -487,18 +493,19 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 
 		objPage.Click(workItemPageObj.inProgressTab);
 		objPage.scrollToBottom();
-		String parentwindow = driver.getWindowHandle();
+		
 		//SMAB-T2091 opening the action link to validate that link redirects to correct page
 		workItemPageObj.openActionLink(lowIncomeWIName);
-		objPage.switchToNewWindow(parentwindow);
+		
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.vaRollYear), "2021","SMAB-T2091: Verify that user is able to navigate to current roll year from action link");
 		softAssert.assertTrue(objPage.verifyElementVisible(objValueAdjustmentPage.valueAdjustmentViewAll),
 				"SMAB-T2091: Validation that Value Adjustments label is present");
 		
-		driver.close();
-		driver.switchTo().window(parentwindow);	
+		driver.navigate().back();
+		Thread.sleep(1000);
 		workItemPageObj.openWorkItem(lowIncomeWIName);
 		objPage.javascriptClick(workItemPageObj.detailsTab);
+		Thread.sleep(1000);
 		softAssert.assertTrue(objPage.verifyElementVisible(workItemPageObj.relatedActionLink),"SMAB-T1918:Verify that User is able to see the Low income WI under 'In Progress' tab after accpeting it");
 
 		//Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record
@@ -506,11 +513,11 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 								"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
 		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 								"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);		
-		objPage.Click(workItemPageObj.detailsWI);
+		
 		//Thread.sleep(3000);
-		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage,10);
+		
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "In Progress","SMAB-T1951: Verify that user is able to accept the WI and is able to see correct status of WI");
-		 parentwindow = driver.getWindowHandle();
+		String parentwindow = driver.getWindowHandle();
 		objPage.Click(workItemPageObj.relatedActionLink);
 		objPage.switchToNewWindow(parentwindow);
 		// step4a: Verifying the WI was created for current Roll Year VA
@@ -531,12 +538,15 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		softAssert.assertContains(objPage.getElementText(workItemPageObj.successAlert), "Status changed successfully","SMAB-T436: Validating the pop message on successful creation of City Strat Code entry from County Strat details page");
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1952:Verify that user is able to submit the Low Income WI manually from corresponding WI Home page");
 		driver.navigate().refresh();
+		Thread.sleep(3000);
 		driver.navigate().back();
+		Thread.sleep(1000);
 		
 		objPage.Click(workItemPageObj.lnkTABMySubmittedforApproval);
-		objPage.waitForElementToDisappear(objApasGenericPage.xpathSpinner, 10);
+		Thread.sleep(5000);
 		workItemPageObj.openWorkItem(lowIncomeWIName);
 		objPage.javascriptClick(workItemPageObj.detailsTab);
+		Thread.sleep(1000);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1952:Verify that user is able to submit the Low Income WI manually from corresponding WI Home page");
 
 		objApasGenericPage.logout();

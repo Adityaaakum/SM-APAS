@@ -41,7 +41,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//label/span[text() = 'RP Setting Name']/../../input")
 	public WebElement rpSettingNameEditBox;
 	
-	@FindBy(xpath = "//div[text()='Real Property Settings Library']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[text()='Real Property Settings Library']")
 	public WebElement realPropertySettingsLibraryHeaderText;
 	
 	
@@ -228,5 +228,17 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 			//String xpathStr = "//a[@title='Exemption Limits - " + rollYear + "']";
 			String xpathStr = "//span[contains(@class,'slds-grid slds-grid--align-spread')]/a[@title='Exemption Limits - " + rollYear + "']";
 			return locateElement(xpathStr, 30);
-		}	 
+		}
+		
+		/**
+		 * @description: It will locate and return element for Exemption Limit Label Name in header
+		 * @param rollYear: Roll Year Settings record
+		 * @return Exemption Limit element (in the header)
+		 */
+		public WebElement getExemptionLimitLabelName(String rollYear) throws Exception {		
+			Thread.sleep(1000);
+			String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//slot[@slot='primaryField']//lightning-formatted-text[text()='Exemption Limits - " + rollYear + "']";
+			return waitForElementToBeClickable(30, xpathStr);
+		}
+		
 }

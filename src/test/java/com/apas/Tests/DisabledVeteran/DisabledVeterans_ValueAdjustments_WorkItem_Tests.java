@@ -140,9 +140,8 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	ReportLogger.INFO("Step 20: Search and select the Work Item from the Grid");
   	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
   	//objPage.Click(actualWIName);
-	objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
-	objPage.javascriptClick(objWIHomePage.detailsWI);
-
+	objPage.waitForElementToBeClickable(objWIHomePage.detailsTab);
+	objPage.Click(objWIHomePage.detailsTab);
    //Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record
    objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
 	softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC",
@@ -537,8 +536,6 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
   	objPage.Click(objWIHomePage.lnkTABHome);
   	ReportLogger.INFO("Step 30: Click on the Sub  TAB - Work Items");
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
-  	ReportLogger.INFO("Step 31: Click on the check box - Show RP");
-  	objPage.Click(objWIHomePage.chkShowRP);
   	ReportLogger.INFO("Step 32: Click on the TAB - In Progress");
   	objPage.Click(objWIHomePage.lnkTABInProgress);
   	ReportLogger.INFO("Step 33: Search the work item in the Grid :"+WIName);
