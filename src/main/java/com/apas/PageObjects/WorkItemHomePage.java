@@ -186,10 +186,13 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath ="//div[@class='windowViewMode-maximized active lafPageHost']//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
 	public WebElement vaRollYear;
 
-	String submittedForApprovalTimeline = "Submitted for Approval";
+	public String submittedForApprovalTimeline = "Submitted for Approval";
 
 	@FindBy(xpath="//span[text()='Submitted for Approval']")
 	public WebElement submittedforApprovalTimeline;
+	
+	@FindBy(xpath="//span[text()='In Progress']")
+	public WebElement inProgressTimeline;
 	
 	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Completed']")
 	public WebElement completedTimeline;
@@ -232,6 +235,14 @@ public class WorkItemHomePage extends ApasGenericPage {
     @FindBy(xpath = "//div[contains(@class,'slds-media__body')]//slot/lightning-formatted-text[contains(text(),'WI-')]")
 	public WebElement getWorkItem;
     
+    @FindBy(xpath = "//h2[@class='slds-modal__title slds-hyphenate']")
+	public WebElement headerLevel2Approver;
+    
+    @FindBy(xpath = "//div[@class='warning']")
+	public WebElement warningOnAssignLevel2Approver;
+    
+    public String warningOnAssignLevel2ApproverScreen = "//div[@class='warning']";
+    
 	public String editButton = "Edit";
 	
 	public String wiActionDetailsPage = "Action";
@@ -256,6 +267,8 @@ public class WorkItemHomePage extends ApasGenericPage {
     public String valueTextBox = "Value";
     public String WithdrawButton="Withdraw";
     public String PutOnHoldButton="Put On Hold";
+    public String assignLevel2Approver = "Assign Level2 Approver";
+    
 
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
@@ -583,15 +596,17 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	 
 	 public void clickOnTimelineAndMarkComplete(WebElement timelineTab) throws Exception {
 		 	ReportLogger.INFO("Click on the " + objPageObj.getElementText(timelineTab) + " option in Timeline and mark it complete");
-		 	objPageObj.javascriptClick(timelineTab);
 		 	Thread.sleep(1000);
-		 	if (objPageObj.getElementText(timelineTab).equals("In Progress")) {
-		 		objPageObj.javascriptClick(markStatusAsCompleteBtn);
+		 	javascriptClick(timelineTab);
+		 	Thread.sleep(1000);
+		 	if (waitForElementToBeVisible(20, markStatusCompleteBtn)) {
+		 		javascriptClick(markStatusCompleteBtn);
 		 	}
-		 	else{
-		 		objPageObj.javascriptClick(markStatusCompleteBtn);
+		 	else {
+		 		Thread.sleep(1000);
+		 		javascriptClick(markStatusAsCompleteBtn);
 		 	}
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 		}
 	 
 
