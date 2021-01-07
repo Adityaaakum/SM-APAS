@@ -187,7 +187,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath ="//div[@class='windowViewMode-maximized active lafPageHost']//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
 	public WebElement vaRollYear;
 
-	String submittedForApprovalTimeline = "Submitted for Approval";
+	@FindBy(xpath = "//div[@class='warning']")
+	public WebElement warningOnAssignLevel2Approver;
 
 	@FindBy(xpath="//span[text()='Submitted for Approval']")
 	public WebElement submittedforApprovalTimeline;
@@ -233,6 +234,9 @@ public class WorkItemHomePage extends ApasGenericPage {
     @FindBy(xpath = "//div[contains(@class,'slds-media__body')]//slot/lightning-formatted-text[contains(text(),'WI-')]")
 	public WebElement getWorkItem;
     
+    @FindBy(xpath = "//h2[@class='slds-modal__title slds-hyphenate']")
+	public WebElement headerLevel2Approver;
+
     @FindBy(xpath = "//table/thead//tr//th[@aria-label='Work item #']//a//span[@title='Work item #']")
     public WebElement gridColWorkItemNum;
     
@@ -250,6 +254,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String wiTypeDetailsPage = "Type";
 	public String wiReferenceDetailsPage = "Reference";
 	public String wiAPNDetailsPage = "APN";
+	public String wiLevel2ApproverDetailsPage = "Level2 Approver";
+	public String wiCurrentApproverDetailsPage = "Current Approver";
 	
 	public String wpSupervisor = "Supervisor";
 	public String wpLevel2Supervisor = "Level2 Supervisor";
@@ -260,6 +266,14 @@ public class WorkItemHomePage extends ApasGenericPage {
     public String valueTextBox = "Value";
     public String WithdrawButton="Withdraw";
     public String PutOnHoldButton="Put On Hold";
+    public String assignLevel2Approver = "Assign Level2 Approver";
+    
+    public String warningOnAssignLevel2ApproverScreen = "//div[@class='warning']";
+    public String assignLevel2ApproverBtn = "//button[@title='Assign Level2 Approver']";
+    public String submittedForApprovalOptionInTimeline = "Submitted for Approval";
+	public String inProgressOptionInTimeline = "In Progress";
+	public String completedOptionInTimeline = "Completed";
+	public String wiStatus = "Status";
 
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
@@ -588,17 +602,18 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		 * @param timelineTab :Time Line Option
 	 **/
 	 
-	 public void clickOnTimelineAndMarkComplete(WebElement timelineTab) throws Exception {
-		 	ReportLogger.INFO("Click on the " + objPageObj.getElementText(timelineTab) + " option in Timeline and mark it complete");
-		 	objPageObj.javascriptClick(timelineTab);
+	 public void clickOnTimelineAndMarkComplete(String timelineTab) throws Exception {
+		 	ReportLogger.INFO("Click on the '" + timelineTab + "' option in Timeline and mark it complete");
+		 	WebElement webElement = driver.findElement(By.xpath("//span[text()='" + timelineTab + "']"));
 		 	Thread.sleep(1000);
-		 	if (objPageObj.getElementText(timelineTab).equals("In Progress")) {
-		 		objPageObj.javascriptClick(markStatusAsCompleteBtn);
+		 	javascriptClick(webElement);
+		 	if (waitForElementToBeVisible(5, markStatusCompleteBtn)) {
+		 		javascriptClick(markStatusCompleteBtn);
 		 	}
-		 	else{
-		 		objPageObj.javascriptClick(markStatusCompleteBtn);
+		 	else {
+		 		javascriptClick(markStatusAsCompleteBtn);
 		 	}
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 		}
 	 
 
@@ -621,9 +636,4 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	        Thread.sleep(2000);
 	    }
 	    
-	    
-	
-
-		
-
 }

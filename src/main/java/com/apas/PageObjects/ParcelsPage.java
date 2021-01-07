@@ -88,7 +88,8 @@ public class ParcelsPage extends ApasGenericPage {
 		String dov = dataMap.get("DOV");
 		String workItemOwner= dataMap.get("Work Item Owner");
 		String workItemNumber;
-
+		
+		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
 		waitForElementToBeClickable(selectOptionDropDownComponentsActionsModal);
 		selectOptionFromDropDown(selectOptionDropDownComponentsActionsModal, "Create Work Item");
