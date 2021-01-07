@@ -43,7 +43,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String changeAssignee= "Change Assignee";
 	public String reasonForTransferring= "Reason for Transferring";
 
-	public String tabPoolAssignment = "Pool Assignment";
+	public String tabPoolAssignment = "Pool Assignments";
 
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
 	public WebElement successAlert;
@@ -239,7 +239,10 @@ public class WorkItemHomePage extends ApasGenericPage {
 
     @FindBy(xpath = "//table/thead//tr//th[@aria-label='Work item #']//a//span[@title='Work item #']")
     public WebElement gridColWorkItemNum;
-    
+
+	@FindBy(xpath = "//input[@type='button' and @value='Remove']")
+	public WebElement removeButton;
+
 	public String editButton = "Edit";
 	
 	public String wiActionDetailsPage = "Action";
@@ -396,7 +399,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 		try {
 			
-			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//a[@title='" + WIName + "' or text()='" + WIName + "']");
+			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//*[@title='" + WIName + "' or text()='" + WIName + "']");
 			if(actualWINames.isEmpty()) {				
 				String pageMsg = driver.findElementByXPath("//p[@class='slds-m-vertical_medium content']").getText();
 				pageMsg=pageMsg.replaceAll("\\s","").trim();
@@ -518,11 +521,8 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	
 	public void clickCheckBoxForSelectingWI(String WIName) throws IOException {
 	    
-		  searchWIinGrid(WIName);
-		
-		  WebElement chkBoxWI = driver.findElementByXPath("//table/tbody//tr/th//a[@title='"+ WIName + "' or text()='"+ WIName + "']"  + "/ancestor::tr/td//input[@type='checkbox']");
-	    
-		//WebElement chkBoxWI = lnkWorkItem.findElement(By.xpath("/ancestor::tr/td//input[@type='checkbox']"));
+    	searchWIinGrid(WIName);
+		WebElement chkBoxWI = driver.findElementByXPath("//table/tbody//tr/th//*[@title='"+ WIName + "' or text()='"+ WIName + "']"  + "/ancestor::tr/td//input[@type='checkbox']");
 		javascriptClick(chkBoxWI);
 	}
 	
