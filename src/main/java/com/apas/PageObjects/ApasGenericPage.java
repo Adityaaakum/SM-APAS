@@ -39,6 +39,7 @@ public class ApasGenericPage extends Page {
 		objLoginPage = new LoginPage(driver);
 	}
 
+	public String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 	public String tabDetails = "Details";
 	public String tabRelated = "Related";
 	public String tabLinkedItems = "Linked Items";
@@ -987,7 +988,7 @@ public class ApasGenericPage extends Page {
 	/**
 	 * Description: this method is to cancel the already opened pop up
 	 */
-	public void cancelRecord() throws IOException {
+	public void cancelRecord() throws Exception {
 		Click(getButtonWithText("Cancel"));
 	}
 
@@ -1052,7 +1053,7 @@ public class ApasGenericPage extends Page {
 	 * Description: this method is to click on New Button and open the create record Pop Up
 	 * @throws InterruptedException
 	 */
-	public void createRecord() throws IOException, InterruptedException {
+	public void createRecord() throws Exception {
 		Click(getButtonWithText("New"));
 		Thread.sleep(1000);
 	}
@@ -1060,7 +1061,7 @@ public class ApasGenericPage extends Page {
 	 * Description: this method is to click on Edit Button and open the Edit record Pop Up
 	 * @throws InterruptedException
 	 */
-	public void editRecord() throws IOException, InterruptedException {
+	public void editRecord() throws Exception {
 		Click(getButtonWithText("Edit"));
 	}
 	
@@ -1103,17 +1104,12 @@ public class ApasGenericPage extends Page {
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
 	public HashMap<String, ArrayList<String>> getGridDataForRowString(String rowString) {
-		
-		int rowIndex=0 ;			
+
 		List<WebElement> tableRows = driver.findElementsByXPath("//table/tbody//tr") ;			
-		List<WebElement> actualWINames = null;				
-		
-		for(int i = 0; i < tableRows.size(); i++) {
-			
-			actualWINames = driver.findElementsByXPath("//table/tbody/tr["+i+"]/th//a[@title='" + rowString + "' or text()='" + rowString + "']");
-			if(!actualWINames.isEmpty()) {					
-				rowIndex = i;
-				return getGridDataInHashMap(1,rowIndex);
+
+		for(int rowIndex = 0; rowIndex < tableRows.size(); rowIndex++) {
+			if(tableRows.get(rowIndex).getText().contains(rowString)) {
+				return getGridDataInHashMap(1,(rowIndex + 1));
 			}
 		}
 		return null;			 	

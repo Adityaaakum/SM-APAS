@@ -743,12 +743,12 @@ public class Page extends TestBase {
 	 * @param text : text of the button
 	 * @return : button element
 	 */
-	public WebElement getButtonWithText(String text) {
+	public WebElement getButtonWithText(String text) throws Exception {
 		String commonxPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 		String xpath = commonxPath + "//button[text()='" + text + "'] | " +
 				commonxPath + "//div[text()='" + text + "']//.. | " +
 				commonxPath + "//*[contains(@class,'slds-is-open')]//button[text()='" + text + "']";
-
+		waitUntilElementIsPresent(xpath, 10);
 		return driver.findElement(By.xpath(xpath));
 	}
 
