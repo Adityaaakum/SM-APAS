@@ -38,9 +38,7 @@ public class WorkItems_Configuration_Test extends TestBase {
     @Test(description = "SMAB-T1782: Validation the Work Item Type and Action based on work item configuration for Parcels", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual"}, alwaysRun = true)
     public void WorkItemConfiguration_ManualWorkItemCreation_Parcels(String loginUser) throws Exception {
 
-        // fetching a parcel where PUC is not blank but  Primary Situs is blank
-        String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
-        String apnValue = salesforceAPI.select(queryAPNValue).get("Name").get(0);
+        String apnValue = objParcelsPage.fetchActiveAPN();
 
         String queryWorkItemType = "SELECT work_item_type__C FROM Work_Item_Configuration__c where Ad_Hoc_Creation_Allowed__c = 'Yes' and roll_code__c = 'SEC'";
         HashMap<String, ArrayList<String>> workItemTypesHashMap = salesforceAPI.select(queryWorkItemType);
@@ -91,7 +89,7 @@ public class WorkItems_Configuration_Test extends TestBase {
         objWorkItemHomePage.logout();
     }
 
-    @Test(description = "SMAB-T1783: Validation the Work Item Type and Action based on work item configuration for BPP Accounts", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual"}, alwaysRun = true)
+    @Test(description = "SMAB-T1783: Validation the Work Item Type and Action based on work item configuration for BPP Accounts", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual"}, alwaysRun = true,enabled = false)
     public void WorkItemConfiguration_ManualWorkItemCreation_BPPAccounts(String loginUser) throws Exception {
 
         String queryBPPAccountValue = "SELECT Name FROM BPP_Account__c where Status__C = 'Active' limit 1";

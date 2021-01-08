@@ -42,6 +42,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String changeWorkPool= "Change Work Pool";
 	public String changeAssignee= "Change Assignee";
 	public String reasonForTransferring= "Reason for Transferring";
+	public String dropDownType = "Type";
+	public String dropDownAction = "Action";
 
 	public String tabPoolAssignment = "Pool Assignments";
 
@@ -635,5 +637,21 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	        Click(poolNameLocator);
 	        Thread.sleep(2000);
 	    }
-	    
+
+	/**
+	 * Description: This method will filter the work work items on Home Page
+	 * @param type: Type of the work item
+	 * @param action: Action of the work item
+	 */
+	public void filterWorkItems(String type, String action) throws Exception {
+		ReportLogger.INFO("Filter the work items based on Type : " + type + " and Action : " + action);
+		selectOptionFromDropDown(dropDownType,type);
+		selectOptionFromDropDown(dropDownAction,action);
+		Thread.sleep(2000);
+	}
+
+	
+
+		
+
 }

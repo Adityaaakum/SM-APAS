@@ -80,8 +80,8 @@ public class ParcelsPage extends ApasGenericPage {
 		String timeStamp = String.valueOf(System.currentTimeMillis());
 		String workItemType = dataMap.get("Work Item Type");
 		String actions = dataMap.get("Actions");
-		String reference = dataMap.get("Reference") + "_" + timeStamp;
-		String description = dataMap.get("Description");
+		String reference = dataMap.get("Reference");
+		String description = dataMap.get("Description") + "_" + timeStamp;
 		String priority = dataMap.get("Priority");
 		String workItemRouting = dataMap.get("Work Item Routing");
 		String dueDate = dataMap.get("Due Date");
@@ -98,7 +98,8 @@ public class ParcelsPage extends ApasGenericPage {
 
 		selectOptionFromDropDown(workItemTypeDropDownComponentsActionsModal, workItemType);
 		selectOptionFromDropDown(actionsDropDownLabel, actions);
-		enter(referenceInputTextBoxComponentActionModal, reference);
+
+		//enter(referenceInputTextBoxComponentActionModal, reference);
 		enter(descriptionInputTextBoxComponentActionModal, description);
 		selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);
 		selectOptionFromDropDown(workItemRoutingDropDownComponentsActionsModal, workItemRouting);
@@ -109,7 +110,7 @@ public class ParcelsPage extends ApasGenericPage {
 
 		Thread.sleep(2000);
 
-		String workItemQuery = "SELECT Name FROM Work_Item__c where Reference__C = '" + reference + "' order by Name desc limit 1";
+		String workItemQuery = "SELECT Name FROM Work_Item__c where Description__c = '" + description + "' order by Name desc limit 1";
 		workItemNumber = objSalesforceAPI.select(workItemQuery).get("Name").get(0);
 		ReportLogger.INFO("Work item created is " + workItemNumber  );
 		

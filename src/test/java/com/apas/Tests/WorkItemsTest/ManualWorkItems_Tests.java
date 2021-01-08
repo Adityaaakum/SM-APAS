@@ -12,11 +12,9 @@ import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
-import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
-import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
@@ -214,9 +212,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	@Test(description = "SMAB-T2219: Verify that user gets the warning message when trying to accept the work item with prior DOV for Parcels", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"})
 	public void WorkItems_Parcels_PriorDateOfValueSequencing(String loginUser) throws Exception {
 
-		// fetching a parcel where PUC is not blank but  Primary Situs is blank
-		String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
-		String apnValue= salesforceAPI.select(queryAPNValue).get("Name").get(0);
+		String apnValue= objParcelsPage.fetchActiveAPN();
 
 		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData, "DOVSequencing");
