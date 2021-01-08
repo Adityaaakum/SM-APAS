@@ -134,7 +134,7 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 
 		ReportLogger.INFO("* Checking status of various buttons at page level and table level");
 		//Step12: Validating presence of ReCalculate button at table level after calculate button is clicked
-		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathReCalculateBtn), "ReCalculate button is visible for calculated table");
+		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathReCalculateBtn), "SMAB-T190: ReCalculate button is visible for calculated table");
 
 		//Step14: Validating presence of CalculateAll button at page level on performing the calculation
 		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathCalculateAllBtn), "SMAB-T190: Calculate all button is visible at page level");

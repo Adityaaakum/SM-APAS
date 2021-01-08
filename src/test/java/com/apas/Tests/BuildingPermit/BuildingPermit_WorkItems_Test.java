@@ -257,8 +257,8 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         objPage.scrollToBottom();
         objWorkItemHomePage.openWorkItem(importReviewWorkItem);
         objWorkItemHomePage.openTab("Details");
-        softAssert.assertEquals(objWorkItemHomePage.getIndividualFieldErrorMessage("Request Type"), "Building Permit - Review - " + fileNameWithoutExtension, "SMAB-T1890: File Name and Review Work Item Name validation in the imported review work item");
-        softAssert.assertEquals(objWorkItemHomePage.getIndividualFieldErrorMessage("Work Pool"), "RP Admin", "SMAB-T1890: Imported review work item pool name validation");
+        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Request Type"), "Building Permit - Review - " + fileNameWithoutExtension, "SMAB-T1890: File Name and Review Work Item Name validation in the imported review work item");
+        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool"), "RP Admin", "SMAB-T1890: Imported review work item pool name validation");
 
         driver.navigate().refresh();
         objBuildingPermitPage.searchModule(modules.HOME);

@@ -725,7 +725,7 @@ public class ExemptionsPage extends ApasGenericPage {
         String closedRollYear = "Select id From Roll_Year_Settings__c where Status__c = 'Closed' and Roll_Year__c>='" + lastRolYearToVerify + "' and Roll_Year__c<='" + currentRollYear + "'and Roll_Year__c NOT IN("+ApprovedRPSLrollyear+") order by name desc";
         objSalesforceAPI.update("Roll_Year_Settings__c", closedRollYear, "Status__c", "Open");
         objSalesforceAPI.update("Real_Property_Settings_Library__c", notApprovedRPSLQuery, "Status__c", "Approved");
-        String openRollYear = "Select id From Roll_Year_Settings__c where Status__c = 'Open' and Roll_Year__c!='" + currentRollYear + "' and Roll_Year__c>='" + lastRolYearToVerify + "' and Roll_Year__c<'" + currentRollYear + "'and Roll_Year__c NOT IN("+ApprovedRPSLrollyear+") order by name desc";
+        String openRollYear = "Select id From Roll_Year_Settings__c where Status__c = 'Open' and Roll_Year__c!='" + currentRollYear + "' and Roll_Year__c>='" + lastRolYearToVerify + "' and Roll_Year__c<'" + currentRollYear + "' order by name desc";
         objSalesforceAPI.update("Roll_Year_Settings__c", openRollYear, "Status__c", "Closed");
         
     }
