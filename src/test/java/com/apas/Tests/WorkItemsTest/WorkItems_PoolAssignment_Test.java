@@ -90,6 +90,7 @@ public class WorkItems_PoolAssignment_Test extends TestBase {
         objPoolAssignmentPage.waitForElementToDisappear(objPoolAssignmentPage.successAlert,10);
 
         //Logout of APAS Application
+        Thread.sleep(2000);
         objWorkItemHomePage.logout();
     }
 
@@ -154,6 +155,7 @@ public class WorkItems_PoolAssignment_Test extends TestBase {
         objPoolAssignmentPage.waitForElementToDisappear(objPoolAssignmentPage.successAlert,10);
 
         //Logout of APAS Application
+        Thread.sleep(2000);
         objWorkItemHomePage.logout();
     }
 
