@@ -624,8 +624,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 */
 	public void clickOnEntryNameInGrid(String rollYear) throws Exception {
 		String xpath = "//tbody//tr//th//a[contains(text(), '"+ rollYear +"')]";
-		Click(waitUntilElementIsPresent(20,xpath));
 		Thread.sleep(2000);
+		Click(waitUntilElementIsPresent(10,xpath));
 	}
 	
 	/**

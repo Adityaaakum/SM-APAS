@@ -767,6 +767,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
 
         //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objBppTrendSetupPage.login(loginUser);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step6: "Perform Calculations" Work Item generation validation
         HashMap<String, ArrayList<String>> InPoolWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_POOL);
@@ -881,7 +882,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
 
         //Step10: Log out from the application and log in as BPP Principal
         objBppTrendSetupPage.logout();
-        Thread.sleep(15000);
+        Thread.sleep(20000);
 
         objBppTrendSetupPage.login(users.PRINCIPAL_USER);
         objBppTrendSetupPage.searchModule(modules.HOME);
