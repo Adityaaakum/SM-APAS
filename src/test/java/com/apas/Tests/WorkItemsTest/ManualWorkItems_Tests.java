@@ -536,9 +536,11 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  
 		  // Step 1: Login to the APAS application using the credentials of staff user
 		  objWorkItemHomePage.login(users.EXEMPTION_SUPPORT_STAFF);
+		  
 		  // Step 2: Opening the PARCELS page and searching a parcel
 		  objWorkItemHomePage.searchModule(PARCELS);
-		  objWorkItemHomePage.globalSearchRecords(apnValue);		
+		  objWorkItemHomePage.globalSearchRecords(apnValue);
+		  
 		  // Step 3: Creating Manual work item for the Parcel 
 		  String Workitem =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);

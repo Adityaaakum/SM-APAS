@@ -40,7 +40,7 @@ public class WorkItems_report_Test extends TestBase{
 		objApasGenericPage = new ApasGenericPage(driver);
 		objReportsPage = new ReportsPage(driver);
 	}
-	@Test(description = "SMAB-T2520: Validation the Work Item Type and Action based on work item configuration for BPP Accounts", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual"}, alwaysRun = true)
+	@Test(description = "SMAB-T2520: Validation of Executive All Work Items reports ", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual"}, alwaysRun = true)
     public void WorkItems_ExecutiveViewReports(String loginUser) throws Exception {
 		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		String reportName = "Executive All Work Items";
