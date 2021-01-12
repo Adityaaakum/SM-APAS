@@ -12,11 +12,9 @@ import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.ExemptionsPage;
-import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
-import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
@@ -97,7 +95,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		driver.navigate().refresh();
 		Thread.sleep(2000);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline, 10);
-		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedforApprovalTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
 		
 		// Step 7: Validate the Work Item details after the Work Item is submitted for approval
@@ -168,8 +166,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2075:Verify User is able to view 'Roll Code' and 'Date' fields getting automatically populated in the work item record linked to a BPP Account", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-			"regression","work_item_manual"  })
+	@Test(description = "SMAB-T2075:Verify User is able to view 'Roll Code' and 'Date' fields getting automatically populated in the work item record linked to a BPP Account", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"  }, enabled = false)
 	public void WorkItems_VerifyLinkedBPPAccountUseCode_DateFields(String loginUser) throws Exception {
 		
 		// fetching a BPP account where Roll code  is not blank 
@@ -215,9 +212,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	@Test(description = "SMAB-T2219: Verify that user gets the warning message when trying to accept the work item with prior DOV for Parcels", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"})
 	public void WorkItems_Parcels_PriorDateOfValueSequencing(String loginUser) throws Exception {
 
-		// fetching a parcel where PUC is not blank but  Primary Situs is blank
-		String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
-		String apnValue= salesforceAPI.select(queryAPNValue).get("Name").get(0);
+		String apnValue= objParcelsPage.fetchActiveAPN();
 
 		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData, "DOVSequencing");
@@ -257,7 +252,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	/**
 	 * This method is to verify that user gets prior date of value sequencing restriction warning message for BPP Accounts
 	 */
-	@Test(description = "SMAB-T2220: Verify that user gets the warning message when trying to accept the work item with prior DOV for BPP Accounts", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"})
+	@Test(description = "SMAB-T2220: Verify that user gets the warning message when trying to accept the work item with prior DOV for BPP Accounts", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"}, enabled = false)
 	public void WorkItems_BPPAccounts_PriorDateOfValueSequencing(String loginUser) throws Exception {
 
 		String queryBPPAccountValue = "SELECT Name FROM BPP_Account__c where Status__C = 'Active' limit 1";
@@ -456,7 +451,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	/**
 	 * Verify that work items are routed correctly as per the work item routing drop down for Parcels
 	 */
-	@Test(description = "SMAB-T1987,SMAB-T1990,SMAB-T1991: Verify that work items are routed correctly as per the work item routing drop down for BPP Account", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"})
+	@Test(description = "SMAB-T1987,SMAB-T1990,SMAB-T1991: Verify that work items are routed correctly as per the work item routing drop down for BPP Account", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"}, enabled = false)
 	public void WorkItems_BPPAccount_ManualWorkItemRouting(String loginUser) throws Exception {
 		String workPool = "BPP Admin";
 
@@ -527,7 +522,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	/**
 	* Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab
 	**/
-    @Test(description = "SMAB-T2466: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual" }, alwaysRun = true)
+    @Test(description = "SMAB-T2474,SMAB-T2475: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual" }, alwaysRun = true)
 	public void WorkItem_WIPresentInCompletedTab_2ndLevelApprover(String loginUser) throws Exception {
 
 		  //fetching a parcel where PUC is not blank but Primary Situs is blank 
@@ -547,7 +542,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  objWorkItemHomePage.waitUntilPageisReady(driver);
 		  
 		  // Step 4: Update Value in workitem details page to update second level supervisor
-		  objWorkItemHomePage.editAndInputFieldData(objWorkItemHomePage.valueTextBox, "21");
+   		  apasGenericObj.editAndInputFieldData(objWorkItemHomePage.valueTextBox,objWorkItemHomePage.valueTextBox, "21");
 		  
 		  //Step 5: Open the Work Item Home Page 
 		  driver.navigate().refresh(); 
@@ -594,7 +589,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  
 		  //steps 9: Validation on after approve by second lavel approval work item should be visible in completed tab
 		  HashMap<String, ArrayList<String>> PrimaryWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-          softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(Workitem), "SMAB-T2466: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab"); 
+          softAssert.assertTrue(PrimaryWorkItems.get("Work item #").contains(Workitem), "SMAB-T2474,SMAB-T2475: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab"); 
 	      objWorkItemHomePage.logout();
      }
     
@@ -657,15 +652,12 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  Thread.sleep(2000);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
 		  objWorkItemHomePage.openWorkItem(Workitem);
-		  String parentWindow = driver.getWindowHandle();
-	      objPage.switchToNewWindow(parentWindow);  
 		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		  Thread.sleep(2000);	  
-		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Current Approver"),ExemptionSupportName,"SMAB-T2476,SMAB-T2477 : Verify Current Approver should be staff user after 'withdraw' the workitem from supervisor level 1");
 		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"In Progress","SMAB-T2476,SMAB-T2477 : Status Of WI Should be In Progress ");
-		  driver.close();
-		  driver.switchTo().window(parentWindow);
+		  driver.navigate().back();
+		  Thread.sleep(2000);
           objWorkItemHomePage.clickCheckBoxForSelectingWI(Workitem);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.btnMarkComplete);
 		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
@@ -694,7 +686,6 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  Thread.sleep(2000);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
 		  objWorkItemHomePage.openWorkItem(Workitem);
-	      objPage.switchToNewWindow(parentWindow);
           objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		  Thread.sleep(2000);	  
@@ -741,7 +732,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
    		  // Step 6: Verify  'withdraw' button on workItem  timeline on parcel page with Submitted for approval status
    		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
    		  softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Submitted for Approval","SMAB-T2479 :Verify Workitem status should be Submitted for Approval");
-   		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2479 :Verify 'Withdraw'should be present Workitem timeline with Submitted for Approval status",true);
+   		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton)), "SMAB-T2479 :Verify 'Withdraw'should be present Workitem timeline with Submitted for Approval status",true);
  		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton));
  		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
  		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
@@ -777,7 +768,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
   		  
    		  // Step 9: Verify  'withdraw' button on workItem  timeline on parcel page with Approval On Hold status
           softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Approval - On Hold","SMAB-T2479 :Verify Workitem status should be Approval -On Hold");
-  		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2479 :Verify 'Withdraw'should be present Workitem timeline with Approval-on Hold status",true);
+  		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton)), "SMAB-T2479 :Verify 'Withdraw'should be present Workitem timeline with Approval-on Hold status",true);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton));
 		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
 		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
@@ -803,7 +794,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
   		  
    		  // Step 11: Verify  'withdraw' button on workItem  timeline on parcel page with Submitted for approval status
   		  softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Submitted for Approval","SMAB-T2480 :Verify Workitem status should be Submitted for Approval");
-  		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2480 :Verify 'Withdraw'should be present Workitem timeline with Submitted for Approval status",true);
+  		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton)), "SMAB-T2480 :Verify 'Withdraw'should be present Workitem timeline with Submitted for Approval status",true);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton));
 		  objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
 		  objWorkItemHomePage.Click(apasGenericObj.closeButton);
@@ -836,7 +827,335 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	      // step 13: Verify 'Withdraw' Button should be present on Workitem timeline with Approval On Hold status on Level For level 1 approval
 		  objWorkItemHomePage.Click(objParcelsPage.ExpendWIOnParcels);
 		  softAssert.assertEquals(objParcelsPage.getFieldvalueFromWITimeLine("Status"),"Approval - On Hold","SMAB-T2480 :Verify Workitem status should be Approval -On Hold");
-		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objParcelsPage.WithdrawButton), "SMAB-T2480 :Verify 'Withdraw' Button should be present on Workitem timeline with 'Approval On Hold' status for Level 1 approval",true);
+		  softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.getButtonWithText(objParcelsPage.WithdrawButton)), "SMAB-T2480 :Verify 'Withdraw' Button should be present on Workitem timeline with 'Approval On Hold' status for Level 1 approval",true);
 		  apasGenericObj.logout();
        }
+       
+       
+       /**
+   	 * This method is to Verify that Level1 Approver is able to assign WIs to a Level2 Approver and 2nd Level supervisor assigns it back to Level1 Approver
+   	 */
+   	@Test(description = "SMAB-T2558,SMAB-T2563: Verify that Level1 Approver is able to assign WIs to a Level2 Approver and 2nd Level supervisor assigns it back to Level1 Approver", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"})
+   	public void WorkItems_verifyLevel2ApproverIsAbleToAssignWorkItems(String loginUser) throws Exception {
+   		
+   		ReportLogger.INFO("Get the user names through SOQL query");
+   		String rpBusinessAdminName = salesforceAPI.getUserName(users.RP_BUSINESS_ADMIN);
+   		String dataAdminName = salesforceAPI.getUserName(users.DATA_ADMIN);
+   		String mappingStaffName = salesforceAPI.getUserName(users.MAPPING_STAFF);
+   		
+   		// fetching a parcel where PUC is not blank but Primary Situs is blank
+   		String queryAPNValue1 = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 2";
+   		HashMap<String, ArrayList<String>> response1 = salesforceAPI.select(queryAPNValue1);
+   		String apnValue1= response1.get("Name").get(1);
+   		
+   		// fetching a parcel where PUC and Primary Situs are not blank		
+		String queryAPNValue2 = "select Name from Parcel__c where PUC_Code_Lookup__c!= null and Primary_Situs__c !=null AND Status__c='Active' limit 1";
+		HashMap<String, ArrayList<String>> response2 = salesforceAPI.select(queryAPNValue2);
+		String apnValue2= response2.get("Name").get(0);
+   		
+   		String workItemCreationData1 = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+   		Map<String, String> hashMapmanualWorkItemData1 = objUtil.generateMapFromJsonFile(workItemCreationData1, "DOVSequencing");
+   		
+   		String workItemCreationData2 = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData2 = objUtil.generateMapFromJsonFile(workItemCreationData2,"DataToCreateWorkItemOfTypeRP");
+		
+		String warningMsgOnAssignLevel2Approver = "warning\nYou are already the 2nd Level approver on one or more of the selected work items. If you want to delegate 2nd Level approval, then select a different user.";
+	  	
+   		// Step1: Login to the APAS application (RP Business Admin)
+   		objWorkItemHomePage.login(loginUser);
+
+   		// Step2: Opening the PARCELS page and search the first parcel
+   		objWorkItemHomePage.searchModule(PARCELS);
+   		objWorkItemHomePage.globalSearchRecords(apnValue1);
+
+   		// Step3: Creating Manual work item with earlier DOV
+   		hashMapmanualWorkItemData1.put("DOV","11/21/2020");
+   		String workItem1 = objParcelsPage.createWorkItem(hashMapmanualWorkItemData1);
+   		objWorkItemHomePage.searchModule(WORK_ITEM);
+   		objWorkItemHomePage.globalSearchRecords(workItem1);
+   		
+   		// Step4: Change the status of WI to Submitted for Approval
+   		driver.navigate().refresh();
+        Thread.sleep(2000);
+	  	objPage.waitForElementToBeClickable(objWorkItemHomePage.submittedforApprovalTimeline, 10);
+	  	objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+	  	objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+   		
+	  	//Step5: Verify the Status and Supervisor details in WI
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.wiStatusDetailsPage);
+		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
+		
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus, "Information"),"Submitted for Approval",
+						"SMAB-T2563: Validate the status of Work Item");
+		
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+				"SMAB-T2563: Validate the Approver on the Work Item");
+		
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),dataAdminName,
+				"SMAB-T2563: Validate the Level2 Approver on the Work Item");
+	
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+				"SMAB-T2563: Validate the Current Approver on the Work Item");
+   	
+   		// Step6: Opening the PARCELS page and search the second parcel
+   		objWorkItemHomePage.searchModule(PARCELS);
+   		objWorkItemHomePage.globalSearchRecords(apnValue2);
+
+   		// Step 7: Creating Manual work item for the Parcel 
+   		String workItem2 = objParcelsPage.createWorkItem(hashMapmanualWorkItemData2);
+   		objWorkItemHomePage.searchModule(WORK_ITEM);
+   		objWorkItemHomePage.globalSearchRecords(workItem2);
+   		
+   		// Step8: Change the status of WI to Submitted for Approval
+   		driver.navigate().refresh();
+        Thread.sleep(2000);
+   		objPage.waitForElementToBeClickable(objWorkItemHomePage.submittedforApprovalTimeline, 10);
+   		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+   		
+   		//Step9: Verify the Status and Supervisor details in WI
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.wiStatusDetailsPage);
+	  	objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
+	  	
+	  	softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus, "Information"),"Submitted for Approval",
+						"SMAB-T2563: Validate the status of Work Item");
+		
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+				"SMAB-T2563: Validate the Approver on the Work Item");
+		
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),"",
+				"SMAB-T2563: Validate the Level2 Approver on the Work Item");
+	
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+				"SMAB-T2563: Validate the Current Approver on the Work Item");
+   		
+   		//Step10: Click on the Main TAB - Home followed by Needs my Approval tab
+		objWorkItemHomePage.searchModule(modules.HOME);
+	  	ReportLogger.INFO("Click on the Main TAB - Home");
+	  	objPage.Click(objWorkItemHomePage.lnkTABHome);
+	  	ReportLogger.INFO("Click on the Sub  TAB - Work Items");
+	  	objPage.Click(objWorkItemHomePage.lnkTABWorkItems);
+	  	ReportLogger.INFO("Click on Needs My Approval TAB");
+	  	objPage.Click(objWorkItemHomePage.needsMyApprovalTab);
+   		
+	  	//Step11: Search for the Work Item and select the checkbox
+	  	ReportLogger.INFO("Search for the Work Items and select the corresponding checkbox");
+	  	objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem1);
+	  	objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2);
+	  		
+	  	//Step12: Click on the Assign Level2 Supervisor button and validate the details
+		ReportLogger.INFO("Click the Assign Level2 Supervisor button");
+		objPage.javascriptClick(objPage.getButtonWithText(objWorkItemHomePage.assignLevel2Approver));	
+		objWorkItemHomePage.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wiLevel2ApproverDetailsPage, mappingStaffName);
+		    
+		String successMessage = objWorkItemHomePage.saveRecord();
+		softAssert.assertEquals(successMessage,"success\nSuccess\nWork item(s) processed successfully!\nClose","SMAB-T2563 : Validate user is able to assign the WI" );
+		objWorkItemHomePage.waitForElementToBeClickable(6, objPage.getButtonWithText(objWorkItemHomePage.assignLevel2Approver));
+				
+		//Step13: Verify the Status and Supervisor details in WIs
+		ReportLogger.INFO("Verify the Status and Supervisor details in WIs");
+		objWorkItemHomePage.searchModule(modules.WORK_ITEM);
+		objWorkItemHomePage.globalSearchRecords(workItem1); 
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
+		
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus, "Information"),"Submitted for Approval",
+							"SMAB-T2563: Validate the status of Work Item");
+			
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+					"SMAB-T2563: Validate the Approver on the Work Item");
+			
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+					"SMAB-T2563: Validate the Level2 Approver on the Work Item");
+		
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+					"SMAB-T2563: Validate the Current Approver on the Work Item");
+			
+		objWorkItemHomePage.globalSearchRecords(workItem2); 
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
+		
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus, "Information"),"Submitted for Approval",
+							"SMAB-T2563: Validate the status of Work Item");
+			
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+					"SMAB-T2563: Validate the Approver on the Work Item");
+			
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+					"SMAB-T2563: Validate the Level2 Approver on the Work Item");
+		
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+					"SMAB-T2563: Validate the Current Approver on the Work Item");
+   	
+		//Step14: Select & Approve the WI
+		objWorkItemHomePage.searchModule(modules.HOME);
+		ReportLogger.INFO("Click on the Main TAB - Home");
+		objPage.Click(objWorkItemHomePage.lnkTABHome);
+		ReportLogger.INFO("Click on the Sub  TAB - Work Items");
+		objPage.Click(objWorkItemHomePage.lnkTABWorkItems);
+		ReportLogger.INFO("Click on Needs My Approval TAB");
+		objPage.Click(objWorkItemHomePage.needsMyApprovalTab);
+			
+		objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem1);
+	  	objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2);
+	  		
+		ReportLogger.INFO("Click on the Approve button");
+		objPage.javascriptClick(objWorkItemHomePage.btnApprove);
+		softAssert.assertEquals(successMessage,"success\nSuccess\nWork item(s) processed successfully!\nClose","SMAB-T2563 : Validate user is able to approve the WI" );
+		Thread.sleep(5000);
+		softAssert.assertTrue(!objWorkItemHomePage.verifyElementExists(workItem1),
+		 			"SMAB-T2563: Validate the First WI is not visible anymore");
+		softAssert.assertTrue(!objWorkItemHomePage.verifyElementExists(workItem2),
+		 			"SMAB-T2563: Validate the Second WI is not visible anymore");
+			
+		//Step15: Verify the Status and Supervisor details in WIs
+		  	ReportLogger.INFO("Verify the Status and Supervisor details in WIs");
+			objWorkItemHomePage.searchModule(modules.WORK_ITEM);
+		  	objWorkItemHomePage.globalSearchRecords(workItem1); 
+		  	objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		  	objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
+		
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus, "Information"),"Submitted for Approval",
+							"SMAB-T2563: Validate the status of Work Item");
+			
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+					"SMAB-T2563: Validate the Approver on the Work Item");
+			
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+					"SMAB-T2563: Validate the Level2 Approver on the Work Item");
+		
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+					"SMAB-T2563: Validate the Current Approver on the Work Item");
+			
+			objWorkItemHomePage.globalSearchRecords(workItem2); 
+		  	objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		  	objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
+		
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus, "Information"),"Submitted for Approval",
+							"SMAB-T2563: Validate the status of Work Item");
+			
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+					"SMAB-T2563: Validate the Approver on the Work Item");
+			
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+					"SMAB-T2563: Validate the Level2 Approver on the Work Item");
+		
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+					"SMAB-T2563: Validate the Current Approver on the Work Item");
+ 
+			//Step16: Logout from the application
+		    objWorkItemHomePage.logout();
+		    Thread.sleep(5000);
+		    
+		    //Step17: Login in the application
+		  	objWorkItemHomePage.login(users.MAPPING_STAFF);
+		  	
+		    //Step18: Opening the Work Item Module
+		    objWorkItemHomePage.searchModule(modules.HOME);
+		  	
+		    //Step19: Click on the Main TAB - Home followed by Needs my Approval tab
+		  	ReportLogger.INFO("Click on the Main TAB - Home");
+		  	objPage.Click(objWorkItemHomePage.lnkTABHome);
+		  	ReportLogger.INFO("Click on the Sub  TAB - Work Items");
+		  	objPage.Click(objWorkItemHomePage.lnkTABWorkItems);
+		  	ReportLogger.INFO("Click on Needs My Approval TAB");
+		  	objPage.Click(objWorkItemHomePage.needsMyApprovalTab);
+		  	ReportLogger.INFO("Search for the Work Item and select the checkbox");
+   
+		  	//Step20: Search for the Work Item and select the checkbox
+	  		ReportLogger.INFO("Search for the Work Items and select the corresponding checkbox");
+	  		objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem1);
+	  		objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2);
+	  		
+	  		//Step21: Click on the Assign Level2 Supervisor button and validate the details
+		  	ReportLogger.INFO("Work Items are assigned back to RP Business Admin");
+		  	objPage.javascriptClick(objPage.getButtonWithText(objWorkItemHomePage.assignLevel2Approver));
+		  	softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.warningOnAssignLevel2Approver),warningMsgOnAssignLevel2Approver,
+					"SMAB-T2558: Validate the warning message is displayed on the pop-up screen");
+		  	objWorkItemHomePage.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wiLevel2ApproverDetailsPage, rpBusinessAdminName);
+		    
+		    successMessage = objWorkItemHomePage.saveRecord();
+			softAssert.assertEquals(successMessage,"success\nSuccess\nWork item(s) processed successfully!\nClose","SMAB-T2563 : Validate user is able to assign the WI" );
+			objWorkItemHomePage.waitForElementToBeClickable(6, objPage.getButtonWithText(objWorkItemHomePage.assignLevel2Approver));
+			
+			//Step22: Select & Approve the WI
+		  	ReportLogger.INFO("Click on Needs My Approval TAB");
+		  	objPage.Click(objWorkItemHomePage.needsMyApprovalTab);
+			
+		  	objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem1);
+	  		objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2);
+	  		
+			ReportLogger.INFO("Click on the Approve button");
+		  	objPage.javascriptClick(objWorkItemHomePage.btnApprove);
+		  	softAssert.assertEquals(successMessage,"success\nSuccess\nWork item(s) processed successfully!\nClose","SMAB-T2563 : Validate user is able to approve the WI" );
+		  	Thread.sleep(5000);
+		    softAssert.assertTrue(!objWorkItemHomePage.verifyElementExists(workItem1),
+		 			"SMAB-T2563: Validate the First WI is not visible anymore");
+		    softAssert.assertTrue(!objWorkItemHomePage.verifyElementExists(workItem2),
+		 			"SMAB-T2563: Validate the Second WI is not visible anymore");
+			
+			//Step23: Logout from the application
+		    objWorkItemHomePage.logout();
+		    Thread.sleep(5000);
+		    
+		    //Step24: Login in the application
+		  	objWorkItemHomePage.login(loginUser);
+		  	
+		    //Step25: Opening the Work Item Module
+		    objWorkItemHomePage.searchModule(modules.HOME);
+		  	
+		    //Step26: Click on the Main TAB - Home followed by Needs my Approval tab
+		  	ReportLogger.INFO("Click on the Main TAB - Home");
+		  	objPage.Click(objWorkItemHomePage.lnkTABHome);
+		  	ReportLogger.INFO("Click on the Sub  TAB - Work Items");
+		  	objPage.Click(objWorkItemHomePage.lnkTABWorkItems);
+		  	ReportLogger.INFO("Click on Needs My Approval TAB");
+		  	objPage.Click(objWorkItemHomePage.needsMyApprovalTab);
+		  	ReportLogger.INFO("Search for the Work Item and select the checkbox");
+   
+		  	//Step27: Search for the Work Item and select the checkbox
+		  	objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem1);
+	  		objWorkItemHomePage.clickCheckBoxForSelectingWI(workItem2);
+		    
+	  		//Step28: Verify the Status and Supervisor details in WI
+		  	ReportLogger.INFO("Verify the Status and Supervisor details in WI");
+			objWorkItemHomePage.searchModule(modules.WORK_ITEM);
+		  	objWorkItemHomePage.globalSearchRecords(workItem1); 
+		  	objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		  	objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
+		
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus, "Information"),"Submitted for Approval",
+							"SMAB-T2563: Validate the status of Work Item");
+			
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+					"SMAB-T2563: Validate the Approver on the Work Item");
+			
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+					"SMAB-T2563: Validate the Level2 Approver on the Work Item");
+		
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+					"SMAB-T2563: Validate the Current Approver on the Work Item");
+			
+			objWorkItemHomePage.globalSearchRecords(workItem2); 
+		  	objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		  	objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
+		
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus, "Information"),"Submitted for Approval",
+							"SMAB-T2563: Validate the status of Work Item");
+			
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+					"SMAB-T2563: Validate the Approver on the Work Item");
+			
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+					"SMAB-T2563: Validate the Level2 Approver on the Work Item");
+		
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
+					"SMAB-T2563: Validate the Current Approver on the Work Item");
+			
+			//Step29: Logout from the application
+		    objWorkItemHomePage.logout();
+		   	    
+   	}   
+       
 }

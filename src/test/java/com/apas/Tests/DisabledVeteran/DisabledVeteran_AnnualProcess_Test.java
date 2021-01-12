@@ -255,7 +255,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 	 * 2. Verify for Active Exemption record created in above test, Current Year's VA is updated with relevant values from RPSL record
 	 * 3. Verify for In-Active Exemption record created in above test, Current Year's VA is still not created even if RPSL is created
 	 **/
-	@Test(description = "SMAB-T1382, SMAB-T511, SMAB-T1293: Verify that when the 'Annual Batch process' runs and status of RPSL is 'Approved', VAR for Active Exemption gets updated with relevant values & for In-Active Exemption, does not get created", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption" }, dependsOnMethods = {"DisabledVeteran_verifyActiveExemptionWithDeletedAndUnApprovedRPSL", "DisabledVeteran_verifyInActiveExemptionWithDeletedAndUnApprovedRPSL"})
+	@Test(description = "SMAB-T1382, SMAB-T511, SMAB-T1293,SMAB-T536,SMAB-T535: Verify that when the 'Annual Batch process' runs and status of RPSL is 'Approved', VAR for Active Exemption gets updated with relevant values & for In-Active Exemption, does not get created", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption" }, dependsOnMethods = {"DisabledVeteran_verifyActiveExemptionWithDeletedAndUnApprovedRPSL", "DisabledVeteran_verifyInActiveExemptionWithDeletedAndUnApprovedRPSL"})
 	
 	public void DisabledVeteran_verifyVAWithApprovedRPSL(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through		
@@ -273,7 +273,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		String entryData = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;		
 		Map<String, String> createRPSLDataMap = objUtils.generateMapFromJsonFile(entryData, "DataToCreateCurrentRPSLEntry");
 		String strSuccessAlertMessage = objRPSLPage.createRPSL(createRPSLDataMap,strRollYear);
-		String recordValue = "Exemption Limits -  " + strRollYear;
+		String recordValue = "Exemption Limits - " + strRollYear;
 		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + recordValue + "\" was created.","SMAB-T536 : Verify the User is able to create Exemption limit record for the current roll year");
 		
 		//Step5: Opening the Real Property Settings Libraries module
@@ -293,7 +293,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		objApasGenericPage.selectOptionFromDropDown(objRPSLPage.statusDropDown,"Approved");
 		strSuccessAlertMessage = objRPSLPage.saveRealPropertySettings();
 		System.out.println("success message is :"+strSuccessAlertMessage);
-		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + value + "\" was saved.","RPSL is edited successfully");
+		softAssert.assertEquals(strSuccessAlertMessage,"Real Property Settings Library \"" + value + "\" was saved.","SMAB-T535: RPSL is edited successfully");
 	
 		//Step9: Search and Select Active Exemption created in previous Test
 		objApasGenericPage.globalSearchRecords(activeExemptionName);
@@ -349,7 +349,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 		
 		//Refreshing the screen to bring back the focus
 		driver.navigate().refresh();
-		Thread.sleep(1000);
+		Thread.sleep(5000);
 				
 		objApasGenericPage.logout();
 				

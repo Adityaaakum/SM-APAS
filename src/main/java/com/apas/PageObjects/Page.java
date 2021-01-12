@@ -730,8 +730,9 @@ public class Page extends TestBase {
 		String xpath = commonPath + "//label[text()=\"" + label + "\"]/..//input | " +
 				commonPath + "//input[@name=\"" + label + "\"] | " + //this condition was observed on manual work item creation pop up for edit boxes
 				commonPath + "//*[@class='inputHeader' and contains(.,\"" + label + "\")]/..//Select |"+ //This condition was observed for few drop downs of Select Type
+				commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//a | " + //this condition was observed on Mapping Action screen for Assessor' Map label
 				commonPath + "//label[text()=\"" + label + "\"]/..//textarea";//this condition was added to handle webelements of type textarea
-
+				
 		waitUntilElementIsPresent(xpath, 3);
 		return driver.findElement(By.xpath(xpath));
 	}
@@ -742,12 +743,12 @@ public class Page extends TestBase {
 	 * @param text : text of the button
 	 * @return : button element
 	 */
-	public WebElement getButtonWithText(String text) {
+	public WebElement getButtonWithText(String text) throws Exception {
 		String commonxPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 		String xpath = commonxPath + "//button[text()='" + text + "'] | " +
 				commonxPath + "//div[text()='" + text + "']//.. | " +
 				commonxPath + "//*[contains(@class,'slds-is-open')]//button[text()='" + text + "']";
-
+		waitUntilElementIsPresent(xpath, 10);
 		return driver.findElement(By.xpath(xpath));
 	}
 

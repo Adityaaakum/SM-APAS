@@ -91,32 +91,30 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		 int noOfVAs =  objValueAdjustmentPage.numberOfValueAdjustments.size(); 
 		 softAssert.assertEquals(noOfVAs, actualVAtoBeCreated, "SMAB-T1213 : Verify Number of Value Adjustments");
 		   
-		  //Step6: Looping through each Value Adjustments to calculate Exemption Amount 
-		  for (int VARowNo = 0; VARowNo<noOfVAs; VARowNo++) { 			 				  
-			//Step7: Clicking on 'Active' Value Adjustment link
-			driver.navigate().refresh();
-			String xpPathActiveVA = "//div//tr["+(VARowNo+1)+"]//*[contains(text(),'Active')]//ancestor:: td[@data-label='Status']//preceding-sibling::th//a";
-			objPage.waitUntilElementIsPresent(xpPathActiveVA,50);
-			WebElement vaLink = objPage.locateElement(xpPathActiveVA,10);
+		//Step6: Looping through each Value Adjustments to calculate Exemption Amount 
+		for (int VARowNo = 0; VARowNo<noOfVAs; VARowNo++) { 			 				  
 			
-			String vANAme = vaLink.getText();
-			ReportLogger.INFO("Clicking on Value Adjustment Link: "+ vANAme);
-			objPage.Click(vaLink);
-			objPage.waitUntilPageisReady(driver);		
+		//Step7: Clicking on 'Active' Value Adjustment link
+		String xpPathActiveVA = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//tr["+(VARowNo+1)+"]//span[contains(text(),'Active')]//..//..//preceding-sibling::th//a";
+		WebElement vaLink = objPage.waitForElementToBeClickable(50, xpPathActiveVA);
+		String vANAme = objPage.getElementText(vaLink);
+		ReportLogger.INFO("Clicking on Value Adjustment Link: "+ vANAme);
+		objPage.Click(vaLink);
+		objPage.waitUntilPageisReady(driver);		
 			
-			//Step8: Calculate Basic Exemption Amount in an 'Active' Value Adjustment					  
-			float expectedExemptionAmount = objValueAdjustmentPage.calculateBasicExemptionAmount();
-			String exemptionAmount = objPage.getElementText(objPage.waitForElementToBeVisible(objValueAdjustmentPage.exemptionAmountCalculatedValueLabel));
-			float actualExemptionAmount = objApasGenericPage.convertToFloat(exemptionAmount); 		 
-			ReportLogger.INFO("Verifying Exemption Amount Calculated");
-			softAssert.assertEquals(actualExemptionAmount,expectedExemptionAmount,"SMAB-T1213: Verify Exemption Amount calculated for each eligible year if the Determination is 'Basic'");
+		//Step8: Calculate Basic Exemption Amount in an 'Active' Value Adjustment					  
+		float expectedExemptionAmount = objValueAdjustmentPage.calculateBasicExemptionAmount();
+		String exemptionAmount = objPage.getElementText(objPage.waitForElementToBeVisible(objValueAdjustmentPage.exemptionAmountCalculatedValueLabel));
+		float actualExemptionAmount = objApasGenericPage.convertToFloat(exemptionAmount); 		 
+		ReportLogger.INFO("Verifying Exemption Amount Calculated");
+		softAssert.assertEquals(actualExemptionAmount,expectedExemptionAmount,"SMAB-T1213: Verify Exemption Amount calculated for each eligible year if the Determination is 'Basic'");
 			   
-			//Step9: Calculate Net Exemption Amount in an 'Active' Value Adjustment			
-			ReportLogger.INFO("Verifying Net Exemption Amount");
-			float expectedNetExemptionAmount = objValueAdjustmentPage.calculateNetExemptionAmount(actualExemptionAmount);				  
-			float actualNetExemptionAmount = objApasGenericPage.convertToFloat(objValueAdjustmentPage.netExemptionAmountCalculatedValueLabel.getText());			 			  
-			softAssert.assertEquals(actualNetExemptionAmount,expectedNetExemptionAmount,"SMAB-T612: Verify Net Exemption Amount calculated for each eligible year & multiple retroactive years if Penalty is applied");
-			driver.navigate().back();		  
+		//Step9: Calculate Net Exemption Amount in an 'Active' Value Adjustment			
+		ReportLogger.INFO("Verifying Net Exemption Amount");
+		float expectedNetExemptionAmount = objValueAdjustmentPage.calculateNetExemptionAmount(actualExemptionAmount);				  
+		float actualNetExemptionAmount = objApasGenericPage.convertToFloat(objValueAdjustmentPage.netExemptionAmountCalculatedValueLabel.getText());			 			  
+		softAssert.assertEquals(actualNetExemptionAmount,expectedNetExemptionAmount,"SMAB-T612: Verify Net Exemption Amount calculated for each eligible year & multiple retroactive years if Penalty is applied");
+		driver.navigate().back();		  
 		  }	 
 		 objApasGenericPage.logout();
 	}

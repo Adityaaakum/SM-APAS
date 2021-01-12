@@ -60,5 +60,6 @@ public interface testdata {
 	String WORK_ITEMS_ROUTING_SETUP = userDirectory + "\\data\\WorkItems\\WorkItemsRoutingSetup.json";
     String ONE_TO_ONE_MAPPING_ACTION = "\\data\\MappingActions\\OneToOneMapping.json";
 	String SPLIT_MAPPING_ACTION = "\\data\\MappingActions\\SplitMappingAction.json";
+    String RETIRE_ACTION = userDirectory + "\\data\\MappingActions\\RetireAction.json";
 
 }
