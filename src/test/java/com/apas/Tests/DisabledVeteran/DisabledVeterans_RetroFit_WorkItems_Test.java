@@ -114,9 +114,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		workItemPageObj.Click(workItemPageObj.detailsTab);
 		workItemPageObj.waitForElementToBeVisible(6, workItemPageObj.referenceDetailsLabel);
 
-		//Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC",
-						"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
+		//Validating that  'Date' field gets automatically populated in the work item record
 		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 						"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
 		
@@ -508,9 +506,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		Thread.sleep(1000);
 		softAssert.assertTrue(objPage.verifyElementVisible(workItemPageObj.relatedActionLink),"SMAB-T1918:Verify that User is able to see the Low income WI under 'In Progress' tab after accpeting it");
 
-		//Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC",
-								"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
+		//Validating that  'Date' field gets automatically populated in the work item record
 		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 								"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);		
 		
