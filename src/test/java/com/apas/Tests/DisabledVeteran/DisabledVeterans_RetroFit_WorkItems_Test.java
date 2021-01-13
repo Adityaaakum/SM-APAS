@@ -359,10 +359,13 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		driver.close();
 		driver.switchTo().window(parentwindow);
 		driver.navigate().back();
+		driver.navigate().refresh();
+		Thread.sleep(3000);
 		objApasGenericPage.globalSearchRecords(reminderSubmittedWINumber);
 
 		// Step8:Supervisor Verifying that the WI also gets returned
-		objPage.Click(workItemPageObj.detailsWI);
+		objPage.javascriptClick(workItemPageObj.detailsTab);
+		Thread.sleep(1000);
 		//Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage, 10);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
@@ -377,7 +380,8 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objApasGenericPage.searchModule(modules.HOME);
 		workItemPageObj.openWorkItem(reminderSubmittedWINumber);
 
-		objPage.Click(workItemPageObj.detailsWI);
+		objPage.javascriptClick(workItemPageObj.detailsTab);
+		Thread.sleep(1000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage,10);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
 		Thread.sleep(1000);
@@ -440,10 +444,13 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		driver.close();
 		driver.switchTo().window(parentwindow);
 		driver.navigate().back();
+		driver.navigate().refresh();
+		Thread.sleep(2000);
 		objApasGenericPage.globalSearchRecords(reminderAgainSubmittedWINumber);
 
 		// Step11:Supervisor Verifying that the WI is completed
-		objPage.Click(workItemPageObj.detailsWI);
+		objPage.javascriptClick(workItemPageObj.detailsTab);
+		Thread.sleep(1000);
 		//Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage, 10);
 		
