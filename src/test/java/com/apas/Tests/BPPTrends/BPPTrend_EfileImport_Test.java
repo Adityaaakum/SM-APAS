@@ -731,7 +731,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Validating Discard functionality of error records
 	 * 3. Validating no of Error records post discarding error records
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
+	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79,SMAB-T955: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
 	public void BppTrend_CAAValFileImportAndDiscardErrorRecords(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);
