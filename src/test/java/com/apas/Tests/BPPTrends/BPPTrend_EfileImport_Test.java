@@ -1221,7 +1221,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertTrue(objEfileHomePage.isNotDisplayed(objEFileImportLogPage.inlineEditButton),"SMAB-T954:Verify that User is able to view and not edit the log records after uploading the BPP Trend e-Files");
 		ReportLogger.INFO("verifying transaction log generated is non editable");
 		objPage.Click(objEfileImportTransactionsPage.transactionsTab);
-		Thread.sleep(5000);
+		Thread.sleep(7000);
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);
 		objPage.waitForElementToBeVisible(objEfileImportTransactionsPage.transactionsRecords.get(0), 10);
 		objPage.javascriptClick(objEfileImportTransactionsPage.transactionsRecords.get(0));
@@ -1321,7 +1321,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		
 		ReportLogger.INFO("Verifying Import count, File count and Error count in Import Transaction record");
 		objPage.Click(objEfileImportTransactionsPage.transactionsTab);
-		Thread.sleep(5000);
+		Thread.sleep(7000);
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);
 		objPage.waitForElementToBeVisible(objEfileImportTransactionsPage.transactionsRecords.get(0), 10);
 		String expectedTransactionID=objPage.getElementText(objEfileImportTransactionsPage.transactionsRecords.get(0));
@@ -1332,7 +1332,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		
 		ReportLogger.INFO("Verifying fileds for Transaction/Audit trail record");
 		objPage.javascriptClick(objEfileImportTransactionsPage.transactionTrailTab);
-		Thread.sleep(5000);
+		Thread.sleep(7000);
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);
 		objPage.javascriptClick(objEfileImportTransactionsPage.transactionTrailRecords.get(0));
 		objPage.waitForElementToBeClickable(objEfileImportTransactionsPage.statusLabel, 10);

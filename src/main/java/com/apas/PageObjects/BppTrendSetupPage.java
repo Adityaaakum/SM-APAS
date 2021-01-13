@@ -787,7 +787,6 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		ReportLogger.INFO("** Creating entry for " + factorType + " property type");
 
 		Click(newButton);
-		//createRecord();
 		enter(minGoodFactorEditBox,factorValue);
 		selectOptionFromDropDown("Property Type",factorType);
 		objPage.Click(objPage.getButtonWithText("Save"));
