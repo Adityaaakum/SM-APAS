@@ -338,7 +338,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 **/
 	public void acceptWorkItem(String workItem) throws Exception {
 		ReportLogger.INFO("Accepting the work item: " + workItem);
-		WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
+		WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//ancestor::th//preceding-sibling::td//span[@class='slds-checkbox_faux']"));
 		scrollToElement(webElementCheckBox);
 		Click(webElementCheckBox);
 		scrollToElement(acceptWorkItemButton);
@@ -368,7 +368,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 **/
 	public void openActionLink(String workItem) throws Exception {
 		ReportLogger.INFO("Clicking on Action Link of the work item : " + workItem);
-		String xpath = "//a[@title='" + workItem + "' or text()='" + workItem + "']//ancestor::th//following-sibling::td//a";
+		String xpath = "//a[@title='" + workItem + "' or text()='" + workItem + "']//ancestor::th//lightning-icon//parent::a";
 		waitUntilElementIsPresent(xpath, 15);
 		waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
 		javascriptClick(driver.findElement(By.xpath(xpath)));
@@ -649,8 +649,29 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		selectOptionFromDropDown(dropDownAction,action);
 		Thread.sleep(2000);
 	}
+	/**
+	 * Description: This method will fetch the Work Item Count from tab mentioned
+	 * @param requestType: Name of the work item
+	 * @param tabName: Tab from which data needs to be fetched
+	 */
+	public int getWorkItemCount(String requestType, String tabName) throws Exception {
+		HashMap<String, ArrayList<String>> InPoolWorkItems = getWorkItemData(tabName);
+		return (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals(requestType)).count();
 
-	
+	}
+	/**
+	 * Description: This method will fetch the Work Item Name from tab mentioned
+	 * @param requestType: Name of the work item
+	 * @param tabName: Tab from which data needs to be fetched
+	 */
+	public String getWorkItemName(String requestType, String tabName) throws Exception {
+		String xpath = "//a[@role='tab'][@data-label='" + tabName + "']";
+		waitUntilElementIsPresent(xpath, 10);
+		WebElement webElement = driver.findElement(By.xpath(xpath));
+		Click(webElement);
+		Thread.sleep(2000);
+		return getGridDataForRowString(requestType).get("Work item #").get(0).split("\\n")[0];
+	}
 
 		
 
