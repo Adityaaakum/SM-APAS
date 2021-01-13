@@ -47,6 +47,7 @@ public class WorkItems_RoutingSetupTest extends TestBase {
     public void WorkItem_verify_NeighborhoodReferenceRecordCreation(String loginUser) throws Exception {
         String workItemCreationData = testdata.WORK_ITEMS_ROUTING_SETUP;
         Map<String, String> hashMapNeighborhoodData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateNeighborhood");
+        hashMapNeighborhoodData.put("Primary Appraiser",salesforceAPI.getUserName(users.RP_BUSINESS_ADMIN));
 
         //Step1: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objWorkItemHomePage.login(loginUser);
@@ -86,6 +87,7 @@ public class WorkItems_RoutingSetupTest extends TestBase {
 
         //Step6: Edit existing Neighborhood reference record
         Map<String, String> hashMapDuplicateNeighborhoodData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateDuplicateNeighborhood");
+        hashMapDuplicateNeighborhoodData.put("Primary Appraiser",salesforceAPI.getUserName(users.RP_BUSINESS_ADMIN));
 
         objWorkItemHomePage.editRecord();
         objWorkItemHomePage.enter(objWorkItemsNeighborhoodsPage.neighborhoodCodeEditBox,hashMapDuplicateNeighborhoodData.get("Neighborhood Code"));

@@ -937,7 +937,7 @@ public class ApasGenericPage extends Page {
 	 * @throws Exception
 	 * @param: filtyepe, Source and period values
 	 */
-	public void openLogRecordForImportedFile(String fileType, String source, String period, String filepath) throws IOException {
+	public void openLogRecordForImportedFile(String fileType, String source, String period, String filepath) throws Exception {
 		String logName = fileType + " :" + source + " :" + period;
 		String filename = filepath.substring(filepath.lastIndexOf("\\") + 1, filepath.lastIndexOf("."));
 		javascriptClick(driver.findElement(By.xpath("(//a[text()='" + filename + "'])[1]")));
@@ -945,6 +945,8 @@ public class ApasGenericPage extends Page {
 		for (String winHandle : driver.getWindowHandles()) {
 			driver.switchTo().window(winHandle);
 		}
+
+		waitUntilElementIsPresent("//div[text()='" + logName + "']",15);
 		javascriptClick(driver.findElement(By.xpath("//div[text()='" + logName + "']")));
 
 	}
