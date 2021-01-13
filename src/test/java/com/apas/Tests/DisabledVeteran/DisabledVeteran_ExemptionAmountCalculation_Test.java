@@ -73,6 +73,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		createExmeptiondataMap.put("Veteran Name", createExmeptiondataMap.get("Veteran Name").concat(java.time.LocalDateTime.now().toString()));
 		objExemptionsPage.createExemption(createExmeptiondataMap);
 		driver.navigate().refresh();
+		Thread.sleep(3000);
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		
 		ReportLogger.INFO("Exemption: "+exemptionName + " is created");

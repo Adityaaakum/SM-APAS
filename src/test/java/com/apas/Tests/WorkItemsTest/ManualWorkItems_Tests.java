@@ -836,7 +836,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
    	 * This method is to Verify that Level1 Approver is able to assign WIs to a Level2 Approver and 2nd Level supervisor assigns it back to Level1 Approver
    	 */
    	@Test(description = "SMAB-T2558,SMAB-T2563: Verify that Level1 Approver is able to assign WIs to a Level2 Approver and 2nd Level supervisor assigns it back to Level1 Approver", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"})
-   	public void WorkItems_verifyLevel2ApproverIsAbleToAssignWorkItems(String loginUser) throws Exception {
+   	public void AWorkItems_verifyLevel2ApproverIsAbleToAssignWorkItems(String loginUser) throws Exception {
    		
    		ReportLogger.INFO("Get the user names through SOQL query");
    		String rpBusinessAdminName = salesforceAPI.getUserName(users.RP_BUSINESS_ADMIN);
