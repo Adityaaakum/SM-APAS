@@ -35,7 +35,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		objUtil = new Util();
 	}
 
-	@FindBy(xpath = "//a[@title = 'New']")
+	@FindBy(xpath = "//a[@title = 'New'] | //flexipage-tab2[contains(@class,'show')]//button[text()='New']")
 	public WebElement newButton;
 
 	@FindBy(xpath = "//a[text()='No actions available']")
@@ -209,8 +209,10 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 * @throws: Exception
 	 */
 	public void createBppSetting(String equipIndexFactorValue) throws Exception {
+		if(verifyElementVisible(dropDownIconBppSetting))
 		clickAction(waitForElementToBeClickable(dropDownIconBppSetting));
-		clickAction(waitForElementToBeClickable(newBtnToCreateEntry));
+		createRecord();
+		//clickAction(waitForElementToBeClickable(newBtnToCreateEntry));
 		enter(objApasGenericPage.maxEquipmentIndexFactor,equipIndexFactorValue);
 		objPage.Click(objPage.getButtonWithText("Save"));
 	}
@@ -774,17 +776,18 @@ public class BppTrendSetupPage extends ApasGenericPage {
 
 		//Step15: Create a BPP Composite Factor Settings
 		ReportLogger.INFO("** Clicking on Bpp Composite Factors Settings tab **");
-		if(moreTabRightSection != null) {
+		/*if(moreTabRightSection != null) {
 			objPage.Click(moreTabRightSection);
 			objPage.Click(bppCompositeFactorOption);
 		} else {
-			objPage.Click(bppCompFactorSettingTab);
-		}
+			*/
+		objPage.Click(bppCompFactorSettingTab);
+		
 
 		ReportLogger.INFO("** Creating entry for " + factorType + " property type");
 
 		Click(newButton);
-
+		//createRecord();
 		enter(minGoodFactorEditBox,factorValue);
 		selectOptionFromDropDown("Property Type",factorType);
 		objPage.Click(objPage.getButtonWithText("Save"));

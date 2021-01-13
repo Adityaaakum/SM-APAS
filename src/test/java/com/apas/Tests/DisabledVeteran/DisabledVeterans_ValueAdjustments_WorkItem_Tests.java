@@ -155,8 +155,8 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 	softAssert.assertEquals(actualRequestTypeName.toString(),RequestTypeName,"SMAB-T2103:Verify RequestType Name of WI generated");
 	
 	objPage.Click(actualWIName);
-  	objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
-	objPage.javascriptClick(objWIHomePage.detailsWI);
+  	objPage.waitForElementToBeClickable(objWIHomePage.detailsTab);
+	objPage.javascriptClick(objWIHomePage.detailsTab);
 
    //Validating that  'Date' field gets automatically populated in the work item record
    objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);

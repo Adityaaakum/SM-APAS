@@ -104,20 +104,6 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		//Search the Work Item Name in the Grid 1st Column
 		WebElement actualWIName = objWIHomePage.searchWIinGrid(WIName);
 
-		objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
-		objPage.Click(objWIHomePage.detailsWI);
-		//Validating that 'Use Code' and 'Street' field  gets automatically populated in the work item record
-		objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
-		String linkedAPN=objApasGenericPage.getFieldValueFromAPAS("APN", "Reference Data Details");
-		String streetName=salesforceAPI.select("SELECT Situs_Street_Name__c   FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ linkedAPN +"')").get("Name").get(0);
-
-		String  useCodeValue=salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where name='"+ linkedAPN +"')").get("Name").get(0);
-
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),useCodeValue,
-				"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Street", "Reference Data Details"),streetName,
-				"SMAB-T2080: Validation that 'Street' fields getting automatically populated in the work item record");
-		
 		ReportLogger.INFO("Step: Fetching Data for Work Item : " + WIName );
 		HashMap<String, ArrayList<String>> rowData = objWIHomePage.getGridDataForRowString(WIName);
 
@@ -130,6 +116,20 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 		softAssert.assertEquals(actualWIName.toString(),WIName,"SMAB-T1922:Verify name of WI generated");
 		softAssert.assertEquals(actualRequestTypeName.toString(),RequestTypeName,"SMAB-T1922:Verify RequestType Name of WI generated");
 
+		objPage.Click(actualWIName);
+		objPage.waitForElementToBeClickable(objWIHomePage.detailsTab);
+		objPage.Click(objWIHomePage.detailsTab);
+		//Validating that 'Use Code' and 'Street' field  gets automatically populated in the work item record
+		objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
+		String linkedAPN=objApasGenericPage.getFieldValueFromAPAS("APN", "Information");
+		String streetName=salesforceAPI.select("SELECT Situs_Street_Name__c  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ linkedAPN +"')").get("Situs_Street_Name__c").get(0);
+		String  useCodeValue=salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where name='"+ linkedAPN +"')").get("Name").get(0);
+
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),useCodeValue,
+				"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Street", "Reference Data Details"),streetName,
+				"SMAB-T2080: Validation that 'Street' fields getting automatically populated in the work item record");
+		
 		String updateWIStatus = "SELECT Id FROM Work_Item__c where Name = '"+WIName+"'";
 		salesforceAPI.update("Work_Item__c", updateWIStatus, "Status__c", "Completed");
 
