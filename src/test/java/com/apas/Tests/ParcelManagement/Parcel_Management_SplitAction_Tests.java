@@ -51,11 +51,11 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
     @Test(description = "SMAB-T2482:Verify that User is able to perform the \"Split\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
             "regression","parcel_management" })
     public void ParcelManagement_VerifySplitMappingActionParcel(String loginUser) throws Exception {
-        String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
+        String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Status__c = 'Active' AND Primary_Situs__c !=NULL limit 1";
         HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
         String apn = responseAPNDetails.get("Name").get(0);
 
-        String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+        /*String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
         HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
         String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
@@ -75,7 +75,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
         jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 
         salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
-
+        */
         String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
         Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
                 "DataToCreateWorkItemOfTypeParcelManagement");
@@ -116,24 +116,29 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
                 "SMAB-T2481: Validation that reason code field is auto populated from parent parcel work item");
 
         //Step 7: Validating help icons
-        objMappingPage.Click(objMappingPage.helpIconFirstNonCondoParcelNumber);
+       objMappingPage.Click(objMappingPage.helpIconFirstNonCondoParcelNumber);
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use system generated APN, leave as blank.",
                 "SMAB-T2481: Validation that help text is generated on clicking the help icon for First non-Condo Parcel text box");
+
         objMappingPage.Click(objMappingPage.helpIconLegalDescription);
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent legal description, leave as blank.",
                 "SMAB-T2481: Validation that help text is generated on clicking the help icon for legal description");
+
         objMappingPage.Click(objMappingPage.helpIconSitus);
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent situs, leave as blank.",
                 "SMAB-T2481: Validation that help text is generated on clicking the help icon for Situs text box");
 
         //Step 7: Validating Error Message when both Number of Child Non-Condo & Condo Parcels fields contain 0
         objParcelsPage.Click(objParcelsPage.getButtonWithText(objMappingPage.nextButton));
-        softAssert.assertEquals(objMappingPage.getErrorMessage(),"Please populate either or both 'Number of Child Non-Condos' or 'Number of Child Condos' field (s)",
+        softAssert.assertEquals(objMappingPage.getErrorMessage(),"Number of Child Non-Condo Parcels and/or Number of Child Condo parcels values total must be equivalent to two or greater.",
                 "SMAB-T2490: Validation that error message is displayed when both Number of Child Non-Condo & Condo Parcels fields contain 0");
 
 
         //Step 8: entering data in form for Split mapping action
-        objMappingPage.fillMappingActionForm(hashMapSplitActionMappingData);
+        Map<String, String> hashMapSplitActionInvalidData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+                "DataToPerformSplitMappingActionWithSpecialChars");
+        objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,hashMapSplitActionMappingData.get("First Condo Parcel Number"));
+
         HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
         //Step 9: Validating Error Message having incorrect map book data
@@ -143,9 +148,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
                 "SMAB-T2490: Validation that error message is displayed when map book of First Child Condo Parcel is any number except 100");
 
         //Step 10: entering data in form for split mapping action
-        hashMapSplitActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-                "DataToPerformSplitMappingActionWithSpecialChars");
-        objMappingPage.fillMappingActionForm(hashMapSplitActionMappingData);
+
 
         //Step 11: Validating Error Message having special characters in fields: First Child Non-Condo Parcel & First Child Condo Parcel
         softAssert.assertEquals(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
@@ -187,7 +190,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
                 "SMAB-T2488: Validation that parcel number of child parcels contains 3 digits");
         softAssert.assertTrue(childAPNNumber.endsWith("0"),
                 "SMAB-T2488: Validation that child APN number ends with 0");
-
+        /*
         //Step 18: Validation of ALL fields THAT ARE displayed on second screen
         softAssert.assertEquals(gridDataHashMap.get("District").get(0),districtValue,
                 "SMAB-T2481: Validation that  System populates District  from the parent parcel");
@@ -229,6 +232,6 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
         driver.switchTo().window(parentWindow);
         objWorkItemHomePage.logout();
-
+        */
     }
 }

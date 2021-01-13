@@ -1,33 +1,33 @@
 {
   "DataToPerformSplitMappingActionWithoutAllFields": {
-    "Action": "Split",
+    "Action": "Perform Parcel Split",
     "Are taxes fully paid?": "Yes",
     "Number of Child Non-Condo Parcels": "2",
     "Number of Child Condo Parcels": "2",
-    "Comments": "Perform Split Mapping Action"
+    "Comments": "Perform Parcel Split"
   },
 
   "DataToPerformSplitMappingActionWithIncorrectData": {
     "Number of Child Non-Condo Parcels": "2",
     "Number of Child Condo Parcels": "2",
-    "First Condo Parcel Number" : "100-340-790",
+    "First non-Condo Parcel Number" : "100-340-790",
     "First Condo Parcel Number" : "120-340-790",
     "Comments": "Perform Split Mapping Action"
   },
   "DataToPerformSplitMappingActionWithSpecialChars": {
-  "First Condo Parcel Number" : "100-340-79$",
+  "First non-Condo Parcel Number" : "100-340-79$",
   "First Condo Parcel Number" : "120-3@0-790",
   "Comments": "Perform Split Mapping Action"
 },
   "DataToPerformSplitMappingActionWithAlphaNumeric": {
-    "First Condo Parcel Number" : "abc-340-790",
+    "First non-Condo Parcel Number" : "abc-340-790",
     "First Condo Parcel Number" : "100-3db-790",
     "Comments": "Perform Split Mapping Action"
   },
   "DataToPerformSplitMappingActionWithValidData": {
   "Number of Child Non-Condo Parcels": "2",
   "Number of Child Condo Parcels": "2",
-  "First Condo Parcel Number" : "100-340-790",
+  "First non-Condo Parcel Number" : "100-340-790",
   "First Condo Parcel Number" : "120-340-790",
   "Comments": "Perform Split Mapping Action"
 },
