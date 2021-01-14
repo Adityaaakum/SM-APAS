@@ -660,7 +660,9 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.openLogRecordForImportedFile("BPP Trend Factors","BOE - Valuation Factors",rollYearForImport,fileName + "BOE Valuation Factors 2021.xlsx");	
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.logStatus, 10);	
 		objPage.Click(objEfileImportTransactionsPage.transactionsTab);	
-		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);	
+		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 15);	
+		Thread.sleep(5000);
+		objPage.waitForElementToBeVisible(objEfileImportTransactionsPage.transactionsRecords.get(0), 10);
 		softAssert.assertEquals(objEfileImportTransactionsPage.transactionsRecords.size(), "2", "SMAB-T91:Verify that admin is able to see Transactions in 'E-File Import Transactions' screen for edited records after file import");
 		
 		objEfileHomePage.logout();
