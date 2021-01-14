@@ -171,8 +171,10 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			clickAction(bppCompFactorSettingTab);
 		}
 
+		if(verifyElementVisible(dropDownIconBppCompFactorSetting))
 			clickAction(dropDownIconBppCompFactorSetting);
-			clickAction(newBtnToCreateEntry);
+			//clickAction(newBtnToCreateEntry);
+			Click(newButton);
 
 		enter("Minimum Good Factor",minGoodFactorValue);
 		objApasGenericPage.selectOptionFromDropDown("Property Type",propertyType);
@@ -783,7 +785,6 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			*/
 		objPage.Click(bppCompFactorSettingTab);
 		
-
 		ReportLogger.INFO("** Creating entry for " + factorType + " property type");
 
 		Click(newButton);

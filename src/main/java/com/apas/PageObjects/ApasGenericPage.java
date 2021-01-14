@@ -539,7 +539,7 @@ public class ApasGenericPage extends Page {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Displaying all the records on the grid");
 		Click(selectListViewButton);
 		String xpathDisplayOption = "//div[contains(@class,'list uiAbstractList')]//a[@role='option']//span[text()='" + displayOption + "']";
-		waitUntilElementIsPresent(xpathDisplayOption, 15);
+		waitUntilElementIsPresent(xpathDisplayOption, 20);
 		Click(driver.findElement(By.xpath(xpathDisplayOption)));
 		Thread.sleep(2000);
 		if (verifyElementExists(xpathSpinner)){
