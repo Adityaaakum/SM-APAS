@@ -259,7 +259,7 @@ public class EFileImportPage extends ApasGenericPage {
         objPage.Click(periodDropdown);
         objPage.Click(driver.findElement(By.xpath("//span[@class='slds-media__body']/span[contains(.,'" + period + "')]")));
         objPage.Click(confirmButton);
-        Thread.sleep(2000);
+        waitForElementToBeVisible(uploadFileInputBox);
         uploadFileInputBox.sendKeys(absoluteFilePath);
         Thread.sleep(2000);
         objPage.waitForElementToBeClickable(doneButton);

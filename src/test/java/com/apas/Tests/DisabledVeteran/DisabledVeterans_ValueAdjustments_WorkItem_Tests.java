@@ -153,6 +153,16 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
     softAssert.assertEquals(actualWIName.toString(),WIName,"SMAB-T2103:Verify name of WI generated");
 	//softAssert.assertEquals(actualVAName.toString(),vANameValue,"SMAB-T2103:Verify linked VA WI generated");
 	softAssert.assertEquals(actualRequestTypeName.toString(),RequestTypeName,"SMAB-T2103:Verify RequestType Name of WI generated");
+	
+	objPage.Click(actualWIName);
+  	objPage.waitForElementToBeClickable(objWIHomePage.detailsTab);
+	objPage.javascriptClick(objWIHomePage.detailsTab);
+
+   //Validating that  'Date' field gets automatically populated in the work item record
+   objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
+	softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
+					"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
+		
     String updateWIStatus = "SELECT Status__c FROM Work_Item__c where Name = '"+WIName+"'";
   	salesforceAPI.update("Work_Item__c", updateWIStatus, "Status__c", "Completed");
   	ReportLogger.INFO("Step 11: Logging out from SF");

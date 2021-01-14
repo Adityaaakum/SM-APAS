@@ -175,7 +175,6 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		String bppAccount= response.get("Name").get(0);
 		String rollCode= response.get("Roll_Code__c").get(0);
 
-		
 		String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
 		String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
 
