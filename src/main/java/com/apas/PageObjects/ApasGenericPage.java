@@ -59,7 +59,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//a[@title = 'Edit']")
 	public WebElement editButton;
 
-	@FindBy(xpath = "//button[@title='Save']")
+	@FindBy(xpath = "//button[text()='Save']")
 	public WebElement saveButton;
 
 	@FindBy(xpath = "//div[contains(.,'App Launcher')]//*[@class='slds-icon-waffle']")
