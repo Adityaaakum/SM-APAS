@@ -24,8 +24,6 @@ import java.util.Objects;
 public class WorkItems_report_Test extends TestBase{
 
 	private RemoteWebDriver driver;
-	Page objPage;
-	ApasGenericPage objApasGenericPage;
 	ReportsPage objReportsPage;
 	Util objUtil = new Util();
 	SoftAssertion softAssert  = new SoftAssertion();
@@ -35,9 +33,6 @@ public class WorkItems_report_Test extends TestBase{
 		driver=null;
 		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
-
-		objPage = new Page(driver);
-		objApasGenericPage = new ApasGenericPage(driver);
 		objReportsPage = new ReportsPage(driver);
 	}
 	@Test(description = "SMAB-T2520: Validation of Executive All Work Items reports ", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual"}, alwaysRun = true)
@@ -48,12 +43,12 @@ public class WorkItems_report_Test extends TestBase{
 		ReportLogger.INFO("Download location : " + downloadLocation);
 		
         // Step1: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-		objApasGenericPage.login(loginUser);
+		objReportsPage.login(loginUser);
         // Step2: Opening the BPP Account page and searching a BPP Account
-		objApasGenericPage.searchModule(modules.REPORTS);
+		objReportsPage.searchModule(modules.REPORTS);
         
 		//Deleteing all the previously downloaded files
-		objApasGenericPage.deleteFilesFromFolder(downloadLocation);
+		objReportsPage.deleteFilesFromFolder(downloadLocation);
 
 		//Step3: Exporting 'Executive All Work Items' report in Formatted Mode
 		objReportsPage.exportReport(reportName,ReportsPage.FORMATTED_EXPORT);
@@ -66,9 +61,9 @@ public class WorkItems_report_Test extends TestBase{
 		HashMap<String, ArrayList<String>> hashMapExcelData = ExcelUtils.getExcelSheetData(downloadedFile.getAbsolutePath(),0,8,1);
 		
 		String expectedColumnsInExportedExcel = "[Work Item: Work Item Number, Account #, Name, Roll Code, APN, Street, Use Code, Work Pool, Request Type, Status, Date, Value, Created In Roll Year, Remarks, Age(Days), Completed Date]";
-		softAssert.assertContains(hashMapExcelData.keySet().toString(),expectedColumnsInExportedExcel,"SMAB-T2520: Columns Validation in downloaded Executive All Work Items report");
+		softAssert.assertEquals(hashMapExcelData.keySet().toString(),expectedColumnsInExportedExcel,"SMAB-T2520: Columns Validation in downloaded Executive All Work Items report");
 		
         //Logout of APAS Application
-		objApasGenericPage.logout();
+		objReportsPage.logout();
     }
 }
