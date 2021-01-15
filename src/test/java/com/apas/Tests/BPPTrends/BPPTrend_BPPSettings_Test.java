@@ -214,7 +214,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 	 * 2. Status of Tables is updated to 'Needs Recalculation' when 'Max. Equip. Index Factor' is updated:: TestCase/JIRA ID: SMAB-T172
 	 * 3. Validating user is able to update 'Max. Equip. Index Factor' when status of Tables is 'Needs Recalculation':: TestCase/JIRA ID: SMAB-T272
 	 */
-	@Test(description = "SMAB-T172, SMAB-T271,SMAB-T139: Perform calculation & re-calculation for factors tables individually using calculate & recalclate buttons with updating max. equip. index factor", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T172,SMAB-T271,SMAB-T139,SMAB-T272: Perform calculation & re-calculation for factors tables individually using calculate & recalclate buttons with updating max. equip. index factor", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BPPTrend_VerifyTableStatus_ByUpdatingMaxEquipSettings(String loginUser) throws Exception {	
 		
 		//Step1: Login to the APAS application using the given user

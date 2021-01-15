@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
+import com.apas.config.modules;
+import com.relevantcodes.extentreports.LogStatus;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
@@ -31,7 +35,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		objUtil = new Util();
 	}
 
-	@FindBy(xpath = "//a[@title = 'New']")
+	@FindBy(xpath = "//a[@title = 'New'] | //flexipage-tab2[contains(@class,'show')]//button[text()='New']")
 	public WebElement newButton;
 
 	@FindBy(xpath = "//a[text()='No actions available']")
@@ -167,8 +171,10 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			clickAction(bppCompFactorSettingTab);
 		}
 
+		if(verifyElementVisible(dropDownIconBppCompFactorSetting))
 			clickAction(dropDownIconBppCompFactorSetting);
-			clickAction(newBtnToCreateEntry);
+			//clickAction(newBtnToCreateEntry);
+			Click(newButton);
 
 		enter("Minimum Good Factor",minGoodFactorValue);
 		objApasGenericPage.selectOptionFromDropDown("Property Type",propertyType);
@@ -205,8 +211,10 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 * @throws: Exception
 	 */
 	public void createBppSetting(String equipIndexFactorValue) throws Exception {
+		if(verifyElementVisible(dropDownIconBppSetting))
 		clickAction(waitForElementToBeClickable(dropDownIconBppSetting));
-		clickAction(waitForElementToBeClickable(newBtnToCreateEntry));
+		createRecord();
+		//clickAction(waitForElementToBeClickable(newBtnToCreateEntry));
 		enter(objApasGenericPage.maxEquipmentIndexFactor,equipIndexFactorValue);
 		objPage.Click(objPage.getButtonWithText("Save"));
 	}
@@ -759,5 +767,31 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		waitUntilElementIsPresent("//span[contains(@title,'" + factorName + "')]",15);
 	}
 
+	public void createCompositeFactor(String year, String factorType, String factorValue) throws Exception {
+		//Step13: Opening the BPP Trend module and set All as the view option in grid
+		searchModule(modules.BPP_TRENDS_SETUP);
+		Thread.sleep(3000);
+		displayRecords("All");
 
+		//Step14: Clicking on the roll year name in grid to navigate to details page of selected roll year
+		clickOnEntryNameInGrid(year);
+
+		//Step15: Create a BPP Composite Factor Settings
+		ReportLogger.INFO("** Clicking on Bpp Composite Factors Settings tab **");
+		/*if(moreTabRightSection != null) {
+			objPage.Click(moreTabRightSection);
+			objPage.Click(bppCompositeFactorOption);
+		} else {
+			*/
+		objPage.Click(bppCompFactorSettingTab);
+		
+		ReportLogger.INFO("** Creating entry for " + factorType + " property type");
+
+		Click(newButton);
+		enter(minGoodFactorEditBox,factorValue);
+		selectOptionFromDropDown("Property Type",factorType);
+		objPage.Click(objPage.getButtonWithText("Save"));
+		Thread.sleep(1000);
+
+	}
 }

@@ -539,7 +539,7 @@ public class ApasGenericPage extends Page {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Displaying all the records on the grid");
 		Click(selectListViewButton);
 		String xpathDisplayOption = "//div[contains(@class,'list uiAbstractList')]//a[@role='option']//span[text()='" + displayOption + "']";
-		waitUntilElementIsPresent(xpathDisplayOption, 15);
+		waitUntilElementIsPresent(xpathDisplayOption, 20);
 		Click(driver.findElement(By.xpath(xpathDisplayOption)));
 		Thread.sleep(2000);
 		if (verifyElementExists(xpathSpinner)){
@@ -937,7 +937,7 @@ public class ApasGenericPage extends Page {
 	 * @throws Exception
 	 * @param: filtyepe, Source and period values
 	 */
-	public void openLogRecordForImportedFile(String fileType, String source, String period, String filepath) throws IOException {
+	public void openLogRecordForImportedFile(String fileType, String source, String period, String filepath) throws Exception {
 		String logName = fileType + " :" + source + " :" + period;
 		String filename = filepath.substring(filepath.lastIndexOf("\\") + 1, filepath.lastIndexOf("."));
 		javascriptClick(driver.findElement(By.xpath("(//a[text()='" + filename + "'])[1]")));
@@ -945,6 +945,8 @@ public class ApasGenericPage extends Page {
 		for (String winHandle : driver.getWindowHandles()) {
 			driver.switchTo().window(winHandle);
 		}
+
+		waitUntilElementIsPresent("//div[text()='" + logName + "']",15);
 		javascriptClick(driver.findElement(By.xpath("//div[text()='" + logName + "']")));
 
 	}

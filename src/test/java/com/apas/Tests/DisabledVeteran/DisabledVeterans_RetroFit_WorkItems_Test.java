@@ -114,9 +114,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		workItemPageObj.Click(workItemPageObj.detailsTab);
 		workItemPageObj.waitForElementToBeVisible(6, workItemPageObj.referenceDetailsLabel);
 
-		//Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC",
-						"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
+		//Validating that  'Date' field gets automatically populated in the work item record
 		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 						"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
 		
@@ -359,10 +357,13 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		driver.close();
 		driver.switchTo().window(parentwindow);
 		driver.navigate().back();
+		driver.navigate().refresh();
+		Thread.sleep(3000);
 		objApasGenericPage.globalSearchRecords(reminderSubmittedWINumber);
 
 		// Step8:Supervisor Verifying that the WI also gets returned
-		objPage.Click(workItemPageObj.detailsWI);
+		objPage.javascriptClick(workItemPageObj.detailsTab);
+		Thread.sleep(1000);
 		//Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage, 10);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
@@ -377,7 +378,8 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objApasGenericPage.searchModule(modules.HOME);
 		workItemPageObj.openWorkItem(reminderSubmittedWINumber);
 
-		objPage.Click(workItemPageObj.detailsWI);
+		objPage.javascriptClick(workItemPageObj.detailsTab);
+		Thread.sleep(1000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage,10);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
 		Thread.sleep(1000);
@@ -440,10 +442,13 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		driver.close();
 		driver.switchTo().window(parentwindow);
 		driver.navigate().back();
+		driver.navigate().refresh();
+		Thread.sleep(2000);
 		objApasGenericPage.globalSearchRecords(reminderAgainSubmittedWINumber);
 
 		// Step11:Supervisor Verifying that the WI is completed
-		objPage.Click(workItemPageObj.detailsWI);
+		objPage.javascriptClick(workItemPageObj.detailsTab);
+		Thread.sleep(1000);
 		//Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage, 10);
 		
@@ -508,9 +513,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		Thread.sleep(1000);
 		softAssert.assertTrue(objPage.verifyElementVisible(workItemPageObj.relatedActionLink),"SMAB-T1918:Verify that User is able to see the Low income WI under 'In Progress' tab after accpeting it");
 
-		//Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC",
-								"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
+		//Validating that  'Date' field gets automatically populated in the work item record
 		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 								"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);		
 		
