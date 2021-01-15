@@ -211,8 +211,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		String retiredAPNValue= response.get("Name").get(0);
-		// fetching  parcel that is In progress		
-		queryAPNValue = "select Name from Parcel__c where Status__c='In Progress' limit 1";
+		// fetching  parcel that is In Progress - To Be Expired		
+		queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' limit 1";
 		response = salesforceAPI.select(queryAPNValue);
 		if(!response.isEmpty())
 			inProgressAPNValue= response.get("Name").get(0);
@@ -220,8 +220,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		else
 		{
 			inProgressAPNValue= objMappingPage.fetchActiveAPN();
-			jsonObject.put("PUC_Code_Lookup__c","In Progress");
-			jsonObject.put("Status__c","In Progress");
+			jsonObject.put("PUC_Code_Lookup__c","In Progress - To Be Expired");
+			jsonObject.put("Status__c","In Progress - To Be Expired");
 			salesforceAPI.update("Parcel__c",objMappingPage.fetchActiveAPN(),jsonObject);
 
 		}

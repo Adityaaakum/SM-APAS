@@ -554,7 +554,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 * @throws: Exception
 	 */
 	public WebElement clickNewButtonUnderFactorSection(String factorsTable) throws Exception {
-		String newBtnXpath = "//span[text() = '"+ factorsTable +"']//ancestor::div[contains(@class, 'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a[@title = 'New']";
+		String newBtnXpath = "//span[text() = '"+ factorsTable +"']//ancestor::div[contains(@class, 'firstHeaderRow')]//following-sibling::div//button[text()='New']";
 		WebElement newButton = locateElement(newBtnXpath, 10);
 //		try {
 //			newButton = locateElement(newBtnXpath, 10);
@@ -742,10 +742,11 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		String queryForID = "SELECT Maximum_Equipment_index_Factor__c FROM BPP_Setting__c WHERE BPP_Trend_Roll_Year_Parent__c = '"+ rollYear +"'";	
 		HashMap<String, ArrayList<String>> factorSettings = objSalesforceAPI.select(queryForID);
 		if(!(factorSettings.size()>0)) {
-			objPage.waitForElementToBeClickable(dropDownIconBppSetting, 20);
+			if(verifyElementVisible(dropDownIconBppSetting))
 			objPage.javascriptClick(dropDownIconBppSetting);
-			objPage.waitForElementToBeClickable(newBtnToCreateEntry, 20);
-			objPage.javascriptClick(newBtnToCreateEntry);
+		//	objPage.waitForElementToBeClickable(newBtnToCreateEntry, 20);
+		//	objPage.javascriptClick(newBtnToCreateEntry);
+			createRecord();
 			enter("Maximum Equipment index Factor","125");
 			objPage.Click(objPage.getButtonWithText("Save"));
 			Thread.sleep(1000);
@@ -778,13 +779,13 @@ public class BppTrendSetupPage extends ApasGenericPage {
 
 		//Step15: Create a BPP Composite Factor Settings
 		ReportLogger.INFO("** Clicking on Bpp Composite Factors Settings tab **");
-		/*if(moreTabRightSection != null) {
-			objPage.Click(moreTabRightSection);
-			objPage.Click(bppCompositeFactorOption);
-		} else {
-			*/
-		objPage.Click(bppCompFactorSettingTab);
-		
+			
+		if(waitForElementToBeClickable(10,moreTabRightSection) != null) {
+		      objPage.Click(moreTabRightSection);
+		      objPage.Click(bppCompositeFactorOption);
+		   } else
+		      objPage.Click(bppCompFactorSettingTab);
+			
 		ReportLogger.INFO("** Creating entry for " + factorType + " property type");
 
 		Click(newButton);
@@ -792,6 +793,10 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		selectOptionFromDropDown("Property Type",factorType);
 		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(1000);
+		
+		
+		
 
-	}
+	
+}
 }
