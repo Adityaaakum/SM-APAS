@@ -68,7 +68,6 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		//Fetching parcel that is In Progress - To Be Expired		
 		queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' limit 1";
 		response = salesforceAPI.select(queryAPNValue);
-		//String inProgressAPNValue= response.get("Name").get(0);
 		String inProgressAPNValue="";
 		 if(!response.isEmpty())
 	            inProgressAPNValue = response.get("Name").get(0);
