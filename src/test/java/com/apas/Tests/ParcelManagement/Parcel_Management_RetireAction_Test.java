@@ -215,10 +215,10 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 				"SMAB-T2455: Validate that User is able to enter 9 digit parent APN without the \"-\"");
 
 		//Step 22: Validate that User is able to view error message when no value is entered in Parent APN field
-		ReportLogger.INFO("Remove the parcel number from Parent APN field");
+		/*ReportLogger.INFO("Remove the parcel number from Parent APN field");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.parentAPNTextBoxLabel,""),"Parcel Number has to be 9 digits, please enter valid parcel number",
-				"SMAB-T2512: Validate that error message is displayed if no value is entered in Parent APN field");
+				"SMAB-T2512: Validate that error message is displayed if no value is entered in Parent APN field");*/
 		
 		//Step 23: Validate that User is able to perform Retire action
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
@@ -249,7 +249,7 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 	 */
 	@Test(description = "SMAB-T2456:Verify that User is able to perform Retire Action for more than one active parcels", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
-	public void ParcelManagement_VerifyRetireMappingActionForMoreThanOneActiveParcels(String loginUser) throws Exception {
+	public void AParcelManagement_VerifyRetireMappingActionForMoreThanOneActiveParcels(String loginUser) throws Exception {
 		
 		//Fetching Active General parcel 
 		String queryAPN1 = "Select name,ID  From Parcel__c where name like '0%' AND Status__c='Active' limit 1";
@@ -305,6 +305,8 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		// Step 6: Enter the other values and perform the Retire action
 		ReportLogger.INFO("Perform the Retire action");
 		objMappingPage.enter(objMappingPage.commentsTextBoxLabel, hashMapRetireeMappingData.get("Comments"));
+		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel), "Test");
+		//objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel (s) have been successfully retired!",
 				"SMAB-T2456: Validate that User is able to perform Retire action for more than one active parcels");

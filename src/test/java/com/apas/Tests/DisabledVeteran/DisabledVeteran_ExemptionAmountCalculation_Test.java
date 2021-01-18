@@ -115,8 +115,9 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 		float expectedNetExemptionAmount = objValueAdjustmentPage.calculateNetExemptionAmount(actualExemptionAmount);				  
 		float actualNetExemptionAmount = objApasGenericPage.convertToFloat(objValueAdjustmentPage.netExemptionAmountCalculatedValueLabel.getText());			 			  
 		softAssert.assertEquals(actualNetExemptionAmount,expectedNetExemptionAmount,"SMAB-T612: Verify Net Exemption Amount calculated for each eligible year & multiple retroactive years if Penalty is applied");
-		driver.navigate().back();		  
-		  }	 
+		driver.navigate().back();
+		Thread.sleep(1000);
+		}	 
 		 objApasGenericPage.logout();
 	}
 	
