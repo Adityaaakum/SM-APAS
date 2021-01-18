@@ -204,7 +204,6 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		String queryAPN = "Select name From Parcel__c where Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String activeParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
-		String inProgressAPNValue;
 		String activeParcelWithoutHyphen=activeParcelToPerformMapping.replace("-","");
 
 		// fetching  parcel that is retired 		
@@ -212,20 +211,12 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		String retiredAPNValue= response.get("Name").get(0);
 		// fetching  parcel that is In Progress - To Be Expired		
+		
+		// fetching  parcel that is In Progress - To Be Expired		
 		queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' limit 1";
 		response = salesforceAPI.select(queryAPNValue);
-		if(!response.isEmpty())
-			inProgressAPNValue= response.get("Name").get(0);
-
-		else
-		{
-			inProgressAPNValue= objMappingPage.fetchActiveAPN();
-			jsonObject.put("PUC_Code_Lookup__c","In Progress - To Be Expired");
-			jsonObject.put("Status__c","In Progress - To Be Expired");
-			salesforceAPI.update("Parcel__c",objMappingPage.fetchActiveAPN(),jsonObject);
-
-		}
-
+		String inProgressAPNValue= response.get("Name").get(0);
+		
 		String mappingActionCreationData = System.getProperty("user.dir") + testdata.ONE_TO_ONE_MAPPING_ACTION;
 		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformOneToOneMappingActionWithAllFields");

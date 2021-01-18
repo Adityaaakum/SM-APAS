@@ -134,7 +134,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		//String expectedErrorMsg = "CPI Factors can't be updated once Submitted for Approval or Approved";
 		
 		String expectedErrorMsg ="Oops...you don't have the necessary privileges to edit this record.";
-		softAssert.assertTrue(actualErrorMsg.contains("insufficient access rights on object id") || actualErrorMsg.contains(expectedErrorMsg), "SMAB-T183: Validation for business admin is not able to edit aproved CPI Factor from grid");
+		softAssert.assertTrue(actualErrorMsg.contains("insufficient access rights on object id") || actualErrorMsg.contains(expectedErrorMsg), "SMAB-T183: Validation for business admin is not able to edit aproved CPI Factor from grid and error message \" you don't have the necessary privileges to edit this record.\" or \" insufficient access rights on object id \" be displayed ");
 
 		objPage.Click(objPage.getButtonWithText("Cancel"));
 
@@ -149,7 +149,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 		objBppTrendSetupPage.enter("CPI Factor", "0.02");
 		objPage.Click(objPage.getButtonWithText("Save"));
 		actualErrorMsg = objPage.getElementText(objApasGenericPage.pageError);		
-		softAssert.assertTrue(actualErrorMsg.contains("insufficient access rights on object id") || actualErrorMsg.contains(expectedErrorMsg), "SMAB-T183: Validation for business admin is not able to edit aproved CPI Factor from grid");
+		softAssert.assertTrue(actualErrorMsg.contains("insufficient access rights on object id") || actualErrorMsg.contains(expectedErrorMsg), "SMAB-T183: Validation for business admin is not able to edit aproved CPI Factor from grid and error message \" you don't have the necessary privileges to edit this record.\" or \" insufficient access rights on object id \" be displayed ");
 		objPage.Click(objPage.getButtonWithText("Cancel"));
 
 		objBppTrendSetupPage.logout();

@@ -787,15 +787,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		if(waitForElementToBeClickable(10,moreTabRightSection) != null) {
 			objPage.Click(moreTabRightSection);
 			objPage.Click(bppCompositeFactorOption);
-<<<<<<< HEAD
 		} else
 			objPage.Click(bppCompFactorSettingTab);
-=======
-		} else {
-			*/
-		objPage.Click(bppCompFactorSettingTab);
->>>>>>> refs/remotes/origin/pre-release
-
 		ReportLogger.INFO("** Creating entry for " + factorType + " property type");
 
 		Click(newButton);
