@@ -71,10 +71,10 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	@FindBy(xpath = "//a[text() = 'BPP Composite Factors Settings']")
 	public WebElement bppCompFactorSettingTab;
 
-	@FindBy(xpath = "//span[text() = 'BPP Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a |//span[text() = 'BPP Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following::div//*[contains(@class,'icon-x-small')]")
+	@FindBy(xpath = "//span[text() = 'BPP Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a")
 	public WebElement dropDownIconBppSetting;
 
-	@FindBy(xpath = "//span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following::div[@class='actionsWrapper']//a | //span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following::div//*[contains(@class,'icon-x-small')]")
+	@FindBy(xpath = "//span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a")
 	public WebElement dropDownIconBppCompFactorSetting;
 
 	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//a[@title = 'New']")
@@ -120,31 +120,31 @@ public class BppTrendSetupPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//span[text() = 'Property Type']//parent::span/following-sibling::div")
 	public WebElement propertyType;
-	
+
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
 	public WebElement successAlertText;
-	
+
 	@FindBy(xpath = "//div[@role='dialog']//button//*[text() = 'Save']")
 	public WebElement saveButton;
-	
+
 	@FindBy(xpath = "//ul[@class='errorsList']//li")
 	public WebElement errorMsgOnTop;
-	
+
 	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//a[@title = 'Edit']")
 	public WebElement editLinkUnderShowMore;
-	
+
 	@FindBy(xpath = "//button[@title='Close this window']")
 	public WebElement closeEntryPopUp;
-	
+
 	@FindBy(xpath = "//button[@title = 'Close']")
 	public WebElement successAlertCloseBtn;
-	
+
 	@FindBy(xpath = "//button[text() = 'Edit']")
 	public WebElement editButton;
 
 	@FindBy(xpath = "//button[text() = 'Delete']")
 	public WebElement deleteButton;
-	
+
 	@FindBy(xpath = "//p[@class='detail']")
 	public WebElement accessErrorMsg;
 
@@ -173,8 +173,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 
 		if(verifyElementVisible(dropDownIconBppCompFactorSetting))
 			clickAction(dropDownIconBppCompFactorSetting);
-			//clickAction(newBtnToCreateEntry);
-			Click(newButton);
+		//clickAction(newBtnToCreateEntry);
+		Click(newButton);
 
 		enter("Minimum Good Factor",minGoodFactorValue);
 		objApasGenericPage.selectOptionFromDropDown("Property Type",propertyType);
@@ -212,7 +212,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 */
 	public void createBppSetting(String equipIndexFactorValue) throws Exception {
 		if(verifyElementVisible(dropDownIconBppSetting))
-		clickAction(waitForElementToBeClickable(dropDownIconBppSetting));
+			clickAction(waitForElementToBeClickable(dropDownIconBppSetting));
 		createRecord();
 		//clickAction(waitForElementToBeClickable(newBtnToCreateEntry));
 		enter(objApasGenericPage.maxEquipmentIndexFactor,equipIndexFactorValue);
@@ -434,7 +434,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 */
 	public String getSuccessMsgText() throws Exception {
 		String xpath = "//div[contains(@class, 'toastContent')]//span[contains(@class, 'toastMessage')]";
-		WebElement successAlertText = locateElement("//div[contains(@class, 'toastContent')]//span[contains(@class, 'toastMessage')]",15);	
+		WebElement successAlertText = locateElement("//div[contains(@class, 'toastContent')]//span[contains(@class, 'toastMessage')]",15);
 		String alertTxt = successAlertText.getText();
 		if(objPage.verifyElementVisible(successAlertCloseBtn)) {
 			objPage.Click(successAlertCloseBtn);
@@ -555,7 +555,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 */
 	public WebElement clickNewButtonUnderFactorSection(String factorsTable) throws Exception {
 		String newBtnXpath = "//span[text() = '"+ factorsTable +"']//ancestor::div[contains(@class, 'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a[@title = 'New']";
-		WebElement newButton = waitForElementToBeClickable(10,newBtnXpath);
+		WebElement newButton = locateElement(newBtnXpath, 10);
 //		try {
 //			newButton = locateElement(newBtnXpath, 10);
 		clickAction(newButton);
@@ -635,14 +635,14 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		Click(waitUntilElementIsPresent(20,xpath));
 		Thread.sleep(2000);
 	}
-	
+
 	/**
 	 * Description: creates the Max Equip Index Settings
 	 * @returns: success message
 	 * @throws: Exception
 	 */
-	public void createBPPSettingEntry(String rollYear, String factorValue) throws Exception{		
-			
+	public void createBPPSettingEntry(String rollYear, String factorValue) throws Exception{
+
 		//Step1: Click BPP Setting drop down
 		clickAction(waitForElementToBeClickable(dropDownIconBppSetting));
 
@@ -651,7 +651,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		enterFactorValue(factorValue);
 		Click(objBuildPermitPage.saveButton);
 	}
-	
+
 	/**
 	 * Description: Retrieves the current status of the given table from details page under given BPP Trend Setup
 	 * @param tableName: Takes the names of the table
@@ -709,12 +709,12 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		}
 		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 		//Query to fetch the status of composite & valuation factor tables
-		String queryForID = "Select "+tableName+" From BPP_Trend_Roll_Year__c where Roll_Year__c = '"+ rollYear +"'";	
+		String queryForID = "Select "+tableName+" From BPP_Trend_Roll_Year__c where Roll_Year__c = '"+ rollYear +"'";
 		HashMap<String, ArrayList<String>> tableStatus = objSalesforceAPI.select(queryForID);
 		return tableStatus.get(tableName).get(0);
 	}
-	
-	
+
+
 	/**
 	 * Description: This will Click on Edit buttonand fill data in maximum & minimum factor field in bpp trend setting and save it
 	 * @param factorValue: Maximum or minimum factor value like 125%
@@ -729,8 +729,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(2000);
 	}
-	
-	
+
+
 	/**
 	 * Description: This will create maximum equipment index factor settings if it does not exist
 	 * @param rollYear: roll year for which settings will be created
@@ -739,7 +739,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public void createMaxEquip(String rollYear) throws Exception {
 		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 		//Query to fetch the settings
-		String queryForID = "SELECT Maximum_Equipment_index_Factor__c FROM BPP_Setting__c WHERE BPP_Trend_Roll_Year_Parent__c = '"+ rollYear +"'";	
+		String queryForID = "SELECT Maximum_Equipment_index_Factor__c FROM BPP_Setting__c WHERE BPP_Trend_Roll_Year_Parent__c = '"+ rollYear +"'";
 		HashMap<String, ArrayList<String>> factorSettings = objSalesforceAPI.select(queryForID);
 		if(!(factorSettings.size()>0)) {
 			objPage.waitForElementToBeClickable(dropDownIconBppSetting, 20);
@@ -767,31 +767,31 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		waitUntilElementIsPresent("//span[contains(@title,'" + factorName + "')]",15);
 	}
 
-							public void createCompositeFactor(String year, String factorType, String factorValue) throws Exception {
-								//Step13: Opening the BPP Trend module and set All as the view option in grid
-								searchModule(modules.BPP_TRENDS_SETUP);
-								Thread.sleep(3000);
-								displayRecords("All");
+	public void createCompositeFactor(String year, String factorType, String factorValue) throws Exception {
+		//Step13: Opening the BPP Trend module and set All as the view option in grid
+		searchModule(modules.BPP_TRENDS_SETUP);
+		Thread.sleep(3000);
+		displayRecords("All");
 
-								//Step14: Clicking on the roll year name in grid to navigate to details page of selected roll year
-								clickOnEntryNameInGrid(year);
+		//Step14: Clicking on the roll year name in grid to navigate to details page of selected roll year
+		clickOnEntryNameInGrid(year);
 
-								//Step15: Create a BPP Composite Factor Settings
-								ReportLogger.INFO("** Clicking on Bpp Composite Factors Settings tab **");
+		//Step15: Create a BPP Composite Factor Settings
+		ReportLogger.INFO("** Clicking on Bpp Composite Factors Settings tab **");
+		/*if(moreTabRightSection != null) {
+			objPage.Click(moreTabRightSection);
+			objPage.Click(bppCompositeFactorOption);
+		} else {
+			*/
+		objPage.Click(bppCompFactorSettingTab);
 
-								if(waitForElementToBeClickable(10,moreTabRightSection) != null) {
-									objPage.Click(moreTabRightSection);
-									objPage.Click(bppCompositeFactorOption);
-								} else
-									objPage.Click(bppCompFactorSettingTab);
+		ReportLogger.INFO("** Creating entry for " + factorType + " property type");
 
-								ReportLogger.INFO("** Creating entry for " + factorType + " property type");
+		Click(newButton);
+		enter(minGoodFactorEditBox,factorValue);
+		selectOptionFromDropDown("Property Type",factorType);
+		objPage.Click(objPage.getButtonWithText("Save"));
+		Thread.sleep(1000);
 
-								Click(newButton);
-								enter(minGoodFactorEditBox,factorValue);
-								selectOptionFromDropDown("Property Type",factorType);
-								objPage.Click(objPage.getButtonWithText("Save"));
-								Thread.sleep(1000);
-
-							}
+	}
 }
