@@ -1,11 +1,21 @@
 package com.apas.PageObjects;
 
-import com.apas.Utils.PasswordUtils;
-import com.apas.Utils.SalesforceAPI;
-import com.apas.Utils.Util;
-import net.bytebuddy.implementation.bind.MethodDelegationBinder;
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import org.apache.commons.io.FileUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -17,32 +27,24 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
+import com.apas.Utils.PasswordUtils;
+import com.apas.Utils.SalesforceAPI;
+import com.apas.Utils.Util;
 import com.relevantcodes.extentreports.LogStatus;
-
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.Clock;
-import java.util.*;
-import java.util.List;
 
 public class ApasGenericPage extends Page {
 
 	LoginPage objLoginPage;
-	SalesforceAPI objSalesforceAPI ;
+	SalesforceAPI objSalesforceAPI = new SalesforceAPI();;
 	Util objUtil = new Util();
-	JSONObject jsonObject;
 	
 	public ApasGenericPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
 		objLoginPage = new LoginPage(driver);
-		objSalesforceAPI = new SalesforceAPI();
-		jsonObject= new JSONObject();
 	}
 
 	public String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
