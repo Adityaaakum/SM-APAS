@@ -289,6 +289,7 @@ public class EFileImportPage extends ApasGenericPage {
         objPage.Click(confirmButton);
         Thread.sleep(2000);
         ExtentTestManager.getTest().log(LogStatus.INFO, "Uploading " + absoluteFilePath + " on Efile Import Tool");
+        objPage.waitForElementToBeVisible(uploadFileInputBox,10);
         uploadFileInputBox.sendKeys(absoluteFilePath);
         Thread.sleep(2000);
     }
