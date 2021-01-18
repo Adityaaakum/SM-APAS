@@ -442,6 +442,8 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		driver.close();
 		driver.switchTo().window(parentwindow);
 		driver.navigate().back();
+		driver.navigate().refresh();
+		Thread.sleep(2000);
 		objApasGenericPage.globalSearchRecords(reminderAgainSubmittedWINumber);
 
 		// Step11:Supervisor Verifying that the WI is completed
