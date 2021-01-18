@@ -153,7 +153,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[2]//input[@type='checkbox']/parent::span")
 	public List<WebElement> lowincomeSubmittedWI;
 
-	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[@class='slds-truncate']//a")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[@class='slds-tabs_default']//a")
 	public WebElement linkedItemsRecord;
 
 	@FindBy(xpath="//button[@title='Accept Work Item']")
@@ -305,9 +305,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 		scrollToElement(webElement);
 		javascriptClick(webElement);
 		Thread.sleep(3000);
-
 	}
-
+	
 	/**
 	 * This method will open related action record linked with the work item
 	 *
@@ -650,7 +649,29 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		Thread.sleep(2000);
 	}
 
-	
+	/**
+	 * Description: This method will fetch the Work Item Count from tab mentioned
+	 * @param requestType: Name of the work item
+	 * @param tabName: Tab from which data needs to be fetched
+	 */
+	public int getWorkItemCount(String requestType, String tabName) throws Exception {
+		HashMap<String, ArrayList<String>> InPoolWorkItems = getWorkItemData(tabName);
+		return (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals(requestType)).count();
+
+	}
+	/**
+	 * Description: This method will fetch the Work Item Name from tab mentioned
+	 * @param requestType: Name of the work item
+	 * @param tabName: Tab from which data needs to be fetched
+	 */
+	public String getWorkItemName(String requestType, String tabName) throws Exception {
+		String xpath = "//a[@role='tab'][@data-label='" + tabName + "']";
+		waitUntilElementIsPresent(xpath, 10);
+		WebElement webElement = driver.findElement(By.xpath(xpath));
+		Click(webElement);
+		Thread.sleep(2000);
+		return getGridDataForRowString(requestType).get("Work item #").get(0).split("\\n")[0];
+	}
 
 		
 

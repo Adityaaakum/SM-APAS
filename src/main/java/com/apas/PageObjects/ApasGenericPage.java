@@ -1079,6 +1079,19 @@ public class ApasGenericPage extends Page {
    }
    
    /*
+   This method is used to return the In Progress APNs from Salesforce
+   @return: returns the active APN
+  */
+  public String fetchInProgressAPN() {
+      return fetchInProgressAPN(1).get(0);
+  }
+
+  public ArrayList<String> fetchInProgressAPN(int numberofAPNs) {
+      String queryForID = "SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberofAPNs;
+      return objSalesforceAPI.select(queryForID).get("Name");
+  }
+   
+   /*
     * Get Field Value from WI TimeLine 
     */
    public String getFieldvalueFromWITimeLine(String fieldName) {

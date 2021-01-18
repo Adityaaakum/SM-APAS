@@ -729,7 +729,7 @@ public class Page extends TestBase {
 		String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]";
 		String xpath = commonPath + "//label[text()=\"" + label + "\"]/..//input | " +
 				commonPath + "//input[@name=\"" + label + "\"] | " + //this condition was observed on manual work item creation pop up for edit boxes
-				commonPath + "//*[@class='inputHeader' and contains(.,\"" + label + "\")]/..//Select |"+ //This condition was observed for few drop downs of Select Type
+				commonPath + "//*[(@class='inputHeader' or @class='uiBlock') and contains(.,\"" + label + "\")]/..//Select |"+ //This condition was observed for few drop downs of Select Type
 				commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//a | " + //this condition was observed on Mapping Action screen for Assessor' Map label
 				commonPath + "//label[text()=\"" + label + "\"]/..//textarea";//this condition was added to handle webelements of type textarea
 				
