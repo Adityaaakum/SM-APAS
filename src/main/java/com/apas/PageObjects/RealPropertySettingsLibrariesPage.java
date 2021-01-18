@@ -32,10 +32,10 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title = 'New']")
 	public WebElement newButton;
 	
-	@FindBy(xpath = "//button[@title = 'Cancel']")
+	@FindBy(xpath = "//button[text() = 'Cancel']")
 	public WebElement cancelButton;
 	
-	@FindBy(xpath = "//button[@title = 'Save']")
+	@FindBy(xpath = "//button[text() = 'Save']")
 	public WebElement saveButton;
 
 	@FindBy(xpath = "//label/span[text() = 'RP Setting Name']/../../input")
