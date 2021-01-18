@@ -71,10 +71,10 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	@FindBy(xpath = "//a[text() = 'BPP Composite Factors Settings']")
 	public WebElement bppCompFactorSettingTab;
 
-	@FindBy(xpath = "//span[text() = 'BPP Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a")
+	@FindBy(xpath = "//span[text() = 'BPP Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a |//span[text() = 'BPP Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following::div//*[contains(@class,'icon-x-small')]")
 	public WebElement dropDownIconBppSetting;
 
-	@FindBy(xpath = "//span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a")
+	@FindBy(xpath = "//span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following::div[@class='actionsWrapper']//a | //span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following::div//*[contains(@class,'icon-x-small')]")
 	public WebElement dropDownIconBppCompFactorSetting;
 
 	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//a[@title = 'New']")
@@ -555,7 +555,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 */
 	public WebElement clickNewButtonUnderFactorSection(String factorsTable) throws Exception {
 		String newBtnXpath = "//span[text() = '"+ factorsTable +"']//ancestor::div[contains(@class, 'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a[@title = 'New']";
-		WebElement newButton = locateElement(newBtnXpath, 10);
+		WebElement newButton = waitForElementToBeClickable(10,newBtnXpath);
 //		try {
 //			newButton = locateElement(newBtnXpath, 10);
 		clickAction(newButton);
@@ -767,31 +767,31 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		waitUntilElementIsPresent("//span[contains(@title,'" + factorName + "')]",15);
 	}
 
-	public void createCompositeFactor(String year, String factorType, String factorValue) throws Exception {
-		//Step13: Opening the BPP Trend module and set All as the view option in grid
-		searchModule(modules.BPP_TRENDS_SETUP);
-		Thread.sleep(3000);
-		displayRecords("All");
+							public void createCompositeFactor(String year, String factorType, String factorValue) throws Exception {
+								//Step13: Opening the BPP Trend module and set All as the view option in grid
+								searchModule(modules.BPP_TRENDS_SETUP);
+								Thread.sleep(3000);
+								displayRecords("All");
 
-		//Step14: Clicking on the roll year name in grid to navigate to details page of selected roll year
-		clickOnEntryNameInGrid(year);
+								//Step14: Clicking on the roll year name in grid to navigate to details page of selected roll year
+								clickOnEntryNameInGrid(year);
 
-		//Step15: Create a BPP Composite Factor Settings
-		ReportLogger.INFO("** Clicking on Bpp Composite Factors Settings tab **");
-		/*if(moreTabRightSection != null) {
-			objPage.Click(moreTabRightSection);
-			objPage.Click(bppCompositeFactorOption);
-		} else {
-			*/
-		objPage.Click(bppCompFactorSettingTab);
-		
-		ReportLogger.INFO("** Creating entry for " + factorType + " property type");
+								//Step15: Create a BPP Composite Factor Settings
+								ReportLogger.INFO("** Clicking on Bpp Composite Factors Settings tab **");
 
-		Click(newButton);
-		enter(minGoodFactorEditBox,factorValue);
-		selectOptionFromDropDown("Property Type",factorType);
-		objPage.Click(objPage.getButtonWithText("Save"));
-		Thread.sleep(1000);
+								if(waitForElementToBeClickable(10,moreTabRightSection) != null) {
+									objPage.Click(moreTabRightSection);
+									objPage.Click(bppCompositeFactorOption);
+								} else
+									objPage.Click(bppCompFactorSettingTab);
 
-	}
+								ReportLogger.INFO("** Creating entry for " + factorType + " property type");
+
+								Click(newButton);
+								enter(minGoodFactorEditBox,factorValue);
+								selectOptionFromDropDown("Property Type",factorType);
+								objPage.Click(objPage.getButtonWithText("Save"));
+								Thread.sleep(1000);
+
+							}
 }
