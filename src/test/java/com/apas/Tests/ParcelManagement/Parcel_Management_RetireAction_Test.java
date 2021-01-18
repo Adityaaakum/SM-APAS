@@ -32,6 +32,7 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 	SoftAssertion softAssert = new SoftAssertion();
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	MappingPage objMappingPage;
+	JSONObject jsonObject= new JSONObject();
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -64,10 +65,20 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		String retiredAPNValue= response.get("Name").get(0);
 		
-		//Fetching parcel that is In Progress		
-		queryAPNValue = "select Name from Parcel__c where Status__c='In Progress' limit 1";
+		//Fetching parcel that is In Progress - To Be Expired		
+		queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' limit 1";
 		response = salesforceAPI.select(queryAPNValue);
-		String inProgressAPNValue= response.get("Name").get(0);
+		//String inProgressAPNValue= response.get("Name").get(0);
+		String inProgressAPNValue="";
+		 if(!response.isEmpty())
+	            inProgressAPNValue = response.get("Name").get(0);
+	        else
+	        {
+	            inProgressAPNValue= objMappingPage.fetchActiveAPN();
+	            jsonObject.put("PUC_Code_Lookup__c","In Progress - To Be Expired");
+	            jsonObject.put("Status__c","In Progress - To Be Expired");
+	            salesforceAPI.update("Parcel__c",objMappingPage.fetchActiveAPN(),jsonObject);
+	        }
 		
 		String activeParcelWithoutHyphen=apn2.replace("-","");
 		String accessorMapParcel = apn1.replace("-", "").substring(0, 5);
