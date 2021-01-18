@@ -101,10 +101,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		int reminderDVWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits")).count();
 		int reminderWIRowNumber = InPoolWorkItems.get("Request Type").indexOf("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits");
 		String reminderDVWINumber = InPoolWorkItems.get("Work item #").get(reminderWIRowNumber);
-		//String reminderDVWINumber  = workItemPageObj.getWorkItemName("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits",workItemPageObj.TAB_IN_POOL);
-		
-		if (reminderDVWINumber.length() > 11) reminderDVWINumber = reminderDVWINumber.substring(0, 11);
-		
+
 		softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reminderWIRowNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1885:Verify that reminder WI 'Disabled Veterans -Update and Validate -Disabled veterans Yearly exemption amounts and income limits' and RPSL for current roll year(if not present) upon job execution");
 		softAssert.assertEquals(reminderDVWorkItemCount, 1, "SMAB-T1885 : DV Reminder WI count is 1");
 
@@ -117,9 +114,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		workItemPageObj.Click(workItemPageObj.detailsTab);
 		workItemPageObj.waitForElementToBeVisible(6, workItemPageObj.referenceDetailsLabel);
 
-		//Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC",
-						"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
+		//Validating that  'Date' field gets automatically populated in the work item record
 		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 						"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
 		
@@ -139,11 +134,8 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		int reminderWorkItemCount = (int) InPoolReminderWorkItems.get("Request Type").stream().filter(request -> request.equals("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits")).count();
 		int reminderWIRNumber = InPoolReminderWorkItems.get("Request Type").indexOf("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits");
 		String reminderWINumber = InPoolReminderWorkItems.get("Work item #").get(reminderWIRNumber);
-		//String reminderWINumber  = workItemPageObj.getWorkItemName("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits",workItemPageObj.TAB_IN_POOL);
-		
-		if (reminderWINumber.length() > 11) reminderWINumber = reminderWINumber.substring(0, 11);
-		
-		//softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reminderWIRNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1993:Verify that reminder WI 'Disabled Veterans -Update and Validate -Disabled veterans Yearly exemption amounts and income limits' and existing RPSL for current roll year is linked to it upon job execution");
+
+		softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reminderWIRNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1993:Verify that reminder WI 'Disabled Veterans -Update and Validate -Disabled veterans Yearly exemption amounts and income limits' and existing RPSL for current roll year is linked to it upon job execution");
 		softAssert.assertEquals(reminderWorkItemCount, 1, "SMAB-T1885 : DV Reminder WI count is 1");
 		workItemPageObj.openWorkItem(reminderWINumber);
 			
@@ -260,7 +252,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		HashMap<String, ArrayList<String>> reminderSubmittedWI = workItemPageObj.getWorkItemData(workItemPageObj.TAB_MY_SUBMITTED_FOR_APPROVAL);
 		int reminderSubmittedWIRowNumber = reminderSubmittedWI.get("Request Type").indexOf("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits");
 		String reminderSubmittedWINumber = reminderSubmittedWI.get("Work item #").get(reminderSubmittedWIRowNumber);
-		if (reminderSubmittedWINumber.length() > 11) reminderSubmittedWINumber = reminderSubmittedWINumber.substring(0, 11);
+		
 		softAssert.assertEquals(reminderSubmittedWI.get("Request Type").get(reminderSubmittedWIRowNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(reminderSubmittedWI.get("Work Pool").get(reminderSubmittedWIRowNumber),"Disabled Veterans","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(reminderSubmittedWINumber, reminderWINumber,"SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
@@ -295,7 +287,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		HashMap<String, ArrayList<String>> needsMyApprovalWI = workItemPageObj.getWorkItemData(workItemPageObj.TAB_NEED_MY_APPROVAL);
 		int reminderSubmittedWIRowNumber = needsMyApprovalWI.get("Request Type").indexOf("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits");
 		String reminderSubmittedWINumber = needsMyApprovalWI.get("Work item #").get(reminderSubmittedWIRowNumber);
-		if (reminderSubmittedWINumber.length() > 11) reminderSubmittedWINumber = reminderSubmittedWINumber.substring(0, 11);
+		
 		ReportLogger.INFO("Returning the RPSL setting and verifying the Wi status");
 		
 		//SMAB-T2087 opening the action link to validate that link redirects to correct page
@@ -365,13 +357,10 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		driver.close();
 		driver.switchTo().window(parentwindow);
 		driver.navigate().back();
-		driver.navigate().refresh();
-		Thread.sleep(3000);
 		objApasGenericPage.globalSearchRecords(reminderSubmittedWINumber);
 
 		// Step8:Supervisor Verifying that the WI also gets returned
-		objPage.javascriptClick(workItemPageObj.detailsTab);
-		Thread.sleep(1000);
+		objPage.Click(workItemPageObj.detailsWI);
 		//Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage, 10);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
@@ -386,8 +375,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		objApasGenericPage.searchModule(modules.HOME);
 		workItemPageObj.openWorkItem(reminderSubmittedWINumber);
 
-		objPage.javascriptClick(workItemPageObj.detailsTab);
-		Thread.sleep(1000);
+		objPage.Click(workItemPageObj.detailsWI);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage,10);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
 		Thread.sleep(1000);
@@ -421,7 +409,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 
 		int reminderAgainSubmittedWIRowNumber = reminderSubmittedWIAgain.get("Request Type").indexOf("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits");
 		String reminderAgainSubmittedWINumber = reminderSubmittedWIAgain.get("Work item #").get(reminderAgainSubmittedWIRowNumber);
-		if (reminderAgainSubmittedWINumber.length() > 11) reminderAgainSubmittedWINumber = reminderAgainSubmittedWINumber.substring(0, 11);
+
 		softAssert.assertEquals(reminderSubmittedWIAgain.get("Request Type").get(reminderAgainSubmittedWIRowNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(reminderSubmittedWIAgain.get("Work Pool").get(reminderAgainSubmittedWIRowNumber),"Disabled Veterans","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		
@@ -450,13 +438,10 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		driver.close();
 		driver.switchTo().window(parentwindow);
 		driver.navigate().back();
-		driver.navigate().refresh();
-		Thread.sleep(2000);
 		objApasGenericPage.globalSearchRecords(reminderAgainSubmittedWINumber);
 
 		// Step11:Supervisor Verifying that the WI is completed
-		objPage.javascriptClick(workItemPageObj.detailsTab);
-		Thread.sleep(1000);
+		objPage.Click(workItemPageObj.detailsWI);
 		//Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage, 10);
 		
@@ -497,9 +482,9 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		ReportLogger.INFO("Total low income Annual Exemption verification amount WI::" + lowIncomeWiCount);
 		int reminderWIRNumber = InPoolLowIncomeWI.get("Request Type").indexOf("Disabled Veterans - Review and Update - Annual exemption amount verification");
 		String lowIncomeWIName = InPoolLowIncomeWI.get("Work item #").get(reminderWIRNumber);
-		if (lowIncomeWIName.length() > 11) lowIncomeWIName = lowIncomeWIName.substring(0, 11);
+
 		// step4: Now accepting and verifying a Low Income WI
-		softAssert.assertEquals(lowIncomeWiCount, lowIncomeWiCount,"Verifying number of WI are same as Low income VA presnet for Previous roll year ");
+		softAssert.assertEquals(lowIncomeWiCount, lowIncomeVACountInSystem,"Verifying number of WI are same as Low income VA presnet for Previous roll year ");
 		ReportLogger.INFO("Accpeting a Low Income Annual Exemption WI :: " + lowIncomeWIName);
 		objPage.scrollToBottom();
 		workItemPageObj.acceptWorkItem(lowIncomeWIName);
@@ -521,9 +506,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 		Thread.sleep(1000);
 		softAssert.assertTrue(objPage.verifyElementVisible(workItemPageObj.relatedActionLink),"SMAB-T1918:Verify that User is able to see the Low income WI under 'In Progress' tab after accpeting it");
 
-		//Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC",
-								"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
+		//Validating that  'Date' field gets automatically populated in the work item record
 		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 								"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);		
 		

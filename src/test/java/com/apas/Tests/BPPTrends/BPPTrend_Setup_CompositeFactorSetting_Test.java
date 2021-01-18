@@ -20,7 +20,7 @@ import com.apas.config.BPPTablesData;
 import com.apas.config.modules;
 
 public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
-	
+
 	RemoteWebDriver driver;
 	Page objPage;
 	BppTrendPage objBppTrendPage;
@@ -48,7 +48,7 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 	public void afterMethod() throws Exception {
 		objBppTrendSetupPage.updateRollYearStatus("Closed", "2019");
 	}
-	
+
 	/**
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating the user is able to create 'Minimum Equip. Index Factor':: TestCase/JIRA ID: SMAB-T186
@@ -60,23 +60,23 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 	public void BppTrend_Create_BppCompositeFactorSetting(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
 		objBppTrendSetupPage.login(loginUser);
-				
+
 		//Step2: Updating the composite factor tables status
 		objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.COMPOSITE_TABLES_API_NAMES, "Not Calculated", rollYear);
-	
+
 		//Step3: Updating the valuation factor tables status
 		objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Yet to submit for Approval", rollYear);
-				
+
 		//Step3: Delete the existing BPP composite setting entry for given roll year
 		objBppTrendPage.removeExistingBppFactorSettingEntry(rollYear);
-		
+
 		//Step5: Opening the BPP Trend module and set All as the view option in grid
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
 		objBppTrendSetupPage.displayRecords("All");
-		
+
 		//Step6: Clicking on the roll year name in grid to navigate to details page of selected roll year
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
-		
+
 		//Step7: Creating Commercial BPP Composite Factor Settings
 		objBppTrendSetupPage.createBppCompositeFactorSetting("Commercial", "10");
 		String popUpMsg = objBppTrendSetupPage.getSuccessMsgText();
@@ -171,12 +171,9 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		objBppTrendPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(1000);
 		ReportLogger.INFO("Validating error message on updating Min. Equipment Index Factor Value for approved tables");
-		String expectedErrorMessage = "insufficient access rights on object id";
-		String actualErrorMessage = objPage.getElementText(objApasGenericPage.pageError);
-		softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T187: Validating error message on editing minimum equip. index value when calculations are approved");
-		objBppTrendPage.Click(objPage.getButtonWithText("Cancel"));
 
-
+		actualErrorMsg = objBppTrendSetupPage.getIndividualFieldErrorMessage("Minimum Good Factor");
+		softAssert.assertContains(actualErrorMsg, "Minimum Good Factor is locked for editing for the Roll Year", "SMAB-T187: Validating error message on editing minimum equip. index value when calculations are approved");
 		objBppTrendSetupPage.logout();
 	}
 }

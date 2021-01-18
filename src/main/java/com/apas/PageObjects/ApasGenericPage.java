@@ -3,6 +3,7 @@ package com.apas.PageObjects;
 import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
+import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
@@ -24,6 +25,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
 import java.util.*;
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class ApasGenericPage extends Page {
 	LoginPage objLoginPage;
 	SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 	Util objUtil = new Util();
+	JSONObject jsonObject= new JSONObject();
 	
 	public ApasGenericPage(RemoteWebDriver driver) {
 		super(driver);
@@ -59,7 +62,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//a[@title = 'Edit']")
 	public WebElement editButton;
 
-	@FindBy(xpath = "//button[@title='Save']")
+	@FindBy(xpath = "//button[text()='Save']")
 	public WebElement saveButton;
 
 	@FindBy(xpath = "//div[contains(.,'App Launcher')]//*[@class='slds-icon-waffle']")
@@ -539,7 +542,7 @@ public class ApasGenericPage extends Page {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Displaying all the records on the grid");
 		Click(selectListViewButton);
 		String xpathDisplayOption = "//div[contains(@class,'list uiAbstractList')]//a[@role='option']//span[text()='" + displayOption + "']";
-		waitUntilElementIsPresent(xpathDisplayOption, 15);
+		waitUntilElementIsPresent(xpathDisplayOption, 20);
 		Click(driver.findElement(By.xpath(xpathDisplayOption)));
 		Thread.sleep(2000);
 		if (verifyElementExists(xpathSpinner)){
@@ -663,7 +666,7 @@ public class ApasGenericPage extends Page {
 	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int tableIndex, int rowNumber) {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
 		//This code is to fetch the data for a particular row in the grid in the table passed in tableIndex
-		String xpath="(//*[@class='slds-tabs_scoped__content slds-show']//table)[" + tableIndex + "]";
+		String xpath="(//*[contains(@class,'slds-show')]//table)[" + tableIndex + "]";
 		String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table)[" + tableIndex + "]";
 		if(verifyElementVisible(xpath))
 		{xpathTable=xpath;}
@@ -709,7 +712,7 @@ public class ApasGenericPage extends Page {
 
 		//Removing the Row Number key as this is meta data column and not part of grid
 		gridDataHashMap.remove("Row Number");
-
+		System.out.println("HashMap: "+gridDataHashMap);
 		return gridDataHashMap;
 	}
 
@@ -937,7 +940,7 @@ public class ApasGenericPage extends Page {
 	 * @throws Exception
 	 * @param: filtyepe, Source and period values
 	 */
-	public void openLogRecordForImportedFile(String fileType, String source, String period, String filepath) throws IOException {
+	public void openLogRecordForImportedFile(String fileType, String source, String period, String filepath) throws Exception {
 		String logName = fileType + " :" + source + " :" + period;
 		String filename = filepath.substring(filepath.lastIndexOf("\\") + 1, filepath.lastIndexOf("."));
 		javascriptClick(driver.findElement(By.xpath("(//a[text()='" + filename + "'])[1]")));
@@ -945,6 +948,8 @@ public class ApasGenericPage extends Page {
 		for (String winHandle : driver.getWindowHandles()) {
 			driver.switchTo().window(winHandle);
 		}
+
+		waitUntilElementIsPresent("//div[text()='" + logName + "']",15);
 		javascriptClick(driver.findElement(By.xpath("//div[text()='" + logName + "']")));
 
 	}
@@ -1079,16 +1084,25 @@ public class ApasGenericPage extends Page {
    }
    
    /*
-   This method is used to return the In Progress APNs from Salesforce
-   @return: returns the active APN
+   This method is used to return the In Progress APN from Salesforce
+   @return: returns the In Progress APN
   */
-  public String fetchInProgressAPN() {
-      return fetchInProgressAPN(1).get(0);
-  }
 
-  public ArrayList<String> fetchInProgressAPN(int numberofAPNs) {
-      String queryForID = "SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberofAPNs;
-      return objSalesforceAPI.select(queryForID).get("Name");
+  public String fetchInProgressAPN() throws Exception {
+      
+	  String queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' limit 1";
+      HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryAPNValue);
+	  String inProgressAPNValue = "";
+		 if(!response.isEmpty())
+	            inProgressAPNValue = response.get("Name").get(0);
+	        else
+	        {
+	            inProgressAPNValue= fetchActiveAPN();
+	            jsonObject.put("PUC_Code_Lookup__c","In Progress - To Be Expired");
+	            jsonObject.put("Status__c","In Progress - To Be Expired");
+	            objSalesforceAPI.update("Parcel__c",fetchActiveAPN(),jsonObject);
+	        }
+	 return inProgressAPNValue;	 
   }
    
    /*
@@ -1117,8 +1131,12 @@ public class ApasGenericPage extends Page {
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
 	public HashMap<String, ArrayList<String>> getGridDataForRowString(String rowString) {
+		String xpath="(//*[contains(@class,'slds-show')]//table/tbody//tr)";
+		String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr";
+		if(verifyElementVisible(xpath))
+		{xpathTable=xpath;}
 
-		List<WebElement> tableRows = driver.findElementsByXPath("//table/tbody//tr") ;			
+		List<WebElement> tableRows = driver.findElementsByXPath(xpathTable) ;
 
 		for(int rowIndex = 0; rowIndex < tableRows.size(); rowIndex++) {
 			if(tableRows.get(rowIndex).getText().contains(rowString)) {

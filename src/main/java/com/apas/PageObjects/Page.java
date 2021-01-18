@@ -774,4 +774,5 @@ public class Page extends TestBase {
 		Click(driver.findElement(By.xpath(xpathStr)));
 		Thread.sleep(1000);
 	}
+
 }

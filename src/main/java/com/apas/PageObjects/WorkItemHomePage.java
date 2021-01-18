@@ -153,7 +153,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[2]//input[@type='checkbox']/parent::span")
 	public List<WebElement> lowincomeSubmittedWI;
 
-	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[@class='slds-tabs_default']//a")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(@class,'slds-truncate') or contains(@class,'slds-hyphenate')]//a")
 	public WebElement linkedItemsRecord;
 
 	@FindBy(xpath="//button[@title='Accept Work Item']")
@@ -337,7 +337,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 **/
 	public void acceptWorkItem(String workItem) throws Exception {
 		ReportLogger.INFO("Accepting the work item: " + workItem);
-		WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
+		WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//ancestor::th//preceding-sibling::td//span[@class='slds-checkbox_faux']"));
 		scrollToElement(webElementCheckBox);
 		Click(webElementCheckBox);
 		scrollToElement(acceptWorkItemButton);
@@ -367,7 +367,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 **/
 	public void openActionLink(String workItem) throws Exception {
 		ReportLogger.INFO("Clicking on Action Link of the work item : " + workItem);
-		String xpath = "//a[@title='" + workItem + "' or text()='" + workItem + "']//ancestor::th//following-sibling::td//a";
+		String xpath = "//a[@title='" + workItem + "' or text()='" + workItem + "']//ancestor::th//lightning-icon//parent::a";
 		waitUntilElementIsPresent(xpath, 15);
 		waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
 		javascriptClick(driver.findElement(By.xpath(xpath)));
@@ -648,7 +648,6 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		selectOptionFromDropDown(dropDownAction,action);
 		Thread.sleep(2000);
 	}
-
 	/**
 	 * Description: This method will fetch the Work Item Count from tab mentioned
 	 * @param requestType: Name of the work item
