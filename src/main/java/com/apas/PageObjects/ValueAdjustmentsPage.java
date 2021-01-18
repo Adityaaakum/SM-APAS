@@ -210,7 +210,7 @@ public class ValueAdjustmentsPage extends ApasGenericPage {
 		
 	public String annualFormReceivedDateEditBox="Annual Form Received Date";
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@title='Save' and text()='Save']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='Save']")
     public WebElement saveButton;
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Low Income Threshold Amount']//parent::div//following-sibling::div//lightning-formatted-text")
@@ -277,7 +277,7 @@ public class ValueAdjustmentsPage extends ApasGenericPage {
 	@FindBy(xpath="//div[contains(@role,'listitem')]//span[text()='Penalty Adjustment Other Reason Detail']//..//parent::div//following-sibling::ul//li")
 	public WebElement errMsgPenaltyAdjstmntOthRsnDetail;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@title='Cancel' and text()='Cancel']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='Cancel']")
     public WebElement cancelButton;
 	
 	@FindBy(xpath = "//label[text() = 'Determination']//following-sibling::div//input")

@@ -39,7 +39,7 @@ public class ExcelUtils {
         XSSFWorkbook workBook = new XSSFWorkbook(file);
         Object strColumnValue;
         XSSFSheet sheet = workBook.getSheetAt(sheetIndex);
-        boolean flag=false;
+        
 
         try {
             Row headerRow = sheet.getRow(tableStartRow);
@@ -51,6 +51,7 @@ public class ExcelUtils {
 
             FormulaEvaluator evaluator = workBook.getCreationHelper().createFormulaEvaluator();
             for (int rowNum = (tableStartRow + 1); rowNum < rowCount; rowNum++) {
+            	boolean flag=false;
                 Row currentRow = sheet.getRow(rowNum);
                 for (int colNum = tableStartColumn; colNum < (totalCells-tableStartColumn); colNum++) {
                     Cell headerCell = headerRow.getCell(colNum);

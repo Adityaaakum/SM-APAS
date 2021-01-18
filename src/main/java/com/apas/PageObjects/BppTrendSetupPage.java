@@ -434,7 +434,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 */
 	public String getSuccessMsgText() throws Exception {
 		String xpath = "//div[contains(@class, 'toastContent')]//span[contains(@class, 'toastMessage')]";
-		WebElement successAlertText = locateElement("//div[contains(@class, 'toastContent')]//span[contains(@class, 'toastMessage')]",15);	
+		WebElement successAlertText = locateElement("//div[contains(@class, 'toastContent')]//span[contains(@class, 'toastMessage')]",15);
 		String alertTxt = successAlertText.getText();
 		if(objPage.verifyElementVisible(successAlertCloseBtn)) {
 			objPage.Click(successAlertCloseBtn);
@@ -647,7 +647,6 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 * @throws: Exception
 	 */
 	public void createBPPSettingEntry(String rollYear, String factorValue) throws Exception{		
-
 		//Step1: Click BPP Setting drop down
 		clickAction(waitForElementToBeClickable(dropDownIconBppSetting));
 
@@ -714,7 +713,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		}
 		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 		//Query to fetch the status of composite & valuation factor tables
-		String queryForID = "Select "+tableName+" From BPP_Trend_Roll_Year__c where Roll_Year__c = '"+ rollYear +"'";	
+		String queryForID = "Select "+tableName+" From BPP_Trend_Roll_Year__c where Roll_Year__c = '"+ rollYear +"'";
 		HashMap<String, ArrayList<String>> tableStatus = objSalesforceAPI.select(queryForID);
 		return tableStatus.get(tableName).get(0);
 	}
@@ -744,7 +743,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public void createMaxEquip(String rollYear) throws Exception {
 		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 		//Query to fetch the settings
-		String queryForID = "SELECT Maximum_Equipment_index_Factor__c FROM BPP_Setting__c WHERE BPP_Trend_Roll_Year_Parent__c = '"+ rollYear +"'";	
+		String queryForID = "SELECT Maximum_Equipment_index_Factor__c FROM BPP_Setting__c WHERE BPP_Trend_Roll_Year_Parent__c = '"+ rollYear +"'";
 		HashMap<String, ArrayList<String>> factorSettings = objSalesforceAPI.select(queryForID);
 		if(!(factorSettings.size()>0)) {
 			if(verifyElementVisible(dropDownIconBppSetting))
@@ -788,8 +787,14 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		if(waitForElementToBeClickable(10,moreTabRightSection) != null) {
 			objPage.Click(moreTabRightSection);
 			objPage.Click(bppCompositeFactorOption);
+<<<<<<< HEAD
 		} else
 			objPage.Click(bppCompFactorSettingTab);
+=======
+		} else {
+			*/
+		objPage.Click(bppCompFactorSettingTab);
+>>>>>>> refs/remotes/origin/pre-release
 
 		ReportLogger.INFO("** Creating entry for " + factorType + " property type");
 

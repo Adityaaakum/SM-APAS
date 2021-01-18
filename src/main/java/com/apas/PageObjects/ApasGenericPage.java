@@ -3,6 +3,7 @@ package com.apas.PageObjects;
 import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
+import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
@@ -24,6 +25,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
 import java.util.*;
 import java.util.List;
 
@@ -59,7 +61,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//a[@title = 'Edit']")
 	public WebElement editButton;
 
-	@FindBy(xpath = "//button[@title='Save']")
+	@FindBy(xpath = "//button[text()='Save']")
 	public WebElement saveButton;
 
 	@FindBy(xpath = "//div[contains(.,'App Launcher')]//*[@class='slds-icon-waffle']")
@@ -663,7 +665,7 @@ public class ApasGenericPage extends Page {
 	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int tableIndex, int rowNumber) {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
 		//This code is to fetch the data for a particular row in the grid in the table passed in tableIndex
-		String xpath="(//*[@class='slds-tabs_scoped__content slds-show']//table)[" + tableIndex + "]";
+		String xpath="(//*[contains(@class,'slds-show')]//table)[" + tableIndex + "]";
 		String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table)[" + tableIndex + "]";
 		if(verifyElementVisible(xpath))
 		{xpathTable=xpath;}
@@ -709,7 +711,7 @@ public class ApasGenericPage extends Page {
 
 		//Removing the Row Number key as this is meta data column and not part of grid
 		gridDataHashMap.remove("Row Number");
-
+		System.out.println("HashMap: "+gridDataHashMap);
 		return gridDataHashMap;
 	}
 
@@ -1106,8 +1108,12 @@ public class ApasGenericPage extends Page {
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
 	public HashMap<String, ArrayList<String>> getGridDataForRowString(String rowString) {
+		String xpath="(//*[contains(@class,'slds-show')]//table/tbody//tr)";
+		String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr";
+		if(verifyElementVisible(xpath))
+		{xpathTable=xpath;}
 
-		List<WebElement> tableRows = driver.findElementsByXPath("//table/tbody//tr") ;			
+		List<WebElement> tableRows = driver.findElementsByXPath(xpathTable) ;
 
 		for(int rowIndex = 0; rowIndex < tableRows.size(); rowIndex++) {
 			if(tableRows.get(rowIndex).getText().contains(rowString)) {

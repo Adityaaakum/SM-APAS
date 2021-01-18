@@ -521,7 +521,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 	/**
 	* Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab
 	**/
-    @Test(description = "SMAB-T2474,SMAB-T2475: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual" }, alwaysRun = true)
+    @Test(description = "SMAB-T2474: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual" }, alwaysRun = true)
 	public void WorkItem_WIPresentInCompletedTab_2ndLevelApprover(String loginUser) throws Exception {
 
 		  //fetching a parcel where PUC is not blank but Primary Situs is blank 
@@ -531,9 +531,11 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  
 		  // Step 1: Login to the APAS application using the credentials of staff user
 		  objWorkItemHomePage.login(users.EXEMPTION_SUPPORT_STAFF);
+		  
 		  // Step 2: Opening the PARCELS page and searching a parcel
 		  objWorkItemHomePage.searchModule(PARCELS);
-		  objWorkItemHomePage.globalSearchRecords(apnValue);		
+		  objWorkItemHomePage.globalSearchRecords(apnValue);
+		  
 		  // Step 3: Creating Manual work item for the Parcel 
 		  String Workitem =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 		  objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
@@ -588,7 +590,7 @@ public class ManualWorkItems_Tests extends TestBase implements testdata, modules
 		  
 		  //steps 9: Validation on after approve by second lavel approval work item should be visible in completed tab
 		  HashMap<String, ArrayList<String>> PrimaryWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-          softAssert.assertTrue(PrimaryWorkItems.get("Work item #").contains(Workitem), "SMAB-T2474,SMAB-T2475: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab"); 
+          softAssert.assertTrue(PrimaryWorkItems.get("Work item #").contains(Workitem), "SMAB-T2474: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab"); 
 	      objWorkItemHomePage.logout();
      }
     
