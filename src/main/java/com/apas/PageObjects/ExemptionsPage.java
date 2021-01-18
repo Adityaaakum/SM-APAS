@@ -44,7 +44,7 @@ public class ExemptionsPage extends ApasGenericPage {
     @FindBy(xpath = "//h2[contains(.,'Edit Exemption')]")
     public WebElement editExemptionHeader;
 
-    @FindBy(xpath = "//button[@title='Cancel']")
+    @FindBy(xpath = "//button[text()='Cancel']")
     public WebElement cancelButton;
 
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title = 'New']")
@@ -90,7 +90,7 @@ public class ExemptionsPage extends ApasGenericPage {
 
     public String dateAcquiredProperty = "Date Acquired Property";
 
-    @FindBy(xpath = "//button[@title='Save']")
+    @FindBy(xpath = "//button[@title='Save'] | //button[text()='Save']")
     public static WebElement saveButton;
 
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Date Occupied/Intend to Occupy Property')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")

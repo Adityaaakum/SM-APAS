@@ -91,33 +91,31 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
         objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
         objBuildingPermitPage.scrollToBottom();
-//        String parentWindow = driver.getWindowHandle();
+
 		//SMAB-T2121: opening the action link to validate that link redirects to Review Error and success Records page
         objWorkItemHomePage.openActionLink(importReviewWorkItem);
-//		objBuildingPermitPage.switchToNewWindow(parentWindow);
+
         objWorkItemHomePage.waitForElementToBeClickable(objEfileImportPage.approveButton);
 		softAssert.assertTrue(objBuildingPermitPage.verifyElementVisible(objEfileImportPage.approveButton),"SMAB-T2121: Validation that approve button is visible");
 		softAssert.assertTrue(objBuildingPermitPage.verifyElementVisible(objEfileImportPage.errorRowSection),"SMAB-T2121: Validation that error Row Section is visible");
 		softAssert.assertTrue(objBuildingPermitPage.verifyElementVisible(objEfileImportPage.buildingPermitLabel),"SMAB-T2121: Validation that Building Permits Label is visible") ;
 		softAssert.assertTrue(objBuildingPermitPage.verifyElementVisible(objEfileImportPage.importedRowSection),"SMAB-T2121: Validation that imported Rows Section is visible");
 
-//		driver.close();
-//		driver.switchTo().window(parentWindow);
         objBuildingPermitPage.searchModule(modules.HOME);
 		objWorkItemHomePage.openWorkItem(importReviewWorkItem);
 		
 		objWorkItemHomePage.openTab(objWorkItemHomePage.tabDetails);
 
-		//Validating that 'Use Code' field and 'Date' field gets automatically populated in the work item record WHERE date should be date of import and use code should be SECS
-		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),"SEC", "SMAB-T2081: Validation that 'Use Code' fields getting automatically populated in the work item record");
-		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Date", "Information"),objUtil.getCurrentDate("MM/dd/yyyy"), "SMAB-T2081: Validation that 'Date' fields is equal to"+objUtil.getCurrentDate("MM/dd/yyyy"));
+		//Validating that 'Date' field gets automatically populated in the work item record WHERE date should be date of import 
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Date", "Information"),objUtil.getCurrentDate("MM/dd/yyyy"), "SMAB-T2081: Validation that 'Date' fields is equal to import date :"+objUtil.getCurrentDate("MM/dd/yyyy"));
 
-//		parentWindow = driver.getWindowHandle();
+		String parentWindow = driver.getWindowHandle();
+        objBuildingPermitPage.searchModule(modules.HOME);
         objWorkItemHomePage.openRelatedActionRecord(importReviewWorkItem);
-//        objBuildingPermitPage.switchToNewWindow(parentWindow);
+        objBuildingPermitPage.switchToNewWindow(parentWindow);
         objEfileImportPage.approveImportedFile();
-//		driver.close();
-//        driver.switchTo().window(parentWindow);
+		driver.close();
+        driver.switchTo().window(parentWindow);
 
         //Step7: Open Home Page
         objBuildingPermitPage.searchModule(modules.HOME);
@@ -141,6 +139,8 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         objWorkItemHomePage.openTab(objWorkItemHomePage.tabDetails);
         softAssert.assertEquals(objWorkItemHomePage.getIndividualFieldErrorMessage("Request Type"), "Building Permit - Final Review - " + fileNameWithoutExtension, "SMAB-T1900: File Name and Final Review Work Item Name validation in the final review work item");
         softAssert.assertEquals(objWorkItemHomePage.getIndividualFieldErrorMessage("Work Pool"), "RP Admin", "SMAB-T1900: Final review work item pool name validation");
+        //Validating that 'Date' field gets automatically populated in the work item record WHERE date should be date of import 
+      	softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Date", "Information"),objUtil.getCurrentDate("MM/dd/yyyy"), "SMAB-T2081: Validation that 'Date' fields is equal to import date :"+objUtil.getCurrentDate("MM/dd/yyyy"));
 
         //Step11: Validation that E-File logs are linked to the work item and the status of the E-logs is Approved
         objWorkItemHomePage.openTab(objWorkItemHomePage.tabLinkedItems);

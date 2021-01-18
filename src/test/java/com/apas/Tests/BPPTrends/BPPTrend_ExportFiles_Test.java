@@ -215,7 +215,7 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		
 		File downloadedFile = Objects.requireNonNull(new File(downloadLocation).listFiles())[0];
 		String exportedFileName = downloadedFile.getName();
-		softAssert.assertTrue(exportedFileName.contains("BPP - Composite Factors by Roll Year-" + rollYear), "SMAB-T1132: Verify downloaded excel file: "+ exportedFileName);
+		softAssert.assertTrue(exportedFileName.contains("BPP - Composite Factors by Roll Year-"), "SMAB-T1132: Verify downloaded excel file: "+ exportedFileName);
 		
 		//Deleteing all the previously downloaded files
 		objApasGenericPage.deleteFilesFromFolder(downloadLocation);
@@ -226,7 +226,7 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		
 		downloadedFile = Objects.requireNonNull(new File(downloadLocation).listFiles())[0];
 		exportedFileName = downloadedFile.getName();
-		softAssert.assertTrue(exportedFileName.contains("BPP - Valuation Factors by Roll Year-" + rollYear), "SMAB-T1132: Verify downloaded excel file: "+ exportedFileName);
+		softAssert.assertTrue(exportedFileName.contains("BPP - Valuation Factors by Roll Year-"), "SMAB-T1132: Verify downloaded excel file: "+ exportedFileName);
 		
 		objApasGenericPage.logout();
 	}

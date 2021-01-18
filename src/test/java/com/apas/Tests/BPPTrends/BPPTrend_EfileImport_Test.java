@@ -660,7 +660,9 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.openLogRecordForImportedFile("BPP Trend Factors","BOE - Valuation Factors",rollYearForImport,fileName + "BOE Valuation Factors 2021.xlsx");	
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.logStatus, 10);	
 		objPage.Click(objEfileImportTransactionsPage.transactionsTab);	
-		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);	
+		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 15);	
+		Thread.sleep(5000);
+		objPage.waitForElementToBeVisible(objEfileImportTransactionsPage.transactionsRecords.get(0), 10);
 		softAssert.assertEquals(objEfileImportTransactionsPage.transactionsRecords.size(), "2", "SMAB-T91:Verify that admin is able to see Transactions in 'E-File Import Transactions' screen for edited records after file import");
 		
 		objEfileHomePage.logout();
@@ -731,7 +733,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Validating Discard functionality of error records
 	 * 3. Validating no of Error records post discarding error records
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
+	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79,SMAB-T955: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
 	public void BppTrend_CAAValFileImportAndDiscardErrorRecords(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);
@@ -1221,7 +1223,9 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		softAssert.assertTrue(objEfileHomePage.isNotDisplayed(objEFileImportLogPage.inlineEditButton),"SMAB-T954:Verify that User is able to view and not edit the log records after uploading the BPP Trend e-Files");
 		ReportLogger.INFO("verifying transaction log generated is non editable");
 		objPage.Click(objEfileImportTransactionsPage.transactionsTab);
-		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);
+		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 15);
+		Thread.sleep(5000);
+		objPage.waitForElementToBeVisible(objEfileImportTransactionsPage.transactionsRecords.get(0), 10);
 		objPage.javascriptClick(objEfileImportTransactionsPage.transactionsRecords.get(0));
 		objPage.waitForElementToBeClickable(objEfileImportTransactionsPage.statusLabel, 10);
 		softAssert.assertTrue(objEfileHomePage.isNotDisplayed(objEFileImportLogPage.inlineEditButton),"SMAB-T951:Verify that User is able to view and not edit the transaction records after uploading the BPP Trend e-Files");
@@ -1319,7 +1323,9 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		
 		ReportLogger.INFO("Verifying Import count, File count and Error count in Import Transaction record");
 		objPage.Click(objEfileImportTransactionsPage.transactionsTab);
-		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);
+		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 15);
+		Thread.sleep(5000);
+		objPage.waitForElementToBeVisible(objEfileImportTransactionsPage.transactionsRecords.get(0), 15);
 		String expectedTransactionID=objPage.getElementText(objEfileImportTransactionsPage.transactionsRecords.get(0));
 		objPage.javascriptClick(objEfileImportTransactionsPage.transactionsRecords.get(0));
 		objPage.waitForElementToBeClickable(objEfileImportTransactionsPage.statusLabel, 10);
@@ -1328,7 +1334,9 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		
 		ReportLogger.INFO("Verifying fileds for Transaction/Audit trail record");
 		objPage.javascriptClick(objEfileImportTransactionsPage.transactionTrailTab);
-		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);
+		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 15);
+		Thread.sleep(5000);
+		objPage.waitForElementToBeVisible(objEfileImportTransactionsPage.transactionTrailRecords.get(0), 15);
 		objPage.javascriptClick(objEfileImportTransactionsPage.transactionTrailRecords.get(0));
 		objPage.waitForElementToBeClickable(objEfileImportTransactionsPage.statusLabel, 10);
 		softAssert.assertEquals(objPage.getElementText(objEfileImportTransactionsPage.transactionType), "Transactions", "SMAB-T1458:Verify that User is able to see Transactions trail with updated fields once a BPP file is uploaded via EFile");
