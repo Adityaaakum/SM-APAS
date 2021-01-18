@@ -60,10 +60,6 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			String workItemNumber1;
 			String workItemNumber2;
 			
-			// fetching a parcel where PUC is not blank but  Primary Situs is blank		
-			//String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
-			//HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
-			
 			ArrayList<String> APNs= objApasGenericPage.fetchActiveAPN(1);
 			String apnValue = APNs.get(0);
 			

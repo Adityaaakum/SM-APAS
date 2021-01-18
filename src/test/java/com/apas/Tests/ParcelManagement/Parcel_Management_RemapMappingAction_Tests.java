@@ -45,7 +45,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 
 	}
 		
-	@Test(description = "SMAB-T2490,SMAB-T2436,SMAB-T249:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2490,SMAB-T2436:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyRemapMappingActionForMultipleParcels(String loginUser) throws Exception {
        ArrayList<String> APNs=objMappingPage.fetchActiveAPN(2);
