@@ -703,12 +703,13 @@ public class BPPTrends_WorkItems_Test extends TestBase {
     public void BPPTrends_verifyPerformCalculationWI_SubmittedForApprovalAndApproval_Status(String loginUser) throws Exception {
 
         //Step1: Delete the existing WIs before generating
-        String query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings' OR Reference__c = 'BPP Composite Factors'";
+        String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
         objSalesforceAPI.delete("Work_Item__c",query);
 
-        //Step2: Delete the existing WIs before generating
-        query = "select id from Work_Item__c where Sub_Type__c = 'Import'";
-        objSalesforceAPI.delete("Work_Item__c",query);
+        //Step2: Update CP Factor for 2020
+        String queryToFetchCPIFactorId = "SELECT id FROM Roll_Year_Settings__c Where Name = '2020'";
+        String queryToUpdateCPIFactor = "SELECT Id FROM CPI_Factor__c Where Roll_Year__c = '"+queryToFetchCPIFactorId+"'";
+        objSalesforceAPI.update("CPI_Factor__c",queryToUpdateCPIFactor,"CPI_Factor__c","1.01");
 
         //Step3: Generate 'Annual Factor Settings' Reminder Work Items
         objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_ANNUAL_FACTORS);
@@ -725,7 +726,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
         BPPTrends_BOEValuation_WorkItemImportAndApprove(loginUser,true);
         BPPTrends_CAAValuation_WorkItemImportAndApprove(loginUser,true);
-        Thread.sleep(15000);
+        Thread.sleep(20000);
 
         //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objBppTrendSetupPage.login(loginUser);
@@ -1023,7 +1024,7 @@ public class BPPTrends_WorkItems_Test extends TestBase {
         Thread.sleep(2000);
         objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline, 10);
         objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
-        softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
+        softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"stage complete Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
 
         //Step 9: Validate the Work Item details after the Work Item is submitted for approval
         ReportLogger.INFO("User validates the Work Item details after it is Submitted for Approval");
