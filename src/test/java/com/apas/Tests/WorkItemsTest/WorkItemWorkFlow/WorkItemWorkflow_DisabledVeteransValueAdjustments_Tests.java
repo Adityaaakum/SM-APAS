@@ -1,4 +1,4 @@
-package com.apas.Tests.DisabledVeteran;
+package com.apas.Tests.WorkItemsTest.WorkItemWorkFlow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
+public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends TestBase {
 	
 	private RemoteWebDriver driver;
 	Page objPage;
@@ -69,7 +69,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","Work_Item_DV" })
 
-	public void DisabledVeteran_verifyWorkItemGeneratedOnEditingVAFields(String loginUser) throws Exception {
+	public void WorkItemWorkflow_DisabledVeteran_WorkItemGeneratedOnEditingVAFields(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 	String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
@@ -173,7 +173,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DisabledVeteranExemption","Work_Item_DV"})
-	public void DisabledVeteran_verifyWorkItemNotGeneratedOnEditingVAFieldsWithOpenWI(String loginUser) throws Exception {
+	public void WorkItemWorkflow_DisabledVeteran_WorkItemNotGeneratedOnEditingVAFieldsWithOpenWI(String loginUser) throws Exception {
 		
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -264,7 +264,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DisabledVeteranExemption", "Work_Item_DV"})
-	public void DisabledVeteran_verifyAnnualExemptionAmountVerificationWIIsApproved(String loginUser) throws Exception {
+	public void WorkItemWorkflow_DisabledVeteran_AnnualExemptionAmountVerificationWIIsApproved(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 	//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -413,7 +413,7 @@ public class DisabledVeterans_ValueAdjustments_WorkItem_Tests extends TestBase {
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DisabledVeteranExemption","Work_Item_DV"})
-	public void DisabledVeteran_verifyAnnualExemptionAmountVerificationWIIsReturned(String loginUser) throws Exception {
+	public void WorkItemWorkflow_DisabledVeteran_AnnualExemptionAmountVerificationWIIsReturned(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 	//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)

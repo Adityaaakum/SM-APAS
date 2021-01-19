@@ -1,4 +1,4 @@
-package com.apas.Tests.BuildingPermit;
+package com.apas.Tests.WorkItemsTest.WorkItemWorkFlow;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class BuildingPermit_WorkItems_Test extends TestBase {
+public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
     RemoteWebDriver driver;
     BuildingPermitPage objBuildingPermitPage;
@@ -31,7 +31,6 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
     EFileImportPage objEfileImportPage;
     ReportsPage objReportsPage;
 
-    Util objUtil = new Util();
     SoftAssertion softAssert = new SoftAssertion();
     SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 
@@ -53,7 +52,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and RP-WI Management permission configuration should exist
      **/
     @Test(description = "SMAB-T1890, SMAB-T1892, SMAB-T1900, SMAB-T1901, SMAB-T1902,SMAB-T2081,SMAB-T2121,SMAB-T2122,SMAB-T1903: Validation for work item generation after building permit file import and approve", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BP"}, alwaysRun = true)
-    public void BuildingPermit_WorkItemAfterImportAndApprove(String loginUser) throws Exception {
+    public void WorkItemWorkflow_BuildingPermit_ReviewAndFinalReviewWorkItem_ImportAndApprove(String loginUser) throws Exception {
 
         String downloadLocation = testdata.DOWNLOAD_FOLDER;
         ReportLogger.INFO("Download location : " + downloadLocation);
@@ -224,7 +223,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and RP-WI Management permission configuration should exist
      **/
     @Test(description = "SMAB-T1890, SMAB-T1899: Validation for work item generation after building permit file import and revert", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BP"}, alwaysRun = true)
-    public void BuildingPermit_WorkItemAfterImportAndRevert(String loginUser) throws Exception {
+    public void WorkItemWorkflow_BuildingPermit_ReviewWorkItem_ImportAndRevert(String loginUser) throws Exception {
 
         //Creating a temporary copy of the file to be processed to create unique name
         String sourceFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "SingleValidRecord_AT.txt";

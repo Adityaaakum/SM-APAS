@@ -1,4 +1,4 @@
-package com.apas.Tests.DisabledVeteran;
+package com.apas.Tests.WorkItemsTest.WorkItemWorkFlow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import com.apas.config.*;
 import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 
-public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
+public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 
 	private RemoteWebDriver driver;
 	Page objPage;
@@ -64,7 +64,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DV_WorkItem_Exemption"})
-	public void DisabledVeteran_verifyWorkItemGeneratedOnNewExemptionCreation(String loginUser) throws Exception {
+	public void WorkItemWorkflow_DisabledVeteran_WorkItemGeneratedOnNewExemptionCreation(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 		String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
@@ -143,7 +143,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DV_WorkItem_Exemption"})
-	public void DisabledVeteran_verifyWorkItemGeneratedOnEnterEndDateRatingExistingExemption(String loginUser) throws Exception {
+	public void WorkItemWorkflow_DisabledVeteran_WorkItemGeneratedOnEnterEndDateRatingExistingExemption(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 		Map<String, String> dataToEdit = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -206,7 +206,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DV_WorkItem_Exemption"})
-	public void DisabledVeteran_verifyWorkItemNotGeneratedOnExemptionWithOpenWI(String loginUser) throws Exception {
+	public void WorkItemWorkflow_DisabledVeteran_WorkItemNotGeneratedOnExemptionWithOpenWI(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -259,7 +259,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DV_WorkItem_Exemption"})
-	public void DisabledVeteran_verifyWorkItemExemptionFilingChangesIsApproved(String loginUser) throws Exception {
+	public void WorkItemWorkflow_DisabledVeteran_WorkItemExemptionFilingChangesIsApproved(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -339,7 +339,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"regression","DV_WorkItem_Exemption"})
-	public void DisabledVeteran_verifyWorkItemExemptionFilingChangesIsReturned(String loginUser) throws Exception {
+	public void WorkItemWorkflow_DisabledVeteran_WorkItemExemptionFilingChangesIsReturned(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -414,7 +414,7 @@ public class DisabledVeteran_Exemption_WorkItem_Tests extends TestBase {
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2554,SMAB-T2556,SMAB-T2558: Verify that 1st level Approver is able to assign WIs to a different 2nd level Approver than what is there in the relevant Work Pool, Verify that 2nd level Approver is able to view 'Warning' message if user tries to assign WI to another user using 'Assign Level2 Approver' button", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DV_WorkItem_Exemption"})
-	public void DisabledVeteran_verifyLevel2ApproverIsAbleToAssignWorkItem(String loginUser) throws Exception {
+	public void WorkItemWorkflow_DisabledVeteran_Level2ApproverIsAbleToAssignWorkItem(String loginUser) throws Exception {
 
 		ReportLogger.INFO("Get the user names through SOQL query");
 		String rpBusinessAdminName = salesforceAPI.getUserName(users.RP_BUSINESS_ADMIN);
