@@ -1,4 +1,4 @@
-package com.apas.Tests.WorkItemsTest;
+package com.apas.Tests.WorkItemsTest.WorkItemWorkFlow;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
@@ -21,11 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class WorkItems_report_Test extends TestBase{
+public class WorkItemWorkflow_Report_Test extends TestBase{
 
 	private RemoteWebDriver driver;
 	ReportsPage objReportsPage;
-	Util objUtil = new Util();
 	SoftAssertion softAssert  = new SoftAssertion();
 
 	@BeforeMethod(alwaysRun=true)
@@ -36,7 +35,7 @@ public class WorkItems_report_Test extends TestBase{
 		objReportsPage = new ReportsPage(driver);
 	}
 	@Test(description = "SMAB-T2520: Validation of Executive All Work Items reports ", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual"}, alwaysRun = true)
-    public void WorkItems_ExecutiveViewReports(String loginUser) throws Exception {
+    public void WorkItemWorkflow_Reports_ExecutiveViewReports(String loginUser) throws Exception {
 		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		String reportName = "Executive All Work Items";
 		String exportedFileName;

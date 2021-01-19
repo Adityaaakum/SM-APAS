@@ -1,4 +1,4 @@
-package com.apas.Tests.WorkItemsTest;
+package com.apas.Tests.WorkItemsTest.WorkIemAdministration;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class WorkItems_Configuration_Test extends TestBase {
+public class WorkItemAdministration_Configuration_Test extends TestBase {
     RemoteWebDriver driver;
 
     WorkItemHomePage objWorkItemHomePage;
@@ -36,7 +36,7 @@ public class WorkItems_Configuration_Test extends TestBase {
     }
 
     @Test(description = "SMAB-T1782: Validation the Work Item Type and Action based on work item configuration for Parcels", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual"}, alwaysRun = true)
-    public void WorkItemConfiguration_ManualWorkItemCreation_Parcels(String loginUser) throws Exception {
+    public void WorkItemAdministration_Configuration_ManualWorkItemCreation_Parcels(String loginUser) throws Exception {
 
         String apnValue = objParcelsPage.fetchActiveAPN();
 
@@ -90,7 +90,7 @@ public class WorkItems_Configuration_Test extends TestBase {
     }
 
     @Test(description = "SMAB-T1783: Validation the Work Item Type and Action based on work item configuration for BPP Accounts", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual"}, alwaysRun = true,enabled = false)
-    public void WorkItemConfiguration_ManualWorkItemCreation_BPPAccounts(String loginUser) throws Exception {
+    public void WorkItemAdministration_Configuration_ManualWorkItemCreation_BPPAccounts(String loginUser) throws Exception {
 
         String queryBPPAccountValue = "SELECT Name FROM BPP_Account__c where Status__C = 'Active' limit 1";
         String BPPAccountValue= salesforceAPI.select(queryBPPAccountValue).get("Name").get(0);

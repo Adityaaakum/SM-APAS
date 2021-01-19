@@ -99,7 +99,7 @@ public class ParcelsPage extends ApasGenericPage {
 		selectOptionFromDropDown(workItemTypeDropDownComponentsActionsModal, workItemType);
 		selectOptionFromDropDown(actionsDropDownLabel, actions);
 
-		//enter(referenceInputTextBoxComponentActionModal, reference);
+		if (reference != null)enter(referenceInputTextBoxComponentActionModal, reference);
 		enter(descriptionInputTextBoxComponentActionModal, description);
 		selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);
 		selectOptionFromDropDown(workItemRoutingDropDownComponentsActionsModal, workItemRouting);

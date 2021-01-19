@@ -153,7 +153,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[2]//input[@type='checkbox']/parent::span")
 	public List<WebElement> lowincomeSubmittedWI;
 
-	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[@class='slds-truncate']//a")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(@class,'slds-truncate') or contains(@class,'slds-hyphenate')]//a")
 	public WebElement linkedItemsRecord;
 
 	@FindBy(xpath="//button[@title='Accept Work Item']")
@@ -305,9 +305,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 		scrollToElement(webElement);
 		javascriptClick(webElement);
 		Thread.sleep(3000);
-
 	}
-
+	
 	/**
 	 * This method will open related action record linked with the work item
 	 *
@@ -343,7 +342,6 @@ public class WorkItemHomePage extends ApasGenericPage {
 		Click(webElementCheckBox);
 		scrollToElement(acceptWorkItemButton);
 		Click(acceptWorkItemButton);
-		objPageObj.waitForElementToDisappear(objApasGenericPage.xpathSpinner,20);
 		waitForElementToBeVisible(successAlert, 20);
 		waitForElementToDisappear(successAlert, 10);
 	}

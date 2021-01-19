@@ -71,10 +71,10 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	@FindBy(xpath = "//a[text() = 'BPP Composite Factors Settings']")
 	public WebElement bppCompFactorSettingTab;
 
-	@FindBy(xpath = "//span[text() = 'BPP Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a")
+	@FindBy(xpath = "//span[text() = 'BPP Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a |//span[text() = 'BPP Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following::div//*[contains(@class,'icon-x-small')]")
 	public WebElement dropDownIconBppSetting;
 
-	@FindBy(xpath = "//span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a")
+	@FindBy(xpath = "//span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following::div[@class='actionsWrapper']//a | //span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following::div//*[contains(@class,'icon-x-small')]")
 	public WebElement dropDownIconBppCompFactorSetting;
 
 	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//a[@title = 'New']")
@@ -321,53 +321,53 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public String getTableStatusFromBppTrendSetupDetailsPage(String tableName) throws Exception {
 		String tableNameForTrendSetupPage;
 		switch(tableName) {
-			case"Commercial Composite Factors":
-				tableNameForTrendSetupPage = "Commercial Trends Status";
-				break;
-			case"Industrial Composite Factors":
-				tableNameForTrendSetupPage = "Industrial Trend Status";
-				break;
-			case"Construction Composite Factors":
-				tableNameForTrendSetupPage = "Const. Trends Status";
-				break;
-			case"Construction Mobile Equipment Composite Factors":
-				tableNameForTrendSetupPage = "Const. Mobile Equipment Trends Status";
-				break;
-			case"Agricultural Mobile Equipment Composite Factors":
-				tableNameForTrendSetupPage = "Ag. Mobile Equipment Trends Status";
-				break;
-			case"Agricultural Composite Factors":
-				tableNameForTrendSetupPage = "Ag. Trends Status";
-				break;
-			case"BPP Prop 13 Factors":
-				tableNameForTrendSetupPage = "Prop 13 Factor Status";
-				break;
-			case"Computer Valuation Factors":
-				tableNameForTrendSetupPage = "Computer Trends Status";
-				break;
-			case"Biopharmaceutical Valuation Factors":
-				tableNameForTrendSetupPage = "Biopharmaceutical Trends Status";
-				break;
-			case"Copier Valuation Factors":
-				tableNameForTrendSetupPage = "Copier Trends Status";
-				break;
-			case"Semiconductor Valuation Factors":
-				tableNameForTrendSetupPage = "Semiconductor Trends Status";
-				break;
-			case"Litho Valuation Factors":
-				tableNameForTrendSetupPage = "Litho Trends Status";
-				break;
-			case"Mechanical Slot Machines Valuation Factors":
-				tableNameForTrendSetupPage = "Mechanical Slot Machine Trends Status";
-				break;
-			case"Set-Top Box Valuation Factors":
-				tableNameForTrendSetupPage = "Set-Top Box Trends Status";
-				break;
-			case"Electrical Slot Machines Valuation Factors":
-				tableNameForTrendSetupPage = "Electronic Slot Machine Trends Status";
-				break;
-			default:
-				tableNameForTrendSetupPage = tableName;
+		case"Commercial Composite Factors":
+			tableNameForTrendSetupPage = "Commercial Trends Status";
+			break;
+		case"Industrial Composite Factors":
+			tableNameForTrendSetupPage = "Industrial Trend Status";
+			break;
+		case"Construction Composite Factors":
+			tableNameForTrendSetupPage = "Const. Trends Status";
+			break;
+		case"Construction Mobile Equipment Composite Factors":
+			tableNameForTrendSetupPage = "Const. Mobile Equipment Trends Status";
+			break;
+		case"Agricultural Mobile Equipment Composite Factors":
+			tableNameForTrendSetupPage = "Ag. Mobile Equipment Trends Status";
+			break;
+		case"Agricultural Composite Factors":
+			tableNameForTrendSetupPage = "Ag. Trends Status";
+			break;
+		case"BPP Prop 13 Factors":
+			tableNameForTrendSetupPage = "Prop 13 Factor Status";
+			break;
+		case"Computer Valuation Factors":
+			tableNameForTrendSetupPage = "Computer Trends Status";
+			break;
+		case"Biopharmaceutical Valuation Factors":
+			tableNameForTrendSetupPage = "Biopharmaceutical Trends Status";
+			break;
+		case"Copier Valuation Factors":
+			tableNameForTrendSetupPage = "Copier Trends Status";
+			break;
+		case"Semiconductor Valuation Factors":
+			tableNameForTrendSetupPage = "Semiconductor Trends Status";
+			break;
+		case"Litho Valuation Factors":
+			tableNameForTrendSetupPage = "Litho Trends Status";
+			break;
+		case"Mechanical Slot Machines Valuation Factors":
+			tableNameForTrendSetupPage = "Mechanical Slot Machine Trends Status";
+			break;
+		case"Set-Top Box Valuation Factors":
+			tableNameForTrendSetupPage = "Set-Top Box Trends Status";
+			break;
+		case"Electrical Slot Machines Valuation Factors":
+			tableNameForTrendSetupPage = "Electronic Slot Machine Trends Status";
+			break;
+		default:
+			tableNameForTrendSetupPage = tableName;
 		}
 
 		String xpathCompositeTrendsStatus = "//span[text() = 'Composite Trends Status']//ancestor::button[contains(@class, 'test-id__section-header-button slds')]";
@@ -554,15 +554,20 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 * @throws: Exception
 	 */
 	public WebElement clickNewButtonUnderFactorSection(String factorsTable) throws Exception {
-		String newBtnXpath = "//span[text() = '"+ factorsTable +"']//ancestor::div[contains(@class, 'firstHeaderRow')]//following-sibling::div[@class='actionsWrapper']//a[@title = 'New']";
-		WebElement newButton = locateElement(newBtnXpath, 10);
-//		try {
-//			newButton = locateElement(newBtnXpath, 10);
+		//	String newBtnXpath = "//span[text() = '"+ factorsTable +"']//ancestor::div[contains(@class, 'firstHeaderRow')]//following-sibling::div//button[text()='New']";
+
+		String commonXPath = "//span[text() = 'BPP Property Index Factors']//ancestor::div[contains(@class, 'firstHeaderRow')]//following-sibling::div";
+		String newBtnXpath = commonXPath + "//button[contains(.,'New')] |" + commonXPath + "//a[contains(.,'New')]";
+
+		//span[text() = 'BPP Property Index Factors']//ancestor::div[contains(@class, 'firstHeaderRow')]//following-sibling::div//button[contains(.,'New')] || //span[text() = 'BPP Property Index Factors']//ancestor::div[contains(@class, 'firstHeaderRow')]//following-sibling::div//a[contains(.,'New')]
+		WebElement newButton = waitForElementToBeClickable(10,newBtnXpath);
+		//		try {
+		//			newButton = locateElement(newBtnXpath, 10);
 		clickAction(newButton);
-//		} catch(Exception ex) {
-//			newButton = locateElement(newBtnXpath, 10);
-//			clickAction(newButton);
-//		}
+		//		} catch(Exception ex) {
+		//			newButton = locateElement(newBtnXpath, 10);
+		//			clickAction(newButton);
+		//		}
 		return newButton;
 	}
 
@@ -583,9 +588,9 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			xpath = "//span[contains(text(), '"+ fieldName +"')]//parent::label//following-sibling::input";
 			element = locateElement(xpath, 30);
 			enter(element, fieldValue);
-//			if(fieldName.toUpperCase().contains("NAME (Roll Year")) {
-//				System.setProperty("factorEntryName", fieldValue);
-//			}
+			//			if(fieldName.toUpperCase().contains("NAME (Roll Year")) {
+			//				System.setProperty("factorEntryName", fieldValue);
+			//			}
 		}
 	}
 
@@ -606,7 +611,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			xpath = xPathShowMoreButton + "//lightning-button-menu//button | " + xPathShowMoreButton +  "//span[text()='Show more actions']//ancestor::a";
 		}
 		Thread.sleep(2000);
-		WebElement showMoreDropDown = waitUntilElementIsPresent(10,xpath);
+		WebElement showMoreDropDown = waitUntilElementIsPresent(20,xpath);
 		if(showMoreDropDown == null) {
 			showMoreDropDown = locateElement(xpath, 30);
 		}
@@ -641,8 +646,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 * @returns: success message
 	 * @throws: Exception
 	 */
-	public void createBPPSettingEntry(String rollYear, String factorValue) throws Exception{
-
+	public void createBPPSettingEntry(String rollYear, String factorValue) throws Exception{		
 		//Step1: Click BPP Setting drop down
 		clickAction(waitForElementToBeClickable(dropDownIconBppSetting));
 
@@ -661,51 +665,51 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public String getTableStatus(String tableName,String rollYear) throws Exception {
 		String tableNameForTrendSetupPage;
 		switch(tableName) {
-			case"Commercial Composite Factors":
-				tableName = "Commercial_Trends_Status__c";
-				break;
-			case"Industrial Composite Factors":
-				tableName = "Industrial_Trend_Status__c";
-				break;
-			case"Construction Composite Factors":
-				tableName = "Const_Trends_Status__c";
-				break;
-			case"Construction Mobile Equipment Composite Factors":
-				tableName = "Const_Mobile_Equipment_Trends_Status__c";
-				break;
-			case"Agricultural Mobile Equipment Composite Factors":
-				tableName = "Ag_Mobile_Equipment_Trends_Status__c";
-				break;
-			case"Agricultural Composite Factors":
-				tableName = "Ag_Trends_Status__c";
-				break;
-			case"BPP Prop 13 Factors":
-				tableName = "Prop_13_Factor_Status_New__c";
-				break;
-			case"Computer Valuation Factors":
-				tableName = "Computer_Trends_Status__c";
-				break;
-			case"Biopharmaceutical Valuation Factors":
-				tableName = "Biopharmaceutical_Trends_Status__c";
-				break;
-			case"Copier Valuation Factors":
-				tableName = "Copier_Trends_Status__c";
-				break;
-			case"Semiconductor Valuation Factors":
-				tableName = "Semiconductor_Trends_Status__c";
-				break;
-			case"Litho Valuation Factors":
-				tableName = "Litho_Trends_Status__c";
-				break;
-			case"Mechanical Slot Machines Valuation Factors":
-				tableName = "Mechanical_Slot_Machine_Trends_Status__c";
-				break;
-			case"Set-Top Box Valuation Factors":
-				tableName = "Set_Top_Box_Trends_Status__c";
-				break;
-			case"Electrical Slot Machines Valuation Factors":
-				tableName = "Electronic_Slot_Machine_Trends_Status__c";
-				break;
+		case"Commercial Composite Factors":
+			tableName = "Commercial_Trends_Status__c";
+			break;
+		case"Industrial Composite Factors":
+			tableName = "Industrial_Trend_Status__c";
+			break;
+		case"Construction Composite Factors":
+			tableName = "Const_Trends_Status__c";
+			break;
+		case"Construction Mobile Equipment Composite Factors":
+			tableName = "Const_Mobile_Equipment_Trends_Status__c";
+			break;
+		case"Agricultural Mobile Equipment Composite Factors":
+			tableName = "Ag_Mobile_Equipment_Trends_Status__c";
+			break;
+		case"Agricultural Composite Factors":
+			tableName = "Ag_Trends_Status__c";
+			break;
+		case"BPP Prop 13 Factors":
+			tableName = "Prop_13_Factor_Status_New__c";
+			break;
+		case"Computer Valuation Factors":
+			tableName = "Computer_Trends_Status__c";
+			break;
+		case"Biopharmaceutical Valuation Factors":
+			tableName = "Biopharmaceutical_Trends_Status__c";
+			break;
+		case"Copier Valuation Factors":
+			tableName = "Copier_Trends_Status__c";
+			break;
+		case"Semiconductor Valuation Factors":
+			tableName = "Semiconductor_Trends_Status__c";
+			break;
+		case"Litho Valuation Factors":
+			tableName = "Litho_Trends_Status__c";
+			break;
+		case"Mechanical Slot Machines Valuation Factors":
+			tableName = "Mechanical_Slot_Machine_Trends_Status__c";
+			break;
+		case"Set-Top Box Valuation Factors":
+			tableName = "Set_Top_Box_Trends_Status__c";
+			break;
+		case"Electrical Slot Machines Valuation Factors":
+			tableName = "Electronic_Slot_Machine_Trends_Status__c";
+			break;
 		}
 		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 		//Query to fetch the status of composite & valuation factor tables
@@ -742,10 +746,11 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		String queryForID = "SELECT Maximum_Equipment_index_Factor__c FROM BPP_Setting__c WHERE BPP_Trend_Roll_Year_Parent__c = '"+ rollYear +"'";
 		HashMap<String, ArrayList<String>> factorSettings = objSalesforceAPI.select(queryForID);
 		if(!(factorSettings.size()>0)) {
-			objPage.waitForElementToBeClickable(dropDownIconBppSetting, 20);
-			objPage.javascriptClick(dropDownIconBppSetting);
-			objPage.waitForElementToBeClickable(newBtnToCreateEntry, 20);
-			objPage.javascriptClick(newBtnToCreateEntry);
+			if(verifyElementVisible(dropDownIconBppSetting))
+				objPage.javascriptClick(dropDownIconBppSetting);
+			//	objPage.waitForElementToBeClickable(newBtnToCreateEntry, 20);
+			//	objPage.javascriptClick(newBtnToCreateEntry);
+			createRecord();
 			enter("Maximum Equipment index Factor","125");
 			objPage.Click(objPage.getButtonWithText("Save"));
 			Thread.sleep(1000);
@@ -764,7 +769,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			Click(driver.findElement(By.xpath("//ul[@role='tablist']//*[@title='More Tabs']")));
 			Click(driver.findElement(By.xpath("//a[@role='menuitem']//span[text()='" + factorName + "']")));
 		}
-		waitUntilElementIsPresent("//span[contains(@title,'" + factorName + "')]",15);
+		waitUntilElementIsPresent("//span[contains(@title,'" + factorName + "')]",20);
 	}
 
 	public void createCompositeFactor(String year, String factorType, String factorValue) throws Exception {
@@ -778,13 +783,12 @@ public class BppTrendSetupPage extends ApasGenericPage {
 
 		//Step15: Create a BPP Composite Factor Settings
 		ReportLogger.INFO("** Clicking on Bpp Composite Factors Settings tab **");
-		/*if(moreTabRightSection != null) {
+
+		if(waitForElementToBeClickable(10,moreTabRightSection) != null) {
 			objPage.Click(moreTabRightSection);
 			objPage.Click(bppCompositeFactorOption);
-		} else {
-			*/
-		objPage.Click(bppCompFactorSettingTab);
-
+		} else
+			objPage.Click(bppCompFactorSettingTab);
 		ReportLogger.INFO("** Creating entry for " + factorType + " property type");
 
 		Click(newButton);
@@ -792,6 +796,10 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		selectOptionFromDropDown("Property Type",factorType);
 		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(1000);
+
+
+
+
 
 	}
 }

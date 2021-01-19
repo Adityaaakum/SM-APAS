@@ -1,5 +1,6 @@
 package com.apas.PageObjects;
 
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -34,6 +35,7 @@ public class ApasGenericPage extends Page {
 	LoginPage objLoginPage;
 	SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 	Util objUtil = new Util();
+	JSONObject jsonObject= new JSONObject();
 	
 	public ApasGenericPage(RemoteWebDriver driver) {
 		super(driver);
@@ -1041,7 +1043,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public File createTempFile(File file) throws IOException {
 		//Creating a temporary copy of the file to be processed to create unique name
-		String timeStamp = objUtil.getCurrentDate("yyMMddhhmmss");
+		String timeStamp = DateUtil.getCurrentDate("yyMMddhhmmss");
 		String destFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + timeStamp + "_" + file.getName();
 		File tempFile = new File(destFile);
 		FileUtils.copyFile(file, tempFile );
@@ -1081,6 +1083,28 @@ public class ApasGenericPage extends Page {
        String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberofAPNs;
        return objSalesforceAPI.select(queryForID).get("Name");
    }
+   
+   /*
+   This method is used to return the In Progress APN from Salesforce
+   @return: returns the In Progress APN
+  */
+
+  public String fetchInProgressAPN() throws Exception {
+      
+	  String queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' limit 1";
+      HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryAPNValue);
+	  String inProgressAPNValue = "";
+		 if(!response.isEmpty())
+	            inProgressAPNValue = response.get("Name").get(0);
+	        else
+	        {
+	            inProgressAPNValue= fetchActiveAPN();
+	            jsonObject.put("PUC_Code_Lookup__c","In Progress - To Be Expired");
+	            jsonObject.put("Status__c","In Progress - To Be Expired");
+	            objSalesforceAPI.update("Parcel__c",fetchActiveAPN(),jsonObject);
+	        }
+	 return inProgressAPNValue;	 
+  }
    
    /*
     * Get Field Value from WI TimeLine 

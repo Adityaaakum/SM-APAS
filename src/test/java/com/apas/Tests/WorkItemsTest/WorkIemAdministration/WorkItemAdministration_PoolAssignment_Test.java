@@ -1,4 +1,4 @@
-package com.apas.Tests.WorkItemsTest;
+package com.apas.Tests.WorkItemsTest.WorkIemAdministration;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
@@ -18,7 +18,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import java.util.Map;
 
-public class WorkItems_PoolAssignment_Test extends TestBase {
+public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
     RemoteWebDriver driver;
 
     PoolAssignmentPage objPoolAssignmentPage;
@@ -43,7 +43,7 @@ public class WorkItems_PoolAssignment_Test extends TestBase {
     }
 
     @Test(description = "SMAB-T2307: Verify that the Warning message is not appearing for the Closed or No opened WI on removing the User from PA", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_PoolAssignment"}, alwaysRun = true)
-    public void WorkItem_PoolAssignment_NoWarningOnRemovingStaff(String loginUser) throws Exception {
+    public void WorkItemAdministration_PoolAssignment_NoWarningOnRemovingStaff(String loginUser) throws Exception {
 
         String workPool = "RP Admin";
 
@@ -96,7 +96,7 @@ public class WorkItems_PoolAssignment_Test extends TestBase {
 
 
     @Test(description = "SMAB-T2305: Verify that the Warning message for opened WI on removing the User from PA", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_PoolAssignment"}, alwaysRun = true)
-    public void WorkItem_PoolAssignment_WarningOnRemovingStaff(String loginUser) throws Exception {
+    public void WorkItemAdministration_PoolAssignment_WarningOnRemovingStaff(String loginUser) throws Exception {
 
         String workPool = "RP Admin";
 

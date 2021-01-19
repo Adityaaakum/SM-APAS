@@ -168,22 +168,6 @@ public class Util {
 	}
 
 	/**
-	 * @author Sikander Bhambhu 
-	 * 
-	 * @Description: This method takes an expected format for date and return
-	 *               the current date in the format provided.
-	 * 
-	 * @param format:
-	 *            expected format of date, example 'MM/dd/yyyy'
-	 **/
-	public String getCurrentDate(String format) {
-		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat(format);
-		String formattedDate = sdf.format(date);
-		return formattedDate;
-	}
-
-	/**
 	 * @author Sikander Bhambhu
 	 * 
 	 * @Description : This method internally collects all the execution reports
