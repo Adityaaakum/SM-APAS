@@ -1,4 +1,4 @@
-package com.apas.Tests.DisabledVeteran;
+package com.apas.Tests.WorkItemsTest.WorkItemWorkFlow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implements testdata, modules, users {
+public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase implements testdata, modules, users {
 
 	private RemoteWebDriver driver;
 
@@ -71,7 +71,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 
 	@Test(description = "SMAB-T1888,SMAB-T1889,SMAB-T1933,SMAB-T1885,SMAB-T2087,SMAB-T2080,SMAB-T1993,SMAB-T1838,SMAB-T1881,SMAB-T2040: Verify User is able to Claim the reminder Annual limit(RPSL) work item, enter annual limits and submit for supervisor approval, Verify user is able to access Work Item details after submitting it for approval", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class, groups = {
 			"regression", "Work_Item_DV" }, alwaysRun = true)
-	public void Disabledveteran_RPSLandReminderWIClaimSubmitValidations(String loginUser) throws Exception {
+	public void WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIClaimSubmitValidations(String loginUser) throws Exception {
 		// deleting Existing WI from Disabled veterans Work pool and 2021-RPSL from
 		// system
 		String deleteDVWIQuery = "select id from Work_Item__c where Request_Type__c in ('Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits','Disabled Veterans - Review and Update - Annual exemption amount verification')";
@@ -271,7 +271,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 	@Test(description = "SMAB-T1921,SMAB-T1889,SMAB-T1919,SMAB-T1920,SMAB-T1867:Verify that once supervisor 'Return' the RPSL record then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' is also Returned and once RPSL approved then WI is also completed,Verify that Supervisor of a WI is able to edit the WI which is submitted for Approval ", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, dependsOnMethods = {
 			"Disabledveteran_RPSLandReminderWIClaimSubmitValidations" }, groups = { "regression",
 					"Work_Item_DV" }, alwaysRun = true)
-	public void Disabledveteran_RPSLandReminderWIApprovalRejectionValidations(String loginUser) throws Exception {
+	public void WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIApprovalRejectionValidations(String loginUser) throws Exception {
 		
 		String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
 		String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
@@ -466,7 +466,7 @@ public class DisabledVeterans_RetroFit_WorkItems_Test extends TestBase implement
 	@Test(description = "SMAB-T2080,SMAB-T2091,SMAB-T1918,SMAB-T1951, SMAB-T1952:Verify system generates WI 'Disabled Veteran -Review and Update-Annual exemption amount verification' for all active Exemption with low income VA for previous roll year once 'Annual Exemption Limits' for current roll year is approved", dataProvider = "loginExemptionSupportStaff", dependsOnMethods = {
 			"Disabledveteran_RPSLandReminderWIApprovalRejectionValidations" }, dataProviderClass = DataProviders.class, groups = {
 					"regression", "Work_Item_DV" }, alwaysRun = true)
-	public void Disabledveteran_LowIncomeExemptionWIVerification(String loginUser) throws Exception {
+	public void WorkItemWorkflow_DisabledVeteran_LowIncomeExemptionWIVerification(String loginUser) throws Exception {
 
 		String rollYear = "2020";
 		String lowIncomeVaQuery = "select id from Value_Adjustments__c where Exemption_Status__c='Active' and Roll_Year__c='"+ rollYear + "' and Determination__c='Low-Income Disabled Veterans Exemption'";

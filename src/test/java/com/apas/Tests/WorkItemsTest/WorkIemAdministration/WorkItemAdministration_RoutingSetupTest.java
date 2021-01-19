@@ -1,4 +1,4 @@
-package com.apas.Tests.WorkItemsTest;
+package com.apas.Tests.WorkItemsTest.WorkIemAdministration;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WorkItems_RoutingSetupTest extends TestBase {
+public class WorkItemAdministration_RoutingSetupTest extends TestBase {
     RemoteWebDriver driver;
     WorkItemHomePage objWorkItemHomePage;
     WorkItemsRoutingSetupPage objWorkItemsRoutingSetupPage;
@@ -44,7 +44,7 @@ public class WorkItems_RoutingSetupTest extends TestBase {
 
     @Test(description = "SMAB-T1811,SMAB-T1812,SMAB-T1814,SMAB-T1815: Verify user is able to create,edit Neighborhood reference record with mandatory fields & not able to create duplicate record", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
             "smoke", "regression", "Work_Items_Manual" }, alwaysRun = true)
-    public void WorkItem_verify_NeighborhoodReferenceRecordCreation(String loginUser) throws Exception {
+    public void WorkItemAdministration_NeighborhoodReferenceRecordCreation(String loginUser) throws Exception {
         String workItemCreationData = testdata.WORK_ITEMS_ROUTING_SETUP;
         Map<String, String> hashMapNeighborhoodData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateNeighborhood");
         hashMapNeighborhoodData.put("Primary Appraiser",salesforceAPI.getUserName(users.RP_BUSINESS_ADMIN));
@@ -114,7 +114,7 @@ public class WorkItems_RoutingSetupTest extends TestBase {
 
     @Test(description = "SMAB-T1816,SMAB-T1817,SMAB-T1821,SMAB-T1822: Verify user is able to create,edit Territory record with mandatory fields & not able to create duplicate record", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
             "smoke", "regression", "Work_Items_Manual" }, alwaysRun = true)
-    public void WorkItem_verify_TerritoryRecordCreation(String loginUser) throws Exception {
+    public void WorkItemAdministration_TerritoryRecordCreation(String loginUser) throws Exception {
         String workItemCreationData = testdata.WORK_ITEMS_ROUTING_SETUP;
         Map<String, String> hashMapTerritoryData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateTerritory");
 
@@ -180,7 +180,7 @@ public class WorkItems_RoutingSetupTest extends TestBase {
 
     @Test(description = "SMAB-T1826,SMAB-T1827,SMAB-T1828,SMAB-T1829: Verify user is able to create,edit Routing Assignments record with mandatory fields & not able to create duplicate record", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
             "smoke", "regression", "Work_Items_Manual" }, alwaysRun = true)
-    public void WorkItem_verify_RoutingAssignmentRecordCreation(String loginUser) throws Exception {
+    public void WorkItemAdministration_RoutingAssignmentRecordCreation(String loginUser) throws Exception {
         String workItemCreationData = testdata.WORK_ITEMS_ROUTING_SETUP;
         Map<String, String> hashMapRoutingAssignmentData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateRoutingAssignment");
 

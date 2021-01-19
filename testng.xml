@@ -14,9 +14,9 @@
 		</groups>
 		<classes>
 
-			 <class name="com.apas.Tests.BuildingPermit.BuildingPermit_WorkItems_Test">
+			 <class name="com.apas.Tests.EFileIntake.EFileIntake_Tests">
 				 <methods>
-					 <include name="BuildingPermit_WorkItemAfterImportAndRevert"/>
+					 <include name="EFileImport_VerifyImportForNewStatus_AndApporveImportFile"/>
 				 </methods>
 			 </class>
 
