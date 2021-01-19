@@ -1,20 +1,9 @@
 package com.apas.PageObjects;
 
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
+import com.apas.Utils.PasswordUtils;
+import com.apas.Utils.SalesforceAPI;
+import com.apas.Utils.Util;
+import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
@@ -27,19 +16,25 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
-import com.apas.Utils.PasswordUtils;
-import com.apas.Utils.SalesforceAPI;
-import com.apas.Utils.Util;
 import com.relevantcodes.extentreports.LogStatus;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.Clock;
+import java.util.*;
+import java.util.List;
 
 public class ApasGenericPage extends Page {
 
 	LoginPage objLoginPage;
-	SalesforceAPI objSalesforceAPI = new SalesforceAPI();;
+	SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 	Util objUtil = new Util();
+	JSONObject jsonObject= new JSONObject();
 	
 	public ApasGenericPage(RemoteWebDriver driver) {
 		super(driver);
@@ -72,7 +67,7 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//div[contains(.,'App Launcher')]//*[@class='slds-icon-waffle']")
 	public WebElement appLauncher;
-
+	
 	@FindBy(xpath = "//table[@role='grid']//thead/tr//th")
 	public WebElement dataGrid;
 
@@ -120,13 +115,13 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
 	public WebElement successAlert;
-
+	
 	@FindBy(xpath = "//span[text()='Delete']")
 	public WebElement deleteConfirmationPostDeleteAction;
-
+	
 	@FindBy(xpath = "//h2[@class='slds-truncate slds-text-heading_medium']")
 	public WebElement popUpErrorMessageWeHitASnag;
-
+	
 	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[not(contains(@class,'hasActiveSubtab'))]//lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
 
@@ -134,10 +129,10 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//lightning-spinner")
 	public WebElement spinner;
-
+	
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
 	public WebElement successAlertText;
-
+	
 	public String xpathSpinner = "//lightning-spinner";
 
 	public String maxEquipmentIndexFactor = "Maximum Equipment index Factor";
@@ -167,10 +162,10 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//button[text() = 'Today']")
 	public WebElement currentDate;
-
+	
 	@FindBy(xpath = "//div[@class = 'slds-media__body slds-align-middle']//span[contains(@class, 'triggerLinkText selectedListView uiOutputText')]")
 	public WebElement currenltySelectViewOption;
-
+	
 	@FindBy(xpath = "//a[@title = 'Select List View']")
 	public WebElement selectListViewIcon;
 
@@ -179,16 +174,16 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All Manual Building Permits']")
 	public WebElement allManualBuilingdPermitsOption;
-
+	
 	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'Recently Viewed']")
 	public WebElement recentlyViewedOption;
-
+	
 	@FindBy(xpath = "//div[@class = 'scroller']//span[contains(@class,'virtualAutocompleteOptionText') and text() = 'All']")
 	public WebElement allOption;
-
+	
 	@FindBy(xpath = "//force-list-view-manager-pin-button//button[contains(@class, 'slds-button slds-button_icon')]//lightning-primitive-icon")
 	public WebElement pinIcon;
-
+	
 	@FindBy(xpath="//button[text()='Close All']")
 	public WebElement closeAllBtn;
 
@@ -204,7 +199,7 @@ public class ApasGenericPage extends Page {
 		WebElement drpDwnOption = waitForElementToBeClickable(20, xpathStr);
 		drpDwnOption.click();
 	}
-
+	
 	/**
 	 * @Description: This method selects year, month and date from date picker / calender
 	 * @param expctdDate: Accepts date in mm/dd/yyyy format
@@ -292,23 +287,23 @@ public class ApasGenericPage extends Page {
 	 * @throws Exception
 	 */
 	public void searchAndSelectOptionFromDropDown(Object element, String value) throws Exception {
-		WebElement webElement;
-		String xpathDropDownOption;
-		if (element instanceof String) {
-			webElement = getWebElementWithLabel((String) element);
-			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()=\""+element+"\"]/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
-		} else{
-			webElement = (WebElement) element;
-			//xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@title='" + value + "']";
-			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
-		}
-
-		enter(webElement, value);
-		WebElement drpDwnOption = locateElement(xpathDropDownOption, 20);
-		waitForElementToBeVisible(drpDwnOption, 10);
-		//drpDwnOption.click();
-		Click(drpDwnOption);
-	}
+        WebElement webElement;
+        String xpathDropDownOption;
+        if (element instanceof String) {
+            webElement = getWebElementWithLabel((String) element);
+            xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()=\""+element+"\"]/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
+        } else{
+            webElement = (WebElement) element;
+            //xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@title='" + value + "']";
+            xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
+        }
+        
+        enter(webElement, value);
+        WebElement drpDwnOption = locateElement(xpathDropDownOption, 20);
+        waitForElementToBeVisible(drpDwnOption, 10);
+        //drpDwnOption.click();
+        Click(drpDwnOption);
+    }
 
 	/**
 	 * @Description: This method is to handle fields like Permit City Code or Processing Status
@@ -318,20 +313,20 @@ public class ApasGenericPage extends Page {
 	 * @throws Exception
 	 */
 	public void selectOptionFromDropDown(Object element, String value) throws Exception {
-		WebElement webElement;
+        WebElement webElement;
 		WebElement drpDwnOption;
-		String xpathDropDownOption;
-		if (element instanceof String) {
-			webElement = getWebElementWithLabel((String) element);
-			String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
+        String xpathDropDownOption;
+        if (element instanceof String) {
+        	webElement = getWebElementWithLabel((String) element);
+        	String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
 			xpathDropDownOption = commonPath + "//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
-
-		} else{
-			webElement = (WebElement) element;
-			xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
+			
+        } else{
+            webElement = (WebElement) element;
+            xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
 		}
 
-		if (webElement.getTagName().equals("select")){
+        if (webElement.getTagName().equals("select")){
 			//This condition is added as few drop downs are found to be of Select type
 			SelectByVisibleText(webElement,value);
 		}else{
@@ -344,7 +339,7 @@ public class ApasGenericPage extends Page {
 			javascriptClick(drpDwnOption);
 		}
 
-	}
+    }
 
 	/**
 	 * Description: This method will fetch the current URL and process it to get the Record Id
@@ -359,10 +354,10 @@ public class ApasGenericPage extends Page {
 		ReportLogger.INFO(Mod + " record id - " + recordId);
 		Thread.sleep(1000);
 		return recordId;
-
+	
 	}
-
-
+	
+	
 	/**
 	 * @description: Clicks on the show more link displayed against the given entry
 	 * @param modRecordName: Name of the entry displayed on grid which is to be accessed
@@ -376,7 +371,7 @@ public class ApasGenericPage extends Page {
 		ReportLogger.INFO(modRecordName + " record exist and user is able to click Show More button against it");
 		Thread.sleep(1000);
 	}
-
+	
 	/**
 	 * Description: This method will click 'Show More Button' on the Screen
 	 * @param modRecordName: Record Number
@@ -388,21 +383,21 @@ public class ApasGenericPage extends Page {
 		clickShowMoreButton(modRecordName);
 		String xpathStr = "//li//a[@title='" + action + "']//div[text()='" + action + "']";
 		WebElement actionElement = waitForElementToBeClickable(10, xpathStr);
-		if (actionElement != null){
-			clickAction(actionElement);
-			ReportLogger.INFO("User is able to click " + action + " option for " + modRecordName + " record");
-			Thread.sleep(2000);
-			flag=true;
-			if (action.equals("Delete")){
-				Click(deleteConfirmationPostDeleteAction);
-				ReportLogger.INFO(action + modRecordName + " record");
-				Thread.sleep(2000);
-			}
-		}
+			if (actionElement != null){
+					clickAction(actionElement);
+					ReportLogger.INFO("User is able to click " + action + " option for " + modRecordName + " record");
+					Thread.sleep(2000);
+					flag=true;
+					if (action.equals("Delete")){
+						Click(deleteConfirmationPostDeleteAction);
+						ReportLogger.INFO(action + modRecordName + " record");
+						Thread.sleep(2000);
+					}
+			 }
 		return flag;
 	}	
-
-
+	
+	
 	/**
 	 * Description: This method will enter date
 	 * @param element: locator of element where date need to be put in
@@ -413,12 +408,12 @@ public class ApasGenericPage extends Page {
 		Click(element);
 		selectDateFromDatePicker(date);
 	}
-
+	
 	/**
 	 * Description: This method will return element from the pop-up error message that appear on Detail page
 	 * @param value: field name
 	 */
-
+	
 	public WebElement returnElemOnPopUpScreen(String value) throws Exception {
 		String xpathStr = "";
 		if (value.contains("Claimant's") || value.contains("Veteran's")) {
@@ -469,12 +464,12 @@ public class ApasGenericPage extends Page {
 		ReportLogger.INFO("Closing all default tabs");
 
 		waitForElementToBeClickable(appLauncher, 10);
-		/*Robot rb=new Robot();
+    	/*Robot rb=new Robot();
     	rb.keyPress(KeyEvent.VK_SHIFT);
     	rb.keyPress(KeyEvent.VK_W);
     	rb.keyRelease(KeyEvent.VK_W);
     	rb.keyRelease(KeyEvent.VK_SHIFT);
-		 */
+		*/
 		Actions objAction=new Actions(driver);
 		objAction.keyDown(Keys.SHIFT).sendKeys("w").keyUp(Keys.SHIFT).perform();
 
@@ -721,7 +716,7 @@ public class ApasGenericPage extends Page {
 		return gridDataHashMap;
 	}
 
-
+	
 	/**
 	 * Description: This method is to check unavailbility of an element
 	 *
@@ -1074,24 +1069,46 @@ public class ApasGenericPage extends Page {
 	public void editRecord() throws Exception {
 		Click(getButtonWithText("Edit"));
 	}
-
+	
 	/*
     This method is used to return the first active APN from Salesforce
     @return: returns the active APN
-	 */
-	public String fetchActiveAPN() {
-		return fetchActiveAPN(1).get(0);
-	}
+   */
+   public String fetchActiveAPN() {
+       return fetchActiveAPN(1).get(0);
+   }
 
-	public ArrayList<String> fetchActiveAPN(int numberofAPNs) {
-		String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberofAPNs;
-		return objSalesforceAPI.select(queryForID).get("Name");
-	}
+   public ArrayList<String> fetchActiveAPN(int numberofAPNs) {
+       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberofAPNs;
+       return objSalesforceAPI.select(queryForID).get("Name");
+   }
+   
+   /*
+   This method is used to return the In Progress APN from Salesforce
+   @return: returns the In Progress APN
+  */
 
-	/*
-	 * Get Field Value from WI TimeLine 
-	 */
-	public String getFieldvalueFromWITimeLine(String fieldName) {
+  public String fetchInProgressAPN() throws Exception {
+      
+	  String queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' limit 1";
+      HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryAPNValue);
+	  String inProgressAPNValue = "";
+		 if(!response.isEmpty())
+	            inProgressAPNValue = response.get("Name").get(0);
+	        else
+	        {
+	            inProgressAPNValue= fetchActiveAPN();
+	            jsonObject.put("PUC_Code_Lookup__c","In Progress - To Be Expired");
+	            jsonObject.put("Status__c","In Progress - To Be Expired");
+	            objSalesforceAPI.update("Parcel__c",fetchActiveAPN(),jsonObject);
+	        }
+	 return inProgressAPNValue;	 
+  }
+   
+   /*
+    * Get Field Value from WI TimeLine 
+    */
+   public String getFieldvalueFromWITimeLine(String fieldName) {
 		String fieldValue="";
 		String fieldXpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//flexipage-component2[@data-component-id='tem_workItemTimeline']//li[1]//*[text()='"+fieldName+"']/../following-sibling::span";
 		try{
@@ -1101,14 +1118,14 @@ public class ApasGenericPage extends Page {
 		}
 		return fieldValue;
 	}
-
-	public String getErrorMessage() throws Exception {
+   
+   public String getErrorMessage() throws Exception {
 		WebElement ErrorText = locateElement("//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
 		String ErrorTxt = ErrorText.getText();
 		return ErrorTxt;
 	}
-
-	/**
+   
+   /**
 	 * Description: This method will save the grid data in hashmap First Table and RowsIndex displayed on UI
 	 *
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
@@ -1128,6 +1145,4 @@ public class ApasGenericPage extends Page {
 		}
 		return null;			 	
 	}
-	
 }
-

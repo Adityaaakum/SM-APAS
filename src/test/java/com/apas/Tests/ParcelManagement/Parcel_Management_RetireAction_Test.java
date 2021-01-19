@@ -64,10 +64,8 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		String retiredAPNValue= response.get("Name").get(0);
 		
-		//Fetching parcel that is In Progress		
-		queryAPNValue = "select Name from Parcel__c where Status__c='In Progress' limit 1";
-		response = salesforceAPI.select(queryAPNValue);
-		String inProgressAPNValue= response.get("Name").get(0);
+		//Fetching parcel that is In Progress - To Be Expired	
+		String inProgressAPNValue = objMappingPage.fetchInProgressAPN();
 		
 		String activeParcelWithoutHyphen=apn2.replace("-","");
 		String accessorMapParcel = apn1.replace("-", "").substring(0, 5);
@@ -204,13 +202,7 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel),"value"),apn2,
 				"SMAB-T2455: Validate that User is able to enter 9 digit parent APN without the \"-\"");
 
-		//Step 22: Validate that User is able to view error message when no value is entered in Parent APN field
-		ReportLogger.INFO("Remove the parcel number from Parent APN field");
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
-		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.parentAPNTextBoxLabel,""),"Parcel Number has to be 9 digits, please enter valid parcel number",
-				"SMAB-T2512: Validate that error message is displayed if no value is entered in Parent APN field");
-		
-		//Step 23: Validate that User is able to perform Retire action
+		//Step 22: Validate that User is able to perform Retire action
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apn1);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
@@ -218,7 +210,7 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel (s) have been successfully retired!",
 				"SMAB-T2455: Validate that User is able to perform Retire action for one active parcel");
 		
-		//Step 24: Validate that the status and PUC of the parcel is updated to Retired
+		//Step 23: Validate that the status and PUC of the parcel is updated to Retired
 		driver.switchTo().window(parentWindow);
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn1);
@@ -293,8 +285,11 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		
 		// Step 6: Enter the other values and perform the Retire action
-		ReportLogger.INFO("Perform the Retire action");
+		ReportLogger.INFO("Add/Update the Comments and Reason Code fields");
 		objMappingPage.enter(objMappingPage.commentsTextBoxLabel, hashMapRetireeMappingData.get("Comments"));
+		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel), "For Testing");
+		
+		ReportLogger.INFO("Perform the Retire action");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel (s) have been successfully retired!",
 				"SMAB-T2456: Validate that User is able to perform Retire action for more than one active parcels");
