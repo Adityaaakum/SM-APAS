@@ -47,6 +47,8 @@ public class MappingPage extends ApasGenericPage {
 	public String assessorMapLabel = "Assessor's Map";
 	public String taxField = "//label[text()='Are taxes fully paid?']";
 	public String saveButton = "Save";
+	public String firstCondoTextBoxLabel = "First Condo Parcel Number";
+	public String splitParcelButton = "Split Parcel";
 
 	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
@@ -85,6 +87,10 @@ public class MappingPage extends ApasGenericPage {
 		String legalDescription = dataMap.get("Legal Description");
 		String situs= dataMap.get("Situs");
 		String comments= dataMap.get("Comments");
+		String numberOfChildNonCondoParcels= dataMap.get("Number of Child Non-Condo Parcels");
+		String numberOfChildCondoParcels= dataMap.get("Number of Child Condo Parcels");
+		String firstCondoParcelNumber= dataMap.get("First Condo Parcel Number");
+
 
 		selectOptionFromDropDown(actionDropDownLabel, action);
 		selectOptionFromDropDown(taxesPaidDropDownLabel, taxesPaid);
@@ -92,8 +98,14 @@ public class MappingPage extends ApasGenericPage {
 		if (parcelSizeValidation != null)selectOptionFromDropDown(parcelSizeDropDownLabel, parcelSizeValidation);
 		if (netLandLoss != null)enter(netLandLossTextBoxLabel, netLandLoss);
 		if (netLandGain != null)enter(netLandGainTextBoxLabel, netLandGain);
+		if (numberOfChildNonCondoParcels != null)
+			enter(numberOfChildNonCondoTextBoxLabel, numberOfChildNonCondoParcels);
 		if (firstnonCondoParcelNumber != null)
 			enter(firstNonCondoTextBoxLabel, firstnonCondoParcelNumber);
+		if (numberOfChildCondoParcels != null)
+			enter(numberOfChildCondoTextBoxLabel, numberOfChildCondoParcels);
+		if (firstCondoParcelNumber != null)
+			enter(firstCondoTextBoxLabel, firstCondoParcelNumber);
 		if (legalDescription != null)
 			enter(legalDescriptionTextBoxLabel, legalDescription);
 		if (situs != null)
