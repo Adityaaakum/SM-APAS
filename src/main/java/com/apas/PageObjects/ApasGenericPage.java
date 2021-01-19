@@ -1097,7 +1097,10 @@ public class ApasGenericPage extends Page {
 	}
    
    public String getErrorMessage() throws Exception {
-		WebElement ErrorText = locateElement("//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
+		List<WebElement> ErrorText = locateElements("//div[contains(@class,'color_error')] |//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
+	   	if(ErrorText.size()>1 && ErrorText.get(0).getAttribute("Class").contains("")){
+
+		}
 		String ErrorTxt = ErrorText.getText();
 		return ErrorTxt;
 	}
