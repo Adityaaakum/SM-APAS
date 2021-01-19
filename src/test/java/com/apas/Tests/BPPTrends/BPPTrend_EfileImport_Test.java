@@ -1069,7 +1069,6 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		ReportLogger.INFO("* Validating upload for file with XLS format");
 		String xlsFormatFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_XLS;
 		objEfileHomePage.uploadInvalidFormatFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, xlsFormatFile);
-		Thread.sleep(1000);
 		objPage.waitForElementToBeClickable(objEfileHomePage.doneButton);
 		objPage.Click(objEfileHomePage.doneButton);
 		Thread.sleep(5000);

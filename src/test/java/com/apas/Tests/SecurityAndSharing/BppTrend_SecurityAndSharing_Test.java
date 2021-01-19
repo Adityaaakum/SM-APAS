@@ -300,12 +300,12 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
         objApasGenericFunctions.clickOnEntryNameInGrid(rollYear);
 
 		//Step4: Validating that user doesn't have any option to create/edit BPP Settings
-		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objApasGenericFunctions.dropDownIconBppSetting));
+		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(20,objApasGenericFunctions.dropDownIconBppSetting));
 		softAssert.assertTrue(objBppTrendPage.waitForElementToBeVisible(5, objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on details page");
 
 		//Step5: Validating that user doesn't have the access to create/Edit Composite Factor Settings
 		objPage.Click(objApasGenericFunctions.bppCompFactorSettingTab);
-		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objApasGenericFunctions.dropDownIconBppCompFactorSetting));
+		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(20,objApasGenericFunctions.dropDownIconBppCompFactorSetting));
 		softAssert.assertTrue(objBppTrendPage.waitForElementToBeVisible(5, objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on details page");
 
 		//Step6: Validating that user doesn't have the access to create/edit BPP Property Index Good Factors
@@ -366,12 +366,12 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		objApasGenericFunctions.clickOnEntryNameInGrid(rollYear);
 
 		//Step4: Validating that user doesn't have any option to create/edit BPP Settings
-		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objApasGenericFunctions.dropDownIconBppSetting));
+		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(20,objApasGenericFunctions.dropDownIconBppSetting));
 		softAssert.assertTrue(objBppTrendPage.waitForElementToBeVisible(5, objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on details page");
 
 		//Step5: Validating that user doesn't have the access to create/Edit Composite Factor Settings
 		objPage.Click(objApasGenericFunctions.bppCompFactorSettingTab);
-		objBppTrendPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objApasGenericFunctions.dropDownIconBppCompFactorSetting));
+		objBppTrendPage.Click(objBppTrendPage.waitForElementToBeClickable(20,objApasGenericFunctions.dropDownIconBppCompFactorSetting));
 		softAssert.assertTrue(objBppTrendPage.waitForElementToBeVisible(5, objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on details page");
 
 		//Step6: Validating that user doesn't have the access to create/edit BPP Property Index Good Factors

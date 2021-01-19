@@ -65,8 +65,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
 
 		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"')").get("Name").get(0);
-		String legalDescriptionValue=salesforceAPI.select("SELECT Short_Legal_Description__c FROM Parcel__c where Short_Legal_Description__c !=NULL limit 1").get("Short_Legal_Description__c").get(0);
-		String districtValue=salesforceAPI.select("SELECT District__c FROM Parcel__c where District__c !=Null limit 1").get("District__c").get(0);
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
 
 		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 		jsonObject.put("Status__c","Active");
@@ -204,18 +204,19 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		String queryAPN = "Select name From Parcel__c where Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String activeParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
-
 		String activeParcelWithoutHyphen=activeParcelToPerformMapping.replace("-","");
 
 		// fetching  parcel that is retired 		
 		String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		String retiredAPNValue= response.get("Name").get(0);
-		// fetching  parcel that is In progress		
-		queryAPNValue = "select Name from Parcel__c where Status__c='In Progress' limit 1";
+		// fetching  parcel that is In Progress - To Be Expired		
+		
+		// fetching  parcel that is In Progress - To Be Expired		
+		queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' limit 1";
 		response = salesforceAPI.select(queryAPNValue);
 		String inProgressAPNValue= response.get("Name").get(0);
-
+		
 		String mappingActionCreationData = System.getProperty("user.dir") + testdata.ONE_TO_ONE_MAPPING_ACTION;
 		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformOneToOneMappingActionWithAllFields");
@@ -261,7 +262,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		//Step 8: Validation that Reason CODE is a mandatory field
 		objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.reasonCodeTextBoxLabel,"");
-		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.reasonCodeTextBoxLabel,""),"Reason Code is Mandatory.",
+		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.reasonCodeTextBoxLabel,""),"Please enter the required field : Reason Code",
 				"SMAB-T2545: Validation that reason code is a mandatory field");
 		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel), hashMapOneToOneMappingData.get("Reason code"));
 
@@ -334,8 +335,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
 
-		String legalDescriptionValue=salesforceAPI.select("SELECT Short_Legal_Description__c FROM Parcel__c where Short_Legal_Description__c !=NULL limit 1").get("Short_Legal_Description__c").get(0);
-		String districtValue=salesforceAPI.select("SELECT District__c FROM Parcel__c where District__c !=Null limit 1").get("District__c").get(0);
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
 
 		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 		jsonObject.put("Status__c","Active");
