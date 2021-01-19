@@ -60,10 +60,9 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 			String workItemNumber1;
 			String workItemNumber2;
 			
-			// fetching a parcel where PUC is not blank but  Primary Situs is blank		
-			String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
-			HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
-			String apnValue = response.get("Name").get(0);
+			ArrayList<String> APNs= objApasGenericPage.fetchActiveAPN(1);
+			String apnValue = APNs.get(0);
+			
 			 
 			
 			String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
@@ -140,7 +139,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 	        objWorkItemHomePage.Click(objWorkItemHomePage.btnApprove);
 	        
 	        //Step 15:Validating the success message that Work items are Approved
-	        softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(), "Work Item(s) process succesfully!",
+	        softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(), "Work item(s) processed successfully!",
 	        		"SMAB-T2241:Validating the success message that Work items are Approved");
 	        objWorkItemHomePage.logout();
 	        Thread.sleep(15000);
