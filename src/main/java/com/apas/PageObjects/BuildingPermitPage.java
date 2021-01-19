@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import com.apas.Reports.ReportLogger;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.config.testdata;
 import com.apas.Reports.ExtentTestManager;
@@ -194,7 +195,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 		String manualEntryData = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_MANUAL + "\\BuildingPermitManualCreationData.json";
 		Map<String, String> manualBuildingPermitMap = objUtil.generateMapFromJsonFile(manualEntryData, "BuildingPermitManualCreationData");
-		String buildingPermitNumber = manualBuildingPermitMap.get("Permit City Code") + "-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
+		String buildingPermitNumber = manualBuildingPermitMap.get("Permit City Code") + "-" + DateUtil.getCurrentDate("yyyMMdd-HHmmss");
 		manualBuildingPermitMap.put("Building Permit Number",buildingPermitNumber);
 		manualBuildingPermitMap.put("APN",activeAPN);
 

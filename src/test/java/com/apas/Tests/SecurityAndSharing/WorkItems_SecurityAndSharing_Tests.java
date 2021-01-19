@@ -37,9 +37,13 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2085:verify that Verify supervisor is able to view 'Action' column only on 'Staff - In Progress' & 'Needs My Approval' tabs", dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, groups = {
-			"regression","work_item_manual" })
-	public void WorkItems_VerifySupervisor_ActionColumn(String loginUser) throws Exception {		
+	@Test(description = "SMAB-T2085:verify that Verify supervisor is able to view 'Action' column only on 'Staff - In Progress' & 'Needs My Approval' tabs", dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual" }, enabled = false)
+	public void WorkItems_VerifySupervisor_ActionColumn(String loginUser) throws Exception {
+		/**
+		 *
+		 * this test case is deprecated as Action column is not present anymore on Work Item homePage
+		 *
+		 */
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (loginPrincipalUser)
 		objApasGenericPage.login(loginUser);
 
@@ -92,9 +96,13 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2086:Verify staff member is able to view 'Action' column only on 'In Progress' tab", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-			"regression","work_item_manual"  })
+	@Test(description = "SMAB-T2086:Verify staff member is able to view 'Action' column only on 'In Progress' tab", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"},enabled = false)
 	public void WorkItems_VerifyStaffUser_ActionColumn(String loginUser) throws Exception {
+		/**
+		 *
+		 * this test case is deprecated as Action column is not present anymore on Work Item homePage
+		 *
+		 */
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (loginBPPBusinessAdmin)
 		objApasGenericPage.login(loginUser);
 
