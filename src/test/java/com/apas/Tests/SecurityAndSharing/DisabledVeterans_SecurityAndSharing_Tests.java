@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import com.apas.PageObjects.*;
+import com.apas.Utils.DateUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -152,7 +153,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 		@Test(description = "SMAB-T642,SMAB-T482:Verify User without permission is not able to create a new Roll Year record",  dataProvider = "loginBppAuditor",dataProviderClass = DataProviders.class, groups = {"regression","DisabledVeteranExemption"})
 		public void DisabledVeteran_nonSystemAdminNotAbleToCREDRollYearObject(String loginInvalidUser) throws Exception {
 
-			String currentYear = objUtil.getCurrentDate("YYYY");
+			String currentYear = DateUtil.getCurrentDate("YYYY");
 			String rollyearQuery="select Name from Roll_Year_Settings__c where Name= '"+currentYear+"'";
 			HashMap<String, ArrayList<String>> rollYearMap=salesforceAPI.select(rollyearQuery);
 			String rollYearRecord=rollYearMap.get("Name").get(0);

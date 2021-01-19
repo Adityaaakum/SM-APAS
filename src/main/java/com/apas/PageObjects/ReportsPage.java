@@ -105,7 +105,7 @@ public class ReportsPage extends ApasGenericPage {
 
 		Click(exportButton);
 
-		System.out.println("Start Time : " + new Util().getCurrentDate("ddhhmmss"));
+		System.out.println("Start Time : " + DateUtil.getCurrentDate("ddhhmmss"));
 		//Added this wait to allow the file to download
 		for (int i=0; i<300/2;i++){
 			if (Objects.requireNonNull(new File(testdata.DOWNLOAD_FOLDER).listFiles()).length > initialFileCount){
@@ -114,7 +114,7 @@ public class ReportsPage extends ApasGenericPage {
 				Thread.sleep(2000);
 			}
 		}
-		System.out.println("End Time : " + new Util().getCurrentDate("ddhhmmss"));
+		System.out.println("End Time : " + DateUtil.getCurrentDate("ddhhmmss"));
 		Thread.sleep(5000);
 	}
 	

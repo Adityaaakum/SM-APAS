@@ -6,6 +6,7 @@ import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.*;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.ExcelUtils;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -61,7 +62,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         objBuildingPermitPage.deleteFilesFromFolder(downloadLocation);
 
         //Creating a temporary copy of the file to be processed to create unique name
-        String timeStamp = objUtil.getCurrentDate("ddhhmmss");
+        String timeStamp = DateUtil.getCurrentDate("ddhhmmss");
         String sourceFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + "MultipleValidRecord.xlsx";
         File tempFile = objBuildingPermitPage.createTempFile(sourceFile);
         String destFile = tempFile.getAbsolutePath();
@@ -106,8 +107,8 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 		
 		objWorkItemHomePage.openTab(objWorkItemHomePage.tabDetails);
 
-		//Validating that 'Date' field gets automatically populated in the work item record WHERE date should be date of import 
-		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Date", "Information"),objUtil.getCurrentDate("MM/dd/yyyy"), "SMAB-T2081: Validation that 'Date' fields is equal to import date :"+objUtil.getCurrentDate("MM/dd/yyyy"));
+		//Validating that 'Date' field gets automatically populated in the work item record WHERE date should be date of import
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Date", "Information"),DateUtil.removeZeroInMonthAndDay(DateUtil.getCurrentDate("MM/dd/yyyy")), "SMAB-T2081: Validation that 'Date' fields is equal to import date");
 
 		String parentWindow = driver.getWindowHandle();
         objBuildingPermitPage.searchModule(modules.HOME);
@@ -123,14 +124,16 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Step8: Validation for Import Review work item moved to completed status
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importReviewWorkItem), "SMAB-T1890: Validation that import review work item moved to Completed status after import file is approved");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importReviewWorkItem + "\nLaunch Data Entry Screen"), "SMAB-T1890: Validation that import review work item moved to Completed status after import file is approved");
 
         //Step9: Validation for generation of "Final Review" Work Item
         String queryFinalReviewWorkItem = "SELECT Name FROM Work_Item__c where Request_Type__c = 'Building Permit - Final Review - " + fileNameWithoutExtension + "'";
         String finalReviewWorkItem = objSalesforceAPI.select(queryFinalReviewWorkItem).get("Name").get(0);
-        ReportLogger.INFO("Created Final Review Work Item : " + importReviewWorkItem);
+        ReportLogger.INFO("Created Final Review Work Item : " + finalReviewWorkItem);
 
         //Step6: Accepting the work item
+        driver.navigate().refresh();
+        Thread.sleep(2000);
         objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
         objWorkItemHomePage.acceptWorkItem(finalReviewWorkItem);
         objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
@@ -140,7 +143,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         softAssert.assertEquals(objWorkItemHomePage.getIndividualFieldErrorMessage("Request Type"), "Building Permit - Final Review - " + fileNameWithoutExtension, "SMAB-T1900: File Name and Final Review Work Item Name validation in the final review work item");
         softAssert.assertEquals(objWorkItemHomePage.getIndividualFieldErrorMessage("Work Pool"), "RP Admin", "SMAB-T1900: Final review work item pool name validation");
         //Validating that 'Date' field gets automatically populated in the work item record WHERE date should be date of import 
-      	softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Date", "Information"),objUtil.getCurrentDate("MM/dd/yyyy"), "SMAB-T2081: Validation that 'Date' fields is equal to import date :"+objUtil.getCurrentDate("MM/dd/yyyy"));
+      	softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Date", "Information"),DateUtil.removeZeroInMonthAndDay(DateUtil.getCurrentDate("MM/dd/yyyy")), "SMAB-T2081: Validation that 'Date' fields is equal to import date");
 
         //Step11: Validation that E-File logs are linked to the work item and the status of the E-logs is Approved
         objWorkItemHomePage.openTab(objWorkItemHomePage.tabLinkedItems);
@@ -166,20 +169,20 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Step15: Open the work item
         objBuildingPermitPage.scrollToBottom();
-//        parentWindow = driver.getWindowHandle();
+        parentWindow = driver.getWindowHandle();
 		//SMAB-T2122:opening the action link to validate that link redirects to Final Review Building Permits  page
         objWorkItemHomePage.openActionLink(finalReviewWorkItem);
-//		objBuildingPermitPage.switchToNewWindow(parentWindow);
+		objBuildingPermitPage.switchToNewWindow(parentWindow);
 		softAssert.assertTrue(objBuildingPermitPage.verifyElementVisible(objReportsPage.buildingPermitHeaderText), "SMAB-T2122: Validation that Final Review Building Permits label is visible");
-//		driver.close();
-//		driver.switchTo().window(parentWindow);
+		driver.close();
+		driver.switchTo().window(parentWindow);
         objBuildingPermitPage.searchModule(modules.HOME);
         objWorkItemHomePage.openRelatedActionRecord(finalReviewWorkItem);
 
         //Step16: Report data validation for linked building permit records
         Thread.sleep(5000);
-//        parentWindow = driver.getWindowHandle();
-//        objBuildingPermitPage.switchToNewWindow(parentWindow);
+        parentWindow = driver.getWindowHandle();
+        objBuildingPermitPage.switchToNewWindow(parentWindow);
         //Switching the frame as the generated report is in different frame
         driver.switchTo().frame(0);
         objBuildingPermitPage.Click(objReportsPage.arrowButton);
@@ -197,7 +200,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         String expectedColumnsInExportedExcel = "[Created Date, Permit City Code, Building Permit Number, APN: APN, Issue Date(YYYYMMDD), Completion Date(YYYYMMDD), Reissue, City APN, City Strat Code, Building Permit Fee, Work Description, Square Footage, Estimated Project Value, Application Name, Owner Name, Owner Address Line 1, Owner Address Line 2, Owner Address Line 3, Owner State, Owner Zip Code, Owner Phone Number, Contractor Name, Contractor Phone]";
         softAssert.assertEquals(hashMapExcelData.keySet().toString(),expectedColumnsInExportedExcel,"SMAB-T1900: Columns Validation in downloaded building permit report");
 
-//        driver.switchTo().window(parentWindow);
+        driver.switchTo().window(parentWindow);
 
         //Step18: Complete the final review work item
         String successMessageText = objWorkItemHomePage.completeWorkItem();
@@ -209,7 +212,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Step20: Close "Final Review" Work Item
         completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(finalReviewWorkItem), "SMAB-T1903: Validation that Final Review work item moved to Completed status after Final Review work item is manually completed");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(finalReviewWorkItem + "\nLaunch Data Entry Screen"), "SMAB-T1903: Validation that Final Review work item moved to Completed status after Final Review work item is manually completed");
 
         //Logout at the end of the test
         objBuildingPermitPage.logout();
@@ -272,7 +275,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
 
         //Step8: Validation for Import Review work item moved to completed status
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importReviewWorkItem), "SMAB-T1890: Validation that import review work item moved to Completed status after import file is approved");
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importReviewWorkItem + "\nLaunch Data Entry Screen"), "SMAB-T1890: Validation that import review work item moved to Completed status after import file is reverted");
 
         //Step9: Opening the completed work item
         objBuildingPermitPage.scrollToBottom();
@@ -284,7 +287,7 @@ public class BuildingPermit_WorkItems_Test extends TestBase {
         softAssert.assertEquals(efileImportLogsData.get("Status").get(0), "Reverted", "SMAB-T1900: Validation that status of the efile logs linked with work item is reverted");
 
         //Step11: Validating the status should be completed
-        objBuildingPermitPage.Click(objWorkItemHomePage.detailsTab);
+        objBuildingPermitPage.openTab(objWorkItemHomePage.tabDetails);
         objBuildingPermitPage.scrollToBottom();
         softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Status"), "Completed", "SMAB-T1890: Validation that status of the work item should be completed");
 
