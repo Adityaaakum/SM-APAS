@@ -101,21 +101,19 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		objEFileImport.selectFileAndSource("BPP Trend Factors", "BOE - Index and Percent Good Factors");
 		objPage.waitForElementToBeClickable(objEFileImport.nextButton, 10);
 		objPage.Click(objEFileImport.nextButton);
-		objPage.Click(objEFileImport.periodDropdown);
-		objPage.clickAction(objEFileImport.periodFirstDropDownValue);
-		//objEFileImport.selectOptionFromDropDown(objEFileImport.periodDropdown, period);//period drop down xpath needs to be updated
+		objEFileImport.selectOptionFromDropDown("Period", "2021");//period drop down xpath needs to be updated
 		objPage.waitForElementToBeClickable(objEFileImport.confirmButton, 10);
 		objPage.Click(objEFileImport.confirmButton);
 		Thread.sleep(2000);
 		
 		  for(String name:fileList){
-        	objPage.waitForElementToBeClickable(objEFileImport.uploadFilebutton,5);
-        	ReportLogger.INFO("Verify invalid file format not allowed for file:"+name);
-        	objEFileImport.uploadFileInputBox.sendKeys(EFileinvalidFormatFilepath+name);
-        	objPage.waitForElementToBeClickable(objEFileImport.invalidFileErrorMsg,5);
-        	
-        	softAssert.assertEquals(objEFileImport.invalidFileErrorMsg.getText(),"Your company doesn't support the following file types: ."+name.substring(name.lastIndexOf(".")+1),"SMAB-T82:Verify the admin user is not able to select file for import with unacceptable formats using Upload button");
-    	 }
+			objPage.waitForElementToBeClickable(objEFileImport.uploadFilebutton,5);
+			ReportLogger.INFO("Verify invalid file format not allowed for file:"+name);
+			objEFileImport.uploadFileInputBox.sendKeys(EFileinvalidFormatFilepath+name);
+			objPage.waitForElementToBeClickable(objEFileImport.invalidFileErrorMsg,5);
+
+			softAssert.assertEquals(objEFileImport.invalidFileErrorMsg.getText(),"Your company doesn't support the following file types: ."+name.substring(name.lastIndexOf(".")+1),"SMAB-T82:Verify the admin user is not able to select file for import with unacceptable formats using Upload button");
+		 }
         objPage.Click(objEFileImport.closeButton);
         
         objEFileImport.logout();
@@ -342,7 +340,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		///step5: importing the file again for same file type, source and period to verify view link is not available for previous import
 		objEFileImport.uploadFileOnEfileIntakeBP(fileType, source,"Import_TestData_ValidAndInvalidScenarios_AT2.txt",athertonBuildingPermitFile1);
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
-		objPage.waitForElementTextToBe(objEFileImport.statusImportedFile, "Imported", 400);
+		objPage.waitForElementTextToBe(objEFileImport.statusImportedFile, "Imported", 200);
 		softAssert.assertEquals(objPage.getElementText(objEFileImport.viewLinkRecord), "View", "SMAB-T578:Verify user is able to see 'View' button only for the latest Imported file from all 'Imported' status log");
 		softAssert.assertTrue(objEFileImport.isNotDisplayed(objEFileImport.viewLinkForPreviousImport), "SMAB-T578:Verify user is able to see 'View' button only for the latest Imported file from all 'Imported' status log");
 		//step6: approving the imported file
@@ -528,22 +526,18 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		//Step5: Waiting for Status of the imported file to be converted to "Imported"
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
 		objPage.waitForElementTextToBe(objEFileImport.statusImportedFile, "Imported", 400);
-		
-		
+
 		//step6: verify import list record entry and data
-		
-				HashMap<String, ArrayList<String>> importedEntry=objEFileImport.getGridDataInHashMap(1, 1);
-				softAssert.assertEquals(importedEntry.get("Uploaded Date").get(0), converteddate, "SMAB-T33 : Uploaded Date - verify import list history data");
-				softAssert.assertEquals(importedEntry.get("Period").get(0), "Adhoc", "SMAB-T33 : Period - verify import list history data");
-				softAssert.assertEquals(importedEntry.get("File Count").get(0), "6", "SMAB-T33 : File Count - verify import list history data");
-				softAssert.assertEquals(importedEntry.get("Import Count").get(0), "2", "SMAB-T33 : Import Count - verify import list history data");
-				softAssert.assertEquals(importedEntry.get("Error Count").get(0), "4", "SMAB-T33 : Error Count - verify import list history data");
-				softAssert.assertEquals(importedEntry.get("Discard Count").get(0), "0", "SMAB-T33 : Discard Count - verify import list history data");
-				softAssert.assertEquals(importedEntry.get("Number of Tries").get(0), "1", "SMAB-T33 : Number of Tries - verify import list history data");
-				softAssert.assertEquals(importedEntry.get("Duplicate in File").get(0), "2", "SMAB-T1566: Duplicate In file - Verify user is able to view duplicate records in Error rows section and corresponding count in import history logs under 'Duplicate Count' column after file import");
-				
-		
-		
+		HashMap<String, ArrayList<String>> importedEntry=objEFileImport.getGridDataInHashMap(1, 1);
+		softAssert.assertEquals(importedEntry.get("Uploaded Date").get(0), converteddate, "SMAB-T33 : Uploaded Date - verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Period").get(0), "Adhoc", "SMAB-T33 : Period - verify import list history data");
+		softAssert.assertEquals(importedEntry.get("File Count").get(0), "6", "SMAB-T33 : File Count - verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Import Count").get(0), "2", "SMAB-T33 : Import Count - verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Error Count").get(0), "4", "SMAB-T33 : Error Count - verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Discard Count").get(0), "0", "SMAB-T33 : Discard Count - verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Number of Tries").get(0), "1", "SMAB-T33 : Number of Tries - verify import list history data");
+		softAssert.assertEquals(importedEntry.get("Duplicate in File").get(0), "2", "SMAB-T1566: Duplicate In file - Verify user is able to view duplicate records in Error rows section and corresponding count in import history logs under 'Duplicate Count' column after file import");
+
 		objEFileImport.Click(objEFileImport.viewLinkRecord);
 		objPage.waitForElementToBeClickable(objEFileImport.errorRowSection, 10);
 		String errorrecords=objEFileImport.errorRowCount.getText().substring(objEFileImport.errorRowCount.getText().indexOf(":")+1, objEFileImport.errorRowCount.getText().length()).trim();
@@ -561,6 +555,8 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		softAssert.assertEquals(objPage.getElementText(objEFileImportLogPage.duplicatesInFileImportLog),"2", "SMAB-T1600:Verify user is able to view duplicate records count in efile import logs and efile import transaction records after file import");
 		objPage.Click(objEFileImportTransactionpage.transactionsTab);
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 10);
+		objPage.waitForElementToBeClickable(objEFileImportTransactionpage.transactionsRecords, 30);
+		Thread.sleep(25000);
 		objPage.javascriptClick(objEFileImportTransactionpage.transactionsRecords.get(0));
 		objPage.waitForElementToBeClickable(objEFileImportTransactionpage.statusLabel, 10);
 		softAssert.assertEquals(objPage.getElementText(objEFileImportTransactionpage.duplicateCountTransaction),"2", "SMAB-T1600:Verify user is able to view duplicate records count in efile import logs and efile import transaction records after file import");

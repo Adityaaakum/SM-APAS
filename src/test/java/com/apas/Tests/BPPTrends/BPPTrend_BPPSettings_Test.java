@@ -76,10 +76,11 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 		
 		//Step6: Click on New option to create BPP Setting entry
-		objPage.waitForElementToBeClickable(objBppTrendSetupPage.dropDownIconBppSetting, 20);
+		if(objPage.verifyElementVisible(objBppTrendSetupPage.dropDownIconBppSetting))
 		objPage.clickAction(objBppTrendSetupPage.dropDownIconBppSetting);
-		objPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
-		
+		//objPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
+		objApasGenericPage.createRecord();
+
 		//Step7: Clear the Default Max Equipment index factor value and verify the error message
 		String expectedErrorMessage = "Complete this field.";
 		objPage.enter("Maximum Equipment index Factor","");
@@ -193,7 +194,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 			objPage.Click(objPage.getButtonWithText("Save"));
 			
 			//String expectedErrorMessage = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";
-			String expectedErrorMessage = "insufficient access rights on object id";
+			String expectedErrorMessage = "Maximum Equipment index Factor is locked for editing for the Roll Year";
 			String actualErrorMessage = objPage.getElementText(objBuildPermitPage.pageError);
 			
 			//Step8: Selecting Test Case Id to Map based on status: 'Submitted For approval'/'Approved'

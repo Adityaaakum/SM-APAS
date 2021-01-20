@@ -181,8 +181,8 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objBuildingPermitPage.Click(objBuildingPermitPage.pageErrorButton);
 
 		//Step7: Enter the updated estimated project value and builing permit number and save the record
-		String updatedWorkDescriptionValue = "New Construction " + objUtil.getCurrentDate("mmss");
-		String updatedBuildingPermitNumber = "LM-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
+		String updatedWorkDescriptionValue = "New Construction " + DateUtil.getCurrentDate("mmss");
+		String updatedBuildingPermitNumber = "LM-" + DateUtil.getCurrentDate("yyyMMdd-HHmmss");
 		ReportLogger.INFO("Value to be updated in 'Work Description' field : " + updatedWorkDescriptionValue);
 		ReportLogger.INFO("Old 'Building Permit Number' value : " + buildingPermitNumber);
 		ReportLogger.INFO("Value to be updated in 'Building Permit Number' field : " + updatedBuildingPermitNumber);
@@ -645,7 +645,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step3: Add the building permit with Non Relevant Permit Prefixes
 		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestData();
-		String buildingPermitNumber = "TR-" + objUtil.getCurrentDate("yyyMMdd-HHmmss");
+		String buildingPermitNumber = "TR-" + DateUtil.getCurrentDate("yyyMMdd-HHmmss");
 		manualBuildingPermitMap.put("Building Permit Number",buildingPermitNumber);
 		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
 
@@ -750,8 +750,8 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step4: Update the work description and building permit number on efile building permit number and save the record
 		ReportLogger.INFO("Editing the existing E-File Building Permit record with Building Permit Number : " + buildingPermitNumber);
-		String updatedWorkDescriptionValue = "New Construction " + objUtil.getCurrentDate("mmss");
-		String updatedBuildingPermitNumber = buildingPermitNumber + objUtil.getCurrentDate("HHmmss");
+		String updatedWorkDescriptionValue = "New Construction " + DateUtil.getCurrentDate("mmss");
+		String updatedBuildingPermitNumber = buildingPermitNumber + DateUtil.getCurrentDate("HHmmss");
 		ReportLogger.INFO("Value to be updated in 'Work Description' field : " + updatedWorkDescriptionValue);
 		ReportLogger.INFO("Old 'Building Permit Number' value : " + buildingPermitNumber);
 		ReportLogger.INFO("Value to be updated in 'Building Permit Number' field : " + updatedBuildingPermitNumber);

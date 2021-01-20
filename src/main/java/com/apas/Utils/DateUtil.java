@@ -91,7 +91,35 @@ public class DateUtil {
         String formattedDate = sdf.format(date);
         return formattedDate;
     }
-    
+
+    /**
+     * Description: This method will remove leading zeroes from the month and day value in Date
+     *
+     * @param dateValue: Date value passed from the Json file
+     * @return : returns the dateValue
+     */
+
+    public static String removeZeroInMonthAndDay(String dateValue) throws Exception {
+        //boolean flag = false;
+        String apnd;
+
+        if (dateValue.charAt(0) == '0') {
+            dateValue = dateValue.substring(1);
+            //flag = true;
+
+            if (dateValue.charAt(2) == '0') {
+                apnd = dateValue.substring(0, 2);
+                dateValue = apnd + dateValue.substring(3);
+            }
+        } else {
+            if (dateValue.charAt(3) == '0') {
+                apnd = dateValue.substring(0, 3);
+                dateValue = apnd + dateValue.substring(4);
+            }
+        }
+        return dateValue;
+    }
+
     /**
      * @param eleStartDate: start date
      * @param eleEndDate:   end date

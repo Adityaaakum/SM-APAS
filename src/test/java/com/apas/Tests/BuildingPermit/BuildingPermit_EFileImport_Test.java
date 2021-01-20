@@ -2,6 +2,7 @@ package com.apas.Tests.BuildingPermit;
 
 import java.util.List;
 import com.apas.Reports.ReportLogger;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.FileUtils;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.DataProviders.DataProviders;
@@ -137,7 +138,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Creating temporary file with random building permit number
-		String buildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
+		String buildingPermitNumber = "T" + DateUtil.getCurrentDate("dd-hhmmss");
 		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "SingleValidRecord_AT.txt";
 		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "SingleValidRecord_AT.txt";
 		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",buildingPermitNumber,temporaryFile);
@@ -380,7 +381,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 	public void BuildingPermit_RecordCreationAfterImportApproved(String loginUser) throws Exception {
 
 		//Step1: Creating temporary file with random building permit number
-		String buildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
+		String buildingPermitNumber = "T" + DateUtil.getCurrentDate("dd-hhmmss");
 		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "SingleValidRecord_AT.txt";
 		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "SingleValidRecord_AT.txt";
 		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",buildingPermitNumber,temporaryFile);

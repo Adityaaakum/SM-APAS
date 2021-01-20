@@ -6,6 +6,7 @@ import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.*;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -44,7 +45,7 @@ public class CityStratCodesTest extends TestBase {
 
 		//Step3: Adding a new record
 		ReportLogger.INFO("Adding a new 'city strat code' record");
-		String strCityStratCode1 = "Test" + objUtils.getCurrentDate("YYYYmmDDHHMMSS");
+		String strCityStratCode1 = "Test" + DateUtil.getCurrentDate("YYYYmmDDHHMMSS");
 		strSuccessAlertMessage = objCityStratCodesPage.addAndSaveCityStratcode("SOLAR", "AT", strCityStratCode1, "Active");
 		softAssert.assertEquals(strSuccessAlertMessage, "success\nCity Strat Code \"" + strCityStratCode1 + "\" was created.\nClose", "SMAB-T396: Validation of text message on Success Alert");
 
@@ -53,7 +54,7 @@ public class CityStratCodesTest extends TestBase {
 
 		//Step5: Adding a new 'city strat code' record with the same detail as previous record with different city start code
 		ReportLogger.INFO("Adding a new 'city strat code' record with the same detail as previous record with different city strat code");
-		String strCityStratCode2 = "Test" + objUtils.getCurrentDate("YYYYmmDDHHMMSS");
+		String strCityStratCode2 = "Test" + DateUtil.getCurrentDate("YYYYmmDDHHMMSS");
 		strSuccessAlertMessage = objCityStratCodesPage.addAndSaveCityStratcode("SOLAR", "AT", strCityStratCode2, "Active");
 		softAssert.assertEquals(strSuccessAlertMessage, "success\nCity Strat Code \"" + strCityStratCode2 + "\" was created.\nClose", "SMAB-T396: Validation of text nessage on Success Alert");
 

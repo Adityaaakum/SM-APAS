@@ -1,5 +1,6 @@
 package com.apas.PageObjects;
 
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -1042,7 +1043,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public File createTempFile(File file) throws IOException {
 		//Creating a temporary copy of the file to be processed to create unique name
-		String timeStamp = objUtil.getCurrentDate("yyMMddhhmmss");
+		String timeStamp = DateUtil.getCurrentDate("yyMMddhhmmss");
 		String destFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + timeStamp + "_" + file.getName();
 		File tempFile = new File(destFile);
 		FileUtils.copyFile(file, tempFile );

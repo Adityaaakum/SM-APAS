@@ -6,6 +6,7 @@ import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.*;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
@@ -196,7 +197,7 @@ public class CountyStratCodesTest extends TestBase {
 		objCountyStratCodesPage.OpenNewEntryFormFromRightHandSidePanel("City Strat Codes");
 
 		//Step7: Create new entry for County Strat Codes
-		String cityStratCode = objUtil.getCurrentDate("YYYYmmDDHHMMSS");
+		String cityStratCode = DateUtil.getCurrentDate("YYYYmmDDHHMMSS");
 		objPage.waitForElementToBeClickable(objCityStratCodesPage.cityCodeDropDown,10);
 		objCityStratCodesPage.selectOptionFromDropDown(objCityStratCodesPage.cityCodeDropDown,"AT");
 		objPage.enter(objCityStratCodesPage.cityStratCodeEditBox,cityStratCode);

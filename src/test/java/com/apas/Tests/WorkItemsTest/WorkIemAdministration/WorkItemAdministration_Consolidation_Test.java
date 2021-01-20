@@ -1,4 +1,4 @@
-package com.apas.Tests.WorkItemsTest;
+package com.apas.Tests.WorkItemsTest.WorkIemAdministration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import com.apas.Utils.Util;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class WorkItems_Consolidation_Test extends TestBase implements testdata, modules, users {
+public class WorkItemAdministration_Consolidation_Test extends TestBase implements testdata, modules, users {
 	RemoteWebDriver driver;
 	Page objPage;
 	WorkItemHomePage objWorkItemHomePage;
@@ -47,7 +47,7 @@ public class WorkItems_Consolidation_Test extends TestBase implements testdata, 
 
 	@Test(description = "SMAB-T2259,SMAB-T2260,SMAB-T2261, SMAB-T2276, SMAB-T2287,SMAB-T2288,SMAB-T2289: Verify auto generated Reminder WI, Revert Imported BOE Index & Goods Factors, auto generated Import WI again upon revert", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"smoke", "regression", "Work_Items_Manual" }, alwaysRun = true)
-	public void WorkItem_Consolidation(String loginUser) throws Exception {
+	public void WorkItemAdministration_Consolidation(String loginUser) throws Exception {
 
 		String PrimaryWorkitem ="";
 		String secondaryWorkitem = "";

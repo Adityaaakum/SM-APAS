@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.apas.PageObjects.EFileImportLogsPage;
+import com.apas.Utils.DateUtil;
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -103,7 +104,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Creating temporary file with random building permit number
-		String buildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
+		String buildingPermitNumber = "T" + DateUtil.getCurrentDate("dd-hhmmss");
 		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "RetiredParcelAndSitusMismatch.txt";
 		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "RetiredParcelAndSitusMismatch.txt";
 		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",buildingPermitNumber,temporaryFile);
@@ -153,9 +154,9 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Creating temporary file with random building permit number
-		String missingAPNBuildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
+		String missingAPNBuildingPermitNumber = "T" + DateUtil.getCurrentDate("dd-hhmmss");
 		Thread.sleep(1000);
-		String invalidAPNBuildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
+		String invalidAPNBuildingPermitNumber = "T" + DateUtil.getCurrentDate("dd-hhmmss");
 		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "WrongParcelAndSitusTypePopulation.txt";
 		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "WrongParcelAndSitusTypePopulation.txt";
 		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",missingAPNBuildingPermitNumber,temporaryFile);
@@ -560,7 +561,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
 
 		//Step1: Creating temporary file with building permit number with existing city apn and parcel
-		String buildingPermitNumber = "T" + objUtil.getCurrentDate("dd-hhmmss");
+		String buildingPermitNumber = "T" + DateUtil.getCurrentDate("dd-hhmmss");
 		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "DuplicateRecordUpsertValidation_AT.txt";
 		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "DuplicateRecordUpsertValidation_AT.txt";
 		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",buildingPermitNumber,temporaryFile);
@@ -629,7 +630,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Pre-requisite: Renaming the building permits(From File to be imported) already in the system to make the record as a fresh record
 		//Creating two files for the same records as the same record processed needs to be processed two times
-		String currentTimestamp = objUtil.getCurrentDate("ddhhmmss");
+		String currentTimestamp = DateUtil.getCurrentDate("ddhhmmss");
 		String firstBuildingPermitFileNameWithoutExtension = "SMAB2061_APNRequiredForProcess";
 		String secondBuildingPermitFileNameWithoutExtension = "SMAB2061_APNRequiredForProcessNewName";
 		String buildingPermitFileName = firstBuildingPermitFileNameWithoutExtension + ".txt";

@@ -1,4 +1,4 @@
-package com.apas.Tests.WorkItemsTest;
+package com.apas.Tests.WorkItemsTest.WorkIemAdministration;
 
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class MassApprovalWorkItems_Tests extends TestBase implements testdata, modules, users { 
+public class WorkItemAdministration_MassApproval_Tests extends TestBase implements testdata, modules, users {
 		private RemoteWebDriver driver;
 		LoginPage objLoginPage;
 		ApasGenericPage objApasGenericPage;
@@ -55,15 +55,14 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 		 */
 		@Test(description = "SMAB-T2241: verify that work pool supervisor is able to select and approve multiple work items", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class, groups = {
 				"regression","work_item_manual"  })
-		public void WorkItems_VerifyMassApproval(String loginUser) throws Exception {
+		public void WorkItemAdministration_MassApproval(String loginUser) throws Exception {
 			
 			String workItemNumber1;
 			String workItemNumber2;
 			
-			// fetching a parcel where PUC is not blank but  Primary Situs is blank		
-			String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
-			HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
-			String apnValue = response.get("Name").get(0);
+			ArrayList<String> APNs= objApasGenericPage.fetchActiveAPN(1);
+			String apnValue = APNs.get(0);
+			
 			 
 			
 			String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
@@ -140,7 +139,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 	        objWorkItemHomePage.Click(objWorkItemHomePage.btnApprove);
 	        
 	        //Step 15:Validating the success message that Work items are Approved
-	        softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(), "Work Item(s) process succesfully!",
+	        softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(), "Work item(s) processed successfully!",
 	        		"SMAB-T2241:Validating the success message that Work items are Approved");
 	        objWorkItemHomePage.logout();
 	        Thread.sleep(15000);
@@ -168,7 +167,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 		 * @throws Exception
 		 */
 		@Test(description = "SMAB-T2042: Verify that Work pool Supervisor gets error when user tries to change assignee for WIs with different Work Pools", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "work_item_manual" }, enabled = false)
-		public void WorkItems_ErrorChangeAsignee(String loginUser) throws Exception {
+		public void WorkItemAdministration_ErrorChangeAssignee(String loginUser) throws Exception {
 			
 			String queryAPNValue = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 1";
 			HashMap<String, ArrayList<String>> value = salesforceAPI.select(queryAPNValue);
@@ -310,7 +309,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 		 * @throws Exception
 		 */
 		@Test(description = "SMAB-T2010: verify that work pool supervisor is able to select multiple 'Staff-In Pool' work items and assign them to a specific user or a work pool.", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "work_item_manual" },enabled = false)
-		public void workItems_ChangeAsigneeAndWorkPoolStaffInPool(String loginUser) throws Exception {
+		public void WorkItemAdministration_ChangeAssigneeAndWorkPoolStaffInPool(String loginUser) throws Exception {
 			String workItem1, workItem2;
 			// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 			objWorkItemHomePage.login(loginUser);
@@ -434,7 +433,7 @@ public class MassApprovalWorkItems_Tests extends TestBase implements testdata, m
 		 * @throws Exception
 		 */
 		@Test(description = "SMAB-T2019:Verify that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific user or a work pool.", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "work_item_manual" }, enabled = false)
-		public void workItems_ChangeAsigneeAndWorkPoolStaffInProgress(String loginUser) throws Exception {
+		public void WorkItemAdministration_ChangeAssigneeAndWorkPoolStaffInProgress(String loginUser) throws Exception {
 			String workItem1 ,workItem2;
 			// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 			objWorkItemHomePage.login(loginUser);
