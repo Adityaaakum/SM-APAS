@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import com.apas.Reports.ReportLogger;
-
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -1168,7 +1166,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2278:Verify the WI generated for a WIC with roll code=SEC that does not have RA record gets assigned to In Pool TAB of Work Pool value of \"RP Lost in Routing\"", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2278,SMAB-T2280:Verify the WI generated for a WIC with roll code=SEC that does not have RA record gets assigned to In Pool TAB of Work Pool value of \"RP Lost in Routing\"", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"regression","work_item_manual" })
 	public void WorkItemWorkflow_VerifyWorkPoolAssignedIs_RPLostInRouting_When_WIC_RollCodeSEC_NoRA(String loginUser) throws Exception {
 
@@ -1218,7 +1216,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"RP Lost in Routing",
-				"SMAB-T2278: Validation that work pool name is RP Lost in Routing for WI generated for a WIC with roll code=SEC that does not have RA record");
+				"SMAB-T2280: Validation that work pool name is RP Lost in Routing if no match found for Neighborhood of Parcel");
 
 		//Step 7:Deleting the routing assignment record for the WIC fetched above
 		salesforceAPI.delete("Routing_Assignment__c",routingAssignmentQuery);
@@ -1243,7 +1241,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2278:Verify the WI generated for a WIC with roll code=UNS that does not have RA record gets assigned to In Pool TAB of Work Pool value of \"BPP Lost in Routing\"", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2284,SMAB-T2280:Verify the WI generated for a WIC with roll code=UNS that does not have RA record gets assigned to In Pool TAB of Work Pool value of \"BPP Lost in Routing\"", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"regression","work_item_manual" })
 	public void WorkItemWorkflow_VerifyWorkPoolAssignedIs_BPPLostInRouting_When_WIC_RollCodeUNS_NoRA(String loginUser) throws Exception {
 
@@ -1293,7 +1291,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"BPP Lost in Routing",
-				"SMAB-T2278: Validation that work pool name is BPP Lost in Routing for WI generated for a WIC with roll code=UNS that does not have RA record");
+				"SMAB-T2280: Validation that work pool name is BPP Lost in Routing if no match found for Territory of BPP Account");
 
 		//Step 7:Deleting the routing assignment record for the WIC fetched above
 		salesforceAPI.delete("Routing_Assignment__c",routingAssignmentQuery);
@@ -1308,7 +1306,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"BPP Lost in Routing",
-				"SMAB-T2278: Validation that work pool name is RP Lost in Routing for WI generated for a WIC with roll code=UNS that does not have RA record");
+				"SMAB-T2284: Verify the WI generated for a WIC with roll code=UNS that does not have RA record gets assigned to In Pool TAB of Work Pool value of \"BPP Lost in Routing\"");
 
 		objWorkItemHomePage.logout();
 	}
