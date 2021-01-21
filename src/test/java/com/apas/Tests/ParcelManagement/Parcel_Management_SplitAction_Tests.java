@@ -51,15 +51,13 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
     @Test(description = "SMAB-T2294, SMAB-T2295, SMAB-T2428, SMAB-T2296, SMAB-T2314, SMAB-T2613:Verify the UI validations for \"Split\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
             "regression","parcel_management" })
     public void ParcelManagement_VerifySplitMappingActionUIValidations(String loginUser) throws Exception {
-        String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Status__c = 'Active' AND Primary_Situs__c !=NULL limit 1";
-        HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
-        String apn = responseAPNDetails.get("Name").get(0);
+        String apn = objMappingPage.fetchActiveAPN();
 
-        String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+        String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
         Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
                 "DataToCreateWorkItemOfTypeParcelManagement");
 
-        String mappingActionCreationData = System.getProperty("user.dir") + testdata.SPLIT_MAPPING_ACTION;
+        String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
         Map<String, String> hashMapSplitActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
                 "DataToPerformSplitMappingActionWithoutAllFields");
 
@@ -178,7 +176,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
         int expectedTotalParcels = Integer.parseInt(hashMapSplitActionValidMappingData.get("Number of Child Non-Condo Parcels")) +
                 Integer.parseInt(hashMapSplitActionValidMappingData.get("Number of Child Condo Parcels"));
 
-        softAssert.assertEquals(actualTotalParcels,expectedTotalParcels,"Verify total no of parcels getting generated");
+        softAssert.assertEquals(actualTotalParcels,expectedTotalParcels,"SMAB-T2613: Verify total no of parcels getting generated");
 
         //Step 21: Validating warning messages
         softAssert.assertContains(objMappingPage.getErrorMessage(),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is",
@@ -199,15 +197,13 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
     @Test(description = "SMAB-T2313, SMAB-T2292:Verify the Parent APN validations for \"Split\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
             "regression","parcel_management" })
     public void ParcelManagement_VerifyParentAPNValidationsForSplitMappingAction(String loginUser) throws Exception {
-        String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Status__c = 'Active' AND Primary_Situs__c !=NULL limit 1";
-        HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
-        String apn = responseAPNDetails.get("Name").get(0);
+        String apn = objMappingPage.fetchActiveAPN();
 
-        String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+        String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
         Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
                 "DataToCreateWorkItemOfTypeParcelManagement");
 
-        String mappingActionCreationData = System.getProperty("user.dir") + testdata.SPLIT_MAPPING_ACTION;
+        String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
         Map<String, String> hashMapSplitActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
                 "DataToPerformSplitMappingActionWithoutAllFields");
 
@@ -248,9 +244,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
         //Step 7: Edit Parent APN, enter In-Progress APN and Verify Error Message
         // fetching  parcel that is In progress
-        queryAPNValue = "select Name from Parcel__c where Status__c='In Progress' limit 1";
-        response = salesforceAPI.select(queryAPNValue);
-        String inProgressAPNValue= response.get("Name").get(0);
+        String inProgressAPNValue= objMappingPage.fetchInProgressAPN();
 
         objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
         objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,inProgressAPNValue);
@@ -281,15 +275,13 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
     @Test(description = "SMAB-T2296, SMAB-T2613:Verify the UI validations for \"Split\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
             "regression","parcel_management" })
     public void ParcelManagement_VerifySplitMappingActionManualOverwriteValidations(String loginUser) throws Exception {
-        String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Status__c = 'Active' AND Primary_Situs__c !=NULL limit 1";
-        HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
-        String apn = responseAPNDetails.get("Name").get(0);
+       String apn =  objMappingPage.fetchActiveAPN();
 
-        String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+        String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
         Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
                 "DataToCreateWorkItemOfTypeParcelManagement");
 
-        String mappingActionCreationData = System.getProperty("user.dir") + testdata.SPLIT_MAPPING_ACTION;
+        String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
 
         // Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
         objMappingPage.login(loginUser);
@@ -326,6 +318,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
         softAssert.assertEquals(actualTotalParcels,expectedTotalParcels,"Verify total no of parcels getting generated");
 
         //Step 8: Validating error message when APN entered is not next available number
+        //Considering Map Book & Map Page from the APN generated by system
+        // and adding 100 to parcel number will become new APN which is not available next as per system
         String childAPNNumber =gridDataHashMap.get("APN").get(0);
         String childAPNComponents[] = childAPNNumber.split("-");
         String apnNotNextAvailable = childAPNComponents[0] + childAPNComponents[1] +
@@ -340,6 +334,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
                 "SMAB-T2613: Validation that error message is displayed when parcel entered is not next abvaialble");
 
         //Step 9: Validating error message when APN entered contains alphabets
+        //Considering Map Book & Map Page from the APN generated by system
+        // and adding alphabets to parcel number
         String apnContainingAlphabets = childAPNComponents[0] + childAPNComponents[1] + "abc";
 
         objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,apnContainingAlphabets);
@@ -351,6 +347,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
                 "SMAB-T2296: Validation that error message is displayed when parcel entered contains alphabets");
 
         //Step 10: Validating error message when APN entered contains special characters
+        //Considering Map Book & Map Page from the APN generated by system
+        // and adding special characters to parcel number
         String apnContainingspecialChars = childAPNComponents[0] + childAPNComponents[1] + "45&";
 
         objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,apnContainingspecialChars);
