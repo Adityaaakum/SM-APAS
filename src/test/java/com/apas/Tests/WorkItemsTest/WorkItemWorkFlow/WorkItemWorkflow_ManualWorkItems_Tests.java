@@ -1168,7 +1168,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	 */
 	@Test(description = "SMAB-T2278,SMAB-T2280:Verify the WI generated for a WIC with roll code=SEC that does not have RA record gets assigned to In Pool TAB of Work Pool value of \"RP Lost in Routing\"", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"regression","work_item_manual" })
-	public void WorkItemWorkflow_VerifyWorkPoolAssignedIs_RPLostInRouting_When_WIC_RollCodeSEC_NoRA(String loginUser) throws Exception {
+	public void WorkItemWorkflow_VerifyRPLostInRouting_WorkPool(String loginUser) throws Exception {
 
 		// fetching an active parcel with no neighborhood record 
 		String queryAPNValue = "select Name from Parcel__c where Status__c='Active' and Neighborhood_Reference__c= NULL limit 1";
@@ -1187,8 +1187,9 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		String routingAssignmentCreationData = testdata.WORK_ITEMS_ROUTING_SETUP;
 		Map<String, String> hashMapRoutingAssignmentData = objUtil.generateMapFromJsonFile(routingAssignmentCreationData,"DataToCreateRP_RoutingAssignment");
 		String query = "SELECT Name,Id FROM Work_Item_Configuration__c WHERE Work_Item_Sub_Type__c = '"+hashMapRoutingAssignmentData.get("Work Item Sub Type")+"' and Work_Item_Type__c='"+hashMapRoutingAssignmentData.get("Work Item Type")+"'";
-		String workItemCofiguration = salesforceAPI.select(query).get("Name").get(0);
-		String workItemCofigurationId = salesforceAPI.select(query).get("Id").get(0);
+		HashMap<String, ArrayList<String>> responseWICDetails = salesforceAPI.select(query);
+		String workItemCofiguration=responseWICDetails.get("Name").get(0);
+		String workItemCofigurationId=responseWICDetails.get("Id").get(0);
 		hashMapRoutingAssignmentData.put("Work Item Configuration", workItemCofiguration);
 		hashMapRoutingAssignmentData.put("Neighborhood", neighborhood);
 
@@ -1199,10 +1200,15 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		// Step 1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objWorkItemHomePage.login(loginUser);
 
+		/* Following steps cover the scenario :
+		 * Parcel fetched is such that neighborhood value of parcel does not match with Neighborhood value of RA for particular WIC with roll code=SEC 
+		 * RA is created for a WIC with roll code=SEC with some neighborhood value and a work item is created for a parcel
+		 */
+		
 		//Step 2: Open the Routing Assignments Page 
 		objWorkItemHomePage.searchModule(modules.ROUTING_ASSIGNMENTS);
 
-		//Step 3: Create a new Routing Assignment for the WIC fetched above 
+		//Step 3:Create a new Routing Assignment for the WIC fetched above 
 		objWorkItemsRoutingSetupPage.createRoutingAssignmentRecord(hashMapRoutingAssignmentData);
 
 		// Step 4: Opening the PARCELS page  and searching  parcel
@@ -1216,8 +1222,12 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"RP Lost in Routing",
-				"SMAB-T2280: Validation that work pool name is RP Lost in Routing if no match found for Neighborhood of Parcel");
+				"SMAB-T2280: Validation that work pool name is RP Lost in Routing if no match found between  Neighborhood of Parcel and neighborhood value of RA");
 
+		/* Following steps cover the scenario :
+		 * When no RA exists for a WIC with roll code=SEC and a work item is created for a parcel
+		 */
+		
 		//Step 7:Deleting the routing assignment record for the WIC fetched above
 		salesforceAPI.delete("Routing_Assignment__c",routingAssignmentQuery);
 
@@ -1243,7 +1253,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	 */
 	@Test(description = "SMAB-T2284,SMAB-T2280:Verify the WI generated for a WIC with roll code=UNS that does not have RA record gets assigned to In Pool TAB of Work Pool value of \"BPP Lost in Routing\"", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"regression","work_item_manual" })
-	public void WorkItemWorkflow_VerifyWorkPoolAssignedIs_BPPLostInRouting_When_WIC_RollCodeUNS_NoRA(String loginUser) throws Exception {
+	public void WorkItemWorkflow_VerifyBPPLostInRouting_WorkPool(String loginUser) throws Exception {
 
 		// fetching a BPP account parcel with no territory record 
 		String queryBPPAccount ="select Name from BPP_Account__c where Roll_Code__c='UNS' and Territory__c =NULL and Status__c ='ACTIVE' Limit 1";
@@ -1262,8 +1272,9 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		String routingAssignmentCreationData = testdata.WORK_ITEMS_ROUTING_SETUP;
 		Map<String, String> hashMapRoutingAssignmentData = objUtil.generateMapFromJsonFile(routingAssignmentCreationData,"DataToCreateBPP_RoutingAssignment");
 		String query = "SELECT Name,Id FROM Work_Item_Configuration__c WHERE Work_Item_Sub_Type__c = '"+hashMapRoutingAssignmentData.get("Work Item Sub Type")+"' and Work_Item_Type__c='"+hashMapRoutingAssignmentData.get("Work Item Type")+"'";
-		String workItemCofiguration = salesforceAPI.select(query).get("Name").get(0);
-		String workItemCofigurationId = salesforceAPI.select(query).get("Id").get(0);
+		HashMap<String, ArrayList<String>> responseWICDetails = salesforceAPI.select(query);
+		String workItemCofiguration=responseWICDetails.get("Name").get(0);
+		String workItemCofigurationId=responseWICDetails.get("Id").get(0);
 		hashMapRoutingAssignmentData.put("Work Item Configuration", workItemCofiguration);
 		hashMapRoutingAssignmentData.put("Territory", territoryValue);
 
@@ -1274,6 +1285,11 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		// Step 1: Login to the APAS application using the credentials passed through dataprovider (BPP Business Admin)
 		objWorkItemHomePage.login(loginUser);
 
+		/* Following steps cover the scenario :
+		 * BPP account fetched is such that territory value of BPP account does not match with territory value of RA for particular WIC with roll code=UNS
+		 * RA is created for a WIC with roll code=UNS with some territory value and a work item is created for a BPP account
+		 */
+		
 		//Step 2: Open the Routing Assignments Page 
 		objWorkItemHomePage.searchModule(modules.ROUTING_ASSIGNMENTS);
 
@@ -1291,8 +1307,12 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"BPP Lost in Routing",
-				"SMAB-T2280: Validation that work pool name is BPP Lost in Routing if no match found for Territory of BPP Account");
+				"SMAB-T2280: Validation that work pool name is BPP Lost in Routing if no match found between  Territory of BPP Account and Territory value of RA");
 
+		/* Following steps cover the scenario :
+		 * When no RA exists for a WIC with roll code=UNS and a work item is created for a BPP Account
+		 */
+		
 		//Step 7:Deleting the routing assignment record for the WIC fetched above
 		salesforceAPI.delete("Routing_Assignment__c",routingAssignmentQuery);
 

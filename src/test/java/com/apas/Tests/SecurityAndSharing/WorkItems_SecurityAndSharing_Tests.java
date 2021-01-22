@@ -87,6 +87,15 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 		//Step3: Validate that no  buttons in completed tab
 		objWorkItemHomePage.waitForElementToBeVisible(10,objWorkItemHomePage.lnkTABInProgress);
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_COMPLETED);
+		softAssert.assertTrue(!objLoginPage.verifyElementVisible(objWorkItemHomePage.reassignButton), "SMAB-T2636: Validate that no button is visible in completed tab");
+		softAssert.assertTrue(!objLoginPage.verifyElementVisible(objWorkItemHomePage.PutOnHoldButton), "SMAB-T2636: Validate that no button is visible in completed tab");
+		softAssert.assertTrue(!objLoginPage.verifyElementVisible(objWorkItemHomePage.assignLevel2Approver), "SMAB-T2636: Validate that no button is visible in completed tab");
+		softAssert.assertTrue(!objLoginPage.verifyElementVisible(objWorkItemHomePage.returnToPool), "SMAB-T2636: Validate that no button is visible in completed tab");
+		softAssert.assertTrue(!objLoginPage.verifyElementVisible(objWorkItemHomePage.ConsolidateButton), "SMAB-T2636: Validate that no button is visible in completed tab");
+		softAssert.assertTrue(!objLoginPage.verifyElementVisible(objWorkItemHomePage.markInProgress), "SMAB-T2636: Validate that no button is visible in completed tab");
+		softAssert.assertTrue(!objLoginPage.verifyElementVisible(objWorkItemHomePage.WithdrawButton), "SMAB-T2636: Validate that no button is visible in completed tab");
+		softAssert.assertTrue(!objLoginPage.verifyElementVisible(objWorkItemHomePage.changeWorkPool), "SMAB-T2636: Validate that no button is visible in completed tab");
+		softAssert.assertTrue(!objLoginPage.verifyElementVisible(objWorkItemHomePage.changeAssignee), "SMAB-T2636: Validate that no button is visible in completed tab");
 		softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.btnApprove), "SMAB-T2636: Validate that no button is visible in completed tab");
 		softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.returnWorkItemButton), "SMAB-T2636: Validate that no button is visible in completed tab");
 		softAssert.assertTrue(objLoginPage.verifyElementNotVisible(objWorkItemHomePage.btnMarkComplete), "SMAB-T2636: Validate that no button is visible in completed tab");
@@ -140,5 +149,4 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 
 		objWorkItemHomePage.logout();
 	}
-
 }
