@@ -279,6 +279,11 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String inProgressOptionInTimeline = "In Progress";
 	public String completedOptionInTimeline = "Completed";
 	public String wiStatus = "Status";
+    public String reassignButton = "Reassign";
+	public final String returnToPool="Return to Pool";
+	public final String markInProgress="Mark In Progress";
+
+
 
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
