@@ -463,96 +463,96 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 	 * @throws Exception
 	 */
 
-	@Test(description = "SMAB-T2080,SMAB-T2091,SMAB-T1918,SMAB-T1951, SMAB-T1952:Verify system generates WI 'Disabled Veteran -Review and Update-Annual exemption amount verification' for all active Exemption with low income VA for previous roll year once 'Annual Exemption Limits' for current roll year is approved", dataProvider = "loginExemptionSupportStaff", dependsOnMethods = {
-			"WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIApprovalRejectionValidations" }, dataProviderClass = DataProviders.class, groups = {
-					"regression", "Work_Item_DV" }, alwaysRun = true)
-	public void WorkItemWorkflow_DisabledVeteran_LowIncomeExemptionWIVerification(String loginUser) throws Exception {
-
-		String rollYear = "2020";
-		String lowIncomeVaQuery = "select id from Value_Adjustments__c where Exemption_Status__c='Active' and Roll_Year__c='"+ rollYear + "' and Determination__c='Low-Income Disabled Veterans Exemption'";
-		HashMap<String, ArrayList<String>> response = salesforceAPI.select(lowIncomeVaQuery);
-		int lowIncomeVACountInSystem = response.get("Id").size();
-		String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
-		String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
-
-		// Step1: Login to the APAS application using the credentials passed through
-		objApasGenericPage.login(loginUser);
-
-		// Step2: Opening the Exemption Module
-		objApasGenericPage.searchModule(modules.HOME);
-
-		// Step3: Navigating to In Pool section and verifying Low income exemption
-		// amount verification WI's for all Active Exemptions
-		
-		HashMap<String, ArrayList<String>> InPoolLowIncomeWI = workItemPageObj.getWorkItemData(workItemPageObj.TAB_IN_POOL);
-		int lowIncomeWiCount = (int) InPoolLowIncomeWI.get("Request Type").stream().filter(request -> request.equals("Disabled Veterans - Review and Update - Annual exemption amount verification")).count();
-		ReportLogger.INFO("Total low income Annual Exemption verification amount WI::" + lowIncomeWiCount);
-		int reminderWIRNumber = InPoolLowIncomeWI.get("Request Type").indexOf("Disabled Veterans - Review and Update - Annual exemption amount verification");
-		String lowIncomeWIName = InPoolLowIncomeWI.get("Work item #").get(reminderWIRNumber);
-
-		// step4: Now accepting and verifying a Low Income WI
-		softAssert.assertEquals(lowIncomeWiCount, lowIncomeVACountInSystem,"Verifying number of WI are same as Low income VA presnet for Previous roll year ");
-		ReportLogger.INFO("Accpeting a Low Income Annual Exemption WI :: " + lowIncomeWIName);
-		objPage.scrollToBottom();
-		workItemPageObj.acceptWorkItem(lowIncomeWIName);
-
-		objPage.Click(workItemPageObj.inProgressTab);
-		objPage.scrollToBottom();
-		
-		//SMAB-T2091 opening the action link to validate that link redirects to correct page
-		workItemPageObj.openActionLink(lowIncomeWIName);
-		
-		softAssert.assertEquals(objPage.getElementText(workItemPageObj.vaRollYear), "2021","SMAB-T2091: Verify that user is able to navigate to current roll year from action link");
-		softAssert.assertTrue(objPage.verifyElementVisible(objValueAdjustmentPage.valueAdjustmentViewAll),
-				"SMAB-T2091: Validation that Value Adjustments label is present");
-		
-		driver.navigate().back();
-		Thread.sleep(1000);
-		workItemPageObj.openWorkItem(lowIncomeWIName);
-		objPage.javascriptClick(workItemPageObj.detailsTab);
-		Thread.sleep(1000);
-		softAssert.assertTrue(objPage.verifyElementVisible(workItemPageObj.relatedActionLink),"SMAB-T1918:Verify that User is able to see the Low income WI under 'In Progress' tab after accpeting it");
-
-		//Validating that  'Date' field gets automatically populated in the work item record
-		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
-								"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);		
-		
-		//Thread.sleep(3000);
-		
-		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "In Progress","SMAB-T1951: Verify that user is able to accept the WI and is able to see correct status of WI");
-		String parentwindow = driver.getWindowHandle();
-		objPage.Click(workItemPageObj.relatedActionLink);
-		objPage.switchToNewWindow(parentwindow);
-		// step4a: Verifying the WI was created for current Roll Year VA
-		Thread.sleep(3000);
-		softAssert.assertEquals(objPage.getElementText(workItemPageObj.vaRollYear), "2021","SMAB-T1918,SMAB-T1951: Verify that user is able to navigate to current roll year VA from corresponding WI");
-		driver.switchTo().window(parentwindow);
-
-		// step5: now Submitting the Work Item manually
-		driver.navigate().refresh();
-		Thread.sleep(3000);
-		objPage.Click(workItemPageObj.detailsWI);
-		//Thread.sleep(3000);
-		objPage.waitForElementToBeClickable(workItemPageObj.submittedforApprovalTimeline, 10);
-		ReportLogger.INFO("Submitting the WI and verifying the Status :: " + lowIncomeWIName);
-		objPage.javascriptClick(workItemPageObj.submittedforApprovalTimeline);
-		objPage.javascriptClick(workItemPageObj.markStatusCompleteBtn);
-
-		softAssert.assertContains(objPage.getElementText(workItemPageObj.successAlert), "Status changed successfully","SMAB-T436: Validating the pop message on successful creation of City Strat Code entry from County Strat details page");
-		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1952:Verify that user is able to submit the Low Income WI manually from corresponding WI Home page");
-		driver.navigate().refresh();
-		Thread.sleep(3000);
-		driver.navigate().back();
-		Thread.sleep(1000);
-		
-		objPage.Click(workItemPageObj.lnkTABMySubmittedforApproval);
-		Thread.sleep(5000);
-		workItemPageObj.openWorkItem(lowIncomeWIName);
-		objPage.javascriptClick(workItemPageObj.detailsTab);
-		Thread.sleep(1000);
-		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1952:Verify that user is able to submit the Low Income WI manually from corresponding WI Home page");
-
-		objApasGenericPage.logout();
-
-	}
+//	@Test(description = "SMAB-T2080,SMAB-T2091,SMAB-T1918,SMAB-T1951, SMAB-T1952:Verify system generates WI 'Disabled Veteran -Review and Update-Annual exemption amount verification' for all active Exemption with low income VA for previous roll year once 'Annual Exemption Limits' for current roll year is approved", dataProvider = "loginExemptionSupportStaff", dependsOnMethods = {
+//			"WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIApprovalRejectionValidations" }, dataProviderClass = DataProviders.class, groups = {
+//					"regression", "Work_Item_DV" }, alwaysRun = true)
+//	public void WorkItemWorkflow_DisabledVeteran_LowIncomeExemptionWIVerification(String loginUser) throws Exception {
+//
+//		String rollYear = "2020";
+//		String lowIncomeVaQuery = "select id from Value_Adjustments__c where Exemption_Status__c='Active' and Roll_Year__c='"+ rollYear + "' and Determination__c='Low-Income Disabled Veterans Exemption'";
+//		HashMap<String, ArrayList<String>> response = salesforceAPI.select(lowIncomeVaQuery);
+//		int lowIncomeVACountInSystem = response.get("Id").size();
+//		String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
+//		String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
+//
+//		// Step1: Login to the APAS application using the credentials passed through
+//		objApasGenericPage.login(loginUser);
+//
+//		// Step2: Opening the Exemption Module
+//		objApasGenericPage.searchModule(modules.HOME);
+//
+//		// Step3: Navigating to In Pool section and verifying Low income exemption
+//		// amount verification WI's for all Active Exemptions
+//
+//		HashMap<String, ArrayList<String>> InPoolLowIncomeWI = workItemPageObj.getWorkItemData(workItemPageObj.TAB_IN_POOL);
+//		int lowIncomeWiCount = (int) InPoolLowIncomeWI.get("Request Type").stream().filter(request -> request.equals("Disabled Veterans - Review and Update - Annual exemption amount verification")).count();
+//		ReportLogger.INFO("Total low income Annual Exemption verification amount WI::" + lowIncomeWiCount);
+//		int reminderWIRNumber = InPoolLowIncomeWI.get("Request Type").indexOf("Disabled Veterans - Review and Update - Annual exemption amount verification");
+//		String lowIncomeWIName = InPoolLowIncomeWI.get("Work item #").get(reminderWIRNumber);
+//
+//		// step4: Now accepting and verifying a Low Income WI
+//		softAssert.assertEquals(lowIncomeWiCount, lowIncomeVACountInSystem,"Verifying number of WI are same as Low income VA presnet for Previous roll year ");
+//		ReportLogger.INFO("Accpeting a Low Income Annual Exemption WI :: " + lowIncomeWIName);
+//		objPage.scrollToBottom();
+//		workItemPageObj.acceptWorkItem(lowIncomeWIName);
+//
+//		objPage.Click(workItemPageObj.inProgressTab);
+//		objPage.scrollToBottom();
+//
+//		//SMAB-T2091 opening the action link to validate that link redirects to correct page
+//		workItemPageObj.openActionLink(lowIncomeWIName);
+//
+//		softAssert.assertEquals(objPage.getElementText(workItemPageObj.vaRollYear), "2021","SMAB-T2091: Verify that user is able to navigate to current roll year from action link");
+//		softAssert.assertTrue(objPage.verifyElementVisible(objValueAdjustmentPage.valueAdjustmentViewAll),
+//				"SMAB-T2091: Validation that Value Adjustments label is present");
+//
+//		driver.navigate().back();
+//		Thread.sleep(1000);
+//		workItemPageObj.openWorkItem(lowIncomeWIName);
+//		objPage.javascriptClick(workItemPageObj.detailsTab);
+//		Thread.sleep(1000);
+//		softAssert.assertTrue(objPage.verifyElementVisible(workItemPageObj.relatedActionLink),"SMAB-T1918:Verify that User is able to see the Low income WI under 'In Progress' tab after accpeting it");
+//
+//		//Validating that  'Date' field gets automatically populated in the work item record
+//		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
+//								"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
+//
+//		//Thread.sleep(3000);
+//
+//		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "In Progress","SMAB-T1951: Verify that user is able to accept the WI and is able to see correct status of WI");
+//		String parentwindow = driver.getWindowHandle();
+//		objPage.Click(workItemPageObj.relatedActionLink);
+//		objPage.switchToNewWindow(parentwindow);
+//		// step4a: Verifying the WI was created for current Roll Year VA
+//		Thread.sleep(3000);
+//		softAssert.assertEquals(objPage.getElementText(workItemPageObj.vaRollYear), "2021","SMAB-T1918,SMAB-T1951: Verify that user is able to navigate to current roll year VA from corresponding WI");
+//		driver.switchTo().window(parentwindow);
+//
+//		// step5: now Submitting the Work Item manually
+//		driver.navigate().refresh();
+//		Thread.sleep(3000);
+//		objPage.Click(workItemPageObj.detailsWI);
+//		//Thread.sleep(3000);
+//		objPage.waitForElementToBeClickable(workItemPageObj.submittedforApprovalTimeline, 10);
+//		ReportLogger.INFO("Submitting the WI and verifying the Status :: " + lowIncomeWIName);
+//		objPage.javascriptClick(workItemPageObj.submittedforApprovalTimeline);
+//		objPage.javascriptClick(workItemPageObj.markStatusCompleteBtn);
+//
+//		softAssert.assertContains(objPage.getElementText(workItemPageObj.successAlert), "Status changed successfully","SMAB-T436: Validating the pop message on successful creation of City Strat Code entry from County Strat details page");
+//		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1952:Verify that user is able to submit the Low Income WI manually from corresponding WI Home page");
+//		driver.navigate().refresh();
+//		Thread.sleep(3000);
+//		driver.navigate().back();
+//		Thread.sleep(1000);
+//
+//		objPage.Click(workItemPageObj.lnkTABMySubmittedforApproval);
+//		Thread.sleep(5000);
+//		workItemPageObj.openWorkItem(lowIncomeWIName);
+//		objPage.javascriptClick(workItemPageObj.detailsTab);
+//		Thread.sleep(1000);
+//		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1952:Verify that user is able to submit the Low Income WI manually from corresponding WI Home page");
+//
+//		objApasGenericPage.logout();
+//
+//	}
 }
