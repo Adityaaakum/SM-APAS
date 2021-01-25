@@ -61,5 +61,7 @@ public interface testdata {
     String ONE_TO_ONE_MAPPING_ACTION = "\\data\\MappingActions\\OneToOneMapping.json";
 	String SPLIT_MAPPING_ACTION = userDirectory + "\\data\\MappingActions\\SplitMappingAction.json";
     String RETIRE_ACTION = userDirectory + "\\data\\MappingActions\\RetireAction.json";
+	String NEIGHBORHOOD = userDirectory + "\\data\\Neighborhood\\Neighborhood.json";
+	String ROUTING_ASSIGNMENT = userDirectory + "\\data\\RoutingAssignment\\RoutingAssignment.json";
 
 }

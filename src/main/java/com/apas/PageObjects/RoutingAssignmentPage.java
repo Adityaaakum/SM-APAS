@@ -14,17 +14,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WorkItemsRoutingSetupPage extends ApasGenericPage{
-	ApasGenericPage objApasGenericPage;
-	Page objPageObj;
-	SalesforceAPI salesforceAPI ;
+public class RoutingAssignmentPage extends ApasGenericPage{
 
-	public WorkItemsRoutingSetupPage(RemoteWebDriver driver) {
-		super(driver);
-		PageFactory.initElements(driver, this);
-		objApasGenericPage = new ApasGenericPage(driver);
-		objPageObj=new Page(driver);
-	}
+    public RoutingAssignmentPage(RemoteWebDriver driver) {
+        super(driver);
+        PageFactory.initElements(driver, this);
+    }
 
 	public String workItemConfigurationDropDown= "Work Item Configuration";
 	public String workPoolDropDown= "Work Pool";
@@ -39,33 +34,29 @@ public class WorkItemsRoutingSetupPage extends ApasGenericPage{
 	 * @throws Exception
 	 **/
 	public String createRoutingAssignmentRecord(Map<String, String> routingAssignmentReferenceData) throws Exception{
-		Click(getButtonWithText(objApasGenericPage.NewButton));
+		Click(getButtonWithText(NewButton));
 		enterRoutingAssignmentRecordDetails(routingAssignmentReferenceData);
-		String successMessage = objApasGenericPage.saveRecord();
+		String successMessage = saveRecord();
 		return successMessage;
 	}
 	/**
 	 * This method will Create Routing Assignment Record
 	 *
-	 * @param workItemConfiguration : WorkItem Configuration
-	 * @param workPool : Work Pool
-	 * @param territoryORneighborhood : User will enter Territory or Neighborhood based on Roll Code
-	 * @param BPPRollCode : True Roll Code is BPP else False if Roll Code is RP
-	 * @throws Exception
+	 * @param routingAssignmentReferenceData : WorkItem Configuration
 	 **/
 	public void enterRoutingAssignmentRecordDetails(Map<String, String> routingAssignmentReferenceData) throws Exception{
 
 		if(routingAssignmentReferenceData.get("Work Item Configuration")!=null) 
-			objApasGenericPage.searchAndSelectOptionFromDropDown(workItemConfigurationDropDown,routingAssignmentReferenceData.get("Work Item Configuration"));
+			searchAndSelectOptionFromDropDown(workItemConfigurationDropDown,routingAssignmentReferenceData.get("Work Item Configuration"));
 
 		if(routingAssignmentReferenceData.get("Work Pool")!=null)
-			objApasGenericPage.searchAndSelectOptionFromDropDown(workPoolDropDown,routingAssignmentReferenceData.get("Work Pool"));
+			searchAndSelectOptionFromDropDown(workPoolDropDown,routingAssignmentReferenceData.get("Work Pool"));
 
 		if(routingAssignmentReferenceData.get("RAType").equals("BPP") && routingAssignmentReferenceData.get("Territory")!=null)
-			objApasGenericPage.searchAndSelectOptionFromDropDown(territoryDropDown,routingAssignmentReferenceData.get("Territory"));
+			searchAndSelectOptionFromDropDown(territoryDropDown,routingAssignmentReferenceData.get("Territory"));
 
 		if(routingAssignmentReferenceData.get("RAType").equals("RP") && routingAssignmentReferenceData.get("Neighborhood")!=null)
-			objApasGenericPage.searchAndSelectOptionFromDropDown(neighborhoodDropDown,routingAssignmentReferenceData.get("Neighborhood"));
+			searchAndSelectOptionFromDropDown(neighborhoodDropDown,routingAssignmentReferenceData.get("Neighborhood"));
 
 	}
 }

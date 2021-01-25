@@ -14,15 +14,13 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class WorkItemAdministration_RoutingSetupTest extends TestBase {
     RemoteWebDriver driver;
     WorkItemHomePage objWorkItemHomePage;
-    WorkItemsRoutingSetupPage objWorkItemsRoutingSetupPage;
-    WorkItemsNeighborhoodsPage objWorkItemsNeighborhoodsPage;
+    RoutingAssignmentPage objWorkItemsRoutingSetupPage;
+    NeighborhoodsPage objWorkItemsNeighborhoodsPage;
     WorkItemsTerritoriesPage objWorkItemsTerritoriesPage;
     Util objUtil;
     SoftAssertion softAssert = new SoftAssertion();
@@ -37,8 +35,8 @@ public class WorkItemAdministration_RoutingSetupTest extends TestBase {
 
         objUtil = new Util();
         objWorkItemHomePage = new WorkItemHomePage(driver);
-        objWorkItemsRoutingSetupPage = new WorkItemsRoutingSetupPage(driver);
-        objWorkItemsNeighborhoodsPage = new WorkItemsNeighborhoodsPage(driver);
+        objWorkItemsRoutingSetupPage = new RoutingAssignmentPage(driver);
+        objWorkItemsNeighborhoodsPage = new NeighborhoodsPage(driver);
         objWorkItemsTerritoriesPage = new WorkItemsTerritoriesPage(driver);
     }
 

@@ -6,17 +6,19 @@ import org.openqa.selenium.support.PageFactory;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.PageObjects.ApasGenericPage;
 
-public class WorkItemsNeighborhoodsPage extends ApasGenericPage {
+public class NeighborhoodsPage extends ApasGenericPage {
     ApasGenericPage objApasGenericPage;
     Page objPageObj;
     SalesforceAPI salesforceAPI ;
 
-    public WorkItemsNeighborhoodsPage(RemoteWebDriver driver) {
+    public NeighborhoodsPage(RemoteWebDriver driver) {
         super(driver);
         PageFactory.initElements(driver, this);
         objApasGenericPage = new ApasGenericPage(driver);
         objPageObj=new Page(driver);
     }
+
+    public String districtNeighborhoodCodeEditBox = "District / Neighborhood Code";
     public String neighborhoodCodeEditBox="Neighborhood Code";
     public String primaryAppraiserDropDown="Primary Appraiser";
     public String districtDropDown="District";
@@ -37,15 +39,11 @@ public class WorkItemsNeighborhoodsPage extends ApasGenericPage {
     }
     /**
      * This method will Create Neighborhood Reference Record
-     *
-     * @param neighborhoodCode : Neighborhood Code
-     * @param neighborhoodDescription : Neighborhood Description
-     * @param primaryAppraiser : Primary Appraiser
-     * @param district : District
-     * @param districtDescription : District Description
+     * @param neighborhoodReferenceData : Neighborhood Reference record Details
      * @throws Exception
      **/
     public void enterNeighborhoodReferenceRecordDetails(Map<String, String> neighborhoodReferenceData) throws Exception{
+        enter(districtNeighborhoodCodeEditBox,neighborhoodReferenceData.get("District Neighborhood Code"));
         enter(neighborhoodCodeEditBox,neighborhoodReferenceData.get("Neighborhood Code"));
         enter(neighborhoodDescriptionEditBox,neighborhoodReferenceData.get("Neighborhood Description"));
         objApasGenericPage.searchAndSelectOptionFromDropDown(primaryAppraiserDropDown,neighborhoodReferenceData.get("Primary Appraiser"));
