@@ -14,9 +14,9 @@
 		</groups>
 		<classes>
 
-			 <class name="com.apas.Tests.EFileIntake.EFileIntake_Tests">
+			 <class name="com.apas.Tests.WorkItemsTest.WorkIemAdministration.WorkItemAdministration_PoolAssignment_Test">
 				 <methods>
-					 <include name="EFileImport_VerifyImportForNewStatus_AndApporveImportFile"/>
+					 <include name="WorkItemAdministration_UpdateNeighborhood_ValidatePoolAssignment"/>
 				 </methods>
 			 </class>
 
