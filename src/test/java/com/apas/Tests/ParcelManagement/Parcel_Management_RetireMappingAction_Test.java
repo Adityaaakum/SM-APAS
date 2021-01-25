@@ -23,7 +23,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class Parcel_Management_RetireAction_Test extends TestBase implements testdata, modules, users {
+public class Parcel_Management_RetireMappingAction_Test extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
@@ -45,19 +45,13 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 	}
 	
 	/**
-	 * This method is to Verify that User is able to perform a "Retire" mapping action for a Parcels (Active) of type Non Condo, Condo and Others from a work item
+	 * This method is to Verify that User is able to view various error messages while perform a "Retire" mapping action from a work item
 	 * @param loginUser
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2455,SMAB-T2457,SMAB-T2512:Verify that User is able to view the various error message during Retire Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyErrorMessagesInRetireMappingAction(String loginUser) throws Exception {
-		
-		//Fetching parcels that are Active 
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Status__c='Active' limit 2";
-		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
-		String apn1=responseAPNDetails.get("Name").get(0);
-		String apn2=responseAPNDetails.get("Name").get(1);
 		
 		//Fetching parcel that is Retired 		
 		String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
@@ -66,6 +60,12 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		
 		//Fetching parcel that is In Progress - To Be Expired	
 		String inProgressAPNValue = objMappingPage.fetchInProgressAPN();
+		
+		//Fetching parcels that are Active 
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Status__c='Active' limit 2";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apn1=responseAPNDetails.get("Name").get(0);
+		String apn2=responseAPNDetails.get("Name").get(1);
 		
 		String activeParcelWithoutHyphen=apn2.replace("-","");
 		String accessorMapParcel = apn1.replace("-", "").substring(0, 5);
@@ -230,7 +230,7 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2456:Verify that User is able to perform Retire Action for more than one active parcels", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"regression","parcel_management" })
+			"smoke","regression","parcel_management" })
 	public void ParcelManagement_VerifyRetireMappingActionForMoreThanOneActiveParcels(String loginUser) throws Exception {
 		
 		//Fetching Active General parcel 

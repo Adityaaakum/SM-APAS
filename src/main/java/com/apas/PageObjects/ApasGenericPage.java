@@ -1105,6 +1105,17 @@ public class ApasGenericPage extends Page {
 	        }
 	 return inProgressAPNValue;	 
   }
+  
+  /*
+  This method is used to return the Retired APN from Salesforce
+  @return: returns the Retired APN
+ */
+
+ public String fetchRetiredAPN() throws Exception {
+     
+	  String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
+	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
+ }
    
    /*
     * Get Field Value from WI TimeLine 

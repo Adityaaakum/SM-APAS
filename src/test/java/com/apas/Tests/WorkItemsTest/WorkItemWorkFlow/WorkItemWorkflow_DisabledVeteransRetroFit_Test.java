@@ -99,12 +99,8 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		HashMap<String, ArrayList<String>> InPoolWorkItems = workItemPageObj.getWorkItemData(workItemPageObj.TAB_IN_POOL);
 		
 		int reminderDVWorkItemCount = (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits")).count();
-		//int reminderWIRowNumber = InPoolWorkItems.get("Request Type").indexOf("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits");
-		//String reminderDVWINumber = InPoolWorkItems.get("Work item #").get(reminderWIRowNumber);
-		
 		String reminderDVWINumber  = workItemPageObj.getWorkItemName("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits",workItemPageObj.TAB_IN_POOL);
 		
-		//softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reminderWIRowNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1885:Verify that reminder WI 'Disabled Veterans -Update and Validate -Disabled veterans Yearly exemption amounts and income limits' and RPSL for current roll year(if not present) upon job execution");
 		softAssert.assertEquals(reminderDVWorkItemCount, 1, "SMAB-T1885 : DV Reminder WI count is 1");
 
 		ReportLogger.INFO("verifying Current year RPSL record is created along with Reminder WI");
@@ -134,12 +130,8 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		
 		HashMap<String, ArrayList<String>> InPoolReminderWorkItems = workItemPageObj.getWorkItemData(workItemPageObj.TAB_IN_POOL);
 		int reminderWorkItemCount = (int) InPoolReminderWorkItems.get("Request Type").stream().filter(request -> request.equals("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits")).count();
-		//int reminderWIRNumber = InPoolReminderWorkItems.get("Request Type").indexOf("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits");
-		//String reminderWINumber = InPoolReminderWorkItems.get("Work item #").get(reminderWIRNumber);
-		
 		String reminderWINumber  = workItemPageObj.getWorkItemName("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits",workItemPageObj.TAB_IN_POOL);
 		
-		//softAssert.assertEquals(InPoolWorkItems.get("Request Type").get(reminderWIRNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1993:Verify that reminder WI 'Disabled Veterans -Update and Validate -Disabled veterans Yearly exemption amounts and income limits' and existing RPSL for current roll year is linked to it upon job execution");
 		softAssert.assertEquals(reminderWorkItemCount, 1, "SMAB-T1885 : DV Reminder WI count is 1");
 		workItemPageObj.openWorkItem(reminderWINumber);
 			
@@ -256,11 +248,8 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		ReportLogger.INFO("Validate the Work Item details on the Home page");
 		HashMap<String, ArrayList<String>> reminderSubmittedWI = workItemPageObj.getWorkItemData(workItemPageObj.TAB_MY_SUBMITTED_FOR_APPROVAL);
 		int reminderSubmittedWIRowNumber = reminderSubmittedWI.get("Request Type").indexOf("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits");
-		//String reminderSubmittedWINumber = reminderSubmittedWI.get("Work item #").get(reminderSubmittedWIRowNumber);
-		
 		String reminderSubmittedWINumber  = workItemPageObj.getWorkItemName("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits",workItemPageObj.TAB_MY_SUBMITTED_FOR_APPROVAL);
 		
-		//softAssert.assertEquals(reminderSubmittedWI.get("Request Type").get(reminderSubmittedWIRowNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(reminderSubmittedWI.get("Work Pool").get(reminderSubmittedWIRowNumber),"Disabled Veterans","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(reminderSubmittedWINumber, reminderWINumber,"SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(reminderSubmittedWI.get(workItemPageObj.wiDateDetailsPage).get(reminderSubmittedWIRowNumber),currentRollYear + "-01-01","SMAB-T1838: Validate user is able to view the date under 'Date' column");
@@ -276,7 +265,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 	 */
 
 	@Test(description = "SMAB-T1921,SMAB-T1889,SMAB-T1919,SMAB-T1920,SMAB-T1867:Verify that once supervisor 'Return' the RPSL record then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' is also Returned and once RPSL approved then WI is also completed,Verify that Supervisor of a WI is able to edit the WI which is submitted for Approval ", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, dependsOnMethods = {
-			"Disabledveteran_RPSLandReminderWIClaimSubmitValidations" }, groups = { "regression",
+			"WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIClaimSubmitValidations" }, groups = { "regression",
 					"Work_Item_DV" }, alwaysRun = true)
 	public void WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIApprovalRejectionValidations(String loginUser) throws Exception {
 		
@@ -293,7 +282,6 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		// record and returning the linked record
 		HashMap<String, ArrayList<String>> needsMyApprovalWI = workItemPageObj.getWorkItemData(workItemPageObj.TAB_NEED_MY_APPROVAL);
 		int reminderSubmittedWIRowNumber = needsMyApprovalWI.get("Request Type").indexOf("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits");
-		//String reminderSubmittedWINumber = needsMyApprovalWI.get("Work item #").get(reminderSubmittedWIRowNumber);
 		String reminderSubmittedWINumber  = workItemPageObj.getWorkItemName("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits",workItemPageObj.TAB_NEED_MY_APPROVAL);
 		ReportLogger.INFO("Returning the RPSL setting and verifying the Wi status");
 		
@@ -420,9 +408,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		HashMap<String, ArrayList<String>> reminderSubmittedWIAgain = workItemPageObj.getWorkItemData(workItemPageObj.TAB_MY_SUBMITTED_FOR_APPROVAL);
 
 		int reminderAgainSubmittedWIRowNumber = reminderSubmittedWIAgain.get("Request Type").indexOf("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits");
-		//String reminderAgainSubmittedWINumber = reminderSubmittedWIAgain.get("Work item #").get(reminderAgainSubmittedWIRowNumber);
 		String reminderAgainSubmittedWINumber  = workItemPageObj.getWorkItemName("Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits",workItemPageObj.TAB_MY_SUBMITTED_FOR_APPROVAL);
-		//softAssert.assertEquals(reminderSubmittedWIAgain.get("Request Type").get(reminderAgainSubmittedWIRowNumber),"Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(reminderSubmittedWIAgain.get("Work Pool").get(reminderAgainSubmittedWIRowNumber),"Disabled Veterans","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		
 		objApasGenericPage.logout();
@@ -472,7 +458,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 	 */
 
 	@Test(description = "SMAB-T2080,SMAB-T2091,SMAB-T1918,SMAB-T1951, SMAB-T1952:Verify system generates WI 'Disabled Veteran -Review and Update-Annual exemption amount verification' for all active Exemption with low income VA for previous roll year once 'Annual Exemption Limits' for current roll year is approved", dataProvider = "loginExemptionSupportStaff", dependsOnMethods = {
-			"Disabledveteran_RPSLandReminderWIApprovalRejectionValidations" }, dataProviderClass = DataProviders.class, groups = {
+			"WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIApprovalRejectionValidations" }, dataProviderClass = DataProviders.class, groups = {
 					"regression", "Work_Item_DV" }, alwaysRun = true)
 	public void WorkItemWorkflow_DisabledVeteran_LowIncomeExemptionWIVerification(String loginUser) throws Exception {
 
@@ -496,10 +482,9 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		int lowIncomeWiCount = (int) InPoolLowIncomeWI.get("Request Type").stream().filter(request -> request.equals("Disabled Veterans - Review and Update - Annual exemption amount verification")).count();
 		ReportLogger.INFO("Total low income Annual Exemption verification amount WI::" + lowIncomeWiCount);
 		int reminderWIRNumber = InPoolLowIncomeWI.get("Request Type").indexOf("Disabled Veterans - Review and Update - Annual exemption amount verification");
-		//String lowIncomeWIName = InPoolLowIncomeWI.get("Work item #").get(reminderWIRNumber);
 		String lowIncomeWIName  = workItemPageObj.getWorkItemName("Disabled Veterans - Review and Update - Annual exemption amount verification",workItemPageObj.TAB_IN_POOL);
 		// step4: Now accepting and verifying a Low Income WI
-		softAssert.assertEquals(lowIncomeWiCount, lowIncomeWiCount,"Verifying number of WI are same as Low income VA presnet for Previous roll year ");
+		softAssert.assertEquals(lowIncomeWiCount, lowIncomeVACountInSystem,"Verifying number of WI are same as Low income VA presnet for Previous roll year ");
 		ReportLogger.INFO("Accpeting a Low Income Annual Exemption WI :: " + lowIncomeWIName);
 		objPage.scrollToBottom();
 		workItemPageObj.acceptWorkItem(lowIncomeWIName);

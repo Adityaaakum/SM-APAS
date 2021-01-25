@@ -7,6 +7,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import com.apas.Reports.ReportLogger;
 import com.apas.Utils.Util;
 
 public class MappingPage extends ApasGenericPage {
@@ -42,11 +43,15 @@ public class MappingPage extends ApasGenericPage {
 
 	public String nextButton = "Next";
 	public String generateParcelButton = "Generate Parcel";
+	public String combineParcelButton = "Combine Parcel";
 	public String parentAPNEditButton = "Edit";
 	public String previousButton = "Previous";
 	public String retireButton = "Retire Parcel (s)";
 	public String assessorMapLabel = "Assessor's Map";
+	public String taxCollectorLabel = "Tax Collector Link(s)";
 	public String taxField = "//label[text()='Are taxes fully paid?']";
+	public String reasonCodeField = "//label[text()='Reason Code']";
+	public String errorMessageOnScreenOne = "//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]";
 	public String saveButton = "Save";
 
 	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
@@ -66,6 +71,9 @@ public class MappingPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Legal Description']")
 	public WebElement legalDescriptionFieldSecondScreen;
+	
+	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Use Code']")
+	public WebElement useCodeFieldSecondScreen;
 	
 	@FindBy(xpath = "//div[contains(@class,'message-font slds-align_absolute-center slds-text-color_success')]")
 	public WebElement confirmationMessageOnSecondScreen;
@@ -159,5 +167,58 @@ public class MappingPage extends ApasGenericPage {
 	public String confirmationMsgOnSecondScreen() throws Exception {
 		Thread.sleep(3000);
 		return getElementText(waitForElementToBeClickable(20, confirmationMessageOnSecondScreen));
+	}
+	
+	 /**
+     * Description: This method will return the error messages on Mapping ACtion Screen One
+     * @param Num: Takes integer as an argument
+     * @returns errorMessage:  Returns the error message text from the screen
+     */
+    public String getErrorMessagesOnFirstScreen(int Num) throws Exception {
+    	String xpathStr = "//div[contains(@class,'flowruntimeBody')]//li[" + Num + "]";
+        WebElement errorMessage = waitForElementToBeClickable(30, xpathStr);
+        return getElementText(errorMessage);
+    }
+    
+    /**
+	 * Description: This method will return the error messages on Mapping ACtion Screen Two
+	 * @param Num: Takes integer as an argument
+     * @returns errorMessage:  Returns the error message text from the screen
+     */
+	public String getErrorMsgOnSecondScreen(int Num) throws Exception {
+		Thread.sleep(2000);
+		String xpathStr = "//div[contains(@class,'message-font slds-align_absolute-center slds-text-color_error')][" + Num + "]";
+        WebElement errorMessage = waitForElementToBeClickable(30, xpathStr);
+        return getElementText(errorMessage);
+	}
+	
+	/**
+	 * Description: This method will create next available APN
+	 * @param Num: Takes APN as an argument
+     * @returns  Returns the created APN
+     */
+	public String createNextAvailableAPN(String lastAPNInMapPage) throws Exception {
+		
+		String mapPageInAPNFetched = lastAPNInMapPage.substring(4, 7);
+		String createdAPN = "";
+		
+		if (!mapPageInAPNFetched.substring(0, 1).equals("9")) {
+				if (!mapPageInAPNFetched.substring(1, 2).equals("9")){
+						String getPartOfMapPage = mapPageInAPNFetched.substring(1, 2);
+						int incrementByOne = Integer.valueOf(getPartOfMapPage)  +  1;
+						String incrementAPN = String.valueOf(incrementByOne);
+						String updatedMapPage = mapPageInAPNFetched.substring(0, 1).concat(incrementAPN).concat("0");
+						createdAPN = lastAPNInMapPage.substring(0, 4).concat(updatedMapPage).concat("-").concat("010");		
+				}
+				else{
+						String getPartOfMapPage = mapPageInAPNFetched.substring(0, 1);
+						int incrementByOne = Integer.valueOf(getPartOfMapPage)  +  1;
+						String incrementAPN = String.valueOf(incrementByOne);
+						String updatedMapPage = incrementAPN.concat("00");
+						createdAPN = lastAPNInMapPage.substring(0, 4).concat(updatedMapPage).concat("-").concat("010");	
+				}
+		}
+        return createdAPN;
+	
 	}
 }
