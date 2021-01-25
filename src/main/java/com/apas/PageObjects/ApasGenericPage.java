@@ -1121,8 +1121,15 @@ public class ApasGenericPage extends Page {
 	}
    
    public String getErrorMessage() throws Exception {
-		WebElement ErrorText = locateElement("//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
-		String ErrorTxt = ErrorText.getText();
+	   	String ErrorTxt = "";
+	   	Thread.sleep(1000);
+		List<WebElement> ErrorText = locateElements("//div[contains(@class,'color_error')] |//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
+	   	if(ErrorText.get(0).getAttribute("class").contains("color_error")){
+			for(WebElement errorMsg : ErrorText){
+				ErrorTxt = (ErrorTxt + errorMsg.getText()).trim();
+			}
+		}else
+			ErrorTxt = ErrorText.get(0).getText();
 		return ErrorTxt;
 	}
    
