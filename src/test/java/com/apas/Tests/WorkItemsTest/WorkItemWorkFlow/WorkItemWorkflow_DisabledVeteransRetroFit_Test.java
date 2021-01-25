@@ -269,7 +269,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 	 */
 
 	@Test(description = "SMAB-T1921,SMAB-T1889,SMAB-T1919,SMAB-T1920,SMAB-T1867:Verify that once supervisor 'Return' the RPSL record then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' is also Returned and once RPSL approved then WI is also completed,Verify that Supervisor of a WI is able to edit the WI which is submitted for Approval ", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, dependsOnMethods = {
-			"Disabledveteran_RPSLandReminderWIClaimSubmitValidations" }, groups = { "regression",
+			"WorkItemWorkflow_Disabledveteran_RPSLandReminderWIClaimSubmitValidations" }, groups = { "regression",
 					"Work_Item_DV" }, alwaysRun = true)
 	public void WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIApprovalRejectionValidations(String loginUser) throws Exception {
 		
