@@ -464,7 +464,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 	 */
 
 	@Test(description = "SMAB-T2080,SMAB-T2091,SMAB-T1918,SMAB-T1951, SMAB-T1952:Verify system generates WI 'Disabled Veteran -Review and Update-Annual exemption amount verification' for all active Exemption with low income VA for previous roll year once 'Annual Exemption Limits' for current roll year is approved", dataProvider = "loginExemptionSupportStaff", dependsOnMethods = {
-			"Disabledveteran_RPSLandReminderWIApprovalRejectionValidations" }, dataProviderClass = DataProviders.class, groups = {
+			"WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIApprovalRejectionValidations" }, dataProviderClass = DataProviders.class, groups = {
 					"regression", "Work_Item_DV" }, alwaysRun = true)
 	public void WorkItemWorkflow_DisabledVeteran_LowIncomeExemptionWIVerification(String loginUser) throws Exception {
 

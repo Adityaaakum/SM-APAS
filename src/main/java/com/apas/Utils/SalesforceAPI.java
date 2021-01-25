@@ -192,9 +192,9 @@ public class SalesforceAPI extends TestBase {
      * This method will execute the Select SQL query end to end from creating HTTP connection
      * to release connection
      * @param sqlQuery : Select SQL query
-     * @return HashMap containing the data received from HTTP Post request
+     * @return String json data in string
      */
-    public HashMap<String, ArrayList<String>> select(String sqlQuery) {
+    public String getSelectQueryDateInJson(String sqlQuery) {
         ReportLogger.INFO("Executing the query : " + sqlQuery);
         sqlQuery = sqlQuery.replace("%", "%25");
         sqlQuery = sqlQuery.replace(" ", "%20");
@@ -205,20 +205,31 @@ public class SalesforceAPI extends TestBase {
         sqlQuery = sqlQuery.replace(">", "%3E");
         System.out.println("Modified query for URI : " + sqlQuery);
 
-        HashMap<String, ArrayList<String>> hashMap = new HashMap<>();
+        String jsonData = "";
 
         //Creating HTTP Post Connection
         HttpPost httpPost = salesforceCreateConnection();
 
         //Authenticating the HTTP Post connection. Executing the SQL Query
         if (salesforceAuthentication(httpPost)) {
-            hashMap = parseJason(getJsonResponse(sqlQuery));
+            jsonData = getJsonResponse(sqlQuery);
         }
 
         //Releasing HTTP Post connection
         salesforceReleaseConnection(httpPost);
 
-        return hashMap;
+        return jsonData;
+    }
+
+    /**
+     * This method will execute the Select SQL query end to end from creating HTTP connection
+     * to release connection
+     * @param sqlQuery : Select SQL query
+     * @return HashMap containing the data received from HTTP Post request
+     */
+    public HashMap<String, ArrayList<String>> select(String sqlQuery) {
+        String jsonResponse = getSelectQueryDateInJson(sqlQuery);
+        return parseJason(jsonResponse);
     }
 
     /**
