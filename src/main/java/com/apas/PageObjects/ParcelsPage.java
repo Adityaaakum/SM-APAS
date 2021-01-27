@@ -10,6 +10,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -25,6 +27,7 @@ public class ParcelsPage extends ApasGenericPage {
 
 	public String componentActionsButtonText = "Component Actions";
 	public String nextButtonComponentsActionsModal = "Next";
+	public String parcelMapInGISPortal = "Parcel Map in GIS Portal";
 
 	public String workItemTypeDropDownComponentsActionsModal = "Work Item Type";
 	public String referenceInputTextBoxComponentActionModal = "Reference";
@@ -39,6 +42,7 @@ public class ParcelsPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
+	
 
 	@FindBy(xpath = "//li[not(contains(@style,'visibility: hidden'))]//*[@title='More Tabs']")
 	public WebElement moretab;
@@ -54,6 +58,17 @@ public class ParcelsPage extends ApasGenericPage {
 
 	@FindBy (xpath= "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]//li[1]//button[@title='Toggle details for work item']")
 	public WebElement ExpendWIOnParcels;
+	
+	@FindBy(xpath = "//button[contains(text(),'Advanced')]")
+	public WebElement advancedButton;
+	
+	@FindBy(xpath = "//*[contains(text(),'Proceed to')]")
+	public WebElement proceedButton;
+	
+	@FindBy(xpath = "//button[contains(text(),'Open Assessor')]")
+	public WebElement openAsessorsMapButton;
+	
+	
 	
     public String SubmittedForApprovalButton="Submit for Approval";
 	
@@ -115,6 +130,16 @@ public class ParcelsPage extends ApasGenericPage {
 		ReportLogger.INFO("Work item created is " + workItemNumber  );
 		
 		return workItemNumber;
+	}
+	
+	public String getOpenGISUrl(String apn) throws Exception {
+
+		String url = driver.getCurrentUrl();
+		//wait.until(ExpectedConditions.urlContains("apn"));
+	
+		System.out.println("Url is" +url);
+		return url;
+	
 	}
 	
 }
