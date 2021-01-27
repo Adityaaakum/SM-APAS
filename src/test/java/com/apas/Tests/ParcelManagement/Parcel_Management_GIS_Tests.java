@@ -135,17 +135,13 @@ public class Parcel_Management_GIS_Tests extends TestBase implements testdata, m
 	
 	@Test(description = "SMAB-T2411:Verify tif file is not downloaded and 404 server error comes by clicking on Open Assessor's Map button ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
-	public void ParcelManagement_OpenAssessorMapInactiveParcel(String loginUser) throws Exception {
-       String inactiveParcel="232-323-234";
-
-        
+	public void ParcelManagement_OpenAssessorMapInactiveParcel(String loginUser) throws Exception {  
 		// Step1: Login to the APAS application using the credentials passed through data provider (RP Business Admin)
 		objMappingPage.login(loginUser);
 
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
 		objMappingPage.searchModule(PARCELS);
-		objMappingPage.globalSearchRecords(inactiveParcel);
-		//driver.navigate().refresh();
+		objMappingPage.globalSearchRecords("232-323-234");
 		Thread.sleep(2000);
 		objParcelsPage.clickAction(objParcelsPage.openAsessorsMapButton);
 		Thread.sleep(3000);
