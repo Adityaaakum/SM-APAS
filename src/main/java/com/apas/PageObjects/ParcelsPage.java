@@ -42,7 +42,6 @@ public class ParcelsPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
-	
 
 	@FindBy(xpath = "//li[not(contains(@style,'visibility: hidden'))]//*[@title='More Tabs']")
 	public WebElement moretab;
@@ -67,8 +66,6 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//button[contains(text(),'Open Assessor')]")
 	public WebElement openAsessorsMapButton;
-	
-	
 	
     public String SubmittedForApprovalButton="Submit for Approval";
 	
@@ -131,15 +128,4 @@ public class ParcelsPage extends ApasGenericPage {
 		
 		return workItemNumber;
 	}
-	
-	public String getOpenGISUrl(String apn) throws Exception {
-
-		String url = driver.getCurrentUrl();
-		//wait.until(ExpectedConditions.urlContains("apn"));
-	
-		System.out.println("Url is" +url);
-		return url;
-	
-	}
-	
 }
