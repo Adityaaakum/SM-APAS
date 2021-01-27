@@ -7,7 +7,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import com.apas.Reports.ReportLogger;
 import com.apas.Utils.Util;
 
 public class MappingPage extends ApasGenericPage {
