@@ -3,6 +3,8 @@ package com.apas.Tests.WorkItemsTest.WorkItemWorkFlow;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.apas.PageObjects.*;
 import com.apas.Reports.ReportLogger;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -15,7 +17,6 @@ import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
-import com.apas.PageObjects.WorkItemsRoutingSetupPage;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
@@ -29,13 +30,13 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 
 	ParcelsPage objParcelsPage;
 	WorkItemHomePage objWorkItemHomePage;
+	WorkPoolPage objWorkPoolPage;
 	Page objPage;
 	Util objUtil = new Util();
 	SoftAssertion softAssert = new SoftAssertion();
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	ApasGenericPage apasGenericObj;
-	WorkItemsRoutingSetupPage objWorkItemsRoutingSetupPage;
-
+	RoutingAssignmentPage objRoutingAssignmentPage;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -46,7 +47,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		objParcelsPage = new ParcelsPage(driver);
 		objPage = new Page(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
-		objWorkItemsRoutingSetupPage=new WorkItemsRoutingSetupPage(driver);
+		objRoutingAssignmentPage = new RoutingAssignmentPage(driver);
+		objWorkPoolPage = new WorkPoolPage(driver);
 	}
 
 	/**
@@ -408,13 +410,13 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		// Step5.a: Create a Work Pool record if there is no existing record
 		if (apasGenericObj.searchRecords(poolName).substring(0, 6).equals("0 item")) {
 			ReportLogger.INFO("There is no existing Work Pool record with the name :: " + poolName);
-			ReportLogger.INFO("Create a New Work Pool record");
-			String successMessage = objWorkItemHomePage.createWorkPool(poolName,rpBusinessAdminName,bppBusinessAdminName,"500"); 
-
-			// Step5.b: Validate the success message after creation of work pool and Value Criteria field
-			softAssert.assertEquals(successMessage,"success\nWork Pool \"" + poolName + "\" was created.\nClose","SMAB-T1935 : Validate success message on creation of the Work Pool" );
-			softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor),"500.00",
-					"SMAB-T1935 : Validate user is able to enter and save Level2 Value Criteria in the Work Pool");
+	    	ReportLogger.INFO("Create a New Work Pool record");
+	    	String successMessage = objWorkPoolPage.createWorkPool(poolName,rpBusinessAdminName,bppBusinessAdminName,"500");
+	    		 				
+	    	// Step5.b: Validate the success message after creation of work pool and Value Criteria field
+	    	softAssert.assertEquals(successMessage,"success\nWork Pool \"" + poolName + "\" was created.\nClose","SMAB-T1935 : Validate success message on creation of the Work Pool" );
+	    	softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkPoolPage.wpLevel2ValueCriteriaSupervisor),"500.00",
+	    				"SMAB-T1935 : Validate user is able to enter and save Level2 Value Criteria in the Work Pool");
 		}
 		// Step6: Open the work pool record if there is an existing record
 		else {
@@ -425,29 +427,29 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 
 		// Step7: Edit the work pool record and update field values in it
 		objWorkItemHomePage.waitForElementToBeVisible(6, objPage.getButtonWithText(objWorkItemHomePage.editButton));
-		objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
-		objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
-		ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record");
-		apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, dataAdminName);
-		objPage.enter(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor, "400");
-		String successMessage = apasGenericObj.saveRecord();
-
-		// Step8 Validate the success message after saving the work pool and other fields
-		softAssert.assertEquals(successMessage,"success\nWork Pool \"" + poolName + "\" was saved.\nClose","SMAB-T1935 : Validate user is able to edit and save the Work Pool" );
-		objWorkItemHomePage.waitForElementToBeVisible(6, objPage.getButtonWithText(objWorkItemHomePage.editButton));
-		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2Supervisor),dataAdminName,
-				"SMAB-T1935 : Validate user is able to update value for Level2 Supervisor in the Work Pool");
-		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wpLevel2ValueCriteriaSupervisor),"400.00",
-				"SMAB-T1936: Validate user is able to update value for Level2 Value Criteria in the Work Pool");
-
-		// Step9: Edit the work pool record again with same user in Approver & Level2 Supervisor fields
-		ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record to keep it same as the Supervisor");
-		objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
-		objPage.clearSelectionFromLookup(objWorkItemHomePage.wpLevel2Supervisor);
-		apasGenericObj.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wpLevel2Supervisor, rpBusinessAdminName);
-		softAssert.assertEquals(apasGenericObj.saveRecordAndGetError(),"Close error dialog\nWe hit a snag.\nReview the errors on this page.\nSupervisor and Level 2 Supervisor should not be same.","SMAB-T1940 : Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor");
-
-		apasGenericObj.logout();
+    	objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
+    	objPage.clearSelectionFromLookup(objWorkPoolPage.wpLevel2Supervisor);
+    	ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record");
+    	apasGenericObj.searchAndSelectOptionFromDropDown(objWorkPoolPage.wpLevel2Supervisor, dataAdminName);
+    	objPage.enter(objWorkPoolPage.wpLevel2ValueCriteriaSupervisor, "400");
+    	String successMessage = apasGenericObj.saveRecord();
+            
+    	// Step8 Validate the success message after saving the work pool and other fields
+    	softAssert.assertEquals(successMessage,"success\nWork Pool \"" + poolName + "\" was saved.\nClose","SMAB-T1935 : Validate user is able to edit and save the Work Pool" );
+    	objWorkItemHomePage.waitForElementToBeVisible(6, objPage.getButtonWithText(objWorkItemHomePage.editButton));
+    	softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkPoolPage.wpLevel2Supervisor),dataAdminName,
+    				"SMAB-T1935 : Validate user is able to update value for Level2 Supervisor in the Work Pool");
+    	softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkPoolPage.wpLevel2ValueCriteriaSupervisor),"400.00",
+    				"SMAB-T1936: Validate user is able to update value for Level2 Value Criteria in the Work Pool");
+    		
+    	// Step9: Edit the work pool record again with same user in Approver & Level2 Supervisor fields
+    	ReportLogger.INFO("Update the value for Level2 Supervisor in the Work Pool record to keep it same as the Supervisor");
+    	objPage.Click(objPage.getButtonWithText(objWorkItemHomePage.editButton));
+    	objPage.clearSelectionFromLookup(objWorkPoolPage.wpLevel2Supervisor);
+    	apasGenericObj.searchAndSelectOptionFromDropDown(objWorkPoolPage.wpLevel2Supervisor, rpBusinessAdminName);
+    	softAssert.assertEquals(apasGenericObj.saveRecordAndGetError(),"Close error dialog\nWe hit a snag.\nReview the errors on this page.\nSupervisor and Level 2 Supervisor should not be same.","SMAB-T1940 : Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor");
+    		
+    	apasGenericObj.logout();
 	}
 
 	/**
@@ -1209,7 +1211,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		objWorkItemHomePage.searchModule(modules.ROUTING_ASSIGNMENTS);
 
 		//Step 3:Create a new Routing Assignment for the WIC fetched above 
-		objWorkItemsRoutingSetupPage.createRoutingAssignmentRecord(hashMapRoutingAssignmentData);
+		objRoutingAssignmentPage.createRoutingAssignmentRecord(hashMapRoutingAssignmentData);
 
 		// Step 4: Opening the PARCELS page  and searching  parcel
 		objWorkItemHomePage.searchModule(PARCELS);
@@ -1294,7 +1296,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		objWorkItemHomePage.searchModule(modules.ROUTING_ASSIGNMENTS);
 
 		//Step 3: Create a new Routing Assignment for the WIC fetched above 
-		objWorkItemsRoutingSetupPage.createRoutingAssignmentRecord(hashMapRoutingAssignmentData);
+		objRoutingAssignmentPage.createRoutingAssignmentRecord(hashMapRoutingAssignmentData);
 
 		// Step 4: Opening the BPP accounts page  and searching  bpp account
 		objWorkItemHomePage.searchModule(BPP_ACCOUNTS);
