@@ -212,7 +212,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 */
 	public void createBppSetting(String equipIndexFactorValue) throws Exception {
 		if(verifyElementVisible(dropDownIconBppSetting))
-			clickAction(waitForElementToBeClickable(dropDownIconBppSetting));
+			Click(waitForElementToBeClickable(dropDownIconBppSetting));
 		
 		//createRecord();
 		clickAction(waitForElementToBeClickable(newBtnToCreateEntry));
@@ -749,9 +749,9 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		if(!(factorSettings.size()>0)) {
 			if(verifyElementVisible(dropDownIconBppSetting))
 				objPage.javascriptClick(dropDownIconBppSetting);
-			//	objPage.waitForElementToBeClickable(newBtnToCreateEntry, 20);
-			//	objPage.javascriptClick(newBtnToCreateEntry);
-			createRecord();
+				objPage.waitForElementToBeClickable(newBtnToCreateEntry, 20);
+				objPage.javascriptClick(newBtnToCreateEntry);
+			//createRecord();
 			enter("Maximum Equipment index Factor","125");
 			objPage.Click(objPage.getButtonWithText("Save"));
 			Thread.sleep(1000);
