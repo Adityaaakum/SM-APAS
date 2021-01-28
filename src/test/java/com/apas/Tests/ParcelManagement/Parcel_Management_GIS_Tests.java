@@ -21,6 +21,7 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.ReportsPage;
@@ -45,6 +46,7 @@ public class Parcel_Management_GIS_Tests extends TestBase implements testdata, m
 	JSONObject jsonObject= new JSONObject();
 	String apnPrefix=new String();
 	ReportsPage objReportsPage;
+	ApasGenericPage objApasGenericPage;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -55,13 +57,14 @@ public class Parcel_Management_GIS_Tests extends TestBase implements testdata, m
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage= new MappingPage(driver);
 		objReportsPage = new ReportsPage(driver);
+		objApasGenericPage= new ApasGenericPage(driver);
 	}
 		
 		
 	@Test(description = "SMAB-T2362:Verify user is able to access GIS by clicking on the parcel map button", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_AcessToOpenGIS(String loginUser) throws Exception {
-       ArrayList<String> APNs=objMappingPage.fetchActiveAPN(1);
+       ArrayList<String> APNs=objApasGenericPage.fetchActiveAPN(1);
 		String activeParcelToPerformMapping=APNs.get(0);
 		String APNWithoutHypen=activeParcelToPerformMapping.replace("-", "");
 
@@ -96,7 +99,7 @@ public class Parcel_Management_GIS_Tests extends TestBase implements testdata, m
 	@Test(description = "SMAB-T2361:Verify tif file is downloaded by clicking on Open Assessor's Map button ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_OpenAssessorMap(String loginUser) throws Exception {
-       ArrayList<String> APNs=objMappingPage.fetchActiveAPN(1);
+       ArrayList<String> APNs=objApasGenericPage.fetchActiveAPN(1);
 		String activeParcelToPerformMapping=APNs.get(0);
 		String APNWithoutHypen=activeParcelToPerformMapping.replace("-", "").substring(0, 4);
 		String downloadLocation = testdata.DOWNLOAD_FOLDER;
