@@ -130,7 +130,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	@FindBy(xpath = "//ul[@class='errorsList']//li")
 	public WebElement errorMsgOnTop;
 
-	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//a[@title = 'Edit']")
+	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default')]//a[@title = 'Edit']")
 	public WebElement editLinkUnderShowMore;
 
 	@FindBy(xpath = "//button[@title='Close this window']")
