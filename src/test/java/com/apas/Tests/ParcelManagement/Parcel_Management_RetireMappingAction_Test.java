@@ -49,7 +49,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2455,SMAB-T2457,SMAB-T2512:Verify that User is able to view the various error message during Retire Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2455,SMAB-T2457:Verify that User is able to view the various error message during Retire Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyErrorMessagesInRetireMappingAction(String loginUser) throws Exception {
 		
