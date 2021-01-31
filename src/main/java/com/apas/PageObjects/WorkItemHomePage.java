@@ -301,7 +301,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 * @throws InterruptedException 
 	 **/
 	public void openWorkItem(String workItem) throws IOException, InterruptedException {
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[@title='" + workItem + "' or text()='" + workItem + "'] | //div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='"+workItem + "']"));
 		scrollToElement(webElement);
 		javascriptClick(webElement);
@@ -394,7 +394,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 
     public WebElement searchWIinGrid(String WIName) {
-    
+    	
 		WebElement btnNext = null;
 		List<WebElement> actualWINames = null;
 

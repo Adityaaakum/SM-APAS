@@ -195,7 +195,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateRetireWithActiveAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		Thread.sleep(1000);
 		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-Warning: TRAs of the combined parcels are different/n-In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2356: Validate that user is able to view Warning message");
 				
@@ -203,7 +202,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		Thread.sleep(1000);
 		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-Warning: TRAs of the combined parcels are different/n-In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2356: Validate that user is able to view Warning message");
 			
@@ -212,16 +210,14 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateInProgressWithActiveAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		Thread.sleep(1000);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2356: Validate that user is able to view error message for Inactive parcel");
 								
 		//Step 12: Validate that user is not able to move to the next screen
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		Thread.sleep(1000);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2356: Validate that user is still able to view error message for Inactive parcel");
 				
 		// Step 13: Add parcels in Parent APN field with different TRA records
@@ -229,8 +225,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateActiveAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		Thread.sleep(1000);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"-Warning: TRAs of the combined parcels are different",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-Warning: TRAs of the combined parcels are different",
 				"SMAB-T2356: Validate that user is able to view warning message");
 				
 		//Step 14: Validate that user is able to move to the next screen
@@ -244,18 +239,18 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		// Step 15: Update the Parent APN field and add more Active parcel records
 		ReportLogger.INFO("Click PREVIOUS button");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
-		Thread.sleep(1000);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
 		ReportLogger.INFO("Add multiple Active APNs :: " + concatenateMixAPNs);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateMixAPNs);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		Thread.sleep(1000);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
 				
 		//Step 16: Validate that user is able to move to the next screen
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		Thread.sleep(1000);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
 		
 		//Step 17: Verify that APNs generated must be 9-digits and should end in '0'
 		ReportLogger.INFO("Validate the Grid values");
@@ -330,7 +325,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 */
 	@Test(description = "SMAB-T2356,SMAB-T2358: Verify user is able to overwrite APN generated by system during Combine process", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
-	public void AParcelManagement_VerifyParcelOverwriteForCombineMappingAction(String loginUser) throws Exception {
+	public void ParcelManagement_VerifyParcelOverwriteForCombineMappingAction(String loginUser) throws Exception {
 		
 		//Fetching Assessee records
 		String queryAssesseeRecord = "SELECT Id, Name FROM Account";
@@ -416,10 +411,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithDifferentOwnership);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		Thread.sleep(1000);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.actionDropDownLabel);
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapCombineMappingData.get("Action"));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
-		Thread.sleep(1000);
 		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-Warning: TRAs of the combined parcels are different\n-In order to proceed with a parcel combine action, the parent APN must have the same ownership and ownership allocation",
 				"SMAB-T2356: Validate that user is able to view Warning message");
 						
@@ -427,8 +421,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		Thread.sleep(1000);
-		System.out.println(objMappingPage.getErrorMessage());
 		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-Warning: TRAs of the combined parcels are different\n-In order to proceed with a parcel combine action, the parent APN must have the same ownership and ownership allocation",
 				"SMAB-T2356: Validate that user is able to view Warning message");
 							
@@ -437,16 +429,14 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithOneWithNoOwnership);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		Thread.sleep(1000);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"-In order to proceed with a parcel combine action, the parent APN must have the same ownership and ownership allocation",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-In order to proceed with a parcel combine action, the parent APN must have the same ownership and ownership allocation",
 				"SMAB-T2356: Validate that user is able to view error message related to ownership record");						
 		
 		//Step 8: Validate that user is not able to move to the next screen
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		Thread.sleep(1000);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"-In order to proceed with a parcel combine action, the parent APN must have the same ownership and ownership allocation",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-In order to proceed with a parcel combine action, the parent APN must have the same ownership and ownership allocation",
 				"SMAB-T2356: Validate that user is able to view error message related to ownership record");										
 		
 		// Step 9: Update the Parent APN field and add another parcel with same ownership record
@@ -454,7 +444,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithSameOwnership);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		Thread.sleep(1000);
 		softAssert.assertTrue(!objMappingPage.verifyElementExists(objMappingPage.errorMessageOnScreenOne),
 				"SMAB-T2356: Validate that user is not able to view error message related to ownership record");
 				
@@ -462,7 +451,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		Thread.sleep(1000);
 		softAssert.assertTrue(!objMappingPage.verifyElementExists(objMappingPage.reasonCodeField),
 				"SMAB-T2356: Validate that 'Reason Code' field is not visible");
 		
@@ -509,11 +497,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		//Step 16 : Click previous button followed by next button
 		ReportLogger.INFO("Click PREVIOUS button");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
-		Thread.sleep(1000);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		Thread.sleep(1000);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
 		
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		String nextGeneratedAPN = gridDataHashMap.get("APN").get(0);
@@ -650,14 +638,15 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithSameOwnership);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		Thread.sleep(1000);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.actionDropDownLabel);
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapCombineMappingData.get("Action"));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
-		Thread.sleep(1000);
+		
 		ReportLogger.INFO("Click NEXT button");
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		Thread.sleep(1000);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
 		
 		// Step 6: Fetch the APN generated
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -671,16 +660,17 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		// Step 7: Click previous button and update parent parcel field
 		ReportLogger.INFO("Click PREVIOUS button");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
-		Thread.sleep(1000);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
 		ReportLogger.INFO("Reverse the parcels in Parent APN field with same ownership record :: " + apn2 + ", " + apn1);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNInReverseOrderWithSameOwnership);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		Thread.sleep(1000);
+		
 		ReportLogger.INFO("Click NEXT button");
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		Thread.sleep(1000);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
 		
 		// Step 8: Fetch the APN generated
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -694,16 +684,17 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		// Step 9: Click previous button and update parent parcel field
 		ReportLogger.INFO("Click PREVIOUS button");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
-		Thread.sleep(1000);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
 		ReportLogger.INFO("Add Condo parcel as first parent parcel in Parent APN field along with Non-Condo parcel with same ownership record :: " + condoAPN + ", " + apn1);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateCondoWithNonCondoWithSameOwnership);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		Thread.sleep(1000);
+		
 		ReportLogger.INFO("Click NEXT button");
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		Thread.sleep(1000);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
 		
 		// Step 10: Fetch the APN generated
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -713,7 +704,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2359: Validate that APN generated is from the same Map Book & Map Page as of first parcel in Parent APN field");
 		softAssert.assertTrue(nextGeneratedAPN2.endsWith("0"),
 				"SMAB-T2359: Validation that child APN number ends with 0");
-		
 		
 		//Fetching parcel that are Active and ends with 990
 		String queryLastAPNInMapBookAndPage = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') AND Id Not IN (Select parcel__c FROM Property_Ownership__c where Owner__r.name != '" + assesseeName + "') and name like '%990' and Status__c = 'Active' limit 1";
@@ -727,16 +717,17 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		// Step 11: Click previous button and update parent parcel field
 		ReportLogger.INFO("Click PREVIOUS button");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
-		Thread.sleep(1000);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
 		ReportLogger.INFO("Add two parcels in Parent APN field with same ownership record :: " + lastAPNInMapBookAndPage + ", " + apn1);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateTwoAPNWithSameOwnership);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		Thread.sleep(1000);
+		
 		ReportLogger.INFO("Click NEXT button");
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		Thread.sleep(1000);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
 		
 		// Step 12: Fetch the APN generated
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
