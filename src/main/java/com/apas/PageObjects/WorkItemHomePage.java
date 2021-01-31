@@ -301,7 +301,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 * @throws InterruptedException 
 	 **/
 	public void openWorkItem(String workItem) throws IOException, InterruptedException {
-		Thread.sleep(2000);
+		Thread.sleep(1000);
 		WebElement webElement = driver.findElement(By.xpath("//lightning-formatted-url//a[@title='" + workItem + "' or text()='" + workItem + "'] | //div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='"+workItem + "']"));
 		scrollToElement(webElement);
 		javascriptClick(webElement);
@@ -400,8 +400,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 		try {
 			
-			//actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//*[@title='" + WIName + "' or text()='" + WIName + "']");
-			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//*[@title='View Work Item' and text()='" + WIName + "']");
+			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//*[@title='" + WIName + "' or text()='" + WIName + "']");
 			
 			if(actualWINames.isEmpty()) {				
 				String pageMsg = driver.findElementByXPath("//p[@class='slds-m-vertical_medium content']").getText();

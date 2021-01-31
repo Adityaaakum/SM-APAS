@@ -414,7 +414,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2554,SMAB-T2556,SMAB-T2558: Verify that 1st level Approver is able to assign WIs to a different 2nd level Approver than what is there in the relevant Work Pool, Verify that 2nd level Approver is able to view 'Warning' message if user tries to assign WI to another user using 'Assign Level2 Approver' button", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DV_WorkItem_Exemption"})
-	public void AWorkItemWorkflow_DisabledVeteran_Level2ApproverIsAbleToAssignWorkItem(String loginUser) throws Exception {
+	public void WorkItemWorkflow_DisabledVeteran_Level2ApproverIsAbleToAssignWorkItem(String loginUser) throws Exception {
 
 		ReportLogger.INFO("Get the user names through SOQL query");
 		String rpBusinessAdminName = salesforceAPI.getUserName(users.RP_BUSINESS_ADMIN);
