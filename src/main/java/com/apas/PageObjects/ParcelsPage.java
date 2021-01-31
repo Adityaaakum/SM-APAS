@@ -25,6 +25,7 @@ public class ParcelsPage extends ApasGenericPage {
 
 	public String componentActionsButtonText = "Component Actions";
 	public String nextButtonComponentsActionsModal = "Next";
+	public String parcelMapInGISPortal = "Parcel Map in GIS Portal";
 
 	public String workItemTypeDropDownComponentsActionsModal = "Work Item Type";
 	public String referenceInputTextBoxComponentActionModal = "Reference";
@@ -54,6 +55,15 @@ public class ParcelsPage extends ApasGenericPage {
 
 	@FindBy (xpath= "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]//li[1]//button[@title='Toggle details for work item']")
 	public WebElement ExpendWIOnParcels;
+	
+	@FindBy(xpath = "//button[contains(text(),'Advanced')]")
+	public WebElement advancedButton;
+	
+	@FindBy(xpath = "//*[contains(text(),'Proceed to')]")
+	public WebElement proceedButton;
+	
+	@FindBy(xpath = "//button[contains(text(),'Open Assessor')]")
+	public WebElement openAsessorsMapButton;
 	
     public String SubmittedForApprovalButton="Submit for Approval";
 	

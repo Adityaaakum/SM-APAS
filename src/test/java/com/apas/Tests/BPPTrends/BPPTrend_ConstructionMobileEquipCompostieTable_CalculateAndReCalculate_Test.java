@@ -208,6 +208,7 @@ public class BPPTrend_ConstructionMobileEquipCompostieTable_CalculateAndReCalcul
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);
 		
 		//Step3: Validating presence of ReCalculateAll button at page level
+		objPage.waitForElementToBeClickable(objBppTrend.xPathReCalculateAllBtn);
 		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathReCalculateAllBtn), "SMAB-T195: ReCalcuate all button is visible");
 
 		//Step4: Clicking on the given table
