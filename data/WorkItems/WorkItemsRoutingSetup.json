@@ -22,5 +22,18 @@
   "DataToCreateRoutingAssignment": {
     "Work Item Sub Type": "Unincorporated File Upload",
     "Work Pool": "RP Admin",
+  },
+"DataToCreateRP_RoutingAssignment": {
+   "Work Item Type": "Building Permit",
+   "Work Item Sub Type": "Burlingame File Upload",
+    "Work Pool": "RP Admin",
+    "RAType":"RP"
+  },
+"DataToCreateBPP_RoutingAssignment": {
+   "Work Item Type": "Building Permit",
+   "Work Item Sub Type": "San Bruno File Upload",
+    "Work Pool": "BPP Admin",
+    "RAType":"BPP"
   }
+
 }

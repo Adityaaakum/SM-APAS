@@ -261,11 +261,6 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String wiAPNDetailsPage = "APN";
 	public String wiLevel2ApproverDetailsPage = "Level2 Approver";
 	public String wiCurrentApproverDetailsPage = "Current Approver";
-	
-	public String wpSupervisor = "Supervisor";
-	public String wpLevel2Supervisor = "Level2 Supervisor";
-	public String wpLevel2ValueCriteriaSupervisor = "Level2 Value Criteria";
-	public String wpWorkPoolName = "Work Pool Name";
 
     public String SaveButton="Save";
     public String valueTextBox = "Value";
@@ -279,6 +274,11 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String inProgressOptionInTimeline = "In Progress";
 	public String completedOptionInTimeline = "Completed";
 	public String wiStatus = "Status";
+    public String reassignButton = "Reassign";
+	public final String returnToPool="Return to Pool";
+	public final String markInProgress="Mark In Progress";
+
+
 
 	/**
 	 * This method will return grid data from the work item home page tab passed in the parameter
@@ -569,35 +569,7 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 			scrollToElement(webElementCheckBox);
 			Click(webElementCheckBox);			
 	    }
-	 
-	 /**
-		 * This method will create a WorkPool
-		 * @param poolName :Work Pool Name
-		 * @param supervisorName :Supervisor Name
-	 **/
-	 
-	 public String createWorkPool(String poolName, String supervisorName) throws Exception {
-			return createWorkPool(poolName, supervisorName, "", "");
-		}
-	 
-	 /**
-		 * This method will create a WorkPool
-		 * @param poolName :Work Pool Name
-		 * @param supervisorName :Supervisor Name
-		 * @param level2SupervisorName :Level 2 Supervisor Name
-		 * @param level2ValueCriteria :Level 2 Value Criteria
-	 **/
-	 
-	 public String createWorkPool(String poolName, String supervisorName, String level2SupervisorName, String level2ValueCriteria) throws Exception {
-		 	ReportLogger.INFO("Create a Work Pool record :: "+poolName);	
-		 	objPageObj.Click(objApasGenericPage.newButton);
-	 		objPageObj.enter(wpWorkPoolName, poolName);
-	 		objApasGenericPage.searchAndSelectOptionFromDropDown(wpSupervisor, supervisorName);
-	 		if(level2SupervisorName != null)objApasGenericPage.searchAndSelectOptionFromDropDown(wpLevel2Supervisor, level2SupervisorName);
-	 		if(level2ValueCriteria != null)objPageObj.enter(wpLevel2ValueCriteriaSupervisor, level2ValueCriteria);
-	 		return objApasGenericPage.saveRecord();
-		}
-	 
+
 	 /**
 		 * This method will click on Time line option and and then mark it complete
 		 * @param timelineTab :Time Line Option

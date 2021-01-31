@@ -54,12 +54,15 @@ public interface testdata {
     String BPP_TREND_BOE_INDEX_FACTORS_VALID = "\\data\\BppTrend\\Valid_Import_Files\\";
     String BPP_TREND_BOE_VAL_FACTORS_VALID = "\\data\\BppTrend\\Valid_Import_Files\\";
     String BPP_TREND_CAA_VAL_FACTORS_VALID = "\\data\\BppTrend\\Valid_Import_Files\\";
-    String MANUAL_WORK_ITEMS = "\\data\\WorkItems\\ManualWorkItem.json";
+    String MANUAL_WORK_ITEMS = userDirectory + "\\data\\WorkItems\\ManualWorkItem.json";
 	String MANUAL_WORK_ITEMS_BPP_ACCOUNTS = userDirectory + "\\data\\WorkItems\\ManualWorkItemBPPAccount.json";
     String BPP_TREND_COMPOSITE_FACTORS_DATA = "\\data\\BppTrend\\BPPTrends_CompositeFactorsData.json";
 	String WORK_ITEMS_ROUTING_SETUP = userDirectory + "\\data\\WorkItems\\WorkItemsRoutingSetup.json";
     String ONE_TO_ONE_MAPPING_ACTION = "\\data\\MappingActions\\OneToOneMapping.json";
+	String SPLIT_MAPPING_ACTION = userDirectory + "\\data\\MappingActions\\SplitMappingAction.json";
     String RETIRE_ACTION = userDirectory + "\\data\\MappingActions\\RetireAction.json";
     String COMBINE_MAPPING_ACTION = userDirectory + "\\data\\MappingActions\\CombineAction.json";
+	String NEIGHBORHOOD = userDirectory + "\\data\\Neighborhood\\Neighborhood.json";
+	String ROUTING_ASSIGNMENT = userDirectory + "\\data\\RoutingAssignment\\RoutingAssignment.json";
 
 }

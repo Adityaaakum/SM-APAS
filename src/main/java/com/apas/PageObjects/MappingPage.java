@@ -7,6 +7,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import com.apas.Reports.ReportLogger;
 import com.apas.Utils.Util;
 
 public class MappingPage extends ApasGenericPage {
@@ -34,12 +35,11 @@ public class MappingPage extends ApasGenericPage {
 	public String districtColumnSecondScreen = "District";
 	public String apnColumnSecondScreen = "APN";
 	public String reasonCodeColumnSecondScreen = "Reason Code";
-
 	public String useCodeColumnSecondScreen = "Use Code";
-
 	public String districtEditTextBoxSecondScreenLabel = "District";
 	public String useCodeEditTextBoxSecondScreenLabel = "Use Code";
-
+	public String numberOfChildNonCondoTextBoxLabel = "Number of Child Non-Condo Parcels";
+	public String numberOfChildCondoTextBoxLabel = "Number of Child Condo Parcels";
 	public String nextButton = "Next";
 	public String generateParcelButton = "Generate Parcel";
 	public String combineParcelButton = "Combine Parcel";
@@ -52,6 +52,8 @@ public class MappingPage extends ApasGenericPage {
 	public String reasonCodeField = "//label[text()='Reason Code']";
 	public String errorMessageOnScreenOne = "//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]";
 	public String saveButton = "Save";
+	public String firstCondoTextBoxLabel = "First Condo Parcel Number";
+	public String splitParcelButton = "Split Parcel";
 
 	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
@@ -93,6 +95,10 @@ public class MappingPage extends ApasGenericPage {
 		String legalDescription = dataMap.get("Legal Description");
 		String situs= dataMap.get("Situs");
 		String comments= dataMap.get("Comments");
+		String numberOfChildNonCondoParcels= dataMap.get("Number of Child Non-Condo Parcels");
+		String numberOfChildCondoParcels= dataMap.get("Number of Child Condo Parcels");
+		String firstCondoParcelNumber= dataMap.get("First Condo Parcel Number");
+
 
 		selectOptionFromDropDown(actionDropDownLabel, action);
 		selectOptionFromDropDown(taxesPaidDropDownLabel, taxesPaid);
@@ -100,8 +106,14 @@ public class MappingPage extends ApasGenericPage {
 		if (parcelSizeValidation != null)selectOptionFromDropDown(parcelSizeDropDownLabel, parcelSizeValidation);
 		if (netLandLoss != null)enter(netLandLossTextBoxLabel, netLandLoss);
 		if (netLandGain != null)enter(netLandGainTextBoxLabel, netLandGain);
+		if (numberOfChildNonCondoParcels != null)
+			enter(numberOfChildNonCondoTextBoxLabel, numberOfChildNonCondoParcels);
 		if (firstnonCondoParcelNumber != null)
 			enter(firstNonCondoTextBoxLabel, firstnonCondoParcelNumber);
+		if (numberOfChildCondoParcels != null)
+			enter(numberOfChildCondoTextBoxLabel, numberOfChildCondoParcels);
+		if (firstCondoParcelNumber != null)
+			enter(firstCondoTextBoxLabel, firstCondoParcelNumber);
 		if (legalDescription != null)
 			enter(legalDescriptionTextBoxLabel, legalDescription);
 		if (situs != null)
@@ -168,56 +180,53 @@ public class MappingPage extends ApasGenericPage {
 		return getElementText(waitForElementToBeClickable(20, confirmationMessageOnSecondScreen));
 	}
 	
-	 /**
-     * Description: This method will return the error messages on Mapping ACtion Screen One
-     * @param Num: Takes integer as an argument
-     * @returns errorMessage:  Returns the error message text from the screen
-     */
-    public String getErrorMessagesOnFirstScreen(int Num) throws Exception {
-    	String xpathStr = "//div[contains(@class,'flowruntimeBody')]//li[" + Num + "]";
-        WebElement errorMessage = waitForElementToBeClickable(30, xpathStr);
-        return getElementText(errorMessage);
-    }
-    
-    /**
-	 * Description: This method will return the error messages on Mapping ACtion Screen Two
-	 * @param Num: Takes integer as an argument
-     * @returns errorMessage:  Returns the error message text from the screen
-     */
-	public String getErrorMsgOnSecondScreen(int Num) throws Exception {
-		Thread.sleep(2000);
-		String xpathStr = "//div[contains(@class,'message-font slds-align_absolute-center slds-text-color_error')][" + Num + "]";
-        WebElement errorMessage = waitForElementToBeClickable(30, xpathStr);
-        return getElementText(errorMessage);
-	}
 	
 	/**
-	 * Description: This method will create next available APN
+	 * Description: This method will take the generated APN (from Mapping action) and then create the next one in that series
 	 * @param Num: Takes APN as an argument
      * @returns  Returns the created APN
      */
-	public String createNextAvailableAPN(String lastAPNInMapPage) throws Exception {
+	public String generateNextAvailableAPN(String apn) throws Exception {
+	
+		String updatedAPN = "";
 		
-		String mapPageInAPNFetched = lastAPNInMapPage.substring(4, 7);
-		String createdAPN = "";
-		
-		if (!mapPageInAPNFetched.substring(0, 1).equals("9")) {
-				if (!mapPageInAPNFetched.substring(1, 2).equals("9")){
-						String getPartOfMapPage = mapPageInAPNFetched.substring(1, 2);
-						int incrementByOne = Integer.valueOf(getPartOfMapPage)  +  1;
-						String incrementAPN = String.valueOf(incrementByOne);
-						String updatedMapPage = mapPageInAPNFetched.substring(0, 1).concat(incrementAPN).concat("0");
-						createdAPN = lastAPNInMapPage.substring(0, 4).concat(updatedMapPage).concat("-").concat("010");		
+		/*Some Examples*/
+		/*100-100-010  --> 100-100-020, 100-090-980  --> 100-090-990, 100-090-890  --> 100-090-900, 100-890-070	 --> 100-890-070*/
+		if (!apn.substring(8, 10).equals("99")){
+			String getLastThreeDigits = apn.substring(8);
+			int incrementByTen = Integer.valueOf(getLastThreeDigits)  +  10;
+			String incrementedAPN = String.valueOf(incrementByTen);
+			if (incrementedAPN.length() < 3) updatedAPN = apn.substring(0, 8).concat("0").concat(incrementedAPN);
+			if (incrementedAPN.length() == 3) updatedAPN = apn.substring(0, 8).concat(incrementedAPN);	
+		}
+		else{		
+			if (!apn.substring(4, 6).equals("99")){
+				
+				/*Some Examples*/
+				/*100-090-990  -->  100-100-010, 100-290-990  -->  100-300-010, 100-280-990  -->  100-290-010, 100-297-990  -->  100-300-010*/
+				if (apn.substring(6, 7).equals("0")){
+					String getMiddleThreeDigits = apn.substring(4,7);
+					int incrementByTen = Integer.valueOf(getMiddleThreeDigits)  +  10;
+					String incrementedAPN = String.valueOf(incrementByTen);
+					if (incrementedAPN.length() < 3) updatedAPN = apn.substring(0, 4).concat("0").concat(incrementedAPN).concat("-010");
+					if (incrementedAPN.length() == 3) updatedAPN = apn.substring(0, 4).concat(incrementedAPN).concat("-010");	
 				}
 				else{
-						String getPartOfMapPage = mapPageInAPNFetched.substring(0, 1);
-						int incrementByOne = Integer.valueOf(getPartOfMapPage)  +  1;
-						String incrementAPN = String.valueOf(incrementByOne);
-						String updatedMapPage = incrementAPN.concat("00");
-						createdAPN = lastAPNInMapPage.substring(0, 4).concat(updatedMapPage).concat("-").concat("010");	
+					
+					/*Some Examples*/
+					/*100-145-990  -->  100-150-010, 100-237-990  -->  100-240-010*/
+					String getPartOfMapPage = apn.substring(4,6);
+					int incrementByOne = Integer.valueOf(getPartOfMapPage)  +  1;
+					String incrementedAPN = String.valueOf(incrementByOne);
+					if (incrementedAPN.length() < 2) updatedAPN = apn.substring(0, 4).concat("0").concat(incrementedAPN).concat("0-010");
+					if (incrementedAPN.length() == 2) updatedAPN = apn.substring(0, 4).concat(incrementedAPN).concat("0-010");	
 				}
-		}
-        return createdAPN;
-	
+			}	
+			else{
+				/*Example : 100-990-990*/
+				ReportLogger.INFO("Warning : 990 limit has been reached for current Map Page, so move to the next Map Book");	
+			}
+	    }
+		return updatedAPN;
 	}
 }
