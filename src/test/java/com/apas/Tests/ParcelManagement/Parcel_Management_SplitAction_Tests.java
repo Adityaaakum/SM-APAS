@@ -106,6 +106,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
         objMappingPage.Click(objMappingPage.helpIconSitus);
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent situs, leave as blank",
                 "SMAB-T2481: Validation that help text is generated on clicking the help icon for Situs text box");
+        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.closeButton));
 
         //Step 9: Validating Error Message when both Number of Child Non-Condo & Condo Parcels fields contain 0
         objParcelsPage.Click(objParcelsPage.getButtonWithText(objMappingPage.nextButton));
@@ -154,7 +155,19 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
         //Step 18: entering valid data in form for split mapping action
         Map<String, String> hashMapSplitActionValidMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
                 "DataToPerformSplitMappingActionWithValidData");
+        
+        String situsCityName = hashMapSplitActionValidMappingData.get("Situs City Name");
+		String direction = hashMapSplitActionValidMappingData.get("Direction");
+		String situsNumber = hashMapSplitActionValidMappingData.get("Situs Number");
+		String situsStreetName = hashMapSplitActionValidMappingData.get("Situs Street Name");
+		String situsType = hashMapSplitActionValidMappingData.get("Situs Type");
+		String situsUnitNumber = hashMapSplitActionValidMappingData.get("Situs Unit Number");
+		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+situsCityName;
+		
+		objMappingPage.editSitusModalWindowFirstScreen(hashMapSplitActionValidMappingData);
         objMappingPage.fillMappingActionForm(hashMapSplitActionValidMappingData);
+        softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabel),"value"),childprimarySitus,
+				"SMAB-T2661: Validation that User is able to update a Situs for child parcels from the Parcel mapping screen for split mapping action");
 
         //Step 19: Verify that APNs generated must be 9-digits and should end in '0'
         HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -177,6 +190,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
                 Integer.parseInt(hashMapSplitActionValidMappingData.get("Number of Child Condo Parcels"));
 
         softAssert.assertEquals(actualTotalParcels,expectedTotalParcels,"SMAB-T2613: Verify total no of parcels getting generated");
+        softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),childprimarySitus,
+				"SMAB-T2661: Validation that System populates primary situs for child parcel from the first screen for split mapping action");
 
         //Step 21: Validating warning messages
         softAssert.assertContains(objMappingPage.getErrorMessage(),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is",
