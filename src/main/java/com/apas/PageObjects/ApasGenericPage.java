@@ -1140,7 +1140,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public HashMap<String, ArrayList<String>> getGridDataForRowString(String rowString) {
 		String xpath="(//*[contains(@class,'slds-show')]//table/tbody//tr)";
-		String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr";
+		String xpathTable = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr";
 		if(verifyElementVisible(xpath))
 		{xpathTable=xpath;}
 
