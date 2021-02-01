@@ -71,7 +71,7 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		String accessorMapParcel = apn1.replace("-", "").substring(0, 5);
 		String expectedIndividualFieldMessage = "Complete this field.";
 		
-		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
 
@@ -250,7 +250,7 @@ public class Parcel_Management_RetireAction_Test extends TestBase implements tes
 		
 		String concatenateAPN = apn1+","+apn2+","+apn3;
 		
-		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
 

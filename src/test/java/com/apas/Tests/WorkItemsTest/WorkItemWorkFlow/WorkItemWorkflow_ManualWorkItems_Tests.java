@@ -859,10 +859,10 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		HashMap<String, ArrayList<String>> response2 = salesforceAPI.select(queryAPNValue2);
 		String apnValue2= response2.get("Name").get(0);
 
-		String workItemCreationData1 = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		String workItemCreationData1 =  testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData1 = objUtil.generateMapFromJsonFile(workItemCreationData1, "DOVSequencing");
 
-		String workItemCreationData2 = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		String workItemCreationData2 =  testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData2 = objUtil.generateMapFromJsonFile(workItemCreationData2,"DataToCreateWorkItemOfTypeRP");
 
 		String warningMsgOnAssignLevel2Approver = "warning\nYou are already the 2nd Level approver on one or more of the selected work items. If you want to delegate 2nd Level approval, then select a different user.";
