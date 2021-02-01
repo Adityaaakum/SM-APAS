@@ -126,6 +126,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent legal description, leave as blank.",
 				"SMAB-T2481: Validation that help text is generated on clicking the help icon for legal description");     		    
 		objMappingPage.Click(objMappingPage.helpIconSitus);
+		Thread.sleep(4000);
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent situs, leave as blank.",
 				"SMAB-T2481: Validation that help text is generated on clicking the help icon for Situs text box");
 		

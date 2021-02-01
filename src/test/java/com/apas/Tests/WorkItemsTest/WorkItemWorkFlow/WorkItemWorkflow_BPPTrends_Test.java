@@ -814,7 +814,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step5: "Perform Calculations" Work Item generation validation
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
-
+Thread.sleep(7000);
         String importWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_IN_POOL);
 
         //Step6: Accepting the work item and opening the link under 'Action' Column
@@ -865,7 +865,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Ste15: Verify WI is present in 'In Progress' tab
-        String inProgressWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_COMPLETED);
+        String inProgressWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_IN_PROGRESS);
         softAssert.assertEquals(inProgressWorkItem,importWorkItem, "SMAB-T2195: Verify WI returned to user is found in 'In Progress' tab");
     }
 
