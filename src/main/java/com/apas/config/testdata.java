@@ -63,5 +63,6 @@ public interface testdata {
     String RETIRE_ACTION = userDirectory + "\\data\\MappingActions\\RetireAction.json";
 	String NEIGHBORHOOD = userDirectory + "\\data\\Neighborhood\\Neighborhood.json";
 	String ROUTING_ASSIGNMENT = userDirectory + "\\data\\RoutingAssignment\\RoutingAssignment.json";
+	String Brand_New_Parcel_MAPPING_ACTION = "\\data\\MappingActions\\BrandNewParcelMapping.json";
 
 }
