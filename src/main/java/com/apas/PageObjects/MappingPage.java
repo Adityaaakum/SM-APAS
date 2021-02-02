@@ -79,6 +79,12 @@ public class MappingPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//div[@class='body']//div/following-sibling::c-tem_parcel-process-parent-view//div[contains(@class,'message-font slds-align_absolute-center slds-text-color_success')]")
 	public WebElement confirmationMessageOnSecondScreen;
+	
+	@FindBy(xpath = "//header[@class='slds-modal__header']//h2[text()='Edit Situs']")
+	public WebElement editSitusLabelSitusModal;
+	
+	@FindBy(xpath = "//div[@class='slds-card__header slds-grid']//span[text()='Situs Information']")
+	public WebElement situsInformationLabelSitusModal;
 
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
@@ -180,6 +186,7 @@ public class MappingPage extends ApasGenericPage {
 	 * @throws Exception
 	 */
 	public void editSitusModalWindowFirstScreen(Map<String, String> dataMap) throws Exception {
+		
 		String situsCityDescription = dataMap.get("Situs City Description");
 		String situsCityCode = dataMap.get("Situs City Code");
 		String situsCityName = dataMap.get("Situs City Name");
@@ -189,7 +196,6 @@ public class MappingPage extends ApasGenericPage {
 		String situsType = dataMap.get("Situs Type");
 		String situsUnitNumber = dataMap.get("Situs Unit Number");
 		
-		Click(getWebElementWithLabel(situsTextBoxLabel));
 		if (situsCityDescription != null) selectOptionFromDropDown(situsCityDescriptionLabel, situsCityDescription);
 		if (situsCityCode != null) selectOptionFromDropDown(situsCityCodeLabel, situsCityCode);
 		if (situsCityName != null) enter(situsCityNameLabel, situsCityName);

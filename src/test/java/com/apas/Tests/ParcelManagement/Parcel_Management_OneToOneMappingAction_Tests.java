@@ -403,7 +403,14 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.closeButton));
 
 		//Step 8: entering data in form for one to one mapping
+		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabel));
+		
+		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.editSitusLabelSitusModal),
+				"SMAB-T2655: Validation that Edit Situs label is displayed as heading of situs modal window in first screen");
+		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.situsInformationLabelSitusModal),
+				"SMAB-T2655: Validation that  Situs Information label is displayed in  situs modal window in first screen");
 		objMappingPage.editSitusModalWindowFirstScreen(hashMapOneToOneMappingData);
+		
 		objMappingPage.fillMappingActionForm(hashMapOneToOneMappingData);
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabel),"value"),childprimarySitus,
 				"SMAB-T2655: Validation that User is able to update a Situs for child parcel from the Parcel mapping screen");
