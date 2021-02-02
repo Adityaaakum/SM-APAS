@@ -1,0 +1,10 @@
+{
+  "DataToPerformCombineMappingAction": {
+    "Action": "Perform Parcel Combine",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Combine",
+    "Comments": "Perform Combine"
+  }
+  
+
+}

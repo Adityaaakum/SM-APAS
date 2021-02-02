@@ -7,6 +7,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import com.apas.Reports.ReportLogger;
 import com.apas.Utils.Util;
 
 public class MappingPage extends ApasGenericPage {
@@ -41,11 +42,15 @@ public class MappingPage extends ApasGenericPage {
 	public String numberOfChildCondoTextBoxLabel = "Number of Child Condo Parcels";
 	public String nextButton = "Next";
 	public String generateParcelButton = "Generate Parcel";
+	public String combineParcelButton = "Combine Parcel";
 	public String parentAPNEditButton = "Edit";
 	public String previousButton = "Previous";
 	public String retireButton = "Retire Parcel (s)";
 	public String assessorMapLabel = "Assessor's Map";
+	public String taxCollectorLabel = "Tax Collector Link(s)";
 	public String taxField = "//label[text()='Are taxes fully paid?']";
+	public String reasonCodeField = "//label[text()='Reason Code']";
+	public String errorMessageOnScreenOne = "//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]";
 	public String saveButton = "Save";
 	public String firstCondoTextBoxLabel = "First Condo Parcel Number";
 	public String splitParcelButton = "Split Parcel";
@@ -69,7 +74,10 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Legal Description']")
 	public WebElement legalDescriptionFieldSecondScreen;
 	
-	@FindBy(xpath = "//div[@class='body']//div/following-sibling::c-tem_parcel-process-parent-view//div[contains(@class,'message-font slds-align_absolute-center slds-text-color_success')]")
+	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Use Code']")
+	public WebElement useCodeFieldSecondScreen;
+	
+	@FindBy(xpath = "//div[contains(@class,'message-font slds-align_absolute-center slds-text-color_success')]")
 	public WebElement confirmationMessageOnSecondScreen;
 	
 	/**
@@ -169,6 +177,57 @@ public class MappingPage extends ApasGenericPage {
 	 * @throws: Exception
 	 */
 	public String confirmationMsgOnSecondScreen() throws Exception {
+		Thread.sleep(3000);
 		return getElementText(waitForElementToBeClickable(20, confirmationMessageOnSecondScreen));
+	}
+	
+	
+	/**
+	 * Description: This method will take the generated APN (from Mapping action) and then create the next one in that series
+	 * @param Num: Takes APN as an argument
+     * @returns  Returns the created APN
+     */
+	public String generateNextAvailableAPN(String apn) throws Exception {
+	
+		String updatedAPN = "";
+		
+		/*Some Examples*/
+		/*100-100-010  --> 100-100-020, 100-090-980  --> 100-090-990, 100-090-890  --> 100-090-900, 100-890-070	 --> 100-890-070*/
+		if (!apn.substring(8, 10).equals("99")){
+			String getLastThreeDigits = apn.substring(8);
+			int incrementByTen = Integer.valueOf(getLastThreeDigits)  +  10;
+			String incrementedAPN = String.valueOf(incrementByTen);
+			if (incrementedAPN.length() < 3) updatedAPN = apn.substring(0, 8).concat("0").concat(incrementedAPN);
+			if (incrementedAPN.length() == 3) updatedAPN = apn.substring(0, 8).concat(incrementedAPN);	
+		}
+		else{		
+			if (!apn.substring(4, 6).equals("99")){
+				
+				/*Some Examples*/
+				/*100-090-990  -->  100-100-010, 100-290-990  -->  100-300-010, 100-280-990  -->  100-290-010, 100-297-990  -->  100-300-010*/
+				if (apn.substring(6, 7).equals("0")){
+					String getMiddleThreeDigits = apn.substring(4,7);
+					int incrementByTen = Integer.valueOf(getMiddleThreeDigits)  +  10;
+					String incrementedAPN = String.valueOf(incrementByTen);
+					if (incrementedAPN.length() < 3) updatedAPN = apn.substring(0, 4).concat("0").concat(incrementedAPN).concat("-010");
+					if (incrementedAPN.length() == 3) updatedAPN = apn.substring(0, 4).concat(incrementedAPN).concat("-010");	
+				}
+				else{
+					
+					/*Some Examples*/
+					/*100-145-990  -->  100-150-010, 100-237-990  -->  100-240-010*/
+					String getPartOfMapPage = apn.substring(4,6);
+					int incrementByOne = Integer.valueOf(getPartOfMapPage)  +  1;
+					String incrementedAPN = String.valueOf(incrementByOne);
+					if (incrementedAPN.length() < 2) updatedAPN = apn.substring(0, 4).concat("0").concat(incrementedAPN).concat("0-010");
+					if (incrementedAPN.length() == 2) updatedAPN = apn.substring(0, 4).concat(incrementedAPN).concat("0-010");	
+				}
+			}	
+			else{
+				/*Example : 100-990-990*/
+				ReportLogger.INFO("Warning : 990 limit has been reached for current Map Page, so move to the next Map Book");	
+			}
+	    }
+		return updatedAPN;
 	}
 }
