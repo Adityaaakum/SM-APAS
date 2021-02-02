@@ -111,7 +111,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 
 	}
 	/**
-	 * This method is to  Verify that the One to One Mapping Action can only be performed on Active Parcels
+	 * This method is to  Verify that the Brand new parcels Mapping Action can only be performed on Active Parcels
 	 *@param loginUser
 	 * @throws Exception
 	 */
