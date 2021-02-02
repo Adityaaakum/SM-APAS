@@ -311,6 +311,8 @@ public class Page extends TestBase {
 			wait.withTimeout(Duration.ofSeconds(timeoutInSeconds)).until(ExpectedConditions.textToBePresentInElement(element, expectedValue));
 		} catch (Exception e) { //org.openqa.selenium.StaleElementReferenceException e) {
 			e.printStackTrace();
+			System.out.print("there");
+			
 		}
 	}
 

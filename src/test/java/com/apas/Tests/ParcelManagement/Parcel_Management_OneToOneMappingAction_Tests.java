@@ -103,7 +103,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		String parentWindow = driver.getWindowHandle();	
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 
-		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapOneToOneMappingData.get("Action"));
+        objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+        objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapOneToOneMappingData.get("Action"));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
 
 		//Step 5: Validating that default values of net land loss and net land gain is 0
@@ -184,6 +185,10 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),"001vacant",
 				"SMAB-T2486: Verify that User is able to to create a Use Code for the child parcel from the custom screen ");
 
+		//Step 15: Validation that child parcel primary situs is inherited from parent parcel
+		String childPrimarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ gridDataHashMap.get("APN").get(0) +"')").get("Name").get(0);
+		softAssert.assertEquals(primarySitusValue,childPrimarySitusValue,
+				"SMAB-T2655: Validation that primary situs of child parcel is same as primary sitrus of parent parcel");
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 
@@ -237,6 +242,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();	
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
+        objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapOneToOneMappingData.get("Action"));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
 
@@ -376,7 +382,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();	
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-
+        objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapOneToOneMappingData.get("Action"));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
 
@@ -443,7 +449,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates Use Code  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),childprimarySitus,
-				"SMAB-T2655: Validation that System populates primary situs for child parcel from the first screen");
+				"SMAB-T2655: Validation that System populates primary situs for child parcel on second screen with situs value that was added in first screen");
 
 		//Step 10 :Verify that User is able to to edit reason code and legal description for the child parcel from the custom screen after performing one to one mapping action
 		objMappingPage.editGridCellValue(objMappingPage.legalDescriptionColumnSecondScreen,"Legal Description PM/01");
@@ -467,12 +473,12 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
 				"SMAB-T2544: Verify that System populates use code  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),childprimarySitus,
-				"SMAB-T2655: Validation that  System populates primary situs for child parcel from the first screen");
+				"SMAB-T2655: Validation that  System populates primary situs for child parcel on last screen with situs value that was added in first screen");
 
 		//Step 14: Validation that primary situs of child parcel has value that was entered in first screen
 		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ childAPNNumber +"')").get("Name").get(0);
 		softAssert.assertEquals(primarySitusValue,childprimarySitus,
-				"SMAB-T2655: Validation that primary situs of child parcel has value that was entered in first screen");
+				"SMAB-T2655: Validation that primary situs of child parcel has value that  was entered in first screen through situs modal window");
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();

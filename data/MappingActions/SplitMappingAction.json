@@ -42,15 +42,7 @@
     "Number of Child Condo Parcels": "2",
     "First non-Condo Parcel Number" : "120-340-790",
     "First Condo Parcel Number" : "100-340-790",
-    "Comments": "Perform Split Mapping Action",
-    "Situs City Description": "ATHERTON",
-    "Situs City Code": "AT",
-    "Situs City Name": "DALY CITY",
-    "Direction": "West Coast",
-    "Situs Number": "69",
-    "Situs Street Name": "CLIFFSIDE",
-    "Situs Type": "ALLEE",
-    "Situs Unit Number": "56"
+    "Comments": "Perform Split Mapping Action"
 },
   "DataToPerformSplitMappingActionWithDotInData": {
     "Action": "Perform Parcel Split",
@@ -77,5 +69,22 @@
     "Number of Child Non-Condo Parcels": "1",
     "Number of Child Condo Parcels": "1",
     "Comments": "Perform Split Mapping Action"
-  }
+  },
+    "DataToPerformSplitMappingActionWithSitusData": {
+    "Action": "Perform Parcel Split",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Split",
+    "Number of Child Non-Condo Parcels": "1",
+    "Number of Child Condo Parcels": "2",
+    "Comments": "Perform Split Mapping Action",
+    "Situs City Description": "ATHERTON",
+    "Situs City Code": "AT",
+    "Situs City Name": "DALY CITY",
+    "Direction": "West Coast",
+    "Situs Number": "69",
+    "Situs Street Name": "CLIFFSIDE",
+    "Situs Type": "ALLEE",
+    "Situs Unit Number": "56"
+}
+  
 }
