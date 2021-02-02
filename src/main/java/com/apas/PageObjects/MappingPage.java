@@ -49,6 +49,7 @@ public class MappingPage extends ApasGenericPage {
 	public String saveButton = "Save";
 	public String firstCondoTextBoxLabel = "First Condo Parcel Number";
 	public String splitParcelButton = "Split Parcel";
+	public String CreateNewParcelButton="Create Brand New Parcel";
 
 	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
