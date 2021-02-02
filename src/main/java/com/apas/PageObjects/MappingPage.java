@@ -49,6 +49,7 @@ public class MappingPage extends ApasGenericPage {
 	public String saveButton = "Save";
 	public String firstCondoTextBoxLabel = "First Condo Parcel Number";
 	public String splitParcelButton = "Split Parcel";
+	public String CreateNewParcelButton="Create Brand New Parcel";
 
 	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
@@ -62,7 +63,7 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@id,'salesforce-lightning-tooltip-bubble')]")
 	public WebElement helpIconToolTipBubble;
 
-	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
+	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li[last()] |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
 	public WebElement errorMessageFirstScreen;
 	
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Legal Description']")
@@ -93,7 +94,7 @@ public class MappingPage extends ApasGenericPage {
 
 
 		selectOptionFromDropDown(actionDropDownLabel, action);
-		selectOptionFromDropDown(taxesPaidDropDownLabel, taxesPaid);
+		if (taxesPaid != null)selectOptionFromDropDown(taxesPaidDropDownLabel, taxesPaid);
 		if (reasonCode != null)enter(reasonCodeTextBoxLabel, reasonCode);
 		if (parcelSizeValidation != null)selectOptionFromDropDown(parcelSizeDropDownLabel, parcelSizeValidation);
 		if (netLandLoss != null)enter(netLandLossTextBoxLabel, netLandLoss);
