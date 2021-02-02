@@ -1105,6 +1105,17 @@ public class ApasGenericPage extends Page {
 	        }
 	 return inProgressAPNValue;	 
   }
+  
+  /*
+  This method is used to return the Retired APN from Salesforce
+  @return: returns the Retired APN
+ */
+
+ public String fetchRetiredAPN() throws Exception {
+     
+	  String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
+	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
+ }
    
    /*
     * Get Field Value from WI TimeLine 
@@ -1122,7 +1133,7 @@ public class ApasGenericPage extends Page {
    
    public String getErrorMessage() throws Exception {
 	   	String ErrorTxt = "";
-	   	Thread.sleep(1000);
+	   	Thread.sleep(2000);
 		List<WebElement> ErrorText = locateElements("//div[contains(@class,'color_error')] |//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
 	   	if(ErrorText.get(0).getAttribute("class").contains("color_error")){
 			for(WebElement errorMsg : ErrorText){
@@ -1130,6 +1141,7 @@ public class ApasGenericPage extends Page {
 			}
 		}else
 			ErrorTxt = ErrorText.get(0).getText();
+	   	
 		return ErrorTxt;
 	}
    

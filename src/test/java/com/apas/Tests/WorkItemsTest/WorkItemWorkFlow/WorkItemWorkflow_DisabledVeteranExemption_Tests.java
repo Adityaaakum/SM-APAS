@@ -463,7 +463,9 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		String alertMessage = objWIHomePage.getAlertMessage();
 		String infoMessage = "Please select atleast one record.";
 		softAssert.assertEquals(alertMessage,infoMessage,"SMAB-T2556: Unable to access 'Select Level2 Approver' pop-up screen");
-
+		objWIHomePage.waitForElementToBeClickable(objWIHomePage.closeButton, 3);
+		objWIHomePage.Click(objWIHomePage.closeButton);
+		
 		//Step9: Search for the Work Item and select the checkbox
 		ReportLogger.INFO("Search for the Work Item and select the checkbox");
 		objWIHomePage.clickCheckBoxForSelectingWI(WIName);

@@ -219,7 +219,7 @@ public class Page extends TestBase {
 				actions.click(elem).build().perform();
 			}
 		}
-
+		
 		waitUntilPageisReady(driver);
 	}
 

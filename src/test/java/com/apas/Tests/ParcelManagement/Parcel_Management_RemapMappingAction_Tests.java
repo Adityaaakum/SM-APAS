@@ -45,7 +45,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 
 	}
 		
-	@Test(description = "SMAB-T2490,SMAB-T2436:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2490,SMAB-T2436,SMAB-T2536:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
 	public void ParcelManagement_VerifyRemapMappingActionForMultipleParcels(String loginUser) throws Exception {
        ArrayList<String> APNs=objMappingPage.fetchActiveAPN(2);
@@ -62,7 +62,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		Map<String, String> remapMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformRemapMappingAction");
 
-		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
 		
@@ -146,7 +146,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		Map<String, String> remapMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformRemapMappingAction");
 
-		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		String workItemCreationData =testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
 		
