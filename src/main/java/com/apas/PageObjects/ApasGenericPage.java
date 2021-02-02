@@ -1152,7 +1152,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public HashMap<String, ArrayList<String>> getGridDataForRowString(String rowString) {
 		String xpath="(//*[contains(@class,'slds-show')]//table/tbody//tr)";
-		String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr";
+		String xpathTable = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr";
 		if(verifyElementVisible(xpath))
 		{xpathTable=xpath;}
 
@@ -1164,5 +1164,56 @@ public class ApasGenericPage extends Page {
 			}
 		}
 		return null;			 	
+	}
+
+	/*
+   This method is used to return the Divided Interest APN from Salesforce
+   @return: returns the Divided Interest APN
+  */
+	public String fetchDividedInterestAPN() throws Exception {
+		String queryAPNValue = "select Name, Status__c from Parcel__c Where NOT(Name like '%0') limit 1";
+		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryAPNValue);
+		String dividedInterestAPNValue = "";
+		dividedInterestAPNValue = response.get("Name").get(0);
+
+		return dividedInterestAPNValue;
+	}
+
+	/*
+   This method is used to click on Tax Collector link of mentioned APN
+   @Param: apnNumber
+   @return: returns the In Progress APN
+  */
+	public void clickTaxCollectorLink(String apnNumber) throws Exception {
+		String xPath = "//a[text()='"+apnNumber+"']";
+		waitForElementToBeVisible(20, xPath);
+		WebElement taxCollectorLink = waitForElementToBeClickable(20, xPath);
+		Click(taxCollectorLink);
+	}
+	/*
+   This method is used to fetch field value for mentioned APN
+   @Param: fieldName: Field name for which value needs to be fetched
+   @Param: apnNumber: Parcle Number for whic field value needs to be fetched
+   @return: returns the value of the field
+  */
+	public String fetchFieldValueOfParcel(String fieldName, String apnNumber) throws Exception {
+		String selectQueryFieldName, fieldValue ="";
+		String query = "SELECT "+fieldName+" FROM Parcel__c where Name = '"+apnNumber+"'";
+		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+		if(fieldName.equalsIgnoreCase("Neighborhood_Reference__c")){
+			query = "SELECT Name FROM Neighborhood__c Where Id = '"+response.get(fieldName).get(0)+"'";
+		}else if(fieldName.equalsIgnoreCase("TRA__c")){
+			query = "SELECT Name FROM TRA__c Where Id = '"+response.get(fieldName).get(0)+"'";
+		}else if(fieldName.equalsIgnoreCase("Primary_Situs__c")){
+			query = "SELECT Name FROM Situs__c Where Id = '"+response.get(fieldName).get(0)+"'";
+		}
+		if(fieldName.equalsIgnoreCase("Status__c")){
+			fieldValue = response.get("Status__c").get(0);
+		}else {
+			response = objSalesforceAPI.select(query);
+			fieldValue = response.get("Name").get(0);
+		}
+		return fieldValue;
 	}
 }

@@ -399,9 +399,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 		List<WebElement> actualWINames = null;
 
 		try {
-			
-			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//*[@title='" + WIName + "' or text()='" + WIName + "']");
-			
+			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//*[@title='View Work Item' and text()='" + WIName + "']");
+
 			if(actualWINames.isEmpty()) {				
 				String pageMsg = driver.findElementByXPath("//p[@class='slds-m-vertical_medium content']").getText();
 				pageMsg=pageMsg.replaceAll("\\s","").trim();
