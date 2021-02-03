@@ -111,6 +111,7 @@ public class Parcel_Management_GIS_Tests extends TestBase implements testdata, m
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(activeParcelToPerformMapping);
+		objMappingPage.waitForElementToBeClickable(objParcelsPage.openAsessorsMapButton);
 		objParcelsPage.clickAction(objParcelsPage.openAsessorsMapButton);
 		Thread.sleep(3000);
 		String parent = driver.getWindowHandle();
@@ -125,6 +126,7 @@ public class Parcel_Management_GIS_Tests extends TestBase implements testdata, m
 		        File downloadedFile = Objects.requireNonNull(new File(downloadLocation).listFiles())[0];
 		        String  genartedFileName = downloadedFile.getName();
 		        softAssert.assertTrue(genartedFileName.contains(APNWithoutHypen), "SMAB-T2361: Verify tif file is downloaded by clicking on Open Assessor's Map button " + genartedFileName);
+		        Thread.sleep(3000);
 		        softAssert.assertEquals(genartedFileName.split("\\.")[1],"tif", "SMAB-T2361: Verify tif file is downloaded by clicking on Open Assessor's Map button");
 		        objReportsPage.deleteFilesFromFolder(downloadLocation);
 				driver.close();
@@ -145,7 +147,7 @@ public class Parcel_Management_GIS_Tests extends TestBase implements testdata, m
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords("232-323-234");
-		Thread.sleep(2000);
+		objMappingPage.waitForElementToBeClickable(objParcelsPage.openAsessorsMapButton);
 		objParcelsPage.clickAction(objParcelsPage.openAsessorsMapButton);
 		Thread.sleep(3000);
 		String parent = driver.getWindowHandle();

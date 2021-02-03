@@ -135,7 +135,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
 
 		//Step8: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
-		String expectedMessage = "APN is retired.\nCity Situs not matching system.";
+		String expectedMessage = "City Situs not matching system.";
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag).trim(), expectedMessage, "SMAB-T453,SMAB-T455: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch");
 
 		//Logout at the end of the test
@@ -701,8 +701,6 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage.globalSearchRecords("T1" + currentTimestamp);
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name", "Building Permit Information"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation in 'Building Permit Information' section for the file name update once the same record is processed in the new file");
 		objBuildingPermitPage.searchModule(modules.EFILE_IMPORT_LOGS);
-		objBuildingPermitPage.displayRecords("All");
-		objBuildingPermitPage.searchRecords(secondBuildingPermitFileNameWithoutExtension);
 		objEFileImportLogsPage.openImportLog("Building Permit :Atherton Building Permits :Adhoc");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation on Import Logs Screen after reprocessing the same record in new file");
 
@@ -766,8 +764,6 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name", "Building Permit Information"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation in 'Building Permit Information' section on Building Permit Screen");
 		objBuildingPermitPage.searchModule(modules.EFILE_IMPORT_LOGS);
-		objBuildingPermitPage.displayRecords("All");
-		objBuildingPermitPage.searchRecords(firstBuildingPermitFileNameWithoutExtension);
 		objEFileImportLogsPage.openImportLog("Building Permit :San Mateo Building permits :Adhoc");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation on Import Logs Screen");
 
@@ -784,8 +780,8 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name", "Building Permit Information"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation in 'Building Permit Information' section for the file name update once the same record is processed in the new file");
 		objBuildingPermitPage.searchModule(modules.EFILE_IMPORT_LOGS);
-		objBuildingPermitPage.displayRecords("All");
-		objBuildingPermitPage.searchRecords(secondBuildingPermitFileNameWithoutExtension);
+	//	objBuildingPermitPage.displayRecords("All");
+		//objBuildingPermitPage.searchRecords(secondBuildingPermitFileNameWithoutExtension);
 		objEFileImportLogsPage.openImportLog("Building Permit :San Mateo Building permits :Adhoc");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation on Import Logs Screen after reprocessing the same record in new file");
 

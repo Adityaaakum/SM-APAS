@@ -422,6 +422,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		//step9: verifying transaction for Reverted status record
 		ReportLogger.INFO("Verify transaction for 'Reverted' status record");
 		objPage.Click(objEFileImportTransactionpage.transactionsTab);
+		Thread.sleep(4000);
 		objPage.waitForElementToBeClickable(objEFileImportTransactionpage.transactionsRecords.get(0), 10);
 		//String expectedTransactionID=objPage.getElementText(objEFileImportTransactionpage.transactionsRecords.get(0));
 		objPage.javascriptClick(objEFileImportTransactionpage.transactionsRecords.get(0));
