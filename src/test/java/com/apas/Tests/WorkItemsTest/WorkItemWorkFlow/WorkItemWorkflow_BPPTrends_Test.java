@@ -589,6 +589,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step3: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objBppTrendSetupPage.login(loginUser);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step4: "Perform Calculations" Work Item generation validation
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
@@ -627,6 +628,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step6: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objBppTrendSetupPage.login(loginUser);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step7: "Perform Calculations" Work Item generation validation
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
@@ -707,8 +709,9 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objSalesforceAPI.delete("Work_Item__c",query);
 
         //Step2: Update CP Factor for 2020
-        String queryToFetchCPIFactorId = "SELECT id FROM Roll_Year_Settings__c Where Name = '2020'";
-        String queryToUpdateCPIFactor = "SELECT Id FROM CPI_Factor__c Where Roll_Year__c = '"+queryToFetchCPIFactorId+"'";
+        String queryToFetchCPIFactorId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '2020'";
+        HashMap<String, ArrayList<String>> cpiFactorId = objSalesforceAPI.select(queryToFetchCPIFactorId);
+        String queryToUpdateCPIFactor = "SELECT Id FROM CPI_Factor__c Where Roll_Year__c = '"+cpiFactorId.get("Id").get(0)+"'";
         objSalesforceAPI.update("CPI_Factor__c",queryToUpdateCPIFactor,"CPI_Factor__c","1.01");
 
         //Step3: Generate 'Annual Factor Settings' Reminder Work Items
@@ -759,7 +762,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step14: Log out from the application and log in as BPP Principal
         objBppTrendSetupPage.logout();
-        Thread.sleep(15000);
+        Thread.sleep(30000);
 
         objBppTrendSetupPage.login(users.PRINCIPAL_USER);
         objBppTrendSetupPage.searchModule(modules.HOME);
@@ -811,6 +814,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objBppTrendSetupPage.login(loginUser);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step5: "Perform Calculations" Work Item generation validation
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
@@ -825,6 +829,11 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objPage.switchToNewWindow(parentwindow);
 
         //Step7: Trigger Calculations by clicking 'Calculate All' Button
+        String queryToFetchCPIFactorId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '2020'";
+        HashMap<String, ArrayList<String>> cpiFactorId = objSalesforceAPI.select(queryToFetchCPIFactorId);
+        String queryToUpdateCPIFactor = "SELECT Id FROM CPI_Factor__c Where Roll_Year__c = '"+cpiFactorId.get("Id").get(0)+"'";
+        objSalesforceAPI.update("CPI_Factor__c",queryToUpdateCPIFactor,"CPI_Factor__c","1.01");
+
         objPage.Click(objBppTrendPage.calculateAllBtn);
         objPage.waitForElementToDisappear(objBppTrendPage.xpathSpinner, 50);
 
@@ -840,7 +849,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step10: Log out from the application and log in as BPP Principal
         objBppTrendSetupPage.logout();
-        Thread.sleep(20000);
+        Thread.sleep(30000);
 
         objBppTrendSetupPage.login(users.PRINCIPAL_USER);
         objBppTrendSetupPage.searchModule(modules.HOME);
@@ -859,13 +868,13 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step14: Log out from the application and log in again as BPP Admin
         objBppTrendSetupPage.logout();
-        Thread.sleep(15000);
+        Thread.sleep(30000);
 
         objBppTrendSetupPage.login(loginUser);
         objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Ste15: Verify WI is present in 'In Progress' tab
-        String inProgressWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_COMPLETED);
+        String inProgressWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_IN_PROGRESS);
         softAssert.assertEquals(inProgressWorkItem,importWorkItem, "SMAB-T2195: Verify WI returned to user is found in 'In Progress' tab");
     }
 
@@ -943,12 +952,12 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         Thread.sleep(1000);
 
         //Step8: Edit the settings
-        objPage.Click(objBppTrendSetupPage.dropDownIconBppSetting);
+        objPage.Click(objBppTrendSetupPage.dropDownIconDetailsSection);
         objPage.Click(objBppTrendSetupPage.editLinkUnderShowMore);
         Thread.sleep(2000);
         objPage.enter("Maximum Equipment index Factor","124.4");
         String successMessage = objBppTrendSetupPage.saveRecord();
-        softAssert.assertEquals(successMessage,"success\nBPP Setting was saved.\nClose","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
+        softAssert.assertContains(successMessage,"was saved.","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
 
         //Change the status to "Reviewed By Admin"
         softAssert.assertEquals(objBppTrendSetupPage.getFieldValueFromAPAS("Annual Factor Status"),"To be Reviewed by Admin","SMAB-T1730 : Validation that new field Annual Factor Status is visible on UI");
@@ -969,12 +978,12 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objBppTrendSetupPage.displayRecords("All");
         objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 
-        objPage.Click(objBppTrendSetupPage.dropDownIconBppSetting);
+        objPage.Click(objBppTrendSetupPage.dropDownIconDetailsSection);
         objPage.Click(objBppTrendSetupPage.editLinkUnderShowMore);
         Thread.sleep(2000);
         objPage.enter("Maximum Equipment index Factor","124.2");
         successMessage = objBppTrendSetupPage.saveRecord();
-        softAssert.assertEquals(successMessage,"success\nBPP Setting was saved.\nClose","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
+        softAssert.assertContains(successMessage,"was saved.","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
 
         //Validation for status even after editing the work BPP Trend set up for completed work item
         driver.navigate().refresh();
@@ -982,7 +991,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objWorkItemHomePage.Click(objWorkItemHomePage.completedTab);
         objWorkItemHomePage.openWorkItem(annualFactorSettingsWorkItemWorkItem);
         objPage.Click(objWorkItemHomePage.detailsTab);
-        softAssert.assertEquals(objBppTrendSetupPage.getFieldValueFromAPAS("Status"), "Completed", "SMAB-T2179: Work item status should be completed even after editing the BPP Settings for the completed work item");
+        softAssert.assertEquals(objBppTrendSetupPage.getFieldValueFromAPAS("Status","Information"), "Completed", "SMAB-T2179: Work item status should be completed even after editing the BPP Settings for the completed work item");
 
         objBppTrendSetupPage.logout();
     }
