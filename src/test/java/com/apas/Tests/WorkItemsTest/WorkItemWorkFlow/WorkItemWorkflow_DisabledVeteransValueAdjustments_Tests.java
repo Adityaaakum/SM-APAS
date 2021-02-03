@@ -150,9 +150,7 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
   	Thread.sleep(50000);
   	String RequestTypeName  = "Disabled Veterans - Update and Validate - Annual exemption amount verification";
     ReportLogger.INFO("Step 25: Verifying Work Item is generated , Work Item Request Name , VA Link on creation of Work Item");
-    softAssert.assertEquals(actualWIName.toString(),WIName,"SMAB-T2103:Verify name of WI generated");
-	//softAssert.assertEquals(actualVAName.toString(),vANameValue,"SMAB-T2103:Verify linked VA WI generated");
-	softAssert.assertEquals(actualRequestTypeName.toString(),RequestTypeName,"SMAB-T2103:Verify RequestType Name of WI generated");
+    softAssert.assertEquals(actualWIName.getText().toString(),WIName,"SMAB-T2103:Verify name of WI generated");
 	
 	objPage.Click(actualWIName);
   	objPage.waitForElementToBeClickable(objWIHomePage.detailsTab);
@@ -160,6 +158,8 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
 
    //Validating that  'Date' field gets automatically populated in the work item record
    objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
+   softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Request Type", "Information"),RequestTypeName,
+			"SMAB-T2103: Validation that 'RequestTypeName' fields ");
 	softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Date", "Information"),"1/1/"+currentRollYear,
 					"SMAB-T2080: Validation that 'Date' fields is equal to 1/1/"+currentRollYear);
 		
