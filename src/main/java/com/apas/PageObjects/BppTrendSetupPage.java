@@ -168,12 +168,21 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			waitForElementToBeVisible(bppCompositeFactorOption, 10);
 			clickAction(bppCompositeFactorOption);
 		} else {
-			clickAction(bppCompFactorSettingTab);
+			javascriptClick(bppCompFactorSettingTab);
+			if(!waitForElementToBeVisible(20,dropDownIconBppCompFactorSetting))
+				Click(bppCompFactorSettingTab);
+			if(!waitForElementToBeVisible(20,dropDownIconBppCompFactorSetting))
+				clickAction(bppCompFactorSettingTab);
 		}
+		if(waitForElementToBeVisible(20,dropDownIconBppCompFactorSetting))
 
-		if(verifyElementVisible(dropDownIconBppCompFactorSetting))
-			clickAction(dropDownIconBppCompFactorSetting);
+			javascriptClick(dropDownIconBppCompFactorSetting);
 		//clickAction(newBtnToCreateEntry);
+		if(!verifyElementVisible(newButton))
+			Click(dropDownIconBppCompFactorSetting);
+		if(!verifyElementVisible(newButton))
+			clickAction(dropDownIconBppCompFactorSetting);
+
 		Click(newButton);
 
 		enter("Minimum Good Factor",minGoodFactorValue);
@@ -213,7 +222,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public void createBppSetting(String equipIndexFactorValue) throws Exception {
 		if(verifyElementVisible(dropDownIconBppSetting))
 			Click(waitForElementToBeClickable(dropDownIconBppSetting));
-		
+
 		//createRecord();
 		clickAction(waitForElementToBeClickable(newBtnToCreateEntry));
 		enter(objApasGenericPage.maxEquipmentIndexFactor,equipIndexFactorValue);
@@ -404,6 +413,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 */
 	public String createDummyBppTrendSetupForErrorsValidation(String compFactorTablesStatus, int rollYear) throws Exception {
 		//Step1: Click New button on the grid to open form / pop up to create new BPP Trend Setup
+		objPage.waitUntilElementIsPresent(30, "//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']");
 		WebElement newButton = objPage.waitForElementToBeVisible("//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']");
 		Click(newButton);
 
@@ -749,8 +759,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		if(!(factorSettings.size()>0)) {
 			if(verifyElementVisible(dropDownIconBppSetting))
 				objPage.javascriptClick(dropDownIconBppSetting);
-				objPage.waitForElementToBeClickable(newBtnToCreateEntry, 20);
-				objPage.javascriptClick(newBtnToCreateEntry);
+			objPage.waitForElementToBeClickable(newBtnToCreateEntry, 20);
+			objPage.javascriptClick(newBtnToCreateEntry);
 			//createRecord();
 			enter("Maximum Equipment index Factor","125");
 			objPage.Click(objPage.getButtonWithText("Save"));
@@ -792,11 +802,11 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			objPage.Click(bppCompFactorSettingTab);
 		ReportLogger.INFO("** Creating entry for " + factorType + " property type");
 
-		
+
 		if(waitForElementToBeClickable(10,dropDownIconBppCompFactorSetting) != null) {
 			objPage.Click(dropDownIconBppCompFactorSetting);
 		} 
-		
+
 		Click(newBtnToCreateEntry);
 		enter(minGoodFactorEditBox,factorValue);
 		selectOptionFromDropDown("Property Type",factorType);
