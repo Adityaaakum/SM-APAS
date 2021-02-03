@@ -141,12 +141,6 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
 
   	ReportLogger.INFO("Step 20: Search and select the Work Item from the Grid : "+WIName);
   	WebElement actualWIName = objWIHomePage.searchWIinGrid(WIName);
-  	
-	ReportLogger.INFO("Step : Fetch the Data from the GRID for the Work Item : " +WIName);
-  	HashMap<String, ArrayList<String>> rowData = objWIHomePage.getGridDataForRowString(WIName);
-  	
-  	String actualRequestTypeName = rowData.get("Request Type").get(0) ;
-  	ReportLogger.INFO("Step 24: Verify the Request Type is as per the Naming Convention :"+actualRequestTypeName);
   	Thread.sleep(50000);
   	String RequestTypeName  = "Disabled Veterans - Update and Validate - Annual exemption amount verification";
     ReportLogger.INFO("Step 25: Verifying Work Item is generated , Work Item Request Name , VA Link on creation of Work Item");
