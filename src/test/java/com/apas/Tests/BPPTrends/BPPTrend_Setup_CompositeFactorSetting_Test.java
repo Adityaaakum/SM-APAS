@@ -145,7 +145,7 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 
 		//Step20: Editing and updating the equipment index factor value
 		objBppTrendSetupPage.clickOnShowMoreLinkInGridForGivenPropertyType("Agricultural");
-		objBppTrendPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
+		objBppTrendPage.javascriptClick(objBppTrendSetupPage.editLinkUnderShowMore);
 		objBppTrendSetupPage.enter("Minimum Good Factor","11");
 		objApasGenericPage.selectOptionFromDropDown("Property Type","Agricultural");
 		objBppTrendPage.Click(objPage.getButtonWithText("Save"));
@@ -164,12 +164,12 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		//Step24: Editing and updating the equipment index factor value
 		ReportLogger.INFO("Clicking show more drop down and clicking edit button");
 		objBppTrendSetupPage.clickOnShowMoreLinkInGridForGivenPropertyType("Commercial");
-		objBppTrendPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
+		objBppTrendPage.javascriptClick(objBppTrendSetupPage.editLinkUnderShowMore);
 
 		//Step21: Validating error message on updating Min. Equipment Index Factor value for approved tables
 		objBppTrendSetupPage.enter("Minimum Good Factor","11");
 		objBppTrendPage.Click(objPage.getButtonWithText("Save"));
-		Thread.sleep(1000);
+		Thread.sleep(5000);
 		ReportLogger.INFO("Validating error message on updating Min. Equipment Index Factor Value for approved tables");
 
 		actualErrorMsg = objBppTrendSetupPage.getIndividualFieldErrorMessage("Minimum Good Factor");
