@@ -818,7 +818,6 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step5: "Perform Calculations" Work Item generation validation
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
-
         String importWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_IN_POOL);
 
         //Step6: Accepting the work item and opening the link under 'Action' Column

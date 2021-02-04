@@ -54,6 +54,15 @@ public class MappingPage extends ApasGenericPage {
 	public String saveButton = "Save";
 	public String firstCondoTextBoxLabel = "First Condo Parcel Number";
 	public String splitParcelButton = "Split Parcel";
+	public String situsCityDescriptionLabel = "Situs City Description";
+	public String situsCityCodeLabel = "Situs City Code";
+	public String situsCityNameLabel = "Situs City Name";
+	public String directionLabel = "Direction";
+	public String situsNumberLabel = "Situs Number";
+	public String situsStreetNameLabel = "Situs Street Name";
+	public String situsTypeLabel = "Situs Type";
+	public String situsUnitNumberLabel = "Situs Unit Number";
+	public String closeButton = "Close";
 	public String CreateNewParcelButton="Create Brand New Parcel";
 
 	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
@@ -68,18 +77,27 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@id,'salesforce-lightning-tooltip-bubble')]")
 	public WebElement helpIconToolTipBubble;
 
-	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li[last()] |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
-	public WebElement errorMessageFirstScreen;
-	
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Legal Description']")
 	public WebElement legalDescriptionFieldSecondScreen;
-	
+
+	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li[last()] |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
+	public WebElement errorMessageFirstScreen;
+
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Use Code']")
 	public WebElement useCodeFieldSecondScreen;
 	
 	@FindBy(xpath = "//div[contains(@class,'message-font slds-align_absolute-center slds-text-color_success')]")
 	public WebElement confirmationMessageOnSecondScreen;
 	
+	@FindBy(xpath = "//header[@class='slds-modal__header']//h2[text()='Edit Situs']")
+	public WebElement editSitusLabelSitusModal;
+	
+	@FindBy(xpath = "//div[@class='slds-card__header slds-grid']//span[text()='Situs Information']")
+	public WebElement situsInformationLabelSitusModal;
+	
+	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[text()='Parent APN(s)']//following::span[@class='slds-col']")
+	public WebElement parentAPNFieldValue;
+
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
 	 * @param dataMap: A data map which contains data to perform  mapping action
@@ -94,12 +112,10 @@ public class MappingPage extends ApasGenericPage {
 		String netLandGain = dataMap.get("Net Land Gain");
 		String firstnonCondoParcelNumber = dataMap.get("First non-Condo Parcel Number");
 		String legalDescription = dataMap.get("Legal Description");
-		String situs= dataMap.get("Situs");
 		String comments= dataMap.get("Comments");
 		String numberOfChildNonCondoParcels= dataMap.get("Number of Child Non-Condo Parcels");
 		String numberOfChildCondoParcels= dataMap.get("Number of Child Condo Parcels");
 		String firstCondoParcelNumber= dataMap.get("First Condo Parcel Number");
-
 
 		selectOptionFromDropDown(actionDropDownLabel, action);
 		if (taxesPaid != null)selectOptionFromDropDown(taxesPaidDropDownLabel, taxesPaid);
@@ -117,11 +133,8 @@ public class MappingPage extends ApasGenericPage {
 			enter(firstCondoTextBoxLabel, firstCondoParcelNumber);
 		if (legalDescription != null)
 			enter(legalDescriptionTextBoxLabel, legalDescription);
-		if (situs != null)
-			enter(situsTextBoxLabel, situs);
 		if (comments != null)
 			enter(commentsTextBoxLabel, comments);
-		
 		Click(getButtonWithText(nextButton));
 	}
 
@@ -141,18 +154,18 @@ public class MappingPage extends ApasGenericPage {
 	 */
 	public String getMappingActionsFieldsErrorMessage(Object element,String value) throws Exception {
 		enter(element, value);
-		
+
 		if(verifyElementVisible(saveButton))
 			Click(getButtonWithText(saveButton));
 
 		else
-		Click(getButtonWithText(nextButton));
+			Click(getButtonWithText(nextButton));
 		Thread.sleep(6000);
 		if(verifyElementVisible(errorMessageFirstScreen))
-				return  getElementText(errorMessageFirstScreen);
+			return  getElementText(errorMessageFirstScreen);
 		else
 			return "No error message is displayed on page";
-		
+
 	}
 
 	public void remapActionForm(Map<String, String> dataMap) throws Exception {
@@ -170,7 +183,6 @@ public class MappingPage extends ApasGenericPage {
 		Click(getButtonWithText(nextButton));
 
 	}
-	
 	/**
 	 * Description: this method is to get the confirmation message after mapping action is completed
 	 * 	 
@@ -180,8 +192,33 @@ public class MappingPage extends ApasGenericPage {
 		Thread.sleep(3000);
 		return getElementText(waitForElementToBeClickable(20, confirmationMessageOnSecondScreen));
 	}
-	
-	
+
+	/**
+	 * @Description: This method will create situs for child parcel from situs modal window from first screen	
+	 * @param dataMap: A data map which contains data to create situs
+	 * @throws Exception
+	 */
+	public void editSitusModalWindowFirstScreen(Map<String, String> dataMap) throws Exception {
+		
+		String situsCityDescription = dataMap.get("Situs City Description");
+		String situsCityCode = dataMap.get("Situs City Code");
+		String situsCityName = dataMap.get("Situs City Name");
+		String direction = dataMap.get("Direction");
+		String situsNumber = dataMap.get("Situs Number");
+		String situsStreetName = dataMap.get("Situs Street Name");
+		String situsType = dataMap.get("Situs Type");
+		String situsUnitNumber = dataMap.get("Situs Unit Number");
+		
+		if (situsCityDescription != null) selectOptionFromDropDown(situsCityDescriptionLabel, situsCityDescription);
+		if (situsCityCode != null) selectOptionFromDropDown(situsCityCodeLabel, situsCityCode);
+		if (situsCityName != null) enter(situsCityNameLabel, situsCityName);
+		if (direction != null)enter(directionLabel, direction);
+		if (situsNumber != null) enter(situsNumberLabel, situsNumber);
+		if (situsStreetName != null) enter(situsStreetNameLabel, situsStreetName);
+		if (situsType != null) selectOptionFromDropDown(situsTypeLabel, situsType);
+		if (situsUnitNumber != null) enter(situsUnitNumberLabel, situsUnitNumber);
+		Click(getButtonWithText(saveButton));
+	}
 	/**
 	 * Description: This method will take the generated APN (from Mapping action) and then create the next one in that series
 	 * @param Num: Takes APN as an argument

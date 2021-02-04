@@ -414,7 +414,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public String createDummyBppTrendSetupForErrorsValidation(String compFactorTablesStatus, int rollYear) throws Exception {
 		//Step1: Click New button on the grid to open form / pop up to create new BPP Trend Setup
 		objPage.waitUntilElementIsPresent(30, "//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']");
-		WebElement newButton = objPage.waitForElementToBeVisible("//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']");
+		WebElement newButton = objPage.waitForElementToBeClickable(30,"//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']");
 		Click(newButton);
 
 		//Step2: Entering BPP trend setup name and roll year

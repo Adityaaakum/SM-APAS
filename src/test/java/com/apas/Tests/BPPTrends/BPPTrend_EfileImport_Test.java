@@ -291,7 +291,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			
 			//Step10: Enter correct data in one of the Error Row 'Cell' 
 			ReportLogger.INFO("Deleting junk data and entering valid data in the table: "+tableName);
-
+			Thread.sleep(5000);
 			if(!tableName.equalsIgnoreCase("M&E Good Factors")) {
 				objEfileHomePage.editGridCellValue("Average","80");
 			}else
@@ -620,6 +620,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			
 			//Step10: Enter correct data in one of the Error Row 'Cell' 
 			ReportLogger.INFO("Deleting junk data and entering valid data in the table: "+tableName);
+			Thread.sleep(5000);
 			objEfileHomePage.editGridCellValue("Valuation Factor","80");
 			objPage.Click(objEfileHomePage.rowSelectCheckBox);
 			objEfileHomePage.collapseSection(objEfileHomePage.errorRowSectionExpandButton);
@@ -958,6 +959,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			
 			//Step12: Enter correct data in one of the Error Row 'Cell' 
 			ReportLogger.INFO("Deleting junk data and entering valid data in the table: "+tableName);
+			Thread.sleep(5000);
 			objEfileHomePage.editGridCellValue("Valuation Factor","80");
 			objPage.Click(objEfileHomePage.rowSelectCheckBox);
 			objEfileHomePage.collapseSection(objEfileHomePage.errorRowSectionExpandButton);

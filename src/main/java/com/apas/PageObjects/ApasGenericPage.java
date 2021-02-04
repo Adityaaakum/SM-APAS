@@ -527,7 +527,7 @@ public class ApasGenericPage extends Page {
 			Click(driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")));
 		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
 
-		waitForElementToBeClickable(15, webelementInput);
+		waitForElementToBeClickable(30, webelementInput);
 		webelementInput.clear();
 		webelementInput.sendKeys(expectedValue);
 		Robot robot = new Robot();
