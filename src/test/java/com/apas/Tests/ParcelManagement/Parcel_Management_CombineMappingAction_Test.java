@@ -73,7 +73,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String inProgressAPNValue= salesforceAPI.select(queryInProgressAPNValue).get("Name").get(0);
 				
 		//Fetching parcels that are Active 
-		String queryAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and Status__c = 'Active'";
+		String queryAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and name like '0%' and Status__c = 'Active'";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
@@ -195,14 +195,14 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateRetireWithActiveAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-Warning: TRAs of the combined parcels are different/n-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-Warning: TRAs of the combined parcels are different\n-In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2356: Validate that user is able to view Warning message");
 				
 		//Step 10: Validate that user is not able to move to the next screen
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-Warning: TRAs of the combined parcels are different/n-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-Warning: TRAs of the combined parcels are different\n-In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2356: Validate that user is able to view Warning message");
 			
 		// Step 11: Update the Parent APN field and add an In Progress parcel
@@ -421,6 +421,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.actionDropDownLabel);
 		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-Warning: TRAs of the combined parcels are different\n-In order to proceed with a parcel combine action, the parent APN must have the same ownership and ownership allocation",
 				"SMAB-T2356: Validate that user is able to view Warning message");
 							
@@ -444,6 +445,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithSameOwnership);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.actionDropDownLabel);
 		softAssert.assertTrue(!objMappingPage.verifyElementExists(objMappingPage.errorMessageOnScreenOne),
 				"SMAB-T2356: Validate that user is not able to view error message related to ownership record");
 				
@@ -451,6 +453,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
 		softAssert.assertTrue(!objMappingPage.verifyElementExists(objMappingPage.reasonCodeField),
 				"SMAB-T2356: Validate that 'Reason Code' field is not visible");
 		

@@ -297,16 +297,14 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		ReportLogger.INFO("Step 10: Click on Needs My Approval TAB");
 		objPage.Click(objWIHomePage.needsMyApprovalTab);
 		ReportLogger.INFO("Step 11: Search for the Work Item and select the checkbox");
-		objWIHomePage.clickCheckBoxForSelectingWI(WIName);
-
-		String parentwindow = driver.getWindowHandle();
-		//SMAB-T2094 opening the action link to validate that link redirects to Exemptions page 
+	    //SMAB-T2094 opening the action link to validate that link redirects to Exemptions page 
 		objWIHomePage.openActionLink(WIName);
-		objPage.switchToNewWindow(parentwindow);
+		
 		softAssert.assertTrue(objPage.verifyElementVisible(objExemptionsPage.newExemptionNameAftercreation),
 				"SMAB-T2094: Validation that Exemption label is visible");
-		driver.switchTo().window(parentwindow);
-
+		driver.navigate().back();
+		Thread.sleep(5000);
+		objWIHomePage.clickCheckBoxForSelectingWI(WIName);
 		ReportLogger.INFO("Step 12: Click on the Approve button");
 		objPage.javascriptClick(objWIHomePage.btnApprove);
 		Thread.sleep(5000);

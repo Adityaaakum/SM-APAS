@@ -166,6 +166,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		//Step 11 :Verify that User is able to to create a district, Use Code for the child parcel from the custom screen after performing one to one mapping action
 		objMappingPage.editGridCellValue(objMappingPage.useCodeColumnSecondScreen,"001vacant");
 		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+		Thread.sleep(5000);
 
 		//Step 13 :Clicking generate parcel button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
@@ -259,8 +260,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		//Step 7: Validation that User should be allowed to enter the 9 digit APN without the - sign
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.parentAPNTextBoxLabel,activeParcelWithoutHyphen);
-		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel),"value"),activeParcelToPerformMapping,
-				"SMAB-T2482: Validation that User should be allowed to enter the 9 digit parent APN without the \"-\"");
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.parentAPNFieldValue),activeParcelToPerformMapping,
+			"SMAB-T2482: Validation that User should be allowed to enter the 9 digit parent APN without the \"-\"");
 
 		//Step 8: Validation that Reason CODE is a mandatory field
 		objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.reasonCodeTextBoxLabel,"");
@@ -456,7 +457,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 		objMappingPage.editGridCellValue(objMappingPage.reasonCodeColumnSecondScreen,"ReasonCode Test");
 		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
-
+		Thread.sleep(5000);
+		
 		//Step 12 :Clicking generate parcel button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
