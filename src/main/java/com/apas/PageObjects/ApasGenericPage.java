@@ -527,6 +527,7 @@ public class ApasGenericPage extends Page {
 			Click(driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")));
 		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
 
+		waitForElementToBeClickable(30, webelementInput);
 		webelementInput.clear();
 		webelementInput.sendKeys(expectedValue);
 		Robot robot = new Robot();
@@ -610,16 +611,15 @@ public class ApasGenericPage extends Page {
 		String fieldValue;
 		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'" + sectionName + "')]";
 		String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName + "']/../..//slot[@slot='outputField']";
-		WebElement field = driver.findElement(By.xpath(fieldPath));
 
 		String fieldXpath = fieldPath + "//force-hoverable-link//a | " +
 				fieldPath + "//lightning-formatted-text | " +
 				fieldPath + "//lightning-formatted-number | " +
 				fieldPath + "//lightning-formatted-rich-text | " +
 				fieldPath + "//force-record-type//span";
-
+		waitForElementToBeVisible(20,fieldXpath);
 		try{
-			fieldValue = field.findElement(By.xpath(fieldXpath)).getText();
+			fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();
 		}catch (Exception ex){
 			fieldValue= "";
 		}
@@ -951,7 +951,7 @@ public class ApasGenericPage extends Page {
 			driver.switchTo().window(winHandle);
 		}
 
-		waitUntilElementIsPresent("//div[text()='" + logName + "']",15);
+		waitUntilElementIsPresent("//div[text()='" + logName + "']",20);
 		javascriptClick(driver.findElement(By.xpath("//div[text()='" + logName + "']")));
 
 	}

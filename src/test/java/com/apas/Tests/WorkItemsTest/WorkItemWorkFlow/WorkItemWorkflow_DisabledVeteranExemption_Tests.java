@@ -298,7 +298,6 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		objPage.Click(objWIHomePage.needsMyApprovalTab);
 		ReportLogger.INFO("Step 11: Search for the Work Item and select the checkbox");
 		objWIHomePage.clickCheckBoxForSelectingWI(WIName);
-
 		ReportLogger.INFO("Step 12: Click on the Approve button");
 		objPage.javascriptClick(objWIHomePage.btnApprove);
 		Thread.sleep(5000);
