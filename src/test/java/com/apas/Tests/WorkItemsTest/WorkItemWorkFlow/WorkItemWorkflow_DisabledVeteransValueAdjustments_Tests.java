@@ -67,7 +67,7 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
 	@Test(description = "SMAB-T2080,SMAB-T2103: APAS system should generate an Annual Exemption amount verification WI on editing/entering few fields in VA", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","Work_Item_DV" })
+			groups = {"regression","Work_Item_DV_12" })
 
 	public void WorkItemWorkflow_DisabledVeteran_WorkItemGeneratedOnEditingVAFields(String loginUser) throws Exception {
 	
@@ -139,7 +139,7 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
   	ReportLogger.INFO("Step 19: Click on the SUB TAB - In POOL");
   	objPage.Click(objWIHomePage.lnkTABInPool);
 
-  	ReportLogger.INFO("Step 20: Search and select the Work Item from the Grid : "+WIName);
+  	ReportLogger.INFO("Step 20: Search and Click the Work Item from the Grid : "+WIName);
   	WebElement actualWIName = objWIHomePage.searchWIinGrid(WIName);
   	Thread.sleep(50000);
   	String RequestTypeName  = "Disabled Veterans - Update and Validate - Annual exemption amount verification";
@@ -166,7 +166,7 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
 	@Test(description = "SMAB-T2104: APAS system should not generate an Annual Exemption amount verification WI on editing/entering few fields in VA for already opened WI", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DisabledVeteranExemption","Work_Item_DV"})
+			groups = {"regression","DisabledVeteranExemption","Work_Item_DV_1"})
 	public void WorkItemWorkflow_DisabledVeteran_WorkItemNotGeneratedOnEditingVAFieldsWithOpenWI(String loginUser) throws Exception {
 		
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -257,7 +257,7 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
 	@Test(description = "SMAB-T2093,SMAB-T1979: Approver should be able to Approve the WI - Annual Exemption Amount Verification" , 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DisabledVeteranExemption", "Work_Item_DV"})
+			groups = {"regression","DisabledVeteranExemption", "Work_Item_DV_1"})
 	public void WorkItemWorkflow_DisabledVeteran_AnnualExemptionAmountVerificationWIIsApproved(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -406,7 +406,7 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
 	@Test(description = "SMAB-T1986: Approver should be able to Return the WI - Annual Exemption Amount Verification" ,
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DisabledVeteranExemption","Work_Item_DV"})
+			groups = {"regression","DisabledVeteranExemption","Work_Item_DV_1"})
 	public void WorkItemWorkflow_DisabledVeteran_AnnualExemptionAmountVerificationWIIsReturned(String loginUser) throws Exception {
 	
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
