@@ -674,6 +674,7 @@ public class ApasGenericPage extends Page {
 
 		String xpathHeaders = xpathTable + "//thead/tr/th";
 		String xpathRows = xpathTable + "//tbody/tr";
+		
 		if (!(rowNumber == -1)) xpathRows = xpathRows + "[" + rowNumber + "]";
 
 		HashMap<String, ArrayList<String>> gridDataHashMap = new HashMap<>();
