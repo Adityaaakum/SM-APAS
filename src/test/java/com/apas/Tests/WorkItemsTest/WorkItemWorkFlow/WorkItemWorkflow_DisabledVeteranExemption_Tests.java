@@ -669,7 +669,9 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		ReportLogger.INFO("Verify that the WI is present in the Completed tab");
 		String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
 		softAssert.assertEquals(actualWIName, WIName, "SMAB-T2556: Validate that the WI is present in the Completed tab");
-
+		
+		objWIHomePage.searchModule(modules.WORK_ITEM);
+		
 		objApasGenericPage.logout();
 
 	}
