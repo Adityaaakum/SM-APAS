@@ -101,6 +101,7 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);
 
 		//Step3: Validating presence of CalculateAll button at page level
+		objPage.waitForElementToBeVisible(15,objBppTrend.xPathCalculateAllBtn);
 		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathCalculateAllBtn), "SMAB-T166: Calculate all button is visible at page level");
 				
 		//Step4: Clicking on the given table
@@ -108,6 +109,7 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 		objBppTrend.clickOnTableOnBppTrendPage(tableName);
 
 		//Step5: Validating presence of calculate button for given tables individually
+		objPage.waitForElementToBeVisible(15,objBppTrend.xPathCalculateBtn);
 		softAssert.assertTrue(objPage.verifyElementVisible(objBppTrend.xPathCalculateBtn), "SMAB-T190: Calculate button is available above '"+ tableName +"' table");
 		
 		//Step6: Validating unavailability of ReCalculate button at table level before performing calculation
