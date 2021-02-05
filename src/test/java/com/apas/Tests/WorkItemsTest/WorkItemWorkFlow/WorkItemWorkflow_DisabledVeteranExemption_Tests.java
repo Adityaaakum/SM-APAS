@@ -113,8 +113,8 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 
 		ReportLogger.INFO("Step 9: Verifying on new Exemption creation Work Item '"+WIName+"' is generated of Request Type : '"+RequestTypeName+"'" );
 
-		softAssert.assertEquals(actualWIName.toString(),WIName,"SMAB-T1922:Verify name of WI generated");
-		softAssert.assertEquals(actualRequestTypeName.toString(),RequestTypeName,"SMAB-T1922:Verify RequestType Name of WI generated");
+		softAssert.assertEquals(actualWIName.getText(),WIName,"SMAB-T1922:Verify name of WI generated");
+		softAssert.assertEquals(actualRequestTypeName,RequestTypeName,"SMAB-T1922:Verify RequestType Name of WI generated");
 
 		objPage.Click(actualWIName);
 		objPage.waitForElementToBeClickable(objWIHomePage.detailsTab);

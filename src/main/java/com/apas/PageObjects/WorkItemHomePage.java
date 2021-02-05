@@ -162,7 +162,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath="//div[@class='pageLevelErrors']//ul[1]")
 	public WebElement errorMsg;
 
-	@FindBy(xpath="//li[@title='Details']//a[@data-label='Details']")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//li[@title='Details']//a[@data-label='Details']")
 	public WebElement detailsWI;
 
 	@FindBy(xpath="//li[@title='Linked Items']//a[@data-label='Linked Items']")

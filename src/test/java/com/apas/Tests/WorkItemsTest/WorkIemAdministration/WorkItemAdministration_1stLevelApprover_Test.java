@@ -24,7 +24,7 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 
-public class WorkItems_1stLevelApprover_Test extends TestBase  {
+public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 		
 		private RemoteWebDriver driver;
 		Page objPage;
@@ -65,8 +65,8 @@ public class WorkItems_1stLevelApprover_Test extends TestBase  {
 		@Test(description = "SMAB-T2552:DV-Retro-work item:Verify that a Disabled Veteran retrofit work item is created automatically,the user can view the Approver field is populated based on the assigned 1st Level Supervisor on the related Work Pool of the work item.", 
 				dataProvider = "loginExemptionSupportStaff",
 				dataProviderClass = DataProviders.class , 
-				groups = {"regression","DV_WorkItem_Exemption"})
-		public void DisabledVeteran_verify1stlevelApproverIsAssignedOnNewExemptionCreation(String loginUser) throws Exception {
+				groups = {"regression","DV_WorkItem_Exemption_1"})
+		public void WorkItemAdministration_verify1stlevelApproverIsAssignedOnAutomatedWICreation(String loginUser) throws Exception {
 			  
 			   Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 			   String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
@@ -133,8 +133,8 @@ public class WorkItems_1stLevelApprover_Test extends TestBase  {
 				+ "BP records after claiming the WI 'Final Review'",
 				dataProvider = "loginExemptionSupportStaff",
 				dataProviderClass = DataProviders.class , 
-				groups = {"regression","DV_WorkItem_Exemption"})
-		public void BP_verify1stlevelApproverIsAssignedOnManualWICreation(String loginUser) throws Exception {
+				groups = {"regression","DV_WorkItem_Exemption_1"})
+		public void WorkItemAdministration_verify1stlevelApproverIsAssignedOnManualWICreation(String loginUser) throws Exception {
 			  
 			   
 			//Fetching the Active Parcel
@@ -152,13 +152,14 @@ public class WorkItems_1stLevelApprover_Test extends TestBase  {
 			//Step3: Search and Open the Parcel
 			objApasGenericPage.globalSearchRecords(parcelToSearch);
      	    		   
-			   String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+			   String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 			   
 			   Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 						"WorkItemRoutingGiveToMe");
 			   String WIName = objParcelPage.createWorkItem(hashMapmanualWorkItemData);
 			   
 			   objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
+			   Thread.sleep(3000);
 			   objPage.javascriptClick(objWIHomePage.detailsWI);
 			   
 			   String WorkItem_Id = objWIHomePage.getWorkItemIDFromParcelOnWorkbench(parcelToSearch);
