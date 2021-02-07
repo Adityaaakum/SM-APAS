@@ -58,7 +58,7 @@ public class WorkItemAdministration_Consolidation_Test extends TestBase implemen
 		  HashMap<String, ArrayList<String>> response =salesforceAPI.select(queryAPNValue); 
 		  String apnValue=response.get("Name").get(0); 
 		  String apnValue1=response.get("Name").get(1);
-		  String workItemCreationData = System.getProperty("user.dir") +testdata.MANUAL_WORK_ITEMS; 
+		  String workItemCreationData =testdata.MANUAL_WORK_ITEMS; 
 		  Map<String, String> hashMapmanualWorkItemData =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeRP");
 		   // Step1: Login to the APAS application using the credentials of staff user)
 		  objWorkItemHomePage.login(users.EXEMPTION_SUPPORT_STAFF);

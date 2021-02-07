@@ -111,10 +111,10 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		String RequestTypeName  = "Disabled Veterans - Direct Review and Update - Initial filing/changes";
 		String actualRequestTypeName = rowData.get("Request Type").get(0) ;
 
-		ReportLogger.INFO("Step 9: Verifying on new Exemption creation Work Item '"+actualWIName+"' is generated of Request Type : '"+actualRequestTypeName+"'" );
+		ReportLogger.INFO("Step 9: Verifying on new Exemption creation Work Item '"+WIName+"' is generated of Request Type : '"+RequestTypeName+"'" );
 
-		softAssert.assertEquals(actualWIName.toString(),WIName,"SMAB-T1922:Verify name of WI generated");
-		softAssert.assertEquals(actualRequestTypeName.toString(),RequestTypeName,"SMAB-T1922:Verify RequestType Name of WI generated");
+		softAssert.assertEquals(actualWIName.getText(),WIName,"SMAB-T1922:Verify name of WI generated");
+		softAssert.assertEquals(actualRequestTypeName,RequestTypeName,"SMAB-T1922:Verify RequestType Name of WI generated");
 
 		objPage.Click(actualWIName);
 		objPage.waitForElementToBeClickable(objWIHomePage.detailsTab);
@@ -123,7 +123,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
 		String linkedAPN=objApasGenericPage.getFieldValueFromAPAS("APN", "Information");
 		String streetName=salesforceAPI.select("SELECT Situs_Street_Name__c  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ linkedAPN +"')").get("Situs_Street_Name__c").get(0);
-		String  useCodeValue=salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where name='"+ linkedAPN +"')").get("Name").get(0);
+		String useCodeValue=salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where name='"+ linkedAPN +"')").get("Name").get(0);
 
 		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),useCodeValue,
 				"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
@@ -298,15 +298,6 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		objPage.Click(objWIHomePage.needsMyApprovalTab);
 		ReportLogger.INFO("Step 11: Search for the Work Item and select the checkbox");
 		objWIHomePage.clickCheckBoxForSelectingWI(WIName);
-
-		String parentwindow = driver.getWindowHandle();
-		//SMAB-T2094 opening the action link to validate that link redirects to Exemptions page 
-		objWIHomePage.openActionLink(WIName);
-		objPage.switchToNewWindow(parentwindow);
-		softAssert.assertTrue(objPage.verifyElementVisible(objExemptionsPage.newExemptionNameAftercreation),
-				"SMAB-T2094: Validation that Exemption label is visible");
-		driver.switchTo().window(parentwindow);
-
 		ReportLogger.INFO("Step 12: Click on the Approve button");
 		objPage.javascriptClick(objWIHomePage.btnApprove);
 		Thread.sleep(5000);
@@ -463,7 +454,9 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		String alertMessage = objWIHomePage.getAlertMessage();
 		String infoMessage = "Please select atleast one record.";
 		softAssert.assertEquals(alertMessage,infoMessage,"SMAB-T2556: Unable to access 'Select Level2 Approver' pop-up screen");
-
+		objWIHomePage.waitForElementToBeClickable(objWIHomePage.closeButton, 3);
+		objWIHomePage.Click(objWIHomePage.closeButton);
+		
 		//Step9: Search for the Work Item and select the checkbox
 		ReportLogger.INFO("Search for the Work Item and select the checkbox");
 		objWIHomePage.clickCheckBoxForSelectingWI(WIName);
@@ -676,7 +669,9 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		ReportLogger.INFO("Verify that the WI is present in the Completed tab");
 		String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
 		softAssert.assertEquals(actualWIName, WIName, "SMAB-T2556: Validate that the WI is present in the Completed tab");
-
+		
+		objWIHomePage.searchModule(modules.WORK_ITEM);
+		
 		objApasGenericPage.logout();
 
 	}

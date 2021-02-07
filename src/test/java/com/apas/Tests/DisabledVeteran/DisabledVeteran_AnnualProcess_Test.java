@@ -233,7 +233,8 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 
 		//Step10: Create new RPSL record
 		objRPSLPage.createRPSL(createRPSLDataMap,strRollYear);
-				
+		objApasGenericPage.waitForElementToBeClickable(objApasGenericPage.closeButton, 3);
+		objApasGenericPage.Click(objApasGenericPage.closeButton);
 		//Step11: Search and Select In-Active Exemption created in previous Test
 		objApasGenericPage.globalSearchRecords(inActiveExemptionName);
 		

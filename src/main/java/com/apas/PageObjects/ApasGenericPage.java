@@ -527,6 +527,7 @@ public class ApasGenericPage extends Page {
 			Click(driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")));
 		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
 
+		waitForElementToBeClickable(30, webelementInput);
 		webelementInput.clear();
 		webelementInput.sendKeys(expectedValue);
 		Robot robot = new Robot();
@@ -610,16 +611,15 @@ public class ApasGenericPage extends Page {
 		String fieldValue;
 		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'" + sectionName + "')]";
 		String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName + "']/../..//slot[@slot='outputField']";
-		WebElement field = driver.findElement(By.xpath(fieldPath));
 
 		String fieldXpath = fieldPath + "//force-hoverable-link//a | " +
 				fieldPath + "//lightning-formatted-text | " +
 				fieldPath + "//lightning-formatted-number | " +
 				fieldPath + "//lightning-formatted-rich-text | " +
 				fieldPath + "//force-record-type//span";
-
+		waitForElementToBeVisible(20,fieldXpath);
 		try{
-			fieldValue = field.findElement(By.xpath(fieldXpath)).getText();
+			fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();
 		}catch (Exception ex){
 			fieldValue= "";
 		}
@@ -674,6 +674,7 @@ public class ApasGenericPage extends Page {
 
 		String xpathHeaders = xpathTable + "//thead/tr/th";
 		String xpathRows = xpathTable + "//tbody/tr";
+		
 		if (!(rowNumber == -1)) xpathRows = xpathRows + "[" + rowNumber + "]";
 
 		HashMap<String, ArrayList<String>> gridDataHashMap = new HashMap<>();
@@ -950,7 +951,7 @@ public class ApasGenericPage extends Page {
 			driver.switchTo().window(winHandle);
 		}
 
-		waitUntilElementIsPresent("//div[text()='" + logName + "']",15);
+		waitUntilElementIsPresent("//div[text()='" + logName + "']",20);
 		javascriptClick(driver.findElement(By.xpath("//div[text()='" + logName + "']")));
 
 	}
@@ -1105,6 +1106,17 @@ public class ApasGenericPage extends Page {
 	        }
 	 return inProgressAPNValue;	 
   }
+  
+  /*
+  This method is used to return the Retired APN from Salesforce
+  @return: returns the Retired APN
+ */
+
+ public String fetchRetiredAPN() throws Exception {
+     
+	  String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
+	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
+ }
    
    /*
     * Get Field Value from WI TimeLine 
@@ -1122,7 +1134,7 @@ public class ApasGenericPage extends Page {
    
    public String getErrorMessage() throws Exception {
 	   	String ErrorTxt = "";
-	   	Thread.sleep(1000);
+	   	Thread.sleep(2000);
 		List<WebElement> ErrorText = locateElements("//div[contains(@class,'color_error')] |//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
 	   	if(ErrorText.get(0).getAttribute("class").contains("color_error")){
 			for(WebElement errorMsg : ErrorText){
@@ -1130,6 +1142,7 @@ public class ApasGenericPage extends Page {
 			}
 		}else
 			ErrorTxt = ErrorText.get(0).getText();
+	   	
 		return ErrorTxt;
 	}
    
@@ -1140,7 +1153,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public HashMap<String, ArrayList<String>> getGridDataForRowString(String rowString) {
 		String xpath="(//*[contains(@class,'slds-show')]//table/tbody//tr)";
-		String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr";
+		String xpathTable = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr";
 		if(verifyElementVisible(xpath))
 		{xpathTable=xpath;}
 
@@ -1152,5 +1165,56 @@ public class ApasGenericPage extends Page {
 			}
 		}
 		return null;			 	
+	}
+
+	/*
+   This method is used to return the Divided Interest APN from Salesforce
+   @return: returns the Divided Interest APN
+  */
+	public String fetchDividedInterestAPN() throws Exception {
+		String queryAPNValue = "select Name, Status__c from Parcel__c Where NOT(Name like '%0') limit 1";
+		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryAPNValue);
+		String dividedInterestAPNValue = "";
+		dividedInterestAPNValue = response.get("Name").get(0);
+
+		return dividedInterestAPNValue;
+	}
+
+	/*
+   This method is used to click on Tax Collector link of mentioned APN
+   @Param: apnNumber
+   @return: returns the In Progress APN
+  */
+	public void clickTaxCollectorLink(String apnNumber) throws Exception {
+		String xPath = "//a[text()='"+apnNumber+"']";
+		waitForElementToBeVisible(20, xPath);
+		WebElement taxCollectorLink = waitForElementToBeClickable(20, xPath);
+		Click(taxCollectorLink);
+	}
+	/*
+   This method is used to fetch field value for mentioned APN
+   @Param: fieldName: Field name for which value needs to be fetched
+   @Param: apnNumber: Parcle Number for whic field value needs to be fetched
+   @return: returns the value of the field
+  */
+	public String fetchFieldValueOfParcel(String fieldName, String apnNumber) throws Exception {
+		String selectQueryFieldName, fieldValue ="";
+		String query = "SELECT "+fieldName+" FROM Parcel__c where Name = '"+apnNumber+"'";
+		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+		if(fieldName.equalsIgnoreCase("Neighborhood_Reference__c")){
+			query = "SELECT Name FROM Neighborhood__c Where Id = '"+response.get(fieldName).get(0)+"'";
+		}else if(fieldName.equalsIgnoreCase("TRA__c")){
+			query = "SELECT Name FROM TRA__c Where Id = '"+response.get(fieldName).get(0)+"'";
+		}else if(fieldName.equalsIgnoreCase("Primary_Situs__c")){
+			query = "SELECT Name FROM Situs__c Where Id = '"+response.get(fieldName).get(0)+"'";
+		}
+		if(fieldName.equalsIgnoreCase("Status__c")){
+			fieldValue = response.get("Status__c").get(0);
+		}else {
+			response = objSalesforceAPI.select(query);
+			fieldValue = response.get("Name").get(0);
+		}
+		return fieldValue;
 	}
 }

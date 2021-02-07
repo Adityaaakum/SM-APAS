@@ -1,0 +1,19 @@
+{
+  "DataToPerformBrandNewParcelMappingActionWithoutAllFields": {
+    "Action": "Brand New Parcel",
+    "First non-Condo Parcel Number": "123456789",
+    "Comments": "Perform Brand New Parcel mapping"  ,
+  },
+  
+  "DataToPerformOneToOneMappingActionWithAllFields": {
+    "Action": "One To One",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "PM 85/25-26",
+    "Net Land Loss": "200",
+    "Net Land Gain": "300",
+    "Comments": "Perform one to one mapping",
+    "Situs": "225 WILSHIRE AVE , DALY CITY" ,
+    "Legal Description": "Legal PM 85/25-260",
+          
+  }
+}

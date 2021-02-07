@@ -67,7 +67,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		String apnValue= response.get("Name").get(0);
 
-		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		String workItemCreationData =  testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeRP");
 
@@ -139,7 +139,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		String apnValue= response.get("Name").get(0);
 
-		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		String workItemCreationData =  testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeRP");
 
@@ -183,7 +183,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
 		String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
 
-		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		String workItemCreationData =  testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeBPP");
 
@@ -218,7 +218,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 
 		String apnValue= objParcelsPage.fetchActiveAPN();
 
-		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		String workItemCreationData =testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData, "DOVSequencing");
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
@@ -313,7 +313,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		String queryLevel2Supervisor = "select name from user where id in (SELECT Level_2_Supervisor__c FROM Work_Pool__c where Name = '" + workPool + "')";
 		String level2Supervisor= salesforceAPI.select(queryLevel2Supervisor).get("Name").get(0);
 
-		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		String workItemCreationData =testdata.MANUAL_WORK_ITEMS;
 
 		// Step1: Login to the APAS application using the credentials passed through data provider
 		objWorkItemHomePage.login(loginUser);
@@ -531,7 +531,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 
 		//fetching a parcel where PUC is not blank but Primary Situs is blank 
 		String apnValue=apasGenericObj.fetchActiveAPN();
-		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS; 
+		String workItemCreationData =testdata.MANUAL_WORK_ITEMS; 
 		Map<String, String> hashMapmanualWorkItemData =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeRP");
 
 		// Step 1: Login to the APAS application using the credentials of staff user
@@ -620,7 +620,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 
 		//fetching a parcel where PUC is not blank but Primary Situs is blank 
 		String apnValue=apasGenericObj.fetchActiveAPN();
-		String workItemCreationData = System.getProperty("user.dir") +testdata.MANUAL_WORK_ITEMS; 
+		String workItemCreationData =testdata.MANUAL_WORK_ITEMS; 
 		Map<String, String> hashMapmanualWorkItemData =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeRP");
 
 		// Step 1: Login to the APAS application using the credentials of staff user
@@ -710,7 +710,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 
 		//fetching a parcel where PUC is not blank but Primary Situs is blank 
 		String apnValue= apasGenericObj.fetchActiveAPN();
-		String workItemCreationData = System.getProperty("user.dir") +testdata.MANUAL_WORK_ITEMS; 
+		String workItemCreationData =testdata.MANUAL_WORK_ITEMS; 
 		Map<String, String> hashMapmanualWorkItemData =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeRP");
 
 		// Step 1: Login to the APAS application using the credentials of staff user
@@ -1182,7 +1182,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 		String neighborhood=responseNeighborhoodDetails.get("Name").get(0);
 
-		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		String workItemCreationData =  testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeBuildingPermitBurlingameFileUpload");
 
@@ -1267,7 +1267,7 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 		HashMap<String, ArrayList<String>> responseTerritoryValueDetails = salesforceAPI.select(queryTerritoryValue);
 		String territoryValue=responseTerritoryValueDetails.get("Name").get(0);
 
-		String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeBuildingPermitSanBrunoFileUpload");
 

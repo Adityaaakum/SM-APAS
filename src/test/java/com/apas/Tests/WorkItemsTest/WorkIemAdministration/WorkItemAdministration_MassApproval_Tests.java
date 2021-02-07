@@ -65,7 +65,7 @@ public class WorkItemAdministration_MassApproval_Tests extends TestBase implemen
 			
 			 
 			
-			String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+			String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 			Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 					"DataToCreateWorkItemOfTypeRP");
 					

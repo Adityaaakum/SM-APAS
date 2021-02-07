@@ -1,6 +1,6 @@
 {
   "DataToPerformRetireAction": {
-    "Action": "Mobile Home/BOE Retire",
+    "Action": "Retire",
    	"Split": "Perform Parcel Split",
    	"Combine": "Perform Parcel Combine",
    	"ManyToMany": "Many To Many",
