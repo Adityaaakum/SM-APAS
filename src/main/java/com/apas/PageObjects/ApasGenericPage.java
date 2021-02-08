@@ -1007,9 +1007,7 @@ public class ApasGenericPage extends Page {
 		String xpath = "//article[contains(.,'" + objectName + "')]//a[@title='Show one more action'] |  //article[contains(.,'" + objectName + "')]//*[@data-aura-class='forceDeferredDropDownAction']//a | //article[contains(.,'City Strat Codes')]//span[text()='Show more actions']";
 		Click(driver.findElement(By.xpath(xpath)));
 		Thread.sleep(1000);
-		//String xpath1 = "//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'New'][@role='button'] | //div[contains(@class, 'slds-dropdown__list slds-dropdown_length-with-icon')]//button[text()='New'][@type='button']";
 		String xpath1 = "//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'New'][@role='button'] | //div[contains(@class, 'slds-dropdown__list slds-dropdown_length-with-icon')]//button[text()='New'][@type='button'] |  //div[contains(@class,'actionMenu')]//a[@title='New']";
-		
 		Click(driver.findElement(By.xpath(xpath1)));
 	}
 
