@@ -283,7 +283,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
         //Step10: Validation that E-File logs are linked to the work item and the status of the E-logs is reverted
         softAssert.assertTrue(objBuildingPermitPage.verifyElementExists(objWorkItemHomePage.linkedItemEFileIntakeLogs), "SMAB-T1900: Validation that efile logs are linked with work item");
         HashMap<String, ArrayList<String>> efileImportLogsData = objBuildingPermitPage.getGridDataInHashMap();
-        softAssert.assertEquals(efileImportLogsData.get("Status").get(0), "Reverted", "SMAB-T1900: Validation that status of the efile logs linked with work item is reverted");
+        softAssert.assertEquals(efileImportLogsData.get("Status").get(0), "Reverted", "SMAB-T1899: Validation that status of the efile logs linked with work item is reverted");
 
         //Step11: Validating the status should be completed
         objBuildingPermitPage.openTab(objWorkItemHomePage.tabDetails);
