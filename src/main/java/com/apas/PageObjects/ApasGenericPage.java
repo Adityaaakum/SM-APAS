@@ -1004,10 +1004,11 @@ public class ApasGenericPage extends Page {
 	 * @param : Object name to be created
 	 */
 	public void OpenNewEntryFormFromRightHandSidePanel(String objectName) throws IOException, InterruptedException {
-		String xpath = "//article[contains(.,'" + objectName + "')]//a[@title='Show one more action'] |  //article[contains(.,'" + objectName + "')]//*[@data-aura-class='forceDeferredDropDownAction']//a";
+		String xpath = "//article[contains(.,'" + objectName + "')]//a[@title='Show one more action'] |  //article[contains(.,'" + objectName + "')]//*[@data-aura-class='forceDeferredDropDownAction']//a | //article[contains(.,'City Strat Codes')]//span[text()='Show more actions']";
 		Click(driver.findElement(By.xpath(xpath)));
 		Thread.sleep(1000);
-		Click(driver.findElement(By.xpath("//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'New'][@role='button']")));
+		String xpath1 = "//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'New'][@role='button'] | //div[contains(@class, 'slds-dropdown__list slds-dropdown_length-with-icon-10')]//button[text()='New'][@type='button']";
+		Click(driver.findElement(By.xpath(xpath1)));
 	}
 
 	/**
