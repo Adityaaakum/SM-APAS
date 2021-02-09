@@ -610,9 +610,9 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 */
 	@Test(description = "SMAB-T2661:Parcel Management- Verify that User is able to update Situs of child parcels from the Parcel mapping screen for \"Split\" mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"regression","parcel_management" })
-	public void ParcelManagement_UpdateChildParcelSitus_SplitMappingAction(String loginUser) throws Exception {
+	public void ParcelManagement_UpdateChildParcelSitusFirstScreen_SplitMappingAction(String loginUser) throws Exception {
 
-		String queryAPN = "Select name,ID  From Parcel__c where name like '004%' AND Primary_Situs__c !=NULL limit 1";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 
