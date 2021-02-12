@@ -64,7 +64,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 	 * 4. Create Real Property settings Record for current Roll Year with Status other than 'Approved'
 	 * 5. Verify for Active Exemption record created in above test, Current Year's VA is still updated with blank values from RPSL record
 	 **/
-	@Test(description = "SMAB-T566,SMAB-T1381: Verify when 'Annual Batch process' runs and a 'VAR' is present for next Tax Year then it gets updated with blank values if status of RPSL is other than 'Approved'", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption" })
+	@Test(description = "SMAB-T566,SMAB-T1381: Verify when 'Annual Batch process' runs and a 'VAR' is present for next Tax Year then it gets updated with blank values if status of RPSL is other than 'Approved'", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"Regression","DisabledVeteran" })
 	public void DisabledVeteran_verifyActiveExemptionWithDeletedAndUnApprovedRPSL(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through		
@@ -181,7 +181,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 	 * 4. Create Real Property settings Record for current Roll Year with Status other than 'Approved'
 	 * 5. Verify for In-Active Exemption record created in above test, Current Year's VA is still not created even if RPSL is created
 	 **/
-	@Test(description = "SMAB-T510,SMAB-T1380: Verify when 'Annual Batch process' runs for In-Active Exemption record 'VAR' for working Tax Year is not created if status of RPSL is other than 'Approved'", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption" })
+	@Test(description = "SMAB-T510,SMAB-T1380: Verify when 'Annual Batch process' runs for In-Active Exemption record 'VAR' for working Tax Year is not created if status of RPSL is other than 'Approved'", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"Regression","DisabledVeteran" })
 	public void DisabledVeteran_verifyInActiveExemptionWithDeletedAndUnApprovedRPSL(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through		
@@ -256,7 +256,7 @@ public class DisabledVeteran_AnnualProcess_Test extends TestBase{
 	 * 2. Verify for Active Exemption record created in above test, Current Year's VA is updated with relevant values from RPSL record
 	 * 3. Verify for In-Active Exemption record created in above test, Current Year's VA is still not created even if RPSL is created
 	 **/
-	@Test(description = "SMAB-T1382, SMAB-T511, SMAB-T1293,SMAB-T536,SMAB-T535: Verify that when the 'Annual Batch process' runs and status of RPSL is 'Approved', VAR for Active Exemption gets updated with relevant values & for In-Active Exemption, does not get created", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption" }, dependsOnMethods = {"DisabledVeteran_verifyActiveExemptionWithDeletedAndUnApprovedRPSL", "DisabledVeteran_verifyInActiveExemptionWithDeletedAndUnApprovedRPSL"})
+	@Test(description = "SMAB-T1382, SMAB-T511, SMAB-T1293,SMAB-T536,SMAB-T535: Verify that when the 'Annual Batch process' runs and status of RPSL is 'Approved', VAR for Active Exemption gets updated with relevant values & for In-Active Exemption, does not get created", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"Regression","DisabledVeteran" }, dependsOnMethods = {"DisabledVeteran_verifyActiveExemptionWithDeletedAndUnApprovedRPSL", "DisabledVeteran_verifyInActiveExemptionWithDeletedAndUnApprovedRPSL"})
 	
 	public void DisabledVeteran_verifyVAWithApprovedRPSL(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through		
