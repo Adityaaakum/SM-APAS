@@ -1,4 +1,4 @@
-package com.apas.Tests.WorkItemsTest.WorkItemWorkFlow;
+package com.apas.Tests.WorkItemsTest.WorkIemAdministration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements testdata, modules, users {
+public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
@@ -57,8 +57,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T1994,SMAB-T1838:verify that user is able to view 'Use Code' and 'Street' fields getting automatically populated in the work item record related to the linked Parcel, Verify user is able to view Work Item details after submitting it for approval", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-			"regression","work_item_manual" })
-	public void WorkItemWorkflow_Manual_LinkedParcelUseCodeStreetFields(String loginUser) throws Exception {
+			"Regression","WorkItemAdministration" })
+	public void WorkItemAdministration_Manual_LinkedParcelUseCodeStreetFields(String loginUser) throws Exception {
 		String puc;
 		String primarySitus;		
 
@@ -130,8 +130,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T1994:verify that user is able to view 'Use Code' which is  blank but 'Street' field get automatically populated in the work item record related to the linked Parcel", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-			"regression","work_item_manual"  })
-	public void WorkItemWorkflow_Manual_LinkedParcelUseCodeNotBlank_StreetFieldBlank(String loginUser) throws Exception {
+			"Regression","WorkItemAdministration"  })
+	public void WorkItemAdministration_Manual_LinkedParcelUseCodeNotBlank_StreetFieldBlank(String loginUser) throws Exception {
 		String puc;
 
 		// fetching a parcel where PUC is not blank but  Primary Situs is blank
@@ -171,8 +171,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2075:Verify User is able to view 'Roll Code' and 'Date' fields getting automatically populated in the work item record linked to a BPP Account", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"  }, enabled = false)
-	public void WorkItemWorkflow_Manual_LinkedBPPAccountUseCode_DateFields(String loginUser) throws Exception {
+	@Test(description = "SMAB-T2075:Verify User is able to view 'Roll Code' and 'Date' fields getting automatically populated in the work item record linked to a BPP Account", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","WorkItemAdministration"  }, enabled = false)
+	public void WorkItemAdministration_Manual_LinkedBPPAccountUseCode_DateFields(String loginUser) throws Exception {
 
 		// fetching a BPP account where Roll code  is not blank 
 		String queryBPPAccount = "select Name,Roll_Code__c from BPP_Account__c where Roll_Code__c!=NULL  and Status__c ='ACTIVE' Limit 1";
@@ -213,8 +213,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	/**
 	 * This method is to verify that user gets prior date of value sequencing restriction warning message for Parcels
 	 */
-	@Test(description = "SMAB-T2219: Verify that user gets the warning message when trying to accept the work item with prior DOV for Parcels", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"})
-	public void WorkItemWorkflow_Manual_Parcels_PriorDateOfValueSequencing(String loginUser) throws Exception {
+	@Test(description = "SMAB-T2219: Verify that user gets the warning message when trying to accept the work item with prior DOV for Parcels", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"Regression","WorkItemAdministration"})
+	public void WorkItemAdministration_Manual_Parcels_PriorDateOfValueSequencing(String loginUser) throws Exception {
 
 		String apnValue= objParcelsPage.fetchActiveAPN();
 
@@ -256,8 +256,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	/**
 	 * This method is to verify that user gets prior date of value sequencing restriction warning message for BPP Accounts
 	 */
-	@Test(description = "SMAB-T2220: Verify that user gets the warning message when trying to accept the work item with prior DOV for BPP Accounts", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"}, enabled = false)
-	public void WorkItemWorkflow_Manual_BPPAccounts_PriorDateOfValueSequencing(String loginUser) throws Exception {
+	@Test(description = "SMAB-T2220: Verify that user gets the warning message when trying to accept the work item with prior DOV for BPP Accounts", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","WorkItemAdministration"}, enabled = false)
+	public void WorkItemAdministration_Manual_BPPAccounts_PriorDateOfValueSequencing(String loginUser) throws Exception {
 
 		String queryBPPAccountValue = "SELECT Name FROM BPP_Account__c where Status__C = 'Active' limit 1";
 		String BPPAccountValue= salesforceAPI.select(queryBPPAccountValue).get("Name").get(0);
@@ -299,8 +299,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	/**
 	 * Verify that work items are routed correctly as per the work item routing drop down for Parcels
 	 */
-	@Test(description = "SMAB-T1985,SMAB-T1989,SMAB-T1988: Verify that work items are routed correctly as per the work item routing drop down for Parcels", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"})
-	public void WorkItemWorkflow_Manual_Parcels_ManualWorkItemRouting(String loginUser) throws Exception {
+	@Test(description = "SMAB-T1985,SMAB-T1989,SMAB-T1988: Verify that work items are routed correctly as per the work item routing drop down for Parcels", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"Regression","WorkItemAdministration"})
+	public void WorkItemAdministration_Manual_Parcels_ManualWorkItemRouting(String loginUser) throws Exception {
 		String workPool = "RP Admin";
 
 		// fetching a parcel where PUC is not blank but  Primary Situs is blank
@@ -374,8 +374,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T1935,SMAB-T1936,SMAB-T1940:Verify User is able to create a Work Pool or update an existing Work Pool to indicate if a second level Approver is needed,Verify User can designate a value amount for the second level Approver on the Work Pool record,Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor", dataProvider = "loginBppAndRpBusinessAdminUsers", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual" })
-	public void WorkItemWorkflow_Manual_WorkItems_VerifyWorkPoolCreation(String loginUser) throws Exception {
+	@Test(description = "SMAB-T1935,SMAB-T1936,SMAB-T1940:Verify User is able to create a Work Pool or update an existing Work Pool to indicate if a second level Approver is needed,Verify User can designate a value amount for the second level Approver on the Work Pool record,Verify the 2nd Level approver on a Work Pool cannot be the same user as the designated Supervisor", dataProvider = "loginBppAndRpBusinessAdminUsers", dataProviderClass = DataProviders.class, groups = {"Regression","WorkItemAdministration" })
+	public void WorkItemAdministration_Manual_WorkItems_VerifyWorkPoolCreation(String loginUser) throws Exception {
 
 		//Step1: Setup the Work Pool Name
 		String poolName="";
@@ -455,8 +455,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	/**
 	 * Verify that work items are routed correctly as per the work item routing drop down for Parcels
 	 */
-	@Test(description = "SMAB-T1987,SMAB-T1990,SMAB-T1991: Verify that work items are routed correctly as per the work item routing drop down for BPP Account", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"}, enabled = false)
-	public void WorkItemWorkflow_Manual_BPPAccount_ManualWorkItemRouting(String loginUser) throws Exception {
+	@Test(description = "SMAB-T1987,SMAB-T1990,SMAB-T1991: Verify that work items are routed correctly as per the work item routing drop down for BPP Account", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","WorkItemAdministration"}, enabled = false)
+	public void WorkItemAdministration_Manual_BPPAccount_ManualWorkItemRouting(String loginUser) throws Exception {
 		String workPool = "BPP Admin";
 
 		String queryBPPAccountValue = "SELECT Name FROM BPP_Account__c where Status__C = 'Active' limit 1";
@@ -526,8 +526,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	/**
 	 * Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab
 	 **/
-	@Test(description = "SMAB-T2474: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_Manual" }, alwaysRun = true)
-	public void WorkItemWorkflow_Manual_WIPresentInCompletedTab_2ndLevelApprover(String loginUser) throws Exception {
+	@Test(description = "SMAB-T2474: Verify WorkItem should be visible in  2nd level supervisor's 'Completed' tab", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "WorkItemAdministration" }, alwaysRun = true)
+	public void WorkItemAdministration_Manual_WIPresentInCompletedTab_2ndLevelApprover(String loginUser) throws Exception {
 
 		//fetching a parcel where PUC is not blank but Primary Situs is blank 
 		String apnValue=apasGenericObj.fetchActiveAPN();
@@ -603,8 +603,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	 * Verify Withdraw' Button on Staff and  level 1 supervisor with  submitted for approval and Approval -On Hold Status
 	 **/
 	@Test(description = "SMAB-T2476,SMAB-T2477,SMAB-T2478: Verify Withdraw' Button on Staff and  level 1 supervisor with  submitted for approval and Approval -On Hold Status", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-			"smoke", "regression", "Work_Items_Manual" }, alwaysRun = true)
-	public void WorkItemWorkflow_Manual_WithrawButtonOnWI(String loginUser) throws Exception {
+			"Smoke", "Regression", "WorkItemAdministration" }, alwaysRun = true)
+	public void WorkItemAdministration_Manual_WithrawButtonOnWI(String loginUser) throws Exception {
 		String ExemptionSupport = CONFIG.getProperty(users.EXEMPTION_SUPPORT_STAFF + "UserName");
 		String rpBusinessAdmin = CONFIG.getProperty(users.RP_BUSINESS_ADMIN + "UserName");
 
@@ -705,8 +705,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	 * Verify 'withdraw' button visible on work item timeline on parcel page
 	 **/
 	@Test(description = "SMAB-T2479,SMAB-T2480 : Verify 'withdraw' button visible on work item timeline on parcel page", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-			"smoke", "regression", "Work_Items_Manual" }, alwaysRun = true)
-	public void WorkItemWorkflow_Manual_Withraw_OnWITimelineOnParcel(String loginUser) throws Exception {
+			"Smoke", "Regression", "WorkItemAdministration" }, alwaysRun = true)
+	public void WorkItemAdministration_Manual_Withraw_OnWITimelineOnParcel(String loginUser) throws Exception {
 
 		//fetching a parcel where PUC is not blank but Primary Situs is blank 
 		String apnValue= apasGenericObj.fetchActiveAPN();
@@ -841,8 +841,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	/**
 	 * This method is to Verify that Level1 Approver is able to assign WIs to a Level2 Approver and 2nd Level supervisor assigns it back to Level1 Approver
 	 */
-	@Test(description = "SMAB-T2558,SMAB-T2563: Verify that Level1 Approver is able to assign WIs to a Level2 Approver and 2nd Level supervisor assigns it back to Level1 Approver", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"})
-	public void WorkItemWorkflow_Manual_verifyLevel2ApproverIsAbleToAssignWorkItems(String loginUser) throws Exception {
+	@Test(description = "SMAB-T2558,SMAB-T2563: Verify that Level1 Approver is able to assign WIs to a Level2 Approver and 2nd Level supervisor assigns it back to Level1 Approver", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","WorkItemAdministration"})
+	public void WorkItemAdministration_Manual_verifyLevel2ApproverIsAbleToAssignWorkItems(String loginUser) throws Exception {
 
 		ReportLogger.INFO("Get the user names through SOQL query");
 		String rpBusinessAdminName = salesforceAPI.getUserName(users.RP_BUSINESS_ADMIN);
@@ -1169,8 +1169,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2278,SMAB-T2280:Verify the WI generated for a WIC with roll code=SEC that does not have RA record gets assigned to In Pool TAB of Work Pool value of \"RP Lost in Routing\"", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-			"regression","work_item_manual" })
-	public void WorkItemWorkflow_VerifyRPLostInRouting_WorkPool(String loginUser) throws Exception {
+			"Regression","WorkItemAdministration" })
+	public void WorkItemAdministration_VerifyRPLostInRouting_WorkPool(String loginUser) throws Exception {
 
 		// fetching an active parcel with no neighborhood record 
 		String queryAPNValue = "select Name from Parcel__c where Status__c='Active' and Neighborhood_Reference__c= NULL limit 1";
@@ -1254,8 +1254,8 @@ public class WorkItemWorkflow_ManualWorkItems_Tests extends TestBase implements 
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2284,SMAB-T2280:Verify the WI generated for a WIC with roll code=UNS that does not have RA record gets assigned to In Pool TAB of Work Pool value of \"BPP Lost in Routing\"", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-			"regression","work_item_manual" })
-	public void WorkItemWorkflow_VerifyBPPLostInRouting_WorkPool(String loginUser) throws Exception {
+			"Regression","WorkItemAdministration" })
+	public void WorkItemAdministration_VerifyBPPLostInRouting_WorkPool(String loginUser) throws Exception {
 
 		// fetching a BPP account parcel with no territory record 
 		String queryBPPAccount ="select Name from BPP_Account__c where Roll_Code__c='UNS' and Territory__c =NULL and Status__c ='ACTIVE' Limit 1";

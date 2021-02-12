@@ -46,7 +46,7 @@ public class RollYearSettingsTest extends TestBase {
 	 -Error message when no mandatory fields are entered in Roll Year record record before saving it
 	 -Create Roll Year record for Future Year
 	 **/
-	@Test(description = "SMAB-T638: Validate that System Admin is able to create Future Roll Year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T638: Validate that System Admin is able to create Future Roll Year record", groups = {"Regression","DisabledVeteran"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void RollYear_CreateFutureRecord(String loginUser) throws Exception {
 	
 			//Step1: Login to the APAS application using the user passed through the data provider
@@ -118,7 +118,7 @@ public class RollYearSettingsTest extends TestBase {
 		 -Edit a Roll Year record
 		 **/
 		
-		@Test(description = "SMAB-T638: Validate that System Admin is able to create Past Roll Year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+		@Test(description = "SMAB-T638: Validate that System Admin is able to create Past Roll Year record", groups = {"Regression","DisabledVeteran"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 		public void RollYear_CreateAndEditPastRecord(String loginUser) throws Exception {
 			
 			//Step1: Login to the APAS application using the user passed through the data provider
@@ -233,7 +233,7 @@ public class RollYearSettingsTest extends TestBase {
 		-Field level validations (error messages)
 		 **/
 		
-		@Test(description = "SMAB-T638: Validate field level validations on Roll Year Screen", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+		@Test(description = "SMAB-T638: Validate field level validations on Roll Year Screen", groups = {"Regression","DisabledVeteran"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 		public void RollYear_FieldLevelValidations(String loginUser) throws Exception {
 		
 			//Step1: Login to the APAS application using the user passed through the data provider
@@ -315,7 +315,7 @@ public class RollYearSettingsTest extends TestBase {
 	 -RP Business Admin and Exemption Support Staff are able to only view the Roll Year Record
 	 **/
 	
-	@Test(description = "SMAB-T638: Validate RP Business admin and Exemption Support staff are able to only view the Roll year record", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T638: Validate RP Business admin and Exemption Support staff are able to only view the Roll year record", groups = {"Regression","DisabledVeteran"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void RollYear_ViewRecord(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -351,7 +351,7 @@ public class RollYearSettingsTest extends TestBase {
 	 Current Roll Year can have other instances linked like CPI factor and Exemption & Penalty Calculations due to which current Roll Year record can't be deleted and created again
 	 **/
 	
-	/*@Test(description = "SMAB-T638: Validate user is able to create Roll year record for current year", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginUsers")
+	/*@Test(description = "SMAB-T638: Validate user is able to create Roll year record for current year", groups = {"Regression","DisabledVeteran"}, dataProvider = "loginUsers")
 	public void RollYear_CreateCurrentRecord(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider

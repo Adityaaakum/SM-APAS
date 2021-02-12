@@ -39,7 +39,7 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
  Below test case will validate generic user is not able to access below modules
  City Strat Codes, County Strat Codes, Non Relevant Permit Settings
  */
-	@Test(description = "SMAB-T439: Validation for user not having the access to certain modules", groups = {"regression","buildingPermit"})
+	@Test(description = "SMAB-T439: Validation for user not having the access to certain modules", groups = {"Regression","BuildingPermit","SecurityAndSharing"})
 	public void BuildingPermit_GenericUserNotHavingAccess() throws Exception {
 
 		//Step1: Login to the APAS application using the General User
@@ -74,7 +74,7 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 	/**
 	 Below test case is used to validate that BPP Auditor/Appraiser and BPP Principal should not be able to create/edit/delete building permit
 	 **/
-	@Test(description = "SMAB-T470: Validate that BPP Auditor/Appraiser and BPP Principal should not be able to create/edit/delete building permit", groups = {"regression","buildingPermit"}, dataProvider = "BPPAuditorAndPrincipal", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T470: Validate that BPP Auditor/Appraiser and BPP Principal should not be able to create/edit/delete building permit", groups = {"Regression","BuildingPermit","SecurityAndSharing"}, dataProvider = "BPPAuditorAndPrincipal", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_CREDPermissionValidation(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -120,7 +120,7 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the permissions given to BPP Business Admin
 	 **/
-	@Test(description = "SMAB-T1820: BPP Business Admin access validations", groups = {"regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T1820: BPP Business Admin access validations", groups = {"Regression","BuildingPermit","SecurityAndSharing"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_AccessValidations_BPPBusinessAdmin(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -181,7 +181,7 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the permissions given to RP Business Admin
 	 **/
-	@Test(description = "SMAB-T1820 : RP Business Admin access validations", groups = {"regression","buildingPermit"}, dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T1820 : RP Business Admin access validations", groups = {"Regression","BuildingPermit","SecurityAndSharing"}, dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_AccessValidations_RPBusinessAdmin(String loginUser) throws Exception {
 		BuildingPermit_AccessValidations_BPPBusinessAdmin(loginUser);
 	}
@@ -189,7 +189,7 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the permissions given to BPP Auditor/Appraiser
 	 **/
-	@Test(description = "SMAB-T1820 : BPP Auditor/Appraiser access validations", groups = {"regression","buildingPermit"}, dataProvider = "loginBppAuditor", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T1820 : BPP Auditor/Appraiser access validations", groups = {"Regression","BuildingPermit","SecurityAndSharing"}, dataProvider = "loginBppAuditor", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_AccessValidations_BPPAuditor(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -241,7 +241,7 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the permissions given to RP Appraiser
 	 **/
-	@Test(description = "SMAB-T1820 : RP Appraiser access validations", groups = {"regression","buildingPermit"}, dataProvider = "RPAppraiser", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T1820 : RP Appraiser access validations", groups = {"Regression","BuildingPermit","SecurityAndSharing"}, dataProvider = "RPAppraiser", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_AccessValidations_RPAppraiser(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -294,7 +294,7 @@ public class BuildingPermit_SecurityAndSharing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the permissions given to Appraisal Support
 	 **/
-	@Test(description = "SMAB-T1820 : Appraisal Support access validations", groups = {"regression","buildingPermit"}, dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T1820 : Appraisal Support access validations", groups = {"Regression","BuildingPermit","SecurityAndSharing"}, dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_AccessValidations_AppraisalSupport(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider

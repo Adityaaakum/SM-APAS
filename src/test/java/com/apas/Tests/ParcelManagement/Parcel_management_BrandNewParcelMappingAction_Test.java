@@ -130,7 +130,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2523,SMAB-T2524,SMAB-T2525,SMAB-T2527:Validation on the Brand New parcel Mapping Action can only be performed on Active Parcels ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"regression","parcel_management" })
+			"Smoke","Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyFirstNonCondoFieldOnBrandNewparcelAction(String loginUser) throws Exception {
 		String queryAPN = "Select name From Parcel__c where Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);

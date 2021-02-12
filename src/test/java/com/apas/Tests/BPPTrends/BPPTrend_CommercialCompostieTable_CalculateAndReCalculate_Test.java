@@ -81,7 +81,7 @@ public class BPPTrend_CommercialCompostieTable_CalculateAndReCalculate_Test exte
 	 * 11. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T162, SMAB-T165
 	 * 12. Validating the status of the table on BPP Trend Setup Page
 	 */
-	@Test(description = "SMAB-T170,SMAB-T162,SMAB-T165,SMAB-T190,SMAB-T198: Performing validation on COMMERCIAL COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T170,SMAB-T162,SMAB-T165,SMAB-T190,SMAB-T198: Performing validation on COMMERCIAL COMPOSITE FACTORS before and after calculation", groups = {"Smoke","Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_CommercialCompositeFactors_CalculateAndCompare(String loginUser) throws Exception {
 		String tableName = "Commercial Composite Factors";
 		
@@ -186,7 +186,7 @@ public class BPPTrend_CommercialCompostieTable_CalculateAndReCalculate_Test exte
 	 * 8. Validating the presence of ReCalculate button for Calculated table:: Test Case/JIRA ID: SMAB-T195
 	 * 10. Validating the data of UI table against the Trend Calculator excel file:: Test Case/JIRA ID: SMAB-T195
 	 */
-	@Test(description = "SMAB-T173,SMAB-T195,SMAB-T196: Performing validation on COMMERCIAL COMPOSITE FACTORS before and after calculation", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T173,SMAB-T195,SMAB-T196: Performing validation on COMMERCIAL COMPOSITE FACTORS before and after calculation", groups = {"Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_CommercialCompositeFactors_ReCalculateAndCompare(String loginUser) throws Exception {
 		String tableName = "Commercial Composite Factors";
 		

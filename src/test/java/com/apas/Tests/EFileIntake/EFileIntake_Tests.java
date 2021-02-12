@@ -82,7 +82,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	
 	
 	@Test(description = "SMAB-T82:Verify the admin user is not able to select file for import with unacceptable formats using Upload button", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"regression","EFileImport" })
+		"Regression","EFileImport" })
 	public void EFile_verifyInvalidFileTypesNotAllowedToImport(String loginUser)throws Exception{
 
 		File dir=new File(EFileinvalidFormatFilepath);
@@ -129,7 +129,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	
 	
 	@Test(description = "SMAB-T15,SMAB-T65,SMAB-T87,SMAB-T100,SMAB-T49,SMAB-T58,SMAB-T88,SMAB-T959,SMAB-T575,SMAB-T915,SMAB-T1155,SMAB-T1550,SMAB-T1511,SMAB-T1510,SMAB-T1793:Verify that Users are able to import e-files through E-File Import Tool for 'New' status records", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"smoke", "regression","EFileImport" })
+			"Smoke", "Regression","EFileImport" })
 	public void EFileImport_VerifyImportForNewStatus_AndApporveImportFile(String loginUser) throws Exception{
 		String period = "Adhoc";
 
@@ -314,7 +314,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	
 	
 	@Test(description = "SMAB-T578,SMAB-T975:Verify user is not able to import a file for BP if the previous Import for a particular File Type, File Source and Period was Approved", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"smoke", "regression","EFileImport" })
+			"Smoke", "Regression","EFileImport" })
 	public void EFileIntake_VerifyAlreadyApprovedFileNotImported(String loginUser) throws Exception{
 		String period = "Adhoc";
 		String fileType="Building Permit";
@@ -373,7 +373,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	 */
 	
 	@Test(description = "SMAB-T68,SMAB-T90,SMAB-T915,SMAB-T101,SMAB-T1512:Verify that user without permission is not able to revert the records from file", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"regression","EFileImport" })
+		"Regression","EFileImport" })
 	public void EFileIntake_VerifyValidationAfterRevertedStatus(String loginUser) throws Exception{
 		objEFileImport.login(loginUser);
 		String period = "Adhoc";
@@ -454,7 +454,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	
 	
 	@Test(description = "SMAB-T28:Verify that user without permission is not able to revert the records from file", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"regression","EFileImport" })
+		"Regression","EFileImport" })
 	public void EFileIntake_VerifyRevertNotAllowedForUnAssigednUser(String loginUser) throws Exception{
 		
 		//String period = objUtil.getCurrentDate("MMMM YYYY");
@@ -500,7 +500,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	 */
 	
 	@Test(description = "SMAB-T32,SMAB-T33,SMAB-T36,SMAB-T1403,SMAB-T1402,SMAB-T1511,SMAB-T1513,SMAB-T1566,SMAB-T1600:Verify user is able to see number of records count from file import action on 'E-File Import Logs' screen", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"smoke", "regression","EFileImport" })	
+		"Smoke", "Regression","EFileImport" })	
 	public void EFileIntake_VerifyImportLogsRecordCount(String loginUser) throws Exception{
 		//String uploadedDate = objUtil.getCurrentDate("MM/dd/YYYY");
 		String converteddate=objUtil.convertCurrentDateISTtoPST("Asia/Kolkata", "America/Los_Angeles","MM/dd/yyyy");
@@ -640,7 +640,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T102:Verify user is able to see number of records count from file import action on 'E-File Import Logs' screen", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"regression","EFileImport" })
+		"Regression","EFileImport" })
 	public void EFileIntake_VerifyFileTypeAndCorrespondingSources(String loginUser) throws Exception{
 	//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEFileImport.login(loginUser);
@@ -679,7 +679,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T1144:Verify that user is not able to upload a file if a file is already 'In Progress' status for the selected 'File type' ,'Source' and 'Period'", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"regression","EFileImport" })
+		"Regression","EFileImport" })
 	public void EFileIntake_VerifyFileNotimportedIfAlreadyInProgress(String loginUser) throws Exception{
 		String period = "Adhoc";
 		String fileType="Building Permit";
@@ -720,7 +720,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T1569,SMAB-T1570,SMAB-T1572,SMAB-T1571:Verify BP File import validation on Input box ", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-		"smoke", "regression","EFileImport" })	
+			"Smoke", "Regression","EFileImport" })	
 	public void EFileIntake_VerifyBPInputBoxValidationsForBPImport(String loginUser) throws Exception{
 		String period = "Adhoc";
 		String fileType="Building Permit";
@@ -789,7 +789,7 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T1791:Verify user is able to see only One 'new' entry and same is used while importing a BPP Trends File Type ", dataProvider = "loginRPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {
-		"regression","EFileImport" })	
+		"Regression","EFileImport" })	
 	public void EFileIntake_VerifyOnlyOneNewStatusRecordForBPPTrends(String loginUser) throws Exception{
 		String period = "2021";
 		String fileType="BPP Trend Factors";

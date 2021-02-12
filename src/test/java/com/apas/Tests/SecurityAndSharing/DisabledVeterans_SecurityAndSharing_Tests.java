@@ -55,7 +55,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 	}
 
 	// Below test case is used to validate permission access on Exemption and VA's
-	@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify User without permission is not able to create a new Exemption, VA record and RPSL",  dataProvider = "RPAppraiser",dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption" })
+	@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify User without permission is not able to create a new Exemption, VA record and RPSL",  dataProvider = "RPAppraiser",dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression","DisabledVeteran","SecurityAndSharing"})
 	public void DisabledVeteran_AccessValidation_RPAppraiser(String loginInvalidUser) throws Exception {
 
 		//Fetching the exemption record from API
@@ -104,7 +104,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 	}
 
 	// Below test case is used to validate permission access on Exemption and VA's
-		@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify User without permission is not able to create a new Exemption, VA record and RPSL",  dataProvider = "loginBppAuditor",dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption" })
+		@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify User without permission is not able to create a new Exemption, VA record and RPSL",  dataProvider = "loginBppAuditor",dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression","DisabledVeteran","SecurityAndSharing" })
 		public void DisabledVeteran_AccessValidation_BPPAppraiser(String loginInvalidUser) throws Exception {
 
 			//Fetching the exemption record from API
@@ -150,7 +150,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 		}
 
 		// Below test case is used to validate permission access on Roll year
-		@Test(description = "SMAB-T642,SMAB-T482:Verify User without permission is not able to create a new Roll Year record",  dataProvider = "loginBppAuditor",dataProviderClass = DataProviders.class, groups = {"regression","DisabledVeteranExemption"})
+		@Test(description = "SMAB-T642,SMAB-T482:Verify User without permission is not able to create a new Roll Year record",  dataProvider = "loginBppAuditor",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran","SecurityAndSharing"})
 		public void DisabledVeteran_nonSystemAdminNotAbleToCREDRollYearObject(String loginInvalidUser) throws Exception {
 
 			String currentYear = DateUtil.getCurrentDate("YYYY");
@@ -173,7 +173,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 		}
 
 		// Below test case is used to validate permission access on Exemption and VA's for BPP Admin
-		@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify BPP Admin should be able to create a new Exemption and VA record",  dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"regression","DisabledVeteranExemption" })
+		@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify BPP Admin should be able to create a new Exemption and VA record",  dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran","SecurityAndSharing" })
 		public void DisabledVeteran_AccessValidation_BPPAdmin(String loginUser) throws Exception {
 
 			//Fetching the exemption record from API
@@ -220,7 +220,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 		}
 
 		// Below test case is used to validate permission access on Exemption and VA's for RP Admin
-		@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify RP Admin should be able to create a new Exemption and VA record",  dataProvider = "loginRPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"regression","DisabledVeteranExemption" })
+		@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify RP Admin should be able to create a new Exemption and VA record",  dataProvider = "loginRPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran","SecurityAndSharing" })
 		public void DisabledVeteran_AccessValidation_RPAdmin(String loginUser) throws Exception {
 
 			//Fetching the exemption record from API
@@ -267,7 +267,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 		}
 
 		// Below test case is used to validate permission access on Exemption and VA's for Appraisal Support
-		@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify Appraisal Support should be able to create a new Exemption and VA record",  dataProvider = "loginApraisalUser",dataProviderClass = DataProviders.class, groups = {"regression","DisabledVeteranExemption" })
+		@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify Appraisal Support should be able to create a new Exemption and VA record",  dataProvider = "loginApraisalUser",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran","SecurityAndSharing" })
 		public void DisabledVeteran_AccessValidation_AppraisalSupport(String loginUser) throws Exception {
 
 			//Fetching the exemption record from API
@@ -315,7 +315,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 
 
 		// Below test case is used to validate permission access on Exemption and VA's for RP Admin
-		@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify Exemption Support Staff access on Exemption, VA record and RPSL",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"regression","DisabledVeteranExemption" })
+		@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify Exemption Support Staff access on Exemption, VA record and RPSL",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran","SecurityAndSharing" })
 		public void DisabledVeteran_AccessValidation_ExemptionSupportStaff(String loginUser) throws Exception {
 
 			//Fetching the exemption record from API
