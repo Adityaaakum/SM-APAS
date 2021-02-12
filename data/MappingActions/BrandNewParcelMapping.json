@@ -15,5 +15,23 @@
     "Situs": "225 WILSHIRE AVE , DALY CITY" ,
     "Legal Description": "Legal PM 85/25-260",
           
+  },
+  "DataToPerformBrandNewParcelMappingActionWithSitusData": {
+    "Action": "Brand New Parcel",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "PM 85/25-26",
+    "Net Land Loss": "200",
+    "Net Land Gain": "300",
+    "Comments": "Perform Brand New Parcel mapping",
+     "Situs City Description": "ATHERTON",
+    "Situs City Code": "AT",
+    "Situs City Name": "DALY CITY",
+    "Direction": "West Coast",
+    "Situs Number": "69",
+    "Situs Street Name": "CLIFFSIDE",
+    "Situs Type": "ALLEE",
+    "Situs Unit Number": "56",
+    "Legal Description": "Legal PM 85/25-260",
+          
   }
 }

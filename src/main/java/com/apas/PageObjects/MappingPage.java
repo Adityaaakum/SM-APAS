@@ -28,7 +28,7 @@ public class MappingPage extends ApasGenericPage {
 	public String netLandGainTextBoxLabel = "Net Land Gain";
 	public String firstNonCondoTextBoxLabel = "First non-Condo Parcel Number";
 	public String legalDescriptionTextBoxLabel = "Legal Description Auto-populate field for Child Parcels";
-	public String situsTextBoxLabel = "Situs Auto-populate Field for Child Parcels";
+	public String situsTextBoxLabel = "Situs";
 	public String commentsTextBoxLabel = "Comments";
 	public String parentAPNTextBoxLabel = "Parent APN(s)";
 	public String legalDescriptionColumnSecondScreen = "Legal Description";
