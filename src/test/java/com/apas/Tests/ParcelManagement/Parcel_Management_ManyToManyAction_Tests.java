@@ -455,14 +455,14 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		//Step 9: Validation that primary situs on last screen screen is getting populated from situs entered in first screen
 		for(int i=0;i<gridDataHashMap.get("Situs").size();i++)
 			softAssert.assertEquals(gridDataHashMap.get("Situs").get(i),childprimarySitus,
-					"SMAB-T2661: Validation that System populates primary situs on last screen for child parcel number "+i+1+" with the situs value that was added in first screen");
+					"SMAB-T2661: Validation that System populates primary situs on last screen for child parcel number "+i+" with the situs value that was added in first screen");
 
 		//Step 10: Validation that primary situs of child parcel is the situs value that was added in first screen from situs modal window
 		for(int i=0;i<gridDataHashMap.get("Situs").size();i++)
 		{
 			String primarySitusValueChildParcel=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ gridDataHashMap.get("APN").get(i) +"')").get("Name").get(0);
 			softAssert.assertEquals(primarySitusValueChildParcel,childprimarySitus,
-					"SMAB-T2661: Validation that primary situs of  child parcel number "+i+1+" has value that was entered in first screen through situs modal window");
+					"SMAB-T2661: Validation that primary situs of  child parcel number "+i+" has value that was entered in first screen through situs modal window");
 		}
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
