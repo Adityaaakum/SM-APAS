@@ -71,7 +71,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 	 * 7. Validating CPI Factor is not editable once approved:: Test Case/JIRA ID: SMAB-T212
 	 * 8. Validating table status on BPP Trend Setup page post approving:: Test Case/JIRA ID:SMAB-T155
 	 */
-	@Test(description = "SMAB-T205,SMAB-T155,SMAB-T156,SMAB-T157,SMAB-T250,SMAB-T212,SMAB-T449: Approve calculations of valuation, composite & prop 13 tables", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T205,SMAB-T155,SMAB-T156,SMAB-T157,SMAB-T250,SMAB-T212,SMAB-T449: Approve calculations of valuation, composite & prop 13 tables", groups = {"Smoke","Regression","BPPTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class)
 	public void BppTrend_Approve(String loginUser) throws Exception {
 		objBppTrendSetupPage.login(loginUser);
 		
