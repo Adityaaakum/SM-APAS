@@ -95,7 +95,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		//SMAB-T2121: opening the action link to validate that link redirects to Review Error and success Records page
         objWorkItemHomePage.openActionLink(importReviewWorkItem);
 
-        objWorkItemHomePage.waitForElementToBeClickable(objEfileImportPage.approveButton);
+        objWorkItemHomePage.waitForElementToBeClickable(objEfileImportPage.approveButton,90);
 		softAssert.assertTrue(objBuildingPermitPage.verifyElementVisible(objEfileImportPage.approveButton),"SMAB-T2121: Validation that approve button is visible");
 		softAssert.assertTrue(objBuildingPermitPage.verifyElementVisible(objEfileImportPage.errorRowSection),"SMAB-T2121: Validation that error Row Section is visible");
 		softAssert.assertTrue(objBuildingPermitPage.verifyElementVisible(objEfileImportPage.buildingPermitLabel),"SMAB-T2121: Validation that Building Permits Label is visible") ;
@@ -123,7 +123,8 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
         //Step8: Validation for Import Review work item moved to completed status
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importReviewWorkItem + "\nLaunch Data Entry Screen"), "SMAB-T1890: Validation that import review work item moved to Completed status after import file is approved");
+        Thread.sleep(5000);
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importReviewWorkItem), "SMAB-T1890: Validation that import review work item moved to Completed status after import file is approved");
 
         //Step9: Validation for generation of "Final Review" Work Item
         String queryFinalReviewWorkItem = "SELECT Name FROM Work_Item__c where Request_Type__c = 'Building Permit - Final Review - " + fileNameWithoutExtension + "'";
@@ -132,6 +133,9 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
         //Step6: Accepting the work item
         driver.navigate().refresh();
+        
+      
+        objBuildingPermitPage.searchModule(modules.HOME);
         Thread.sleep(2000);
         objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
         objWorkItemHomePage.acceptWorkItem(finalReviewWorkItem);
