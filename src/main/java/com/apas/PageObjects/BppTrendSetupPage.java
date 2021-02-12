@@ -10,6 +10,7 @@ import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
+import com.gargoylesoftware.htmlunit.javascript.configuration.JavaScriptConfiguration;
 import com.relevantcodes.extentreports.LogStatus;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -164,9 +165,9 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		if(verifyElementVisible(moreTabCompositeFactorSettings)) {
 			WebElement moreTab = locateElement(moreTabCompositeFactorSettings, 10);
 			waitForElementToBeClickable(moreTab, 10);
-			clickAction(moreTab);
+			javascriptClick(moreTab);
 			waitForElementToBeVisible(bppCompositeFactorOption, 10);
-			clickAction(bppCompositeFactorOption);
+			javascriptClick(bppCompositeFactorOption);
 		} else {
 			javascriptClick(bppCompFactorSettingTab);
 			if(!waitForElementToBeVisible(20,dropDownIconBppCompFactorSetting))
