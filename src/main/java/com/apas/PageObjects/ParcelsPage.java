@@ -117,7 +117,6 @@ public class ParcelsPage extends ApasGenericPage {
 		if (dov != null) enter(dovInputTextBox, dov);
 		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
-
 		Thread.sleep(2000);
 
 		String workItemQuery = "SELECT Name FROM Work_Item__c where Description__c = '" + description + "' order by Name desc limit 1";

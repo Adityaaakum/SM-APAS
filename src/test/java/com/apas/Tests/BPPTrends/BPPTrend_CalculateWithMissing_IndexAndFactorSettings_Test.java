@@ -50,7 +50,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 	 * 3. Validating error message for missing good and index factor data:: TestCase/JIRA Id: SMAB-T193,SMAB-T257
 	 * 4. Deleting the dummy/test BPP Trend Setup
 	 */
-	@Test(description = "SMAB-T163,SMAB-T192,SMAB-T193,SMAB-T257: Calculation of INDUSTRIAL COMPOSITE FACTORS with missing calculation variables", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T163,SMAB-T192,SMAB-T193,SMAB-T257: Calculation of INDUSTRIAL COMPOSITE FACTORS with missing calculation variables", groups = {"Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_CompositeFactors_CalculateWithCalculationVariablesMissing(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
 		objBppTrendSetupPage.login(users.SYSTEM_ADMIN);

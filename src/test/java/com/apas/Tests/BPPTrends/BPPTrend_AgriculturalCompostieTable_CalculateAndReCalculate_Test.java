@@ -75,7 +75,7 @@ public class BPPTrend_AgriculturalCompostieTable_CalculateAndReCalculate_Test ex
 	 * 11. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T209
 	 * 12. Validating the status of the table on BPP Trend Setup Page: SMAB-T269
 	 */
-	@Test(description = "SMAB-T170,SMAB-T209,SMAB-T269,SMAB-T190,SMAB-T198: Performing validation on Agricultural COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T170,SMAB-T209,SMAB-T269,SMAB-T190,SMAB-T198: Performing validation on Agricultural COMPOSITE FACTORS before and after calculation", groups = {"Smoke","Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_AgriculturalCompositeFactors_CalculateAndCompare(String loginUser) throws Exception {
 		String tableName = "Agricultural Composite Factors";
 		
@@ -181,7 +181,7 @@ public class BPPTrend_AgriculturalCompostieTable_CalculateAndReCalculate_Test ex
 	 * 7. Validating the message displayed above table after ReCalculation is done
 	 * 8. Validating the presence of ReCalculate button for Calculated table:: Test Case/JIRA ID: SMAB-T195
 	 */
-	@Test(description = "SMAB-T173,SMAB-T195,SMAB-T196: Performing validation on AGRICULTURAL COMPOSITE FACTORS before and after calculation", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T173,SMAB-T195,SMAB-T196: Performing validation on AGRICULTURAL COMPOSITE FACTORS before and after calculation", groups = {"Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_AgriculturalCompositeFactors_ReCalculateAndCompare(String loginUser) throws Exception {
 		String tableName = "Agricultural Composite Factors";	
 		
