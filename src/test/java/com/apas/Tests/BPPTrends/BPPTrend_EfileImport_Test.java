@@ -67,7 +67,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Validating Discard functionality of error records
 	 * 3. Validating no of Error records post discarding error records
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
+	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
 	public void BppTrend_BOEIndexFileImportAndDiscardErrorRecords(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);
@@ -167,7 +167,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Validating revert functionality of error records
 	 * 3. Validating status post reverting error records on history page
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
+	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
 	public void BppTrend_BOEIndexFileImportAndRevert(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);
@@ -229,7 +229,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 4. Validating retry functionality of error records
 	 * 5. Validating no of records in Error and Imported rows section post retrying
 	 */
-	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
+	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","BPPTrend"})
 	public void BppTrend_BOEIndexImportAndRetryErrorRecords(String loginUser) throws Exception {
 		//Step1: Delete the existing data from system before importing files
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
@@ -336,7 +336,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Approving all records
 	 * 3. Validating status post approving on history page and transaction import logs page
 	 */
-	@Test(description = "SMAB-T957,SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
+	@Test(description = "SMAB-T957,SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","BPPTrend"})
 	public void BppTrend_BOEIndexImportAndApprove(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);	
@@ -397,7 +397,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Validating Discard functionality of error records
 	 * 3. Validating no of Error records post discarding error records
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111: Discarding error records and reverting import for BOE valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
+	@Test(description = "SMAB-T106,SMAB-T111: Discarding error records and reverting import for BOE valuation file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
 	public void BppTrend_BOEValFileImportAndDiscardErrorRecords(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);
@@ -496,7 +496,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Validating revert functionality of error records
 	 * 3. Validating status post reverting error records on history page
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
+	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
 	public void BppTrend_BOEValFileImportAndRevert(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);
@@ -558,7 +558,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 4. Validating retry functionality of error records
 	 * 5. Validating no of records in Error and Imported rows section post retrying
 	 */
-	@Test(description = "SMAB-T111,SMAB-T91: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
+	@Test(description = "SMAB-T111,SMAB-T91: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","BPPTrend"})
 	public void BppTrend_BOEValImportAndRetryErrorRecords(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);				
@@ -674,7 +674,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Approving all records
 	 * 3. Validating status post approving on history page and transaction import logs page
 	 */
-	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
+	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","BPPTrend"})
 	public void BppTrend_BOEValImportAndApprove(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);				
@@ -734,7 +734,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Validating Discard functionality of error records
 	 * 3. Validating no of Error records post discarding error records
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79,SMAB-T955: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
+	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79,SMAB-T955: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
 	public void BppTrend_CAAValFileImportAndDiscardErrorRecords(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);
@@ -834,7 +834,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Validating revert functionality of error records
 	 * 3. Validating status post reverting error records on history page
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79,SMAB-T956: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
+	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79,SMAB-T956: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
 	public void BppTrend_CAAValFileImportAndRevert(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);
@@ -897,7 +897,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 4. Validating retry functionality of error records
 	 * 5. Validating no of records in Error and Imported rows section post retrying
 	 */
-	@Test(description = "SMAB-T111,SMAB-T958: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
+	@Test(description = "SMAB-T111,SMAB-T958: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","BPPTrend"})
 	public void BppTrend_CAAValImportAndRetryErrorRecords(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);				
@@ -999,7 +999,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Approving all records
 	 * 3. Validating status post approving on history page and transaction import logs page
 	 */
-	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
+	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","BPPTrend"})
 	public void BppTrend_CAAValImportAndApprove(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);			
@@ -1059,7 +1059,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Validating the restrictions on uploading file with .TXT format:: TestCase/JIRA ID: SMAB-T112
 	 * 3. Validating the restrictions on uploading file with .XLS format:: TestCase/JIRA ID: SMAB-T112
 	 */
-	@Test(description = "SMAB-T112: Validating restrictions on uploading BPP Trends data files in invalid format", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","BPPTrend"})
+	@Test(description = "SMAB-T112: Validating restrictions on uploading BPP Trends data files in invalid format", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
 	public void BppTrend_ImportWithInvalidFormat(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business administrator)
 		objEfileHomePage.login(loginUser);
@@ -1117,7 +1117,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 		h. Age is greater than 40 and less than 1
 	 * 		i. Index / Average value beyond range
 	 */
-	@Test(description = "SMAB-T105: Validating transformation rules on BOE Index file import", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke","regression","BPPTrend"})
+	@Test(description = "SMAB-T105: Validating transformation rules on BOE Index file import", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","BPPTrend"})
 	public void BppTrend_TransformationRules_On_BoeIndexAndPercentFactors_Import(String loginUser) throws Exception {
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'BPP Trend Factors' and Import_Period__C='" + rollYearForImport + "' and File_Source__C like '%Factors%' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
@@ -1190,7 +1190,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	
 	
 	@Test(description = "SMAB-T974,SMAB-T951,SMAB-T954:Verify user is not able to import a file for BPP Trends if the previous Import for a particular File Type, File Source and Period was Approved", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {
-		"regression","EFileImport" })
+		"Regression","EFileImport" })
 	public void BPPTrends_VerifyAlreadyApprovedFileForSamePeriodIsNotImportedAgain(String loginUser) throws Exception{
 		//String rollYearForImport = "2021";
 		String fileType="BPP Trend Factors";
@@ -1266,7 +1266,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 */
 	
 	@Test(description = "SMAB-T83,SMAB-T84,SMAB-T1458:Verify user is able to see number of records count from file import action on 'E-File Import Logs' screen", dataProvider = "loginBusinessAdmin",dataProviderClass = DataProviders.class, groups = {
-		"regression","EFileImport" })	
+		"Regression","EFileImport" })	
 	public void BPPTrends_VerifyImportedLogsTransactionsRecordCountAndTrailFields(String loginUser) throws Exception{
 		//String uploadedDate = objUtil.getCurrentDate("MM/dd/YYYY");
 		String converteddate=objUtil.convertCurrentDateISTtoPST("Asia/Kolkata", "America/Los_Angeles","MM/dd/yyyy");
