@@ -18,11 +18,9 @@
   },
   "DataToPerformBrandNewParcelMappingActionWithSitusData": {
     "Action": "Brand New Parcel",
-    "Are taxes fully paid?": "Yes",
     "Reason code": "PM 85/25-26",
-    "Net Land Loss": "200",
-    "Net Land Gain": "300",
     "Comments": "Perform Brand New Parcel mapping",
+     "First non-Condo Parcel Number": "123456789",
      "Situs City Description": "ATHERTON",
     "Situs City Code": "AT",
     "Situs City Name": "DALY CITY",
@@ -31,7 +29,6 @@
     "Situs Street Name": "CLIFFSIDE",
     "Situs Type": "ALLEE",
     "Situs Unit Number": "56",
-    "Legal Description": "Legal PM 85/25-260",
           
   }
 }

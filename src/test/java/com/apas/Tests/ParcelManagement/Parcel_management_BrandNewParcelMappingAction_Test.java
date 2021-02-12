@@ -282,7 +282,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),childprimarySitus,
 				"SMAB-T2663: Validation that System populates primary situs on last screen for child parcel with the situs value that was added in first screen");
 
-		HashMap<String, ArrayList<String>> primarySitusValueChildParcel =salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ childAPNNumber +"')");
+		String primarySitusValueChildParcel =salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ childAPNNumber +"')").get("Name").get(0);
 		softAssert.assertEquals(primarySitusValueChildParcel,childprimarySitus,
 				"SMAB-T2663: Validation that primary situs of  child parcel  has value that was entered in first screen through situs modal window");
 				driver.switchTo().window(parentWindow);
