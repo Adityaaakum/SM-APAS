@@ -326,21 +326,25 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Imported Valuation Factors");
 		objApasGenericFunctions.clickShowMoreDropDownForGivenFactorEntry("Imported Valuation Factors");
 		objPage.javascriptClick(objBppTrendPage.editLinkUnderShowMore);
-		objPage.waitUntilElementIsPresent(objApasGenericFunctions.xPathErrorMsg,30);
-		String actualErrorMsg =  objApasGenericFunctions.errorMsgforEdit.getText();
-		softAssert.assertEquals(actualErrorMsg,expectedErrorMessage, "SMAB-T270: User is not able to Edit Real Property Settings Library record");
-		objPage.Click(objApasGenericFunctions.closeErrorPopUp);
+		
+		objPage.Click(objPage.getButtonWithText("Save"));
+		 expectedErrorMessage = "Oops...you don't have the necessary privileges to edit this record. See your administrator for help.";
+		String actualErrorMessage = objPage.getElementText(objBuildPermitPage.pageError);
+		softAssert.assertTrue(actualErrorMessage.contains(expectedErrorMessage) || actualErrorMessage.contains("insufficient access rights on object id"), "SMAB-T270: User is not able to Edit Imported Valuation record");
+		objPage.Click(objApasGenericFunctions.closeEntryPopUp);
 
 		//Step9: Validating that user doesn't have the access to create/edit Composite Factors
 		objApasGenericFunctions.openFactorTab("Composite Factors");
 		softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Composite Factors");
 		objApasGenericFunctions.clickShowMoreDropDownForGivenFactorEntry("Composite Factors");
 		objPage.javascriptClick(objBppTrendPage.editLinkUnderShowMore);
-		objPage.waitUntilElementIsPresent(objApasGenericFunctions.xPathErrorMsg,30);
-		actualErrorMsg =  objApasGenericFunctions.errorMsgforEdit.getText();
-		softAssert.assertEquals(actualErrorMsg,expectedErrorMessage, "SMAB-T270: User is not able to Edit Real Property Settings Library record");
-		objPage.Click(objApasGenericFunctions.closeErrorPopUp);
-
+		
+		objPage.Click(objPage.getButtonWithText("Save"));
+		 expectedErrorMessage = "Oops...you don't have the necessary privileges to edit this record. See your administrator for help.";
+		 actualErrorMessage = objPage.getElementText(objBuildPermitPage.pageError);
+		softAssert.assertTrue(actualErrorMessage.contains(expectedErrorMessage) || actualErrorMessage.contains("insufficient access rights on object id"), "SMAB-T270: User is not able to composite factors");
+		objPage.Click(objApasGenericFunctions.closeEntryPopUp);
+		
 		//Logging out of the application
 		objApasGenericFunctions.logout();
 	}
@@ -399,8 +403,10 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		objApasGenericFunctions.openFactorTab("Composite Factors");
 		softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Composite Factors");
 		objApasGenericFunctions.clickShowMoreDropDownForGivenFactorEntry("Composite Factors");
+		Thread.sleep(4000);
 		if (loginUser.equals(users.PRINCIPAL_USER))
-			softAssert.assertTrue(objPage.verifyElementVisible(objApasGenericFunctions.editLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'Edit' option is displayed for Composite Factors");
+			softAssert.assertTrue(objBppTrendPage.waitForElementToBeVisible(5, objBppTrendPage.editLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'Edit' option is visible for Composite factors");
+
 		else
 			softAssert.assertTrue(objPage.verifyElementVisible(objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Action Available' option is displayed for Composite Factors");
 
