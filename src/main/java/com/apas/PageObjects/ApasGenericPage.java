@@ -988,7 +988,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public String saveRecordAndGetError() throws Exception {
 		Click(getButtonWithText("Save"));
-		waitForElementToBeClickable(pageError,20);
+		waitForElementToBeClickable(pageError,90);
 		return getElementText(pageError);
 	}
 
