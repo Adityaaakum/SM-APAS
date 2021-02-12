@@ -36,7 +36,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2033: verify that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval', 'Approval-On Hold' and 'completed'", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"  })
+	@Test(description = "SMAB-T2033: verify that work pool supervisor is not able to mass transfer WI's with status 'submitted for approval', 'Approval-On Hold' and 'completed'", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","SecurityAndSharing","WorkItemAdministration"  })
 	public void WorkItems_SharingAndSecurity_NoMassApproval(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
@@ -75,7 +75,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2636: Work Input - verify All the required button present on WI Home page For Supervisor User", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"  })
+	@Test(description = "SMAB-T2636: Work Input - verify All the required button present on WI Home page For Supervisor User", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","SecurityAndSharing","WorkItemAdministration" })
 	public void WorkItems_SharingAndSecurity_ButtonPresent_WIHomePage_SupervisorUser(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
@@ -156,7 +156,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2635: Work Input - verify All the required button present on WI Home page For staff User", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class, groups = {"regression","work_item_manual"  })
+	@Test(description = "SMAB-T2635: Work Input - verify All the required button present on WI Home page For staff User", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class, groups = {"regression","SecurityAndSharing","WorkItemAdministration"  })
 	public void WorkItems_SharingAndSecurity_ButtonPresent_WIHomePage_StaffUser(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider 

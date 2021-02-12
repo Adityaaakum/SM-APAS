@@ -59,7 +59,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 	 -Exemption Support staff and RP Business Admin users are able to view and edit an Exemption record
 	 **/
 	
-	@Test(description = "SMAB-T522, SMAB-T523, SMAB-T479, SMAB-T480, SMAB-T481: Validate Exemption Support staff and RP Business Admin is able to view, create and edit Exemption record by filling mandatory fields", groups = {"smoke", "regression", "DisabledVeteranExemption"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T522, SMAB-T523, SMAB-T479, SMAB-T480, SMAB-T481: Validate Exemption Support staff and RP Business Admin is able to view, create and edit Exemption record by filling mandatory fields", groups = {"Smoke", "Regression", "DisabledVeteran"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void DisabledVeteran_CreateAndEditExemptionAndMandatoryFieldErrorValidation(String loginUser) throws Exception {
 	
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -161,7 +161,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 	 -Mandatory check validations on edit Exemption screen using Pencil Edit button
 	 **/
 	
-	@Test(description = "SMAB-T522, SMAB-T527: Validate user is not able to edit and save Exemption record when mandatory fields are not entered before saving", groups = {"regression","DisabledVeteranExemption"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T522, SMAB-T527: Validate user is not able to edit and save Exemption record when mandatory fields are not entered before saving", groups = {"Regression","DisabledVeteran"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void DisabledVeteran_EditExemptionAndMandatoryFieldErrorValidation(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider

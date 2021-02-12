@@ -46,7 +46,7 @@ public class WorkItemAdministration_Consolidation_Test extends TestBase implemen
 	}
 
 	@Test(description = "SMAB-T2259,SMAB-T2260,SMAB-T2261, SMAB-T2276, SMAB-T2287,SMAB-T2288,SMAB-T2289: Verify auto generated Reminder WI, Revert Imported BOE Index & Goods Factors, auto generated Import WI again upon revert", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-			"smoke", "regression", "Work_Items_Manual" }, alwaysRun = true)
+			"Smoke", "Regression","WorkItemAdministration" }, alwaysRun = true)
 	public void WorkItemAdministration_Consolidation(String loginUser) throws Exception {
 
 		String PrimaryWorkitem ="";
