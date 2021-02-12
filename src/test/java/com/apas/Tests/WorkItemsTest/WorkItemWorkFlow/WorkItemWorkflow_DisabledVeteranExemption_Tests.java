@@ -296,6 +296,18 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		objPage.Click(objWIHomePage.lnkTABWorkItems);
 		ReportLogger.INFO("Step 10: Click on Needs My Approval TAB");
 		objPage.Click(objWIHomePage.needsMyApprovalTab);
+		
+		//SMAB-T2094 opening the action link to validate that link redirects to Exemptions page 
+		objWIHomePage.searchWIinGrid(WIName);
+    	objWIHomePage.openActionLink(WIName);
+		objWIHomePage.waitForElementToBeVisible(objExemptionsPage.newExemptionNameAftercreation, 10);
+		softAssert.assertTrue(objPage.verifyElementVisible(objExemptionsPage.newExemptionNameAftercreation),
+				"SMAB-T2094: Validation that user is directed to exemption details page and Exemption label is visible on clicking navigation icon of WI");
+		
+		objApasGenericPage.searchModule(modules.HOME);
+		objPage.Click(objWIHomePage.lnkTABHome);
+		objPage.Click(objWIHomePage.lnkTABWorkItems);
+		objPage.Click(objWIHomePage.needsMyApprovalTab);
 		ReportLogger.INFO("Step 11: Search for the Work Item and select the checkbox");
 		objWIHomePage.clickCheckBoxForSelectingWI(WIName);
 		ReportLogger.INFO("Step 12: Click on the Approve button");
