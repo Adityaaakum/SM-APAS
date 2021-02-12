@@ -62,7 +62,7 @@ public class Parcel_Management_GIS_Tests extends TestBase implements testdata, m
 		
 		
 	@Test(description = "SMAB-T2362:Verify user is able to access GIS by clicking on the parcel map button", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"regression","parcel_management" })
+			"Regression","ParcelManagement" })
 	public void ParcelManagement_AcessToOpenGIS(String loginUser) throws Exception {
        ArrayList<String> APNs=objApasGenericPage.fetchActiveAPN(1);
 		String activeParcelToPerformMapping=APNs.get(0);
@@ -97,7 +97,7 @@ public class Parcel_Management_GIS_Tests extends TestBase implements testdata, m
 	}
 	
 	@Test(description = "SMAB-T2361:Verify tif file is downloaded by clicking on Open Assessor's Map button ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"regression","parcel_management" })
+			"Regression","ParcelManagement" })
 	public void ParcelManagement_OpenAssessorMap(String loginUser) throws Exception {
        ArrayList<String> APNs=objApasGenericPage.fetchActiveAPN(1);
 		String activeParcelToPerformMapping=APNs.get(0);
@@ -139,7 +139,7 @@ public class Parcel_Management_GIS_Tests extends TestBase implements testdata, m
 	
 	
 	@Test(description = "SMAB-T2411:Verify tif file is not downloaded and 404 server error comes by clicking on Open Assessor's Map button ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"regression","parcel_management" })
+			"Regression","ParcelManagement" })
 	public void ParcelManagement_OpenAssessorMapInactiveParcel(String loginUser) throws Exception {  
 		// Step1: Login to the APAS application using the credentials passed through data provider (RP Business Admin)
 		objMappingPage.login(loginUser);

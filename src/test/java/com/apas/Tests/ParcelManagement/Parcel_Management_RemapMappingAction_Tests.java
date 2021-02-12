@@ -46,7 +46,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	}
 		
 	@Test(description = "SMAB-T2490,SMAB-T2436,SMAB-T2536:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"regression","parcel_management" })
+			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyRemapMappingActionForMultipleParcels(String loginUser) throws Exception {
        ArrayList<String> APNs=objMappingPage.fetchActiveAPN(2);
 		String activeParcelToPerformMapping=APNs.get(0);
@@ -117,7 +117,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2490,SMAB-T2493,SMAB-T2532,SMAB-T2535,SMAB-T2531,SMAB-T2533:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"regression","parcel_management" })
+			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyRemapMappingAction(String loginUser) throws Exception {
 		String activeParcelToPerformMapping=objMappingPage.fetchActiveAPN();
 		String activeParcelWithoutHyphen=activeParcelToPerformMapping.replace("-","");
