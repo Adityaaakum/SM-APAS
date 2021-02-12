@@ -4,20 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.apas.Reports.ExtentTestManager;
-import com.apas.Reports.ReportLogger;
-import com.apas.TestBase.TestBase;
-import com.apas.Utils.SalesforceAPI;
-import com.apas.Utils.Util;
-import com.apas.config.modules;
-import com.gargoylesoftware.htmlunit.javascript.configuration.JavaScriptConfiguration;
-import com.relevantcodes.extentreports.LogStatus;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+
+import com.apas.Reports.ReportLogger;
+import com.apas.TestBase.TestBase;
+import com.apas.Utils.SalesforceAPI;
+import com.apas.Utils.Util;
+import com.apas.config.modules;
 
 public class BppTrendSetupPage extends ApasGenericPage {
 
