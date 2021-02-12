@@ -655,7 +655,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 
-		//Step 5: Selecting Action as 'Split' & Taxes Paid fields value as 'N/A'
+		//Step 5: Selecting Action as 'Split' & Taxes Paid fields value as 'Yes'
 		objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapSplitActionMappingData.get("Action"));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
