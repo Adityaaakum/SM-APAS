@@ -150,6 +150,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		//Step22: Entering index factor value as -1
 		objBppTrendSetupPage.enter("Index Factor", "-1");
 		objPage.Click(objPage.getButtonWithText("Save"));
+
 		Thread.sleep(4000);
 		//Step23: Validating the error message displayed on entering index factor value as -1
 		actualErrorMsgOnInvalidIndexValue = objPage.getElementText(objBuildPermitPage.pageError);

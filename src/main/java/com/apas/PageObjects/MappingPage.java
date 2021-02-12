@@ -64,6 +64,7 @@ public class MappingPage extends ApasGenericPage {
 	public String situsUnitNumberLabel = "Situs Unit Number";
 	public String closeButton = "Close";
 	public String CreateNewParcelButton="Create Brand New Parcel";
+	public String generateParcelsButton = "Generate Parcels";
 
 	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
@@ -95,7 +96,7 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[@class='slds-card__header slds-grid']//span[text()='Situs Information']")
 	public WebElement situsInformationLabelSitusModal;
 	
-	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[text()='Parent APN(s)']//following::span[@class='slds-col']")
+	@FindBy(xpath = "//*[text()='Parent APN(s)']//following::span[@class='slds-col']")
 	public WebElement parentAPNFieldValue;
 
 	/**
