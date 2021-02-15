@@ -1,13 +1,16 @@
 package com.apas.PageObjects;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import com.apas.Reports.ReportLogger;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 
 public class MappingPage extends ApasGenericPage {
@@ -54,6 +57,14 @@ public class MappingPage extends ApasGenericPage {
 	public String saveButton = "Save";
 	public String firstCondoTextBoxLabel = "First Condo Parcel Number";
 	public String splitParcelButton = "Split Parcel";
+	public String parcelStatus = "Status";
+	public String parcelPUC = "PUC";
+	public String parcelTRA = "TRA";
+	public String parcelPrimarySitus = "Primary Situs";
+	public String parcelDistrictNeighborhood = "District / Neighborhood Code";
+	public String parcelShortLegalDescription = "Short Legal Description";
+	public String firstNonCondoTextBoxLabel2 = "First Non-Condo Parcel Number";
+	public String legalDescriptionTextBoxLabel2 = "Legal Description Auto-populate Field for Child Parcels";
 
 	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
@@ -224,9 +235,83 @@ public class MappingPage extends ApasGenericPage {
 			}	
 			else{
 				/*Example : 100-990-990*/
-				ReportLogger.INFO("Warning : 990 limit has been reached for current Map Page, so move to the next Map Book");	
+				//ReportLogger.INFO("Warning : 990 limit has been reached for current Map Page, so move to the next Map Book");	
+				updatedAPN = "Warning : 990 limit has been reached for current Map Page, so move to the next Map Book";
 			}
 	    }
 		return updatedAPN;
 	}
+	
+	/**
+	 * Description: This method will fetch the Parcel# from the Work Item
+	 * @param rowNum: Row# in the linked item
+	 * return : Returns the Parcel#
+	 */
+	public String getLinkedParcelInWorkItem(String rowNum) throws Exception {
+		Thread.sleep(1000);
+		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//tr[@data-row-key-value='row-" + rowNum + "']";
+		waitUntilElementIsPresent(xpath, 10);
+		return getElementText(driver.findElement(By.xpath(xpath)));
+	}
+	
+	/*
+    This method is used to return the first owner record from Salesforce
+    @return: returns the active APN
+   */
+   public String getOwnerForMappingAction() {
+       return getOwnerForMappingAction(1).get("Name").get(0);
+   }
+
+   public HashMap<String, ArrayList<String>> getOwnerForMappingAction(int numberofRecords) {
+	   String queryOwnerRecord = "SELECT Id, Name FROM Account Limit " + numberofRecords;
+	   return objSalesforceAPI.select(queryOwnerRecord);
+   }
+   
+   /*
+   This method is used to return the Retired APN having a specific Ownership record
+   @return: returns the Retired APN
+  */
+
+   public HashMap<String, ArrayList<String>> getRetiredApnHavingOwner(String assesseeName) throws Exception {
+	   String queryRetiredAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and Status__c = 'Retired'";
+ 	  	return objSalesforceAPI.select(queryRetiredAPNValue);
+   }
+ 
+  /*
+  This method is used to return the In Progress APN having a specific Ownership record
+  @return: returns the In Progress APN
+ */
+
+   public HashMap<String, ArrayList<String>> getInProgressApnHavingOwner(String assesseeName) throws Exception {
+	   String queryInProgressAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and Status__c = 'In Progress - To Be Expired'";
+	   return objSalesforceAPI.select(queryInProgressAPNValue);
+   }
+ 		
+   /*
+   This method is used to return the Active APN having a specific Ownership record
+   @return: returns the Active APN
+  */
+    public HashMap<String, ArrayList<String>> getActiveApnHavingOwner(String assesseeName) throws Exception {
+    	return getActiveApnHavingOwner(assesseeName, 1);
+    }
+    
+    public HashMap<String, ArrayList<String>> getActiveApnHavingOwner(String assesseeName, int numberofRecords) throws Exception {
+    	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') AND Id Not IN (Select parcel__c FROM Property_Ownership__c where Owner__r.name != '" + assesseeName + "') and (Not Name like '%990') and (Not Name like '134%') and Status__c = 'Active' Limit " + numberofRecords;
+    	return objSalesforceAPI.select(queryActiveAPNValue);
+    }
+    
+    /*
+    This method is used to return the Active APN having no Ownership record
+    @return: returns the Active APN
+   */
+    
+    public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner() throws Exception {
+    	return getActiveApnWithNoOwner(1);
+    }
+    
+     public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner(int numberofRecords) throws Exception {
+     	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and Status__c = 'Active' Limit " + numberofRecords;
+     	return objSalesforceAPI.select(queryActiveAPNValue);
+     }
+    
 }

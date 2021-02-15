@@ -3,6 +3,8 @@
     "Action": "Perform Parcel Combine",
     "Are taxes fully paid?": "Yes",
     "Reason code": "Testing Combine",
+    "Legal Description": "Test Legal Description",
+    "First Non-Condo Parcel Number": "151-550-010",
     "Comments": "Perform Combine"
   }
   
