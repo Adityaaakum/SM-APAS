@@ -757,4 +757,47 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.logout();
 	}
 	
+	
+	
+	
+	
+	
+	
+	/*@Test(description = "SMAB-T2359: Verify user is able to validate APN generation by system during Combine process", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"regression","parcel_management" })
+	public void AParcelManagement_CreateWI(String loginUser) throws Exception {
+		
+		//Fetching Assessee records
+		String queryAssesseeRecord = "SELECT Id, Name FROM Account Limit 1";
+		HashMap<String, ArrayList<String>> responseAssesseeDetails = salesforceAPI.select(queryAssesseeRecord);
+		String assesseeName = responseAssesseeDetails.get("Name").get(0);
+		
+		//Fetching parcel that are Active with Ownership record 
+		String queryAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') AND Id Not IN (Select parcel__c FROM Property_Ownership__c where Owner__r.name != '" + assesseeName + "') and (Not Name like '%990') and Status__c = 'Active' Limit 2";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
+		String apn1=responseAPNDetails.get("Name").get(0);
+		
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+		
+		String mappingActionCreationData = testdata.COMBINE_MAPPING_ACTION;
+		Map<String, String> hashMapCombineMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformCombineMappingAction");
+		
+		
+		// Step1: Login to the APAS application
+		objMappingPage.login(loginUser);
+		int i;
+		// Step2: Opening the PARCELS page  and searching the  parcel to perform Retire Action
+		for (i=0; i<10; i++){
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn1);
+
+		// Step 3: Creating Manual work item for the Active Parcel 
+		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		}
+		objWorkItemHomePage.logout();
+	}*/
+	
 }
