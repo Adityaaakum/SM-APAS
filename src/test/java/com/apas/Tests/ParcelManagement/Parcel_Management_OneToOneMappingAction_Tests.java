@@ -319,7 +319,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2655,SMAB-T2544:Verify that Verify that User is able to perform a One to One mapping action for a Parcel (Active) by filling all fields in mapping action form for Condo and mobile home type parcels", dataProvider = "Condo_MobileHome_Parcels", dataProviderClass = DataProviders.class, groups = {
-			"regression","parcel_management" })
+			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyOneToOneMappingActionCondoMobileHomeParcels(String loginUser,String parcelType) throws Exception {
 		if(parcelType.equals("Condo_Parcel"))
 			apnPrefix="100";
