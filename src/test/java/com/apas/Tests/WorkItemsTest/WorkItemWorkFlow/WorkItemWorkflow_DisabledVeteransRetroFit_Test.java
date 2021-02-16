@@ -188,10 +188,13 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		objPage.enter(rpslObj.dvBasicIncomeExemptionAmountEditBox, "145273");
 		objPage.enter(rpslObj.dvLowIncomeHouseholdLimitEditBox, "65337");
 		objApasGenericPage.selectOptionFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
-		/*
-		 * objPage.Click(rpslObj.saveButton); Thread.sleep(5000);
-		 */
+		
 		objApasGenericPage.saveRecord();
+		softAssert.assertEquals(objPage.getElementText(rpslObj.lowIncomeExemptionAmtDetails), "$217,910.00","SMAB-T1888:Verify updated amounts value on current Roll Year RPSL");
+		softAssert.assertEquals(objPage.getElementText(rpslObj.basicExemptionAmtDetails), "$145,273.00","SMAB-T1888:Verify updated amounts value on current Roll Year RPSL");
+		softAssert.assertEquals(objPage.getElementText(rpslObj.lowIncomeHouseholdLimitDetails), "$65,337.00","SMAB-T1888:Verify updated amounts value on current Roll Year RPSL");
+		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Submitted for Approval","SMAB-T1888:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
+		
 		driver.close();
 		driver.switchTo().window(parentwindow);
 
@@ -295,7 +298,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 				"SMAB-T2087: Validation that Exemption Limits label is present");
 		 
 		driver.navigate().back();
-		Thread.sleep(1000);
+		Thread.sleep(5000);
 		String parentwindow = driver.getWindowHandle();
 		
 		//Step4: Open the WI record and validate the details in the Detail tab
