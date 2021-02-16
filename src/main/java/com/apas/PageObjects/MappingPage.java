@@ -235,7 +235,6 @@ public class MappingPage extends ApasGenericPage {
 			}	
 			else{
 				/*Example : 100-990-990*/
-				//ReportLogger.INFO("Warning : 990 limit has been reached for current Map Page, so move to the next Map Book");	
 				updatedAPN = "Warning : 990 limit has been reached for current Map Page, so move to the next Map Book";
 			}
 	    }
@@ -272,20 +271,42 @@ public class MappingPage extends ApasGenericPage {
    @return: returns the Retired APN
   */
 
-   public HashMap<String, ArrayList<String>> getRetiredApnHavingOwner(String assesseeName) throws Exception {
+   /*public HashMap<String, ArrayList<String>> getRetiredApnHavingOwner(String assesseeName) throws Exception {
 	   String queryRetiredAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and Status__c = 'Retired'";
  	  	return objSalesforceAPI.select(queryRetiredAPNValue);
    }
- 
+ */
   /*
   This method is used to return the In Progress APN having a specific Ownership record
   @return: returns the In Progress APN
  */
 
-   public HashMap<String, ArrayList<String>> getInProgressApnHavingOwner(String assesseeName) throws Exception {
-	   String queryInProgressAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and Status__c = 'In Progress - To Be Expired'";
+  /* public HashMap<String, ArrayList<String>> getInProgressApnHavingOwner(String assesseeName) throws Exception {
+	   String queryInProgressAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and Status__c like 'In Progress%'";
+	   return objSalesforceAPI.select(queryInProgressAPNValue);
+   }*/
+   
+   
+   /*
+   This method is used to return the Retired APN having no Ownership record
+   @return: returns the Retired APN
+  */
+
+   public HashMap<String, ArrayList<String>> getRetiredApnHavingNoOwner() throws Exception {
+	   String queryRetiredAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Status__c = 'Retired' Limit 1";
+ 	  	return objSalesforceAPI.select(queryRetiredAPNValue);
+   }
+ 
+  /*
+  This method is used to return the In Progress APN having no Ownership record
+  @return: returns the In Progress APN
+ */
+
+   public HashMap<String, ArrayList<String>> getInProgressApnHavingNoOwner() throws Exception {
+	   String queryInProgressAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Status__c like 'In Progress%' Limit 1";
 	   return objSalesforceAPI.select(queryInProgressAPNValue);
    }
+ 	
  		
    /*
    This method is used to return the Active APN having a specific Ownership record
@@ -296,7 +317,7 @@ public class MappingPage extends ApasGenericPage {
     }
     
     public HashMap<String, ArrayList<String>> getActiveApnHavingOwner(String assesseeName, int numberofRecords) throws Exception {
-    	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') AND Id Not IN (Select parcel__c FROM Property_Ownership__c where Owner__r.name != '" + assesseeName + "') and (Not Name like '%990') and (Not Name like '134%') and Status__c = 'Active' Limit " + numberofRecords;
+    	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') AND Id Not IN (Select parcel__c FROM Property_Ownership__c where Owner__r.name != '" + assesseeName + "') and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and Status__c = 'Active' Limit " + numberofRecords;
     	return objSalesforceAPI.select(queryActiveAPNValue);
     }
     
@@ -305,13 +326,13 @@ public class MappingPage extends ApasGenericPage {
     @return: returns the Active APN
    */
     
-    public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner() throws Exception {
+     public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner() throws Exception {
     	return getActiveApnWithNoOwner(1);
-    }
-    
-     public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner(int numberofRecords) throws Exception {
-     	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and Status__c = 'Active' Limit " + numberofRecords;
-     	return objSalesforceAPI.select(queryActiveAPNValue);
      }
     
+     public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner(int numberofRecords) throws Exception {
+     	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and Status__c = 'Active' Limit " + numberofRecords;
+     	return objSalesforceAPI.select(queryActiveAPNValue);
+     }
+     
 }
