@@ -60,7 +60,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 	 * 4. Create Exemptions with status - Active & In Active
 	 * 5. Verify if created Exemptions are visible on Report or not
 	 **/
-	@Test(description = "SMAB-T635: Verify the exemption support staff can export the Report", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class ,groups = {"regression", "DisabledVeteranExemption" })
+	@Test(description = "SMAB-T635: Verify the exemption support staff can export the Report", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class ,groups = {"Regression", "DisabledVeteran" })
 	public void DisabledVeteran_verifyExportReport(String loginUser) throws Exception {
 		
 		String downloadLocation = testdata.DOWNLOAD_FOLDER;
@@ -113,7 +113,7 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 	 * 1. Create Exemptions with status - Active & In Active
 	 * 2. Verify if created Exemptions are visible on Report or not 
 	 **/
-	@Test(description = "SMAB-T606: Verify the Exemption Support staff is able to generate the report with the Active and deactivated exemptions", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class ,groups = {"regression", "DisabledVeteranExemption" })
+	@Test(description = "SMAB-T606: Verify the Exemption Support staff is able to generate the report with the Active and deactivated exemptions", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class ,groups = {"Regression", "DisabledVeteran" })
 	public void DisabledVeteran_verifyCreatedExemptionsVisiblityInReport(String loginUser) throws Exception {
 		// Step1: Login to the APAS application using the credentials passed through		
 		objApasGenericPage.login(loginUser);

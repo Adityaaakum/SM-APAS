@@ -81,7 +81,7 @@ public class BPPTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 	 * 11. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T200
 	 * 12. Validating the status of the table on BPP Trend Setup Page: SMAB-T268
 	 */
-	@Test(description = "SMAB-T170,SMAB-T200,SMAB-T268,SMAB-T190,SMAB-T198: Performing validation on AGRICULTURAL MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T170,SMAB-T200,SMAB-T268,SMAB-T190,SMAB-T198: Performing validation on AGRICULTURAL MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"Smoke","Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_AgriculturalMobileCompositeFactors_CalculateAndCompare(String loginUser) throws Exception {
 		String tableName = "Agricultural Mobile Equipment Composite Factors";
 		
@@ -184,7 +184,7 @@ public class BPPTrend_AgriculturalMobileEquip_CompostieTable_CalculateAndReCalcu
 	 * 7. Validating the message displayed above table after ReCalculation is done
 	 * 8. Validating the presence of ReCalculate button for Calculated table:: Test Case/JIRA ID: SMAB-T195
 	 */
-	@Test(description = "SMAB-T173,SMAB-T195,SMAB-T196: Performing validation on AGRICULTURAL MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T173,SMAB-T195,SMAB-T196: Performing validation on AGRICULTURAL MOBILE EQUIP COMPOSITE FACTORS before and after calculation", groups = {"Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_AgriculturalMobileCompositeFactors_ReCalculateAndCompare(String loginUser) throws Exception {
 		String tableName = "Agricultural Mobile Equipment Composite Factors";
 		

@@ -53,7 +53,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * DESCRIPTION: Checking Security Level For Restricted Users : Validating the unavailability of Calculate and Calculate All buttons:
 	 */
-	@Test(description = "SMAB-T174,SMAB-T175: Validate that Calculate & Calculate All buttons should not be visible to restricted users", groups = {"BPPTrend","regression"}, dataProvider = "usersRestrictedToCalculate", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T174,SMAB-T175: Validate that Calculate & Calculate All buttons should not be visible to restricted users", groups = {"BPPTrend","Regression"}, dataProvider = "usersRestrictedToCalculate", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BppTrend_RestrictionsOnCalculateButtons_RestrictedUsers(String loginUser) throws Exception {
 
 		//Step1: Resetting the Composite and Valuation factor tables status to Not Calculated
@@ -86,7 +86,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * DESCRIPTION: Checking Security Level For Restricted User : Validating the unavailability of ReCalculate and ReCalculate All buttons
 	 */
-	@Test(description = "SMAB-T174,SMAB-T175: Validate that ReCalculate & 'ReCalculate All' and 'Submit All Factor For Approval' buttons should not be visible to restricted users", groups = {"BPPTrend","regression"}, dataProvider = "usersRestrictedToReCalculate", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T174,SMAB-T175: Validate that ReCalculate & 'ReCalculate All' and 'Submit All Factor For Approval' buttons should not be visible to restricted users", groups = {"BPPTrend","Regression"}, dataProvider = "usersRestrictedToReCalculate", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BppTrend_RestrictionsOnReCalculateButtons_RestrictedUsers(String loginUser) throws Exception {
 
 		//Step1: Resetting the Composite and Valuation factor tables status to Not Calculated
@@ -120,7 +120,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * Description: Validating the unavailability of Approve & Approve All buttons for restricted users
 	 */
-	@Test(description = "SMAB-T174,SMAB-T175,SMAB-T249,SMAB-T199,SMAB-T250,SMAB-T301: Perform security verification on Approve & Approve All buttons for restricted users", groups = {"BPPTrend","regression"}, dataProvider = "usersRestrictedToApprove", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T174,SMAB-T175,SMAB-T249,SMAB-T199,SMAB-T250,SMAB-T301: Perform security verification on Approve & Approve All buttons for restricted users", groups = {"BPPTrend","Regression"}, dataProvider = "usersRestrictedToApprove", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BppTrend_RestrictionsOnApproveButtons_RestrictedUsers(String loginUser) throws Exception {
 
 		//Step1: Resetting the Composite and Valuation factor tables status to Not Calculated
@@ -173,7 +173,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * DESCRIPTION: Validating the unavailability of Export Composite Factors button for restricted users
 	 */
-	@Test(description = "SMAB-T450: Perform security verification on Export Composite and validation Factors button for restricted users", groups = {"BPPTrend","regression"}, dataProvider = "usersRestrictedToExportCompFactorsFile", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T450: Perform security verification on Export Composite and validation Factors button for restricted users", groups = {"BPPTrend","Regression"}, dataProvider = "usersRestrictedToExportCompFactorsFile", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BppTrend_RestrictionsOnExportFactorsButton_RestrictedUsers(String loginUser) throws Exception {
 
 		//Step1: Resetting the Composite and Valuation factor tables status to Not Calculated
@@ -199,7 +199,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * DESCRIPTION: Validating the unavailability of edit pencil icon to edit table status on BPP Trend Setup
 	 */
-	@Test(description = "SMAB-T171: Validating the unavailability of edit pencil icon to edit table status on BPP Trend Setup", groups = {"BPPTrend","regression"}, dataProvider = "usersRestrictedEditTableStatusOnBppTrendPage", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T171: Validating the unavailability of edit pencil icon to edit table status on BPP Trend Setup", groups = {"BPPTrend","Regression"}, dataProvider = "usersRestrictedEditTableStatusOnBppTrendPage", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BppTrend_RestrictionsEditingTableStatus_RestrictedUsers(String loginUser) throws Exception {
 
 		//Step1: Resetting the Composite and Valuation factor tables status to Not Calculated
@@ -245,7 +245,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	 * DESCRIPTION: Validating that (Appraiser/Auditor) are not able to create and edit inflation factors records:: TestCase/JIRA ID: SMAB-T210
 	 * Edit Restriction for business admin scenario is covered in BPPTrend_InflationFactor_Test class
 	 */
-	@Test(description = "SMAB-T210: Appraiser and Auditor users unable to create/edit CPI factor", groups = {"regression","BPPTrend"}, dataProvider = "rpApprasierAndBPPAuditor", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T210: Appraiser and Auditor users unable to create/edit CPI factor", groups = {"Regression","BPPTrend"}, dataProvider = "rpApprasierAndBPPAuditor", dataProviderClass = DataProviders.class)
 	public void BppTrend_CreateEdit_InflationFactor_RestrictedUsers(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the given user
@@ -282,7 +282,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * DESCRIPTION: Validating the unavailability of create/edit/delete links under BPP Settings
 	 */
-	@Test(description = "SMAB-T270: Validating that restricted user is unable to create/edit BPP Settings", groups = {"regression","BPPTrend"}, dataProvider = "usersRestrictedToModifyMaxEquipIndexFactor", dataProviderClass = DataProviders.class,alwaysRun = true)
+	@Test(description = "SMAB-T270: Validating that restricted user is unable to create/edit BPP Settings", groups = {"Regression","BPPTrend"}, dataProvider = "usersRestrictedToModifyMaxEquipIndexFactor", dataProviderClass = DataProviders.class,alwaysRun = true)
 	public void BppTrend_RestrictionsEditingBPPSettingsAfterApprove_RestrictedUsers(String loginUser) throws Exception {
 
 		//Resetting the Composite and Valuation factor tables status to Not Calculated
@@ -326,21 +326,25 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Imported Valuation Factors");
 		objApasGenericFunctions.clickShowMoreDropDownForGivenFactorEntry("Imported Valuation Factors");
 		objPage.javascriptClick(objBppTrendPage.editLinkUnderShowMore);
-		objPage.waitUntilElementIsPresent(objApasGenericFunctions.xPathErrorMsg,30);
-		String actualErrorMsg =  objApasGenericFunctions.errorMsgforEdit.getText();
-		softAssert.assertEquals(actualErrorMsg,expectedErrorMessage, "SMAB-T270: User is not able to Edit Real Property Settings Library record");
-		objPage.Click(objApasGenericFunctions.closeErrorPopUp);
+		
+		objPage.Click(objPage.getButtonWithText("Save"));
+		 expectedErrorMessage = "Oops...you don't have the necessary privileges to edit this record. See your administrator for help.";
+		String actualErrorMessage = objPage.getElementText(objBuildPermitPage.pageError);
+		softAssert.assertTrue(actualErrorMessage.contains(expectedErrorMessage) || actualErrorMessage.contains("insufficient access rights on object id"), "SMAB-T270: User is not able to Edit Imported Valuation record");
+		objPage.Click(objApasGenericFunctions.closeEntryPopUp);
 
 		//Step9: Validating that user doesn't have the access to create/edit Composite Factors
 		objApasGenericFunctions.openFactorTab("Composite Factors");
 		softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Composite Factors");
 		objApasGenericFunctions.clickShowMoreDropDownForGivenFactorEntry("Composite Factors");
 		objPage.javascriptClick(objBppTrendPage.editLinkUnderShowMore);
-		objPage.waitUntilElementIsPresent(objApasGenericFunctions.xPathErrorMsg,30);
-		actualErrorMsg =  objApasGenericFunctions.errorMsgforEdit.getText();
-		softAssert.assertEquals(actualErrorMsg,expectedErrorMessage, "SMAB-T270: User is not able to Edit Real Property Settings Library record");
-		objPage.Click(objApasGenericFunctions.closeErrorPopUp);
-
+		
+		objPage.Click(objPage.getButtonWithText("Save"));
+		 expectedErrorMessage = "Oops...you don't have the necessary privileges to edit this record. See your administrator for help.";
+		 actualErrorMessage = objPage.getElementText(objBuildPermitPage.pageError);
+		softAssert.assertTrue(actualErrorMessage.contains(expectedErrorMessage) || actualErrorMessage.contains("insufficient access rights on object id"), "SMAB-T270: User is not able to composite factors");
+		objPage.Click(objApasGenericFunctions.closeEntryPopUp);
+		
 		//Logging out of the application
 		objApasGenericFunctions.logout();
 	}
@@ -348,7 +352,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * DESCRIPTION: Validating the unavailability of create/edit/delete links under BPP Settings
 	 */
-	@Test(description = "SMAB-T270: Validating that restricted user is unable to create/edit BPP Settings", groups = {"regression","BPPTrend"}, dataProvider = "usersRestrictedToModifyMaxEquipIndexFactor", dataProviderClass = DataProviders.class,alwaysRun = true)
+	@Test(description = "SMAB-T270: Validating that restricted user is unable to create/edit BPP Settings", groups = {"Regression","BPPTrend"}, dataProvider = "usersRestrictedToModifyMaxEquipIndexFactor", dataProviderClass = DataProviders.class,alwaysRun = true)
 	public void BppTrend_RestrictionsEditingBPPSettingsBeforeApprove_RestrictedUsers(String loginUser) throws Exception {
 
 		//Resetting the Composite and Valuation factor tables status to Not Calculated
@@ -399,8 +403,10 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		objApasGenericFunctions.openFactorTab("Composite Factors");
 		softAssert.assertTrue(!objPage.verifyElementVisible(objApasGenericFunctions.newButton), "SMAB-T270: For User '"+ loginUser +"': 'New Button' option is not visible for Composite Factors");
 		objApasGenericFunctions.clickShowMoreDropDownForGivenFactorEntry("Composite Factors");
+		Thread.sleep(4000);
 		if (loginUser.equals(users.PRINCIPAL_USER))
-			softAssert.assertTrue(objPage.verifyElementVisible(objApasGenericFunctions.editLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'Edit' option is displayed for Composite Factors");
+			softAssert.assertTrue(objBppTrendPage.waitForElementToBeVisible(5, objBppTrendPage.editLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'Edit' option is visible for Composite factors");
+
 		else
 			softAssert.assertTrue(objPage.verifyElementVisible(objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Action Available' option is displayed for Composite Factors");
 

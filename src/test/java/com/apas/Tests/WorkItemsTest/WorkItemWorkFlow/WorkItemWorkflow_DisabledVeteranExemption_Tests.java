@@ -63,7 +63,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 	@Test(description = "SMAB-T2080,SMAB-T1922: APAS system should generate a WI on new Exemption Creation", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DV_WorkItem_Exemption"})
+			groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
 	public void WorkItemWorkflow_DisabledVeteran_WorkItemGeneratedOnNewExemptionCreation(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -142,7 +142,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 	@Test(description = "SMAB-T1923: APAS system should generate a WI on updating the End Date of Rating for Existing Exemption", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DV_WorkItem_Exemption"})
+			groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
 	public void WorkItemWorkflow_DisabledVeteran_WorkItemGeneratedOnEnterEndDateRatingExistingExemption(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -205,7 +205,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 	@Test(description = "SMAB-T1926: APAS system should not generate a WI on new Exemption having WI opened", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DV_WorkItem_Exemption"})
+			groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
 	public void WorkItemWorkflow_DisabledVeteran_WorkItemNotGeneratedOnExemptionWithOpenWI(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -258,7 +258,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 	@Test(description = "SMAB-T2094,SMAB-T1978: APAS Verify the Supervisor is able to Approve the WI initial filing/changes on new Exemption Creation", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DV_WorkItem_Exemption"})
+			groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
 	public void WorkItemWorkflow_DisabledVeteran_WorkItemExemptionFilingChangesIsApproved(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -296,6 +296,18 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		objPage.Click(objWIHomePage.lnkTABWorkItems);
 		ReportLogger.INFO("Step 10: Click on Needs My Approval TAB");
 		objPage.Click(objWIHomePage.needsMyApprovalTab);
+		
+		//SMAB-T2094 opening the action link to validate that link redirects to Exemptions page 
+		objWIHomePage.searchWIinGrid(WIName);
+    	objWIHomePage.openActionLink(WIName);
+		objWIHomePage.waitForElementToBeVisible(objExemptionsPage.newExemptionNameAftercreation, 10);
+		softAssert.assertTrue(objPage.verifyElementVisible(objExemptionsPage.newExemptionNameAftercreation),
+				"SMAB-T2094: Validation that user is directed to exemption details page and Exemption label is visible on clicking navigation icon of WI");
+		
+		objApasGenericPage.searchModule(modules.HOME);
+		objPage.Click(objWIHomePage.lnkTABHome);
+		objPage.Click(objWIHomePage.lnkTABWorkItems);
+		objPage.Click(objWIHomePage.needsMyApprovalTab);
 		ReportLogger.INFO("Step 11: Search for the Work Item and select the checkbox");
 		objWIHomePage.clickCheckBoxForSelectingWI(WIName);
 		ReportLogger.INFO("Step 12: Click on the Approve button");
@@ -329,7 +341,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 	@Test(description = "SMAB-T1981: APAS Verify the Supervisor is able to Return the WI initial filing/changes on new Exemption Creation", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DV_WorkItem_Exemption"})
+			groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
 	public void WorkItemWorkflow_DisabledVeteran_WorkItemExemptionFilingChangesIsReturned(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -404,7 +416,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2554,SMAB-T2556,SMAB-T2558: Verify that 1st level Approver is able to assign WIs to a different 2nd level Approver than what is there in the relevant Work Pool, Verify that 2nd level Approver is able to view 'Warning' message if user tries to assign WI to another user using 'Assign Level2 Approver' button", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DV_WorkItem_Exemption"})
+	@Test(description = "SMAB-T2554,SMAB-T2556,SMAB-T2558: Verify that 1st level Approver is able to assign WIs to a different 2nd level Approver than what is there in the relevant Work Pool, Verify that 2nd level Approver is able to view 'Warning' message if user tries to assign WI to another user using 'Assign Level2 Approver' button", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
 	public void WorkItemWorkflow_DisabledVeteran_Level2ApproverIsAbleToAssignWorkItem(String loginUser) throws Exception {
 
 		ReportLogger.INFO("Get the user names through SOQL query");

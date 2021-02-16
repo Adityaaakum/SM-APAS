@@ -80,7 +80,7 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 	 * 10. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T166
 	 * 11. Validating the status of the table on BPP Trend Setup Page
 	 */
-	@Test(description = "SMAB-T170,SMAB-T166,SMAB-T190,SMAB-T194,SMAB-T198: Performing validation on INDUSTRIAL COMPOSITE FACTORS before and after calculation", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T170,SMAB-T166,SMAB-T190,SMAB-T194,SMAB-T198: Performing validation on INDUSTRIAL COMPOSITE FACTORS before and after calculation", groups = {"Smoke","Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_IndustrialCompositeFactors_CalculateAndCompare(String loginUser) throws Exception {
 		String tableName = "Industrial Composite Factors";		
 		
@@ -185,7 +185,7 @@ public class BPPTrend_IndustrialCompostieTable_CalculateAndReCalculate_Test exte
 	 * 8. Validating the presence of ReCalculate button for Calculated table:: Test Case/JIRA ID: SMAB-T195
 	 * 9. Validating the data of UI table against the Trend Calculator excel file:: Test Case/JIRA ID: SMAB-T302, SMAB-T164
 	 */
-	@Test(description = "SMAB-T173,SMAB-T302,SMAB-T195,SMAB-T196,SMAB-T164: Performing validation on INDUSTRIAL COMPOSITE FACTORS before and after calculation", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T173,SMAB-T302,SMAB-T195,SMAB-T196,SMAB-T164: Performing validation on INDUSTRIAL COMPOSITE FACTORS before and after calculation", groups = {"Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_IndustrialCompositeFactors_ReCalculateAndCompare(String loginUser) throws Exception {
 		String tableName = "Industrial Composite Factors";
 		

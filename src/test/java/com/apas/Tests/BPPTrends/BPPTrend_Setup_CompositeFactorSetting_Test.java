@@ -56,7 +56,7 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 	 * 3. Validating the user able to update value of 'Minimum. Equip. Index Factor':: TestCase/JIRA ID: SMAB-T185
 	 * 4. Validating the user is not able to edit 'Minimum Equip. Index Factor' when calculations are approved:: TestCase/JIRA ID: SMAB-T187
 	 */
-	@Test(description = "SMAB-T186,SMAB-T188,SMAB-T185,SMAB-T187: Create BPP Composite Factor Setting with invalid and valid min. equip. index factor values", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T186,SMAB-T188,SMAB-T185,SMAB-T187: Create BPP Composite Factor Setting with invalid and valid min. equip. index factor values", groups={"Smoke","Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_Create_BppCompositeFactorSetting(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
 		objBppTrendSetupPage.login(loginUser);

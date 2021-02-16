@@ -65,7 +65,7 @@ public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 		@Test(description = "SMAB-T2552:DV-Retro-work item:Verify that a Disabled Veteran retrofit work item is created automatically,the user can view the Approver field is populated based on the assigned 1st Level Supervisor on the related Work Pool of the work item.", 
 				dataProvider = "loginExemptionSupportStaff",
 				dataProviderClass = DataProviders.class , 
-				groups = {"regression","DV_WorkItem_Exemption_1"})
+				groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran","WorkItemAdministration"})
 		public void WorkItemAdministration_verify1stlevelApproverIsAssignedOnAutomatedWICreation(String loginUser) throws Exception {
 			  
 			   Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -133,7 +133,7 @@ public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 				+ "BP records after claiming the WI 'Final Review'",
 				dataProvider = "loginExemptionSupportStaff",
 				dataProviderClass = DataProviders.class , 
-				groups = {"regression","DV_WorkItem_Exemption_1"})
+				groups = {"Regression","WorkItemWorkflow_DisabledVeteran","DisabledVeteran","WorkItemAdministration"})
 		public void WorkItemAdministration_verify1stlevelApproverIsAssignedOnManualWICreation(String loginUser) throws Exception {
 			  
 			   

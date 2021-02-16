@@ -1,0 +1,80 @@
+{
+  "DataToPerformManyToManyMappingActionWithoutAllFields": {
+    "Action": "Many To Many",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Many To Many",
+    "Number of Child Non-Condo Parcels": "2",
+    "Comments": "Perform Many To Many"
+  },
+
+  "DataToPerformManyToManyMappingActionWithIncorrectData": {
+    "Action": "Many To Many",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Many To Many",
+    "Number of Child Non-Condo Parcels": "2",
+    "First non-Condo Parcel Number" : "100-340-790",
+    "Comments": "Perform Many To Many Mapping Action"
+  },
+  "DataToPerformManyToManyMappingActionWithSpecialChars": {
+    "Action": "Many To Many",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Many To Many",
+    "First non-Condo Parcel Number" : "120-340-79$",
+    "Comments": "Perform Many To Many Mapping Action"
+},
+  "DataToPerformManyToManyMappingActionWithAlphaNumeric": {
+    "Action": "Many To Many",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Many To Many",
+    "First non-Condo Parcel Number" : "abc-340-790",
+    "Comments": "Perform Many To Many Mapping Action"
+  },
+  "DataToPerformManyToManyMappingActionWithValidData": {
+    "Action": "Many To Many",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Many To Many",
+    "Number of Child Non-Condo Parcels": "2",
+    "First non-Condo Parcel Number" : "120-340-790",
+    "Comments": "Perform Many To Many Mapping Action"
+},
+  "DataToPerformManyToManyMappingActionWithDotInData": {
+    "Action": "Many To Many",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Many To Many",
+    "Number of Child Non-Condo Parcels": "2",
+    "First non-Condo Parcel Number" : "120-340-79.",
+    "Comments": "Perform Many To Many Mapping Action"
+  },
+  "DataToPerformManyToManyMappingActionWithAnyNoOfParcels": {
+    "Action": "Many To Many",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Many To Many",
+    "Number of Child Non-Condo Parcels": "15",
+    "Number of Child Condo Parcels": "15",
+    "Comments": "Perform Many To Many Mapping Action"
+  },
+  "DataToPerformManyToManyMappingActionForUIValidations": {
+    "Action": "Many To Many",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Many To Many",
+    "Number of Child Non-Condo Parcels": "2",
+    "Comments": "Perform Many To Many Mapping Action"
+  },
+    "DataToPerformManyToManyMappingActionWithSitusData": {
+    "Action": "Many To Many",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Many To Many",
+    "Number of Child Non-Condo Parcels": "2",
+    "Number of Child Condo Parcels": "0",
+    "Comments": "Perform Many To Many Mapping Action",
+    "Situs City Description": "ATHERTON",
+    "Situs City Code": "AT",
+    "Situs City Name": "DALY CITY",
+    "Direction": "West Coast",
+    "Situs Number": "69",
+    "Situs Street Name": "CLIFFSIDE",
+    "Situs Type": "ALLEE",
+    "Situs Unit Number": "56"
+}
+  
+}

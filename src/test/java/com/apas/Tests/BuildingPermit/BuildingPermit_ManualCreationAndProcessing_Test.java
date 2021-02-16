@@ -47,7 +47,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the manual creation of building permit
 	 **/
-	@Test(description = "SMAB-T383,SMAB-T520,SMAB-T402,SMAB-T421,SMAB-T416: Creating manual entry for building permit", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"smoke","regression","buildingPermit"}, alwaysRun = true)
+	@Test(description = "SMAB-T383,SMAB-T520,SMAB-T402,SMAB-T421,SMAB-T416: Creating manual entry for building permit", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"Smoke","Regression","BuildingPermit"}, alwaysRun = true)
 	public void BuildingPermit_ManualCreateNewBuildingPermitWithDataValidations(String loginUser) throws Exception {
 
 
@@ -145,7 +145,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	 1. Error appearing if mandatory fields are not filled while editing the existing building permit record
 	 2. Save the record after updating the value in a field
 	 **/
-	@Test(description = "SMAB-T466,SMAB-T349,SMAB-T419: Mandatory Field Validation while editing manual building permit and editing a record", groups = {"regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T466,SMAB-T349,SMAB-T419: Mandatory Field Validation while editing manual building permit and editing a record", groups = {"Regression","BuildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_EditAndValidateRequiredFieldsValidationsForExistingPermit(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -209,7 +209,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate error appearing if mandatory fields are not filled while manually creating building permit
 	 **/
-	@Test(description = "SMAB-T418: Mandatory Field Validation while creating manual building permit", groups = {"smoke","regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass =  DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T418: Mandatory Field Validation while creating manual building permit", groups = {"Smoke","Regression","BuildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass =  DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_ManualCreationWithRequiredFieldsValidations(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -244,7 +244,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate that building permit can be created when 'Building Permit Number, Permit City Code and APN' is unique
 	 **/
-	@Test(description = "SMAB-T519: Validate that building permit can be created when 'Building Permit Number, Permit City Code and APN' is unique", groups = {"smoke","regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T519: Validate that building permit can be created when 'Building Permit Number, Permit City Code and APN' is unique", groups = {"Smoke","Regression","BuildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_ManualCreationForDuplicateCheck(String loginUser) throws Exception {
 
 		//Pre-requisite: Fetch the APN to be used to create building permit
@@ -306,7 +306,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the warning message when building permit is created with retired parcel
 	 **/
-	@Test(description = "SMAB-T626: Validate that warning message appears when a building permit is created with retired parcel", groups = {"smoke","regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T626: Validate that warning message appears when a building permit is created with retired parcel", groups = {"Smoke","Regression","BuildingPermit"}, dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_ManualCreationWithRetiredParcel(String loginUser) throws Exception {
 
 		//Pre-requisite: Fetch Retired APN to be used to create building permit
@@ -351,7 +351,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the values in Processing Status and Calculated Processing Status fields when processing status was not selected
 	 **/
-	@Test(description = "SMAB-T399: Validate that Process and Calculated Process Status fields are auto populated when process status field is not selected", groups = {"regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T399: Validate that Process and Calculated Process Status fields are auto populated when process status field is not selected", groups = {"Regression","BuildingPermit"}, dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_Manual_ProcessFieldsStatus_ProcessingStatusNotSelectedByUser(String loginUser) throws Exception {
 
 		//Pre-requisite: Fetch the APN to be used to create building permit
@@ -389,7 +389,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the values in Processing Status and Calculated Processing Status fields when processing status was selected
 	 **/
-	@Test(description = "SMAB-T400: Validate that Process and Calculated Process Status fields are auto populated when process status field is selected", groups = {"regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T400: Validate that Process and Calculated Process Status fields are auto populated when process status field is selected", groups = {"Regression","BuildingPermit"}, dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_Manual_ProcessFieldsStatus_ProcessingStatusSelectedByUser(String loginUser) throws Exception {
 
 		//Pre-requisite: Fetch the APN to be used to create building permit
@@ -430,7 +430,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	 Processing Status should be populated as it has been explicitly selected by user
 	 Calculated Processing Status should be populated as 'Process' if Estimated project value is "Greater Than or Equal to $25,000" ELSE 'No Process'
 	 **/
-	@Test(description = "SMAB-T403, SMAB-T404,SMAB-T909,SMAB-T400: Validated the Calculated Process Status field is automatically updated when estimated project value or county strat code is updated", groups = {"regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T403, SMAB-T404,SMAB-T909,SMAB-T400: Validated the Calculated Process Status field is automatically updated when estimated project value or county strat code is updated", groups = {"Regression","BuildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_Manual_CalculatedProcessingStatus_EstimatedProjectValueOrCountyStratCodeUpdated(String loginUser) throws Exception {
 
 		//Pre-requisite: Fetch the APN to be used to create building permit
@@ -491,7 +491,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 
 		//Step9: Update the processing status as No Process and Calculated Processing status should be updated with the same value
 		objPage.Click(objBuildingPermitPage.editButton);
-		objBuildingPermitPage.selectOptionFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "No Process");
+		objBuildingPermitPage.searchAndSelectOptionFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "No Process");
 		objBuildingPermitPage.saveRecord();
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T403: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
@@ -512,7 +512,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the error message as per the business rule validation while creating building permit manually
 	 **/
-	@Test(description = "SMAB-T630,SMAB-T627,SMAB-T628,SMAB-T631: Validate the error message as per the business rule validation while creating building permit manually", groups = {"regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T630,SMAB-T627,SMAB-T628,SMAB-T631: Validate the error message as per the business rule validation while creating building permit manually", groups = {"Regression","BuildingPermit"}, dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_Manual_ErrorMessageValidations(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -570,7 +570,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate the the correct values in Permit City Code drop down while creating manual building permit
 	 **/
-	@Test(description = "SMAB-T506: Validate the correct values in Permit City Code drop down while creating manual building permit", groups = {"regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T506: Validate the correct values in Permit City Code drop down while creating manual building permit", groups = {"Regression","BuildingPermit"}, dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_Manual_PermitCityCodeValues(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -595,7 +595,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate situs information is not populated when APN doesn't have any primary situs linked
 	 **/
-	@Test(description = "SMAB-T424: Validation for no Situs when primary situs doesn't exist for the parcel", groups = {"regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T424: Validation for no Situs when primary situs doesn't exist for the parcel", groups = {"Regression","BuildingPermit"}, dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_Manual_NoSitusPopulation(String loginUser) throws Exception {
 
 		//Pre-Requisite: Pull the APN which doenst have primary situs linked
@@ -634,7 +634,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate successful creation of manual building permit with non relevant permit prefixes
 	 **/
-	@Test(description = "SMAB-T443: Validation for successful creation of manual building permit with non relevant permit prefixes", groups = {"regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T443: Validation for successful creation of manual building permit with non relevant permit prefixes", groups = {"Regression","BuildingPermit"}, dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_Manual_NonRelevantPermitPrefixes(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the user passed through the data provider
@@ -661,7 +661,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate that building permit record can be created manually by system/data admin for the cities providing E-File
 	 **/
-	@Test(description = "SMAB-T345,SMAB-T517,SMAB-T327: Validate manual creation of building permits for cities providing e-files", groups = {"regression","buildingPermit"}, dataProvider = "loginSystemAdmin",dataProviderClass = com.apas.DataProviders.DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T345,SMAB-T517,SMAB-T327: Validate manual creation of building permits for cities providing e-files", groups = {"Regression","BuildingPermit"}, dataProvider = "loginSystemAdmin",dataProviderClass = com.apas.DataProviders.DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_Manual_CreateForCitiesProvidingEFile(String loginSystemAdmin) throws Exception {
 
 		//Pre-requisiet: Fetching available city strat code based on permit city code
@@ -723,7 +723,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate that Building Permit records imported through E-File are editable
 	 **/
-	@Test(description = "SMAB-T912: Validtion for edit functionality on building permits imported through e-file", groups = {"regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T912: Validtion for edit functionality on building permits imported through e-file", groups = {"Regression","BuildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_EditBuildingPermitsImportedThroughEfile(String loginUser) throws Exception {
 
 		//Fetch the APN to be used to create building permit
@@ -771,7 +771,7 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 	/**
 	 Below test case is used to validate that APN is mandatory only for Processing Status= "Process" while updating Building Permit records imported through E-File
 	 **/
-	@Test(description = "SMAB-T1537: Validation for mandatory APN on building permits imported through e-file when processing status is 'Process'", groups = {"regression","buildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T1537: Validation for mandatory APN on building permits imported through e-file when processing status is 'Process'", groups = {"Regression","BuildingPermit"}, dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_ApnMandatoryForProcess(String loginUser) throws Exception {
 
 		//Fetch the APN to be used to create building permit
