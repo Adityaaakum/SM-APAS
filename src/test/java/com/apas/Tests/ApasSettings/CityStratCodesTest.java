@@ -33,7 +33,7 @@ public class CityStratCodesTest extends TestBase {
 	/**
 	 * Below test case will validate that County record can have multiple related City Code records
 	 */
-	@Test(description = "SMAB-T396: Validation for County record can have multiple related City Code records", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression"}, alwaysRun = true)
+	@Test(description = "SMAB-T396: Validation for County record can have multiple related City Code records", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression"}, alwaysRun = true)
 	public void CityStratCode_verifyCreationOfMultipleRelatedCityCodesAndEdit(String loginUser) throws Exception {
 		String strSuccessAlertMessage;
 
@@ -72,7 +72,7 @@ public class CityStratCodesTest extends TestBase {
 	 * Below test case is used to validate the manual creation of City Strat Code entry
 	 * Checking validations on mandatory fields
 	 **/
-	@Test(description = "SMAB-T390,SMAB-T395: Creating manual entry for City Strat Code", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "buildingPermit"}, alwaysRun = true)
+	@Test(description = "SMAB-T390,SMAB-T395: Creating manual entry for City Strat Code", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BuildingPermit"}, alwaysRun = true)
 	public void CityStratCode_MandatoryFieldValidation(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
