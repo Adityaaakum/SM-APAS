@@ -611,12 +611,12 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		//Get the user name through queries
 		String ExemptionSupportNameQuery = "select Name from User where UserName__c = '"+ ExemptionSupport + "'";
 		HashMap<String, ArrayList<String>> response1 = new SalesforceAPI().select(ExemptionSupportNameQuery);
-		String rpBusinessAdminName = response1.get("Name").get(0);
+		String ExemptionSupportName = response1.get("Name").get(0);
 
 		//Get the user name through queries
 		String rpBusinessAdminNameQuery = "select Name from User where UserName__c = '"+ rpBusinessAdmin + "'";
 		response1 = new SalesforceAPI().select(rpBusinessAdminNameQuery);
-		String ExemptionSupportName = response1.get("Name").get(0);
+		String rpBusinessAdminName = response1.get("Name").get(0);
 
 		//fetching a parcel where PUC is not blank but Primary Situs is blank 
 		String apnValue=apasGenericObj.fetchActiveAPN();

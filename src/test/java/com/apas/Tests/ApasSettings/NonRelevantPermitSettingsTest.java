@@ -33,7 +33,7 @@ public class NonRelevantPermitSettingsTest extends TestBase {
      Below test case will validate that user is not allowed to create duplicate Non Relevant Permit Settings
      PreCondition: AT City Code with Active status is already added in Non Relevant Permit Settings
      */
-	@Test(description = "SMAB-T398: Validation for Duplicate Non Relevant Permit Settings", groups = {"regression","buildingPermit"},dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T398: Validation for Duplicate Non Relevant Permit Settings", groups = {"Regression","BuildingPermit"},dataProvider = "loginBPPBusinessAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void NonRelevantPermitSettings_DuplicateNonRelevantSettingsNotAllowed(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider
