@@ -144,7 +144,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         //Step 12: Validating Error Message when Number of Child Non-Condo Parcels field contains 0
         objParcelsPage.Click(objParcelsPage.getButtonWithText(objMappingPage.nextButton));
         softAssert.assertContains(objMappingPage.getErrorMessage(),"Number of Child Non Condo Parcels\" must be greater than 1",
-                "SMAB-T2583: Validation that error message is displayed when both Number of Child Non-Condo & Condo Parcels fields contain 0");
+                "SMAB-T2583: Validation that error message is displayed when Number of Child Non-Condo & Condo Parcels fields contain 0");
 
         //Step 13: entering incorrect map book in 'First Non Condo Parcel Number' field
         Map<String, String> hashMapManyToManyActionInvalidData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
@@ -162,7 +162,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
         //Step 16: Validating Error Message having special characters in fields: First Child Non-Condo Parcel
         softAssert.assertContains(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
-                "SMAB-T2583: Validation that error message is displayed when First Child Non-Condo Parcel contains Special Characters");
+                "SMAB-T2584: Validation that error message is displayed when First Child Non-Condo Parcel contains Special Characters");
 
         //Step 17: entering alphanumeric data in form for Many To Many mapping action
         Map<String, String> hashMapManyToManyActionAlphaNumData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
@@ -171,7 +171,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
         //Step 18: Validating Error Message having alphabets in fields: First Child Non-Condo Parcel
         softAssert.assertContains(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
-                "SMAB-T2583: Validation that error message is displayed when First Child Non-Condo Parcel contains alphabets");
+                "SMAB-T2584: Validation that error message is displayed when First Child Non-Condo Parcel contains alphabets");
 
         //Step 19: entering alphanumeric data in form for Many To Many mapping action
         Map<String, String> hashMapManyToManyActionDotInData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
@@ -180,7 +180,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
         //Step 20: Validating Error Message having dot in fields: First Child Non-Condo Parcel
         softAssert.assertContains(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
-                "SMAB-T2583: Validation that error message is displayed when First Child Non-Condo Parcel contains dot");
+                "SMAB-T2584: Validation that error message is displayed when First Child Non-Condo Parcel contains dot");
 
         //Step 21: entering valid data in form for ManyToMany mapping action
         Map<String, String> hashMapManyToManyActionValidMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
@@ -223,7 +223,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
         //Step 24: Validating warning message
         softAssert.assertContains(objMappingPage.getErrorMessage(),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is",
-                "SMAB-T2586: Validation that warning message is displayed when Parcel number generated is different from the user selection");
+                "SMAB-T2591: Validation that warning message is displayed when Parcel number generated is different from the user selection");
 
         driver.switchTo().window(parentWindow);
         objWorkItemHomePage.logout();
