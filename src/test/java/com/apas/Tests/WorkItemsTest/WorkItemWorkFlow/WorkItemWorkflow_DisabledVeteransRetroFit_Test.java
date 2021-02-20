@@ -487,7 +487,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		int reminderWIRNumber = InPoolLowIncomeWI.get("Request Type").indexOf("Disabled Veterans - Review and Update - Annual exemption amount verification");
 		String lowIncomeWIName  = workItemPageObj.getWorkItemName("Disabled Veterans - Review and Update - Annual exemption amount verification",workItemPageObj.TAB_IN_POOL);
 		// step4: Now accepting and verifying a Low Income WI
-		softAssert.assertEquals(lowIncomeWiCount, lowIncomeWiCount,"Verifying number of WI are same as Low income VA presnet for Previous roll year ");
+		softAssert.assertEquals(lowIncomeWiCount, lowIncomeVACountInSystem,"Verifying number of WI are same as Low income VA presnet for Previous roll year ");
 		ReportLogger.INFO("Accpeting a Low Income Annual Exemption WI :: " + lowIncomeWIName);
 		objPage.scrollToBottom();
 		workItemPageObj.acceptWorkItem(lowIncomeWIName);
@@ -503,7 +503,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 				"SMAB-T2091: Validation that Value Adjustments label is present");
 		
 		driver.navigate().back();
-		Thread.sleep(15000);
+		Thread.sleep(15000);  //It takes long to load back the screen
 		workItemPageObj.openWorkItem(lowIncomeWIName);
 		objPage.javascriptClick(workItemPageObj.detailsTab);
 		Thread.sleep(1000);
@@ -539,13 +539,13 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		driver.navigate().refresh();
 		Thread.sleep(3000);
 		driver.navigate().back();
-		Thread.sleep(15000);
+		Thread.sleep(15000); //It takes long to load back the screen
 		
 		objPage.Click(workItemPageObj.lnkTABMySubmittedforApproval);
 		Thread.sleep(5000);
 		workItemPageObj.openWorkItem(lowIncomeWIName);
 		objPage.javascriptClick(workItemPageObj.detailsTab);
-		Thread.sleep(2000);
+		Thread.sleep(1000);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1952:Verify that user is able to submit the Low Income WI manually from corresponding WI Home page");
 
 		objApasGenericPage.logout();

@@ -842,12 +842,12 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 	 * This method is to Verify that Level1 Approver is able to assign WIs to a Level2 Approver and 2nd Level supervisor assigns it back to Level1 Approver
 	 */
 	@Test(description = "SMAB-T2558,SMAB-T2563: Verify that Level1 Approver is able to assign WIs to a Level2 Approver and 2nd Level supervisor assigns it back to Level1 Approver", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","WorkItemAdministration"})
-	public void AWorkItemAdministration_Manual_verifyLevel2ApproverIsAbleToAssignWorkItems(String loginUser) throws Exception {
+	public void WorkItemAdministration_Manual_verifyLevel2ApproverIsAbleToAssignWorkItems(String loginUser) throws Exception {
 
 		ReportLogger.INFO("Get the user names through SOQL query");
 		String rpBusinessAdminName = salesforceAPI.getUserName(users.RP_BUSINESS_ADMIN);
 		String dataAdminName = salesforceAPI.getUserName(users.DATA_ADMIN);
-		String mappingStaffName = salesforceAPI.getUserName(users.APPRAISAL_SUPPORT);
+		String appraisalSupportName = salesforceAPI.getUserName(users.APPRAISAL_SUPPORT);
 
 		// fetching a parcel where PUC is not blank but Primary Situs is blank
 		String queryAPNValue1 = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 2";
@@ -953,7 +953,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		//Step12: Click on the Assign Level2 Supervisor button and validate the details
 		ReportLogger.INFO("Click the Assign Level2 Supervisor button");
 		objPage.javascriptClick(objPage.getButtonWithText(objWorkItemHomePage.assignLevel2Approver));	
-		objWorkItemHomePage.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wiLevel2ApproverDetailsPage, mappingStaffName);
+		objWorkItemHomePage.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wiLevel2ApproverDetailsPage, appraisalSupportName);
 
 		String successMessage = objWorkItemHomePage.saveRecord();
 		softAssert.assertEquals(successMessage,"success\nSuccess\nWork item(s) processed successfully!\nClose","SMAB-T2563 : Validate user is able to assign the WI" );
@@ -972,7 +972,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
 				"SMAB-T2563: Validate the Approver on the Work Item");
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),appraisalSupportName,
 				"SMAB-T2563: Validate the Level2 Approver on the Work Item");
 
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
@@ -988,7 +988,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
 				"SMAB-T2563: Validate the Approver on the Work Item");
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),appraisalSupportName,
 				"SMAB-T2563: Validate the Level2 Approver on the Work Item");
 
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
@@ -1028,10 +1028,10 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
 				"SMAB-T2563: Validate the Approver on the Work Item");
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),appraisalSupportName,
 				"SMAB-T2563: Validate the Level2 Approver on the Work Item");
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),appraisalSupportName,
 				"SMAB-T2563: Validate the Current Approver on the Work Item");
 
 		objWorkItemHomePage.globalSearchRecords(workItem2); 
@@ -1044,10 +1044,10 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
 				"SMAB-T2563: Validate the Approver on the Work Item");
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),appraisalSupportName,
 				"SMAB-T2563: Validate the Level2 Approver on the Work Item");
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),appraisalSupportName,
 				"SMAB-T2563: Validate the Current Approver on the Work Item");
 
 		//Step16: Logout from the application
