@@ -371,7 +371,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 		waitUntilElementIsPresent(xpath, 15);
 		waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
 		javascriptClick(driver.findElement(By.xpath(xpath)));
-		Thread.sleep(4000);
+		Thread.sleep(5000);
 	}
 
 	/**
