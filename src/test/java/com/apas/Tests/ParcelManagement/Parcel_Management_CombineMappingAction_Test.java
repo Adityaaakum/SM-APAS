@@ -708,30 +708,80 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 		
 		String legalDescriptionValue="Legal PM 85/25-260";
+		String updateRecordOn = "";
+		String updateSmallestAPN = "";
 		//String districtValue="District01";
 		
-		String concatenateActiveAPN = apn1+","+apn2;
+		//String concatenateActiveAPN = apn1+","+apn2;
 		
-		//Enter values in the Parcels
-		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
-		jsonParcelObject.put("Short_Legal_Description__c","");
-		//jsonParcelObject.put("District__c",districtValue);
-		jsonParcelObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
-		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObject);
-		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(1));
+		
+		//Getting Condo Parcel
+		HashMap<String, ArrayList<String>> responseCondoAPNDetails = objMappingPage.getCondoApnHavingOwner(assesseeName);
+		String apn3 = responseCondoAPNDetails.get("Name").get(0);
+		
+		
+		//Delete the existing parcel relationship instances on all 3 parcels
+		objMappingPage.deleteSourceRelationshipInstanceFromParcel(apn1);
+		objMappingPage.deleteSourceRelationshipInstanceFromParcel(apn2);
+		objMappingPage.deleteSourceRelationshipInstanceFromParcel(apn3);
+		
+        /*String queryRelationship = "SELECT Name FROM Parcel_Relationship__c where Source_Parcel__r.name = '" + apn1 + "'";
+        salesforceAPI.delete("Parcel_Relationship__c", queryRelationship);*/
+        
+        //Delete the parcel size on all 3 parcels
+		objMappingPage.deleteLotSizeOnParcel(apn1);
+		objMappingPage.deleteLotSizeOnParcel(apn2);
+		objMappingPage.deleteLotSizeOnParcel(apn3);
+		
+       /* String queryParcelSize = "SELECT Lot_Size_SQFT__c FROM Parcel__c  where Name = '" + apn1 + "'";
+        salesforceAPI.delete("Parcel_Relationship__c", queryParcelSize);*/
 		
 		//Fetching some more Active parcels
-		String queryCondoAPN = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and name like '100%' and Status__c = 'Active'";
+		/*String queryCondoAPN = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and name like '100%' and Status__c = 'Active'";
 		HashMap<String, ArrayList<String>> responseCondoAPNDetails = salesforceAPI.select(queryCondoAPN);
 		String apn3=responseCondoAPNDetails.get("Name").get(0);
 		
 		String queryMobileHomeAPN = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and name like '133%' and Status__c = 'Active'";
 		HashMap<String, ArrayList<String>> responseMobileHomeAPNDetails = salesforceAPI.select(queryMobileHomeAPN);
-		String apn4=responseMobileHomeAPNDetails.get("Name").get(0);
+		String apn4=responseMobileHomeAPNDetails.get("Name").get(0);*/
 						
-		String concatenateMixAPNs = apn1+","+apn2+","+apn3+","+apn4;
+		/*String concatenateMixAPNs = apn1+","+apn2+","+apn3+","+apn4;*/
+		
+		
+		int numbParcel1 = objMappingPage.convertAPNIntoInteger(apn1);
+		int numbParcel2 = objMappingPage.convertAPNIntoInteger(apn2);
+		int numbParcel3 = objMappingPage.convertAPNIntoInteger(apn3);
+		
+		int temp = numbParcel1<numbParcel2?numbParcel1:numbParcel2;
+		int smallestNumb = numbParcel3<temp?numbParcel3:temp;
+		String smallestAPN = String.valueOf(smallestNumb);
+		System.out.println(smallestAPN);
+		System.out.println(smallestAPN.length());
+		if (smallestAPN.length() == 9) updateSmallestAPN = smallestAPN.substring(0, 3).concat("-").concat(smallestAPN.substring(4, 7)).concat("-").concat(smallestAPN.substring(8, 11));
+		if (smallestAPN.length() == 8) updateSmallestAPN = "0" + smallestAPN.substring(0, 2).concat("-").concat(smallestAPN.substring(2, 5)).concat("-").concat(smallestAPN.substring(5, 8));
+		if (smallestAPN.length() == 7) updateSmallestAPN = "00" + smallestAPN.substring(0, 1).concat("-").concat(smallestAPN.substring(1, 4)).concat("-").concat(smallestAPN.substring(4, 7));
+		System.out.println(updateSmallestAPN);
+		
+		if (updateSmallestAPN.equals(apn1)) updateRecordOn = responseAPNDetails.get("Id").get(0);
+		if (updateSmallestAPN.equals(apn2)) updateRecordOn = responseAPNDetails.get("Id").get(1);
+		if (updateSmallestAPN.equals(apn3)) updateRecordOn = responseCondoAPNDetails.get("Id").get(0);
+		
+		//Enter values in the Parcels
+		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonParcelObject.put("Short_Legal_Description__c","");
+		jsonParcelObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c",updateRecordOn,jsonParcelObject);
+		//salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(1));
 				
+		
+		
+		String concatenateMixAPNs = apn1+","+apn2+","+apn3;
+		
+		
+		
+		
+		
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -764,6 +814,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		// Step 6: Select the Combine value in Action field, various values in 'Are Taxes fully paid?' field and validate other fields in layout are/are not visible
 		ReportLogger.INFO("Select the 'Combine' Action and Yes in Tax field");
+		Thread.sleep(2000);  //Allows screen to load
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapCombineMappingData.get("Action"));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
 		
@@ -863,7 +914,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		apnValue.put("APN1", apn1); 
 		apnValue.put("APN2", apn2); 
 		apnValue.put("APN3", apn3); 
-		apnValue.put("APN4", apn4); 
+		//apnValue.put("APN4", apn4); 
           
        /* // using for-each loop for iteration over Map.entrySet() 
         //for (Map.Entry<String,String> entry : apnValue.entrySet())
@@ -879,8 +930,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2373: Validation that System populates Situs  from the parent parcel");
 		softAssert.assertTrue(apnValue.containsValue(relationshipTableDataHashMap.get("Source Parcel").get(2)),
 				"SMAB-T2373: Validation that System populates Situs  from the parent parcel");
-		softAssert.assertTrue(apnValue.containsValue(relationshipTableDataHashMap.get("Source Parcel").get(3)),
-				"SMAB-T2373: Validation that System populates Situs  from the parent parcel");
+		//softAssert.assertTrue(apnValue.containsValue(relationshipTableDataHashMap.get("Source Parcel").get(3)),
+		//		"SMAB-T2373: Validation that System populates Situs  from the parent parcel");
 		
 		
 		objParcelsPage.openRelatedTabInParcelRecord("Ownership");
@@ -928,7 +979,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(tableDataHashMap3.get("Target Parcel").get(0),childAPNNumber,
 				"SMAB-T2373: Validate that the Child parcel appears in Parcel Relationship tab");
 		
-		objMappingPage.globalSearchRecords(apn4);
+		/*objMappingPage.globalSearchRecords(apn4);
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"In Progress - To Be Expired",
 				"SMAB-T2373: Validate the status of fourth parent parcel");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),"In Progress - To Be Expired",
@@ -937,7 +988,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objParcelsPage.openRelatedTabInParcelRecord("Parcel Relationships");
 		HashMap<String, ArrayList<String>> tableDataHashMap4 = objParcelsPage.getParcelTableDataInHashMap("Target Parcel Relationships");
 		softAssert.assertEquals(tableDataHashMap4.get("Target Parcel").get(0),childAPNNumber,
-				"SMAB-T2373: Validate that the Child parcel appears in Parcel Relationship tab");
+				"SMAB-T2373: Validate that the Child parcel appears in Parcel Relationship tab");*/
 		
 		
 		objMappingPage.searchModule(WORK_ITEM);
@@ -954,7 +1005,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(objMappingPage.getLinkedParcelInWorkItem("0"), apn1,"SMAB-T1885:Verify that reminder WI 'Disabled Veterans -Update and Validate -Disabled veterans Yearly exemption amounts and income limits' and RPSL for current roll year(if not present) upon job execution");
 		softAssert.assertEquals(objMappingPage.getLinkedParcelInWorkItem("1"), apn2,"SMAB-T1885:Verify that reminder WI 'Disabled Veterans -Update and Validate -Disabled veterans Yearly exemption amounts and income limits' and RPSL for current roll year(if not present) upon job execution");
 		softAssert.assertEquals(objMappingPage.getLinkedParcelInWorkItem("2"), apn3,"SMAB-T1885:Verify that reminder WI 'Disabled Veterans -Update and Validate -Disabled veterans Yearly exemption amounts and income limits' and RPSL for current roll year(if not present) upon job execution");
-		softAssert.assertEquals(objMappingPage.getLinkedParcelInWorkItem("3"), apn4,"SMAB-T1885:Verify that reminder WI 'Disabled Veterans -Update and Validate -Disabled veterans Yearly exemption amounts and income limits' and RPSL for current roll year(if not present) upon job execution");
+		//softAssert.assertEquals(objMappingPage.getLinkedParcelInWorkItem("3"), apn4,"SMAB-T1885:Verify that reminder WI 'Disabled Veterans -Update and Validate -Disabled veterans Yearly exemption amounts and income limits' and RPSL for current roll year(if not present) upon job execution");
 
 		
 		
@@ -1033,11 +1084,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),"99-RETIRED PARCEL",
 				"SMAB-T2373: Validate the PUC of third parent parcel");
 		
-		objMappingPage.globalSearchRecords(apn4);
+		/*objMappingPage.globalSearchRecords(apn4);
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"Retired",
 				"SMAB-T2373: Validate the status of fourth parent parcel");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),"99-RETIRED PARCEL",
-				"SMAB-T2373: Validate the PUC of fourth parent parcel");
+				"SMAB-T2373: Validate the PUC of fourth parent parcel");*/
 		
 		objWorkItemHomePage.logout();
 		Thread.sleep(000);
