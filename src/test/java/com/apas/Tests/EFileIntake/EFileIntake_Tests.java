@@ -597,9 +597,8 @@ public class EFileIntake_Tests extends TestBase implements testdata, modules, us
 		ReportLogger.INFO("Verifying that on Confirming/Continuing the warning user navigates back to previous page");
 		objPage.Click(objEFileImport.continueButton);
 		objPage.waitForElementToBeClickable(objEFileImport.statusImportedFile,30);
-		objEFileImport.selectFileAndSource(fileType,source);
-		//softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileTypedropdown), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
-		//softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.sourceDropdown), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.fileTypedropdown), fileType, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
+		softAssert.assertEquals(objPage.getSelectedDropDownValue(objEFileImport.sourceDropdown), source, "SMAB-T1511:Verify user is able to navigate backwards from review and Approve screen for New,Imported and Approved status");
 	
 		objPage.waitForElementToBeVisible(objEFileImport.nextButton, 15);
 		softAssert.assertEquals(objEFileImport.getElementText(objEFileImport.disacrdCount),"1","SMAB-T68:Verify View link is not displayed for records in history table apart from statuses - 'Imported','New' and 'In Progress' and Approved");
