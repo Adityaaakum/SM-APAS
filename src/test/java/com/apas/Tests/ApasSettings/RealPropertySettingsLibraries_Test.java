@@ -195,7 +195,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		objPage.Click(objRPSLPage.newButton);
 		Thread.sleep(3000);
 		ReportLogger.INFO("Clicking on Save Button without entering any details");
-		objPage.waitUntilElementIsPresent("//button[@title = 'Save']", 30);
+		objPage.waitUntilElementIsPresent("//button[text() = 'Save']", 30);
 		objPage.Click(objRPSLPage.saveButton);
 
 		//Step4: Validate the error message appeared for mandatory fields
@@ -210,6 +210,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 
 		//Step5: Closing the RPSL creation pop up
 		objPage.Click(objRPSLPage.cancelButton);
+		objRPSLPage.searchModule(modules.WORK_ITEM);
 		objRPSLPage.logout();
 	}
 	
@@ -421,6 +422,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		
 		//Step4 : Click on Approved RPSL for past Roll Year
 		ReportLogger.INFO("Clicking on Approved RPSL Link for past Roll Year i.e. " + pastRollYear);
+		objRPSLPage.searchRecords("Exemption Limits - " + pastRollYear);
 		objPage.Click(objRPSLPage.getRPSLRecord(pastRollYear));
 		
 		//Step5 : Click on EDIT button for the record and retrieve the error message

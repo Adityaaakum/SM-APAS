@@ -154,6 +154,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		objPage.Click(workItemPageObj.saveButton);
 		objPage.waitForElementToBeVisible(6, workItemPageObj.pageLevelErrorMsg);
 		softAssert.assertContains(workItemPageObj.pageLevelErrorMsg.getText(), "Please accept the WorkItem :","SMAB-T1933:Verify that user is not able to submit the annual setting without claiming the WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits'");
+		
 		objPage.Click(workItemPageObj.cancelBtn);
 		driver.navigate().back();
 		driver.navigate().back();
@@ -290,13 +291,13 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		//SMAB-T2087 opening the action link to validate that link redirects to correct page
 		workItemPageObj.openActionLink(reminderSubmittedWINumber);
 		
-		softAssert.assertTrue(objPage.verifyElementVisible(workItemPageObj.editBtn),
-				"SMAB-T2087: Validation that edit button is visible");
 		softAssert.assertTrue(objPage.verifyElementVisible(rpslObj.realPropertySettingsLibraryHeaderText),
 				"SMAB-T2087: Validation that Real Property Settings Library label is visible");
 		softAssert.assertTrue(objPage.verifyElementVisible(rpslObj.getExemptionLimitLabelName("2021")),
 				"SMAB-T2087: Validation that Exemption Limits label is present");
-		 
+		softAssert.assertTrue(objPage.verifyElementVisible(workItemPageObj.editBtn),
+				"SMAB-T2087: Validation that edit button is visible");
+		
 		driver.navigate().back();
 		Thread.sleep(5000);
 		String parentwindow = driver.getWindowHandle();
@@ -414,6 +415,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		softAssert.assertEquals(reminderSubmittedWIAgain.get("Work Pool").get(reminderAgainSubmittedWIRowNumber),"Disabled Veterans","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		
 		objApasGenericPage.logout();
+		Thread.sleep(5000);
 
 //******************** step10: Now supervisor will Approve the RPSl and verify the WI is Completed***************///
 
@@ -501,7 +503,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 				"SMAB-T2091: Validation that Value Adjustments label is present");
 		
 		driver.navigate().back();
-		Thread.sleep(1000);
+		Thread.sleep(10000);  //It takes long to load back the screen
 		workItemPageObj.openWorkItem(lowIncomeWIName);
 		objPage.javascriptClick(workItemPageObj.detailsTab);
 		Thread.sleep(1000);
@@ -537,7 +539,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		driver.navigate().refresh();
 		Thread.sleep(3000);
 		driver.navigate().back();
-		Thread.sleep(1000);
+		Thread.sleep(10000); //It takes long to load back the screen
 		
 		objPage.Click(workItemPageObj.lnkTABMySubmittedforApproval);
 		Thread.sleep(5000);
