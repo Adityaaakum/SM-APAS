@@ -341,7 +341,7 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
 			"SMAB-T2093: Validation that Value Adjustment Details label is visible");
 	
 	driver.navigate().back();
-	Thread.sleep(15000);	//It takes long to load back the screen
+	Thread.sleep(10000);	//It takes long to load back the screen
 	
 	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
@@ -376,7 +376,7 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
 			"SMAB-T2093: Validation that Value Adjustments label is visible");
 	
 	driver.navigate().back();
-	Thread.sleep(15000);	//It takes long to load back the screen
+	Thread.sleep(10000);	//It takes long to load back the screen
 	
 	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);

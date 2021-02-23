@@ -503,7 +503,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 				"SMAB-T2091: Validation that Value Adjustments label is present");
 		
 		driver.navigate().back();
-		Thread.sleep(15000);  //It takes long to load back the screen
+		Thread.sleep(10000);  //It takes long to load back the screen
 		workItemPageObj.openWorkItem(lowIncomeWIName);
 		objPage.javascriptClick(workItemPageObj.detailsTab);
 		Thread.sleep(1000);
@@ -539,7 +539,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		driver.navigate().refresh();
 		Thread.sleep(3000);
 		driver.navigate().back();
-		Thread.sleep(15000); //It takes long to load back the screen
+		Thread.sleep(10000); //It takes long to load back the screen
 		
 		objPage.Click(workItemPageObj.lnkTABMySubmittedforApproval);
 		Thread.sleep(5000);
