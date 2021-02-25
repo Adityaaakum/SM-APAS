@@ -63,7 +63,7 @@ public class BPPTrend_ConstructionMobileEquipCompostieTable_CalculateAndReCalcul
 		objBuildPermit = new BuildingPermitPage(driver);
 		objSoftAssert = new SoftAssert();
         objBppTrendSetupPage = new BppTrendSetupPage(driver);
-        objBppTrendSetupPage.updateRollYearStatus("Open", "2020");
+        objBppTrendSetupPage.updateRollYearStatus("Open", "2022");
 	}
 
 	@AfterMethod
@@ -152,7 +152,7 @@ public class BPPTrend_ConstructionMobileEquipCompostieTable_CalculateAndReCalcul
 
 		ReportLogger.INFO("** Comparing the UI grid data against the data available in Trend Calculator file **");
 		//Step17: Retrieving the path of excel file to read for data comparison on calculate button click
-		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CALCULATOR + "2020_Trend_Factors_Calculator.xlsx";
+		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CALCULATOR + "2022_Trend_Factors_Calculator.xlsx";
 		
 		//Step18: Generating data map from the Trend Calculator excel file using the given table name
 		HashMap<String, ArrayList<String>> dataMapFromExcel = ExcelUtils.getExcelSheetData(fileName, 6);
@@ -252,7 +252,7 @@ public class BPPTrend_ConstructionMobileEquipCompostieTable_CalculateAndReCalcul
 				
 		ReportLogger.INFO("** Comparing the UI grid data against the data available in Trend Calculator file **");
 		//Step14: Retrieving the path of excel file to read for data comparison on calculate button click
-		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CALCULATOR_WITH_UPDATED_MIN_EQIP_INDEX_FACTOR + "2020_Trend_Factors_Calculator.xlsx";
+		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CALCULATOR_WITH_UPDATED_MIN_EQIP_INDEX_FACTOR + "2022_Trend_Factors_Calculator.xlsx";
 
 		//Step15: Generating data map from the Trend Calculator excel file using the given table name
 		HashMap<String, ArrayList<String>> dataMapFromExcel = ExcelUtils.getExcelSheetData(fileName, 6);

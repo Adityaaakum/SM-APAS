@@ -40,7 +40,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	EFileImportLogsPage objEFileImportLogPage;
 	Util objUtil;
 	SoftAssertion softAssert;
-	String rollYearForImport;// In PreUat & Staging environment, Period dropdown has values '2019 & 2020' but in QA they're '2020 & 2021'
+	String rollYearForImport;// In PreUat & Staging environment, Period dropdown has values '2019 & 2022' but in QA they're '2022 & 2022'
 	SalesforceAPI objSalesforceAPI;
 	
 	@BeforeMethod(alwaysRun = true)
@@ -57,7 +57,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEFileImportLogPage=new EFileImportLogsPage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
-		rollYearForImport = "2021";
+		rollYearForImport = "2022";
 		objSalesforceAPI = new SalesforceAPI();
 	}
 		
@@ -88,7 +88,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
-		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, fileName + "BOE Equipment Index Factors and Percent Good Factors 2021.xlsx");		
+		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, fileName + "BOE Equipment Index Factors and Percent Good Factors 2022.xlsx");		
 		
 		//Step7: Waiting for the status of the file to be converted to Imported
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -137,7 +137,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			
 		//********* Validating that correct number of records are present in Imported row section after file import *********	
 			//Step17: Counting no of records imported from Excel File Imported			
-			int countOfTotalRecordsInt = objEfileHomePage.getRowCountSpecificToTable(fileName+ "BOE Equipment Index Factors and Percent Good Factors 2021.xlsx",tableName);
+			int countOfTotalRecordsInt = objEfileHomePage.getRowCountSpecificToTable(fileName+ "BOE Equipment Index Factors and Percent Good Factors 2022.xlsx",tableName);
 			
 			//Step18: Fetching expected Imported Rows Count
 			String expectedImportedRowsCount = Integer.toString(countOfTotalRecordsInt - Integer.parseInt(expectedNoOfErrorRecords));			
@@ -188,7 +188,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
-		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, fileName + "BOE Equipment Index Factors and Percent Good Factors 2021.xlsx");		
+		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, fileName + "BOE Equipment Index Factors and Percent Good Factors 2022.xlsx");		
 		
 		//Step7: Waiting for the status of the file to be converted to Imported
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -250,7 +250,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS;
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
-		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, fileName + "BOE Equipment Index Factors and Percent Good Factors 2021.xlsx");		
+		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, fileName + "BOE Equipment Index Factors and Percent Good Factors 2022.xlsx");		
 		
 		//Step7: Waiting for the status of the file to be converted to Imported
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -336,7 +336,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Approving all records
 	 * 3. Validating status post approving on history page and transaction import logs page
 	 */
-	@Test(description = "SMAB-T957,SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","BPPTrend"})
+	@Test(description = "SMAB-T957,SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
 	public void BppTrend_BOEIndexImportAndApprove(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);	
@@ -357,7 +357,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_VALID;
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
-		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, fileName + "BOE Equipment Index Factors and Percent Good Factors 2021.xlsx");		
+		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYearForImport, fileName + "BOE Equipment Index Factors and Percent Good Factors 2022.xlsx");		
 		
 		//Step7: Waiting for the status of the file to be converted to Imported
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -418,7 +418,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
-		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Valuation Factors", rollYearForImport, fileName + "BOE Valuation Factors 2021.xlsx");		
+		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Valuation Factors", rollYearForImport, fileName + "BOE Valuation Factors 2022.xlsx");		
 		
 		//Step7: Waiting for the status of the file to be converted to Imported
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -467,7 +467,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			
 		//********* Validating that correct number of records are present in Imported row section after file import *********	
 			//Step17: Counting no of records imported from Excel File Imported			
-			int countOfTotalRecordsInt = objEfileHomePage.getRowCountSpecificToTable(fileName + "BOE Valuation Factors 2021.xlsx",tableName);
+			int countOfTotalRecordsInt = objEfileHomePage.getRowCountSpecificToTable(fileName + "BOE Valuation Factors 2022.xlsx",tableName);
 			
 			//Step18: Fetching expected Imported Rows Count
 			String expectedImportedRowsCount = Integer.toString(countOfTotalRecordsInt - Integer.parseInt(expectedNoOfErrorRecords));			
@@ -517,7 +517,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
-		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Valuation Factors", rollYearForImport, fileName + "BOE Valuation Factors 2021.xlsx");		
+		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Valuation Factors", rollYearForImport, fileName + "BOE Valuation Factors 2022.xlsx");		
 		
 		//Step7: Waiting for the status of the file to be converted to Imported
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -579,7 +579,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS;
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
-		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Valuation Factors", rollYearForImport, fileName + "BOE Valuation Factors 2021.xlsx");		
+		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Valuation Factors", rollYearForImport, fileName + "BOE Valuation Factors 2022.xlsx");		
 		
 		//Step7: Waiting for the status of the file to be converted to Imported
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -620,7 +620,8 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			
 			//Step10: Enter correct data in one of the Error Row 'Cell' 
 			ReportLogger.INFO("Deleting junk data and entering valid data in the table: "+tableName);
-			Thread.sleep(5000);
+			Thread.sleep(7000);
+			objPage.scrollToBottomOfPage();
 			objEfileHomePage.editGridCellValue("Valuation Factor","80");
 			objPage.Click(objEfileHomePage.rowSelectCheckBox);
 			objEfileHomePage.collapseSection(objEfileHomePage.errorRowSectionExpandButton);
@@ -658,7 +659,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objPage.Click(objEfileHomePage.sourceDetails);	
 		objPage.Click(objEfileHomePage.continueButton);
 		objPage.waitForElementToBeClickable(objEfileHomePage.statusImportedFile, 10);	
-		objEfileHomePage.openLogRecordForImportedFile("BPP Trend Factors","BOE - Valuation Factors",rollYearForImport,fileName + "BOE Valuation Factors 2021.xlsx");	
+		objEfileHomePage.openLogRecordForImportedFile("BPP Trend Factors","BOE - Valuation Factors",rollYearForImport,fileName + "BOE Valuation Factors 2022.xlsx");	
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.logStatus, 10);	
 		objPage.Click(objEfileImportTransactionsPage.transactionsTab);	
 		objPage.waitForElementToBeClickable(objEFileImportLogPage.viewAlllink, 15);	
@@ -674,7 +675,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Approving all records
 	 * 3. Validating status post approving on history page and transaction import logs page
 	 */
-	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","BPPTrend"})
+	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
 	public void BppTrend_BOEValImportAndApprove(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);				
@@ -695,7 +696,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VAL_FACTORS_VALID;
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
-		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Valuation Factors", rollYearForImport, fileName + "BOE Valuation Factors 2021.xlsx");		
+		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "BOE - Valuation Factors", rollYearForImport, fileName + "BOE Valuation Factors 2022.xlsx");		
 		
 		//Step7: Waiting for the status of the file to be converted to Imported
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -755,7 +756,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
-		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "CAA - Valuation Factors", rollYearForImport, fileName + "CAA Valuation Factors 2021.xlsx");		
+		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "CAA - Valuation Factors", rollYearForImport, fileName + "CAA Valuation Factors 2022.xlsx");		
 		
 		//Step7: Waiting for the status of the file to be converted to Imported
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -804,7 +805,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			
 		//********* Validating that correct number of records are present in Imported row section after file import *********	
 			//Step17: Counting no of records imported from Excel File Imported			
-			int countOfTotalRecordsInt = objEfileHomePage.getRowCountSpecificToTable(fileName + "CAA Valuation Factors 2021.xlsx",tableName);
+			int countOfTotalRecordsInt = objEfileHomePage.getRowCountSpecificToTable(fileName + "CAA Valuation Factors 2022.xlsx",tableName);
 			
 			//Step18: Fetching expected Imported Rows Count
 			String expectedImportedRowsCount = Integer.toString(countOfTotalRecordsInt - Integer.parseInt(expectedNoOfErrorRecords));			
@@ -855,7 +856,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.searchModule(modules.EFILE_INTAKE);
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
-		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "CAA - Valuation Factors", rollYearForImport, fileName + "CAA Valuation Factors 2021.xlsx");		
+		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "CAA - Valuation Factors", rollYearForImport, fileName + "CAA Valuation Factors 2022.xlsx");		
 		
 		//Step7: Waiting for the status of the file to be converted to Imported
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -918,7 +919,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VALUATION_FACTORS;
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
-		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "CAA - Valuation Factors", rollYearForImport, fileName + "CAA Valuation Factors 2021.xlsx");		
+		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "CAA - Valuation Factors", rollYearForImport, fileName + "CAA Valuation Factors 2022.xlsx");		
 		
 		//Step7: Waiting for the status of the file to be converted to Imported
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -999,7 +1000,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Approving all records
 	 * 3. Validating status post approving on history page and transaction import logs page
 	 */
-	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","BPPTrend"})
+	@Test(description = "SMAB-T111: Correcting error records and retrying an approving them in BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
 	public void BppTrend_CAAValImportAndApprove(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);			
@@ -1020,7 +1021,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VAL_FACTORS_VALID;
 		
 		//Step6: Uploading the BPP Trend BOE Index Factors file having error and success records
-		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "CAA - Valuation Factors", rollYearForImport, fileName + "CAA Valuation Factors 2021.xlsx");		
+		objEfileHomePage.uploadFileOnEfileIntake("BPP Trend Factors", "CAA - Valuation Factors", rollYearForImport, fileName + "CAA Valuation Factors 2022.xlsx");		
 		
 		//Step7: Waiting for the status of the file to be converted to Imported
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -1192,14 +1193,14 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	@Test(description = "SMAB-T974,SMAB-T951,SMAB-T954:Verify user is not able to import a file for BPP Trends if the previous Import for a particular File Type, File Source and Period was Approved", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {
 		"Regression","EFileImport" })
 	public void BPPTrends_VerifyAlreadyApprovedFileForSamePeriodIsNotImportedAgain(String loginUser) throws Exception{
-		//String rollYearForImport = "2021";
+		//String rollYearForImport = "2022";
 		String fileType="BPP Trend Factors";
 		String source="BOE - Valuation Factors";
 
 		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.COMPOSITE_TABLES_API_NAMES, "Not Calculated", rollYearForImport);
 		objBppTrend.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Yet to submit for Approval", rollYearForImport);
 
-		String boebppTrendIndexFactorsFile=System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS_VALID_DATA+"BOE Valuation Factors 2021.xlsx";
+		String boebppTrendIndexFactorsFile=System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS_VALID_DATA+"BOE Valuation Factors 2022.xlsx";
 		objEfileHomePage.login(loginUser);
 
 		//Step1: Delete the existing data from system before importing files
@@ -1271,10 +1272,10 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		//String uploadedDate = objUtil.getCurrentDate("MM/dd/YYYY");
 		String converteddate=objUtil.convertCurrentDateISTtoPST("Asia/Kolkata", "America/Los_Angeles","MM/dd/yyyy");
 		
-		//String rollYearForImport = "2021";
+		//String rollYearForImport = "2022";
 		String fileType="BPP Trend Factors";
 		String source="BOE - Valuation Factors";
-		String boebppTrendIndexFactorsFile=System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS+"BOE Valuation Factors 2021.xlsx";
+		String boebppTrendIndexFactorsFile=System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VALUATION_FACTORS+"BOE Valuation Factors 2022.xlsx";
 		String boeTableErrorRecords=System.getProperty("user.dir") + testdata.BOE_ERRORREOCRDS_COUNT+"BOEErrorReocrdsCountFile.json";
 
 		Map<String, String> errorRecordsCount = objUtil.generateMapFromJsonFile(boeTableErrorRecords, "ErrorRecordsTableWise");

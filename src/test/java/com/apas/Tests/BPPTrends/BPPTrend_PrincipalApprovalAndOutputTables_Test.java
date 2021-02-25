@@ -52,7 +52,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		softAssert = new SoftAssertion();
 		rollYear = CONFIG.getProperty("rollYear");
         objBppTrendSetupPage = new BppTrendSetupPage(driver);
-        objBppTrendSetupPage.updateRollYearStatus("Open", "2020");
+        objBppTrendSetupPage.updateRollYearStatus("Open", "2022");
 	}
 
 	@AfterMethod
