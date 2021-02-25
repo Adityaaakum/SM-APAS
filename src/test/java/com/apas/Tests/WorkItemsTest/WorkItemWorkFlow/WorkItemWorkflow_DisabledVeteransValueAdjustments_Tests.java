@@ -328,20 +328,24 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	ReportLogger.INFO("Step 23: Click on the button Accept the Work Item");
   	objPage.Click(objWIHomePage.acceptWorkItemBtn);
+  	Thread.sleep(3000);
   	
   	ReportLogger.INFO("Step 21: Click on the TAB - In Progress");
-  	Thread.sleep(50000);
   	objPage.Click(objWIHomePage.lnkTABInProgress);
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
-  	String parentwindow = driver.getWindowHandle();
+  	
 	//SMAB-T2093 opening the action link to validate that link redirects to Value Adjustment Details page 
   	objWIHomePage.openActionLink(WIName);
-	objPage.switchToNewWindow(parentwindow);
 	softAssert.assertTrue(objPage.verifyElementVisible(ObjValueAdjustmentPage.valueAdjustmentViewAll),
 			"SMAB-T2093: Validation that Value Adjustment Details label is visible");
-	driver.close();
-	driver.switchTo().window(parentwindow);
+	
+	driver.navigate().back();
+	Thread.sleep(10000);	//It takes long to load back the screen
+	
+	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
+  	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
+	
   	ReportLogger.INFO("Step 23: Click on the button - Mark Complete");
   	objPage.Click(objWIHomePage.btnMarkComplete);
   	
@@ -361,22 +365,24 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
   	ReportLogger.INFO("Step 21: Click on the TAB Needs My Approval");
   	objPage.Click(objWIHomePage.needsMyApprovalTab);
+  	Thread.sleep(3000);
+  	
   	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
   	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
   	
-  	 parentwindow = driver.getWindowHandle();
 	//SMAB-T2093 opening the action link to validate that link redirects to Value Adjustments page 
   	objWIHomePage.openActionLink(WIName);
-  	Thread.sleep(5000);
-	objPage.switchToNewWindow(parentwindow);
-	Thread.sleep(2000);
-
 	softAssert.assertTrue(objPage.verifyElementVisible(ObjValueAdjustmentPage.valueAdjustmentViewAll),
 			"SMAB-T2093: Validation that Value Adjustments label is visible");
-	//driver.close();
-	driver.switchTo().window(parentwindow);  	
+	
+	driver.navigate().back();
+	Thread.sleep(10000);	//It takes long to load back the screen
+	
+	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
+  	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
 	ReportLogger.INFO("Step 23: Click on the Approve button");
   	objPage.Click(objWIHomePage.btnApprove);
+  	Thread.sleep(3000);
   	
   	ReportLogger.INFO("Step 24: Logging OUT from SF");
   	objApasGenericPage.logout();
@@ -394,8 +400,12 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
   	objPage.Click(objWIHomePage.lnkTABWorkItems);
   	ReportLogger.INFO("Step 30: Click on the Completed TAB");
   	objPage.Click(objWIHomePage.lnkTABCompleted);
+  	Thread.sleep(3000);
+  	
   	ReportLogger.INFO("Step 31: Search work item under the Completed TAB :"+WIName);
   	String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
+  	Thread.sleep(3000);
+  	
   	ReportLogger.INFO("Step 32: Verifying the Approver has successfully Approved the Work Item");
   	softAssert.assertEquals(actualWIName, WIName, "SMAB-T1979: Approver has successfully Approved the Work Item");
   	Thread.sleep(5000);

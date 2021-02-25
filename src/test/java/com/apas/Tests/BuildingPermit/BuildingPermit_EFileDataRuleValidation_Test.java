@@ -135,7 +135,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
 
 		//Step8: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
-		String expectedMessage = "City Situs not matching system.";
+		String expectedMessage = "APN is retired. City Situs not matching system.";
 		softAssert.assertEquals(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag).trim(), expectedMessage, "SMAB-T453,SMAB-T455: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch");
 
 		//Logout at the end of the test

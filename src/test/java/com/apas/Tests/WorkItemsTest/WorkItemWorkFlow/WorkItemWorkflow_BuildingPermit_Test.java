@@ -102,6 +102,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		softAssert.assertTrue(objBuildingPermitPage.verifyElementVisible(objEfileImportPage.importedRowSection),"SMAB-T2121: Validation that imported Rows Section is visible");
 
         objBuildingPermitPage.searchModule(modules.HOME);
+        objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
 		objWorkItemHomePage.openWorkItem(importReviewWorkItem);
 		
 		objWorkItemHomePage.openTab(objWorkItemHomePage.tabDetails);
