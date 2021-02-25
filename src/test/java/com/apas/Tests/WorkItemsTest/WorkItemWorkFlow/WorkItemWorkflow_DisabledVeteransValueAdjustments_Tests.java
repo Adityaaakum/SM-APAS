@@ -67,7 +67,7 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
 	@Test(description = "SMAB-T2080,SMAB-T2103: APAS system should generate an Annual Exemption amount verification WI on editing/entering few fields in VA", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran" })
+			groups = {"Smoke","Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran" })
 
 	public void WorkItemWorkflow_DisabledVeteran_WorkItemGeneratedOnEditingVAFields(String loginUser) throws Exception {
 	
