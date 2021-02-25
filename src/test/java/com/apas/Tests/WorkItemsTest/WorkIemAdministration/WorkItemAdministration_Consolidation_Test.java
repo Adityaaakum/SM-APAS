@@ -97,14 +97,18 @@ public class WorkItemAdministration_Consolidation_Test extends TestBase implemen
 		  objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);
 		  objWorkItemHomePage.selectWorkItemOnHomePage(secondaryWorkitem);
 		  objWorkItemHomePage.Click(objPage.getButtonWithText(objWorkItemHomePage.ConsolidateButton));
-		  apasGenericObj.selectOptionFromDropDown("Select Primary",PrimaryWorkitem+" RP - CPI Factor");
+		  //apasGenericObj.selectOptionFromDropDown("Select Primary",PrimaryWorkitem+" RP - CPI Factor");
+		  objWorkItemHomePage.Click(objWorkItemHomePage.SelectPrimaryButton);
+			objWorkItemHomePage.Click(driver.findElementByXPath(
+					"//label[text()='Select Primary']/following-sibling::div//span[contains(@title,'" + PrimaryWorkitem
+							+ "')]"));///
 		  objWorkItemHomePage.Click(objPage.getButtonWithText(objWorkItemHomePage.SaveButton));
           
 		  //steps 11: verify primary work item should be visible in in progress tab after consolidation
 		  Thread.sleep(2000);
 		  HashMap<String, ArrayList<String>> PrimaryWorkItems =objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_IN_PROGRESS);
-		  softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(PrimaryWorkitem),"SMAB-T2261: Validation that Primary WorkItem should be visible In In Progress Tab On Home page after consolidate " ); 
-		  softAssert.assertTrue(!(PrimaryWorkItems.get("Work Item Number").contains(secondaryWorkitem)),"SMAB-T2261: Validation that Secondary WorkItem should not be visible In In Progress Tab On Home page after consolidate "  ); 
+		  softAssert.assertTrue(PrimaryWorkItems.get("Work item #").contains(PrimaryWorkitem),"SMAB-T2261: Validation that Primary WorkItem should be visible In In Progress Tab On Home page after consolidate " ); 
+		  softAssert.assertTrue(!(PrimaryWorkItems.get("Work item #").contains(secondaryWorkitem)),"SMAB-T2261: Validation that Secondary WorkItem should not be visible In In Progress Tab On Home page after consolidate "  ); 
 		  objWorkItemHomePage.openWorkItem(PrimaryWorkitem);
 		  objPage.waitForElementToBeClickable(objWorkItemHomePage.ChildWorkItemsTab);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.ChildWorkItemsTab);
@@ -134,7 +138,7 @@ public class WorkItemAdministration_Consolidation_Test extends TestBase implemen
 		  
 		  //steps 14: validating primary work item should be visible on submitted for approval tab after click on mark complete button 
 		  PrimaryWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_MY_SUBMITTED_FOR_APPROVAL);
-		  softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(PrimaryWorkitem),"SMAB-T2276, SMAB-T2287: Validation that Primary WorkItem should be visible In Submitted for approval Tab On Home page after consolidate " ); 
+		  softAssert.assertTrue(PrimaryWorkItems.get("Work item #").contains(PrimaryWorkitem),"SMAB-T2276, SMAB-T2287: Validation that Primary WorkItem should be visible In Submitted for approval Tab On Home page after consolidate " ); 
 		  objWorkItemHomePage.logout();
 		  Thread.sleep(15000);
 		  
@@ -147,7 +151,7 @@ public class WorkItemAdministration_Consolidation_Test extends TestBase implemen
 		  objWorkItemHomePage.Click(objWorkItemHomePage.submittedforApprovalTimeline);
 		  //steps 15: Validation on after approve by first lavel approval work item should be visible in submited for approval tab
 		  PrimaryWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_MY_SUBMITTED_FOR_APPROVAL);
-		  softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(PrimaryWorkitem),"SMAB-T2288: Validation that Primary WorkItem should be visible In Submit For approval tab after first lavel of approval ");  
+		  softAssert.assertTrue(PrimaryWorkItems.get("Work item #").contains(PrimaryWorkitem),"SMAB-T2288: Validation that Primary WorkItem should be visible In Submit For approval tab after first lavel of approval ");  
 		  objWorkItemHomePage.logout();
 		  Thread.sleep(15000);
           
@@ -161,7 +165,7 @@ public class WorkItemAdministration_Consolidation_Test extends TestBase implemen
 		  objWorkItemHomePage.Click(objWorkItemHomePage.completedTab);
 		  // steps 16 : Validation on after approve by second lavel approval work item should be visible in completed tab
 	      PrimaryWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-          softAssert.assertTrue(PrimaryWorkItems.get("Work Item Number").contains(PrimaryWorkitem), "SMAB-T2289: Validation that Primary WorkItem should be visible In completed Tab after after 2nd lavel of approval "); 
+          softAssert.assertTrue(PrimaryWorkItems.get("Work item #").contains(PrimaryWorkitem), "SMAB-T2289: Validation that Primary WorkItem should be visible In completed Tab after after 2nd lavel of approval "); 
 	      objWorkItemHomePage.logout();
      }
 }
