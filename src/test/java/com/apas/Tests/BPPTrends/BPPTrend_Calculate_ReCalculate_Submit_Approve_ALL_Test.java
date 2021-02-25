@@ -273,7 +273,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 	 * 7. Validating the status of all the composite factor table on BPP Trend Setup age:: Test Case/JIRA ID: SMAB-T442
 	 * 8. Validating the status of all the valuation factor table on BPP Trend Setup age:: Test Case/JIRA ID: SMAB-T442, SMAB-T247
 	 */
-	@Test(description = "SMAB-T250,SMAB-T442,SMAB-T247,SMAB-T211: Sumbit calculations for approval for all factor tables in one go",groups = {"Smoke","Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T250,SMAB-T442,SMAB-T247,SMAB-T211: Sumbit calculations for approval for all factor tables in one go",groups = {"Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_SubmitAllFactorForApproval(String loginUser) throws Exception {
 		//Step1: Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));

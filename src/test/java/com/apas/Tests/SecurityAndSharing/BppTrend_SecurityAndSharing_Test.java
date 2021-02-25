@@ -120,7 +120,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * Description: Validating the unavailability of Approve & Approve All buttons for restricted users
 	 */
-	@Test(description = "SMAB-T174,SMAB-T175,SMAB-T249,SMAB-T199,SMAB-T250,SMAB-T301: Perform security verification on Approve & Approve All buttons for restricted users", groups = {"BPPTrend","Regression"}, dataProvider = "usersRestrictedToApprove", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T174,SMAB-T175,SMAB-T249,SMAB-T199,SMAB-T250,SMAB-T301: Perform security verification on Approve & Approve All buttons for restricted users", groups = {"BPPTrend","Regression","Smoke"}, dataProvider = "usersRestrictedToApprove", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BppTrend_RestrictionsOnApproveButtons_RestrictedUsers(String loginUser) throws Exception {
 
 		//Step1: Resetting the Composite and Valuation factor tables status to Not Calculated
