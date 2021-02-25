@@ -60,7 +60,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		objBuildPermit = new BuildingPermitPage(driver);
 		objSoftAssert = new SoftAssert();
         objBppTrendSetupPage = new BppTrendSetupPage(driver);
-        objBppTrendSetupPage.updateRollYearStatus("Open", "2022");
+        objBppTrendSetupPage.updateRollYearStatus("Open", "2020");
 	}
 
 	@AfterMethod
@@ -174,7 +174,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "** Comparing the UI grid data against the data available in Trend Calculator file **");
 		//Step18: Retrieving the path of excel file to read for data comparison on calculate button click
-		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CALCULATOR + "2022_Trend_Factors_Calculator.xlsx";
+		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CALCULATOR + "2020_Trend_Factors_Calculator.xlsx";
 
 		//Step19: Generating data map from the Trend Calculator excel file using the given table name
 		Map<String, List<Object>> dataMapFromExcel = objBppTrnPg.retrieveDataFromExcelForGivenTable(fileName, tableName);
