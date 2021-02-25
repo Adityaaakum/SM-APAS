@@ -55,7 +55,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 	}
 
 	// Below test case is used to validate permission access on Exemption and VA's
-	@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify User without permission is not able to create a new Exemption, VA record and RPSL",  dataProvider = "RPAppraiser",dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression","DisabledVeteran","SecurityAndSharing"})
+	@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify User without permission is not able to create a new Exemption, VA record and RPSL",  dataProvider = "RPAppraiser",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran","SecurityAndSharing"})
 	public void DisabledVeteran_AccessValidation_RPAppraiser(String loginInvalidUser) throws Exception {
 
 		//Fetching the exemption record from API
@@ -104,7 +104,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 	}
 
 	// Below test case is used to validate permission access on Exemption and VA's
-		@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify User without permission is not able to create a new Exemption, VA record and RPSL",  dataProvider = "loginBppAuditor",dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression","DisabledVeteran","SecurityAndSharing" })
+		@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify User without permission is not able to create a new Exemption, VA record and RPSL",  dataProvider = "loginBppAuditor",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran","SecurityAndSharing" })
 		public void DisabledVeteran_AccessValidation_BPPAppraiser(String loginInvalidUser) throws Exception {
 
 			//Fetching the exemption record from API
