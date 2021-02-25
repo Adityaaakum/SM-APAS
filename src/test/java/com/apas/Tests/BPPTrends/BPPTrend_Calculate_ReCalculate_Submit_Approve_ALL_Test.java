@@ -73,7 +73,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 	 * 5. Checking unavailability of Calculate button for valuation factor tables:: Test Case/JIRA ID: SMAB-T247
 	 * 6. Checking the status of all tables in BPP Trends page
 	 */
-	@Test(description = "SMAB-T191,SMAB-T247,SMAB-T313: Perform calculation for all factor tables in one go", groups = {"Regression","BPPTrend"}, dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T191,SMAB-T247,SMAB-T313: Perform calculation for all factor tables in one go", groups = {"Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_CalculateAll(String loginUser) throws Exception {
 		//Step1: Resetting the composite factor tables status to Not Calculated
 		List<String> compositeFactorTablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));

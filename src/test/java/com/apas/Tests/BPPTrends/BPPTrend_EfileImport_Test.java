@@ -40,7 +40,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	EFileImportLogsPage objEFileImportLogPage;
 	Util objUtil;
 	SoftAssertion softAssert;
-	String rollYearForImport;// In PreUat & Staging environment, Period dropdown has values '2019 & 2021' but in QA they're '2021 & 2021'
+	String rollYearForImport;// In PreUat & Staging environment, Period dropdown has values '2019 & 2020' but in QA they're '2021 & 2021'
 	SalesforceAPI objSalesforceAPI;
 	
 	@BeforeMethod(alwaysRun = true)

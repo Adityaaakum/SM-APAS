@@ -57,7 +57,7 @@ public class BPPTrend_AgriculturalCompostieTable_CalculateAndReCalculate_Test ex
 		objBuildPermit = new BuildingPermitPage(driver);
 		objSoftAssert = new SoftAssert();
 		objBppTrendSetupPage = new BppTrendSetupPage(driver);
-		objBppTrendSetupPage.updateRollYearStatus("Open", "202");
+		objBppTrendSetupPage.updateRollYearStatus("Open", "2020");
 		
 	}
 
@@ -146,7 +146,7 @@ public class BPPTrend_AgriculturalCompostieTable_CalculateAndReCalculate_Test ex
 
 		ReportLogger.INFO("** Comparing the UI grid data against the data available in Trend Calculator file **");
 		//Step17: Retrieving the path of excel file to read for data comparison on calculate button click
-		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CALCULATOR + "202_Trend_Factors_Calculator.xlsx";
+		String fileName = System.getProperty("user.dir") + testdata.BPP_TREND_CALCULATOR + "2020_Trend_Factors_Calculator.xlsx";
 
 		//Step18: Generating data map from the Trend Calculator excel file using the given table name
 		HashMap<String, ArrayList<String>> dataMapFromExcel = ExcelUtils.getExcelSheetData(fileName, 3);
