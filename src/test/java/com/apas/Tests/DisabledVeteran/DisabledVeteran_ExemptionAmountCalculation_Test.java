@@ -56,7 +56,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 	 * 1. 'Basic Exemption Amount' Calculated is correct for each VA(Current + Past years)
 	 * 2. Net Exemption Amount is correct for each VA(Current + Past Years)
 	 **/
-	@Test(description = "SMAB-T1213, SMAB-T612: Verify Basic & Net Exemption Amount for each 'Active' Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression","DisabledVeteran" })
+	@Test(description = "SMAB-T1213, SMAB-T612: Verify Basic & Net Exemption Amount for each 'Active' Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran" })
 	public void DisabledVeteran_verifyBasicExemptionAmount(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
