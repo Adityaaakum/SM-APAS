@@ -75,7 +75,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2636: Work Input - verify All the required button present on WI Home page For Supervisor User", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression","SecurityAndSharing","WorkItemAdministration" })
+	@Test(description = "SMAB-T2636: Work Input - verify All the required button present on WI Home page For Supervisor User", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","SecurityAndSharing","WorkItemAdministration" })
 	public void WorkItems_SharingAndSecurity_ButtonPresent_WIHomePage_SupervisorUser(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
@@ -156,7 +156,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2635: Work Input - verify All the required button present on WI Home page For staff User", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class, groups = {"regression","SecurityAndSharing","WorkItemAdministration"  })
+	@Test(description = "SMAB-T2635: Work Input - verify All the required button present on WI Home page For staff User", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","SecurityAndSharing","WorkItemAdministration"  })
 	public void WorkItems_SharingAndSecurity_ButtonPresent_WIHomePage_StaffUser(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider 

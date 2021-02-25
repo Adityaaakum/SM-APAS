@@ -432,7 +432,7 @@ public class WorkItemAdministration_MassApproval_Tests extends TestBase implemen
 		 * @param loginUser
 		 * @throws Exception
 		 */
-		@Test(description = "SMAB-T2019:Verify that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific user or a work pool.", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","WorkItemAdministration" }, enabled = false)
+		@Test(description = "SMAB-T2019:Verify that Work pool Supervisor is able to select multiple 'Staff-In Progress' work items and assign them to a specific user or a work pool.", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","WorkItemAdministration" }, enabled = false)
 		public void WorkItemAdministration_ChangeAssigneeAndWorkPoolStaffInProgress(String loginUser) throws Exception {
 			String workItem1 ,workItem2;
 			// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
