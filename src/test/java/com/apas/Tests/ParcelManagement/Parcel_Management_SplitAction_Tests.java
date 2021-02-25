@@ -121,6 +121,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.Click(objMappingPage.helpIconSitus);
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent situs, leave as blank",
 				"SMAB-T2481: Validation that help text is generated on clicking the help icon for Situs text box");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.closeButton));
 
 		//Step 11: Validating Error Message when both Number of Child Non-Condo & Condo Parcels fields contain 0
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objMappingPage.nextButton));
@@ -172,6 +173,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.fillMappingActionForm(hashMapSplitActionValidMappingData);
 
 		//Step 21: Verify that APNs generated must be 9-digits and should end in '0'
+
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		String childAPNNumber =gridDataHashMap.get("APN").get(0);
 		String childAPNComponents[] = childAPNNumber.split("-");

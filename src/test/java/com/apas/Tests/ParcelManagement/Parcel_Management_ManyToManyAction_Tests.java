@@ -85,7 +85,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
         //Step 4: Clicking the  details tab for the work item newly created and clicking on Related Action Link
         objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-        objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+        objWorkItemHomePage.waitForElementToBeVisible(40,objWorkItemHomePage.referenceDetailsLabel);
         String reasonCode = objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
         objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
         String parentWindow = driver.getWindowHandle();
@@ -273,7 +273,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
         //Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
         objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-        objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+        objWorkItemHomePage.waitForElementToBeVisible(40,objWorkItemHomePage.referenceDetailsLabel);
         String reasonCode = objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
         objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
         String parentWindow = driver.getWindowHandle();
