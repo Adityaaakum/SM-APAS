@@ -129,7 +129,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	}
 	
 	
-	@Test(description = "SMAB-T501,SMAB-T502,SMAB-T503,SMAB-T497,SMAB-T494,SMAB-T498,SMAB-T1278,SMAB-T1223,SMAB-T1263,SMAB-T1262,SMAB-T1264,SMAB-T1221:Verify business validations while creating Exemption records", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression","DisabledVeteran"})
+	@Test(description = "SMAB-T501,SMAB-T502,SMAB-T503,SMAB-T497,SMAB-T494,SMAB-T498,SMAB-T1278,SMAB-T1223,SMAB-T1263,SMAB-T1262,SMAB-T1264,SMAB-T1221:Verify business validations while creating Exemption records", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran"})
 	public void Disabledveteran_BusinessValidationsForExemptionFields(String loginUser) throws Exception{
 			Map<String, String> businessValidationdata = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
 			businessValidationdata.put("ClaimantName", exemptionPageObj.fetchAssesseeName());
@@ -324,7 +324,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	 Below test case is used to verify if 'End date Of Rating can not be Modified Once Entered by user'
 	 * @throws Exception 
 	 **/
-	@Test(description = "SMAB-T1218,SMAB-T643,SMAB-T500:Verify End Date of Rating can't be modified if initially set",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression","DisabledVeteran"})	
+	@Test(description = "SMAB-T1218,SMAB-T643,SMAB-T500:Verify End Date of Rating can't be modified if initially set",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran"})	
 	public void Disabledveteran_EnddateOfRatingNotModifiableOnceEntered(String loginUser) throws Exception
 	{
 			Map<String, String> dataToEdit = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData");
