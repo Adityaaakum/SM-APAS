@@ -443,7 +443,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		newExemptionName = objExemptionsPage.createNewExemptionWithMandatoryData(newExemptionData);
 		HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
 		String WIName = getWIDetails.get("Name").get(0);
-
+		objApasGenericPage.searchModule(modules.WORK_ITEM);
 		objApasGenericPage.logout();
 		Thread.sleep(5000);
 

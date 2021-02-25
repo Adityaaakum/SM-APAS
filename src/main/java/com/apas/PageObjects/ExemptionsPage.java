@@ -47,7 +47,7 @@ public class ExemptionsPage extends ApasGenericPage {
     @FindBy(xpath = "//button[text()='Cancel']")
     public WebElement cancelButton;
 
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title = 'New']")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[text() = 'New']")
     public WebElement newExemptionButton;
 
     public String apn = "APN";
