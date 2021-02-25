@@ -578,7 +578,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      * This test case is to validate Perform Calculations work item creation after BOE Index & Goods Factor is approved
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1736,SMAB-T1947: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
+    @Test(description = "SMAB-T1736,SMAB-T1947: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_PerformCalculations_WorkItemGeneration(String loginUser) throws Exception {
         //Step1: Delete the existing WI from system before importing files
         String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
@@ -606,7 +606,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      * This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1761: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
+    @Test(description = "SMAB-T1761: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_SubmitAllFactorForApprovalBtnNotVisible_WhenImportWINotCompleted(String loginUser) throws Exception {
         //Step1: Delete the existing 'Annual Factor Settings' WIs before generating
         String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
@@ -655,7 +655,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      * This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T2196: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
+    @Test(description = "SMAB-T2196: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_ErrorMsgWhenAnnualSettingsWINotCompleted(String loginUser) throws Exception {
 
         //Step1: Delete the existing WIs before generating
@@ -701,7 +701,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
     /** This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1750,SMAB-T1737,SMAB-T1732,SMAB-T1944,SMAB-T1948,SMAB-T1739,SMAB-T1945,SMAB-T1949,SMAB-T1742,SMAB-T1946,SMAB-T1950: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
+    @Test(description = "SMAB-T1750,SMAB-T1737,SMAB-T1732,SMAB-T1944,SMAB-T1948,SMAB-T1739,SMAB-T1945,SMAB-T1949,SMAB-T1742,SMAB-T1946,SMAB-T1950: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_PerformCalculationWI_SubmittedForApprovalAndApprovalStatus(String loginUser) throws Exception {
 
         //Step1: Delete the existing WIs before generating
@@ -789,7 +789,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
     /** This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T2195: Verify user is able to submit 'Perform Calculations' WI for Approval", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
+    @Test(description = "SMAB-T2195: Verify user is able to submit 'Perform Calculations' WI for Approval", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_PerformCalculationWI_ReturnedStatus(String loginUser) throws Exception {
 
         //Step1: Delete the existing WIs before generating
@@ -1032,7 +1032,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         Thread.sleep(2000);
         objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline, 10);
         objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
-        
+
         softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline).replace("\n"," "),"stage complete Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
 
         //Step 9: Validate the Work Item details after the Work Item is submitted for approval
