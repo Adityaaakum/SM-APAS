@@ -65,6 +65,7 @@ public class MappingPage extends ApasGenericPage {
 	public String parcelShortLegalDescription = "Short Legal Description";
 	public String firstNonCondoTextBoxLabel2 = "First Non-Condo Parcel Number";
 	public String legalDescriptionTextBoxLabel2 = "Legal Description Auto-populate Field for Child Parcels";
+	public String parcelLotSize = "Lot Size (SQFT)";
 
 	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;

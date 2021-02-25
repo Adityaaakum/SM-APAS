@@ -798,7 +798,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform Retire Action
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn1);
-
+		
+		objWorkItemHomePage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		objMappingPage.enter(objMappingPage.parcelLotSize, "100");
+		objWorkItemHomePage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+		
 		// Step 3: Creating Manual work item for the Active Parcel 
 		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
