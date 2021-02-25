@@ -40,7 +40,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	EFileImportLogsPage objEFileImportLogPage;
 	Util objUtil;
 	SoftAssertion softAssert;
-	String rollYearForImport;// In PreUat & Staging environment, Period dropdown has values '2019 & 2020' but in QA they're '2021 & 2021'
+	String rollYearForImport;// In PreUat & Staging environment, Period dropdown has values '2019 & 2020' but in QA they're '2020 & 2021'
 	SalesforceAPI objSalesforceAPI;
 	
 	@BeforeMethod(alwaysRun = true)
@@ -621,7 +621,6 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			//Step10: Enter correct data in one of the Error Row 'Cell' 
 			ReportLogger.INFO("Deleting junk data and entering valid data in the table: "+tableName);
 			Thread.sleep(7000);
-			objPage.scrollToBottomOfPage();
 			objEfileHomePage.editGridCellValue("Valuation Factor","80");
 			objPage.Click(objEfileHomePage.rowSelectCheckBox);
 			objEfileHomePage.collapseSection(objEfileHomePage.errorRowSectionExpandButton);
