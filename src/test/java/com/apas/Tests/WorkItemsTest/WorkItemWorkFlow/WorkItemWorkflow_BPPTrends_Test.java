@@ -1032,7 +1032,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         Thread.sleep(2000);
         objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline, 10);
         objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
-        
+
         softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline).replace("\n"," "),"stage complete Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
 
         //Step 9: Validate the Work Item details after the Work Item is submitted for approval

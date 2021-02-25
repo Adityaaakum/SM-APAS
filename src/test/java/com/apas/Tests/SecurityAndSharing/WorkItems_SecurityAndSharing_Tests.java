@@ -32,7 +32,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	/**
 	 * This method is to verify that work pool supervisor is not able to mass transfer WI's with status
 	 * 'submitted for approval', 'Approval-On Hold' and 'completed'
-	 * 
+	 *
 	 * @param loginUser
 	 * @throws Exception
 	 */
@@ -71,7 +71,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	}
 	/**
 	 * This method is to verify All the required button present on WI Home page For Supervisor User
-	 * 
+	 *
 	 * @param loginUser
 	 * @throws Exception
 	 */
@@ -152,7 +152,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 
 	/**
 	 * This method is to verify All the required button present on WI Home page For staff User
-	 * 
+	 *
 	 * @param loginUser
 	 * @throws Exception
 	 */
