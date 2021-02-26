@@ -405,7 +405,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	 2. Non-System Admin users are not able to update a locked 'Real Property Settings' record
 	 **/
 	@Test(description = "SMAB-T640,SMAB-T641: Verify 'Real Property Settings: Exemption Limits' record 'Status' field validation and it gets locked once 'Approved'", groups = {"Regression","DisabledVeteran"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class)
-	public void DisabledVeteran_verifyEditRPSLUsersAccess(String loginUser) throws Exception {		
+	public void ADisabledVeteran_verifyEditRPSLUsersAccess(String loginUser) throws Exception {		
 		
 		String currentRollYear="2021";
 		String pastRollYear="2020";

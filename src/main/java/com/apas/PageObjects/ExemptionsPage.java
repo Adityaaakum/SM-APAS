@@ -49,7 +49,7 @@ public class ExemptionsPage extends ApasGenericPage {
 
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title = 'New']")
     public WebElement newExemptionButton;
-
+    
     public String apn = "APN";
 
     public String dateApplicationReceived = "Date Application Received";
@@ -233,6 +233,12 @@ public class ExemptionsPage extends ApasGenericPage {
 
     @FindBy(xpath = "//lightning-formatted-text[contains(text(),'EXMPTN-')]")
     public WebElement exemptionName;
+    
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text() = 'New']")
+    public WebElement newExemptionRelatedButton;
+    
+  
+
 
 
     //Locators added for elements on Exemption screen - Detail Page
