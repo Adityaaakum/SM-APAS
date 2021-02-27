@@ -244,6 +244,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	@FindBy(xpath = "//input[@type='button' and @value='Remove']")
 	public WebElement removeButton;
+	
+	@FindBy(xpath="//*[@name='Select Primary']")
+	public WebElement SelectPrimaryButton;
 
 	public String editButton = "Edit";
 	
