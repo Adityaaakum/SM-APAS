@@ -61,7 +61,7 @@ public class ReportsPage extends ApasGenericPage {
 	public WebElement buildingPermitHeaderText;
 	
 
-	public String linkBuildingPermitNumber = "//table[contains(@class,'data-grid-full-table')]//tbody//tr//th[@data-row-index='3']/../td[@data-column-index='2']//a[contains(@href,'')]";
+	public String linkBuildingPermitNumber = "//table[contains(@class,'data-grid-full-table')]//tbody//tr//th[@data-row-index='2']/../td[@data-column-index='2']//a[contains(@href,'')]";
 	public String linkAPN = "//table[contains(@class,'data-grid-full-table')]//tbody//tr//th[@data-row-index='3']/../td[@data-column-index='3']//a[contains(@href,'')]";
 	public String linkAPNDV = "//table[contains(@class,'full')]//span[contains(text(),'APN')]//ancestor::tr//following-sibling::tr[1]//td[1]//a";
 	public String linkExemptionName = "//table[contains(@class,'full')]//span[contains(text(),'Exemption: Exemption Name')]//ancestor::tr//following-sibling::tr[1]//td[1]//a";

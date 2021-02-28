@@ -48,7 +48,7 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
         objRoutingAssignmentPage = new RoutingAssignmentPage(driver);
     }
 
-    @Test(description = "SMAB-T2307: Verify that the Warning message is not appearing for the Closed or No opened WI on removing the User from PA", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_PoolAssignment"}, alwaysRun = true)
+    @Test(description = "SMAB-T2307: Verify that the Warning message is not appearing for the Closed or No opened WI on removing the User from PA", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","WorkItemAdministration"}, alwaysRun = true)
     public void WorkItemAdministration_PoolAssignment_NoWarningOnRemovingStaff(String loginUser) throws Exception {
 
         String workPool = "RP Admin";
@@ -101,7 +101,7 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
     }
 
 
-    @Test(description = "SMAB-T2305: Verify that the Warning message for opened WI on removing the User from PA", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_PoolAssignment"}, alwaysRun = true)
+    @Test(description = "SMAB-T2305: Verify that the Warning message for opened WI on removing the User from PA", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "WorkItemAdministration"}, alwaysRun = true)
     public void WorkItemAdministration_PoolAssignment_WarningOnRemovingStaff(String loginUser) throws Exception {
 
         String workPool = "RP Admin";
@@ -134,7 +134,7 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
         // Step6: Create the work item
         objWorkItemHomePage.searchModule(modules.PARCELS);
         objWorkItemHomePage.globalSearchRecords(apnValue);
-        String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+        String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
         Map<String, String> hashMapGiveWorkItemToSomeoneElse = objUtil.generateMapFromJsonFile(workItemCreationData, "WorkItemRoutingGiveToSomeoneElse");
         hashMapGiveWorkItemToSomeoneElse.put("Work Item Owner",user);
         objParcelsPage.createWorkItem(hashMapGiveWorkItemToSomeoneElse);
@@ -170,7 +170,7 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
     2. Existing User role is updated to "Staff" where user is not equal to the primary appraiser of the neighborhood
     3. Role is updated to "Primary Appraiser" where user equals to the primary appraiser of the updated neighborhood
      */
-    @Test(description = "SMAB-T2602, SMAB-T2601, SMAB-T2599: Verify Primary Appraiser in pool assignment when neighborhood is changed in Routing assignment", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_PoolAssignment"}, alwaysRun = true)
+    @Test(description = "SMAB-T2602, SMAB-T2601, SMAB-T2599: Verify Primary Appraiser in pool assignment when neighborhood is changed in Routing assignment", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "WorkItemAdministration"}, alwaysRun = true)
     public void WorkItemAdministration_UpdateNeighborhood_ValidatePoolAssignment(String loginUser) throws Exception {
 
         String primaryAppraiser1 = salesforceAPI.getUserName(users.APPRAISAL_SUPPORT);
@@ -309,7 +309,7 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
     2. Existing User role is updated to "Staff" where user is not equal to the primary appraiser of the neighborhood
     3. Role is updated to "Primary Appraiser" where user equals to the primary appraiser of the updated neighborhood
      */
-    @Test(description = "SMAB-T2603, SMAB-T2604, SMAB-T2605: Verify primary appraisers in pool assignment when Primary Appraiser is changed in Neighborood", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Items_PoolAssignment"}, alwaysRun = true)
+    @Test(description = "SMAB-T2603, SMAB-T2604, SMAB-T2605: Verify primary appraisers in pool assignment when Primary Appraiser is changed in Neighborood", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","WorkItemAdministration"}, alwaysRun = true)
     public void WorkItemAdministration_UpdatePrimaryAppraiser_ValidatePoolAssignment(String loginUser) throws Exception {
 
         String primaryAppraiser1 = salesforceAPI.getUserName(users.APPRAISAL_SUPPORT);

@@ -222,6 +222,7 @@
 						         <include>BuildingPermitEditTest.java</include>
 					    </includes> -->
 						<groups>${testSuite}</groups>
+						<!-- <excludedGroups>${testGroupIgnore}</excludedGroups> -->
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
 						<!-- All the classes need to be prefixed or post fixed with word 'Test' to be executed by Maven. This is Maven functionality-->
 						<systemPropertyVariables>

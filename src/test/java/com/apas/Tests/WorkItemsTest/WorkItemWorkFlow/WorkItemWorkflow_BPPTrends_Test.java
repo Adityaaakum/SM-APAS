@@ -52,7 +52,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      * This test case is to validate reminder work item creation and the work item flow for approved file
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1731,SMAB-T1732,SMAB-T2175,SMAB-T1944,SMAB-T1948: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = false)
+    @Test(description = "SMAB-T1731,SMAB-T1732,SMAB-T2175,SMAB-T1944,SMAB-T1948: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = false)
     public void WorkItemWorkflow_BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(String loginUser, boolean flagDeleteAndGenerateReminderWI) throws Exception {
         String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_VALID + "BOE Equipment Index Factors and Percent Good Factors 2021.xlsx";
 
@@ -139,7 +139,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      * This test case is to validate reminder work item creation and the work item flow for reverted file
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1731,SMAB-T1733,SMAB-T2175: Verify auto generated Reminder WI, Revert Imported BOE Index & Goods Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = true)
+    @Test(description = "SMAB-T1731,SMAB-T1733,SMAB-T2175: Verify auto generated Reminder WI, Revert Imported BOE Index & Goods Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_BOEIndexAndGoods_WorkItemImportAndRevert(String loginUser) throws Exception {
         String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_VALID + "BOE Equipment Index Factors and Percent Good Factors 2021.xlsx";
 
@@ -228,7 +228,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      * This test case is to validate reminder work item creation and the 'BOE Valuation Factors' work item flow for approved file
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1738,SMAB-T1739,SMAB-T1769,SMAB-T1945,SMAB-T1949: Verify auto generated Reminder WI, Approval of Imported BOE Valuation Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = false)
+    @Test(description = "SMAB-T1738,SMAB-T1739,SMAB-T1769,SMAB-T1945,SMAB-T1949: Verify auto generated Reminder WI, Approval of Imported BOE Valuation Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = false)
     public void WorkItemWorkflow_BPPTrends_BOEValuation_WorkItemImportAndApprove(String loginUser, boolean flagDeleteAndGenerateReminderWI) throws Exception {
         String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VAL_FACTORS_VALID + "BOE Valuation Factors 2021.xlsx";
 
@@ -314,7 +314,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      * This test case is to validate reminder work item creation and the work item flow for reverted file
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1738,SMAB-T1740,SMAB-T1769: Verify auto generated Reminder WI, Revert Imported BOE Valuation Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = true)
+    @Test(description = "SMAB-T1738,SMAB-T1740,SMAB-T1769: Verify auto generated Reminder WI, Revert Imported BOE Valuation Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_BOEValuation_WorkItemImportAndRevert(String loginUser) throws Exception {
         String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VAL_FACTORS_VALID + "BOE Valuation Factors 2021.xlsx";
 
@@ -403,7 +403,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      * This test case is to validate reminder work item creation and the 'CAA Valuation Factors' work item flow for approved file
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1741,SMAB-T1742,SMAB-T1776,SMAB-T1946,SMAB-T1950: Verify auto generated Reminder WI, Approval of Imported CAA Valuation Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = false)
+    @Test(description = "SMAB-T1741,SMAB-T1742,SMAB-T1776,SMAB-T1946,SMAB-T1950: Verify auto generated Reminder WI, Approval of Imported CAA Valuation Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = false)
     public void WorkItemWorkflow_BPPTrends_CAAValuation_WorkItemImportAndApprove(String loginUser, boolean flagDeleteAndGenerateReminderWI) throws Exception {
         String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VAL_FACTORS_VALID + "CAA Valuation Factors 2021.xlsx";
 
@@ -489,7 +489,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      * This test case is to validate reminder work item creation and the work item flow for reverted file
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1741,SMAB-T1743,SMAB-T1776: Verify auto generated Reminder WI, Revert Imported CAA Valuation Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = true)
+    @Test(description = "SMAB-T1741,SMAB-T1743,SMAB-T1776: Verify auto generated Reminder WI, Revert Imported CAA Valuation Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_CAAValuation_WorkItemImportAndRevert(String loginUser) throws Exception {
         String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VAL_FACTORS_VALID + "CAA Valuation Factors 2021.xlsx";
 
@@ -578,7 +578,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      * This test case is to validate Perform Calculations work item creation after BOE Index & Goods Factor is approved
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1736,SMAB-T1947: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = true)
+    @Test(description = "SMAB-T1736,SMAB-T1947: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_PerformCalculations_WorkItemGeneration(String loginUser) throws Exception {
         //Step1: Delete the existing WI from system before importing files
         String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
@@ -589,6 +589,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step3: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objBppTrendSetupPage.login(loginUser);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step4: "Perform Calculations" Work Item generation validation
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
@@ -605,7 +606,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      * This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1761: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = true)
+    @Test(description = "SMAB-T1761: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_SubmitAllFactorForApprovalBtnNotVisible_WhenImportWINotCompleted(String loginUser) throws Exception {
         //Step1: Delete the existing 'Annual Factor Settings' WIs before generating
         String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
@@ -627,6 +628,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step6: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objBppTrendSetupPage.login(loginUser);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step7: "Perform Calculations" Work Item generation validation
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
@@ -653,7 +655,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      * This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T2196: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = true)
+    @Test(description = "SMAB-T2196: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_ErrorMsgWhenAnnualSettingsWINotCompleted(String loginUser) throws Exception {
 
         //Step1: Delete the existing WIs before generating
@@ -699,7 +701,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
     /** This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1750,SMAB-T1737: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Item_BPP"}, alwaysRun = true, enabled = true)
+    @Test(description = "SMAB-T1750,SMAB-T1737,SMAB-T1732,SMAB-T1944,SMAB-T1948,SMAB-T1739,SMAB-T1945,SMAB-T1949,SMAB-T1742,SMAB-T1946,SMAB-T1950: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_PerformCalculationWI_SubmittedForApprovalAndApprovalStatus(String loginUser) throws Exception {
 
         //Step1: Delete the existing WIs before generating
@@ -707,8 +709,9 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objSalesforceAPI.delete("Work_Item__c",query);
 
         //Step2: Update CP Factor for 2020
-        String queryToFetchCPIFactorId = "SELECT id FROM Roll_Year_Settings__c Where Name = '2020'";
-        String queryToUpdateCPIFactor = "SELECT Id FROM CPI_Factor__c Where Roll_Year__c = '"+queryToFetchCPIFactorId+"'";
+        String queryToFetchCPIFactorId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '2020'";
+        HashMap<String, ArrayList<String>> cpiFactorId = objSalesforceAPI.select(queryToFetchCPIFactorId);
+        String queryToUpdateCPIFactor = "SELECT Id FROM CPI_Factor__c Where Roll_Year__c = '"+cpiFactorId.get("Id").get(0)+"'";
         objSalesforceAPI.update("CPI_Factor__c",queryToUpdateCPIFactor,"CPI_Factor__c","1.01");
 
         //Step3: Generate 'Annual Factor Settings' Reminder Work Items
@@ -759,7 +762,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step14: Log out from the application and log in as BPP Principal
         objBppTrendSetupPage.logout();
-        Thread.sleep(15000);
+        Thread.sleep(30000);
 
         objBppTrendSetupPage.login(users.PRINCIPAL_USER);
         objBppTrendSetupPage.searchModule(modules.HOME);
@@ -786,7 +789,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
     /** This test case is to validate user is not able to submit calculations if any of the 'Import' WI is not 'Completed'
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and BPP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T2195: Verify user is able to submit 'Perform Calculations' WI for Approval", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BPP"}, alwaysRun = true, enabled = true)
+    @Test(description = "SMAB-T2195: Verify user is able to submit 'Perform Calculations' WI for Approval", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_PerformCalculationWI_ReturnedStatus(String loginUser) throws Exception {
 
         //Step1: Delete the existing WIs before generating
@@ -811,10 +814,10 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objBppTrendSetupPage.login(loginUser);
+        objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step5: "Perform Calculations" Work Item generation validation
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
-
         String importWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_IN_POOL);
 
         //Step6: Accepting the work item and opening the link under 'Action' Column
@@ -825,6 +828,11 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objPage.switchToNewWindow(parentwindow);
 
         //Step7: Trigger Calculations by clicking 'Calculate All' Button
+        String queryToFetchCPIFactorId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '2020'";
+        HashMap<String, ArrayList<String>> cpiFactorId = objSalesforceAPI.select(queryToFetchCPIFactorId);
+        String queryToUpdateCPIFactor = "SELECT Id FROM CPI_Factor__c Where Roll_Year__c = '"+cpiFactorId.get("Id").get(0)+"'";
+        objSalesforceAPI.update("CPI_Factor__c",queryToUpdateCPIFactor,"CPI_Factor__c","1.01");
+
         objPage.Click(objBppTrendPage.calculateAllBtn);
         objPage.waitForElementToDisappear(objBppTrendPage.xpathSpinner, 50);
 
@@ -840,7 +848,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step10: Log out from the application and log in as BPP Principal
         objBppTrendSetupPage.logout();
-        Thread.sleep(20000);
+        Thread.sleep(30000);
 
         objBppTrendSetupPage.login(users.PRINCIPAL_USER);
         objBppTrendSetupPage.searchModule(modules.HOME);
@@ -859,13 +867,13 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step14: Log out from the application and log in again as BPP Admin
         objBppTrendSetupPage.logout();
-        Thread.sleep(15000);
+        Thread.sleep(30000);
 
         objBppTrendSetupPage.login(loginUser);
         objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Ste15: Verify WI is present in 'In Progress' tab
-        String inProgressWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_COMPLETED);
+        String inProgressWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_IN_PROGRESS);
         softAssert.assertEquals(inProgressWorkItem,importWorkItem, "SMAB-T2195: Verify WI returned to user is found in 'In Progress' tab");
     }
 
@@ -873,7 +881,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
     /**
      * DESCRIPTION: Validation of BPP Trend Annual Factors Reminder Work Item workflow
      */
-    @Test(description = "SMAB-T1729,SMAB-T1730,SMAB-T1943,SMAB-T2168,SMAB-T2169,SMAB-T2179: Validation of BPP Trend Annual Factors Reminder Work Item workflow", groups={"smoke","regression","Work_Item_BPP"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
+    @Test(description = "SMAB-T1729,SMAB-T1730,SMAB-T1943,SMAB-T2168,SMAB-T2169,SMAB-T2179: Validation of BPP Trend Annual Factors Reminder Work Item workflow", groups={"Smoke","Regression","BPPTrend","WorkItemWorkflow_BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
     public void WorkItemWorkflow_BppTrend_AnnualFactors_ReminderWorkItemWorkFlow(String loginUser) throws Exception {
         String rollYear = "2021";
 
@@ -943,12 +951,12 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         Thread.sleep(1000);
 
         //Step8: Edit the settings
-        objPage.Click(objBppTrendSetupPage.dropDownIconBppSetting);
+        objPage.Click(objBppTrendSetupPage.dropDownIconDetailsSection);
         objPage.Click(objBppTrendSetupPage.editLinkUnderShowMore);
         Thread.sleep(2000);
         objPage.enter("Maximum Equipment index Factor","124.4");
         String successMessage = objBppTrendSetupPage.saveRecord();
-        softAssert.assertEquals(successMessage,"success\nBPP Setting was saved.\nClose","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
+        softAssert.assertContains(successMessage,"was saved.","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
 
         //Change the status to "Reviewed By Admin"
         softAssert.assertEquals(objBppTrendSetupPage.getFieldValueFromAPAS("Annual Factor Status"),"To be Reviewed by Admin","SMAB-T1730 : Validation that new field Annual Factor Status is visible on UI");
@@ -969,12 +977,12 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objBppTrendSetupPage.displayRecords("All");
         objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 
-        objPage.Click(objBppTrendSetupPage.dropDownIconBppSetting);
+        objPage.Click(objBppTrendSetupPage.dropDownIconDetailsSection);
         objPage.Click(objBppTrendSetupPage.editLinkUnderShowMore);
         Thread.sleep(2000);
         objPage.enter("Maximum Equipment index Factor","124.2");
         successMessage = objBppTrendSetupPage.saveRecord();
-        softAssert.assertEquals(successMessage,"success\nBPP Setting was saved.\nClose","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
+        softAssert.assertContains(successMessage,"was saved.","SMAB-T1730: Validation that user is able to edit BPP Settings and Factors through Annual Factor Settings work item");
 
         //Validation for status even after editing the work BPP Trend set up for completed work item
         driver.navigate().refresh();
@@ -982,7 +990,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objWorkItemHomePage.Click(objWorkItemHomePage.completedTab);
         objWorkItemHomePage.openWorkItem(annualFactorSettingsWorkItemWorkItem);
         objPage.Click(objWorkItemHomePage.detailsTab);
-        softAssert.assertEquals(objBppTrendSetupPage.getFieldValueFromAPAS("Status"), "Completed", "SMAB-T2179: Work item status should be completed even after editing the BPP Settings for the completed work item");
+        softAssert.assertEquals(objBppTrendSetupPage.getFieldValueFromAPAS("Status","Information"), "Completed", "SMAB-T2179: Work item status should be completed even after editing the BPP Settings for the completed work item");
 
         objBppTrendSetupPage.logout();
     }
@@ -990,7 +998,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
     /**
      * This test case is to validate Work Item details after submitting it for approval
      **/
-    @Test(description = "SMAB-T1838: Verify user is able to view Work Item details after submitting it for approval", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "Work_Item_BPP"}, alwaysRun = true, enabled = true)
+    @Test(description = "SMAB-T1838: Verify user is able to view Work Item details after submitting it for approval", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_WorkItemDetailsAfterSubmittedForApproval(String loginUser) throws Exception {
 
         //Step1: Delete the existing data from system before importing files
@@ -1024,7 +1032,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         Thread.sleep(2000);
         objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline, 10);
         objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
-        
+
         softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline).replace("\n"," "),"stage complete Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
 
         //Step 9: Validate the Work Item details after the Work Item is submitted for approval

@@ -44,7 +44,7 @@ public class JiraAdaptavistStatusUpdate extends TestBase {
 			// passing body to the API call
 			httpRequest.body(testCaseUpdateRequestMainPojo);
 			Response response = httpRequest.post("testrun/" + testCycle + "/testcase/" + jiraTestCaseId + "/testresult");
-
+						
 			@SuppressWarnings("rawtypes")
 			ResponseBody res = response.getBody();
 			System.out.println("Response body post status update in JIRA: " + res.asString());

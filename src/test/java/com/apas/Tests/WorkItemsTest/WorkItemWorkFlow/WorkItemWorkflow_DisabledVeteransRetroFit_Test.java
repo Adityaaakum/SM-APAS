@@ -70,7 +70,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 	 */
 
 	@Test(description = "SMAB-T1888,SMAB-T1889,SMAB-T1933,SMAB-T1885,SMAB-T2087,SMAB-T2080,SMAB-T1993,SMAB-T1838,SMAB-T1881,SMAB-T2040: Verify User is able to Claim the reminder Annual limit(RPSL) work item, enter annual limits and submit for supervisor approval, Verify user is able to access Work Item details after submitting it for approval", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class, groups = {
-			"regression", "Work_Item_DV" }, alwaysRun = true)
+			"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran" }, alwaysRun = true)
 	public void WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIClaimSubmitValidations(String loginUser) throws Exception {
 		// deleting Existing WI from Disabled veterans Work pool and 2021-RPSL from
 		// system
@@ -154,6 +154,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		objPage.Click(workItemPageObj.saveButton);
 		objPage.waitForElementToBeVisible(6, workItemPageObj.pageLevelErrorMsg);
 		softAssert.assertContains(workItemPageObj.pageLevelErrorMsg.getText(), "Please accept the WorkItem :","SMAB-T1933:Verify that user is not able to submit the annual setting without claiming the WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits'");
+		
 		objPage.Click(workItemPageObj.cancelBtn);
 		driver.navigate().back();
 		driver.navigate().back();
@@ -188,10 +189,13 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		objPage.enter(rpslObj.dvBasicIncomeExemptionAmountEditBox, "145273");
 		objPage.enter(rpslObj.dvLowIncomeHouseholdLimitEditBox, "65337");
 		objApasGenericPage.selectOptionFromDropDown(rpslObj.statusDropDown, "Submitted for Approval");
-		/*
-		 * objPage.Click(rpslObj.saveButton); Thread.sleep(5000);
-		 */
+		
 		objApasGenericPage.saveRecord();
+		softAssert.assertEquals(objPage.getElementText(rpslObj.lowIncomeExemptionAmtDetails), "$217,910.00","SMAB-T1888:Verify updated amounts value on current Roll Year RPSL");
+		softAssert.assertEquals(objPage.getElementText(rpslObj.basicExemptionAmtDetails), "$145,273.00","SMAB-T1888:Verify updated amounts value on current Roll Year RPSL");
+		softAssert.assertEquals(objPage.getElementText(rpslObj.lowIncomeHouseholdLimitDetails), "$65,337.00","SMAB-T1888:Verify updated amounts value on current Roll Year RPSL");
+		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Submitted for Approval","SMAB-T1888:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
+		
 		driver.close();
 		driver.switchTo().window(parentwindow);
 
@@ -264,8 +268,8 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T1921,SMAB-T1889,SMAB-T1919,SMAB-T1920,SMAB-T1867:Verify that once supervisor 'Return' the RPSL record then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' is also Returned and once RPSL approved then WI is also completed,Verify that Supervisor of a WI is able to edit the WI which is submitted for Approval ", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, dependsOnMethods = {
-			"WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIClaimSubmitValidations" }, groups = { "regression",
-					"Work_Item_DV" }, alwaysRun = true)
+			"WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIClaimSubmitValidations" }, groups = { "Regression",
+					"DisabledVeteran","WorkItemWorkflow_DisabledVeteran" }, alwaysRun = true)
 	public void WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIApprovalRejectionValidations(String loginUser) throws Exception {
 		
 		String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
@@ -287,15 +291,15 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		//SMAB-T2087 opening the action link to validate that link redirects to correct page
 		workItemPageObj.openActionLink(reminderSubmittedWINumber);
 		
-		softAssert.assertTrue(objPage.verifyElementVisible(workItemPageObj.editBtn),
-				"SMAB-T2087: Validation that edit button is visible");
 		softAssert.assertTrue(objPage.verifyElementVisible(rpslObj.realPropertySettingsLibraryHeaderText),
 				"SMAB-T2087: Validation that Real Property Settings Library label is visible");
 		softAssert.assertTrue(objPage.verifyElementVisible(rpslObj.getExemptionLimitLabelName("2021")),
 				"SMAB-T2087: Validation that Exemption Limits label is present");
-		 
+		softAssert.assertTrue(objPage.verifyElementVisible(workItemPageObj.editBtn),
+				"SMAB-T2087: Validation that edit button is visible");
+		
 		driver.navigate().back();
-		Thread.sleep(1000);
+		Thread.sleep(5000);
 		String parentwindow = driver.getWindowHandle();
 		
 		//Step4: Open the WI record and validate the details in the Detail tab
@@ -411,6 +415,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		softAssert.assertEquals(reminderSubmittedWIAgain.get("Work Pool").get(reminderAgainSubmittedWIRowNumber),"Disabled Veterans","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		
 		objApasGenericPage.logout();
+		Thread.sleep(5000);
 
 //******************** step10: Now supervisor will Approve the RPSl and verify the WI is Completed***************///
 
@@ -457,7 +462,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 	 */
 	@Test(description = "SMAB-T2080,SMAB-T2091,SMAB-T1918,SMAB-T1951, SMAB-T1952:Verify system generates WI 'Disabled Veteran -Review and Update-Annual exemption amount verification' for all active Exemption with low income VA for previous roll year once 'Annual Exemption Limits' for current roll year is approved", dataProvider = "loginExemptionSupportStaff", dependsOnMethods = {
 			"WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIApprovalRejectionValidations" }, dataProviderClass = DataProviders.class, groups = {
-					"regression", "Work_Item_DV" }, alwaysRun = true)
+					"Regression", "DisabledVeteran","WorkItemWorkflow_DisabledVeteran"}, alwaysRun = true)
 	public void WorkItemWorkflow_DisabledVeteran_LowIncomeExemptionWIVerification(String loginUser) throws Exception {
 
 		String rollYear = "2020";
@@ -498,7 +503,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 				"SMAB-T2091: Validation that Value Adjustments label is present");
 		
 		driver.navigate().back();
-		Thread.sleep(1000);
+		Thread.sleep(10000);  //It takes long to load back the screen
 		workItemPageObj.openWorkItem(lowIncomeWIName);
 		objPage.javascriptClick(workItemPageObj.detailsTab);
 		Thread.sleep(1000);
@@ -534,7 +539,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		driver.navigate().refresh();
 		Thread.sleep(3000);
 		driver.navigate().back();
-		Thread.sleep(1000);
+		Thread.sleep(10000); //It takes long to load back the screen
 		
 		objPage.Click(workItemPageObj.lnkTABMySubmittedforApproval);
 		Thread.sleep(5000);

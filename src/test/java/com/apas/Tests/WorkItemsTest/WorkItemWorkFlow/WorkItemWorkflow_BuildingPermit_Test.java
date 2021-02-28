@@ -51,7 +51,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
      * This test case is to validate work item creation functionality and the work item flow after file is approved
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and RP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1890, SMAB-T1892, SMAB-T1900, SMAB-T1901, SMAB-T1902,SMAB-T2081,SMAB-T2121,SMAB-T2122,SMAB-T1903: Validation for work item generation after building permit file import and approve", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BP"}, alwaysRun = true)
+    @Test(description = "SMAB-T1890, SMAB-T1892, SMAB-T1900, SMAB-T1901, SMAB-T1902,SMAB-T2081,SMAB-T2121,SMAB-T2122,SMAB-T1903: Validation for work item generation after building permit file import and approve", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "WorkItemWorkflow_BuildingPermit", "BuildingPermit"}, alwaysRun = true)
     public void WorkItemWorkflow_BuildingPermit_ReviewAndFinalReviewWorkItem_ImportAndApprove(String loginUser) throws Exception {
 
         String downloadLocation = testdata.DOWNLOAD_FOLDER;
@@ -95,13 +95,14 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		//SMAB-T2121: opening the action link to validate that link redirects to Review Error and success Records page
         objWorkItemHomePage.openActionLink(importReviewWorkItem);
 
-        objWorkItemHomePage.waitForElementToBeClickable(objEfileImportPage.approveButton);
+        objWorkItemHomePage.waitForElementToBeClickable(objEfileImportPage.approveButton,90);
 		softAssert.assertTrue(objBuildingPermitPage.verifyElementVisible(objEfileImportPage.approveButton),"SMAB-T2121: Validation that approve button is visible");
 		softAssert.assertTrue(objBuildingPermitPage.verifyElementVisible(objEfileImportPage.errorRowSection),"SMAB-T2121: Validation that error Row Section is visible");
 		softAssert.assertTrue(objBuildingPermitPage.verifyElementVisible(objEfileImportPage.buildingPermitLabel),"SMAB-T2121: Validation that Building Permits Label is visible") ;
 		softAssert.assertTrue(objBuildingPermitPage.verifyElementVisible(objEfileImportPage.importedRowSection),"SMAB-T2121: Validation that imported Rows Section is visible");
 
         objBuildingPermitPage.searchModule(modules.HOME);
+        objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
 		objWorkItemHomePage.openWorkItem(importReviewWorkItem);
 		
 		objWorkItemHomePage.openTab(objWorkItemHomePage.tabDetails);
@@ -123,7 +124,8 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
         //Step8: Validation for Import Review work item moved to completed status
         HashMap<String, ArrayList<String>> completedWorkItems = objWorkItemHomePage.getWorkItemData(objWorkItemHomePage.TAB_COMPLETED);
-        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importReviewWorkItem + "\nLaunch Data Entry Screen"), "SMAB-T1890: Validation that import review work item moved to Completed status after import file is approved");
+        Thread.sleep(5000);
+        softAssert.assertTrue(completedWorkItems.get("Work item #").contains(importReviewWorkItem), "SMAB-T1890: Validation that import review work item moved to Completed status after import file is approved");
 
         //Step9: Validation for generation of "Final Review" Work Item
         String queryFinalReviewWorkItem = "SELECT Name FROM Work_Item__c where Request_Type__c = 'Building Permit - Final Review - " + fileNameWithoutExtension + "'";
@@ -132,6 +134,9 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
         //Step6: Accepting the work item
         driver.navigate().refresh();
+        
+      
+        objBuildingPermitPage.searchModule(modules.HOME);
         Thread.sleep(2000);
         objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
         objWorkItemHomePage.acceptWorkItem(finalReviewWorkItem);
@@ -222,7 +227,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
      * This test case is to validate work item creation functionality and the work item flow after file is reverted
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and RP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1890, SMAB-T1899: Validation for work item generation after building permit file import and revert", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"smoke", "regression", "Work_Item_BP"}, alwaysRun = true)
+    @Test(description = "SMAB-T1890, SMAB-T1899: Validation for work item generation after building permit file import and revert", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "WorkItemWorkflow_BuildingPermit", "BuildingPermit"}, alwaysRun = true)
     public void WorkItemWorkflow_BuildingPermit_ReviewWorkItem_ImportAndRevert(String loginUser) throws Exception {
 
         //Creating a temporary copy of the file to be processed to create unique name
@@ -283,7 +288,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
         //Step10: Validation that E-File logs are linked to the work item and the status of the E-logs is reverted
         softAssert.assertTrue(objBuildingPermitPage.verifyElementExists(objWorkItemHomePage.linkedItemEFileIntakeLogs), "SMAB-T1900: Validation that efile logs are linked with work item");
         HashMap<String, ArrayList<String>> efileImportLogsData = objBuildingPermitPage.getGridDataInHashMap();
-        softAssert.assertEquals(efileImportLogsData.get("Status").get(0), "Reverted", "SMAB-T1900: Validation that status of the efile logs linked with work item is reverted");
+        softAssert.assertEquals(efileImportLogsData.get("Status").get(0), "Reverted", "SMAB-T1899: Validation that status of the efile logs linked with work item is reverted");
 
         //Step11: Validating the status should be completed
         objBuildingPermitPage.openTab(objWorkItemHomePage.tabDetails);

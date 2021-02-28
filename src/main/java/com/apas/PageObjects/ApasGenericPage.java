@@ -527,6 +527,7 @@ public class ApasGenericPage extends Page {
 			Click(driver.findElement(By.xpath("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")));
 		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
 
+		waitForElementToBeClickable(30, webelementInput);
 		webelementInput.clear();
 		webelementInput.sendKeys(expectedValue);
 		Robot robot = new Robot();
@@ -561,7 +562,7 @@ public class ApasGenericPage extends Page {
 	public void globalSearchRecords(String searchString) throws Exception {
 
 		ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
-		if (System.getProperty("region").toUpperCase().equals("E2E")){
+		if (System.getProperty("region").toUpperCase().equals("E2E") || System.getProperty("region").toUpperCase().equals("PREUAT")){
 			WebElement element  = driver.findElement(By.xpath("//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input"));
 			searchAndSelectOptionFromDropDown(element, searchString);
 		}else{
@@ -610,16 +611,15 @@ public class ApasGenericPage extends Page {
 		String fieldValue;
 		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'" + sectionName + "')]";
 		String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName + "']/../..//slot[@slot='outputField']";
-		WebElement field = driver.findElement(By.xpath(fieldPath));
 
 		String fieldXpath = fieldPath + "//force-hoverable-link//a | " +
 				fieldPath + "//lightning-formatted-text | " +
 				fieldPath + "//lightning-formatted-number | " +
 				fieldPath + "//lightning-formatted-rich-text | " +
 				fieldPath + "//force-record-type//span";
-
+		waitForElementToBeVisible(20,fieldXpath);
 		try{
-			fieldValue = field.findElement(By.xpath(fieldXpath)).getText();
+			fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();
 		}catch (Exception ex){
 			fieldValue= "";
 		}
@@ -674,6 +674,7 @@ public class ApasGenericPage extends Page {
 
 		String xpathHeaders = xpathTable + "//thead/tr/th";
 		String xpathRows = xpathTable + "//tbody/tr";
+		
 		if (!(rowNumber == -1)) xpathRows = xpathRows + "[" + rowNumber + "]";
 
 		HashMap<String, ArrayList<String>> gridDataHashMap = new HashMap<>();
@@ -950,7 +951,7 @@ public class ApasGenericPage extends Page {
 			driver.switchTo().window(winHandle);
 		}
 
-		waitUntilElementIsPresent("//div[text()='" + logName + "']",15);
+		waitUntilElementIsPresent("//div[text()='" + logName + "']",20);
 		javascriptClick(driver.findElement(By.xpath("//div[text()='" + logName + "']")));
 
 	}
@@ -987,7 +988,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public String saveRecordAndGetError() throws Exception {
 		Click(getButtonWithText("Save"));
-		waitForElementToBeClickable(pageError,20);
+		waitForElementToBeClickable(pageError,90);
 		return getElementText(pageError);
 	}
 
@@ -1003,10 +1004,11 @@ public class ApasGenericPage extends Page {
 	 * @param : Object name to be created
 	 */
 	public void OpenNewEntryFormFromRightHandSidePanel(String objectName) throws IOException, InterruptedException {
-		String xpath = "//article[contains(.,'" + objectName + "')]//a[@title='Show one more action'] |  //article[contains(.,'" + objectName + "')]//*[@data-aura-class='forceDeferredDropDownAction']//a";
+		String xpath = "//article[contains(.,'" + objectName + "')]//a[@title='Show one more action'] |  //article[contains(.,'" + objectName + "')]//*[@data-aura-class='forceDeferredDropDownAction']//a | //article[contains(.,'City Strat Codes')]//span[text()='Show more actions']";
 		Click(driver.findElement(By.xpath(xpath)));
 		Thread.sleep(1000);
-		Click(driver.findElement(By.xpath("//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'New'][@role='button']")));
+		String xpath1 = "//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'New'][@role='button'] | //div[contains(@class, 'slds-dropdown__list slds-dropdown_length-with-icon')]//button[text()='New'][@type='button'] |  //div[contains(@class,'actionMenu')]//a[@title='New']";
+		Click(driver.findElement(By.xpath(xpath1)));
 	}
 
 	/**
@@ -1080,7 +1082,7 @@ public class ApasGenericPage extends Page {
    }
 
    public ArrayList<String> fetchActiveAPN(int numberofAPNs) {
-       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberofAPNs;
+       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT')  and (Not Name like '1%') Limit " + numberofAPNs;
        return objSalesforceAPI.select(queryForID).get("Name");
    }
    
@@ -1163,7 +1165,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public HashMap<String, ArrayList<String>> getGridDataForRowString(String rowString) {
 		String xpath="(//*[contains(@class,'slds-show')]//table/tbody//tr)";
-		String xpathTable = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr";
+		String xpathTable = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr";
 		if(verifyElementVisible(xpath))
 		{xpathTable=xpath;}
 
@@ -1175,5 +1177,56 @@ public class ApasGenericPage extends Page {
 			}
 		}
 		return null;			 	
+	}
+
+	/*
+   This method is used to return the Divided Interest APN from Salesforce
+   @return: returns the Divided Interest APN
+  */
+	public String fetchDividedInterestAPN() throws Exception {
+		String queryAPNValue = "select Name, Status__c from Parcel__c Where NOT(Name like '%0') limit 1";
+		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryAPNValue);
+		String dividedInterestAPNValue = "";
+		dividedInterestAPNValue = response.get("Name").get(0);
+
+		return dividedInterestAPNValue;
+	}
+
+	/*
+   This method is used to click on Tax Collector link of mentioned APN
+   @Param: apnNumber
+   @return: returns the In Progress APN
+  */
+	public void clickTaxCollectorLink(String apnNumber) throws Exception {
+		String xPath = "//a[text()='"+apnNumber+"']";
+		waitForElementToBeVisible(20, xPath);
+		WebElement taxCollectorLink = waitForElementToBeClickable(20, xPath);
+		Click(taxCollectorLink);
+	}
+	/*
+   This method is used to fetch field value for mentioned APN
+   @Param: fieldName: Field name for which value needs to be fetched
+   @Param: apnNumber: Parcle Number for whic field value needs to be fetched
+   @return: returns the value of the field
+  */
+	public String fetchFieldValueOfParcel(String fieldName, String apnNumber) throws Exception {
+		String selectQueryFieldName, fieldValue ="";
+		String query = "SELECT "+fieldName+" FROM Parcel__c where Name = '"+apnNumber+"'";
+		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+		if(fieldName.equalsIgnoreCase("Neighborhood_Reference__c")){
+			query = "SELECT Name FROM Neighborhood__c Where Id = '"+response.get(fieldName).get(0)+"'";
+		}else if(fieldName.equalsIgnoreCase("TRA__c")){
+			query = "SELECT Name FROM TRA__c Where Id = '"+response.get(fieldName).get(0)+"'";
+		}else if(fieldName.equalsIgnoreCase("Primary_Situs__c")){
+			query = "SELECT Name FROM Situs__c Where Id = '"+response.get(fieldName).get(0)+"'";
+		}
+		if(fieldName.equalsIgnoreCase("Status__c")){
+			fieldValue = response.get("Status__c").get(0);
+		}else {
+			response = objSalesforceAPI.select(query);
+			fieldValue = response.get("Name").get(0);
+		}
+		return fieldValue;
 	}
 }

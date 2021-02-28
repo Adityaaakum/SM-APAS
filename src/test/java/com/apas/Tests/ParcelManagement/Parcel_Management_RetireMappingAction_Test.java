@@ -50,7 +50,8 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2455,SMAB-T2457:Verify that User is able to view the various error message during Retire Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"regression","parcel_management" })
+			"Regression","ParcelManagement" })
+
 	public void ParcelManagement_VerifyErrorMessagesInRetireMappingAction(String loginUser) throws Exception {
 		
 		//Fetching parcel that is Retired 		
@@ -230,7 +231,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2456:Verify that User is able to perform Retire Action for more than one active parcels", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"smoke","regression","parcel_management" })
+			"Smoke","Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyRetireMappingActionForMoreThanOneActiveParcels(String loginUser) throws Exception {
 		
 		//Fetching Active General parcel 

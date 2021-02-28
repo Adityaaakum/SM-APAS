@@ -53,7 +53,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 	 * 2. Validating the user is not able to enter invalid value of 'Max. Equip. Index Factor':: TestCase/JIRA ID: SMAB-T134
 	 * 3. Validating the user is able to enter the 'Max. Equip. Index Factor' when table status is 'Not Calculated': TestCase/JIRA ID: SMAB-T135
 	 */
-	@Test(description = "SMAB-T133,SMAB-T134,SMAB-T135: Create and edit BPP Setting with invalid and valid max. equip. index factor", groups={"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T133,SMAB-T134,SMAB-T135: Create and edit BPP Setting with invalid and valid max. equip. index factor", groups={"Smoke","Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_Verify_BPPSettings_CreationAndValidations(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the given user
@@ -156,7 +156,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating user is unable to update 'Max. Equip. Index Factor' when calculations are either submitted for approval or approved:: TestCase/JIRA ID: SMAB-T137, SMAB-T273, SMAB-T274
 	 */
-	@Test(description = "SMAB-T137,SMAB-T273,SMAB-T274: Edit BPP Setting when table calculations are approved", groups={"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T137,SMAB-T273,SMAB-T274: Edit BPP Setting when table calculations are approved", groups={"Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_Verify_CreateEditBppSetting_AfterSubmittedAndApprovalOfTableCalculations(String loginUser) throws Exception {		
 		
 		//Step1: Login to the APAS application using the given user
@@ -215,7 +215,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 	 * 2. Status of Tables is updated to 'Needs Recalculation' when 'Max. Equip. Index Factor' is updated:: TestCase/JIRA ID: SMAB-T172
 	 * 3. Validating user is able to update 'Max. Equip. Index Factor' when status of Tables is 'Needs Recalculation':: TestCase/JIRA ID: SMAB-T272
 	 */
-	@Test(description = "SMAB-T172,SMAB-T271,SMAB-T139,SMAB-T272: Perform calculation & re-calculation for factors tables individually using calculate & recalclate buttons with updating max. equip. index factor", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T172,SMAB-T271,SMAB-T139,SMAB-T272: Perform calculation & re-calculation for factors tables individually using calculate & recalclate buttons with updating max. equip. index factor", groups = {"Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BPPTrend_VerifyTableStatus_ByUpdatingMaxEquipSettings(String loginUser) throws Exception {	
 		
 		//Step1: Login to the APAS application using the given user
@@ -246,7 +246,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		//Step7: Verify saved Max. Equipment Index factor Settings value 
 		String factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();	
 		softAssert.assertEquals(factorValueSaved,Integer.toString(maxEquipIndexNewValue)+"%","SMAB-T271,SMAB-T172,SMAB-T139: Verify user is able to edit the Max Equipemnt Index factor value  when table status is 'Calculated'");
-		Thread.sleep(2000);
+		Thread.sleep(6000);
 		
 		//Step8: Verify table status when Max. Equipment Index factor Settings value is updated
 		softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Commercial Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Commercial Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");

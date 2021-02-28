@@ -4,19 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.apas.Reports.ExtentTestManager;
-import com.apas.Reports.ReportLogger;
-import com.apas.TestBase.TestBase;
-import com.apas.Utils.SalesforceAPI;
-import com.apas.Utils.Util;
-import com.apas.config.modules;
-import com.relevantcodes.extentreports.LogStatus;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+
+import com.apas.Reports.ReportLogger;
+import com.apas.TestBase.TestBase;
+import com.apas.Utils.SalesforceAPI;
+import com.apas.Utils.Util;
+import com.apas.config.modules;
 
 public class BppTrendSetupPage extends ApasGenericPage {
 
@@ -35,7 +34,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		objUtil = new Util();
 	}
 
-	@FindBy(xpath = "//a[@title = 'New'] | //flexipage-tab2[contains(@class,'show')]//button[text()='New']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//a[@title = 'New'] | //flexipage-tab2[contains(@class,'show')]//*[text()='New']")
 	public WebElement newButton;
 
 	@FindBy(xpath = "//a[text()='No actions available']")
@@ -77,7 +76,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following::div[@class='actionsWrapper']//a | //span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following::div//*[contains(@class,'icon-x-small')]")
 	public WebElement dropDownIconBppCompFactorSetting;
 
-	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//a[@title = 'New'] | //flexipage-tab2[contains(@class,'show')]//button[text()='New']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//div[contains(@class, 'uiMenuList--default visible positioned')]//a[@title = 'New'] | //flexipage-tab2[contains(@class,'show')]//*[text()='New']")
 	public WebElement newBtnToCreateEntry;
 
 	@FindBy(xpath = "(//div[contains(@class,'actionMenu')])[2]//a[@title = 'New']")
@@ -164,16 +163,25 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		if(verifyElementVisible(moreTabCompositeFactorSettings)) {
 			WebElement moreTab = locateElement(moreTabCompositeFactorSettings, 10);
 			waitForElementToBeClickable(moreTab, 10);
-			clickAction(moreTab);
+			javascriptClick(moreTab);
 			waitForElementToBeVisible(bppCompositeFactorOption, 10);
-			clickAction(bppCompositeFactorOption);
+			javascriptClick(bppCompositeFactorOption);
 		} else {
-			clickAction(bppCompFactorSettingTab);
+			javascriptClick(bppCompFactorSettingTab);
+			if(!waitForElementToBeVisible(20,dropDownIconBppCompFactorSetting))
+				Click(bppCompFactorSettingTab);
+			if(!waitForElementToBeVisible(20,dropDownIconBppCompFactorSetting))
+				clickAction(bppCompFactorSettingTab);
 		}
+		if(waitForElementToBeVisible(20,dropDownIconBppCompFactorSetting))
 
-		if(verifyElementVisible(dropDownIconBppCompFactorSetting))
-			clickAction(dropDownIconBppCompFactorSetting);
+			javascriptClick(dropDownIconBppCompFactorSetting);
 		//clickAction(newBtnToCreateEntry);
+		if(!verifyElementVisible(newButton))
+			Click(dropDownIconBppCompFactorSetting);
+		if(!verifyElementVisible(newButton))
+			clickAction(dropDownIconBppCompFactorSetting);
+
 		Click(newButton);
 
 		enter("Minimum Good Factor",minGoodFactorValue);
@@ -213,7 +221,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public void createBppSetting(String equipIndexFactorValue) throws Exception {
 		if(verifyElementVisible(dropDownIconBppSetting))
 			Click(waitForElementToBeClickable(dropDownIconBppSetting));
-		
+
 		//createRecord();
 		clickAction(waitForElementToBeClickable(newBtnToCreateEntry));
 		enter(objApasGenericPage.maxEquipmentIndexFactor,equipIndexFactorValue);
@@ -404,7 +412,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 */
 	public String createDummyBppTrendSetupForErrorsValidation(String compFactorTablesStatus, int rollYear) throws Exception {
 		//Step1: Click New button on the grid to open form / pop up to create new BPP Trend Setup
-		WebElement newButton = objPage.waitForElementToBeVisible("//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']");
+		objPage.waitUntilElementIsPresent(30, "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']");
+		WebElement newButton = objPage.waitForElementToBeClickable(30,"//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']");
 		Click(newButton);
 
 		//Step2: Entering BPP trend setup name and roll year
@@ -749,8 +758,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		if(!(factorSettings.size()>0)) {
 			if(verifyElementVisible(dropDownIconBppSetting))
 				objPage.javascriptClick(dropDownIconBppSetting);
-				objPage.waitForElementToBeClickable(newBtnToCreateEntry, 20);
-				objPage.javascriptClick(newBtnToCreateEntry);
+			objPage.waitForElementToBeClickable(newBtnToCreateEntry, 20);
+			objPage.javascriptClick(newBtnToCreateEntry);
 			//createRecord();
 			enter("Maximum Equipment index Factor","125");
 			objPage.Click(objPage.getButtonWithText("Save"));
@@ -792,11 +801,11 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			objPage.Click(bppCompFactorSettingTab);
 		ReportLogger.INFO("** Creating entry for " + factorType + " property type");
 
-		
+
 		if(waitForElementToBeClickable(10,dropDownIconBppCompFactorSetting) != null) {
 			objPage.Click(dropDownIconBppCompFactorSetting);
 		} 
-		
+
 		Click(newBtnToCreateEntry);
 		enter(minGoodFactorEditBox,factorValue);
 		selectOptionFromDropDown("Property Type",factorType);

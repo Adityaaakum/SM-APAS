@@ -162,7 +162,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath="//div[@class='pageLevelErrors']//ul[1]")
 	public WebElement errorMsg;
 
-	@FindBy(xpath="//li[@title='Details']//a[@data-label='Details']")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//li[@title='Details']//a[@data-label='Details']")
 	public WebElement detailsWI;
 
 	@FindBy(xpath="//li[@title='Linked Items']//a[@data-label='Linked Items']")
@@ -244,6 +244,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	@FindBy(xpath = "//input[@type='button' and @value='Remove']")
 	public WebElement removeButton;
+	
+	@FindBy(xpath="//*[@name='Select Primary']")
+	public WebElement SelectPrimaryButton;
 
 	public String editButton = "Edit";
 	
@@ -371,7 +374,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 		waitUntilElementIsPresent(xpath, 15);
 		waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
 		javascriptClick(driver.findElement(By.xpath(xpath)));
-		Thread.sleep(4000);
+		Thread.sleep(5000);
 	}
 
 	/**
@@ -399,9 +402,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 		List<WebElement> actualWINames = null;
 
 		try {
-			
-			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//*[@title='" + WIName + "' or text()='" + WIName + "']");
-			
+			actualWINames = driver.findElementsByXPath("//table/tbody//tr/th//*[@title='View Work Item' and text()='" + WIName + "']");
+
 			if(actualWINames.isEmpty()) {				
 				String pageMsg = driver.findElementByXPath("//p[@class='slds-m-vertical_medium content']").getText();
 				pageMsg=pageMsg.replaceAll("\\s","").trim();
@@ -644,7 +646,69 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		Thread.sleep(2000);
 		return getGridDataForRowString(requestType).get("Work item #").get(0).split("\\n")[0];
 	}
-
+	
+	/**
+	 * Description: This method will fetch the Work Item ID from Work_Item_Linkage__c object for new WI 
+	 * created on creation of new Exemption
+	 * @param ExemptionName: Name of the Exemption newly created
+	 */
+	public String getWorkItemIDFromExemptionOnWorkBench(String ExemptionName) {
+		salesforceAPI = new SalesforceAPI();
 		
+		String slqWork_Item_Id = "Select Work_Item__c from Work_Item_Linkage__c where Exemption__r.Name = '"+ExemptionName+"'";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(slqWork_Item_Id); 		  
+		String WorkItem_Id = response.get("Work_Item__c").get(0);
+		
+		return WorkItem_Id;
+		
+	}
+	
+	/**
+	 * Description: This method will fetch the Work Item ID from Work_Item_Linkage__c object for new WI 
+	 * created Manually from Parcel
+	 * @param ParcelName: Name of the Parcel for which manual WI created
+	 */
+	public String getWorkItemIDFromParcelOnWorkbench(String ParcelName) {
+		salesforceAPI  = new SalesforceAPI();
+
+		String slqWork_Item_Id = "Select Work_Item__c from Work_Item_Linkage__c where Parcel__r.Name = '"+ ParcelName +"' order by CreatedDate desc";		  
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(slqWork_Item_Id); 		  
+		String WorkItem_Id = response.get("Work_Item__c").get(0);
+		
+		return WorkItem_Id;
+			
+	}
+	
+	/**
+	 * Description: This method will fetch the Work Item supervisor name 
+	 * @param ID : ID of the WI created manually or automated.
+	 */
+	
+	public String getSupervisorDetailsFromWorkBench(String Id){
+		
+		salesforceAPI = new SalesforceAPI();
+		
+		/*
+		 * String sql_getWorkPoolSupervisorDetails =
+		 * "Select work_item__r.work_pool__r.Supervisor__r.name ,"+
+		 * "work_item__r.Name from work_item_linkage__c " +
+		 * "where Exemption__r.Name = '"+ExemptionName+"'";
+		 */		  		
+		  		  
+		  String slqWork_Pool_Id = "Select Work_Pool__c from Work_Item__c where id = '"+Id+"'";
+          HashMap<String, ArrayList<String>> response_3 = salesforceAPI.select(slqWork_Pool_Id); 		  
+		  String WorkPool_Id = response_3.get("Work_Pool__c").get(0);
+		  
+		  String sqlWorkPoolSupervisor = "Select supervisor__c from Work_Pool__c where id = '"+WorkPool_Id+"'";
+		  HashMap<String, ArrayList<String>> response_4 = salesforceAPI.select(sqlWorkPoolSupervisor);
+		  String SupervisorId = response_4.get("Supervisor__c").get(0);
+		  
+		  String sqlUserName = "Select Name from user where id = '"+SupervisorId+"'";
+		  HashMap<String, ArrayList<String>> response_5 = salesforceAPI.select(sqlUserName);
+		  String SupervisorName = response_5.get("Name").get(0);
+		
+		
+		return SupervisorName;   
+	}	
 
 }

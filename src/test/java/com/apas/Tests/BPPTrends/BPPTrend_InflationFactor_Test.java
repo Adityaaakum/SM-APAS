@@ -51,7 +51,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 //	 * 1. Validating that 'Inflation Factor' is >= 0 and <=1.02:: TestCase/JIRA ID: SMAB-T182
 //	 * 2. Validate that user is able to create a new Inflation Factors for a year with valid data:: TestCase/JIRA ID: SMAB-T180
 //	 */
-//	@Test(description = "SMAB-T180,SMAB-T182: Create new CPI Factor", groups = {"smoke","regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+//	@Test(description = "SMAB-T180,SMAB-T182: Create new CPI Factor", groups = {"Smoke","Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 //	public void BppTrend_Create_CpiFactors(String loginUser) throws Exception {
 //		String rollYear = "2019";
 //		//Step1: Login to the APAS application using the given user
@@ -108,7 +108,7 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating business administrator is not able to edit approved inflation factor:: TestCase/JIRA ID: SMAB-T183
 	 */
-	@Test(description = "SMAB-T183: Validating business administrator user is not able to edit the approved inflation factor", groups = {"regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T183: Validating business administrator user is not able to edit the approved inflation factor", groups = {"Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
 	public void BppTrend_EditApprovedCpiFactor(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
 		objBppTrendSetupPage.login(loginUser);

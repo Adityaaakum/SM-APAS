@@ -63,7 +63,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 	@Test(description = "SMAB-T2080,SMAB-T1922: APAS system should generate a WI on new Exemption Creation", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DV_WorkItem_Exemption"})
+			groups = {"Smoke","Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
 	public void WorkItemWorkflow_DisabledVeteran_WorkItemGeneratedOnNewExemptionCreation(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -111,10 +111,10 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		String RequestTypeName  = "Disabled Veterans - Direct Review and Update - Initial filing/changes";
 		String actualRequestTypeName = rowData.get("Request Type").get(0) ;
 
-		ReportLogger.INFO("Step 9: Verifying on new Exemption creation Work Item '"+actualWIName+"' is generated of Request Type : '"+actualRequestTypeName+"'" );
+		ReportLogger.INFO("Step 9: Verifying on new Exemption creation Work Item '"+WIName+"' is generated of Request Type : '"+RequestTypeName+"'" );
 
-		softAssert.assertEquals(actualWIName.toString(),WIName,"SMAB-T1922:Verify name of WI generated");
-		softAssert.assertEquals(actualRequestTypeName.toString(),RequestTypeName,"SMAB-T1922:Verify RequestType Name of WI generated");
+		softAssert.assertEquals(actualWIName.getText(),WIName,"SMAB-T1922:Verify name of WI generated");
+		softAssert.assertEquals(actualRequestTypeName,RequestTypeName,"SMAB-T1922:Verify RequestType Name of WI generated");
 
 		objPage.Click(actualWIName);
 		objPage.waitForElementToBeClickable(objWIHomePage.detailsTab);
@@ -123,7 +123,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		objWIHomePage.waitForElementToBeVisible(10, objWIHomePage.referenceDetailsLabel);
 		String linkedAPN=objApasGenericPage.getFieldValueFromAPAS("APN", "Information");
 		String streetName=salesforceAPI.select("SELECT Situs_Street_Name__c  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ linkedAPN +"')").get("Situs_Street_Name__c").get(0);
-		String  useCodeValue=salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where name='"+ linkedAPN +"')").get("Name").get(0);
+		String useCodeValue=salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where name='"+ linkedAPN +"')").get("Name").get(0);
 
 		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Use Code", "Reference Data Details"),useCodeValue,
 				"SMAB-T2080: Validation that 'Use Code' fields getting automatically populated in the work item record");
@@ -142,7 +142,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 	@Test(description = "SMAB-T1923: APAS system should generate a WI on updating the End Date of Rating for Existing Exemption", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DV_WorkItem_Exemption"})
+			groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
 	public void WorkItemWorkflow_DisabledVeteran_WorkItemGeneratedOnEnterEndDateRatingExistingExemption(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -205,7 +205,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 	@Test(description = "SMAB-T1926: APAS system should not generate a WI on new Exemption having WI opened", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DV_WorkItem_Exemption"})
+			groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
 	public void WorkItemWorkflow_DisabledVeteran_WorkItemNotGeneratedOnExemptionWithOpenWI(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -258,7 +258,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 	@Test(description = "SMAB-T2094,SMAB-T1978: APAS Verify the Supervisor is able to Approve the WI initial filing/changes on new Exemption Creation", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DV_WorkItem_Exemption"})
+			groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
 	public void WorkItemWorkflow_DisabledVeteran_WorkItemExemptionFilingChangesIsApproved(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -296,17 +296,20 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		objPage.Click(objWIHomePage.lnkTABWorkItems);
 		ReportLogger.INFO("Step 10: Click on Needs My Approval TAB");
 		objPage.Click(objWIHomePage.needsMyApprovalTab);
+		
+		//SMAB-T2094 opening the action link to validate that link redirects to Exemptions page 
+		objWIHomePage.searchWIinGrid(WIName);
+    	objWIHomePage.openActionLink(WIName);
+		objWIHomePage.waitForElementToBeVisible(objExemptionsPage.newExemptionNameAftercreation, 10);
+		softAssert.assertTrue(objPage.verifyElementVisible(objExemptionsPage.newExemptionNameAftercreation),
+				"SMAB-T2094: Validation that user is directed to exemption details page and Exemption label is visible on clicking navigation icon of WI");
+		
+		objApasGenericPage.searchModule(modules.HOME);
+		objPage.Click(objWIHomePage.lnkTABHome);
+		objPage.Click(objWIHomePage.lnkTABWorkItems);
+		objPage.Click(objWIHomePage.needsMyApprovalTab);
 		ReportLogger.INFO("Step 11: Search for the Work Item and select the checkbox");
 		objWIHomePage.clickCheckBoxForSelectingWI(WIName);
-
-		String parentwindow = driver.getWindowHandle();
-		//SMAB-T2094 opening the action link to validate that link redirects to Exemptions page 
-		objWIHomePage.openActionLink(WIName);
-		objPage.switchToNewWindow(parentwindow);
-		softAssert.assertTrue(objPage.verifyElementVisible(objExemptionsPage.newExemptionNameAftercreation),
-				"SMAB-T2094: Validation that Exemption label is visible");
-		driver.switchTo().window(parentwindow);
-
 		ReportLogger.INFO("Step 12: Click on the Approve button");
 		objPage.javascriptClick(objWIHomePage.btnApprove);
 		Thread.sleep(5000);
@@ -338,7 +341,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 	@Test(description = "SMAB-T1981: APAS Verify the Supervisor is able to Return the WI initial filing/changes on new Exemption Creation", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"regression","DV_WorkItem_Exemption"})
+			groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
 	public void WorkItemWorkflow_DisabledVeteran_WorkItemExemptionFilingChangesIsReturned(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -413,7 +416,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2554,SMAB-T2556,SMAB-T2558: Verify that 1st level Approver is able to assign WIs to a different 2nd level Approver than what is there in the relevant Work Pool, Verify that 2nd level Approver is able to view 'Warning' message if user tries to assign WI to another user using 'Assign Level2 Approver' button", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DV_WorkItem_Exemption"})
+	@Test(description = "SMAB-T2554,SMAB-T2556,SMAB-T2558: Verify that 1st level Approver is able to assign WIs to a different 2nd level Approver than what is there in the relevant Work Pool, Verify that 2nd level Approver is able to view 'Warning' message if user tries to assign WI to another user using 'Assign Level2 Approver' button", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
 	public void WorkItemWorkflow_DisabledVeteran_Level2ApproverIsAbleToAssignWorkItem(String loginUser) throws Exception {
 
 		ReportLogger.INFO("Get the user names through SOQL query");
@@ -440,7 +443,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		newExemptionName = objExemptionsPage.createNewExemptionWithMandatoryData(newExemptionData);
 		HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
 		String WIName = getWIDetails.get("Name").get(0);
-
+		objApasGenericPage.searchModule(modules.WORK_ITEM);
 		objApasGenericPage.logout();
 		Thread.sleep(5000);
 
@@ -678,7 +681,9 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		ReportLogger.INFO("Verify that the WI is present in the Completed tab");
 		String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
 		softAssert.assertEquals(actualWIName, WIName, "SMAB-T2556: Validate that the WI is present in the Completed tab");
-
+		
+		objWIHomePage.searchModule(modules.WORK_ITEM);
+		
 		objApasGenericPage.logout();
 
 	}

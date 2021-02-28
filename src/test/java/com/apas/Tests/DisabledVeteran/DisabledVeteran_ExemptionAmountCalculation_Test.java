@@ -56,7 +56,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 	 * 1. 'Basic Exemption Amount' Calculated is correct for each VA(Current + Past years)
 	 * 2. Net Exemption Amount is correct for each VA(Current + Past Years)
 	 **/
-	@Test(description = "SMAB-T1213, SMAB-T612: Verify Basic & Net Exemption Amount for each 'Active' Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption" })
+	@Test(description = "SMAB-T1213, SMAB-T612: Verify Basic & Net Exemption Amount for each 'Active' Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran" })
 	public void DisabledVeteran_verifyBasicExemptionAmount(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
@@ -130,7 +130,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 	 * 4. Net Exemption Amount of Low Income VAR that results in penalty
 	 **/
 	
-  @Test(description = "SMAB-T573, SMAB-T512, SMAB-T475: Verify Low Income Exemption Amount for each 'Active' Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"regression","DisabledVeteranExemption" })
+  @Test(description = "SMAB-T573, SMAB-T512, SMAB-T475: Verify Low Income Exemption Amount for each 'Active' Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran" })
   	public void DisabledVeteran_verifyLowIncomeExemptionAmount(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
@@ -220,7 +220,7 @@ public class DisabledVeteran_ExemptionAmountCalculation_Test extends TestBase{
 	 * 4. on editing VAR,the user cannot enter a value into the Penalty Adjustment Reason 
 	 *    or Penalty Adjustment Other Reason Detail when the Penalty Amount - User Adjusted is blank or $0
 	 **/
-	@Test(description = "SMAB-T1134, SMAB-T1266, SMAB-T1267, SMAB-T1268: Verify validations on Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption" })
+	@Test(description = "SMAB-T1134, SMAB-T1266, SMAB-T1267, SMAB-T1268: Verify validations on Value Adjustemnt", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran" })
 	public void DisabledVeteran_verifyValidationsOnVA(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through

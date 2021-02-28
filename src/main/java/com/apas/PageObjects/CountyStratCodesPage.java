@@ -1,7 +1,10 @@
 package com.apas.PageObjects;
 
 import com.apas.Reports.ReportLogger;
+
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.Map;
@@ -19,6 +22,9 @@ public class CountyStratCodesPage extends ApasGenericPage {
 	public String permitValueOperatorDropDown = "Permit Value Operator";
 	public String statusDropDown = "Status";
 	public String permitValueLimit = "Permit Value Limit";
+	
+	@FindBy (xpath="//*[@data-key='error']//..//button[@title='Close'] | //button[@title='Close error dialog']")
+    public WebElement CloseErrorMsg;
 
 	/**
 	 * Description: This method will open the new entry pop up
@@ -36,6 +42,7 @@ public class CountyStratCodesPage extends ApasGenericPage {
 	public void enterCountyStratCodeDetails(Map<String, String> dataMap) throws Exception {
 		enter(stratCodeRefNumInputFiled, dataMap.get("Strat Code Reference Number"));
 		enter(stratCodeDescInputField, dataMap.get("Strat Code Description"));
+		if (verifyElementVisible(CloseErrorMsg))Click(CloseErrorMsg);
 		selectOptionFromDropDown(statusDropDown, dataMap.get("Status"));
 		selectOptionFromDropDown(processingStatusDrpDown, dataMap.get("Processing Status"));
 	}

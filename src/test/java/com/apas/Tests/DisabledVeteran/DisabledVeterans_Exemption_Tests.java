@@ -71,7 +71,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	 * @throws Exception 
 	 */
 
-	@Test(description = "SMAB-T488,SMAB-T491,SMAB-T492,SMAB-T493,SMAB-T494,SMAB-T495,SMAB-T496:Future dates Error Messages for date Fields",dataProvider="loginExemptionSupportStaff" ,dataProviderClass = DataProviders.class, groups = {"regression","DisabledVeteranExemption"})
+	@Test(description = "SMAB-T488,SMAB-T491,SMAB-T492,SMAB-T493,SMAB-T494,SMAB-T495,SMAB-T496:Future dates Error Messages for date Fields",dataProvider="loginExemptionSupportStaff" ,dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran"})
 	public void Disabledveteran_FutureDatesErrorMessagesWhileCreatingExemption(String loginUser) throws Exception{
 		
 		Map<String, String> fieldData = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
@@ -129,7 +129,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	}
 	
 	
-	@Test(description = "SMAB-T501,SMAB-T502,SMAB-T503,SMAB-T497,SMAB-T494,SMAB-T498,SMAB-T1278,SMAB-T1223,SMAB-T1263,SMAB-T1262,SMAB-T1264,SMAB-T1221:Verify business validations while creating Exemption records", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption"})
+	@Test(description = "SMAB-T501,SMAB-T502,SMAB-T503,SMAB-T497,SMAB-T494,SMAB-T498,SMAB-T1278,SMAB-T1223,SMAB-T1263,SMAB-T1262,SMAB-T1264,SMAB-T1221:Verify business validations while creating Exemption records", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran"})
 	public void Disabledveteran_BusinessValidationsForExemptionFields(String loginUser) throws Exception{
 			Map<String, String> businessValidationdata = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
 			businessValidationdata.put("ClaimantName", exemptionPageObj.fetchAssesseeName());
@@ -253,7 +253,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	 Below test case is used to Edit an Exemption record
 	 * @throws Exception 
 	 **/
-	@Test(description = "SMAB-T1282,SMAB-T1269,SMAB-T499,SMAB-T489:Verify date fields are not editable once entered for an Exemption",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"regression" ,"DisabledVeteranExemption"})
+	@Test(description = "SMAB-T1282,SMAB-T1269,SMAB-T499,SMAB-T489:Verify date fields are not editable once entered for an Exemption",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression" ,"DisabledVeteran"})
 	public void Disabledveteran_DateFieldsNotEditableonCreatedExemptionDetailsPage(String loginUser) throws Exception
 	{	Map<String, String> dataToEdit = objUtil.generateMapFromJsonFile(exemptionFilePath, "editExemptionData");
 			
@@ -324,7 +324,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	 Below test case is used to verify if 'End date Of Rating can not be Modified Once Entered by user'
 	 * @throws Exception 
 	 **/
-	@Test(description = "SMAB-T1218,SMAB-T643,SMAB-T500:Verify End Date of Rating can't be modified if initially set",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption"})	
+	@Test(description = "SMAB-T1218,SMAB-T643,SMAB-T500:Verify End Date of Rating can't be modified if initially set",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran"})	
 	public void Disabledveteran_EnddateOfRatingNotModifiableOnceEntered(String loginUser) throws Exception
 	{
 			Map<String, String> dataToEdit = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData");
@@ -382,7 +382,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	 * Below test case will
 	 * 1. Verify error message on saving Exemption when the Claimant SSN value is different than the SSN value that exists on the related Assessee record
 	 **/
-	@Test(description = "SMAB-T1528: Verify user is able to view an error message on saving Exemption when the Claimant SSN value that is entered on the Exemption record is different than the SSN value that exists on the related Assessee record", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"regression","DisabledVeteranExemption" })
+	@Test(description = "SMAB-T1528: Verify user is able to view an error message on saving Exemption when the Claimant SSN value that is entered on the Exemption record is different than the SSN value that exists on the related Assessee record", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"Regression","DisabledVeteran" })
 	public void DisabledVeteran_verifyExemptionwithIncorrectClaimantSSN(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through		
@@ -416,7 +416,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
    Below test case is used to verify Exemption is not created for Retired and Invalid PUC code Parcels(APN) from Parcels Exemption related list
    * @throws Exception 
    **/
-  @Test(description = "SMAB-T1515,SMAB-T1516,SMAB-T1517,SMAB-T1518,SMAB-T580:Verify User is not able to create Exemption for Retired and Invalid PUC Code APN's",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"smoke", "regression","DisabledVeteranExemption"})    
+  @Test(description = "SMAB-T1515,SMAB-T1516,SMAB-T1517,SMAB-T1518,SMAB-T580:Verify User is not able to create Exemption for Retired and Invalid PUC Code APN's",dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression","DisabledVeteran"})    
   public void Disabledveteran_ExemptionNotCreatedForRetiredAndInvalidPUCCodeAPN(String loginUser) throws Exception
   {
 	 //Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)     
