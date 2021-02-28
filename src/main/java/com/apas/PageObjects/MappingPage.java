@@ -249,7 +249,7 @@ public class MappingPage extends ApasGenericPage {
 	 */
 	public String getLinkedParcelInWorkItem(String rowNum) throws Exception {
 		Thread.sleep(1000);
-		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//tr[@data-row-key-value='row-" + rowNum + "']";
+		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//tr[@data-row-key-value='row-" + rowNum + "']//th";
 		waitUntilElementIsPresent(xpath, 10);
 		return getElementText(driver.findElement(By.xpath(xpath)));
 	}
@@ -266,27 +266,6 @@ public class MappingPage extends ApasGenericPage {
 	   String queryOwnerRecord = "SELECT Id, Name FROM Account Limit " + numberofRecords;
 	   return objSalesforceAPI.select(queryOwnerRecord);
    }
-   
-   /*
-   This method is used to return the Retired APN having a specific Ownership record
-   @return: returns the Retired APN
-  */
-
-   /*public HashMap<String, ArrayList<String>> getRetiredApnHavingOwner(String assesseeName) throws Exception {
-	   String queryRetiredAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and Status__c = 'Retired'";
- 	  	return objSalesforceAPI.select(queryRetiredAPNValue);
-   }
- */
-  /*
-  This method is used to return the In Progress APN having a specific Ownership record
-  @return: returns the In Progress APN
- */
-
-  /* public HashMap<String, ArrayList<String>> getInProgressApnHavingOwner(String assesseeName) throws Exception {
-	   String queryInProgressAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and Status__c like 'In Progress%'";
-	   return objSalesforceAPI.select(queryInProgressAPNValue);
-   }*/
-   
    
    /*
    This method is used to return the Retired APN having no Ownership record
@@ -354,32 +333,19 @@ public class MappingPage extends ApasGenericPage {
      */
       
       public void deleteSourceRelationshipInstanceFromParcel(String apn) throws Exception {
-    	  String query = "SELECT Name FROM Parcel_Relationship__c where Source_Parcel__r.name = '" + apn + "'";
+    	  String query = "SELECT Id FROM Parcel_Relationship__c where Source_Parcel__r.name = '" + apn + "'";
     	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
     	  if(!response.isEmpty())objSalesforceAPI.delete("Parcel_Relationship__c", query);
   	  }
       
-      /*
-      This method will delete existing relationship instances (Source) from the Parcel
-     */
-      
-      public void deleteLotSizeOnParcel(String apn) throws Exception {
-    	  String query = "SELECT Lot_Size_SQFT__c FROM Parcel__c  where Name = '" + apn + "'";
-    	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
-    	  if(!response.isEmpty())objSalesforceAPI.delete("Parcel__c", query);
-  	  }
-     
       /*
       This method will convert APN into Integer
      */
       
       public int convertAPNIntoInteger(String apn) throws Exception {
     	 String apnComponent[] = apn.split("-");
-    	 //if (apnComponent[0].length() < 3) apnComponent[0] = "0" + apnComponent[0]
   		 String consolidateAPN = apnComponent[0] + apnComponent[1] + apnComponent[2];
   		 return Integer.valueOf(consolidateAPN);
   	  }
-      
-      
-      
+       
 }
