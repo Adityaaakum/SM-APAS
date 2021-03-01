@@ -56,7 +56,7 @@ public class WorkItemAdministration_RoutingSetupTest extends TestBase {
 
         //Step3: Click on New Button and save the record without entering mandatory fields
         // Delete existing record before creating new record
-        String query = "SELECT Id FROM Neighborhood__c WHERE Name  = '"+hashMapNeighborhoodData.get("Neighborhood Code")+"'";
+        String query = "SELECT Id FROM Neighborhood__c WHERE Name  = '"+hashMapNeighborhoodData.get("District")+"/"+ hashMapNeighborhoodData.get("Neighborhood Code")+"'";
         salesforceAPI.delete("Neighborhood__c",query);
 
         objWorkItemHomePage.createRecord();
@@ -105,7 +105,7 @@ public class WorkItemAdministration_RoutingSetupTest extends TestBase {
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1815: Verify user is not able to create duplicate Neighborhood Reference Record");
 
         //Step9: Delete record create above
-        query = "SELECT Id FROM Neighborhood__c WHERE Name  = '"+hashMapDuplicateNeighborhoodData.get("Neighborhood Code")+"'";
+        query = "SELECT Id FROM Neighborhood__c WHERE Name  = '"+hashMapNeighborhoodData.get("District")+"/"+ hashMapNeighborhoodData.get("Neighborhood Code")+"'";
         salesforceAPI.delete("Neighborhood__c",query);
 
     }
