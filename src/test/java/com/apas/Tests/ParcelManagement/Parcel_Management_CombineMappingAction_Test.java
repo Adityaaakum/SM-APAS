@@ -396,40 +396,40 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + apn3);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"The APN provided already exists in the system",
-				"SMAB-T2358: Validate that User is able to view error message if APN (Active) already exist");
+		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The APN provided already exists in the system"),
+				"SMAB-T2358: Validate that User is able to view error message if APN (Active) already exist : The APN provided already exists in the system");
 		
 		//Step 12 :Overwrite parcel value with retired parcel# and Click Combine parcel button
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,retiredAPNValue);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + retiredAPNValue);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"The APN provided already exists in the system",
-				"SMAB-T2358: Validate that User is able to view error message if APN (Retired) already exist");
+		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The APN provided already exists in the system"),
+				"SMAB-T2358: Validate that following error message is displayed for Retired Parcel : The APN provided already exists in the system");
 		
 		//Step 13 :Overwrite parcel value with interim parcel# and Click Combine parcel button
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,interimAPN);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + interimAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"This map book is reserved for interim parcels",
-				"SMAB-T2358: Validate that User is able to view error message if Interim APN is overwritten");
+		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This map book is reserved for interim parcels"),
+				"SMAB-T2358: Validate that following error message is displayed for Interim Parcel : This map book is reserved for interim parcels");
 		
 		//Step 14 :Overwrite parcel value with less than 9 digits and Click Combine parcel button
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,lessThan9DigitAPN);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + lessThan9DigitAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
-				"SMAB-T2358: Validate that User is able to view error message if APN is less than 9 digits");
+		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
+				"SMAB-T2358: Validate that User is able to view error message if APN is less than 9 digits : This parcel number is not valid, it should contain 9 digit numeric values.");
 		
 		//Step 15 :Overwrite parcel value with more than 9 digits and Click Combine parcel button
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,moreThan9DigitAPN);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + moreThan9DigitAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.r",
-				"SMAB-T2358: Validate that User is able to view error message if APN is more than 9 digits");
+		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
+				"SMAB-T2358: Validate that User is able to view error message if APN is more than 9 digits : This parcel number is not valid, it should contain 9 digit numeric values.");
 		
 		//Step 16 : Click previous button followed by next button
 		ReportLogger.INFO("Click PREVIOUS button");
@@ -450,32 +450,32 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + notNextGeneratedAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"The parcel entered is invalid since the following parcel is available " + nextGeneratedAPN,
-				"SMAB-T2358: Validate that User is able to view error message if APN overwritten is not the next available one in the system");
+		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The parcel entered is invalid since the following parcel is available " + nextGeneratedAPN),
+				"SMAB-T2358: Validate that User is able to view error message if APN overwritten is not the next available one in the system : The parcel entered is invalid since the following parcel is available <APN>");
 	
 		//Step 19 :Overwrite parcel value with alphanumeric value and Click Combine parcel button
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,alphanumericAPN1);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + alphanumericAPN1);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
-				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with alphanumeric value at the end");
+		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
+				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with alphanumeric value at the end : This parcel number is not valid, it should contain 9 digit numeric values");
 		
 		//Step 20 :Overwrite parcel value with alphanumeric value and Click Combine parcel button
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,alphanumericAPN2);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + alphanumericAPN2);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
-				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with alphanumeric value in the beginning");
+		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
+				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with alphanumeric value in the beginning : This parcel number is not valid, it should contain 9 digit numeric values");
 		
 		//Step 21 :Overwrite parcel value with special symbol and Click Combine parcel button
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,specialSymbolAPN);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + specialSymbolAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
-				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with special symbol");
+		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
+				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with special symbol : This parcel number is not valid, it should contain 9 digit numeric values");
 		
 		
 		driver.switchTo().window(parentWindow);
