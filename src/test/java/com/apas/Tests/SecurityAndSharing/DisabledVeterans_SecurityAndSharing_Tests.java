@@ -221,7 +221,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 
 		// Below test case is used to validate permission access on Exemption and VA's for RP Admin
 		@Test(description = "SMAB-T483,SMAB-T482,SMAB-T476,SMAB-T477: Verify RP Admin should be able to create a new Exemption and VA record",  dataProvider = "loginRPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran","SecurityAndSharing" })
-		public void ADisabledVeteran_AccessValidation_RPAdmin(String loginUser) throws Exception {
+		public void DisabledVeteran_AccessValidation_RPAdmin(String loginUser) throws Exception {
 
 			//Fetching the exemption record from API
 			String exemptionQuery = "select Name from Exemption__c where Status__c= 'Active' Limit 1";

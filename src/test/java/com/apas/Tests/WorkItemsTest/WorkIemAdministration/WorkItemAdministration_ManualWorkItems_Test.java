@@ -861,8 +861,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 
 		String workItemCreationData1 =  testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData1 = objUtil.generateMapFromJsonFile(workItemCreationData1, "DOVSequencing");
-		//Map<String, String> hashMapmanualWorkItemData1 = objUtil.generateMapFromJsonFile(workItemCreationData1,"DataToCreateWorkItemOfTypeRP");
-
+		
 		String workItemCreationData2 =  testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData2 = objUtil.generateMapFromJsonFile(workItemCreationData2,"DataToCreateWorkItemOfTypeRP");
 
