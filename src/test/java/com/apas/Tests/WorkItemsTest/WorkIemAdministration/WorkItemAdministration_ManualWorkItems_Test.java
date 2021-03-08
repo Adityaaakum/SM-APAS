@@ -861,7 +861,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 
 		String workItemCreationData1 =  testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData1 = objUtil.generateMapFromJsonFile(workItemCreationData1, "DOVSequencing");
-
+		
 		String workItemCreationData2 =  testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData2 = objUtil.generateMapFromJsonFile(workItemCreationData2,"DataToCreateWorkItemOfTypeRP");
 
@@ -882,7 +882,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 
 		// Step4: Change the status of WI to Submitted for Approval
 		driver.navigate().refresh();
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(objWorkItemHomePage.submittedforApprovalTimeline, 10);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
@@ -915,7 +915,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 
 		// Step8: Change the status of WI to Submitted for Approval
 		driver.navigate().refresh();
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(objWorkItemHomePage.submittedforApprovalTimeline, 10);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 

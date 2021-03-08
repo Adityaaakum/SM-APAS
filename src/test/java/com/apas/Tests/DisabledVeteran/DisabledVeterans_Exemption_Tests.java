@@ -446,7 +446,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	       objPage.waitForElementToBeVisible(objParcel.exemptionRelatedList, 3);
 	       softAssert.assertTrue(objParcel.exemptionRelatedList.isDisplayed(), "SMAB-T580:Verify that user is able to see 'Exemption related List' and related fields on Parcel details page");
 	       objPage.Click(objParcel.exemptionRelatedList); 
-	       objPage.Click(exemptionPageObj.newExemptionButton);
+	       objPage.Click(exemptionPageObj.newExemptionRelatedButton);
 	       
 	   //Step3: Selecting mandatory details before verifying error message
 	       objPage.enter(exemptionPageObj.dateApplicationReceived,fieldData.get("DateApplicationReceived"));

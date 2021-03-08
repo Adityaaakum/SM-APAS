@@ -584,14 +584,26 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         String query = "SELECT Id FROM Work_Item__c Where Type__c = 'BPP Trends'";
         objSalesforceAPI.delete("Work_Item__c", query);
 
-        //Step2: Validate reminder work item creation and the work item flow for approved file
+        //Step2: Generate 'Update & Validate' reminder work item and the update BPP Trends Setup Status
+        objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_ANNUAL_FACTORS);
+
+        //Step3: Validate reminder work item creation and the work item flow for approved file
         WorkItemWorkflow_BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
 
-        //Step3: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
+        //Step4: Update 'Annual Factor Status' & WI status to Completed
+        query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings'";
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "In Progress");
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
+
+        query = "SELECT id FROM BPP_Trend_Roll_Year__c WHERE Roll_Year__c = '" + rollYear + "'";
+        objSalesforceAPI.update("BPP_Trend_Roll_Year__c", query, "Annual_Factor_Status__c", "Reviewed by Admin");
+
+        //Step5: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objBppTrendSetupPage.login(loginUser);
         objBppTrendSetupPage.searchModule(modules.HOME);
+        Thread.sleep(2000);
 
-        //Step4: "Perform Calculations" Work Item generation validation
+        //Step6: "Perform Calculations" Work Item generation validation
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
 
         int importWorkItemCount = objWorkItemHomePage.getWorkItemCount(performCalculationsRequestType,objWorkItemHomePage.TAB_IN_POOL);
@@ -734,6 +746,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objBppTrendSetupPage.login(loginUser);
         objBppTrendSetupPage.searchModule(modules.HOME);
+        Thread.sleep(2000);
 
         //Step6: "Perform Calculations" Work Item generation validation
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";

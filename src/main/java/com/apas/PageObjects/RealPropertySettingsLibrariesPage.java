@@ -121,7 +121,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//div[@class='uiBlock']//p[@class='detail']//span")
 	public WebElement errorMsgforEdit;
 	
-	@FindBy(xpath = "//li[@title = 'Details']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//li[@title = 'Details']")
 	public WebElement detailsTabLabel;
 	
 	@FindBy(xpath = "//span[text()='Close this window']//ancestor::button")
