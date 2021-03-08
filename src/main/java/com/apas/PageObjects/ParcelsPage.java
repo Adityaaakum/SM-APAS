@@ -40,10 +40,8 @@ public class ParcelsPage extends ApasGenericPage {
 	public String workItemRoutingDropDownComponentsActionsModal = "Work Item Routing";
 	public String workItemOwnerSearchBox = "Work Item Owner (if someone other than you)";
 
-	public String editButton ="Edit";
+	
 	public String editApnField ="APN";
-	public String editBoxSave ="Save";
-	public String editBoxCancel="Cancel";
 	
 	public String LongLegalDescriptionLabel="Long Legal Description"; 
 
@@ -85,8 +83,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public WebElement openAsessorsMapButton;
 	
 	
-	@FindBy(xpath = "//li[contains(text(),'APN')]")
-	public WebElement EditButtonErrorMessage;
+	
 	
 	
 	

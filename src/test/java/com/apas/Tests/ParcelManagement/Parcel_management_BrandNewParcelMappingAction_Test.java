@@ -192,5 +192,194 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objWorkItemHomePage.logout();
 
 	}
+	/**
+	 *  Upon completion of the "Brand New Parcel" action, the system will create the desired parcels
+	 * 
+	 * @param loginUser-Mapping user
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T2642,SMAB-T2643,SMAB-T2644:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression","ParcelManagement" },enabled = true)
+	public void ParcelManagement_VerifyBrandNewParcelMappingAction(String loginUser) throws Exception {
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apn=responseAPNDetails.get("Name").get(0);
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+		String mappingActionCreationData = System.getProperty("user.dir") + testdata.Brand_New_Parcel_MAPPING_ACTION;
+		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformBrandNewParcelMappingActionWithoutAllFields");
+
+		//  Login to the APAS application using the credentials passed through data provider (login Mapping User)
+		objMappingPage.login(loginUser);
+
+		//  Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn);
+
+		//  Creating Manual work item for the Parcel 
+	     String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		//Clicking the  details tab for the work item newly created and clicking on Related Action Link
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+	    
+		// Validation that work pool should be 'Mapping' on parent parcel work item
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping",": Validation that work pool should be 'Mapping' on parent parcel work item");
+		
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();	
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		
+						
+		// entering data in form for Brand New Parcel mapping
+		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.CreateNewParcelButton));
+		// Validating that Parcel has been successfully created.
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel has been successfully created. Please Review Spatial Information",
+				"SMAB-T2642: Validation that Parcel has been successfully created. Please Review Spatial Information");
+		
+		// Retriving new APN genrated
+           HashMap<String, ArrayList<String>> gridParcelData = objMappingPage.getGridDataInHashMap();
+           String newCreatedApn  =   gridParcelData.get("APN").get(0);                         
+           HashMap<String, ArrayList<String>> statusnewApn = objMappingPage.fetchFieldValueOfParcel("Status__c", newCreatedApn);
+             // validating status of brand new parcel           
+            softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2643: Verifying the status of the new parcel");
+              //Completing the workItem
+           String   queryWI = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
+     	   salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Completed");
+     		//Validating the status of the workItem 
+     		 HashMap<String, ArrayList<String>> statusCompletedApn = objMappingPage.fetchFieldValueOfParcel("Status__c",newCreatedApn);
+             //Validating the status of parcel after completing WI
+           softAssert.assertEquals(statusCompletedApn.get("Status__c").get(0), "Active", "SMAB-T2644 Validating that the status of new APN is active");
+            driver.switchTo().window(parentWindow);
+		    objMappingPage.logout();
+		   		
+            		                          
+		   
+	}
+	/**
+	 * Once the parcel creation has been approved, the user will not be allowed to change the APN allocated.
+	 * 
+	 * 
+	 * @param loginUser-Mapping user
+	 * @throws Exception
+	 */
+	
+	@Test(description = "SMAB-T2646: Once the parcel creation has been approved, the user will not be allowed to change the APN allocated.", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression","ParcelManagement" },enabled = true)
+	public void ParcelManagement_VerifyNoTAllowedToChangeNewAPN(String loginUser) throws Exception {
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apn=responseAPNDetails.get("Name").get(0);
+
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+		String mappingActionCreationData = System.getProperty("user.dir") + testdata.Brand_New_Parcel_MAPPING_ACTION;
+		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformBrandNewParcelMappingActionWithoutAllFields");
+
+		//  Login to the APAS application using the credentials passed through data provider (login Mapping User)
+		objMappingPage.login(loginUser);
+
+		//  Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn);
+
+		//  Creating Manual work item for the Parcel 
+		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		//Clicking the  details tab for the work item newly created and clicking on Related Action Link
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+				
+		// Validation that work pool should be 'Mapping' on parent parcel work item
+	    softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping",": Validation that work pool should be 'Mapping' on parent parcel work item");	
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();	
+		objWorkItemHomePage.switchToNewWindow(parentWindow);	
+	     // entering data in form for Brand New Parcel mapping
+		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.CreateNewParcelButton));		
+		 HashMap<String, ArrayList<String>> gridParcelData = objMappingPage.getGridDataInHashMap();
+         String newCreatedApn  =   gridParcelData.get("APN").get(0);
+          driver.switchTo().window(parentWindow);         
+          objMappingPage.searchModule(PARCELS);         
+ 		  objMappingPage.globalSearchRecords(newCreatedApn);
+ 		
+ 		//clicking on edit button in parcels page
+ 		 objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditButton));
+ 		  objParcelsPage.scrollToElement(objParcelsPage.getWebElementWithLabel(objParcelsPage.editApnField)); 		                   
+ 		 //Entering new apn value 		 
+ 		 objParcelsPage.enter(objParcelsPage.getWebElementWithLabel(objParcelsPage.editApnField), "111"); 		         
+ 		 objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.SaveButton));		         
+ 		 softAssert.assertEquals(objParcelsPage.getErrorMessage(),"APN number cannot be changed once created" ,"SMAB-T2646: Verifying that new APN cannot be reupdated."); 		 
+ 		 objParcelsPage.cancelRecord();
+ 		 objParcelsPage.logout(); 
+ 		       
+ 		      
+ 				         
+	}
+	
+	/**
+	 * The update legal and short legal description should be visible in parcel if added while creating the parcel and these fields should be editable after the parcel is approved
+	 * 
+	 * @param loginUser - Mapping user
+	 * @throws Exception
+	 */
+	
+	@Test(description = "SMAB-T2647: The update legal and short legal description should be visible in parcel if added while creating the parcel and these fields should be editable after the parcel is approved", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression","ParcelManagement" },enabled = true)
+	public void ParcelManagement_VerifyLegalDescIsEditable(String loginUser) throws Exception {
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apn=responseAPNDetails.get("Name").get(0);
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+		String mappingActionCreationData = System.getProperty("user.dir") + testdata.Brand_New_Parcel_MAPPING_ACTION;
+		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformBrandNewParcelMappingActionWithoutAllFields");
+
+		//  Login to the APAS application using the credentials passed through data provider (login Mapping User)
+		objMappingPage.login(loginUser);
+		//  Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn);
+		//  Creating Manual work item for the Parcel 
+		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		//Clicking the  details tab for the work item newly created and clicking on Related Action Link
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);	
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping",": Validation that work pool should be 'Mapping' on parent parcel work item");	
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();	
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		
+	    // entering data in form for Brand New Parcel mapping
+		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.CreateNewParcelButton));		
+		 HashMap<String, ArrayList<String>> gridParcelData=      objMappingPage.getGridDataInHashMap();
+         String newCreatedApn  =   gridParcelData.get("APN").get(0);         
+         driver.switchTo().window(parentWindow);         
+         objMappingPage.searchModule(PARCELS);         
+ 		objMappingPage.globalSearchRecords(newCreatedApn); 		
+ 		//clicking on edit button in parcels page 		
+ 		 objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditButton));
+ 	     boolean status = objParcelsPage.verifyElementEnabled(objParcelsPage.getWebElementWithLabel(objParcelsPage.LongLegalDescriptionLabel));		
+ 	 	objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.SaveButton)); 
+ 		  //validating that long desc field is editable
+ 		 softAssert.assertEquals(status ,true, "SMAB-T2647:Validating long desc field is editable");
+ 		  objParcelsPage.logout();
+ 		  
+ 		  
+	}
+
+
 
 }
