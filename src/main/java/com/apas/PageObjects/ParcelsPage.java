@@ -11,6 +11,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ParcelsPage extends ApasGenericPage {
@@ -37,12 +39,23 @@ public class ParcelsPage extends ApasGenericPage {
 	public String priorityDropDownComponentsActionsModal = "Priority";
 	public String workItemRoutingDropDownComponentsActionsModal = "Work Item Routing";
 	public String workItemOwnerSearchBox = "Work Item Owner (if someone other than you)";
+
 	public String editButton ="Edit";
 	public String editApnField ="APN";
 	public String editBoxSave ="Save";
 	public String editBoxCancel="Cancel";
 	
 	public String LongLegalDescriptionLabel="Long Legal Description"; 
+
+	public String statusDropDownLabel = "Status";
+	public String parcelRelationshipsTabLabel = "Parcel Relationships";
+	public String ownershipTabLabel = "Ownership";
+	public String ownerDropDown = "Owner";
+	public String typeDropDown = "Type";
+	public String statusDropDown = "Status";
+	public String bppAccountDropDown = "BPP Account";
+	public String ownershipStartTextBox = "Ownership Start Date";
+	
 
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
@@ -138,4 +151,54 @@ public class ParcelsPage extends ApasGenericPage {
 		return workItemNumber;
 	}
 	
+	/**
+	 * Description: This method will open the parcel Related TAB Name passed in the
+	 * parameter
+	 * @param tabName: Value in the APN column
+	 * @throws Exception 
+	 */
+	public void openParcelRelatedTab(String tabName) throws Exception {
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening the parcel Related List Tab : " + tabName);
+		String xPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[text()='" + tabName + "']";
+		if(verifyElementVisible(xPath)) {
+			Click(getButtonWithText(tabName));
+		}
+		else {
+			Click(moretab);
+			Click(driver.findElement(By.xpath(xPath)));
+		}
+		Thread.sleep(2000);
+	}
+	
+	/**
+	 * @Description: This method will create Ownership record
+	 * @param dataMap: A data map which contains data to perform create Ownership record
+	 * @throws Exception
+	 */
+	public String createOwnershipRecord(Map<String, String> dataMap) throws Exception {
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");
+		
+		//Fetching Assessee records
+        String queryAssesseeRecord = "SELECT Id, Name FROM Account Limit 1";
+        HashMap<String, ArrayList<String>> responseAssesseeDetails = objSalesforceAPI.select(queryAssesseeRecord);
+        String assesseeName = responseAssesseeDetails.get("Name").get(0);
+        
+		String owner = assesseeName;
+		String type = dataMap.get("Type");
+		String status = dataMap.get("Status");
+		String bppAccount = dataMap.get("BPP Account");
+		String ownershipStartDate = dataMap.get("Ownership Start Date");
+		
+		createRecord();
+		searchAndSelectOptionFromDropDown(ownerDropDown, owner);
+		selectOptionFromDropDown(typeDropDown, type);
+		selectOptionFromDropDown(statusDropDown, status);
+		if (ownershipStartDate != null)
+			enter(ownershipStartTextBox, ownershipStartDate);
+		if (bppAccount != null)
+			searchAndSelectOptionFromDropDown(bppAccountDropDown, bppAccount);
+		
+		String successMsg = saveRecord();
+		return successMsg;
+	}
 }

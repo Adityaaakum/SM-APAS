@@ -121,9 +121,9 @@ public class Parcel_Managment_Manual_Creation_Output extends TestBase implements
      	 salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Completed");
      		//Validating the status of the workItem 
      		
-     		 String statusnewApn = objMappingPage.fetchFieldValueOfParcel("Status__c",newApn);
+     		 HashMap<String, ArrayList<String>> statusnewApn = objMappingPage.fetchFieldValueOfParcel("Status__c",newApn);
              
-           softAssert.assertEquals(statusnewApn, "Active", "SMAB-T2644 Validating that the status of new APN is active");
+           softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "Active", "SMAB-T2644 Validating that the status of new APN is active");
      		  		
      		    	   		    		
              		                           
