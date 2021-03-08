@@ -735,8 +735,8 @@ public class Page extends TestBase {
 				commonPath + "//input[@name=\"" + label + "\"] | " + //this condition was observed on manual work item creation pop up for edit boxes
 				commonPath + "//*[(@class='inputHeader' or @class='uiBlock') and contains(.,\"" + label + "\")]/..//Select |"+ //This condition was observed for few drop downs of Select Type
 				commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//a | " + //this condition was observed on Mapping Action screen for Assessor' Map label
-				commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//span | " + //this condition was observed on Mapping Action screen for Parent APN(s) field
 				commonPath + "//label[text()=\"" + label + "\"]/..//textarea";//this condition was added to handle webelements of type textarea
+		//commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//span | " + //this condition was observed on Mapping Action screen for Parent APN(s) field
 				
 		waitUntilElementIsPresent(xpath, 3);
 		return driver.findElement(By.xpath(xpath));
