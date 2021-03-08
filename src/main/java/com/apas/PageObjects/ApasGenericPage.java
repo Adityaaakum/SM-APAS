@@ -1202,16 +1202,6 @@ public class ApasGenericPage extends Page {
 		String query = "SELECT "+fieldName+" FROM Parcel__c where Name = '"+apnNumber+"'";
 		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
 
-		if(fieldName.equalsIgnoreCase("Neighborhood_Reference__c")){
-			query = "SELECT Name FROM Neighborhood__c Where Id = '"+response.get(fieldName).get(0)+"'";
-		}else if(fieldName.equalsIgnoreCase("TRA__c")){
-			query = "SELECT Name FROM TRA__c Where Id = '"+response.get(fieldName).get(0)+"'";
-		}else if(fieldName.equalsIgnoreCase("Primary_Situs__c")){
-			query = "SELECT Name FROM Situs__c Where Id = '"+response.get(fieldName).get(0)+"'";
-		}
-		response = objSalesforceAPI.select(query);
-		
-		
 		return response;
 	}
 
