@@ -539,33 +539,33 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String childAPNNumber2 =gridDataHashMap.get("APN").get(1);
 
 		//Step 9: Verify Primary Situs value is inheritted from Parent to Child Parcels
-		String parentAPNPrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__c",apn);
-		String childAPN1PrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__c",childAPNNumber1);
-		String childAPN2PrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__c",childAPNNumber2);
-		softAssert.assertEquals(parentAPNPrimarySitus,childAPN1PrimarySitus,"SMAB-T2541: Verify Primary Situs of Child Parcel is inheritted from Parent Parcel");
-		softAssert.assertEquals(parentAPNPrimarySitus,childAPN2PrimarySitus,"SMAB-T2541: Verify Primary Situs of Child Parcel is inheritted from Parent Parcel");
+		HashMap<String, ArrayList<String>> parentAPNPrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__c",apn);
+		HashMap<String, ArrayList<String>> childAPN1PrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__c",childAPNNumber1);
+		HashMap<String, ArrayList<String>> childAPN2PrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__c",childAPNNumber2);
+		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN1PrimarySitus.get("Name").get(0),"SMAB-T2541: Verify Primary Situs of Child Parcel is inheritted from Parent Parcel");
+		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN2PrimarySitus.get("Name").get(0),"SMAB-T2541: Verify Primary Situs of Child Parcel is inheritted from Parent Parcel");
 
 		//Step 10: Verify Neighborhood Code value is inheritted from Parent to Child Parcels
-		String parentAPNNeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",apn);
-		String childAPN1NeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",childAPNNumber1);
-		String childAPN2NeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",childAPNNumber2);
-		softAssert.assertEquals(parentAPNNeighborhoodCode,childAPN1NeighborhoodCode,"SMAB-T2541: Verify District/Neighborhood Code of Child Parcel is inheritted from Parent Parcel");
-		softAssert.assertEquals(parentAPNNeighborhoodCode,childAPN2NeighborhoodCode,"SMAB-T2541: Verify District/Neighborhood Code of Child Parcel is inheritted from Parent Parcel");
+		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",apn);
+		HashMap<String, ArrayList<String>> childAPN1NeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",childAPNNumber1);
+		HashMap<String, ArrayList<String>> childAPN2NeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",childAPNNumber2);
+		softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),childAPN1NeighborhoodCode.get("Name").get(0),"SMAB-T2541: Verify District/Neighborhood Code of Child Parcel is inheritted from Parent Parcel");
+		softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),childAPN2NeighborhoodCode.get("Name").get(0),"SMAB-T2541: Verify District/Neighborhood Code of Child Parcel is inheritted from Parent Parcel");
 
 		//Step 11: Verify TRA value is inheritted from Parent to Child Parcels
-		String parentAPNTRA = objMappingPage.fetchFieldValueOfParcel("TRA__c",apn);
-		String childAPN1TRA = objMappingPage.fetchFieldValueOfParcel("TRA__c",childAPNNumber1);
-		String childAPN2TRA = objMappingPage.fetchFieldValueOfParcel("TRA__c",childAPNNumber2);
-		softAssert.assertEquals(parentAPNTRA,childAPN1TRA,"SMAB-T2541: Verify TRA of Child Parcel is inheritted from Parent Parcel");
-		softAssert.assertEquals(parentAPNTRA,childAPN2TRA,"SMAB-T2541: Verify TRA of Child Parcel is inheritted from Parent Parcel");
+		HashMap<String, ArrayList<String>> parentAPNTRA = objMappingPage.fetchFieldValueOfParcel("TRA__c",apn);
+		HashMap<String, ArrayList<String>> childAPN1TRA = objMappingPage.fetchFieldValueOfParcel("TRA__c",childAPNNumber1);
+		HashMap<String, ArrayList<String>> childAPN2TRA = objMappingPage.fetchFieldValueOfParcel("TRA__c",childAPNNumber2);
+		softAssert.assertEquals(parentAPNTRA.get("Name").get(0),childAPN1TRA.get("Name").get(0),"SMAB-T2541: Verify TRA of Child Parcel is inheritted from Parent Parcel");
+		softAssert.assertEquals(parentAPNTRA.get("Name").get(0),childAPN2TRA.get("Name").get(0),"SMAB-T2541: Verify TRA of Child Parcel is inheritted from Parent Parcel");
 
 		//Step 12: Verify Status of Parent & Child Parcels after parcel is split and before WI completion
-		String parentAPNStatus = objMappingPage.fetchFieldValueOfParcel("Status__c",apn);
-		String childAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",childAPNNumber1);
-		String childAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",childAPNNumber2);
-		softAssert.assertEquals(parentAPNStatus,"In Progress - To Be Expired","SMAB-T2541: Verify Status of Parent Parcel: "+apn);
-		softAssert.assertEquals(childAPN1Status,"In Progress - New Parcel","SMAB-T2541: Verify Status of Child Parcel: "+childAPNNumber1);
-		softAssert.assertEquals(childAPN2Status,"In Progress - New Parcel","SMAB-T2541: Verify Status of Child Parcel: "+childAPNNumber2);
+		HashMap<String, ArrayList<String>> parentAPNStatus = objMappingPage.fetchFieldValueOfParcel("Status__c",apn);
+		HashMap<String, ArrayList<String>> childAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",childAPNNumber1);
+		HashMap<String, ArrayList<String>> childAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",childAPNNumber2);
+		softAssert.assertEquals(parentAPNStatus.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2541: Verify Status of Parent Parcel: "+apn);
+		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2541: Verify Status of Child Parcel: "+childAPNNumber1);
+		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2541: Verify Status of Child Parcel: "+childAPNNumber2);
 
 		//Step 13: Verify no Parent WI is inherrited by Child Parcels after parcel is split
 		String query = "SELECT Id FROM Parcel__c Where Name = '"+childAPNNumber1+ "'";
@@ -590,20 +590,20 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		parentAPNStatus = objMappingPage.fetchFieldValueOfParcel("Status__c",apn);
 		childAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",childAPNNumber1);
 		childAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",childAPNNumber2);
-		softAssert.assertEquals(parentAPNStatus,"Retired","SMAB-T2551: Verify Status of Parent Parcel: "+apn);
-		softAssert.assertEquals(childAPN1Status,"Active","SMAB-T2551: Verify Status of Child Parcel: "+childAPNNumber1);
-		softAssert.assertEquals(childAPN2Status,"Active","SMAB-T2551: Verify Status of Child Parcel: "+childAPNNumber2);
+		softAssert.assertEquals(parentAPNStatus.get("Status__c").get(0),"Retired","SMAB-T2551: Verify Status of Parent Parcel: "+apn);
+		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"Active","SMAB-T2551: Verify Status of Child Parcel: "+childAPNNumber1);
+		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"Active","SMAB-T2551: Verify Status of Child Parcel: "+childAPNNumber2);
 
 		//Step 16: Verify 2 new WIs are generated and linked to Child Parcels after parcel is split and WI is completed
 		String queryToGetRequestType = "SELECT Work_Item__r.Request_Type__c FROM Work_Item_Linkage__c Where Parcel__c = '"+childAPNId1+"' OR Parcel__c = '"+childAPNId2+"'";
 		response = salesforceAPI.select(queryToGetRequestType);
-		int expectedWorkItemsGenerated = response.size();
+		int expectedWorkItemsGenerated = response.get("Work_Item__r").size();
 		softAssert.assertEquals(expectedWorkItemsGenerated,4,"Verify 2 new Work Items are generated and linked to each child parcel after parcel is split and WI is completed");
 
-		softAssert.assertEquals(response.get("Request_Type__c").get(0),"New APN - Update Characteristics & Verify PUC","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
-		softAssert.assertEquals(response.get("Request_Type__c").get(1),"New APN - Allocate Value","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
-		softAssert.assertEquals(response.get("Request_Type__c").get(2),"New APN - Update Characteristics & Verify PUC","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
-		softAssert.assertEquals(response.get("Request_Type__c").get(3),"New APN - Allocate Value","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
+		softAssert.assertContains(response.get("Work_Item__r").get(0),"New APN - Update Characteristics & Verify PUC","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
+		softAssert.assertContains(response.get("Work_Item__r").get(1),"New APN - Allocate Value","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
+		softAssert.assertContains(response.get("Work_Item__r").get(2),"New APN - Update Characteristics & Verify PUC","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
+		softAssert.assertContains(response.get("Work_Item__r").get(3),"New APN - Allocate Value","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
 	}
 	/**
 	 * This method is to Parcel Management- Verify that User is able to update Situs of child parcels from the Parcel mapping screen for "Split" mapping action
