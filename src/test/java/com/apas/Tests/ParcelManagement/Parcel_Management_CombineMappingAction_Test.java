@@ -756,6 +756,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 	}
+
 	/**
 	 * This method is to Verify that User is able to update Situs for child parcel from the Parcel mapping screen for "Combine" mapping action
 	 * @param loginUser

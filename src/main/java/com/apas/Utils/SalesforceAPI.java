@@ -492,7 +492,7 @@ public class SalesforceAPI extends TestBase {
      */
     public void generateReminderWorkItems(String reminderWorkItemCode) throws IOException {
 
-        ReportLogger.INFO("Generating Disabled Veteran Reminder Work Items");
+        ReportLogger.INFO("Generating Reminder Work Items");
         //Creating HTTP Post Connection
         HttpPost httpPost = salesforceCreateConnection();
 

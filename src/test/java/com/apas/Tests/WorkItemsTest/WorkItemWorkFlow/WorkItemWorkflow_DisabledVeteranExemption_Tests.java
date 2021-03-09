@@ -63,7 +63,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 	@Test(description = "SMAB-T2080,SMAB-T1922: APAS system should generate a WI on new Exemption Creation", 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
+			groups = {"Smoke","Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
 	public void WorkItemWorkflow_DisabledVeteran_WorkItemGeneratedOnNewExemptionCreation(String loginUser) throws Exception {
 
 		Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
@@ -443,7 +443,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		newExemptionName = objExemptionsPage.createNewExemptionWithMandatoryData(newExemptionData);
 		HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
 		String WIName = getWIDetails.get("Name").get(0);
-
+		objApasGenericPage.searchModule(modules.WORK_ITEM);
 		objApasGenericPage.logout();
 		Thread.sleep(5000);
 

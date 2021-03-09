@@ -562,7 +562,7 @@ public class ApasGenericPage extends Page {
 	public void globalSearchRecords(String searchString) throws Exception {
 
 		ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
-		if (System.getProperty("region").toUpperCase().equals("E2E")){
+		if (System.getProperty("region").toUpperCase().equals("E2E") || System.getProperty("region").toUpperCase().equals("PREUAT")){
 			WebElement element  = driver.findElement(By.xpath("//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input"));
 			searchAndSelectOptionFromDropDown(element, searchString);
 		}else{
@@ -1082,7 +1082,7 @@ public class ApasGenericPage extends Page {
    }
 
    public ArrayList<String> fetchActiveAPN(int numberofAPNs) {
-       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberofAPNs;
+       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT')  and (Not Name like '1%') Limit " + numberofAPNs;
        return objSalesforceAPI.select(queryForID).get("Name");
    }
    
@@ -1195,27 +1195,42 @@ public class ApasGenericPage extends Page {
 	/*
    This method is used to fetch field value for mentioned APN
    @Param: fieldName: Field name for which value needs to be fetched
-   @Param: apnNumber: Parcle Number for whic field value needs to be fetched
+   @Param: apnNumber: Parcel Number for which field value needs to be fetched
    @return: returns the value of the field
   */
-	public String fetchFieldValueOfParcel(String fieldName, String apnNumber) throws Exception {
-		String selectQueryFieldName, fieldValue ="";
+	public HashMap<String, ArrayList<String>> fetchFieldValueOfParcel(String fieldName, String apnNumber) throws Exception {
 		String query = "SELECT "+fieldName+" FROM Parcel__c where Name = '"+apnNumber+"'";
 		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
 
-		if(fieldName.equalsIgnoreCase("Neighborhood_Reference__c")){
-			query = "SELECT Name FROM Neighborhood__c Where Id = '"+response.get(fieldName).get(0)+"'";
-		}else if(fieldName.equalsIgnoreCase("TRA__c")){
-			query = "SELECT Name FROM TRA__c Where Id = '"+response.get(fieldName).get(0)+"'";
-		}else if(fieldName.equalsIgnoreCase("Primary_Situs__c")){
-			query = "SELECT Name FROM Situs__c Where Id = '"+response.get(fieldName).get(0)+"'";
-		}
-		if(fieldName.equalsIgnoreCase("Status__c")){
-			fieldValue = response.get("Status__c").get(0);
-		}else {
-			response = objSalesforceAPI.select(query);
-			fieldValue = response.get("Name").get(0);
-		}
-		return fieldValue;
+		return response;
 	}
-}
+
+	public String getSuccessMessage() throws Exception {
+		String SuccessTxt = "";
+		waitForElementToDisappear(xpathSpinner,15);
+		Thread.sleep(2000);
+		List<WebElement> SuccessText = locateElements("//div[contains(@class,'color_success')]",15);
+		if(SuccessText.get(0).getAttribute("class").contains("color_success")){
+			for(WebElement successMsg : SuccessText){
+				SuccessTxt = (SuccessTxt + successMsg.getText()).trim();
+			}
+		}else
+			SuccessTxt = SuccessText.get(0).getText();
+
+		return SuccessTxt;
+	}
+
+	/**
+	 * Description: This method will verify is a cell on a grid displayed from the first row is editable
+	 *
+	 * @param columnNameOnGrid: Column name on which the cell needs to be updated
+	 */
+	public boolean verifyGridCellEditable(String columnNameOnGrid) {
+		boolean isCellEditable = false;
+		if(verifyElementVisible("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")){
+			isCellEditable = true;
+		}
+		return isCellEditable;
+	}
+
+	}

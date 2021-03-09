@@ -678,7 +678,11 @@ public class Page extends TestBase {
 	public String getSelectedDropDownValue(WebElement dropDown) throws Exception {
 		waitForElementToBeVisible(dropDown, 30);
 		Click(dropDown);
-		String value = driver.findElement(By.xpath("//div[@aria-expanded='true']//lightning-base-combobox-item//*[@data-key='check']//ancestor::span/following-sibling::span")).getText();
+		String array[]=dropDown.toString().split("xpath:");
+        String tempValue=array[1];
+        String actualValue=tempValue.substring(0,tempValue.lastIndexOf("]")).trim();
+        String dropDownFieldValue= actualValue +"/../following-sibling::div//lightning-base-combobox-item//*[@data-key='check']//ancestor::span/following-sibling::span/span";
+		String value =  driver.findElement(By.xpath(dropDownFieldValue)).getText();
 		Click(dropDown);
 		return value;
 	}
@@ -747,7 +751,8 @@ public class Page extends TestBase {
 		String commonxPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 		String xpath = commonxPath + "//button[text()='" + text + "'] | " +
 				commonxPath + "//div[text()='" + text + "']//.. | " +
-				commonxPath + "//*[contains(@class,'slds-is-open')]//button[text()='" + text + "']";
+				commonxPath + "//*[contains(@class,'slds-is-open')]//button[text()='" + text + "'] | " +
+				commonxPath + "//a[text()='" + text + "']";
 		waitUntilElementIsPresent(xpath, 10);
 		return driver.findElement(By.xpath(xpath));
 	}

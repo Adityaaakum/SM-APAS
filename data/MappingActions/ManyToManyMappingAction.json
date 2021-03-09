@@ -37,6 +37,14 @@
     "First non-Condo Parcel Number" : "120-340-790",
     "Comments": "Perform Many To Many Mapping Action"
 },
+  "DataToPerformManyToManyMappingActionWithMissingReasonCode": {
+    "Action": "Many To Many",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "",
+    "Number of Child Non-Condo Parcels": "2",
+    "First non-Condo Parcel Number" : "120-340-790",
+    "Comments": "Perform Many To Many Mapping Action"
+},
   "DataToPerformManyToManyMappingActionWithDotInData": {
     "Action": "Many To Many",
     "Are taxes fully paid?": "Yes",
@@ -74,6 +82,17 @@
     "Situs Street Name": "CLIFFSIDE",
     "Situs Type": "ALLEE",
     "Situs Unit Number": "56"
-}
+},
+  "DataToPerformManyToManyMappingActionForOutputValidations": {
+    "Action": "Many To Many",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Many To Many",
+    "Number of Child Non-Condo Parcels": "2",
+    "Comments": "Perform Many To Many Mapping Action"
+  },
+  "DataToCreateOwnershipRecord": {
+    "Type": "Owner",
+    "Status": "Active"
+  }
   
 }

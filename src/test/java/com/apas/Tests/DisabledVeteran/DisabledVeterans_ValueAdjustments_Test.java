@@ -62,7 +62,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	 * @throws Exception 
 	 **/
 	@Test(description = "SMAB-T633,SMAB-T1613:Verify Zero value adjustments record is created for historic Start Date and End Date", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {
-			"Smoke", "Regression","DisabledVeteran" })
+			"Regression","DisabledVeteran" })
 	public void Disabledveteran_NoVACreationBeyondDefaultLimitDatesExemption(String loginUser) throws Exception{
 		
 		Map<String, String> noVAData = objUtil.generateMapFromJsonFile(exemptionFilePath, "noVAData");
@@ -95,7 +95,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	 * @throws Exception 
 	 **/
 
-	@Test(description = "SMAB-T1261:verify user is able to see new VAs Getting Created After Updating a Not Qualified Exemption To Qualified",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression","DisabledVeteran" })
+	@Test(description = "SMAB-T1261:verify user is able to see new VAs Getting Created After Updating a Not Qualified Exemption To Qualified",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran" })
 	
 		public void Disabledveteran_VAsGetsCreatedAfterUpdatingNotQualifiedExemptionToQualified(String loginUser) throws Exception{
 		Map<String, String> noVAData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NotQualifiedToQualifiedData");
@@ -199,7 +199,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	/**
 	 Below test case is used to verify that on entering End date of Rating future VA's are deactivated,deleted and new is created
 	 **/
-	@Test(description = "SMAB-T499,SMAB-T601,SMAB-T485,SMAB-T602,SMAB-T1281,SMAB-T486: Verify future dated VA's are DEACTIVATED with Status Not Active when end date of rating is entered",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression","DisabledVeteran" })
+	@Test(description = "SMAB-T499,SMAB-T601,SMAB-T485,SMAB-T602,SMAB-T1281,SMAB-T486: Verify future dated VA's are DEACTIVATED with Status Not Active when end date of rating is entered",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran" })
 	public void Disabledveteran_UpdatingEndDateOfRating_DeletesFutureVA_CreatesNewVA_DeActivesVA(String loginUser) throws Exception	{
 		Map<String, String> endDateOfRatingData = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData1");
 		
@@ -312,7 +312,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	 **/
 	
 
-	@Test(description = "SMAB-T1276:Verify No penalty is applied to all VA's if application is submitted before Grace end date", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression","DisabledVeteran" })
+	@Test(description = "SMAB-T1276:Verify No penalty is applied to all VA's if application is submitted before Grace end date", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran" })
 	public void Disabledveteran_NoPenlatyIfApplicationSubmittedBeforeGraceEndDate(String loginUser) throws Exception{
 		Map<String, String> newExemptionMandatoryData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NoPenaltyData");
 		//Step1: Login to the APAS application using the credentials passed through data provider
@@ -360,7 +360,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 	 Below test case is used to verify Penalty percentage and Penalty amounts for VA's
 	 * @throws Exception 
 	 **/
-	@Test(description = "SMAB-T1365,SMAB-T1387,SMAB-T1375,SMAB-T1290,SMAB-T1277,SMAB-T1291:Verify correct penlaty percenatge is applied to all VA's", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression","DisabledVeteran"})
+	@Test(description = "SMAB-T1365,SMAB-T1387,SMAB-T1375,SMAB-T1290,SMAB-T1277,SMAB-T1291:Verify correct penlaty percenatge is applied to all VA's", dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","DisabledVeteran"})
 	public void Disabledveteran_PenlatyPercentageForAllVAs(String loginUser) throws Exception{
 		
 		Map<String, String> newExemptionMandatoryData = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData");

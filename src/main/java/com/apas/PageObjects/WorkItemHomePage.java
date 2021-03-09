@@ -244,6 +244,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	@FindBy(xpath = "//input[@type='button' and @value='Remove']")
 	public WebElement removeButton;
+	
+	@FindBy(xpath="//*[@name='Select Primary']")
+	public WebElement SelectPrimaryButton;
 
 	public String editButton = "Edit";
 	
@@ -371,7 +374,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 		waitUntilElementIsPresent(xpath, 15);
 		waitForElementToBeClickable(driver.findElement(By.xpath(xpath)), 10);
 		javascriptClick(driver.findElement(By.xpath(xpath)));
-		Thread.sleep(4000);
+		Thread.sleep(5000);
 	}
 
 	/**

@@ -53,9 +53,9 @@ public class TestBase extends BrowserDriver {
 	public void TearDown() {
 		RemoteWebDriver ldriver = BrowserDriver.getBrowserInstance();
 		try {
-			ldriver.close();
+		//	ldriver.close();
 			Thread.sleep(4000);
-			ldriver.quit();
+		//	ldriver.quit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

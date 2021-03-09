@@ -44,7 +44,7 @@ public class CountyStratCodesTest extends TestBase {
 	 * Checking the validations for mandatory fields
 	 * Checking for validation on duplicate entry creation
 	 **/
-	@Test(description = "SMAB-T392,SMAB-T437: Creating manual entry for County Strat Code, editing it and checking for duplicate entry creation", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "buildingPermit"})
+	@Test(description = "SMAB-T392,SMAB-T437: Creating manual entry for County Strat Code, editing it and checking for duplicate entry creation", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BuildingPermit"})
 	public void CountyStratCode_CREDAndMandatoryFieldValidations(String loginUser) throws Exception {
 
 		String stratCodeDerscription = "CountyStratCodeValidationTest";
@@ -132,7 +132,7 @@ public class CountyStratCodesTest extends TestBase {
 	/**
 	 * Below test case is used to validate validation for dependency of permit value operator and permit value limit fields on each other
 	 **/
-	@Test(description = "SMAB-T465: Creating manual entry to check dependent permit value operator and permit value limit fields on each other", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "buildingPermit"})
+	@Test(description = "SMAB-T465: Creating manual entry to check dependent permit value operator and permit value limit fields on each other", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BuildingPermit"})
 	public void CountyStratCode_PermitValueFieldsDependency(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
@@ -177,7 +177,7 @@ public class CountyStratCodesTest extends TestBase {
 	 * Below test case is used to create city strat code from details page of county strat code
 	 * Checking the validations for mandatory fields
 	 **/
-	@Test(description = "SMAB-T436: Creating manual entry for City Strat Code from details page of County Strat Code", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"regression", "buildingPermit"})
+	@Test(description = "SMAB-T436: Creating manual entry for City Strat Code from details page of County Strat Code", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BuildingPermit"})
 	public void CountyStratCode_CreateCityStratCodeFromCountyStratDetailsPage(String loginUser) throws Exception {
 
 		//Step1: Retrieving details of an existing county strat code using salesforce API

@@ -41,7 +41,7 @@ public class WorkItemAdministration_RoutingSetupTest extends TestBase {
     }
 
     @Test(description = "SMAB-T1811,SMAB-T1812,SMAB-T1814,SMAB-T1815: Verify user is able to create,edit Neighborhood reference record with mandatory fields & not able to create duplicate record", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-            "Smoke", "Regression", "WorkItemAdministration" }, alwaysRun = true)
+            "Regression", "WorkItemAdministration" }, alwaysRun = true)
     public void WorkItemAdministration_NeighborhoodReferenceRecordCreation(String loginUser) throws Exception {
         String workItemCreationData = testdata.WORK_ITEMS_ROUTING_SETUP;
         Map<String, String> hashMapNeighborhoodData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateNeighborhood");
@@ -56,7 +56,7 @@ public class WorkItemAdministration_RoutingSetupTest extends TestBase {
 
         //Step3: Click on New Button and save the record without entering mandatory fields
         // Delete existing record before creating new record
-        String query = "SELECT Id FROM Neighborhood__c WHERE Name  = '"+hashMapNeighborhoodData.get("Neighborhood Code")+"'";
+        String query = "SELECT Id FROM Neighborhood__c WHERE Name  = '"+hashMapNeighborhoodData.get("District")+"/"+ hashMapNeighborhoodData.get("Neighborhood Code")+"'";
         salesforceAPI.delete("Neighborhood__c",query);
 
         objWorkItemHomePage.createRecord();
@@ -105,13 +105,13 @@ public class WorkItemAdministration_RoutingSetupTest extends TestBase {
         softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1815: Verify user is not able to create duplicate Neighborhood Reference Record");
 
         //Step9: Delete record create above
-        query = "SELECT Id FROM Neighborhood__c WHERE Name  = '"+hashMapDuplicateNeighborhoodData.get("Neighborhood Code")+"'";
+        query = "SELECT Id FROM Neighborhood__c WHERE Name  = '"+hashMapNeighborhoodData.get("District")+"/"+ hashMapNeighborhoodData.get("Neighborhood Code")+"'";
         salesforceAPI.delete("Neighborhood__c",query);
 
     }
 
     @Test(description = "SMAB-T1816,SMAB-T1817,SMAB-T1821,SMAB-T1822: Verify user is able to create,edit Territory record with mandatory fields & not able to create duplicate record", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-            "Smoke", "Regression","WorkItemAdministration" }, alwaysRun = true)
+            "Regression","WorkItemAdministration" }, alwaysRun = true)
     public void WorkItemAdministration_TerritoryRecordCreation(String loginUser) throws Exception {
         String workItemCreationData = testdata.WORK_ITEMS_ROUTING_SETUP;
         Map<String, String> hashMapTerritoryData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateTerritory");

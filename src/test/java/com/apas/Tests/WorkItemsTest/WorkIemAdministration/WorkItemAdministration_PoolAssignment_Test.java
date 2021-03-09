@@ -134,7 +134,7 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
         // Step6: Create the work item
         objWorkItemHomePage.searchModule(modules.PARCELS);
         objWorkItemHomePage.globalSearchRecords(apnValue);
-        String workItemCreationData = System.getProperty("user.dir") + testdata.MANUAL_WORK_ITEMS;
+        String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
         Map<String, String> hashMapGiveWorkItemToSomeoneElse = objUtil.generateMapFromJsonFile(workItemCreationData, "WorkItemRoutingGiveToSomeoneElse");
         hashMapGiveWorkItemToSomeoneElse.put("Work Item Owner",user);
         objParcelsPage.createWorkItem(hashMapGiveWorkItemToSomeoneElse);

@@ -611,12 +611,12 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		//Get the user name through queries
 		String ExemptionSupportNameQuery = "select Name from User where UserName__c = '"+ ExemptionSupport + "'";
 		HashMap<String, ArrayList<String>> response1 = new SalesforceAPI().select(ExemptionSupportNameQuery);
-		String rpBusinessAdminName = response1.get("Name").get(0);
+		String ExemptionSupportName = response1.get("Name").get(0);
 
 		//Get the user name through queries
 		String rpBusinessAdminNameQuery = "select Name from User where UserName__c = '"+ rpBusinessAdmin + "'";
 		response1 = new SalesforceAPI().select(rpBusinessAdminNameQuery);
-		String ExemptionSupportName = response1.get("Name").get(0);
+		String rpBusinessAdminName = response1.get("Name").get(0);
 
 		//fetching a parcel where PUC is not blank but Primary Situs is blank 
 		String apnValue=apasGenericObj.fetchActiveAPN();
@@ -847,7 +847,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		ReportLogger.INFO("Get the user names through SOQL query");
 		String rpBusinessAdminName = salesforceAPI.getUserName(users.RP_BUSINESS_ADMIN);
 		String dataAdminName = salesforceAPI.getUserName(users.DATA_ADMIN);
-		String mappingStaffName = salesforceAPI.getUserName(users.MAPPING_STAFF);
+		String appraisalSupportName = salesforceAPI.getUserName(users.APPRAISAL_SUPPORT);
 
 		// fetching a parcel where PUC is not blank but Primary Situs is blank
 		String queryAPNValue1 = "select Name from Parcel__c where puc_code_lookup__c != NULL and primary_situs__c = NULL and Status__c='Active' limit 2";
@@ -861,7 +861,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 
 		String workItemCreationData1 =  testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData1 = objUtil.generateMapFromJsonFile(workItemCreationData1, "DOVSequencing");
-
+		
 		String workItemCreationData2 =  testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData2 = objUtil.generateMapFromJsonFile(workItemCreationData2,"DataToCreateWorkItemOfTypeRP");
 
@@ -882,7 +882,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 
 		// Step4: Change the status of WI to Submitted for Approval
 		driver.navigate().refresh();
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(objWorkItemHomePage.submittedforApprovalTimeline, 10);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
@@ -915,7 +915,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 
 		// Step8: Change the status of WI to Submitted for Approval
 		driver.navigate().refresh();
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(objWorkItemHomePage.submittedforApprovalTimeline, 10);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 
@@ -953,7 +953,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		//Step12: Click on the Assign Level2 Supervisor button and validate the details
 		ReportLogger.INFO("Click the Assign Level2 Supervisor button");
 		objPage.javascriptClick(objPage.getButtonWithText(objWorkItemHomePage.assignLevel2Approver));	
-		objWorkItemHomePage.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wiLevel2ApproverDetailsPage, mappingStaffName);
+		objWorkItemHomePage.searchAndSelectOptionFromDropDown(objWorkItemHomePage.wiLevel2ApproverDetailsPage, appraisalSupportName);
 
 		String successMessage = objWorkItemHomePage.saveRecord();
 		softAssert.assertEquals(successMessage,"success\nSuccess\nWork item(s) processed successfully!\nClose","SMAB-T2563 : Validate user is able to assign the WI" );
@@ -972,7 +972,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
 				"SMAB-T2563: Validate the Approver on the Work Item");
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),appraisalSupportName,
 				"SMAB-T2563: Validate the Level2 Approver on the Work Item");
 
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
@@ -988,7 +988,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
 				"SMAB-T2563: Validate the Approver on the Work Item");
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),appraisalSupportName,
 				"SMAB-T2563: Validate the Level2 Approver on the Work Item");
 
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
@@ -1028,10 +1028,10 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
 				"SMAB-T2563: Validate the Approver on the Work Item");
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),appraisalSupportName,
 				"SMAB-T2563: Validate the Level2 Approver on the Work Item");
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),appraisalSupportName,
 				"SMAB-T2563: Validate the Current Approver on the Work Item");
 
 		objWorkItemHomePage.globalSearchRecords(workItem2); 
@@ -1044,10 +1044,10 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiApproverDetailsPage, "Approval & Supervisor Details"),rpBusinessAdminName,
 				"SMAB-T2563: Validate the Approver on the Work Item");
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiLevel2ApproverDetailsPage, "Approval & Supervisor Details"),appraisalSupportName,
 				"SMAB-T2563: Validate the Level2 Approver on the Work Item");
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),mappingStaffName,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiCurrentApproverDetailsPage, "Approval & Supervisor Details"),appraisalSupportName,
 				"SMAB-T2563: Validate the Current Approver on the Work Item");
 
 		//Step16: Logout from the application
@@ -1055,7 +1055,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		Thread.sleep(5000);
 
 		//Step17: Login in the application
-		objWorkItemHomePage.login(users.MAPPING_STAFF);
+		objWorkItemHomePage.login(users.APPRAISAL_SUPPORT);
 
 		//Step18: Opening the Work Item Module
 		objWorkItemHomePage.searchModule(modules.HOME);

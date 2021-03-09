@@ -34,7 +34,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		objUtil = new Util();
 	}
 
-	@FindBy(xpath = "//a[@title = 'New'] | //flexipage-tab2[contains(@class,'show')]//button[text()='New']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//a[@title = 'New'] | //flexipage-tab2[contains(@class,'show')]//*[text()='New']")
 	public WebElement newButton;
 
 	@FindBy(xpath = "//a[text()='No actions available']")
@@ -76,7 +76,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following::div[@class='actionsWrapper']//a | //span[text() = 'BPP Composite Factors Settings']//ancestor::div[contains(@class,'firstHeaderRow')]//following::div//*[contains(@class,'icon-x-small')]")
 	public WebElement dropDownIconBppCompFactorSetting;
 
-	@FindBy(xpath = "//div[contains(@class, 'uiMenuList--default visible positioned')]//a[@title = 'New'] | //flexipage-tab2[contains(@class,'show')]//button[text()='New']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//div[contains(@class, 'uiMenuList--default visible positioned')]//a[@title = 'New'] | //flexipage-tab2[contains(@class,'show')]//*[text()='New']")
 	public WebElement newBtnToCreateEntry;
 
 	@FindBy(xpath = "(//div[contains(@class,'actionMenu')])[2]//a[@title = 'New']")
@@ -412,7 +412,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 */
 	public String createDummyBppTrendSetupForErrorsValidation(String compFactorTablesStatus, int rollYear) throws Exception {
 		//Step1: Click New button on the grid to open form / pop up to create new BPP Trend Setup
-		objPage.waitUntilElementIsPresent(30, "//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']");
+		objPage.waitUntilElementIsPresent(30, "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']");
 		WebElement newButton = objPage.waitForElementToBeClickable(30,"//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']");
 		Click(newButton);
 

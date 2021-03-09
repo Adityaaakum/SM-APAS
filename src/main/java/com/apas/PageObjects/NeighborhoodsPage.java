@@ -43,7 +43,7 @@ public class NeighborhoodsPage extends ApasGenericPage {
      * @throws Exception
      **/
     public void enterNeighborhoodReferenceRecordDetails(Map<String, String> neighborhoodReferenceData) throws Exception{
-        enter(districtNeighborhoodCodeEditBox,neighborhoodReferenceData.get("District Neighborhood Code"));
+        enter(districtNeighborhoodCodeEditBox,neighborhoodReferenceData.get("District / Neighborhood Code"));
         enter(neighborhoodCodeEditBox,neighborhoodReferenceData.get("Neighborhood Code"));
         enter(neighborhoodDescriptionEditBox,neighborhoodReferenceData.get("Neighborhood Description"));
         objApasGenericPage.searchAndSelectOptionFromDropDown(primaryAppraiserDropDown,neighborhoodReferenceData.get("Primary Appraiser"));
