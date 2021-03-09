@@ -41,8 +41,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String workItemOwnerSearchBox = "Work Item Owner (if someone other than you)";
 
 	
-	public String editApnField ="APN";
-	
+	public String editApnField ="APN";	
 	public String LongLegalDescriptionLabel="Long Legal Description"; 
 
 	public String statusDropDownLabel = "Status";
