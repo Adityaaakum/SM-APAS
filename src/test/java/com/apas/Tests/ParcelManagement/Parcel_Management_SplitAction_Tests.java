@@ -610,11 +610,10 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2661:Parcel Management- Verify that User is able to update Situs of child parcels from the Parcel mapping screen for \"Split\" mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+	@Test(description = "SMAB-T2661:Parcel Management- Verify that User is able to update Situs of child parcels from the Parcel mapping screen for \"Split\" mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
 	public void ParcelManagement_UpdateChildParcelSitus_SplitMappingAction(String loginUser) throws Exception {
 
-		String queryAPN = "Select name,ID  From Parcel__c where name like '004%' AND Primary_Situs__c !=NULL limit 1";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 
@@ -657,7 +656,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 
-		//Step 5: Selecting Action as 'Split' & Taxes Paid fields value as 'N/A'
+		//Step 5: Selecting Action as 'Split' & Taxes Paid fields value as 'Yes'
 		objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapSplitActionMappingData.get("Action"));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
@@ -689,14 +688,14 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		//Step 9: Validation that primary situs on last screen screen is getting populated from situs entered in first screen
 		for(int i=0;i<gridDataHashMap.get("Situs").size();i++)
 			softAssert.assertEquals(gridDataHashMap.get("Situs").get(i),childprimarySitus,
-					"SMAB-T2661: Validation that System populates primary situs on last screen for child parcel number "+i+1+" with the situs value that was added in first screen");
+					"SMAB-T2661: Validation that System populates primary situs on last screen for child parcel number "+i+" with the situs value that was added in first screen");
 
 		//Step 10: Validation that primary situs of child parcel is the situs value that was added in first screen from situs modal window
 		for(int i=0;i<gridDataHashMap.get("Situs").size();i++)
 		{
 		String primarySitusValueChildParcel=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ gridDataHashMap.get("APN").get(i) +"')").get("Name").get(0);
 		softAssert.assertEquals(primarySitusValueChildParcel,childprimarySitus,
-				"SMAB-T2661: Validation that primary situs of  child parcel number "+i+1+" has value that was entered in first screen through situs modal window");
+				"SMAB-T2661: Validation that primary situs of  child parcel number "+i+" has value that was entered in first screen through situs modal window");
 		}
 
 		driver.switchTo().window(parentWindow);
