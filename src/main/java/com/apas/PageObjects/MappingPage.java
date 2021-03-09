@@ -38,7 +38,7 @@ public class MappingPage extends ApasGenericPage {
 	public String useCodeColumnSecondScreen = "Use Code";
 	public String districtEditTextBoxSecondScreenLabel = "District";
 	public String useCodeEditTextBoxSecondScreenLabel = "Use Code";
-	public String numberOfChildNonCondoTextBoxLabel = "Number of Child Non Condo Parcels";
+	public String numberOfChildNonCondoTextBoxLabel = "Number of Child Non-Condo Parcels";
 	public String numberOfChildCondoTextBoxLabel = "Number of Child Condo Parcels";
 	public String nextButton = "Next";
 	public String generateParcelButton = "Generate Parcel";

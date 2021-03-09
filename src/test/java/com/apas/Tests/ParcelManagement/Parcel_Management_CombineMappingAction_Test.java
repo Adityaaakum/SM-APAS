@@ -763,7 +763,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2659:Parcel Management- Verify that User is able to update Situs for child parcel from the Parcel mapping screen for \"Combine\" mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"regression","parcel_management" })
+			"Regression","ParcelManagement" })
 	public void ParcelManagement_UpdateChildParcelSitusFirstScreen_CombineMappingAction(String loginUser) throws Exception {
 
 		//Fetching Assessee records
