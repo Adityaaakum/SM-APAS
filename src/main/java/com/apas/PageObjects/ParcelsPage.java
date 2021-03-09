@@ -85,8 +85,6 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	
 	
-	
-	
     public String SubmittedForApprovalButton="Submit for Approval";
 	
     public String WithdrawButton="Withdraw";

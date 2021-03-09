@@ -50,7 +50,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2263,SMAB-T2521,SMAB-T2522,SMAB-T2537,SMAB-T2547:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel (Active) of type Non Condo from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement" },enabled = false)
 	public void ParcelManagement_VerifyBrandNewParcelMappingActionNonCondoParcel(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -59,7 +59,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
-		String mappingActionCreationData = System.getProperty("user.dir") + testdata.Brand_New_Parcel_MAPPING_ACTION;
+		String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformBrandNewParcelMappingActionWithoutAllFields");
 
@@ -116,13 +116,13 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2523,SMAB-T2524,SMAB-T2525,SMAB-T2527:Validation on the Brand New parcel Mapping Action can only be performed on Active Parcels ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Smoke","Regression","ParcelManagement" })
+			"Smoke","Regression","ParcelManagement" },enabled = true)
 	public void ParcelManagement_VerifyFirstNonCondoFieldOnBrandNewparcelAction(String loginUser) throws Exception {
 		String queryAPN = "Select name From Parcel__c where Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String activeParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
 		
-		String mappingActionCreationData = System.getProperty("user.dir") + testdata.Brand_New_Parcel_MAPPING_ACTION;
+		String mappingActionCreationData =  testdata.Brand_New_Parcel_MAPPING_ACTION;
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformBrandNewParcelMappingActionWithoutAllFields");
 
@@ -199,7 +199,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2642,SMAB-T2643,SMAB-T2644:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" },enabled = true)
+			"Regression","ParcelManagement" },enabled =true)
 	public void ParcelManagement_VerifyBrandNewParcelMappingAction(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -207,7 +207,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
-		String mappingActionCreationData = System.getProperty("user.dir") + testdata.Brand_New_Parcel_MAPPING_ACTION;
+		String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformBrandNewParcelMappingActionWithoutAllFields");
 
@@ -272,14 +272,16 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	@Test(description = "SMAB-T2646: Once the parcel creation has been approved, the user will not be allowed to change the APN allocated.", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" },enabled = true)
 	public void ParcelManagement_VerifyNoTAllowedToChangeNewAPN(String loginUser) throws Exception {
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
+		String apn2=responseAPNDetails.get("Name").get(1);
+		
 
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
-		String mappingActionCreationData = System.getProperty("user.dir") + testdata.Brand_New_Parcel_MAPPING_ACTION;
+		String mappingActionCreationData =  testdata.Brand_New_Parcel_MAPPING_ACTION;
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformBrandNewParcelMappingActionWithoutAllFields");
 
@@ -315,9 +317,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
  		 objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditButton));
  		  objParcelsPage.scrollToElement(objParcelsPage.getWebElementWithLabel(objParcelsPage.editApnField)); 		                   
  		 //Entering new apn value 		 
- 		 objParcelsPage.enter(objParcelsPage.getWebElementWithLabel(objParcelsPage.editApnField), "111"); 		         
- 		 objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.SaveButton));		         
- 		 softAssert.assertEquals(objParcelsPage.getErrorMessage(),"APN number cannot be changed once created" ,"SMAB-T2646: Verifying that new APN cannot be reupdated."); 		 
+ 		 objParcelsPage.enter(objParcelsPage.getWebElementWithLabel(objParcelsPage.editApnField), apn2); 		         
+ 		 softAssert.assertEquals(objParcelsPage.saveRecordAndGetError().contains("You can't save this record because a duplicate record already exists"),true ,"SMAB-T2646: Verifying that new APN cannot be reupdated."); 	         
  		 objParcelsPage.cancelRecord();
  		 objParcelsPage.logout(); 
  		       
@@ -341,7 +342,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
-		String mappingActionCreationData = System.getProperty("user.dir") + testdata.Brand_New_Parcel_MAPPING_ACTION;
+		String mappingActionCreationData =   testdata.Brand_New_Parcel_MAPPING_ACTION;
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformBrandNewParcelMappingActionWithoutAllFields");
 
