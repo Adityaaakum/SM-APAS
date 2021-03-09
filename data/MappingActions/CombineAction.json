@@ -4,7 +4,21 @@
     "Are taxes fully paid?": "Yes",
     "Reason code": "Testing Combine",
     "Comments": "Perform Combine"
-  }
+  },
+  "DataToPerformCombineMappingActionWithSitusData": {
+    "Action": "Perform Parcel Combine",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Combine",
+    "Comments": "Perform Combine Mapping Action",
+    "Situs City Description": "ATHERTON",
+    "Situs City Code": "AT",
+    "Situs City Name": "DALY CITY",
+    "Direction": "West Coast",
+    "Situs Number": "69",
+    "Situs Street Name": "CLIFFSIDE",
+    "Situs Type": "ALLEE",
+    "Situs Unit Number": "56"
+}
   
 
 }

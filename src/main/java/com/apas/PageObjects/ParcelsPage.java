@@ -39,6 +39,11 @@ public class ParcelsPage extends ApasGenericPage {
 	public String priorityDropDownComponentsActionsModal = "Priority";
 	public String workItemRoutingDropDownComponentsActionsModal = "Work Item Routing";
 	public String workItemOwnerSearchBox = "Work Item Owner (if someone other than you)";
+
+	
+	public String editApnField ="APN";	
+	public String LongLegalDescriptionLabel="Long Legal Description"; 
+
 	public String statusDropDownLabel = "Status";
 	public String parcelRelationshipsTabLabel = "Parcel Relationships";
 	public String ownershipTabLabel = "Ownership";
@@ -75,6 +80,9 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//button[contains(text(),'Open Assessor')]")
 	public WebElement openAsessorsMapButton;
+	
+	
+	
 	
     public String SubmittedForApprovalButton="Submit for Approval";
 	
