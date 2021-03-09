@@ -170,14 +170,8 @@ public class ParcelsPage extends ApasGenericPage {
 	 * @param dataMap: A data map which contains data to perform create Ownership record
 	 * @throws Exception
 	 */
-	public String createOwnershipRecord(Map<String, String> dataMap) throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");
-		
-		//Fetching Assessee records
-        String queryAssesseeRecord = "SELECT Id, Name FROM Account Limit 1";
-        HashMap<String, ArrayList<String>> responseAssesseeDetails = objSalesforceAPI.select(queryAssesseeRecord);
-        String assesseeName = responseAssesseeDetails.get("Name").get(0);
-        
+	public String createOwnershipRecord(String assesseeName, Map<String, String> dataMap) throws Exception {
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");        
 		String owner = assesseeName;
 		String type = dataMap.get("Type");
 		String status = dataMap.get("Status");
