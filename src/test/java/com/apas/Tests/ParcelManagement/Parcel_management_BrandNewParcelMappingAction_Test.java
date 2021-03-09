@@ -352,14 +352,14 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		// Retriving new APN genrated
            HashMap<String, ArrayList<String>> gridParcelData = objMappingPage.getGridDataInHashMap();
            String newCreatedApn  =   gridParcelData.get("APN").get(0);                         
-           HashMap<String, ArrayList<String>> statusnewApn = objMappingPage.fetchFieldValueOfParcel("Status__c", newCreatedApn);
+           HashMap<String, ArrayList<String>> statusnewApn = objParcelsPage.fetchFieldValueOfParcel("Status__c", newCreatedApn);
              // validating status of brand new parcel           
             softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2643: Verifying the status of the new parcel");
               //Completing the workItem
            String   queryWI = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
      	   salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Completed");
      		//Validating the status of the workItem 
-     		 HashMap<String, ArrayList<String>> statusCompletedApn = objMappingPage.fetchFieldValueOfParcel("Status__c",newCreatedApn);
+     		 HashMap<String, ArrayList<String>> statusCompletedApn = objParcelsPage.fetchFieldValueOfParcel("Status__c",newCreatedApn);
              //Validating the status of parcel after completing WI
            softAssert.assertEquals(statusCompletedApn.get("Status__c").get(0), "Active", "SMAB-T2644 Validating that the status of new APN is active");
             driver.switchTo().window(parentWindow);
