@@ -214,7 +214,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 
 	}
 	/**
-<<<<<<< HEAD
+
 	 *  Upon completion of the "Brand New Parcel" action, the system will create the desired parcels
 	 * 
 	 * @param loginUser-Mapping user
