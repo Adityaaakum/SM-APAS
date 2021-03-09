@@ -104,13 +104,13 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         // Step1: Login to the APAS application
         objMappingPage.login(users.RP_APPRAISER);
 
-        // Step2: Opening the PARCELS page and searching the parcel to create ownership record        
+        // Step2: Opening the PARCELS page and searching the parcel to create ownership record   
         responseAPNDetails.get("Name").stream().forEach(parcel -> {
         	try {
 	        	objMappingPage.searchModule(PARCELS);
 		        objMappingPage.globalSearchRecords(parcel);
 		        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
-		        objParcelsPage.createOwnershipRecord(hashMapCreateOwnershipRecordData);
+		        objParcelsPage.createOwnershipRecord(assesseeName, hashMapCreateOwnershipRecordData);
         	}
         	catch(Exception e) {
         		ExtentTestManager.getTest().log(LogStatus.ERROR, "Fail to create ownership record"+e);
@@ -476,13 +476,17 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         // Step1: Login to the APAS application
         objMappingPage.login(users.RP_APPRAISER);
 
-        // Step2: Opening the PARCELS page and searching the parcel to create ownership record        
+        // Step2: Opening the PARCELS page and searching the parcel to create ownership record 
+        //Fetching Assessee records
+        String queryAssesseeRecord = "SELECT Id, Name FROM Account Limit 1";
+        HashMap<String, ArrayList<String>> responseAssesseeDetails = salesforceAPI.select(queryAssesseeRecord);
+        String assesseeName = responseAssesseeDetails.get("Name").get(0);
         responseAPNDetails.get("Name").stream().forEach(parcel -> {
         	try {
 	        	objMappingPage.searchModule(PARCELS);
 		        objMappingPage.globalSearchRecords(parcel);
 		        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
-		        objParcelsPage.createOwnershipRecord(hashMapCreateOwnershipRecordData);
+		        objParcelsPage.createOwnershipRecord(assesseeName, hashMapCreateOwnershipRecordData);
         	}
         	catch(Exception e) {
         		ExtentTestManager.getTest().log(LogStatus.ERROR, "Fail to create ownership record"+e);
@@ -702,13 +706,16 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         // Step1: Login to the APAS application
         objMappingPage.login(users.RP_APPRAISER);
 
-        // Step2: Opening the PARCELS page and searching the parcel to create ownership record        
+        // Step2: Opening the PARCELS page and searching the parcel to create ownership record 
+        String queryAssesseeRecord = "SELECT Id, Name FROM Account Limit 1";
+        HashMap<String, ArrayList<String>> responseAssesseeDetails = salesforceAPI.select(queryAssesseeRecord);
+        String assesseeName = responseAssesseeDetails.get("Name").get(0);
         responseAPNDetails.get("Name").stream().forEach(parcel -> {
         	try {
 	        	objMappingPage.searchModule(PARCELS);
 		        objMappingPage.globalSearchRecords(parcel);
 		        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
-		        objParcelsPage.createOwnershipRecord(hashMapCreateOwnershipRecordData);
+		        objParcelsPage.createOwnershipRecord(assesseeName, hashMapCreateOwnershipRecordData);
         	}
         	catch(Exception e) {
         		ExtentTestManager.getTest().log(LogStatus.ERROR, "Fail to create ownership record"+e);
