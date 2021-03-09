@@ -356,9 +356,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
         softAssert.assertContains(objMappingPage.getErrorMessage(),"-In order to proceed with a parcel \"Many To Many\" action, the parent APN must have the same ownership and ownership allocation.",
                 "SMAB-T2596: Validation that proper error message is displayed if parcels are of different ownership");
-        softAssert.assertContains(objMappingPage.getErrorMessage(),"-Warning: TRAs of the \"Many to Many\" parent parcels are different.",
-                "SMAB-T2594: Validation that proper warning message is displayed if parcels are of different TRAs");
-
+        
         //Step 7: Edit Parent APN, enter Retired APN  and Verify Error Message
         // fetching  parcel that is retired
         queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
@@ -416,8 +414,10 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
         objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithoutHyphen);
         objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-        objMappingPage.waitForElementToBeClickable(20,objMappingPage.parentAPNFieldValue);
+        Thread.sleep(2000);
         softAssert.assertTrue(objMappingPage.getElementText(objMappingPage.parentAPNFieldValue).split(",")[0].contains("-"),"SMAB-T2582: Verify that when 9 digit APN is entered without hyphen, after saving hyphen is added automatically");
+        softAssert.assertContains(objMappingPage.getErrorMessage(),"-Warning: TRAs of the \"Many to Many\" parent parcels are different.",
+                "SMAB-T2594: Validation that proper warning message is displayed if parcels are of different TRAs");
 
 
         driver.switchTo().window(parentWindow);
@@ -569,41 +569,41 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         });
         
         //Step 14: Verify Status of Parent & Child Parcels before WI completion
-        HashMap<String, ArrayList<String>> parentAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn1);
-        HashMap<String, ArrayList<String>> parentAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn2);		
-        HashMap<String, ArrayList<String>> childAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
-        HashMap<String, ArrayList<String>> childAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
+        HashMap<String, ArrayList<String>> parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn1);
+        HashMap<String, ArrayList<String>> parentAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn2);		
+        HashMap<String, ArrayList<String>> childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
+        HashMap<String, ArrayList<String>> childAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
   		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2722: Verify Status of Parent Parcel: "+apn1);
   		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2722: Verify Status of Parent Parcel: "+apn2);
   		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2722: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
   		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2722: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(1));     
   		
 		//Step 15: Verify Neighborhood Code value is inherited from Parent to Child Parcels
-  		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",apn1);
-  		HashMap<String, ArrayList<String>> childAPN1NeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",gridDataHashMap.get("APN").get(0));
-  		HashMap<String, ArrayList<String>> childAPN2NeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",gridDataHashMap.get("APN").get(1));
+  		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",apn1);
+  		HashMap<String, ArrayList<String>> childAPN1NeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",gridDataHashMap.get("APN").get(0));
+  		HashMap<String, ArrayList<String>> childAPN2NeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",gridDataHashMap.get("APN").get(1));
 		softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),childAPN1NeighborhoodCode.get("Name").get(0),"SMAB-T2722: Verify District/Neighborhood Code of Child Parcel is inheritted from first Parent Parcel");
 		softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),childAPN2NeighborhoodCode.get("Name").get(0),"SMAB-T2722: Verify District/Neighborhood Code of Child Parcel is inheritted from first Parent Parcel");
 
 		//Step 16: Verify TRA value is inherited from Parent to Child Parcels
-		HashMap<String, ArrayList<String>> parentAPNTRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",apn1);
-		HashMap<String, ArrayList<String>> childAPN1TRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",gridDataHashMap.get("APN").get(0));
-		HashMap<String, ArrayList<String>> childAPN2TRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",gridDataHashMap.get("APN").get(1));
+		HashMap<String, ArrayList<String>> parentAPNTRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",apn1);
+		HashMap<String, ArrayList<String>> childAPN1TRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",gridDataHashMap.get("APN").get(0));
+		HashMap<String, ArrayList<String>> childAPN2TRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",gridDataHashMap.get("APN").get(1));
 		softAssert.assertEquals(parentAPNTRA.get("Name").get(0),childAPN1TRA.get("Name").get(0),"SMAB-T2722: Verify TRA of Child Parcel is inheritted from first Parent Parcel");
 		softAssert.assertEquals(parentAPNTRA.get("Name").get(0),childAPN2TRA.get("Name").get(0),"SMAB-T2722: Verify TRA of Child Parcel is inheritted from first Parent Parcel");
 
 		//Step 17: Verify District value is inherited from Parent to Child Parcels
-		HashMap<String, ArrayList<String>> parentAPNDistrict = objMappingPage.fetchFieldValueOfParcel("District__c",apn1);
-		HashMap<String, ArrayList<String>> childAPN1District = objMappingPage.fetchFieldValueOfParcel("District__c",gridDataHashMap.get("APN").get(0));
-		HashMap<String, ArrayList<String>> childAPN2District = objMappingPage.fetchFieldValueOfParcel("District__c",gridDataHashMap.get("APN").get(1));
+		HashMap<String, ArrayList<String>> parentAPNDistrict = objParcelsPage.fetchFieldValueOfParcel("District__c",apn1);
+		HashMap<String, ArrayList<String>> childAPN1District = objParcelsPage.fetchFieldValueOfParcel("District__c",gridDataHashMap.get("APN").get(0));
+		HashMap<String, ArrayList<String>> childAPN2District = objParcelsPage.fetchFieldValueOfParcel("District__c",gridDataHashMap.get("APN").get(1));
 		softAssert.assertEquals(parentAPNDistrict.get("District__c").get(0),childAPN1District.get("District__c").get(0),"SMAB-T2722: Verify District of Child Parcel is inheritted from first Parent Parcel");
 		softAssert.assertEquals(parentAPNDistrict.get("District__c").get(0),childAPN2District.get("District__c").get(0),"SMAB-T2722: Verify District of Child Parcel is inheritted from first Parent Parcel");
 		
 		//Step 18: Verify Primary Situs value is inherited from Parent to Child Parcels
-  		HashMap<String, ArrayList<String>> parentAPNPrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__r.Name",apn1);
-  		HashMap<String, ArrayList<String>> childAPN1PrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__r.Name",gridDataHashMap.get("APN").get(0));
-  		HashMap<String, ArrayList<String>> childAPN2PrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__r.Name",gridDataHashMap.get("APN").get(1));
-		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN1PrimarySitus.get("Name").get(0),"SMAB-T2722: Verify Primary Situs of Child Parcel is inheritted from first Parent Parcel");
+  		HashMap<String, ArrayList<String>> parentAPNPrimarySitus = objParcelsPage.fetchFieldValueOfParcel("Primary_Situs__c",apn1);
+  		HashMap<String, ArrayList<String>> childAPN1PrimarySitus = objParcelsPage.fetchFieldValueOfParcel("Primary_Situs__c",gridDataHashMap.get("APN").get(0));
+  		HashMap<String, ArrayList<String>> childAPN2PrimarySitus = objParcelsPage.fetchFieldValueOfParcel("Primary_Situs__c",gridDataHashMap.get("APN").get(1));
+  		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN1PrimarySitus.get("Name").get(0),"SMAB-T2722: Verify Primary Situs of Child Parcel is inheritted from first Parent Parcel");
 		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN2PrimarySitus.get("Name").get(0),"SMAB-T2722: Verify Primary Situs of Child Parcel is inheritted from first Parent Parcel");
 		
 		
@@ -612,10 +612,10 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		salesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
 		
 		//Step 20: Verify Status of Parent & Child Parcels after WI completion
-		parentAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn1);
-		parentAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn2);		
-		childAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
-		childAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
+		parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn1);
+		parentAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn2);		
+		childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
+		childAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
   		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Retired","SMAB-T2722: Verify Status of Parent Parcel: "+apn1);
   		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"Retired","SMAB-T2722: Verify Status of Parent Parcel: "+apn2);
   		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"Active","SMAB-T2722: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
@@ -798,10 +798,10 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         });
         
         //Step 14: Verify Status of Parent & Child Parcels before WI completion
-        HashMap<String, ArrayList<String>> parentAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn1);
-        HashMap<String, ArrayList<String>> parentAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn2);		
-        HashMap<String, ArrayList<String>> childAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
-        HashMap<String, ArrayList<String>> childAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
+        HashMap<String, ArrayList<String>> parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn1);
+        HashMap<String, ArrayList<String>> parentAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn2);		
+        HashMap<String, ArrayList<String>> childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
+        HashMap<String, ArrayList<String>> childAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
   		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2730: Verify Status of Parent Parcel: "+apn1);
   		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2730: Verify Status of Parent Parcel: "+apn2);
   		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2730: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
@@ -809,30 +809,30 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         
   		
 		//Step 15: Verify Neighborhood Code value is inherited from Parent to Child Parcels
-		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",apn1);
-		HashMap<String, ArrayList<String>> childAPN1NeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",gridDataHashMap.get("APN").get(0));
-		HashMap<String, ArrayList<String>> childAPN2NeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",gridDataHashMap.get("APN").get(1));
+		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",apn1);
+		HashMap<String, ArrayList<String>> childAPN1NeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",gridDataHashMap.get("APN").get(0));
+		HashMap<String, ArrayList<String>> childAPN2NeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",gridDataHashMap.get("APN").get(1));
 		softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),childAPN1NeighborhoodCode.get("Name").get(0),"SMAB-T2730: Verify District/Neighborhood Code of Child Parcel is inheritted from first Parent Parcel");
 		softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),childAPN2NeighborhoodCode.get("Name").get(0),"SMAB-T2730: Verify District/Neighborhood Code of Child Parcel is inheritted from first Parent Parcel");
 
 		//Step 16: Verify TRA value is inherited from Parent to Child Parcels
-		HashMap<String, ArrayList<String>> parentAPNTRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",apn1);
-		HashMap<String, ArrayList<String>> childAPN1TRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",gridDataHashMap.get("APN").get(0));
-		HashMap<String, ArrayList<String>> childAPN2TRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",gridDataHashMap.get("APN").get(1));
+		HashMap<String, ArrayList<String>> parentAPNTRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",apn1);
+		HashMap<String, ArrayList<String>> childAPN1TRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",gridDataHashMap.get("APN").get(0));
+		HashMap<String, ArrayList<String>> childAPN2TRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",gridDataHashMap.get("APN").get(1));
 		softAssert.assertEquals(parentAPNTRA.get("Name").get(0),childAPN1TRA.get("Name").get(0),"SMAB-T2730: Verify TRA of Child Parcel is inheritted from first Parent Parcel");
 		softAssert.assertEquals(parentAPNTRA.get("Name").get(0),childAPN2TRA.get("Name").get(0),"SMAB-T2730: Verify TRA of Child Parcel is inheritted from first Parent Parcel");
 
 		//Step 17: Verify District value is inherited from Parent to Child Parcels
-		HashMap<String, ArrayList<String>> parentAPNDistrict = objMappingPage.fetchFieldValueOfParcel("District__c",apn1);
-		HashMap<String, ArrayList<String>> childAPN1District = objMappingPage.fetchFieldValueOfParcel("District__c",gridDataHashMap.get("APN").get(0));
-		HashMap<String, ArrayList<String>> childAPN2District = objMappingPage.fetchFieldValueOfParcel("District__c",gridDataHashMap.get("APN").get(1));
+		HashMap<String, ArrayList<String>> parentAPNDistrict = objParcelsPage.fetchFieldValueOfParcel("District__c",apn1);
+		HashMap<String, ArrayList<String>> childAPN1District = objParcelsPage.fetchFieldValueOfParcel("District__c",gridDataHashMap.get("APN").get(0));
+		HashMap<String, ArrayList<String>> childAPN2District = objParcelsPage.fetchFieldValueOfParcel("District__c",gridDataHashMap.get("APN").get(1));
 		softAssert.assertEquals(parentAPNDistrict.get("District__c").get(0),childAPN1District.get("District__c").get(0),"SMAB-T2730: Verify District of Child Parcel is inheritted from first Parent Parcel");
 		softAssert.assertEquals(parentAPNDistrict.get("District__c").get(0),childAPN2District.get("District__c").get(0),"SMAB-T2730: Verify District of Child Parcel is inheritted from first Parent Parcel");
 		
 		//Step 18: Verify Primary Situs value is inherited from Parent to Child Parcels
-  		HashMap<String, ArrayList<String>> parentAPNPrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__c",apn1);
-  		HashMap<String, ArrayList<String>> childAPN1PrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__c",gridDataHashMap.get("APN").get(0));
-  		HashMap<String, ArrayList<String>> childAPN2PrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__c",gridDataHashMap.get("APN").get(1));
+  		HashMap<String, ArrayList<String>> parentAPNPrimarySitus = objParcelsPage.fetchFieldValueOfParcel("Primary_Situs__c",apn1);
+  		HashMap<String, ArrayList<String>> childAPN1PrimarySitus = objParcelsPage.fetchFieldValueOfParcel("Primary_Situs__c",gridDataHashMap.get("APN").get(0));
+  		HashMap<String, ArrayList<String>> childAPN2PrimarySitus = objParcelsPage.fetchFieldValueOfParcel("Primary_Situs__c",gridDataHashMap.get("APN").get(1));
 		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN1PrimarySitus.get("Name").get(0),"SMAB-T2730: Verify Primary Situs of Child Parcel is inheritted from first Parent Parcel");
 		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN2PrimarySitus.get("Name").get(0),"SMAB-T2730: Verify Primary Situs of Child Parcel is inheritted from first Parent Parcel");
 		
@@ -842,10 +842,10 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		salesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
 		
 		//Step 20: Verify Status of Parent & Child Parcels after WI completion
-		parentAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn1);
-		parentAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn2);		
-		childAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
-		childAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
+		parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn1);
+		parentAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn2);		
+		childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
+		childAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
   		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Retired","SMAB-T2730: Verify Status of Parent Parcel: "+apn1);
   		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"Retired","SMAB-T2730: Verify Status of Parent Parcel: "+apn2);
   		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"Active","SMAB-T2730: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));

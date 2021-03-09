@@ -181,4 +181,24 @@ public class ParcelsPage extends ApasGenericPage {
 		String successMsg = saveRecord();
 		return successMsg;
 	}
+	/*
+	   This method is used to fetch field value for mentioned APN
+	   @Param: fieldName: Field name for which value needs to be fetched
+	   @Param: apnNumber: Parcel Number for which field value needs to be fetched
+	   @return: returns the value of the field
+	  */
+		public HashMap<String, ArrayList<String>> fetchFieldValueOfParcel(String fieldName, String apnNumber) throws Exception {
+			String query = "SELECT "+fieldName+" FROM Parcel__c where Name = '"+apnNumber+"'";
+			HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+			if(fieldName.equalsIgnoreCase("Neighborhood_Reference__c")){
+				query = "SELECT Name FROM Neighborhood__c Where Id = '"+response.get(fieldName).get(0)+"'";
+			}else if(fieldName.equalsIgnoreCase("TRA__c")){
+				query = "SELECT Name FROM TRA__c Where Id = '"+response.get(fieldName).get(0)+"'";
+			}else if(fieldName.equalsIgnoreCase("Primary_Situs__c")){
+				query = "SELECT Name FROM Situs__c Where Id = '"+response.get(fieldName).get(0)+"'";
+			}
+			response = objSalesforceAPI.select(query);		
+			return response;
+		}
 }

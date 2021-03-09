@@ -13,6 +13,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 import org.hamcrest.core.IsNull;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -354,6 +355,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,apnNotNextAvailable);
 		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.splitParcelButton));
+		objMappingPage.waitForElementToDisappear(objMappingPage.xpathSpinner, 50);
 
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertContains(gridDataHashMap.get("Error Message").get(0),"The parcel entered is invalid since the following parcel is available",
@@ -538,31 +540,32 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String childAPNNumber1 =gridDataHashMap.get("APN").get(0);
 		String childAPNNumber2 =gridDataHashMap.get("APN").get(1);
 
-		//Step 9: Verify Primary Situs value is inheritted from Parent to Child Parcels
-		HashMap<String, ArrayList<String>> parentAPNPrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__r.Name",apn);
-		HashMap<String, ArrayList<String>> childAPN1PrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__r.Name",childAPNNumber1);
-		HashMap<String, ArrayList<String>> childAPN2PrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__r.Name",childAPNNumber2);
+		//Step 9: Verify Primary Situs value is inheritted from Parent to Child Parcels		
+		HashMap<String, ArrayList<String>> parentAPNPrimarySitus = objParcelsPage.fetchFieldValueOfParcel("Primary_Situs__c",apn);
+		HashMap<String, ArrayList<String>> childAPN1PrimarySitus = objParcelsPage.fetchFieldValueOfParcel("Primary_Situs__c",childAPNNumber1);
+		HashMap<String, ArrayList<String>> childAPN2PrimarySitus = objParcelsPage.fetchFieldValueOfParcel("Primary_Situs__c",childAPNNumber2);
+		
 		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN1PrimarySitus.get("Name").get(0),"SMAB-T2541: Verify Primary Situs of Child Parcel is inheritted from Parent Parcel");
 		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN2PrimarySitus.get("Name").get(0),"SMAB-T2541: Verify Primary Situs of Child Parcel is inheritted from Parent Parcel");
 
 		//Step 10: Verify Neighborhood Code value is inheritted from Parent to Child Parcels
-		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",apn);
-		HashMap<String, ArrayList<String>> childAPN1NeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",childAPNNumber1);
-		HashMap<String, ArrayList<String>> childAPN2NeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",childAPNNumber2);
+		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",apn);
+		HashMap<String, ArrayList<String>> childAPN1NeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",childAPNNumber1);
+		HashMap<String, ArrayList<String>> childAPN2NeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",childAPNNumber2);
 		softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),childAPN1NeighborhoodCode.get("Name").get(0),"SMAB-T2541: Verify District/Neighborhood Code of Child Parcel is inheritted from Parent Parcel");
 		softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),childAPN2NeighborhoodCode.get("Name").get(0),"SMAB-T2541: Verify District/Neighborhood Code of Child Parcel is inheritted from Parent Parcel");
 
 		//Step 11: Verify TRA value is inheritted from Parent to Child Parcels
-		HashMap<String, ArrayList<String>> parentAPNTRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",apn);
-		HashMap<String, ArrayList<String>> childAPN1TRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",childAPNNumber1);
-		HashMap<String, ArrayList<String>> childAPN2TRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",childAPNNumber2);
+		HashMap<String, ArrayList<String>> parentAPNTRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",apn);
+		HashMap<String, ArrayList<String>> childAPN1TRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",childAPNNumber1);
+		HashMap<String, ArrayList<String>> childAPN2TRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",childAPNNumber2);
 		softAssert.assertEquals(parentAPNTRA.get("Name").get(0),childAPN1TRA.get("Name").get(0),"SMAB-T2541: Verify TRA of Child Parcel is inheritted from Parent Parcel");
 		softAssert.assertEquals(parentAPNTRA.get("Name").get(0),childAPN2TRA.get("Name").get(0),"SMAB-T2541: Verify TRA of Child Parcel is inheritted from Parent Parcel");
 
 		//Step 12: Verify Status of Parent & Child Parcels after parcel is split and before WI completion
-		HashMap<String, ArrayList<String>> parentAPNStatus = objMappingPage.fetchFieldValueOfParcel("Status__c",apn);
-		HashMap<String, ArrayList<String>> childAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",childAPNNumber1);
-		HashMap<String, ArrayList<String>> childAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",childAPNNumber2);
+		HashMap<String, ArrayList<String>> parentAPNStatus = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn);
+		HashMap<String, ArrayList<String>> childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",childAPNNumber1);
+		HashMap<String, ArrayList<String>> childAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",childAPNNumber2);
 		softAssert.assertEquals(parentAPNStatus.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2541: Verify Status of Parent Parcel: "+apn);
 		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2541: Verify Status of Child Parcel: "+childAPNNumber1);
 		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2541: Verify Status of Child Parcel: "+childAPNNumber2);
@@ -587,9 +590,9 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		salesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
 
 		//Step 15: Verify Status of Parent & Child Parcels after parcel is split and WI is completed
-		parentAPNStatus = objMappingPage.fetchFieldValueOfParcel("Status__c",apn);
-		childAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",childAPNNumber1);
-		childAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",childAPNNumber2);
+		parentAPNStatus = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn);
+		childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",childAPNNumber1);
+		childAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",childAPNNumber2);
 		softAssert.assertEquals(parentAPNStatus.get("Status__c").get(0),"Retired","SMAB-T2551: Verify Status of Parent Parcel: "+apn);
 		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"Active","SMAB-T2551: Verify Status of Child Parcel: "+childAPNNumber1);
 		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"Active","SMAB-T2551: Verify Status of Child Parcel: "+childAPNNumber2);
