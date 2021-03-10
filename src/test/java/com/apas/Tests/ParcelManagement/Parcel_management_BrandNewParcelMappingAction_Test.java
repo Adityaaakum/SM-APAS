@@ -585,7 +585,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
     
     @Test(description = "SMAB-T2632 ,SMAB-T2693: Verify Parent APN field cannot be greyed except if mapping action is brand new parcel ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
   		  ,groups = {"Regression","ParcelManagement"},enabled =true)
-    public void verifyBrandNewParcelAction(String loginUser) throws Exception
+    public void verifyBrandNewParcelParentParcelGrayed(String loginUser) throws Exception
     {
   	  String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
   		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);

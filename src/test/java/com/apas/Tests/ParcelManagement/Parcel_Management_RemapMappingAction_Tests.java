@@ -328,14 +328,14 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	 
 	  /**
 	   * 
-	   *  Verify that when multiple parent parcels are entered, if a space is entered or not after a comma, the system should format the parcel as expected.
+	   *  Verify that when multiple parent parcels are entered, if a space is entered or not after a comma, the system should format the parcel as expected,and apn should be 9 digits only.
 	   * @param loginUser
 	   * @throws Exception
 	   */
 	  
-	  @Test(description = "SMAB-T2625:  Verify that when multiple parent parcels are entered, if a space is entered or not after a comma, the system should format the parcel as expected. ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
+	  @Test(description = "SMAB-T2625,SMAB-T2628:  Verify that when multiple parent parcels are entered, if a space is entered or not after a comma, the system should format the parcel as expected,And Apn should be 9 digits ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
 			  ,groups = {"Regression","ParcelManagement"},enabled=true)
-	  public void verifyMultipleParentParcelsInduntation(String loginUser) throws Exception
+	  public void verifyMultipleParentParcelsIndentation(String loginUser) throws Exception
 	  {
 		  String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
 			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -349,6 +349,9 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 			Map<String, String> RemapParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 					"DataToPerformRemapMappingAction");	
 		     String combineApn=apn+","+apn1;
+		     String apnlessThan9 = apn.substring(0, 10);
+			   String validApn = apn.replace("-", "");
+			   String invalidApn = apnlessThan9.replace("-", "");
 			   
 	           // user login to APAS application
 			       objMappingPage.login(loginUser);		
@@ -373,79 +376,30 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 				softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel),"value"),apn+" , "+apn1,
 							"SMAB-T2625:  Verify that when multiple parent parcels are entered, if a space is entered or not after a comma, the system should format the parcel as expected.");	
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-	  			driver.switchTo().window(parentWindow);
-				objMappingPage.logout();
-	                   
-
-	}
-
-	  
-	  /**
-	   * Verify that Parent APN should be a 9 digit number only
-	 * @throws Exception 
-	   * 
-	   * 
-	   * */
-	    @Test(description = "SMAB-T2628:Verify that Parent APN should be a 9 digit number only ",
-	   		enabled =true,groups = {"Regression","ParcelManagment"},dataProvider = "loginMappingUser",dataProviderClass = DataProviders.class)
-	       public void ParentValidations(String LoginUser) throws Exception
-	    {
-	    	
-	    	
-	    	String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
-			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
-			String apn=responseAPNDetails.get("Name").get(0);
-			String apn1=responseAPNDetails.get("Name").get(1);
-			
-		    String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
-			Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
-					"DataToCreateWorkItemOfTypeParcelManagement");	
-			String mappingActionCreationData =  testdata.REMAP_MAPPING_ACTION;
-			Map<String, String> RemapParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-					"DataToPerformRemapMappingAction");		
-		       String apnlessThan9 = apn.substring(0, 10);
-			   String validApn = apn.replace("-", "");
-			   String invalidApn = apnlessThan9.replace("-", "");		   
-	        // user login to APAS application
-			    objMappingPage.login(LoginUser);	
-	        //  Opening the PARCELS page  and searching the  parcel to perform one to one mapping
-				objMappingPage.searchModule(PARCELS);
-				objMappingPage.globalSearchRecords(apn);	
-			
-			//  Creating Manual work item for the Parcel 
-				objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
-			//Clicking the  details tab for the work item newly created and clicking on Related Action Link
-				objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-				objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);				      		        						
-				String parentWindow=driver.getWindowHandle();
-				objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
-			 // : User enters into mapping page				
-				objWorkItemHomePage.switchToNewWindow(parentWindow);
-				objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,RemapParcelMappingData.get("Action"));
-				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
-				// user enters apn less than 9 digits
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));    	
 	    		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apnlessThan9);
-				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));				
-				softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+apnlessThan9, "T-SMAB2628 validating error message of invalid APN less than 9 digits");			  
-				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));	
-				// user enter apn less than 9 and without -
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+				//Validating APN of less than 9 digits
+ 				softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+apnlessThan9, "T-SMAB2628 validating error message of invalid APN less than 9 digits");			  
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));		    	
 				objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,invalidApn);
-				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));			
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));	
+				//Validating invalid apn without -
 				softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+apnlessThan9, "T-SMAB2628 validating error message of invalid APN less than 9 digits");		  
-				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));	
-				//user enters a valid apn
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));		
 				objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,validApn);
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));									
-				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));					
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+				//validating valid apn of 9 digits without -
 				softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel),"value"),apn,
-								"SMAB-T2356: Validate the APN value is valid"); 
-	    		driver.switchTo().window(parentWindow);
+								"SMAB-T2628: Validate the APN value is valid"); 
+	  			driver.switchTo().window(parentWindow);
 				objMappingPage.logout();
-	    	
-	    }
-	    
-	    
-	    /**Verify APN entered must not have special character
+				
+	  }
+	  
+	  
+	    /**Verify APN entered must not have special character and validate apn without spaces
 	     * 
 	     * @param loginUser
 	     * @throws Exception
@@ -459,8 +413,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	  	  String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
 	  		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 	  		String apn=responseAPNDetails.get("Name").get(0);
-	  		String apn1=responseAPNDetails.get("Name").get(1);
-	  		
+	  			  		
 	  	  String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 	  		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 	  				"DataToCreateWorkItemOfTypeParcelManagement");
