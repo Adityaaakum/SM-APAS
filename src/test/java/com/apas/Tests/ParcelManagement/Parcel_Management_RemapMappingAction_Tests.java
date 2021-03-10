@@ -422,15 +422,18 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 			 // : User enters into mapping page				
 				objWorkItemHomePage.switchToNewWindow(parentWindow);
 				objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,RemapParcelMappingData.get("Action"));
-				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));    	
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+				// user enters apn less than 9 digits
 	    		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apnlessThan9);
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));				
 				softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+apnlessThan9, "T-SMAB2628 validating error message of invalid APN less than 9 digits");			  
-				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));		    	
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));	
+				// user enter apn less than 9 and without -
 				objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,invalidApn);
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));			
 				softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+apnlessThan9, "T-SMAB2628 validating error message of invalid APN less than 9 digits");		  
-				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));		
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));	
+				//user enters a valid apn
 				objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,validApn);
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));									
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));					
@@ -551,13 +554,15 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	  			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);  				
 	  		 //  User enters into mapping page	 				
 	  			objWorkItemHomePage.switchToNewWindow(parentWindow);  				
-	  			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));				  					
+	  			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));	
+	  			//User duplicates apn in remap mapping 2 screen 
 	  		    objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apn+","+apn1);
 	  		    objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));	 	          
 	  		    objMappingPage.remapActionForm(RemapParcelMappingData);  	 			  			
 	  			HashMap<String, ArrayList<String>> gridParcelData=      objMappingPage.getGridDataInHashMap();            
 	             objMappingPage.editGridCellValue("APN", gridParcelData.get("APN").get(1));    
 	             objMappingPage.Click(objMappingPage.remapParcelButton);
+	             //Validating error message ,that duplicate apn cannot be remapped to parcels
 	             softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.remapErrorMessageonSecondScreen), "The APN provided is a duplicate APN.Please check.", "SMAB-T2634: validate duplicates Apn Cannot be entered in parcel remap");  			
 	                   
 	             driver.switchTo().window(parentWindow);
