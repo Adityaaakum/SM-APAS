@@ -94,7 +94,7 @@ public class Parcel_managment_MappingActionsParentParcelValidations extends Test
 				objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);		
 		
 														
-				softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping","SMAB-T2483: Validation that work pool should be 'Mapping' on parent parcel work item");
+				softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping",": Validation that work pool should be 'Mapping' on parent parcel work item");
 				String parentWindow=driver.getWindowHandle();
 				objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 				
@@ -173,7 +173,7 @@ public class Parcel_managment_MappingActionsParentParcelValidations extends Test
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);	
 				
 			                                  							
-				softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping","SMAB-T2483: Validation that work pool should be 'Mapping' on parent parcel work item");
+				softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping",": Validation that work pool should be 'Mapping' on parent parcel work item");
 				String parentWindow=driver.getWindowHandle();
 				objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		 //  User enters into mapping page							
@@ -230,7 +230,7 @@ public class Parcel_managment_MappingActionsParentParcelValidations extends Test
 		//Clicking the  details tab for the work item newly created and clicking on Related Action Link
 				objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 				objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);				      		        						
-				softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping","SMAB-T2483: Validation that work pool should be 'Mapping' on parent parcel work item");
+				softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping",": Validation that work pool should be 'Mapping' on parent parcel work item");
 				String parentWindow=driver.getWindowHandle();
 				objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		 // : User enters into mapping page				
@@ -292,7 +292,7 @@ public class Parcel_managment_MappingActionsParentParcelValidations extends Test
   				objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
   				objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel); 		
   												
-  				softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping","SMAB-T2483: Validation that work pool should be 'Mapping' on parent parcel work item");
+  				softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping",": Validation that work pool should be 'Mapping' on parent parcel work item");
   				String parentWindow=driver.getWindowHandle();
   				objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
   				
@@ -369,7 +369,7 @@ public class Parcel_managment_MappingActionsParentParcelValidations extends Test
   				objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);		
   		
   														
-  				softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping","SMAB-T2483: Validation that work pool should be 'Mapping' on parent parcel work item");
+  				softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping",": Validation that work pool should be 'Mapping' on parent parcel work item");
   				String parentWindow=driver.getWindowHandle();
   				objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
   				
