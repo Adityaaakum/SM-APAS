@@ -105,7 +105,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		String childAPNNumber =gridDataHashMap.get("APN").get(0);
-		softAssert.assertTrue(gridDataHashMap.get("Situs").get(0).isBlank(),"SMAB-T2663: Validation that primary situs of child parcel on second screen is blank as situs was not updated in first screen");
+		softAssert.assertTrue(gridDataHashMap.get("Situs").get(0).isEmpty(),"SMAB-T2663: Validation that primary situs of child parcel on second screen is blank as situs was not updated in first screen");
 
 		//Step 11 :Clicking generate parcel button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.CreateNewParcelButton));
@@ -116,7 +116,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 
 		//Step 13: Validation that child parcel primary situs is blank since  situs was not updated in first screen
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
-		softAssert.assertTrue(gridDataHashMap.get("Situs").get(0).isBlank(),"SMAB-T2663: Validation that primary situs of child parcel on last screen is blank as situs was not updated in first screen");
+		softAssert.assertTrue(gridDataHashMap.get("Situs").get(0).isEmpty(),"SMAB-T2663: Validation that primary situs of child parcel on last screen is blank as situs was not updated in first screen");
 
 		HashMap<String, ArrayList<String>> childPrimarySitusValue =salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ childAPNNumber +"')");
 		softAssert.assertTrue(childPrimarySitusValue.isEmpty(),
