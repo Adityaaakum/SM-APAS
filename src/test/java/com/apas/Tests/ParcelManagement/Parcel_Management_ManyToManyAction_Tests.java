@@ -6,6 +6,7 @@ import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
+import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
@@ -13,6 +14,8 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
+import com.relevantcodes.extentreports.LogStatus;
+
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -49,7 +52,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
      * @param loginUser
      * @throws Exception
      */
-    @Test(description = "SMAB-T2583, SMAB-T2585, SMAB-T2581, SMAB-T2586:Verify the UI validations for \"Split\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+    @Test(description = "SMAB-T2583, SMAB-T2585, SMAB-T2581, SMAB-T2586, SMAB-T2590:Verify the UI validations for \"Split\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
             "Regression","ParcelManagement" })
     public void ParcelManagement_VerifyManyToManyMappingActionUIValidations(String loginUser) throws Exception {
         //Fetching Assessee records
@@ -58,12 +61,35 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         String assesseeName = responseAssesseeDetails.get("Name").get(0);
 
         //Fetching parcels that are Active with same Ownership record
-        String queryAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') AND Id Not IN (Select parcel__c FROM Property_Ownership__c where Owner__r.name != '" + assesseeName + "') and (Not Name like '%990') and Status__c = 'Active' Limit 2";
+        String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '100%') and (Not Name like '134%') and Status__c = 'Active' Limit 2";
         HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
         String apn1=responseAPNDetails.get("Name").get(0);
         String apn2=responseAPNDetails.get("Name").get(1);
+        
+        //Fetch some other values from database
+  		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+  		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn1 +"')").get("Name").get(0);
+  		
+  		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+  		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
-        String concatenateAPNWithSameOwnership = apn1+","+apn2;
+  		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+  		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+  		
+  		String legalDescriptionValue="Legal PM 85/25-260";
+  		String districtValue="District01";
+      		
+        String concatenateAPNWithSameOwnership = apn1+","+apn2;        
+        
+        //Enter values in the Parcels
+        jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+        jsonObject.put("Status__c","Active");
+        jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+        jsonObject.put("District__c",districtValue);
+        jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+        jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+  		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
+  		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(1));	
 
         String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
         Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -72,7 +98,27 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         String mappingActionCreationData = testdata.MANY_TO_MANY_MAPPING_ACTION;
         Map<String, String> hashMapManyToManyActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
                 "DataToPerformManyToManyMappingActionWithoutAllFields");
+        Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+                "DataToCreateOwnershipRecord");
+        
+        // Step1: Login to the APAS application
+        objMappingPage.login(users.RP_APPRAISER);
 
+        // Step2: Opening the PARCELS page and searching the parcel to create ownership record        
+        responseAPNDetails.get("Name").stream().forEach(parcel -> {
+        	try {
+	        	objMappingPage.searchModule(PARCELS);
+		        objMappingPage.globalSearchRecords(parcel);
+		        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+		        objParcelsPage.createOwnershipRecord(hashMapCreateOwnershipRecordData);
+        	}
+        	catch(Exception e) {
+        		ExtentTestManager.getTest().log(LogStatus.ERROR, "Fail to create ownership record"+e);
+        	}
+        });
+        objWorkItemHomePage.logout();
+        Thread.sleep(20000);
+        
         // Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
         objMappingPage.login(loginUser);
 
@@ -181,13 +227,20 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         //Step 20: Validating Error Message having dot in fields: First Child Non-Condo Parcel
         softAssert.assertContains(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
                 "SMAB-T2584: Validation that error message is displayed when First Child Non-Condo Parcel contains dot");
-
-        //Step 21: entering valid data in form for ManyToMany mapping action
+        
+        //Step 21: Validating Error Message when reason code is blank
+        Map<String, String> hashMapManyToManyActionWithBlankReasonCodeMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+                "DataToPerformManyToManyMappingActionWithMissingReasonCode");
+        objMappingPage.fillMappingActionForm(hashMapManyToManyActionWithBlankReasonCodeMappingData);
+        softAssert.assertContains(objMappingPage.getErrorMessage(),"Please enter the required field : Reason Code",
+                "SMAB-T2590: Validation that error message is displayed when reason code is blank");
+        
+        //Step 22: entering valid data in form for ManyToMany mapping action
         Map<String, String> hashMapManyToManyActionValidMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
                 "DataToPerformManyToManyMappingActionWithValidData");
         objMappingPage.fillMappingActionForm(hashMapManyToManyActionValidMappingData);
 
-        //Step 22: Verify that APNs generated must be 9-digits and should end in '0'
+        //Step 23: Verify that APNs generated must be 9-digits and should end in '0'
         HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
         String childAPNNumber1 =gridDataHashMap.get("APN").get(0);
         String childAPN1Components[] = childAPNNumber1.split("-");
@@ -215,16 +268,28 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         softAssert.assertTrue(childAPNNumber2.endsWith("0"),
                 "SMAB-T2586: Validation that child APN number ends with 0");
 
-        //Step 23: Verify total number of parcels getting generated
+        //Step 24: Verify total number of parcels getting generated
         int actualTotalParcels = gridDataHashMap.get("APN").size();
         int expectedTotalParcels = Integer.parseInt(hashMapManyToManyActionValidMappingData.get("Number of Child Non-Condo Parcels"));
 
         softAssert.assertEquals(actualTotalParcels,expectedTotalParcels,"SMAB-T2586: Verify total no of parcels getting generated");
 
-        //Step 24: Validating warning message
+        //Step 25: Validating warning message
         softAssert.assertContains(objMappingPage.getErrorMessage(),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is",
                 "SMAB-T2591: Validation that warning message is displayed when Parcel number generated is different from the user selection");
-
+        
+        //Step 26: Validation of ALL fields THAT ARE displayed on second screen
+  		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue.replaceFirst("\\s", ""),
+  				"SMAB-T2873: Validation that System populates Situs from the parent parcel");
+  		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescriptionValue,
+  				"SMAB-T2873: Validation that System populates Legal Description from the parent parcel");
+  		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
+  				"SMAB-T2873: Validation that System populates TRA from the parent parcel");
+  		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
+  				"SMAB-T2873: Validation that System populates Use Code  from the parent parcel");
+  		softAssert.assertEquals(gridDataHashMap.get("District/Neighborhood").get(0),responseNeighborhoodDetails.get("Name").get(0),
+  				"SMAB-T2873: Validation that System populates District/Neighborhood from the parent parcel");
+  		
         driver.switchTo().window(parentWindow);
         objWorkItemHomePage.logout();
     }
@@ -360,5 +425,457 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
     }
 
+    /**
+     * This method is to Verify that User is able to perform output validations for "ManyToMany" mapping action for a Parcel (Active) from a work item
+     * @param loginUser
+     * @throws Exception
+     */
+    @Test(description = "SMAB-T2722:Verify the Output validations for \"Many to Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+            "Regression","ParcelManagement" })
+    public void ParcelManagement_VerifyNonCondoManyToManyMappingActionOutputValidations(String loginUser) throws Exception {
+
+        //Fetching parcels that are Active with no Ownership record
+        String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '100%') and (Not Name like '134%') and Status__c = 'Active' Limit 2";
+        HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
+        String apn1=responseAPNDetails.get("Name").get(0);
+        String apn2=responseAPNDetails.get("Name").get(1);
+        
+        String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
+
+		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonObject.put("Status__c","Active");
+		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonObject.put("District__c",districtValue);
+		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonObject);
+
+        String concatenateAPNWithSameOwnership = apn1+","+apn2;
+    	
+        String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+        Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+                "DataToCreateWorkItemOfTypeParcelManagement");
+
+        String mappingActionCreationData = testdata.MANY_TO_MANY_MAPPING_ACTION;
+        Map<String, String> hashMapManyToManyActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+                "DataToPerformManyToManyMappingActionWithoutAllFields");
+        Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+                "DataToCreateOwnershipRecord");
+        	
+        // Step1: Login to the APAS application
+        objMappingPage.login(users.RP_APPRAISER);
+
+        // Step2: Opening the PARCELS page and searching the parcel to create ownership record        
+        responseAPNDetails.get("Name").stream().forEach(parcel -> {
+        	try {
+	        	objMappingPage.searchModule(PARCELS);
+		        objMappingPage.globalSearchRecords(parcel);
+		        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+		        objParcelsPage.createOwnershipRecord(hashMapCreateOwnershipRecordData);
+        	}
+        	catch(Exception e) {
+        		ExtentTestManager.getTest().log(LogStatus.ERROR, "Fail to create ownership record"+e);
+        	}
+        });
+        objWorkItemHomePage.logout();
+        Thread.sleep(20000);
+        
+        // Step 3: Login to the APAS application using the credentials passed through data provider
+        objMappingPage.login(loginUser);
+
+        // Step 4: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+        objMappingPage.searchModule(PARCELS);
+        objMappingPage.globalSearchRecords(apn1);
+
+        // Step 5: Creating Manual work item for the Parcel
+        String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+        //Step 6: Clicking the  details tab for the work item newly created and clicking on Related Action Link
+        objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+        objWorkItemHomePage.waitForElementToBeVisible(40,objWorkItemHomePage.referenceDetailsLabel);
+        objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+        String parentWindow = driver.getWindowHandle();
+        objWorkItemHomePage.switchToNewWindow(parentWindow);
+        objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+
+        // Step 7: Update the Parent APN field and add another parcel with same ownership record
+        ReportLogger.INFO("Add a parcel in Parent APN field with same ownership record :: " + apn1 + ", " + apn2);
+        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+        objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithSameOwnership);
+        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+
+        //Step 8: Selecting Action as 'Many To Many' & Taxes Paid fields value as 'N/A'
+        objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapManyToManyActionMappingData.get("Action"));
+        objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
+
+        //Step 9: entering valid data in form and generating parcels for ManyToMany mapping action
+        Map<String, String> hashMapManyToManyActionValidMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+                "DataToPerformManyToManyMappingActionForOutputValidations");
+        objMappingPage.fillMappingActionForm(hashMapManyToManyActionValidMappingData);
+        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelsButton));
+
+        //Step 10: Verify the success message after parcels are generated
+        softAssert.assertContains(objMappingPage.getSuccessMessage(),"Parcels have been successfully created. Please Review Spatial Information",
+                "SMAB-T2722: Validation that success message is displayed when Parcels are generated");
+
+        //Step 11: Verify the grid cells are not editable after parcels are generated
+        HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
+        boolean actionColumn = gridDataHashMap.containsKey("Action");
+        softAssert.assertTrue(!actionColumn,"SMAB-T2722: Validation that columns should not be editable as Action column has disappeared after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2722: Validation that APN column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2722: Validation that Legal Description column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2722: Validation that TRA column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2722: Validation that Situs column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2722: Validation that Reason Code column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("District/Neighborhood"),"SMAB-T2722: Validation that District/Neighborhood column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2722: Validation that Use Code column should not be editable after generating parcels");
+
+        //Step 12: Verify total number of parcels getting generated
+        int actualTotalParcels = gridDataHashMap.get("APN").size();
+        int expectedTotalParcels = Integer.parseInt(hashMapManyToManyActionValidMappingData.get("Number of Child Non Condo Parcels"));
+        softAssert.assertEquals(actualTotalParcels,expectedTotalParcels,"SMAB-T2722: Verify total no of parcels getting generated");
+      
+        //Step 13: Click on APN generated and verify Source Relationship details
+        gridDataHashMap.get("APN").stream().forEach(parcel -> {
+        	try {
+				objMappingPage.Click(objMappingPage.getButtonWithText(parcel));
+				objMappingPage.waitUntilPageisReady(driver);
+				objMappingPage.waitForElementToBeVisible(60, objParcelsPage.moretab);
+				
+				objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelRelationshipsTabLabel);
+				softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(apn1)), "SMAB-T2722: Verify Parent Parcel: "+apn1+" is visible under Source Parcel Relationships section");
+				softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(apn2)), "SMAB-T2722: Verify Parent Parcel: "+apn2+" is visible under Source Parcel Relationships section");
+				
+				driver.navigate().back();
+        	}
+        	catch(Exception e) {
+        		ExtentTestManager.getTest().log(LogStatus.FAIL, "Fail to validate Parent Parcel under Source Parcel Relationships section"+e);
+        	}
+        });
+        
+        //Step 14: Verify Status of Parent & Child Parcels before WI completion
+        HashMap<String, ArrayList<String>> parentAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn1);
+        HashMap<String, ArrayList<String>> parentAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn2);		
+        HashMap<String, ArrayList<String>> childAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
+        HashMap<String, ArrayList<String>> childAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
+  		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2722: Verify Status of Parent Parcel: "+apn1);
+  		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2722: Verify Status of Parent Parcel: "+apn2);
+  		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2722: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
+  		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2722: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(1));     
+  		
+		//Step 15: Verify Neighborhood Code value is inherited from Parent to Child Parcels
+  		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",apn1);
+  		HashMap<String, ArrayList<String>> childAPN1NeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",gridDataHashMap.get("APN").get(0));
+  		HashMap<String, ArrayList<String>> childAPN2NeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",gridDataHashMap.get("APN").get(1));
+		softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),childAPN1NeighborhoodCode.get("Name").get(0),"SMAB-T2722: Verify District/Neighborhood Code of Child Parcel is inheritted from first Parent Parcel");
+		softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),childAPN2NeighborhoodCode.get("Name").get(0),"SMAB-T2722: Verify District/Neighborhood Code of Child Parcel is inheritted from first Parent Parcel");
+
+		//Step 16: Verify TRA value is inherited from Parent to Child Parcels
+		HashMap<String, ArrayList<String>> parentAPNTRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",apn1);
+		HashMap<String, ArrayList<String>> childAPN1TRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",gridDataHashMap.get("APN").get(0));
+		HashMap<String, ArrayList<String>> childAPN2TRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",gridDataHashMap.get("APN").get(1));
+		softAssert.assertEquals(parentAPNTRA.get("Name").get(0),childAPN1TRA.get("Name").get(0),"SMAB-T2722: Verify TRA of Child Parcel is inheritted from first Parent Parcel");
+		softAssert.assertEquals(parentAPNTRA.get("Name").get(0),childAPN2TRA.get("Name").get(0),"SMAB-T2722: Verify TRA of Child Parcel is inheritted from first Parent Parcel");
+
+		//Step 17: Verify District value is inherited from Parent to Child Parcels
+		HashMap<String, ArrayList<String>> parentAPNDistrict = objMappingPage.fetchFieldValueOfParcel("District__c",apn1);
+		HashMap<String, ArrayList<String>> childAPN1District = objMappingPage.fetchFieldValueOfParcel("District__c",gridDataHashMap.get("APN").get(0));
+		HashMap<String, ArrayList<String>> childAPN2District = objMappingPage.fetchFieldValueOfParcel("District__c",gridDataHashMap.get("APN").get(1));
+		softAssert.assertEquals(parentAPNDistrict.get("District__c").get(0),childAPN1District.get("District__c").get(0),"SMAB-T2722: Verify District of Child Parcel is inheritted from first Parent Parcel");
+		softAssert.assertEquals(parentAPNDistrict.get("District__c").get(0),childAPN2District.get("District__c").get(0),"SMAB-T2722: Verify District of Child Parcel is inheritted from first Parent Parcel");
+		
+		//Step 18: Verify Primary Situs value is inherited from Parent to Child Parcels
+  		HashMap<String, ArrayList<String>> parentAPNPrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__r.Name",apn1);
+  		HashMap<String, ArrayList<String>> childAPN1PrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__r.Name",gridDataHashMap.get("APN").get(0));
+  		HashMap<String, ArrayList<String>> childAPN2PrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__r.Name",gridDataHashMap.get("APN").get(1));
+		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN1PrimarySitus.get("Name").get(0),"SMAB-T2722: Verify Primary Situs of Child Parcel is inheritted from first Parent Parcel");
+		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN2PrimarySitus.get("Name").get(0),"SMAB-T2722: Verify Primary Situs of Child Parcel is inheritted from first Parent Parcel");
+		
+		
+		//Step 19: Mark the WI complete
+		String query = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
+		salesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
+		
+		//Step 20: Verify Status of Parent & Child Parcels after WI completion
+		parentAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn1);
+		parentAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn2);		
+		childAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
+		childAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
+  		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Retired","SMAB-T2722: Verify Status of Parent Parcel: "+apn1);
+  		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"Retired","SMAB-T2722: Verify Status of Parent Parcel: "+apn2);
+  		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"Active","SMAB-T2722: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
+  		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"Active","SMAB-T2722: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(1));
+        
+  		//Step 21: Verify 2 new WIs are generated and linked to Child Parcels after parcel is split and WI is completed
+		String queryToGetRequestType = "SELECT Work_Item__r.Request_Type__c FROM Work_Item_Linkage__c Where Parcel__r.Name = '"+gridDataHashMap.get("APN").get(0)+"' OR Parcel__r.Name = '"+gridDataHashMap.get("APN").get(1)+"'";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryToGetRequestType);
+		int expectedWorkItemsGenerated = response.get("Work_Item__r").size();
+		softAssert.assertEquals(expectedWorkItemsGenerated,4,"SMAB-T2722: Verify 2 new Work Items are generated and linked to each child parcel after many to many mapping action is performed and WI is completed");
+
+		softAssert.assertContains(response.get("Work_Item__r").get(0),"New APN - Update Characteristics & Verify PUC","SMAB-T2722: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
+		softAssert.assertContains(response.get("Work_Item__r").get(1),"New APN - Allocate Value","SMAB-T2722: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
+		softAssert.assertContains(response.get("Work_Item__r").get(2),"New APN - Update Characteristics & Verify PUC","SMAB-T2722: Verify Request Type of 2 new Work Items generated that are linked to each many to many mapping action is performed and WI is completed");
+		softAssert.assertContains(response.get("Work_Item__r").get(3),"New APN - Allocate Value","SMAB-T2722: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
+  		
+		driver.switchTo().window(parentWindow);
+		
+		//Step 22: Open Parent APN and verify Target Relationship details
+		responseAPNDetails.get("Name").stream().forEach(parcel -> {
+        	try {
+        		objMappingPage.searchModule(PARCELS);
+                objMappingPage.globalSearchRecords(parcel);
+				objMappingPage.waitForElementToBeVisible(60, objParcelsPage.moretab);
+				
+				objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelRelationshipsTabLabel);
+				softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(gridDataHashMap.get("APN").get(0))), "SMAB-T2722: Verify Child Parcel: "+gridDataHashMap.get("APN").get(0)+" is visible under Target Parcel Relationships section");
+				softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(gridDataHashMap.get("APN").get(1))), "SMAB-T2722: Verify Child Parcel: "+gridDataHashMap.get("APN").get(1)+" is visible under Target Parcel Relationships section");
+				
+				driver.navigate().back();
+        	}
+        	catch(Exception e) {
+        		ExtentTestManager.getTest().log(LogStatus.FAIL, "Fail to validate Parent Parcel under Source Parcel Relationships section"+e);
+        	}
+        });
+        
+        objWorkItemHomePage.logout();
+    }
+    
+    /**
+     * This method is to Verify that User is able to perform output validations for "ManyToMany" mapping action for a Parcel (Active) from a work item
+     * @param loginUser
+     * @throws Exception
+     */
+    @Test(description = "SMAB-T2730:Verify the Output validations for \"Many to Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+            "Regression","ParcelManagement" })
+    public void ParcelManagement_VerifyCondoManyToManyMappingActionOutputValidations(String loginUser) throws Exception {
+
+        //Fetching parcels that are Active with no Ownership record
+        String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Name like '100%') and (Not Name like '134%') and Status__c = 'Active' Limit 2";
+        HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
+        String apn1=responseAPNDetails.get("Name").get(0);
+        String apn2=responseAPNDetails.get("Name").get(1);
+        
+        String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
+
+		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonObject.put("Status__c","Active");
+		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonObject.put("District__c",districtValue);
+		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonObject);
+
+        String concatenateAPNWithSameOwnership = apn1+","+apn2;
+    	
+        String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+        Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+                "DataToCreateWorkItemOfTypeParcelManagement");
+
+        String mappingActionCreationData = testdata.MANY_TO_MANY_MAPPING_ACTION;
+        Map<String, String> hashMapManyToManyActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+                "DataToPerformManyToManyMappingActionWithoutAllFields");
+        Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+                "DataToCreateOwnershipRecord");
+        	
+        // Step1: Login to the APAS application
+        objMappingPage.login(users.RP_APPRAISER);
+
+        // Step2: Opening the PARCELS page and searching the parcel to create ownership record        
+        responseAPNDetails.get("Name").stream().forEach(parcel -> {
+        	try {
+	        	objMappingPage.searchModule(PARCELS);
+		        objMappingPage.globalSearchRecords(parcel);
+		        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+		        objParcelsPage.createOwnershipRecord(hashMapCreateOwnershipRecordData);
+        	}
+        	catch(Exception e) {
+        		ExtentTestManager.getTest().log(LogStatus.ERROR, "Fail to create ownership record"+e);
+        	}
+        });
+        objWorkItemHomePage.logout();
+        Thread.sleep(20000);
+        
+        // Step 3: Login to the APAS application using the credentials passed through data provider
+        objMappingPage.login(loginUser);
+
+        // Step 4: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+        objMappingPage.searchModule(PARCELS);
+        objMappingPage.globalSearchRecords(apn1);
+
+        // Step 5: Creating Manual work item for the Parcel
+        String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+        //Step 6: Clicking the  details tab for the work item newly created and clicking on Related Action Link
+        objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+        objWorkItemHomePage.waitForElementToBeVisible(40,objWorkItemHomePage.referenceDetailsLabel);
+        objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+        String parentWindow = driver.getWindowHandle();
+        objWorkItemHomePage.switchToNewWindow(parentWindow);
+        objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+
+        // Step 7: Update the Parent APN field and add another parcel with same ownership record
+        ReportLogger.INFO("Add a parcel in Parent APN field with same ownership record :: " + apn1 + ", " + apn2);
+        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+        objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithSameOwnership);
+        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+
+        //Step 8: Selecting Action as 'Many To Many' & Taxes Paid fields value as 'N/A'
+        objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapManyToManyActionMappingData.get("Action"));
+        objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
+
+        //Step 9: entering valid data in form and generating parcels for ManyToMany mapping action
+        Map<String, String> hashMapManyToManyActionValidMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+                "DataToPerformManyToManyMappingActionForOutputValidations");
+        objMappingPage.fillMappingActionForm(hashMapManyToManyActionValidMappingData);
+        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelsButton));
+
+        //Step 10: Verify the success message after parcels are generated
+        softAssert.assertContains(objMappingPage.getSuccessMessage(),"Parcels have been successfully created. Please Review Spatial Information",
+                "SMAB-T2730: Validation that success message is displayed when Parcels are generated");
+
+        //Step 11: Verify the grid cells are not editable after parcels are generated
+        HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
+        boolean actionColumn = gridDataHashMap.containsKey("Action");
+        softAssert.assertTrue(!actionColumn,"SMAB-T2722: Validation that columns should not be editable as Action column has disappeared after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2730: Validation that APN column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2730: Validation that Legal Description column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2730: Validation that TRA column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2730: Validation that Situs column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2730: Validation that Reason Code column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("District/Neighborhood"),"SMAB-T2730: Validation that District/Neighborhood column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2730: Validation that Use Code column should not be editable after generating parcels");
+
+        //Step 12: Verify total number of parcels getting generated
+        int actualTotalParcels = gridDataHashMap.get("APN").size();
+        int expectedTotalParcels = Integer.parseInt(hashMapManyToManyActionValidMappingData.get("Number of Child Non Condo Parcels"));
+        softAssert.assertEquals(actualTotalParcels,expectedTotalParcels,"SMAB-T2730: Verify total no of parcels getting generated");
+      
+        //Step 13: Click on APN generated and verify Source Relationship details
+        gridDataHashMap.get("APN").stream().forEach(parcel -> {
+        	try {
+				objMappingPage.Click(objMappingPage.getButtonWithText(parcel));
+				objMappingPage.waitUntilPageisReady(driver);
+				objMappingPage.waitForElementToBeVisible(60, objParcelsPage.moretab);
+				
+				objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelRelationshipsTabLabel);
+				softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(apn1)), "SMAB-T2730: Verify Parent Parcel: "+apn1+" is visible under Source Parcel Relationships section");
+				softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(apn2)), "SMAB-T2730: Verify Parent Parcel: "+apn2+" is visible under Source Parcel Relationships section");
+				
+				driver.navigate().back();
+        	}
+        	catch(Exception e) {
+        		ExtentTestManager.getTest().log(LogStatus.FAIL, "Fail to validate Parent Parcel under Source Parcel Relationships section"+e);
+        	}
+        });
+        
+        //Step 14: Verify Status of Parent & Child Parcels before WI completion
+        HashMap<String, ArrayList<String>> parentAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn1);
+        HashMap<String, ArrayList<String>> parentAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn2);		
+        HashMap<String, ArrayList<String>> childAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
+        HashMap<String, ArrayList<String>> childAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
+  		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2730: Verify Status of Parent Parcel: "+apn1);
+  		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2730: Verify Status of Parent Parcel: "+apn2);
+  		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2730: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
+  		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2730: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(1));
+        
+  		
+		//Step 15: Verify Neighborhood Code value is inherited from Parent to Child Parcels
+		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",apn1);
+		HashMap<String, ArrayList<String>> childAPN1NeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",gridDataHashMap.get("APN").get(0));
+		HashMap<String, ArrayList<String>> childAPN2NeighborhoodCode = objMappingPage.fetchFieldValueOfParcel("Neighborhood_Reference__r.Name",gridDataHashMap.get("APN").get(1));
+		softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),childAPN1NeighborhoodCode.get("Name").get(0),"SMAB-T2730: Verify District/Neighborhood Code of Child Parcel is inheritted from first Parent Parcel");
+		softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),childAPN2NeighborhoodCode.get("Name").get(0),"SMAB-T2730: Verify District/Neighborhood Code of Child Parcel is inheritted from first Parent Parcel");
+
+		//Step 16: Verify TRA value is inherited from Parent to Child Parcels
+		HashMap<String, ArrayList<String>> parentAPNTRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",apn1);
+		HashMap<String, ArrayList<String>> childAPN1TRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",gridDataHashMap.get("APN").get(0));
+		HashMap<String, ArrayList<String>> childAPN2TRA = objMappingPage.fetchFieldValueOfParcel("TRA__r.Name",gridDataHashMap.get("APN").get(1));
+		softAssert.assertEquals(parentAPNTRA.get("Name").get(0),childAPN1TRA.get("Name").get(0),"SMAB-T2730: Verify TRA of Child Parcel is inheritted from first Parent Parcel");
+		softAssert.assertEquals(parentAPNTRA.get("Name").get(0),childAPN2TRA.get("Name").get(0),"SMAB-T2730: Verify TRA of Child Parcel is inheritted from first Parent Parcel");
+
+		//Step 17: Verify District value is inherited from Parent to Child Parcels
+		HashMap<String, ArrayList<String>> parentAPNDistrict = objMappingPage.fetchFieldValueOfParcel("District__c",apn1);
+		HashMap<String, ArrayList<String>> childAPN1District = objMappingPage.fetchFieldValueOfParcel("District__c",gridDataHashMap.get("APN").get(0));
+		HashMap<String, ArrayList<String>> childAPN2District = objMappingPage.fetchFieldValueOfParcel("District__c",gridDataHashMap.get("APN").get(1));
+		softAssert.assertEquals(parentAPNDistrict.get("District__c").get(0),childAPN1District.get("District__c").get(0),"SMAB-T2730: Verify District of Child Parcel is inheritted from first Parent Parcel");
+		softAssert.assertEquals(parentAPNDistrict.get("District__c").get(0),childAPN2District.get("District__c").get(0),"SMAB-T2730: Verify District of Child Parcel is inheritted from first Parent Parcel");
+		
+		//Step 18: Verify Primary Situs value is inherited from Parent to Child Parcels
+  		HashMap<String, ArrayList<String>> parentAPNPrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__c",apn1);
+  		HashMap<String, ArrayList<String>> childAPN1PrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__c",gridDataHashMap.get("APN").get(0));
+  		HashMap<String, ArrayList<String>> childAPN2PrimarySitus = objMappingPage.fetchFieldValueOfParcel("Primary_Situs__c",gridDataHashMap.get("APN").get(1));
+		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN1PrimarySitus.get("Name").get(0),"SMAB-T2730: Verify Primary Situs of Child Parcel is inheritted from first Parent Parcel");
+		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN2PrimarySitus.get("Name").get(0),"SMAB-T2730: Verify Primary Situs of Child Parcel is inheritted from first Parent Parcel");
+		
+		
+		//Step 19: Mark the WI complete
+		String query = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
+		salesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
+		
+		//Step 20: Verify Status of Parent & Child Parcels after WI completion
+		parentAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn1);
+		parentAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",apn2);		
+		childAPN1Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
+		childAPN2Status = objMappingPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
+  		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Retired","SMAB-T2730: Verify Status of Parent Parcel: "+apn1);
+  		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"Retired","SMAB-T2730: Verify Status of Parent Parcel: "+apn2);
+  		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"Active","SMAB-T2730: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
+  		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"Active","SMAB-T2730: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(1));
+        
+  		//Step 21: Verify 2 new WIs are generated and linked to Child Parcels after parcel is split and WI is completed
+		String queryToGetRequestType = "SELECT Work_Item__r.Request_Type__c FROM Work_Item_Linkage__c Where Parcel__r.Name = '"+gridDataHashMap.get("APN").get(0)+"' OR Parcel__r.Name = '"+gridDataHashMap.get("APN").get(1)+"'";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryToGetRequestType);
+		int expectedWorkItemsGenerated = response.get("Work_Item__r").size();
+		softAssert.assertEquals(expectedWorkItemsGenerated,4,"SMAB-T2730: Verify 2 new Work Items are generated and linked to each child parcel after many to many mapping action is performed and WI is completed");
+
+		softAssert.assertContains(response.get("Work_Item__r").get(0),"New APN - Update Characteristics & Verify PUC","SMAB-T2730: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
+		softAssert.assertContains(response.get("Work_Item__r").get(1),"New APN - Allocate Value","SMAB-T2730: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
+		softAssert.assertContains(response.get("Work_Item__r").get(2),"New APN - Update Characteristics & Verify PUC","SMAB-T2730: Verify Request Type of 2 new Work Items generated that are linked to each many to many mapping action is performed and WI is completed");
+		softAssert.assertContains(response.get("Work_Item__r").get(3),"New APN - Allocate Value","SMAB-T2730: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
+  		
+		driver.switchTo().window(parentWindow);
+		
+		//Step 22: Open Parent APN and verify Target Relationship details
+		responseAPNDetails.get("Name").stream().forEach(parcel -> {
+        	try {
+        		objMappingPage.searchModule(PARCELS);
+                objMappingPage.globalSearchRecords(parcel);
+				objMappingPage.waitForElementToBeVisible(60, objParcelsPage.moretab);
+				
+				objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelRelationshipsTabLabel);
+				softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(gridDataHashMap.get("APN").get(0))), "SMAB-T2730: Verify Child Parcel: "+gridDataHashMap.get("APN").get(0)+" is visible under Target Parcel Relationships section");
+				softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(gridDataHashMap.get("APN").get(1))), "SMAB-T2730: Verify Child Parcel: "+gridDataHashMap.get("APN").get(1)+" is visible under Target Parcel Relationships section");
+				
+				driver.navigate().back();
+        	}
+        	catch(Exception e) {
+        		ExtentTestManager.getTest().log(LogStatus.FAIL, "Fail to validate Parent Parcel under Source Parcel Relationships section"+e);
+        	}
+        });
+				
+        objWorkItemHomePage.logout();
+    }
 
 }

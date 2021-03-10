@@ -6,7 +6,10 @@
     "Legal Description": "Test Legal Description",
     "First Non-Condo Parcel Number": "151-550-010",
     "Comments": "Perform Combine"
-  }
+  },
   
-
+ "DataToCreateOwnershipRecord": {
+    "Type": "Owner",
+    "Status": "Active"
+  }
 }

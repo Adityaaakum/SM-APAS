@@ -358,14 +358,15 @@ public class MappingPage extends ApasGenericPage {
      This method is used to return the Condo APN (Active) having a specific Ownership record
      @return: returns the Condo Active APN
     */
-      public HashMap<String, ArrayList<String>> getCondoApnHavingOwner(String assesseeName) throws Exception {
-      	return getCondoApnHavingOwner(assesseeName, 1);
-      }
-      
-      public HashMap<String, ArrayList<String>> getCondoApnHavingOwner(String assesseeName, int numberofRecords) throws Exception {
-      	String queryCondoAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') AND Id Not IN (Select parcel__c FROM Property_Ownership__c where Owner__r.name != '" + assesseeName + "') and (Not Name like '%990') and name like '100%' and Status__c = 'Active' Limit " + numberofRecords;
-      	return objSalesforceAPI.select(queryCondoAPNValue);
-      }
+
+      public HashMap<String, ArrayList<String>> getCondoApnWithNoOwner() throws Exception {
+        	return getCondoApnWithNoOwner(1);
+        }
+        
+      public HashMap<String, ArrayList<String>> getCondoApnWithNoOwner(int numberofRecords) throws Exception {
+        	String queryCondoAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and name like '100%' and Status__c = 'Active' Limit " + numberofRecords;
+        	return objSalesforceAPI.select(queryCondoAPNValue);
+        }
      
       /*
       This method will delete existing relationship instances (Source) from the Parcel

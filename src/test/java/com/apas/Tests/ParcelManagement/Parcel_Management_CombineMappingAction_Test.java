@@ -269,10 +269,15 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyParcelOverwriteForCombineMappingAction(String loginUser) throws Exception {
 		
+		//Fetching parcel that are Active
+		HashMap<String, ArrayList<String>> responseAPNDetails1 = objMappingPage.getActiveApnWithNoOwner(2);
+		String apn1=responseAPNDetails1.get("Name").get(0);
+		String apn2=responseAPNDetails1.get("Name").get(1);
+		
 		//Getting Owner or Account records
-		HashMap<String, ArrayList<String>> responseAssesseeDetails = objMappingPage.getOwnerForMappingAction(3);
+		HashMap<String, ArrayList<String>> responseAssesseeDetails = objMappingPage.getOwnerForMappingAction(2);
 	    String assesseeName1 = responseAssesseeDetails.get("Name").get(0);
-		String assesseeName2 = responseAssesseeDetails.get("Name").get(2);
+		String assesseeName2 = responseAssesseeDetails.get("Name").get(1);
 		
 		//Fetching parcel that is Retired 
 		String retiredAPNValue = objMappingPage.fetchRetiredAPN();
@@ -280,18 +285,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		//Fetching Interim parcel 
 		String interimAPN = objMappingPage.fetchInterimAPN();
 		
-		//Fetching parcel that are Active  with Ownership record 1
-		HashMap<String, ArrayList<String>> responseAPNDetails1 = objMappingPage.getActiveApnHavingOwner(assesseeName1, 2);
-		String apn1=responseAPNDetails1.get("Name").get(0);
-		String apn2=responseAPNDetails1.get("Name").get(1);
-		
-		//Fetching parcel that are Active  with Ownership record 2
-		HashMap<String, ArrayList<String>> responseAPNDetails2 = objMappingPage.getActiveApnHavingOwner(assesseeName2);
-		String apn3=responseAPNDetails2.get("Name").get(0);
-		
-		//Fetching parcel that are Active  with No Ownership record
-		HashMap<String, ArrayList<String>> responseAPNDetails3 = objMappingPage.getActiveApnWithNoOwner();
-		String apn4=responseAPNDetails3.get("Name").get(0);
+		//Fetching parcel that are Active different than above
+		HashMap<String, ArrayList<String>> responseAPNDetails2 = objMappingPage.getActiveApnWithNoOwner(4);
+		String apn3=responseAPNDetails2.get("Name").get(2);
+		String apn4=responseAPNDetails2.get("Name").get(3);
 		
 		//Data Manipulation to test the overwrite scenarios
 		String concatenateAPNWithSameOwnership = apn1+","+apn2;
@@ -309,8 +306,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				
 		salesforceAPI.update("Parcel__c", responseAPNDetails1.get("Id").get(0), "TRA__c",responseTRADetails.get("Id").get(0));
 		salesforceAPI.update("Parcel__c", responseAPNDetails1.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(0));
-		salesforceAPI.update("Parcel__c", responseAPNDetails2.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(1));
-		salesforceAPI.update("Parcel__c", responseAPNDetails3.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c", responseAPNDetails2.get("Id").get(2), "TRA__c", responseTRADetails.get("Id").get(1));
+		salesforceAPI.update("Parcel__c", responseAPNDetails2.get("Id").get(3), "TRA__c", responseTRADetails.get("Id").get(0));
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -319,7 +316,31 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String mappingActionCreationData = testdata.COMBINE_MAPPING_ACTION;
 		Map<String, String> hashMapCombineMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformCombineMappingAction");
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+	                "DataToCreateOwnershipRecord");
+		
+		// Adding Ownership records in the parcels
+        objMappingPage.login(users.RP_APPRAISER);
 
+        // Opening the PARCELS page and searching the parcel to create ownership record        
+        responseAPNDetails1.get("Name").stream().forEach(parcel -> {
+        	try {
+	        	objMappingPage.searchModule(PARCELS);
+		        objMappingPage.globalSearchRecords(parcel);
+		        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+		        objParcelsPage.createOwnershipRecord1(hashMapCreateOwnershipRecordData,assesseeName1);
+        	}
+        	catch(Exception e) {
+        		ReportLogger.INFO("Fail to create ownership record : "+e);
+        	}
+        });
+        
+        objMappingPage.globalSearchRecords(apn3);
+        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+        objParcelsPage.createOwnershipRecord1(hashMapCreateOwnershipRecordData,assesseeName2);
+        
+        objWorkItemHomePage.logout();
+        Thread.sleep(5000);
 		
 		// Step1: Login to the APAS application
 		objMappingPage.login(loginUser);
@@ -622,12 +643,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String assesseeName = objMappingPage.getOwnerForMappingAction();
 
 		//Fetching parcels that are Active with specific ownership record
-		HashMap<String, ArrayList<String>> responseAPNDetails = objMappingPage.getActiveApnHavingOwner(assesseeName, 2);
+		HashMap<String, ArrayList<String>> responseAPNDetails = objMappingPage.getActiveApnWithNoOwner(2);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
 		
 		//Getting an Active Condo Parcel with specific ownership record
-		HashMap<String, ArrayList<String>> responseCondoAPNDetails = objMappingPage.getCondoApnHavingOwner(assesseeName);
+		HashMap<String, ArrayList<String>> responseCondoAPNDetails = objMappingPage.getCondoApnWithNoOwner();
 		String apn3 = responseCondoAPNDetails.get("Name").get(0);
 		
 		//Add the parcels in a Hash Map for validations later
@@ -689,7 +710,31 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String mappingActionCreationData = testdata.COMBINE_MAPPING_ACTION;
 		Map<String, String> hashMapCombineMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformCombineMappingAction");
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+                "DataToCreateOwnershipRecord");
+		
+		// Add ownership records in the parcels
+        objMappingPage.login(users.RP_APPRAISER);
 
+        // Opening the PARCELS page and searching the parcel to create ownership record        
+        responseAPNDetails.get("Name").stream().forEach(parcel -> {
+        	try {
+	        	objMappingPage.searchModule(PARCELS);
+		        objMappingPage.globalSearchRecords(parcel);
+		        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+		        objParcelsPage.createOwnershipRecord1(hashMapCreateOwnershipRecordData,assesseeName);
+        	}
+        	catch(Exception e) {
+        		ReportLogger.INFO("Fail to create ownership record : "+e);
+        	}
+        });
+        
+        objMappingPage.globalSearchRecords(apn3);
+        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+        objParcelsPage.createOwnershipRecord1(hashMapCreateOwnershipRecordData,assesseeName);
+        
+        objWorkItemHomePage.logout();
+        Thread.sleep(5000);
 		
 		// Step1: Login to the APAS application
 		objMappingPage.login(loginUser);
@@ -811,39 +856,24 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(ownershipTableDataHashMap.get("Owner").get(0),assesseeName,
 				"SMAB-T2373: Validate that the Ownership record appears in Ownership tab");
 		
-		//Step 16: Validate Parent parcels status and Parcel relationship
-		objMappingPage.globalSearchRecords(apn1);
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"In Progress - To Be Expired",
-				"SMAB-T2373: Validate the Status of first parent parcel");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),"In Progress - To Be Expired",
-				"SMAB-T2373: Validate the PUC of first parent parcel");
-		
-		objParcelsPage.openRelatedTabInParcelRecord("Parcel Relationships");
-		HashMap<String, ArrayList<String>> tableDataHashMap1 = objParcelsPage.getParcelTableDataInHashMap("Target Parcel Relationships");
-		softAssert.assertEquals(tableDataHashMap1.get("Target Parcel").get(0),childAPNNumber,
-				"SMAB-T2373: Validate that the Child parcel appears in Parcel Relationship tab");
-		
-		objMappingPage.globalSearchRecords(apn2);
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"In Progress - To Be Expired",
-				"SMAB-T2373: Validate the Status of second parent parcel");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),"In Progress - To Be Expired",
-				"SMAB-T2373: Validate the PUC of second parent parcel");
-		
-		objParcelsPage.openRelatedTabInParcelRecord("Parcel Relationships");
-		HashMap<String, ArrayList<String>> tableDataHashMap2 = objParcelsPage.getParcelTableDataInHashMap("Target Parcel Relationships");
-		softAssert.assertEquals(tableDataHashMap2.get("Target Parcel").get(0),childAPNNumber,
-				"SMAB-T2373: Validate that the Child parcel appears in Parcel Relationship tab");
-		
-		objMappingPage.globalSearchRecords(apn3);
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"In Progress - To Be Expired",
-				"SMAB-T2373: Validate the Status of third parent parcel");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),"In Progress - To Be Expired",
-				"SMAB-T2373: Validate the PUC of third parent parcel");
-		
-		objParcelsPage.openRelatedTabInParcelRecord("Parcel Relationships");
-		HashMap<String, ArrayList<String>> tableDataHashMap3 = objParcelsPage.getParcelTableDataInHashMap("Target Parcel Relationships");
-		softAssert.assertEquals(tableDataHashMap3.get("Target Parcel").get(0),childAPNNumber,
-				"SMAB-T2373: Validate that the Child parcel appears in Parcel Relationship tab");
+		//Step 16: Validate Parent parcels status and Parcel relationship		
+		apnValue.forEach((parcelKey, parcel) -> {
+		try {
+			objMappingPage.globalSearchRecords(parcel);
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"In Progress - To Be Expired",
+					"SMAB-T2373: Validate the Status of parcel : " + parcel);
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),"In Progress - To Be Expired",
+					"SMAB-T2373: Validate the PUC of parcel : " + parcel);
+			
+			objParcelsPage.openRelatedTabInParcelRecord("Parcel Relationships");
+			HashMap<String, ArrayList<String>> tableDataHashMap1 = objParcelsPage.getParcelTableDataInHashMap("Target Parcel Relationships");
+			softAssert.assertEquals(tableDataHashMap1.get("Target Parcel").get(0),childAPNNumber,
+					"SMAB-T2373: Validate that the Child parcel appears in Parcel Relationship tab");
+    	}
+    	catch(Exception e) {
+    		ReportLogger.INFO("Fail to validate the parcel status and relationship : "+e);
+    	}
+    	});
 		
 		//Step 17: Complete the WI and validate the linked parcels to the WI
 		objMappingPage.searchModule(WORK_ITEM);
@@ -916,23 +946,18 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),"00-VACANT LAND",
 				"SMAB-T2373: Validate the PUC of child parcel generated");
 		
-		objMappingPage.globalSearchRecords(apn1);
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"Retired",
-				"SMAB-T2373: Validate the status of first parent parcel");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),"99-RETIRED PARCEL",
-				"SMAB-T2373: Validate the PUC of first parent parcel");
-				
-		objMappingPage.globalSearchRecords(apn2);
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"Retired",
-				"SMAB-T2373: Validate the status of second parent parcel");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),"99-RETIRED PARCEL",
-				"SMAB-T2373: Validate the PUC of second parent parcel");
-		
-		objMappingPage.globalSearchRecords(apn3);
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"Retired",
-				"SMAB-T2373: Validate the status of third parent parcel");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),"99-RETIRED PARCEL",
-				"SMAB-T2373: Validate the PUC of third parent parcel");
+		apnValue.forEach((parcelKey, parcel) -> {
+			try {
+				objMappingPage.globalSearchRecords(parcel);
+				softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"Retired",
+						"SMAB-T2373: Validate the Status of parcel : " + parcel);
+				softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),"99-RETIRED PARCEL",
+						"SMAB-T2373: Validate the PUC of parcel : " + parcel);
+	    	}
+	    	catch(Exception e) {
+	    		ReportLogger.INFO("Fail to validate the Parcel status and PUC : "+e);
+	    	}
+	    });
 		
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
