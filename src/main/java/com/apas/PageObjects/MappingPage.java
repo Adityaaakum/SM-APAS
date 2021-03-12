@@ -26,7 +26,7 @@ public class MappingPage extends ApasGenericPage {
 	public String parcelSizeDropDownLabel  = "Parcel Size Validation for Parent & Children Needed?";
 	public String netLandLossTextBoxLabel = "Net Land Loss";
 	public String netLandGainTextBoxLabel = "Net Land Gain";
-	public String firstNonCondoTextBoxLabel = "First Non-Condo Parcel Number";
+	public String firstNonCondoTextBoxLabel = "First non-Condo Parcel Number";
 	public String legalDescriptionTextBoxLabel = "Legal Description Auto-Populate Field for Child Parcels";
 	public String situsTextBoxLabel = "Situs Auto-Populate Field for Child Parcels";
 	public String commentsTextBoxLabel = "Comments";
@@ -65,7 +65,7 @@ public class MappingPage extends ApasGenericPage {
 	public String closeButton = "Close";
 	public String CreateNewParcelButton="Create Brand New Parcel";
 	public String generateParcelsButton = "Generate Parcels";
-
+   
 	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
 
@@ -98,6 +98,12 @@ public class MappingPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//*[text()='Parent APN(s)']//following::span[@class='slds-col']")
 	public WebElement parentAPNFieldValue;
+	
+	@FindBy(xpath = "//button[@title='Remap Parcel (s)']")
+	 public WebElement remapParcelButton ;
+	
+	@FindBy(xpath = "//div[@class='slds-hyphenate']/*[contains(text(),'The APN provided is a duplicate')]")
+	public WebElement remapErrorMessageonSecondScreen;
 
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
