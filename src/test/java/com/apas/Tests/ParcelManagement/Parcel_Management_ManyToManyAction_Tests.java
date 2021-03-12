@@ -16,7 +16,6 @@ import com.apas.config.testdata;
 import com.apas.config.users;
 import com.relevantcodes.extentreports.LogStatus;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -24,7 +23,6 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class Parcel_Management_ManyToManyAction_Tests extends TestBase implements testdata, modules, users {
@@ -990,32 +988,5 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		}
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
-	}
-
-	@Test(description = "SMAB-T2722:Verify the Output validations for \"Many to Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-            "Regression","ParcelManagement" })
-    public void ParcelManagement_VerifyManyToManyMappingAction(String loginUser) throws Exception {
-
-        
-        //Step 14: Verify Status of Parent & Child Parcels before WI completion
-		JSONObject jsonObjectRecord=null;
-		String query = "SELECT Primary_Situs__r.Name FROM Parcel__c where Name = '002-024-990'";
-		
-		String jsonResponse = salesforceAPI.getSelectQueryDateInJson(query);
-		System.out.println(jsonResponse);
-
-		JSONObject jsonObject = new JSONObject(jsonResponse);
-        JSONArray jsonArray = jsonObject.getJSONArray("records");
-        for (int i = 0; i < jsonArray.length(); i++) {
-            jsonObjectRecord = jsonArray.getJSONObject(i);
-            System.out.println("jsonObjectRecord: "+i+ "- "+jsonObjectRecord);           
-        }
-        jsonObject = new JSONObject(jsonObjectRecord);
-        jsonArray = jsonObject.getJSONArray("Primary_Situs__r");
-        for (int i = 0; i < jsonArray.length(); i++) {
-            jsonObjectRecord = jsonArray.getJSONObject(i);
-            System.out.println("jsonObjectRecord: "+i+ "- "+jsonObjectRecord);           
-        }
-        
 	}
 }
