@@ -26,7 +26,7 @@ public interface testdata {
 	String BPP_TREND_CAA_VALUATION_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\";
 	String BPP_TREND_BOE_VALUATION_FACTORS = "\\data\\BppTrend\\Error_Record_Files\\";
 	String BPP_TREND_DATA = "\\data\\BppTrend\\BppTrendSetupAndBppSettingData.json";
-	String REMAP_MAPPING_ACTION = "\\data\\MappingActions\\RemapMappingAction.json";
+	String REMAP_MAPPING_ACTION = userDirectory+"\\data\\MappingActions\\RemapMappingAction.json";
 	
 	String BPP_TREND_BOE_INDEX_FACTORS_CSV = "\\data\\BppTrend\\Invalid_Format_Files\\BOE Equipment Index Factors and Percent Good Factors Sample_CSV_Format.csv";
 	String BPP_TREND_BOE_INDEX_FACTORS_TXT = "\\data\\BppTrend\\Invalid_Format_Files\\BOE Equipment Index Factors and Percent Good Factors Sample_TXT_Format.txt";
@@ -64,7 +64,7 @@ public interface testdata {
     String COMBINE_MAPPING_ACTION = userDirectory + "\\data\\MappingActions\\CombineAction.json";
 	String NEIGHBORHOOD = userDirectory + "\\data\\Neighborhood\\Neighborhood.json";
 	String ROUTING_ASSIGNMENT = userDirectory + "\\data\\RoutingAssignment\\RoutingAssignment.json";
-	String Brand_New_Parcel_MAPPING_ACTION = "\\data\\MappingActions\\BrandNewParcelMapping.json";
+	String Brand_New_Parcel_MAPPING_ACTION = userDirectory+"\\data\\MappingActions\\BrandNewParcelMapping.json";
 	String MANY_TO_MANY_MAPPING_ACTION = userDirectory + "\\data\\MappingActions\\ManyToManyMappingAction.json";
 
 }

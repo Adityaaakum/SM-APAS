@@ -1203,18 +1203,6 @@ public class ApasGenericPage extends Page {
 		WebElement taxCollectorLink = waitForElementToBeClickable(20, xPath);
 		Click(taxCollectorLink);
 	}
-	/*
-   This method is used to fetch field value for mentioned APN
-   @Param: fieldName: Field name for which value needs to be fetched
-   @Param: apnNumber: Parcel Number for which field value needs to be fetched
-   @return: returns the value of the field
-  */
-	public HashMap<String, ArrayList<String>> fetchFieldValueOfParcel(String fieldName, String apnNumber) throws Exception {
-		String query = "SELECT "+fieldName+" FROM Parcel__c where Name = '"+apnNumber+"'";
-		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
-
-		return response;
-	}
 
 	public String getSuccessMessage() throws Exception {
 		String SuccessTxt = "";

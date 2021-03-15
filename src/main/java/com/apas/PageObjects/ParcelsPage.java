@@ -40,6 +40,11 @@ public class ParcelsPage extends ApasGenericPage {
 	public String priorityDropDownComponentsActionsModal = "Priority";
 	public String workItemRoutingDropDownComponentsActionsModal = "Work Item Routing";
 	public String workItemOwnerSearchBox = "Work Item Owner (if someone other than you)";
+
+	
+	public String editApnField ="APN";	
+	public String LongLegalDescriptionLabel="Long Legal Description"; 
+
 	public String statusDropDownLabel = "Status";
 	public String parcelRelationshipsTabLabel = "Parcel Relationships";
 	public String ownershipTabLabel = "Ownership";
@@ -76,6 +81,9 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//button[contains(text(),'Open Assessor')]")
 	public WebElement openAsessorsMapButton;
+	
+	
+	
 	
     public String SubmittedForApprovalButton="Submit for Approval";
 	
@@ -137,20 +145,6 @@ public class ParcelsPage extends ApasGenericPage {
 		
 		return workItemNumber;
 	}
-	
-	/**
-     * Description: This method will open the related tab for parcel record
-     *
-     * @param poolName: Takes Related Tab name as an argument
-     */
-	
-	  public void openRelatedTabInParcelRecord(String tabName) throws Exception {
-		  ReportLogger.INFO("Open the Related tab : " + tabName); 
-		  String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='"+ tabName + "']"; WebElement relatedTabLocator =
-		  waitForElementToBeClickable(30, xpathStr); 
-		  Click(relatedTabLocator);
-		  Thread.sleep(2000); 
-	  }
 	 
     
     /**
@@ -236,14 +230,8 @@ public class ParcelsPage extends ApasGenericPage {
 	 * @param dataMap: A data map which contains data to perform create Ownership record
 	 * @throws Exception
 	 */
-	public String createOwnershipRecord(Map<String, String> dataMap) throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");
-		
-		//Fetching Assessee records
-        String queryAssesseeRecord = "SELECT Id, Name FROM Account Limit 1";
-        HashMap<String, ArrayList<String>> responseAssesseeDetails = objSalesforceAPI.select(queryAssesseeRecord);
-        String assesseeName = responseAssesseeDetails.get("Name").get(0);
-        
+	public String createOwnershipRecord(String assesseeName, Map<String, String> dataMap) throws Exception {
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");        
 		String owner = assesseeName;
 		String type = dataMap.get("Type");
 		String status = dataMap.get("Status");
@@ -262,26 +250,26 @@ public class ParcelsPage extends ApasGenericPage {
 		String successMsg = saveRecord();
 		return successMsg;
 	}
-	
-	public String createOwnershipRecord1(Map<String, String> dataMap, String assesseeName) throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");
-		
-		String owner = assesseeName;
-		String type = dataMap.get("Type");
-		String status = dataMap.get("Status");
-		String bppAccount = dataMap.get("BPP Account");
-		String ownershipStartDate = dataMap.get("Ownership Start Date");
-		
-		createRecord();
-		searchAndSelectOptionFromDropDown(ownerDropDown, owner);
-		selectOptionFromDropDown(typeDropDown, type);
-		selectOptionFromDropDown(statusDropDown, status);
-		if (ownershipStartDate != null)
-			enter(ownershipStartTextBox, ownershipStartDate);
-		if (bppAccount != null)
-			searchAndSelectOptionFromDropDown(bppAccountDropDown, bppAccount);
-		
-		String successMsg = saveRecord();
-		return successMsg;
-	}
+
+	/*
+	   This method is used to fetch field value for mentioned APN
+	   @Param: fieldName: Field name for which value needs to be fetched
+	   @Param: apnNumber: Parcel Number for which field value needs to be fetched
+	   @return: returns the value of the field
+	  */
+		public HashMap<String, ArrayList<String>> fetchFieldValueOfParcel(String fieldName, String apnNumber) throws Exception {
+			String query = "SELECT "+fieldName+" FROM Parcel__c where Name = '"+apnNumber+"'";
+			HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+			if(fieldName.equalsIgnoreCase("Neighborhood_Reference__c")){
+				query = "SELECT Name FROM Neighborhood__c Where Id = '"+response.get(fieldName).get(0)+"'";
+			}else if(fieldName.equalsIgnoreCase("TRA__c")){
+				query = "SELECT Name FROM TRA__c Where Id = '"+response.get(fieldName).get(0)+"'";
+			}else if(fieldName.equalsIgnoreCase("Primary_Situs__c")){
+				query = "SELECT Name FROM Situs__c Where Id = '"+response.get(fieldName).get(0)+"'";
+			}
+			response = objSalesforceAPI.select(query);		
+			return response;
+		}
+
 }
