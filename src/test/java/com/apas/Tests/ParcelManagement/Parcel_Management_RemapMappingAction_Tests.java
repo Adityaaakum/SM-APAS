@@ -58,7 +58,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		String retiredAPNValue= response.get("Name").get(0);
 
 				
-		String mappingActionCreationData = System.getProperty("user.dir") + testdata.REMAP_MAPPING_ACTION;
+		String mappingActionCreationData = testdata.REMAP_MAPPING_ACTION;
 		Map<String, String> remapMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformRemapMappingAction");
 
@@ -142,7 +142,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		}
 		
 				
-		String mappingActionCreationData = System.getProperty("user.dir") + testdata.REMAP_MAPPING_ACTION;
+		String mappingActionCreationData =  testdata.REMAP_MAPPING_ACTION;
 		Map<String, String> remapMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformRemapMappingAction");
 
@@ -262,7 +262,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	  
 	  @Test(description = "SMAB-T2483,SMAB-T2691,SMAB-T2692: Verify APN entered must exist in APAS,And no dupicates Apn allowed ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
 			  ,groups = {"Regression","ParcelManagement"},enabled =true)
-	  public void verifyAPNEnteredMustExistInApas(String loginUser) throws Exception
+	  public void ParcelManagment_Verify_APN_EnteredMust_Exist_In_Apas_RemapMappingAction(String loginUser) throws Exception
 	  {
 		  String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
 			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -335,7 +335,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	  
 	  @Test(description = "SMAB-T2625,SMAB-T2628:  Verify that when multiple parent parcels are entered, if a space is entered or not after a comma, the system should format the parcel as expected,And Apn should be 9 digits ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
 			  ,groups = {"Regression","ParcelManagement"},enabled=true)
-	  public void verifyMultipleParentParcelsIndentation(String loginUser) throws Exception
+	  public void ParcelManagment_Verify_Multiple_Parent_Parcels_Indentation_RemapMapping(String loginUser) throws Exception
 	  {
 		  String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
 			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -408,7 +408,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	    
 	    @Test(description = "SMAB-T2629,SMAB-T2630 : Verify APN entered must not have special character ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
 	  		  ,groups = {"Regression","ParcelManagement"},enabled = true)
-	    public void verifyAPNEnteredMustNotHaveSpcChar(String loginUser) throws Exception
+	    public void ParcelManagment_VerifyAPN_Entered_MustNotHave_SpcChar_RemappingAction(String loginUser) throws Exception
 	    {
 	  	  String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
 	  		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -476,7 +476,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	    
 	    @Test(description = "SMAB-T2634: on mapping screen(second screen) when manually update the apn and enter the same existing as generated for another child parcel and try to finalize the action of multiple parcels generated error should be thrownS ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
 	  		  ,groups = {"Regression","ParcelManagement"},enabled =true)
-	    public void verifyRemapWithDuplicateApns(String loginUser) throws Exception
+	    public void ParcelManagment_Verify_Remap_With_Duplicate_Apns_RemappingAction(String loginUser) throws Exception
 	    {
 	  	  String queryAPN = "select name from parcel__c where status__c ='Active' limit 2";
 	  		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -515,6 +515,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	  			HashMap<String, ArrayList<String>> gridParcelData=      objMappingPage.getGridDataInHashMap();            
 	             objMappingPage.editGridCellValue("APN", gridParcelData.get("APN").get(1));    
 	             objMappingPage.Click(objMappingPage.remapParcelButton);
+	             objMappingPage.waitForElementToBeVisible(objMappingPage.remapErrorMessageonSecondScreen, 5);
 	             //Validating error message ,that duplicate apn cannot be remapped to parcels
 	             softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.remapErrorMessageonSecondScreen), "The APN provided is a duplicate APN.Please check.", "SMAB-T2634: validate duplicates Apn Cannot be entered in parcel remap");  			
 	                   
@@ -536,7 +537,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	    
 	    @Test(description = "SMAB-T2627: Verify that when many parcels are entered that exceed the allocated space, the system should automatically auto-wrap the parent APN so they are displayed properly ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
 	  		  ,groups = {"Regression","ParcelManagement"},enabled =true)
-	    public void manyNewParcelApnFormatted(String loginUser) throws Exception
+	    public void ParcelManagment_Many_NewParcel_Apn_Formatted_RemappingAction(String loginUser) throws Exception
 	    {
 	  	  String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 11";
 	  		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
