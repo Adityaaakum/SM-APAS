@@ -584,7 +584,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
      * @throws Exception
      */
     
-    @Test(description = "SMAB-T2632,SMAB-T2993 : Verify Parent APN field cannot be greyed except if mapping action is brand new parcel ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
+    @Test(description = "SMAB-T2632,SMAB-T2693 : Verify Parent APN field cannot be greyed except if mapping action is brand new parcel ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
   		  ,groups = {"Regression","ParcelManagement"},enabled =true)
     public void ParcelManagment_verify_BrandNewParcel_ParentParcel_Greyed_BrandNewMappingAction(String loginUser) throws Exception
     {
