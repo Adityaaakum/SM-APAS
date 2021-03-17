@@ -236,7 +236,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		//Step7: Validate user who has submitted the Work Item for Approval is not able to Complete it
 		ReportLogger.INFO("User is not able to approve the WI :: " + reminderWINumber);
 		workItemPageObj.clickOnTimelineAndMarkComplete(workItemPageObj.completedOptionInTimeline);
-		softAssert.assertEquals(objApasGenericPage.getAlertMessage(),"Status: You cannot change status from Submitted for Approval to Completed","SMAB-T1881 : Validate that after Work Item is submitted for approval, user is not able to mark it 'Complete' manually");
+		softAssert.assertEquals(objApasGenericPage.getAlertMessage(),"Status: The work item selected cannot be closed manually","SMAB-T1881 : Validate that after Work Item is submitted for approval, user is not able to mark it 'Complete' manually");
 		objPage.Click(workItemPageObj.CloseErrorMsg);
 		
 		ReportLogger.INFO("Validate the status of the Work Item after closing the error message");
