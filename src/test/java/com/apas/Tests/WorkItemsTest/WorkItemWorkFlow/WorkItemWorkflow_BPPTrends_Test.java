@@ -252,7 +252,9 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step4: "Import" Reminder Work Item generation validation
         String importBOEValuationRequestType = "BPP Trends - Import - BOE Valuation Factors";
-
+        
+        driver.navigate().refresh();
+        
         int importWorkItemCount = objWorkItemHomePage.getWorkItemCount(importBOEValuationRequestType,objWorkItemHomePage.TAB_IN_POOL);
         softAssert.assertEquals(importWorkItemCount, 1,  "SMAB-T1738,SMAB-T1945: Imported work item count validation");
 
@@ -427,7 +429,9 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step4: "Import" Reminder Work Item generation validation
         String importCAAValuationRequestType = "BPP Trends - Import - CAA Valuation Factors";
-
+        
+        driver.navigate().refresh();
+        
         int importWorkItemCount = objWorkItemHomePage.getWorkItemCount(importCAAValuationRequestType,objWorkItemHomePage.TAB_IN_POOL);
         softAssert.assertEquals(importWorkItemCount, 1,  "SMAB-T1741,SMAB-T1946: Imported work item count validation");
 
@@ -605,7 +609,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step6: "Perform Calculations" Work Item generation validation
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
-
+        driver.navigate().refresh();
         int importWorkItemCount = objWorkItemHomePage.getWorkItemCount(performCalculationsRequestType,objWorkItemHomePage.TAB_IN_POOL);
         softAssert.assertEquals(importWorkItemCount, 1, "SMAB-T1736,SMAB-T1947: Imported work item count validation");
 
@@ -643,6 +647,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Step7: "Perform Calculations" Work Item generation validation
+        driver.navigate().refresh();
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
         String importWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_IN_POOL);
 
@@ -750,6 +755,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step6: "Perform Calculations" Work Item generation validation
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
+        driver.navigate().refresh();
         String importWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_IN_POOL);
 
         //Step7: Accepting the work item and opening the link under 'Action' Column
@@ -779,7 +785,8 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         objBppTrendSetupPage.login(users.PRINCIPAL_USER);
         objBppTrendSetupPage.searchModule(modules.HOME);
-
+        driver.navigate().refresh();
+        
         //Step15: Navigate to 'Needs My Approval' tab and
         objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
 
@@ -814,7 +821,8 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step10: Update 'Annual Factor Status' & WI status to Completed
         query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings'";
-        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "In Progress");
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "In Progress");        
+
         objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
 
         query = "SELECT id FROM BPP_Trend_Roll_Year__c WHERE Roll_Year__c = '" +rollYear+ "'";
@@ -828,9 +836,10 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objBppTrendSetupPage.login(loginUser);
         objBppTrendSetupPage.searchModule(modules.HOME);
-
+        
         //Step5: "Perform Calculations" Work Item generation validation
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
+        driver.navigate().refresh();
         String importWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_IN_POOL);
 
         //Step6: Accepting the work item and opening the link under 'Action' Column
@@ -870,6 +879,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
 
         //Step12: Return the Work Item
+        driver.navigate().refresh();
         objWorkItemHomePage.returntWorkItem(importWorkItem,"Test WI Rejection");
 
         //Step13: Verify Status of WI 'Perform Calculations' is 'Completed'
@@ -886,6 +896,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objBppTrendSetupPage.searchModule(modules.HOME);
 
         //Ste15: Verify WI is present in 'In Progress' tab
+        driver.navigate().refresh();
         String inProgressWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_IN_PROGRESS);
         softAssert.assertEquals(inProgressWorkItem,importWorkItem, "SMAB-T2195: Verify WI returned to user is found in 'In Progress' tab");
     }
