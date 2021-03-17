@@ -252,7 +252,7 @@ public class DisabledVeterans_SecurityAndSharing_Tests extends TestBase implemen
 
 			//Step4: Verify the user access on Real Property Settings Library screen
 			ReportLogger.INFO("Verifying user is able to see New and Edit button for creating/Editing Real Property Settings Library");
-			exemptionPageObj.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
+			//exemptionPageObj.searchModule(modules.EFILE_INTAKE_VIEW); //To close split view mode
 			exemptionPageObj.searchModule(REAL_PROPERTY_SETTINGS_LIBRARIES);
 			softAssert.assertTrue(objPage.verifyElementVisible(objRPSLPage.newButton), "SMAB-T476,SMAB-T477: User is able to see New button to create a Real Property Settings Library record");
 			exemptionPageObj.displayRecords("All");

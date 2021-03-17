@@ -48,16 +48,16 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 	}
 	
 	/**
-	 * This method is to Verify that User is able to view various error messages while perform a "Retire" mapping action from a work item
+	 * This method is to Verify that User is able to view various error messages while perform a "BOE Activation" mapping action from a work item
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2748,SMAB-T2689,SMAB-T2688,SMAB-T2749,:Verify that User is able to view the various error message during Retire Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+	@Test(description = "SMAB-T2748,SMAB-T2689,SMAB-T2688,SMAB-T2754,SMAB-T2749,:Verify that User is able to view the various error message during BOE Activation mapping Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression","ParcelManagement","Smoke" })
 	public void ParcelManagement_VerifyErrorMessagesInBOEActivationMappingAction(String loginUser) throws Exception {
 		
 		//Fetching parcel that is Retired 		
-		String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
+		String queryAPNValue = "SELECT Source_Parcel__r.Name, Parcel_Actions__c,Id,Name  From Parcel_Relationship__c Where Parcel_Actions__c != 'BOE Activation' And Target_Parcel_Status__c = 'Retired' Limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		String retiredAPNValue= response.get("Name").get(0);
 		String retiredParcelWithoutHyphen=retiredAPNValue.replace("-","");
@@ -94,20 +94,18 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		Thread.sleep(5000);
 		
-		// Step 6: Select the active value in Action field and validate that 'Are Taxes fully paid?' field isn't visible
+		// Step 6: Select the BOE activation value in Action field
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,"BOE Activation");
-		//Step 6: Validating warning for parent parcel for brand new parcel on first screen
+		//Step 7: Validating Error for parent parcel for 'BOE Activation' on first screen
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"-In order to proceed with this action, the parent parcel (s) must be Retired.",
 						"SMAB-T2748: Validation that Warning: -In order to proceed with  BOE activation , the parent parcel (s) must be Retired.");
-		//Step 16: Validate that Reason CODE is a mandatory field
-		//Step 22: Validate that User is able to perform Retire action
 		Thread.sleep(2000);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 	    Thread.sleep(2000);
 		objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.parentAPNTextBoxLabel,retiredParcelWithoutHyphen);
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,"BOE Activation");
 		
-		//Step 16: Validate that Reason CODE is a mandatory field		
+		//Step 8: Validate that Reason CODE is a mandatory field		
 		ReportLogger.INFO("Remove the value from Reason Code field and click Retire button");
 		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel), "");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
@@ -118,11 +116,11 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objMappingPage.enter("First non-Condo Parcel Number","123456789");
 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		//Step 14: Validating that
+		//Step 9: Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
 						"SMAB-T2754,SMAB-T2689: Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
 
-		//Step 13 :Clicking generate parcel button
+		//Step 10 :Clicking generate parcel button
 	    objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelsButton));
 	    softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Please Review Spatial Information",
 				"SMAB-T2688: Validate that User is able to perform BOE Activation action for one retired parcel");
@@ -135,15 +133,18 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
      * @param loginUser
      * @throws Exception
      */
-    @Test(description = "SMAB-T2757,SMAB-T2758,SMAB-T2759,SMAB-T2760,SMAB-T2761,SMAB-T2684:Verify the Output validations for \"BOE Activation\" mapping action for a Parcel (retired) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-            "Regression","ParcelManagement" })
+    @Test(description = "SMAB-T2757,SMAB-T2758,SMAB-T2759,SMAB-T2760,SMAB-T2761,SMAB-T2687:"
+    		+ "Verify the Output validations for \"BOE Activation\" mapping action for a Parcel (retired) from a work item",
+    		dataProvider = "loginMappingUser",
+    		dataProviderClass = DataProviders.class, 
+    		groups = {"Regression","ParcelManagement" })
     public void ParcelManagement_VerifyBOEActivationMappingActionOutputValidations(String loginUser) throws Exception {
 
-        //Fetching parcels that are Active with no Ownership record
-        String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '100%') and (Not Name like '134%') and Status__c = 'Retired' Limit 1";
+        // Step 1: Fetching parcels that are Active with no Ownership record
+        String queryAPNValue = "SELECT Source_Parcel__r.Name, Parcel_Actions__c,Id,Name  From Parcel_Relationship__c Where Parcel_Actions__c != 'BOE Activation' And Target_Parcel_Status__c = 'Retired' Limit 1";
         HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
-        String apn1="048-154-030";
-        		//responseAPNDetails.get("Name").get(0);
+        String apn1=responseAPNDetails.get("Name").get(0);
+        //step 2: getting Neighborhood and tra value
         String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
@@ -157,24 +158,24 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		jsonObject.put("District__c",districtValue);
 		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-
+        // Step 3: update  values on Parcels
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
 	
         String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
         Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
                 "DataToCreateWorkItemOfTypeParcelManagement");
 
-        // Step 3: Login to the APAS application using the credentials passed through data provider
+        // Step 4: Login to the APAS application using the credentials passed through data provider
         objMappingPage.login(loginUser);
 
-        // Step 4: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+        // Step 5: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
         objMappingPage.searchModule(PARCELS);
         objMappingPage.globalSearchRecords(apn1);
 
-        // Step 5: Creating Manual work item for the Parcel
+        // Step 6: Creating Manual work item for the Parcel
         String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
-        //Step 6: Clicking the  details tab for the work item newly created and clicking on Related Action Link
+        //Step 7: Clicking the  details tab for the work item newly created and clicking on Related Action Link
         objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
         objWorkItemHomePage.waitForElementToBeVisible(40,objWorkItemHomePage.referenceDetailsLabel);
         objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
@@ -187,28 +188,29 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objMappingPage.enter("First non-Condo Parcel Number","123456789");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		Thread.sleep(2000);
-		//Step 14: Validating that
+		//Step 9: Validating that
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
-						"SMAB-T2524: Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
-
+						"Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
+		//Step 10: generate  new child parcels 
         objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelsButton));
 
-        //Step 10: Verify the success message after parcels are generated
+        //Step 11: Verify the success message after parcels are generated
         softAssert.assertContains(objMappingPage.getSuccessMessage(),"Please Review Spatial Information",
-                "SMAB-T2722: Validation that success message is displayed when Parcels are generated");
+                "Validation that success message is displayed when Parcels are generated");
 
-        //Step 11: Verify the grid cells are not editable after parcels are generated
+        //Step 12: Verify the grid cells are not editable after parcels are generated
         HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
         boolean actionColumn = gridDataHashMap.containsKey("Action");
-        softAssert.assertTrue(!actionColumn,"SMAB-T2760: Validation that columns should not be editable as Action column has disappeared after generating parcels");
-        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2760: Validation that APN column should not be editable after generating parcels");
-        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2760: Validation that Legal Description column should not be editable after generating parcels");
-        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2760: Validation that TRA column should not be editable after generating parcels");
-        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2760: Validation that Situs column should not be editable after generating parcels");
-        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2760: Validation that Reason Code column should not be editable after generating parcels");
-        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("District/Neighborhood"),"SMAB-T2760: Validation that District/Neighborhood column should not be editable after generating parcels");
-        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2760: Validation that Use Code column should not be editable after generating parcels");
-
+        softAssert.assertTrue(!actionColumn,"Validation that columns should not be editable as Action column has disappeared after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN")," Validation that APN column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description")," Validation that Legal Description column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"Validation that TRA column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs")," Validation that Situs column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code"),"Validation that Reason Code column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("District/Neighborhood")," Validation that District/Neighborhood column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code")," Validation that Use Code column should not be editable after generating parcels");
+       
+        //Step 13: Open Parent APN and verify Target Relationship details
         gridDataHashMap.get("APN").stream().forEach(parcel -> {
         	try {
 				objMappingPage.Click(objMappingPage.getButtonWithText(parcel));
@@ -289,14 +291,14 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
         		ExtentTestManager.getTest().log(LogStatus.FAIL, "Fail to validate Parent Parcel under Source Parcel Relationships section"+e);
         	}
         });
-		// Step 4: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+		// Step 23: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
         objMappingPage.searchModule(PARCELS);
         objMappingPage.globalSearchRecords(apn1);
 
-        // Step 5: Creating Manual work item for the Parcel
+        // Step 24: Creating Manual work item for the Parcel
          workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
-        //Step 6: Clicking the  details tab for the work item newly created and clicking on Related Action Link
+        //Step 25: Clicking the  details tab for the work item newly created and clicking on Related Action Link
         objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
         objWorkItemHomePage.waitForElementToBeVisible(40,objWorkItemHomePage.referenceDetailsLabel);
         objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
@@ -304,14 +306,14 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
         objWorkItemHomePage.switchToNewWindow(parentWindow);
         objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
 
-         //Step 8: Selecting Action as 'Many To Many' & Taxes Paid fields value as 'N/A'
+         //Step 26: Selecting Action as 'Many To Many' & Taxes Paid fields value as 'N/A'
         objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,"BOE Activation");
 		objMappingPage.enter("First non-Condo Parcel Number","123456789");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		Thread.sleep(2000);
-		//Step 14: Validating that
+		//Step 27: Validating that -In order to proceed with BOE Activation, the parent parcel (s) should not have been previously activated.
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"-In order to proceed with BOE Activation, the parent parcel (s) should not have been previously activated.",
-						"SMAB-T2684: Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
+						"SMAB-T2687: Validation that Warning: -In order to proceed with BOE Activation, the parent parcel (s) should not have been previously activated.");
 
         objWorkItemHomePage.logout();
     }
