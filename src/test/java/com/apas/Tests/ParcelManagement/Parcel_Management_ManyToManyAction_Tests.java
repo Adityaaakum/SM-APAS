@@ -302,19 +302,13 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
     @Test(description = "SMAB-T2587, SMAB-T2594, SMAB-T2595, SMAB-T2596, SMAB-T2626, SMAB-T2582:Verify the Parent APN validations for \"Many To Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
             "Regression","ParcelManagement" })
     public void ParcelManagement_VerifyParentAPNValidationsForManyToManyMappingAction(String loginUser) throws Exception {
-        //Fetching Assessee records
-        String queryAssesseeRecord = "SELECT Id, Name FROM Account Limit 1";
-        HashMap<String, ArrayList<String>> responseAssesseeDetails = salesforceAPI.select(queryAssesseeRecord);
-        String assesseeName = responseAssesseeDetails.get("Name").get(0);
-
+       
         //Fetching parcels that are Active with different Ownership record
-        String queryAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and (Not Name like '%990') and (Not Name like '134%') and Status__c = 'Active' Limit 1";
-        HashMap<String, ArrayList<String>> responseAPNDetails1 = salesforceAPI.select(queryAPNValue);
-        String apn1=responseAPNDetails1.get("Name").get(0);
-
-        queryAPNValue = "SELECT Name, Id from parcel__c where Id Not in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and (Not Name like '%990') and (Not Name like '134%') and Status__c = 'Active' Limit 1";
-        HashMap<String, ArrayList<String>> responseAPNDetails2 = salesforceAPI.select(queryAPNValue);
-        String apn2=responseAPNDetails2.get("Name").get(0);
+        String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '100%') and (Not Name like '134%') and Status__c = 'Active' Limit 2";
+        
+        HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
+        String apn1=responseAPNDetails.get("Name").get(0);
+        String apn2=responseAPNDetails.get("Name").get(1);
 
         String concatenateAPNWithDifferentOwnership = apn1+","+apn2;
 
@@ -325,6 +319,32 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         String mappingActionCreationData = testdata.MANY_TO_MANY_MAPPING_ACTION;
         Map<String, String> hashMapManyToManyActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
                 "DataToPerformManyToManyMappingActionWithoutAllFields");
+        Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+                "DataToCreateOwnershipRecord");
+        
+        objMappingPage.login(users.RP_APPRAISER);
+
+        
+     // Step2: Opening the PARCELS page and searching the parcel to create different ownership record 
+        //Fetching Assessee records
+        String queryAssesseeRecord = "SELECT Id, Name FROM Account Limit 1";
+        HashMap<String, ArrayList<String>> responseAssesseeDetails = salesforceAPI.select(queryAssesseeRecord);
+        String assesseeName = responseAssesseeDetails.get("Name").get(0);
+        objMappingPage.searchModule(PARCELS);
+        objMappingPage.globalSearchRecords(responseAPNDetails.get("Name").get(0));
+        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+        objParcelsPage.createOwnershipRecord(assesseeName, hashMapCreateOwnershipRecordData);
+        
+        queryAssesseeRecord = "SELECT Id, Name FROM Account Where Id != '"+responseAssesseeDetails.get("Id").get(0)+"' Limit 1";
+        responseAssesseeDetails = salesforceAPI.select(queryAssesseeRecord);
+        assesseeName = responseAssesseeDetails.get("Name").get(0);
+        objMappingPage.searchModule(PARCELS);
+        objMappingPage.globalSearchRecords(responseAPNDetails.get("Name").get(1));
+        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+        objParcelsPage.createOwnershipRecord(assesseeName, hashMapCreateOwnershipRecordData);
+        	
+        objWorkItemHomePage.logout();
+        Thread.sleep(20000);
 
         // Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
         objMappingPage.login(loginUser);
@@ -370,6 +390,8 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
         softAssert.assertContains(objMappingPage.getErrorMessage(),"-In order to proceed with this action, the parent parcel (s) must be active",
                 "SMAB-T2587: Validation that proper error message is displayed if parent parcel is retired");
+        softAssert.assertContains(objMappingPage.getErrorMessage(),"-Warning: TRAs of the \"Many to Many\" parent parcels are different.",
+                "SMAB-T2594: Validation that proper warning message is displayed if parcels are of different TRAs");
 
         //Step 7: Edit Parent APN, enter In-Progress APN and Verify Error Message
         // fetching  parcel that is In progress
@@ -405,7 +427,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         //Step 10: Edit Parent APN without hyphen and Verify hyphen is added to APN after saving
         //Fetching parcels that are Active with same Ownership record
         queryAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') AND Id Not IN (Select parcel__c FROM Property_Ownership__c where Owner__r.name != '" + assesseeName + "') and (Not Name like '%990') and (Not Name like '134%') and Status__c = 'Active' Limit 2";
-        HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
+        responseAPNDetails = salesforceAPI.select(queryAPNValue);
         String activeAPN1=responseAPNDetails.get("Name").get(0);
         String activeAPN2=responseAPNDetails.get("Name").get(1);
 
@@ -416,9 +438,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
         Thread.sleep(2000);
         softAssert.assertTrue(objMappingPage.getElementText(objMappingPage.parentAPNFieldValue).split(",")[0].contains("-"),"SMAB-T2582: Verify that when 9 digit APN is entered without hyphen, after saving hyphen is added automatically");
-        softAssert.assertContains(objMappingPage.getErrorMessage(),"-Warning: TRAs of the \"Many to Many\" parent parcels are different.",
-                "SMAB-T2594: Validation that proper warning message is displayed if parcels are of different TRAs");
-
+        
 
         driver.switchTo().window(parentWindow);
         objWorkItemHomePage.logout();

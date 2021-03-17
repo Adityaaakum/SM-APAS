@@ -355,7 +355,9 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,apnNotNextAvailable);
 		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.splitParcelButton));
-		objMappingPage.waitForElementToDisappear(objMappingPage.xpathSpinner, 50);
+		objMappingPage.waitForElementToDisappear(objMappingPage.xpathSpinner, 60);
+		objMappingPage.waitForElementToBeVisible(60, objMappingPage.apnColumnSecondScreen);
+		Thread.sleep(2000);
 
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertContains(gridDataHashMap.get("Error Message").get(0),"The parcel entered is invalid since the following parcel is available",
