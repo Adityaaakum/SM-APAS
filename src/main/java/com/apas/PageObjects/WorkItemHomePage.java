@@ -629,6 +629,7 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	 * @param tabName: Tab from which data needs to be fetched
 	 */
 	public int getWorkItemCount(String requestType, String tabName) throws Exception {
+		Thread.sleep(1000);
 		HashMap<String, ArrayList<String>> InPoolWorkItems = getWorkItemData(tabName);
 		return (int) InPoolWorkItems.get("Request Type").stream().filter(request -> request.equals(requestType)).count();
 
