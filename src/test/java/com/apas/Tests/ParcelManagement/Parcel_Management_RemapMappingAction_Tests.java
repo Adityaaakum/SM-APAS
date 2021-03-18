@@ -513,7 +513,8 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	  		    objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));	 	          
 	  		    objMappingPage.remapActionForm(RemapParcelMappingData);  	 			  			
 	  			HashMap<String, ArrayList<String>> gridParcelData=      objMappingPage.getGridDataInHashMap();            
-	             objMappingPage.editGridCellValue("APN", gridParcelData.get("APN").get(1));    
+	             objMappingPage.editGridCellValue("APN", gridParcelData.get("APN").get(1));
+	             objMappingPage.waitForElementToBeVisible(objMappingPage.remapParcelButton, 5);
 	             objMappingPage.Click(objMappingPage.remapParcelButton);
 	             objMappingPage.waitForElementToBeVisible(objMappingPage.remapErrorMessageonSecondScreen, 5);
 	             //Validating error message ,that duplicate apn cannot be remapped to parcels

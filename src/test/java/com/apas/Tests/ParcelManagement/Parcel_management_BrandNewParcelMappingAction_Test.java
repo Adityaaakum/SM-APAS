@@ -333,9 +333,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
 	    
-		// Validation that work pool should be 'Mapping' on parent parcel work item
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping",": Validation that work pool should be 'Mapping' on parent parcel work item");
-		
+			
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();	
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -361,7 +359,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
      		//Validating the status of the workItem 
      		 HashMap<String, ArrayList<String>> statusCompletedApn = objParcelsPage.fetchFieldValueOfParcel("Status__c",newCreatedApn);
              //Validating the status of parcel after completing WI
-           softAssert.assertEquals(statusCompletedApn.get("Status__c").get(0), "Active", "SMAB-T2644 Validating that the status of new APN is active");
+           softAssert.assertEquals(statusCompletedApn.get("Status__c").get(0), "Active", "SMAB-T2644: Validating that the status of new APN is active");
             driver.switchTo().window(parentWindow);
 		    objMappingPage.logout();
 		   		
@@ -410,9 +408,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		//Clicking the  details tab for the work item newly created and clicking on Related Action Link
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
-				
-		// Validation that work pool should be 'Mapping' on parent parcel work item
-	    softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping",": Validation that work pool should be 'Mapping' on parent parcel work item");	
+		
+		 
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();	
 		objWorkItemHomePage.switchToNewWindow(parentWindow);	
@@ -468,8 +465,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 
 		//Clicking the  details tab for the work item newly created and clicking on Related Action Link
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);	
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping",": Validation that work pool should be 'Mapping' on parent parcel work item");	
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);			
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();	
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -634,13 +630,13 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
    				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 				objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, "");
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-				softAssert.assertEquals(objMappingPage.verifyElementVisible(objMappingPage.reasonCodeTextBoxLabel), false, "SMAB-T2693 Verify fields are not populated");
+				softAssert.assertEquals(objMappingPage.verifyElementVisible(objMappingPage.reasonCodeTextBoxLabel), false, "SMAB-T2693: Verify fields are not populated");
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 				objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, apn1);
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 				objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapNewParcelMappingData.get("Action"));
 								//Verifying that fields got auto populated when there is a change in apn
-				softAssert.assertEquals(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel).isEnabled(), true, "SMAB-T2693 Verify fields are populated");
+				softAssert.assertEquals(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel).isEnabled(), true, "SMAB-T2693:Verify fields are populated");
 
 				
    				
