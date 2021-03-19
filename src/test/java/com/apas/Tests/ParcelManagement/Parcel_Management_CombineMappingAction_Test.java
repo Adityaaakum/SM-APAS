@@ -68,6 +68,23 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	    HashMap<String, ArrayList<String>> activeAPN = objMappingPage.getActiveApnWithNoOwner(2);
 	    String apn1 = activeAPN.get("Name").get(0);
 		String apn2 = activeAPN.get("Name").get(1);
+					
+		//Find lowest APN of both parcels
+		String updateSmallestAPN = "";		
+		int numbParcel1 = objMappingPage.convertAPNIntoInteger(apn1);
+		int numbParcel2 = objMappingPage.convertAPNIntoInteger(apn2);
+				
+		int smallestNumb = numbParcel1<numbParcel2?numbParcel1:numbParcel2;
+		String smallestAPN = String.valueOf(smallestNumb);
+		
+		if (smallestAPN.length() == 9) updateSmallestAPN = smallestAPN.substring(0, 3).concat("-").concat(smallestAPN.substring(4, 7)).concat("-").concat(smallestAPN.substring(8, 11));
+		if (smallestAPN.length() == 8) updateSmallestAPN = "0" + smallestAPN.substring(0, 2).concat("-").concat(smallestAPN.substring(2, 5)).concat("-").concat(smallestAPN.substring(5, 8));
+		if (smallestAPN.length() == 7) updateSmallestAPN = "00" + smallestAPN.substring(0, 1).concat("-").concat(smallestAPN.substring(1, 4)).concat("-").concat(smallestAPN.substring(4, 7));
+				
+		if (updateSmallestAPN.equals(apn2)) {
+			apn2 = apn1;
+			apn1 = updateSmallestAPN;
+		}
 		
 		//Data Manipulation to test various validations
 		String activeParcelWithoutHyphen=apn2.replace("-","");
@@ -279,8 +296,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	    String assesseeName1 = responseAssesseeDetails.get("Name").get(0);
 		String assesseeName2 = responseAssesseeDetails.get("Name").get(1);
 		
-		//Fetching parcel that is Retired 
-		String retiredAPNValue = objMappingPage.fetchRetiredAPN();
+		//Fetching parcel that is Retired
+		String queryRetiredAPNValue = "select Name from Parcel__c where Status__c='Retired' and (Not Name like '%990') limit 1";
+		String retiredAPNValue = salesforceAPI.select(queryRetiredAPNValue).get("Name").get(0);
+		//String retiredAPNValue = objMappingPage.fetchRetiredAPN();
 
 		//Fetching Interim parcel 
 		String interimAPN = objMappingPage.fetchInterimAPN();
@@ -320,8 +339,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	                "DataToCreateOwnershipRecord");
 		
 		// Adding Ownership records in the parcels
-        objMappingPage.login(users.RP_APPRAISER);
-
+        objMappingPage.login(users.SYSTEM_ADMIN);
+        
         // Opening the PARCELS page and searching the parcel to create ownership record        
         responseAPNDetails1.get("Name").stream().forEach(parcel -> {
         	try {
@@ -713,7 +732,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
                 "DataToCreateOwnershipRecord");
 		
 		// Add ownership records in the parcels
-        objMappingPage.login(users.RP_APPRAISER);
+        objMappingPage.login(users.SYSTEM_ADMIN);
 
         // Opening the PARCELS page and searching the parcel to create ownership record        
         responseAPNDetails.get("Name").stream().forEach(parcel -> {
