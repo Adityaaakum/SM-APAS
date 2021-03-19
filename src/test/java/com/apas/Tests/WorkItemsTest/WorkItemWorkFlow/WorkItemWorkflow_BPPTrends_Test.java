@@ -695,6 +695,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
 
         //Step7: "Perform Calculations" Work Item generation validation
+        driver.navigate().refresh();
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
 
         String importWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_IN_POOL);
