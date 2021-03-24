@@ -26,8 +26,8 @@ public class MappingPage extends ApasGenericPage {
 	public String parcelSizeDropDownLabel  = "Parcel Size Validation for Parent & Children Needed?";
 	public String netLandLossTextBoxLabel = "Net Land Loss";
 	public String netLandGainTextBoxLabel = "Net Land Gain";
-	public String firstNonCondoTextBoxLabel = "First Non-Condo Parcel Number";
-	public String legalDescriptionTextBoxLabel = "Legal Description Auto-Populate Field for Child Parcels";
+	public String firstNonCondoTextBoxLabel = "First non-Condo Parcel Number";
+	public String legalDescriptionTextBoxLabel = "Legal Description Auto-populate field for Child Parcels";
 	public String situsTextBoxLabel = "Situs Auto-Populate Field for Child Parcels";
 	public String commentsTextBoxLabel = "Comments";
 	public String parentAPNTextBoxLabel = "Parent APN(s)";
@@ -72,7 +72,7 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//label[text()='Legal Description Auto-populate field for Child Parcels']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconLegalDescription;
 
-	@FindBy(xpath = "//label[text()='Situs Auto-populate field for Child Parcels']/..//div[@class='slds-form-element__icon']")
+	@FindBy(xpath = "//label[text()='Situs Auto-populate Field for Child Parcels']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconSitus;
 
 	@FindBy(xpath = "//div[contains(@id,'salesforce-lightning-tooltip-bubble')]")
