@@ -58,7 +58,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		String retiredAPNValue= response.get("Name").get(0);
 
 				
-		String mappingActionCreationData = System.getProperty("user.dir") + testdata.REMAP_MAPPING_ACTION;
+		String mappingActionCreationData = testdata.REMAP_MAPPING_ACTION;
 		Map<String, String> remapMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformRemapMappingAction");
 
@@ -142,7 +142,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		}
 		
 				
-		String mappingActionCreationData = System.getProperty("user.dir") + testdata.REMAP_MAPPING_ACTION;
+		String mappingActionCreationData =  testdata.REMAP_MAPPING_ACTION;
 		Map<String, String> remapMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformRemapMappingAction");
 
@@ -250,4 +250,350 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	      objWorkItemHomePage.logout();
 
 	}
+	
+	
+	 /*
+	   * This method is to verify that APN exists in the system
+	   * @param -Login user
+	   * @throws-Exception
+	   * 
+	   */
+	  
+	  
+	  @Test(description = "SMAB-T2483,SMAB-T2691,SMAB-T2692: Verify APN entered must exist in APAS,And no dupicates Apn allowed ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
+			  ,groups = {"Regression","ParcelManagement"},enabled =true)
+	  public void ParcelManagment_Verify_APN_EnteredMust_Exist_In_Apas_RemapMappingAction(String loginUser) throws Exception
+	  {
+		  String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
+			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+			String apn=responseAPNDetails.get("Name").get(0);
+			String apn1=responseAPNDetails.get("Name").get(1);
+			
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+					"DataToCreateWorkItemOfTypeParcelManagement");
+		
+		String mappingActionCreationData =  testdata.REMAP_MAPPING_ACTION;
+		Map<String, String> RemapParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+					"DataToPerformRemapMappingAction");
+		
+		                               
+		       //  user login to APAS application
+			       objMappingPage.login(loginUser);			
+	        //  Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+					objMappingPage.searchModule(PARCELS);
+					objMappingPage.globalSearchRecords(apn);		
+			//  Creating Manual work item for the Parcel 
+					objParcelsPage.createWorkItem(hashMapmanualWorkItemData);			
+					
+			//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
+					objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+					objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);														
+					String parentWindow=driver.getWindowHandle();
+					objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+					
+			 //  User enters into mapping page									
+					objWorkItemHomePage.switchToNewWindow(parentWindow);
+					objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,RemapParcelMappingData.get("Action"));		          
+				    objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));				
+			// Step 6: User enters new APN that alerady exists in the system		
+					objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apn1);
+					objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));								
+					objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+					softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel),"value"),apn1,
+							"SMAB-T2483: Validate the APN value in Parent APN field");								 
+					objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+					objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,RemapParcelMappingData.get("Action"));
+					objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+					objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, "");
+					objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+				// validating error msg if no parent Apn is provided
+					softAssert.assertEquals(objMappingPage.getErrorMessage(),"The Parent APN cannot be blank.", "SMAB-T2692: validating error message of no parent  APN");
+								
+	        // Step 7 : User enters an invalid APN to check
+					objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+					objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, "000000000");
+					objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+					softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following Parent APNs do not exist : 000-000-000", "SMAB-T2483: validating error message of invalid APN");
+			//Entering multiple same Apns and validating error messages
+					objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+					objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, apn+","+apn);
+					objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+					softAssert.assertEquals(objMappingPage.getErrorMessage(),"The Parent APN can not have duplicate APNs.","SMAB-T2691: Verify that when multiple same APN's are added in parent APN field, it should throw error or show the warning");
+								
+	  			  driver.switchTo().window(parentWindow);
+				 objMappingPage.logout();
+	  }
+	  
+	 
+	  /**
+	   * 
+	   *  Verify that when multiple parent parcels are entered, if a space is entered or not after a comma, the system should format the parcel as expected,and apn should be 9 digits only.
+	   * @param loginUser
+	   * @throws Exception
+	   */
+	  
+	  @Test(description = "SMAB-T2625,SMAB-T2628:  Verify that when multiple parent parcels are entered, if a space is entered or not after a comma, the system should format the parcel as expected,And Apn should be 9 digits ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
+			  ,groups = {"Regression","ParcelManagement"},enabled=true)
+	  public void ParcelManagment_Verify_Multiple_Parent_Parcels_Indentation_RemapMapping(String loginUser) throws Exception
+	  {
+		  String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
+			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+			String apn=responseAPNDetails.get("Name").get(0);
+			String apn1=responseAPNDetails.get("Name").get(1);
+			
+		    String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+			Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+					"DataToCreateWorkItemOfTypeParcelManagement");
+			String mappingActionCreationData =  testdata.REMAP_MAPPING_ACTION;
+			Map<String, String> RemapParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+					"DataToPerformRemapMappingAction");	
+		     String combineApn=apn+","+apn1;
+		     String apnlessThan9 = apn.substring(0, 10);
+			   String validApn = apn.replace("-", "");
+			   String invalidApn = apnlessThan9.replace("-", "");
+			   
+	           // user login to APAS application
+			       objMappingPage.login(loginUser);		
+		       //  Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+				   objMappingPage.searchModule(PARCELS);
+				   objMappingPage.globalSearchRecords(apn);
+			  //  Creating Manual work item for the Parcel 
+				objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+			 //Clicking the  details tab for the work item newly created and clicking on Related Action Link
+				objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+				objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);		                           							
+				String parentWindow=driver.getWindowHandle();
+				objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+			 //  User enters into mapping page							
+				objWorkItemHomePage.switchToNewWindow(parentWindow);
+				objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,RemapParcelMappingData.get("Action"));
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));								
+				//  Entering combined APN'S
+				objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,combineApn);
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));				
+				softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel),"value"),apn+" , "+apn1,
+							"SMAB-T2625:  Verify that when multiple parent parcels are entered, if a space is entered or not after a comma, the system should format the parcel as expected.");	
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));    	
+	    		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apnlessThan9);
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+				//Validating APN of less than 9 digits
+ 				softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+apnlessThan9, "T-SMAB2628 validating error message of invalid APN less than 9 digits");			  
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));		    	
+				objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,invalidApn);
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));	
+				//Validating invalid apn without -
+				softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+apnlessThan9, "T-SMAB2628 validating error message of invalid APN less than 9 digits");		  
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));		
+				objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,validApn);
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));									
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+				//validating valid apn of 9 digits without -
+				softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel),"value"),apn,
+								"SMAB-T2628: Validate the APN value is valid"); 
+	  			driver.switchTo().window(parentWindow);
+				objMappingPage.logout();
+				
+	  }
+	  
+	  
+	    /**Verify APN entered must not have special character and validate apn without spaces
+	     * 
+	     * @param loginUser
+	     * @throws Exception
+	     */
+	    
+	    
+	    @Test(description = "SMAB-T2629,SMAB-T2630 : Verify APN entered must not have special character ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
+	  		  ,groups = {"Regression","ParcelManagement"},enabled = true)
+	    public void ParcelManagment_VerifyAPN_Entered_MustNotHave_SpcChar_RemappingAction(String loginUser) throws Exception
+	    {
+	  	  String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
+	  		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+	  		String apn=responseAPNDetails.get("Name").get(0);
+	  			  		
+	  	  String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+	  		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+	  				"DataToCreateWorkItemOfTypeParcelManagement");
+	  	
+	  		String mappingActionCreationData =  testdata.REMAP_MAPPING_ACTION;
+	  		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+	  				"DataToPerformRemapMappingAction");  		
+	  		String invalidApn =  apn.substring(0, 10)+"$";
+	  		String invalidApn2 =  apn.substring(0, 10)+".";
+	  		String spacedApn = apn.replace("-", " ");  	
+	          // user login to APAS application
+	  		      objMappingPage.login(loginUser);  	
+	          //  Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+	  			  objMappingPage.searchModule(PARCELS);
+	  			  objMappingPage.globalSearchRecords(apn);   		
+	  		//  Creating Manual work item for the Parcel 
+	  			  objParcelsPage.createWorkItem(hashMapmanualWorkItemData);   				
+	  		//Clicking the  details tab for the work item newly created and clicking on Related Action Link
+	  			  objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+	  			  objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel); 			  
+	  			  String parentWindow=driver.getWindowHandle();
+	  			  objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);  				
+	  		 //  User enters into mapping page	  				
+	  		      objWorkItemHomePage.switchToNewWindow(parentWindow);
+	  			  objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapBrandNewParcelMappingData.get("Action"));   
+	  			//	objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
+	  			  objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));    
+	  			  objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, invalidApn);
+				  objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+				  softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+invalidApn, "T-SMAB2629 validating error message of invalid APN");			  
+				  objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));				
+					//  User enters new APN that alerady exists in the system		
+				  objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,spacedApn);
+				  objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));					
+				  objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));						
+				  softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel),"value"),apn,
+									"SMAB-T2630: Validate the APN value in Parent APN field is without spaces");					 
+				  objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));						
+				  objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+				  // Entering . at the end of 8 digit apn
+	  			  objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, invalidApn2);
+				  objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+				  softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+invalidApn2, "T-SMAB2629 validating error message of invalid APN");			  	
+				
+				  
+	  			  driver.switchTo().window(parentWindow);
+				  objMappingPage.logout();
+	    
+	    
+	    }
+	    
+	    /**
+	     * on mapping screen(second screen) when manually update the apn and enter the same existing as generated for another child parcel and try to finalize the action of multiple parcels generated error should be thrownS
+	     * 
+	     * @param loginUser
+	     * @throws Exception
+	     */
+
+	    
+	    
+	    @Test(description = "SMAB-T2634: on mapping screen(second screen) when manually update the apn and enter the same existing as generated for another child parcel and try to finalize the action of multiple parcels generated error should be thrownS ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
+	  		  ,groups = {"Regression","ParcelManagement"},enabled =true)
+	    public void ParcelManagment_Verify_Remap_With_Duplicate_Apns_RemappingAction(String loginUser) throws Exception
+	    {
+	  	  String queryAPN = "select name from parcel__c where status__c ='Active' limit 2";
+	  		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+	  		String apn=responseAPNDetails.get("Name").get(0);
+	  		String apn1=responseAPNDetails.get("Name").get(1);
+	  		
+	  	String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+	  		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+	  				"DataToCreateWorkItemOfTypeParcelManagement");
+	  	
+	  		String mappingActionCreationData = testdata.REMAP_MAPPING_ACTION;
+	  		Map<String, String> RemapParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+	  				"DataToPerformRemapMappingAction");		  
+	  	
+	          // user login to APAS application
+	  		       objMappingPage.login(loginUser);
+	          //  Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+	  			 objMappingPage.searchModule(PARCELS);
+	  			 objMappingPage.globalSearchRecords(apn);  	
+	  		
+	  		//  Creating Manual work item for the Parcel 
+	  			objParcelsPage.createWorkItem(hashMapmanualWorkItemData);  				
+	  				
+	  		//Clicking the  details tab for the work item newly created and clicking on Related Action Link
+	  			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+	  			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);  				
+	  			String parentWindow=driver.getWindowHandle();
+	  			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);  				
+	  		 //  User enters into mapping page	 				
+	  			objWorkItemHomePage.switchToNewWindow(parentWindow);  				
+	  			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));	
+	  			//User duplicates apn in remap mapping 2 screen 
+	  		    objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apn+","+apn1);
+	  		    objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));	 	          
+	  		    objMappingPage.remapActionForm(RemapParcelMappingData);  	 			  			
+	  			HashMap<String, ArrayList<String>> gridParcelData=      objMappingPage.getGridDataInHashMap();            
+	             objMappingPage.editGridCellValue("APN", gridParcelData.get("APN").get(1));
+	             objMappingPage.waitForElementToBeVisible(objMappingPage.remapParcelButton, 5);
+	             objMappingPage.Click(objMappingPage.remapParcelButton);
+	             objMappingPage.waitForElementToBeVisible(objMappingPage.remapErrorMessageonSecondScreen, 5);
+	             //Validating error message ,that duplicate apn cannot be remapped to parcels
+	             softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.remapErrorMessageonSecondScreen), "The APN provided is a duplicate APN.Please check.", "SMAB-T2634: validate duplicates Apn Cannot be entered in parcel remap");  			
+	                   
+	             driver.switchTo().window(parentWindow);
+	                  
+	             objMappingPage.logout();
+	  			
+	    } 
+	   
+	    
+	    /**
+	     * Verify that when many parcels are entered that exceed the allocated space, the system should automatically auto-wrap the parent APN so they are displayed properly
+	     * 
+	     * 
+	     * 
+	     * @param loginUser
+	     * @throws Exception
+	     */
+	    
+	    @Test(description = "SMAB-T2627: Verify that when many parcels are entered that exceed the allocated space, the system should automatically auto-wrap the parent APN so they are displayed properly ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
+	  		  ,groups = {"Regression","ParcelManagement"},enabled =true)
+	    public void ParcelManagment_Many_NewParcel_Apn_Formatted_RemappingAction(String loginUser) throws Exception
+	    {
+	  	  String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 11";
+	  		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+	  		String apn = responseAPNDetails.get("Name").get(0);
+	  		String combinedapn=responseAPNDetails.get("Name").get(0)+" , "+
+	  		  responseAPNDetails.get("Name").get(1)+" , "+
+	  			responseAPNDetails.get("Name").get(2)+" , "+
+	  			responseAPNDetails.get("Name").get(3)+" , "+
+	  			responseAPNDetails.get("Name").get(4)+" , "+
+	  			responseAPNDetails.get("Name").get(5)+" , "+
+	  			responseAPNDetails.get("Name").get(6)+" , "+
+	  			responseAPNDetails.get("Name").get(7)+" , "+
+	  			responseAPNDetails.get("Name").get(8)+" , "+
+	  			responseAPNDetails.get("Name").get(9)+" , "+
+	  			responseAPNDetails.get("Name").get(10)+" , ";
+	  		
+	  	String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+	  		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+	  				"DataToCreateWorkItemOfTypeParcelManagement");  	
+	  		String mappingActionCreationData =  testdata.REMAP_MAPPING_ACTION;
+	  		Map<String, String> hashMapNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+	  				"DataToPerformRemapMappingAction");
+	        //Step1 - user login to APAS application
+			       objMappingPage.login(loginUser);		
+	        // Step2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+					objMappingPage.searchModule(PARCELS);
+					objMappingPage.globalSearchRecords(apn);	
+			// Step 3: Creating Manual work item for the Parcel 
+					objParcelsPage.createWorkItem(hashMapmanualWorkItemData); 				
+
+			//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
+					objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+					objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);					
+					String parentWindow=driver.getWindowHandle();
+					objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);				
+			 // Step 5: User enters into mapping page			
+	 				objWorkItemHomePage.switchToNewWindow(parentWindow);
+	 				objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapNewParcelMappingData.get("Action"));
+	 				 objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));				
+	 				// Step 6: User enters new combined apn of 11 that alerady exists in the system		
+	 				objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,combinedapn);
+	 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));								
+	 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+	 				softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel),"value"),combinedapn,
+	 								"SMAB-T2627: Verify that when many parcels are entered that exceed the allocated space, the system should automatically auto-wrap the parent APN so they are displayed properly");
+	 				
+	 				
+	 				 driver.switchTo().window(parentWindow);
+	                 
+		             objMappingPage.logout();
+		  			
+	    }
+	    
+
+	
+	
+	
 }
