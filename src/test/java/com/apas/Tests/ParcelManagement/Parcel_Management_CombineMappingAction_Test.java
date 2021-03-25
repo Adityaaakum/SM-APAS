@@ -1,5 +1,7 @@
 package com.apas.Tests.ParcelManagement;
 
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -870,7 +872,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	public void ParcelManagement_ReturnToCustomScreen_CombineMappingAction_NoPrimarySitusTRAOwnership(String loginUser) throws Exception {
 
 		//Fetching parcels that are Active with no Ownership record, no  tra and no primary situs
-		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Name like '0%') and (Not Name like '134%') and Status__c = 'Active' and TRA__c=NULL and Primary_Situs__c=NULL Limit 2";
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and Status__c = 'Active' and TRA__c=NULL and Primary_Situs__c=NULL Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
@@ -897,6 +899,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
+		Thread.sleep(7000);
+		objMappingPage.closeDefaultOpenTabs();
 
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform split mapping
 		objMappingPage.searchModule(PARCELS);
@@ -1017,6 +1021,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
+		Thread.sleep(7000);
+		objMappingPage.closeDefaultOpenTabs();
 
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform split mapping
 		objMappingPage.searchModule(PARCELS);
@@ -1122,6 +1128,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
+		Thread.sleep(7000);
+		objMappingPage.closeDefaultOpenTabs();
 
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform split mapping
 		objMappingPage.searchModule("APAS");
