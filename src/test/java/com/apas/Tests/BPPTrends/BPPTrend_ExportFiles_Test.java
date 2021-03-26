@@ -54,9 +54,9 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		objApasGenericPage = new ApasGenericPage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
-		rollYear = "2020";
+		rollYear = "2022";
         objBppTrendSetupPage = new BppTrendSetupPage(driver);
-        objApasGenericPage.updateRollYearStatus("Open", "2020");
+        objApasGenericPage.updateRollYearStatus("Open", "2022");
 	}
 	/* DESCRIPTION: Performing following once all tables are APPROVED:
 		 * 1. Validate Export Valuation & Composite Factors buttons are not visible before status of all the Factor Tables is 'Approved':: Test Case/JIRA ID: SMAB-T266, SMAB-T303, SMAB-T313
