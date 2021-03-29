@@ -72,9 +72,9 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//table[@role='grid']//thead/tr//th")
 	public WebElement dataGrid;
 
-	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items...')]")
+	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items...')]|//input[@placeholder='Search apps or items...']")
 	public WebElement appLauncherSearchBox;
-
+	
 	@FindBy(xpath = "//input[@placeholder='Search apps and items...']/..//button")
 	public WebElement searchClearButton;
 
@@ -196,7 +196,7 @@ public class ApasGenericPage extends Page {
 	 * Description: This will click on the module name from the drop down
 	 */
 	public void clickNavOptionFromDropDown(String navOption) throws Exception {
-		String xpathStr = "//a[@data-label= '" + navOption + "']//b[text() = '" + navOption + "']";
+		String xpathStr = "//a[@data-label= '" + navOption + "']//b[text() = '" + navOption + "']|//a[contains(@class,'app-launcher') and @title='" + navOption + "']";
 		WebElement drpDwnOption = waitForElementToBeClickable(20, xpathStr);
 		drpDwnOption.click();
 	}
