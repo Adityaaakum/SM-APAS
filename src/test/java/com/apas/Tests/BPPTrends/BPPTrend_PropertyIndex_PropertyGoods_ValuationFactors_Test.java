@@ -42,7 +42,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		objBppTrnPg = new BppTrendPage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
-		rollYear = CONFIG.getProperty("rollYear");
+		rollYear = "2022";
 		objBuildPermitPage = new BuildingPermitPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
 		objBppTrendSetupPage = new BppTrendSetupPage(driver);
