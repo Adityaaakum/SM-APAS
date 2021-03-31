@@ -78,9 +78,8 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		//Step6: Click on New option to create BPP Setting entry
 		if(objPage.verifyElementVisible(objBppTrendSetupPage.dropDownIconBppSetting))
 		objPage.clickAction(objBppTrendSetupPage.dropDownIconBppSetting);
-		objPage.clickAction(objBppTrendPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
-	//	objApasGenericPage.createRecord();
-
+		objPage.javascriptClick(objBppTrendPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
+		
 		//Step7: Clear the Default Max Equipment index factor value and verify the error message
 		String expectedErrorMessage = "Complete this field.";
 		objPage.enter("Maximum Equipment index Factor","");
@@ -127,6 +126,9 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		softAssert.assertEquals(actualValue,expectedValue,"SMAB-T134: Verify entered value: 124.4 is saved as "+expectedValue);
 
 		//Step14: Validate error message with factor values within specified range : 160
+		Thread.sleep(2000);
+		driver.navigate().refresh();
+		objPage.waitForElementToBeClickable(60, objPage.getButtonWithText("Edit"));
 		objPage.Click(objPage.getButtonWithText("Edit"));
 		Thread.sleep(1000);
 		objPage.enter("Maximum Equipment index Factor","160");
@@ -138,9 +140,8 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		softAssert.assertEquals(actualValue,expectedValue,"SMAB-T134: Verify entered value: 124.4 is saved as "+expectedValue);
 
 		//Step15: Updating the default value : 125
-//		objPage.clickAction(objBppTrendSetupPage.dropDownIconDetailsSection);
-//		Thread.sleep(1000);
-//		objPage.clickAction(objBppTrendSetupPage.editLinkUnderShowMore);
+		driver.navigate().refresh();
+		objPage.waitForElementToBeClickable(60, objPage.getButtonWithText("Edit"));
 		objPage.Click(objPage.getButtonWithText("Edit"));
 		Thread.sleep(1000);
 		objPage.enter("Maximum Equipment index Factor","125");
@@ -170,6 +171,9 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		// Create Maximum Equipment index Factor for given roll year if it does not exist
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);		
 		objBppTrendSetupPage.createMaxEquip(rollYear);
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+		objBppTrendSetupPage.displayRecords("All");
+		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);	
 		
 		//Step4: Verifying the 'Edit' BPP Settings access when status is "Submitted for Approval" and "Approved"
 		String[] tableStatus  = {"Submitted for Approval","Approved"};
@@ -246,7 +250,8 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		//Step7: Verify saved Max. Equipment Index factor Settings value 
 		String factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();	
 		softAssert.assertEquals(factorValueSaved,Integer.toString(maxEquipIndexNewValue)+"%","SMAB-T271,SMAB-T172,SMAB-T139: Verify user is able to edit the Max Equipemnt Index factor value  when table status is 'Calculated'");
-		Thread.sleep(6000);
+		driver.navigate().refresh();
+		Thread.sleep(2000);
 		
 		//Step8: Verify table status when Max. Equipment Index factor Settings value is updated
 		softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Commercial Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Commercial Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");

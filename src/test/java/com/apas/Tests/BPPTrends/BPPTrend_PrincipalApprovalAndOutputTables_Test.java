@@ -50,7 +50,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		objBuildPermitPage = new BuildingPermitPage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
-		rollYear = CONFIG.getProperty("rollYear");
+		rollYear = "2022";
         objBppTrendSetupPage = new BppTrendSetupPage(driver);
         objBppTrendSetupPage.updateRollYearStatus("Open", "2020");
 	}
@@ -87,7 +87,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 		List<String> allTablesBppTrendSetupPage = new ArrayList<String>();
 		allTablesBppTrendSetupPage.addAll(Arrays.asList(CONFIG.getProperty("compositeFactorTablesForBppSetupPage").split(",")));
 		allTablesBppTrendSetupPage.addAll(Arrays.asList(CONFIG.getProperty("valuationFactorTablesForBppSetupPage").split(",")));
-		String rollYear = CONFIG.getProperty("rollYear");
+		//String rollYear = CONFIG.getProperty("rollYear");
 
 		//Step2: Check status of the composite & valuation tables on BPP trend status page before approving		
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
