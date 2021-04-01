@@ -82,6 +82,8 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//button[contains(text(),'Open Assessor')]")
 	public WebElement openAsessorsMapButton;
 	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Next']")
+	public WebElement ownershipNextButton;
 	
 	
 	
@@ -239,6 +241,7 @@ public class ParcelsPage extends ApasGenericPage {
 		String ownershipStartDate = dataMap.get("Ownership Start Date");
 		
 		createRecord();
+		Click(ownershipNextButton);
 		searchAndSelectOptionFromDropDown(ownerDropDown, owner);
 		selectOptionFromDropDown(typeDropDown, type);
 		selectOptionFromDropDown(statusDropDown, status);
