@@ -1113,11 +1113,22 @@ public class ApasGenericPage extends Page {
   @return: returns the Retired APN
  */
 
- public String fetchRetiredAPN() throws Exception {
+  	public String fetchRetiredAPN() throws Exception {
      
 	  String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
 	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
- }
+  	}
+ 
+ /*
+ This method is used to return the Interim APN (starts with 800) from Salesforce
+ @return: returns the Interim APN
+*/
+
+  	public String fetchInterimAPN() throws Exception {
+    
+	  String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' AND Status__c='Active' limit 1";
+	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
+  	}
    
    /*
     * Get Field Value from WI TimeLine 
