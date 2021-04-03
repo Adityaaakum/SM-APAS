@@ -629,12 +629,11 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		String parentWindow = driver.getWindowHandle();	
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
         objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
-		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapOneToOneMappingData.get("Action"));
-		Thread.sleep(5000);
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapOneToOneMappingData.get("Action"));		
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, hashMapOneToOneMappingData.get("Are taxes fully paid?"));
 		objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel, hashMapOneToOneMappingData.get("Reason code"));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		Thread.sleep(5000);
+		objMappingPage.waitForElementToBeVisible(objMappingPage.generateParcelButton);
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		String childApn = gridDataHashMap.get("APN").get(0);	
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
