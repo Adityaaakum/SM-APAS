@@ -633,7 +633,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, hashMapOneToOneMappingData.get("Are taxes fully paid?"));
 		objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel, hashMapOneToOneMappingData.get("Reason code"));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		objMappingPage.waitForElementToBeVisible(objMappingPage.generateParcelButton);
+		objMappingPage.waitForElementToBeClickable(10, objMappingPage.generateParcelButton);
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		String childApn = gridDataHashMap.get("APN").get(0);	
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
