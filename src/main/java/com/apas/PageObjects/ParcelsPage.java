@@ -13,6 +13,7 @@ import org.openqa.selenium.support.PageFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ParcelsPage extends ApasGenericPage {
@@ -81,6 +82,8 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//button[contains(text(),'Open Assessor')]")
 	public WebElement openAsessorsMapButton;
 	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Next']")
+	public WebElement ownershipNextButton;
 	
 	@FindBy(xpath = "//a/span[contains(text(),'PR')]")
 	public WebElement parcelRelationName;
@@ -140,13 +143,73 @@ public class ParcelsPage extends ApasGenericPage {
 		if (dov != null) enter(dovInputTextBox, dov);
 		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
-		Thread.sleep(2000);
+		Thread.sleep(3000);
 
 		String workItemQuery = "SELECT Name FROM Work_Item__c where Description__c = '" + description + "' order by Name desc limit 1";
 		workItemNumber = objSalesforceAPI.select(workItemQuery).get("Name").get(0);
 		ReportLogger.INFO("Work item created is " + workItemNumber  );
 		
 		return workItemNumber;
+	}
+	 
+    
+    /**
+	 * Description: This method will save the table data in hashmap for the Target/Source Parcel relationship
+	 *
+	 * @param rowNumber: Row Number for which data needs to be fetched
+	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
+	 */
+    public HashMap<String, ArrayList<String>> getParcelTableDataInHashMap(String tableName) {
+		return getParcelTableDataInHashMap(tableName, -1);
+	}
+    
+	public HashMap<String, ArrayList<String>> getParcelTableDataInHashMap(String tableName, int rowNumber) {
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
+		String xpathTable = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//span[@title='" + tableName + "']//ancestor::lst-list-view-manager-header//following-sibling::div[@class='slds-grid listDisplays']//table";
+		
+		String xpathHeaders = xpathTable + "//thead/tr/th";
+		String xpathRows = xpathTable + "//tbody/tr";
+		if (!(rowNumber == -1)) xpathRows = xpathRows + "[" + rowNumber + "]";
+
+		HashMap<String, ArrayList<String>> gridDataHashMap = new HashMap<>();
+
+		//Fetching the headers and data web elements from application
+		List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpathHeaders));
+		List<WebElement> webElementsRows = driver.findElements(By.xpath(xpathRows));
+
+		String key, value;
+
+		//Converting the grid data into hashmap
+		for (WebElement webElementRow : webElementsRows) {
+			int yearAcquiredKeyCounter = 0;
+			List<WebElement> webElementsCells = webElementRow.findElements(By.xpath(".//td | .//th"));
+			for (int gridCellCount = 0; gridCellCount < webElementsHeaders.size(); gridCellCount++) {
+				key = webElementsHeaders.get(gridCellCount).getAttribute("aria-label");
+				//Year Acquired Column appears twice in Commercial and Industrial Composite Factors table
+				//Below code will not add column in hashmap appearing twice
+				if(key != null && key.equalsIgnoreCase("Year Acquired")) {
+					if(yearAcquiredKeyCounter<1) {
+						yearAcquiredKeyCounter = yearAcquiredKeyCounter + 1;
+					}else
+						key=null;
+				}
+
+				if (key != null) {
+					//"replace("Edit "+ key,"").trim()" code is user to remove the text \nEdit as few cells have edit button and the text of edit button is also returned with getText()
+					value = webElementsCells.get(gridCellCount).getText();
+					String[] splitValues = value.split("Edit " + key);
+					if (splitValues.length > 0) value = splitValues[0].trim();
+					else value = "";
+					gridDataHashMap.computeIfAbsent(key, k -> new ArrayList<>());
+					gridDataHashMap.get(key).add(value);
+				}
+			}
+		}
+
+		//Removing the Row Number key as this is meta data column and not part of grid
+		gridDataHashMap.remove("Row Number");
+		System.out.println("HashMap: "+gridDataHashMap);
+		return gridDataHashMap;
 	}
 	
 	/**
@@ -182,6 +245,7 @@ public class ParcelsPage extends ApasGenericPage {
 		String ownershipStartDate = dataMap.get("Ownership Start Date");
 		
 		createRecord();
+		Click(ownershipNextButton);
 		searchAndSelectOptionFromDropDown(ownerDropDown, owner);
 		selectOptionFromDropDown(typeDropDown, type);
 		selectOptionFromDropDown(statusDropDown, status);
@@ -193,6 +257,7 @@ public class ParcelsPage extends ApasGenericPage {
 		String successMsg = saveRecord();
 		return successMsg;
 	}
+
 	/*
 	   This method is used to fetch field value for mentioned APN
 	   @Param: fieldName: Field name for which value needs to be fetched
@@ -213,4 +278,5 @@ public class ParcelsPage extends ApasGenericPage {
 			response = objSalesforceAPI.select(query);		
 			return response;
 		}
+
 }

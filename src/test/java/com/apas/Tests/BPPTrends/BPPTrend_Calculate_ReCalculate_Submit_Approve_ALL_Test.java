@@ -50,12 +50,12 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 		objBuildPermitPage = new BuildingPermitPage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
-		rollYear = CONFIG.getProperty("rollYear");
+		rollYear = "2022";
 		objSalesforceAPI = new SalesforceAPI();
 		objBuildPermit = new BuildingPermitPage(driver);
 		objSoftAssert = new SoftAssert();
         objBppTrendSetupPage = new BppTrendSetupPage(driver);
-        objBppTrendSetupPage.updateRollYearStatus("Open", "2020");
+        objBppTrendSetupPage.updateRollYearStatus("Open", "2022");
 	}
 
 	@AfterMethod

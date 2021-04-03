@@ -130,7 +130,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent legal description, leave as blank.",
 				"SMAB-T2481: Validation that help text is generated on clicking the help icon for legal description");     		    
 		objMappingPage.Click(objMappingPage.helpIconSitus);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent situs, leave as blank.",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent situs, leave as blank",
 				"SMAB-T2481: Validation that help text is generated on clicking the help icon for Situs text box");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.closeButton));
 
@@ -166,11 +166,6 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
 				"SMAB-T2481: Validation that  System populates Use Code  from the parent parcel");
 
-		//Step 11 :Verify that User is able to to create a district, Use Code for the child parcel from the custom screen after performing one to one mapping action
-		objMappingPage.editGridCellValue(objMappingPage.useCodeColumnSecondScreen,"001vacant");
-		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
-		Thread.sleep(5000);
-
 		//Step 13 :Clicking generate parcel button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -186,9 +181,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 				"SMAB-T2481: Validation that  System populates Legal Description from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2481: Validation that  System populates TRA from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),"001vacant",
-				"SMAB-T2486: Verify that User is able to to create a Use Code for the child parcel from the custom screen ");
-
+		
 		//Step 15: Validation that child parcel primary situs is inherited from parent parcel
 		String childPrimarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ gridDataHashMap.get("APN").get(0) +"')").get("Name").get(0);
 		softAssert.assertEquals(primarySitusValue,childPrimarySitusValue,
