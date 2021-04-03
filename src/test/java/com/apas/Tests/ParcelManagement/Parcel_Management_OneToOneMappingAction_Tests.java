@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.bcel.generic.NEW;
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -507,9 +508,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 
-		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
-
-		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"')").get("Name").get(0);
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");	
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String districtValue="District01";
 
@@ -521,72 +520,71 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
-
 		
 		String mappingActionCreationData =  System.getProperty("user.dir")+testdata.ONE_TO_ONE_MAPPING_ACTION;
 		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformOneToOneMappingActionWithAllFields");
-
+		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
-
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
 
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
-
 		// Step 3: Creating Manual work item for the Parcel 
 		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
-
 		//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();	
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-        objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
-		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapOneToOneMappingData.get("Action"));
-		
+        objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);		
 		objMappingPage.fillMappingActionForm(hashMapOneToOneMappingData);
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
-		String childApn = gridDataHashMap.get("APN").get(0);
-		objMappingPage.editGridCellValue(parentWindow, childApn);
+		String childApn = gridDataHashMap.get("APN").get(0);		
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));  
 		HashMap<String, ArrayList<String>> statusnewApn = objParcelsPage.fetchFieldValueOfParcel("Status__c",childApn);
         // validating status of brand new parcel           
         softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2718: Verifying the status of the new target parcel");
         String pucLookeup = "SELECT Name FROM PUC_Code__c where id in (SELECT PUC_Code_Lookup__c FROM Parcel__c where name='"+childApn+"')"; 
-        softAssert.assertEquals( salesforceAPI.select(pucLookeup).get("Name").get(0),"In Progress - New Parcel" ,"SMAB-T2718: Verifying the PUC of the new target parcel");
-        String ParentParcelQuery = "SELECT Parent_Parcel__c FROM Parcel__c where Parent_Parcel__c!=null";
+        //Validating PUC Code of child parcel
+        softAssert.assertEquals( salesforceAPI.select(pucLookeup).get("Name").get(0),"In Progress - New Parcel" ,"SMAB-T2718: Verifying the PUC of the new target parcel");        
         HashMap<String, ArrayList<String>> statusoldApn = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn);
+        //Validating status of parent parcel.
         softAssert.assertEquals(statusoldApn.get("Status__c").get(0), "In Progress - To Be Expired", "SMAB-T2718: Verifying the status of the source parcel");      
         String pucLookeupold = "SELECT Name FROM PUC_Code__c where id in (SELECT PUC_Code_Lookup__c FROM Parcel__c where name='"+apn+"')"; 
-        softAssert.assertEquals( salesforceAPI.select(pucLookeupold).get("Name").get(0),"In Progress - To Be Expired" ,"SMAB-T2718: Verifying the Puc of the source parcel");
-         //Completing the workItem
+        // Validating PUC of parent parcel.
+        softAssert.assertEquals( salesforceAPI.select(pucLookeupold).get("Name").get(0),"In Progress - To Be Expired" ,"SMAB-T2718: Verifying the Puc of the source parcel");        
         driver.switchTo().window(parentWindow);
         objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(childApn);
-
-		     objParcelsPage.Click(objParcelsPage.parcelRelationTabs);
-		   String parcelRelationName=   objParcelsPage.getElementText(objParcelsPage.parcelRelationName);
-		   String childvalidQuery= " SELECT Name FROM Parcel__c where id in (SELECT Target_Parcel__c FROM Parcel_Relationship__c where name ='"+parcelRelationName+"')";
-		   
-		   HashMap<String, ArrayList<String>>  childveifyHashmap  =  salesforceAPI.select(childvalidQuery);
-		   softAssert.assertEquals(childveifyHashmap.get("Name").get(0),childApn, "SMAB-T2718: Verifying the target parcel no  of the   in parcel relationship layout");
-           String sourcevalidQuery= " SELECT Name FROM Parcel__c where id in (SELECT Source_Parcel__c  FROM Parcel_Relationship__c where name ='"+parcelRelationName+"')";
-		   
-		   HashMap<String, ArrayList<String>>  sourceveifyHashmap  =  salesforceAPI.select(sourcevalidQuery);
-		   softAssert.assertEquals(sourceveifyHashmap.get("Name").get(0),apn, "SMAB-T2718: Verifying the source parcel no  of the  child parcel in parcel relationship layout");
-		   HashMap<String, ArrayList<String>> statusnewApns = objParcelsPage.fetchFieldValueOfParcel("Status__c",childApn);
+		//Fetching the parcel relationship number
+		objParcelsPage.selectOptionFromDropDown(objParcelsPage.moretab, objParcelsPage.parcelRelationshipsTabLabel);
+		 String parcelRelationName=   objParcelsPage.getElementText(objParcelsPage.parcelRelationName);
+		 String childvalidQuery= " SELECT Name FROM Parcel__c where id in (SELECT Target_Parcel__c FROM Parcel_Relationship__c where name ='"+parcelRelationName+"')";		   
+		 HashMap<String, ArrayList<String>>  childveifyHashmap  =  salesforceAPI.select(childvalidQuery);
+		 //Verifying target parcel from WI
+		 softAssert.assertEquals(childveifyHashmap.get("Name").get(0),childApn, "SMAB-T2718: Verifying the target parcel no  of the   in parcel relationship layout");
+         String sourcevalidQuery= " SELECT Name FROM Parcel__c where id in (SELECT Source_Parcel__c  FROM Parcel_Relationship__c where name ='"+parcelRelationName+"')";		   
+		 HashMap<String, ArrayList<String>>  sourceveifyHashmap  =  salesforceAPI.select(sourcevalidQuery);
+		 //Verifying source parcel from WI
+		 softAssert.assertEquals(sourceveifyHashmap.get("Name").get(0),apn, "SMAB-T2718: Verifying the source parcel no  of the  child parcel in parcel relationship layout");
+		 HashMap<String, ArrayList<String>> statusnewApns = objParcelsPage.fetchFieldValueOfParcel("Status__c",childApn);
 	        // validating status of brand new parcel           
-	        softAssert.assertEquals(statusnewApns.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2719: Verifying the status of the new target parcel,if it is in progress ,no work Items can be carried ,as only active parcels can have mapping actions");
-		   objMappingPage.logout();
+	     softAssert.assertEquals(statusnewApns.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2719: Verifying the status of the new target parcel,if it is in progress ,no work Items can be carried ,as only active parcels can have mapping actions");
+		 objMappingPage.logout();
         
 	}
-	@Test(description = "SMAB-T2720,SMAB-T2721:Verify the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel is changed ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	/*Verify the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel
+	 * Also ,validation of new Appraiser WI once after the Child parcel gets Active.
+	 * 
+	 * 
+	 */
+	@Test(description = "SMAB-T2720,SMAB-T2721,SMAB-T2717:Verify the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel is changed ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyOneToOneMappingActionChildInheritanceafterwI_Completion(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL  limit 1";
@@ -615,7 +613,6 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		
 
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
-
 		
 		String mappingActionCreationData =  System.getProperty("user.dir")+testdata.ONE_TO_ONE_MAPPING_ACTION;
 		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
@@ -624,17 +621,13 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
-
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
-
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
-
 		// Step 3: Creating Manual work item for the Parcel 
 		 String WorkItemNo =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
-
 		//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
@@ -650,31 +643,41 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		Thread.sleep(5000);
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
-		String childApn = gridDataHashMap.get("APN").get(0);
-		
-		objMappingPage.editGridCellValue("Parcel Size (SQFT)", "0");
-		Thread.sleep(4000);
+		String childApn = gridDataHashMap.get("APN").get(0);	
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		
+		// Completing the work Item
 		 String   queryWI = "Select Id from Work_Item__c where Name = '"+WorkItemNo+"' ";
    	     salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Completed");
    	  HashMap<String, ArrayList<String>> statusnewApn = objParcelsPage.fetchFieldValueOfParcel("Status__c",childApn);
       // validating status of brand new parcel           
       softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "Active", "SMAB-T2720,SMAB-T2721: Verifying the status of the new target parcel");
-     
-      softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),primarySitusValue.replaceFirst("\\s+", ""),
+      String validateNoOfAppraiserWI="SELECT name FROM Work_Item__c order by name desc limit 2";     
+      HashMap<String, ArrayList<String>> childApnWorkItems =salesforceAPI.select(validateNoOfAppraiserWI);      
+      String workItemConf ="SELECT Work_Item_Configuration__c FROM Work_Item__c where name ='"+childApnWorkItems.get("Name").get(0)+"' ";
+      HashMap<String, ArrayList<String>> WorkItemConfigVald =salesforceAPI.select(workItemConf);
+      String workItemSubType =" SELECT Work_Item_Sub_Type__c FROM Work_Item_Configuration__c where id='"+WorkItemConfigVald.get("Work_Item_Configuration__c").get(0)+"' ";
+         HashMap<String, ArrayList<String>> HashMapWorkItemSuBType= salesforceAPI.select(workItemSubType);
+         //Validating the Appraiser WI-Allocate Value, created for child APN after the Apn is active
+      softAssert.assertTrue(HashMapWorkItemSuBType.get("Work_Item_Sub_Type__c").contains("Allocate Value"), "SMAB-T2717: Validating sub type WI for new child APN ");      
+      String workItemConf2 ="SELECT Work_Item_Configuration__c FROM Work_Item__c where name ='"+childApnWorkItems.get("Name").get(1)+"' ";
+      HashMap<String, ArrayList<String>> WorkItemConfigVald2 =salesforceAPI.select(workItemConf2);
+      String workItemSubType2 =" SELECT Work_Item_Sub_Type__c FROM Work_Item_Configuration__c where id='"+WorkItemConfigVald2.get("Work_Item_Configuration__c").get(0)+"' ";
+         HashMap<String, ArrayList<String>> HashMapWorkItemSuBType2= salesforceAPI.select(workItemSubType2);
+         //Validating the Second WI- Update Characteristics & Verify PUC, after child APN gets active
+      softAssert.assertTrue(HashMapWorkItemSuBType2.get("Work_Item_Sub_Type__c").contains("Update Characteristics & Verify PUC"), "SMAB-T2717: Validating sub type WI for new child APN ");      
+      
+        //Validation that  System populates Situs  from the parent parcel
+        softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),primarySitusValue.replaceFirst("\\s+", ""),
 				"SMAB-T2720,SMAB-T2721: Validation that  System populates Situs  from the parent parcel");
+        //Validation that  System populates neighborhood Code from the parent parcel
 		softAssert.assertEquals(gridDataHashMap.get("District/Neighborhood").get(0),responseNeighborhoodDetails.get("Name").get(0),
-				"SMAB-T2720,SMAB-T2721: Validation that  System populates neighborhood Code from the parent parcel");
-		
+				"SMAB-T2720,SMAB-T2721: Validation that  System populates neighborhood Code from the parent parcel");		
 		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescriptionValue,
 				"SMAB-T2720,SMAB-T2721: Validation that  System populates Legal Description from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2720,SMAB-T2721: Validation that  System populates TRA from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),hashMapOneToOneMappingData.get("Reason code"),
-				"SMAB-T2720,SMAB-T2721: Validation that  System populates Reason Code from the parent parcel");
-		
-		
+				"SMAB-T2720,SMAB-T2721: Validation that  System populates Reason Code from the parent parcel");	
 		//Step 15: Validation that child parcel primary situs is inherited from parent parcel
 		 String childPrimarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ gridDataHashMap.get("APN").get(0) +"')").get("Name").get(0);
 		 softAssert.assertEquals(primarySitusValue,childPrimarySitusValue,
@@ -683,17 +686,16 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
          softAssert.assertEquals(statusoldApn.get("Status__c").get(0), "Retired", "SMAB-T2720,SMAB-T2721: Verifying the status of the source parcel");      
 		 driver.switchTo().window(parentWindow);
 		 objMappingPage.searchModule(PARCELS);
-		 objMappingPage.globalSearchRecords(childApn);
-
-		 objParcelsPage.Click(objParcelsPage.parcelRelationTabs);
+		 objMappingPage.globalSearchRecords(childApn);       
+ 	     objParcelsPage.selectOptionFromDropDown(objParcelsPage.moretab, objParcelsPage.parcelRelationshipsTabLabel);
 	      String parcelRelationName=   objParcelsPage.getElementText(objParcelsPage.parcelRelationName);
-		  String childvalidQuery= " SELECT Name FROM Parcel__c where id in (SELECT Target_Parcel__c FROM Parcel_Relationship__c where name ='"+parcelRelationName+"')";
-		
+		  String childvalidQuery= " SELECT Name FROM Parcel__c where id in (SELECT Target_Parcel__c FROM Parcel_Relationship__c where name ='"+parcelRelationName+"')";		
 		  HashMap<String, ArrayList<String>>  childveifyHashmap  =  salesforceAPI.select(childvalidQuery);
+		   //Verifying the target parcel no
 		  softAssert.assertEquals(childveifyHashmap.get("Name").get(0),childApn, "SMAB-T2720,SMAB-T2721: Verifying the target parcel no  of the   in parcel relationship layout");
-	      String sourcevalidQuery= " SELECT Name FROM Parcel__c where id in (SELECT Source_Parcel__c  FROM Parcel_Relationship__c where name ='"+parcelRelationName+"')";
-			   
+	      String sourcevalidQuery= " SELECT Name FROM Parcel__c where id in (SELECT Source_Parcel__c  FROM Parcel_Relationship__c where name ='"+parcelRelationName+"')";			   
 		  HashMap<String, ArrayList<String>>  sourceveifyHashmap  =  salesforceAPI.select(sourcevalidQuery);
+		  //Verifying the  source parcel 
 		  softAssert.assertEquals(sourceveifyHashmap.get("Name").get(0),apn, "SMAB-T2720,SMAB-T2721: Verifying the source parcel no  of the  child parcel in parcel relationship layout");
 		  objWorkItemHomePage.logout();
 

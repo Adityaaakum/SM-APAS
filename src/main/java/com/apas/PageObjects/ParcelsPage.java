@@ -82,6 +82,10 @@ public class ParcelsPage extends ApasGenericPage {
 	public WebElement openAsessorsMapButton;
 	
 	
+	@FindBy(xpath = "//a/span[contains(text(),'PR')]")
+	public WebElement parcelRelationName;
+	
+	
 	
 	
     public String SubmittedForApprovalButton="Submit for Approval";
