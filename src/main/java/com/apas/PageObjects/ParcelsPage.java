@@ -85,8 +85,6 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Next']")
 	public WebElement ownershipNextButton;
 	
-	@FindBy(xpath = "//a/span[contains(text(),'PR')]")
-	public WebElement parcelRelationName;
 	
 	
 	

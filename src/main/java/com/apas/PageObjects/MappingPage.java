@@ -30,8 +30,8 @@ public class MappingPage extends ApasGenericPage {
 	public String netLandLossTextBoxLabel = "Net Land Loss";
 	public String netLandGainTextBoxLabel = "Net Land Gain";
 	public String firstNonCondoTextBoxLabel = "First non-Condo Parcel Number";
-	public String legalDescriptionTextBoxLabel = "Legal Description Auto-populate field for Child Parcels";
-	public String situsTextBoxLabel = "Situs Auto-populate Field for Child Parcels";
+	public String legalDescriptionTextBoxLabel = "Legal Description Auto-Populate Field for Child Parcels";
+	public String situsTextBoxLabel = "Situs Auto-Populate Field for Child Parcels";
 	public String commentsTextBoxLabel = "Comments";
 	public String parentAPNTextBoxLabel = "Parent APN(s)";
 	public String legalDescriptionColumnSecondScreen = "Legal Description";
@@ -44,7 +44,7 @@ public class MappingPage extends ApasGenericPage {
 	public String numberOfChildNonCondoTextBoxLabel = "Number of Child Non-Condo Parcels";
 	public String numberOfChildCondoTextBoxLabel = "Number of Child Condo Parcels";
 	public String nextButton = "Next";
-	public String generateParcelButton = "Generate Parcel";
+	public String generateParcelButton = "Generate Parcel(s)";
 	public String combineParcelButton = "Combine Parcel";
 	public String parentAPNEditButton = "Edit";
 	public String previousButton = "Previous";
@@ -77,6 +77,7 @@ public class MappingPage extends ApasGenericPage {
 	public String closeButton = "Close";
 	public String CreateNewParcelButton="Create Brand New Parcel";
 	public String generateParcelsButton = "Generate Parcels";
+	
    
 	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
