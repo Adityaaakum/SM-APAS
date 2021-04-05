@@ -485,7 +485,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	
 	/**
 	 * Verify the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel is changed
-	 *@param loginUser
+	 *@param loginUser-Mapping user
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2718,SMAB-T2719:Verify the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel is changed ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
@@ -574,7 +574,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	}
 	/*Verify the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel
 	 * Also ,validation of new Appraiser WI once after the Child parcel gets Active.
-	 * 
+	 * login user-Mapping user
 	 * 
 	 */
 	@Test(description = "SMAB-T2720,SMAB-T2721,SMAB-T2717:Verify the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel is changed ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
