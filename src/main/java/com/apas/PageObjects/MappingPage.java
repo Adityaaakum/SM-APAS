@@ -63,8 +63,8 @@ public class MappingPage extends ApasGenericPage {
 	public String parcelPrimarySitus = "Primary Situs";
 	public String parcelDistrictNeighborhood = "District / Neighborhood Code";
 	public String parcelShortLegalDescription = "Short Legal Description";
-	public String firstNonCondoTextBoxLabel2 = "First non-Condo Parcel Number";
-	public String legalDescriptionTextBoxLabel2 = "Legal Description Auto-populate field for Child Parcels";
+	public String firstNonCondoTextBoxLabel2 = "First Non-Condo Parcel Number";
+	public String legalDescriptionTextBoxLabel2 = "Legal Description Auto-populate Field for Child Parcels";
 	public String parcelLotSize = "Lot Size (SQFT)";
 	public String situsCityDescriptionLabel = "Situs City Description";
 	public String situsCityCodeLabel = "Situs City Code";
