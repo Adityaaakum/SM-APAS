@@ -37,7 +37,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 		driver = BrowserDriver.getBrowserInstance();
 
 		objBppTrnPg = new BppTrendPage(driver);
-		rollYear = CONFIG.getProperty("rollYear");
+		rollYear = "2022";
 		objBppTrendSetupPage = new BppTrendSetupPage(driver);
 		objBppTrendSetupPage.updateRollYearStatus("Open", "2020");
 	}

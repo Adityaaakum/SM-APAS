@@ -1,13 +1,16 @@
 package com.apas.PageObjects;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import com.apas.Reports.ReportLogger;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 
 public class MappingPage extends ApasGenericPage {
@@ -21,12 +24,12 @@ public class MappingPage extends ApasGenericPage {
 
 	public WebElement situsFieldInTable;
 	public String actionDropDownLabel = "Action";
-	public String taxesPaidDropDownLabel = "Are taxes fully paid?";
+	public String taxesPaidDropDownLabel = "Are Taxes Fully Paid?";
 	public String reasonCodeTextBoxLabel = "Reason Code";
 	public String parcelSizeDropDownLabel  = "Parcel Size Validation for Parent & Children Needed?";
-	public String netLandLossTextBoxLabel = "Net Land Loss";
-	public String netLandGainTextBoxLabel = "Net Land Gain";
-	public String firstNonCondoTextBoxLabel = "First non-Condo Parcel Number";
+	public String netLandLossTextBoxLabel = "Net Land Loss (SQ FT)";
+	public String netLandGainTextBoxLabel = "Net Land Gain (SQ FT)";
+	public String firstNonCondoTextBoxLabel = "First Non-Condo Parcel Number";
 	public String legalDescriptionTextBoxLabel = "Legal Description Auto-Populate Field for Child Parcels";
 	public String situsTextBoxLabel = "Situs Auto-Populate Field for Child Parcels";
 	public String commentsTextBoxLabel = "Comments";
@@ -41,19 +44,28 @@ public class MappingPage extends ApasGenericPage {
 	public String numberOfChildNonCondoTextBoxLabel = "Number of Child Non-Condo Parcels";
 	public String numberOfChildCondoTextBoxLabel = "Number of Child Condo Parcels";
 	public String nextButton = "Next";
-	public String generateParcelButton = "Generate Parcel";
+	public String generateParcelButton = "Generate Parcel(s)";
 	public String combineParcelButton = "Combine Parcel";
 	public String parentAPNEditButton = "Edit";
 	public String previousButton = "Previous";
 	public String retireButton = "Retire Parcel (s)";
 	public String assessorMapLabel = "Assessor's Map";
 	public String taxCollectorLabel = "Tax Collector Link(s)";
-	public String taxField = "//label[text()='Are taxes fully paid?']";
+	public String taxField = "//label[text()='Are Taxes Fully Paid?']";
 	public String reasonCodeField = "//label[text()='Reason Code']";
 	public String errorMessageOnScreenOne = "//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]";
 	public String saveButton = "Save";
 	public String firstCondoTextBoxLabel = "First Condo Parcel Number";
 	public String splitParcelButton = "Split Parcel";
+	public String parcelStatus = "Status";
+	public String parcelPUC = "PUC";
+	public String parcelTRA = "TRA";
+	public String parcelPrimarySitus = "Primary Situs";
+	public String parcelDistrictNeighborhood = "District / Neighborhood Code";
+	public String parcelShortLegalDescription = "Short Legal Description";
+	public String firstNonCondoTextBoxLabel2 = "First Non-Condo Parcel Number";
+	public String legalDescriptionTextBoxLabel2 = "Legal Description Auto-Populate Field for Child Parcels";
+	public String parcelLotSize = "Lot Size (SQFT)";
 	public String situsCityDescriptionLabel = "Situs City Description";
 	public String situsCityCodeLabel = "Situs City Code";
 	public String situsCityNameLabel = "Situs City Name";
@@ -64,16 +76,16 @@ public class MappingPage extends ApasGenericPage {
 	public String situsUnitNumberLabel = "Situs Unit Number";
 	public String closeButton = "Close";
 	public String CreateNewParcelButton="Create Brand New Parcel";
-	public String generateParcelsButton = "Generate Parcels";
+	public String generateParcelsButton = "Generate Parcel(s)";
 	public String updateParcelsButton = "Update Parcel";
-
-	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
+	
+	@FindBy(xpath = "//label[text()='First Non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
 
-	@FindBy(xpath = "//label[text()='Legal Description Auto-populate field for Child Parcels']/..//div[@class='slds-form-element__icon']")
+	@FindBy(xpath = "//label[text()='Legal Description Auto-Populate Field for Child Parcels']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconLegalDescription;
 
-	@FindBy(xpath = "//label[text()='Situs Auto-populate field for Child Parcels']/..//div[@class='slds-form-element__icon']")
+	@FindBy(xpath = "//label[text()='Situs Auto-Populate Field for Child Parcels']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconSitus;
 
 	@FindBy(xpath = "//div[contains(@id,'salesforce-lightning-tooltip-bubble')]")
@@ -270,9 +282,117 @@ public class MappingPage extends ApasGenericPage {
 			}	
 			else{
 				/*Example : 100-990-990*/
-				ReportLogger.INFO("Warning : 990 limit has been reached for current Map Page, so move to the next Map Book");	
+				updatedAPN = "Warning : 990 limit has been reached for current Map Page, so move to the next Map Book";
 			}
 	    }
 		return updatedAPN;
 	}
+	
+	/**
+	 * Description: This method will fetch the Parcel# from the Work Item
+	 * @param rowNum: Row# in the linked item
+	 * return : Returns the Parcel#
+	 */
+	public String getLinkedParcelInWorkItem(String rowNum) throws Exception {
+		Thread.sleep(1000);
+		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//tr[@data-row-key-value='row-" + rowNum + "']//th";
+		waitUntilElementIsPresent(xpath, 10);
+		return getElementText(driver.findElement(By.xpath(xpath)));
+	}
+	
+	/*
+    This method is used to return the first owner record from Salesforce
+    @return: returns the active APN
+   */
+   public String getOwnerForMappingAction() {
+       return getOwnerForMappingAction(1).get("Name").get(0);
+   }
+
+   public HashMap<String, ArrayList<String>> getOwnerForMappingAction(int numberofRecords) {
+	   String queryOwnerRecord = "SELECT Id, Name FROM Account Limit " + numberofRecords;
+	   return objSalesforceAPI.select(queryOwnerRecord);
+   }
+   
+   /*
+   This method is used to return the Retired APN having no Ownership record
+   @return: returns the Retired APN
+  */
+
+   public HashMap<String, ArrayList<String>> getRetiredApnHavingNoOwner() throws Exception {
+	   String queryRetiredAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Status__c = 'Retired' Limit 1";
+ 	  	return objSalesforceAPI.select(queryRetiredAPNValue);
+   }
+ 
+  /*
+  This method is used to return the In Progress APN having no Ownership record
+  @return: returns the In Progress APN
+ */
+
+   public HashMap<String, ArrayList<String>> getInProgressApnHavingNoOwner() throws Exception {
+	   String queryInProgressAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Status__c like 'In Progress%' Limit 1";
+	   return objSalesforceAPI.select(queryInProgressAPNValue);
+   }
+ 	
+ 		
+   /*
+   This method is used to return the Active APN having a specific Ownership record
+   @return: returns the Active APN
+  */
+    public HashMap<String, ArrayList<String>> getActiveApnHavingOwner(String assesseeName) throws Exception {
+    	return getActiveApnHavingOwner(assesseeName, 1);
+    }
+    
+    public HashMap<String, ArrayList<String>> getActiveApnHavingOwner(String assesseeName, int numberofRecords) throws Exception {
+    	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') AND Id Not IN (Select parcel__c FROM Property_Ownership__c where Owner__r.name != '" + assesseeName + "') and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and Status__c = 'Active' Limit " + numberofRecords;
+    	return objSalesforceAPI.select(queryActiveAPNValue);
+    }
+    
+    /*
+    This method is used to return the Active APN having no Ownership record
+    @return: returns the Active APN
+   */
+    
+     public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner() throws Exception {
+    	return getActiveApnWithNoOwner(1);
+     }
+    
+     public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner(int numberofRecords) throws Exception {
+     	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and Status__c = 'Active' Limit " + numberofRecords;
+     	return objSalesforceAPI.select(queryActiveAPNValue);
+     }
+     
+     /*
+     This method is used to return the Condo APN (Active) having a specific Ownership record
+     @return: returns the Condo Active APN
+    */
+
+      public HashMap<String, ArrayList<String>> getCondoApnWithNoOwner() throws Exception {
+        	return getCondoApnWithNoOwner(1);
+        }
+        
+      public HashMap<String, ArrayList<String>> getCondoApnWithNoOwner(int numberofRecords) throws Exception {
+        	String queryCondoAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and name like '100%' and Status__c = 'Active' Limit " + numberofRecords;
+        	return objSalesforceAPI.select(queryCondoAPNValue);
+        }
+     
+      /*
+      This method will delete existing relationship instances (Source) from the Parcel
+     */
+      
+      public void deleteSourceRelationshipInstanceFromParcel(String apn) throws Exception {
+    	  String query = "SELECT Id FROM Parcel_Relationship__c where Source_Parcel__r.name = '" + apn + "'";
+    	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+    	  if(!response.isEmpty())objSalesforceAPI.delete("Parcel_Relationship__c", query);
+  	  }
+      
+      /*
+      This method will convert APN into Integer
+     */
+      
+      public int convertAPNIntoInteger(String apn) throws Exception {
+    	 String apnComponent[] = apn.split("-");
+  		 String consolidateAPN = apnComponent[0] + apnComponent[1] + apnComponent[2];
+  		 return Integer.valueOf(consolidateAPN);
+  	  }
+       
 }

@@ -51,6 +51,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 	 */
 	@Test(description = "SMAB-T2455,SMAB-T2457:Verify that User is able to view the various error message during Retire Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
+
 	public void ParcelManagement_VerifyErrorMessagesInRetireMappingAction(String loginUser) throws Exception {
 		
 		//Fetching parcel that is Retired 		
@@ -98,11 +99,12 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		String parentWindow = driver.getWindowHandle();
 		ReportLogger.INFO("Switch to the Mapping Action screen");
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		Thread.sleep(2000); //Allows Mapping screen to load completely
 
 		// Step 5: Validate the APN value
-		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel),"value"),apn1,
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel)),apn1,
 				"SMAB-T2455: Validate the APN value in Parent APN field");
-
+		
 		// Step 6: Select the Retire value in Action field and validate that 'Are Taxes fully paid?' field isn't visible
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapRetireeMappingData.get("Action"));
 		softAssert.assertTrue(!objMappingPage.verifyElementExists(objMappingPage.taxField),
@@ -199,7 +201,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		ReportLogger.INFO("Enter the parcel number without '-' in parent parcel field");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.parentAPNTextBoxLabel,activeParcelWithoutHyphen);
-		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel),"value"),apn2,
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel)),apn2,
 				"SMAB-T2455: Validate that User is able to enter 9 digit parent APN without the \"-\"");
 
 		//Step 22: Validate that User is able to perform Retire action
@@ -276,6 +278,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		String parentWindow = driver.getWindowHandle();
 		ReportLogger.INFO("Switch to the Mapping Action screen");
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		Thread.sleep(2000); //Allows Mapping screen to load completely
 		
 		// Step 5: Update the Parent APN field and add more parcel#
 		ReportLogger.INFO("Add two more parcels in Parent APN field :: " + apn1 + ", " + apn3);
