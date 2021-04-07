@@ -24,12 +24,12 @@ public class MappingPage extends ApasGenericPage {
 
 	public WebElement situsFieldInTable;
 	public String actionDropDownLabel = "Action";
-	public String taxesPaidDropDownLabel = "Are taxes fully paid?";
+	public String taxesPaidDropDownLabel = "Are Taxes Fully Paid?";
 	public String reasonCodeTextBoxLabel = "Reason Code";
 	public String parcelSizeDropDownLabel  = "Parcel Size Validation for Parent & Children Needed?";
-	public String netLandLossTextBoxLabel = "Net Land Loss";
-	public String netLandGainTextBoxLabel = "Net Land Gain";
-	public String firstNonCondoTextBoxLabel = "First non-Condo Parcel Number";
+	public String netLandLossTextBoxLabel = "Net Land Loss (SQ FT)";
+	public String netLandGainTextBoxLabel = "Net Land Gain (SQ FT)";
+	public String firstNonCondoTextBoxLabel = "First Non-Condo Parcel Number";
 	public String legalDescriptionTextBoxLabel = "Legal Description Auto-Populate Field for Child Parcels";
 	public String situsTextBoxLabel = "Situs Auto-Populate Field for Child Parcels";
 	public String commentsTextBoxLabel = "Comments";
@@ -51,7 +51,7 @@ public class MappingPage extends ApasGenericPage {
 	public String retireButton = "Retire Parcel (s)";
 	public String assessorMapLabel = "Assessor's Map";
 	public String taxCollectorLabel = "Tax Collector Link(s)";
-	public String taxField = "//label[text()='Are taxes fully paid?']";
+	public String taxField = "//label[text()='Are Taxes Fully Paid?']";
 	public String reasonCodeField = "//label[text()='Reason Code']";
 	public String errorMessageOnScreenOne = "//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]";
 	public String saveButton = "Save";
@@ -64,7 +64,7 @@ public class MappingPage extends ApasGenericPage {
 	public String parcelDistrictNeighborhood = "District / Neighborhood Code";
 	public String parcelShortLegalDescription = "Short Legal Description";
 	public String firstNonCondoTextBoxLabel2 = "First Non-Condo Parcel Number";
-	public String legalDescriptionTextBoxLabel2 = "Legal Description Auto-populate Field for Child Parcels";
+	public String legalDescriptionTextBoxLabel2 = "Legal Description Auto-Populate Field for Child Parcels";
 	public String parcelLotSize = "Lot Size (SQFT)";
 	public String situsCityDescriptionLabel = "Situs City Description";
 	public String situsCityCodeLabel = "Situs City Code";
@@ -76,16 +76,16 @@ public class MappingPage extends ApasGenericPage {
 	public String situsUnitNumberLabel = "Situs Unit Number";
 	public String closeButton = "Close";
 	public String CreateNewParcelButton="Create Brand New Parcel";
-	public String generateParcelsButton = "Generate Parcels";
+	public String generateParcelsButton = "Generate Parcel(s)";
+	public String updateParcelsButton = "Update Parcel";
 	
-   
-	@FindBy(xpath = "//label[text()='First non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
+	@FindBy(xpath = "//label[text()='First Non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
 
-	@FindBy(xpath = "//label[text()='Legal Description Auto-populate field for Child Parcels']/..//div[@class='slds-form-element__icon']")
+	@FindBy(xpath = "//label[text()='Legal Description Auto-Populate Field for Child Parcels']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconLegalDescription;
 
-	@FindBy(xpath = "//label[text()='Situs Auto-populate field for Child Parcels']/..//div[@class='slds-form-element__icon']")
+	@FindBy(xpath = "//label[text()='Situs Auto-Populate Field for Child Parcels']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconSitus;
 
 	@FindBy(xpath = "//div[contains(@id,'salesforce-lightning-tooltip-bubble')]")
