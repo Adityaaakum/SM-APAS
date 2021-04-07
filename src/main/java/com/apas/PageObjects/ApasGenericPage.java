@@ -473,7 +473,7 @@ public class ApasGenericPage extends Page {
 		*/
 		Actions objAction=new Actions(driver);
 		objAction.keyDown(Keys.SHIFT).sendKeys("w").keyUp(Keys.SHIFT).perform();
-		waitForElementToBeVisible(closeAllBtn);
+		waitForElementToBeVisible(5,closeAllBtn);
 		if(verifyElementVisible(closeAllBtn))
 		{Click(closeAllBtn);}
 		Thread.sleep(3000);

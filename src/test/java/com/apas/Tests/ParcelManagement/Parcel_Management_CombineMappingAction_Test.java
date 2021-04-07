@@ -437,7 +437,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,apn3);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + apn3);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The APN provided already exists in the system"),
 				"SMAB-T2358: Validate that User is able to view error message if APN (Active) already exist : The APN provided already exists in the system");
 		
@@ -445,7 +445,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,retiredAPNValue);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + retiredAPNValue);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The APN provided already exists in the system"),
 				"SMAB-T2358: Validate that following error message is displayed for Retired Parcel : The APN provided already exists in the system");
 		
@@ -453,7 +453,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,interimAPN);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + interimAPN);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This map book is reserved for interim parcels"),
 				"SMAB-T2358: Validate that following error message is displayed for Interim Parcel : This map book is reserved for interim parcels");
 		
@@ -461,7 +461,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,lessThan9DigitAPN);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + lessThan9DigitAPN);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
 				"SMAB-T2358: Validate that User is able to view error message if APN is less than 9 digits : This parcel number is not valid, it should contain 9 digit numeric values.");
 		
@@ -469,7 +469,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,moreThan9DigitAPN);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + moreThan9DigitAPN);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
 				"SMAB-T2358: Validate that User is able to view error message if APN is more than 9 digits : This parcel number is not valid, it should contain 9 digit numeric values.");
 		
@@ -491,7 +491,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,notNextGeneratedAPN);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + notNextGeneratedAPN);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The parcel entered is invalid since the following parcel is available " + nextGeneratedAPN),
 				"SMAB-T2358: Validate that User is able to view error message if APN overwritten is not the next available one in the system : The parcel entered is invalid since the following parcel is available <APN>");
 	
@@ -499,7 +499,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,alphanumericAPN1);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + alphanumericAPN1);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
 				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with alphanumeric value at the end : This parcel number is not valid, it should contain 9 digit numeric values");
 		
@@ -507,7 +507,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,alphanumericAPN2);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + alphanumericAPN2);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
 				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with alphanumeric value in the beginning : This parcel number is not valid, it should contain 9 digit numeric values");
 		
@@ -515,7 +515,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,specialSymbolAPN);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + specialSymbolAPN);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
 				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with special symbol : This parcel number is not valid, it should contain 9 digit numeric values");
 		
@@ -821,7 +821,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		//Step 11 :Clicking generate parcel button
 		ReportLogger.INFO("Click on Combine Parcel button");
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"APNs have been Combined Successfully! Please Review Spatial Information",
 				"SMAB-T2357: Validate that User is able to perform Combine action for multiple active parcels");
 		
@@ -1112,7 +1112,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2659: Validation that System populates primary situs on second screen for child parcel with the situs value that was added in first screen");
 
 		//Step 8: Click Combine Parcel Button
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		//Step 9: Validation that primary situs on last screen screen is getting populated from situs entered in first screen
@@ -1136,7 +1136,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	public void ParcelManagement_ReturnToCustomScreen_CombineMappingAction_NoPrimarySitusTRAOwnership(String loginUser) throws Exception {
 
 		//Fetching parcels that are Active with no Ownership record, no  tra and no primary situs
-		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and Status__c = 'Active' and TRA__c=NULL and Primary_Situs__c=NULL Limit 2";
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and TRA__c=NULL and Primary_Situs__c=NULL Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
@@ -1144,8 +1144,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String concatenateAPNWithSameOwnership = apn1+","+apn2;
 
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
-		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
-		jsonParcelObject.put("Status__c","Active");
 
 		//Enter values in the Parcels
 		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
@@ -1163,10 +1161,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
-		Thread.sleep(7000);
-		objMappingPage.closeDefaultOpenTabs();
 
-		// Step2: Opening the PARCELS page  and searching the  parcel to perform split mapping
+		// Step2: Opening the PARCELS page  and searching the  parcel 
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn1);
 
@@ -1180,7 +1176,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 
-		//Step 5: Selecting Action as 'perform parcel combine' & Taxes Paid fields value as 'N/A'
+		//Step 5: Selecting Action as 'perform parcel combine' 
 		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithSameOwnership);
@@ -1201,8 +1197,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String districtNeighborhood=gridDataHashMap.get("District/Neighborhood").get(0);
 		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)").get(0);
 
-		//Step 7: Click Combine Parcel Button
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
+		//Step 7: Click generate Parcel Button
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
 		//Step 8: Navigating back to the WI that was created and clicking on related action link 
 		driver.switchTo().window(parentWindow);
@@ -1232,7 +1228,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)").get(0),parcelSizeSQFT,
 				"SMAB-T2677: Validation that  System populates parcel size column in return to custom screen from the parcel size that was entered while performing mapping action  ");
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(objMappingPage.updateParcelsButton)),
-				"SMAB-T2677: Validation that  There is \"Update Parcel\" button on return to custom screen");
+				"SMAB-T2677: Validation that  There is \"Update Parcel(s)\" button on return to custom screen");
+		
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2677: Validation that APN column should not be editable on retirning to custom screen");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2677: Validation that Legal Description column on retirning to custom screen");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2677: Validation that TRA column should not be editable on retirning to custom screen");
@@ -1240,6 +1237,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2677: Validation that Reason Code column should not be editable on retirning to custom screen");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("District/Neighborhood"),"SMAB-T2677: Validation that District/Neighborhood column should not be editable on retirning to custom screen");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2677: Validation that Use Code column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)"),"SMAB-T2677: Validation that Parcel Size (SQFT) column should  be editable on retirning to custom screen");
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
@@ -1251,10 +1249,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 */
 	@Test(description = "SMAB-T2677:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Combine\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
-	public void ParcelManagement_ReturnToCustomScreen_CombineMappingAction_WithPrimarySitusTRAOwnership(String loginUser) throws Exception {
+	public void ParcelManagement_ReturnToCustomScreen_CombineMappingAction_WithPrimarySitusTRA(String loginUser) throws Exception {
 
 		//Fetching parcels that are Active with same Ownership record
-		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '100%') and (Not Name like '134%') and  Primary_Situs__c !=NULL and Status__c = 'Active' Limit 2";
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and  Primary_Situs__c !=NULL Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
@@ -1265,13 +1263,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+		//Enter values in the Parcels
 		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 		jsonParcelObject.put("Status__c","Active");
 		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 
-		//Enter values in the Parcels
-		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
-		jsonParcelObject.put("Status__c","Active");
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObject);
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonParcelObject);
 
@@ -1285,10 +1281,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
-		Thread.sleep(7000);
-		objMappingPage.closeDefaultOpenTabs();
 
-		// Step2: Opening the PARCELS page  and searching the  parcel to perform split mapping
+		// Step2: Opening the PARCELS page  and searching the  parcel 
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn1);
 
@@ -1302,7 +1296,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 
-		//Step 5: Selecting Action as 'perform parcel combine' & Taxes Paid fields value as 'N/A'
+		//Step 5: Selecting Action as 'perform parcel combine' 
 		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithSameOwnership);
@@ -1324,7 +1318,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)").get(0);
 
 		//Step 7: Click Combine Parcel Button
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
 		//Step 8: Navigating back to the WI that was created and clicking on related action link 
 		driver.switchTo().window(parentWindow);
@@ -1354,7 +1348,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)").get(0),parcelSizeSQFT,
 				"SMAB-T2677: Validation that  System populates parcel size column in return to custom screen from the parcel size that was entered while performing mapping action  ");
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(objMappingPage.updateParcelsButton)),
-				"SMAB-T2677: Validation that  There is \"Update Parcel\" button on return to custom screen");
+				"SMAB-T2677: Validation that  There is \"Update Parcel(s)\" button on return to custom screen");
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
@@ -1363,9 +1357,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_CombineMappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 
-
 		//Fetching parcels that are Active with same Ownership record
-		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '100%') and (Not Name like '134%') and  Primary_Situs__c !=NULL and Status__c = 'Active' Limit 2";
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and  Primary_Situs__c !=NULL Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
@@ -1376,13 +1369,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+		
+		//Enter values in the Parcels
 		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 		jsonParcelObject.put("Status__c","Active");
 		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 
-		//Enter values in the Parcels
-		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
-		jsonParcelObject.put("Status__c","Active");
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObject);
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonParcelObject);
 
@@ -1395,12 +1387,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		Thread.sleep(7000);
 		objMappingPage.closeDefaultOpenTabs();
 
-		// Step2: Opening the PARCELS page  and searching the  parcel to perform split mapping
+		// Step2: Opening the PARCELS page  and searching the  parcel 
 		objMappingPage.searchModule("APAS");
 		objMappingPage.searchModule("Mapping Action");
 		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
 
-		//Step 3: Selecting Action as 'perform parcel combine' & Taxes Paid fields value as 'N/A'
+		//Step 3: Selecting Action as 'perform parcel combine' 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithSameOwnership);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
@@ -1421,7 +1413,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)").get(0);
 
 		//Step 5: Click Combine Parcel Button
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.combineParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.getSuccessMessage();
 
 		//Step 8: Navigating  to the independent mapping action WI that would have been created after performing combine action and clicking on related action link 
@@ -1446,8 +1438,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(gridDataHashMap.get("District/Neighborhood").get(0),districtNeighborhood,
 				"SMAB-T2677: Validation that  System populates District/Neighborhood in return to custom screen  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),situs.replaceFirst("\\s+", ""),"SMAB-T2677: Validation that  System populates Situs in return to custom screen  from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
-				"SMAB-T2677: Validation that  System populates reason code in return to custom screen from the sane reason code that was entered while perfroming mapping action");
 		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescription,
 				"SMAB-T2677: Validation that  System populates Legal Description in return to custom screen from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),tra,
@@ -1457,7 +1447,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)").get(0),parcelSizeSQFT,
 				"SMAB-T2677: Validation that  System populates parcel size column in return to custom screen from the parcel size that was entered while performing mapping action  ");
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(objMappingPage.updateParcelsButton)),
-				"SMAB-T2677: Validation that  There is \"Update Parcel\" button on return to custom screen");
+				"SMAB-T2677: Validation that  There is \"Update Parcel(s)\" button on return to custom screen");
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
