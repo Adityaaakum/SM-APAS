@@ -72,9 +72,9 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//table[@role='grid']//thead/tr//th")
 	public WebElement dataGrid;
 
-	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items...')]")
+	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items...')]|//input[@placeholder='Search apps or items...']")
 	public WebElement appLauncherSearchBox;
-
+	
 	@FindBy(xpath = "//input[@placeholder='Search apps and items...']/..//button")
 	public WebElement searchClearButton;
 
@@ -196,7 +196,7 @@ public class ApasGenericPage extends Page {
 	 * Description: This will click on the module name from the drop down
 	 */
 	public void clickNavOptionFromDropDown(String navOption) throws Exception {
-		String xpathStr = "//a[@data-label= '" + navOption + "']//b[text() = '" + navOption + "']";
+		String xpathStr = "//a[@data-label= '" + navOption + "']//b[text() = '" + navOption + "']|//a[contains(@class,'app-launcher') and @title='" + navOption + "']";
 		WebElement drpDwnOption = waitForElementToBeClickable(20, xpathStr);
 		drpDwnOption.click();
 	}
@@ -562,7 +562,7 @@ public class ApasGenericPage extends Page {
 	public void globalSearchRecords(String searchString) throws Exception {
 
 		ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
-		if (System.getProperty("region").toUpperCase().equals("E2E") || System.getProperty("region").toUpperCase().equals("PREUAT")){
+		if (System.getProperty("region").toUpperCase().equals("E2E") || System.getProperty("region").toUpperCase().equals("PREUAT") || System.getProperty("region").toUpperCase().equals("STAGING")){
 			WebElement element  = driver.findElement(By.xpath("//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input"));
 			searchAndSelectOptionFromDropDown(element, searchString);
 		}else{
@@ -1113,11 +1113,22 @@ public class ApasGenericPage extends Page {
   @return: returns the Retired APN
  */
 
- public String fetchRetiredAPN() throws Exception {
+  	public String fetchRetiredAPN() throws Exception {
      
 	  String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
 	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
- }
+  	}
+ 
+ /*
+ This method is used to return the Interim APN (starts with 800) from Salesforce
+ @return: returns the Interim APN
+*/
+
+  	public String fetchInterimAPN() throws Exception {
+    
+	  String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' AND Status__c='Active' limit 1";
+	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
+  	}
    
    /*
     * Get Field Value from WI TimeLine 

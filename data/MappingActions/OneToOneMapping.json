@@ -3,7 +3,6 @@
     "Action": "One To One",
     "Are taxes fully paid?": "Yes",
     "Net Land Loss": "200",
-    "Net Land Gain": "300",
     "Comments": "Perform one to one mapping"  ,
   },
   
@@ -11,8 +10,12 @@
     "Action": "One To One",
     "Are taxes fully paid?": "Yes",
     "Reason code": "PM 85/25-26",
-    "Net Land Loss": "200",
-    "Net Land Gain": "300",
+
+    "Net Land Loss": "200",  
+     "Net Land Gain": "300",  
+
+
+
     "Comments": "Perform one to one mapping",
     "Legal Description": "Legal PM 85/25-260",
     "Situs City Description": "ATHERTON",
