@@ -1,6 +1,8 @@
 package com.apas.Tests.BPPTrends;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import com.apas.PageObjects.*;
@@ -60,7 +62,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 	 * 2. Validating the business rules for Year Acquired value:: TestCase/JIRA ID: SMAB-T238
 	 * 3. Validating user is unable to create duplicate entry:: TestCase/JIRA ID: SMAB-T236
 	 */
-	@Test(description = "SMAB-T235,SMAB-T236,SMAB-T238: Edit new factors entry under BPP Property Index factor table having different status of tables before submitting calculation", groups = {"Regression","BPPTrend"}, dataProvider = "variousStatusOfCompositeTablesBeforeSubmitting", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T235,SMAB-T236,SMAB-T229: Edit new factors entry under BPP Property Index factor table having different status of tables before submitting calculation", groups = {"Regression","BPPTrend"}, dataProvider = "variousStatusOfCompositeTablesBeforeSubmitting", dataProviderClass = DataProviders.class)
 	public void BppTrend_Edit_PropertyIndexFactorEntry_WithDifferentStatusOfTables(String tablesStatus) throws Exception {
 		//Step1: Resetting the composite factor tables status
 		List<String> tablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
@@ -80,7 +82,6 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 
 		//Step5: Validating the status of table on Details tab
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Validating the status of table on details page");
-		String propertyType = "Agricultural";
 		String currentStatus = objBppTrendSetupPage.getTableStatusFromBppTrendSetupDetailsPage("Ag. Trends Status");
 		softAssert.assertEquals(currentStatus, tablesStatus, "SMAB-T235: Validation for status of Ag. Trends Status table");
 		softAssert.assertEquals(currentStatus, tablesStatus, "SMAB-T238: Validation for status of Ag. Trends Status table");
@@ -91,14 +92,17 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		objBppTrnPg.waitForElementToBeVisible(20, objBppTrendSetupPage.bppPropertyIndexFactorsTableSection);
 		boolean bppPropIndexFactorTablevisible = objBppTrnPg.verifyElementVisible(objBppTrendSetupPage.bppPropertyIndexFactorsTableSection);
 		softAssert.assertTrue(bppPropIndexFactorTablevisible, "SMAB-T229: Verify BPP Property Index Factors tab is displayed on BPP Trend setup Page");
+		
+		
 		//Step6: Retrieve existing values from tables for very first row
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Retrieving the details of record to delete, create and edit from details page");		
+		HashMap<String, ArrayList<String>> gridDataHashMap =objBppTrendSetupPage.getGridDataInHashMap();
+		String entryName = gridDataHashMap.get("Name (Roll Year - Property Type)").get(0);
+		String yearAcquired = gridDataHashMap.get("Year Acquired").get(0);
+		String propertyValue = gridDataHashMap.get("Property Type").get(0);
+		String existingIndexFactor = gridDataHashMap.get("Index Factor").get(0);
+		
 		String factorTableName = "BPP Property Index Factors";
-
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Retrieving the details of record to delete, create and edit from details page");
-		String entryName = objBppTrendSetupPage.readNameValueFromGivenFactorTable(factorTableName, propertyType);
-		String yearAcquired = objBppTrendSetupPage.readAcquiredYearValueFromGivenFactorTable(factorTableName, propertyType);
-		String propertyValue = objBppTrendSetupPage.readPropertyTypeValueFromBppPropIndexFactors(propertyType);
-		String existingIndexFactor = objBppTrendSetupPage.readIndexFactorValue(propertyType);
 
 		//Step7: Click New button for given factors table to create a new entry under it
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking New Button");
@@ -128,6 +132,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		//Step19: Validating Edit button is visible under show more drop down
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking show more button for property type: "+entryName);
 		Thread.sleep(2000);
+		entryName = entryName.split("\n")[0];
 		objBppTrendSetupPage.clickShowMoreLink(entryName);
 		Thread.sleep(2000);
 		objBppTrnPg.waitForElementToBeVisible(objBuildPermitPage.editLinkUnderShowMore, 10);
@@ -238,14 +243,15 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 
 		//Step6: Retrieve existing values from tables for very first row
 		String factorTableName = "BPP Property Index Factors";
-		String propertyType = "Commercial";
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Retrieving the details of record to delete, create and edit from details page");
-		String entryName = objBppTrendSetupPage.readNameValueFromGivenFactorTable(factorTableName, propertyType);
-		String yearAcquired = objBppTrendSetupPage.readAcquiredYearValueFromGivenFactorTable(factorTableName, propertyType);
-		String propertyValue = objBppTrendSetupPage.readPropertyTypeValueFromBppPropIndexFactors(propertyType);
-		String indexFactor = objBppTrendSetupPage.readIndexFactorValue(propertyType);
-
+		HashMap<String, ArrayList<String>> gridDataHashMap =objBppTrendSetupPage.getGridDataInHashMap();
+		String entryName = gridDataHashMap.get("Name (Roll Year - Property Type)").get(0);
+		entryName = entryName.split("\n")[0];
+		String yearAcquired = gridDataHashMap.get("Year Acquired").get(0);
+		String propertyValue = gridDataHashMap.get("Property Type").get(0);
+		String indexFactor = gridDataHashMap.get("Index Factor").get(0);
+		
 		//Step7: Click New button for given factors table to create a new entry under it
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking New Button");
 		objBppTrendSetupPage.clickNewButtonUnderFactorSection(factorTableName);
@@ -305,7 +311,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating that user is able to edit an entry:: TestCase/JIRA ID: SMAB-T284
 	 */
-	@Test(description = "SMAB-T284: Edit new factors entry under Valuation factor table having different status of tables before submitting calculation", groups = {"Regression","BPPTrend"}, dataProvider = "variousStatusOfValuationTablesBeforeSubmitting", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T284,SMAB-T229: Edit new factors entry under Valuation factor table having different status of tables before submitting calculation", groups = {"Regression","BPPTrend"}, dataProvider = "variousStatusOfValuationTablesBeforeSubmitting", dataProviderClass = DataProviders.class)
 	public void BppTrend_Edit_ValuationFactorEntry_WithDifferentStatusOfTables(String tablesStatus) throws Exception {
 		//Step1: Resetting the valuation factor tables status
 		List<String> tablesToReset = Arrays.asList(CONFIG.getProperty("valuationTablesToResetViaApi").split(","));
@@ -452,7 +458,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating that user is able to edit an entry:: TestCase/JIRA ID: SMAB-T283, SMAB-T285, SMAB-T288
 	 */
-	@Test(description = "SMAB-T283,SMAB-T285,SMAB-T288: Edit new factors entry under BPP Percent Goods Factors table having different status of tables before submitting calculation", groups = {"Regression","BPPTrend"}, dataProvider = "variousStatusOfCompositeTablesBeforeSubmitting", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T283,SMAB-T285,SMAB-T288,SMAB-T229: Edit new factors entry under BPP Percent Goods Factors table having different status of tables before submitting calculation", groups = {"Regression","BPPTrend"}, dataProvider = "variousStatusOfCompositeTablesBeforeSubmitting", dataProviderClass = DataProviders.class)
 	public void BppTrend_Edit_PercentGoodsFactorEntry_WithDifferentStatusOfTables(String tablesStatus) throws Exception {
 		//Step1: Resetting the composite factor tables status
 		List<String> tablesToReset = Arrays.asList(CONFIG.getProperty("compositeTablesToResetViaApi").split(","));
