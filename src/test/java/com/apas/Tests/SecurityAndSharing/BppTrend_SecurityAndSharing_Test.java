@@ -28,7 +28,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	Page objPage;
 	BppTrendPage objBppTrendPage;
 	SoftAssertion softAssert;
-	String rollYear = "2020";
+	String rollYear = "2022";
 	SalesforceAPI objSalesforceAPI;
 	SoftAssert objSoftAssert;
 	BuildingPermitPage objBuildPermitPage;
@@ -47,7 +47,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		objSoftAssert = new SoftAssert();
 		objBuildPermitPage = new BuildingPermitPage(driver);
 		objApasGenericFunctions = new BppTrendSetupPage(driver);
-		objApasGenericFunctions.updateRollYearStatus("Open", "2020");
+		objApasGenericFunctions.updateRollYearStatus("Open", "2022");
 	}
 
 	/**
