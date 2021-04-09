@@ -11,7 +11,7 @@
   "DataToPerformCombineMappingActionWithSitusData": {
     "Action": "Perform Parcel Combine",
     "Are taxes fully paid?": "Yes",
-    "Reason code": "Testing Combine",
+    "Reason code": "Test WI",
     "Comments": "Perform Combine Mapping Action",
     "Situs City Description": "ATHERTON",
     "Situs City Code": "AT",
