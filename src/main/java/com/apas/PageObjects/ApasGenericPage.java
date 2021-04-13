@@ -72,9 +72,9 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//table[@role='grid']//thead/tr//th")
 	public WebElement dataGrid;
 
-	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items...')]")
+	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items...')]|//input[@placeholder='Search apps or items...']")
 	public WebElement appLauncherSearchBox;
-
+	
 	@FindBy(xpath = "//input[@placeholder='Search apps and items...']/..//button")
 	public WebElement searchClearButton;
 
@@ -196,7 +196,7 @@ public class ApasGenericPage extends Page {
 	 * Description: This will click on the module name from the drop down
 	 */
 	public void clickNavOptionFromDropDown(String navOption) throws Exception {
-		String xpathStr = "//a[@data-label= '" + navOption + "']//b[text() = '" + navOption + "']";
+		String xpathStr = "//a[@data-label= '" + navOption + "']//b[text() = '" + navOption + "']|//a[contains(@class,'app-launcher') and @title='" + navOption + "']";
 		WebElement drpDwnOption = waitForElementToBeClickable(20, xpathStr);
 		drpDwnOption.click();
 	}
@@ -461,7 +461,7 @@ public class ApasGenericPage extends Page {
 		//closeDefaultOpenTabs();
 	}
 
-	private void closeDefaultOpenTabs() throws Exception {
+	public  void closeDefaultOpenTabs() throws Exception {
 		ReportLogger.INFO("Closing all default tabs");
 
 		waitForElementToBeClickable(appLauncher, 10);
@@ -473,9 +473,9 @@ public class ApasGenericPage extends Page {
 		*/
 		Actions objAction=new Actions(driver);
 		objAction.keyDown(Keys.SHIFT).sendKeys("w").keyUp(Keys.SHIFT).perform();
-
+		waitForElementToBeVisible(5,closeAllBtn);
 		if(verifyElementVisible(closeAllBtn))
-		{javascriptClick(closeAllBtn);}
+		{Click(closeAllBtn);}
 		Thread.sleep(3000);
 
 	}
@@ -1113,11 +1113,22 @@ public class ApasGenericPage extends Page {
   @return: returns the Retired APN
  */
 
- public String fetchRetiredAPN() throws Exception {
+  	public String fetchRetiredAPN() throws Exception {
      
 	  String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
 	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
- }
+  	}
+ 
+ /*
+ This method is used to return the Interim APN (starts with 800) from Salesforce
+ @return: returns the Interim APN
+*/
+
+  	public String fetchInterimAPN() throws Exception {
+    
+	  String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' AND Status__c='Active' limit 1";
+	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
+  	}
    
    /*
     * Get Field Value from WI TimeLine 
