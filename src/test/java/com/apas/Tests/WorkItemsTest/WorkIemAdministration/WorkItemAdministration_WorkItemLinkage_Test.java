@@ -85,7 +85,7 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
     }
     
     @Test(description = "SMAB-T2654,SMAB-T2656: Verify APN field when there are more than one parcel records are added to WI via Linkages", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-            "Regression", "WorkItemAdministration" }, alwaysRun = true)
+            "Regression", "WorkItemAdministration" }, alwaysRun = false)
     public void WorkItemAdministration_VerifyAPNColumnWithMoreThan1APN(String loginUser) throws Exception {
     	//Fetch Active APN
     	ArrayList<String> apns = objMappingPage.fetchActiveAPN(2);
@@ -120,15 +120,13 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
 		
 		// Step 6: Navigate to Home Page and verify APN Column under In Progress tab
     	objMappingPage.searchModule(HOME);
+    	Thread.sleep(2000);
     	objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
 		WebElement WI = objWorkItemHomePage.searchWIinGrid(WINumber);
 		HashMap<String, ArrayList<String>> gridData;
 		
-		System.out.println("WI Present: "+ objWorkItemHomePage.verifyElementVisible(WI));
-		
 		if(objWorkItemHomePage.verifyElementVisible(WI)) {
 			gridData = objMappingPage.getGridDataInHashMap();
-			System.out.println("Index: "+ gridData.get("Work item #").indexOf(updatedWINumber));
 			softAssert.assertContains(gridData.get("APN").get(gridData.get("Work item #").indexOf(updatedWINumber)), "Multiple", "SMAB-T2654: APN Number Validation for Work Item");
 
 		}else		
@@ -141,11 +139,9 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
 		objWorkItemHomePage.waitForElementToDisappear(objWorkItemHomePage.successAlert, 10); 
 		
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
-		driver.navigate().refresh();
-		Thread.sleep(3000);
-		WI = objWorkItemHomePage.searchWIinGrid(WINumber);
+		boolean WIPresent = objWorkItemHomePage.searchWIInGrid(WINumber);
 		
-		if(objWorkItemHomePage.verifyElementVisible(WI)) {
+		if(WIPresent) {
 			gridData = objMappingPage.getGridDataInHashMap();
 			softAssert.assertContains(gridData.get("APN").get(gridData.get("Work item #").indexOf(updatedWINumber)), "Multiple", "SMAB-T2654: APN Number Validation for Work Item");
 	
