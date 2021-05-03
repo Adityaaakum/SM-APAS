@@ -749,6 +749,7 @@ public class Page extends TestBase {
 	 * @return : button element
 	 */
 	public WebElement getButtonWithText(String text) throws Exception {
+		Thread.sleep(1000);
 		String commonxPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 		String xpath = commonxPath + "//button[text()='" + text + "'] | " +
 				commonxPath + "//div[text()='" + text + "']//.. | " +

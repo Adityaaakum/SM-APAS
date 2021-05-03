@@ -438,7 +438,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + apn3);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		Thread.sleep(1000);
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The APN provided already exists in the system"),
 				"SMAB-T2358: Validate that User is able to view error message if APN (Active) already exist : The APN provided already exists in the system");
 		
@@ -447,7 +446,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + retiredAPNValue);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		Thread.sleep(1000);
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The APN provided already exists in the system"),
 				"SMAB-T2358: Validate that following error message is displayed for Retired Parcel : The APN provided already exists in the system");
 		
@@ -456,7 +454,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + interimAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		Thread.sleep(1000);
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This map book is reserved for interim parcels"),
 				"SMAB-T2358: Validate that following error message is displayed for Interim Parcel : This map book is reserved for interim parcels");
 		
@@ -465,7 +462,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + lessThan9DigitAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		Thread.sleep(1000);
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
 				"SMAB-T2358: Validate that User is able to view error message if APN is less than 9 digits : This parcel number is not valid, it should contain 9 digit numeric values.");
 		
@@ -474,7 +470,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + moreThan9DigitAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		Thread.sleep(1000);
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
 				"SMAB-T2358: Validate that User is able to view error message if APN is more than 9 digits : This parcel number is not valid, it should contain 9 digit numeric values.");
 		
@@ -497,7 +492,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + notNextGeneratedAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		Thread.sleep(1000);
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The parcel entered is invalid since the following parcel is available " + nextGeneratedAPN),
 				"SMAB-T2358: Validate that User is able to view error message if APN overwritten is not the next available one in the system : The parcel entered is invalid since the following parcel is available <APN>");
 	
@@ -506,7 +500,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + alphanumericAPN1);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		Thread.sleep(1000);
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
 				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with alphanumeric value at the end : This parcel number is not valid, it should contain 9 digit numeric values");
 		
@@ -515,7 +508,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + alphanumericAPN2);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		Thread.sleep(1000);
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
 				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with alphanumeric value in the beginning : This parcel number is not valid, it should contain 9 digit numeric values");
 		
@@ -524,7 +516,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + specialSymbolAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		Thread.sleep(1000);
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("This parcel number is not valid, it should contain 9 digit numeric values."),
 				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with special symbol : This parcel number is not valid, it should contain 9 digit numeric values");
 		
@@ -810,7 +801,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		String childAPNNumber =gridDataHashMap.get("APN").get(0);
 
-		softAssert.assertEquals(gridDataHashMap.get("District/Neighborhood").get(0),responseNeighborhoodDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2357: Validation that System populates District/Neighborhood from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue.replaceFirst("\\s", ""),
 				"SMAB-T2357: Validation that System populates Situs from the parent parcel");
@@ -839,7 +830,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue.replaceFirst("\\s", ""),
 				"SMAB-T2357: Validation that System populates Situs  from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("District/Neighborhood").get(0),responseNeighborhoodDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2357: Validation that System populates neighborhood Code from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
 				"SMAB-T2357: Validation that System populates Reason code from parent parcel work item");
@@ -881,7 +872,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		
 		//Step 15: Validate the Ownership record on child parcel
 		objParcelsPage.openParcelRelatedTab("Ownership");
-		HashMap<String, ArrayList<String>> ownershipTableDataHashMap = objParcelsPage.getParcelTableDataInHashMap("Property Ownerships");
+		HashMap<String, ArrayList<String>> ownershipTableDataHashMap = objParcelsPage.getParcelTableDataInHashMap("Ownership");
 		softAssert.assertEquals(ownershipTableDataHashMap.get("Owner").get(0),assesseeName,
 				"SMAB-T2373: Validate that the Ownership record appears in Ownership tab");
 		
@@ -1203,7 +1194,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String tra=gridDataHashMap.get("TRA").get(0);
 		String situs=gridDataHashMap.get("Situs").get(0);
 		String reasonCode=gridDataHashMap.get("Reason Code").get(0);
-		String districtNeighborhood=gridDataHashMap.get("District/Neighborhood").get(0);
+		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd").get(0);
 		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)").get(0);
 
 		//Step 7: Click generate Parcel Button
