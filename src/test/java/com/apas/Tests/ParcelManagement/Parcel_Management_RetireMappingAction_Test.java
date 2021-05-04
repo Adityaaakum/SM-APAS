@@ -175,26 +175,26 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		ReportLogger.INFO("Enter the Retired parcel in Parent APN field");
 		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel), hashMapRetireeMappingData.get("Reason code"));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
-		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.parentAPNTextBoxLabel,retiredAPNValue),"-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.parentAPNTextBoxLabel,retiredAPNValue),"- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2457: Validate that proper error message is displayed if parent parcel is retired");
 		
 		//Step 18: Validate that user is not able to move to the next screen
 		ReportLogger.INFO("Retire Action cannot be completed with Retired parcel");
 		objMappingPage.enter(objMappingPage.commentsTextBoxLabel, hashMapRetireeMappingData.get("Comments"));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2457: Validate that user is not able to perform Retire action with error message on the screen");
 
 		//Step 19: Validate that proper error message is displayed if parent parcel is in progress
 		ReportLogger.INFO("Enter the In Progress parcel in Parent APN field");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
-		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.parentAPNTextBoxLabel,inProgressAPNValue),"-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.parentAPNTextBoxLabel,inProgressAPNValue),"- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2457: Validate that proper error message is displayed if parent parcel is in progress status");
 		
 		//Step 20: Validate that user is not able to move to the next screen
 		ReportLogger.INFO("Retire Action cannot be completed with In Progress parcel");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2457: Validate that user is not able to perform Retire action with error message on the screen");
 		
 		//Step 21: Validate that User should be allowed to enter the 9 digit APN without the - sign

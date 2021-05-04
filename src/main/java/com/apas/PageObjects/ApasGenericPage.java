@@ -461,7 +461,7 @@ public class ApasGenericPage extends Page {
 		//closeDefaultOpenTabs();
 	}
 
-	private void closeDefaultOpenTabs() throws Exception {
+	public  void closeDefaultOpenTabs() throws Exception {
 		ReportLogger.INFO("Closing all default tabs");
 
 		waitForElementToBeClickable(appLauncher, 10);
@@ -473,9 +473,9 @@ public class ApasGenericPage extends Page {
 		*/
 		Actions objAction=new Actions(driver);
 		objAction.keyDown(Keys.SHIFT).sendKeys("w").keyUp(Keys.SHIFT).perform();
-
+		waitForElementToBeVisible(5,closeAllBtn);
 		if(verifyElementVisible(closeAllBtn))
-		{javascriptClick(closeAllBtn);}
+		{Click(closeAllBtn);}
 		Thread.sleep(3000);
 
 	}
