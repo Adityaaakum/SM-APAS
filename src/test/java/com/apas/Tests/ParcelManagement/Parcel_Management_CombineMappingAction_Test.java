@@ -294,9 +294,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apn2=responseAPNDetails1.get("Name").get(1);
 		
 		//Getting Owner or Account records
-		HashMap<String, ArrayList<String>> responseAssesseeDetails = objMappingPage.getOwnerForMappingAction(3);
+		HashMap<String, ArrayList<String>> responseAssesseeDetails = objMappingPage.getOwnerForMappingAction(2);
 	    String assesseeName1 = responseAssesseeDetails.get("Name").get(0);
-		String assesseeName2 = responseAssesseeDetails.get("Name").get(2);
+		String assesseeName2 = responseAssesseeDetails.get("Name").get(1);
 		
 		//Fetching parcel that is Retired
 		String queryRetiredAPNValue = "select Name from Parcel__c where Status__c='Retired' and (Not Name like '%990') limit 1";
