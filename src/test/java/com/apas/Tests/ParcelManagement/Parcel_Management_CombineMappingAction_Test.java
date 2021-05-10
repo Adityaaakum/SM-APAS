@@ -79,7 +79,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		int smallestNumb = numbParcel1<numbParcel2?numbParcel1:numbParcel2;
 		String smallestAPN = String.valueOf(smallestNumb);
 		
-		if (smallestAPN.length() == 9) updateSmallestAPN = smallestAPN.substring(0, 3).concat("-").concat(smallestAPN.substring(4, 7)).concat("-").concat(smallestAPN.substring(8, 11));
+		if (smallestAPN.length() == 9) updateSmallestAPN = smallestAPN.substring(0, 3).concat("-").concat(smallestAPN.substring(3, 6)).concat("-").concat(smallestAPN.substring(6, 9));
 		if (smallestAPN.length() == 8) updateSmallestAPN = "0" + smallestAPN.substring(0, 2).concat("-").concat(smallestAPN.substring(2, 5)).concat("-").concat(smallestAPN.substring(5, 8));
 		if (smallestAPN.length() == 7) updateSmallestAPN = "00" + smallestAPN.substring(0, 1).concat("-").concat(smallestAPN.substring(1, 4)).concat("-").concat(smallestAPN.substring(4, 7));
 				
@@ -294,9 +294,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apn2=responseAPNDetails1.get("Name").get(1);
 		
 		//Getting Owner or Account records
-		HashMap<String, ArrayList<String>> responseAssesseeDetails = objMappingPage.getOwnerForMappingAction(2);
+		HashMap<String, ArrayList<String>> responseAssesseeDetails = objMappingPage.getOwnerForMappingAction(3);
 	    String assesseeName1 = responseAssesseeDetails.get("Name").get(0);
-		String assesseeName2 = responseAssesseeDetails.get("Name").get(1);
+		String assesseeName2 = responseAssesseeDetails.get("Name").get(2);
 		
 		//Fetching parcel that is Retired
 		String queryRetiredAPNValue = "select Name from Parcel__c where Status__c='Retired' and (Not Name like '%990') limit 1";
@@ -356,6 +356,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         	}
         });
         
+        objMappingPage.searchModule(PARCELS);
         objMappingPage.globalSearchRecords(apn3);
         objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
         objParcelsPage.createOwnershipRecord(assesseeName2,hashMapCreateOwnershipRecordData);
@@ -558,7 +559,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		int smallestNumb = numbParcel3<temp?numbParcel3:temp;
 		String smallestAPN = String.valueOf(smallestNumb);
 		
-		if (smallestAPN.length() == 9) updateSmallestAPN = smallestAPN.substring(0, 3).concat("-").concat(smallestAPN.substring(4, 7)).concat("-").concat(smallestAPN.substring(8, 11));
+		if (smallestAPN.length() == 9) updateSmallestAPN = smallestAPN.substring(0, 3).concat("-").concat(smallestAPN.substring(3, 6)).concat("-").concat(smallestAPN.substring(6, 9));
 		if (smallestAPN.length() == 8) updateSmallestAPN = "0" + smallestAPN.substring(0, 2).concat("-").concat(smallestAPN.substring(2, 5)).concat("-").concat(smallestAPN.substring(5, 8));
 		if (smallestAPN.length() == 7) updateSmallestAPN = "00" + smallestAPN.substring(0, 1).concat("-").concat(smallestAPN.substring(1, 4)).concat("-").concat(smallestAPN.substring(4, 7));
 		
@@ -694,7 +695,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		int smallestNumb = numbParcel3<temp?numbParcel3:temp;
 		String smallestAPN = String.valueOf(smallestNumb);
 		
-		if (smallestAPN.length() == 9) updateSmallestAPN = smallestAPN.substring(0, 3).concat("-").concat(smallestAPN.substring(4, 7)).concat("-").concat(smallestAPN.substring(8, 11));
+		if (smallestAPN.length() == 9) updateSmallestAPN = smallestAPN.substring(0, 3).concat("-").concat(smallestAPN.substring(3, 6)).concat("-").concat(smallestAPN.substring(6, 9));
 		if (smallestAPN.length() == 8) updateSmallestAPN = "0" + smallestAPN.substring(0, 2).concat("-").concat(smallestAPN.substring(2, 5)).concat("-").concat(smallestAPN.substring(5, 8));
 		if (smallestAPN.length() == 7) updateSmallestAPN = "00" + smallestAPN.substring(0, 1).concat("-").concat(smallestAPN.substring(1, 4)).concat("-").concat(smallestAPN.substring(4, 7));
 		
@@ -749,6 +750,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         	}
         });
         
+        objMappingPage.searchModule(PARCELS);
         objMappingPage.globalSearchRecords(apn3);
         objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
         objParcelsPage.createOwnershipRecord(assesseeName, hashMapCreateOwnershipRecordData);
