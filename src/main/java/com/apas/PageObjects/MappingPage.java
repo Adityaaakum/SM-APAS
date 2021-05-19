@@ -43,6 +43,7 @@ public class MappingPage extends ApasGenericPage {
 	public String useCodeEditTextBoxSecondScreenLabel = "Use Code";
 	public String numberOfChildNonCondoTextBoxLabel = "Number of Child Non-Condo Parcels";
 	public String numberOfChildCondoTextBoxLabel = "Number of Child Condo Parcels";
+	public String numberOfIntermiParcelLabel = "Number of Interim Parcel";
 	public String nextButton = "Next";
 	public String generateParcelButton = "Generate Parcel(s)";
 	public String combineParcelButton = "Combine Parcel";

@@ -125,8 +125,8 @@ public class ParcelsPage extends ApasGenericPage {
 		
 		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
-		waitForElementToBeClickable(selectOptionDropDownComponentsActionsModal);
-		selectOptionFromDropDown(selectOptionDropDownComponentsActionsModal, "Create Work Item");
+		//waitForElementToBeClickable(selectOptionDropDownComponentsActionsModal);
+		//selectOptionFromDropDown(selectOptionDropDownComponentsActionsModal, "Create Work Item");
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
 		waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);
 		
@@ -135,8 +135,8 @@ public class ParcelsPage extends ApasGenericPage {
 
 		if (reference != null)enter(referenceInputTextBoxComponentActionModal, reference);
 		enter(descriptionInputTextBoxComponentActionModal, description);
-		selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);
-		selectOptionFromDropDown(workItemRoutingDropDownComponentsActionsModal, workItemRouting);
+		//selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);
+		//selectOptionFromDropDown(workItemRoutingDropDownComponentsActionsModal, workItemRouting);
 		if (dueDate != null) enter(dueDateInputTextBox, dueDate);
 		if (dov != null) enter(dovInputTextBox, dov);
 		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);

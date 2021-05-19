@@ -54,7 +54,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2356: Verify user is able to view error messages on the first screen during combine process", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2356, SMAB-2570, SMAB-2568: Verify user is able to view error messages on the Mapping screen during combine process", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyErrorMessageOnFirstScreenForParcelCombineMappingAction(String loginUser) throws Exception {
 		
@@ -70,7 +70,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	    HashMap<String, ArrayList<String>> activeAPN = objMappingPage.getActiveApnWithNoOwner(2);
 	    String apn1 = activeAPN.get("Name").get(0);
 		String apn2 = activeAPN.get("Name").get(1);
-					
+		
+		String queryMobileHomeAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Name like '134%' and Status__c = 'Active' Limit 1";
+		HashMap<String, ArrayList<String>> responseDetails = salesforceAPI.select(queryMobileHomeAPNValue);
+		String mobileHomeApn=responseDetails.get("Name").get(0);
+		
 		//Find lowest APN of both parcels
 		String updateSmallestAPN = "";		
 		int numbParcel1 = objMappingPage.convertAPNIntoInteger(apn1);
@@ -94,6 +98,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String concatenateActiveAPN = apn1+","+apn2;
 		String concatenateRetireWithActiveAPN = apn1+","+retiredAPNValue;
 		String concatenateInProgressWithActiveAPN = inProgressAPNValue+","+apn1;
+		String concatenateMobileHomeWithActiveAPN = mobileHomeApn+","+apn1;
 		String legalDescriptionValue="Legal PM 85/25-260";
 		
 		//Fetch TRA value from database to enter in APN to test validations
@@ -192,20 +197,35 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2356: Validate that user is not able to move to the next screen and still able to view Warning message");
+		
+		// Step 9: Update the Parent APN field and add a mobile home APN (134-XXX-XXX) parcel
+		ReportLogger.INFO("Add a retired parcel in Parent APN field :: " + concatenateMobileHomeWithActiveAPN);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateMobileHomeWithActiveAPN);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with this action, the parent parcel(s) cannot start with 134.",
+				"SMAB-T2570: Validate that user is able to view error message");
 
+		//Step 10: Validate that user is not able to move to the next screen
+		ReportLogger.INFO("Click NEXT button");
+		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with this action, the parent parcel(s) cannot start with 134.",
+				"SMAB-T2570: Validate that user is not able to move to the next screen and still able to view error message");
+				
 		// Step 11: Update the Parent APN field and add an In Progress parcel
 		ReportLogger.INFO("Add an In Progress parcel in Parent APN field :: " + concatenateInProgressWithActiveAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateInProgressWithActiveAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2356: Validate that user is able to view error message for Inactive parcel");
 
 		//Step 12: Validate that user is not able to move to the next screen
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2356: Validate that user is not able to move to the next screen and still able to view error message for Inactive parcel");
 				
 		// Step 13: Add parcels in Parent APN field with different TRA records
@@ -215,9 +235,49 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different",
 				"SMAB-T2356: Validate that user is able to view warning message");
-
+		
+		//Validate the error if Non-Condo field is having a parcel with pre-fix 100 or 134 and/or incorrect number of digits
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
+        objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,mobileHomeApn);
+		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+        softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- Non Condo Parcel Number cannot start with 100 or 134, Please enter valid Parcel Number",
+				"SMAB-T2570: Validate that user is able to view error message");
+		
+        objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"");
+        objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"100-670-700");
+        objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+        softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- Non Condo Parcel Number cannot start with 100 or 134, Please enter valid Parcel Number",
+				"SMAB-T2570: Validate that user is able to view error message");
+		
+        objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"");
+        objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,apn1.substring(0, 10));
+        objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+        softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- This parcel number is not valid, it should contain 9 digit numeric values.",
+				"SMAB-T2570: Validate that user is able to view error message");
+        
+        objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"");
+        objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,apn1.substring(0, 10).concat("a"));
+        objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+        softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- This parcel number is not valid, it should contain 9 digit numeric values.",
+				"SMAB-T2570: Validate that user is able to view error message");
+       
+        objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel,"");
+        objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,apn1);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		//objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.reasonCodeTextBoxLabel));
+		softAssert.assertContains(objMappingPage.getErrorMessage(),"Please enter the required field : Reason Code",
+                "SMAB-T2570: Validation that error message is displayed when reason code is blank");
+		
 		//Step 14: Validate that user is able to move to the next screen
+		ReportLogger.INFO("Enter back the reason Code and remove First Non-Condo Parcel");
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"");
+		objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel,reasonCode);
 		ReportLogger.INFO("Click NEXT button");
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		Thread.sleep(1000); //Allows the grid to load
@@ -240,6 +300,16 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertTrue(childAPNNumber.endsWith("0"),
 				"SMAB-T2356: Validation that child APN number ends with 0");
 		
+		//Validate the fields that are editable and non-editable on second mapping action screen
+		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2568: Validation that APN column is editable");
+        softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2568: Validation that Legal Description column is editable");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2568: Validation that TRA column is not editable");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2568: Validation that Situs column is not editable");
+        softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2568: Validation that Reason Code column is editable");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd"),"SMAB-T2568: Validation that District/Neighborhood column is not editable");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2568: Validation that Use Code column is not editable");
+        softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)"),"SMAB-T2568: Validation that Parcel Size column is editable");
+        
 		//Step 16: Validate that Legal description appears from the first parent parcel
 		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescriptionValue,
 				"SMAB-T2356: Validate that System populates Legal Description from the parent parcel");
@@ -531,7 +601,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2359: Verify user is able to validate APN generation by system during Combine process", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2359, SMAB-T2568: Verify user is able to validate APN generation by system during Combine process", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyParcelGenerationForCombineMappingAction(String loginUser) throws Exception {
 		
@@ -569,8 +639,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> responseLastAPNValueForParcel = salesforceAPI.select(queryLastAPNValueForParcel);
 		String lastParcel=responseLastAPNValueForParcel.get("Name").get(0);
 		
-		//Create the next available APN for the Condo parcel fetched above
+		//Create the next available APN for the parcel fetched above
 		String nextGeneratedForSmallestParcel = objMappingPage.generateNextAvailableAPN(lastParcel);
+		
+		//Setup a parcel which is not the next available one in the system to validate the warning message
+		String parcelForWarningMessage = combineMapBookAndPageForParcel.concat("900");
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -600,7 +673,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		ReportLogger.INFO("Switch to the Mapping Action screen");
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 
-		// Step 5: Update the Parent APN field and add another parcel and move to next screen
+		// Step 5: Update the Parent APN field and add another parcel, check validations and move to next screen
 		ReportLogger.INFO("Add a parcel in Parent APN field with same ownership record :: " + condoAPN+", "+apn1 +", "+apn2);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateCondoWithNonCondo);
@@ -608,14 +681,45 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.actionDropDownLabel);
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapCombineMappingData.get("Action"));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
+		
+		//Validate the default values and help text
+		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.parcelSizeDropDownLabel),"value"),"Yes",
+                "SMAB-T2568: Validation that default value of Number of Child Non-Condo Parcels  is 0");
+        softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.netLandLossTextBoxLabel),"value"),"0",
+                "SMAB-T2568: Validation that default value of Net Land Loss is 0");
+        softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.netLandGainTextBoxLabel),"value"),"0",
+                "SMAB-T2568: Validation that default value of Net Land Gain is 0");
+        softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.numberOfIntermiParcelLabel),"value"),"0",
+                "SMAB-T2568: Validation that default value of Interim Parcel is 0");
+        
+        objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
+        objMappingPage.Click(objMappingPage.helpIconFirstNonCondoParcelNumber);
+        softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use system generated APN, leave as blank.",
+                "SMAB-T2568: Validation that help text is generated on clicking the help icon for First non-Condo Parcel text box");
+        
+        objMappingPage.Click(objMappingPage.helpIconLegalDescription);
+        softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent legal description, leave as blank.",
+                "SMAB-T2568: Validation that help text is generated on clicking the help icon for legal description");
 
+        objMappingPage.Click(objMappingPage.helpIconSitus);
+        softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent situs, leave as blank.",
+                "SMAB-T2568: Validation that help text is generated on clicking the help icon for Situs text box");
+        
+        //Enter First Non-Condo parcel which is not the next available parcel in the system
+        objParcelsPage.Click(objParcelsPage.getButtonWithText(objMappingPage.closeButton));
+        objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
+        objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,parcelForWarningMessage);
+     
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
 
-		// Step 6: Fetch the APN generated
+		// Step 6: Validate the warning message and Fetch the APN generated
+		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is " +parcelForWarningMessage),
+				"SMAB-T2568: Validate that User is able to view warning message when suggested First Non-Condo parcel is not the next available parcel in the system");
+
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		String nextGeneratedAPN1 = gridDataHashMap.get("APN").get(0);
 		softAssert.assertEquals(nextGeneratedAPN1,nextGeneratedForSmallestParcel,
@@ -656,7 +760,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2357,SMAB-T2373,SMAB-T2376,SMAB-T2443: Verify user is able to combine as many number of parcels into one and attributes are inherited in the child parcel from the parent parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2357,SMAB-T2373,SMAB-T2376,SMAB-T2443,SMAB-2567: Verify user is able to combine as many number of parcels into one and attributes are inherited in the child parcel from the parent parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyParcelCombineMappingAction(String loginUser) throws Exception {
 		
@@ -792,12 +896,14 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
 				
-		//Step 8: Validate that user is able to move to the next screen
+		//Step 8: Validate that user is able to move to the next screen and no warning message is displayed
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
-		
+		softAssert.assertTrue(!objMappingPage.getErrorMessage().contains("Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is"),
+						"SMAB-T2568: Validate that User is able to view warning message when suggested First Non-Condo parcel is not the next available parcel in the system");
+
 		//Step 9: Validate that ALL fields THAT ARE displayed on second screen
 		ReportLogger.INFO("Validate the Grid values");
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -810,7 +916,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
 				"SMAB-T2357: Validation that System populates Reason code from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),"",
-				"SMAB-T2357: Validation that System populates Legal Description from the parent parcel");
+				"SMAB-T2567: Validation that System populates Legal Description from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2357: Validation that System populates TRA from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
@@ -830,6 +936,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		//Step 12: Validate that ALL fields THAT ARE displayed AFTER PARCEL ARE GENERATED
 		ReportLogger.INFO("Validate the Grid values");
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
+		boolean actionColumn = gridDataHashMap.containsKey("Action");
+		
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue.replaceFirst("\\s", ""),
 				"SMAB-T2357: Validation that System populates Situs  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),responseNeighborhoodDetails.get("Name").get(0),
@@ -843,6 +951,17 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
 				"SMAB-T2357: Verify that User is able to to create a Use Code for the child parcel from the custom screen ");
 		
+		//Validate that all the fields are non-editable after the parcels are generated
+        softAssert.assertTrue(!actionColumn,"SMAB-T2568: Validation that Action column has disappeared after generating parcels");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2568: Validation that APN column is not editable");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2568: Validation that Legal Description column is not editable");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2568: Validation that TRA column is not editable");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2568: Validation that Situs column is not editable");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2568: Validation that Reason Code column is not editable");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd"),"SMAB-T2568: Validation that District/Neighborhood column is not editable");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2568: Validation that Use Code column is not editable");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)"),"SMAB-T2568: Validation that Parcel Size column is not editable");
+		        
 		//Step 13: Open the child parcel and validate the attributes
 		driver.switchTo().window(parentWindow);
 		objMappingPage.searchModule(PARCELS);
@@ -923,7 +1042,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String workItem2=responseWorkItem.get("Name").get(1);
 		
 		objMappingPage.searchModule(WORK_ITEM);
-		objMappingPage.displayRecords("All");
+		//objMappingPage.displayRecords("All");
 		Thread.sleep(1000); //Allows the newly generated WIs to appear in the system
 		objMappingPage.globalSearchRecords(workItem1);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
@@ -987,7 +1106,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.login(RP_APPRAISER);
 		
 		objMappingPage.searchModule(WORK_ITEM);
-		objMappingPage.displayRecords("All");
+		//objMappingPage.displayRecords("All");
 		objMappingPage.globalSearchRecords(workItem1);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
