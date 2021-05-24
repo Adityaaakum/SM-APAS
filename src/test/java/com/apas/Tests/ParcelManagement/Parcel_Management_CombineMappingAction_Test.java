@@ -69,14 +69,16 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		//Getting parcels that are Active with no owners
 	    HashMap<String, ArrayList<String>> activeAPN = objMappingPage.getActiveApnWithNoOwner(2);
 	    String apn1 = activeAPN.get("Name").get(0);
+	    String apnId1 = activeAPN.get("Id").get(0);
 		String apn2 = activeAPN.get("Name").get(1);
+		String apnId2 = activeAPN.get("Id").get(1);
 		
 		String queryMobileHomeAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Name like '134%' and Status__c = 'Active' Limit 1";
 		HashMap<String, ArrayList<String>> responseDetails = salesforceAPI.select(queryMobileHomeAPNValue);
 		String mobileHomeApn=responseDetails.get("Name").get(0);
 		
 		//Find lowest APN of both parcels
-		String updateSmallestAPN = "";		
+		String updateSmallestAPN = "";
 		int numbParcel1 = objMappingPage.convertAPNIntoInteger(apn1);
 		int numbParcel2 = objMappingPage.convertAPNIntoInteger(apn2);
 				
@@ -90,6 +92,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		if (updateSmallestAPN.equals(apn2)) {
 			apn2 = apn1;
 			apn1 = updateSmallestAPN;
+			apnId1 = activeAPN.get("Id").get(1);
+			apnId2 = activeAPN.get("Id").get(0);
 		}
 		
 		//Data Manipulation to test various validations
@@ -108,8 +112,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		//Enter values in the Parcels
 		jsonParcelObject.put("Short_Legal_Description__c",legalDescriptionValue);
 		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-		salesforceAPI.update("Parcel__c",activeAPN.get("Id").get(0),jsonParcelObject);
-		salesforceAPI.update("Parcel__c", activeAPN.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(1));
+		salesforceAPI.update("Parcel__c", apnId1, jsonParcelObject);
+		salesforceAPI.update("Parcel__c", apnId2, "TRA__c", responseTRADetails.get("Id").get(1));
 		salesforceAPI.update("Parcel__c", retiredAPN.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(1));
 		salesforceAPI.update("Parcel__c", inProgressAPN.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(0));
 		
@@ -188,14 +192,14 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateRetireWithActiveAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2356: Validate that user is able to view Warning message");
 
 		//Step 10: Validate that user is not able to move to the next screen
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2356: Validate that user is not able to move to the next screen and still able to view Warning message");
 		
 		// Step 9: Update the Parent APN field and add a mobile home APN (134-XXX-XXX) parcel
@@ -203,14 +207,14 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateMobileHomeWithActiveAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with this action, the parent parcel(s) cannot start with 134.",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel(s) cannot start with 134.",
 				"SMAB-T2570: Validate that user is able to view error message");
 
 		//Step 10: Validate that user is not able to move to the next screen
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with this action, the parent parcel(s) cannot start with 134.",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel(s) cannot start with 134.",
 				"SMAB-T2570: Validate that user is not able to move to the next screen and still able to view error message");
 				
 		// Step 11: Update the Parent APN field and add an In Progress parcel
@@ -269,7 +273,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,apn1);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		//objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.reasonCodeTextBoxLabel));
-		softAssert.assertContains(objMappingPage.getErrorMessage(),"Please enter the required field : Reason Code",
+		softAssert.assertContains(objMappingPage.getErrorMessage(),"Please enter the required field(s) : Reason Code",
                 "SMAB-T2570: Validation that error message is displayed when reason code is blank");
 		
 		//Step 14: Validate that user is able to move to the next screen
