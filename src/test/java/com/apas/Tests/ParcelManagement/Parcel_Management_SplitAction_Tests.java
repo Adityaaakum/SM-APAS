@@ -74,7 +74,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		// Step 3: Creating Manual work item for the Parcel
 		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
-		//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
+		//Step 4:Clicking the details tab for the work item newly created and clicking on Related Action Link
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
 		String reasonCode = objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");

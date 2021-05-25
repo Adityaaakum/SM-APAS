@@ -84,9 +84,9 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//div[@role='combobox']//div[@aria-label='Items']/p")
 	public WebElement itemsListBox;
 
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='button'][@title='Select List View']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='button'][@title='Select List View'] | //div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@role='button'][@title='Select List View']")
 	public WebElement selectListViewButton;
-
+	
 	@FindBy(xpath = "//a[@role='option']//span[text()='All' or text()='All Active Parcels']")
 	public WebElement selectListViewOptionAll;
 
@@ -1082,7 +1082,7 @@ public class ApasGenericPage extends Page {
    }
 
    public ArrayList<String> fetchActiveAPN(int numberofAPNs) {
-       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT')  and (Not Name like '1%') Limit " + numberofAPNs;
+       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT')  and (Not Name like '1%') and (Not Name like '800%') Limit " + numberofAPNs;
        return objSalesforceAPI.select(queryForID).get("Name");
    }
    

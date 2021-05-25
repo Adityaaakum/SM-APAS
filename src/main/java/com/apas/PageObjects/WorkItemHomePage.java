@@ -46,7 +46,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String dropDownAction = "Action";
 
 	public String tabPoolAssignment = "Pool Assignments";
-
+	
+	
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
 	public WebElement successAlert;
 
@@ -247,6 +248,12 @@ public class WorkItemHomePage extends ApasGenericPage {
 	
 	@FindBy(xpath="//*[@name='Select Primary']")
 	public WebElement SelectPrimaryButton;
+	
+	@FindBy(xpath = "//input[@placeholder='Search Parcels...']")
+	public WebElement searchParcelsDropdown;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Linked Items']")
+	public WebElement linkedItemsTab;
 
 	public String editButton = "Edit";
 	
@@ -711,5 +718,40 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		
 		return SupervisorName;   
 	}	
+	
+	/**
+	 * Description: This method will create the Work Item Linkage
+	 * @param ParcelName: Name of the Parcel for which Work Item Linkage will be created
+	 * @throws Exception 
+	 */
+	public void createWorkItemLinkage(String ParcelName) throws Exception {
+		ReportLogger.INFO("Creating WI Linkage");
+		objApasGenericPage.createRecord();
+		searchAndSelectOptionFromDropDown(searchParcelsDropdown, ParcelName);
+		Click(getButtonWithText("Save"));
+		objPageObj.waitUntilPageisReady(driver);			
+		Thread.sleep(3000);
+	}
+	/**
+	 * Description: This method will delete the Work Item Linkage
+	 * @param ParcelName: Name of the Parcel for which Work Item Linkage will be deleted
+	 * @throws Exception 
+	 */
+	public void deleteWorkItemLinkage(String ParcelName) throws Exception {
+		ReportLogger.INFO("Deleting WI Linkage");
+		String xPathShowMoreButton = "//a[text()='"+ParcelName+"']//ancestor::tr//button[contains(@class,'x-small')]";
+		WebElement showMoreButton = waitForElementToBeClickable(10, xPathShowMoreButton);
+		
+		String xPathDeleteLinkUnderShowMore = "//span[text()='Delete']//..";
+		
+		if (showMoreButton != null){
+			javascriptClick(showMoreButton);
+			WebElement deleteLinkUnderShowMore = waitForElementToBeClickable(10, xPathDeleteLinkUnderShowMore);
+			javascriptClick(deleteLinkUnderShowMore);
+			Click(getButtonWithText("Ok"));
+			objPageObj.waitUntilPageisReady(driver);
+			Thread.sleep(3000);
+		}
+	}
 
 }

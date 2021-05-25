@@ -635,12 +635,17 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         WorkItemWorkflow_BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
 
         //Step5: Update 'Annual Factor Status' & WI status to Completed
-        query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings' OR Reference__c = 'BOE Valuation Factors'";
+        query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings'";
         objSalesforceAPI.update("Work_Item__c", query, "Status__c", "In Progress");
-        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
-
+        
         query = "SELECT id FROM BPP_Trend_Roll_Year__c WHERE Roll_Year__c = '" + rollYear + "'";
         objSalesforceAPI.update("BPP_Trend_Roll_Year__c", query, "Annual_Factor_Status__c", "Reviewed by Admin");
+        
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
+        
+        query = "select id from Work_Item__c where Reference__c = 'BOE Valuation Factors'";
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "In Progress");
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
 
         //Step6: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objBppTrendSetupPage.login(loginUser);
@@ -1018,61 +1023,6 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         softAssert.assertEquals(objBppTrendSetupPage.getFieldValueFromAPAS("Status","Information"), "Completed", "SMAB-T2179: Work item status should be completed even after editing the BPP Settings for the completed work item");
 
         objBppTrendSetupPage.logout();
-    }
-
-    /**
-     * This test case is to validate Work Item details after submitting it for approval
-     **/
-    @Test(description = "SMAB-T1838: Verify user is able to view Work Item details after submitting it for approval", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
-    public void WorkItemWorkflow_BPPTrends_WorkItemDetailsAfterSubmittedForApproval(String loginUser) throws Exception {
-
-        //Step1: Delete the existing data from system before importing files
-        objEfileImportPage.deleteImportedRecords("BPP Trend Factors", "BOE - Valuation Factors", rollYear);
-
-        //Step2: Delete the existing WI from system before importing files
-        String query = "select id from Work_Item__c where Reference__c = 'BOE Valuation Factors'";
-        objSalesforceAPI.delete("Work_Item__c", query);
-
-        //Step3: Generate Reminder Work Items
-        objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_EFILE);
-
-        //Step4: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objWorkItemHomePage.login(loginUser);
-
-        //Stpe5: Open the Work Item Home Page
-        objWorkItemHomePage.searchModule(modules.HOME);
-
-        //Step6: "Import" Reminder Work Item generation validation
-        String importBOEValuationRequestType = "BPP Trends - Import - BOE Valuation Factors";
-        String importWorkItem = objWorkItemHomePage.getWorkItemName(importBOEValuationRequestType,objWorkItemHomePage.TAB_IN_POOL);
-
-        //Step7: Accepting the work item and open it
-        objWorkItemHomePage.acceptWorkItem(importWorkItem);
-        objWorkItemHomePage.searchModule(modules.WORK_ITEM);
-        objWorkItemHomePage.globalSearchRecords(importWorkItem);
-
-        //Step 8: User submits the Work Item for Approval
-        ReportLogger.INFO("User submits the Work Item for Approval :: " + importWorkItem);
-        driver.navigate().refresh();
-        Thread.sleep(2000);
-        objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline, 10);
-        objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
-
-        softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline).replace("\n"," "),"stage complete Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
-
-        //Step 9: Validate the Work Item details after the Work Item is submitted for approval
-        ReportLogger.INFO("User validates the Work Item details after it is Submitted for Approval");
-        objWorkItemHomePage.openTab("Details");
-        objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
-
-        softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.wiStatusDetailsPage),"Completed","SMAB-T1838: Validate user is able to validate the value of 'Status' field");
-        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage, "Information"),"BPP Trends","SMAB-T1838: Validate user is able to validate the value of 'Type' field");
-        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiActionDetailsPage, "Information"),"Import","SMAB-T1838: Validate user is able to validate the value of 'Action' field");
-        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiWorkPoolDetailsPage, "Information"),"BPP Admin","SMAB-T1838: Validate user is able to validate the value of 'Work Pool' field");
-        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiPriorityDetailsPage, "Information"),"None","SMAB-T1838: Validate user is able to validate the value of 'Priority' field");
-        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiReferenceDetailsPage, "Information"),"BOE Valuation Factors","SMAB-T1838: Validate user is able to validate the value of 'Reference' field");
-
-        objWorkItemHomePage.logout();
     }
 
 }
