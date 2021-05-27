@@ -635,12 +635,17 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         WorkItemWorkflow_BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(loginUser,false);
 
         //Step5: Update 'Annual Factor Status' & WI status to Completed
-        query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings' OR Reference__c = 'BOE Valuation Factors'";
+        query = "select id from Work_Item__c where Reference__c = 'Annual Factor Settings'";
         objSalesforceAPI.update("Work_Item__c", query, "Status__c", "In Progress");
-        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
-
+        
         query = "SELECT id FROM BPP_Trend_Roll_Year__c WHERE Roll_Year__c = '" + rollYear + "'";
         objSalesforceAPI.update("BPP_Trend_Roll_Year__c", query, "Annual_Factor_Status__c", "Reviewed by Admin");
+        
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
+        
+        query = "select id from Work_Item__c where Reference__c = 'BOE Valuation Factors'";
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "In Progress");
+        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
 
         //Step6: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objBppTrendSetupPage.login(loginUser);
