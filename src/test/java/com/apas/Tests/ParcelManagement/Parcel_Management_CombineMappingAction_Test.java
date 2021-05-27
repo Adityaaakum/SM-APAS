@@ -1046,7 +1046,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String workItem2=responseWorkItem.get("Name").get(1);
 		
 		objMappingPage.searchModule(WORK_ITEM);
-		//objMappingPage.displayRecords("All");
+		objMappingPage.displayRecords("All");
 		Thread.sleep(1000); //Allows the newly generated WIs to appear in the system
 		objMappingPage.globalSearchRecords(workItem1);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
@@ -1110,7 +1110,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.login(RP_APPRAISER);
 		
 		objMappingPage.searchModule(WORK_ITEM);
-		//objMappingPage.displayRecords("All");
+		objMappingPage.displayRecords("All");
 		objMappingPage.globalSearchRecords(workItem1);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);

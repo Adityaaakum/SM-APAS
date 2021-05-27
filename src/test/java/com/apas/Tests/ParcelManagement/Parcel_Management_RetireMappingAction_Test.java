@@ -223,7 +223,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		  
 		//Step 24: Validate that the work item is automatically closed after the mapping action is completed
 		objMappingPage.searchModule(WORK_ITEM);
-		//objMappingPage.displayRecords("All");
+		objMappingPage.displayRecords("All");
 		objMappingPage.globalSearchRecords(workItem);
 		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Completed","SMAB-T2672:Verify the status of Work Item is automatically updated to 'Completed'");
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
@@ -335,8 +335,8 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		
 		//Step 8: Validate that the work item is automatically closed after the mapping action is completed
 		objMappingPage.searchModule(WORK_ITEM);
+		objMappingPage.displayRecords("All");
 		objMappingPage.globalSearchRecords(workItem);
-		Thread.sleep(1000);
 		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Completed","SMAB-T2671:Verify the status of Work Item is automatically updated to 'Completed'");
 		
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);

@@ -380,7 +380,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	 Below test case is used to validate 8 years of Real Property Settings
 	 **/
 	@Test(description = "SMAB-T583: Verify user is able to view at least last 8 years of Exemption Limits records", groups = {"Smoke","Regression","DisabledVeteran"}, dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class )
-	public void ADisabledVeteran_verify8YearsRPSL(String loginUser) throws Exception {
+	public void DisabledVeteran_verify8YearsRPSL(String loginUser) throws Exception {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (ExemptionSupportStaff)
 		objRPSLPage.login(loginUser);
