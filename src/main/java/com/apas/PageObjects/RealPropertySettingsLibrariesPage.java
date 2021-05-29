@@ -70,12 +70,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	@FindBy(xpath = "//*[@aria-hidden='false']//*[text()='DV Low Income Household Limit']//following-sibling::div//input")
 	public WebElement dvLowIncomeHouseholdLimitEditBox;
 	
-	/*@FindBy(xpath = "//label/span[text()='DV Annual Due Date']/../following-sibling::div/input")
-	public WebElement dvLowIncomeHouseholdLimitDatePicker;*/
 	public String dvLowIncomeHouseholdLimitDatePicker="DV Annual Due Date";
-	
-	/*@FindBy(xpath = "//label/span[text()='DV Annual Due Date 2']/../following-sibling::div/input")
-	public WebElement dvAnnualLowIncomeDueDate2DatePicker;*/
 	public String dvAnnualLowIncomeDueDate2DatePicker="DV Annual Due Date 2";
 	
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']")
@@ -170,8 +165,7 @@ public class RealPropertySettingsLibrariesPage extends ApasGenericPage{
 	public String saveRealPropertySettings() throws Exception {
 		ReportLogger.INFO("Clicking on Save Button");
 		Click(saveButton);
-		//waitForElementToBeVisible(successAlert,30);
-		locateElement("//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']",2);
+		locateElement("//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']",6);
 		return getElementText(successAlertText);
 	}
 	
