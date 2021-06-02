@@ -401,7 +401,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String specialSymbolAPN = apn1.substring(0, 9).concat(".%");
 		
 		//Fetch TRA value from database and enter it in Parcels (to show TRA warning on the screen along with ownership error message)
-		String queryTRAValue = "SELECT Name,Id FROM TRA__c WHERE limit 2";
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 				
 		salesforceAPI.update("Parcel__c", responseAPNDetails1.get("Id").get(0), "TRA__c",responseTRADetails.get("Id").get(0));
