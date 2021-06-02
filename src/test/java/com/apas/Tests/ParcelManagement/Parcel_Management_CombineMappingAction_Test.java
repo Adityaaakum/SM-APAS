@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -66,12 +67,14 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	    HashMap<String, ArrayList<String>> inProgressAPN = objMappingPage.getInProgressApnHavingNoOwner();
 	    String inProgressAPNValue = inProgressAPN.get("Name").get(0);
 	   
-		//Getting parcels that are Active with no owners
-	    HashMap<String, ArrayList<String>> activeAPN = objMappingPage.getActiveApnWithNoOwner(2);
+		//Getting parcels (Name and ID) that are Active with no owners
+	    HashMap<String, ArrayList<String>> activeAPN = objMappingPage.getActiveApnWithNoOwner(3);
 	    String apn1 = activeAPN.get("Name").get(0);
 	    String apnId1 = activeAPN.get("Id").get(0);
 		String apn2 = activeAPN.get("Name").get(1);
 		String apnId2 = activeAPN.get("Id").get(1);
+		String apn3 = activeAPN.get("Name").get(2);
+		String apnId3 = activeAPN.get("Id").get(2);
 		
 		String queryMobileHomeAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Name like '134%' and Status__c = 'Active' Limit 1";
 		HashMap<String, ArrayList<String>> responseDetails = salesforceAPI.select(queryMobileHomeAPNValue);
@@ -100,13 +103,13 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String activeParcelWithoutHyphen=apn2.replace("-","");
 		String accessorMapParcel = apn1.replace("-", "").substring(0, 5);
 		String concatenateActiveAPN = apn1+","+apn2;
-		String concatenateRetireWithActiveAPN = apn1+","+retiredAPNValue;
-		String concatenateInProgressWithActiveAPN = inProgressAPNValue+","+apn1;
-		String concatenateMobileHomeWithActiveAPN = mobileHomeApn+","+apn1;
+		String concatenateRetireWithActiveAPN = apn3+","+retiredAPNValue;
+		String concatenateInProgressWithActiveAPN = inProgressAPNValue+","+apn3;
+		String concatenateMobileHomeWithActiveAPN = mobileHomeApn+","+apn3;
 		String legalDescriptionValue="Legal PM 85/25-260";
 		
 		//Fetch TRA value from database to enter in APN to test validations
-		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 3";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 		
 		//Enter values in the Parcels
@@ -114,8 +117,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 		salesforceAPI.update("Parcel__c", apnId1, jsonParcelObject);
 		salesforceAPI.update("Parcel__c", apnId2, "TRA__c", responseTRADetails.get("Id").get(1));
-		salesforceAPI.update("Parcel__c", retiredAPN.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(1));
-		salesforceAPI.update("Parcel__c", inProgressAPN.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c", apnId3, "TRA__c", responseTRADetails.get("Id").get(2));
+		salesforceAPI.update("Parcel__c", retiredAPN.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(2));
+		salesforceAPI.update("Parcel__c", inProgressAPN.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(2));
+		salesforceAPI.update("Parcel__c", responseDetails.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(2));
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -222,14 +227,14 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateInProgressWithActiveAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2356: Validate that user is able to view error message for Inactive parcel");
 
 		//Step 12: Validate that user is not able to move to the next screen
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2356: Validate that user is not able to move to the next screen and still able to view error message for Inactive parcel");
 				
 		// Step 13: Add parcels in Parent APN field with different TRA records
@@ -396,7 +401,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String specialSymbolAPN = apn1.substring(0, 9).concat(".%");
 		
 		//Fetch TRA value from database and enter it in Parcels (to show TRA warning on the screen along with ownership error message)
-		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c WHERE limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 				
 		salesforceAPI.update("Parcel__c", responseAPNDetails1.get("Id").get(0), "TRA__c",responseTRADetails.get("Id").get(0));
@@ -647,7 +652,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String nextGeneratedForSmallestParcel = objMappingPage.generateNextAvailableAPN(lastParcel);
 		
 		//Setup a parcel which is not the next available one in the system to validate the warning message
-		String parcelForWarningMessage = combineMapBookAndPageForParcel.concat("900");
+		String parcelForWarningMessage = apn1.substring(0, 8).concat("900");
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -657,7 +662,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		Map<String, String> hashMapCombineMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformCombineMappingAction");
 
-
+		Actions actions = new Actions(driver);
+		
 		// Step1: Login to the APAS application
 		objMappingPage.login(loginUser);
 
@@ -697,33 +703,39 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
                 "SMAB-T2568: Validation that default value of Interim Parcel is 0");
         
         objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
-        objMappingPage.Click(objMappingPage.helpIconFirstNonCondoParcelNumber);
+        actions.moveToElement(objMappingPage.helpIconFirstNonCondoParcelNumber).perform();
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use system generated APN, leave as blank.",
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for First non-Condo Parcel text box");
         
-        objMappingPage.Click(objMappingPage.helpIconLegalDescription);
+        actions.moveToElement(objMappingPage.helpIconLegalDescription).perform();
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent legal description, leave as blank.",
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for legal description");
 
-        objMappingPage.Click(objMappingPage.helpIconSitus);
+        actions.moveToElement(objMappingPage.helpIconSitus).perform();
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent situs, leave as blank.",
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for Situs text box");
         
         //Enter First Non-Condo parcel which is not the next available parcel in the system
-        objParcelsPage.Click(objParcelsPage.getButtonWithText(objMappingPage.closeButton));
-        objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
         objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,parcelForWarningMessage);
-     
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
-		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
 
-		// Step 6: Validate the warning message and Fetch the APN generated
+		//Validate the warning message 
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is " +parcelForWarningMessage),
 				"SMAB-T2568: Validate that User is able to view warning message when suggested First Non-Condo parcel is not the next available parcel in the system");
-
+		
+		ReportLogger.INFO("Click PREVIOUS button");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"");
+		ReportLogger.INFO("Click NEXT button");
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
+		
+		// Step 6: Fetch the APN generated
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		String nextGeneratedAPN1 = gridDataHashMap.get("APN").get(0);
 		softAssert.assertEquals(nextGeneratedAPN1,nextGeneratedForSmallestParcel,
