@@ -277,7 +277,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel,"");
         objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,apn1);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		//objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.reasonCodeTextBoxLabel));
 		softAssert.assertContains(objMappingPage.getErrorMessage(),"Please enter the required field(s) : Reason Code",
                 "SMAB-T2570: Validation that error message is displayed when reason code is blank");
 		

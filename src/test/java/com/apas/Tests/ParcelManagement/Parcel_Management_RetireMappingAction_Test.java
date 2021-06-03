@@ -230,10 +230,10 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		/**Post implementation of SMAB-9063, now, WI will not get closed automatically after the Retire action is completed.
 		   Hence, commenting the below code for now**/
 		
-		/**softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Completed","SMAB-T2672:Verify the status of Work Item is automatically updated to 'Completed'");
-		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);**/
+		/**softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Completed","SMAB-T2672:Verify the status of Work Item is automatically updated to 'Completed'");**/
 		
 		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		softAssert.assertEquals(objMappingPage.getLinkedParcelInWorkItem("0"), apn1,
 				"SMAB-T2672: Validate that parent parcel is displayed in the Linked Items of WI");
 		
@@ -281,14 +281,6 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		Map<String, String> hashMapRetireeMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformRetireAction");
 		
-		//Fetch PUC value from database and enter it in Parcels 		
-		//String queryPUCValue = "SELECT Id, Name FROM PUC_Code__c WHERE (Not Name like 'In Progress%') limit 3";
-		//HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select(queryPUCValue);
-				
-		//salesforceAPI.update("Parcel__c", responseAPNDetails1.get("Id").get(0), "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
-		//salesforceAPI.update("Parcel__c", responseAPNDetails2.get("Id").get(0), "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(1));
-		//salesforceAPI.update("Parcel__c", responseAPNDetails3.get("Id").get(0), "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(2));
-		
 		// Step1: Login to the APAS application
 		objMappingPage.login(loginUser);
 
@@ -330,26 +322,20 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		driver.switchTo().window(parentWindow);
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn1);
-		//softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("PUC"),responsePUCDetails.get("Id").get(0),
-		//		"SMAB-T2456 : Verify PUC of the "+apn1+" is updated after Retire action is completed");
 		softAssert.assertTrue(!objMappingPage.getFieldValueFromAPAS("PUC").equals("99-RETIRED PARCEL"),
 				"SMAB-T2456 : Verify PUC of the "+apn1+" is not updated after Retire action is completed");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"Retired",
 				"SMAB-T2456 : Verify Status of the "+apn1+" is updated after Retire action is completed");
 		  
 		objMappingPage.globalSearchRecords(apn2);
-		//softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("PUC"),responsePUCDetails.get("Id").get(1),
-		//		"SMAB-T2456 : Verify PUC of the "+apn2+" is updated after Retire action is completed");
 		softAssert.assertTrue(!objMappingPage.getFieldValueFromAPAS("PUC").equals("99-RETIRED PARCEL"),
-				"SMAB-T2456 : Verify PUC of the "+apn1+" is not updated after Retire action is completed");
+				"SMAB-T2456 : Verify PUC of the "+apn2+" is not updated after Retire action is completed");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"Retired",
 				"SMAB-T2456 : Verify Status of the "+apn2+" is updated after Retire action is completed");
 		
 		objMappingPage.globalSearchRecords(apn3);
-		//softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("PUC"),responsePUCDetails.get("Id").get(2),
-		//		"SMAB-T2456 : Verify PUC of the "+apn3+" is updated after Retire action is completed");
 		softAssert.assertTrue(!objMappingPage.getFieldValueFromAPAS("PUC").equals("99-RETIRED PARCEL"),
-				"SMAB-T2456 : Verify PUC of the "+apn1+" is not updated after Retire action is completed");
+				"SMAB-T2456 : Verify PUC of the "+apn3+" is not updated after Retire action is completed");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"Retired",
 				"SMAB-T2456 : Verify Status of the "+apn3+" is updated after Retire action is completed");
 		
@@ -365,8 +351,9 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		
 		/**softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Completed","SMAB-T2671:Verify the status of Work Item is automatically updated to 'Completed'");**/
 		
-		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
 				"SMAB-T2671: Validate that first Parent APN is displayed in the linked item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
