@@ -134,7 +134,7 @@ public class ParcelsPage extends ApasGenericPage {
 		selectOptionFromDropDown(workItemTypeDropDownComponentsActionsModal, workItemType);
 		selectOptionFromDropDown(actionsDropDownLabel, actions);
 		
-		if(waitForElementToBeVisible(30, getWebElementWithLabel(auditTrailRecordDropDownComponentsActionsModal))) selectOptionFromDropDown(auditTrailRecordDropDownComponentsActionsModal, auditTrail);
+		if(waitForElementToBeVisible(6, getWebElementWithLabel(auditTrailRecordDropDownComponentsActionsModal))) selectOptionFromDropDown(auditTrailRecordDropDownComponentsActionsModal, auditTrail);
 		if (reference != null)enter(referenceInputTextBoxComponentActionModal, reference);
 		enter(descriptionInputTextBoxComponentActionModal, description);
 		//selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);
