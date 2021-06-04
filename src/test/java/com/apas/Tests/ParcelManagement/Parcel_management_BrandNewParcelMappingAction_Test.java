@@ -208,7 +208,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		//Step 13 :Clicking generate parcel button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		
-		//Step 14: Validating that waring message
+		//Step 14: Validating the warning message
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
 				"SMAB-T2524: Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
 
@@ -266,14 +266,14 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapBrandNewParcelMappingData.get("Action"));
 
 			//Step 5: editing situs for child parcel and filling all fields
-			objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabel_1));
+			objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabelForBrandNewParcel));
 
 			softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.editSitusLabelSitusModal),
 					"SMAB-T2663: Validation that Edit Situs label is displayed as heading of situs modal window in first screen");
 			softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.situsInformationLabelSitusModal),
 					"SMAB-T2663: Validation that  Situs Information label is displayed in  situs modal window in first screen");
 			objMappingPage.editSitusModalWindowFirstScreen(hashMapBrandNewParcelMappingData);
-			softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabel_1),"value"),childprimarySitus,
+			softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabelForBrandNewParcel),"value"),childprimarySitus,
 					"SMAB-T2663: Validation that User is able to update a Situs for child parcel from the Parcel mapping screen");
 
 			//Step 6: entering data in form for Brand New Parcel mapping
@@ -539,15 +539,14 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapBrandNewParcelMappingData.get("Action"));
 
 		//Step 5: editing situs for child parcel and filling all fields
-		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabel_1));
-		//Thread.sleep(5000);
+		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabelForBrandNewParcel));
 
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.editSitusLabelSitusModal),
 				"SMAB-T2663: Validation that Edit Situs label is displayed as heading of situs modal window in first screen");
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.situsInformationLabelSitusModal),
 				"SMAB-T2663: Validation that  Situs Information label is displayed in  situs modal window in first screen");
 		objMappingPage.editSitusModalWindowFirstScreen(hashMapBrandNewParcelMappingData);
-		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabel_1),"value"),childprimarySitus,
+		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabelForBrandNewParcel),"value"),childprimarySitus,
 				"SMAB-T2663: Validation that User is able to update a Situs for child parcel from the Parcel mapping screen");
 
 		//Step 6: entering data in form for Brand New Parcel mapping
