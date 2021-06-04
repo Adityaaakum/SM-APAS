@@ -641,8 +641,6 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         query = "SELECT id FROM BPP_Trend_Roll_Year__c WHERE Roll_Year__c = '" + rollYear + "'";
         objSalesforceAPI.update("BPP_Trend_Roll_Year__c", query, "Annual_Factor_Status__c", "Reviewed by Admin");
         
-        objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
-        
         query = "select id from Work_Item__c where Reference__c = 'BOE Valuation Factors'";
         objSalesforceAPI.update("Work_Item__c", query, "Status__c", "In Progress");
         objSalesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
@@ -732,7 +730,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objSalesforceAPI.delete("Work_Item__c",query);
 
         //Step2: Update CP Factor for 2020
-        String queryToFetchCPIFactorId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '2020'";
+        String queryToFetchCPIFactorId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '2021'";
         HashMap<String, ArrayList<String>> cpiFactorId = objSalesforceAPI.select(queryToFetchCPIFactorId);
         String queryToUpdateCPIFactor = "SELECT Id FROM CPI_Factor__c Where Roll_Year__c = '"+cpiFactorId.get("Id").get(0)+"'";
         objSalesforceAPI.update("CPI_Factor__c",queryToUpdateCPIFactor,"CPI_Factor__c","1.01");
@@ -762,6 +760,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         //Step6: "Perform Calculations" Work Item generation validation
         String performCalculationsRequestType = "BPP Trends - Perform Calculations - BPP Composite Factors";
         driver.navigate().refresh();
+        Thread.sleep(10000);
         String importWorkItem = objWorkItemHomePage.getWorkItemName(performCalculationsRequestType,objWorkItemHomePage.TAB_IN_POOL);
 
         //Step7: Accepting the work item and opening the link under 'Action' Column
