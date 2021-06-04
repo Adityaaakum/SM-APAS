@@ -547,7 +547,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         Map<String, String> hashMapManyToManyActionValidMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
                 "DataToPerformManyToManyMappingActionForOutputValidations");
         objMappingPage.fillMappingActionForm(hashMapManyToManyActionValidMappingData);
-        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelsButton));
+        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
         //Step 10: Verify the success message after parcels are generated
         softAssert.assertContains(objMappingPage.getSuccessMessage(),"Parcels have been successfully created. Please Review Spatial Information",
@@ -776,7 +776,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         Map<String, String> hashMapManyToManyActionValidMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
                 "DataToPerformManyToManyMappingActionForOutputValidations");
         objMappingPage.fillMappingActionForm(hashMapManyToManyActionValidMappingData);
-        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelsButton));
+        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
         //Step 10: Verify the success message after parcels are generated
         softAssert.assertContains(objMappingPage.getSuccessMessage(),"Parcels have been successfully created. Please Review Spatial Information",
@@ -991,7 +991,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 					"SMAB-T2660: Validation that System populates primary situs on second screen for child parcel number "+i+1+" with the situs value that was added in first screen");
 
 		//Step 9: Click generate Parcel Button
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelsButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		//Step 10: Validation that primary situs on last screen screen is getting populated from situs entered in first screen
