@@ -85,15 +85,11 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Next']")
 	public WebElement ownershipNextButton;
 	
-	
-	
-	
-	
     public String SubmittedForApprovalButton="Submit for Approval";
-	
     public String WithdrawButton="Withdraw";
-	
     public String ApprovalButton="Approve";
+    public String auditTrailElementPath="//label[text() = 'Is this Audit Trail Record linked to any Existing Audit Trail Record?']";
+    
 	/**
 	 * Description: This method will open the parcel with the APN passed in the
 	 * parameter
@@ -134,7 +130,8 @@ public class ParcelsPage extends ApasGenericPage {
 		selectOptionFromDropDown(workItemTypeDropDownComponentsActionsModal, workItemType);
 		selectOptionFromDropDown(actionsDropDownLabel, actions);
 		
-		if(waitForElementToBeVisible(6, getWebElementWithLabel(auditTrailRecordDropDownComponentsActionsModal))) selectOptionFromDropDown(auditTrailRecordDropDownComponentsActionsModal, auditTrail);
+		if(verifyElementExists(auditTrailElementPath)) selectOptionFromDropDown(auditTrailRecordDropDownComponentsActionsModal, auditTrail);
+		
 		if (reference != null)enter(referenceInputTextBoxComponentActionModal, reference);
 		enter(descriptionInputTextBoxComponentActionModal, description);
 		//selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);
