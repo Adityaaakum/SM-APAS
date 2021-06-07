@@ -121,7 +121,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 						"SMAB-T2754,SMAB-T2689: Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
 
 		//Step 10 :Clicking generate parcel button
-	    objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelsButton));
+	    objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 	    softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Please Review Spatial Information",
 				"SMAB-T2688: Validate that User is able to perform BOE Activation action for one retired parcel");
 		
@@ -192,7 +192,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
 						"Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
 		//Step 10: generate  new child parcels 
-        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelsButton));
+        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
         //Step 11: Verify the success message after parcels are generated
         softAssert.assertContains(objMappingPage.getSuccessMessage(),"Please Review Spatial Information",

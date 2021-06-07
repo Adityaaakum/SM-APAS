@@ -40,7 +40,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String priorityDropDownComponentsActionsModal = "Priority";
 	public String workItemRoutingDropDownComponentsActionsModal = "Work Item Routing";
 	public String workItemOwnerSearchBox = "Work Item Owner (if someone other than you)";
-
+	public String auditTrailRecordDropDownComponentsActionsModal = "Is this Audit Trail Record linked to any Existing Audit Trail Record?";
 	
 	public String editApnField ="APN";	
 	public String LongLegalDescriptionLabel="Long Legal Description"; 
@@ -85,15 +85,11 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Next']")
 	public WebElement ownershipNextButton;
 	
-	
-	
-	
-	
     public String SubmittedForApprovalButton="Submit for Approval";
-	
     public String WithdrawButton="Withdraw";
-	
     public String ApprovalButton="Approve";
+    public String auditTrailElementPath="//label[text() = 'Is this Audit Trail Record linked to any Existing Audit Trail Record?']";
+    
 	/**
 	 * Description: This method will open the parcel with the APN passed in the
 	 * parameter
@@ -114,6 +110,7 @@ public class ParcelsPage extends ApasGenericPage {
 		String timeStamp = String.valueOf(System.currentTimeMillis());
 		String workItemType = dataMap.get("Work Item Type");
 		String actions = dataMap.get("Actions");
+		String auditTrail = dataMap.get("Audit Trail");
 		String reference = dataMap.get("Reference");
 		String description = dataMap.get("Description") + "_" + timeStamp;
 		String priority = dataMap.get("Priority");
@@ -132,7 +129,9 @@ public class ParcelsPage extends ApasGenericPage {
 		
 		selectOptionFromDropDown(workItemTypeDropDownComponentsActionsModal, workItemType);
 		selectOptionFromDropDown(actionsDropDownLabel, actions);
-
+		
+		if(verifyElementExists(auditTrailElementPath)) selectOptionFromDropDown(auditTrailRecordDropDownComponentsActionsModal, auditTrail);
+		
 		if (reference != null)enter(referenceInputTextBoxComponentActionModal, reference);
 		enter(descriptionInputTextBoxComponentActionModal, description);
 		//selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);

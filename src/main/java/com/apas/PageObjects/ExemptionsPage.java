@@ -505,6 +505,7 @@ public class ExemptionsPage extends ApasGenericPage {
         if (dataMap.containsKey("End Date Of Rating")) enter(endDateOfRating, dataMap.get("End Date Of Rating"));
         if (dataMap.containsKey("End Rating Reason"))
             selectOptionFromDropDown(endRatingReason, dataMap.get("End Rating Reason"));
+        Thread.sleep(1000);
     }
 
     /**
