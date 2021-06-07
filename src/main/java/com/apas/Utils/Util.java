@@ -1,7 +1,7 @@
 package com.apas.Utils;
 
 import java.io.*;
-
+import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -353,5 +353,15 @@ public class Util {
 
 
 	}
+		
+	public Object getValueOf(Object clazz, String lookingForValue) throws Exception {
+		    Field field = clazz.getClass().getField(lookingForValue);
+		    Class clazzType = field.getType();
+		    if (clazzType.toString().equals("double"))
+		      return field.getDouble(clazz);
+		    else if (clazzType.toString().equals("int"))
+		      return field.getInt(clazz);		    
+		    return field.get(clazz);
+		  }	
 
 }

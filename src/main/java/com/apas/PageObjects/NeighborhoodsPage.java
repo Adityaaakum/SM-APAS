@@ -18,7 +18,7 @@ public class NeighborhoodsPage extends ApasGenericPage {
         objPageObj=new Page(driver);
     }
 
-    public String districtNeighborhoodCodeEditBox = "District / Neighborhood Code";
+    public String districtNeighborhoodCodeEditBox = "District / Neighborhood";
     public String neighborhoodCodeEditBox="Neighborhood Code";
     public String primaryAppraiserDropDown="Primary Appraiser";
     public String districtDropDown="District";

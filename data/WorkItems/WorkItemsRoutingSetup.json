@@ -1,13 +1,13 @@
 {
   "DataToCreateNeighborhood": {
-    "District / Neighborhood Code": "SMAB6150",
+    "District / Neighborhood Code": "06/01",
     "Neighborhood Code": "01",
     "Neighborhood Description": "Test",
     "Primary Appraiser": "rpbusiness adminAUT",
     "District": "06"
   },
   "DataToCreateDuplicateNeighborhood": {
-    "District / Neighborhood Code": "SMAB6150",
+    "District / Neighborhood Code": "06/02",
     "Neighborhood Code": "02",
     "Neighborhood Description": "Test",
     "Primary Appraiser": "rpbusiness adminAUT",
