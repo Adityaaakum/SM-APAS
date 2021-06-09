@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +38,8 @@ public class BppTrendPage extends ApasGenericPage {
 	Util objUtil;
 	Page objPage;
 	SalesforceAPI objSFAPI;
-    public Map<String, String> trendSettingsOriginalValues;
-    Map<String, Integer> trendSettingRowNumbers;
+	public Map<String, String> trendSettingsOriginalValues;
+	Map<String, Integer> trendSettingRowNumbers;
 	String xpathCellData = null;
 
 	public BppTrendPage(RemoteWebDriver driver) {
@@ -362,7 +363,7 @@ public class BppTrendPage extends ApasGenericPage {
 	 * @throws: Exception
 	 */
 	public void clickOnTableOnBppTrendPage(String tableName) throws Exception {
-//		Thread.sleep(2000);
+		//		Thread.sleep(2000);
 		String xpath = "//a[text() = '"+ tableName +"']";
 
 		if (verifyElementExists(xpath)){
@@ -427,20 +428,7 @@ public class BppTrendPage extends ApasGenericPage {
 	 * @param tableName: Name of the table for which data needs to be updated
 	 * @throws: Exception
 	 */
-	public void editCellDataInGridForGivenTable(String tableName, Object data) throws Exception {
-		String xpathEditTxtBox = "//div//input[@name = 'dt-inline-edit-text']";
-		WebElement editTxtBox;
-		editTxtBox = locateElement(xpathEditTxtBox, 30);
-		waitForElementToBeClickable(15, editTxtBox);
-		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", editTxtBox);
-		editTxtBox.clear();
-		WebElement editBtn = locateEditButtonInFocusedCell();
-		Click(editBtn);
-		Thread.sleep(1000);
-		editTxtBox = locateElement(xpathEditTxtBox, 30);
-		editTxtBox.sendKeys(String.valueOf(data));
-		Thread.sleep(1000);
-
+	public void editCellDataInGridForGivenTable(String tableName, Object data,HashMap table_dataColumnName) throws Exception {
 		String tagAppend;
 		if(tableName.equalsIgnoreCase("BPP Prop 13 Factors")) {
 			tagAppend = "td";
@@ -448,7 +436,36 @@ public class BppTrendPage extends ApasGenericPage {
 			tagAppend = "th";
 		}
 
-		WebElement year = locateElement("(//lightning-tab[@data-id = '"+ tableName +"']//"+ tagAppend +"[@data-label = 'Year Acquired'])[1]", 20);
+		String xpathEditTxtBox = "//div//input[@name = 'dt-inline-edit-text']";
+		WebElement editTxtBox;
+		editTxtBox = locateElement(xpathEditTxtBox, 30);
+		waitForElementToBeClickable(15, editTxtBox);
+		scrollToElement(editTxtBox);
+		((JavascriptExecutor)driver).executeScript("arguments[0].style.border='3px solid green'", editTxtBox);
+		editTxtBox.clear();
+		WebElement editBtn = locateEditButtonInFocusedCell();
+
+		if(editBtn ==null )
+		{  tagAppend = "td";
+			String columnName=(String)table_dataColumnName.get(tableName);
+			editTxtBox=locateElement("//lightning-tab[@data-id = '"+ tableName +"']//*[@data-label = '"+columnName+"'][1]",20);
+			Click(editTxtBox);
+
+
+		}
+		else 
+		{Click(editBtn);
+
+		Thread.sleep(6000);
+		editTxtBox = locateElement(xpathEditTxtBox, 30);
+		}
+		
+		editTxtBox.sendKeys(String.valueOf(data));
+		Thread.sleep(1000);
+
+
+
+		WebElement year = locateElement("(//lightning-tab[@data-id = '"+ tableName +"']//*[@data-label = 'Year Acquired'])[1]", 20);
 		Click(year);
 	}
 
@@ -471,7 +488,7 @@ public class BppTrendPage extends ApasGenericPage {
 		//Waiting for the page spinner to become visible and if visible then wait for it to go invisible
 		String xpath = "//lightning-spinner//span[text() = 'Loading']";
 		if(verifyElementVisible(xpathSpinner))
-		waitForElementToDisappear(xpathSpinner, 50);
+			waitForElementToDisappear(xpathSpinner, 50);
 
 		//Locating the message displayed above the table once the loader / spinner becomes invisible
 		xpath = "//lightning-tab[@data-id = '"+ tableName +"']//div[@class = 'hightlight-tab-message']";
@@ -631,99 +648,99 @@ public class BppTrendPage extends ApasGenericPage {
 	public Map<String, List<Object>> retrieveDataFromExcelForGivenTable(String filePath, String sheetName) throws Exception {
 		String sheetNameForExcel = "";
 		switch (sheetName) {
-        case "Commercial Composite Factors":
-        	sheetNameForExcel = "Commercial Composite";
-            break;
-        case "Industrial Composite Factors":
-        	sheetNameForExcel = "Industrial Composite";
-            break;
-        case "Agricultural Composite Factors":
-        	sheetNameForExcel = "Agricultural Composite";
-            break;
-        case "Construction Composite Factors":
-        	sheetNameForExcel = "Construction Composite";
-            break;
-        case "Agricultural Mobile Equipment Composite Factors":
-        	sheetNameForExcel = "Ag Mobile Equip Composite";
-            break;
-        case "Construction Mobile Equipment Composite Factors":
-        	sheetNameForExcel = "Construction Mobile Composite";
-            break;
-        case "BPP Prop 13 Factors":
-        	sheetNameForExcel = "2019 CPI";
-            break;
-        }
+		case "Commercial Composite Factors":
+			sheetNameForExcel = "Commercial Composite";
+			break;
+		case "Industrial Composite Factors":
+			sheetNameForExcel = "Industrial Composite";
+			break;
+		case "Agricultural Composite Factors":
+			sheetNameForExcel = "Agricultural Composite";
+			break;
+		case "Construction Composite Factors":
+			sheetNameForExcel = "Construction Composite";
+			break;
+		case "Agricultural Mobile Equipment Composite Factors":
+			sheetNameForExcel = "Ag Mobile Equip Composite";
+			break;
+		case "Construction Mobile Equipment Composite Factors":
+			sheetNameForExcel = "Construction Mobile Composite";
+			break;
+		case "BPP Prop 13 Factors":
+			sheetNameForExcel = "2019 CPI";
+			break;
+		}
 
 		Map<String, List<Object>> dataMap = new LinkedHashMap<String, List<Object>>();
 		FileInputStream file = null;
 		XSSFWorkbook workBook = null;
 		try {
-            file = new FileInputStream(new File(filePath));
-            workBook = new XSSFWorkbook(file);
-            XSSFSheet sheet = workBook.getSheet(sheetNameForExcel);
-            DataFormatter dataFormatter = new DataFormatter();
+			file = new FileInputStream(new File(filePath));
+			workBook = new XSSFWorkbook(file);
+			XSSFSheet sheet = workBook.getSheet(sheetNameForExcel);
+			DataFormatter dataFormatter = new DataFormatter();
 
-            int startingRow;
-            Row headerRow;
-            if(sheetNameForExcel.equalsIgnoreCase("Ag Mobile Equip Composite")) {
-            	startingRow = 2;
-            	headerRow = sheet.getRow(1);
-            } else {
-            	startingRow = 1;
-            	headerRow = sheet.getRow(0);
-            }
+			int startingRow;
+			Row headerRow;
+			if(sheetNameForExcel.equalsIgnoreCase("Ag Mobile Equip Composite")) {
+				startingRow = 2;
+				headerRow = sheet.getRow(1);
+			} else {
+				startingRow = 1;
+				headerRow = sheet.getRow(0);
+			}
 
-            int totalCells = headerRow.getLastCellNum();
-            int cellIndexToSkip = -1;
-            int cellIndexForYearAcq = 0;
-            for(int i = 0; i < totalCells; i++) {
-            	String cellValue = dataFormatter.formatCellValue(headerRow.getCell(i));
-            	if(cellValue.toUpperCase().trim().equals("AGE") || cellValue.toUpperCase().contains("ACQ. DURING")) {
-            		cellIndexToSkip = i;
-            	}
-            	if(cellValue.toUpperCase().contains("YEAR ACQUIRED") || cellValue.toUpperCase().contains("YEAR") || cellValue.toUpperCase().contains("YEAR ACQ.")) {
-            		cellIndexForYearAcq = i;
-            	}
-            }
+			int totalCells = headerRow.getLastCellNum();
+			int cellIndexToSkip = -1;
+			int cellIndexForYearAcq = 0;
+			for(int i = 0; i < totalCells; i++) {
+				String cellValue = dataFormatter.formatCellValue(headerRow.getCell(i));
+				if(cellValue.toUpperCase().trim().equals("AGE") || cellValue.toUpperCase().contains("ACQ. DURING")) {
+					cellIndexToSkip = i;
+				}
+				if(cellValue.toUpperCase().contains("YEAR ACQUIRED") || cellValue.toUpperCase().contains("YEAR") || cellValue.toUpperCase().contains("YEAR ACQ.")) {
+					cellIndexForYearAcq = i;
+				}
+			}
 
-            int rowCount = sheet.getPhysicalNumberOfRows();
-            for(int i = startingRow; i < rowCount; i++) {
-                Row currentRow = sheet.getRow(i);
-                List<Object> currentRowData = new ArrayList<>();
-                String yearAcquired = null;
+			int rowCount = sheet.getPhysicalNumberOfRows();
+			for(int i = startingRow; i < rowCount; i++) {
+				Row currentRow = sheet.getRow(i);
+				List<Object> currentRowData = new ArrayList<>();
+				String yearAcquired = null;
 
-                FormulaEvaluator evaluator = workBook.getCreationHelper().createFormulaEvaluator();
-                for(int j = 0; j < totalCells; j++) {
-                	if(j != cellIndexToSkip) {
-                		Cell cell = currentRow.getCell(j);
-                		CellValue cellValue = evaluator.evaluate(cell);
-                		Object strValue = cellValue.getNumberValue();
+				FormulaEvaluator evaluator = workBook.getCreationHelper().createFormulaEvaluator();
+				for(int j = 0; j < totalCells; j++) {
+					if(j != cellIndexToSkip) {
+						Cell cell = currentRow.getCell(j);
+						CellValue cellValue = evaluator.evaluate(cell);
+						Object strValue = cellValue.getNumberValue();
 
-                		switch (cellValue.getCellType()) {
-                		    case Cell.CELL_TYPE_STRING:
-                		        strValue = cellValue.getStringValue();
-                		        break;
-                		    case Cell.CELL_TYPE_NUMERIC:
-                		        strValue = cellValue.getNumberValue();
-                		        break;
-                		}
+						switch (cellValue.getCellType()) {
+						case Cell.CELL_TYPE_STRING:
+							strValue = cellValue.getStringValue();
+							break;
+						case Cell.CELL_TYPE_NUMERIC:
+							strValue = cellValue.getNumberValue();
+							break;
+						}
 
-                		if(j != cellIndexForYearAcq) {
-                			int intValue = (int) Math.round((double)strValue);
-                			currentRowData.add(intValue);
-                		} else {
-                			yearAcquired = strValue.toString().substring(0, strValue.toString().indexOf("."));
-                		}
-                	}
-                }
-                dataMap.put(yearAcquired, currentRowData);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-        	workBook.close();
-        	file.close();
-        }
+						if(j != cellIndexForYearAcq) {
+							int intValue = (int) Math.round((double)strValue);
+							currentRowData.add(intValue);
+						} else {
+							yearAcquired = strValue.toString().substring(0, strValue.toString().indexOf("."));
+						}
+					}
+				}
+				dataMap.put(yearAcquired, currentRowData);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			workBook.close();
+			file.close();
+		}
 		return dataMap;
 	}
 
@@ -1114,12 +1131,12 @@ public class BppTrendPage extends ApasGenericPage {
 	}
 
 
-//	public void deleteDuplicateCPI(String rollYear) {
-//		String queryForRollYearId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '"+rollYear+"'";
-//		HashMap<String, ArrayList<String>> rollYearId = objSFAPI.select(queryForRollYearId);
-//		String queryForDuplicateCPIFactor = "SELECT Id FROM CPI_Factor__c  Where Roll_Year__c ='"+rollYearId.get("Id").get(0)+"'  AND Status__c<>'Approved'";
-//		objSFAPI.delete("CPI_Factor__c", queryForDuplicateCPIFactor);
-//	}
+	//	public void deleteDuplicateCPI(String rollYear) {
+	//		String queryForRollYearId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '"+rollYear+"'";
+	//		HashMap<String, ArrayList<String>> rollYearId = objSFAPI.select(queryForRollYearId);
+	//		String queryForDuplicateCPIFactor = "SELECT Id FROM CPI_Factor__c  Where Roll_Year__c ='"+rollYearId.get("Id").get(0)+"'  AND Status__c<>'Approved'";
+	//		objSFAPI.delete("CPI_Factor__c", queryForDuplicateCPIFactor);
+	//	}
 
 	/**
 	 * Description: Searches module BPP Trends module and Select the Roll Year passed as an argument
@@ -1134,7 +1151,7 @@ public class BppTrendPage extends ApasGenericPage {
 		Click(selectRollYearButton);
 		Thread.sleep(2000);	
 	}
-	
+
 	/**
 	 * Description: This will update the status of tables based on the expected status
 	 * @param expectedStatus: Expected status like Calculated, Not Calculated etc.
@@ -1145,14 +1162,14 @@ public class BppTrendPage extends ApasGenericPage {
 		SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 		//Query to update the status of composite & valuation factor tables
 		String queryForID = "Select Id From BPP_Trend_Roll_Year__c where Roll_Year__c = '"+ rollYear +"'";
-		
+
 		JSONObject jsonObj = new JSONObject();
 		for(String columnName : tablesToupdate) {
 			jsonObj.put(columnName, expectedStatus);
 		}
 		objSalesforceAPI.update("BPP_Trend_Roll_Year__c", queryForID, jsonObj);
 	}
-	
+
 	/**
 	 * Description: Waits until the page spinner goes invisible within given timeout
 	 * @param: Takes Xpath as an argument
@@ -1166,7 +1183,7 @@ public class BppTrendPage extends ApasGenericPage {
 		} else {
 			element = locateElement(xpath, timeOutInSeconds[0]);
 		}
-		
+
 		if(element != null) {
 			for(int i = 0; i < 500; i++) {
 				try{
@@ -1178,5 +1195,5 @@ public class BppTrendPage extends ApasGenericPage {
 			}
 		}
 	}
-	
+
 }

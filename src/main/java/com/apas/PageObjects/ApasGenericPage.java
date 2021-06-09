@@ -333,10 +333,10 @@ public class ApasGenericPage extends Page {
 		}else{
 			scrollToElement(webElement);
 			javascriptClick(webElement);
-			waitUntilElementIsPresent(xpathDropDownOption, 5);
+			waitUntilElementIsPresent(xpathDropDownOption, 10);
 			drpDwnOption = driver.findElement(By.xpath(xpathDropDownOption));
 			scrollToElement(drpDwnOption);
-			waitForElementToBeClickable(drpDwnOption, 3);
+			waitForElementToBeClickable(drpDwnOption, 8);
 			javascriptClick(drpDwnOption);
 		}
 
