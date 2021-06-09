@@ -3,7 +3,7 @@
     "Action": "One To One",
     "Are taxes fully paid?": "Yes",
     "Net Land Loss": "200",
-    "Comments": "Perform one to one mapping"  ,
+    "Comments": "Perform one to one mapping"  
   },
   
   "DataToPerformOneToOneMappingActionWithAllFields": {
@@ -11,8 +11,7 @@
     "Are taxes fully paid?": "Yes",
     "Reason code": "PM 85/25-26",
 
-    "Net Land Loss": "200",  
-     "Net Land Gain": "300",  
+   
 
 
 
@@ -20,12 +19,13 @@
     "Legal Description": "Legal PM 85/25-260",
     "Situs City Description": "ATHERTON",
     "Situs City Code": "AT",
-    "Situs City Name": "DALY CITY",
+    "Situs City Name": "ATHERTON",
     "Direction": "West Coast",
     "Situs Number": "69",
     "Situs Street Name": "CLIFFSIDE",
     "Situs Type": "ALLEE",
-    "Situs Unit Number": "56"
+    "Situs Unit Number": "56",
+     "City Name": "DALLS CITY"
           
   }
 }
