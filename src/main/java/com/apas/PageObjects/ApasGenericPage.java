@@ -77,7 +77,7 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items...')]|//input[@placeholder='Search apps or items...']")
 	public WebElement appLauncherSearchBox;
-	
+
 	@FindBy(xpath = "//input[@placeholder='Search apps and items...']/..//button")
 	public WebElement searchClearButton;
 
@@ -89,7 +89,7 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='button'][@title='Select List View'] | //div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@role='button'][@title='Select List View']")
 	public WebElement selectListViewButton;
-	
+
 	@FindBy(xpath = "//a[@role='option']//span[text()='All' or text()='All Active Parcels']")
 	public WebElement selectListViewOptionAll;
 
@@ -464,7 +464,7 @@ public class ApasGenericPage extends Page {
 		//closeDefaultOpenTabs();
 	}
 
-	public  void closeDefaultOpenTabs() throws Exception {
+	public void closeDefaultOpenTabs() throws Exception {
 		ReportLogger.INFO("Closing all default tabs");
 
 		waitForElementToBeClickable(appLauncher, 10);
@@ -477,6 +477,7 @@ public class ApasGenericPage extends Page {
 		Actions objAction=new Actions(driver);
 		objAction.keyDown(Keys.SHIFT).sendKeys("w").keyUp(Keys.SHIFT).perform();
 		waitForElementToBeVisible(5,closeAllBtn);
+		
 		if(verifyElementVisible(closeAllBtn))
 		{Click(closeAllBtn);}
 		Thread.sleep(3000);
@@ -592,18 +593,72 @@ public class ApasGenericPage extends Page {
 	public void globalSearchRecords(String searchString) throws Exception {
 
 		ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
-		if (System.getProperty("region").toUpperCase().equals("E2E") || System.getProperty("region").toUpperCase().equals("PREUAT") || System.getProperty("region").toUpperCase().equals("STAGING")){
+		try {
+			if (System.getProperty("region").toUpperCase().equals("E2E") || System.getProperty("region").toUpperCase().equals("PREUAT") || System.getProperty("region").toUpperCase().equals("STAGING")){
 			WebElement element  = driver.findElement(By.xpath("//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input"));
 			searchAndSelectOptionFromDropDown(element, searchString);
+			
 		}else{
 			Click(globalSearchButton);
 			enter(globalSearchListEditBox,searchString);
 			String xpath = "//*[@role='option']//span[@title = '" + searchString + "']";
 			waitUntilElementIsPresent(xpath,5);
 			Click(driver.findElement(By.xpath(xpath)));
+			
+			}
+			Thread.sleep(5000);
+		}
+			
+			catch (Exception e) {
+				// for parcel search
+					if(searchString.length()== 11 && isSearchStringParcel(searchString)) {
+					ReportLogger.INFO("Opening parcel record: " + searchString);
+					String executionEnv = "";
+				
+					if (System.getProperty("region").toUpperCase().equals("QA"))
+						executionEnv = "qa";
+					if (System.getProperty("region").toUpperCase().equals("E2E"))
+						executionEnv = "e2e";
+					if (System.getProperty("region").toUpperCase().equals("PREUAT"))
+						executionEnv = "preuat";
+					if (System.getProperty("region").toUpperCase().equals("STAGING"))
+						executionEnv = "staging";
+					
+					String   query = "Select Id from Parcel__c where Name = '"+searchString+"'";
+					HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);	
+					
+					 driver.navigate().to("https://smcacre--"+executionEnv+
+							 ".lightning.force.com/lightning/r/Parcel__c/"+response+"/view");
+					 
+					 Thread.sleep(5000);
+
+					}
+					 else {
+						  ReportLogger.INFO("Unable to search parcel: " + searchString + e);
+					 }
+			}
+
+	
+	}
+	
+	public boolean isSearchStringParcel(String parcel) {
+
+		int count = 0;
+		if (parcel == null) {
+			return false;
 		}
 
-		Thread.sleep(5000);
+		for (int i = 0; i < parcel.length(); i++) {
+			char c = parcel.charAt(i);
+			if (c == '-') {
+				count++;
+			}
+		}
+		if (count == 2) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -1143,22 +1198,23 @@ public class ApasGenericPage extends Page {
   @return: returns the Retired APN
  */
 
-  	public String fetchRetiredAPN() throws Exception {
+ public String fetchRetiredAPN() throws Exception {
      
 	  String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
 	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
-  	}
+	}
  
- /*
- This method is used to return the Interim APN (starts with 800) from Salesforce
- @return: returns the Interim APN
+/*
+This method is used to return the Interim APN (starts with 800) from Salesforce
+@return: returns the Interim APN
 */
 
-  	public String fetchInterimAPN() throws Exception {
-    
+	public String fetchInterimAPN() throws Exception {
+ 
 	  String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' AND Status__c='Active' limit 1";
 	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
-  	}
+	}
+ 
    
    /*
     * Get Field Value from WI TimeLine 
@@ -1233,6 +1289,7 @@ public class ApasGenericPage extends Page {
 		WebElement taxCollectorLink = waitForElementToBeClickable(20, xPath);
 		Click(taxCollectorLink);
 	}
+	
 
 	public String getSuccessMessage() throws Exception {
 		String SuccessTxt = "";
@@ -1260,6 +1317,6 @@ public class ApasGenericPage extends Page {
 			isCellEditable = true;
 		}
 		return isCellEditable;
+	
 	}
-
-	}
+}
