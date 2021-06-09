@@ -88,9 +88,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapBrandNewParcelMappingData.get("Action"));
 
 		//Step 6: Validating warning for parent parcel for brand new parcel on first screen
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
-				"- Warning: If a parent parcel value is present it will not be taken into consideration while creating a new parcel",
-				
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"- Warning: If a parent parcel value is present it will not be taken into consideration while creating a new parcel",
 				"SMAB-T2522: Validation that Warning: If a parent parcel value is present it will not be taken into consideration while creating a new parcel");
 
 		//Step 7: Validating that reason code field is auto populated from parent parcel work item
@@ -102,9 +100,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
 
 		//Step 10: Validating warning message on second screen
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
-				
-				"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
 				"SMAB-T2537: Validation that Warning present on secound screeen ");
 
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -155,7 +151,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 
 		// Step 2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
 		objMappingPage.searchModule(PARCELS);
-		objMappingPage.globalSearchRecords("100-050-190");
+		objMappingPage.globalSearchRecords(activeParcelToPerformMapping);
 
 		//Step 3: Creating Manual work item for the Parcel 
 		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
@@ -344,8 +340,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		// Validating that Parcel has been successfully created.
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),
-				"Parcel(s) have been created successfully. Please review spatial information.",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel(s) have been created successfully. Please review spatial information.",
 				"SMAB-T2642: Validation that Parcel has been successfully created. Please Review Spatial Information");
 		
 		// Retriving new APN genrated
