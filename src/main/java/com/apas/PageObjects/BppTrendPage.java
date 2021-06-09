@@ -429,12 +429,12 @@ public class BppTrendPage extends ApasGenericPage {
 	 * @throws: Exception
 	 */
 	public void editCellDataInGridForGivenTable(String tableName, Object data,HashMap table_dataColumnName) throws Exception {
-		String tagAppend;
+		/*String tagAppend;
 		if(tableName.equalsIgnoreCase("BPP Prop 13 Factors")) {
 			tagAppend = "td";
 		} else {
 			tagAppend = "th";
-		}
+		}*/
 
 		String xpathEditTxtBox = "//div//input[@name = 'dt-inline-edit-text']";
 		WebElement editTxtBox;
@@ -446,24 +446,19 @@ public class BppTrendPage extends ApasGenericPage {
 		WebElement editBtn = locateEditButtonInFocusedCell();
 
 		if(editBtn ==null )
-		{  tagAppend = "td";
+		{  
 			String columnName=(String)table_dataColumnName.get(tableName);
 			editTxtBox=locateElement("//lightning-tab[@data-id = '"+ tableName +"']//*[@data-label = '"+columnName+"'][1]",20);
 			Click(editTxtBox);
-
-
 		}
 		else 
-		{Click(editBtn);
-
-		Thread.sleep(6000);
-		editTxtBox = locateElement(xpathEditTxtBox, 30);
+		{
+			Click(editBtn);
+			Thread.sleep(6000);
+			editTxtBox = locateElement(xpathEditTxtBox, 30);
 		}
-		
 		editTxtBox.sendKeys(String.valueOf(data));
 		Thread.sleep(1000);
-
-
 
 		WebElement year = locateElement("(//lightning-tab[@data-id = '"+ tableName +"']//*[@data-label = 'Year Acquired'])[1]", 20);
 		Click(year);
