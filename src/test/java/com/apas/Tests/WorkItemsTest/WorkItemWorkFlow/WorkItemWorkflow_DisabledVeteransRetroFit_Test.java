@@ -307,7 +307,8 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		workItemPageObj.openWorkItem(reminderSubmittedWINumber);
 		workItemPageObj.openTab("Details");
 		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiActionDetailsPage, "Information"),"Update and Validate","SMAB-T1867: Validate that Supervisor of a WI is able to view value for 'Action' field ");
-		softAssert.assertEquals(objPage.getElementText(workItemPageObj.relatedActionLink),"Update and Validate","SMAB-T1867: Validate that Supervisor of a WI is able to view value for 'Related Action' field");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiRelatedActionDetailsPage,"Information"),"Update and Validate","SMAB-T1867: Validate that Supervisor of a WI is able to view value for 'Related Action' field");
+		//softAssert.assertEquals(objPage.getElementText(workItemPageObj.relatedActionLink),"Update and Validate","SMAB-T1867: Validate that Supervisor of a WI is able to view value for 'Related Action' field");
 		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiDateDetailsPage, "Information"),"1/1/"+currentRollYear,"SMAB-T1867: Validate that 'Date' field is equal to 1/1/"+currentRollYear);
 		
 		//Step5: Edit the WI and update the details
@@ -365,7 +366,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		Thread.sleep(1000);
 		//Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage, 10);
-		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiStatus,"Information"), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
 		objPage.scrollToElement(workItemPageObj.currenWIStatusonTimeline);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
 		objApasGenericPage.logout();
@@ -380,7 +381,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		objPage.javascriptClick(workItemPageObj.detailsTab);
 		Thread.sleep(1000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage,10);
-		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiStatus,"Information"), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
 		Thread.sleep(1000);
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline), "Returned","SMAB-T1921:Verify that once supervisor 'Rejects/Return' the exemption annual limits settings then WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' should be returned back to 'Returned'");
 
@@ -402,7 +403,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		objPage.Click(workItemPageObj.detailsWI);
 		//Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage,10);
-		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Submitted for Approval","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiStatus,"Information"), "Submitted for Approval","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1889:Verify that once user submits the exemption annual settings then work item 'Disabled Veterans Update and Validate Annual exemption amounts and income limits' also gets submitted to supervisor");
 		driver.navigate().back();
 		driver.navigate().refresh();
@@ -450,7 +451,7 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 		//Thread.sleep(5000);
 		objPage.waitForElementToBeClickable(workItemPageObj.wiStatusDetailsPage, 10);
 		
-		softAssert.assertEquals(objPage.getElementText(workItemPageObj.wiStatusDetailsPage), "Completed","SMAB-T1919:Verify that supervisor is able to approve the annual limits from WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits'");
+		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(workItemPageObj.wiStatus,"Information"), "Completed","SMAB-T1919:Verify that supervisor is able to approve the annual limits from WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits'");
 		softAssert.assertEquals(objPage.getElementText(workItemPageObj.currenWIStatusonTimeline), "Completed","SMAB-T1919:Verify that supervisor is able to approve the annual limits from WI 'Disabled Veterans Update and Validate Annual exemption amounts and income limits'");
 		objApasGenericPage.logout();
 	}
