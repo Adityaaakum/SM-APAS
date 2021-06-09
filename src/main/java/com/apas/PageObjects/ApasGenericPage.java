@@ -628,7 +628,8 @@ public class ApasGenericPage extends Page {
 					HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);	
 					
 					 driver.navigate().to("https://smcacre--"+executionEnv+
-							 ".lightning.force.com/lightning/r/Parcel__c/"+response+"/view");
+							 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
+					 ReportLogger.INFO("https://smcacre--"+executionEnv+".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
 					 
 					 Thread.sleep(5000);
 
