@@ -169,7 +169,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath="//li[@title='Linked Items']//a[@data-label='Linked Items']")
 	public WebElement linkedItemsWI;
 
-	@FindBy(xpath="//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='Related Action']/parent::div/following-sibling::div//a")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@class='test-id__field-label' and text()='Related Action']/parent::div/following-sibling::div//a")
 	public WebElement relatedActionLink;
 
 	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='Status']/parent::div/following-sibling::div//lightning-formatted-text")

@@ -88,7 +88,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapBrandNewParcelMappingData.get("Action"));
 
 		//Step 6: Validating warning for parent parcel for brand new parcel on first screen
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: If a parent parcel value is present it will not be taken into consideration while creating a new parcel",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"- Warning: If a parent parcel value is present it will not be taken into consideration while creating a new parcel",
 				"SMAB-T2522: Validation that Warning: If a parent parcel value is present it will not be taken into consideration while creating a new parcel");
 
 		//Step 7: Validating that reason code field is auto populated from parent parcel work item
@@ -111,8 +111,9 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
 		//Step 12: Validating that Parcel has been successfully created.
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel has been successfully created. Please Review Spatial Information",
-				"SMAB-T2547: Validation that Parcel has been successfully created. Please Review Spatial Information");
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),
+				"Parcel(s) have been successfully created. Please Review Spatial Information",
+				"SMAB-T2547: Validation that Parcel has been created successfully. Please Review Spatial Information");
 
 		//Step 13: Validation that child parcel primary situs is blank since  situs was not updated in first screen
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -136,12 +137,6 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		String queryAPN = "Select name From Parcel__c where Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String activeParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
-
-
-		
-		
-
-
 
 		String mappingActionCreationData =  testdata.Brand_New_Parcel_MAPPING_ACTION;
 
@@ -345,7 +340,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		// Validating that Parcel has been successfully created.
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel has been successfully created. Please Review Spatial Information",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel(s) have been created successfully. Please review spatial information.",
 				"SMAB-T2642: Validation that Parcel has been successfully created. Please Review Spatial Information");
 		
 		// Retriving new APN genrated
@@ -354,14 +349,25 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
            HashMap<String, ArrayList<String>> statusnewApn = objParcelsPage.fetchFieldValueOfParcel("Status__c", newCreatedApn);
              // validating status of brand new parcel           
             softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2643: Verifying the status of the new parcel");
-              //Completing the workItem
+            driver.switchTo().window(parentWindow);
+		    objMappingPage.logout();  
+            
+		    Thread.sleep(10000);
+		    objMappingPage.login(users.RP_APPRAISER);
+   		
+            //Completing the workItem
            String   queryWI = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
      	   salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Completed");
+     	   
+     	   objMappingPage.searchModule(PARCELS);
+		   objMappingPage.globalSearchRecords(newCreatedApn);
+		   
      		//Validating the status of the workItem 
      		 HashMap<String, ArrayList<String>> statusCompletedApn = objParcelsPage.fetchFieldValueOfParcel("Status__c",newCreatedApn);
              //Validating the status of parcel after completing WI
-           softAssert.assertEquals(statusCompletedApn.get("Status__c").get(0), "Active", "SMAB-T2644: Validating that the status of new APN is active");
-            driver.switchTo().window(parentWindow);
+           softAssert.assertEquals(statusCompletedApn.get("Status__c").get(0), "Active",
+        		   "SMAB-T2644: Validating that the status of new APN is active");
+           // driver.switchTo().window(parentWindow);
 		    objMappingPage.logout();
 		   		
             		                          
