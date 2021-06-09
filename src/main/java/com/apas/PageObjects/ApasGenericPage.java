@@ -72,7 +72,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//table[@role='grid']//thead/tr//th")
 	public WebElement dataGrid;
 
-	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items...')]")
+	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items...')]|//input[@placeholder='Search apps or items...']")
 	public WebElement appLauncherSearchBox;
 
 	@FindBy(xpath = "//input[@placeholder='Search apps and items...']/..//button")
@@ -84,7 +84,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//div[@role='combobox']//div[@aria-label='Items']/p")
 	public WebElement itemsListBox;
 
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='button'][@title='Select List View']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='button'][@title='Select List View'] | //div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@role='button'][@title='Select List View']")
 	public WebElement selectListViewButton;
 
 	@FindBy(xpath = "//a[@role='option']//span[text()='All' or text()='All Active Parcels']")
@@ -196,7 +196,7 @@ public class ApasGenericPage extends Page {
 	 * Description: This will click on the module name from the drop down
 	 */
 	public void clickNavOptionFromDropDown(String navOption) throws Exception {
-		String xpathStr = "//a[@data-label= '" + navOption + "']//b[text() = '" + navOption + "']";
+		String xpathStr = "//a[@data-label= '" + navOption + "']//b[text() = '" + navOption + "']|//a[contains(@class,'app-launcher') and @title='" + navOption + "']";
 		WebElement drpDwnOption = waitForElementToBeClickable(20, xpathStr);
 		drpDwnOption.click();
 	}
@@ -461,7 +461,7 @@ public class ApasGenericPage extends Page {
 		//closeDefaultOpenTabs();
 	}
 
-	private void closeDefaultOpenTabs() throws Exception {
+	public void closeDefaultOpenTabs() throws Exception {
 		ReportLogger.INFO("Closing all default tabs");
 
 		waitForElementToBeClickable(appLauncher, 10);
@@ -473,9 +473,10 @@ public class ApasGenericPage extends Page {
 		*/
 		Actions objAction=new Actions(driver);
 		objAction.keyDown(Keys.SHIFT).sendKeys("w").keyUp(Keys.SHIFT).perform();
-
+		waitForElementToBeVisible(5,closeAllBtn);
+		
 		if(verifyElementVisible(closeAllBtn))
-		{javascriptClick(closeAllBtn);}
+		{Click(closeAllBtn);}
 		Thread.sleep(3000);
 
 	}
@@ -1135,7 +1136,7 @@ public class ApasGenericPage extends Page {
    }
 
    public ArrayList<String> fetchActiveAPN(int numberofAPNs) {
-       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberofAPNs;
+       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT')  and (Not Name like '1%') and (Not Name like '800%') Limit " + numberofAPNs;
        return objSalesforceAPI.select(queryForID).get("Name");
    }
    
@@ -1170,7 +1171,19 @@ public class ApasGenericPage extends Page {
      
 	  String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
 	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
- }
+	}
+ 
+/*
+This method is used to return the Interim APN (starts with 800) from Salesforce
+@return: returns the Interim APN
+*/
+
+	public String fetchInterimAPN() throws Exception {
+ 
+	  String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' AND Status__c='Active' limit 1";
+	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
+	}
+ 
    
    /*
     * Get Field Value from WI TimeLine 
@@ -1251,24 +1264,33 @@ public class ApasGenericPage extends Page {
    @Param: apnNumber: Parcle Number for whic field value needs to be fetched
    @return: returns the value of the field
   */
-	public String fetchFieldValueOfParcel(String fieldName, String apnNumber) throws Exception {
-		String selectQueryFieldName, fieldValue ="";
-		String query = "SELECT "+fieldName+" FROM Parcel__c where Name = '"+apnNumber+"'";
-		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
 
-		if(fieldName.equalsIgnoreCase("Neighborhood_Reference__c")){
-			query = "SELECT Name FROM Neighborhood__c Where Id = '"+response.get(fieldName).get(0)+"'";
-		}else if(fieldName.equalsIgnoreCase("TRA__c")){
-			query = "SELECT Name FROM TRA__c Where Id = '"+response.get(fieldName).get(0)+"'";
-		}else if(fieldName.equalsIgnoreCase("Primary_Situs__c")){
-			query = "SELECT Name FROM Situs__c Where Id = '"+response.get(fieldName).get(0)+"'";
+	public String getSuccessMessage() throws Exception {
+		String SuccessTxt = "";
+		waitForElementToDisappear(xpathSpinner,15);
+		Thread.sleep(2000);
+		List<WebElement> SuccessText = locateElements("//div[contains(@class,'color_success')]",15);
+		if(SuccessText.get(0).getAttribute("class").contains("color_success")){
+			for(WebElement successMsg : SuccessText){
+				SuccessTxt = (SuccessTxt + successMsg.getText()).trim();
+			}
+		}else
+			SuccessTxt = SuccessText.get(0).getText();
+
+		return SuccessTxt;
+	}
+
+	/**
+	 * Description: This method will verify is a cell on a grid displayed from the first row is editable
+	 *
+	 * @param columnNameOnGrid: Column name on which the cell needs to be updated
+	 */
+	public boolean verifyGridCellEditable(String columnNameOnGrid) {
+		boolean isCellEditable = false;
+		if(verifyElementVisible("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")){
+			isCellEditable = true;
 		}
-		if(fieldName.equalsIgnoreCase("Status__c")){
-			fieldValue = response.get("Status__c").get(0);
-		}else {
-			response = objSalesforceAPI.select(query);
-			fieldValue = response.get("Name").get(0);
-		}
-		return fieldValue;
+		return isCellEditable;
+	
 	}
 }
