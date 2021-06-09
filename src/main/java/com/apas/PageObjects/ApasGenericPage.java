@@ -562,6 +562,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public void globalSearchRecords(String searchString) throws Exception {
 
+		ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
 		try {
 			if (System.getProperty("region").toUpperCase().equals("E2E") || System.getProperty("region").toUpperCase().equals("PREUAT") || System.getProperty("region").toUpperCase().equals("STAGING")){
 			WebElement element  = driver.findElement(By.xpath("//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input"));
@@ -1258,12 +1259,7 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		WebElement taxCollectorLink = waitForElementToBeClickable(20, xPath);
 		Click(taxCollectorLink);
 	}
-	/*
-   This method is used to fetch field value for mentioned APN
-   @Param: fieldName: Field name for which value needs to be fetched
-   @Param: apnNumber: Parcle Number for whic field value needs to be fetched
-   @return: returns the value of the field
-  */
+	
 
 	public String getSuccessMessage() throws Exception {
 		String SuccessTxt = "";
