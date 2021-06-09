@@ -625,7 +625,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		if(showMoreDropDown == null) {
 			showMoreDropDown = locateElement(xpath, 30);
 		}
-		clickAction(showMoreDropDown);
+		Click(showMoreDropDown);
 		Thread.sleep(1000);
 	}
 

@@ -4,6 +4,9 @@ import com.apas.Utils.DateUtil;
 import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
+import com.apas.config.modules;
+import com.apas.config.modulesObjectName;
+
 import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
@@ -333,10 +336,10 @@ public class ApasGenericPage extends Page {
 		}else{
 			scrollToElement(webElement);
 			javascriptClick(webElement);
-			waitUntilElementIsPresent(xpathDropDownOption, 5);
+			waitUntilElementIsPresent(xpathDropDownOption, 10);
 			drpDwnOption = driver.findElement(By.xpath(xpathDropDownOption));
 			scrollToElement(drpDwnOption);
-			waitForElementToBeClickable(drpDwnOption, 3);
+			waitForElementToBeClickable(drpDwnOption, 8);
 			javascriptClick(drpDwnOption);
 		}
 
@@ -486,19 +489,46 @@ public class ApasGenericPage extends Page {
 	 * @param moduleToSearch : Module Name to search and open
 	 */
 	public void searchModule(String moduleToSearch) throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
-		waitForElementToBeClickable(appLauncher, 60);
-		Thread.sleep(5000);
-		Click(appLauncher);
-		waitForElementToBeClickable(appLauncherSearchBox, 60);
-		enter(appLauncherSearchBox, moduleToSearch);
-		Thread.sleep(2000);
-		clickNavOptionFromDropDown(moduleToSearch);
-		//This static wait statement is added as the module title is different from the module to search
-		Thread.sleep(4000);
+		
+		try{	
+			waitForElementToBeClickable(appLauncher, 60);
+			//Thread.sleep(5000);
+			Click(appLauncher);			
+			waitForElementToBeClickable(appLauncherSearchBox, 60);
+			enter(appLauncherSearchBox, moduleToSearch);
+			//Thread.sleep(2000);
+			clickNavOptionFromDropDown(moduleToSearch);
+			//This static wait statement is added as the module title is different from the module to search
+			Thread.sleep(4000);
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
+		}
+		catch(Exception e){
+			Util utl = new Util();	
+			modulesObjectName modobj = new modulesObjectName();
+			String moduleURL = envURL + utl.getValueOf(modobj, moduleToSearch);
+			navigateTo(driver,moduleURL);
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Navigating directly" + moduleURL);
+		}
 	}
-
-
+	
+	/*
+	 * public void searchModuleByNameorObject(String moduleName , String
+	 * moduleObjectName) throws IOException {
+	 * ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleName +
+	 * " tab");
+	 * 
+	 * try { //Method -1 waitForElementToBeClickable(appLauncher, 60);
+	 * Thread.sleep(5000); Click(appLauncher); //Method-2
+	 * waitForElementToBeClickable(appLauncherSearchBox, 60);
+	 * enter(appLauncherSearchBox, moduleName); Thread.sleep(2000);
+	 * clickNavOptionFromDropDown(moduleName); //This static wait statement is added
+	 * as the module title is different from the module to search
+	 * Thread.sleep(4000); } catch(Exception e ) { String moduleURL = envURL +
+	 * "/lightning/o/" + moduleObjectName; navigateTo(driver,moduleURL); }
+	 * 
+	 * }
+	 * 
+	 */
 	/**
 	 * Description: This method will logout the logged in user from APAS application
 	 */

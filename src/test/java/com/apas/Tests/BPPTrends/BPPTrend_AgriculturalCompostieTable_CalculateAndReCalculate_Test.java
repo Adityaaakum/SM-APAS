@@ -75,7 +75,11 @@ public class BPPTrend_AgriculturalCompostieTable_CalculateAndReCalculate_Test ex
 	 * 11. Validating the data of UI table against the Trend Calculator excel file:: TestCase/JIRA ID: SMAB-T209
 	 * 12. Validating the status of the table on BPP Trend Setup Page: SMAB-T269
 	 */
-	@Test(description = "SMAB-T170,SMAB-T209,SMAB-T269,SMAB-T190,SMAB-T198: Performing validation on Agricultural COMPOSITE FACTORS before and after calculation", groups = {"Smoke","Regression","BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T170,SMAB-T209,SMAB-T269,SMAB-T190,SMAB-T198: "
+			+ "Performing validation on Agricultural COMPOSITE FACTORS before and after calculation", 
+			groups = {"Smoke","Regression","BPPTrend"}, 
+			dataProvider = "loginBusinessAdmin", 
+			dataProviderClass = DataProviders.class)
 	public void BppTrend_AgriculturalCompositeFactors_CalculateAndCompare(String loginUser) throws Exception {
 		String tableName = "Agricultural Composite Factors";
 		

@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 
 import java.util.Map;
 
-public class WorkItemAdministration_RoutingSetupTest extends TestBase {
+public class WorkItemAdministration_RoutingSetup_Test extends TestBase {
     RemoteWebDriver driver;
     WorkItemHomePage objWorkItemHomePage;
     RoutingAssignmentPage objWorkItemsRoutingSetupPage;
@@ -38,76 +38,6 @@ public class WorkItemAdministration_RoutingSetupTest extends TestBase {
         objWorkItemsRoutingSetupPage = new RoutingAssignmentPage(driver);
         objWorkItemsNeighborhoodsPage = new NeighborhoodsPage(driver);
         objWorkItemsTerritoriesPage = new WorkItemsTerritoriesPage(driver);
-    }
-
-    @Test(description = "SMAB-T1811,SMAB-T1812,SMAB-T1814,SMAB-T1815: Verify user is able to create,edit Neighborhood reference record with mandatory fields & not able to create duplicate record", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-            "Regression", "WorkItemAdministration" }, alwaysRun = true)
-    public void WorkItemAdministration_NeighborhoodReferenceRecordCreation(String loginUser) throws Exception {
-        String workItemCreationData = testdata.WORK_ITEMS_ROUTING_SETUP;
-        Map<String, String> hashMapNeighborhoodData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateNeighborhood");
-        hashMapNeighborhoodData.put("Primary Appraiser",salesforceAPI.getUserName(users.RP_BUSINESS_ADMIN));
-
-        //Step1: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
-        objWorkItemHomePage.login(loginUser);
-
-        //Step2: Open the Neighborhoods Page & select all list view
-        objWorkItemHomePage.searchModule(modules.NEIGHBORHOODS);
-        //objApasGenericFunctions.displayRecords("All");
-
-        //Step3: Click on New Button and save the record without entering mandatory fields
-        // Delete existing record before creating new record
-        String query = "SELECT Id FROM Neighborhood__c WHERE Name  = '"+hashMapNeighborhoodData.get("District")+"/"+ hashMapNeighborhoodData.get("Neighborhood Code")+"'";
-        salesforceAPI.delete("Neighborhood__c",query);
-
-        objWorkItemHomePage.createRecord();
-        objWorkItemHomePage.saveRecordAndGetError();
-
-        //Step4 : Verify Error message for mandatory fields
-        String expectedErrorMessage = "Complete this field.";
-        String actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsNeighborhoodsPage.neighborhoodCodeEditBox);
-        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1811: Verify Neighborhood Code is a mandatory field");
-
-        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsNeighborhoodsPage.neighborhoodDescriptionEditBox);
-        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1811: Verify Neighborhood Description is a mandatory field");
-
-        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsNeighborhoodsPage.primaryAppraiserDropDown);
-        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1811: Verify Primary Appraiser is a mandatory field");
-
-        actualErrorMessage = objWorkItemHomePage.getIndividualFieldErrorMessage(objWorkItemsNeighborhoodsPage.districtDropDown);
-        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1811: Verify District is a mandatory field");
-
-        //Step5: Create new Neighborhood reference record
-        objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-        objWorkItemsNeighborhoodsPage.enterNeighborhoodReferenceRecordDetails(hashMapNeighborhoodData);
-        String actualSuccessMessage = objWorkItemHomePage.saveRecord();
-        String expectedSuccessMessage="Neighborhood \""+hashMapNeighborhoodData.get("Neighborhood Code") +"\" was created.";
-        softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-T1812: Verify user is able to create new Neighborhood Reference Record successfully");
-
-        //Step6: Edit existing Neighborhood reference record
-        Map<String, String> hashMapDuplicateNeighborhoodData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateDuplicateNeighborhood");
-        hashMapDuplicateNeighborhoodData.put("Primary Appraiser",salesforceAPI.getUserName(users.RP_BUSINESS_ADMIN));
-
-        objWorkItemHomePage.editRecord();
-        objWorkItemHomePage.enter(objWorkItemsNeighborhoodsPage.neighborhoodCodeEditBox,hashMapDuplicateNeighborhoodData.get("Neighborhood Code"));
-        actualSuccessMessage = objWorkItemHomePage.saveRecord();
-        expectedSuccessMessage="Neighborhood \""+hashMapDuplicateNeighborhoodData.get("Neighborhood Code") +"\" was saved.";
-        softAssert.assertContains(actualSuccessMessage, expectedSuccessMessage, "SMAB-T1814: Verify user is able to edit Neighborhood Reference Record successfully");
-
-        //Step7: Open the Neighborhoods Page & select all list view
-        objWorkItemHomePage.searchModule(modules.NEIGHBORHOODS);
-        //objApasGenericFunctions.displayRecords("All");
-
-        //Step8: Create duplicate Neighborhood reference record
-        objWorkItemHomePage.createRecord();
-        objWorkItemsNeighborhoodsPage.enterNeighborhoodReferenceRecordDetails(hashMapDuplicateNeighborhoodData);
-        actualErrorMessage = objWorkItemHomePage.saveRecordAndGetError();
-        expectedErrorMessage = "You can't save this record because a duplicate record already exists. To save, use different information.";
-        softAssert.assertContains(actualErrorMessage, expectedErrorMessage, "SMAB-T1815: Verify user is not able to create duplicate Neighborhood Reference Record");
-
-        //Step9: Delete record create above
-        query = "SELECT Id FROM Neighborhood__c WHERE Name  = '"+hashMapNeighborhoodData.get("District")+"/"+ hashMapNeighborhoodData.get("Neighborhood Code")+"'";
-        salesforceAPI.delete("Neighborhood__c",query);
-
     }
 
     @Test(description = "SMAB-T1816,SMAB-T1817,SMAB-T1821,SMAB-T1822: Verify user is able to create,edit Territory record with mandatory fields & not able to create duplicate record", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
