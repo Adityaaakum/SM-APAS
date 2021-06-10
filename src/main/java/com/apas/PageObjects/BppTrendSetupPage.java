@@ -573,7 +573,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		WebElement newButton = waitForElementToBeClickable(10,newBtnXpath);
 		//		try {
 		//			newButton = locateElement(newBtnXpath, 10);
-		clickAction(newButton);
+		Click(newButton);
 		//		} catch(Exception ex) {
 		//			newButton = locateElement(newBtnXpath, 10);
 		//			clickAction(newButton);
