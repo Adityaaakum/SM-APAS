@@ -57,7 +57,6 @@ public class MappingPage extends ApasGenericPage {
 	public String errorMessageOnScreenOne = "//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]";
 	public String saveButton = "Save";
 	public String firstCondoTextBoxLabel = "First Condo Parcel Number";
-	public String splitParcelButton = "Split Parcel";
 	public String parcelStatus = "Status";
 	public String parcelPUC = "PUC";
 	public String parcelTRA = "TRA";
@@ -221,7 +220,7 @@ public class MappingPage extends ApasGenericPage {
 	 */
 	public void editSitusModalWindowFirstScreen(Map<String, String> dataMap) throws Exception {
 		
-		String cityName = dataMap.get("Situs City Name");
+		String cityName = dataMap.get("City Name");
 		String situsCityCode = dataMap.get("Situs City Code");
 		String situsCityName = dataMap.get("Situs City Name");
 		String direction = dataMap.get("Direction");
