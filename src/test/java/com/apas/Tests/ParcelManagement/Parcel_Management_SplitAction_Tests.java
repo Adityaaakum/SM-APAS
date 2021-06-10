@@ -354,7 +354,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,apnNotNextAvailable);
 		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.splitParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToDisappear(objMappingPage.xpathSpinner, 60);
 		objMappingPage.waitForElementToBeVisible(60, objMappingPage.apnColumnSecondScreen);
 		Thread.sleep(2000);
@@ -370,7 +370,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,apnContainingAlphabets);
 		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.splitParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertContains(gridDataHashMap.get("Error Message").get(0),"This parcel number is not valid, it should contain 9 digit numeric values.",
@@ -383,7 +383,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,apnContainingspecialChars);
 		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.splitParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertContains(gridDataHashMap.get("Error Message").get(0),"This parcel number is not valid, it should contain 9 digit numeric values.",
@@ -394,7 +394,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,alreadyExistingApn);
 		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.splitParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertContains(gridDataHashMap.get("Error Message").get(0),"The APN provided already exists in the system",
@@ -535,7 +535,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.fillMappingActionForm(hashMapSplitActionValidData);
 
 		//Step 7: Click Split Parcel Button
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.splitParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		//Step 8: Verify Field values are inheritted from Parent to Child Parcels
@@ -687,7 +687,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 					"SMAB-T2661: Validation that System populates primary situs on second screen for child parcel number "+i+1+" with the situs value that was added in first screen");
 
 		//Step 8: Click Split Parcel Button
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.splitParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		//Step 9: Validation that primary situs on last screen screen is getting populated from situs entered in first screen

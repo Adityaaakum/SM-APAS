@@ -489,7 +489,7 @@ public class ApasGenericPage extends Page {
 	 *
 	 * @param moduleToSearch : Module Name to search and open
 	 */
-	public void searchModule(String moduleToSearch) throws Exception {
+public void searchModule(String moduleToSearch) throws Exception {
 		
 		try{	
 			waitForElementToBeClickable(appLauncher, 60);
@@ -506,11 +506,14 @@ public class ApasGenericPage extends Page {
 		catch(Exception e){
 			Util utl = new Util();	
 			modulesObjectName modobj = new modulesObjectName();
-			String moduleURL = envURL + utl.getValueOf(modobj, moduleToSearch);
+			moduleToSearch = moduleToSearch.replaceAll("\\s+", "");
+			String moduleURL = envURL + utl.getValueOf(modobj, moduleToSearch.trim());
 			navigateTo(driver,moduleURL);
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Navigating directly" + moduleURL);
 		}
 	}
+	
+	
 	
 	/*
 	 * public void searchModuleByNameorObject(String moduleName , String

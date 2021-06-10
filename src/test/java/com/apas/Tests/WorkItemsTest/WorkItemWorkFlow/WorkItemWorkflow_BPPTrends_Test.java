@@ -786,7 +786,9 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step14: Log out from the application and log in as BPP Principal
         objBppTrendSetupPage.logout();
-        Thread.sleep(30000);
+        Thread.sleep(5000);
+        driver.navigate().refresh();
+        Thread.sleep(6000);
 
         objBppTrendSetupPage.login(users.PRINCIPAL_USER);
         objBppTrendSetupPage.searchModule(modules.HOME);
@@ -874,9 +876,10 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         softAssert.assertEquals(actualWIStatus, "Submitted for Approval", "SMAB-T2195: Verify status of WI : 'Perform Calculations' is 'Submitted for Approval'");
 
         //Step10: Log out from the application and log in as BPP Principal
+        driver.navigate().refresh();
         objBppTrendSetupPage.logout();
-        Thread.sleep(30000);
-
+        Thread.sleep(6000);
+        
         objBppTrendSetupPage.login(users.PRINCIPAL_USER);
         objBppTrendSetupPage.searchModule(modules.HOME);
 
@@ -895,7 +898,10 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step14: Log out from the application and log in again as BPP Admin
         objBppTrendSetupPage.logout();
-        Thread.sleep(30000);
+        Thread.sleep(7000);
+        driver.navigate().refresh();
+        Thread.sleep(6000);
+ 
 
         objBppTrendSetupPage.login(loginUser);
         objBppTrendSetupPage.searchModule(modules.HOME);
