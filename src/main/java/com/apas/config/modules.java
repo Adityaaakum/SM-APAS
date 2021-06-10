@@ -20,7 +20,6 @@ public interface modules {
 	String CPI_FACTORS = "CPI Factors";
 	String WORK_POOL = "Work Pool";
 	String WORK_ITEM = "Work Item";
-
 	String REAL_PROPERTY_SETTINGS_LIBRARIES = "Real Property Settings Libraries";
 	String ROLL_YEAR_SETTINGS = "Roll Year Settings";
 	String EXEMPTION = "Exemption";
@@ -32,6 +31,7 @@ public interface modules {
 	String VALUE_ADJUSTMENTS = "Value Adjustments";
 	String WORKITEM_MNGMNT = "Work Item Management Console";
 	String NEIGHBORHOODS = "Neighborhoods";
+	String NEIGHBORHOODS_OBJECT = "Neighborhood__c\\home";
 	String TERRITORIES = "Territories";
 	String ROUTING_ASSIGNMENTS = "Routing Assignments";
 }

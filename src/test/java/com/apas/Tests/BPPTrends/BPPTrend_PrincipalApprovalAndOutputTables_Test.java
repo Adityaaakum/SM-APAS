@@ -2,6 +2,7 @@ package com.apas.Tests.BPPTrends;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import com.apas.PageObjects.BppTrendSetupPage;
@@ -73,6 +74,22 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 	 */
 	@Test(description = "SMAB-T205,SMAB-T155,SMAB-T156,SMAB-T157,SMAB-T250,SMAB-T212,SMAB-T449: Approve calculations of valuation, composite & prop 13 tables", groups = {"Smoke","Regression","BPPTrend"}, dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class)
 	public void BppTrend_Approve(String loginUser) throws Exception {
+		HashMap<String,String> map=new HashMap<String,String>();
+		map.put("Commercial Composite Factors","3");
+		map.put("Industrial Composite Factors","3");
+		map.put("Agricultural Composite Factors","15 (Expected Life)");
+		map.put("Construction Composite Factors","12 (Expected Life)");
+		map.put("Agricultural Mobile Equipment Composite Factors","ExceptHarvesters-New");
+		map.put("Construction Mobile Equipment Composite Factors","New");
+		map.put("BPP Prop 13 Factors","Prop 13 Factor");
+		map.put("Computer Valuation Factors","Personal Computer");
+		map.put("Semiconductor Valuation Factors","Semiconductor - M&E");
+		map.put("Biopharmaceutical Valuation Factors","Biopharma Schedule A - M&E");
+		map.put("Copier Valuation Factors","Copier");
+		map.put("Litho Valuation Factors","Litho");
+		map.put("Set-Top Box Valuation Factors","Set-Top Box");
+		map.put("Electrical Slot Machines Valuation Factors","Electronic Slot Machine");
+		map.put("Mechanical Slot Machines Valuation Factors","Mechanical Slot Machines & Other Gaming Equipment");
 		objBppTrendSetupPage.login(loginUser);
 		
 		//Resetting the composite factor tables status to Not Calculated
@@ -156,7 +173,7 @@ public class BPPTrend_PrincipalApprovalAndOutputTables_Test extends TestBase {
 			WebElement editBtn = objBppTrnPg.locateEditButtonInFocusedCell();
 			objBppTrnPg.Click(editedCell);
 			objBppTrnPg.Click(editBtn);	
-			objBppTrnPg.editCellDataInGridForGivenTable(tableName, (cellDataBeforeEdit + 1));
+			objBppTrnPg.editCellDataInGridForGivenTable(tableName, (cellDataBeforeEdit + 1),map);
 			boolean isEditedCellHighlighted = objBppTrnPg.isEditedCellFocused(editedCell);
 			softAssert.assertTrue(isEditedCellHighlighted, "SMAB-T449: Edited cell is highlighted in yellow color for "+ tableName +" table");
 

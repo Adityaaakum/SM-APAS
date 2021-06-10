@@ -32,6 +32,7 @@ public class MappingPage extends ApasGenericPage {
 	public String firstNonCondoTextBoxLabel = "First Non-Condo Parcel Number";
 	public String legalDescriptionTextBoxLabel = "Legal Description Auto-Populate Field for Child Parcels";
 	public String situsTextBoxLabel = "Situs Auto-Populate Field for Child Parcels";
+	public String situsTextBoxLabelForBrandNewParcel = "Situs";
 	public String commentsTextBoxLabel = "Comments";
 	public String parentAPNTextBoxLabel = "Parent APN(s)";
 	public String legalDescriptionColumnSecondScreen = "Legal Description";
@@ -68,6 +69,7 @@ public class MappingPage extends ApasGenericPage {
 	public String legalDescriptionTextBoxLabel2 = "Legal Description Auto-Populate Field for Child Parcels";
 	public String parcelLotSize = "Lot Size (SQFT)";
 	public String situsCityDescriptionLabel = "Situs City Description";
+	public String cityNameLabel = "City Name";
 	public String situsCityCodeLabel = "Situs City Code";
 	public String situsCityNameLabel = "Situs City Name";
 	public String directionLabel = "Direction";
@@ -77,7 +79,6 @@ public class MappingPage extends ApasGenericPage {
 	public String situsUnitNumberLabel = "Situs Unit Number";
 	public String closeButton = "Close";
 	public String CreateNewParcelButton="Create Brand New Parcel";
-	public String generateParcelsButton = "Generate Parcel(s)";
 	public String updateParcelsButton = "Update Parcel(s)";
 	
 	@FindBy(xpath = "//label[text()='First Non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
@@ -221,7 +222,7 @@ public class MappingPage extends ApasGenericPage {
 	 */
 	public void editSitusModalWindowFirstScreen(Map<String, String> dataMap) throws Exception {
 		
-		String situsCityDescription = dataMap.get("Situs City Description");
+		String cityName = dataMap.get("City Name");
 		String situsCityCode = dataMap.get("Situs City Code");
 		String situsCityName = dataMap.get("Situs City Name");
 		String direction = dataMap.get("Direction");
@@ -230,7 +231,7 @@ public class MappingPage extends ApasGenericPage {
 		String situsType = dataMap.get("Situs Type");
 		String situsUnitNumber = dataMap.get("Situs Unit Number");
 		
-		if (situsCityDescription != null) selectOptionFromDropDown(situsCityDescriptionLabel, situsCityDescription);
+		if (cityName != null) selectOptionFromDropDown(cityNameLabel, cityName);
 		if (situsCityCode != null) selectOptionFromDropDown(situsCityCodeLabel, situsCityCode);
 		if (situsCityName != null) enter(situsCityNameLabel, situsCityName);
 		if (direction != null)enter(directionLabel, direction);

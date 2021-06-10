@@ -88,7 +88,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapBrandNewParcelMappingData.get("Action"));
 
 		//Step 6: Validating warning for parent parcel for brand new parcel on first screen
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: If a parent parcel value is present it will not be taken into consideration while creating a new parcel",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"- Warning: If a parent parcel value is present it will not be taken into consideration while creating a new parcel",
 				"SMAB-T2522: Validation that Warning: If a parent parcel value is present it will not be taken into consideration while creating a new parcel");
 
 		//Step 7: Validating that reason code field is auto populated from parent parcel work item
@@ -108,11 +108,12 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		softAssert.assertTrue(gridDataHashMap.get("Situs").get(0).isEmpty(),"SMAB-T2663: Validation that primary situs of child parcel on second screen is blank as situs was not updated in first screen");
 
 		//Step 11 :Clicking generate parcel button
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.CreateNewParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
 		//Step 12: Validating that Parcel has been successfully created.
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel has been successfully created. Please Review Spatial Information",
-				"SMAB-T2547: Validation that Parcel has been successfully created. Please Review Spatial Information");
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),
+				"Parcel(s) have been successfully created. Please Review Spatial Information",
+				"SMAB-T2547: Validation that Parcel has been created successfully. Please Review Spatial Information");
 
 		//Step 13: Validation that child parcel primary situs is blank since  situs was not updated in first screen
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -136,12 +137,6 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		String queryAPN = "Select name From Parcel__c where Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String activeParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
-
-
-		
-		
-
-
 
 		String mappingActionCreationData =  testdata.Brand_New_Parcel_MAPPING_ACTION;
 
@@ -206,8 +201,9 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.editGridCellValue(objMappingPage.legalDescriptionColumnSecondScreen,"Legal Discription");
 
 		//Step 13 :Clicking generate parcel button
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.CreateNewParcelButton));
-		//Step 14: Validating that
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		
+		//Step 14: Validating the warning message
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
 				"SMAB-T2524: Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
 
@@ -265,14 +261,14 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapBrandNewParcelMappingData.get("Action"));
 
 			//Step 5: editing situs for child parcel and filling all fields
-			objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabel));
+			objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabelForBrandNewParcel));
 
 			softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.editSitusLabelSitusModal),
 					"SMAB-T2663: Validation that Edit Situs label is displayed as heading of situs modal window in first screen");
 			softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.situsInformationLabelSitusModal),
 					"SMAB-T2663: Validation that  Situs Information label is displayed in  situs modal window in first screen");
 			objMappingPage.editSitusModalWindowFirstScreen(hashMapBrandNewParcelMappingData);
-			softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabel),"value"),childprimarySitus,
+			softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabelForBrandNewParcel),"value"),childprimarySitus,
 					"SMAB-T2663: Validation that User is able to update a Situs for child parcel from the Parcel mapping screen");
 
 			//Step 6: entering data in form for Brand New Parcel mapping
@@ -285,7 +281,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 					"SMAB-T2663: Validation that System populates primary situs on second screen for child parcel  with the situs value that was added in first screen");
 
 			//Step 8 :Clicking generate parcel button
-			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.CreateNewParcelButton));
+			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
 			//Step 9: Validation that primary situs on last screen screen is getting populated from situs entered in first screen
 			gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -342,9 +338,9 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 						
 		// entering data in form for Brand New Parcel mapping
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.CreateNewParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		// Validating that Parcel has been successfully created.
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel has been successfully created. Please Review Spatial Information",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel(s) have been created successfully. Please review spatial information.",
 				"SMAB-T2642: Validation that Parcel has been successfully created. Please Review Spatial Information");
 		
 		// Retriving new APN genrated
@@ -353,14 +349,25 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
            HashMap<String, ArrayList<String>> statusnewApn = objParcelsPage.fetchFieldValueOfParcel("Status__c", newCreatedApn);
              // validating status of brand new parcel           
             softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2643: Verifying the status of the new parcel");
-              //Completing the workItem
+            driver.switchTo().window(parentWindow);
+		    objMappingPage.logout();  
+            
+		    Thread.sleep(10000);
+		    objMappingPage.login(users.RP_APPRAISER);
+   		
+            //Completing the workItem
            String   queryWI = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
      	   salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Completed");
+     	   
+     	   objMappingPage.searchModule(PARCELS);
+		   objMappingPage.globalSearchRecords(newCreatedApn);
+		   
      		//Validating the status of the workItem 
      		 HashMap<String, ArrayList<String>> statusCompletedApn = objParcelsPage.fetchFieldValueOfParcel("Status__c",newCreatedApn);
              //Validating the status of parcel after completing WI
-           softAssert.assertEquals(statusCompletedApn.get("Status__c").get(0), "Active", "SMAB-T2644: Validating that the status of new APN is active");
-            driver.switchTo().window(parentWindow);
+           softAssert.assertEquals(statusCompletedApn.get("Status__c").get(0), "Active",
+        		   "SMAB-T2644: Validating that the status of new APN is active");
+           // driver.switchTo().window(parentWindow);
 		    objMappingPage.logout();
 		   		
             		                          
@@ -415,7 +422,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objWorkItemHomePage.switchToNewWindow(parentWindow);	
 	     // entering data in form for Brand New Parcel mapping
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.CreateNewParcelButton));		
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));		
 		 HashMap<String, ArrayList<String>> gridParcelData = objMappingPage.getGridDataInHashMap();
          String newCreatedApn  =   gridParcelData.get("APN").get(0);
           driver.switchTo().window(parentWindow);         
@@ -472,7 +479,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		
 	    // entering data in form for Brand New Parcel mapping
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.CreateNewParcelButton));		
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));		
 		 HashMap<String, ArrayList<String>> gridParcelData=      objMappingPage.getGridDataInHashMap();
          String newCreatedApn  =   gridParcelData.get("APN").get(0);         
          driver.switchTo().window(parentWindow);         
@@ -538,14 +545,14 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapBrandNewParcelMappingData.get("Action"));
 
 		//Step 5: editing situs for child parcel and filling all fields
-		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabel));
+		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabelForBrandNewParcel));
 
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.editSitusLabelSitusModal),
 				"SMAB-T2663: Validation that Edit Situs label is displayed as heading of situs modal window in first screen");
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.situsInformationLabelSitusModal),
 				"SMAB-T2663: Validation that  Situs Information label is displayed in  situs modal window in first screen");
 		objMappingPage.editSitusModalWindowFirstScreen(hashMapBrandNewParcelMappingData);
-		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabel),"value"),childprimarySitus,
+		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabelForBrandNewParcel),"value"),childprimarySitus,
 				"SMAB-T2663: Validation that User is able to update a Situs for child parcel from the Parcel mapping screen");
 
 		//Step 6: entering data in form for Brand New Parcel mapping
@@ -558,7 +565,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 				"SMAB-T2663: Validation that System populates primary situs on second screen for child parcel  with the situs value that was added in first screen");
 
 		//Step 8 :Clicking generate parcel button
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.CreateNewParcelButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
 		//Step 9: Validation that primary situs on last screen screen is getting populated from situs entered in first screen
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
