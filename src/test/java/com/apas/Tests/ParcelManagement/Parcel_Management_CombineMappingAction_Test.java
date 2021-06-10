@@ -1126,8 +1126,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(primarySitusValueChildParcel,childprimarySitus,
 				"SMAB-T2659: Validation that primary situs of  child parcel  has value that was entered in first screen through situs modal window");
 
+		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
-	}
+		}
 	/**
 	 * This method is to Parcel Management- Verify that User is able to Return to Custom Screen after performing  a "Combine" mapping action for a Parcel
 	 * @param loginUser
@@ -1216,7 +1217,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),apn,
 				"SMAB-T2677: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
-		softAssert.assertEquals(gridDataHashMap.get("District/Neighborhood").get(0),districtNeighborhood,
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),districtNeighborhood,
 				"SMAB-T2677: Validation that  System populates District/Neighborhood in return to custom screen  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),situs.replaceFirst("\\s+", ""),"SMAB-T2677: Validation that  System populates Situs in return to custom screen  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
@@ -1237,7 +1238,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2677: Validation that TRA column should not be editable on retirning to custom screen");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2677: Validation that Situs column should not be editable on retirning to custom screen");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2677: Validation that Reason Code column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("District/Neighborhood"),"SMAB-T2677: Validation that District/Neighborhood column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd"),"SMAB-T2677: Validation that District/Neighborhood column should not be editable on retirning to custom screen");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2677: Validation that Use Code column should not be editable on retirning to custom screen");
 		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)"),"SMAB-T2677: Validation that Parcel Size (SQFT) column should  be editable on retirning to custom screen");
 
@@ -1316,7 +1317,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String tra=gridDataHashMap.get("TRA").get(0);
 		String situs=gridDataHashMap.get("Situs").get(0);
 		String reasonCode=gridDataHashMap.get("Reason Code").get(0);
-		String districtNeighborhood=gridDataHashMap.get("District/Neighborhood").get(0);
+		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd").get(0);
 		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)").get(0);
 
 		//Step 7: Click Combine Parcel Button
@@ -1336,7 +1337,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),apn,
 				"SMAB-T2677: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
-		softAssert.assertEquals(gridDataHashMap.get("District/Neighborhood").get(0),districtNeighborhood,
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),districtNeighborhood,
 				"SMAB-T2677: Validation that  System populates District/Neighborhood in return to custom screen  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),situs.replaceFirst("\\s+", ""),"SMAB-T2677: Validation that  System populates Situs in return to custom screen  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
@@ -1411,7 +1412,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String tra=gridDataHashMap.get("TRA").get(0);
 		String situs=gridDataHashMap.get("Situs").get(0);
 		String reasonCode=gridDataHashMap.get("Reason Code").get(0);
-		String districtNeighborhood=gridDataHashMap.get("District/Neighborhood").get(0);
+		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd").get(0);
 		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)").get(0);
 
 		//Step 5: Click Combine Parcel Button
@@ -1437,7 +1438,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),apn,
 				"SMAB-T2677: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
-		softAssert.assertEquals(gridDataHashMap.get("District/Neighborhood").get(0),districtNeighborhood,
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),districtNeighborhood,
 				"SMAB-T2677: Validation that  System populates District/Neighborhood in return to custom screen  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),situs.replaceFirst("\\s+", ""),"SMAB-T2677: Validation that  System populates Situs in return to custom screen  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescription,
