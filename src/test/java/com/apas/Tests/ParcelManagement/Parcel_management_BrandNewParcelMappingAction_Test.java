@@ -218,7 +218,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		 * @throws Exception
 		 */
 		@Test(description = "SMAB-T2663: Verify that User is able to update Situs from the Parcel mapping screen for \"Brand New Parcel\" mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-				"Regression","ParcelManagement" },enabled= true)
+				"Regression","ParcelManagement" },enabled= false)
 		public void ParcelManagement_UpdateChildParcelSitusFirstScreen_BrandNewMappingAction1(String loginUser) throws Exception {
 			String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
 			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);

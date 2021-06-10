@@ -787,6 +787,8 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         //Step14: Log out from the application and log in as BPP Principal
         objBppTrendSetupPage.logout();
         Thread.sleep(30000);
+        driver.navigate().refresh();
+        Thread.sleep(6000);
 
         objBppTrendSetupPage.login(users.PRINCIPAL_USER);
         objBppTrendSetupPage.searchModule(modules.HOME);
@@ -876,7 +878,9 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         //Step10: Log out from the application and log in as BPP Principal
         objBppTrendSetupPage.logout();
         Thread.sleep(30000);
-
+        driver.navigate().refresh();
+        Thread.sleep(6000);
+        
         objBppTrendSetupPage.login(users.PRINCIPAL_USER);
         objBppTrendSetupPage.searchModule(modules.HOME);
 
@@ -896,6 +900,9 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         //Step14: Log out from the application and log in again as BPP Admin
         objBppTrendSetupPage.logout();
         Thread.sleep(30000);
+        driver.navigate().refresh();
+        Thread.sleep(6000);
+ 
 
         objBppTrendSetupPage.login(loginUser);
         objBppTrendSetupPage.searchModule(modules.HOME);

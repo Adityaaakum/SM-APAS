@@ -1126,8 +1126,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(primarySitusValueChildParcel,childprimarySitus,
 				"SMAB-T2659: Validation that primary situs of  child parcel  has value that was entered in first screen through situs modal window");
 
+		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
-	}
+		}
 	/**
 	 * This method is to Parcel Management- Verify that User is able to Return to Custom Screen after performing  a "Combine" mapping action for a Parcel
 	 * @param loginUser

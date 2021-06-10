@@ -221,7 +221,7 @@ public class MappingPage extends ApasGenericPage {
 	 */
 	public void editSitusModalWindowFirstScreen(Map<String, String> dataMap) throws Exception {
 		
-		String cityName = dataMap.get("City Name");
+		String cityName = dataMap.get("Situs City Name");
 		String situsCityCode = dataMap.get("Situs City Code");
 		String situsCityName = dataMap.get("Situs City Name");
 		String direction = dataMap.get("Direction");
