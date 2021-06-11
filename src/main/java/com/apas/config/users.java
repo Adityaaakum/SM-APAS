@@ -16,4 +16,5 @@ public interface users {
 	String BPP_BUSINESS_ADMIN = "bppBusinessAdmin";
 	String OTHER_COUNTY_STAFF = "otherCountStaff";
 	String MAPPING_STAFF = "mappingStaff";
+	String MAPPING_SUPERVISOR = "mappingSupervisor";
 }
