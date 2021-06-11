@@ -261,7 +261,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		String apn2=responseAPNDetails2.get("Name").get(0);
 		
 		//Fetching Active Mobile home parcel
-		String queryAPN3 = "Select Name, ID where name like '134%' AND Status__c='Active' limit 1";
+		String queryAPN3 = "Select Name, ID From Parcel__c where name like '134%' AND Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails3 = salesforceAPI.select(queryAPN3);
 		String apn3=responseAPNDetails3.get("Name").get(0);
 		
