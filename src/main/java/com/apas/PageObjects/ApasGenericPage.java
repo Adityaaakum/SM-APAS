@@ -611,39 +611,50 @@ public void searchModule(String moduleToSearch) throws Exception {
 			}
 			Thread.sleep(5000);
 		}
-			
-			catch (Exception e) {
-				// for parcel search
-					if(searchString.length()== 11 && isSearchStringParcel(searchString)) {
-					ReportLogger.INFO("Opening parcel record: " + searchString);
-					String executionEnv = "";
-				
-					if (System.getProperty("region").toUpperCase().equals("QA"))
-						executionEnv = "qa";
-					if (System.getProperty("region").toUpperCase().equals("E2E"))
-						executionEnv = "e2e";
-					if (System.getProperty("region").toUpperCase().equals("PREUAT"))
-						executionEnv = "preuat";
-					if (System.getProperty("region").toUpperCase().equals("STAGING"))
-						executionEnv = "staging";
-					
-					String   query = "Select Id from Parcel__c where Name = '"+searchString+"'";
-					HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);	
-					
-					 driver.navigate().to("https://smcacre--"+executionEnv+
-							 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
+
+		catch (Exception e) {
+            
+            String executionEnv = "";
+            if (System.getProperty("region").toUpperCase().equals("QA"))
+                executionEnv = "qa";
+            if (System.getProperty("region").toUpperCase().equals("E2E"))
+                executionEnv = "e2e";
+            if (System.getProperty("region").toUpperCase().equals("PREUAT"))
+                executionEnv = "preuat";
+            if (System.getProperty("region").toUpperCase().equals("STAGING"))
+                executionEnv = "staging";
+
+            // for parcel search
+                if(searchString.length()== 11 && isSearchStringParcel(searchString)) {
+                    ReportLogger.INFO("Opening parcel record: " + searchString);
+                    String   query = "Select Id from Parcel__c where Name = '"+searchString+"'";
+                    HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+                    driver.navigate().to("https://smcacre--"+executionEnv+
+                             ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
 					 ReportLogger.INFO("https://smcacre--"+executionEnv+".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
-					 
+					 Thread.sleep(5000);
+                }
+                
+                // for work item search
+                else if(searchString.startsWith("WI-")){
+                    ReportLogger.INFO("Opening WI record: " + searchString);
+                    String   query = "Select Id from Work_Item__c  where Name = '"+searchString+"'";
+
+                    HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);   
+                    driver.navigate().to("https://smcacre--"+executionEnv+
+                             ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
+					 ReportLogger.INFO("https://smcacre--"+executionEnv+".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
 					 Thread.sleep(5000);
 
-					}
-					 else {
-						  ReportLogger.INFO("Unable to search parcel: " + searchString + e);
-					 }
-			}
+                }
+                 else {
+                      ReportLogger.INFO("Unable to search string: " + searchString + e);
+                 }
+        }
 
-	
 	}
+
 	
 	public boolean isSearchStringParcel(String parcel) {
 
@@ -1064,7 +1075,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 	 */
 	public String saveRecord() throws Exception {
 		Click(getButtonWithText("Save"));
-		waitForElementToBeClickable(successAlert,20);
+		waitForElementToBeClickable(successAlert,25);
 		String messageOnAlert = getElementText(successAlert);
 		waitForElementToDisappear(successAlert,10);
 		return messageOnAlert;
@@ -1319,8 +1330,9 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 	 * Description: This method will verify is a cell on a grid displayed from the first row is editable
 	 *
 	 * @param columnNameOnGrid: Column name on which the cell needs to be updated
+	 *  
 	 */
-	public boolean verifyGridCellEditable(String columnNameOnGrid) {
+	public boolean verifyGridCellEditable(String columnNameOnGrid)  {
 		boolean isCellEditable = false;
 		if(verifyElementVisible("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")){
 			isCellEditable = true;
