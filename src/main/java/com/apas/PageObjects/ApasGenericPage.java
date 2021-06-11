@@ -611,10 +611,10 @@ public void searchModule(String moduleToSearch) throws Exception {
 			}
 			Thread.sleep(5000);
 		}
+
 		catch (Exception e) {
             
             String executionEnv = "";
-           
             if (System.getProperty("region").toUpperCase().equals("QA"))
                 executionEnv = "qa";
             if (System.getProperty("region").toUpperCase().equals("E2E"))
@@ -623,33 +623,38 @@ public void searchModule(String moduleToSearch) throws Exception {
                 executionEnv = "preuat";
             if (System.getProperty("region").toUpperCase().equals("STAGING"))
                 executionEnv = "staging";
-           
+
             // for parcel search
                 if(searchString.length()== 11 && isSearchStringParcel(searchString)) {
                     ReportLogger.INFO("Opening parcel record: " + searchString);
                     String   query = "Select Id from Parcel__c where Name = '"+searchString+"'";
                     HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
-                    
+
                     driver.navigate().to("https://smcacre--"+executionEnv+
                              ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
 					 ReportLogger.INFO("https://smcacre--"+executionEnv+".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
 					 Thread.sleep(5000);
                 }
+                
                 // for work item search
                 else if(searchString.startsWith("WI-")){
                     ReportLogger.INFO("Opening WI record: " + searchString);
                     String   query = "Select Id from Work_Item__c  where Name = '"+searchString+"'";
+
                     HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);   
                     driver.navigate().to("https://smcacre--"+executionEnv+
                              ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
 					 ReportLogger.INFO("https://smcacre--"+executionEnv+".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
 					 Thread.sleep(5000);
+
                 }
                  else {
                       ReportLogger.INFO("Unable to search string: " + searchString + e);
                  }
         }
+
 	}
+
 	
 	public boolean isSearchStringParcel(String parcel) {
 

@@ -49,7 +49,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2455,SMAB-T2457:Verify that User is able to view the various error message during Retire Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2455,SMAB-T2457,SMAB-T2672:Verify that User is able to view the various error message during Retire Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 
 	public void ParcelManagement_VerifyErrorMessagesInRetireMappingAction(String loginUser) throws Exception {
@@ -86,9 +86,10 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform Retire Action
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn1);
+		String parentParcelPUC = objWorkItemHomePage.getFieldValueFromAPAS("PUC", "Parcel Information");
 
 		// Step 3: Creating Manual work item for the Active Parcel 
-		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		String workItem = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		// Step 4: Clicking the details tab for the work item newly created and clicking on Related Action Link
 		ReportLogger.INFO("Click on the Related Action link");
@@ -216,11 +217,25 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		driver.switchTo().window(parentWindow);
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn1);
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("PUC"),"99-RETIRED PARCEL",
-				"SMAB-T2455 : Verify PUC of the parcel is updated after Retire action is completed");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("PUC"),parentParcelPUC,
+				"SMAB-T2455 : Verify PUC of the parcel is not updated after Retire action is completed");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"Retired",
 				"SMAB-T2455 : Verify Status of the parcel is updated after Retire action is completed");
-		  
+		 
+		//Step 24: Validate that the work item is automatically closed after the mapping action is completed
+		objMappingPage.searchModule(WORK_ITEM);
+		objMappingPage.displayRecords("All");
+		objMappingPage.globalSearchRecords(workItem);
+		
+		/**Post implementation of SMAB-9063, now, WI will not get closed automatically after the Retire action is completed.
+		   Hence, commenting the below code for now**/
+		
+		/**softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Completed","SMAB-T2672:Verify the status of Work Item is automatically updated to 'Completed'");**/
+		
+		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		softAssert.assertEquals(objMappingPage.getLinkedParcelInWorkItem("0"), apn1,
+				"SMAB-T2672: Validate that parent parcel is displayed in the Linked Items of WI");
 		
 		objMappingPage.logout();
 
@@ -231,24 +246,30 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2456:Verify that User is able to perform Retire Action for more than one active parcels", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2456,SMAB-T2671:Verify that User is able to perform Retire Action for more than one active parcels", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Smoke","Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyRetireMappingActionForMoreThanOneActiveParcels(String loginUser) throws Exception {
 		
 		//Fetching Active General parcel 
-		String queryAPN1 = "Select name,ID  From Parcel__c where name like '0%' AND Status__c='Active' limit 1";
+		String queryAPN1 = "Select Name, ID From Parcel__c where name like '0%' AND Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails1 = salesforceAPI.select(queryAPN1);
 		String apn1=responseAPNDetails1.get("Name").get(0);
 		
 		//Fetching Active Condo parcel 
-		String queryAPN2 = "Select name,ID  From Parcel__c where name like '100%' AND Status__c='Active' limit 1";
+		String queryAPN2 = "Select Name, ID From Parcel__c where name like '100%' AND Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails2 = salesforceAPI.select(queryAPN2);
 		String apn2=responseAPNDetails2.get("Name").get(0);
 		
 		//Fetching Active Mobile home parcel
-		String queryAPN3 = "Select name,ID  From Parcel__c where name like '134%' AND Status__c='Active' limit 1";
+		String queryAPN3 = "Select Name, ID From Parcel__c where name like '134%' AND Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails3 = salesforceAPI.select(queryAPN3);
 		String apn3=responseAPNDetails3.get("Name").get(0);
+		
+		//Add the parcels in a Hash Map for validations later
+		Map<String,String> apnValue = new HashMap<String,String>(); 
+		apnValue.put("APN1", apn1); 
+		apnValue.put("APN2", apn2); 
+		apnValue.put("APN3", apn3); 
 		
 		String concatenateAPN = apn1+","+apn2+","+apn3;
 		
@@ -259,7 +280,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		String mappingActionCreationData = testdata.RETIRE_ACTION;
 		Map<String, String> hashMapRetireeMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformRetireAction");
-
+		
 		// Step1: Login to the APAS application
 		objMappingPage.login(loginUser);
 
@@ -268,7 +289,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		objMappingPage.globalSearchRecords(apn2);
 
 		// Step 3: Creating Manual work item for the Active Parcel 
-		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		String workItem = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		// Step 4: Clicking the details tab for the work item newly created and clicking on Related Action Link
 		ReportLogger.INFO("Click on the Related Action link");
@@ -301,24 +322,45 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		driver.switchTo().window(parentWindow);
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn1);
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("PUC"),"99-RETIRED PARCEL",
-				"SMAB-T2456 : Verify PUC of the "+apn1+" is updated after Retire action is completed");
+		softAssert.assertTrue(!objMappingPage.getFieldValueFromAPAS("PUC").equals("99-RETIRED PARCEL"),
+				"SMAB-T2456 : Verify PUC of the "+apn1+" is not updated after Retire action is completed");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"Retired",
 				"SMAB-T2456 : Verify Status of the "+apn1+" is updated after Retire action is completed");
 		  
 		objMappingPage.globalSearchRecords(apn2);
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("PUC"),"99-RETIRED PARCEL",
-				"SMAB-T2456 : Verify PUC of the "+apn2+" is updated after Retire action is completed");
+		softAssert.assertTrue(!objMappingPage.getFieldValueFromAPAS("PUC").equals("99-RETIRED PARCEL"),
+				"SMAB-T2456 : Verify PUC of the "+apn2+" is not updated after Retire action is completed");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"Retired",
 				"SMAB-T2456 : Verify Status of the "+apn2+" is updated after Retire action is completed");
 		
 		objMappingPage.globalSearchRecords(apn3);
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("PUC"),"99-RETIRED PARCEL",
-				"SMAB-T2456 : Verify PUC of the "+apn3+" is updated after Retire action is completed");
+		softAssert.assertTrue(!objMappingPage.getFieldValueFromAPAS("PUC").equals("99-RETIRED PARCEL"),
+				"SMAB-T2456 : Verify PUC of the "+apn3+" is not updated after Retire action is completed");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"Retired",
 				"SMAB-T2456 : Verify Status of the "+apn3+" is updated after Retire action is completed");
 		
+		//Step 8: Validate that the work item is automatically closed after the mapping action is completed
+		objMappingPage.searchModule(WORK_ITEM);
+		objMappingPage.displayRecords("All");
+		objMappingPage.globalSearchRecords(workItem);
+		driver.navigate().refresh();
+		Thread.sleep(5000);
 		
+		/**Post implementation of SMAB-9063, now, WI will not get closed automatically after the Retire action is completed.
+		   Hence, commenting the below code for now**/
+		
+		/**softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Completed","SMAB-T2671:Verify the status of Work Item is automatically updated to 'Completed'");**/
+		
+		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		
+		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
+				"SMAB-T2671: Validate that first Parent APN is displayed in the linked item");
+		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
+				"SMAB-T2671: Validate that second Parent APN is displayed in the linked item");
+		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("2")),
+				"SMAB-T2671: Validate that third Parent APN is displayed in the linked item");
+				
 		objMappingPage.logout();
 
 	}
