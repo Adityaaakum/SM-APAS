@@ -641,7 +641,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
-		objMappingPage.login(users.RP_APPRAISER);
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
 		objMappingPage.searchModule(WORK_ITEM);
 		objMappingPage.globalSearchRecords(workItemNumber);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
@@ -882,7 +882,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
-		objMappingPage.login(users.RP_APPRAISER);
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
 		objMappingPage.searchModule(WORK_ITEM);
 		objMappingPage.globalSearchRecords(workItemNumber);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
