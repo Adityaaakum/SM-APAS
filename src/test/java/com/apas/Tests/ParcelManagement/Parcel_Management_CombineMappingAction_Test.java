@@ -374,7 +374,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		//Fetching parcel that is Retired
 		String queryRetiredAPNValue = "select Name from Parcel__c where Status__c='Retired' and (Not Name like '%990') and name like '0%' limit 1";
 		String retiredAPNValue = salesforceAPI.select(queryRetiredAPNValue).get("Name").get(0);
-		//String retiredAPNValue = objMappingPage.fetchRetiredAPN();
 
 		//Fetching Interim parcel 
 		String interimAPN = objMappingPage.fetchInterimAPN();
@@ -1031,7 +1030,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.globalSearchRecords(workItemNumber);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		driver.navigate().refresh(); //refresh as the focus is getting lost
-		Thread.sleep(8000);
+		Thread.sleep(10000);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
 		
@@ -1045,11 +1044,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("2")),
 				"SMAB-T2373: Validate that third Parent APN is displayed in the linked item");
 		
-		//Step 18: Fetching work items generated and validating its details
-		
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
-
+		
+		//Step 18: Login from Mapping Supervisor to approve the WI
 		ReportLogger.INFO("Now logging in as RP Appraiser to approve the work item and validate that new WIs are accessible");
 		objWorkItemHomePage.login(MAPPING_SUPERVISOR);
 		
@@ -1057,7 +1055,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.globalSearchRecords(workItemNumber);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		driver.navigate().refresh(); //refresh as the focus is getting lost
-		Thread.sleep(8000);
+		Thread.sleep(10000);
 		objWorkItemHomePage.completeWorkItem();
 		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Completed","SMAB-T1838:Verify user is able to complete the Work Item");
 		
@@ -1071,18 +1069,16 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("2")),
 				"SMAB-T2373: Validate that third Parent APN is displayed in the linked item");
 		
-		//Step 18: Fetching work items generated and validating its details
-		String queryWIs = "SELECT Name,Id FROM Work_Item__c Order By Name Desc Limit 2";
+		//Step 19: Fetching work item generated and validating its details
+		String queryWIs = "SELECT Name,Id FROM Work_Item__c Order By Name Desc Limit 1";
 		HashMap<String, ArrayList<String>> responseWorkItem = salesforceAPI.select(queryWIs);
 		String workItem1=responseWorkItem.get("Name").get(0);
-		String workItem2=responseWorkItem.get("Name").get(1);
 		
+		//Step 20: Validating the Status and PUC on Parent parcels and status of Child parcel
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(childAPNNumber);
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"Active",
 				"SMAB-T2373: Validate the status of child parcel generated");
-		//softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),"00-VACANT LAND",
-		//		"SMAB-T2373: Validate the PUC of child parcel generated");
 		
 		apnValue.forEach((parcelKey, parcel) -> {
 			try {
@@ -1099,7 +1095,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
-
+		
+		//Step 21: Login from RP Appraiser to validate new WI created
 		ReportLogger.INFO("Now logging in as RP Appraiser to validate that new WIs are accessible");
 		objWorkItemHomePage.login(RP_APPRAISER);
 		objMappingPage.searchModule(WORK_ITEM);
@@ -1110,23 +1107,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
 		softAssert.assertEquals(objMappingPage.getLinkedParcelInWorkItem("0"), childAPNNumber,
 				"SMAB-T2443: Validate that Child parcel is displayed in the Linked Items of first generated WI");
-		
-		objMappingPage.Click(objWorkItemHomePage.detailsTab);
-		objMappingPage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Type", "Information"),"New APN",
-				"SMAB-T2443: Validate the Type of WI generated");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Action", "Information"),"Allocate Value",
-				"SMAB-T2443: Validate the Acction of WI generated");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status", "Information"),"In Pool",
-				"SMAB-T2443: Validate the Status of WI generated");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Reference", "Information"),"Neighborhood and District are different of parent parcels",
-				"SMAB-T2376: Validate the Reference of WI generated");
-		
-		objMappingPage.globalSearchRecords(workItem2);
-		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
-		softAssert.assertEquals(objMappingPage.getLinkedParcelInWorkItem("0"), childAPNNumber,
-				"SMAB-T2443: Validate that Child parcel is displayed in the Linked Items of second generated WI");
 		
 		objMappingPage.Click(objWorkItemHomePage.detailsTab);
 		objMappingPage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
