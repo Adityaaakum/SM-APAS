@@ -57,7 +57,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 	public void ParcelManagement_VerifyErrorMessagesInBOEActivationMappingAction(String loginUser) throws Exception {
 		
 		//Fetching parcel that is Retired 		
-		String queryAPNValue = "SELECT Source_Parcel__r.Name From Parcel_Relationship__c Where Parcel_Actions__c != 'BOE Activation' And Source_Parcel__r.status__c = 'Retired' Limit 1";
+		String queryAPNValue = "SELECT Source_Parcel__r.Name,Target_Parcel__r.Name, Target_Parcel_Status__c From Parcel_Relationship__c Where Parcel_Actions__c != 'BOE Activation' And Source_Parcel__r.status__c = 'Retired' Limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		String retiredAPNValue= response.get("Source_Parcel__r").get(0);
 		int index = retiredAPNValue.lastIndexOf(":");
@@ -145,17 +145,10 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
         // Step 1: Fetching parcels that are Active with no Ownership record
         String queryAPNValue =
-        		"SELECT Source_Parcel__r.Name From Parcel_Relationship__c"
-        		+ " Where Parcel_Actions__c != 'BOE Activation'"
-        		+ " And Source_Parcel__r.status__c = 'Retired'"
-        		+ " And Target_Parcel_Status__c = 'Retired'Limit 1";
-        
+        		"SELECT Source_Parcel__r.Name, Parcel_Actions__c,Id,Name  From Parcel_Relationship__c Where Parcel_Actions__c != 'BOE Activation' And Target_Parcel_Status__c = 'Retired' Limit 1";
         HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
-        System.out.println("REsponse-----------------"+responseAPNDetails);
-        String APNValue= responseAPNDetails.get("Source_Parcel__r").get(0);
-		int index = APNValue.lastIndexOf(":");
-		APNValue = APNValue.substring(index+2,APNValue.length()-2);
-        String apn1=APNValue;
+        
+        String apn1=responseAPNDetails.get("Name").get(0);
         //step 2: getting Neighborhood and tra value
         String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
@@ -197,7 +190,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
          //Step 8: Selecting Action as 'Many To Many' & Taxes Paid fields value as 'N/A'
         objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,"BOE Activation");
-		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.firstNonCondoTextBoxLabel),"123456789");
+		objMappingPage.enter("First non-Condo Parcel Number","123456789");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		Thread.sleep(2000);
 		//Step 9: Validating that

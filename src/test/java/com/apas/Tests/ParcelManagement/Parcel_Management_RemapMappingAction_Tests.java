@@ -88,7 +88,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,retiredAPNValue + ","+ activeParcelToPerformMapping2);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2490: Validation that proper error message is displayed if parent parcel is retired");
 		
 	
@@ -172,14 +172,14 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,retiredAPNValue);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2532: Validation that proper error message is displayed if parent parcel is retired");
 
 		//Step 6: Validation that proper error message is displayed if parent parcel is in progress
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,inProgressAPNValue);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2532: Validation that proper error message is displayed if parent parcel is in progress status");
 
 		//Step 7: Verifying that User should be allowed to enter the 9 digit APN without the \"-\" in Parent APN field
@@ -193,28 +193,38 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		
 		//Step 9: Verifying that proper error message is displayed if alphanumeric value  is entered in First non condo parcel field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "123-45*-78&");
-		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));		
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"This parcel number is not valid, it should contain 9 digit numeric values.",
+		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- This parcel number is not valid, it should contain 9 digit numeric values.",
 				"SMAB-T2493: Validation that proper error message is displayed if alphanumeric value  is entered in First non condo parcel field");
 		
 		//Step 10:Verifying that proper error message is displayed if less than 9 disgits are entered in First non condo parcel field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "123-456-78");
-		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));		
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"Parcel Number has to be 9 digit, please enter valid parcel number",
+		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));	
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- This parcel number is not valid, it should contain 9 digit numeric values.",
 				"SMAB-T2493: Validation that proper error message is displayed if less than 9 disgits are entered in First non condo parcel field");
 		
 		//Step 11:Verifying that proper error message is displayed if parcel starting with 100 is entered in First non condo parcel field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "100-456-789");
-		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));		
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"Non Condo Parcel Number cannot start with 100 or 134, Please enter valid Parcel Number",
+		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));	
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Non Condo Parcel Number cannot start with 100, Please enter valid Parcel Number",
 				"SMAB-T2531: Validation that proper error message is displayed if parcel starting with 100 is entered in First non condo parcel field");
 		
-		//Step 12:Verifying that proper error message is displayed if parcel starting with 134 is entered in First non condo parcel field
-		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "134-456-789");
-		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));		
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"Non Condo Parcel Number cannot start with 100 or 134, Please enter valid Parcel Number",
-				"SMAB-T2531: Validation that proper error message is displayed if parcel starting with 134 is entered in First non condo parcel field");
-		
+		/* APN Starting with 134 are allowed in non condo field
+		 * //Step 12:Verifying that proper error message is displayed if parcel starting
+		 * with 134 is entered in First non condo parcel field
+		 * objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,
+		 * "134-456-789");
+		 * objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.
+		 * reasonCodeTextBoxLabel));
+		 * softAssert.assertEquals(objMappingPage.getErrorMessage()
+		 * ,"Non Condo Parcel Number cannot start with 100 or 134, Please enter valid Parcel Number"
+		 * ,
+		 * "SMAB-T2531: Validation that proper error message is displayed if parcel starting with 134 is entered in First non condo parcel field"
+		 * );
+		 */
 		//Step 13: Verifying that User should be allowed to enter the 9 digit APN without the \"-\" in First Non Condo Parcel Field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, activeParcelWithoutHyphen);
 		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));	
@@ -308,18 +318,18 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 					objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, "");
 					objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 				// validating error msg if no parent Apn is provided
-					softAssert.assertEquals(objMappingPage.getErrorMessage(),"The Parent APN cannot be blank.", "SMAB-T2692: validating error message of no parent  APN");
+					softAssert.assertEquals(objMappingPage.getErrorMessage(),"- The Parent APN cannot be blank.", "SMAB-T2692: validating error message of no parent  APN");
 								
 	        // Step 7 : User enters an invalid APN to check
 					objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 					objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, "000000000");
 					objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-					softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following Parent APNs do not exist : 000-000-000", "SMAB-T2483: validating error message of invalid APN");
+					softAssert.assertEquals(objMappingPage.getErrorMessage(),"- The following Parent APNs do not exist : 000-000-000", "SMAB-T2483: validating error message of invalid APN");
 			//Entering multiple same Apns and validating error messages
 					objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 					objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, apn+","+apn);
 					objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-					softAssert.assertEquals(objMappingPage.getErrorMessage(),"The Parent APN can not have duplicate APNs.","SMAB-T2691: Verify that when multiple same APN's are added in parent APN field, it should throw error or show the warning");
+					softAssert.assertEquals(objMappingPage.getErrorMessage(),"- The Parent APN can not have duplicate APNs.","SMAB-T2691: Verify that when multiple same APN's are added in parent APN field, it should throw error or show the warning");
 								
 	  			  driver.switchTo().window(parentWindow);
 				 objMappingPage.logout();
@@ -380,12 +390,12 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	    		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apnlessThan9);
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 				//Validating APN of less than 9 digits
- 				softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+apnlessThan9, "T-SMAB2628 validating error message of invalid APN less than 9 digits");			  
+ 				softAssert.assertEquals(objMappingPage.getErrorMessage(),"- The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+apnlessThan9, "T-SMAB2628 validating error message of invalid APN less than 9 digits");			  
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));		    	
 				objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,invalidApn);
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));	
 				//Validating invalid apn without -
-				softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+apnlessThan9, "T-SMAB2628 validating error message of invalid APN less than 9 digits");		  
+				softAssert.assertEquals(objMappingPage.getErrorMessage(),"- The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+apnlessThan9, "T-SMAB2628 validating error message of invalid APN less than 9 digits");		  
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));		
 				objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,validApn);
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));									
@@ -443,7 +453,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	  			  objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));    
 	  			  objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, invalidApn);
 				  objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-				  softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+invalidApn, "T-SMAB2629 validating error message of invalid APN");			  
+				  softAssert.assertEquals(objMappingPage.getErrorMessage(),"- The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+invalidApn, "T-SMAB2629 validating error message of invalid APN");			  
 				  objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));				
 					//  User enters new APN that alerady exists in the system		
 				  objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,spacedApn);
@@ -456,7 +466,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 				  // Entering . at the end of 8 digit apn
 	  			  objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, invalidApn2);
 				  objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-				  softAssert.assertEquals(objMappingPage.getErrorMessage(),"The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+invalidApn2, "T-SMAB2629 validating error message of invalid APN");			  	
+				  softAssert.assertEquals(objMappingPage.getErrorMessage(),"- The following parent parcel number(s) is not valid, it should contain 9 digit numeric values :"+" "+invalidApn2, "T-SMAB2629 validating error message of invalid APN");			  	
 				
 				  
 	  			  driver.switchTo().window(parentWindow);
@@ -511,12 +521,13 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	  			//User duplicates apn in remap mapping 2 screen 
 	  		    objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apn+","+apn1);
 	  		    objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));	 	          
-	  		    objMappingPage.remapActionForm(RemapParcelMappingData);  	 			  			
+	  		    objMappingPage.remapActionForm(RemapParcelMappingData);  
+	  		    Thread.sleep(4000);
 	  			HashMap<String, ArrayList<String>> gridParcelData=      objMappingPage.getGridDataInHashMap();            
 	             objMappingPage.editGridCellValue("APN", gridParcelData.get("APN").get(1));
-	             objMappingPage.waitForElementToBeVisible(objMappingPage.remapParcelButton, 5);
-	             objMappingPage.Click(objMappingPage.remapParcelButton);
-	             objMappingPage.waitForElementToBeVisible(objMappingPage.remapErrorMessageonSecondScreen, 5);
+                 Thread.sleep(4000);
+	             objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+	             objMappingPage.waitForElementToBeVisible(objMappingPage.remapErrorMessageonSecondScreen, 10);
 	             //Validating error message ,that duplicate apn cannot be remapped to parcels
 	             softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.remapErrorMessageonSecondScreen), "The APN provided is a duplicate APN.Please check.", "SMAB-T2634: validate duplicates Apn Cannot be entered in parcel remap");  			
 	                   

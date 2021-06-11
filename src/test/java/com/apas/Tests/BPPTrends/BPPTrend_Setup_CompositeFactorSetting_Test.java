@@ -163,17 +163,18 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 
 		//Step24: Editing and updating the equipment index factor value
 		ReportLogger.INFO("Clicking show more drop down and clicking edit button");
-		objBppTrendSetupPage.clickOnShowMoreLinkInGridForGivenPropertyType("Commercial");
+		objBppTrendSetupPage.clickOnShowMoreLinkInGridForGivenPropertyType("Agricultural");
 		objBppTrendPage.javascriptClick(objBppTrendSetupPage.editLinkUnderShowMore);
 
 		//Step21: Validating error message on updating Min. Equipment Index Factor value for approved tables
-		objBppTrendSetupPage.enter("Minimum Good Factor","11");
+		objBppTrendSetupPage.enter("Minimum Good Factor","12");
 		objBppTrendPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(5000);
 		ReportLogger.INFO("Validating error message on updating Min. Equipment Index Factor Value for approved tables");
 
-		actualErrorMsg = objBppTrendSetupPage.getIndividualFieldErrorMessage("Minimum Good Factor");
-		softAssert.assertContains(actualErrorMsg, "Minimum Good Factor is locked for editing for the Roll Year", "SMAB-T187: Validating error message on editing minimum equip. index value when calculations are approved");
+		//actualErrorMsg = objBppTrendSetupPage.getIndividualFieldErrorMessage("Minimum Good Factor");
+		//softAssert.assertTrue(actualErrorMsg, "Minimum Good Factor is locked for editing for the Roll Year", "SMAB-T187: Validating error message on editing minimum equip. index value when calculations are approved");
+		softAssert.assertTrue(objBppTrendSetupPage.waitForElementToBeVisible(10,objApasGenericPage.pageError), "SMAB-T187: Validating error message on editing minimum equip. index value when calculations are approved");
 		objBppTrendSetupPage.logout();
 	}
 }

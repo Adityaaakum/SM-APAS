@@ -44,6 +44,7 @@ public class MappingPage extends ApasGenericPage {
 	public String useCodeEditTextBoxSecondScreenLabel = "Use Code";
 	public String numberOfChildNonCondoTextBoxLabel = "Number of Child Non-Condo Parcels";
 	public String numberOfChildCondoTextBoxLabel = "Number of Child Condo Parcels";
+	public String numberOfIntermiParcelLabel = "Number of Interim Parcel";
 	public String nextButton = "Next";
 	public String generateParcelButton = "Generate Parcel(s)";
 	public String combineParcelButton = "Combine Parcel";
@@ -57,7 +58,6 @@ public class MappingPage extends ApasGenericPage {
 	public String errorMessageOnScreenOne = "//div[contains(@class,'flowruntimeBody')]//li |//div[contains(@class,'error') and not(contains(@class,'message-font'))]";
 	public String saveButton = "Save";
 	public String firstCondoTextBoxLabel = "First Condo Parcel Number";
-	public String splitParcelButton = "Split Parcel";
 	public String parcelStatus = "Status";
 	public String parcelPUC = "PUC";
 	public String parcelTRA = "TRA";
@@ -333,20 +333,6 @@ public class MappingPage extends ApasGenericPage {
 	   String queryInProgressAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Status__c like 'In Progress%' Limit 1";
 	   return objSalesforceAPI.select(queryInProgressAPNValue);
    }
- 	
- 		
-   /*
-   This method is used to return the Active APN having a specific Ownership record
-   @return: returns the Active APN
-  */
-    public HashMap<String, ArrayList<String>> getActiveApnHavingOwner(String assesseeName) throws Exception {
-    	return getActiveApnHavingOwner(assesseeName, 1);
-    }
-    
-    public HashMap<String, ArrayList<String>> getActiveApnHavingOwner(String assesseeName, int numberofRecords) throws Exception {
-    	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') AND Id Not IN (Select parcel__c FROM Property_Ownership__c where Owner__r.name != '" + assesseeName + "') and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and Status__c = 'Active' Limit " + numberofRecords;
-    	return objSalesforceAPI.select(queryActiveAPNValue);
-    }
     
     /*
     This method is used to return the Active APN having no Ownership record
@@ -358,7 +344,7 @@ public class MappingPage extends ApasGenericPage {
      }
     
      public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner(int numberofRecords) throws Exception {
-     	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and Status__c = 'Active' Limit " + numberofRecords;
+     	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and (Not Name like '800%') and Status__c = 'Active' Limit " + numberofRecords;
      	return objSalesforceAPI.select(queryActiveAPNValue);
      }
      

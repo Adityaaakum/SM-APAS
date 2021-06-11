@@ -4,6 +4,9 @@ import com.apas.Utils.DateUtil;
 import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
+import com.apas.config.modules;
+import com.apas.config.modulesObjectName;
+
 import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
@@ -319,7 +322,7 @@ public class ApasGenericPage extends Page {
         String xpathDropDownOption;
         if (element instanceof String) {
         	webElement = getWebElementWithLabel((String) element);
-        	String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
+        	String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody') or contains(@class,'slds-input slds-combobox__input')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
 			xpathDropDownOption = commonPath + "//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
 			
         } else{
@@ -333,10 +336,10 @@ public class ApasGenericPage extends Page {
 		}else{
 			scrollToElement(webElement);
 			javascriptClick(webElement);
-			waitUntilElementIsPresent(xpathDropDownOption, 5);
+			waitUntilElementIsPresent(xpathDropDownOption, 10);
 			drpDwnOption = driver.findElement(By.xpath(xpathDropDownOption));
 			scrollToElement(drpDwnOption);
-			waitForElementToBeClickable(drpDwnOption, 3);
+			waitForElementToBeClickable(drpDwnOption, 8);
 			javascriptClick(drpDwnOption);
 		}
 
@@ -486,20 +489,50 @@ public class ApasGenericPage extends Page {
 	 *
 	 * @param moduleToSearch : Module Name to search and open
 	 */
-	public void searchModule(String moduleToSearch) throws Exception {
-		ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
-		waitForElementToBeClickable(appLauncher, 60);
-		Thread.sleep(5000);
-		Click(appLauncher);
-		waitForElementToBeClickable(appLauncherSearchBox, 60);
-		enter(appLauncherSearchBox, moduleToSearch);
-		Thread.sleep(2000);
-		clickNavOptionFromDropDown(moduleToSearch);
-		//This static wait statement is added as the module title is different from the module to search
-		Thread.sleep(4000);
+public void searchModule(String moduleToSearch) throws Exception {
+		
+		try{	
+			waitForElementToBeClickable(appLauncher, 60);
+			//Thread.sleep(5000);
+			Click(appLauncher);			
+			waitForElementToBeClickable(appLauncherSearchBox, 60);
+			enter(appLauncherSearchBox, moduleToSearch);
+			//Thread.sleep(2000);
+			clickNavOptionFromDropDown(moduleToSearch);
+			//This static wait statement is added as the module title is different from the module to search
+			Thread.sleep(4000);
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleToSearch + " tab");
+		}
+		catch(Exception e){
+			Util utl = new Util();	
+			modulesObjectName modobj = new modulesObjectName();
+			moduleToSearch = moduleToSearch.replaceAll("\\s+", "");
+			String moduleURL = envURL + utl.getValueOf(modobj, moduleToSearch.trim());
+			navigateTo(driver,moduleURL);
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Navigating directly" + moduleURL);
+		}
 	}
-
-
+	
+	
+	
+	/*
+	 * public void searchModuleByNameorObject(String moduleName , String
+	 * moduleObjectName) throws IOException {
+	 * ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleName +
+	 * " tab");
+	 * 
+	 * try { //Method -1 waitForElementToBeClickable(appLauncher, 60);
+	 * Thread.sleep(5000); Click(appLauncher); //Method-2
+	 * waitForElementToBeClickable(appLauncherSearchBox, 60);
+	 * enter(appLauncherSearchBox, moduleName); Thread.sleep(2000);
+	 * clickNavOptionFromDropDown(moduleName); //This static wait statement is added
+	 * as the module title is different from the module to search
+	 * Thread.sleep(4000); } catch(Exception e ) { String moduleURL = envURL +
+	 * "/lightning/o/" + moduleObjectName; navigateTo(driver,moduleURL); }
+	 * 
+	 * }
+	 * 
+	 */
 	/**
 	 * Description: This method will logout the logged in user from APAS application
 	 */
@@ -578,6 +611,7 @@ public class ApasGenericPage extends Page {
 			}
 			Thread.sleep(5000);
 		}
+<<<<<<< HEAD
 			
 			catch (Exception e) {
 				
@@ -618,9 +652,52 @@ public class ApasGenericPage extends Page {
 						  ReportLogger.INFO("Unable to search string: " + searchString + e);
 					 }
 			}
+=======
 
-	
+		catch (Exception e) {
+            
+            String executionEnv = "";
+            if (System.getProperty("region").toUpperCase().equals("QA"))
+                executionEnv = "qa";
+            if (System.getProperty("region").toUpperCase().equals("E2E"))
+                executionEnv = "e2e";
+            if (System.getProperty("region").toUpperCase().equals("PREUAT"))
+                executionEnv = "preuat";
+            if (System.getProperty("region").toUpperCase().equals("STAGING"))
+                executionEnv = "staging";
+
+            // for parcel search
+                if(searchString.length()== 11 && isSearchStringParcel(searchString)) {
+                    ReportLogger.INFO("Opening parcel record: " + searchString);
+                    String   query = "Select Id from Parcel__c where Name = '"+searchString+"'";
+                    HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+                    driver.navigate().to("https://smcacre--"+executionEnv+
+                             ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
+					 ReportLogger.INFO("https://smcacre--"+executionEnv+".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
+					 Thread.sleep(5000);
+                }
+                
+                // for work item search
+                else if(searchString.startsWith("WI-")){
+                    ReportLogger.INFO("Opening WI record: " + searchString);
+                    String   query = "Select Id from Work_Item__c  where Name = '"+searchString+"'";
+
+                    HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);   
+                    driver.navigate().to("https://smcacre--"+executionEnv+
+                             ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
+					 ReportLogger.INFO("https://smcacre--"+executionEnv+".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
+					 Thread.sleep(5000);
+
+                }
+                 else {
+                      ReportLogger.INFO("Unable to search string: " + searchString + e);
+                 }
+        }
+>>>>>>> 91a3d9406ebad66589d84d19d05b66aacae9aa40
+
 	}
+
 	
 	public boolean isSearchStringParcel(String parcel) {
 
@@ -1041,7 +1118,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public String saveRecord() throws Exception {
 		Click(getButtonWithText("Save"));
-		waitForElementToBeClickable(successAlert,20);
+		waitForElementToBeClickable(successAlert,25);
 		String messageOnAlert = getElementText(successAlert);
 		waitForElementToDisappear(successAlert,10);
 		return messageOnAlert;
@@ -1291,8 +1368,9 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 	 * Description: This method will verify is a cell on a grid displayed from the first row is editable
 	 *
 	 * @param columnNameOnGrid: Column name on which the cell needs to be updated
+	 *  
 	 */
-	public boolean verifyGridCellEditable(String columnNameOnGrid) {
+	public boolean verifyGridCellEditable(String columnNameOnGrid)  {
 		boolean isCellEditable = false;
 		if(verifyElementVisible("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")){
 			isCellEditable = true;
