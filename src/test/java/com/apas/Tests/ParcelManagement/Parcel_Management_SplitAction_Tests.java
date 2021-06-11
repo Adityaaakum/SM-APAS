@@ -116,11 +116,11 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 				"SMAB-T2481: Validation that help text is generated on clicking the help icon for First non-Condo Parcel text box");
 
 		objMappingPage.Click(objMappingPage.helpIconLegalDescription);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent legal description, leave as blank",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent legal description, leave as blank.",
 				"SMAB-T2481: Validation that help text is generated on clicking the help icon for legal description");
 
 		objMappingPage.Click(objMappingPage.helpIconSitus);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent situs, leave as blank",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent situs, leave as blank.",
 				"SMAB-T2481: Validation that help text is generated on clicking the help icon for Situs text box");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.closeButton));
 
@@ -136,7 +136,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.fillMappingActionForm(hashMapSplitActionInvalidData);
 
 		//Step 13: Validating Error Message having incorrect map book data
-		softAssert.assertContains(objMappingPage.getErrorMessage(),"Non Condo Parcel Number cannot start with 100 or 134, Please enter valid Parcel Number",
+		softAssert.assertContains(objMappingPage.getErrorMessage(),"- Non Condo Parcel Number cannot start with 100, Please enter valid Parcel Number - Condo Parcel Number should start with 100 only, Please enter valid Parcel Number",
 				"SMAB-T2428: Validation that error message is displayed when map book of First Child Non-Condo Parcel is 100");
 		softAssert.assertContains(objMappingPage.getErrorMessage(),"Condo Parcel Number should start with 100 only, Please enter valid Parcel Number",
 				"SMAB-T2295: Validation that error message is displayed when map book of First Child Condo Parcel is any number except 100");
@@ -237,6 +237,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		Thread.sleep(3000);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
 		String reasonCode = objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
@@ -257,7 +258,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,retiredAPNValue);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertContains(objMappingPage.getErrorMessage(),"-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertContains(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2313: Validation that proper error message is displayed if parent parcel is retired");
 
 		//Step 7: Edit Parent APN, enter In-Progress APN and Verify Error Message
@@ -267,7 +268,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,inProgressAPNValue);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertContains(objMappingPage.getErrorMessage(),"-In order to proceed with this action, the parent parcel (s) must be active",
+		softAssert.assertContains(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel (s) must be active",
 				"SMAB-T2313: Validation that proper error message is displayed if parent parcel is in progress status");
 
 		//Step 7: Enter more than one Parent APNs and Verify Error message
@@ -278,7 +279,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,activeParcelToPerformMapping + ","+ activeParcelToPerformMapping2);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertContains(objMappingPage.getErrorMessage(),"-Split process should have exactly one parent Apn",
+		softAssert.assertContains(objMappingPage.getErrorMessage(),"- Split process should have exactly one parent Apn",
 				"SMAB-T2292: Validation that proper error message is displayed if parent parcel is in progress status");
 
 		//Step 8: Edit Parent APN, enter divided Interest APN and Verify Error Message
@@ -287,8 +288,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,dividedInterestAPNValue);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertContains(objMappingPage.getErrorMessage(),"Parent parcel cannot be a divided interest parcel.",
-				"SMAB-T2613: Validation that proper error message is displayed if parent parcel is divided interest parcel");
+		softAssert.assertContains(objMappingPage.getErrorMessage(),"",
+				"SMAB-T2613: Validation that no error message is displayed if parent parcel is divided interest parcel");
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
@@ -588,8 +589,18 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		softAssert.assertEquals(response.size(),0,"SMAB-T2550: Validate that no Parent Parent Work tem is inheritted to Child Parcel "+childAPNNumber2+"  after Split Mapping Action");
 
 		//Step 14: Mark the WI complete
-		query = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
-		salesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
+		 String   queryWI = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
+   	      salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Submitted for Approval");
+          driver.switchTo().window(parentWindow);
+          objWorkItemHomePage.logout();
+          objMappingPage.login(users.MAPPING_SUPERVISOR);
+           Thread.sleep(5000);
+           objMappingPage.searchModule(WORK_ITEM);
+		  objMappingPage.globalSearchRecords(workItemNumber);
+		    objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		     driver.navigate().refresh(); //refresh as the focus is getting lost
+		    Thread.sleep(5000);
+		  objWorkItemHomePage.completeWorkItem();
 
 		//Step 15: Verify Status of Parent & Child Parcels after parcel is split and WI is completed
 		parentAPNStatus = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn);
