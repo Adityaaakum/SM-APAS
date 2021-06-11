@@ -1070,7 +1070,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 	 */
 	public String saveRecord() throws Exception {
 		Click(getButtonWithText("Save"));
-		waitForElementToBeClickable(successAlert,20);
+		waitForElementToBeClickable(successAlert,25);
 		String messageOnAlert = getElementText(successAlert);
 		waitForElementToDisappear(successAlert,10);
 		return messageOnAlert;

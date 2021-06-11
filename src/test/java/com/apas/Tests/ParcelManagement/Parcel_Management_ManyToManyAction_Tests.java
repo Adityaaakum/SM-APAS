@@ -520,7 +520,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 			}
 		});
 		objWorkItemHomePage.logout();
-		Thread.sleep(20000);
+		Thread.sleep(5000);
+		driver.navigate().refresh();
+		Thread.sleep(6000);
 
 		// Step 3: Login to the APAS application using the credentials passed through data provider
 		objMappingPage.login(loginUser);
@@ -641,6 +643,10 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		driver.navigate().refresh();
+		Thread.sleep(6000);
+
 		objMappingPage.login(users.MAPPING_SUPERVISOR);
 		objMappingPage.searchModule(WORK_ITEM);
 		objMappingPage.globalSearchRecords(workItemNumber);
@@ -663,12 +669,12 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		String queryToGetRequestType = "SELECT Work_Item__r.Request_Type__c FROM Work_Item_Linkage__c Where Parcel__r.Name = '"+gridDataHashMap.get("APN").get(0)+"' OR Parcel__r.Name = '"+gridDataHashMap.get("APN").get(1)+"'";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryToGetRequestType);
 		int expectedWorkItemsGenerated = response.get("Work_Item__r").size();
-		softAssert.assertEquals(expectedWorkItemsGenerated,4,"SMAB-T2722: Verify 2 new Work Items are generated and linked to each child parcel after many to many mapping action is performed and WI is completed");
+		softAssert.assertEquals(expectedWorkItemsGenerated,2,"SMAB-T2722: Verify 2 new Work Items are generated and linked to each child parcel after many to many mapping action is performed and WI is completed");
 
 		softAssert.assertContains(response.get("Work_Item__r").get(0),"New APN - Update Characteristics & Verify PUC","SMAB-T2722: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
-		softAssert.assertContains(response.get("Work_Item__r").get(1),"New APN - Allocate Value","SMAB-T2722: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
-		softAssert.assertContains(response.get("Work_Item__r").get(2),"New APN - Update Characteristics & Verify PUC","SMAB-T2722: Verify Request Type of 2 new Work Items generated that are linked to each many to many mapping action is performed and WI is completed");
-		softAssert.assertContains(response.get("Work_Item__r").get(3),"New APN - Allocate Value","SMAB-T2722: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
+		//softAssert.assertContains(response.get("Work_Item__r").get(1),"New APN - Allocate Value","SMAB-T2722: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
+		softAssert.assertContains(response.get("Work_Item__r").get(1),"New APN - Update Characteristics & Verify PUC","SMAB-T2722: Verify Request Type of 2 new Work Items generated that are linked to each many to many mapping action is performed and WI is completed");
+		//softAssert.assertContains(response.get("Work_Item__r").get(3),"New APN - Allocate Value","SMAB-T2722: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
 
 		driver.switchTo().window(parentWindow);
 
@@ -760,7 +766,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 			}
 		});
 		objWorkItemHomePage.logout();
-		Thread.sleep(20000);
+		Thread.sleep(5000);
+		driver.navigate().refresh();
+		Thread.sleep(6000);
 
 		// Step 3: Login to the APAS application using the credentials passed through data provider
 		objMappingPage.login(loginUser);
@@ -882,6 +890,10 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		driver.navigate().refresh();
+		Thread.sleep(6000);
+
 		objMappingPage.login(users.MAPPING_SUPERVISOR);
 		objMappingPage.searchModule(WORK_ITEM);
 		objMappingPage.globalSearchRecords(workItemNumber);
@@ -904,12 +916,12 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		String queryToGetRequestType = "SELECT Work_Item__r.Request_Type__c FROM Work_Item_Linkage__c Where Parcel__r.Name = '"+gridDataHashMap.get("APN").get(0)+"' OR Parcel__r.Name = '"+gridDataHashMap.get("APN").get(1)+"'";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryToGetRequestType);
 		int expectedWorkItemsGenerated = response.get("Work_Item__r").size();
-		softAssert.assertEquals(expectedWorkItemsGenerated,4,"SMAB-T2730: Verify 2 new Work Items are generated and linked to each child parcel after many to many mapping action is performed and WI is completed");
+		softAssert.assertEquals(expectedWorkItemsGenerated,2,"SMAB-T2730: Verify 2 new Work Items are generated and linked to each child parcel after many to many mapping action is performed and WI is completed");
 
 		softAssert.assertContains(response.get("Work_Item__r").get(0),"New APN - Update Characteristics & Verify PUC","SMAB-T2730: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
-		softAssert.assertContains(response.get("Work_Item__r").get(1),"New APN - Allocate Value","SMAB-T2730: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
-		softAssert.assertContains(response.get("Work_Item__r").get(2),"New APN - Update Characteristics & Verify PUC","SMAB-T2730: Verify Request Type of 2 new Work Items generated that are linked to each many to many mapping action is performed and WI is completed");
-		softAssert.assertContains(response.get("Work_Item__r").get(3),"New APN - Allocate Value","SMAB-T2730: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
+		//softAssert.assertContains(response.get("Work_Item__r").get(1),"New APN - Allocate Value","SMAB-T2730: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
+		softAssert.assertContains(response.get("Work_Item__r").get(1),"New APN - Update Characteristics & Verify PUC","SMAB-T2730: Verify Request Type of 2 new Work Items generated that are linked to each many to many mapping action is performed and WI is completed");
+		//softAssert.assertContains(response.get("Work_Item__r").get(3),"New APN - Allocate Value","SMAB-T2730: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
 
 		driver.switchTo().window(parentWindow);
 
