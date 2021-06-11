@@ -1235,6 +1235,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_CombineMappingAction_NoPrimarySitusTRAOwnership(String loginUser) throws Exception {
 
+		String  childAPNPUC;
 		//Fetching parcels that are Active with no Ownership record, no  tra and no primary situs
 		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and TRA__c=NULL and Primary_Situs__c=NULL Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
@@ -1299,7 +1300,14 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		//Step 7: Click generate Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		objMappingPage.getSuccessMessage();
 
+		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+apn+"') limit 1");
+		if(responsePUCDetailsChildAPN.size()==0)
+			  childAPNPUC ="";
+		else
+			childAPNPUC=responsePUCDetailsChildAPN.get("Name").get(0);
+		
 		//Step 8: Navigating back to the WI that was created and clicking on related action link 
 		driver.switchTo().window(parentWindow);
 		objMappingPage.globalSearchRecords(workItem);
@@ -1323,8 +1331,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2677: Validation that  System populates Legal Description in return to custom screen from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),tra,
 				"SMAB-T2677: Validation that  System populates TRA in return to custom screen from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),"In Progress - New Parcel",
-				"SMAB-T2677: Validation that  System populates Use Code as In Progress - New Parcel");
+		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),childAPNPUC,
+				"SMAB-T2677: Validation that  System populates Use Code as that was edited in custom screen");
 		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)").get(0),parcelSizeSQFT,
 				"SMAB-T2677: Validation that  System populates parcel size column in return to custom screen from the parcel size that was entered while performing mapping action  ");
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(objMappingPage.updateParcelsButton)),
@@ -1350,6 +1358,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	@Test(description = "SMAB-T2677:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Combine\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_CombineMappingAction_WithPrimarySitusTRA(String loginUser) throws Exception {
+
+		String  childAPNPUC;
 
 		//Fetching parcels that are Active with same Ownership record
 		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and  Primary_Situs__c !=NULL Limit 2";
@@ -1419,7 +1429,14 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		//Step 7: Click Combine Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		objMappingPage.getSuccessMessage();
 
+		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+apn+"') limit 1");
+		if(responsePUCDetailsChildAPN.size()==0)
+			  childAPNPUC ="";
+		else
+			childAPNPUC=responsePUCDetailsChildAPN.get("Name").get(0);
+		
 		//Step 8: Navigating back to the WI that was created and clicking on related action link 
 		driver.switchTo().window(parentWindow);
 		objMappingPage.globalSearchRecords(workItem);
@@ -1443,8 +1460,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2677: Validation that  System populates Legal Description in return to custom screen from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),tra,
 				"SMAB-T2677: Validation that  System populates TRA in return to custom screen from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),"In Progress - New Parcel",
-				"SMAB-T2677: Validation that  System populates Use Code as In Progress - New Parcel");
+		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),childAPNPUC,
+				"SMAB-T2677: Validation that  System populates Use Code as that was edited in custom screen");
 		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)").get(0),parcelSizeSQFT,
 				"SMAB-T2677: Validation that  System populates parcel size column in return to custom screen from the parcel size that was entered while performing mapping action  ");
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(objMappingPage.updateParcelsButton)),
@@ -1456,6 +1473,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	@Test(description = "SMAB-T2677:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Combine\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_CombineMappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
+
+		String  childAPNPUC;
 
 		//Fetching parcels that are Active with same Ownership record
 		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and  Primary_Situs__c !=NULL Limit 2";
@@ -1516,6 +1535,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.getSuccessMessage();
 
+		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+apn+"') limit 1");
+		if(responsePUCDetailsChildAPN.size()==0)
+			  childAPNPUC ="";
+		else
+			childAPNPUC=responsePUCDetailsChildAPN.get("Name").get(0);
+		
 		//Step 8: Navigating  to the independent mapping action WI that would have been created after performing combine action and clicking on related action link 
 		String workItemId= objWorkItemHomePage.getWorkItemIDFromParcelOnWorkbench(apn1);
 		String query = "SELECT Name FROM Work_Item__c where id = '"+ workItemId + "'";
@@ -1542,8 +1567,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2677: Validation that  System populates Legal Description in return to custom screen from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),tra,
 				"SMAB-T2677: Validation that  System populates TRA in return to custom screen from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),"In Progress - New Parcel",
-				"SMAB-T2677: Validation that  System populates Use Code as In Progress - New Parcel");
+		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),childAPNPUC,
+				"SMAB-T2677: Validation that  System populates Use Code that was edited in custom screen");
 		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)").get(0),parcelSizeSQFT,
 				"SMAB-T2677: Validation that  System populates parcel size column in return to custom screen from the parcel size that was entered while performing mapping action  ");
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(objMappingPage.updateParcelsButton)),
