@@ -57,9 +57,11 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 	public void ParcelManagement_VerifyErrorMessagesInBOEActivationMappingAction(String loginUser) throws Exception {
 		
 		//Fetching parcel that is Retired 		
-		String queryAPNValue = "SELECT Source_Parcel__r.Name, Parcel_Actions__c,Id,Name  From Parcel_Relationship__c Where Parcel_Actions__c != 'BOE Activation' And Target_Parcel_Status__c = 'Retired' Limit 1";
+		String queryAPNValue = "SELECT Source_Parcel__r.Name From Parcel_Relationship__c Where Parcel_Actions__c != 'BOE Activation' And Source_Parcel__r.status__c = 'Retired' Limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
-		String retiredAPNValue= response.get("Name").get(0);
+		String retiredAPNValue= response.get("Source_Parcel__r").get(0);
+		int index = retiredAPNValue.lastIndexOf(":");
+		retiredAPNValue = retiredAPNValue.substring(index+2,retiredAPNValue.length()-2);
 		String retiredParcelWithoutHyphen=retiredAPNValue.replace("-","");
 
 		//Fetching parcels that are Active 
@@ -97,7 +99,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		// Step 6: Select the BOE activation value in Action field
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,"BOE Activation");
 		//Step 7: Validating Error for parent parcel for 'BOE Activation' on first screen
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"-In order to proceed with this action, the parent parcel (s) must be Retired.",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"- In order to proceed with this action, the parent parcel(s) must be Retired.",
 						"SMAB-T2748: Validation that Warning: -In order to proceed with  BOE activation , the parent parcel (s) must be Retired.");
 		Thread.sleep(2000);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
@@ -113,18 +115,19 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 						"SMAB-T2749: Validate that 'Reason Code' is a mandatory field");
 		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel), "test");
 
-		objMappingPage.enter("First non-Condo Parcel Number","123456789");
+		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.firstNonCondoTextBoxLabel),"123456789");
 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		//Step 9: Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				" Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789 for Non-Condo Parcel.",
 						"SMAB-T2754,SMAB-T2689: Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
 
 		//Step 10 :Clicking generate parcel button
 	    objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-	    softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Please Review Spatial Information",
+	    softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen()," Parcel(s) have been created successfully. Please review spatial information.",
 				"SMAB-T2688: Validate that User is able to perform BOE Activation action for one retired parcel");
-		
+	    driver.switchTo().window(parentWindow);
 		objMappingPage.logout();
 
 	}
@@ -141,9 +144,18 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
     public void ParcelManagement_VerifyBOEActivationMappingActionOutputValidations(String loginUser) throws Exception {
 
         // Step 1: Fetching parcels that are Active with no Ownership record
-        String queryAPNValue = "SELECT Source_Parcel__r.Name, Parcel_Actions__c,Id,Name  From Parcel_Relationship__c Where Parcel_Actions__c != 'BOE Activation' And Target_Parcel_Status__c = 'Retired' Limit 1";
+        String queryAPNValue =
+        		"SELECT Source_Parcel__r.Name From Parcel_Relationship__c"
+        		+ " Where Parcel_Actions__c != 'BOE Activation'"
+        		+ " And Source_Parcel__r.status__c = 'Retired'"
+        		+ " And Target_Parcel_Status__c = 'Retired'Limit 1";
+        
         HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
-        String apn1=responseAPNDetails.get("Name").get(0);
+        System.out.println("REsponse-----------------"+responseAPNDetails);
+        String APNValue= responseAPNDetails.get("Source_Parcel__r").get(0);
+		int index = APNValue.lastIndexOf(":");
+		APNValue = APNValue.substring(index+2,APNValue.length()-2);
+        String apn1=APNValue;
         //step 2: getting Neighborhood and tra value
         String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
@@ -185,7 +197,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
          //Step 8: Selecting Action as 'Many To Many' & Taxes Paid fields value as 'N/A'
         objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,"BOE Activation");
-		objMappingPage.enter("First non-Condo Parcel Number","123456789");
+		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.firstNonCondoTextBoxLabel),"123456789");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		Thread.sleep(2000);
 		//Step 9: Validating that
