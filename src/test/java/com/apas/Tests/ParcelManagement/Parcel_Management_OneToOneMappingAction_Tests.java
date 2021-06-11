@@ -593,6 +593,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	        driver.switchTo().window(parentWindow);
 	        objWorkItemHomePage.logout();
 	        objMappingPage.login(users.RP_APPRAISER);
+	        Thread.sleep(5000);
 	        objMappingPage.searchModule(WORK_ITEM);
 			objMappingPage.globalSearchRecords(WorkItemNo);
 			objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);

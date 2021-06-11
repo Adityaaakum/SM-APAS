@@ -13,15 +13,18 @@
 
     "Comments": "Perform one to one mapping",
     "Legal Description": "Legal PM 85/25-260",
-    "Situs City Description": "Daly City",
-    "Situs City Code": "DC",
-    "Situs City Name": "DALY CITY",
+
+    "Situs City Description": "ATHERTON",
+    "Situs City Code": "AT",
+    "Situs City Name": "ATHERTON",
+
+   
     "Direction": "West Coast",
     "Situs Number": "69",
     "Situs Street Name": "CLIFFSIDE",
     "Situs Type": "ALLEE",
     "Situs Unit Number": "56",
-    "City Name": "DALY CITY"
+    "City Name": "ATHERTON"
           
   }
 }
