@@ -119,10 +119,7 @@ public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 			   softAssert.assertEquals(Curr_Approver,WP_SupervisorName,"SMAB-T2552:Verify Current Approver and Work Pool supervisor are same");			   
 			   softAssert.assertEquals(Approver,WP_SupervisorName,"SMAB-T2552:Verify Approver and Work Pool supervisor are same");
 			   
-			   String updateWIStatus = "SELECT Id FROM Work_Item__c where Name = '"+WIName+"'";
-			   salesforceAPI.update("Work_Item__c", updateWIStatus, "Status__c", "Completed");
-
-			   ReportLogger.INFO("Step 11: Logging out from SF");
+			   ReportLogger.INFO("Step 10: Logging out from SF");
 
 			   objApasGenericPage.logout();	
 			   
