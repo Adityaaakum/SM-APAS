@@ -592,7 +592,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	     	   salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Submitted for Approval");
 	        driver.switchTo().window(parentWindow);
 	        objWorkItemHomePage.logout();
-	        objMappingPage.login(users.RP_APPRAISER);
+	        objMappingPage.login(users.MAPPING_SUPERVISOR);
 	        Thread.sleep(5000);
 	        objMappingPage.searchModule(WORK_ITEM);
 			objMappingPage.globalSearchRecords(WorkItemNo);
@@ -611,10 +611,9 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
     		String queryToGetRequestType = "SELECT Work_Item__r.Request_Type__c FROM Work_Item_Linkage__c Where Parcel__r.Name = '"+gridDataHashMap.get("APN").get(0)+"' ";
     		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryToGetRequestType);
     		int expectedWorkItemsGenerated = response.get("Work_Item__r").size();
-    		softAssert.assertEquals(expectedWorkItemsGenerated,2,"SMAB-T2717: Verify 2 new Work Items are generated and linked to each child parcel after one to one mapping action is performed and WI is completed");
-
+    		softAssert.assertEquals(expectedWorkItemsGenerated,1,"SMAB-T2717: Verify 2 new Work Items are generated and linked to each child parcel after one to one mapping action is performed and WI is completed");
+           // currently Allocate value is not genrated as part of new story so removed asseration for that
     		softAssert.assertContains(response.get("Work_Item__r").get(0),"New APN - Update Characteristics & Verify PUC","SMAB-T2717: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
-    		softAssert.assertContains(response.get("Work_Item__r").get(1),"New APN - Allocate Value","SMAB-T2717: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after one to one  mapping action is performed and WI is completed");
     		
         //Validation that  System populates Situs  from the parent parcel
       

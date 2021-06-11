@@ -282,15 +282,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		softAssert.assertContains(objMappingPage.getErrorMessage(),"- Split process should have exactly one parent Apn",
 				"SMAB-T2292: Validation that proper error message is displayed if parent parcel is in progress status");
 
-		//Step 8: Edit Parent APN, enter divided Interest APN and Verify Error Message
-		String dividedInterestAPNValue= objMappingPage.fetchDividedInterestAPN();
-
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
-		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,dividedInterestAPNValue);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		softAssert.assertContains(objMappingPage.getErrorMessage(),"",
-				"SMAB-T2613: Validation that no error message is displayed if parent parcel is divided interest parcel");
-
+		
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 
@@ -614,13 +606,11 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String queryToGetRequestType = "SELECT Work_Item__r.Request_Type__c FROM Work_Item_Linkage__c Where Parcel__c = '"+childAPNId1+"' OR Parcel__c = '"+childAPNId2+"'";
 		response = salesforceAPI.select(queryToGetRequestType);
 		int expectedWorkItemsGenerated = response.get("Work_Item__r").size();
-		softAssert.assertEquals(expectedWorkItemsGenerated,4,"SMAB-T2551: Verify 2 new Work Items are generated and linked to each child parcel after parcel is split and WI is completed");
+		softAssert.assertEquals(expectedWorkItemsGenerated,2,"SMAB-T2551: Verify 2 new Work Items are generated and linked to each child parcel after parcel is split and WI is completed");
 
 		softAssert.assertContains(response.get("Work_Item__r").get(0),"New APN - Update Characteristics & Verify PUC","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
-		softAssert.assertContains(response.get("Work_Item__r").get(1),"New APN - Allocate Value","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
-		softAssert.assertContains(response.get("Work_Item__r").get(2),"New APN - Update Characteristics & Verify PUC","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
-		softAssert.assertContains(response.get("Work_Item__r").get(3),"New APN - Allocate Value","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
-	}
+		
+		}
 	/**
 	 * This method is to Parcel Management- Verify that User is able to update Situs of child parcels from the Parcel mapping screen for "Split" mapping action
 	 * @param loginUser
