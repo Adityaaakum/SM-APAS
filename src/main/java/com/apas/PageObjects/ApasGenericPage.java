@@ -1285,10 +1285,15 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
    @return: returns the Divided Interest APN
   */
 	public String fetchDividedInterestAPN() throws Exception {
-		String queryAPNValue = "select Name, Status__c from Parcel__c Where NOT(Name like '%0') limit 1";
+		String queryAPNValue = "select Name, Status__c from Parcel__c Where NOT(Name like '%0')  limit 1";
 		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryAPNValue);
 		String dividedInterestAPNValue = "";
 		dividedInterestAPNValue = response.get("Name").get(0);
+		 String   dividedInterestStatusCheck= "Select Status__c from Parcel__c where name='"+dividedInterestAPNValue+"'";
+		if(objSalesforceAPI.select(dividedInterestStatusCheck).get("Status__c").get(0)!="Active")
+		{
+			 objSalesforceAPI.update("Parcel__c","Select Id from Parcel__c where name='"+dividedInterestAPNValue+"'", "Status__c", "Active");
+		}
 
 		return dividedInterestAPNValue;
 	}
