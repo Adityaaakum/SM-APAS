@@ -506,7 +506,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 		catch(Exception e){
 			Util utl = new Util();	
 			modulesObjectName modobj = new modulesObjectName();
-			moduleToSearch = moduleToSearch.replaceAll("\\s+", "");
+			moduleToSearch = moduleToSearch.replaceAll("\\s+", "").replace("-", "");
 			String moduleURL = envURL + utl.getValueOf(modobj, moduleToSearch.trim());
 			navigateTo(driver,moduleURL);
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Navigating directly" + moduleURL);
