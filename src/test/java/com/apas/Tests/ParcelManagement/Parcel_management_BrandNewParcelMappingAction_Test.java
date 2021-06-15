@@ -297,15 +297,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
             
 
             //Completing the workItem
-            objWorkItemHomePage.completeWorkItem();         
-		   
-   		
-			/*
-			 * String queryWI =
-			 * "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
-			 * salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Completed");
-			 */
-     	   
+           objWorkItemHomePage.completeWorkItem();             	   
      	   objMappingPage.searchModule(PARCELS);
 		   objMappingPage.globalSearchRecords(newCreatedApn);
 		   
