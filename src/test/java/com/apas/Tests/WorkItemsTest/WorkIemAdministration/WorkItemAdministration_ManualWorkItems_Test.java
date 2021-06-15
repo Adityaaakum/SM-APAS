@@ -113,7 +113,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		softAssert.assertTrue(primarySitus.contains(apasGenericObj.getFieldValueFromAPAS("Street", "Reference Data Details")),
 				"SMAB-T1838: Validate user is able to validate the value of 'Street' field");
 
-		softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.wiStatusDetailsPage),"Submitted for Approval","SMAB-T1838: Validate user is able to validate the value of 'Status' field");
+		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus,"Information"),"Submitted for Approval","SMAB-T1838: Validate user is able to validate the value of 'Status' field");
 		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage, "Information"),"RP","SMAB-T1838: Validate user is able to validate the value of 'Type' field");
 		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wiActionDetailsPage, "Information"),"CPI Factor","SMAB-T1838: Validate user is able to validate the value of 'Action' field");
 		softAssert.assertEquals(apasGenericObj.getFieldValueFromAPAS(objWorkItemHomePage.wiWorkPoolDetailsPage, "Information"),"Disabled Veterans","SMAB-T1838: Validate user is able to validate the value of 'Work Pool' field");
@@ -238,6 +238,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 
 		//Step5:Accept the work items created above
 		driver.navigate().refresh();
+		Thread.sleep(3000);
 		objWorkItemHomePage.searchModule(HOME);
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 

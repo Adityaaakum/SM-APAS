@@ -527,8 +527,9 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	             objMappingPage.editGridCellValue("APN", gridParcelData.get("APN").get(1));
                  Thread.sleep(4000);
 	             objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-	             objMappingPage.waitForElementToBeVisible(objMappingPage.remapErrorMessageonSecondScreen, 10);
+	            
 	             //Validating error message ,that duplicate apn cannot be remapped to parcels
+	             Thread.sleep(4000);
 	             softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.remapErrorMessageonSecondScreen), "The APN provided is a duplicate APN.Please check.", "SMAB-T2634: validate duplicates Apn Cannot be entered in parcel remap");  			
 	                   
 	             driver.switchTo().window(parentWindow);

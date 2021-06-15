@@ -254,7 +254,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		String factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();	
 		softAssert.assertEquals(factorValueSaved,Integer.toString(maxEquipIndexNewValue)+"%","SMAB-T271,SMAB-T172,SMAB-T139: Verify user is able to edit the Max Equipemnt Index factor value  when table status is 'Calculated'");
 		driver.navigate().refresh();
-		Thread.sleep(2000);
+		Thread.sleep(7000);
 		
 		//Step8: Verify table status when Max. Equipment Index factor Settings value is updated
 		softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Commercial Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Commercial Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
