@@ -100,7 +100,9 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
 
 		//Step 10: Validating warning message on second screen
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"Warning: If a parent parcel value is present"
+				+ " it will not be taken into consideration while creating a new parcel",
 				"SMAB-T2537: Validation that Warning present on secound screeen ");
 
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -112,7 +114,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 
 		//Step 12: Validating that Parcel has been successfully created.
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),
-				"Parcel(s) have been successfully created. Please Review Spatial Information",
+				"Parcel(s) have been created successfully. Please review spatial information.",
 				"SMAB-T2547: Validation that Parcel has been created successfully. Please Review Spatial Information");
 
 		//Step 13: Validation that child parcel primary situs is blank since  situs was not updated in first screen
@@ -168,28 +170,38 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 
 		//Step 5: Validating mandatory field validation
 		objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.reasonCodeTextBoxLabel,"");
-		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.reasonCodeTextBoxLabel,""),"Please enter the required field : Reason Code, First non-Condo Parcel Number",
+		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage
+				(objMappingPage.reasonCodeTextBoxLabel,""),
+				"- Please enter the required field(s) : Reason Code, First Non-Condo Parcel Number",
 				"SMAB-T2527: Validation that reason code is a mandatory field");
 		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel), "Performing Brand New Parcel mapping action");
 		objMappingPage.scrollToBottomOfPage();
 
 		//Step 6: Validation that proper error message is displayed if a parcel number starting from 100 is entered in non condo number field
-		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"100-234-561"),"Non Condo Parcel Number cannot start with 100, Please enter valid Parcel Number",
+		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage
+				(objMappingPage.firstNonCondoTextBoxLabel,"100-234-561"),
+				"- Non Condo Parcel Number cannot start with 100, Please enter valid Parcel Number",
 				"SMAB-T2525: Validation that proper error message is displayed if a parcel number starting from 100 is entered in non condo number field");
 
 		//Step 7: Validation that proper  error message is displayed if an special character parcel number is entered in non condo number field
 		objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"12#-123-3@$");
-		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"abc123123abc"),"This parcel number is not valid, it should contain 9 digit numeric values.",
+		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage
+				(objMappingPage.firstNonCondoTextBoxLabel,"abc123123abc"),
+				"- This parcel number is not valid, it should contain 9 digit numeric values.",
 				"SMAB-T2523: Validation that proper error message is displayed if an alphanummeric parcel number is entered in non condo number field");
 
 		//Step 8: Validation that proper  error message is displayed if an alphanummeric parcel number is entered in non condo number field
 		objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"abc123123abc");
-		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"abc123123abc"),"This parcel number is not valid, it should contain 9 digit numeric values.",
+		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage
+				(objMappingPage.firstNonCondoTextBoxLabel,"abc123123abc"),
+				"- This parcel number is not valid, it should contain 9 digit numeric values.",
 				"SMAB-T2523: Validation that proper error message is displayed if an alphanummeric parcel number is entered in non condo number field");
 
 
 		//Step 9: Validation that proper  error message is displayed if parcel number  not of Nine digits is entered in non condo number field
-		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"010123"),"This parcel number is not valid, it should contain 9 digit numeric values.",
+		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage
+				(objMappingPage.firstNonCondoTextBoxLabel,"010123"),
+				"- This parcel number is not valid, it should contain 9 digit numeric values.",
 				"SMAB-T2523: Validation that proper error message is displayed if  parcel number  not of Nine digits is entered in non condo number field");
 		//Step 10: entering data in form for Brand New Parcel mapping
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
@@ -265,15 +277,34 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
            HashMap<String, ArrayList<String>> statusnewApn = objParcelsPage.fetchFieldValueOfParcel("Status__c", newCreatedApn);
              // validating status of brand new parcel           
             softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2643: Verifying the status of the new parcel");
-            driver.switchTo().window(parentWindow);
-		    objMappingPage.logout();  
+        
+            //Submit work item for approval
+            String query = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
+            salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
+
+             driver.switchTo().window(parentWindow);
+            objWorkItemHomePage.logout();
+            Thread.sleep(5000);
+            driver.navigate().refresh();
+            Thread.sleep(6000);
+
+             objMappingPage.login(users.MAPPING_SUPERVISOR);
+            objMappingPage.searchModule(WORK_ITEM);
+            objMappingPage.globalSearchRecords(workItemNumber);
+            objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+            driver.navigate().refresh(); //refresh as the focus is getting lost
+            Thread.sleep(5000);
             
-		    Thread.sleep(10000);
-		    objMappingPage.login(users.RP_APPRAISER);
-   		
+
             //Completing the workItem
-           String   queryWI = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
-     	   salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Completed");
+            objWorkItemHomePage.completeWorkItem();         
+		   
+   		
+			/*
+			 * String queryWI =
+			 * "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
+			 * salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Completed");
+			 */
      	   
      	   objMappingPage.searchModule(PARCELS);
 		   objMappingPage.globalSearchRecords(newCreatedApn);
