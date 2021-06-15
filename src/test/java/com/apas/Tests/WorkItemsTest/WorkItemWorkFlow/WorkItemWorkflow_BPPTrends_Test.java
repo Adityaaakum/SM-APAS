@@ -888,6 +888,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
 
         //Step12: Return the Work Item
         driver.navigate().refresh();
+        objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.inPoolTab, 15);
         objWorkItemHomePage.returntWorkItem(importWorkItem,"Test WI Rejection");
 
         //Step13: Verify Status of WI 'Perform Calculations' is 'Completed'

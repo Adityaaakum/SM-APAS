@@ -171,16 +171,16 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			if(!waitForElementToBeVisible(20,dropDownIconBppCompFactorSetting))
 				Click(bppCompFactorSettingTab);
 			if(!waitForElementToBeVisible(20,dropDownIconBppCompFactorSetting))
-				clickAction(bppCompFactorSettingTab);
+				Click(bppCompFactorSettingTab);
 		}
 		if(waitForElementToBeVisible(20,dropDownIconBppCompFactorSetting))
 
-			javascriptClick(dropDownIconBppCompFactorSetting);
+			Click(dropDownIconBppCompFactorSetting);
 		//clickAction(newBtnToCreateEntry);
 		if(!verifyElementVisible(newButton))
 			Click(dropDownIconBppCompFactorSetting);
 		if(!verifyElementVisible(newButton))
-			clickAction(dropDownIconBppCompFactorSetting);
+			Click(dropDownIconBppCompFactorSetting);
 
 		Click(newButton);
 
@@ -223,7 +223,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			Click(waitForElementToBeClickable(dropDownIconBppSetting));
 
 		//createRecord();
-		clickAction(waitForElementToBeClickable(newBtnToCreateEntry));
+		Click(waitForElementToBeClickable(newBtnToCreateEntry));
 		enter(objApasGenericPage.maxEquipmentIndexFactor,equipIndexFactorValue);
 		objPage.Click(objPage.getButtonWithText("Save"));
 	}
