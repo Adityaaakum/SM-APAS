@@ -27,7 +27,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public final String TAB_StaffOnHold = "Staff - On Hold";
 	public final String TAB_StaffInPool = "Staff - In Pool";
 	public final String Tab_WorkItems_ON_parcel="Work Items";
-	
+
 	ApasGenericPage objApasGenericPage;
 	Page objPageObj;
 	SalesforceAPI salesforceAPI ;
@@ -46,8 +46,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String dropDownAction = "Action";
 
 	public String tabPoolAssignment = "Pool Assignments";
-	
-	
+
+
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
 	public WebElement successAlert;
 
@@ -92,17 +92,17 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	@FindBy(xpath = "//label[text()='Returned Reason']//following-sibling::div//input")
 	public WebElement returnedReasonTxtBox;
-	
+
 	@FindBy(xpath = "//table[@role='grid']//span[text()='Action']")
 	public WebElement actionColumn;
-	
+
 	@FindBy(xpath = "//*[@aria-labelledby='In Progress__item']//span[text()='Action']")
 	public WebElement actionColumnInProgressTab;
 
 	public String linkedItemEFileIntakeLogs = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'E File Intake Logs')]";
 
 	public String relatedBuildingPermits = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'Related Building Permits')]";
-	
+
 	@FindBy(xpath="//a[@title='Home']")
 	public WebElement lnkTABHome;
 
@@ -174,7 +174,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='Status']/parent::div/following-sibling::div//lightning-formatted-text")
 	public WebElement wiStatusDetailsPage;
-	
+
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//li//a[@aria-selected='true' and @role='option']")
 	public WebElement currenWIStatusonTimeline;
 
@@ -195,16 +195,16 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	@FindBy(xpath="//span[text()='Submitted for Approval']")
 	public WebElement submittedforApprovalTimeline;
-	
+
 	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Completed']")
 	public WebElement completedTimeline;
-	
+
 	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button//span[text()='Mark as Current Status']")
 	public WebElement markStatusCompleteBtn;
-	
+
 	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button//span[text()='Mark Status as Complete']")
 	public WebElement markStatusAsCompleteBtn;
-	
+
 	@FindBy(xpath="//button[@title='Mark Complete']") 
 	public WebElement btnMarkComplete;
 
@@ -213,19 +213,19 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	@FindBy(xpath="//span[text()='Reference Data Details']")
 	public WebElement referenceDetailsLabel;
-	
+
 	@FindBy(xpath="//button[@title='Approve']") 
 	public WebElement btnApprove;
-	
-    public String ConsolidateButton="Consolidate";
-    
-    @FindBy (xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Child Work Items']")
-    public WebElement ChildWorkItemsTab;
-   
-    @FindBy (xpath="//*[@data-key='error']//..//button[@title='Close'] | //button[@title='Close error dialog']")
-    public WebElement CloseErrorMsg;
-    
-    @FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
+
+	public String ConsolidateButton="Consolidate";
+
+	@FindBy (xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Child Work Items']")
+	public WebElement ChildWorkItemsTab;
+
+	@FindBy (xpath="//*[@data-key='error']//..//button[@title='Close'] | //button[@title='Close error dialog']")
+	public WebElement CloseErrorMsg;
+
+	@FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
 	public WebElement workItemNumberDetailView;
 
 	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Assigned To']/..//input")
@@ -234,29 +234,29 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Work Pool']/..//input")
 	public WebElement WorkPool;
 
-    @FindBy(xpath = "//div[contains(@class,'slds-media__body')]//slot/lightning-formatted-text[contains(text(),'WI-')]")
+	@FindBy(xpath = "//div[contains(@class,'slds-media__body')]//slot/lightning-formatted-text[contains(text(),'WI-')]")
 	public WebElement getWorkItem;
-    
-    @FindBy(xpath = "//h2[@class='slds-modal__title slds-hyphenate']")
+
+	@FindBy(xpath = "//h2[@class='slds-modal__title slds-hyphenate']")
 	public WebElement headerLevel2Approver;
 
-    @FindBy(xpath = "//table/thead//tr//th[@aria-label='Work item #']//a//span[@title='Work item #']")
-    public WebElement gridColWorkItemNum;
+	@FindBy(xpath = "//table/thead//tr//th[@aria-label='Work item #']//a//span[@title='Work item #']")
+	public WebElement gridColWorkItemNum;
 
 	@FindBy(xpath = "//input[@type='button' and @value='Remove']")
 	public WebElement removeButton;
-	
+
 	@FindBy(xpath="//*[@name='Select Primary']")
 	public WebElement SelectPrimaryButton;
-	
+
 	@FindBy(xpath = "//input[@placeholder='Search Parcels...']")
 	public WebElement searchParcelsDropdown;
-	
+
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Linked Items']")
 	public WebElement linkedItemsTab;
 
 	public String editButton = "Edit";
-	
+
 	public String wiActionDetailsPage = "Action";
 	public String wiRelatedActionDetailsPage = "Related Action";
 	public String wiDateDetailsPage = "Date";
@@ -272,19 +272,19 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String wiLevel2ApproverDetailsPage = "Level2 Approver";
 	public String wiCurrentApproverDetailsPage = "Current Approver";
 
-    public String SaveButton="Save";
-    public String valueTextBox = "Value";
-    public String WithdrawButton="Withdraw";
-    public String PutOnHoldButton="Put On Hold";
-    public String assignLevel2Approver = "Assign Level2 Approver";
-    
-    public String warningOnAssignLevel2ApproverScreen = "//div[@class='warning']";
-    public String assignLevel2ApproverBtn = "//button[@title='Assign Level2 Approver']";
-    public String submittedForApprovalOptionInTimeline = "Submitted for Approval";
+	public String SaveButton="Save";
+	public String valueTextBox = "Value";
+	public String WithdrawButton="Withdraw";
+	public String PutOnHoldButton="Put On Hold";
+	public String assignLevel2Approver = "Assign Level2 Approver";
+
+	public String warningOnAssignLevel2ApproverScreen = "//div[@class='warning']";
+	public String assignLevel2ApproverBtn = "//button[@title='Assign Level2 Approver']";
+	public String submittedForApprovalOptionInTimeline = "Submitted for Approval";
 	public String inProgressOptionInTimeline = "In Progress";
 	public String completedOptionInTimeline = "Completed";
 	public String wiStatus = "Status";
-    public String reassignButton = "Reassign";
+	public String reassignButton = "Reassign";
 	public final String returnToPool="Return to Pool";
 	public final String markInProgress="Mark In Progress";
 
@@ -317,7 +317,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 		javascriptClick(webElement);
 		Thread.sleep(3000);
 	}
-	
+
 	/**
 	 * This method will open related action record linked with the work item
 	 *
@@ -362,6 +362,11 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 **/
 	public String completeWorkItem() throws Exception {
 		ReportLogger.INFO("Completing the work item");
+		Click(detailsWI);
+		waitForElementToBeVisible(10, wiValueDetailsPage);
+		enter(wiValueDetailsPage, "-1");
+		saveRecord();
+
 		javascriptClick(dataTabCompleted);
 		javascriptClick(markAsCurrentStatusButton);
 		waitForElementToBeVisible(successAlert, 20);
@@ -403,8 +408,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 	}
 
 
-    public WebElement searchWIinGrid(String WIName) {
-    	
+	public WebElement searchWIinGrid(String WIName) {
+
 		WebElement btnNext = null;
 		List<WebElement> actualWINames = null;
 
@@ -418,50 +423,50 @@ public class WorkItemHomePage extends ApasGenericPage {
 				String[] arrSplit = pageMsg.split("\\.");
 				System.out.println(arrSplit[1]);
 				Pattern p = Pattern.compile("\\d");
-		        Matcher m = p.matcher(arrSplit[1]);
-		        String lastPageNum = null;
+				Matcher m = p.matcher(arrSplit[1]);
+				String lastPageNum = null;
 				while(m.find()){ 
 					System.out.println(m.group());
 					lastPageNum = m.group();
-					}					 
-		        for(int i = 0 ; i < Integer.valueOf(lastPageNum); i++) {
-		        	btnNext = driver.findElementByXPath("//lightning-button/button[text()='Next']");
-		        	javascriptClick(btnNext);
-		        	Thread.sleep(20000);
-		        	actualWINames = driver.findElementsByXPath("//table//tr[contains(.,'" + WIName + "')]");
-		        	if(!actualWINames.isEmpty()) {		        				    			
-		    			break;		  
-		        	}
-			    }
+				}					 
+				for(int i = 0 ; i < Integer.valueOf(lastPageNum); i++) {
+					btnNext = driver.findElementByXPath("//lightning-button/button[text()='Next']");
+					javascriptClick(btnNext);
+					Thread.sleep(20000);
+					actualWINames = driver.findElementsByXPath("//table//tr[contains(.,'" + WIName + "')]");
+					if(!actualWINames.isEmpty()) {		        				    			
+						break;		  
+					}
+				}
 			}
-		 }	
-			catch (Exception e) {
-				ReportLogger.INFO(e.getMessage());
-						}
-    	return actualWINames.get(0);
-    }
+		}	
+		catch (Exception e) {
+			ReportLogger.INFO(e.getMessage());
+		}
+		return actualWINames.get(0);
+	}
 
 	/*
 	 * This method will search for the WI in the TAB GRID and click Open
 	 * 
 	 * @param WIName : Name of the work item
 	 */
-    public String searchandClickWIinGrid(String WIName) throws IOException {
-    	
-    	String actualWINamefrmGrid = null;
-    	WebElement lnlWorkItem = null;
-    	
-    	lnlWorkItem = searchWIinGrid(WIName);
-    	actualWINamefrmGrid = lnlWorkItem.getText();
-    	javascriptClick(lnlWorkItem);
-		
+	public String searchandClickWIinGrid(String WIName) throws IOException {
+
+		String actualWINamefrmGrid = null;
+		WebElement lnlWorkItem = null;
+
+		lnlWorkItem = searchWIinGrid(WIName);
+		actualWINamefrmGrid = lnlWorkItem.getText();
+		javascriptClick(lnlWorkItem);
+
 		return actualWINamefrmGrid;
 	}
 
 
-    
-    public HashMap<String, ArrayList<String>>  getWorkItemDetails(String newExemptionName, String WIStatus, String WIType, String WISubType, String WIReference) throws InterruptedException {
-		
+
+	public HashMap<String, ArrayList<String>>  getWorkItemDetails(String newExemptionName, String WIStatus, String WIType, String WISubType, String WIReference) throws InterruptedException {
+
 		/*
 		 * String query = "Select Work_Item__r.Name,Work_Item__r.Request_Type__c " +
 		 * "from Work_Item_linkage__c " +
@@ -472,152 +477,152 @@ public class WorkItemHomePage extends ApasGenericPage {
 		 * "and Work_Item__r.Reference__c ='"+WIReference+"'" ;
 		 */
 		salesforceAPI = new SalesforceAPI();
-        
+
 		String sqlExemption_Id = "Select Id from Exemption__c where Name = '"+newExemptionName+"'";
-        HashMap<String, ArrayList<String>> response_1  = salesforceAPI.select(sqlExemption_Id);
-        String Exemption_Id = response_1.get("Id").get(0);
-        
-        String slqWork_Item_Id = "Select Work_Item__c from Work_Item_Linkage__c where Exemption__c = '"+Exemption_Id+"'and Work_Item__r.Status__c ='"+WIStatus+"'";
-        Thread.sleep(5000);
-        HashMap<String, ArrayList<String>> response_2  = salesforceAPI.select(slqWork_Item_Id);
-        String WorkItem_Id = response_2.get("Work_Item__c").get(0);
-        
-        String slqWork_Item_Details = "Select Name, Request_Type__c from Work_Item__c "+
-        		                      "where Id = '"+WorkItem_Id+"' "+        		          
-       		                          "and Type__c     = '"+WIType+"' " +
-    		                          "and Sub_Type__c = '"+WISubType+"' " +
-    		                          "and Reference__c ='"+WIReference+"'";
-        HashMap<String, ArrayList<String>> response_3  = salesforceAPI.select(slqWork_Item_Details);
+		HashMap<String, ArrayList<String>> response_1  = salesforceAPI.select(sqlExemption_Id);
+		String Exemption_Id = response_1.get("Id").get(0);
+
+		String slqWork_Item_Id = "Select Work_Item__c from Work_Item_Linkage__c where Exemption__c = '"+Exemption_Id+"'and Work_Item__r.Status__c ='"+WIStatus+"'";
+		Thread.sleep(5000);
+		HashMap<String, ArrayList<String>> response_2  = salesforceAPI.select(slqWork_Item_Id);
+		String WorkItem_Id = response_2.get("Work_Item__c").get(0);
+
+		String slqWork_Item_Details = "Select Name, Request_Type__c from Work_Item__c "+
+				"where Id = '"+WorkItem_Id+"' "+        		          
+				"and Type__c     = '"+WIType+"' " +
+				"and Sub_Type__c = '"+WISubType+"' " +
+				"and Reference__c ='"+WIReference+"'";
+		HashMap<String, ArrayList<String>> response_3  = salesforceAPI.select(slqWork_Item_Details);
 		return response_3 ;
-         
-     }
 
-public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName, String WIStatus, String WIType,
-		String WISubType, String WIReference) throws InterruptedException {
+	}
 
-	/*
-	 * String query = "Select Work_Item__r.Name,Work_Item__r.Request_Type__c " +
-	 * "from Work_Item_linkage__c " +
-	 * "where Value_Adjustments__r.Name  = '"+VAName+"' " +
-	 * "and Work_Item__r.Status__c   = '"+WIStatus+"' " +
-	 * "and Work_Item__r.Type__c     = '"+WIType+"' " +
-	 * "and Work_Item__r.Sub_Type__c = '"+WISubType+"' " +
-	 * "and Work_Item__r.Reference__c ='"+WIReference+"'" ;
-	 */
-	salesforceAPI = new SalesforceAPI();
+	public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName, String WIStatus, String WIType,
+			String WISubType, String WIReference) throws InterruptedException {
 
-	String sqlValueAdjustment_Id = "Select Id from Value_Adjustments__c where Name = '" + VAName + "'";
-	HashMap<String, ArrayList<String>> response_1 = salesforceAPI.select(sqlValueAdjustment_Id);
-	String ValueAdjustment_Id = response_1.get("Id").get(0);
+		/*
+		 * String query = "Select Work_Item__r.Name,Work_Item__r.Request_Type__c " +
+		 * "from Work_Item_linkage__c " +
+		 * "where Value_Adjustments__r.Name  = '"+VAName+"' " +
+		 * "and Work_Item__r.Status__c   = '"+WIStatus+"' " +
+		 * "and Work_Item__r.Type__c     = '"+WIType+"' " +
+		 * "and Work_Item__r.Sub_Type__c = '"+WISubType+"' " +
+		 * "and Work_Item__r.Reference__c ='"+WIReference+"'" ;
+		 */
+		salesforceAPI = new SalesforceAPI();
 
-	String slqWork_Item_Id = "Select Work_Item__c from Work_Item_Linkage__c where Value_Adjustments__c = '"
-			+ ValueAdjustment_Id + "'";
-	Thread.sleep(2000);
-	HashMap<String, ArrayList<String>> response_2 = salesforceAPI.select(slqWork_Item_Id);
-	String WorkItem_Id = response_2.get("Work_Item__c").get(0);
+		String sqlValueAdjustment_Id = "Select Id from Value_Adjustments__c where Name = '" + VAName + "'";
+		HashMap<String, ArrayList<String>> response_1 = salesforceAPI.select(sqlValueAdjustment_Id);
+		String ValueAdjustment_Id = response_1.get("Id").get(0);
 
-	String slqWork_Item_Details = "Select Name, Request_Type__c from Work_Item__c " + "where Id = '" + WorkItem_Id
-			+ "' " + "and Status__c   = '" + WIStatus + "' " + "and Type__c     = '" + WIType + "' "
-			+ "and Sub_Type__c = '" + WISubType + "' " + "and Reference__c ='" + WIReference + "'";
-	HashMap<String, ArrayList<String>> response_3 = salesforceAPI.select(slqWork_Item_Details);
-	return response_3;
+		String slqWork_Item_Id = "Select Work_Item__c from Work_Item_Linkage__c where Value_Adjustments__c = '"
+				+ ValueAdjustment_Id + "'";
+		Thread.sleep(2000);
+		HashMap<String, ArrayList<String>> response_2 = salesforceAPI.select(slqWork_Item_Id);
+		String WorkItem_Id = response_2.get("Work_Item__c").get(0);
 
-  }
+		String slqWork_Item_Details = "Select Name, Request_Type__c from Work_Item__c " + "where Id = '" + WorkItem_Id
+				+ "' " + "and Status__c   = '" + WIStatus + "' " + "and Type__c     = '" + WIType + "' "
+				+ "and Sub_Type__c = '" + WISubType + "' " + "and Reference__c ='" + WIReference + "'";
+		HashMap<String, ArrayList<String>> response_3 = salesforceAPI.select(slqWork_Item_Details);
+		return response_3;
+
+	}
 
 	public void clickExemptionNameLink(String ExemptionName) throws IOException {
-	
+
 		WebElement lnkExemptionName = driver.findElementByXPath("//a[text()='" + ExemptionName + "']");
 		objPageObj.Click(lnkExemptionName);
 	}
-	
+
 	public void clickCheckBoxForSelectingWI(String WIName) throws IOException {
-	    
-    	searchWIinGrid(WIName);
+
+		searchWIinGrid(WIName);
 		WebElement chkBoxWI = driver.findElementByXPath("//table/tbody//tr/th//*[@title='"+ WIName + "' or text()='"+ WIName + "']"  + "/ancestor::tr/td//input[@type='checkbox']");
 		javascriptClick(chkBoxWI);
 	}
-	
+
 	public String searchLinkedExemptionOrVA(String ExemptionOrVAName) {
-	
+
 		WebElement actualVAName = null;
 		String actualExemptionNameFrmGrid = null;
-	
+
 		try {
 			actualVAName = driver.findElementByXPath("//table/tbody//tr//a[@title='" + ExemptionOrVAName + "']");
 			actualExemptionNameFrmGrid = actualVAName.getAttribute("title");
-	
+
 		} catch (Exception e) {
-	
+
 			ReportLogger.INFO(e.getMessage());
 		}
-	
+
 		return actualExemptionNameFrmGrid;
 	}
-	
+
 	public String searchRequestTypeNameonWIDetails(String RequestTypeName) {
-	
+
 		WebElement actualRequestTypeName = null;
 		String actualRequestTypeNameFrmGrid = null;
-	
+
 		try {
 			actualRequestTypeName = driver.findElement(By.xpath("//*[text()='" + RequestTypeName + "']"));
 			actualRequestTypeNameFrmGrid = actualRequestTypeName.getText();
 		} catch (Exception e) {
-	
+
 			ReportLogger.INFO(e.getMessage());
 		}
 		return actualRequestTypeNameFrmGrid;
 	}
-	 
+
 	/**
 	 * This method will select work item from in progress tab
 	 *
 	 * @param workItem :created workItem
 	 **/
-	 public void selectWorkItemOnHomePage(String workItem) throws IOException{
-			WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
-			scrollToElement(webElementCheckBox);
-			Click(webElementCheckBox);			
-	    }
+	public void selectWorkItemOnHomePage(String workItem) throws IOException{
+		WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//span[@class='slds-checkbox_faux']"));
+		scrollToElement(webElementCheckBox);
+		Click(webElementCheckBox);			
+	}
 
-	 /**
-		 * This method will click on Time line option and and then mark it complete
-		 * @param timelineTab :Time Line Option
+	/**
+	 * This method will click on Time line option and and then mark it complete
+	 * @param timelineTab :Time Line Option
 	 **/
-	 
-	 public void clickOnTimelineAndMarkComplete(String timelineTab) throws Exception {
-		 	ReportLogger.INFO("Click on the '" + timelineTab + "' option in Timeline and mark it complete");
-		 	WebElement webElement = driver.findElement(By.xpath("//span[text()='" + timelineTab + "']"));
-		 	Thread.sleep(1000);
-		 	javascriptClick(webElement);
-		 	if (waitForElementToBeVisible(5, markStatusCompleteBtn)) {
-		 		javascriptClick(markStatusCompleteBtn);
-		 	}
-		 	else {
-		 		javascriptClick(markStatusAsCompleteBtn);
-		 	}
-			Thread.sleep(2000);
-		}
-	 
 
-	 public boolean searchWIInGrid(String workItem) throws IOException{
-	        WebElement webElement = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]"));
-	        scrollToElement(webElement);
-	        return waitForElementToBeVisible(90,webElement);         
-	    }
-	 
-	 /**
-	     * Description: This method will open the Work Pool record using record name
-	     *
-	     * @param poolName: Takes Work Pool Name as an argument
-	     */
-	    public void openWorkPoolRecord(String poolName) throws Exception {
-	        ReportLogger.INFO("Open the Work Pool record : " + poolName);
-	        String xpathStr = "//span//a[@title='" + poolName + "']";
-	        WebElement poolNameLocator = waitForElementToBeClickable(30, xpathStr);
-	        Click(poolNameLocator);
-	        Thread.sleep(2000);
-	    }
+	public void clickOnTimelineAndMarkComplete(String timelineTab) throws Exception {
+		ReportLogger.INFO("Click on the '" + timelineTab + "' option in Timeline and mark it complete");
+		WebElement webElement = driver.findElement(By.xpath("//span[text()='" + timelineTab + "']"));
+		Thread.sleep(1000);
+		javascriptClick(webElement);
+		if (waitForElementToBeVisible(5, markStatusCompleteBtn)) {
+			javascriptClick(markStatusCompleteBtn);
+		}
+		else {
+			javascriptClick(markStatusAsCompleteBtn);
+		}
+		Thread.sleep(2000);
+	}
+
+
+	public boolean searchWIInGrid(String workItem) throws IOException{
+		WebElement webElement = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]"));
+		scrollToElement(webElement);
+		return waitForElementToBeVisible(90,webElement);         
+	}
+
+	/**
+	 * Description: This method will open the Work Pool record using record name
+	 *
+	 * @param poolName: Takes Work Pool Name as an argument
+	 */
+	public void openWorkPoolRecord(String poolName) throws Exception {
+		ReportLogger.INFO("Open the Work Pool record : " + poolName);
+		String xpathStr = "//span//a[@title='" + poolName + "']";
+		WebElement poolNameLocator = waitForElementToBeClickable(30, xpathStr);
+		Click(poolNameLocator);
+		Thread.sleep(2000);
+	}
 
 	/**
 	 * Description: This method will filter the work work items on Home Page
@@ -654,7 +659,7 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		Thread.sleep(2000);
 		return getGridDataForRowString(requestType).get("Work item #").get(0).split("\\n")[0];
 	}
-	
+
 	/**
 	 * Description: This method will fetch the Work Item ID from Work_Item_Linkage__c object for new WI 
 	 * created on creation of new Exemption
@@ -662,15 +667,15 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 	 */
 	public String getWorkItemIDFromExemptionOnWorkBench(String ExemptionName) {
 		salesforceAPI = new SalesforceAPI();
-		
+
 		String slqWork_Item_Id = "Select Work_Item__c from Work_Item_Linkage__c where Exemption__r.Name = '"+ExemptionName+"'";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(slqWork_Item_Id); 		  
 		String WorkItem_Id = response.get("Work_Item__c").get(0);
-		
+
 		return WorkItem_Id;
-		
+
 	}
-	
+
 	/**
 	 * Description: This method will fetch the Work Item ID from Work_Item_Linkage__c object for new WI 
 	 * created Manually from Parcel
@@ -682,43 +687,43 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		String slqWork_Item_Id = "Select Work_Item__c from Work_Item_Linkage__c where Parcel__r.Name = '"+ ParcelName +"' order by CreatedDate desc";		  
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(slqWork_Item_Id); 		  
 		String WorkItem_Id = response.get("Work_Item__c").get(0);
-		
+
 		return WorkItem_Id;
-			
+
 	}
-	
+
 	/**
 	 * Description: This method will fetch the Work Item supervisor name 
 	 * @param ID : ID of the WI created manually or automated.
 	 */
-	
+
 	public String getSupervisorDetailsFromWorkBench(String Id){
-		
+
 		salesforceAPI = new SalesforceAPI();
-		
+
 		/*
 		 * String sql_getWorkPoolSupervisorDetails =
 		 * "Select work_item__r.work_pool__r.Supervisor__r.name ,"+
 		 * "work_item__r.Name from work_item_linkage__c " +
 		 * "where Exemption__r.Name = '"+ExemptionName+"'";
 		 */		  		
-		  		  
-		  String slqWork_Pool_Id = "Select Work_Pool__c from Work_Item__c where id = '"+Id+"'";
-          HashMap<String, ArrayList<String>> response_3 = salesforceAPI.select(slqWork_Pool_Id); 		  
-		  String WorkPool_Id = response_3.get("Work_Pool__c").get(0);
-		  
-		  String sqlWorkPoolSupervisor = "Select supervisor__c from Work_Pool__c where id = '"+WorkPool_Id+"'";
-		  HashMap<String, ArrayList<String>> response_4 = salesforceAPI.select(sqlWorkPoolSupervisor);
-		  String SupervisorId = response_4.get("Supervisor__c").get(0);
-		  
-		  String sqlUserName = "Select Name from user where id = '"+SupervisorId+"'";
-		  HashMap<String, ArrayList<String>> response_5 = salesforceAPI.select(sqlUserName);
-		  String SupervisorName = response_5.get("Name").get(0);
-		
-		
+
+		String slqWork_Pool_Id = "Select Work_Pool__c from Work_Item__c where id = '"+Id+"'";
+		HashMap<String, ArrayList<String>> response_3 = salesforceAPI.select(slqWork_Pool_Id); 		  
+		String WorkPool_Id = response_3.get("Work_Pool__c").get(0);
+
+		String sqlWorkPoolSupervisor = "Select supervisor__c from Work_Pool__c where id = '"+WorkPool_Id+"'";
+		HashMap<String, ArrayList<String>> response_4 = salesforceAPI.select(sqlWorkPoolSupervisor);
+		String SupervisorId = response_4.get("Supervisor__c").get(0);
+
+		String sqlUserName = "Select Name from user where id = '"+SupervisorId+"'";
+		HashMap<String, ArrayList<String>> response_5 = salesforceAPI.select(sqlUserName);
+		String SupervisorName = response_5.get("Name").get(0);
+
+
 		return SupervisorName;   
 	}	
-	
+
 	/**
 	 * Description: This method will create the Work Item Linkage
 	 * @param ParcelName: Name of the Parcel for which Work Item Linkage will be created
@@ -741,9 +746,9 @@ public HashMap<String, ArrayList<String>> getWorkItemDetailsForVA(String VAName,
 		ReportLogger.INFO("Deleting WI Linkage");
 		String xPathShowMoreButton = "//a[text()='"+ParcelName+"']//ancestor::tr//button[contains(@class,'x-small')]";
 		WebElement showMoreButton = waitForElementToBeClickable(10, xPathShowMoreButton);
-		
+
 		String xPathDeleteLinkUnderShowMore = "//span[text()='Delete']//..";
-		
+
 		if (showMoreButton != null){
 			javascriptClick(showMoreButton);
 			WebElement deleteLinkUnderShowMore = waitForElementToBeClickable(10, xPathDeleteLinkUnderShowMore);
