@@ -135,7 +135,7 @@ public class ParcelsPage extends ApasGenericPage {
 		if (reference != null)enter(referenceInputTextBoxComponentActionModal, reference);
 		enter(descriptionInputTextBoxComponentActionModal, description);
 		//selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);
-		selectOptionFromDropDown(workItemRoutingDropDownComponentsActionsModal, workItemRouting);
+		//selectOptionFromDropDown(workItemRoutingDropDownComponentsActionsModal, workItemRouting);
 		if (dueDate != null) enter(dueDateInputTextBox, dueDate);
 		if (dov != null) enter(dovInputTextBox, dov);
 		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
