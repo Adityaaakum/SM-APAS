@@ -695,7 +695,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.numberOfIntermiParcelLabel),"value"),"0",
                 "SMAB-T2568: Validation that default value of Interim Parcel is 0");
         
-        objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
+        objMappingPage.waitForElementToBeVisible(6, objMappingPage.helpIconFirstNonCondoParcelNumber);
         actions.moveToElement(objMappingPage.helpIconFirstNonCondoParcelNumber).perform();
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use system generated APN, leave as blank.",
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for First non-Condo Parcel text box");
