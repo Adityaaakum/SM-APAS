@@ -373,7 +373,7 @@ public class MappingPage extends ApasGenericPage {
       {
     	  String query ="SELECT  Id,Target_Parcel__c FROM Parcel_Relationship__c where source_parcel__r.name='" +apn+"'";
     	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
-    	  System.out.println(response);
+    	  
     	  if(!response.isEmpty())
     	  {
     		  response.get("Id").stream().forEach(Id ->{
