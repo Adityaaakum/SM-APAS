@@ -77,7 +77,6 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
 		// Step1: Login to the APAS application
 		objMappingPage.login(loginUser);
-
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform Retire Action
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn1);

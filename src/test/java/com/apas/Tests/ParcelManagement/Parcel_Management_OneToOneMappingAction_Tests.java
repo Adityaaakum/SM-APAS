@@ -615,8 +615,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
            // currently Allocate value is not genrated as part of new story so removed asseration for that
     		softAssert.assertContains(response,"New APN - Update Characteristics & Verify PUC","SMAB-T2717: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
     		
-        //Validation that  System populates Situs  from the parent parcel
-      
+        //Validation that  System populates Situs  from the parent parcel      
         softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),primarySitusValue.replaceFirst("\\s+", ""),
 				"SMAB-T2720,SMAB-T2721: Validation that  System populates Situs  from the parent parcel");
         
