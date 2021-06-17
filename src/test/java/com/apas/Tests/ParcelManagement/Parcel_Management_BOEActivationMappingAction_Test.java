@@ -57,11 +57,11 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 	public void ParcelManagement_VerifyErrorMessagesInBOEActivationMappingAction(String loginUser) throws Exception {
 		
 		//Fetching parcel that is Retired 		
-		String queryAPNValue = "SELECT Source_Parcel__r.Name,Target_Parcel__r.Name, Target_Parcel_Status__c From Parcel_Relationship__c Where Parcel_Actions__c != 'BOE Activation' And Source_Parcel__r.status__c = 'Retired' Limit 1";
+		String queryAPNValue = "SELECT name from Parcel__c where Status__c='Retired' Limit 1 ";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
-		String retiredAPNValue= response.get("Source_Parcel__r").get(0);
-		int index = retiredAPNValue.lastIndexOf(":");
-		retiredAPNValue = retiredAPNValue.substring(index+2,retiredAPNValue.length()-2);
+		String retiredAPNValue= response.get("Name").get(0);
+		System.out.println("Logger"+retiredAPNValue);
+		objMappingPage.deleteRelationshipInstanceFromParcel(retiredAPNValue);
 		String retiredParcelWithoutHyphen=retiredAPNValue.replace("-","");
 
 		//Fetching parcels that are Active 
@@ -119,8 +119,8 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		//Step 9: Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
-				" Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789 for Non-Condo Parcel.",
+		softAssert.assertContains(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				" Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
 						"SMAB-T2754,SMAB-T2689: Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
 
 		//Step 10 :Clicking generate parcel button
@@ -144,11 +144,11 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
     public void ParcelManagement_VerifyBOEActivationMappingActionOutputValidations(String loginUser) throws Exception {
 
         // Step 1: Fetching parcels that are Active with no Ownership record
-        String queryAPNValue =
-        		"SELECT Source_Parcel__r.Name, Parcel_Actions__c,Id,Name  From Parcel_Relationship__c Where Parcel_Actions__c != 'BOE Activation' And Target_Parcel_Status__c = 'Retired' Limit 1";
-        HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
-        
-        String apn1=responseAPNDetails.get("Name").get(0);
+    	String queryAPNValue = "SELECT Name,Id from Parcel__c where Status__c='Retired' Limit 1 ";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
+		System.out.println(response);
+		String retiredAPNValue= response.get("Name").get(0);		
+		objMappingPage.deleteRelationshipInstanceFromParcel(retiredAPNValue);
         //step 2: getting Neighborhood and tra value
         String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
@@ -164,7 +164,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
         // Step 3: update  values on Parcels
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
+		salesforceAPI.update("Parcel__c",response.get("Id").get(0),jsonObject);
 	
         String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
         Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -175,7 +175,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
         // Step 5: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
         objMappingPage.searchModule(PARCELS);
-        objMappingPage.globalSearchRecords(apn1);
+        objMappingPage.globalSearchRecords(retiredAPNValue);
 
         // Step 6: Creating Manual work item for the Parcel
         String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
@@ -190,17 +190,18 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
          //Step 8: Selecting Action as 'Many To Many' & Taxes Paid fields value as 'N/A'
         objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,"BOE Activation");
-		objMappingPage.enter("First non-Condo Parcel Number","123456789");
+        Thread.sleep(3000);
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"123456789");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		Thread.sleep(2000);
 		//Step 9: Validating that
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789 for Non-Condo Parcel.",
 						"Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
 		//Step 10: generate  new child parcels 
         objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
         //Step 11: Verify the success message after parcels are generated
-        softAssert.assertContains(objMappingPage.getSuccessMessage(),"Please Review Spatial Information",
+        softAssert.assertContains(objMappingPage.getSuccessMessage(),"been successfully Activated!",
                 "Validation that success message is displayed when Parcels are generated");
 
         //Step 12: Verify the grid cells are not editable after parcels are generated
@@ -212,7 +213,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
         softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"Validation that TRA column should not be editable after generating parcels");
         softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs")," Validation that Situs column should not be editable after generating parcels");
         softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code"),"Validation that Reason Code column should not be editable after generating parcels");
-        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("District/Neighborhood")," Validation that District/Neighborhood column should not be editable after generating parcels");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd")," Validation that District/Neighborhood column should not be editable after generating parcels");
         softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code")," Validation that Use Code column should not be editable after generating parcels");
        
         //Step 13: Open Parent APN and verify Target Relationship details
@@ -223,7 +224,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 				objMappingPage.waitForElementToBeVisible(60, objParcelsPage.moretab);
 				
 				objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelRelationshipsTabLabel);
-				softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(apn1)), "SMAB-T2757: Verify Parent Parcel: "+apn1+" is visible under Source Parcel Relationships section");				
+				softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(retiredAPNValue)), "SMAB-T2757: Verify Parent Parcel: "+retiredAPNValue+" is visible under Source Parcel Relationships section");				
 				driver.navigate().back();
         	}
         	catch(Exception e) {
@@ -232,57 +233,64 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
         });
         
         //Step 14: Verify Status of Parent & Child Parcels before WI completion
-        HashMap<String, ArrayList<String>> parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn1);
+        HashMap<String, ArrayList<String>> parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",retiredAPNValue);
         HashMap<String, ArrayList<String>> childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
-  		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2759: Verify Status of Parent Parcel: "+apn1);
+  		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2759: Verify Status of Parent Parcel: "+retiredAPNValue);
   		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2759: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
   		
 		//Step 15: Verify Neighborhood Code value is inherited from Parent to Child Parcels
-  		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",apn1);
+  		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",retiredAPNValue);
   		HashMap<String, ArrayList<String>> childAPN1NeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",gridDataHashMap.get("APN").get(0));
 		softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),childAPN1NeighborhoodCode.get("Name").get(0),"SMAB-T2760: Verify District/Neighborhood Code of Child Parcel is inheritted from first Parent Parcel");
 
 		//Step 16: Verify TRA value is inherited from Parent to Child Parcels
-		HashMap<String, ArrayList<String>> parentAPNTRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",apn1);
+		HashMap<String, ArrayList<String>> parentAPNTRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",retiredAPNValue);
 		HashMap<String, ArrayList<String>> childAPN1TRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",gridDataHashMap.get("APN").get(0));
 		softAssert.assertEquals(parentAPNTRA.get("Name").get(0),childAPN1TRA.get("Name").get(0),"SMAB-T2760: Verify TRA of Child Parcel is inheritted from first Parent Parcel");
 
 		//Step 17: Verify District value is inherited from Parent to Child Parcels
-		HashMap<String, ArrayList<String>> parentAPNDistrict = objParcelsPage.fetchFieldValueOfParcel("District__c",apn1);
+		HashMap<String, ArrayList<String>> parentAPNDistrict = objParcelsPage.fetchFieldValueOfParcel("District__c",retiredAPNValue);
 		HashMap<String, ArrayList<String>> childAPN1District = objParcelsPage.fetchFieldValueOfParcel("District__c",gridDataHashMap.get("APN").get(0));
 		softAssert.assertEquals(parentAPNDistrict.get("District__c").get(0),childAPN1District.get("District__c").get(0),"SMAB-T2760: Verify District of Child Parcel is inheritted from first Parent Parcel");
 		
 		//Step 18: Verify Primary Situs value is inherited from Parent to Child Parcels
-  		HashMap<String, ArrayList<String>> parentAPNPrimarySitus = objParcelsPage.fetchFieldValueOfParcel("Primary_Situs__c",apn1);
+  		HashMap<String, ArrayList<String>> parentAPNPrimarySitus = objParcelsPage.fetchFieldValueOfParcel("Primary_Situs__c",retiredAPNValue);
   		HashMap<String, ArrayList<String>> childAPN1PrimarySitus = objParcelsPage.fetchFieldValueOfParcel("Primary_Situs__c",gridDataHashMap.get("APN").get(0));
   		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN1PrimarySitus.get("Name").get(0),"SMAB-T2760: Verify Primary Situs of Child Parcel is inheritted from first Parent Parcel");
 		
 		
 		//Step 19: Mark the WI complete
 		String query = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
-		salesforceAPI.update("Work_Item__c", query, "Status__c", "Completed");
+		salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
+		driver.switchTo().window(parentWindow);
+        objWorkItemHomePage.logout();
+        objMappingPage.login(users.MAPPING_SUPERVISOR);
+        Thread.sleep(5000);
+        objMappingPage.searchModule(WORK_ITEM);
+		objMappingPage.globalSearchRecords(workItemNumber);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		driver.navigate().refresh(); //refresh as the focus is getting lost
+		Thread.sleep(5000);
+		objWorkItemHomePage.completeWorkItem();
 		
 		//Step 20: Verify Status of Parent & Child Parcels after WI completion
-		parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn1);
+		parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",retiredAPNValue);
 		childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
-  		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Retired","SMAB-T2761: Verify Status of Parent Parcel: "+apn1);
+  		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Retired","SMAB-T2761: Verify Status of Parent Parcel: "+retiredAPNValue);
   		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"Active","SMAB-T2761: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
         
   		//Step 21: Verify 2 new WIs are generated and linked to Child Parcels after parcel is split and WI is completed
-		String queryToGetRequestType = "SELECT Work_Item__r.Request_Type__c FROM Work_Item_Linkage__c Where Parcel__r.Name = '"+gridDataHashMap.get("APN").get(0)+"' OR Parcel__r.Name = '"+gridDataHashMap.get("APN").get(1)+"'";
-		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryToGetRequestType);
-		int expectedWorkItemsGenerated = response.get("Work_Item__r").size();
-		softAssert.assertEquals(expectedWorkItemsGenerated,4,"SMAB-T2758: Verify 2 new Work Items are generated and linked to each child parcel after many to many mapping action is performed and WI is completed");
-
-		softAssert.assertContains(response.get("Work_Item__r").get(0),"New APN - Update Characteristics & Verify PUC","SMAB-T2758: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
-		softAssert.assertContains(response.get("Work_Item__r").get(1),"New APN - Allocate Value","SMAB-T2758: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
-		softAssert.assertContains(response.get("Work_Item__r").get(2),"New APN - Update Characteristics & Verify PUC","SMAB-T2758: Verify Request Type of 2 new Work Items generated that are linked to each many to many mapping action is performed and WI is completed");
-		softAssert.assertContains(response.get("Work_Item__r").get(3),"New APN - Allocate Value","SMAB-T2758: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
-  		
+  		String queryToGetRequestType = "SELECT Work_Item__r.Request_Type__c FROM Work_Item_Linkage__c Where Parcel__r.Name = '"+gridDataHashMap.get("APN").get(0)+"' ";
+		HashMap<String, ArrayList<String>> responseRequestType = salesforceAPI.select(queryToGetRequestType);
+		int expectedWorkItemsGenerated = responseRequestType.get("Work_Item__r").size();
+		softAssert.assertEquals(expectedWorkItemsGenerated,1,"SMAB-T2717: Verify 2 new Work Items are generated and linked to each child parcel after one to one mapping action is performed and WI is completed");
+       // currently Allocate value is not genrated as part of new story so removed asseration for that
+		softAssert.assertContains(responseRequestType,"New APN - Update Characteristics & Verify PUC","SMAB-T2717: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
+		
 		driver.switchTo().window(parentWindow);
 		
 		//Step 22: Open Parent APN and verify Target Relationship details
-		responseAPNDetails.get("Name").stream().forEach(parcel -> {
+		response.get("Name").stream().forEach(parcel -> {
         	try {
         		objMappingPage.searchModule(PARCELS);
                 objMappingPage.globalSearchRecords(parcel);
@@ -298,7 +306,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
         });
 		// Step 23: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
         objMappingPage.searchModule(PARCELS);
-        objMappingPage.globalSearchRecords(apn1);
+        objMappingPage.globalSearchRecords(retiredAPNValue);
 
         // Step 24: Creating Manual work item for the Parcel
          workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
@@ -313,13 +321,14 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
          //Step 26: Selecting Action as 'Many To Many' & Taxes Paid fields value as 'N/A'
         objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,"BOE Activation");
-		objMappingPage.enter("First non-Condo Parcel Number","123456789");
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"123456789");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		Thread.sleep(2000);
 		//Step 27: Validating that -In order to proceed with BOE Activation, the parent parcel (s) should not have been previously activated.
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"-In order to proceed with BOE Activation, the parent parcel (s) should not have been previously activated.",
+		softAssert.assertContains(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"- In order to proceed with BOE Activation, the parent parcel(s) should not have been previously activated.",
 						"SMAB-T2687: Validation that Warning: -In order to proceed with BOE Activation, the parent parcel (s) should not have been previously activated.");
 
+		driver.switchTo().window(parentWindow);
         objWorkItemHomePage.logout();
     }
     

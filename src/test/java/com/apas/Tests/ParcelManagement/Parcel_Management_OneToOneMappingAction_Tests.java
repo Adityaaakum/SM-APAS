@@ -570,7 +570,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	        
 	        //Validating PUC Code of child parcel
 	        
-	        softAssert.assertEquals( salesforceAPI.select(pucLookeup).get("Name").get(0),"In Progress - New Parcel" ,"SMAB-T2718: Verifying the PUC of the new target parcel");        
+	       softAssert.assertEquals( salesforceAPI.select(pucLookeup).get("Name").get(0),"In Progress - New Parcel" ,"SMAB-T2718: Verifying the PUC of the new target parcel");        
 	        HashMap<String, ArrayList<String>> statusoldApn = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn);
 	        
 	        //Validating status of parent parcel.
@@ -613,7 +613,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
     		int expectedWorkItemsGenerated = response.get("Work_Item__r").size();
     		softAssert.assertEquals(expectedWorkItemsGenerated,1,"SMAB-T2717: Verify 2 new Work Items are generated and linked to each child parcel after one to one mapping action is performed and WI is completed");
            // currently Allocate value is not genrated as part of new story so removed asseration for that
-    		softAssert.assertContains(response.get("Work_Item__r").get(0),"New APN - Update Characteristics & Verify PUC","SMAB-T2717: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
+    		softAssert.assertContains(response,"New APN - Update Characteristics & Verify PUC","SMAB-T2717: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
     		
         //Validation that  System populates Situs  from the parent parcel
       
