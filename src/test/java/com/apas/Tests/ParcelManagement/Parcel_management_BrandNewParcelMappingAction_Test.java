@@ -100,9 +100,10 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
 
 		//Step 10: Validating warning message on second screen
+		//softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageSecondScreen),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
-				"Warning: If a parent parcel value is present"
-				+ " it will not be taken into consideration while creating a new parcel",
+				"- Warning: If a parent parcel value is present it will not be taken"
+				+ " into consideration while creating a new parcel",
 				"SMAB-T2537: Validation that Warning present on secound screeen ");
 
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
