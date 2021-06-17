@@ -364,6 +364,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 		ReportLogger.INFO("Completing the work item");
 		Click(detailsWI);
 		waitForElementToBeVisible(10, wiValueDetailsPage);
+		Click(editBtn);
 		enter(wiValueDetailsPage, "-1");
 		saveRecord();
 
