@@ -98,6 +98,9 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li[last()] |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
 	public WebElement errorMessageFirstScreen;
 
+	@FindBy(xpath = "//div[@class='main-form']//c-org_parcel-process-brand-new-view//ul/li[contains(text(),'Warning: Parcel number generated is different from the user selection based on established criteria')]")
+	public WebElement errorMessageSecondScreen;
+	
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Use Code']")
 	public WebElement useCodeFieldSecondScreen;
 	
