@@ -707,16 +707,14 @@ public class Page extends TestBase {
 	 * @param timeOutInSeconds : Max time to wait to disappear
 	 */
 	public void waitForElementToDisappear(Object object, int timeOutInSeconds) throws Exception {
-		WebElement webElement;
-		if (object instanceof String) {
-			webElement = driver.findElement(By.xpath(object.toString()));
-		} else if (object instanceof By) {
-			webElement = driver.findElement((By) object);
-		} else
-			webElement = (WebElement) object;
-
+		/*
+		 * WebElement webElement; if (object instanceof String) { webElement =
+		 * driver.findElement(By.xpath(object.toString())); } else if (object instanceof
+		 * By) { webElement = driver.findElement((By) object); } else webElement =
+		 * (WebElement) object;
+		 */
 		for (int i = 0; i < timeOutInSeconds; i++) {
-			if (verifyElementVisible(webElement))
+			if (verifyElementVisible(object))
 				Thread.sleep(1000);
 			else
 				break;
