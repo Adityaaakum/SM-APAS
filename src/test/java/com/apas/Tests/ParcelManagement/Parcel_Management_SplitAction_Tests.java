@@ -623,12 +623,6 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 
-		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
-		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
-		jsonObject.put("Status__c","Active");
-
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
-
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
@@ -725,7 +719,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
 		Map<String, String> hashMapSplitActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformSplitMappingActionWithoutAllFields");
+				"DataToPerformSplitMappingActionWithSitusData");
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -833,7 +827,12 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
 		Map<String, String> hashMapSplitActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformSplitMappingActionWithoutAllFields");
+				"DataToPerformSplitMappingActionWithSitusData");
+		
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c",apn,jsonObject);
 		
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -922,7 +921,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
 		Map<String, String> hashMapSplitActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformSplitMappingActionWithoutAllFields");
+				"DataToPerformSplitMappingActionWithSitusData");
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);

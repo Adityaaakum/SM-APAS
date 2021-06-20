@@ -673,7 +673,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		String mappingActionCreationData =  testdata.ONE_TO_ONE_MAPPING_ACTION;
 		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformOneToOneMappingActionWithoutAllFields");
+				"DataToPerformOneToOneMappingActionWithAllFields");
 		
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -785,8 +785,13 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		String mappingActionCreationData =  testdata.ONE_TO_ONE_MAPPING_ACTION;
 		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformOneToOneMappingActionWithoutAllFields");
+				"DataToPerformOneToOneMappingActionWithAllFields");
 
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
+		
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
 
@@ -955,8 +960,5 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 	}
-
-
-	
 	
 }
