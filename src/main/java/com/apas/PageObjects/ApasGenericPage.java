@@ -505,7 +505,7 @@ public class ApasGenericPage extends Page {
 		catch(Exception e){
 			Util utl = new Util();	
 			modulesObjectName modobj = new modulesObjectName();
-			String moduleURL = envURL + utl.getValueOf(modobj, moduleToSearch);
+			String moduleURL = envURL + utl.getValueOf(modobj, moduleToSearch.trim());
 			navigateTo(driver,moduleURL);
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Navigating directly" + moduleURL);
 		}
