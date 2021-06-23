@@ -693,7 +693,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	}
 	/**
-	 * Description: This method will fetch the latest Work Item ID created in APAS 
+	 * Description: This method will fetch the latest Work Item details created in APAS 
 	 
 	 */
 	public HashMap<String, ArrayList<String>> getLatestWorkItemDetailsOnWorkbench(int numberofWIs) {

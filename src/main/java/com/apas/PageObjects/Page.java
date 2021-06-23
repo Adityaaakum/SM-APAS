@@ -698,22 +698,23 @@ public class Page extends TestBase {
 		Click(getWebElementWithLabel(dropDown));
 		return driver.findElement(By.xpath("//label[text()='" + dropDown + "']/..//*[@role='listbox']")).getText().trim();
 	}
-
-    /**
+	/**
 	 * Description: Waits until the element goes invisible within given timeout
 	 *
 	 * @param object           : Object to disappear
 	 * @param timeOutInSeconds : Max time to wait to disappear
 	 */
 	public void waitForElementToDisappear(Object object, int timeOutInSeconds) throws Exception {
-		/*
-		 * WebElement webElement; if (object instanceof String) { webElement =
-		 * driver.findElement(By.xpath(object.toString())); } else if (object instanceof
-		 * By) { webElement = driver.findElement((By) object); } else webElement =
-		 * (WebElement) object;
-		 */
+		WebElement webElement;
+		if (object instanceof String) {
+			webElement = driver.findElement(By.xpath(object.toString()));
+		} else if (object instanceof By) {
+			webElement = driver.findElement((By) object);
+		} else
+			webElement = (WebElement) object;
+
 		for (int i = 0; i < timeOutInSeconds; i++) {
-			if (verifyElementVisible(object))
+			if (verifyElementVisible(webElement))
 				Thread.sleep(1000);
 			else
 				break;
