@@ -610,8 +610,8 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	 */
 	@Test(description = "SMAB-T2898:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"remap\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
-	public void ParcelManagement_ReturnToCustomScreen_RemapMappingAction_NoPrimarySitusTRAOwnership(String loginUser) throws Exception {
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and Status__c = 'Active' limit 1";
+	public void ParcelManagement_ReturnToCustomScreen_RemapMappingAction_NoPrimarySitusTRA(String loginUser) throws Exception {
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c =NULL and TRA__c=NULL and Status__c = 'Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 
@@ -665,13 +665,13 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-		objMappingPage.waitForElementToBeVisible(100, objMappingPage.updateParcelsButton);
-
+		Thread.sleep(7000);
+		
 		//Step 9: Validation that User is navigated to a screen with following fields:APN
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),childAPN,
 				"SMAB-T2898: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
-		softAssert.assertTrue(objMappingPage.isNotDisplayed(objMappingPage.getButtonWithText(objMappingPage.updateParcelsButton)),
+		softAssert.assertTrue(!objMappingPage.verifyElementVisible(objMappingPage.updateParcelsButton),
 				"SMAB-T2898: Validation that  There is No \"Update Parcel(s)\" button on return to custom screen");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2898: Validation that APN column should not be editable on retirning to custom screen");
 		
@@ -730,12 +730,13 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		Thread.sleep(7000);
 
 		//Step 7: Validation that User is navigated to a screen with following fields:APN
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),childAPN,
 				"SMAB-T2898: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
-		softAssert.assertTrue(!objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(objMappingPage.updateParcelsButton)),
+		softAssert.assertTrue(!objMappingPage.verifyElementVisible(objMappingPage.updateParcelsButton),
 				"SMAB-T2898: Validation that  There is No \"Update Parcel(s)\" button on return to custom screen");
 
 		driver.switchTo().window(parentWindow);

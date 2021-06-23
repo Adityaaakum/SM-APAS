@@ -108,8 +108,7 @@ public class Page extends TestBase {
 					}
 					catch(Exception exception) {
 						webElement = getButtonWithText(object.toString());
-					}
-				}
+					}}
 
 			} else if (object instanceof By) {
 				webElement = driver.findElement((By) object);
