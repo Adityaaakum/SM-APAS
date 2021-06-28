@@ -1,0 +1,9 @@
+{
+  "DataToPerformBOEActivationMappingActionWithAllFields": {
+    "Action": "BOE Activation",
+    "Reason code": "PM 85/25-26",
+    "Comments": "Perform BOE Activation",
+    "First non-Condo Parcel Number" : "120-340-790"
+          
+  }
+}
