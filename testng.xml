@@ -14,9 +14,9 @@
 		</groups>
 		<classes>
 
-			 <class name="com.apas.Tests.WorkItemsTest.WorkIemAdministration.WorkItemAdministration_PoolAssignment_Test">
+			 <class name="com.apas.Tests.SecurityAndSharing.ParcelManagement_SecurityAndSharing_Test">
 				 <methods>
-					 <include name="WorkItemAdministration_UpdateNeighborhood_ValidatePoolAssignment"/>
+					 <include name="ParcelManagement_ViewRecord"/>
 				 </methods>
 			 </class>
 

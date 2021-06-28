@@ -101,8 +101,8 @@
     "Work Item Routing": "Give Work Item to Default Work Pool"
   },
   "DataToCreateWorkItemOfTypeParcelManagement": {
-    "Work Item Type": "Parcel Management",
-    "Actions": "Create New Parcel",
+    "Work Item Type": "Mapping",
+    "Actions": "Perform Customer Request Split",
     "Audit Trail": "No",
     "Reference": "Test WI",
     "Description": "Creation of work item",

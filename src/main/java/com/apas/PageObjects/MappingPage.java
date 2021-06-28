@@ -118,6 +118,9 @@ public class MappingPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//div[@class='slds-hyphenate']/*[contains(text(),'The APN provided is a duplicate')]")
 	public WebElement remapErrorMessageonSecondScreen;
+	
+	@FindBy(xpath="//span[text()='Only mapping users have access to perform mapping related actions']")
+	public WebElement MappingScreenError;
 
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
