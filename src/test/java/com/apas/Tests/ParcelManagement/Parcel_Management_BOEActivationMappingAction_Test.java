@@ -331,4 +331,91 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
         objWorkItemHomePage.logout();
     }
     
+    /**
+	 * This method is to  Verify  the custom edit on mapping page
+	 *@param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T2839,SMAB-T2844: I need to have the ability to select specific fields from the mapping custom screen, so that the correct values can be assigned to the parcels. ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Smoke","Regression","ParcelManagement" },enabled = true)
+	public void ParcelManagement_VerifyBOEParcelEditAction(String loginUser) throws Exception {
+		String queryAPN = "Select name From Parcel__c where Status__c='Retired' limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String RetiredParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
+		objMappingPage.deleteRelationshipInstanceFromParcel(RetiredParcelToPerformMapping);
+
+		String mappingActionCreationData =  testdata.BOE_ACTION;
+
+		Map<String, String> hashMapBOEParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformBOEMappingActionWithAllFields");
+		String situsCityName = hashMapBOEParcelMappingData.get("City Name");
+		String direction = hashMapBOEParcelMappingData.get("Direction");
+		String situsNumber = hashMapBOEParcelMappingData.get("Situs Number");
+		String situsStreetName = hashMapBOEParcelMappingData.get("Situs Street Name");
+		String situsType = hashMapBOEParcelMappingData.get("Situs Type");
+		String situsUnitNumber = hashMapBOEParcelMappingData.get("Situs Unit Number");
+		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+situsCityName;
+
+
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+		// Step1: Login to the APAS application using the credentials passed through data provider (mapping staff user)
+		objMappingPage.login(loginUser);
+
+		// Step 2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(RetiredParcelToPerformMapping);
+
+		//Step 3: Creating Manual work item for the Parcel 
+		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
+		Thread.sleep(3000);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		String reasonCode=objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();	
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		 objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+		 objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,"BOE Activation");
+		objMappingPage.waitForElementToBeVisible(objMappingPage.reasonCodeField);
+		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
+				"SMAB-T2839: Validation that reason code field is auto populated from parent parcel work item");
+		objMappingPage.fillMappingActionForm(hashMapBOEParcelMappingData);
+		 objMappingPage.Click(objMappingPage.mapping2ScreenActionButton);
+			Thread.sleep(3000);
+		objMappingPage.editActionInMappingSecondScreen(hashMapBOEParcelMappingData);
+		objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);
+		ReportLogger.INFO("Validate the Grid values");
+		HashMap<String, ArrayList<String>> gridDataHashMapAfterEditAction =objMappingPage.getGridDataInHashMap();
+		String childAPNNumber= gridDataHashMapAfterEditAction.get("APN").get(0);
+		//Verifying new situs,TRA ,use code is populated in grid table		    
+	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Situs").get(0),childprimarySitus,
+				"SMAB-T2839,SMAB-T2844: Validation that System populates Situs from the parent parcel");
+	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA").get(0),hashMapBOEParcelMappingData.get("TRA"),
+				"SMAB-T2839,SMAB-T2844: Validation that System populates TRA from the parent parcel");
+	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code").get(0),hashMapBOEParcelMappingData.get("PUC"),
+				"SMAB-T2839,SMAB-T2844: Validation that System populates TRA from the parent parcel");
+	    ReportLogger.INFO("Click on Combine Parcel button");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen()," have been successfully Activated!",
+				"SMAB-T2839,SMAB-T2844: Validate that User is able to perform Combine action for multiple active parcels");			    
+	    
+	    driver.switchTo().window(parentWindow);
+	    objMappingPage.searchModule(PARCELS);
+		
+		objMappingPage.globalSearchRecords(childAPNNumber);
+		//Validate the Situs of child parcel generated
+	    softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus, "Parcel Information"),childprimarySitus,
+				"SMAB-T2844,SMAB-T2839: Validate the Situs of child parcel generated");
+		objWorkItemHomePage.logout();
+
+	    
+		
+
+}
+
+    
 }

@@ -2,7 +2,7 @@
 
 
   "DataToPerformBOEMappingActionWithAllFields": {
-    "Action": "BOE Activation",
+    "Action":"BOE Activation",
     "Reason code": "PM 85/25-26",
     "Comments": "Perform one to one mapping",
    "Situs City Description": "Daly City",

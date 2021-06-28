@@ -80,6 +80,21 @@ public class MappingPage extends ApasGenericPage {
 	public String CreateNewParcelButton="Create Brand New Parcel";
 	public String updateParcelsButton = "Update Parcel(s)";
 	
+	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
+	public WebElement editSpanin2MappingScreen;
+	
+	@FindBy(xpath = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]/ancestor::tr/following-sibling::tr//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]")
+	public WebElement moreEditSpanin2MappingScreen;
+	
+	@FindBy(xpath = "//button[@title='Clear Selection'][1]")
+	public WebElement clearSelectionTRA;
+	
+	@FindBy(xpath = "//button[@title='Clear Selection'][1]/ancestor::lightning-input-field/following-sibling::lightning-input-field//button")
+	public WebElement clearSelectionPUC;	
+	
+	@FindBy(xpath = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]")
+	public WebElement mapping2ScreenActionButton;
+	
 	@FindBy(xpath = "//label[text()='First Non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
 
@@ -393,5 +408,19 @@ public class MappingPage extends ApasGenericPage {
   		 String consolidateAPN = apnComponent[0] + apnComponent[1] + apnComponent[2];
   		 return Integer.valueOf(consolidateAPN);
   	  }
-       
+      
+      public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
+  		
+    	  
+			Click(editSpanin2MappingScreen);
+			if(waitForElementToBeVisible(2, clearSelectionTRA))
+		    Click(clearSelectionTRA);
+			selectOptionFromDropDown(parcelTRA,dataMap.get("TRA"));
+			if(waitForElementToBeVisible(2, clearSelectionPUC))
+			Click(clearSelectionPUC);
+			selectOptionFromDropDown(parcelPUC,dataMap.get("PUC"));
+			editSitusModalWindowFirstScreen(dataMap);
+			
+  	}
+  	   
 }
