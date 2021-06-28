@@ -81,10 +81,10 @@ public class MappingPage extends ApasGenericPage {
 	public String updateParcelsButton = "Update Parcel(s)";
 	
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
-	public WebElement editSpanin2MappingScreen;
+	public WebElement editButtonInSeconMappingScreen;
 	
 	@FindBy(xpath = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]/ancestor::tr/following-sibling::tr//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]")
-	public WebElement secondEditActionInMappingScreen;
+	public WebElement secondmappingSecondScreenEditActionGridButton;
 	
 	@FindBy(xpath = "//button[@title='Clear Selection'][1]")
 	public WebElement clearSelectionTRA;
@@ -93,7 +93,7 @@ public class MappingPage extends ApasGenericPage {
 	public WebElement clearSelectionPUC;	
 	
 	@FindBy(xpath = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]")
-	public WebElement mapping2ScreenActionButton;
+	public WebElement mappingSecondScreenEditActionGridButton;
 	
 	@FindBy(xpath = "//label[text()='First Non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
@@ -415,7 +415,7 @@ public class MappingPage extends ApasGenericPage {
       public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
   		
     	  
-			Click(editSpanin2MappingScreen);
+			Click(editButtonInSeconMappingScreen);
 			if(waitForElementToBeVisible(2, clearSelectionTRA))
 		    Click(clearSelectionTRA);
 			selectOptionFromDropDown(parcelTRA,dataMap.get("TRA"));

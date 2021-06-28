@@ -649,7 +649,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
 				"SMAB-T2835: Validation that reason code field is auto populated from parent parcel work item");
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
-		 objMappingPage.Click(objMappingPage.mapping2ScreenActionButton);
+		 objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
 			Thread.sleep(3000);
 		objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
 		objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);

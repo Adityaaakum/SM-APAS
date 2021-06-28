@@ -384,7 +384,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
 				"SMAB-T2839: Validation that reason code field is auto populated from parent parcel work item");
 		objMappingPage.fillMappingActionForm(hashMapBOEParcelMappingData);
-		 objMappingPage.Click(objMappingPage.mapping2ScreenActionButton);
+		 objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
 			Thread.sleep(3000);
 		objMappingPage.editActionInMappingSecondScreen(hashMapBOEParcelMappingData);
 		objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);

@@ -764,7 +764,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
 				"SMAB-T2838: Validation that reason code field is auto populated from parent parcel work item");
 		objMappingPage.fillMappingActionForm(hashMapSplitActionMappingData);
-		 objMappingPage.Click(objMappingPage.mapping2ScreenActionButton);
+		 objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
 			Thread.sleep(3000);
 		objMappingPage.editActionInMappingSecondScreen(hashMapSplitActionMappingData);
 		objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);
@@ -778,7 +778,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 				"SMAB-T2838,SMAB-T2843: Validation that System populates TRA from the parent parcel");
 	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code").get(0),hashMapSplitActionMappingData.get("PUC"),
 				"SMAB-T2838,SMAB-T2843: Validation that System populates Use Code from the parent parcel");
-	    objMappingPage.Click(objMappingPage.secondEditActionInMappingScreen);
+	    objMappingPage.Click(objMappingPage.secondmappingSecondScreenEditActionGridButton);
 		Thread.sleep(3000);
 		objMappingPage.editActionInMappingSecondScreen(hashMapSplitActionMappingData);
 		objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);

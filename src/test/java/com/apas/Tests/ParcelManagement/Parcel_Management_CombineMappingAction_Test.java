@@ -1761,7 +1761,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2578: Validation that Use Code column is not editable");
 				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)"),"SMAB-T2578: Validation that Parcel Size column is  editable");
 				
-				 objMappingPage.Click(objMappingPage.mapping2ScreenActionButton);
+				 objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
 					Thread.sleep(3000);
 				objMappingPage.editActionInMappingSecondScreen(hashMapCombineMappingData);
 				objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);
