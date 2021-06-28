@@ -1180,7 +1180,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code").get(0),hashMapManyToManyActionMappingData.get("PUC"),
 				"SMAB-T2836,SMAB-T2841: Validation that System populates Use Code from the parent parcel");
 	    //Clicking on 2 edit action button
-	    objMappingPage.Click(objMappingPage.moreEditSpanin2MappingScreen);
+	    objMappingPage.Click(objMappingPage.secondEditActionInMappingScreen);
 		Thread.sleep(3000);
 	objMappingPage.editActionInMappingSecondScreen(hashMapManyToManyActionMappingData);
 	objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);

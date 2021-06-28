@@ -778,7 +778,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 				"SMAB-T2838,SMAB-T2843: Validation that System populates TRA from the parent parcel");
 	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code").get(0),hashMapSplitActionMappingData.get("PUC"),
 				"SMAB-T2838,SMAB-T2843: Validation that System populates Use Code from the parent parcel");
-	    objMappingPage.Click(objMappingPage.moreEditSpanin2MappingScreen);
+	    objMappingPage.Click(objMappingPage.secondEditActionInMappingScreen);
 		Thread.sleep(3000);
 		objMappingPage.editActionInMappingSecondScreen(hashMapSplitActionMappingData);
 		objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);

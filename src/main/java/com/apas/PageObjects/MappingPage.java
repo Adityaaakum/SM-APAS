@@ -84,7 +84,7 @@ public class MappingPage extends ApasGenericPage {
 	public WebElement editSpanin2MappingScreen;
 	
 	@FindBy(xpath = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]/ancestor::tr/following-sibling::tr//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]")
-	public WebElement moreEditSpanin2MappingScreen;
+	public WebElement secondEditActionInMappingScreen;
 	
 	@FindBy(xpath = "//button[@title='Clear Selection'][1]")
 	public WebElement clearSelectionTRA;
