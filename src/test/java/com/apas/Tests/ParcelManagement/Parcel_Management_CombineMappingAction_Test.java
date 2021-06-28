@@ -792,9 +792,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		apnValue.put("APN3", apn3); 
 		
 		//Delete the existing parcel relationship instances on all 3 parcels
-		objMappingPage.deleteSourceRelationshipInstanceFromParcel(apn1);
-		objMappingPage.deleteSourceRelationshipInstanceFromParcel(apn2);
-		objMappingPage.deleteSourceRelationshipInstanceFromParcel(apn3);
+		objMappingPage.deleteRelationshipInstanceFromParcel(apn1);
+		objMappingPage.deleteRelationshipInstanceFromParcel(apn2);
+		objMappingPage.deleteRelationshipInstanceFromParcel(apn3);
 		
         //Find lowest APN of all 3 parcels
 		String updateRecordOn = "";

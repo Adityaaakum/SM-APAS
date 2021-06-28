@@ -371,7 +371,7 @@ public class MappingPage extends ApasGenericPage {
       This method will delete existing relationship instances (Source) from the Parcel
      */
       
-      public void deleteSourceRelationshipInstanceFromParcel(String apn) throws Exception {
+      public void deleteRelationshipInstanceFromParcel(String apn) throws Exception {
     	  String query = "SELECT Id FROM Parcel_Relationship__c where Source_Parcel__r.name = '" + apn + "'";
     	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
     	  if(!response.isEmpty())objSalesforceAPI.delete("Parcel_Relationship__c", query);

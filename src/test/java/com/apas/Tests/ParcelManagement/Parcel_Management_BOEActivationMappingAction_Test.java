@@ -333,12 +333,10 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 	public void ParcelManagement_ReturnToCustomScreen_BOEACtivationMappingAction(String loginUser) throws Exception {
 		String childAPNPUC;
 		
-		//Fetching parcel that is Retired 		
-		String queryAPNValue = "SELECT Source_Parcel__r.Name,Target_Parcel__r.Name, Target_Parcel_Status__c From Parcel_Relationship__c Where Parcel_Actions__c != 'BOE Activation' And Source_Parcel__r.status__c = 'Retired' Limit 1";
-		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
-		String apn= response.get("Source_Parcel__r").get(0);
-		JSONObject json = new JSONObject(apn); 
-		String parentAPN = json.getString("Name"); 
+		String queryAPN = "Select name From Parcel__c where Status__c='Retired' limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String parentAPN=responseAPNDetails.get("Name").get(0);
+		objMappingPage.deleteRelationshipInstanceFromParcel(parentAPN);
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -386,7 +384,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		//Step 7: Click generate Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
-		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+apn+"') limit 1");
+		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+parentAPN+"') limit 1");
 		if(responsePUCDetailsChildAPN.size()==0)
 			  childAPNPUC ="";
 		else
@@ -439,11 +437,10 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		String childAPNPUC;
 
 		//Fetching parcel that is Retired 		
-		String queryAPNValue = "SELECT Source_Parcel__r.Name,Target_Parcel__r.Name, Target_Parcel_Status__c From Parcel_Relationship__c Where Parcel_Actions__c != 'BOE Activation' And Source_Parcel__r.status__c = 'Retired' Limit 1";
-		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
-		String apn= response.get("Source_Parcel__r").get(0);
-		JSONObject json = new JSONObject(apn); 
-		String parentAPN = json.getString("Name");  
+		String queryAPN = "Select name From Parcel__c where Status__c='Retired' limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String parentAPN=responseAPNDetails.get("Name").get(0);
+		objMappingPage.deleteRelationshipInstanceFromParcel(parentAPN);  
 		
 		String mappingActionCreationData =  testdata.BOEACtivation_MAPPING_ACTION;
 		Map<String, String> hashMapBOEACtivationMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
@@ -474,13 +471,12 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		String legalDescription=gridDataHashMap.get("Legal Description").get(0);
 		String tra=gridDataHashMap.get("TRA").get(0);
 		String situs=gridDataHashMap.get("Situs").get(0);
-		String reasonCode=gridDataHashMap.get("Reason Code").get(0);
 		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd").get(0);
 
 		//Step 5: Click BOEACtivation Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
-		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+apn+"') limit 1");
+		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+parentAPN+"') limit 1");
 		if(responsePUCDetailsChildAPN.size()==0)
 			  childAPNPUC ="";
 		else
