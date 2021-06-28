@@ -692,6 +692,17 @@ public class WorkItemHomePage extends ApasGenericPage {
 		return WorkItem_Id;
 
 	}
+	/**
+	 * Description: This method will fetch the latest Work Item details created in APAS 
+	 
+	 */
+	public HashMap<String, ArrayList<String>> getLatestWorkItemDetailsOnWorkbench(int numberofWIs) {
+		salesforceAPI  = new SalesforceAPI();
+		String slqWork_Item_Id = "SELECT Id ,Name ,type__c,sub_type__c ,status__c ,createddate FROM Work_Item__c order by createddate desc  limit "+ numberofWIs;		  
+
+		 return salesforceAPI.select(slqWork_Item_Id);
+
+	}
 
 	/**
 	 * Description: This method will fetch the Work Item supervisor name 
