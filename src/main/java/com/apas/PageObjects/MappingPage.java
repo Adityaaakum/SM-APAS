@@ -78,7 +78,9 @@ public class MappingPage extends ApasGenericPage {
 	public String situsUnitNumberLabel = "Situs Unit Number";
 	public String closeButton = "Close";
 	public String CreateNewParcelButton="Create Brand New Parcel";
-	public String updateParcelsButton = "Update Parcel(s)";
+	public String updateParcelsButton = "//button[text()='Update Parcel(s)']";
+	public String updateParcelButtonLabelName = "Update Parcel(s)";
+
 	
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
 	public WebElement editButtonInSeconMappingScreen;

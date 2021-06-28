@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -46,7 +47,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objMappingPage= new MappingPage(driver);
 
 	}
-	
+
 	/**
 	 * This method is to Verify that User is able to view various error messages while perform a "BOE Activation" mapping action from a work item
 	 * @param loginUser
@@ -130,7 +131,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objMappingPage.logout();
 
 	}
-	 /**
+	/**
      * This method is to Verify that User is able to perform output validations for "BOE Activation" mapping action for a Parcel (Active) from a work item
      * @param loginUser
      * @throws Exception
@@ -330,92 +331,289 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		driver.switchTo().window(parentWindow);
         objWorkItemHomePage.logout();
     }
-    
-    /**
-	 * This method is to  Verify  the custom edit on mapping page
-	 *@param loginUser
+	/**
+	 * This method is to Parcel Management- Verify that User is able to Return to Custom Screen after performing  a "BOEACtivation" mapping action for a Parcel
+	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2839,SMAB-T2844: I need to have the ability to select specific fields from the mapping custom screen, so that the correct values can be assigned to the parcels. ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Smoke","Regression","ParcelManagement" },enabled = true)
-	public void ParcelManagement_VerifyBOEParcelEditAction(String loginUser) throws Exception {
+	@Test(description = "SMAB-T2898:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"BOEACtivation\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression","ParcelManagement" })
+	public void ParcelManagement_ReturnToCustomScreen_BOEACtivationMappingAction(String loginUser) throws Exception {
+		String childAPNPUC;
+		
 		String queryAPN = "Select name From Parcel__c where Status__c='Retired' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
-		String RetiredParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
-		objMappingPage.deleteRelationshipInstanceFromParcel(RetiredParcelToPerformMapping);
-
-		String mappingActionCreationData =  testdata.BOEACtivation_MAPPING_ACTION;
-
-		Map<String, String> hashMapBOEParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformBOEMappingActionWithAllFields");
-		String situsCityName = hashMapBOEParcelMappingData.get("City Name");
-		String direction = hashMapBOEParcelMappingData.get("Direction");
-		String situsNumber = hashMapBOEParcelMappingData.get("Situs Number");
-		String situsStreetName = hashMapBOEParcelMappingData.get("Situs Street Name");
-		String situsType = hashMapBOEParcelMappingData.get("Situs Type");
-		String situsUnitNumber = hashMapBOEParcelMappingData.get("Situs Unit Number");
-		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+situsCityName;
-
-
+		String parentAPN=responseAPNDetails.get("Name").get(0);
+		objMappingPage.deleteRelationshipInstanceFromParcel(parentAPN);
+		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
-		// Step1: Login to the APAS application using the credentials passed through data provider (mapping staff user)
+
+		String mappingActionCreationData =  testdata.BOEACtivation_MAPPING_ACTION;
+		Map<String, String> hashMapBOEACtivationMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformBOEActivationMappingActionWithAllFields");
+
+		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
 
-		// Step 2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+		// Step2: Opening the PARCELS page  and searching the  parcel 
 		objMappingPage.searchModule(PARCELS);
-		objMappingPage.globalSearchRecords(RetiredParcelToPerformMapping);
+		objMappingPage.globalSearchRecords(parentAPN);
 
-		//Step 3: Creating Manual work item for the Parcel 
-		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		// Step 3: Creating Manual work item for the Parcel
+
+		String workItem=objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
-		Thread.sleep(3000);
+
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
 		String reasonCode=objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
-		String parentWindow = driver.getWindowHandle();	
+		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-		 objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
-		 objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,"BOE Activation");
-		objMappingPage.waitForElementToBeVisible(objMappingPage.reasonCodeField);
-		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
-				"SMAB-T2839: Validation that reason code field is auto populated from parent parcel work item");
-		objMappingPage.fillMappingActionForm(hashMapBOEParcelMappingData);
-		 objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
-			Thread.sleep(3000);
-		objMappingPage.editActionInMappingSecondScreen(hashMapBOEParcelMappingData);
-		objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);
-		ReportLogger.INFO("Validate the Grid values");
-		HashMap<String, ArrayList<String>> gridDataHashMapAfterEditAction =objMappingPage.getGridDataInHashMap();
-		String childAPNNumber= gridDataHashMapAfterEditAction.get("APN").get(0);
-		//Verifying new situs,TRA ,use code is populated in grid table		    
-	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Situs").get(0),childprimarySitus,
-				"SMAB-T2839,SMAB-T2844: Validation that System populates Situs from the parent parcel");
-	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA").get(0),hashMapBOEParcelMappingData.get("TRA"),
-				"SMAB-T2839,SMAB-T2844: Validation that System populates TRA from the parent parcel");
-	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code").get(0),hashMapBOEParcelMappingData.get("PUC"),
-				"SMAB-T2839,SMAB-T2844: Validation that System populates TRA from the parent parcel");
-	    ReportLogger.INFO("Click on Combine Parcel button");
+
+		//Step 5: Selecting Action as 'perform parcel BOEACtivation' 
+		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapBOEACtivationMappingData.get("Action"));
+
+		//Step 6: filling all fields in mapping action screen
+		objMappingPage.fillMappingActionForm(hashMapBOEACtivationMappingData);
+		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
+		gridDataHashMap =objMappingPage.getGridDataInHashMap();
+
+		String childAPN=gridDataHashMap.get("APN").get(0);
+		String legalDescription=gridDataHashMap.get("Legal Description").get(0);
+		String tra=gridDataHashMap.get("TRA").get(0);
+		String situs=gridDataHashMap.get("Situs").get(0);
+		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd").get(0);
+
+		//Step 7: Click generate Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen()," have been successfully Activated!",
-				"SMAB-T2839,SMAB-T2844: Validate that User is able to perform Combine action for multiple active parcels");			    
-	    
-	    driver.switchTo().window(parentWindow);
-	    objMappingPage.searchModule(PARCELS);
+		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
+		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+parentAPN+"') limit 1");
+		if(responsePUCDetailsChildAPN.size()==0)
+			  childAPNPUC ="";
+		else
+			childAPNPUC=responsePUCDetailsChildAPN.get("Name").get(0);
 		
-		objMappingPage.globalSearchRecords(childAPNNumber);
-		//Validate the Situs of child parcel generated
-	    softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus, "Parcel Information"),childprimarySitus,
-				"SMAB-T2844,SMAB-T2839: Validate the Situs of child parcel generated");
+		//Step 8: Navigating back to the WI that was created and clicking on related action link 
+		driver.switchTo().window(parentWindow);
+		objMappingPage.globalSearchRecords(workItem);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		Thread.sleep(7);
+		
+		//Step 9: Validation that User is navigated to a screen with following fields:APN
+		gridDataHashMap =objMappingPage.getGridDataInHashMap();
+		
+		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),childAPN,
+				"SMAB-T2898: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
+		softAssert.assertTrue(!objMappingPage.verifyElementVisible(objMappingPage.updateParcelsButton),
+				"SMAB-T2898: Validation that  There is No \"Update Parcel(s)\" button on return to custom screen");
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),districtNeighborhood,
+						"SMAB-T2898: Validation that  System populates District/Neighborhood in return to custom screen  from the parent parcel");
+		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),situs.replaceFirst("\\s+", ""),"SMAB-T2898: Validation that  System populates Situs in return to custom screen  from the parent parcel");
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescription,
+						"SMAB-T2898: Validation that  System populates Legal Description in return to custom screen from the parent parcel");
+		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),tra,
+						"SMAB-T2898: Validation that  System populates TRA in return to custom screen from the parent parcel");
+		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),childAPNPUC,
+						"SMAB-T2898: Validation that  System populates Use Code that was edited in custom screen");
+		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
+				"SMAB-T2898: Validation that  System populates reason code in return to custom screen from the sane reason code that was entered while perfroming mapping action");
+
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2898: Validation that APN column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2898: Validation that Legal Description column on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2898: Validation that TRA column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2898: Validation that Situs column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2898: Validation that Reason Code column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd"),"SMAB-T2898: Validation that District/Neighborhood column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2898: Validation that Use Code column should not be editable on retirning to custom screen");
+
+		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
+	}
+	
+	@Test(description = "SMAB-T2898:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"BOEACtivation\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression","ParcelManagement" })
+	public void ParcelManagement_ReturnToCustomScreen_BOEACtivation_MappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
+		String childAPNPUC;
 
-	    
+		//Fetching parcel that is Retired 		
+		String queryAPN = "Select name From Parcel__c where Status__c='Retired' limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String parentAPN=responseAPNDetails.get("Name").get(0);
+		objMappingPage.deleteRelationshipInstanceFromParcel(parentAPN);  
+		
+		String mappingActionCreationData =  testdata.BOEACtivation_MAPPING_ACTION;
+		Map<String, String> hashMapBOEACtivationMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformBOEActivationMappingActionWithAllFields");
+
+		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
+		objMappingPage.login(loginUser);
+		Thread.sleep(7000);
+		objMappingPage.closeDefaultOpenTabs();
+
+		// Step2: Opening the PARCELS page  and searching the  parcel 
+		objMappingPage.searchModule("APAS");
+		objMappingPage.searchModule("Mapping Action");
+		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
+
+		//Step 3: Selecting Action as 'perform parcel BOEACtivation' 
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,parentAPN);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapBOEACtivationMappingData.get("Action"));
+
+		//Step 4: filling all fields in mapping action screen
+		objMappingPage.fillMappingActionForm(hashMapBOEACtivationMappingData);
+		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
+		gridDataHashMap =objMappingPage.getGridDataInHashMap();
+
+		String childAPN=gridDataHashMap.get("APN").get(0);
+		String legalDescription=gridDataHashMap.get("Legal Description").get(0);
+		String tra=gridDataHashMap.get("TRA").get(0);
+		String situs=gridDataHashMap.get("Situs").get(0);
+		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd").get(0);
+
+		//Step 5: Click BOEACtivation Parcel Button
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
+		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+parentAPN+"') limit 1");
+		if(responsePUCDetailsChildAPN.size()==0)
+			  childAPNPUC ="";
+		else
+			childAPNPUC=responsePUCDetailsChildAPN.get("Name").get(0);
 		
 
-}
+		//Step 6: Navigating  to the independent mapping action WI that would have been created after performing BOEACtivation action and clicking on related action link 
+		String workItemId= objWorkItemHomePage.getWorkItemIDFromParcelOnWorkbench(parentAPN);
+		String query = "SELECT Name FROM Work_Item__c where id = '"+ workItemId + "'";
+		HashMap<String, ArrayList<String>> responseDetails = salesforceAPI.select(query);
+		String workItem=responseDetails.get("Name").get(0);
 
-    
+		objMappingPage.globalSearchRecords(workItem);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		Thread.sleep(5000);
+		
+		//Step 7: Validation that User is navigated to a screen with following fields:APN
+		gridDataHashMap =objMappingPage.getGridDataInHashMap();
+		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),childAPN,
+				"SMAB-T2898: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
+		softAssert.assertTrue(!objMappingPage.verifyElementVisible(objMappingPage.updateParcelsButton),
+				"SMAB-T2898: Validation that  There is No \"Update Parcel(s)\" button on return to custom screen");
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),districtNeighborhood,
+				"SMAB-T2898: Validation that  System populates District/Neighborhood in return to custom screen  from the parent parcel");
+		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),situs.replaceFirst("\\s+", ""),"SMAB-T2898: Validation that  System populates Situs in return to custom screen  from the parent parcel");
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescription,
+				"SMAB-T2898: Validation that  System populates Legal Description in return to custom screen from the parent parcel");
+		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),tra,
+				"SMAB-T2898: Validation that  System populates TRA in return to custom screen from the parent parcel");
+		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),childAPNPUC,
+				"SMAB-T2898: Validation that  System populates Use Code that was edited in custom screen");
+		
+		driver.switchTo().window(parentWindow);
+		objWorkItemHomePage.logout();
+	}
+	
+	
+	 /**
+		 * This method is to  Verify  the custom edit on mapping page
+		 *@param loginUser
+		 * @throws Exception
+		 */
+		@Test(description = "SMAB-T2839,SMAB-T2844: I need to have the ability to select specific fields from the mapping custom screen, so that the correct values can be assigned to the parcels. ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+				"Smoke","Regression","ParcelManagement" },enabled = true)
+		public void ParcelManagement_VerifyBOEParcelEditAction(String loginUser) throws Exception {
+			String queryAPN = "Select name From Parcel__c where Status__c='Retired' limit 1";
+			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+			String RetiredParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
+			objMappingPage.deleteRelationshipInstanceFromParcel(RetiredParcelToPerformMapping);
+
+			String mappingActionCreationData =  testdata.BOEACtivation_MAPPING_ACTION;
+
+			Map<String, String> hashMapBOEParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+					"DataToPerformBOEMappingActionWithAllFields");
+			String situsCityName = hashMapBOEParcelMappingData.get("City Name");
+			String direction = hashMapBOEParcelMappingData.get("Direction");
+			String situsNumber = hashMapBOEParcelMappingData.get("Situs Number");
+			String situsStreetName = hashMapBOEParcelMappingData.get("Situs Street Name");
+			String situsType = hashMapBOEParcelMappingData.get("Situs Type");
+			String situsUnitNumber = hashMapBOEParcelMappingData.get("Situs Unit Number");
+			String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+situsCityName;
+
+
+			String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+			Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+					"DataToCreateWorkItemOfTypeParcelManagement");
+			// Step1: Login to the APAS application using the credentials passed through data provider (mapping staff user)
+			objMappingPage.login(loginUser);
+
+			// Step 2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+			objMappingPage.searchModule(PARCELS);
+			objMappingPage.globalSearchRecords(RetiredParcelToPerformMapping);
+
+			//Step 3: Creating Manual work item for the Parcel 
+			objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+			//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
+			Thread.sleep(3000);
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+			String reasonCode=objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
+			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+			String parentWindow = driver.getWindowHandle();	
+			objWorkItemHomePage.switchToNewWindow(parentWindow);
+			 objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+			 objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,"BOE Activation");
+			objMappingPage.waitForElementToBeVisible(objMappingPage.reasonCodeField);
+			softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
+					"SMAB-T2839: Validation that reason code field is auto populated from parent parcel work item");
+			objMappingPage.fillMappingActionForm(hashMapBOEParcelMappingData);
+			 objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+				Thread.sleep(3000);
+			objMappingPage.editActionInMappingSecondScreen(hashMapBOEParcelMappingData);
+			objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);
+			ReportLogger.INFO("Validate the Grid values");
+			HashMap<String, ArrayList<String>> gridDataHashMapAfterEditAction =objMappingPage.getGridDataInHashMap();
+			String childAPNNumber= gridDataHashMapAfterEditAction.get("APN").get(0);
+			//Verifying new situs,TRA ,use code is populated in grid table		    
+		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Situs").get(0),childprimarySitus,
+					"SMAB-T2839,SMAB-T2844: Validation that System populates Situs from the parent parcel");
+		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA").get(0),hashMapBOEParcelMappingData.get("TRA"),
+					"SMAB-T2839,SMAB-T2844: Validation that System populates TRA from the parent parcel");
+		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code").get(0),hashMapBOEParcelMappingData.get("PUC"),
+					"SMAB-T2839,SMAB-T2844: Validation that System populates TRA from the parent parcel");
+		    ReportLogger.INFO("Click on Combine Parcel button");
+			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+			softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen()," have been successfully Activated!",
+					"SMAB-T2839,SMAB-T2844: Validate that User is able to perform Combine action for multiple active parcels");			    
+		    
+		    driver.switchTo().window(parentWindow);
+		    objMappingPage.searchModule(PARCELS);
+			
+			objMappingPage.globalSearchRecords(childAPNNumber);
+			//Validate the Situs of child parcel generated
+		    softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus, "Parcel Information"),childprimarySitus,
+					"SMAB-T2844,SMAB-T2839: Validate the Situs of child parcel generated");
+			objWorkItemHomePage.logout();
+
+		    
+			
+
+	}
+
+	    
+	
+
 }

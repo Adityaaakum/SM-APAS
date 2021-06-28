@@ -68,5 +68,4 @@ public interface testdata {
 	String MANY_TO_MANY_MAPPING_ACTION = userDirectory + "\\data\\MappingActions\\ManyToManyMappingAction.json";
 	String BOEACtivation_MAPPING_ACTION= userDirectory + "\\data\\MappingActions\\BOEActivationMapping.json";
 
-
 }
