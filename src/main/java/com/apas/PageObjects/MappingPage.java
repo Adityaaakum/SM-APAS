@@ -78,7 +78,9 @@ public class MappingPage extends ApasGenericPage {
 	public String situsUnitNumberLabel = "Situs Unit Number";
 	public String closeButton = "Close";
 	public String CreateNewParcelButton="Create Brand New Parcel";
-	public String updateParcelsButton = "Update Parcel(s)";
+	public String updateParcelsButton = "//button[text()='Update Parcel(s)']";
+	public String updateParcelButtonLabelName = "Update Parcel(s)";
+
 	
 	@FindBy(xpath = "//label[text()='First Non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
@@ -98,6 +100,9 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li[last()] |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
 	public WebElement errorMessageFirstScreen;
 
+	@FindBy(xpath = "//div[contains(@class,'flowRuntimeV2')]//c-org_parcel-process-brand-new-view[1]//div[contains(@class,'error')]//li")
+	public WebElement errorMessageSecondScreen;
+	
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Use Code']")
 	public WebElement useCodeFieldSecondScreen;
 	
