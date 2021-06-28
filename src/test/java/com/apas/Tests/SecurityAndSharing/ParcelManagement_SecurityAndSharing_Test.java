@@ -134,8 +134,9 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 		objParcelsPage.Click(objParcelsPage.saveButton);
 		objParcelsPage.logout();
 	}
-	@Test(description = "SMAB-T638: Validate RP Business admin and Exemption Support staff are able to only view the Roll year record", groups = {"Regression","DisabledVeteran"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
-	public void ParcelManagement_ViewRecord(String loginUser) throws Exception {
+	
+	@Test(description = "SMAB-T2463: Validate RP Business admin and Exemption Support staff should not able to delete parcel", groups = {"Regression","DisabledVeteran"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	public void ParcelManagement_ValidationOnDeleteRecord(String loginUser) throws Exception {
 		String queryAPN = "Select Name From Parcel__c limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
@@ -151,7 +152,7 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 		objParcelsPage.searchRecords(apn);
 		
 		//Step4: Search the existing Roll Year record - Delete/Edit options should not be visbile to non-admin users
-		softAssert.assertTrue(!objParcelsPage.clickShowMoreButtonAndAct(apn, "Delete"),"SMAB-T638: Validate non system admin user is not able to view 'Delete' option to delete the existing Roll Year record : ");
+		softAssert.assertTrue(!objParcelsPage.clickShowMoreButtonAndAct(apn, "Delete"),"SMAB-T2463: Validate non system admin user is not able to view 'Delete' option to delete the existing parcel record");
 				
 		objParcelsPage.logout();
 	}
