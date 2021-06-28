@@ -18,7 +18,7 @@
   "DataToCreateWorkItemOfTypeDisableveterans": {
     "Work Item Type": "Disabled Veterans",
     "Actions": "Direct Review and Update",
-    "Audit Trail": "No"
+    "Audit Trail": "No",
     "Reference": "test WI",
     "Description": "Creation of work item",
     "Priority": "Urgent",

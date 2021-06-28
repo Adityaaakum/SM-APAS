@@ -1,9 +1,25 @@
 {
-  "DataToPerformBOEActivationMappingActionWithAllFields": {
+
+
+"DataToPerformBOEMappingActionWithAllFields": {
     "Action": "BOE Activation",
     "Reason code": "PM 85/25-26",
     "Comments": "Perform BOE Activation",
-    "First non-Condo Parcel Number" : "120-340-790"
+    "First non-Condo Parcel Number" : "120-340-790",
+
+   "Situs City Description": "Daly City",
+    "Situs City Code": "DC",    
+    "City Name": "DALY CITY",
+    "Direction": "West Coast",
+    "Situs Number": "69",
+    "Situs Street Name": "CLIFFSIDE",
+    "Situs Type": "ALLEE",
+    "Situs Unit Number": "56",
+    "TRA":"0010009",
+    "PUC": "01-SINGLE FAMILY RES"
           
   }
+
+
+
 }
