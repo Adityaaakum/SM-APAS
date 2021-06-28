@@ -344,7 +344,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		String RetiredParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
 		objMappingPage.deleteRelationshipInstanceFromParcel(RetiredParcelToPerformMapping);
 
-		String mappingActionCreationData =  testdata.BOE_ACTION;
+		String mappingActionCreationData =  testdata.BOEACtivation_MAPPING_ACTION;
 
 		Map<String, String> hashMapBOEParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformBOEMappingActionWithAllFields");
