@@ -1180,7 +1180,7 @@ public void searchModule(String moduleToSearch) throws Exception {
    }
 
    public ArrayList<String> fetchActiveAPN(int numberofAPNs) {
-       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active'  and (Not Name like '1%') and (Not Name like '800%') Limit " + numberofAPNs;
+       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active'  and (Not Name like '100%') and (Not Name like '800%') Limit " + numberofAPNs;
        return objSalesforceAPI.select(queryForID).get("Name");
    }
    
