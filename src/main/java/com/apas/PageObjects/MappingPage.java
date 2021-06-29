@@ -82,6 +82,21 @@ public class MappingPage extends ApasGenericPage {
 	public String updateParcelButtonLabelName = "Update Parcel(s)";
 
 	
+	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
+	public WebElement editButtonInSeconMappingScreen;
+	
+	@FindBy(xpath = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]/ancestor::tr/following-sibling::tr//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]")
+	public WebElement secondmappingSecondScreenEditActionGridButton;
+	
+	@FindBy(xpath = "//button[@title='Clear Selection'][1]")
+	public WebElement clearSelectionTRA;
+	
+	@FindBy(xpath = "//button[@title='Clear Selection'][1]/ancestor::lightning-input-field/following-sibling::lightning-input-field//button")
+	public WebElement clearSelectionPUC;	
+	
+	@FindBy(xpath = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]")
+	public WebElement mappingSecondScreenEditActionGridButton;
+	
 	@FindBy(xpath = "//label[text()='First Non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
 
