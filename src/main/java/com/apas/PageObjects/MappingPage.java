@@ -140,7 +140,7 @@ public class MappingPage extends ApasGenericPage {
 	public WebElement remapErrorMessageonSecondScreen;
 	
 	@FindBy(xpath="//div[@class='uiOutputRichText']//span")
-	public WebElement MappingScreenError;
+	public WebElement mappingScreenError;
 
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action

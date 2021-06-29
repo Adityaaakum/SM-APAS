@@ -190,9 +190,7 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath="//button[text()='Close All']")
 	public WebElement closeAllBtn;
-	@FindBy(xpath="//*[text()='Parcel']/following-sibling::slot//lightning-formatted-text")
-	public WebElement getparcel;
-
+	
 	public String SaveButton="Save";
 	public String NewButton="New";
 	public String EditButton="Edit";
