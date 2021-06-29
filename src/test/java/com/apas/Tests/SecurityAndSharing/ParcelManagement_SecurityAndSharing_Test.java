@@ -92,16 +92,16 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2469, SMAB-T264, SMAB-T2465: Verify system admin and mapping user should be able to create and update parcel", dataProvider = "loginSystemAdminAndMappingStaffAndMappingSupervisor", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2469, SMAB-T2464, SMAB-T2465: Verify system admin and mapping user should be able to create and update parcel", dataProvider = "loginSystemAdminAndMappingStaffAndMappingSupervisor", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_AccessValidationOnCreationAndEdition(String loginUser) throws Exception {
 		
 		String ParcelCreationData = testdata.MANUAL_PARCEL_CREATION_DATA;
-		Map<String, String> hashMapmanualParcelData = objUtil.generateMapFromJsonFile(ParcelCreationData,
+		Map<String, String> hashMapManualParcelData = objUtil.generateMapFromJsonFile(ParcelCreationData,
 				"DataToCreateParcel");
-		String APN = hashMapmanualParcelData.get("APN");
+		String APN = hashMapManualParcelData.get("APN");
 		System.out.println("print APN "+APN);
-		String ParcelNumber = hashMapmanualParcelData.get("Parcel Number");
+		String ParcelNumber = hashMapManualParcelData.get("Parcel Number");
 		//Fetching parcel and delete the parcel
 		String queryAPN = "Select Id  From Parcel__c where name='"+APN+"'";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -132,10 +132,13 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 		objParcelsPage.enter("Short Legal Description", "short legal description testing");
 		objParcelsPage.searchAndSelectOptionFromDropDown("TRA", TRAValue);
 		objParcelsPage.Click(objParcelsPage.saveButton);
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.getparcel),APN
+				,"SMAB-T2469, SMAB-T2464, SMAB-T2465: Only mapping users have access to perform mapping related actions");
 		objParcelsPage.logout();
+		
 	}
 	
-	@Test(description = "SMAB-T2463: Validate RP Business admin and Exemption Support staff should not able to delete parcel", groups = {"Regression","DisabledVeteran"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T2463: Validate RP Business admin and Exemption Support staff should not able to delete parcel", groups = {"Regression","ParcelManagement"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void ParcelManagement_ValidationOnDeleteRecord(String loginUser) throws Exception {
 		String queryAPN = "Select Name From Parcel__c limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
