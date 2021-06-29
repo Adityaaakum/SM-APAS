@@ -69,7 +69,7 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
 		objMappingPage.searchModule(PARCELS);
-		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.getButtonWithText(objParcelsPage.CreateNewParcelButton)),"SMAB- : Create new button should not be visible to other users");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.getButtonWithText(objParcelsPage.createNewParcelButton)),"SMAB- : Create new button should not be visible to other users");
 		objMappingPage.globalSearchRecords(apn);
 
 		// Step 3: Creating Manual work item for the Parcel
@@ -83,7 +83,7 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 		String parentWindow = driver.getWindowHandle();
 		ReportLogger.INFO("Switch to the Mapping Action screen");
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.MappingScreenError),"Only mapping users have access to perform mapping related actions"
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.mappingScreenError),"Only mapping users have access to perform mapping related actions"
 				,"SMAB-T2468: Only mapping users have access to perform mapping related actions");
 		objParcelsPage.logout();
 	}
@@ -119,20 +119,20 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 		// Step2: Opening the PARCELS page
 		objMappingPage.searchModule(PARCELS);
 		//Steps3: verify new button on parcel page
-		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.getButtonWithText(objParcelsPage.CreateNewParcelButton)),"SMAB-T2469: Create new button should not be visible to other users");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.getButtonWithText(objParcelsPage.createNewParcelButton)),"SMAB-T2469: Create new button should not be visible to other users");
 		
-		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.CreateNewParcelButton));
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.createNewParcelButton));
 		
 		objParcelsPage.enter("APN", APN);
 		objParcelsPage.searchAndSelectOptionFromDropDown("PUC", ActivePUC);
 		objParcelsPage.enter("Parcel Number", ParcelNumber);
 		objParcelsPage.Click(objParcelsPage.saveButton);
 		Thread.sleep(5000);
-        objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditParcelButton));		
+        objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.editParcelButton));		
 		objParcelsPage.enter("Short Legal Description", "short legal description testing");
 		objParcelsPage.searchAndSelectOptionFromDropDown("TRA", TRAValue);
 		objParcelsPage.Click(objParcelsPage.saveButton);
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.getparcel),APN
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("APN"),APN
 				,"SMAB-T2469, SMAB-T2464, SMAB-T2465: Only mapping users have access to perform mapping related actions");
 		objParcelsPage.logout();
 		
