@@ -370,15 +370,27 @@ public class MappingPage extends ApasGenericPage {
         	return objSalesforceAPI.select(queryCondoAPNValue);
         }
      
-      /*
-      This method will delete existing relationship instances (Source) from the Parcel
-     */
-      
-      public void deleteSourceRelationshipInstanceFromParcel(String apn) throws Exception {
-    	  String query = "SELECT Id FROM Parcel_Relationship__c where Source_Parcel__r.name = '" + apn + "'";
+     
+      /**
+       *  This method will delete existing relationship instances  from the Parcel
+       * @param apn-Apn whose records needs to be deleted
+       * @return
+       * @throws Exception
+       */
+      public void deleteRelationshipInstanceFromParcel(String apn)
+      {
+    	  String query ="SELECT  Id,Target_Parcel__c FROM Parcel_Relationship__c where source_parcel__r.name='" +apn+"'";
     	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
-    	  if(!response.isEmpty())objSalesforceAPI.delete("Parcel_Relationship__c", query);
-  	  }
+    	  
+    	  if(!response.isEmpty())
+    	  {
+    		  response.get("Id").stream().forEach(Id ->{
+    			  objSalesforceAPI.delete("Parcel_Relationship__c", Id);
+    			  
+    		  });      	    				  
+    	  }
+
+      }
       
       /*
       This method will convert APN into Integer
@@ -389,5 +401,19 @@ public class MappingPage extends ApasGenericPage {
   		 String consolidateAPN = apnComponent[0] + apnComponent[1] + apnComponent[2];
   		 return Integer.valueOf(consolidateAPN);
   	  }
-       
+      
+      public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
+  		
+    	  
+			Click(editButtonInSeconMappingScreen);
+			if(waitForElementToBeVisible(2, clearSelectionTRA))
+		    Click(clearSelectionTRA);
+			selectOptionFromDropDown(parcelTRA,dataMap.get("TRA"));
+			if(waitForElementToBeVisible(2, clearSelectionPUC))
+			Click(clearSelectionPUC);
+			selectOptionFromDropDown(parcelPUC,dataMap.get("PUC"));
+			editSitusModalWindowFirstScreen(dataMap);
+			
+  	}
+  	   
 }

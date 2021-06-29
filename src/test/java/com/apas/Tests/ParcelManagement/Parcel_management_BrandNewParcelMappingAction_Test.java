@@ -15,6 +15,7 @@ import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -897,8 +898,94 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 	}
+	
+	 /**
+		 * This method is to  Verify  the custom edit on mapping page
+		 *@param loginUser
+		 * @throws Exception
+		 */
+		@Test(description = "SMAB-T2835,SMAB-T2840: I need to have the ability to select specific fields from the mapping custom screen, so that the correct values can be assigned to the parcels. ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+				"Smoke","Regression","ParcelManagement" },enabled = true)
+		public void ParcelManagement_VerifyBrandNewParcelEditAction(String loginUser) throws Exception {
+			String queryAPN = "Select name From Parcel__c where Status__c='Active' limit 1";
+			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+			String activeParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
+			objMappingPage.deleteRelationshipInstanceFromParcel(activeParcelToPerformMapping);
+
+			String mappingActionCreationData =  testdata.Brand_New_Parcel_MAPPING_ACTION;
+
+			Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+					"DataToPerformBrandNewParcelMappingActionWithSitusData");
+			String situsCityName = hashMapBrandNewParcelMappingData.get("City Name");
+			String direction = hashMapBrandNewParcelMappingData.get("Direction");
+			String situsNumber = hashMapBrandNewParcelMappingData.get("Situs Number");
+			String situsStreetName = hashMapBrandNewParcelMappingData.get("Situs Street Name");
+			String situsType = hashMapBrandNewParcelMappingData.get("Situs Type");
+			String situsUnitNumber = hashMapBrandNewParcelMappingData.get("Situs Unit Number");
+			String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+situsCityName;
+
+
+			String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+			Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+					"DataToCreateWorkItemOfTypeParcelManagement");
+			// Step1: Login to the APAS application using the credentials passed through data provider (mapping staff user)
+			objMappingPage.login(loginUser);
+
+			// Step 2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+			objMappingPage.searchModule(PARCELS);
+			objMappingPage.globalSearchRecords(activeParcelToPerformMapping);
+
+			//Step 3: Creating Manual work item for the Parcel 
+			objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+			//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
+			Thread.sleep(3000);
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+			String reasonCode=objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
+			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+			String parentWindow = driver.getWindowHandle();	
+			objWorkItemHomePage.switchToNewWindow(parentWindow);
+			 objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+			objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapBrandNewParcelMappingData.get("Action"));
+			objMappingPage.waitForElementToBeVisible(objMappingPage.reasonCodeField);
+			softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
+					"SMAB-T2835: Validation that reason code field is auto populated from parent parcel work item");
+			objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
+			 objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+				Thread.sleep(3000);
+			objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
+			objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);
+			ReportLogger.INFO("Validate the Grid values");
+			HashMap<String, ArrayList<String>> gridDataHashMapAfterEditAction =objMappingPage.getGridDataInHashMap();
+			String childAPNNumber= gridDataHashMapAfterEditAction.get("APN").get(0);
+					    
+		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Situs").get(0),childprimarySitus,
+					"SMAB-T2835,SMAB-T2840: Validation that System populates Situs from the parent parcel");
+		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA").get(0),hashMapBrandNewParcelMappingData.get("TRA"),
+					"SMAB-T2835,SMAB-T2840: Validation that System populates TRA from the parent parcel");
+		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code").get(0),hashMapBrandNewParcelMappingData.get("PUC"),
+					"SMAB-T2835,SMAB-T2840: Validation that System populates TRA from the parent parcel");
+		    ReportLogger.INFO("Click on Combine Parcel button");
+			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+			softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel(s) have been created successfully. Please review spatial information.",
+					"SMAB-T2835,SMAB-T2840: Validate that User is able to perform Combine action for multiple active parcels");			    
+		    
+		    driver.switchTo().window(parentWindow);
+		    objMappingPage.searchModule(PARCELS);
+			
+			objMappingPage.globalSearchRecords(childAPNNumber);
+			//Validate the Situs of child parcel generated
+		    softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus, "Parcel Information"),childprimarySitus,
+					"SMAB-T2840: Validate the Situs of child parcel generated");
+			objWorkItemHomePage.logout();
+
+		    
+			
+
+	}
+	}
 
 
 	
 	
-}

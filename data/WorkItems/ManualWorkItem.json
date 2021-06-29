@@ -18,7 +18,7 @@
   "DataToCreateWorkItemOfTypeDisableveterans": {
     "Work Item Type": "Disabled Veterans",
     "Actions": "Direct Review and Update",
-    "Audit Trail": "No"
+    "Audit Trail": "No",
     "Reference": "test WI",
     "Description": "Creation of work item",
     "Priority": "Urgent",
@@ -102,7 +102,7 @@
   },
   "DataToCreateWorkItemOfTypeParcelManagement": {
     "Work Item Type": "Mapping",
-    "Actions": "Perform Customer Request Split",
+    "Actions": "Perform Other Mapping Work",
     "Audit Trail": "No",
     "Reference": "Test WI",
     "Description": "Creation of work item",

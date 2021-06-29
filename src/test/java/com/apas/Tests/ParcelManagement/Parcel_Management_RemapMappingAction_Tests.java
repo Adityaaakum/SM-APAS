@@ -655,7 +655,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 
 		//Step 7: Click generate Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		objMappingPage.getSuccessMessage();
+		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
 
 		//Step 8: Navigating back to the WI that was created and clicking on related action link 
 		driver.switchTo().window(parentWindow);
@@ -715,7 +715,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		
 		//Step 5: Click remap Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		objMappingPage.getSuccessMessage();
+		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
 
 		//Step 6: Navigating  to the independent mapping action WI that would have been created after performing remap action and clicking on related action link 
 		String workItemId= objWorkItemHomePage.getWorkItemIDFromParcelOnWorkbench(apn);
