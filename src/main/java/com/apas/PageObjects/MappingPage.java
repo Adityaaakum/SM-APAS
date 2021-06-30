@@ -385,7 +385,6 @@ public class MappingPage extends ApasGenericPage {
         	return objSalesforceAPI.select(queryCondoAPNValue);
         }
      
-     
       /**
        *  This method will delete existing relationship instances  from the Parcel
        * @param apn-Apn whose records needs to be deleted
