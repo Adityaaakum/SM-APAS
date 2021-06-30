@@ -248,7 +248,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 	 */
 	@Test(description = "SMAB-T2456,SMAB-T2671:Verify that User is able to perform Retire Action for more than one active parcels", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Smoke","Regression","ParcelManagement" })
-	public void AParcelManagement_VerifyRetireMappingActionForMoreThanOneActiveParcels(String loginUser) throws Exception {
+	public void ParcelManagement_VerifyRetireMappingActionForMoreThanOneActiveParcels(String loginUser) throws Exception {
 		
 		//Fetching Active General parcel 
 		String queryAPN1 = "Select Name, ID From Parcel__c where name like '0%' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Status__c='Active' limit 1";
