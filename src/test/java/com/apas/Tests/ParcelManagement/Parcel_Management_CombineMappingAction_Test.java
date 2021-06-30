@@ -75,7 +75,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apnId2 = activeAPN.get("Id").get(1);
 		String apn3 = activeAPN.get("Name").get(2);
 		
-		String queryMobileHomeAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Name like '134%' and Status__c = 'Active' Limit 1";
+		String queryMobileHomeAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Name like '134%' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 1";
 		HashMap<String, ArrayList<String>> responseDetails = salesforceAPI.select(queryMobileHomeAPNValue);
 		String mobileHomeApn=responseDetails.get("Name").get(0);
 		
@@ -372,7 +372,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String assesseeName2 = responseAssesseeDetails.get("Name").get(1);
 		
 		//Fetching parcel that is Retired
-		String queryRetiredAPNValue = "select Name from Parcel__c where Status__c='Retired' and (Not Name like '%990') and name like '0%' limit 1";
+		String queryRetiredAPNValue = "select Name from Parcel__c where Status__c='Retired'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and (Not Name like '%990') and name like '0%' limit 1";
 		String retiredAPNValue = salesforceAPI.select(queryRetiredAPNValue).get("Name").get(0);
 
 		//Fetching Interim parcel 
@@ -613,7 +613,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apn2=responseAPNDetails.get("Name").get(1);
 		
 		//Fetching a Condo Active parcel
-		String queryCondoAPN = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and name like '100%' and (Not Name like '%990') and Status__c = 'Active' Limit 1";
+		String queryCondoAPN = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and name like '100%' and (Not Name like '%990') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  and Status__c = 'Active' Limit 1";
 		HashMap<String, ArrayList<String>> responseCondoAPNDetails = salesforceAPI.select(queryCondoAPN);
 		String condoAPN=responseCondoAPNDetails.get("Name").get(0);
 		
@@ -637,7 +637,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		
 		//Query last APN in Map Book and Map Page for the parcel
 		String combineMapBookAndPageForParcel = updateSmallestAPN.substring(0, 8);
-		String queryLastAPNValueForParcel = "SELECT Name FROM Parcel__c where Name like '" + combineMapBookAndPageForParcel + "%' ORDER BY Name DESC LIMIT 1";
+		String queryLastAPNValueForParcel = "SELECT Name,Id FROM Parcel__c where  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') And Name like '" + combineMapBookAndPageForParcel + "%' ORDER BY Name DESC LIMIT 1";
 		HashMap<String, ArrayList<String>> responseLastAPNValueForParcel = salesforceAPI.select(queryLastAPNValueForParcel);
 		String lastParcel=responseLastAPNValueForParcel.get("Name").get(0);
 		
@@ -1162,7 +1162,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String assesseeName = responseAssesseeDetails.get("Name").get(0);
 
 		//Fetching parcels that are Active 
-		String queryAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and name like '0%' and Status__c = 'Active' ";
+		String queryAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and name like '0%' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  and Status__c = 'Active' ";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
@@ -1252,7 +1252,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		String  childAPNPUC;
 		//Fetching parcels that are Active with no Ownership record, no  tra and no primary situs
-		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and TRA__c=NULL and Primary_Situs__c=NULL and Status__c='Active' Limit 2";
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and TRA__c=NULL and Primary_Situs__c=NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Active' Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
@@ -1369,7 +1369,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String  childAPNPUC;
 
 		//Fetching parcels that are Active with same Ownership record
-		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and  Primary_Situs__c !=NULL and Status__c = 'Active' Limit 2";
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and  Primary_Situs__c !=NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
@@ -1480,7 +1480,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String  childAPNPUC;
 
 		//Fetching parcels that are Active with same Ownership record
-		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and  Primary_Situs__c !=NULL and Status__c = 'Active' Limit 2";
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and  Primary_Situs__c !=NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
@@ -1632,7 +1632,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 		String legalDescriptionValue="Legal PM 85/25-260";
-		//String primarySitusValue=salesforceAPI.select("SELECT Name FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where Id='"+ updateRecordOn +"')").get("Name").get(0);
+		String primarySitusValue=salesforceAPI.select("SELECT Name FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where Id='"+ updateRecordOn +"')").get("Name").get(0);
 		
 		//Enter values in the Parcels
 		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
@@ -1739,11 +1739,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 				softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),responseNeighborhoodDetails.get("Name").get(0),
 						"SMAB-T2578: Validation that System populates District/Neighborhood from the parent parcel");
-				/*
-				 * softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue
-				 * .replaceFirst("\\s", ""),
-				 * "SMAB-T2578: Validation that System populates Situs from the parent parcel");
-				 */
+				
+				  softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue
+				  .replaceFirst("\\s", ""),
+				  "SMAB-T2578: Validation that System populates Situs from the parent parcel");
+				 
 				softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
 						"SMAB-T2578: Validation that System populates Reason code from the parent parcel");
 				softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),"",
@@ -1757,7 +1757,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2578: Validation that APN column is  editable");
 				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2578: Validation that Legal Description column is  editable");
 				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2578: Validation that TRA column is not editable");
-		//		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2578: Validation that Situs column is not editable");
+		  	softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2578: Validation that Situs column is not editable");
 				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2578: Validation that Reason Code column is not editable");
 				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd"),"SMAB-T2578: Validation that District/Neighborhood column is not editable");
 				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2578: Validation that Use Code column is not editable");
