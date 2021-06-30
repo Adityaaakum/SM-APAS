@@ -134,10 +134,13 @@ public class MappingPage extends ApasGenericPage {
 	public WebElement parentAPNFieldValue;
 	
 	@FindBy(xpath = "//button[@title='Remap Parcel (s)']")
-	 public WebElement remapParcelButton ;
+	public WebElement remapParcelButton ;
 	
 	@FindBy(xpath = "//div[@class='slds-hyphenate']/*[contains(text(),'The APN provided is a duplicate')]")
 	public WebElement remapErrorMessageonSecondScreen;
+	
+	@FindBy(xpath="//div[@class='uiOutputRichText']//span")
+	public WebElement mappingScreenError;
 
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action

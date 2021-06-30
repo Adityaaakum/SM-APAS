@@ -382,5 +382,17 @@ public class DataProviders {
             { users.MAPPING_STAFF , "Mobile_Home_Parcel" }
         };
     }
+    /**
+	 * Below function will be used to login to application with different users
+	 * @returns: Return the user business administrator, principal user and Bpp Auditor in an array
+	 **/
+    @DataProvider(name = "loginSystemAdminAndMappingStaffAndMappingSupervisor")
+    public Object[][] dpLoginSystemAdminAndMappingstaffuser() {
+        if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+            return new Object[][] { { users.MAPPING_STAFF } };
+        else
+            return new Object[][] { { users.MAPPING_STAFF}, { users.SYSTEM_ADMIN }, { users.MAPPING_SUPERVISOR } };
+
+    }
    
 }
