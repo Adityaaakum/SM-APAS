@@ -463,7 +463,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.actionDropDownLabel);
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapCombineMappingData.get("Action"));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with a parcel combine action, the parent APN must have the same ownership and ownership allocation",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with a parcel combine action, the parent APN(s) must have the same ownership and ownership allocation",
 				"SMAB-T2356: Validate that user is able to view Warning message");
 
 		//Step 6: Validate that user is not able to move to the next screen
@@ -471,7 +471,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with a parcel combine action, the parent APN must have the same ownership and ownership allocation",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with a parcel combine action, the parent APN(s) must have the same ownership and ownership allocation",
 				"SMAB-T2356: Validate that user is able to view Warning message");
 
 		// Step 7: Update the Parent APN field and add another parcel with no ownership record
@@ -480,7 +480,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithOneWithNoOwnership);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with a parcel combine action, the parent APN must have the same ownership and ownership allocation",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with a parcel combine action, the parent APN(s) must have the same ownership and ownership allocation",
 				"SMAB-T2356: Validate that user is able to view error message related to ownership record");						
 
 		//Step 8: Validate that user is not able to move to the next screen
@@ -488,7 +488,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with a parcel combine action, the parent APN must have the same ownership and ownership allocation",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with a parcel combine action, the parent APN(s) must have the same ownership and ownership allocation",
 				"SMAB-T2356: Validate that user is able to view error message related to ownership record");										
 
 		// Step 9: Update the Parent APN field and add another parcel with same ownership record
@@ -695,16 +695,40 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.numberOfIntermiParcelLabel),"value"),"0",
                 "SMAB-T2568: Validation that default value of Interim Parcel is 0");
         
-        objMappingPage.waitForElementToBeVisible(6, objMappingPage.helpIconFirstNonCondoParcelNumber);
-        actions.moveToElement(objMappingPage.helpIconFirstNonCondoParcelNumber).perform();
+        /** Commenting this for now as it works in local workspace but fails in Automation Server. Alternate code has been written below for the same **/
+		/*
+		 * objMappingPage.waitForElementToBeVisible(6,
+		 * objMappingPage.helpIconFirstNonCondoParcelNumber);
+		 * actions.moveToElement(objMappingPage.helpIconFirstNonCondoParcelNumber).
+		 * perform();
+		 * softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.
+		 * helpIconToolTipBubble),"To use system generated APN, leave as blank.",
+		 * "SMAB-T2568: Validation that help text is generated on clicking the help icon for First non-Condo Parcel text box"
+		 * );
+		 * 
+		 * actions.moveToElement(objMappingPage.helpIconLegalDescription).perform();
+		 * softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.
+		 * helpIconToolTipBubble),"To use parent legal description, leave as blank.",
+		 * "SMAB-T2568: Validation that help text is generated on clicking the help icon for legal description"
+		 * );
+		 * 
+		 * actions.moveToElement(objMappingPage.helpIconSitus).perform();
+		 * softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.
+		 * helpIconToolTipBubble),"To use parent situs, leave as blank.",
+		 * "SMAB-T2568: Validation that help text is generated on clicking the help icon for Situs text box"
+		 * );
+		 */
+        
+        objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
+        objMappingPage.Click(objMappingPage.helpIconFirstNonCondoParcelNumber);
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use system generated APN, leave as blank.",
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for First non-Condo Parcel text box");
         
-        actions.moveToElement(objMappingPage.helpIconLegalDescription).perform();
+        objMappingPage.Click(objMappingPage.helpIconLegalDescription);
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent legal description, leave as blank.",
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for legal description");
 
-        actions.moveToElement(objMappingPage.helpIconSitus).perform();
+        objMappingPage.Click(objMappingPage.helpIconSitus);
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent situs, leave as blank.",
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for Situs text box");
         
@@ -978,8 +1002,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.globalSearchRecords(childAPNNumber);
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"In Progress - New Parcel",
 				"SMAB-T2373: Validate the Status of child parcel generated");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),"In Progress - New Parcel",
-				"SMAB-T2373: Validate the PUC of child parcel generated");
+		softAssert.assertTrue(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information").equals(""),
+				"SMAB-T2373: Validate the PUC of child parcel is not populated");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelTRA, "Parcel Information"),responseTRADetails.get("Name").get(0),
 				"SMAB-T2373: Validate the TRA of child parcel generated");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus, "Parcel Information"),primarySitusValue.replaceFirst("\\s", ""),
