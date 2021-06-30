@@ -63,7 +63,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		String inProgressAPNValue = objMappingPage.fetchInProgressAPN();
 		
 		//Fetching parcels that are Active 
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Status__c='Active' limit 2";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Status__c='Active' limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
@@ -248,20 +248,20 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 	 */
 	@Test(description = "SMAB-T2456,SMAB-T2671:Verify that User is able to perform Retire Action for more than one active parcels", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Smoke","Regression","ParcelManagement" })
-	public void ParcelManagement_VerifyRetireMappingActionForMoreThanOneActiveParcels(String loginUser) throws Exception {
+	public void AParcelManagement_VerifyRetireMappingActionForMoreThanOneActiveParcels(String loginUser) throws Exception {
 		
 		//Fetching Active General parcel 
-		String queryAPN1 = "Select Name, ID From Parcel__c where name like '0%' AND Status__c='Active' limit 1";
+		String queryAPN1 = "Select Name, ID From Parcel__c where name like '0%' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails1 = salesforceAPI.select(queryAPN1);
 		String apn1=responseAPNDetails1.get("Name").get(0);
 		
 		//Fetching Active Condo parcel 
-		String queryAPN2 = "Select Name, ID From Parcel__c where name like '100%' AND Status__c='Active' limit 1";
+		String queryAPN2 = "Select Name, ID From Parcel__c where name like '100%' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails2 = salesforceAPI.select(queryAPN2);
 		String apn2=responseAPNDetails2.get("Name").get(0);
 		
 		//Fetching Active Mobile home parcel
-		String queryAPN3 = "Select Name, ID From Parcel__c where name like '134%' AND Status__c='Active' limit 1";
+		String queryAPN3 = "Select Name, ID From Parcel__c where name like '134%' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails3 = salesforceAPI.select(queryAPN3);
 		String apn3=responseAPNDetails3.get("Name").get(0);
 		
