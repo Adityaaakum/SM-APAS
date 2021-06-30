@@ -17,4 +17,6 @@ public interface users {
 	String OTHER_COUNTY_STAFF = "otherCountStaff";
 	String MAPPING_STAFF = "mappingStaff";
 	String MAPPING_SUPERVISOR = "mappingSupervisor";
+	String CIO_STAFF = "cioStaff";
+	String CIO_SUPERVISOR = "cioSupervisor";
 }
