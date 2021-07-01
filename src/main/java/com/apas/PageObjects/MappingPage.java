@@ -343,7 +343,7 @@ public class MappingPage extends ApasGenericPage {
   */
 
    public HashMap<String, ArrayList<String>> getRetiredApnHavingNoOwner() throws Exception {
-	   String queryRetiredAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Status__c = 'Retired' Limit 1";
+	   String queryRetiredAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Retired' Limit 1";
  	  	return objSalesforceAPI.select(queryRetiredAPNValue);
    }
  
@@ -353,7 +353,7 @@ public class MappingPage extends ApasGenericPage {
  */
 
    public HashMap<String, ArrayList<String>> getInProgressApnHavingNoOwner() throws Exception {
-	   String queryInProgressAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Status__c like 'In Progress%' Limit 1";
+	   String queryInProgressAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c like 'In Progress%' Limit 1";
 	   return objSalesforceAPI.select(queryInProgressAPNValue);
    }
     
@@ -367,7 +367,7 @@ public class MappingPage extends ApasGenericPage {
      }
     
      public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner(int numberofRecords) throws Exception {
-     	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and (Not Name like '800%') and Status__c = 'Active' Limit " + numberofRecords;
+     	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and (Not Name like '800%') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit " + numberofRecords;
      	return objSalesforceAPI.select(queryActiveAPNValue);
      }
      
@@ -381,7 +381,7 @@ public class MappingPage extends ApasGenericPage {
         }
         
       public HashMap<String, ArrayList<String>> getCondoApnWithNoOwner(int numberofRecords) throws Exception {
-        	String queryCondoAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and name like '100%' and Status__c = 'Active' Limit " + numberofRecords;
+        	String queryCondoAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  and (Not Name like '%990') and name like '100%' and Status__c = 'Active' Limit " + numberofRecords;
         	return objSalesforceAPI.select(queryCondoAPNValue);
         }
      
@@ -415,7 +415,11 @@ public class MappingPage extends ApasGenericPage {
   		 String consolidateAPN = apnComponent[0] + apnComponent[1] + apnComponent[2];
   		 return Integer.valueOf(consolidateAPN);
   	  }
-      
+  /*
+   * 
+   *     This method is used to enter the values in edit action screen
+   *     
+   */
       public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
   		
     	  
