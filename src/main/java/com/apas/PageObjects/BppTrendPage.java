@@ -1141,13 +1141,14 @@ public class BppTrendPage extends ApasGenericPage {
 	public void selectRollYearOnBPPTrends(String rollYear) throws Exception {
 		searchModule(modules.BPP_TRENDS);
 		objPage.waitForElementToBeClickable(rollYearDropdown, 30);
-		
+		Thread.sleep(5000);
 		selectOptionFromDropDown("Roll Year",rollYear);
-		
-//		Click(rollYearDropdown);
-	//	clickOnGivenRollYear(rollYear);
+		Thread.sleep(4000);
+
+        //Click(rollYearDropdown);
+		//clickOnGivenRollYear(rollYear);
 		Click(selectRollYearButton);
-		Thread.sleep(2000);	
+		Thread.sleep(5000);	
 	}
 
 	/**
