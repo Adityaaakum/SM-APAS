@@ -25,6 +25,8 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 import com.relevantcodes.extentreports.LogStatus;
+import com.apas.Utils.DateUtil;
+
 
 public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
@@ -352,7 +354,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
 		String mappingActionCreationData =  testdata.BOEACtivation_MAPPING_ACTION;
 		Map<String, String> hashMapBOEACtivationMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformBOEActivationMappingActionWithAllFields");
+				"DataToPerformBOEMappingActionWithAllFields");
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -452,7 +454,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		
 		String mappingActionCreationData =  testdata.BOEACtivation_MAPPING_ACTION;
 		Map<String, String> hashMapBOEACtivationMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformBOEActivationMappingActionWithAllFields");
+				"DataToPerformBOEMappingActionWithAllFields");
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -484,6 +486,10 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		//Step 5: Click BOEACtivation Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
+
+		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel(s) have been created successfully. Please review spatial information.",
+				"SMAB-T2832: Validate that User is able to perform one to one  action from mapping actions tab");			    
+
 		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+parentAPN+"') limit 1");
 		if(responsePUCDetailsChildAPN.size()==0)
 			  childAPNPUC ="";
@@ -501,6 +507,15 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		
+
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Type","Information"), "Mapping",
+				"SMAB-T2832: Validation that  A new WI of type Mapping is created after performing one to one from mapping action tab");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Action","Information"), "Independent Mapping Action",
+				"SMAB-T2832: Validation that  A new WI of action Independent Mapping Action is created after performing one to one from mapping action tab");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Date", "Information"),DateUtil.getCurrentDate("MM/dd/yyyy"), "SMAB-T2832: Validation that 'Date' fields is equal to date when this WI was created");
+	
+		
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
