@@ -382,5 +382,13 @@ public class DataProviders {
             { users.MAPPING_STAFF , "Mobile_Home_Parcel" }
         };
     }
+    
+    @DataProvider(name = "loginSystemAdminAndCIOUsers")
+    public Object[][] dpLoginSystemAdminAndCIOUsers() {
+       // if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+            return new Object[][] { { users.SYSTEM_ADMIN } };
+     //   else
+       //     return new Object[][] { { users.SYSTEM_ADMIN }, { users.CIO_USER } };
+    }
    
 }

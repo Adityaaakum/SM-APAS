@@ -736,14 +736,15 @@ public class Page extends TestBase {
 				commonPath + "//*[(@class='inputHeader' or @class='uiBlock') and contains(.,\"" + label + "\")]/..//Select |"+ //This condition was observed for few drop downs of Select Type
 				commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//a | " + //this condition was observed on Mapping Action screen for Assessor' Map label
 				commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//span[@class='slds-col'] | " + //this condition was observed on Mapping Action screen for Parent APN(s) field
-				commonPath + "//label[text()=\"" + label + "\"]/..//textarea";//this condition was added to handle webelements of type textarea
-				
+				commonPath + "//label[text()=\"" + label + "\"]/..//textarea |" +
+				commonPath + "//span[text()=\"" + label + "\"]/../following-sibling::input";
+		//this condition was added to handle webelements of type textarea
+	
 		waitUntilElementIsPresent(xpath, 10);
 		return driver.findElement(By.xpath(xpath));
 	}
 	
-	/**
-	 * Description: returns the web element based on the text of the button
+	/**	 * Description: returns the web element based on the text of the button
 	 *
 	 * @param text : text of the button
 	 * @return : button element
@@ -754,7 +755,8 @@ public class Page extends TestBase {
 		String xpath = commonxPath + "//button[text()='" + text + "'] | " +
 				commonxPath + "//div[text()='" + text + "']//.. | " +
 				commonxPath + "//*[contains(@class,'slds-is-open')]//button[text()='" + text + "'] | " +
-				commonxPath + "//a[text()='" + text + "']";
+				commonxPath + "//a[text()='" + text + "'] |" +
+				commonxPath + "//span[text()='" + text + "']";
 		waitUntilElementIsPresent(xpath, 10);
 		return driver.findElement(By.xpath(xpath));
 	}

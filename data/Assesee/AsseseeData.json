@@ -1,0 +1,12 @@
+ {
+ "DataToCreateNewAssesee": {
+    "Salutation": "Mr.",
+    "First Name": "TestFirst",
+    "Last Name or Name": "TestLast",
+    "Type": "City",    
+    "Phone": "+19876543210",
+    "Email": "test@gmail.com",
+    "SSN": "123456789",
+    "Care Of": "test"
+  }
+}
