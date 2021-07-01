@@ -12,15 +12,18 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.EFileImportLogsPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
+import com.apas.Reports.ExtentTestManager;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
+import com.relevantcodes.extentreports.LogStatus;
 
 public class Parcel_Management_RemapMappingAction_Tests extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
@@ -33,6 +36,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	MappingPage objMappingPage;
 	JSONObject jsonObject= new JSONObject();
 	String apnPrefix=new String();
+	EFileImportLogsPage objEFileImport;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -743,7 +747,174 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		objWorkItemHomePage.logout();
 	}
 
+	/**This test verifies the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel
+	 * Also ,validation of new Appraiser WI once after the Child parcel gets Active.
+	 * login user-Mapping user
+	 * 
+	 */
+	@Test(description = "SMAB-T2898:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"remap\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement" })
+	public void ParcelManagement_VerifyRemapMappingActionOutput(String loginUser) throws Exception {
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apn = responseAPNDetails.get("Name").get(0);
 
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 
+		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select(
+				"SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+
+		String primarySitusValue = salesforceAPI.select(
+				"SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='" + apn
+						+ "')")
+				.get("Name").get(0);
+		String legalDescriptionValue = "Legal PM 85/25-260";
+		String districtValue = "District01";
+
+		jsonObject.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+		jsonObject.put("Status__c", "Active");
+		jsonObject.put("Short_Legal_Description__c", legalDescriptionValue);
+		jsonObject.put("District__c", districtValue);
+		jsonObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("TRA__c", responseTRADetails.get("Id").get(0));
+
+		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), jsonObject);
+
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+
+		String mappingActionCreationData = testdata.REMAP_MAPPING_ACTION;
+		Map<String, String> hashMapRemapMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformRemapMappingAction");
+
+		// Step1: Login to the APAS application using the credentials passed through
+		objMappingPage.login(loginUser);
+
+		// Step2: Opening the PARCELS page and searching the parcel
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn);
+
+		// Step 3: Creating Manual work item for the Parcel
+		String workItem = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		// Step 4:Clicking the details tab for the work item newly created and clicking on Related Action Link		
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		// Step 5: Selecting Action as 'perform parcel remap'
+		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,
+		hashMapRemapMappingData.get("Action"));
+
+		
+
+		
+		
+		// Step 6: filling all fields in mapping action screen
+				objMappingPage.fillMappingActionForm(hashMapRemapMappingData);
+				HashMap<String, ArrayList<String>> gridDataHashMap = objMappingPage.getGridDataInHashMap();
+				gridDataHashMap = objMappingPage.getGridDataInHashMap();
+
+				String childAPN = gridDataHashMap.get("APN").get(0);
+				
+				// Step 7: Click generate Parcel Button
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+				//objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		
+	/**	//Step 8: Navigating back to the WI that was created and clicking on related action link 
+				driver.switchTo().window(parentWindow);
+				objMappingPage.globalSearchRecords(workItem);
+				objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+				objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+				objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+				parentWindow = driver.getWindowHandle();
+				objWorkItemHomePage.switchToNewWindow(parentWindow);
+				Thread.sleep(7000);
+
+				gridDataHashMap =objMappingPage.getGridDataInHashMap();
+				 childAPN = gridDataHashMap.get("APN").get(0);**/
+				
+				HashMap<String, ArrayList<String>> gridDataHashMapN =objMappingPage.getGridDataInHashMap();
+				gridDataHashMapN.get("APN").stream().forEach(parcel -> {
+		        	try {
+						objMappingPage.Click(objMappingPage.getButtonWithText(parcel));
+						objMappingPage.waitUntilPageisReady(driver);
+						objMappingPage.waitForElementToBeVisible(60, objParcelsPage.moretab);
+						
+						objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelRelationshipsTabLabel);
+						softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(apn)), "SMAB-T2757: Verify Parent Parcel: "+apn+" is visible under Source Parcel Relationships section");				
+						driver.navigate().back();
+		        	}
+		        	catch(Exception e) {
+		        		ExtentTestManager.getTest().log(LogStatus.FAIL, "Fail to validate Parent Parcel under Source Parcel Relationships section"+e);
+		        	}
+		        });
+				
+				
+				  //Step 14: Verify Status of Parent & Child Parcels before WI completion
+		        HashMap<String, ArrayList<String>> parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn);
+		        HashMap<String, ArrayList<String>> childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMapN.get("APN").get(0));
+		  		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2759: Verify Status of Parent Parcel: "+apn);
+		  		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2759: Verify Status of Child Parcel: "+gridDataHashMapN.get("APN").get(0));
+		  		
+				//Step 15: Verify Neighborhood Code value is inherited from Parent to Child Parcels
+		  		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",apn);
+		  		HashMap<String, ArrayList<String>> childAPN1NeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",gridDataHashMapN.get("APN").get(0));
+				softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),childAPN1NeighborhoodCode.get("Name").get(0),"SMAB-T2760: Verify District/Neighborhood Code of Child Parcel is inheritted from first Parent Parcel");
+
+				//Step 16: Verify TRA value is inherited from Parent to Child Parcels
+				HashMap<String, ArrayList<String>> parentAPNTRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",apn);
+				HashMap<String, ArrayList<String>> childAPN1TRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",gridDataHashMapN.get("APN").get(0));
+				softAssert.assertEquals(parentAPNTRA.get("Name").get(0),childAPN1TRA.get("Name").get(0),"SMAB-T2760: Verify TRA of Child Parcel is inheritted from first Parent Parcel");
+
+				//Step 17: Verify District value is inherited from Parent to Child Parcels
+				HashMap<String, ArrayList<String>> parentAPNDistrict = objParcelsPage.fetchFieldValueOfParcel("District__c",apn);
+				HashMap<String, ArrayList<String>> childAPN1District = objParcelsPage.fetchFieldValueOfParcel("District__c",gridDataHashMapN.get("APN").get(0));
+				softAssert.assertEquals(parentAPNDistrict.get("District__c").get(0),childAPN1District.get("District__c").get(0),"SMAB-T2760: Verify District of Child Parcel is inheritted from first Parent Parcel");
+				
+
+				
+				driver.switchTo().window(parentWindow);
+				objMappingPage.logout();
+				Thread.sleep(4000);
+				
+				objWorkItemHomePage.login(users.MAPPING_SUPERVISOR);
+				objMappingPage.globalSearchRecords(workItem);
+				
+				objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+				objWorkItemHomePage.Click(objWorkItemHomePage.completedTimeline);				
+				objWorkItemHomePage.Click(objWorkItemHomePage.markStatusCompleteBtn);
+		
+				Thread.sleep(4000);
+				objMappingPage.logout();
+				Thread.sleep(3000);
+				
+				objWorkItemHomePage.login(users.MAPPING_STAFF);
+				   objMappingPage.globalSearchRecords(workItem);
+		
+					objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+					objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+
+				
+				
+				//Step 20: Verify Status of Parent & Child Parcels after WI completion
+				parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn);
+				childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMapN.get("APN").get(0));
+		  		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Retired","SMAB-T2761: Verify Status of Parent Parcel: "+apn);
+		  		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"Active","SMAB-T2761: Verify Status of Child Parcel: "+gridDataHashMapN.get("APN").get(0));
+		  		
+				driver.switchTo().window(parentWindow);
+				objMappingPage.logout();
+				
+				
+				
+	}
 }

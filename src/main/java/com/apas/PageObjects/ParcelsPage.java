@@ -86,10 +86,15 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Next']")
 	public WebElement ownershipNextButton;
 	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//slot[@name='main']//span[text()='View All']")
+	public WebElement viewAlllink;
+	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
     public String ApprovalButton="Approve";
     public String auditTrailElementPath="//label[text() = 'Is this Audit Trail Record linked to any Existing Audit Trail Record?']";
+    
+    
     
 	/**
 	 * Description: This method will open the parcel with the APN passed in the
