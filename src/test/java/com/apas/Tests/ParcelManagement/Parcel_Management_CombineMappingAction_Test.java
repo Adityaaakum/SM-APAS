@@ -603,7 +603,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2359, SMAB-T2568: Verify user is able to validate APN generation by system during Combine process", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2359, SMAB-T2568, SMAB-T2902: Verify user is able to validate APN generation by system during Combine process", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyParcelGenerationForCombineMappingAction(String loginUser) throws Exception {
 		
@@ -727,10 +727,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         objMappingPage.Click(objMappingPage.helpIconLegalDescription);
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent legal description, leave as blank.",
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for legal description");
-
-        objMappingPage.Click(objMappingPage.helpIconSitus);
-        softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent situs, leave as blank.",
-                "SMAB-T2568: Validation that help text is generated on clicking the help icon for Situs text box");
         
         //Enter First Non-Condo parcel which is not the next available parcel in the system
         objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,parcelForWarningMessage);
@@ -779,7 +775,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		String nextGeneratedAPN2 = gridDataHashMap.get("APN").get(0);
 		softAssert.assertEquals(nextGeneratedAPN2,nextGeneratedForSmallestParcel,
-				"SMAB-T2359: Validate that APN generated is from the same Map Book & Map Page as of first parcel in Parent APN field");
+				"SMAB-T2902: Validate that APN generated is from the same Map Book & Map Page as of first parcel in Parent APN field");
 		softAssert.assertTrue(nextGeneratedAPN2.endsWith("0"),
 				"SMAB-T2359: Validation that child APN number ends with 0");
 		
@@ -1734,13 +1730,13 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 				//Step 9: Validate that ALL fields THAT ARE displayed on second screen
 				ReportLogger.INFO("Validate the Grid values");
-			HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
+				HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 				String childAPNNumber =gridDataHashMap.get("APN").get(0);
 
 				softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),responseNeighborhoodDetails.get("Name").get(0),
 						"SMAB-T2578: Validation that System populates District/Neighborhood from the parent parcel");
 				
-				  softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue
+				softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue
 				  .replaceFirst("\\s", ""),
 				  "SMAB-T2578: Validation that System populates Situs from the parent parcel");
 				 
@@ -1757,7 +1753,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2578: Validation that APN column is  editable");
 				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2578: Validation that Legal Description column is  editable");
 				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2578: Validation that TRA column is not editable");
-		  	softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2578: Validation that Situs column is not editable");
+		  	    softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2578: Validation that Situs column is not editable");
 				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2578: Validation that Reason Code column is not editable");
 				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd"),"SMAB-T2578: Validation that District/Neighborhood column is not editable");
 				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2578: Validation that Use Code column is not editable");
@@ -1789,27 +1785,99 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 			    softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus, "Parcel Information"),childprimarySitus,
 						"SMAB-T2579: Validate the Situs of child parcel generated");
 				objWorkItemHomePage.logout();
-
-			    
-				
-				
-				
+	
 			}       
-
-	}			
-	
 		
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 * This method is to system doesn't consider Interim parcel as lower parcel if other parcel is higher than that in series
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T2904: Verify system doesn't consider Interim parcel as lower parcel if other parcel is higher than that in series", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression","ParcelManagement" })
+	public void ParcelManagement_VerifyParcelGenerationForCombineWithInterimAsLowestParcel(String loginUser) throws Exception {
+		
+		//Getting Owner or Account records
+		String assesseeName = objMappingPage.getOwnerForMappingAction();
 
+		//Fetching Interim parcels that are Active with no ownership record
+		String apn1 = objParcelsPage.fetchInterimAPN();
+		
+		//Getting an Active Non-Condo Parcel with no ownership record
+		String queryAPNValue = "Select name,ID  From Parcel__c where name like '9%'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Id NOT in (Select parcel__c FROM Property_Ownership__c) AND Status__c='Active' limit 1";
+		String apn2 = salesforceAPI.select(queryAPNValue).get("Name").get(0);
+		
+		String concatenateMixAPNs = apn1+","+apn2;
+		
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+
+		String mappingActionCreationData = testdata.COMBINE_MAPPING_ACTION;
+		Map<String, String> hashMapCombineMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformCombineMappingAction");
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+                "DataToCreateOwnershipRecord");
+		
+		// Add ownership records in the parcels
+        objMappingPage.login(users.SYSTEM_ADMIN);
+
+        // Opening the PARCELS page and searching the parcels to create ownership record        
+        objMappingPage.searchModule(PARCELS);
+        objParcelsPage.createOwnershipRecord(apn1, assesseeName, hashMapCreateOwnershipRecordData);
+        objParcelsPage.createOwnershipRecord(apn2, assesseeName, hashMapCreateOwnershipRecordData);
+        
+        objWorkItemHomePage.logout();
+        Thread.sleep(5000);
+		
+		// Step1: Login to the APAS application
+		objMappingPage.login(loginUser);
+
+		// Step2: Opening the PARCELS page  and searching the parcel to perform Combine Action
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn1);
+		
+		// Step 3: Creating Manual work item for the Active Parcel 
+		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		// Step 4: Clicking the details tab for the work item newly created and clicking on Related Action Link
+		ReportLogger.INFO("Click on the Related Action link");
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		ReportLogger.INFO("Switch to the Mapping Action screen");
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		// Step 5: Select the Combine value in Action field
+		ReportLogger.INFO("Select the 'Combine' Action and Yes in Tax field");
+		Thread.sleep(2000);  //Allows screen to load completely
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapCombineMappingData.get("Action"));
+		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
+		
+		// Step 6: Update the Parent APN field and add more Active parcel records
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
+		ReportLogger.INFO("Add multiple Active APNs :: " + concatenateMixAPNs);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateMixAPNs);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
+				
+		//Step 7: Validate that user is able to move to the next screen 
+		ReportLogger.INFO("Click NEXT button");
+		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
+		
+		//Step 8: Validate that ALL fields THAT ARE displayed on second screen
+		ReportLogger.INFO("Validate the Grid values");
+		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
+		String childAPNNumber =gridDataHashMap.get("APN").get(0);
+		
+		softAssert.assertTrue(childAPNNumber.startsWith("9"),
+				"SMAB-T2904: Validate system doesn't consider Interim parcel as lower parcel if other parcel is higher than that in series");
+		
+		driver.switchTo().window(parentWindow);
+		objWorkItemHomePage.logout();
+		}
+	}			

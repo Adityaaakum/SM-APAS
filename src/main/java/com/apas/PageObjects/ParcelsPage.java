@@ -234,6 +234,32 @@ public class ParcelsPage extends ApasGenericPage {
 	 * @param dataMap: A data map which contains data to perform create Ownership record
 	 * @throws Exception
 	 */
+	public String createOwnershipRecord(String apn, String assesseeName, Map<String, String> dataMap) throws Exception {	
+		globalSearchRecords(apn);
+        openParcelRelatedTab(ownershipTabLabel);
+        Thread.sleep(1000);
+        
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");        
+		String owner = assesseeName;
+		String type = dataMap.get("Type");
+		String status = dataMap.get("Status");
+		String bppAccount = dataMap.get("BPP Account");
+		String ownershipStartDate = dataMap.get("Ownership Start Date");
+		
+		createRecord();
+		Click(ownershipNextButton);
+		searchAndSelectOptionFromDropDown(ownerDropDown, owner);
+		selectOptionFromDropDown(typeDropDown, type);
+		selectOptionFromDropDown(statusDropDown, status);
+		if (ownershipStartDate != null)
+			enter(ownershipStartTextBox, ownershipStartDate);
+		if (bppAccount != null)
+			searchAndSelectOptionFromDropDown(bppAccountDropDown, bppAccount);
+		
+		String successMsg = saveRecord();
+		return successMsg;
+	}
+	
 	public String createOwnershipRecord(String assesseeName, Map<String, String> dataMap) throws Exception {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");        
 		String owner = assesseeName;

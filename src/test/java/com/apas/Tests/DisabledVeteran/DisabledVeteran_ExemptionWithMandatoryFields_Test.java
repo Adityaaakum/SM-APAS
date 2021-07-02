@@ -72,6 +72,7 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		ReportLogger.INFO("Click 'New' button to open an Exemption record");
 		Thread.sleep(2000);
 		objPage.Click(objPage.waitForElementToBeClickable(objExemptionsPage.newExemptionButton));
+		objPage.Click(objExemptionsPage.exemptionRecordTypeNextButton);
 		objPage.waitForElementToBeClickable(objExemptionsPage.apn,10);
 		objPage.waitForElementToBeClickable(objExemptionsPage.claimantName,10);
 		ReportLogger.INFO("Without entering any data on the Exemption record, click 'Save' button");
