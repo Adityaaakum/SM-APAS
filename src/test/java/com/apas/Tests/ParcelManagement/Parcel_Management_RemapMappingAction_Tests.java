@@ -130,7 +130,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 
 		// fetching  parcel that is In progress	
 		String inProgressAPNValue;
-		queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' limit 1";
+		queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		response = salesforceAPI.select(queryAPNValue);
 		if(!response.isEmpty())
 			inProgressAPNValue= response.get("Name").get(0);
@@ -275,7 +275,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 			,groups = {"Regression","ParcelManagement"},enabled =true)
 	public void ParcelManagment_Verify_APN_EnteredMust_Exist_In_Apas_RemapMappingAction(String loginUser) throws Exception
 	{
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 		String apn1=responseAPNDetails.get("Name").get(1);
@@ -348,7 +348,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 			,groups = {"Regression","ParcelManagement"},enabled=true)
 	public void ParcelManagment_Verify_Multiple_Parent_Parcels_Indentation_RemapMapping(String loginUser) throws Exception
 	{
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 		String apn1=responseAPNDetails.get("Name").get(1);
@@ -421,7 +421,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 			,groups = {"Regression","ParcelManagement"},enabled = true)
 	public void ParcelManagment_VerifyAPN_Entered_MustNotHave_SpcChar_RemappingAction(String loginUser) throws Exception
 	{
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 
@@ -489,7 +489,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 			,groups = {"Regression","ParcelManagement"},enabled =true)
 	public void ParcelManagment_Verify_Remap_With_Duplicate_Apns_RemappingAction(String loginUser) throws Exception
 	{
-		String queryAPN = "select name from parcel__c where status__c ='Active' limit 2";
+		String queryAPN = "select name from parcel__c where status__c ='Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 		String apn1=responseAPNDetails.get("Name").get(1);
@@ -552,7 +552,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 			,groups = {"Regression","ParcelManagement"},enabled =true)
 	public void ParcelManagment_Many_NewParcel_Apn_Formatted_RemappingAction(String loginUser) throws Exception
 	{
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 11";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 11";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn = responseAPNDetails.get("Name").get(0);
 		String combinedapn=responseAPNDetails.get("Name").get(0)+" , "+
@@ -612,7 +612,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	@Test(description = "SMAB-T2898:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"remap\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_RemapMappingAction_NoPrimarySitusTRA(String loginUser) throws Exception {
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c =NULL and TRA__c=NULL and Status__c = 'Active' limit 1";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c =NULL and TRA__c=NULL and Status__c = 'Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 
@@ -683,7 +683,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_Remap_MappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and Status__c = 'Active' limit 1";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and Status__c = 'Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 
