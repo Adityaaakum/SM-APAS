@@ -53,7 +53,7 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 
 	@Test(description = "SMAB-T2991:Verify user is able to create, edit and update the Assessee records", groups = {
 			"Assessees",
-			"Regression" }, dataProvider = "loginSystemAdminAndCIOUsers", dataProviderClass = DataProviders.class, alwaysRun = true)
+			"Regression" }, dataProvider = "loginCIOuser", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void Assessee_VerifyCreateEditUpdateAssesseeRecords(String loginUser) throws Exception {
 
 		String asseseeCreationData = testdata.ASSESEE_DATA;
@@ -101,7 +101,7 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 		objAsseseePage.Click(objAsseseePage.detailsTab);
 		softAssert.assertEquals(updatedValue, objAsseseePage.getFieldValueFromAPAS("Care Of", ""),
 				"SMAB-T2991: Validate Assessee Care Of");
-		
+
 		objAsseseePage.logout();
 
 	}
@@ -132,16 +132,14 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 
 		softAssert.assertTrue(!objAsseseePage.clickShowMoreButtonAndAct(name, "Delete"),
 				"SMAB-T2993: delete button should not be visible to other users");
-		
+
 		objAsseseePage.logout();
 
-
 	}
-	
-	
+
 	@Test(description = "SMAB-T2991:Verify user is able to create, edit and update the Assessee records", groups = {
 			"Assessees",
-			"Regression" }, dataProvider = "loginSystemAdminAndCIOUsers", dataProviderClass = DataProviders.class, alwaysRun = true)
+			"Regression" }, dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void Assessee_VerifyCreateEditUpdateAgencyAssesseeRecords(String loginUser) throws Exception {
 
 		String asseseeCreationData = testdata.ASSESEE_DATA;
@@ -163,20 +161,17 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 		objAsseseePage.Click(objAsseseePage.detailsTab);
 
 		softAssert.assertEquals(
-				hashAsseseeCreationData.get("First Name") + " "
-				+ hashAsseseeCreationData.get("Last Name or Name"), objAsseseePage.getFieldValueFromAPAS("Assessee Name", ""), 
-				"SMAB-T2991: Validate Agency Name");
+				hashAsseseeCreationData.get("First Name") + " " + hashAsseseeCreationData.get("Last Name or Name"),
+				objAsseseePage.getFieldValueFromAPAS("Assessee Name", ""), "SMAB-T2991: Validate Agency Name");
 
 		softAssert.assertEquals(hashAsseseeCreationData.get("Email"), objAsseseePage.getFieldValueFromAPAS("Email", ""),
 				"SMAB-T2991: Validate Agency Email Address");
-		
-		softAssert.assertEquals(hashAsseseeCreationData.get("Type"), objAsseseePage.getFieldValueFromAPAS("Email", ""),
+
+		softAssert.assertEquals(hashAsseseeCreationData.get("Type"), objAsseseePage.getFieldValueFromAPAS("Type", ""),
 				"SMAB-T2991: Validate Agency Type");
 
-		
 		softAssert.assertEquals(hashAsseseeCreationData.get("Care Of"),
-				objAsseseePage.getFieldValueFromAPAS("Care Of", ""), 
-				"SMAB-T2991: Validate Agency Care Of");
+				objAsseseePage.getFieldValueFromAPAS("Care Of", ""), "SMAB-T2991: Validate Agency Care Of");
 
 		softAssert.assertEquals(hashAsseseeCreationData.get("Phone"),
 				objAsseseePage.getFieldValueFromAPAS("Phone", "Contact Information"),
@@ -190,7 +185,7 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 		objAsseseePage.Click(objAsseseePage.detailsTab);
 		softAssert.assertEquals(updatedValue, objAsseseePage.getFieldValueFromAPAS("Care Of", ""),
 				"SMAB-T2991: Validate Agency Care Of");
-		
+
 		objAsseseePage.logout();
 
 	}
