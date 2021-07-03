@@ -78,7 +78,24 @@ public class MappingPage extends ApasGenericPage {
 	public String situsUnitNumberLabel = "Situs Unit Number";
 	public String closeButton = "Close";
 	public String CreateNewParcelButton="Create Brand New Parcel";
-	public String updateParcelsButton = "Update Parcel(s)";
+	public String updateParcelsButton = "//button[text()='Update Parcel(s)']";
+	public String updateParcelButtonLabelName = "Update Parcel(s)";
+
+	
+	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
+	public WebElement editButtonInSeconMappingScreen;
+	
+	@FindBy(xpath = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]/ancestor::tr/following-sibling::tr//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]")
+	public WebElement secondmappingSecondScreenEditActionGridButton;
+	
+	@FindBy(xpath = "//button[@title='Clear Selection'][1]")
+	public WebElement clearSelectionTRA;
+	
+	@FindBy(xpath = "//button[@title='Clear Selection'][1]/ancestor::lightning-input-field/following-sibling::lightning-input-field//button")
+	public WebElement clearSelectionPUC;	
+	
+	@FindBy(xpath = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]")
+	public WebElement mappingSecondScreenEditActionGridButton;
 	
 	@FindBy(xpath = "//label[text()='First Non-Condo Parcel Number']/..//div[@class='slds-form-element__icon']")
 	public WebElement helpIconFirstNonCondoParcelNumber;
@@ -117,10 +134,13 @@ public class MappingPage extends ApasGenericPage {
 	public WebElement parentAPNFieldValue;
 	
 	@FindBy(xpath = "//button[@title='Remap Parcel (s)']")
-	 public WebElement remapParcelButton ;
+	public WebElement remapParcelButton ;
 	
 	@FindBy(xpath = "//div[@class='slds-hyphenate']/*[contains(text(),'The APN provided is a duplicate')]")
 	public WebElement remapErrorMessageonSecondScreen;
+	
+	@FindBy(xpath="//div[@class='uiOutputRichText']//span")
+	public WebElement mappingScreenError;
 
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
@@ -323,7 +343,7 @@ public class MappingPage extends ApasGenericPage {
   */
 
    public HashMap<String, ArrayList<String>> getRetiredApnHavingNoOwner() throws Exception {
-	   String queryRetiredAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Status__c = 'Retired' Limit 1";
+	   String queryRetiredAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Retired' Limit 1";
  	  	return objSalesforceAPI.select(queryRetiredAPNValue);
    }
  
@@ -333,7 +353,7 @@ public class MappingPage extends ApasGenericPage {
  */
 
    public HashMap<String, ArrayList<String>> getInProgressApnHavingNoOwner() throws Exception {
-	   String queryInProgressAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Status__c like 'In Progress%' Limit 1";
+	   String queryInProgressAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c like 'In Progress%' Limit 1";
 	   return objSalesforceAPI.select(queryInProgressAPNValue);
    }
     
@@ -347,7 +367,7 @@ public class MappingPage extends ApasGenericPage {
      }
     
      public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner(int numberofRecords) throws Exception {
-     	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and (Not Name like '800%') and Status__c = 'Active' Limit " + numberofRecords;
+     	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and (Not Name like '800%') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit " + numberofRecords;
      	return objSalesforceAPI.select(queryActiveAPNValue);
      }
      
@@ -361,19 +381,30 @@ public class MappingPage extends ApasGenericPage {
         }
         
       public HashMap<String, ArrayList<String>> getCondoApnWithNoOwner(int numberofRecords) throws Exception {
-        	String queryCondoAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and name like '100%' and Status__c = 'Active' Limit " + numberofRecords;
+        	String queryCondoAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  and (Not Name like '%990') and name like '100%' and Status__c = 'Active' Limit " + numberofRecords;
         	return objSalesforceAPI.select(queryCondoAPNValue);
         }
      
-      /*
-      This method will delete existing relationship instances (Source) from the Parcel
-     */
-      
-      public void deleteSourceRelationshipInstanceFromParcel(String apn) throws Exception {
-    	  String query = "SELECT Id FROM Parcel_Relationship__c where Source_Parcel__r.name = '" + apn + "'";
+      /**
+       *  This method will delete existing relationship instances  from the Parcel
+       * @param apn-Apn whose records needs to be deleted
+       * @return
+       * @throws Exception
+       */
+      public void deleteRelationshipInstanceFromParcel(String apn)
+      {
+    	  String query ="SELECT  Id,Target_Parcel__c FROM Parcel_Relationship__c where source_parcel__r.name='" +apn+"'";
     	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
-    	  if(!response.isEmpty())objSalesforceAPI.delete("Parcel_Relationship__c", query);
-  	  }
+    	  
+    	  if(!response.isEmpty())
+    	  {
+    		  response.get("Id").stream().forEach(Id ->{
+    			  objSalesforceAPI.delete("Parcel_Relationship__c", Id);
+    			  
+    		  });      	    				  
+    	  }
+
+      }
       
       /*
       This method will convert APN into Integer
@@ -384,5 +415,23 @@ public class MappingPage extends ApasGenericPage {
   		 String consolidateAPN = apnComponent[0] + apnComponent[1] + apnComponent[2];
   		 return Integer.valueOf(consolidateAPN);
   	  }
-       
+  /*
+   * 
+   *     This method is used to enter the values in edit action screen
+   *     
+   */
+      public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
+  		
+    	  
+			Click(editButtonInSeconMappingScreen);
+			if(waitForElementToBeVisible(2, clearSelectionTRA))
+		    Click(clearSelectionTRA);
+			selectOptionFromDropDown(parcelTRA,dataMap.get("TRA"));
+			if(waitForElementToBeVisible(2, clearSelectionPUC))
+			Click(clearSelectionPUC);
+			selectOptionFromDropDown(parcelPUC,dataMap.get("PUC"));
+			editSitusModalWindowFirstScreen(dataMap);
+			
+  	}
+  	   
 }

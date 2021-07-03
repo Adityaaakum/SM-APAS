@@ -108,8 +108,7 @@ public class Page extends TestBase {
 					}
 					catch(Exception exception) {
 						webElement = getButtonWithText(object.toString());
-					}
-				}
+					}}
 
 			} else if (object instanceof By) {
 				webElement = driver.findElement((By) object);
@@ -699,8 +698,7 @@ public class Page extends TestBase {
 		Click(getWebElementWithLabel(dropDown));
 		return driver.findElement(By.xpath("//label[text()='" + dropDown + "']/..//*[@role='listbox']")).getText().trim();
 	}
-
-    /**
+	/**
 	 * Description: Waits until the element goes invisible within given timeout
 	 *
 	 * @param object           : Object to disappear
