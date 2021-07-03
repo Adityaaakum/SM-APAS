@@ -1560,7 +1560,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2829: Validation that  A new WI of type Mapping is created after performing one to one from mapping action tab");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Action","Information"), "Independent Mapping Action",
 				"SMAB-T2829: Validation that  A new WI of action Independent Mapping Action is created after performing one to one from mapping action tab");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Date", "Information"),DateUtil.getCurrentDate("MM/dd/yyyy"), "SMAB-T2829: Validation that 'Date' fields is equal to date when this WI was created");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Date", "Information"),DateUtil.removeZeroInMonthAndDay(DateUtil.getCurrentDate("MM/dd/yyyy")), "SMAB-T2829: Validation that 'Date' fields is equal to date when this WI was created");
 
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
