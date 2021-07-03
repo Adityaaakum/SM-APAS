@@ -77,7 +77,7 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//input[contains(@placeholder, 'Search apps and items...')]|//input[@placeholder='Search apps or items...']")
 	public WebElement appLauncherSearchBox;
-	
+
 	@FindBy(xpath = "//input[@placeholder='Search apps and items...']/..//button")
 	public WebElement searchClearButton;
 
@@ -89,7 +89,7 @@ public class ApasGenericPage extends Page {
 
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='button'][@title='Select List View'] | //div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@role='button'][@title='Select List View']")
 	public WebElement selectListViewButton;
-	
+
 	@FindBy(xpath = "//a[@role='option']//span[text()='All' or text()='All Active Parcels']")
 	public WebElement selectListViewOptionAll;
 
@@ -322,7 +322,7 @@ public class ApasGenericPage extends Page {
         String xpathDropDownOption;
         if (element instanceof String) {
         	webElement = getWebElementWithLabel((String) element);
-        	String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
+        	String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody') or contains(@class,'slds-input slds-combobox__input')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
 			xpathDropDownOption = commonPath + "//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
 			
         } else{
@@ -336,10 +336,10 @@ public class ApasGenericPage extends Page {
 		}else{
 			scrollToElement(webElement);
 			javascriptClick(webElement);
-			waitUntilElementIsPresent(xpathDropDownOption, 5);
+			waitUntilElementIsPresent(xpathDropDownOption, 10);
 			drpDwnOption = driver.findElement(By.xpath(xpathDropDownOption));
 			scrollToElement(drpDwnOption);
-			waitForElementToBeClickable(drpDwnOption, 3);
+			waitForElementToBeClickable(drpDwnOption, 8);
 			javascriptClick(drpDwnOption);
 		}
 
@@ -464,7 +464,7 @@ public class ApasGenericPage extends Page {
 		//closeDefaultOpenTabs();
 	}
 
-	public  void closeDefaultOpenTabs() throws Exception {
+	public void closeDefaultOpenTabs() throws Exception {
 		ReportLogger.INFO("Closing all default tabs");
 
 		waitForElementToBeClickable(appLauncher, 10);
@@ -477,6 +477,7 @@ public class ApasGenericPage extends Page {
 		Actions objAction=new Actions(driver);
 		objAction.keyDown(Keys.SHIFT).sendKeys("w").keyUp(Keys.SHIFT).perform();
 		waitForElementToBeVisible(5,closeAllBtn);
+		
 		if(verifyElementVisible(closeAllBtn))
 		{Click(closeAllBtn);}
 		Thread.sleep(3000);
@@ -488,7 +489,7 @@ public class ApasGenericPage extends Page {
 	 *
 	 * @param moduleToSearch : Module Name to search and open
 	 */
-	public void searchModule(String moduleToSearch) throws Exception {
+public void searchModule(String moduleToSearch) throws Exception {
 		
 		try{	
 			waitForElementToBeClickable(appLauncher, 60);
@@ -505,11 +506,13 @@ public class ApasGenericPage extends Page {
 		catch(Exception e){
 			Util utl = new Util();	
 			modulesObjectName modobj = new modulesObjectName();
-			String moduleURL = envURL + utl.getValueOf(modobj, moduleToSearch.trim());
-			navigateTo(driver,moduleURL);
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Navigating directly" + moduleURL);
+			moduleToSearch = moduleToSearch.replaceAll("\\s+", "").replace("-", "");
+			navigateTo(driver,moduleToSearch);
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Navigating directly" + moduleToSearch);
 		}
 	}
+	
+	
 	
 	/*
 	 * public void searchModuleByNameorObject(String moduleName , String
@@ -592,18 +595,82 @@ public class ApasGenericPage extends Page {
 	public void globalSearchRecords(String searchString) throws Exception {
 
 		ReportLogger.INFO("Searching and filtering the data through APAS level search with the String " + searchString);
-		if (System.getProperty("region").toUpperCase().equals("E2E") || System.getProperty("region").toUpperCase().equals("PREUAT") || System.getProperty("region").toUpperCase().equals("STAGING")){
+		try {
+			if (System.getProperty("region").toUpperCase().equals("E2E") || System.getProperty("region").toUpperCase().equals("PREUAT") || System.getProperty("region").toUpperCase().equals("STAGING")){
 			WebElement element  = driver.findElement(By.xpath("//div[@data-aura-class='forceSearchDesktopHeader']/div[@data-aura-class='forceSearchInputDesktop']//input"));
 			searchAndSelectOptionFromDropDown(element, searchString);
+			
 		}else{
 			Click(globalSearchButton);
 			enter(globalSearchListEditBox,searchString);
 			String xpath = "//*[@role='option']//span[@title = '" + searchString + "']";
 			waitUntilElementIsPresent(xpath,5);
 			Click(driver.findElement(By.xpath(xpath)));
+			
+			}
+			Thread.sleep(5000);
+		}
+			
+			catch (Exception e) {
+				
+				String executionEnv = "";
+				
+				if (System.getProperty("region").toUpperCase().equals("QA"))
+					executionEnv = "qa";
+				if (System.getProperty("region").toUpperCase().equals("E2E"))
+					executionEnv = "e2e";
+				if (System.getProperty("region").toUpperCase().equals("PREUAT"))
+					executionEnv = "preuat";
+				if (System.getProperty("region").toUpperCase().equals("STAGING"))
+					executionEnv = "staging";
+				
+				// for parcel search
+					if(searchString.length()== 11 && isSearchStringParcel(searchString)) {
+						ReportLogger.INFO("Opening parcel record: " + searchString);
+						String   query = "Select Id from Parcel__c where Name = '"+searchString+"'";
+						HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);	
+						driver.navigate().to("https://smcacre--"+executionEnv+
+								 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
+						ReportLogger.INFO("https://smcacre--"+executionEnv+
+								 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
+						Thread.sleep(5000);
+					}
+					// for work item search
+					else if(searchString.startsWith("WI-")){
+						ReportLogger.INFO("Opening WI record: " + searchString);
+						String   query = "Select Id from Work_Item__c  where Name = '"+searchString+"'";
+						HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);	
+						driver.navigate().to("https://smcacre--"+executionEnv+
+								 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
+						ReportLogger.INFO("https://smcacre--"+executionEnv+
+								 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
+						Thread.sleep(5000);
+					}
+					 else {
+						  ReportLogger.INFO("Unable to search string: " + searchString + e);
+					 }
+			}
+	}
+
+	
+	public boolean isSearchStringParcel(String parcel) {
+
+		int count = 0;
+		if (parcel == null) {
+			return false;
 		}
 
-		Thread.sleep(5000);
+		for (int i = 0; i < parcel.length(); i++) {
+			char c = parcel.charAt(i);
+			if (c == '-') {
+				count++;
+			}
+		}
+		if (count == 2) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -1005,7 +1072,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public String saveRecord() throws Exception {
 		Click(getButtonWithText("Save"));
-		waitForElementToBeClickable(successAlert,20);
+		waitForElementToBeClickable(successAlert,25);
 		String messageOnAlert = getElementText(successAlert);
 		waitForElementToDisappear(successAlert,10);
 		return messageOnAlert;
@@ -1143,22 +1210,23 @@ public class ApasGenericPage extends Page {
   @return: returns the Retired APN
  */
 
-  	public String fetchRetiredAPN() throws Exception {
+ public String fetchRetiredAPN() throws Exception {
      
 	  String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
 	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
-  	}
+	}
  
- /*
- This method is used to return the Interim APN (starts with 800) from Salesforce
- @return: returns the Interim APN
+/*
+This method is used to return the Interim APN (starts with 800) from Salesforce
+@return: returns the Interim APN
 */
 
-  	public String fetchInterimAPN() throws Exception {
-    
+	public String fetchInterimAPN() throws Exception {
+ 
 	  String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' AND Status__c='Active' limit 1";
 	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
-  	}
+	}
+ 
    
    /*
     * Get Field Value from WI TimeLine 
@@ -1214,10 +1282,15 @@ public class ApasGenericPage extends Page {
    @return: returns the Divided Interest APN
   */
 	public String fetchDividedInterestAPN() throws Exception {
-		String queryAPNValue = "select Name, Status__c from Parcel__c Where NOT(Name like '%0') limit 1";
+		String queryAPNValue = "select Name, Status__c from Parcel__c Where NOT(Name like '%0')  limit 1";
 		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryAPNValue);
 		String dividedInterestAPNValue = "";
 		dividedInterestAPNValue = response.get("Name").get(0);
+		 String   dividedInterestStatusCheck= "Select Status__c from Parcel__c where name='"+dividedInterestAPNValue+"'";
+		if(objSalesforceAPI.select(dividedInterestStatusCheck).get("Status__c").get(0)!="Active")
+		{
+			 objSalesforceAPI.update("Parcel__c","Select Id from Parcel__c where name='"+dividedInterestAPNValue+"'", "Status__c", "Active");
+		}
 
 		return dividedInterestAPNValue;
 	}
@@ -1233,6 +1306,7 @@ public class ApasGenericPage extends Page {
 		WebElement taxCollectorLink = waitForElementToBeClickable(20, xPath);
 		Click(taxCollectorLink);
 	}
+	
 
 	public String getSuccessMessage() throws Exception {
 		String SuccessTxt = "";
@@ -1253,13 +1327,14 @@ public class ApasGenericPage extends Page {
 	 * Description: This method will verify is a cell on a grid displayed from the first row is editable
 	 *
 	 * @param columnNameOnGrid: Column name on which the cell needs to be updated
+	 *  
 	 */
-	public boolean verifyGridCellEditable(String columnNameOnGrid) {
+	public boolean verifyGridCellEditable(String columnNameOnGrid)  {
 		boolean isCellEditable = false;
 		if(verifyElementVisible("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")){
 			isCellEditable = true;
 		}
 		return isCellEditable;
+	
 	}
-
-	}
+}

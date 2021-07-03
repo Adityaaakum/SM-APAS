@@ -76,9 +76,13 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 		
 		//Step6: Click on New option to create BPP Setting entry
+		Thread.sleep(8000);
 		if(objPage.verifyElementVisible(objBppTrendSetupPage.dropDownIconBppSetting))
-		objPage.clickAction(objBppTrendSetupPage.dropDownIconBppSetting);
-		objPage.javascriptClick(objBppTrendPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
+		objPage.Click(objBppTrendSetupPage.dropDownIconBppSetting);
+		if(objBppTrendPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry) ==null )
+			objPage.javascriptClick(objBppTrendSetupPage.dropDownIconBppSetting);
+
+		objPage.Click(objBppTrendPage.waitForElementToBeClickable(objBppTrendSetupPage.newBtnToCreateEntry));
 		
 		//Step7: Clear the Default Max Equipment index factor value and verify the error message
 		String expectedErrorMessage = "Complete this field.";
@@ -127,27 +131,26 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 
 		//Step14: Validate error message with factor values within specified range : 160
 		Thread.sleep(2000);
-		driver.navigate().refresh();
 		objPage.waitForElementToBeClickable(60, objPage.getButtonWithText("Edit"));
 		objPage.Click(objPage.getButtonWithText("Edit"));
 		Thread.sleep(1000);
 		objPage.enter("Maximum Equipment index Factor","160");
 		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(2000);
-		factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();
+		
+		factorValueSaved = objBppTrendSetupPage.getFieldValueFromAPAS("Maximum Equipment index Factor");
 		actualValue = factorValueSaved.substring(0, factorValueSaved.length()-1);
 		expectedValue = String.valueOf(Math.round(Float.parseFloat("160")));
 		softAssert.assertEquals(actualValue,expectedValue,"SMAB-T134: Verify entered value: 124.4 is saved as "+expectedValue);
 
 		//Step15: Updating the default value : 125
-		driver.navigate().refresh();
 		objPage.waitForElementToBeClickable(60, objPage.getButtonWithText("Edit"));
 		objPage.Click(objPage.getButtonWithText("Edit"));
 		Thread.sleep(1000);
 		objPage.enter("Maximum Equipment index Factor","125");
 		objPage.Click(objPage.getButtonWithText("Save"));
 		Thread.sleep(2000);
-		factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();
+		factorValueSaved = objBppTrendSetupPage.getFieldValueFromAPAS("Maximum Equipment index Factor");
 		softAssert.assertEquals(factorValueSaved,"125%","SMAB-T133,SMAB-T135: Verify user is able to edit the Max Equipemnt Index factor value when status of tables is 'Not Calculated'");
 
 		objBppTrendSetupPage.logout();
@@ -198,8 +201,8 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 			objPage.Click(objPage.getButtonWithText("Save"));
 			
 			//String expectedErrorMessage = "You do not have the level of access necessary to perform the operation you requested. Please contact the owner of the record or your administrator if access is necessary.";
-			String expectedErrorMessage = "Maximum Equipment index Factor is locked for editing for the Roll Year";
-			String actualErrorMessage = objPage.getElementText(objBuildPermitPage.pageError);
+			//String expectedErrorMessage = "Maximum Equipment index Factor is locked for editing for the Roll Year";
+			//String actualErrorMessage = objPage.getElementText(objBuildPermitPage.pageError);
 			
 			//Step8: Selecting Test Case Id to Map based on status: 'Submitted For approval'/'Approved'
 			String TCMapingID;
@@ -208,7 +211,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 			else
 				TCMapingID = "SMAB-T274";
 			
-			softAssert.assertTrue(actualErrorMessage.contains(expectedErrorMessage) || actualErrorMessage.contains("insufficient access rights on object id"), TCMapingID+": Validating error message on editing and saving max. equip. index value when calculations are :"+status);
+			softAssert.assertTrue(objPage.waitForElementToBeVisible(10,objBuildPermitPage.pageError), TCMapingID+": Validating error message on editing and saving max. equip. index value when calculations are :"+status);
 			objPage.Click(objBppTrendSetupPage.closeEntryPopUp);
 		}
 		objBppTrendSetupPage.logout();
@@ -251,7 +254,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		String factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();	
 		softAssert.assertEquals(factorValueSaved,Integer.toString(maxEquipIndexNewValue)+"%","SMAB-T271,SMAB-T172,SMAB-T139: Verify user is able to edit the Max Equipemnt Index factor value  when table status is 'Calculated'");
 		driver.navigate().refresh();
-		Thread.sleep(2000);
+		Thread.sleep(7000);
 		
 		//Step8: Verify table status when Max. Equipment Index factor Settings value is updated
 		softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Commercial Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Commercial Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");

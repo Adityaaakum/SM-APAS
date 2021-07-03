@@ -119,7 +119,7 @@ public class WorkItemAdministration_Consolidation_Test extends TestBase implemen
 		  Thread.sleep(2000);
 		  
 		  //steps 12: validation of parent- child relationship and status on child work item
-		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Request Type"),"RP - CPI Factor","SMAB-T2276 : request type matched RP - CPI Factor - Test WI");
+		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Request Type"),"RP - CPI Factor - Test WI","SMAB-T2276 : request type matched RP - CPI Factor - Test WI");
 		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"In Progress","SMAB-T2276 : Status Of Child WI Should be In Progress ");
 		  softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Parent-Child Relationship Type"),"Consolidated Secondary","SMAB-T2276 : parent-Child Relationship Type Of Child WI Should be Consolidated Secondary");
 		  driver.navigate().back();
@@ -128,7 +128,7 @@ public class WorkItemAdministration_Consolidation_Test extends TestBase implemen
 		  objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.dataTabCompleted, 5);
 		  objWorkItemHomePage.javascriptClick(objWorkItemHomePage.dataTabCompleted);
 		  objWorkItemHomePage.javascriptClick(objWorkItemHomePage.markAsCurrentStatusButton);
-		  softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),"Status: You cannot change status from In Progress to Completed","SMAB-T2287 : Error validation You cannot change status from In Progress to Completed On WI page" ); 
+		  softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),"Status: The work item selected cannot be closed manually","SMAB-T2287 : Error validation You cannot change status from In Progress to Completed On WI page" ); 
 		  objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
 		  driver.navigate().back();
 		  objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
@@ -158,6 +158,7 @@ public class WorkItemAdministration_Consolidation_Test extends TestBase implemen
 		  // Login supervisor 2 users.DATA_ADMIN
 		  objWorkItemHomePage.login(users.DATA_ADMIN);
 		  objWorkItemHomePage.searchModule(modules.HOME);
+          objWorkItemHomePage.Click(objWorkItemHomePage.toggleBUtton);
           Thread.sleep(2000);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
 		  objWorkItemHomePage.selectWorkItemOnHomePage(PrimaryWorkitem);

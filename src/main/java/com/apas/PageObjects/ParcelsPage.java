@@ -41,7 +41,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String workItemRoutingDropDownComponentsActionsModal = "Work Item Routing";
 	public String workItemOwnerSearchBox = "Work Item Owner (if someone other than you)";
 	public String auditTrailRecordDropDownComponentsActionsModal = "Is this Audit Trail Record linked to any Existing Audit Trail Record?";
-	
+
 	public String editApnField ="APN";	
 	public String LongLegalDescriptionLabel="Long Legal Description"; 
 
@@ -129,9 +129,9 @@ public class ParcelsPage extends ApasGenericPage {
 		
 		selectOptionFromDropDown(workItemTypeDropDownComponentsActionsModal, workItemType);
 		selectOptionFromDropDown(actionsDropDownLabel, actions);
-		
+	
 		if(verifyElementExists(auditTrailElementPath)) selectOptionFromDropDown(auditTrailRecordDropDownComponentsActionsModal, auditTrail);
-		
+
 		if (reference != null)enter(referenceInputTextBoxComponentActionModal, reference);
 		enter(descriptionInputTextBoxComponentActionModal, description);
 		//selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);
@@ -140,7 +140,7 @@ public class ParcelsPage extends ApasGenericPage {
 		if (dov != null) enter(dovInputTextBox, dov);
 		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
-		Thread.sleep(3000);
+		Thread.sleep(5000);
 
 		String workItemQuery = "SELECT Name FROM Work_Item__c where Description__c = '" + description + "' order by Name desc limit 1";
 		workItemNumber = objSalesforceAPI.select(workItemQuery).get("Name").get(0);

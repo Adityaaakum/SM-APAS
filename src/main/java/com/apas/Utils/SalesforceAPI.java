@@ -128,7 +128,7 @@ public class SalesforceAPI extends TestBase {
      * @param sqlQuery : Select SQL query
      * @return Json response in String format
      */
-    private String getJsonResponse(String sqlQuery) {
+    public String getJsonResponse(String sqlQuery) {
         String responseString = "";
         System.out.println("Executing Query : " + sqlQuery);
         try {

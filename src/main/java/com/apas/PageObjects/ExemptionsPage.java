@@ -134,6 +134,9 @@ public class ExemptionsPage extends ApasGenericPage {
     public String endRatingReason = "End Rating Reason";
 
     public String endDateOfRating = "End Date of Rating";
+    
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Next']")
+	public WebElement exemptionRecordTypeNextButton;
 
     @FindBy(xpath = "//div[text()='Basis for Claim']//following::button[@title='Move selection to Chosen'][1]")
     public WebElement basisForClaim;
@@ -396,7 +399,7 @@ public class ExemptionsPage extends ApasGenericPage {
      */
 
     public String createNewExemption(Map<String, String> newExemptionData) throws Exception {
-
+    	//Click(exemptionRecordTypeNextButton);
         ReportLogger.INFO("Entering/Selecting values for New Exemption record");
         searchAndSelectOptionFromDropDown("APN", fetchActiveAPN());
         objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
@@ -435,7 +438,7 @@ public class ExemptionsPage extends ApasGenericPage {
 
 
     public String createNewExemptionWithMandatoryData(Map<String, String> newExemptionData) throws Exception {
-
+    	//Click(exemptionRecordTypeNextButton);
         ReportLogger.INFO("Entering/Selecting values for New Exemption record");
         searchAndSelectOptionFromDropDown("APN", fetchActiveAPN());
         objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
@@ -482,7 +485,8 @@ public class ExemptionsPage extends ApasGenericPage {
      */
 
     public void enterExemptionData(Map<String, String> dataMap) throws Exception {
-        String assesseeName = fetchAssesseeName();
+    	//Click(exemptionRecordTypeNextButton);
+    	String assesseeName = fetchAssesseeName();
 
         String apnNumber = fetchActiveAPN();
         if (dataMap.containsKey("Different APN")) apnNumber = dataMap.get("Different APN");
@@ -501,7 +505,6 @@ public class ExemptionsPage extends ApasGenericPage {
         selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
         if (dataMap.containsKey("Reason for Not Qualified"))
             selectOptionFromDropDown(reasonNotQualified, dataMap.get("Reason for Not Qualified"));
-        ;
         if (dataMap.containsKey("End Date Of Rating")) enter(endDateOfRating, dataMap.get("End Date Of Rating"));
         if (dataMap.containsKey("End Rating Reason"))
             selectOptionFromDropDown(endRatingReason, dataMap.get("End Rating Reason"));
@@ -675,7 +678,7 @@ public class ExemptionsPage extends ApasGenericPage {
     }
 
     public ArrayList<String> fetchActiveAPN(int numberofAPNs) {
-        String queryForID = "SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberofAPNs;
+        String queryForID = "SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('000- Vacant Land (Migrated)','000B Vacant Land - Brush, Barren','01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT') Limit " + numberofAPNs;
         return objSalesforceAPI.select(queryForID).get("Name");
     }
 

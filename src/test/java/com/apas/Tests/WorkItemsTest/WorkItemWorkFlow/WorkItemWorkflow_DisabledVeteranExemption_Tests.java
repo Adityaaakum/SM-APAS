@@ -130,10 +130,7 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS("Street", "Reference Data Details"),streetName,
 				"SMAB-T2080: Validation that 'Street' fields getting automatically populated in the work item record");
 		
-		String updateWIStatus = "SELECT Id FROM Work_Item__c where Name = '"+WIName+"'";
-		salesforceAPI.update("Work_Item__c", updateWIStatus, "Status__c", "Completed");
-
-		ReportLogger.INFO("Step 11: Logging out from SF");
+				ReportLogger.INFO("Step 10: Logging out from SF");
 
 		objApasGenericPage.logout();
 
@@ -195,9 +192,8 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
 		ReportLogger.INFO("Step 13: Verifying Work Item is generated on entering/editing the End Date of Rating for an Exemption");
 		softAssert.assertEquals(actualWIName, WIName, "SMAB-T1923: Work Item is generated on Entering the End Date of Rating for an Exemption");
-		updateWIStatus = "SELECT Id FROM Work_Item__c where Name = '"+WIName+"'";
-		salesforceAPI.update("Work_Item__c", updateWIStatus, "Status__c", "Completed");
-		ReportLogger.INFO("Step 11: Logging out from SF");
+		
+		ReportLogger.INFO("Step 14: Logging out from SF");
 		objApasGenericPage.logout();
 
 	}
@@ -665,19 +661,11 @@ public class WorkItemWorkflow_DisabledVeteranExemption_Tests extends TestBase {
 		ReportLogger.INFO("Click on the Sub  TAB - Work Items");
 		objPage.Click(objWIHomePage.lnkTABWorkItems);
 
-		//Step30: Verify that the WI is present in the Completed tab
-		softAssert.assertTrue(!objWIHomePage.verifyElementExists(objWIHomePage.assignLevel2ApproverBtn),
-				"SMAB-T2556: Validate that 'Assign Level2 Approver' button is not visible");
-
-		//Step31: Click on the Completed tab
+		//Step30: Click on the Completed tab
 		ReportLogger.INFO("Click on the TAB - Completed");
 		objPage.Click(objWIHomePage.lnkTABCompleted);
 
-		//Step32: Verify that the WI is present in the Completed tab
-		softAssert.assertTrue(!objWIHomePage.verifyElementExists(objWIHomePage.assignLevel2ApproverBtn),
-				"SMAB-T2556: Validate that 'Assign Level2 Approver' button is not visible");
-
-		//Step33: Verify that the WI is present in the Completed tab
+		//Step31: Verify that the WI is present in the Completed tab
 		ReportLogger.INFO("Verify that the WI is present in the Completed tab");
 		String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);
 		softAssert.assertEquals(actualWIName, WIName, "SMAB-T2556: Validate that the WI is present in the Completed tab");
