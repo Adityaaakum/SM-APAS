@@ -10,32 +10,17 @@
     "Action": "One To One",
     "Are taxes fully paid?": "Yes",
     "Reason code": "PM 85/25-26",
-
     "Comments": "Perform one to one mapping",
     "Legal Description": "Legal PM 85/25-260",
-
-<<<<<<< HEAD
     "Situs City Description": "ATHERTON",
     "Situs City Code": "AT",
     "Situs City Name": "ATHERTON",
-
-   
-=======
-   "Situs City Description": "Daly City",
-    "Situs City Code": "DC",    
-    "City Name": "DALY CITY",
->>>>>>> 8a08e710190f961b77b631c606d877537f51889a
     "Direction": "West Coast",
     "Situs Number": "69",
     "Situs Street Name": "CLIFFSIDE",
     "Situs Type": "ALLEE",
     "Situs Unit Number": "56",
-<<<<<<< HEAD
     "City Name": "ATHERTON"
-=======
-    "TRA":"0010009",
-    "PUC": "01-SINGLE FAMILY RES"
->>>>>>> 8a08e710190f961b77b631c606d877537f51889a
           
   }
 }

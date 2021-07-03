@@ -21,17 +21,9 @@
     "Reason code": "PM 85/25-26",
     "First non-Condo Parcel Number": "123456789",
     "Comments": "Perform Brand New Parcel mapping",
-<<<<<<< HEAD
-     "First non-Condo Parcel Number": "123456789",
-     "City Name": "ATHERTON",
-     "Situs City Description": "ATHERTON",
-    "Situs City Code": "AT",
-    "Situs City Name": "ATHERTON",
-=======
       "Situs City Description": "Daly City",
     "Situs City Code": "DC",    
     "City Name": "DALY CITY",
->>>>>>> 8a08e710190f961b77b631c606d877537f51889a
     "Direction": "West Coast",
     "Situs Number": "69",
     "Situs Street Name": "CLIFFSIDE",
