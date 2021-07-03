@@ -324,7 +324,6 @@ public class ApasGenericPage extends Page {
         	webElement = getWebElementWithLabel((String) element);
         	String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody') or contains(@class,'slds-input slds-combobox__input')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
 			xpathDropDownOption = commonPath + "//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "'] " ;
-								  //commonPath + "//span[text()=\"" + element + "\"]/../following-sibling::div//a[@role='button']";	;
 			
         } else{
             webElement = (WebElement) element;
