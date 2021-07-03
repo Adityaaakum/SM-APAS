@@ -1194,7 +1194,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 
   public String fetchInProgressAPN() throws Exception {
       
-	  String queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' limit 1";
+	  String queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
       HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryAPNValue);
 	  String inProgressAPNValue = "";
 		 if(!response.isEmpty())
