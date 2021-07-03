@@ -190,7 +190,7 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath="//button[text()='Close All']")
 	public WebElement closeAllBtn;
-
+	
 	public String SaveButton="Save";
 	public String NewButton="New";
 	public String EditButton="Edit";
@@ -507,8 +507,10 @@ public void searchModule(String moduleToSearch) throws Exception {
 			Util utl = new Util();	
 			modulesObjectName modobj = new modulesObjectName();
 			moduleToSearch = moduleToSearch.replaceAll("\\s+", "").replace("-", "");
+
 			navigateTo(driver,moduleToSearch);
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Navigating directly" + moduleToSearch);
+
 		}
 	}
 	
@@ -1179,7 +1181,9 @@ public void searchModule(String moduleToSearch) throws Exception {
    }
 
    public ArrayList<String> fetchActiveAPN(int numberofAPNs) {
-       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and PUC_Code_Lookup__r.name in ('01-SINGLE FAMILY RES','02-DUPLEX','03-TRIPLEX','04-FOURPLEX','05-FIVE or MORE UNITS','07-MOBILEHOME','07F-FLOATING HOME','89-RESIDENTIAL MISC.','91-MORE THAN 1 DETACHED LIVING UNITS','92-SFR CONVERTED TO 2 UNITS','94-TWO DUPLEXES','96-FOURPLEX PLUS A RESIDENCE DUPLEX OR TRI','97-RESIDENTIAL CONDO','97H-HOTEL CONDO','98-CO-OPERATIVE APARTMENT')  and (Not Name like '1%') and (Not Name like '800%') Limit " + numberofAPNs;
+
+       String queryForID = "SELECT Name FROM Parcel__c where primary_situs__c != NULL and Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and (Not Name like '100%') and (Not Name like '800%') Limit " + numberofAPNs;
+
        return objSalesforceAPI.select(queryForID).get("Name");
    }
    
@@ -1223,7 +1227,9 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 
 	public String fetchInterimAPN() throws Exception {
  
-	  String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' AND Status__c='Active' limit 1";
+	  String queryAPNValue = "Select name,ID  From Parcel__c "
+	  		+ "where name like '800%' AND Status__c='Active' limit 1";
+
 	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
 	}
  

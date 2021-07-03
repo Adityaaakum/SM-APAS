@@ -399,6 +399,7 @@ public class ExemptionsPage extends ApasGenericPage {
      */
 
     public String createNewExemption(Map<String, String> newExemptionData) throws Exception {
+
     	//Click(exemptionRecordTypeNextButton);
         ReportLogger.INFO("Entering/Selecting values for New Exemption record");
         searchAndSelectOptionFromDropDown("APN", fetchActiveAPN());
@@ -438,6 +439,7 @@ public class ExemptionsPage extends ApasGenericPage {
 
 
     public String createNewExemptionWithMandatoryData(Map<String, String> newExemptionData) throws Exception {
+
     	//Click(exemptionRecordTypeNextButton);
         ReportLogger.INFO("Entering/Selecting values for New Exemption record");
         searchAndSelectOptionFromDropDown("APN", fetchActiveAPN());
@@ -485,6 +487,7 @@ public class ExemptionsPage extends ApasGenericPage {
      */
 
     public void enterExemptionData(Map<String, String> dataMap) throws Exception {
+
     	//Click(exemptionRecordTypeNextButton);
     	String assesseeName = fetchAssesseeName();
 

@@ -44,7 +44,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objWorkItemHomePage = new WorkItemHomePage(driver);
         objBppTrendPage = new BppTrendPage(driver);
         objBppTrendSetupPage = new BppTrendSetupPage(driver);
-        rollYear = "2021";
+        rollYear = "2022";
     }
 
 
@@ -54,7 +54,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      **/
     @Test(description = "SMAB-T1731,SMAB-T1732,SMAB-T2175,SMAB-T1944,SMAB-T1948: Verify auto generated Reminder WI, Approval of Imported BOE Index & Goods Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = false)
     public void WorkItemWorkflow_BPPTrends_BOEIndexAndGoods_WorkItemImportAndApprove(String loginUser, boolean flagDeleteAndGenerateReminderWI) throws Exception {
-        String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_VALID + "BOE Equipment Index Factors and Percent Good Factors 2021.xlsx";
+        String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_VALID + "BOE Equipment Index Factors and Percent Good Factors 2022.xlsx";
 
         //Step1: Delete the existing data & WIs and Generate Reminder Work Items
         if(!flagDeleteAndGenerateReminderWI){
@@ -141,7 +141,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      **/
     @Test(description = "SMAB-T1731,SMAB-T1733,SMAB-T2175: Verify auto generated Reminder WI, Revert Imported BOE Index & Goods Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_BOEIndexAndGoods_WorkItemImportAndRevert(String loginUser) throws Exception {
-        String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_VALID + "BOE Equipment Index Factors and Percent Good Factors 2021.xlsx";
+        String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_INDEX_FACTORS_VALID + "BOE Equipment Index Factors and Percent Good Factors 2022.xlsx";
 
         //Step1: Delete the existing data from system before importing files
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors", "BOE - Index and Percent Good Factors", rollYear);
@@ -230,7 +230,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      **/
     @Test(description = "SMAB-T1738,SMAB-T1739,SMAB-T1769,SMAB-T1945,SMAB-T1949: Verify auto generated Reminder WI, Approval of Imported BOE Valuation Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = false)
     public void WorkItemWorkflow_BPPTrends_BOEValuation_WorkItemImportAndApprove(String loginUser, boolean flagDeleteAndGenerateReminderWI) throws Exception {
-        String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VAL_FACTORS_VALID + "BOE Valuation Factors 2021.xlsx";
+        String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VAL_FACTORS_VALID + "BOE Valuation Factors 2022.xlsx";
 
         //Step1: Delete the existing data & WIs and Generate Reminder Work Items
         if(!flagDeleteAndGenerateReminderWI) {
@@ -318,7 +318,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      **/
     @Test(description = "SMAB-T1738,SMAB-T1740,SMAB-T1769: Verify auto generated Reminder WI, Revert Imported BOE Valuation Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_BOEValuation_WorkItemImportAndRevert(String loginUser) throws Exception {
-        String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VAL_FACTORS_VALID + "BOE Valuation Factors 2021.xlsx";
+        String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_BOE_VAL_FACTORS_VALID + "BOE Valuation Factors 2022.xlsx";
 
         //Step1: Delete the existing data from system before importing files
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors", "BOE - Valuation Factors", rollYear);
@@ -407,7 +407,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      **/
     @Test(description = "SMAB-T1741,SMAB-T1742,SMAB-T1776,SMAB-T1946,SMAB-T1950: Verify auto generated Reminder WI, Approval of Imported CAA Valuation Factors, auto generated Review Import WI", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = false)
     public void WorkItemWorkflow_BPPTrends_CAAValuation_WorkItemImportAndApprove(String loginUser, boolean flagDeleteAndGenerateReminderWI) throws Exception {
-        String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VAL_FACTORS_VALID + "CAA Valuation Factors 2021.xlsx";
+        String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VAL_FACTORS_VALID + "CAA Valuation Factors 2022.xlsx";
 
         //Step1: Delete the existing data & WIs and Generate Reminder Work Items
         if(!flagDeleteAndGenerateReminderWI) {
@@ -495,7 +495,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      **/
     @Test(description = "SMAB-T1741,SMAB-T1743,SMAB-T1776: Verify auto generated Reminder WI, Revert Imported CAA Valuation Factors, auto generated Import WI again upon revert", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "BPPTrend","WorkItemWorkflow_BPPTrend"}, alwaysRun = true, enabled = true)
     public void WorkItemWorkflow_BPPTrends_CAAValuation_WorkItemImportAndRevert(String loginUser) throws Exception {
-        String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VAL_FACTORS_VALID + "CAA Valuation Factors 2021.xlsx";
+        String sourceFile = System.getProperty("user.dir") + testdata.BPP_TREND_CAA_VAL_FACTORS_VALID + "CAA Valuation Factors 2022.xlsx";
 
         //Step1: Delete the existing data from system before importing files
         objEfileImportPage.deleteImportedRecords("BPP Trend Factors", "CAA - Valuation Factors", rollYear);
@@ -730,7 +730,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         objSalesforceAPI.delete("Work_Item__c",query);
 
         //Step2: Update CP Factor for 2020
-        String queryToFetchCPIFactorId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '2021'";
+        String queryToFetchCPIFactorId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '2022'";
         HashMap<String, ArrayList<String>> cpiFactorId = objSalesforceAPI.select(queryToFetchCPIFactorId);
         String queryToUpdateCPIFactor = "SELECT Id FROM CPI_Factor__c Where Roll_Year__c = '"+cpiFactorId.get("Id").get(0)+"'";
         objSalesforceAPI.update("CPI_Factor__c",queryToUpdateCPIFactor,"CPI_Factor__c","1.01");
@@ -919,7 +919,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
      */
     @Test(description = "SMAB-T1729,SMAB-T1730,SMAB-T1943,SMAB-T2168,SMAB-T2169,SMAB-T2179: Validation of BPP Trend Annual Factors Reminder Work Item workflow", groups={"Smoke","Regression","BPPTrend","WorkItemWorkflow_BPPTrend"}, dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
     public void WorkItemWorkflow_BppTrend_AnnualFactors_ReminderWorkItemWorkFlow(String loginUser) throws Exception {
-        String rollYear = "2021";
+        String rollYear = "2022";
 
         //Code to delete current roll year BPP Trend Setup, BPP Settings and Composite Factor Records
         objBppTrendPage.removeExistingBppSettingEntry(rollYear);
@@ -952,7 +952,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         //Step2: Validation for the cloned annual factor from the prior year
         objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
         objBppTrendSetupPage.displayRecords("All");
-        softAssert.assertTrue(objBppTrendSetupPage.getGridDataInHashMap().get("Name").contains("2021 - BPP Trend Setup"),"SMAB-T2168: Validation for cloning of prior year BPP Trend Setup record on reminder work item generation");
+        softAssert.assertTrue(objBppTrendSetupPage.getGridDataInHashMap().get("Name").contains("2022 - BPP Trend Setup"),"SMAB-T2168: Validation for cloning of prior year BPP Trend Setup record on reminder work item generation");
 
         //Stpe3: Open the Work Item Home Page
         objBppTrendSetupPage.searchModule(modules.HOME);

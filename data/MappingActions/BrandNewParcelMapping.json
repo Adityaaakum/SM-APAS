@@ -2,7 +2,7 @@
   "DataToPerformBrandNewParcelMappingActionWithoutAllFields": {
     "Action": "Brand New Parcel",
     "First non-Condo Parcel Number": "123456789",
-    "Comments": "Perform Brand New Parcel mapping"  ,
+    "Comments": "Perform Brand New Parcel mapping"  
   },
   
   "DataToPerformOneToOneMappingActionWithAllFields": {
@@ -13,23 +13,31 @@
     "Net Land Gain": "300",
     "Comments": "Perform one to one mapping",
     "Situs": "225 WILSHIRE AVE , DALY CITY" ,
-    "Legal Description": "Legal PM 85/25-260",
+    "Legal Description": "Legal PM 85/25-260"
           
   },
   "DataToPerformBrandNewParcelMappingActionWithSitusData": {
     "Action": "Brand New Parcel",
     "Reason code": "PM 85/25-26",
+    "First non-Condo Parcel Number": "123456789",
     "Comments": "Perform Brand New Parcel mapping",
+<<<<<<< HEAD
      "First non-Condo Parcel Number": "123456789",
      "City Name": "ATHERTON",
      "Situs City Description": "ATHERTON",
     "Situs City Code": "AT",
     "Situs City Name": "ATHERTON",
+=======
+      "Situs City Description": "Daly City",
+    "Situs City Code": "DC",    
+    "City Name": "DALY CITY",
+>>>>>>> 8a08e710190f961b77b631c606d877537f51889a
     "Direction": "West Coast",
     "Situs Number": "69",
     "Situs Street Name": "CLIFFSIDE",
     "Situs Type": "ALLEE",
     "Situs Unit Number": "56",
-          
+    "TRA":"0010009",
+    "PUC": "01-SINGLE FAMILY RES"
   }
 }

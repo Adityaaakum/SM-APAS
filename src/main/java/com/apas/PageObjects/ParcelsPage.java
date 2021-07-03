@@ -53,7 +53,8 @@ public class ParcelsPage extends ApasGenericPage {
 	public String statusDropDown = "Status";
 	public String bppAccountDropDown = "BPP Account";
 	public String ownershipStartTextBox = "Ownership Start Date";
-	
+	public String createNewParcelButton="New";
+	public String editParcelButton="Edit";
 
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;

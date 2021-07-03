@@ -18,7 +18,11 @@
   "DataToCreateWorkItemOfTypeDisableveterans": {
     "Work Item Type": "Disabled Veterans",
     "Actions": "Direct Review and Update",
+<<<<<<< HEAD
     "Audit Trail": "No"
+=======
+    "Audit Trail": "No",
+>>>>>>> 8a08e710190f961b77b631c606d877537f51889a
     "Reference": "test WI",
     "Description": "Creation of work item",
     "Priority": "Urgent",
@@ -101,8 +105,8 @@
     "Work Item Routing": "Give Work Item to Default Work Pool"
   },
   "DataToCreateWorkItemOfTypeParcelManagement": {
-    "Work Item Type": "Parcel Management",
-    "Actions": "Create New Parcel",
+    "Work Item Type": "Mapping",
+    "Actions": "Perform Other Mapping Work",
     "Audit Trail": "No",
     "Reference": "Test WI",
     "Description": "Creation of work item",

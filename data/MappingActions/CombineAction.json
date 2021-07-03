@@ -14,14 +14,20 @@
     "Reason code": "Test WI",
     "Comments": "Perform Combine Mapping Action",
     "Situs City Description": "Daly City",
+<<<<<<< HEAD
     "Situs City Code": "DC",
     "Situs City Name": "DALY CITY",
+=======
+    "Situs City Code": "DC",    
+>>>>>>> 8a08e710190f961b77b631c606d877537f51889a
     "City Name": "DALY CITY",
     "Direction": "West Coast",
     "Situs Number": "69",
     "Situs Street Name": "CLIFFSIDE",
     "Situs Type": "ALLEE",
-    "Situs Unit Number": "56"
+    "Situs Unit Number": "56",
+    "TRA":"0010009",
+    "PUC": "01-SINGLE FAMILY RES"
 },
 
  "DataToCreateOwnershipRecord": {
