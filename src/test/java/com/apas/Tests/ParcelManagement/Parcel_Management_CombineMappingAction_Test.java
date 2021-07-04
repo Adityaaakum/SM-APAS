@@ -463,7 +463,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.actionDropDownLabel);
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapCombineMappingData.get("Action"));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with a parcel combine action, the parent APN(s) must have the same ownership and ownership allocation",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with a parcel combine action, the parent APN(s) must have the same ownership and ownership allocation.",
 				"SMAB-T2356: Validate that user is able to view Warning message");
 
 		//Step 6: Validate that user is not able to move to the next screen
@@ -471,7 +471,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with a parcel combine action, the parent APN(s) must have the same ownership and ownership allocation",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- Warning: TRAs of the combined parcels are different\n- In order to proceed with a parcel combine action, the parent APN(s) must have the same ownership and ownership allocation.",
 				"SMAB-T2356: Validate that user is able to view Warning message");
 
 		// Step 7: Update the Parent APN field and add another parcel with no ownership record
@@ -480,7 +480,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithOneWithNoOwnership);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with a parcel combine action, the parent APN(s) must have the same ownership and ownership allocation",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with a parcel combine action, the parent APN(s) must have the same ownership and ownership allocation.",
 				"SMAB-T2356: Validate that user is able to view error message related to ownership record");						
 
 		//Step 8: Validate that user is not able to move to the next screen
@@ -488,7 +488,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
-		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with a parcel combine action, the parent APN(s) must have the same ownership and ownership allocation",
+		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- In order to proceed with a parcel combine action, the parent APN(s) must have the same ownership and ownership allocation.",
 				"SMAB-T2356: Validate that user is able to view error message related to ownership record");										
 
 		// Step 9: Update the Parent APN field and add another parcel with same ownership record
@@ -513,15 +513,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The APN provided already exists in the system"),
 				"SMAB-T2358: Validate that User is able to view error message if APN (Active) already exist : The APN provided already exists in the system");
-		
-		//Step 12 :Overwrite parcel value with retired parcel# and Click Combine parcel button
-		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,retiredAPNValue);
-		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
-		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + retiredAPNValue);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The APN provided already exists in the system"),
-				"SMAB-T2358: Validate that following error message is displayed for Retired Parcel : The APN provided already exists in the system");
-		
+
 		//Step 13 :Overwrite parcel value with interim parcel# and Click Combine parcel button
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,interimAPN);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
