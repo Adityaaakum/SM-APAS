@@ -367,15 +367,10 @@ public class MappingPage extends ApasGenericPage {
      }
     
      public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner(int numberofRecords) throws Exception {
-
-     	String queryActiveAPNValue = "SELECT Name, Id from parcel__c "
-     			+ "where Id NOT in (Select parcel__c FROM Property_Ownership__c) "
-     			+ "and (Not Name like '%990') "
-     			+ "and (Not Name like '134%') "
-     			+ "and (Not Name like '100%') "
-     			+ "and (Not Name like '800%') "
-     			+ "and Status__c = 'Active' Limit " + numberofRecords;
-     	
+        
+    	 String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and (Not Name like '800%') "
+    	 		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
+    	 		+ "and Status__c = 'Active' Limit " + numberofRecords;   	    
      	return objSalesforceAPI.select(queryActiveAPNValue);
      }
      
