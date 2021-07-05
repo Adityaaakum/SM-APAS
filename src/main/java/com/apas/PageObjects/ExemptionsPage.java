@@ -400,7 +400,7 @@ public class ExemptionsPage extends ApasGenericPage {
 
     public String createNewExemption(Map<String, String> newExemptionData) throws Exception {
 
-    	//Click(exemptionRecordTypeNextButton);
+    	Click(exemptionRecordTypeNextButton);
         ReportLogger.INFO("Entering/Selecting values for New Exemption record");
         searchAndSelectOptionFromDropDown("APN", fetchActiveAPN());
         objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
