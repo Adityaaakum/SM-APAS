@@ -12,7 +12,6 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
-import com.apas.PageObjects.EFileImportLogsPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
@@ -37,7 +36,6 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	MappingPage objMappingPage;
 	JSONObject jsonObject= new JSONObject();
 	String apnPrefix=new String();
-	EFileImportLogsPage objEFileImport;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -771,19 +769,15 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn = responseAPNDetails.get("Name").get(0);
 
-		//  Neighborhood value
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
-		//  TRA value
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 
-		// PUC value
 		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select(
 				"SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
 
-		// Primary situs value
 		String primarySitusValue = salesforceAPI.select(
 				"SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='" + apn
 						+ "')")
@@ -818,8 +812,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		// Step 3: Creating Manual work item for the Parcel
 		String workItem = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
-		// Step 4:Clicking the details tab for the work item newly created and clicking
-		// on Related Action Link
+		// Step 4:Clicking the details tab for the work item newly created and clicking on Related Action Link
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
@@ -865,8 +858,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0), "In Progress - New Parcel",
 				"SMAB-T2574: Verify Status of Child Parcel: " + gridDataHashMap.get("APN").get(0));
 
-		// Step 10: Verify Neighborhood Code value is inherited from Parent to Child
-		// Parcels
+		// Step 10: Verify Neighborhood Code value is inherited from Parent to Child Parcels
 		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objParcelsPage
 				.fetchFieldValueOfParcel("Neighborhood_Reference__c", apn);
 		HashMap<String, ArrayList<String>> childAPN1NeighborhoodCode = objParcelsPage
@@ -900,7 +892,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		objMappingPage.logout();
 		Thread.sleep(4000);
 
-		// Step 14: login as mapping supervisor
+		// Step 14: Login as mapping supervisor
 		objWorkItemHomePage.login(users.MAPPING_SUPERVISOR);
 		objMappingPage.globalSearchRecords(workItem);
 
@@ -928,7 +920,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0), "Active",
 				"SMAB-T2577: Verify Status of Child Parcel: " + gridDataHashMap.get("APN").get(0));
 
-		// Step : switch to parent window and logout
+		// Step 18 : Switch to parent window and logout
 		driver.switchTo().window(parentWindow);
 		objMappingPage.logout();
 	}
