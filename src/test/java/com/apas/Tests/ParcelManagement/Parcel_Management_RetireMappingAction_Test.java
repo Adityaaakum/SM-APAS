@@ -366,7 +366,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 
 	}
 
-	@Test(description = "SMAB-T2716:Parcel Management- Verify that User is able to perform retire action Return to Custom Screen after performing  a \"retire\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2833:Parcel Management- Verify that User is able to perform retire action from mapping actions tab for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_Retire_MappingAction_IndependentMappingAction(String loginUser) throws Exception {
 
@@ -379,7 +379,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		Map<String, String> hashMapRetireeMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformRetireAction");
 				
-		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
+		// Step1: Login to the APAS application using the credentials passed through dataprovider (MAPPING_STAFF User)
 		objMappingPage.login(loginUser);
 		Thread.sleep(7000);
 		objMappingPage.closeDefaultOpenTabs();
