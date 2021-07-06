@@ -840,7 +840,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 
 				objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelRelationshipsTabLabel);
 				softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(apn)),
-						"SMAB-T2574: Verify Parent Parcel: " + apn
+						"SMAB-T2575: Verify Parent Parcel: " + apn
 								+ " is visible under Source Parcel Relationships section");
 				driver.navigate().back();
 			} catch (Exception e) {
