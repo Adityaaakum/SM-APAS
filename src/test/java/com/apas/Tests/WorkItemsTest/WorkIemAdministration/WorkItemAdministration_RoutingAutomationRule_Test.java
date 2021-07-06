@@ -83,32 +83,32 @@ public class WorkItemAdministration_RoutingAutomationRule_Test extends TestBase 
         
         String queryWPName = "SELECT Name FROM Work_Pool__c where id = '"+workPoolId+"'";
         workPoolName = salesforceAPI.select(queryWPName).get("Name").get(0);
-        		
-        		
-        String query_3 = "SELECT ID FROM Parcel__c where  status__c = 'Active' and neighborhood_reference__r.name='"+neighborhoodName+"'";
+        		        		        
+        String query_3 = "SELECT ID FROM Parcel__c where  status__c = 'Active'";
         HashMap<String, ArrayList<String>> response_3 = salesforceAPI.select(query_3);   
         parcelID = response_3.get("Id").get(0);
-           
-    	
-    	//Step1: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
+        
+        //Update the NB code
+        salesforceAPI.update("Parcel__c", parcelID, "Neighborhood_Reference__c",neighborhoodID);        	
+        
+        String workItemCreationData=testdata.MANUAL_WORK_ITEMS; 
+		Map<String, String> hashMapmanualWorkItemData =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeDisableveterans");		
+        
+		//Step1: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objWorkItemHomePage.login(loginUser);
         
         String parcelURL = envURL+"/lightning/r/Parcel__c/"+parcelID+"/view";
         
         //Navigate to Parcel view page
         driver.get(parcelURL);
-        
-        String workItemCreationData=testdata.MANUAL_WORK_ITEMS; 
-		Map<String, String> hashMapmanualWorkItemData =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeDisableveterans");		
-
 		// Step 2: Opening the PARCELS page and searching a parcel		
 		String workItemNumber =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 		
-		boolean flag;
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+        objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+        String actualWorkPoolName=objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information");        	
 		
-		flag = objWorkItemHomePage.verifyWorkPoolName(workPoolName);
-		
-		softAssert.assertTrue(flag, "SMAB-T2135: WIC with Roll Code SEC successfully routed to the 1st matched "
+		softAssert.assertEquals(actualWorkPoolName, workPoolName,"SMAB-T2135: WIC with Roll Code SEC successfully routed to the 1st matched "
 				                     + "Neighborhood Code of the related Parcel to assign the Work Pool '"+workPoolName+"' to the Work Item : "+workItemNumber);       
                 
     }
@@ -140,6 +140,8 @@ public class WorkItemAdministration_RoutingAutomationRule_Test extends TestBase 
         String query_2 = "SELECT Neighborhood__c ,Work_Pool__c FROM Routing_Assignment__c "
         		+ "where configuration__c= '"+ workItemConfigID +"'";
         
+        //this code snippet is to fetch the Name from embedded JSON object in an Array in the
+        //in the response using relationship query
 		/*
 		 * String jsonResponse = salesforceAPI.getSelectQueryDateInJson(query_2);
 		 * JSONObject jsonObject = new JSONObject(jsonResponse); JSONArray jsonArray =
@@ -161,31 +163,29 @@ public class WorkItemAdministration_RoutingAutomationRule_Test extends TestBase 
         String query_3 = "SELECT Id FROM Parcel__c where  status__c = 'Active' and "
         		+ "neighborhood_reference__r.name != '"+neighborhoodName+"' limit 1 ";
         
-        parcelID = salesforceAPI.select(query_3).get("Id").get(0);
-           
-    	
-    	//Step1: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
+        parcelID = salesforceAPI.select(query_3).get("Id").get(0);              
+    	 
+        String workItemCreationData=testdata.MANUAL_WORK_ITEMS; 
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeDisableveterans");
+		
+		//Step1: Login to the APAS application using the credentials passed through data provider (BPP Business Admin)
         objWorkItemHomePage.login(loginUser);        
         
         String parcelURL = envURL+"/lightning/r/Parcel__c/"+parcelID+"/view";
         
         //Navigate to Parcel view page
         driver.get(parcelURL);
-        Thread.sleep(2000);
-        
-        String workItemCreationData=testdata.MANUAL_WORK_ITEMS; 
-		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfTypeDisableveterans");
-		
-		// Step 2: Opening the PARCELS page and searching a parcel		
+       
+        // Step 2: Opening the PARCELS page and searching a parcel		
 		String workItemNumber =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 		
 		String rpLostWorkPoolName = "RP Lost in Routing";
 		
-		boolean flag;
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+        objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+        String actualWorkPoolName=objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information");
 		
-		flag = objWorkItemHomePage.verifyWorkPoolName(rpLostWorkPoolName);
-		
-		softAssert.assertTrue(flag, "SMAB-T2136: WIC with Roll Code SEC successfully routed to the un-matched "
+		softAssert.assertEquals(actualWorkPoolName, rpLostWorkPoolName,"SMAB-T2136: WIC with Roll Code SEC successfully routed to the un-matched "
 				                     + "Neighborhood Code of the related Parcel to assign the Work Pool '"+rpLostWorkPoolName+"' to the Work Item: "+workItemNumber);       
                 
     }

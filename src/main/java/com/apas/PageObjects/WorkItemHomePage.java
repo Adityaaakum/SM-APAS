@@ -771,13 +771,13 @@ public class WorkItemHomePage extends ApasGenericPage {
 		}
 	}
 	
-	public boolean verifyWorkPoolName(String workPoolName) {
-		
-		boolean flag;
-		String xpath = "//div/a/span[text()='"+workPoolName+"']";
-		flag = objPageObj.verifyElementExists(xpath);
-		
-		return flag;
-	}
+	/*
+	 * public boolean verifyWorkPoolName(String workPoolName) {
+	 * 
+	 * boolean flag; String xpath = "//div/a/span[text()='"+workPoolName+"']"; flag
+	 * = objPageObj.verifyElementExists(xpath);
+	 * 
+	 * return flag; }
+	 */
 
 }
