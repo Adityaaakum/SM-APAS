@@ -510,7 +510,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 			String moduleURL = envURL + utl.getValueOf(modobj, moduleToSearch.trim());
 			navigateTo(driver,moduleURL);
 			Thread.sleep(4000);
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Navigating directly to - " + moduleURL);
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Navigating directly to - " + moduleToSearch);
 		}
 	}
 	

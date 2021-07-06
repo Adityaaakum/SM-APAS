@@ -781,7 +781,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2357,SMAB-T2373,SMAB-T2376,SMAB-T2443,SMAB-2567: Verify user is able to combine as many number of parcels into one and attributes are inherited in the child parcel from the parent parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2357,SMAB-T2373,SMAB-T2376,SMAB-T2443,SMAB-2567,SMAB-2812: Verify user is able to combine as many number of parcels into one and attributes are inherited in the child parcel from the parent parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyParcelCombineMappingAction(String loginUser) throws Exception {
 		
@@ -1030,7 +1030,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 			objParcelsPage.openParcelRelatedTab("Parcel Relationships");
 			HashMap<String, ArrayList<String>> tableDataHashMap1 = objParcelsPage.getParcelTableDataInHashMap("Target Parcel Relationships");
 			softAssert.assertEquals(tableDataHashMap1.get("Target Parcel").get(0),childAPNNumber,
-					"SMAB-T2373: Validate that the Child parcel appears in Parcel Relationship tab");
+					"SMAB-T2812: Validate that the Child parcel appears in Parcel Relationship tab");
     	}
     	catch(Exception e) {
     		ReportLogger.INFO("Fail to validate the parcel status and relationship : "+e);
@@ -1090,7 +1090,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(childAPNNumber);
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"Active",
-				"SMAB-T2373: Validate the status of child parcel generated");
+				"SMAB-T2373,SMAB-T2376: Validate the status of child parcel generated");
 		
 		apnValue.forEach((parcelKey, parcel) -> {
 			try {
