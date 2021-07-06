@@ -17,6 +17,7 @@ import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
@@ -363,6 +364,64 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 				
 		objMappingPage.logout();
 
+	}
+
+	@Test(description = "SMAB-T2716:Parcel Management- Verify that User is able to perform retire action Return to Custom Screen after performing  a \"retire\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression","ParcelManagement" })
+	public void ParcelManagement_Retire_MappingAction_IndependentMappingAction(String loginUser) throws Exception {
+
+		//Fetching Active General parcel 
+		String queryAPN1 = "Select Name, ID From Parcel__c where name like '0%' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Status__c='Active' limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails1 = salesforceAPI.select(queryAPN1);
+		String apn=responseAPNDetails1.get("Name").get(0);
+		
+		String mappingActionCreationData = testdata.RETIRE_ACTION;
+		Map<String, String> hashMapRetireeMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformRetireAction");
+				
+		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
+		objMappingPage.login(loginUser);
+		Thread.sleep(7000);
+		objMappingPage.closeDefaultOpenTabs();
+
+		// Step2: Opening the PARCELS page  and searching the  parcel 
+		objMappingPage.searchModule("APAS");
+		objMappingPage.searchModule("Mapping Action");
+		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
+
+		//Step 3: Selecting Action as 'perform parcel retire' 
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apn);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapRetireeMappingData.get("Action"));
+
+		//Step 4: filling all fields in mapping action screen
+		objMappingPage.enter(objMappingPage.commentsTextBoxLabel, hashMapRetireeMappingData.get("Comments"));
+		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel), "For Testing");
+	
+		//Step 5: Click retire Parcel Button
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
+		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel(s) "+apn+" have been successfully retired!",
+				"SMAB-T2833: Validate that User is able to perform Retire action from mapping actions tab");
+		
+		//Step 6: Navigating  to the independent mapping action WI that would have been created after performing retire action 
+		String workItemId= objWorkItemHomePage.getWorkItemIDFromParcelOnWorkbench(apn);
+		String query = "SELECT Name FROM Work_Item__c where id = '"+ workItemId + "'";
+		HashMap<String, ArrayList<String>> responseDetails = salesforceAPI.select(query);
+		String workItem=responseDetails.get("Name").get(0);
+		
+		objMappingPage.globalSearchRecords(workItem);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Type","Information"), "Mapping",
+				"SMAB-T2833: Validation that  A new WI of type Mapping is created after performing retire from mapping action tab");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Action","Information"), "Independent Mapping Action",
+				"SMAB-T2833: Validation that  A new WI of action Independent Mapping Action is created after performing retire from mapping action tab");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Date", "Information"),DateUtil.removeZeroInMonthAndDay(DateUtil.getCurrentDate("MM/dd/yyyy")), "SMAB-T2831: Validation that 'Date' fields is equal to date when this WI was created");
+	
+		objWorkItemHomePage.logout();
 	}
 
 }
