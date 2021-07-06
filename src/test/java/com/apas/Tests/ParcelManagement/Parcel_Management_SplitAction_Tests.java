@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Parcel_Management_SplitAction_Tests extends TestBase implements testdata, modules, users {
-	private RemoteWebDriver driver;
+	  private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
 	WorkItemHomePage objWorkItemHomePage;
