@@ -1227,7 +1227,11 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 
 	public String fetchInterimAPN() throws Exception {
  
-	  String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Id NOT in (Select parcel__c FROM Property_Ownership__c) AND Status__c='Active' limit 1";
+	  String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' "
+	  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
+	  		+ "AND Id NOT in (Select parcel__c FROM Property_Ownership__c) "
+	  		+ "AND Status__c='Active' limit 1";
+
 	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
 	}
  
