@@ -869,7 +869,6 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		
 		//Step 11: Validation that child parcel primary situs is inherited from parent parcel		
 		 String childPrimarySitusValue=objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus, "Parcel Information");
-				 salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ gridDataHashMap.get("APN").get(0) +"')").get("Name").get(0);
 		 softAssert.assertEquals(primarySitusValue.replaceFirst("\\s", ""),childPrimarySitusValue,
 				"SMAB-T2513: Validation that primary situs of child parcel is same as primary sitrus of parent parcel");
 		
