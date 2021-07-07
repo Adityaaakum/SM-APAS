@@ -773,5 +773,14 @@ public class WorkItemHomePage extends ApasGenericPage {
 			Thread.sleep(3000);
 		}
 	}
+	
+	/*
+	 * public boolean verifyWorkPoolName(String workPoolName) {
+	 * 
+	 * boolean flag; String xpath = "//div/a/span[text()='"+workPoolName+"']"; flag
+	 * = objPageObj.verifyElementExists(xpath);
+	 * 
+	 * return flag; }
+	 */
 
 }
