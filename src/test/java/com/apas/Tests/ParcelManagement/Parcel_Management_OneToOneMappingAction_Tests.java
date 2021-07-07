@@ -53,7 +53,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2655,SMAB-T2482,SMAB-T2488,SMAB-T2486,SMAB-T2481:Verify that User is able to perform a \"One to One\" mapping action for a Parcel (Active) of type Non Condo from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2655,SMAB-T2482,SMAB-T2488,SMAB-T2486,SMAB-T2481:Verify that User is able to perform a \"One to One\" mapping action for a Parcel (Active) of type Non Condo from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyOneToOneMappingActionNonCondoParcel(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
@@ -83,7 +83,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
-				"DataToCreateWorkItemOfTypeParcelManagement");
+				"DataToCreateWorkItemOfTypeMappingWithActionCustomerRequestCombine");
 
 		String mappingActionCreationData =  testdata.ONE_TO_ONE_MAPPING_ACTION;
 		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
@@ -103,6 +103,22 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
 		String reasonCode=objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
+		
+		//validating related action
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Related Action", "Information"),
+						hashMapmanualWorkItemData.get("Actions"),"SMAB-T3494-Verify that the Related Action"
+								+ "label should match the Actions labels while creating WI and it should"
+								+ "open mapping screen on clicking Perform Customer Request Combine");
+				
+		//validating Event Id in Work item screen of Action type
+		String eventIDValue = objWorkItemHomePage.getFieldValueFromAPAS("Event ID", "Information");
+		softAssert.assertEquals(eventIDValue.contains("CRC"),
+						true,"SMAB-T3496-Verify that the Event ID based on the mapping should be"
+								+ "created and populated on the Work item record.");
+				
+		softAssert.assertTrue(!objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.editEventIdButton),
+						"SMAB-T3496-This field should not be editable.");
+				
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();	
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -188,6 +204,17 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		softAssert.assertEquals(primarySitusValue,childPrimarySitusValue,
 				"SMAB-T2655: Validation that primary situs of child parcel is same as primary sitrus of parent parcel");
 		driver.switchTo().window(parentWindow);
+		
+		//validate that The "Return " functionality for parcel mgmt activities should work for all these work items.
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		parentWindow = driver.getWindowHandle();	
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		softAssert.assertEquals(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName).getText(),"Update Parcel(s)",
+				"SMAB-T3495-validate that The Return functionality for parcel mgmt activities should work for all these work items.");
+		driver.switchTo().window(parentWindow);
+		
 		objWorkItemHomePage.logout();
 
 	}

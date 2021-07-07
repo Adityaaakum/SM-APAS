@@ -51,7 +51,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @throws Exception
 	 */
 
-	@Test(description = "SMAB-T2663,SMAB-T2263,SMAB-T2521,SMAB-T2522,SMAB-T2537,SMAB-T2547:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel (Active) of type Non Condo from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2663,SMAB-T2263,SMAB-T2521,SMAB-T2522,SMAB-T2537,SMAB-T2547:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel (Active) of type Non Condo from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" },enabled= true)
 	public void ParcelManagement_VerifyBrandNewParcelMappingActionNonCondoParcel(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
@@ -81,6 +81,24 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		String reasonCode=objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
 		//Step 5: Validation that work pool should be 'Mapping' on parent parcel work item
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping","SMAB-T2263: Validation that work pool should be 'Mapping' on parent parcel work item");
+		
+		//validating related action
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Related Action", "Information"),
+				hashMapmanualWorkItemData.get("Actions"),"SMAB-T3494-Verify that the Related Action"
+						+ " label should match the Actions labels while creating WI and it should"
+						+ " open mapping screen on clicking-Perform Other Mapping Work ");
+		
+		//validating Event Id in Work item screen of Action type
+		String eventIDValue = objWorkItemHomePage.getFieldValueFromAPAS("Event ID", "Information");
+		softAssert.assertEquals(eventIDValue.contains("Alpha"),
+				true,"SMAB-T3496-Verify that the Event ID based on the mapping should be"
+						+ " created and populated on the Work item record.");
+				
+
+		softAssert.assertTrue(!objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.editEventIdButton),
+				"SMAB-T3496-This field should not be editable.");
+
+		
 
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();	
@@ -99,6 +117,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 
 		//Step 8: entering data in form for Brand New Parcel mapping
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
+		
+		Thread.sleep(1000);
 
 		//Step 10: Validating warning message on second screen
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageSecondScreen),
@@ -126,6 +146,18 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		softAssert.assertTrue(childPrimarySitusValue.isEmpty(),
 				"SMAB-T2663: Validation that primary situs of child parcel is blank as situs was not updated in first screen ");
 		driver.switchTo().window(parentWindow);
+		
+		//validate that The "Return " functionality for parcel mgmt activities should work for all these work items.
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		parentWindow = driver.getWindowHandle();	
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		softAssert.assertEquals(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName).getText(),"Update Parcel(s)",
+				"SMAB-T3495-validate that The Return functionality for parcel mgmt activities should work for all these work items.");
+		driver.switchTo().window(parentWindow);
+
+
 		objWorkItemHomePage.logout();
 
 	}

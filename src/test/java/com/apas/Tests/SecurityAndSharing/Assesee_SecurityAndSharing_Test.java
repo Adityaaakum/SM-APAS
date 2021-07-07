@@ -53,7 +53,7 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 
 	@Test(description = "SMAB-T2991:Verify user is able to create, edit and update the Assessee records", groups = {
 			"Assessees",
-			"Regression" }, dataProvider = "loginCIOuser", dataProviderClass = DataProviders.class, alwaysRun = true)
+			"Regression" }, dataProvider = "loginCIOSupervisor", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void Assessee_VerifyCreateEditUpdateAssesseeRecords(String loginUser) throws Exception {
 
 		String asseseeCreationData = testdata.ASSESEE_DATA;

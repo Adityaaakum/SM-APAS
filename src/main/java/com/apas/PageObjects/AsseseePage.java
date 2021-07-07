@@ -58,7 +58,7 @@ public class AsseseePage extends ApasGenericPage {
 	@FindBy(xpath = "//h2[contains(text(),'Edit Person Assessee')]")
 	public WebElement visibleEditpopUp;
 
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//forcegenerated-adg-rollup_component___force-generated__flexipage_-record-page___-account_-record_-page1___-account___-v-i-e-w//button[text()='Edit']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//button[text()='Edit']")
 	public WebElement editButton;
 
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]//span[text()='Type']/../following-sibling::div")
@@ -72,44 +72,14 @@ public class AsseseePage extends ApasGenericPage {
 		String email = dataMap.get("Email");
 		String careof = dataMap.get("Care Of");
 		String phone = dataMap.get("Phone");
-		WebElement fieldElement;
 
-		/*
-		 * 
-		 * if (firstName != null) enter(firstNameLabel, firstName); if (lastName !=
-		 * null) enter(lastNameLabel, lastName); if (ssn != null) enter(ssnLabel, ssn);
-		 * if (email != null) enter(emailLabel, email); if (careof != null)
-		 * enter(careOfLabel, careof); if (phone != null) enter(phoneLabel, phone);
-		 */
-
-		if (firstName != null) {
-			fieldElement = locateElement(getFieldXpath(firstNameLabel), 20);
-			enter(fieldElement, firstName);
-		}
-
-		if (lastName != null) {
-			fieldElement = locateElement(getFieldXpath(lastNameLabel), 20);
-			enter(fieldElement, lastName);
-		}
-
-		if (ssn != null) {
-			fieldElement = locateElement(getFieldXpath(ssnLabel), 20);
-			enter(fieldElement, ssn);
-		}
-
-		if (email != null) {
-			fieldElement = locateElement(getFieldXpath(emailLabel), 20);
-			enter(fieldElement, email);
-		}
-
-		if (careof != null) {
-			fieldElement = locateElement(getFieldXpath(careOfLabel), 20);
-			enter(fieldElement, careof);
-		}
-		if (phone != null) {
-			fieldElement = locateElement(getFieldXpath(phoneLabel), 20);
-			enter(fieldElement, phone);
-		}
+		enter(firstNameLabel, firstName);
+		enter(lastNameLabel, lastName);
+		enter(ssnLabel, ssn);
+		enter(emailLabel, email);
+		enter(careOfLabel, careof);
+		enter(phoneLabel, phone);
+		
 		Click(getButtonWithText(saveButton));
 
 	}
@@ -118,7 +88,6 @@ public class AsseseePage extends ApasGenericPage {
 
 		String firstName = dataMap.get("First Name");
 		String lastName = dataMap.get("Last Name or Name");
-		String ssn = dataMap.get("SSN");
 		String email = dataMap.get("Email");
 		String careof = dataMap.get("Care Of");
 		String phone = dataMap.get("Phone");
@@ -128,35 +97,16 @@ public class AsseseePage extends ApasGenericPage {
 		Click(agencyRadioButton);
 		Click(getButtonWithText(nextButton));
 
-		if (firstName != null) {
-			fieldElement = locateElement(getFieldXpath(firstNameLabel), 20);
-			enter(fieldElement, firstName);
-		}
+		enter(firstNameLabel, firstName);
+		enter(lastNameLabel, lastName);
+		enter(emailLabel, email);
+		enter(careOfLabel, careof);
+		enter(phoneLabel, phone);
 
-		if (lastName != null) {
-			fieldElement = locateElement(getFieldXpath(lastNameLabel), 20);
-			enter(fieldElement, lastName);
-		}
+		String fieldXpath = "//span[text()='" + typeDropdownLabel + "']/../following-sibling::div//a";
+		fieldElement = locateElement(fieldXpath, 20);
+		selectOptionFromDropDown(fieldElement, type);
 
-		if (email != null) {
-			fieldElement = locateElement(getFieldXpath(emailLabel), 20);
-			enter(fieldElement, email);
-		}
-
-		if (careof != null) {
-			fieldElement = locateElement(getFieldXpath(careOfLabel), 20);
-			enter(fieldElement, careof);
-		}
-		if (phone != null) {
-			fieldElement = locateElement(getFieldXpath(phoneLabel), 20);
-			enter(fieldElement, phone);
-		}
-		if (type != null) {
-			getFieldXpath(typeDropdownLabel);
-			String fieldXpath = "//span[text()='" + typeDropdownLabel + "']/../following-sibling::div//a";
-			fieldElement = locateElement(fieldXpath, 20);
-			selectOptionFromDropDown(fieldElement, type);
-		}
 		// selectOptionFromDropDown(typeDropdownLabel, type);
 		Click(getButtonWithText(saveButton));
 
@@ -164,24 +114,11 @@ public class AsseseePage extends ApasGenericPage {
 
 	public String updatewAssesee(String careofValue) throws Exception {
 
-		WebElement fieldElement;
-		if (careofValue != null) {
-			fieldElement = locateElement(getFieldXpath(careOfLabel), 20);
-			enter(fieldElement, careofValue);
-		}
+		enter(careOfLabel, careofValue);
 		Click(getButtonWithText(saveButton));
-
 		return careofValue;
 
 	}
 
-	public String getFieldXpath(String label) {
-		String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]";
-
-		String fieldXpath = commonPath + "//span[text()=\"" + label + "\"]/../following-sibling::input";
-
-		return fieldXpath;
-
-	}
 
 }

@@ -383,7 +383,7 @@ public class DataProviders {
         };
     }
     
-    @DataProvider(name = "loginCIOuser")
+    @DataProvider(name = "loginCIOSupervisor")
     public Object[][] dpCIOStaffUser() {
         return new Object[][] { { users.CIO_SUPERVISOR } };
     }

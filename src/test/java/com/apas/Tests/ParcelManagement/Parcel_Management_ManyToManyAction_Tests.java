@@ -1171,7 +1171,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2683:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"ManyToMany\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2683:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"ManyToMany\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_ManyToManyMappingAction_WithPrimarySitusTRA(String loginUser) throws Exception {
 
@@ -1195,7 +1195,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
-				"DataToCreateWorkItemOfTypeParcelManagement");
+				"DataToCreateWorkItemOfTypeMappingWithActionMobileHomeRequest");
 
 		String mappingActionCreationData = testdata.MANY_TO_MANY_MAPPING_ACTION;
 		Map<String, String> hashMapManyToManyActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
@@ -1215,6 +1215,21 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
 		String reasonCode=objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
+		
+		// validating related action
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Related Action", "Information"),
+				hashMapmanualWorkItemData.get("Actions"),"SMAB-T3494-Verify that the Related Action"
+						+ "label should match the Actions labels while creating WI and it should"
+						+ "open mapping screen on clicking Perform Mobile Home Request");
+
+		// validating Event Id in Work item screen of Action type
+		String eventIDValue = objWorkItemHomePage.getFieldValueFromAPAS("Event ID", "Information");
+		softAssert.assertEquals(eventIDValue.contains("MH"), true,"SMAB-T3496-Verify that the Event ID based on the mapping should be"
+				+ "created and populated on the Work item record.");
+		
+		softAssert.assertTrue(!objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.editEventIdButton),
+				"SMAB-T3496-This field should not be editable.");				
+			
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -1250,6 +1265,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 			childAPNPUC=responsePUCDetailsChildAPN.get("Name").get(0);
 		
 		//Step 8: Navigating back to the WI that was created and clicking on related action link 
+		//validate that The "Return " functionality for parcel mgmt activities should work for all these work items.
 		driver.switchTo().window(parentWindow);
 		objMappingPage.globalSearchRecords(workItem);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -1258,6 +1274,8 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		objMappingPage.waitForElementToBeVisible(10, objMappingPage.updateParcelsButton);
+		softAssert.assertEquals(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName).getText(),"Update Parcel(s)",
+				"SMAB-T3495-validate that The Return functionality for parcel mgmt activities should work for all these work items.");
 
 		//Step 9: Validation that User is navigated to a screen with following fields:APN,Legal Description,Parcel Size(SQFT),TRA,Situs,Reason Code,District/Neighborhood,Use Code
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
