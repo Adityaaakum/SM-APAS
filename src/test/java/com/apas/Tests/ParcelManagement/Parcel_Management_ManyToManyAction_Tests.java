@@ -708,7 +708,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2730:Verify the Output validations for \"Many to Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2730,SMAB-T2903:Verify the Output validations for \"Many to Many\" mapping action and validation on lower APN value", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyCondoManyToManyMappingActionOutputValidations(String loginUser) throws Exception {
 
@@ -833,7 +833,13 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		int actualTotalParcels = gridDataHashMap.get("APN").size();
 		int expectedTotalParcels = Integer.parseInt(hashMapManyToManyActionValidMappingData.get("Number of Child Non-Condo Parcels"));
 		softAssert.assertEquals(actualTotalParcels,expectedTotalParcels,"SMAB-T2730: Verify total no of parcels getting generated");
-
+		
+		//Validate APNs generated are from same Map page and Map book as of lower APN
+		String nextGeneratedAPN1 = gridDataHashMap.get("APN").get(0);
+		String nextGeneratedAPN2 = gridDataHashMap.get("APN").get(actualTotalParcels-1);
+		softAssert.assertEquals(parentAPN.substring(0, 7),nextGeneratedAPN1.substring(0, 7),"SMAB-T2903: Verify that child parcel (first) generated is from same Map Page and Map Book as of Parent parcel");
+		softAssert.assertEquals(parentAPN.substring(0, 7),nextGeneratedAPN2.substring(0, 7),"SMAB-T2903: Verify that child parcel (last) generated is from same Map Page and Map Book as of Parent parcel");
+		
 		//Step 13: Click on APN generated and verify Source Relationship details
 		gridDataHashMap.get("APN").stream().forEach(parcel -> {
 			try {

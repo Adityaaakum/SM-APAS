@@ -31,7 +31,7 @@ public class RollYearSettingsPage extends ApasGenericPage {
 	
 	//Locators added for elements on Roll Year Settings screen
 
-	@FindBy(xpath = "//a[@title='New']/div[@title='New'][1]")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title='New']/div[@title='New'][1]")
 	public WebElement newRollYearButton;
 	
 	@FindBy(xpath = "//span[text()='Recently Viewed']")

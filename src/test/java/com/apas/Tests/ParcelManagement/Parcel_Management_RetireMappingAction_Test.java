@@ -56,7 +56,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 	public void ParcelManagement_VerifyErrorMessagesInRetireMappingAction(String loginUser) throws Exception {
 		
 		//Fetching parcel that is Retired 		
-		String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' limit 1";
+		String queryAPNValue = "select Name from Parcel__c where Status__c='Retired' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		String retiredAPNValue= response.get("Name").get(0);
 		
@@ -211,7 +211,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apn1);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
-		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel (s) have been successfully retired!",
+		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel (s) "+apn1+" have been successfully retired!",
 				"SMAB-T2455: Validate that User is able to perform Retire action for one active parcel");
 		
 		//Step 23: Validate that the status and PUC of the parcel is updated to Retired
@@ -316,7 +316,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		
 		ReportLogger.INFO("Perform the Retire action");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel (s) have been successfully retired!",
+		softAssert.assertContains(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"have been successfully retired!",
 				"SMAB-T2456: Validate that User is able to perform Retire action for more than one active parcels");
 		
 		//Step 7: Validate that the status and PUC of the parcels is updated to Retired
