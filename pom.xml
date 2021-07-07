@@ -220,7 +220,7 @@
 						
 						         <include>BuildingPermit_Manual_Test.java</include>
 						         <include>BuildingPermitEditTest.java</include>
-					    </includes> -->
+					    </includes> --> 
 						<groups>${testSuite}</groups>
 						<!-- <excludedGroups>${testGroupIgnore}</excludedGroups> -->
 						<!-- <suiteXmlFiles> <suiteXmlFile>testng.xml</suiteXmlFile> </suiteXmlFiles> -->
