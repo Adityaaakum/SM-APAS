@@ -757,10 +757,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 
 		softAssert.assertTrue(!objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.editEventIdButton),
 				"SMAB-T3496-This field should not be editable.");
-				
-=======
 
->>>>>>> pre-release
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);

@@ -97,7 +97,7 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 
 		objPage.waitForElementToBeVisible(objAsseseePage.visibleEditpopUp, 10);
 
-		String updatedValue = objAsseseePage.updatewAssesee("careOfUpdated");
+		String updatedValue = objAsseseePage.updateAssesee("careOfUpdated");
 		objAsseseePage.Click(objAsseseePage.detailsTab);
 		softAssert.assertEquals(updatedValue, objAsseseePage.getFieldValueFromAPAS("Care Of", ""),
 				"SMAB-T2991: Validate Assessee Care Of");
@@ -106,7 +106,7 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 
 	}
 
-	@Test(description = "SMAB-T2993:Verify user is not able to delete the Assessee records", groups = { "Assessees",
+	@Test(description = "SMAB-T2993:Verify user is not able to delete the Assessee records", groups = { "Assessee",
 			"Regression" }, dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void Assessee_VerifyUserCannotCreateorUpdateorDeleteAssesseeRecords(String loginUser) throws Exception {
 
@@ -138,7 +138,7 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 	}
 
 	@Test(description = "SMAB-T2991:Verify user is able to create, edit and update the Assessee records", groups = {
-			"Assessees",
+			"Assessee",
 			"Regression" }, dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void Assessee_VerifyCreateEditUpdateAgencyAssesseeRecords(String loginUser) throws Exception {
 
@@ -181,7 +181,7 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 
 		objPage.waitForElementToBeVisible(objAsseseePage.visibleEditpopUp, 10);
 
-		String updatedValue = objAsseseePage.updatewAssesee("careOfUpdated");
+		String updatedValue = objAsseseePage.updateAssesee("careOfUpdated");
 		objAsseseePage.Click(objAsseseePage.detailsTab);
 		softAssert.assertEquals(updatedValue, objAsseseePage.getFieldValueFromAPAS("Care Of", ""),
 				"SMAB-T2991: Validate Agency Care Of");

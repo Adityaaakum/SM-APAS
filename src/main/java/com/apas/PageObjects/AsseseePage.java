@@ -106,13 +106,11 @@ public class AsseseePage extends ApasGenericPage {
 		String fieldXpath = "//span[text()='" + typeDropdownLabel + "']/../following-sibling::div//a";
 		fieldElement = locateElement(fieldXpath, 20);
 		selectOptionFromDropDown(fieldElement, type);
-
-		// selectOptionFromDropDown(typeDropdownLabel, type);
 		Click(getButtonWithText(saveButton));
 
 	}
 
-	public String updatewAssesee(String careofValue) throws Exception {
+	public String updateAssesee(String careofValue) throws Exception {
 
 		enter(careOfLabel, careofValue);
 		Click(getButtonWithText(saveButton));
