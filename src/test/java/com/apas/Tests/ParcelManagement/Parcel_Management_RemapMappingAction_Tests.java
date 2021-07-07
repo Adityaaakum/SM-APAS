@@ -783,12 +783,12 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 						+ "')")
 				.get("Name").get(0);
 		String legalDescriptionValue = "Legal PM 85/25-260";
-		String districtValue = "District01";
+		String parentdistrictValue = "01";
 
 		jsonObject.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 		jsonObject.put("Status__c", "Active");
 		jsonObject.put("Short_Legal_Description__c", legalDescriptionValue);
-		jsonObject.put("District__c", districtValue);
+		jsonObject.put("District__c", parentdistrictValue);
 		jsonObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c", responseTRADetails.get("Id").get(0));
 
@@ -848,45 +848,42 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 						"Fail to validate Parent Parcel under Source Parcel Relationships section" + e);
 			}
 		});
+		
+	
+	
+		objMappingPage.waitUntilPageisReady(driver);
+		String Apn2= gridDataHashMap.get("APN").get(0);
+		objMappingPage.Click(objMappingPage.getButtonWithText(Apn2));
+		String Districtvalue = (objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelDistrictNeighborhood, "Summary Values"));
+		String[] a=Districtvalue.split("/");
+		String childDistrictValue =a[0];
 
-		// Step 9: Verify Status of Parent & Child Parcels before WI completion
-		HashMap<String, ArrayList<String>> parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c", apn);
-		HashMap<String, ArrayList<String>> childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",
-				gridDataHashMap.get("APN").get(0));
-		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0), "In Progress - To Be Expired",
-				"SMAB-T2574: Verify Status of Parent Parcel: " + apn);
-		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0), "In Progress - New Parcel",
-				"SMAB-T2574: Verify Status of Child Parcel: " + gridDataHashMap.get("APN").get(0));
-
-		// Step 10: Verify Neighborhood Code value is inherited from Parent to Child Parcels
-		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objParcelsPage
-				.fetchFieldValueOfParcel("Neighborhood_Reference__c", apn);
-		HashMap<String, ArrayList<String>> childAPN1NeighborhoodCode = objParcelsPage
-				.fetchFieldValueOfParcel("Neighborhood_Reference__c", gridDataHashMap.get("APN").get(0));
-		softAssert.assertEquals(parentAPNNeighborhoodCode.get("Name").get(0),
-				childAPN1NeighborhoodCode.get("Name").get(0),
+		// Step 9: Verify Neighborhood Code value is inherited from Parent to Child Parcels
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelDistrictNeighborhood, "Summary Values"),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2513: Verify District/Neighborhood Code of Child Parcel is inheritted from first Parent Parcel");
 
-		// Step 11: Verify TRA value is inherited from Parent to Child Parcels
-		HashMap<String, ArrayList<String>> parentAPNTRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c", apn);
-		HashMap<String, ArrayList<String>> childAPN1TRA = objParcelsPage.fetchFieldValueOfParcel("TRA__c",
-				gridDataHashMap.get("APN").get(0));
-		softAssert.assertEquals(parentAPNTRA.get("Name").get(0), childAPN1TRA.get("Name").get(0),
+		// Step 10: Verify TRA value is inherited from Parent to Child Parcels
+	
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelTRA, "Parcel Information"),responseTRADetails.get("Name").get(0),
 				"SMAB-T2513: Verify TRA of Child Parcel is inheritted from first Parent Parcel");
 		
-		//Step 12: Validation that child parcel primary situs is inherited from parent parcel		
-		 String childPrimarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ gridDataHashMap.get("APN").get(0) +"')").get("Name").get(0);
-		 softAssert.assertEquals(primarySitusValue,childPrimarySitusValue,
+		//Step 11: Validation that child parcel primary situs is inherited from parent parcel		
+		 String childPrimarySitusValue=objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus, "Parcel Information");
+				 salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ gridDataHashMap.get("APN").get(0) +"')").get("Name").get(0);
+		 softAssert.assertEquals(primarySitusValue.replaceFirst("\\s", ""),childPrimarySitusValue,
 				"SMAB-T2513: Validation that primary situs of child parcel is same as primary sitrus of parent parcel");
 		
-		// Step 13: Verify District value is inherited from Parent to Child Parcels
-		HashMap<String, ArrayList<String>> parentAPNDistrict = objParcelsPage.fetchFieldValueOfParcel("District__c",
-				apn);
-		HashMap<String, ArrayList<String>> childAPN1District = objParcelsPage.fetchFieldValueOfParcel("District__c",
-				gridDataHashMap.get("APN").get(0));
-		softAssert.assertEquals(parentAPNDistrict.get("District__c").get(0),
-				childAPN1District.get("District__c").get(0),
+		// Step 12: Verify District value is inherited from Parent to Child Parcels
+		softAssert.assertEquals(childDistrictValue,parentdistrictValue,
 				"SMAB-T2513: Verify District of Child Parcel is inheritted from first Parent Parcel");
+		
+		String childApnstatus= objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information");
+		objMappingPage.globalSearchRecords(apn);
+		// Step 13: Verify Status of Parent & Child Parcels before WI completion
+
+		        softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"In Progress - To Be Expired",						"SMAB-T2574: Verify Status of Parent Parcel: " + apn);
+				softAssert.assertEquals(childApnstatus, "In Progress - New Parcel",
+						"SMAB-T2574: Verify Status of Child Parcel: " + gridDataHashMap.get("APN").get(0));
 
 		driver.switchTo().window(parentWindow);
 		objMappingPage.logout();
@@ -913,11 +910,13 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
 
 		// Step 17: Verify Status of Parent & Child Parcels after WI completion
-		parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c", apn);
-		childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c", gridDataHashMap.get("APN").get(0));
-		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0), "Retired",
+		objMappingPage.globalSearchRecords(apn);
+		String parentAPN1Status = objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information");
+		objMappingPage.globalSearchRecords(gridDataHashMap.get("APN").get(0));
+		String childAPN1Status = objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information");
+		softAssert.assertEquals(parentAPN1Status, "Retired",
 				"SMAB-T2577: Verify Status of Parent Parcel: " + apn);
-		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0), "Active",
+		softAssert.assertEquals(childAPN1Status, "Active",
 				"SMAB-T2577: Verify Status of Child Parcel: " + gridDataHashMap.get("APN").get(0));
 
 		// Step 18 : Switch to parent window and logout
