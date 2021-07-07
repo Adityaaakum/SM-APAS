@@ -55,7 +55,22 @@ public class ParcelsPage extends ApasGenericPage {
 	public String ownershipStartTextBox = "Ownership Start Date";
 	public String createNewParcelButton="New";
 	public String editParcelButton="Edit";
-
+	
+	/** Added to identify fields, dropdowns for CIO functionality **/
+	public String exemptionTypeLabel="Exemption Type(s)";
+	public String exemptionLabel="Exemption";
+	public String exemptionRelatedTab="Exemptions";
+	public String saveParcelButton="Save";
+	public String recordTypeDropdown = "Record Type";
+	public String typeOfAuditTrailDropdown = "Type of Audit Trail Record?";
+	public String sourceDropdown = "Source";
+	public String dateOfValueInputTextBox = "Date of Value";
+	public String dateOfRecordingInputTextBox = "Date of Recording";
+	public String descriptionInputTextBox = "Description";
+	public String saveAndNextButton="Save and Next";
+	
+	
+	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
 
@@ -85,6 +100,12 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Next']")
 	public WebElement ownershipNextButton;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]//select[@name=\"Component_Action_Options\"]")
+	public WebElement selectOptionDropdown;
+	
+	@FindBy(xpath = "//a[starts-with(@title,\"RD-APN\")][@class='tabHeader slds-context-bar__label-action '][@aria-selected='true']//span[@class='title slds-truncate']")
+	public WebElement recordedDocumentApnGenerated;
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -302,5 +323,7 @@ public class ParcelsPage extends ApasGenericPage {
 			response = objSalesforceAPI.select(query);		
 			return response;
 		}
-
+		
+		
+		
 }
