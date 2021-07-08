@@ -508,8 +508,9 @@ public void searchModule(String moduleToSearch) throws Exception {
 			modulesObjectName modobj = new modulesObjectName();
 			moduleToSearch = moduleToSearch.replaceAll("\\s+", "").replace("-", "");
 			String moduleURL = envURL + utl.getValueOf(modobj, moduleToSearch.trim());
-			navigateTo(driver,moduleURL);		
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Navigating directly" + moduleToSearch);
+			navigateTo(driver,moduleURL);
+			Thread.sleep(4000);
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Navigating directly to - " + moduleToSearch);
 		}
 	}
 	
@@ -1193,7 +1194,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 
   public String fetchInProgressAPN() throws Exception {
       
-	  String queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' limit 1";
+	  String queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
       HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryAPNValue);
 	  String inProgressAPNValue = "";
 		 if(!response.isEmpty())
@@ -1225,9 +1226,11 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 */
 
 	public String fetchInterimAPN() throws Exception {
-		String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%'  "
-				+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
-				+ "AND Status__c='Active' limit 1";	  
+ 
+	  String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' "
+	  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
+	  		+ "AND Id NOT in (Select parcel__c FROM Property_Ownership__c) "
+	  		+ "AND Status__c='Active' limit 1";
 
 	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
 	}
