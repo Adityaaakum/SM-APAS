@@ -23,8 +23,33 @@ public class CIOTransferPage extends ApasGenericPage {
 
 	public String componentActionsButtonLabel = "Component Actions";
 	public String submitforApprovalButtonLabel = "Submit for Approval";
-	public String copyToMailToButtonLabel = "Copy to Mail To ";
+	public String copyToMailToButtonLabel = "Copy to Mail To";
 	public String calculateOwnershipButtonLabel  = "Calculate Ownership";
 	public String checkOriginalTransferListButtonLabel = "Check Original Transfer List";
+	public String backToWIsButtonLabel = "Back to WIs";
+	
+	@FindBy(xpath = "//div[contains(@class,'uiOutputRichText')]")
+	public WebElement confirmationMessageOnTranferScreen;
+	
+	@FindBy(xpath = "//div[@class='highlights slds-clearfix slds-page-header slds-page-header_record-home']//ul[@class='slds-button-group-list']//lightning-primitive-icon")
+	public WebElement quickActionButtonDropdownIcon;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Back']")
+	public WebElement quickActionOptionBack;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Approve']")
+	public WebElement quickActionOptionApprove;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Return']")
+	public WebElement quickActionOptionReturn;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Submit for Review']")
+	public WebElement quickActionOptionSubmitForReview;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Review Complete']")
+	public WebElement quickActionOptionReviewComplete;
+	
+	
+
 	  
 }

@@ -394,5 +394,8 @@ public class DataProviders {
             return new Object[][] { { users.MAPPING_STAFF}, { users.SYSTEM_ADMIN }, { users.MAPPING_SUPERVISOR } };
 
     }
-   
+    @DataProvider(name = "loginCIOStaffUser")
+    public Object[][] CIOStaffUser() {
+        return new Object[][] {{ users.CIO_STAFF }};
+    }
 }
