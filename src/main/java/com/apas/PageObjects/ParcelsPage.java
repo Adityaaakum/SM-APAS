@@ -55,7 +55,22 @@ public class ParcelsPage extends ApasGenericPage {
 	public String ownershipStartTextBox = "Ownership Start Date";
 	public String createNewParcelButton="New";
 	public String editParcelButton="Edit";
-
+	
+	/** Added to identify fields, dropdowns for CIO functionality **/
+	public String exemptionTypeLabel="Exemption Type(s)";
+	public String exemptionLabel="Exemption";
+	public String exemptionRelatedTab="Exemptions";
+	public String saveParcelButton="Save";
+	public String recordTypeDropdown = "Record Type";
+	public String typeOfAuditTrailDropdown = "Type of Audit Trail Record?";
+	public String sourceDropdown = "Source";
+	public String dateOfValueInputTextBox = "Date of Value";
+	public String dateOfRecordingInputTextBox = "Date of Recording";
+	public String descriptionInputTextBox = "Description";
+	public String saveAndNextButton="Save and Next";
+	
+	
+	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
 
@@ -85,6 +100,12 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Next']")
 	public WebElement ownershipNextButton;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]//select[@name=\"Component_Action_Options\"]")
+	public WebElement selectOptionDropdown;
+	
+	@FindBy(xpath = "//a[starts-with(@title,\"RD-APN\")][@class='tabHeader slds-context-bar__label-action '][@aria-selected='true']//span[@class='title slds-truncate']")
+	public WebElement recordedDocumentApnGenerated;
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -141,7 +162,7 @@ public class ParcelsPage extends ApasGenericPage {
 		if (dov != null) enter(dovInputTextBox, dov);
 		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
-		Thread.sleep(3000);
+		Thread.sleep(5000);
 
 		String workItemQuery = "SELECT Name FROM Work_Item__c where Description__c = '" + description + "' order by Name desc limit 1";
 		workItemNumber = objSalesforceAPI.select(workItemQuery).get("Name").get(0);
@@ -234,6 +255,32 @@ public class ParcelsPage extends ApasGenericPage {
 	 * @param dataMap: A data map which contains data to perform create Ownership record
 	 * @throws Exception
 	 */
+	public String createOwnershipRecord(String apn, String assesseeName, Map<String, String> dataMap) throws Exception {	
+		globalSearchRecords(apn);
+        openParcelRelatedTab(ownershipTabLabel);
+        Thread.sleep(1000);
+        
+		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");        
+		String owner = assesseeName;
+		String type = dataMap.get("Type");
+		String status = dataMap.get("Status");
+		String bppAccount = dataMap.get("BPP Account");
+		String ownershipStartDate = dataMap.get("Ownership Start Date");
+		
+		createRecord();
+		Click(ownershipNextButton);
+		searchAndSelectOptionFromDropDown(ownerDropDown, owner);
+		selectOptionFromDropDown(typeDropDown, type);
+		selectOptionFromDropDown(statusDropDown, status);
+		if (ownershipStartDate != null)
+			enter(ownershipStartTextBox, ownershipStartDate);
+		if (bppAccount != null)
+			searchAndSelectOptionFromDropDown(bppAccountDropDown, bppAccount);
+		
+		String successMsg = saveRecord();
+		return successMsg;
+	}
+	
 	public String createOwnershipRecord(String assesseeName, Map<String, String> dataMap) throws Exception {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");        
 		String owner = assesseeName;
@@ -276,5 +323,7 @@ public class ParcelsPage extends ApasGenericPage {
 			response = objSalesforceAPI.select(query);		
 			return response;
 		}
-
+		
+		
+		
 }

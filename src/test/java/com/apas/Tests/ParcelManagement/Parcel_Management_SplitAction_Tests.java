@@ -8,6 +8,7 @@ import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
@@ -26,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Parcel_Management_SplitAction_Tests extends TestBase implements testdata, modules, users {
-	private RemoteWebDriver driver;
+	  private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
 	WorkItemHomePage objWorkItemHomePage;
@@ -468,7 +469,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifySplitMappingActionOutputValidations(String loginUser) throws Exception {
 
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 
@@ -620,7 +621,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	@Test(description = "SMAB-T2661:Parcel Management- Verify that User is able to update Situs of child parcels from the Parcel mapping screen for \"Split\" mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
 	public void ParcelManagement_UpdateChildParcelSitus_SplitMappingAction(String loginUser) throws Exception {
 
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL  and Status__c = 'Active' limit 1";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 
@@ -712,7 +713,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	public void ParcelManagement_ReturnToCustomScreen_SplitMappingAction_NoPrimarySitusTRA(String loginUser) throws Exception {
 		String childAPNPUC;
 
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c =NULL and TRA__c=NULL and Status__c = 'Active' limit 1";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c =NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')and TRA__c=NULL and Status__c = 'Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 		
@@ -822,7 +823,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		String childAPNPUC;
 		
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and Status__c = 'Active' limit 1";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 		
@@ -961,6 +962,9 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
 
+		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel(s) have been created successfully. Please review spatial information.",
+				"SMAB-T2830: Validate that User is able to perform one to one  action from mapping actions tab");			    
+	    
 		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+apn+"') limit 1");
 		if(responsePUCDetailsChildAPN.size()==0)
 			childAPNPUC ="";
@@ -977,6 +981,13 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Type","Information"), "Mapping",
+				"SMAB-T2830: Validation that  A new WI of type Mapping is created after performing one to one from mapping action tab");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Action","Information"), "Independent Mapping Action",
+				"SMAB-T2830: Validation that  A new WI of action Independent Mapping Action is created after performing one to one from mapping action tab");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Date", "Information"),DateUtil.removeZeroInMonthAndDay(DateUtil.getCurrentDate("MM/dd/yyyy")), "SMAB-T2830: Validation that 'Date' fields is equal to date when this WI was created");
+
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);

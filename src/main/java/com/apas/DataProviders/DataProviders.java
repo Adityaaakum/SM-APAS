@@ -399,4 +399,12 @@ public class DataProviders {
         return new Object[][] {{ users.CIO_STAFF }};
     }
    
+    /**
+   	 * Below function will be used to login to application with different users
+   	 * @returns: Return the user CIO Staff
+   	 **/
+       @DataProvider(name = "loginCIOStaff")
+       public Object[][] dpCIOStaffUser() {
+           return new Object[][] { { users.CIO_STAFF } };
+       }
 }

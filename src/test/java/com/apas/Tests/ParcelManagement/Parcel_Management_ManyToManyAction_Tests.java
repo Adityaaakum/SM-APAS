@@ -9,6 +9,7 @@ import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
@@ -707,7 +708,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2730:Verify the Output validations for \"Many to Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2730,SMAB-T2903:Verify the Output validations for \"Many to Many\" mapping action and validation on lower APN value", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyCondoManyToManyMappingActionOutputValidations(String loginUser) throws Exception {
 
@@ -832,7 +833,13 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		int actualTotalParcels = gridDataHashMap.get("APN").size();
 		int expectedTotalParcels = Integer.parseInt(hashMapManyToManyActionValidMappingData.get("Number of Child Non-Condo Parcels"));
 		softAssert.assertEquals(actualTotalParcels,expectedTotalParcels,"SMAB-T2730: Verify total no of parcels getting generated");
-
+		
+		//Validate APNs generated are from same Map page and Map book as of lower APN
+		String nextGeneratedAPN1 = gridDataHashMap.get("APN").get(0);
+		String nextGeneratedAPN2 = gridDataHashMap.get("APN").get(actualTotalParcels-1);
+		softAssert.assertEquals(parentAPN.substring(0, 7),nextGeneratedAPN1.substring(0, 7),"SMAB-T2903: Verify that child parcel (first) generated is from same Map Page and Map Book as of Parent parcel");
+		softAssert.assertEquals(parentAPN.substring(0, 7),nextGeneratedAPN2.substring(0, 7),"SMAB-T2903: Verify that child parcel (last) generated is from same Map Page and Map Book as of Parent parcel");
+		
 		//Step 13: Click on APN generated and verify Source Relationship details
 		gridDataHashMap.get("APN").stream().forEach(parcel -> {
 			try {
@@ -1344,6 +1351,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
 
+		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel(s) have been created successfully. Please review spatial information.",
+				"SMAB-T2673: Validate that User is able to perform one to one  action from mapping actions tab");			    
+
 		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+apn+"') limit 1");
 		if(responsePUCDetailsChildAPN.size()==0)
 			  childAPNPUC ="";
@@ -1360,6 +1370,13 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Type","Information"), "Mapping",
+				"SMAB-T2673: Validation that  A new WI of type Mapping is created after performing one to one from mapping action tab");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Action","Information"), "Independent Mapping Action",
+				"SMAB-T2673: Validation that  A new WI of action Independent Mapping Action is created after performing one to one from mapping action tab");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Date", "Information"),DateUtil.removeZeroInMonthAndDay(DateUtil.getCurrentDate("MM/dd/yyyy")), "SMAB-T2673: Validation that 'Date' fields is equal to date when this WI was created");
+
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);

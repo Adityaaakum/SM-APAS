@@ -87,6 +87,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		objApasGenericPage.searchModule(EXEMPTIONS);
 		
 		objPage.Click(exemptionPageObj.newExemptionButton);
+		objPage.Click(exemptionPageObj.exemptionRecordTypeNextButton);
 		
 		//Step3: selecting mandatory details before verifying error message
 		objApasGenericPage.searchAndSelectOptionFromDropDown("APN",fieldData.get("APN"));
@@ -142,6 +143,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			objApasGenericPage.searchModule(EXEMPTIONS);
 			
 			objPage.Click(exemptionPageObj.newExemptionButton);
+			objPage.Click(exemptionPageObj.exemptionRecordTypeNextButton);
 			
 			//Step3: selecting mandatory details before verifying error message
 			objApasGenericPage.searchAndSelectOptionFromDropDown("APN",businessValidationdata.get("APN"));
@@ -424,8 +426,8 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
       
       Map<String, String> fieldData = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData1");
       fieldData.put("ClaimantName", exemptionPageObj.fetchAssesseeName());       
-      String queryRetiredAPN = "SELECT Name,Status__c FROM Parcel__c where Status__c='Retired' and PUC_Code_Lookup__r.name='99-RETIRED PARCEL' Limit 1";
-      String queryPUCAPN="SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('00-VACANT LAND','06-HOTEL','08-BOARDING HOUSE','09-MOBILEHOME PARK','11-STORE','14-SUPERMARKET') Limit 1";
+      String queryRetiredAPN = "SELECT Name,Status__c FROM Parcel__c where Status__c='Retired' and PUC_Code_Lookup__r.name='999 - Retired' Limit 1";
+      String queryPUCAPN="SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('000- Vacant Land (Migrated)','000B Vacant Land - Brush, Barren','00-VACANT LAND','06-HOTEL','08-BOARDING HOUSE','09-MOBILEHOME PARK','11-STORE','14-SUPERMARKET') Limit 1";
       HashMap<String, ArrayList<String>> response  = salesforceAPI.select(queryRetiredAPN);
       String retiredAPNName= response.get("Name").get(0);       
       HashMap<String, ArrayList<String>> response1  = salesforceAPI.select(queryPUCAPN);
