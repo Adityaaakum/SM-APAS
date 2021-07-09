@@ -398,12 +398,10 @@ public class MappingPage extends ApasGenericPage {
     	  
     	  if(!response.isEmpty())
     	  {
-    		  response.get("Id").stream().forEach(Id ->{
-    			  objSalesforceAPI.delete("Parcel_Relationship__c", Id);
-    			  
-    		  });      	    				  
+    		      response.get("Id").stream().forEach(Id ->{
+    			  objSalesforceAPI.delete("Parcel_Relationship__c", Id);    			  
+    		  });     	    				  
     	  }
-
       }
       
       /*

@@ -352,7 +352,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
 		String mappingActionCreationData =  testdata.BOEACtivation_MAPPING_ACTION;
 		Map<String, String> hashMapBOEACtivationMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformBOEActivationMappingActionWithAllFields");
+				"DataToPerformBOEMappingActionWithAllFields");
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -375,8 +375,8 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 
 		//Step 5: Selecting Action as 'perform parcel BOEACtivation' 
-		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
-		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapBOEACtivationMappingData.get("Action"));
+		objMappingPage.waitForElementToBeVisible(3, objMappingPage.actionDropDownLabel);
+		
 
 		//Step 6: filling all fields in mapping action screen
 		objMappingPage.fillMappingActionForm(hashMapBOEACtivationMappingData);
