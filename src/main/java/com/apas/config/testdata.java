@@ -69,5 +69,11 @@ public interface testdata {
 	String ASSESEE_DATA = userDirectory + "\\data\\Assesee\\AsseseeData.json";
 	String MANUAL_PARCEL_CREATION_DATA=userDirectory+"\\data\\MappingActions\\Parcel.json";
 	String BOEACtivation_MAPPING_ACTION= userDirectory + "\\data\\MappingActions\\BOEActivationMapping.json";
+	
+	
+	
+	
+	
+
 
 }

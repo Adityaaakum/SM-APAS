@@ -399,7 +399,7 @@ public class DataProviders {
             return new Object[][] { { users.MAPPING_STAFF}, { users.SYSTEM_ADMIN }, { users.MAPPING_SUPERVISOR } };
 
     }
-   
+       
     /**
    	 * Below function will be used to login to application with different users
    	 * @returns: Return the user CIO Staff
