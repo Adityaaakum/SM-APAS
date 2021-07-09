@@ -323,11 +323,12 @@ public class ApasGenericPage extends Page {
         if (element instanceof String) {
         	webElement = getWebElementWithLabel((String) element);
         	String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody') or contains(@class,'slds-input slds-combobox__input')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
-			xpathDropDownOption = commonPath + "//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
+			xpathDropDownOption = commonPath + "//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']" ;
 			
         } else{
             webElement = (WebElement) element;
-            xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
+            xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
+            		
 		}
 
         if (webElement.getTagName().equals("select")){
@@ -715,7 +716,9 @@ public void searchModule(String moduleToSearch) throws Exception {
 				fieldPath + "//lightning-formatted-text | " +
 				fieldPath + "//lightning-formatted-number | " +
 				fieldPath + "//lightning-formatted-rich-text | " +
-				fieldPath + "//force-record-type//span";
+				fieldPath + "//force-record-type//span | " +
+				fieldPath + "//lightning-formatted-name |" +
+				fieldPath + "//a";
 		waitForElementToBeVisible(20,fieldXpath);
 		try{
 			fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();
