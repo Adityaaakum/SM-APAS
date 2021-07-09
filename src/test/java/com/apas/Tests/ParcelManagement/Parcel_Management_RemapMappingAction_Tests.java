@@ -82,6 +82,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();	
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -108,7 +109,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		softAssert.assertEquals(gridDataHashMap.get("APN").size(),2,
 				"SMAB-T2536: Verify that after remap total number of parcel generated are equal to number of parent parcels");
 		driver.switchTo().window(parentWindow);
-
+	
 		//Step 8: Logout
 		objWorkItemHomePage.logout();
 
@@ -621,6 +622,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
+		
 
 		String mappingActionCreationData =  testdata.REMAP_MAPPING_ACTION;
 		Map<String, String> hashMapRemapMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
@@ -641,6 +643,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -739,7 +742,23 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Action","Information"), "Independent Mapping Action",
 				"SMAB-T2828: Validation that  A new WI of action Independent Mapping Action is created after performing one to one from mapping action tab");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Date", "Information"),DateUtil.removeZeroInMonthAndDay(DateUtil.getCurrentDate("MM/dd/yyyy")), "SMAB-T2828: Validation that 'Date' fields is equal to date when this WI was created");
+
 		
+		// validating related action
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Related Action", "Information"),
+				"Independent Mapping Action",
+				"SMAB-T3494-Verify that the Related Action"
+						+ " label should match the Actions labels while creating WI and it should"
+						+ " open mapping screen on clicking-Independent Mapping Action");
+
+		// validating Event Id in Work item screen of Action type
+		String eventIDValue = objWorkItemHomePage.getFieldValueFromAPAS("Event ID", "Information");
+		softAssert.assertEquals(eventIDValue.contains("Alpha"), true,
+				"SMAB-T3496-Verify that the Event ID based on the mapping should be"
+						+ " created and populated on the Work item record.");
+
+		softAssert.assertTrue(!objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.editEventIdButton),
+				"SMAB-T3496-This field should not be editable.");
 
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
@@ -751,7 +770,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),childAPN,
 				"SMAB-T2898: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
 		softAssert.assertTrue(!objMappingPage.verifyElementVisible(objMappingPage.updateParcelsButton),
-				"SMAB-T2898: Validation that  There is No \"Update Parcel(s)\" button on return to custom screen");
+				"SMAB-T2898,SMAB-T3495: Validation that  There is No \"Update Parcel(s)\" button on return to custom screen");
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();

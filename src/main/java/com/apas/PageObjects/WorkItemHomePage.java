@@ -255,6 +255,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Linked Items']")
 	public WebElement linkedItemsTab;
 
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'Information')]//force-record-layout-item//button[@title = 'Edit Event ID']")
+	public WebElement editEventIdButton;
+    
 	public String editButton = "Edit";
 
 	public String wiActionDetailsPage = "Action";

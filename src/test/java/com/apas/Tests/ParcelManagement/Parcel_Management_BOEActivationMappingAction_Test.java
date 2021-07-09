@@ -122,7 +122,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		//Step 9: Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789
 		softAssert.assertContains(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
-				" Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
+				"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
 						"SMAB-T2754,SMAB-T2689: Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
 
 		//Step 10 :Clicking generate parcel button
