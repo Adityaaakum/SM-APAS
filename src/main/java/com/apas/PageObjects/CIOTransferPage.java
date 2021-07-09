@@ -120,7 +120,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	     * This method triggers the job to get the desried WI for given document type and APN count
 	     */
 	    
-	    public void genrateRecorderJobWorkItems(String DocType,int ApnCount) throws IOException
+	    public void generateRecorderJobWorkItems(String DocType,int ApnCount) throws IOException
 	    {
 	    	   	
 	    	String fetchDocId ="SELECT id from recorded_document__c where recorder_doc_type__c='"+DocType+"'"+" and xAPN_count__c="+ApnCount;
@@ -144,7 +144,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    			throw new Exception();
 	    		}
 	    		++counterForFailedattempts;
-	    		genrateRecorderJobWorkItems(DocType, ApnCount-1);
+	    		generateRecorderJobWorkItems(DocType, ApnCount-1);
 	    		
 	    	}
 	    	catch (Exception e) {
@@ -152,12 +152,10 @@ public class CIOTransferPage extends ApasGenericPage {
 	    		 * Ability to handle situations when there are no requested documents with the given number of  recorded APN's is out of scope for now and can be developed later.
 	    		 * 
 	    		 */
-
-	    		if(salesforceApi.select(fetchDocId).get("Id")==null)
-	    		{
-	    			ReportLogger.INFO("SORRY!! NO RECORDER DOC FOUND WITH THE GIVEN TYPE AND APN COUNT");
+	    		counterForFailedattempts=0;	    		
+	    		ReportLogger.INFO("SORRY!! NO RECORDER DOC FOUND WITH THE GIVEN TYPE AND APN COUNT");
 	    			
-	    		}  		
+	    		 		
 	    		
 			}
 	    	

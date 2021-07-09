@@ -264,8 +264,6 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath = "//a[@id='customTab4__item']")
 	public WebElement RecordedApnTab;
 	
-	@FindBy(xpath = "//button[@name='New']")
-	public WebElement NewButtononWI;
 	
 	
 	

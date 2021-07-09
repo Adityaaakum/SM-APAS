@@ -80,6 +80,7 @@ public class MappingPage extends ApasGenericPage {
 	public String CreateNewParcelButton="Create Brand New Parcel";
 	public String updateParcelsButton = "//button[text()='Update Parcel(s)']";
 	public String updateParcelButtonLabelName = "Update Parcel(s)";
+	public final String  DOC_CERTIFICATE_OF_COMPLIANCE="CC";
 
 	
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")

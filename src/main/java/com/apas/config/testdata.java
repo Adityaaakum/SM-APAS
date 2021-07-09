@@ -71,7 +71,7 @@ public interface testdata {
 	
 	
 	
-	String DOC_CERTIFICATE_OF_COMPLIANCE="CC";
+	
 	
 
 
