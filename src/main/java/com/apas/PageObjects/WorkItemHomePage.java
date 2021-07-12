@@ -299,8 +299,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String reassignButton = "Reassign";
 	public final String returnToPool="Return to Pool";
 	public final String markInProgress="Mark In Progress";
-	public String apnLabel ="APN";
-	public String recordedApnTabLabel="Recorded APN(s)";
+	public String apnLabel ="APN";	
 	public String NewButton="New";
 	public String migrateAPN="Migrate APN(s)";
 

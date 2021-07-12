@@ -114,7 +114,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    
 	    /*
 	     * 
-	     * This method triggers the job to get the desried WI for given document type and APN count
+	     * This method triggers the job to get the desired WI for given document type and APN count
 	     */
 	    
 	    public void generateRecorderJobWorkItems(String DocType,int ApnCount) throws IOException
@@ -134,6 +134,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
 	    		ReportLogger.INFO("Genrated Recorded WorkeItems."); 
 	    		counterForFailedattempts=0;
+	    		Thread.sleep(3000);
 	    		return;
 	    		}
 	    		if(ApnCount<0)
@@ -157,7 +158,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    }
 	    /*
 	     * 
-	     * This is an overloaded version that genrates WI based on RecordedDocumentID
+	     * This is an overloaded version that generates WI based on  only RecordedDocumentID,this method is more emphasised when particular APN data needs to be used for a given recorded document
 	     */
 	    
 	    public void generateRecorderJobWorkItems(String RecordedDocumentId) throws IOException

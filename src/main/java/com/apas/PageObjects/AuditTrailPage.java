@@ -13,10 +13,10 @@ import org.openqa.selenium.support.PageFactory;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 
-public class AuditTrail extends ApasGenericPage {
+public class AuditTrailPage extends ApasGenericPage {
 	Util objUtil;
 
-	public AuditTrail(RemoteWebDriver driver) {
+	public AuditTrailPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
 		objUtil = new Util();

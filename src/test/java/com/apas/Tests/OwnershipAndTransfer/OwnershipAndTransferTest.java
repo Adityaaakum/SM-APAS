@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
-import com.apas.PageObjects.AuditTrail;
+import com.apas.PageObjects.AuditTrailPage;
 import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.CioTransferScreen;
 import com.apas.PageObjects.MappingPage;
@@ -41,7 +41,7 @@ public class OwnershipAndTransferTest extends TestBase implements testdata, modu
 	JSONObject jsonObject= new JSONObject();
 	String apnPrefix=new String();
 	CIOTransferPage Cio;
-	AuditTrail trail;
+	AuditTrailPage trail;
 
 
 	@BeforeMethod(alwaysRun = true)
@@ -53,14 +53,17 @@ public class OwnershipAndTransferTest extends TestBase implements testdata, modu
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage= new MappingPage(driver);
 		Cio = new CIOTransferPage(driver);
-		trail= new AuditTrail(driver);
+		trail= new AuditTrailPage(driver);
 
 	}
+	/*
+	 * Verify that NO APN WI is genrated for document without APN and user has the ability to add recorded APN on it to create a WI for MAPPING OR CIO
+	 * 
+	 */
 	
-	
-	@Test(description = "SMAB-T3106,SMAB-T3111:Verify the type of WI system creates for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3106,SMAB-T3111:Verify the type of WI system created for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","RecorderIntegration" })
-	public void ParcelManagement_VerifyNewWIgenratedfromRecorderIntegrationForNOAPNRecordedDocument(String loginUser) throws Exception {
+	public void RecorderIntegration_VerifyNewWIgeneratedfromRecorderIntegrationForNOAPNRecordedDocument(String loginUser) throws Exception {
 		
 		String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) AND Status__c='Active' Limit 1";
   	  HashMap<String, ArrayList<String>> hashMapRecordedApn= salesforceAPI.select(getApnToAdd);
@@ -101,7 +104,8 @@ public class OwnershipAndTransferTest extends TestBase implements testdata, modu
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert);
 			//User validates the status of the WI 
-			softAssert.assertEquals(salesforceAPI.select("select status__c from work_item__c where name='"+WorkItemNo+"'").get("Status__c").get(0), "Completed", "SMAB-T3111: Validating that status of WI is completed");
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "Completed", "SMAB-T3111:Validating that status of WI is completed");
 			softAssert.assertEquals(salesforceAPI.select("SELECT Id,name FROM Work_Item__c where Type__c='MAPPING'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1").get("Name")!=null, true, "SMAB-T3111:Validating a new WI genrated as soon as New APN is processed.");
 			objWorkItemHomePage.logout();
 			
