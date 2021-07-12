@@ -37,8 +37,9 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	MappingPage objMappingPage;
 	JSONObject jsonObject= new JSONObject();
 	String apnPrefix=new String();
-	AuditTrail trail= new AuditTrail(driver);
-	CIOTransferPage objtransfer=new CIOTransferPage(driver);
+	AuditTrail trail;
+	CIOTransferPage objtransfer;
+	
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -48,6 +49,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage= new MappingPage(driver);
+		 trail= new AuditTrail(driver);
+		 objtransfer=new CIOTransferPage(driver);
 
 	}
 	/**
@@ -1041,9 +1044,9 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
          objMappingPage.scrollToElement(objWorkItemHomePage.secondRelatedBuisnessEvent);
          objMappingPage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
          EventLib=   objMappingPage.getFieldValueFromAPAS(trail.EventLibrary);
-         softAssert.assertContains(EventLib, "Recorded Document - MAPPING ", "SMAB-T2946:Verifying Eventlibrary of Buisnessevent AuditTrail");
+         softAssert.assertEquals(EventLib, "DRAFT - MAPPING - CC", "SMAB-T2946:Verifying Eventlibrary of Buisnessevent AuditTrail");
           EventType=   objMappingPage.getFieldValueFromAPAS(trail.EventType);
-         softAssert.assertContains(EventType, "Recorded Document - MAPPING ", "SMAB-T2946:Verifying EventType of Buisnessevent AuditTrail");
+         softAssert.assertEquals(EventType, "DRAFT - MAPPING - CC", "SMAB-T2946:Verifying EventType of Buisnessevent AuditTrail");
           EventId=   objMappingPage.getFieldValueFromAPAS(trail.EventId);
           EventTitle=   objMappingPage.getFieldValueFromAPAS(trail.EventTitle);
          softAssert.assertContains(EventTitle, EventType+" "+EventId, "SMAB-T2946:Verifying EventTitle of Buisnessevent AuditTrail");
