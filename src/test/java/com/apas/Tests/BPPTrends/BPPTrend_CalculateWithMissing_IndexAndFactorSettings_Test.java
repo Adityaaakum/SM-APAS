@@ -55,6 +55,8 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 	public void BppTrend_CompositeFactors_CalculateWithCalculationVariablesMissing(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
 		objBppTrendSetupPage.login(users.SYSTEM_ADMIN);
+		Thread.sleep(6000);
+		objBppTrendSetupPage.closeDefaultOpenTabs();
 		
 		//Step2: Opening the BPP Trend module
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
@@ -74,6 +76,8 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 
 		//Step4: Login with given login user
 		objBppTrendSetupPage.login(loginUser);
+		Thread.sleep(5000);
+		objBppTrendSetupPage.closeDefaultOpenTabs();
 		
 		//Step5: Navigating to BPP Trend page and selecting given roll year
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS);

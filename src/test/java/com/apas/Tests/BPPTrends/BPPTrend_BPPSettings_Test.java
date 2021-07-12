@@ -227,7 +227,7 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		
 		//Step1: Login to the APAS application using the given user
 		objBppTrendSetupPage.login(loginUser);
-		
+
 		//Step2: Updating the composite factor tables status
 		objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.COMPOSITE_TABLES_API_NAMES, "Calculated", rollYear);
 
@@ -236,6 +236,9 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 		
 		//Step4: Navigate to BPP Trend Setup page snd Select roll Year
 		// Create Maximum Equipment index Factor for given roll year if it does not exist
+		
+		Thread.sleep(6000);
+		objBppTrendSetupPage.closeDefaultOpenTabs();
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
 		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
