@@ -46,7 +46,7 @@ public class ApasGenericPage extends Page {
 		objLoginPage = new LoginPage(driver);
 	}
 
-	public  String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
+	public String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 	public String tabDetails = "Details";
 	public String tabRelated = "Related";
 	public String tabLinkedItems = "Linked Items";
@@ -1348,24 +1348,4 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		return isCellEditable;
 	
 	}
-	/**
-     *  This method will delete existing ownership records for the Parcel
-     * @param apn-Apn whose records needs to be deleted
-     * @return
-     * @throws Exception
-     */
-    public void deleteOwnershipFromParcel(String apn)
-    {
-  	  String query ="SELECT  Id FROM Property_Ownership__c where parcel__c='" +apn+"'";
-  	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
-  	  
-  	  if(!response.isEmpty())
-  	  {
-  		  response.get("Id").stream().forEach(Id ->{
-  			  objSalesforceAPI.delete("Property_Ownership__c", Id);
-  			  
-  		  });      	    				  
-  	  }
-
-    }
 }
