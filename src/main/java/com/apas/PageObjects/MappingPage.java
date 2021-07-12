@@ -81,6 +81,7 @@ public class MappingPage extends ApasGenericPage {
 	public String updateParcelsButton = "//button[text()='Update Parcel(s)']";
 	public String updateParcelButtonLabelName = "Update Parcel(s)";
 	public final String  DOC_CERTIFICATE_OF_COMPLIANCE="CC";
+	public final String DOC_LOT_LINE_ADJUSTMENT="LL";
 
 	
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
@@ -424,14 +425,17 @@ public class MappingPage extends ApasGenericPage {
    */
       public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
   		
-    	  
+    	    String PUC =objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
+    	    String TRA=objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);    	  
 			Click(editButtonInSeconMappingScreen);
 			if(waitForElementToBeVisible(2, clearSelectionTRA))
 		    Click(clearSelectionTRA);
-			selectOptionFromDropDown(parcelTRA,dataMap.get("TRA"));
+			enter(parcelPUC, TRA);
+			selectOptionFromDropDown(parcelTRA,TRA);
 			if(waitForElementToBeVisible(2, clearSelectionPUC))
 			Click(clearSelectionPUC);
-			selectOptionFromDropDown(parcelPUC,dataMap.get("PUC"));
+			enter(parcelPUC, PUC);
+			selectOptionFromDropDown(parcelPUC,PUC);
 			editSitusModalWindowFirstScreen(dataMap);
 			
   	}

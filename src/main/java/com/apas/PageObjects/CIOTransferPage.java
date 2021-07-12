@@ -39,6 +39,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String calculateOwnershipButtonLabel  = "Calculate Ownership";
 	public String checkOriginalTransferListButtonLabel = "Check Original Transfer List";
 	public String backToWIsButtonLabel = "Back to WIs";
+	public String saveButton ="Save";
 	
 	
 	
@@ -47,10 +48,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	
     @FindBy(xpath = "//button[@name='New'][1]")
 	public WebElement NewRecordedAPNsButton;
-    
-    @FindBy(xpath = "//button[@name='SaveEdit']")
-    public WebElement SaveButton;
-    
+  
     @FindBy(xpath = "//*[@class='flexipage-tabset']//a[1]")
     public WebElement RelatedTab;
 	
@@ -83,7 +81,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    
 	    public void addRecordedApn(String DocId,int count) throws Exception
 	    {
-	    	String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) Limit "+count;
+	    	String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) AND Status__c='Active' Limit "+count;
 	    	  HashMap<String, ArrayList<String>> hashMapRecordedApn= salesforceApi.select(getApnToAdd);
 	    	
 	    	if(count!=0) {
@@ -101,15 +99,14 @@ public class CIOTransferPage extends ApasGenericPage {
 							Click(NewRecordedAPNsButton);
 							enter(ApnLabel, Name);
 							selectOptionFromDropDown(ApnLabel, Name);
-							Click(SaveButton);
+							Click(getButtonWithText(SaveButton));
 							driver.navigate().back();
 							driver.navigate().back();
 							ReportLogger.INFO("Recorded APN Name added "+Name);
 							
 						} catch (Exception e) {
 						ReportLogger.INFO("UNABLE TO ADD RECORDED APN!!");	
-						}
-						   		
+						}						   		
 	        	});       	
 	        }
 	    	}	 	   
@@ -117,7 +114,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    
 	    /*
 	     * 
-	     * This method triggers the job to get the desried WI for given document type and APN count
+	     * This method triggers the job to get the desired WI for given document type and APN count
 	     */
 	    
 	    public void generateRecorderJobWorkItems(String DocType,int ApnCount) throws IOException
@@ -137,6 +134,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
 	    		ReportLogger.INFO("Genrated Recorded WorkeItems."); 
 	    		counterForFailedattempts=0;
+	    		Thread.sleep(3000);
 	    		return;
 	    		}
 	    		if(ApnCount<0)
@@ -153,16 +151,33 @@ public class CIOTransferPage extends ApasGenericPage {
 	    		 * 
 	    		 */
 	    		counterForFailedattempts=0;	    		
-	    		ReportLogger.INFO("SORRY!! NO RECORDER DOC FOUND WITH THE GIVEN TYPE AND APN COUNT");
-	    			
-	    		 		
+	    		ReportLogger.INFO("SORRY!! NO RECORDER DOC FOUND WITH THE GIVEN TYPE AND APN COUNT");    		 		
 	    		
 			}
 	    	
-	    	
-	    	
-	    	
 	    }
+	    /*
+	     * 
+	     * This is an overloaded version that generates WI based on  only RecordedDocumentID,this method is more emphasised when particular APN data needs to be used for a given recorded document
+	     */
+	    
+	    public void generateRecorderJobWorkItems(String RecordedDocumentId) throws IOException
+	    {
+	    	try {
+	    	markPendingRecordedDocsAsProcessed();
+	    	salesforceApi.update("recorded_document__c" , RecordedDocumentId, "Status__c","Pending");
+    		ReportLogger.INFO("Marking "+RecordedDocumentId+"in Pending state");
+    		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
+    		ReportLogger.INFO("Genrated Recorded WorkeItems."); 
+	    	
+	    	}
+	    	catch (Exception e) {
+	    		ReportLogger.INFO("SORRY!! WorkItem cannot be genrated");
+			}	    	
+	    }
+	    
+	    
+	    
 	    /*
 	     * This methods marks all the pending recorder doc's to processed
 	     * 
