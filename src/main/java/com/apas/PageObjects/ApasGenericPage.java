@@ -46,7 +46,7 @@ public class ApasGenericPage extends Page {
 		objLoginPage = new LoginPage(driver);
 	}
 
-	public String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
+	public  String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 	public String tabDetails = "Details";
 	public String tabRelated = "Related";
 	public String tabLinkedItems = "Linked Items";
