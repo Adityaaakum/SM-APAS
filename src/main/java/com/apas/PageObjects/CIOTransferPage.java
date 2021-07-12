@@ -38,15 +38,14 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String checkOriginalTransferListButtonLabel = "Check Original Transfer List";
 	public String finishButtonLabel = "Finish";
 	public final String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
+	public String backToWIsButtonLabel = "Back to WIs";
+	public String saveButton ="Save";
 
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
 	public WebElement relatedListTab;
 
 	@FindBy(xpath = "//button[@name='New'][1]")
 	public WebElement NewRecordedAPNsButton;
-
-	@FindBy(xpath = "//button[@name='SaveEdit']")
-	public WebElement SaveButton;
 
 	@FindBy(xpath = "//*[@class='flexipage-tabset']//a[1]")
 	public WebElement RelatedTab;
@@ -81,143 +80,173 @@ public class CIOTransferPage extends ApasGenericPage {
 	public WebElement quickActionOptionBack;
 
 	/*
-	 * This method adds the recorded APN in Recorded-Document
-	 * 
-	 */
-
-	public void addRecordedApn(String DocId, int count) throws Exception {
-		String getApnToAdd = "Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) Limit "
-				+ count;
-		HashMap<String, ArrayList<String>> hashMapRecordedApn = salesforceApi.select(getApnToAdd);
-
-		if (count != 0) {
-
-			navigateToRecorderDocument(DocId);
-			Thread.sleep(3000);
-			objMappingPage.Click(relatedListTab);
-
-			if (!hashMapRecordedApn.isEmpty()) {
-
-				hashMapRecordedApn.get("Name").stream().forEach(Name -> {
-
-					try {
-						Click(NewRecordedAPNsButton);
-						enter(ApnLabel, Name);
-						selectOptionFromDropDown(ApnLabel, Name);
-						Click(SaveButton);
-						driver.navigate().back();
-						driver.navigate().back();
-						ReportLogger.INFO("Recorded APN Name added " + Name);
-
-					} catch (Exception e) {
-						ReportLogger.INFO("UNABLE TO ADD RECORDED APN!!");
-					}
-
-				});
+	    * This method adds the recorded APN in Recorded-Document
+	    * 
+	    */
+	    
+	    public void addRecordedApn(String DocId,int count) throws Exception
+	    {
+	    	String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) AND Status__c='Active' Limit "+count;
+	    	  HashMap<String, ArrayList<String>> hashMapRecordedApn= salesforceApi.select(getApnToAdd);
+	    	
+	    	if(count!=0) {
+	    		
+	    		navigateToRecorderDocument(DocId);
+	    		Thread.sleep(3000);
+	            objMappingPage.Click(relatedListTab);   
+	      
+	        if(!hashMapRecordedApn.isEmpty())
+	        {
+	        	
+	          hashMapRecordedApn.get("Name").stream().forEach(Name->{
+	        		
+						try {
+							Click(NewRecordedAPNsButton);
+							enter(ApnLabel, Name);
+							selectOptionFromDropDown(ApnLabel, Name);
+							Click(getButtonWithText(SaveButton));
+							driver.navigate().back();
+							driver.navigate().back();
+							ReportLogger.INFO("Recorded APN Name added "+Name);
+							
+						} catch (Exception e) {
+						ReportLogger.INFO("UNABLE TO ADD RECORDED APN!!");	
+						}						   		
+	        	});       	
+	        }
+	    	}	 	   
+	    }
+	    
+	    /*
+	     * 
+	     * This method triggers the job to get the desired WI for given document type and APN count
+	     */
+	    
+	    public void generateRecorderJobWorkItems(String DocType,int ApnCount) throws IOException
+	    {
+	    	   	
+	    	String fetchDocId ="SELECT id from recorded_document__c where recorder_doc_type__c='"+DocType+"'"+" and xAPN_count__c="+ApnCount;
+	    	try
+	    	{   
+	    		if(getRecordedDocumentId(DocType, ApnCount)!=null && ApnCount>=0)
+	    		{
+	    		String recorderDocId=getRecordedDocumentId(DocType,ApnCount); 
+	    		
+	    		markPendingRecordedDocsAsProcessed();    		
+	    		addRecordedApn(recorderDocId, counterForFailedattempts);
+	    		salesforceApi.update("recorded_document__c" , recorderDocId, "Status__c","Pending");
+	    		ReportLogger.INFO("Marking "+recorderDocId+"in Pending state");
+	    		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
+	    		ReportLogger.INFO("Genrated Recorded WorkeItems."); 
+	    		counterForFailedattempts=0;
+	    		Thread.sleep(3000);
+	    		return;
+	    		}
+	    		if(ApnCount<0)
+	    		{
+	    			throw new Exception();
+	    		}
+	    		++counterForFailedattempts;
+	    		generateRecorderJobWorkItems(DocType, ApnCount-1);
+	    		
+	    	}
+	    	catch (Exception e) {
+	    		/*
+	    		 * Ability to handle situations when there are no requested documents with the given number of  recorded APN's is out of scope for now and can be developed later.
+	    		 * 
+	    		 */
+	    		counterForFailedattempts=0;	    		
+	    		ReportLogger.INFO("SORRY!! NO RECORDER DOC FOUND WITH THE GIVEN TYPE AND APN COUNT");    		 		
+	    		
 			}
+	    	
+	    }
+	    /*
+	     * 
+	     * This is an overloaded version that generates WI based on  only RecordedDocumentID,this method is more emphasised when particular APN data needs to be used for a given recorded document
+	     */
+	    
+	    public void generateRecorderJobWorkItems(String RecordedDocumentId) throws IOException
+	    {
+	    	try {
+	    	markPendingRecordedDocsAsProcessed();
+	    	salesforceApi.update("recorded_document__c" , RecordedDocumentId, "Status__c","Pending");
+ 		ReportLogger.INFO("Marking "+RecordedDocumentId+"in Pending state");
+ 		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
+ 		ReportLogger.INFO("Genrated Recorded WorkeItems."); 
+	    	
+	    	}
+	    	catch (Exception e) {
+	    		ReportLogger.INFO("SORRY!! WorkItem cannot be genrated");
+			}	    	
+	    }
+	    
+	    
+	    
+	    /*
+	     * This methods marks all the pending recorder doc's to processed
+	     * 
+	     */
+	    public void markPendingRecordedDocsAsProcessed() {
+	    	
+	    	salesforceApi.update("recorded_document__c" , "Select Id from recorded_document__c where status__c='Pending'", "Status__c","Processed");
+			ReportLogger.INFO("Marking all the recorded document to processed state");
+			
 		}
-	}
-
-	/*
-	 * 
-	 * This method triggers the job to get the desried WI for given document type
-	 * and APN count
-	 */
-
-	public void generateRecorderJobWorkItems(String DocType, int ApnCount) throws IOException {
-
-		String fetchDocId = "SELECT id from recorded_document__c where recorder_doc_type__c='" + DocType + "'"
-				+ " and xAPN_count__c=" + ApnCount;
-		try {
-			if (getRecordedDocumentId(DocType, ApnCount) != null && ApnCount >= 0) {
-				String recorderDocId = getRecordedDocumentId(DocType, ApnCount);
-
-				markPendingRecordedDocsAsProcessed();
-				addRecordedApn(recorderDocId, counterForFailedattempts);
-				salesforceApi.update("recorded_document__c", recorderDocId, "Status__c", "Pending");
-				ReportLogger.INFO("Marking " + recorderDocId + "in Pending state");
-				salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
-				ReportLogger.INFO("Genrated Recorded WorkeItems.");
-				counterForFailedattempts = 0;
-				return;
-			}
-			if (ApnCount < 0) {
-				throw new Exception();
-			}
-			++counterForFailedattempts;
-			generateRecorderJobWorkItems(DocType, ApnCount - 1);
-
-		} catch (Exception e) {
-			/*
-			 * Ability to handle situations when there are no requested documents with the
-			 * given number of recorded APN's is out of scope for now and can be developed
-			 * later.
-			 * 
-			 */
-			counterForFailedattempts = 0;
-			ReportLogger.INFO("SORRY!! NO RECORDER DOC FOUND WITH THE GIVEN TYPE AND APN COUNT");
-
-		}
-
-	}
-
-	/*
-	 * This methods marks all the pending recorder doc's to processed
-	 * 
-	 */
-	public void markPendingRecordedDocsAsProcessed() {
-
-		salesforceApi.update("recorded_document__c", "Select Id from recorded_document__c where status__c='Pending'",
-				"Status__c", "Processed");
-		ReportLogger.INFO("Marking all the recorded document to processed state");
-
-	}
-
-	/*
-	 * This method navigates to the recorded document UI
-	 */
-	public void navigateToRecorderDocument(String id) throws InterruptedException {
-
-		String executionEnv = "";
-
-		if (System.getProperty("region").toUpperCase().equals("QA"))
-			executionEnv = "qa";
-		if (System.getProperty("region").toUpperCase().equals("E2E"))
-			executionEnv = "e2e";
-		if (System.getProperty("region").toUpperCase().equals("PREUAT"))
-			executionEnv = "preuat";
-		if (System.getProperty("region").toUpperCase().equals("STAGING"))
-			executionEnv = "staging";
-
-		driver.navigate().to("https://smcacre--" + executionEnv
-				+ ".lightning.force.com/lightning/r/Recorded_Document__c/" + id + "/view");
-		ReportLogger.INFO("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Recorded_Document__c/"
-				+ id + "/view");
-		Thread.sleep(5000);
-
-	}
-
-	/*
-	 * This method returns the DocId with required no of apns
-	 * 
-	 */
-	public String getRecordedDocumentId(String type, int count) {
-
-		String fetchDocId = "SELECT id from recorded_document__c where recorder_doc_type__c='" + type + "'"
-				+ " and xAPN_count__c=" + count;
-
-		if (salesforceApi.select(fetchDocId).get("Id") == null) {
-			return null;
+	    
+	    /*
+	     * This method navigates to the recorded document UI
+	     */
+	    public void navigateToRecorderDocument(String id) throws InterruptedException
+	    {
+	    	
+	    	String executionEnv = "";
+			
+			if (System.getProperty("region").toUpperCase().equals("QA"))
+				executionEnv = "qa";
+			if (System.getProperty("region").toUpperCase().equals("E2E"))
+				executionEnv = "e2e";
+			if (System.getProperty("region").toUpperCase().equals("PREUAT"))
+				executionEnv = "preuat";
+			if (System.getProperty("region").toUpperCase().equals("STAGING"))
+				executionEnv = "staging";		
+			
+			driver.navigate().to("https://smcacre--"+executionEnv+
+					 ".lightning.force.com/lightning/r/Recorded_Document__c/"+id+"/view");
+			ReportLogger.INFO("https://smcacre--"+executionEnv+
+					 ".lightning.force.com/lightning/r/Recorded_Document__c/"+id+"/view");
+			Thread.sleep(5000);
+	    	
+	    }
+	    
+	   /*
+	    * This method returns the DocId with required no of apns
+	    *  
+	    */
+	   public String getRecordedDocumentId(String type,int count)
+	   {
+		   
+		   String fetchDocId ="SELECT id from recorded_document__c where recorder_doc_type__c='"+type+"'"+" and xAPN_count__c="+count;
+		   
+		   if(salesforceApi.select(fetchDocId).get("Id")==null)
+		   {
+			   return null;
+		   }
+		   
+		  return salesforceApi.select(fetchDocId).get("Id").get(0);
+	   }	    
+	    
+	    
+		public HashMap<String, ArrayList<String>>getAPNNameFromRecordedDocument(String RecordedDocId)
+		{
+			
+			return salesforceApi.select("select Name from Parcel__c where Id in (SELECT Parcel__c FROM Recorded_APN__c where Recorded_document__c ='"+RecordedDocId+"'");
 		}
 
-		return salesforceApi.select(fetchDocId).get("Id").get(0);
-	}
 
-	public HashMap<String, ArrayList<String>> getAPNNameFromRecordedDocument(String RecordedDocId) {
+	    
+	
+	
 
-		return salesforceApi.select(
-				"select Name from Parcel__c where Id in (SELECT Parcel__c FROM Recorded_APN__c where Recorded_document__c ='"
-						+ RecordedDocId + "'");
-	}
-
+	  
 }
