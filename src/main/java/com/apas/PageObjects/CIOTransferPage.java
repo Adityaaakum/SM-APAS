@@ -25,55 +25,60 @@ public class CIOTransferPage extends ApasGenericPage {
 		super(driver);
 		PageFactory.initElements(driver, this);
 		objUtil = new Util();
-		salesforceApi=new SalesforceAPI();
-		objMappingPage= new MappingPage(driver);
-		
-		
+		salesforceApi = new SalesforceAPI();
+		objMappingPage = new MappingPage(driver);
+
 	}
-	
-	public String ApnLabel ="APN";
-	int counterForFailedattempts=0;
+
+	public String ApnLabel = "APN";
+	int counterForFailedattempts = 0;
 	public String componentActionsButtonLabel = "Component Actions";
-	public String submitforApprovalButtonLabel = "Submit for Approval";
 	public String copyToMailToButtonLabel = "Copy to Mail To";
-	public String calculateOwnershipButtonLabel  = "Calculate Ownership";
+	public String calculateOwnershipButtonLabel = "Calculate Ownership";
 	public String checkOriginalTransferListButtonLabel = "Check Original Transfer List";
+	public String finishButtonLabel = "Finish";
+	public final String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 	public String backToWIsButtonLabel = "Back to WIs";
 	public String saveButton ="Save";
-	
-	
-	
+
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
 	public WebElement relatedListTab;
-	
-    @FindBy(xpath = "//button[@name='New'][1]")
+
+	@FindBy(xpath = "//button[@name='New'][1]")
 	public WebElement NewRecordedAPNsButton;
-  
-    @FindBy(xpath = "//*[@class='flexipage-tabset']//a[1]")
-    public WebElement RelatedTab;
-	
+
+	@FindBy(xpath = "//*[@class='flexipage-tabset']//a[1]")
+	public WebElement RelatedTab;
+
 	@FindBy(xpath = "//div[contains(@class,'uiOutputRichText')]")
 	public WebElement confirmationMessageOnTranferScreen;
-	
+
 	@FindBy(xpath = "//div[@class='highlights slds-clearfix slds-page-header slds-page-header_record-home']//ul[@class='slds-button-group-list']//lightning-primitive-icon")
 	public WebElement quickActionButtonDropdownIcon;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Back']")
-	public WebElement quickActionOptionBack;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Approve']")
+
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Approve']")
 	public WebElement quickActionOptionApprove;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Return']")
+
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Return']")
 	public WebElement quickActionOptionReturn;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Submit for Review']")
+
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Submit for Review']")
 	public WebElement quickActionOptionSubmitForReview;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Review Complete']")
+
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Review Complete']")
 	public WebElement quickActionOptionReviewComplete;
-	
-	
+
+	@FindBy(xpath = commonXpath
+			+ "//*[@class='slds-truncate' and text()='Back to WIs'] | //button[text()='Back to WIs']")
+	public WebElement quickActionOptionBackToWIs;
+
+	@FindBy(xpath = commonXpath
+			+ "//*[@class='slds-truncate' and text()='Submit for Approval'] | //button[text()='Submit for Approval']")
+	public WebElement quickActionOptionSubmitForApproval;
+
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
+	public WebElement quickActionOptionBack;
+
 	/*
 	    * This method adds the recorded APN in Recorded-Document
 	    * 
@@ -166,9 +171,9 @@ public class CIOTransferPage extends ApasGenericPage {
 	    	try {
 	    	markPendingRecordedDocsAsProcessed();
 	    	salesforceApi.update("recorded_document__c" , RecordedDocumentId, "Status__c","Pending");
-    		ReportLogger.INFO("Marking "+RecordedDocumentId+"in Pending state");
-    		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
-    		ReportLogger.INFO("Genrated Recorded WorkeItems."); 
+ 		ReportLogger.INFO("Marking "+RecordedDocumentId+"in Pending state");
+ 		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
+ 		ReportLogger.INFO("Genrated Recorded WorkeItems."); 
 	    	
 	    	}
 	    	catch (Exception e) {
