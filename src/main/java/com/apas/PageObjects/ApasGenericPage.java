@@ -323,11 +323,12 @@ public class ApasGenericPage extends Page {
         if (element instanceof String) {
         	webElement = getWebElementWithLabel((String) element);
         	String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody') or contains(@class,'slds-input slds-combobox__input')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
-			xpathDropDownOption = commonPath + "//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']";
+			xpathDropDownOption = commonPath + "//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']" ;
 			
         } else{
             webElement = (WebElement) element;
-            xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short visible positioned') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
+            xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
+            		
 		}
 
         if (webElement.getTagName().equals("select")){
@@ -509,7 +510,8 @@ public void searchModule(String moduleToSearch) throws Exception {
 			moduleToSearch = moduleToSearch.replaceAll("\\s+", "").replace("-", "");
 			String moduleURL = envURL + utl.getValueOf(modobj, moduleToSearch.trim());
 			navigateTo(driver,moduleURL);
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Navigating directly" + moduleURL);
+			Thread.sleep(4000);
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Navigating directly to - " + moduleToSearch);
 		}
 	}
 	
@@ -714,7 +716,9 @@ public void searchModule(String moduleToSearch) throws Exception {
 				fieldPath + "//lightning-formatted-text | " +
 				fieldPath + "//lightning-formatted-number | " +
 				fieldPath + "//lightning-formatted-rich-text | " +
-				fieldPath + "//force-record-type//span";
+				fieldPath + "//force-record-type//span | " +
+				fieldPath + "//lightning-formatted-name |" +
+				fieldPath + "//a";
 		waitForElementToBeVisible(20,fieldXpath);
 		try{
 			fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();
@@ -1193,7 +1197,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 
   public String fetchInProgressAPN() throws Exception {
       
-	  String queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' limit 1";
+	  String queryAPNValue = "select Name from Parcel__c where Status__c='In Progress - To Be Expired' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
       HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryAPNValue);
 	  String inProgressAPNValue = "";
 		 if(!response.isEmpty())
@@ -1226,7 +1230,11 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 
 	public String fetchInterimAPN() throws Exception {
  
-	  String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  AND Status__c='Active' limit 1";
+	  String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' "
+	  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
+	  		+ "AND Id NOT in (Select parcel__c FROM Property_Ownership__c) "
+	  		+ "AND Status__c='Active' limit 1";
+
 	  return objSalesforceAPI.select(queryAPNValue).get("Name").get(0);
 	}
  

@@ -12,6 +12,8 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.AuditTrailPage;
+import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
@@ -22,6 +24,7 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
+import com.apas.Utils.DateUtil;
 
 public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase implements testdata, modules, users{
 	private RemoteWebDriver driver;
@@ -34,6 +37,9 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	MappingPage objMappingPage;
 	JSONObject jsonObject= new JSONObject();
 	String apnPrefix=new String();
+	AuditTrailPage trail;
+	CIOTransferPage objtransfer;
+	
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -43,6 +49,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage= new MappingPage(driver);
+		 trail= new AuditTrailPage(driver);
+		 objtransfer=new CIOTransferPage(driver);
 
 	}
 	/**
@@ -51,7 +59,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @throws Exception
 	 */
 
-	@Test(description = "SMAB-T2663,SMAB-T2263,SMAB-T2521,SMAB-T2522,SMAB-T2537,SMAB-T2547:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel (Active) of type Non Condo from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2663,SMAB-T2263,SMAB-T2521,SMAB-T2522,SMAB-T2537,SMAB-T2547:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel (Active) of type Non Condo from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" },enabled= true)
 	public void ParcelManagement_VerifyBrandNewParcelMappingActionNonCondoParcel(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
@@ -81,6 +89,24 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		String reasonCode=objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
 		//Step 5: Validation that work pool should be 'Mapping' on parent parcel work item
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool", "Information"),"Mapping","SMAB-T2263: Validation that work pool should be 'Mapping' on parent parcel work item");
+		
+		//validating related action
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Related Action", "Information"),
+				hashMapmanualWorkItemData.get("Actions"),"SMAB-T3494-Verify that the Related Action"
+						+ " label should match the Actions labels while creating WI and it should"
+						+ " open mapping screen on clicking-Perform Other Mapping Work ");
+		
+		//validating Event Id in Work item screen of Action type
+		String eventIDValue = objWorkItemHomePage.getFieldValueFromAPAS("Event ID", "Information");
+		softAssert.assertEquals(eventIDValue.contains("Alpha"),
+				true,"SMAB-T3496-Verify that the Event ID based on the mapping should be"
+						+ " created and populated on the Work item record.");
+				
+
+		softAssert.assertTrue(!objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.editEventIdButton),
+				"SMAB-T3496-This field should not be editable.");
+
+		
 
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();	
@@ -99,6 +125,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 
 		//Step 8: entering data in form for Brand New Parcel mapping
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
+		
+		Thread.sleep(1000);
 
 		//Step 10: Validating warning message on second screen
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageSecondScreen),
@@ -126,6 +154,18 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		softAssert.assertTrue(childPrimarySitusValue.isEmpty(),
 				"SMAB-T2663: Validation that primary situs of child parcel is blank as situs was not updated in first screen ");
 		driver.switchTo().window(parentWindow);
+		
+		//validate that The "Return " functionality for parcel mgmt activities should work for all these work items.
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		parentWindow = driver.getWindowHandle();	
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		softAssert.assertEquals(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName).getText(),"Update Parcel(s)",
+				"SMAB-T3495-validate that The Return functionality for parcel mgmt activities should work for all these work items.");
+		driver.switchTo().window(parentWindow);
+
+
 		objWorkItemHomePage.logout();
 
 	}
@@ -140,6 +180,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		String queryAPN = "Select name From Parcel__c where Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String activeParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
+		objMappingPage.deleteRelationshipInstanceFromParcel(activeParcelToPerformMapping);
 
 		String mappingActionCreationData =  testdata.Brand_New_Parcel_MAPPING_ACTION;
 
@@ -859,6 +900,9 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
 
+		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel(s) have been created successfully. Please review spatial information.",
+				"SMAB-T2831: Validate that User is able to perform one to one  action from mapping actions tab");			    
+
 		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+childAPN+"') limit 1");
 		if(responsePUCDetailsChildAPN.size()==0)
 			  childAPNPUC ="";
@@ -872,6 +916,12 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Type","Information"), "Mapping",
+				"SMAB-T2831: Validation that  A new WI of type Mapping is created after performing one to one from mapping action tab");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Action","Information"), "Independent Mapping Action",
+				"SMAB-T2831: Validation that  A new WI of action Independent Mapping Action is created after performing one to one from mapping action tab");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Date", "Information"),DateUtil.removeZeroInMonthAndDay(DateUtil.getCurrentDate("MM/dd/yyyy")), "SMAB-T2831: Validation that 'Date' fields is equal to date when this WI was created");
+	
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -984,6 +1034,116 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			
 
 	}
+		
+		/**
+		 * This method is to Verify that User is able to genrate a recorded doc WI from recorderIntegration and is able to perform mapping actions on that document
+		 * @param loginUser
+		 * @throws Exception
+		 */
+		@Test(description = "SMAB-T2946:Verify the type of WI system creates for different recorded document types for a recorded document with one APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+				"Smoke","Regression","ChangeInOwnershipManagement","RecorderIntegration" })
+		public void ParcelManagement_VerifyNewWIgenratedfromRecorderIntegrationAndBrandNewMappingAction(String loginUser) throws Exception {
+					
+			
+		objMappingPage.login(users.SYSTEM_ADMIN);
+		objMappingPage.searchModule(PARCELS);
+		salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c where Sub_type__c='Certificate of Compliance' and status__c ='In pool'", "status__c","In Progress");
+		objtransfer.generateRecorderJobWorkItems(objMappingPage.DOC_CERTIFICATE_OF_COMPLIANCE, 1);
+   		String WorkItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='MAPPING'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";        
+        String WorkItemNo=salesforceAPI.select(WorkItemQuery).get("Name").get(0);		         
+        //Searching for the WI genrated
+         objMappingPage.globalSearchRecords(WorkItemNo); 
+        String ApnfromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+        Thread.sleep(2000);
+        //Validating the fields on AT=C on the Recorder WI
+         objMappingPage.scrollToElement(objWorkItemHomePage.firstRelatedBuisnessEvent);
+         objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
+         String EventLib=   objMappingPage.getFieldValueFromAPAS(trail.EventLibrary);
+         softAssert.assertContains(EventLib, "Recorded Document - MAPPING ", "SMAB-T2946:Verifying Eventlibrary of correspondence AuditTrail");
+         String EventType=   objMappingPage.getFieldValueFromAPAS(trail.EventType);
+         softAssert.assertContains(EventLib, "Recorded Document - MAPPING ","SMAB-T2946:Verifying EventType of correspondence AuditTrail");
+         String EventId=   objMappingPage.getFieldValueFromAPAS(trail.EventId);
+         //Validating eventTitle of AT=C
+         String EventTitle=   objMappingPage.getFieldValueFromAPAS(trail.EventTitle);
+         softAssert.assertContains(EventTitle, EventType+" "+EventId, "SMAB-T2946:Verifying EventTitle of correspondence AuditTrail");         
+         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), "Recorder's Office" , "SMAB-T2946:Verifying RequestOrigin of correspondence AuditTrail");         
+         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed" , "SMAB-T2946:Verifying Status of correspondence AuditTrail");
+         //Navigating back to WI linked grid table
+         driver.navigate().back();
+         
+         //Validating the fields on Second Buisness Event on the Recorder WI
+         objMappingPage.scrollToElement(objWorkItemHomePage.secondRelatedBuisnessEvent);
+         objMappingPage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
+         EventLib=   objMappingPage.getFieldValueFromAPAS(trail.EventLibrary);
+         softAssert.assertEquals(EventLib, "DRAFT - MAPPING - CC", "SMAB-T2946:Verifying Eventlibrary of Buisnessevent AuditTrail");
+         EventType=   objMappingPage.getFieldValueFromAPAS(trail.EventType);
+         softAssert.assertEquals(EventType, "DRAFT - MAPPING - CC", "SMAB-T2946:Verifying EventType of Buisnessevent AuditTrail");
+         EventId=   objMappingPage.getFieldValueFromAPAS(trail.EventId);
+         EventTitle=   objMappingPage.getFieldValueFromAPAS(trail.EventTitle);
+         //Validating eventitle of AT=BE
+         softAssert.assertContains(EventTitle, EventType+" "+EventId, "SMAB-T2946:Verifying EventTitle of Buisnessevent AuditTrail");
+         objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin);
+         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), "Recorder's Office" ,"SMAB-T2946:Verifying RequestOrigin of Buisnessevent AuditTrail");         
+         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.Status), "Open" ,"SMAB-T2946:Verifying Status of Buisnessevent AuditTrail");
+         driver.navigate().back();
+         
+         //Logging out as sysadmin
+         objMappingPage.logout();
+         //Mapping user logs in and perform mapping action on the WI genrated
+         objMappingPage.login(loginUser);
+         String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
+ 		 Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+ 				"DataToPerformBrandNewParcelMappingActionWithoutAllFields");
+ 		 objMappingPage.globalSearchRecords(WorkItemNo);
+ 		 objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+ 		 objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+ 		 softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage),"Mapping" , "SMAB-T2946: Verfiying the type of WI genrated for given Recorded Document");
+ 		 softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiActionDetailsPage),"Certificate of Compliance" , "SMAB-T2946: Verfiying the Action of WI genrated for given Recorded Document");
+ 		 objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		 String parentWindow = driver.getWindowHandle();	
+		 objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+         objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
+ 		 objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+ 		// Validating that Parcel has been successfully created.
+ 		 softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel(s) have been created successfully. Please review spatial information.",
+ 				"SMAB-T2642: Validation that Parcel has been successfully created. Please Review Spatial Information");
+ 		
+ 		// Retriving new APN genrated
+          HashMap<String, ArrayList<String>> gridParcelData = objMappingPage.getGridDataInHashMap();
+          String newCreatedApn  =   gridParcelData.get("APN").get(0);                         
+          HashMap<String, ArrayList<String>> statusnewApn = objParcelsPage.fetchFieldValueOfParcel("Status__c", newCreatedApn);
+          // validating status of brand new parcel           
+          softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2643: Verifying the status of the new parcel");		                 
+         //Submit work item for approval
+          String query = "Select Id from Work_Item__c where Name = '"+WorkItemNo+"'";
+          salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
+
+          driver.switchTo().window(parentWindow);
+          objWorkItemHomePage.logout();
+          Thread.sleep(5000);
+          //Logging as a mapping supervisor
+          objMappingPage.login(users.MAPPING_SUPERVISOR);
+          objMappingPage.searchModule(WORK_ITEM);
+          objMappingPage.globalSearchRecords(WorkItemNo);
+          objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+          driver.navigate().refresh(); //refresh as the focus is getting lost
+          Thread.sleep(5000);   
+
+         //Completing the workItem
+          objWorkItemHomePage.completeWorkItem();             	   
+  	      objMappingPage.searchModule(PARCELS);
+	      objMappingPage.globalSearchRecords(newCreatedApn);
+	   
+  		//Validating the status of the workItem 
+  		 HashMap<String, ArrayList<String>> statusCompletedApn = objParcelsPage.fetchFieldValueOfParcel("Status__c",newCreatedApn);
+          //Validating the status of parcel after completing WI
+         softAssert.assertEquals(statusCompletedApn.get("Status__c").get(0), "Active",
+     		   "SMAB-T2644: Validating that the status of new APN is active");            
+	     objMappingPage.logout();
+
+		}
+		
 	}
 
 

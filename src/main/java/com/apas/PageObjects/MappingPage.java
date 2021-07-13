@@ -80,6 +80,8 @@ public class MappingPage extends ApasGenericPage {
 	public String CreateNewParcelButton="Create Brand New Parcel";
 	public String updateParcelsButton = "//button[text()='Update Parcel(s)']";
 	public String updateParcelButtonLabelName = "Update Parcel(s)";
+	public final String  DOC_CERTIFICATE_OF_COMPLIANCE="CC";
+	public final String DOC_LOT_LINE_ADJUSTMENT="LL";
 
 	
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
@@ -367,7 +369,10 @@ public class MappingPage extends ApasGenericPage {
      }
     
      public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner(int numberofRecords) throws Exception {
-     	String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and (Not Name like '800%') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit " + numberofRecords;
+        
+    	 String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and (Not Name like '800%') "
+    	 		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
+    	 		+ "and Status__c = 'Active' Limit " + numberofRecords;   	    
      	return objSalesforceAPI.select(queryActiveAPNValue);
      }
      
@@ -398,12 +403,10 @@ public class MappingPage extends ApasGenericPage {
     	  
     	  if(!response.isEmpty())
     	  {
-    		  response.get("Id").stream().forEach(Id ->{
-    			  objSalesforceAPI.delete("Parcel_Relationship__c", Id);
-    			  
-    		  });      	    				  
+    		      response.get("Id").stream().forEach(Id ->{
+    			  objSalesforceAPI.delete("Parcel_Relationship__c", Id);    			  
+    		  });     	    				  
     	  }
-
       }
       
       /*
@@ -422,14 +425,17 @@ public class MappingPage extends ApasGenericPage {
    */
       public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
   		
-    	  
+    	    String PUC =objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
+    	    String TRA=objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);    	  
 			Click(editButtonInSeconMappingScreen);
 			if(waitForElementToBeVisible(2, clearSelectionTRA))
 		    Click(clearSelectionTRA);
-			selectOptionFromDropDown(parcelTRA,dataMap.get("TRA"));
+			enter(parcelPUC, TRA);
+			selectOptionFromDropDown(parcelTRA,TRA);
 			if(waitForElementToBeVisible(2, clearSelectionPUC))
 			Click(clearSelectionPUC);
-			selectOptionFromDropDown(parcelPUC,dataMap.get("PUC"));
+			enter(parcelPUC, PUC);
+			selectOptionFromDropDown(parcelPUC,PUC);
 			editSitusModalWindowFirstScreen(dataMap);
 			
   	}

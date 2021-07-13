@@ -60,7 +60,9 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 	public void BppTrend_Create_BppCompositeFactorSetting(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
 		objBppTrendSetupPage.login(loginUser);
-
+		Thread.sleep(8000);
+		objBppTrendSetupPage.closeDefaultOpenTabs();
+		
 		//Step2: Updating the composite factor tables status
 		objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.COMPOSITE_TABLES_API_NAMES, "Not Calculated", rollYear);
 
@@ -106,10 +108,14 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 
 		//Step12: Opening the BPP Trend module and set All as the view option in grid
 		//Clicking on the roll year name in grid to navigate to details page of selected roll year
+		
+		objBppTrendSetupPage.closeDefaultOpenTabs();
+		
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
 		objBppTrendSetupPage.displayRecords("All");
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 
+		
 		//Step13: Creating Construction BPP Composite Factor Settings with incorrect factor value : -1
 		objBppTrendSetupPage.createBppCompositeFactorSetting("Construction", "-1");
 
@@ -139,6 +145,10 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 
 		//Step19: Retrieving the minimum equipment index factor value for Agricultural before editing
+		if(objBppTrendSetupPage.waitForElementToBeClickable(10,objBppTrendSetupPage.moreTabRightSection) != null) {
+			objPage.Click(objBppTrendSetupPage.moreTabRightSection);
+			objPage.Click(objBppTrendSetupPage.bppCompositeFactorOption);
+		}
 		objBppTrendPage.scrollToElement(objBppTrendSetupPage.viewAllBppCompositeFactorSettings);
 		objBppTrendPage.javascriptClick(objBppTrendSetupPage.viewAllBppCompositeFactorSettings);
 		String factorValueBeforeEditing = objBppTrendSetupPage.retrieveExistingMinEquipFactorValueFromGrid("Agricultural");
@@ -148,7 +158,7 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		objBppTrendPage.javascriptClick(objBppTrendSetupPage.editLinkUnderShowMore);
 		objBppTrendSetupPage.enter("Minimum Good Factor","11");
 		objApasGenericPage.selectOptionFromDropDown("Property Type","Agricultural");
-		objBppTrendPage.Click(objPage.getButtonWithText("Save"));
+		objBppTrendPage.Click(objBppTrendSetupPage.saveBtnInBppSettingPopUp);
 		Thread.sleep(2000);
 
 		//Step21: Retrieving and validating the equipment index factor value after editing
@@ -168,7 +178,7 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 
 		//Step21: Validating error message on updating Min. Equipment Index Factor value for approved tables
 		objBppTrendSetupPage.enter("Minimum Good Factor","12");
-		objBppTrendPage.Click(objPage.getButtonWithText("Save"));
+		objBppTrendPage.Click(objBppTrendSetupPage.saveBtnInBppSettingPopUp);
 		Thread.sleep(5000);
 		ReportLogger.INFO("Validating error message on updating Min. Equipment Index Factor Value for approved tables");
 

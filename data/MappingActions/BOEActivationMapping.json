@@ -6,7 +6,6 @@
     "Reason code": "PM 85/25-26",
     "Comments": "Perform BOE Activation",
     "First non-Condo Parcel Number" : "120-340-790",
-
    "Situs City Description": "Daly City",
     "Situs City Code": "DC",    
     "City Name": "DALY CITY",
@@ -15,7 +14,7 @@
     "Situs Street Name": "CLIFFSIDE",
     "Situs Type": "ALLEE",
     "Situs Unit Number": "56",
-    "TRA":"0010009",
+    "TRA":"123456",
     "PUC": "01-SINGLE FAMILY RES"
           
   }

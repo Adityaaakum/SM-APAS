@@ -35,7 +35,7 @@ public class SalesforceAPI extends TestBase {
     public static String REMINDER_WI_CODE_DV = "new+DisabledVeteransAnnualReminderWIService().createReminderWorkItems(ApexUtility.getCurrentRollYear());";
     public static String REMINDER_WI_CODE_BPP_ANNUAL_FACTORS = "new+BPPTrendsAnnualFactorWorkItemService().createBppTrendsAnnualFactorsWI(ApexUtility.getCurrentRollYear());";
     public static String REMINDER_WI_CODE_BPP_EFILE = "new+BPPTrendsImportReminderWorkItemService().createReminderWorkItemsForEFile(ApexUtility.getCurrentRollYear());";
-    
+    public static String RECORDER_WORKITEM="DataBase.executeBatch(new+RecorderIntegrationBatch('Pending',true),3);";
     /**
      * This method will create HTTP Post connection with Salesforce
      @return Http Post Connection
@@ -128,7 +128,7 @@ public class SalesforceAPI extends TestBase {
      * @param sqlQuery : Select SQL query
      * @return Json response in String format
      */
-    private String getJsonResponse(String sqlQuery) {
+    public String getJsonResponse(String sqlQuery) {
         String responseString = "";
         System.out.println("Executing Query : " + sqlQuery);
         try {
@@ -194,7 +194,7 @@ public class SalesforceAPI extends TestBase {
      * @param sqlQuery : Select SQL query
      * @return String json data in string
      */
-    public String getSelectQueryDateInJson(String sqlQuery) {
+    private String getSelectQueryDateInJson(String sqlQuery) {
         ReportLogger.INFO("Executing the query : " + sqlQuery);
         sqlQuery = sqlQuery.replace("%", "%25");
         sqlQuery = sqlQuery.replace(" ", "%20");

@@ -254,7 +254,22 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Linked Items']")
 	public WebElement linkedItemsTab;
+	
+	@FindBy(xpath = "//a[contains(text(),'Trail')][1]")
+	public WebElement firstRelatedBuisnessEvent;
+	
+	@FindBy(xpath = "//a[contains(text(),'Trail')][1]/ancestor::tr/following-sibling::tr//a[1]")
+	public WebElement secondRelatedBuisnessEvent;
+	
+	@FindBy(xpath = "//a[@data-label='Recorded APN(s)']")
+	public WebElement recordedAPNtab;
+	
+	
+	
 
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'Information')]//force-record-layout-item//button[@title = 'Edit Event ID']")
+	public WebElement editEventIdButton;
+    
 	public String editButton = "Edit";
 
 	public String wiActionDetailsPage = "Action";
@@ -287,6 +302,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String reassignButton = "Reassign";
 	public final String returnToPool="Return to Pool";
 	public final String markInProgress="Mark In Progress";
+	public String apnLabel ="APN";	
+	public String NewButton="New";
+	public String migrateAPN="Migrate APN(s)";
 
 
 
@@ -770,5 +788,14 @@ public class WorkItemHomePage extends ApasGenericPage {
 			Thread.sleep(3000);
 		}
 	}
+	
+	/*
+	 * public boolean verifyWorkPoolName(String workPoolName) {
+	 * 
+	 * boolean flag; String xpath = "//div/a/span[text()='"+workPoolName+"']"; flag
+	 * = objPageObj.verifyElementExists(xpath);
+	 * 
+	 * return flag; }
+	 */
 
 }

@@ -123,9 +123,9 @@ public class DisabledVeteran_ExemptionReport_Test extends TestBase{
 				
 		// Step3: Fetching data to verify column names in report
 		Map<String, String> activeExemptionDataMap;
-		String currentRollYear = "2021";
-		String previousRollYear = "2020";
-		String removeRollYear = "2019";
+		String currentRollYear = "2022";
+		String previousRollYear = "2021";
+		String removeRollYear = "2020";
 		String removeEntry1 = "6/30/" + previousRollYear;
 		String removeEntry2 = "7/1/" + removeRollYear;
 		String exemptionData = System.getProperty("user.dir") + testdata.EXEMPTION_REPORT_DATA;		
