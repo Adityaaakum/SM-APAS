@@ -64,6 +64,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String recordTypeDropdown = "Record Type";
 	public String typeOfAuditTrailDropdown = "Type of Audit Trail Record?";
 	public String sourceDropdown = "Source";
+	public String dateOfEventInputTextBox = "Date of Event";
 	public String dateOfValueInputTextBox = "Date of Value";
 	public String dateOfRecordingInputTextBox = "Date of Recording";
 	public String descriptionInputTextBox = "Description";
@@ -324,6 +325,63 @@ public class ParcelsPage extends ApasGenericPage {
 			return response;
 		}
 		
-		
+		/**
+		 * @Description: This method will fill all the fields in Adit Trail record to create unrecorded event
+		 * @param dataMap: A data map which contains data to create audit trail record
+		 * @throws Exception
+		 */
+		public String createUnrecordedEvent(Map<String, String> dataMap) throws Exception {
+			/*
+			 *  String
+			 * workItemType = dataMap.get("Work Item Type"); String actions =
+			 * dataMap.get("Actions"); String auditTrail = dataMap.get("Audit Trail");
+			 * String reference = dataMap.get("Reference"); String description =
+			 * dataMap.get("Description") + "_" + timeStamp; String priority =
+			 * dataMap.get("Priority"); String workItemRouting =
+			 * dataMap.get("Work Item Routing"); String dueDate = dataMap.get("Due Date");
+			 * String dov = dataMap.get("DOV"); String workItemOwner=
+			 * dataMap.get("Work Item Owner"); String workItemNumber;
+			 */
+			
+			String timeStamp = String.valueOf(System.currentTimeMillis());
+			String description = dataMap.get("Description") + "_" + timeStamp;
+			//String workItemNumber;
+			
+			waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
+			Click(getButtonWithText(componentActionsButtonText));
+			waitForElementToBeClickable(selectOptionDropdown);
+			selectOptionFromDropDown(selectOptionDropdown, "Create Audit Trail Record");
+			Click(getButtonWithText(nextButtonComponentsActionsModal));
+			waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);
+			
+			selectOptionFromDropDown(recordTypeDropdown, dataMap.get("Record Type"));
+			Thread.sleep(2000);
+			selectOptionFromDropDown(typeOfAuditTrailDropdown, dataMap.get("Type of Audit Trail Record?"));
+			selectOptionFromDropDown(sourceDropdown, dataMap.get("Source"));
+			enter(dateOfEventInputTextBox, dataMap.get("Date of Event"));
+			enter(dateOfValueInputTextBox, dataMap.get("Date of Value"));
+			enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
+			enter(descriptionInputTextBox, description);
+			Click(getButtonWithText(saveAndNextButton));
+			Thread.sleep(5000);
+			
+			//if(verifyElementExists(auditTrailElementPath)) selectOptionFromDropDown(auditTrailRecordDropDownComponentsActionsModal, auditTrail);
+
+			//if (reference != null)enter(referenceInputTextBoxComponentActionModal, reference);
+			//
+			//selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);
+			//selectOptionFromDropDown(workItemRoutingDropDownComponentsActionsModal, workItemRouting);
+			//if (dueDate != null) enter(dueDateInputTextBox, dueDate);
+			//if (dov != null) enter(dovInputTextBox, dov);
+			//if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
+			//Click(getButtonWithText(nextButtonComponentsActionsModal));
+			//Thread.sleep(3000);
+
+			//String workItemQuery = "SELECT Name FROM Work_Item__c where Description__c = '" + description + "' order by Name desc limit 1";
+			//workItemNumber = objSalesforceAPI.select(workItemQuery).get("Name").get(0);
+			//ReportLogger.INFO("Work item created is " + workItemNumber  );
+			
+			return getElementText(recordedDocumentApnGenerated);
+		}		
 		
 }

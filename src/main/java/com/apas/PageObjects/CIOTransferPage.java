@@ -39,6 +39,12 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String calculateOwnershipButtonLabel  = "Calculate Ownership";
 	public String checkOriginalTransferListButtonLabel = "Check Original Transfer List";
 	public String backToWIsButtonLabel = "Back to WIs";
+	public String transferCodeLabel = "Transfer Code";
+	public String transferDescriptionLabel = "Transfer Description";
+	public String transferStatusLabel = "CIO Transfer Status";
+	public String exemptionRetainLabel = "Exemption Retain";
+	public String saveButton ="Save";
+	public String finishButton ="Finish";
 	
 	
 	
@@ -223,10 +229,43 @@ public class CIOTransferPage extends ApasGenericPage {
 			return salesforceApi.select("select Name from Parcel__c where Id in (SELECT Parcel__c FROM Recorded_APN__c where Recorded_document__c ='"+RecordedDocId+"'");
 		}
 
-
-	    
-	
-	
-
-	  
+		
+		/**
+	     * Description: This method will click the pencil icon edit button against the label passed as argument
+	     * @param labelName: Takes Label Name as an argument
+	     */
+		 public void editRecordedApnField(String labelName) throws Exception {
+		        ReportLogger.INFO("Edit the field : " + labelName);
+		        Thread.sleep(1000);
+		        String xpathStr = "//span[text() = '" + labelName + "']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]";
+		        WebElement fieldLocator = locateElement(xpathStr, 30);
+		        Click(fieldLocator);
+		        Thread.sleep(1000);
+		    }
+		
+		 /**
+			 * @param fieldName:   Name of the field
+			 * @return Value of the field
+			 * @description: This method will return the value of the field passed in the parameter from the currently open page
+			 */
+			/*
+			 * public String getFieldValueFromRecorderApnTransfer(String fieldName) { String
+			 * fieldValue; String sectionXpath =
+			 * "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]"
+			 * ; String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='"
+			 * + fieldName + "']/../..//slot[@slot='outputField']";
+			 * 
+			 * String fieldXpath = fieldPath + "//force-hoverable-link//a | " + fieldPath +
+			 * "//lightning-formatted-text | " + fieldPath +
+			 * "//lightning-formatted-number | " + fieldPath +
+			 * "//lightning-formatted-rich-text | " + fieldPath +
+			 * "//force-record-type//span | " + fieldPath + "//lightning-formatted-name |" +
+			 * fieldPath + "//a"; waitForElementToBeVisible(20,fieldXpath); try{ fieldValue
+			 * = driver.findElement(By.xpath(fieldXpath)).getText(); }catch (Exception ex){
+			 * fieldValue= ""; }
+			 * 
+			 * System.out.println(fieldName + " : " + fieldValue); return fieldValue; }
+			 */
+		 
+		
 }

@@ -227,7 +227,6 @@ public class ExemptionsPage extends ApasGenericPage {
     @FindBy(xpath = "//div[text()='Basis for Claim']//following::button[@title='Move selection to Chosen'][1]")
     public WebElement basisForClaimButton;
 
-    //@FindBy(xpath = "//button[text() = 'Edit']")
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@name='Edit']")
     public WebElement editButton;
 
@@ -371,7 +370,12 @@ public class ExemptionsPage extends ApasGenericPage {
     public String exemptionNumber = "//lightning-formatted-text[contains(text(),'EXMPTN-')]";
 
     public String errorMessageOnTop = "//div[@class='pageLevelErrors']//li";
-
+    
+    /** Locators for Home Owner Exemptions **/
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[contains(@class,'slds-radio topdown-radio')]//span[text()='HOE']")
+    public WebElement homeOwnerExemptionRadioButton;
+  
+    
     /**
      * Description: This method is to determine the Roll Year of any given date(e.g Application received date)
      *
@@ -743,4 +747,42 @@ public class ExemptionsPage extends ApasGenericPage {
         
     }
     
+    /**
+     * Description: This method includes other methods and creates a Home Owner Exemption
+     * @param dataMap: Map that is storing values from JSON file
+     */
+
+    public void createHomeOwnerExemption(Map<String, String> dataMap) throws Exception {
+    	Thread.sleep(2000);
+        ReportLogger.INFO("Click 'New' button to fill the following details in the Home Owner Exemption record : " + dataMap);
+        Click(waitForElementToBeClickable(newExemptionButton));
+        Thread.sleep(2000);
+        waitForElementToBeClickable(apn, 10);
+        waitForElementToBeClickable(claimantName, 10);
+        enterHomeOwnerExemptionData(dataMap);
+        ReportLogger.INFO("Click 'Save' button to save the details entered in Exemption record");
+        saveExemptionRecord();
+    }
+    
+    
+    /**
+     * Description: This method will enter field values in Home Onwer Exemption screen
+     * @param dataMap: Map that is storing values from JSON file
+     */
+
+    public void enterHomeOwnerExemptionData(Map<String, String> dataMap) throws Exception {
+    	Click(homeOwnerExemptionRadioButton);
+    	Click(exemptionRecordTypeNextButton);
+    	String assesseeName = fetchAssesseeName();
+        String apnNumber = fetchActiveAPN();
+        
+        //searchAndSelectOptionFromDropDown(apn, apnNumber);
+        //searchAndSelectOptionFromDropDown(claimantName, assesseeName);
+        searchAndSelectOptionFromDropDown(claimantName, "new owner");
+        selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
+        
+        scrollToElement(getWebElementWithLabel(dateApplicationReceived));
+        enter(dateApplicationReceived, dataMap.get("Date Application Received"));
+        Thread.sleep(1000);
+    }
 }
