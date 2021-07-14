@@ -153,6 +153,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public String minGoodFactorEditBox = "Minimum Good Factor";
 	public String moreTabCompositeFactorSettings = "//div[contains(@class, 'column region-sidebar-right')]//button[@title = 'More Tabs']";
 
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[text() = 'Imported Valuation Factors']")
+	public WebElement bppImportedValuationFactorsTab;
 	/**
 	 * Description: Creates the BPP Composite Factor Setting on BPP trend status page
 	 * @param propertyType: Takes composite factor setting factor value as
