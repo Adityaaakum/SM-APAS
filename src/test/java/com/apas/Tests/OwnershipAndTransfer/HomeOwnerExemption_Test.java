@@ -59,21 +59,20 @@ public class HomeOwnerExemption_Test extends TestBase {
 	
 	/**
 	 Below test case is used to validate,
-	 -Mandatory check validations on edit Exemption screen using Edit button
-	 -Mandatory check validations on edit Exemption screen using Pencil Edit button
+	 -Exemption value, Exemption Type and Qualification fields are not retained if a Transfer Code with 'Retain Exemption' as 'No' is selected
 	 **/
 	
-	@Test(description = "SMAB-T522, SMAB-T527: Validate user is not able to edit and save Exemption record when mandatory fields are not entered before saving", groups = {"Regression","	", "HomeOwnerExemption"}, dataProvider = "loginCIOStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T3479: Validate Exemption value, Exemption Type and Qualification fields are not retained if a Transfer Code with 'Retain Exemption' as 'No' is selected", groups = {"Regression","ChangeInOwnershipManagement", "HomeOwnerExemption"}, dataProvider = "loginCIOStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void HomeOwnerExemption_ExemptionRetain(String loginUser) throws Exception {
 		
 		String apn = objApasGenericPage.fetchActiveAPN();
 		Map<String, String> dataToCreateHomeOwnerExemptionMap = objUtil.generateMapFromJsonFile(homeOwnerExemptionData, "NewHOECreation");
 		Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
 		
-		//Step1: Login to the APAS application using the user passed through the data provider
+		//Step1: Login to the APAS application
 		objApasGenericPage.login(users.SYSTEM_ADMIN);
 				
-		//Step2: Open the Exemption module
+		//Step2: Open the Parcel module and add values for Exemption fields
 		objApasGenericPage.searchModule(modules.PARCELS);
 		objApasGenericPage.globalSearchRecords(apn);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.editParcelButton));
@@ -81,23 +80,18 @@ public class HomeOwnerExemption_Test extends TestBase {
 		objApasGenericPage.scrollToElement(objApasGenericPage.getWebElementWithLabel(objParcelsPage.exemptionLabel));
 		objExemptionsPage.enter(objParcelsPage.exemptionLabel, dataToCreateHomeOwnerExemptionMap.get("Exemption"));
 		objExemptionsPage.selectMultipleValues(dataToCreateHomeOwnerExemptionMap.get("ExemptionType"), objParcelsPage.exemptionTypeLabel);
-		
 		objExemptionsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.saveParcelButton));
 		
-		/*Step3: Create data map for the JSON file (DisabledVeteran_DataToCreateExemptionRecord.json)
-				 Create Exemption record
-				 Capture the record id and Exemption Name*/
-		
-		//objApasGenericPage.searchModule(modules.EXEMPTION);
+		/*Step3: Open Exemption and create HOE*/
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.exemptionRelatedTab);
 		objExemptionsPage.createHomeOwnerExemption(dataToCreateHomeOwnerExemptionMap);
-		//String recordId = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
-		softAssert.assertTrue(exemptionName.contains("EXMPTN"),"SMAB-T522: Validate user is able to create Exemption with mandtory fields'");
+		softAssert.assertTrue(exemptionName.contains("EXMPTN"),"SMAB-T3479: Validate user is able to create Exemption with mandtory fields'");
 		
 		objApasGenericPage.logout();
 		Thread.sleep(5000);
 		
+		//Step4: Login from CIO Staff and update the Transfer code with Retain Exemption as No on CIO Transfer activity
 		objApasGenericPage.login(users.CIO_STAFF);
 		objApasGenericPage.searchModule(modules.PARCELS);
 		objApasGenericPage.globalSearchRecords(apn);
@@ -107,37 +101,39 @@ public class HomeOwnerExemption_Test extends TestBase {
 		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-SALE");
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferCodeLabel, ""),"CIO-SALE",
-				"SMAB-T2843,SMAB-T2838: Validate the Situs of child parcel generated");
+				"SMAB-T3479: Validate the Transfer Code on CIO Transfer screen");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferDescriptionLabel, ""),"Chg of Own, Ass, Sale",
-				"SMAB-T2843,SMAB-T2838: Validate the Situs of child parcel generated");
+				"SMAB-T3479: Validate the Transfer Description on CIO Transfer screen");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.exemptionRetainLabel, ""),"No",
-				"SMAB-T2843,SMAB-T2838: Validate the Situs of child parcel generated");
+				"SMAB-T3479: Validate the Exemption Retain field on CIO Transfer screen");
 		
+		//Step5: Submit for Approval
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.submitforApprovalButtonLabel));
 		Thread.sleep(1000);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
 		Thread.sleep(1000);
 		
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferStatusLabel, "System Information"),"Submitted for Approval",
-				"SMAB-T2843,SMAB-T2838: Validate the Situs of child parcel generated");
+				"SMAB-T3479: Validate the Transfer Activity status on CIO Transfer screen");
 		
 		objApasGenericPage.logout();
 		Thread.sleep(5000);
 		
+		//Step6: Login from Exemption Staff and verify the field values
 		objApasGenericPage.login(users.EXEMPTION_SUPPORT_STAFF);
 		objApasGenericPage.searchModule(modules.PARCELS);
 		objApasGenericPage.globalSearchRecords(apn);
 		
-		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objParcelsPage.exemptionTypeLabel, "Summary Values"),"",
-				"SMAB-T2843,SMAB-T2838: Validate the Situs of child parcel generated");
-		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objParcelsPage.exemptionLabel, "Summary Values"),"",
-				"SMAB-T2843,SMAB-T2838: Validate the Situs of child parcel generated");
+		softAssert.assertTrue(objCIOTransferPage.getFieldValueFromAPAS(objParcelsPage.exemptionTypeLabel, "Summary Values").equals(""),
+				"SMAB-T3479: Validate that 'Home Owner' value is removed from Exemption Type field on Parcel record");
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objParcelsPage.exemptionLabel, "Summary Values"),"$0",
+				"SMAB-T3479: Validate that 'Exemption' amount is removed from Exemption field on Parcel record");
 		
 		objApasGenericPage.searchModule(modules.EXEMPTION);
 		objApasGenericPage.globalSearchRecords(exemptionName);
 		
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objExemptionsPage.qualification, "General Information"),"Not Qualified",
-				"SMAB-T2843,SMAB-T2838: Validate the Situs of child parcel generated");
+				"SMAB-T3479: Validate that 'Qualification?' field is updated to on HOE Exemption record");
 		
 		objApasGenericPage.logout();
 		

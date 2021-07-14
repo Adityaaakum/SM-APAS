@@ -90,7 +90,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    public void addRecordedApn(String DocId,int count) throws Exception
 	    {
 	    	String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) Limit "+count;
-	    	  HashMap<String, ArrayList<String>> hashMapRecordedApn= salesforceApi.select(getApnToAdd);
+	    	HashMap<String, ArrayList<String>> hashMapRecordedApn= salesforceApi.select(getApnToAdd);
 	    	
 	    	if(count!=0) {
 	    		
@@ -237,35 +237,10 @@ public class CIOTransferPage extends ApasGenericPage {
 		 public void editRecordedApnField(String labelName) throws Exception {
 		        ReportLogger.INFO("Edit the field : " + labelName);
 		        Thread.sleep(1000);
-		        String xpathStr = "//span[text() = '" + labelName + "']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]";
+		        String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//span[text() = '" + labelName + "']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]";		        
 		        WebElement fieldLocator = locateElement(xpathStr, 30);
 		        Click(fieldLocator);
 		        Thread.sleep(1000);
 		    }
-		
-		 /**
-			 * @param fieldName:   Name of the field
-			 * @return Value of the field
-			 * @description: This method will return the value of the field passed in the parameter from the currently open page
-			 */
-			/*
-			 * public String getFieldValueFromRecorderApnTransfer(String fieldName) { String
-			 * fieldValue; String sectionXpath =
-			 * "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]"
-			 * ; String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='"
-			 * + fieldName + "']/../..//slot[@slot='outputField']";
-			 * 
-			 * String fieldXpath = fieldPath + "//force-hoverable-link//a | " + fieldPath +
-			 * "//lightning-formatted-text | " + fieldPath +
-			 * "//lightning-formatted-number | " + fieldPath +
-			 * "//lightning-formatted-rich-text | " + fieldPath +
-			 * "//force-record-type//span | " + fieldPath + "//lightning-formatted-name |" +
-			 * fieldPath + "//a"; waitForElementToBeVisible(20,fieldXpath); try{ fieldValue
-			 * = driver.findElement(By.xpath(fieldXpath)).getText(); }catch (Exception ex){
-			 * fieldValue= ""; }
-			 * 
-			 * System.out.println(fieldName + " : " + fieldValue); return fieldValue; }
-			 */
-		 
-		
+			
 }

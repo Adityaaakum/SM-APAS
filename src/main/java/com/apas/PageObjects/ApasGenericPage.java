@@ -515,26 +515,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 		}
 	}
 	
-	
-	
-	/*
-	 * public void searchModuleByNameorObject(String moduleName , String
-	 * moduleObjectName) throws IOException {
-	 * ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleName +
-	 * " tab");
-	 * 
-	 * try { //Method -1 waitForElementToBeClickable(appLauncher, 60);
-	 * Thread.sleep(5000); Click(appLauncher); //Method-2
-	 * waitForElementToBeClickable(appLauncherSearchBox, 60);
-	 * enter(appLauncherSearchBox, moduleName); Thread.sleep(2000);
-	 * clickNavOptionFromDropDown(moduleName); //This static wait statement is added
-	 * as the module title is different from the module to search
-	 * Thread.sleep(4000); } catch(Exception e ) { String moduleURL = envURL +
-	 * "/lightning/o/" + moduleObjectName; navigateTo(driver,moduleURL); }
-	 * 
-	 * }
-	 * 
-	 */
+
 	/**
 	 * Description: This method will logout the logged in user from APAS application
 	 */
