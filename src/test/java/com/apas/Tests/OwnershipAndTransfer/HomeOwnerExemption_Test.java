@@ -108,7 +108,7 @@ public class HomeOwnerExemption_Test extends TestBase {
 				"SMAB-T3479: Validate the Exemption Retain field on CIO Transfer screen");
 		
 		//Step5: Submit for Approval
-		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.submitforApprovalButtonLabel));
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
 		Thread.sleep(1000);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
 		Thread.sleep(1000);

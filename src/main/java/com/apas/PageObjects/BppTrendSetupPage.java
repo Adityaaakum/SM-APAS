@@ -88,7 +88,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	@FindBy(xpath = "//lst-list-view-row-level-action//button | //lst-list-view-row-level-action//a")
 	public WebElement dropDownIconDetailsSection;
 
-	@FindBy(xpath = "//div[@class = 'actionsContainer']//div[contains(@class, 'slds-float_right')]//button[@title = 'Save']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//button[text()= 'Save']")
 	public WebElement saveBtnInBppSettingPopUp;
 
 	@FindBy(xpath = "//button[@title = 'Cancel']//span[text() = 'Cancel']")
@@ -153,6 +153,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public String minGoodFactorEditBox = "Minimum Good Factor";
 	public String moreTabCompositeFactorSettings = "//div[contains(@class, 'column region-sidebar-right')]//button[@title = 'More Tabs']";
 
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[text() = 'Imported Valuation Factors']")
+	public WebElement bppImportedValuationFactorsTab;
 	/**
 	 * Description: Creates the BPP Composite Factor Setting on BPP trend status page
 	 * @param propertyType: Takes composite factor setting factor value as
@@ -167,20 +169,19 @@ public class BppTrendSetupPage extends ApasGenericPage {
 			waitForElementToBeVisible(bppCompositeFactorOption, 10);
 			javascriptClick(bppCompositeFactorOption);
 		} else {
-			javascriptClick(bppCompFactorSettingTab);
+			Click(bppCompFactorSettingTab);
 			if(!waitForElementToBeVisible(20,dropDownIconBppCompFactorSetting))
-				Click(bppCompFactorSettingTab);
+				javascriptClick(bppCompFactorSettingTab);
 			if(!waitForElementToBeVisible(20,dropDownIconBppCompFactorSetting))
-				Click(bppCompFactorSettingTab);
+				clickAction(bppCompFactorSettingTab);
 		}
 		if(waitForElementToBeVisible(20,dropDownIconBppCompFactorSetting))
-
 			Click(dropDownIconBppCompFactorSetting);
 		//clickAction(newBtnToCreateEntry);
 		if(!verifyElementVisible(newButton))
-			Click(dropDownIconBppCompFactorSetting);
+			javascriptClick(dropDownIconBppCompFactorSetting);
 		if(!verifyElementVisible(newButton))
-			Click(dropDownIconBppCompFactorSetting);
+			clickAction(dropDownIconBppCompFactorSetting);
 
 		Click(newButton);
 
@@ -219,6 +220,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	 * @throws: Exception
 	 */
 	public void createBppSetting(String equipIndexFactorValue) throws Exception {
+		
+		waitForElementToBeVisible(dropDownIconBppSetting,10);
 		if(verifyElementVisible(dropDownIconBppSetting))
 			Click(waitForElementToBeClickable(dropDownIconBppSetting));
 
@@ -413,7 +416,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public String createDummyBppTrendSetupForErrorsValidation(String compFactorTablesStatus, int rollYear) throws Exception {
 		//Step1: Click New button on the grid to open form / pop up to create new BPP Trend Setup
 		objPage.waitUntilElementIsPresent(30, "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']");
-		WebElement newButton = objPage.waitForElementToBeClickable(30,"//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']");
+		WebElement newButton = objPage.waitForElementToBeClickable(30,"//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//div[contains(@class, 'headerRegion forceListViewManagerHeader')]//a[@title = 'New']");
 		Click(newButton);
 
 		//Step2: Entering BPP trend setup name and roll year

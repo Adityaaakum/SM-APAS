@@ -25,20 +25,21 @@ public class CIOTransferPage extends ApasGenericPage {
 		super(driver);
 		PageFactory.initElements(driver, this);
 		objUtil = new Util();
-		salesforceApi=new SalesforceAPI();
-		objMappingPage= new MappingPage(driver);
-		
-		
+		salesforceApi = new SalesforceAPI();
+		objMappingPage = new MappingPage(driver);
+
 	}
-	
-	public String ApnLabel ="APN";
-	int counterForFailedattempts=0;
+
+	public String ApnLabel = "APN";
+	int counterForFailedattempts = 0;
 	public String componentActionsButtonLabel = "Component Actions";
-	public String submitforApprovalButtonLabel = "Submit for Approval";
 	public String copyToMailToButtonLabel = "Copy to Mail To";
-	public String calculateOwnershipButtonLabel  = "Calculate Ownership";
+	public String calculateOwnershipButtonLabel = "Calculate Ownership";
 	public String checkOriginalTransferListButtonLabel = "Check Original Transfer List";
+	public String finishButtonLabel = "Finish";
+	public final String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 	public String backToWIsButtonLabel = "Back to WIs";
+
 	public String transferCodeLabel = "Transfer Code";
 	public String transferDescriptionLabel = "Transfer Description";
 	public String transferStatusLabel = "CIO Transfer Status";
@@ -46,42 +47,44 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String saveButton ="Save";
 	public String finishButton ="Finish";
 	
-	
-	
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
 	public WebElement relatedListTab;
-	
-    @FindBy(xpath = "//button[@name='New'][1]")
+
+	@FindBy(xpath = "//button[@name='New'][1]")
 	public WebElement NewRecordedAPNsButton;
-    
-    @FindBy(xpath = "//button[@name='SaveEdit']")
-    public WebElement SaveButton;
-    
-    @FindBy(xpath = "//*[@class='flexipage-tabset']//a[1]")
-    public WebElement RelatedTab;
-	
+
+	@FindBy(xpath = "//*[@class='flexipage-tabset']//a[1]")
+	public WebElement RelatedTab;
+
 	@FindBy(xpath = "//div[contains(@class,'uiOutputRichText')]")
 	public WebElement confirmationMessageOnTranferScreen;
-	
+
 	@FindBy(xpath = "//div[@class='highlights slds-clearfix slds-page-header slds-page-header_record-home']//ul[@class='slds-button-group-list']//lightning-primitive-icon")
 	public WebElement quickActionButtonDropdownIcon;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Back']")
-	public WebElement quickActionOptionBack;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Approve']")
+
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Approve']")
 	public WebElement quickActionOptionApprove;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Return']")
+
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Return']")
 	public WebElement quickActionOptionReturn;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Submit for Review']")
+
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Submit for Review']")
 	public WebElement quickActionOptionSubmitForReview;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//*[@class='slds-truncate' and text()='Review Complete']")
+
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Review Complete']")
 	public WebElement quickActionOptionReviewComplete;
-	
-	
+
+	@FindBy(xpath = commonXpath
+			+ "//*[@class='slds-truncate' and text()='Back to WIs'] | //button[text()='Back to WIs']")
+	public WebElement quickActionOptionBackToWIs;
+
+	@FindBy(xpath = commonXpath
+			+ "//*[@class='slds-truncate' and text()='Submit for Approval'] | //button[text()='Submit for Approval']")
+	public WebElement quickActionOptionSubmitForApproval;
+
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
+	public WebElement quickActionOptionBack;
+
 	/*
 	    * This method adds the recorded APN in Recorded-Document
 	    * 
@@ -89,6 +92,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    
 	    public void addRecordedApn(String DocId,int count) throws Exception
 	    {
+
 	    	String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) Limit "+count;
 	    	HashMap<String, ArrayList<String>> hashMapRecordedApn= salesforceApi.select(getApnToAdd);
 	    	
@@ -107,15 +111,14 @@ public class CIOTransferPage extends ApasGenericPage {
 							Click(NewRecordedAPNsButton);
 							enter(ApnLabel, Name);
 							selectOptionFromDropDown(ApnLabel, Name);
-							Click(SaveButton);
+							Click(getButtonWithText(SaveButton));
 							driver.navigate().back();
 							driver.navigate().back();
 							ReportLogger.INFO("Recorded APN Name added "+Name);
 							
 						} catch (Exception e) {
 						ReportLogger.INFO("UNABLE TO ADD RECORDED APN!!");	
-						}
-						   		
+						}						   		
 	        	});       	
 	        }
 	    	}	 	   
@@ -123,7 +126,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    
 	    /*
 	     * 
-	     * This method triggers the job to get the desried WI for given document type and APN count
+	     * This method triggers the job to get the desired WI for given document type and APN count
 	     */
 	    
 	    public void generateRecorderJobWorkItems(String DocType,int ApnCount) throws IOException
@@ -143,6 +146,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
 	    		ReportLogger.INFO("Genrated Recorded WorkeItems."); 
 	    		counterForFailedattempts=0;
+	    		Thread.sleep(3000);
 	    		return;
 	    		}
 	    		if(ApnCount<0)
@@ -159,16 +163,33 @@ public class CIOTransferPage extends ApasGenericPage {
 	    		 * 
 	    		 */
 	    		counterForFailedattempts=0;	    		
-	    		ReportLogger.INFO("SORRY!! NO RECORDER DOC FOUND WITH THE GIVEN TYPE AND APN COUNT");
-	    			
-	    		 		
+	    		ReportLogger.INFO("SORRY!! NO RECORDER DOC FOUND WITH THE GIVEN TYPE AND APN COUNT");    		 		
 	    		
 			}
 	    	
-	    	
-	    	
-	    	
 	    }
+	    /*
+	     * 
+	     * This is an overloaded version that generates WI based on  only RecordedDocumentID,this method is more emphasised when particular APN data needs to be used for a given recorded document
+	     */
+	    
+	    public void generateRecorderJobWorkItems(String RecordedDocumentId) throws IOException
+	    {
+	    	try {
+	    	markPendingRecordedDocsAsProcessed();
+	    	salesforceApi.update("recorded_document__c" , RecordedDocumentId, "Status__c","Pending");
+ 		ReportLogger.INFO("Marking "+RecordedDocumentId+"in Pending state");
+ 		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
+ 		ReportLogger.INFO("Genrated Recorded WorkeItems."); 
+	    	
+	    	}
+	    	catch (Exception e) {
+	    		ReportLogger.INFO("SORRY!! WorkItem cannot be genrated");
+			}	    	
+	    }
+	    
+	    
+	    
 	    /*
 	     * This methods marks all the pending recorder doc's to processed
 	     * 
@@ -228,7 +249,6 @@ public class CIOTransferPage extends ApasGenericPage {
 			
 			return salesforceApi.select("select Name from Parcel__c where Id in (SELECT Parcel__c FROM Recorded_APN__c where Recorded_document__c ='"+RecordedDocId+"'");
 		}
-
 		
 		/**
 	     * Description: This method will click the pencil icon edit button against the label passed as argument
@@ -244,3 +264,4 @@ public class CIOTransferPage extends ApasGenericPage {
 		    }
 			
 }
+

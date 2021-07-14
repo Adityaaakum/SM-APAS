@@ -71,7 +71,9 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		//Step2: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with tables status as status: " + tablesStatus);
 		objBppTrendSetupPage.login(users.BUSINESS_ADMIN);
-
+		Thread.sleep(5000);
+		objBppTrendSetupPage.closeDefaultOpenTabs();
+		
 		//Step3: Opening the BPP Trend module and set All as the view option in grid
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
 		objBppTrendSetupPage.displayRecords("All");
@@ -222,7 +224,9 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		//Step2: Login to the APAS application using the given user
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Executing the tests case with tables status as '"+ tableStatus +"'");
 		objBppTrendSetupPage.login(users.BUSINESS_ADMIN);
-
+		Thread.sleep(7000);
+		objBppTrendSetupPage.closeDefaultOpenTabs();
+		
 		//Step3: Opening the BPP Trend module and set All as the view option in grid
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
 		objBppTrendSetupPage.displayRecords("All");
@@ -331,8 +335,14 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 
 		//Step5: Clicking on Imported Valuation Factors tab and validating whether its table is visible
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Imported Valuation Factors tab on details page");
+		if(objBppTrnPg.verifyElementVisible(objBppTrendSetupPage.bppImportedValuationFactorsTab))
+			objBppTrnPg.Click(objBppTrendSetupPage.bppImportedValuationFactorsTab);
+		else
+		{
 		objBppTrnPg.Click(objBppTrendSetupPage.moreTabLeftSection);
+	
 		objBppTrnPg.javascriptClick(objBppTrendSetupPage.dropDownOptionBppImportedValuationFactors);
+		}
 		objBppTrnPg.waitForElementToBeVisible(20,objBppTrendSetupPage.bppImportedValuationFactorsTableSection);
 		boolean bppImportedValFactorTableVisible = objBppTrnPg.waitForElementToBeVisible(20,objBppTrendSetupPage.bppImportedValuationFactorsTableSection);
 		softAssert.assertTrue(bppImportedValFactorTableVisible, "SMAB-T229: Verify Imported Valuation Factors tab is displayed on BPP Trend setup Page");
@@ -420,8 +430,14 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 
 		//Step5: Clicking on BPP property index factor tab and validating whether its table is visible
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking on Valuation Factors tab on details page");
+		if(objBppTrnPg.verifyElementVisible(objBppTrendSetupPage.bppImportedValuationFactorsTab))
+			objBppTrnPg.Click(objBppTrendSetupPage.bppImportedValuationFactorsTab);
+		else
+		{
 		objBppTrnPg.Click(objBppTrendSetupPage.moreTabLeftSection);
+	
 		objBppTrnPg.javascriptClick(objBppTrendSetupPage.dropDownOptionBppImportedValuationFactors);
+		}
 		objBppTrnPg.waitForElementToBeVisible(objBppTrendSetupPage.bppImportedValuationFactorsTableSection, 20);
 
 		//Step6: Clicking on the show more button and validating presence of Edit button
