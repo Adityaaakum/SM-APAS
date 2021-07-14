@@ -385,7 +385,7 @@ public class DataProviders {
     
     /**
    	 * Below function will be used to login to application with CIO Supervisor
-   	 * @returns: Return the user CIO Staff
+   	 * @returns: Return the user CIO Supervisor
    	 **/
     @DataProvider(name = "loginCIOSupervisor")
     public Object[][] dpCIOSupervisor() {
