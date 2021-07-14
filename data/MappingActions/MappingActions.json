@@ -1,0 +1,21 @@
+{
+  "DataToPerformMappingAction": {
+    "OneToOneAction": "One To One",
+    "SpiltACtion": "Perform Parcel Split",
+    "RemapAction": "Perform Parcel Remap",
+    "RetireAction" :  "Retire",
+    "ManyToManyAction": "Many To Many",
+    "CombineAction": "Perform Parcel Combine" 
+  },
+  "DataToPerformValidationForNetLandLossOnMappingActionScreen": {
+    "OneToOneAction": "One To One",
+    "SpiltACtion": "Perform Parcel Split",
+    "ManyToManyAction": "Many To Many",
+    "CombineAction": "Perform Parcel Combine" 
+  },
+  "DataToPerformValidationForOwnershipOnMappingActionScreen": {
+    "ManyToManyAction": "Many To Many",
+    "CombineAction": "Perform Parcel Combine" 
+  }
+  
+  }
