@@ -261,9 +261,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath = "//a[contains(text(),'Trail')][1]/ancestor::tr/following-sibling::tr//a[1]")
 	public WebElement secondRelatedBuisnessEvent;
 	
-	@FindBy(xpath = "//a[@id='customTab4__item']")
-	public WebElement RecordedApnTab;
-	
+	@FindBy(xpath = "//a[@data-label='Recorded APN(s)']")
+	public WebElement recordedAPNtab;
 	
 	
 	
@@ -303,7 +302,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String reassignButton = "Reassign";
 	public final String returnToPool="Return to Pool";
 	public final String markInProgress="Mark In Progress";
-	String ApnLabel ="APN";
+	public String apnLabel ="APN";	
+	public String NewButton="New";
+	public String migrateAPN="Migrate APN(s)";
 
 
 
