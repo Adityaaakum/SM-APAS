@@ -1066,7 +1066,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 	public void clickShowMoreLink(String entryDetails) throws Exception {
 		String xpathStr = "//table//tbody/tr//th//a//span[text() = '" + entryDetails + "']//parent::*//ancestor::th//following-sibling::td//button | //table//tbody/tr//th//a[text() ='" + entryDetails + "']//ancestor::th//following-sibling::td//a[@role='button']";
 		WebElement modificationsIcon = locateElement(xpathStr, 60);
-		clickAction(modificationsIcon);
+		Click(modificationsIcon);
 		waitUntilElementIsPresent(menuList, 5);
 	}
 
