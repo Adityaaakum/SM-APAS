@@ -174,7 +174,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3390,SMAB-T3467 : Verify that When CIO users navigates to quick action dropdown button different CIO users are able to view different dropdown buttons", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3390,SMAB-T3468 : Verify that When CIO users navigates to quick action dropdown button different CIO users are able to view different dropdown buttons", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "SecurityAndSharing" })
 	public void QuickActionButtonsValidation_CIOTransferScreen_SubmitForReview(String loginUser) throws Exception {
 
@@ -234,7 +234,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		objCIOTransferPage.waitForElementToBeInVisible(objCIOTransferPage.xpathSpinner, 6);
 
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
-				"SMAB-T3467: Validation that componentActionsButtonLabel  button is not visible CIO staff after submit for review");
+				"SMAB-T3468: Validation that componentActionsButtonLabel  button is not visible CIO staff after submit for review");
 		objCIOTransferPage.logout();
 
 		// Step6: CIO supervisor now logs in and navigates to the above transfer screen
@@ -245,7 +245,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
 
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
-				"SMAB-T3467: Validation that componentActionsButtonLabel  button is not visible CIO supervisor after submit for review");
+				"SMAB-T3468: Validation that componentActionsButtonLabel  button is not visible CIO supervisor after submit for review");
 		softAssert.assertTrue(objCIOTransferPage.verifyElementVisible(objCIOTransferPage.calculateOwnershipButtonLabel),
 				"SMAB-T3390: Validation that calculateOwnershipButtonLabel button is visible CIO supervisor");
 		softAssert.assertTrue(objCIOTransferPage.verifyElementVisible(objCIOTransferPage.copyToMailToButtonLabel),
@@ -279,7 +279,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
 		objCIOTransferPage.waitForElementToBeInVisible(objCIOTransferPage.xpathSpinner, 6);
 		softAssert.assertTrue(objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
-				"SMAB-T3467: Validation that componentActionsButtonLabel  button is  visible to supervisor after WI is reviewed");
+				"SMAB-T3468: Validation that componentActionsButtonLabel  button is  visible to supervisor after WI is reviewed");
 
 		driver.switchTo().window(parentWindow);
 		objCIOTransferPage.logout();
