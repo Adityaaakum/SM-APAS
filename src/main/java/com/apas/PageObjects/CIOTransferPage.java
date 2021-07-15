@@ -78,6 +78,8 @@ public class CIOTransferPage extends ApasGenericPage {
 
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
+	
+     public final String DOC_DEED="DE";
 
 	/*
 	    * This method adds the recorded APN in Recorded-Document
