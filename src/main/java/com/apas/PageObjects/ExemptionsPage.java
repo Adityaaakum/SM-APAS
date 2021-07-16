@@ -234,7 +234,7 @@ public class ExemptionsPage extends ApasGenericPage {
     @FindBy(xpath = "//div[@role='menu']//li[@class='uiMenuItem']/a[@title = 'Edit']")
     public WebElement editMenuItemButton;
 
-    @FindBy(xpath = "//lightning-formatted-text[contains(text(),'EXMPTN-')]")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//lightning-formatted-text[contains(text(),'EXMPTN-')]")
     public WebElement exemptionName;
     
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text() = 'New']")
@@ -742,4 +742,5 @@ public class ExemptionsPage extends ApasGenericPage {
         objSalesforceAPI.update("Roll_Year_Settings__c", openRollYear, "Status__c", "Closed");
         
     }
+    
 }

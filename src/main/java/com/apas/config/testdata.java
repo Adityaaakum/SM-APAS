@@ -66,8 +66,15 @@ public interface testdata {
 	String ROUTING_ASSIGNMENT = userDirectory + "\\data\\RoutingAssignment\\RoutingAssignment.json";
 	String Brand_New_Parcel_MAPPING_ACTION = userDirectory+"\\data\\MappingActions\\BrandNewParcelMapping.json";
 	String MANY_TO_MANY_MAPPING_ACTION = userDirectory + "\\data\\MappingActions\\ManyToManyMappingAction.json";
+	String ASSESEE_DATA = userDirectory + "\\data\\Assesee\\AsseseeData.json";
 	String MANUAL_PARCEL_CREATION_DATA=userDirectory+"\\data\\MappingActions\\Parcel.json";
 	String BOEACtivation_MAPPING_ACTION= userDirectory + "\\data\\MappingActions\\BOEActivationMapping.json";
+	String PARCEL_MAPPING_ACTION=userDirectory + "\\data\\MappingActions\\MappingActions.json";
 	
+	
+	
+	
+	
+
 
 }
