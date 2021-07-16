@@ -442,7 +442,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objWorkItemHomePage.logout();
 	}
 	
-	@Test(description = "SMAB-T2898:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"BOEACtivation\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2832,SMAB-T2898:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"BOEACtivation\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_BOEACtivation_MappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 		String childAPNPUC;

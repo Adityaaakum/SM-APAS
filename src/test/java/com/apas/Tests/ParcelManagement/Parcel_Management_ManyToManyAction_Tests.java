@@ -1307,7 +1307,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 	}
-	@Test(description = "SMAB-T2683:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"ManyToMany\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2673,SMAB-T2683:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"ManyToMany\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_ManyToManyMappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 
