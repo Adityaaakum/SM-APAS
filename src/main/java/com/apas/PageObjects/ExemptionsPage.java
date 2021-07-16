@@ -777,8 +777,7 @@ public class ExemptionsPage extends ApasGenericPage {
         String apnNumber = fetchActiveAPN();
         
         //searchAndSelectOptionFromDropDown(apn, apnNumber);
-        searchAndSelectOptionFromDropDown(claimantName, "new owner");
-        //searchAndSelectOptionFromDropDown(claimantName, assesseeName);
+        searchAndSelectOptionFromDropDown(claimantName, assesseeName);
         selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
         
         scrollToElement(getWebElementWithLabel(dateApplicationReceived));
