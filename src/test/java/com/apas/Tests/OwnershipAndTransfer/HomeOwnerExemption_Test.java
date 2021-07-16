@@ -98,6 +98,7 @@ public class HomeOwnerExemption_Test extends TestBase {
 		String transferActivityId = objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
 		
 		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-SALE");
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferCodeLabel, ""),"CIO-SALE",
@@ -109,9 +110,9 @@ public class HomeOwnerExemption_Test extends TestBase {
 		
 		//Step5: Submit for Approval
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
-		Thread.sleep(1000);
+		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.finishButton);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
-		Thread.sleep(1000);
+		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferStatusLabel);
 		
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferStatusLabel, "System Information"),"Submitted for Approval",
 				"SMAB-T3479: Validate the Transfer Activity status on CIO Transfer screen");

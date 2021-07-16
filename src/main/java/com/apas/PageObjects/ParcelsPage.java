@@ -347,7 +347,6 @@ public class ParcelsPage extends ApasGenericPage {
 			selectOptionFromDropDown(typeOfAuditTrailDropdown, dataMap.get("Type of Audit Trail Record?"));
 			selectOptionFromDropDown(sourceDropdown, dataMap.get("Source"));
 			enter(dateOfEventInputTextBox, dataMap.get("Date of Event"));
-			enter(dateOfValueInputTextBox, dataMap.get("Date of Value"));
 			enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
 			enter(descriptionInputTextBox, description);
 			Click(getButtonWithText(saveAndNextButton));
