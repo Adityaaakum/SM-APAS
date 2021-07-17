@@ -779,7 +779,6 @@ public class ExemptionsPage extends ApasGenericPage {
         //searchAndSelectOptionFromDropDown(apn, apnNumber);
         searchAndSelectOptionFromDropDown(claimantName, assesseeName);
         selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
-        
         scrollToElement(getWebElementWithLabel(dateApplicationReceived));
         enter(dateApplicationReceived, dataMap.get("Date Application Received"));
         Thread.sleep(1000);

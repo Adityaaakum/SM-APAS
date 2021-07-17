@@ -1335,9 +1335,9 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
      * @return
      * @throws Exception
      */
-    public void deleteOwnershipFromParcel(String apn)
+    public void deleteOwnershipFromParcel(String apnId)
     {
-  	  String query ="SELECT  Id FROM Property_Ownership__c where parcel__c='" +apn+"'";
+  	  String query ="SELECT  Id FROM Property_Ownership__c where parcel__c='" +apnId+"'";
   	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
   	  
   	  if(!response.isEmpty())
