@@ -54,6 +54,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String RecordedApnTransfer="Recorded APN Transfer";
 	public String Edit="Edit";
 	public String Status="Status";
+	public final String DOC_DEED="DE";
 	
 
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
@@ -94,11 +95,9 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
 	
-	@FindBy(xpath = "//a[contains(@href,'Mail_To')]")
-	public WebElement newMailToButton;
 	
-     public final String DOC_DEED="DE";
-
+	
+     
 	/*
 	    * This method adds the recorded APN in Recorded-Document
 	    * 
