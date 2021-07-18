@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.print.DocFlavor.STRING;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -40,6 +42,19 @@ public class CIOTransferPage extends ApasGenericPage {
 	public final String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 	public String backToWIsButtonLabel = "Back to WIs";
 	public String saveButton ="Save";
+	public String newButton="New";
+	public String formattedName1Label="Formatted Name1";
+	public String startDate="Start Date";
+	public String endDate="End Date";
+	public String mailingZip="Mailing Zip";
+	public String CancelButton="Cancel";
+	public String LastNameLabel="Last Name";
+	public String OwnershipStartDate="Ownership Start Date";
+	public String OwnershipEndDate="Ownership End Date";
+	public String RecordedApnTransfer="Recorded APN Transfer";
+	public String Edit="Edit";
+	public String Status="Status";
+	
 
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
 	public WebElement relatedListTab;
@@ -78,6 +93,9 @@ public class CIOTransferPage extends ApasGenericPage {
 
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
+	
+	@FindBy(xpath = "//a[contains(@href,'Mail_To')]")
+	public WebElement newMailToButton;
 	
      public final String DOC_DEED="DE";
 
@@ -220,6 +238,7 @@ public class CIOTransferPage extends ApasGenericPage {
 			Thread.sleep(5000);
 	    	
 	    }
+	    
 	    
 	   /*
 	    * This method returns the DocId with required no of apns

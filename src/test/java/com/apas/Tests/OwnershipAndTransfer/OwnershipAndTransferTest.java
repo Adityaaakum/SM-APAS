@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.bcel.generic.NEW;
 import org.json.JSONObject;
+import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -110,10 +111,100 @@ public class OwnershipAndTransferTest extends TestBase implements testdata, modu
 			
 			
 	}
-			
-	        
 	
+	/*
+	 * Verify that NO APN WI is genrated for document without APN and user has the ability to add recorded APN on it to create a WI for MAPPING OR CIO
+	 * 
+	 */
+	
+	@Test(description = "SMAB-T3279,SMAB-T3281:Verify that User is not able to enter end date less than start date for mail to and grantee records in CIO transfer", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer" })
+	public void OwnershipAndTransfer_VerifyValidationofMailToAndGranteeRecords(String loginUser) throws Exception {
 		
-	
+		  String execEnv= System.getProperty("region");		
+  	    
+  	      String OwnershipAndTransferCreationData =  testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+	       Map<String, String> hashMapOwnershipAndTransferCreationData = objUtil.generateMapFromJsonFile(OwnershipAndTransferCreationData,
+				"dataToCreateMailToRecordsWithIncompleteData");
+	  
+		  String OwnershipAndTransferGranteeCreationData =  testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		  Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(OwnershipAndTransferGranteeCreationData,
+				"dataToCreateGranteeWithIncompletedData");
+  	    
+  	
+			//login with sys admin
+         objMappingPage.login(users.SYSTEM_ADMIN);
+		   objMappingPage.searchModule(PARCELS);
+		   salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c","In Progress");
+		   Cio.generateRecorderJobWorkItems(Cio.DOC_DEED, 1);
+		   //Query to fetch WI
+			String WorkItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";					
+	        String WorkItemNo=salesforceAPI.select(WorkItemQuery).get("Name").get(0);
+	        objMappingPage.globalSearchRecords(WorkItemNo);	
+	        Thread.sleep(9000);
+	        objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+	        objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);	        
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+			
+			//Clicking on related action link			
+			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+			String parentWindow=driver.getWindowHandle();				  				
+			objWorkItemHomePage.switchToNewWindow(parentWindow);			
+			
+			//Finding the RAT ID
+			String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + WorkItemNo + "'";
+			HashMap<String, ArrayList<String>> navigationUrL = salesforceAPI.select(queryRecordedAPNTransfer);			   
+			   String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+			 //Navigating to mail to screen			   
+		   
+		   driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+""+"/related/CIO_Transfer_Mail_To__r/view");
+		   //Creating mail to record
+		  
+		   Cio.Click(Cio.getButtonWithText(Cio.newButton));
+		   Cio.enter(Cio.formattedName1Label, hashMapOwnershipAndTransferCreationData.get("Formatted Name1"));
+		   Cio.enter(Cio.startDate, hashMapOwnershipAndTransferCreationData.get("Start Date"));
+		   Cio.enter(Cio.endDate, "7/15/2021");
+		   Cio.enter(Cio.mailingZip,hashMapOwnershipAndTransferCreationData.get("Mailing Zip"));		   
+		   softAssert.assertContains(Cio.saveRecordAndGetError(),"Start Date","SMAB-T3279: Verify user is not able to save mail to record with enddate less than start date");
+	       Cio.Click(Cio.getButtonWithText(Cio.CancelButton));
+	       
+	       //Creating mail to record with correct data
+	       Cio.waitForElementToBeClickable(Cio.newButton, 3);
+           Cio.Click(Cio.getButtonWithText(Cio.newButton));
+	       Cio.enter(Cio.formattedName1Label, hashMapOwnershipAndTransferCreationData.get("Formatted Name1"));
+	       Cio.enter(Cio.startDate, hashMapOwnershipAndTransferCreationData.get("Start Date"));
+	       Cio.enter(Cio.endDate,  hashMapOwnershipAndTransferCreationData.get("Start Date"));
+		   Cio.enter(Cio.mailingZip,hashMapOwnershipAndTransferCreationData.get("Mailing Zip"));
+		   Cio.Click(Cio.getButtonWithText(Cio.saveButton));
+		   Cio.waitForElementToBeVisible(3,Cio.formattedName1Label );		  
+		   softAssert.assertContains( Cio.getFieldValueFromAPAS(Cio.formattedName1Label),hashMapOwnershipAndTransferCreationData.get("Formatted Name1"),"SMAB-T3279: Verify user is  able to save mail to record with enddate greater than start date");
+		   //Navigating to grantee scren
+		   
+		   driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+		   
+		   Cio.waitForElementToBeVisible(5,Cio.newButton);
+		   Cio.Click(Cio.getButtonWithText(Cio.newButton));
+		   Cio.enter(Cio.LastNameLabel, hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+		   Cio.enter(Cio.OwnershipStartDate, hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"));
+		   Cio.enter(Cio.OwnershipEndDate, "7/15/2021");
+		   Cio.Click(Cio.getButtonWithText(Cio.saveButton));
+		   softAssert.assertContains( Cio.getFieldValueFromAPAS(Cio.LastNameLabel),hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"),"SMAB-T3281: Verify user is  able to save mail to record with enddate greater than start date,as by default DOR is taken as a ownership start date");
+		   softAssert.assertContains( Cio.getFieldValueFromAPAS(Cio.Status),"Active","SMAB-T3281: Verifying that status of grantee is active");
+		   //Editing the grantee record to make ownership end date lesser than ownership start date
+		   
+		   Cio.waitForElementToBeVisible(5,Cio.Edit);
+		   Cio.Click(Cio.getButtonWithText(Cio.Edit));
+		   Cio.enter(Cio.OwnershipStartDate, hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"));
+		   
+		   softAssert.assertContains(Cio.saveRecordAndGetError(),"Start Date","SMAB-T3281: Verify user is not able to save grantee  record with ownership enddate less than ownership start date");
+		   Cio.Click(Cio.getButtonWithText(Cio.CancelButton));
+		
+		   //logging out
+		   Cio.logout();
+		   
+		   
+		   
+		   
 
+}
 }

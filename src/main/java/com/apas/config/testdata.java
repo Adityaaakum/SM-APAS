@@ -70,6 +70,7 @@ public interface testdata {
 	String MANUAL_PARCEL_CREATION_DATA=userDirectory+"\\data\\MappingActions\\Parcel.json";
 	String BOEACtivation_MAPPING_ACTION= userDirectory + "\\data\\MappingActions\\BOEActivationMapping.json";
 	String PARCEL_MAPPING_ACTION=userDirectory + "\\data\\MappingActions\\MappingActions.json";
+	String OWNERSHIP_AND_TRANSFER_CREATION_DATA= userDirectory+"\\data\\OwnershipAndTransfer\\OwnershipAndTrasnferData.json";
 	
 	
 	
