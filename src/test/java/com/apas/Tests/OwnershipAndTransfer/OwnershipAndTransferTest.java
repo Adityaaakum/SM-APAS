@@ -113,8 +113,7 @@ public class OwnershipAndTransferTest extends TestBase implements testdata, modu
 	}
 	
 	/*
-	 * Verify that NO APN WI is genrated for document without APN and user has the ability to add recorded APN on it to create a WI for MAPPING OR CIO
-	 * 
+	 * Verify that User is unable to add mail-to and grantee records having end date prior to start date in recorded APN transfer screen.	  
 	 */
 	
 	@Test(description = "SMAB-T3279,SMAB-T3281:Verify that User is not able to enter end date less than start date for mail to and grantee records in CIO transfer", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
