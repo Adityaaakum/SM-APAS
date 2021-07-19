@@ -295,11 +295,16 @@ public class ApasGenericPage extends Page {
         String xpathDropDownOption;
         if (element instanceof String) {
             webElement = getWebElementWithLabel((String) element);
-            xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()=\""+element+"\"]/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
+            xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or "
+            		+ "contains(@class,'windowViewMode-maximized')]"
+            		+ "//label[text()=\""+element+"\"]/..//*[(@title='" + value + "') or "
+            				+ "(text() = '" + value + "')]";
         } else{
             webElement = (WebElement) element;
             //xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@title='" + value + "']";
-            xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
+            xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or "
+            		+ "contains(@class,'windowViewMode-maximized') or "
+            		+ "contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
         }
         
         enter(webElement, value);
@@ -1155,7 +1160,8 @@ public void searchModule(String moduleToSearch) throws Exception {
 	}
 
 	public String getAlertMessage() throws Exception {
-		WebElement AlertText = locateElement("//div[contains(@class, 'toastContent')]//span[contains(@class, 'toastMessage')]",15);
+		WebElement AlertText = locateElement("//div[contains(@class, 'toastContent')]"
+				+ "//span[contains(@class, 'toastMessage')]",15);
 		String alertTxt = AlertText.getText();
 		return alertTxt;
 	}
@@ -1256,7 +1262,8 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
    public String getErrorMessage() throws Exception {
 	   	String ErrorTxt = "";
 	   	Thread.sleep(2000);
-		List<WebElement> ErrorText = locateElements("//div[contains(@class,'color_error')] |//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
+		List<WebElement> ErrorText = locateElements("//div[contains(@class,'color_error')] |"
+				+ "//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
 	   	if(ErrorText.get(0).getAttribute("class").contains("color_error")){
 			for(WebElement errorMsg : ErrorText){
 				ErrorTxt = (ErrorTxt + errorMsg.getText()).trim();
