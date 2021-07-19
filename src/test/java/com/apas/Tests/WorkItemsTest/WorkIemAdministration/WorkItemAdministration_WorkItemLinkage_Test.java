@@ -360,9 +360,9 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
 		String actualApnOnWIDetailsTab = objWorkItemHomePage.getFieldValueFromAPAS("APN");
 		String actualNavigationURL = objWorkItemHomePage.getFieldValueFromAPAS("Navigation Url");
 		
-		softAssert.assertEquals(actualApnOnWIDetailsTab, expectedUpdatedAPN, "SMAB-T2675: "
+		softAssert.assertEquals(actualApnOnWIDetailsTab, expectedUpdatedAPN, "SMAB-T2619,SMAB-T2675: "
 				+ "Verify APN field has the updated APN :"+actualApnOnWIDetailsTab);
-		softAssert.assertEquals(actualNavigationURL, expectedNavigationURL, "SMAB-T2675: "
+		softAssert.assertEquals(actualNavigationURL, expectedNavigationURL, "SMAB-T2619,SMAB-T2675: "
 				+ "Verify Navigation URL field has the updated navigation url :"+actualNavigationURL);
 		
 		
