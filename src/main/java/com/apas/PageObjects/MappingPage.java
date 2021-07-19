@@ -35,7 +35,7 @@ public class MappingPage extends ApasGenericPage {
 	public String situsTextBoxLabelForBrandNewParcel = "Situs";
 	public String commentsTextBoxLabel = "Comments";
 	public String parentAPNTextBoxLabel = "Parent APN(s)";
-	public String legalDescriptionColumnSecondScreen = "Legal Description";
+	public String legalDescriptionColumnSecondScreen = "Legal Description*";
 	public String districtColumnSecondScreen = "District";
 	public String apnColumnSecondScreen = "APN";
 	public String reasonCodeColumnSecondScreen = "Reason Code";
@@ -321,7 +321,7 @@ public class MappingPage extends ApasGenericPage {
 	 */
 	public String getLinkedParcelInWorkItem(String rowNum) throws Exception {
 		Thread.sleep(1000);
-		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//tr[@data-row-key-value='row-" + rowNum + "']//th";
+		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//tr[@data-row-key-value='row-" + rowNum + "']//th/lightning-primitive-cell-factory[@data-label='APN']";
 		waitUntilElementIsPresent(xpath, 10);
 		return getElementText(driver.findElement(By.xpath(xpath)));
 	}

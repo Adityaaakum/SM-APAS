@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.bcel.generic.NEW;
 import org.json.JSONObject;
-import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -66,30 +65,25 @@ public class OwnershipAndTransfer_Test extends TestBase implements testdata, mod
 	public void RecorderIntegration_VerifyNewWIgeneratedfromRecorderIntegrationForNOAPNRecordedDocument(String loginUser) throws Exception {
 		
 		String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) AND Status__c='Active' Limit 1";
-  	    HashMap<String, ArrayList<String>> hashMapRecordedApn= salesforceAPI.select(getApnToAdd);
+  	  HashMap<String, ArrayList<String>> hashMapRecordedApn= salesforceAPI.select(getApnToAdd);
   	    String recordedAPN = hashMapRecordedApn.get("Name").get(0);
   	
 			//login with sys admin
-  	    
-		    objMappingPage.login(users.SYSTEM_ADMIN);
-		    objMappingPage.searchModule(PARCELS);
-		    salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c where Sub_type__c='NO APN - CIO' and status__c ='In pool'", "status__c","In Progress");
-		    objCioTransfer.generateRecorderJobWorkItems(objMappingPage.DOC_CERTIFICATE_OF_COMPLIANCE, 0);
+		   objMappingPage.login(users.SYSTEM_ADMIN);
+		   objMappingPage.searchModule(PARCELS);
+		   salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c where Sub_type__c='NO APN - CIO' and status__c ='In pool'", "status__c","In Progress");
+		   objCioTransfer.generateRecorderJobWorkItems(objMappingPage.DOC_CERTIFICATE_OF_COMPLIANCE, 0);
 			String WorkItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='NO APN' AND Sub_type__c='NO APN - MAPPING'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";
 			Thread.sleep(3000);			
 	        String WorkItemNo=salesforceAPI.select(WorkItemQuery).get("Name").get(0);
 	        objMappingPage.globalSearchRecords(WorkItemNo);
 	        Thread.sleep(2000);
-	        
 	        //User tries to close the WI in which no APN is added
-	        
             objWorkItemHomePage.Click(objWorkItemHomePage.dataTabCompleted);
             objWorkItemHomePage.Click(objWorkItemHomePage.markAsCurrentStatusButton);
 	        softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),"Status: Work item status cannot be completed as related recorded APN(s) are not migrated yet.", "SMAB-T3106:Verifying User is not able to close WI Before migrating APN");
 	        objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-	        
 	        //User tries to add the Recorded APN
-	        
 	        objMappingPage.Click(objWorkItemHomePage.recordedAPNtab);
 	        objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.NewButton));
 	        objWorkItemHomePage.enter(objWorkItemHomePage.apnLabel, recordedAPN);
@@ -99,24 +93,16 @@ public class OwnershipAndTransfer_Test extends TestBase implements testdata, mod
 			Thread.sleep(2000);
 			driver.navigate().back();
 			driver.navigate().back();
-			
 			//User clicks on Migrate button
-			
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.migrateAPN));			
 			Thread.sleep(2000);
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
-			
 			//User validates the status of added recorded APN
-			
 			softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0),"Processed", "SMAB-T3111: Validating that status of added APN is processed");
-			
 			//User tries to complete the WI
-			
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert);
-			
-			//User validates the status of the WI
-			
+			//User validates the status of the WI 
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "Completed", "SMAB-T3111:Validating that status of WI is completed");
 			softAssert.assertEquals(salesforceAPI.select("SELECT Id,name FROM Work_Item__c where Type__c='MAPPING'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1").get("Name")!=null, true, "SMAB-T3111:Validating a new WI genrated as soon as New APN is processed.");
@@ -124,6 +110,7 @@ public class OwnershipAndTransfer_Test extends TestBase implements testdata, mod
 			
 			
 	}
+	
 	
 	/*
 	 * Verify that User is unable to add mail-to and grantee records having end date prior to start date in recorded APN transfer screen.	  
@@ -225,4 +212,10 @@ public class OwnershipAndTransfer_Test extends TestBase implements testdata, mod
 		   
 
 }
+			
+	        
+	
+		
+	
+
 }

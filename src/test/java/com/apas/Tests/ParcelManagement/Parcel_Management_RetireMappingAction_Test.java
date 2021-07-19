@@ -211,7 +211,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apn1);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
-		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel (s) "+apn1+" have been successfully retired!",
+		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel (s) "+apn1+" is pending verification from the supervisor in order to be retired.",
 				"SMAB-T2455: Validate that User is able to perform Retire action for one active parcel");
 		
 		//Step 23: Validate that the status and PUC of the parcel is updated to Retired
@@ -220,7 +220,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		objMappingPage.globalSearchRecords(apn1);
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("PUC"),parentParcelPUC,
 				"SMAB-T2455 : Verify PUC of the parcel is not updated after Retire action is completed");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"Retired",
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"In Progress - To Be Expired",
 				"SMAB-T2455 : Verify Status of the parcel is updated after Retire action is completed");
 		 
 		//Step 24: Validate that the work item is automatically closed after the mapping action is completed
@@ -316,7 +316,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		
 		ReportLogger.INFO("Perform the Retire action");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
-		softAssert.assertContains(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"have been successfully retired!",
+		softAssert.assertContains(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"is pending verification from the supervisor in order to be retired.",
 				"SMAB-T2456: Validate that User is able to perform Retire action for more than one active parcels");
 		
 		//Step 7: Validate that the status and PUC of the parcels is updated to Retired
@@ -325,19 +325,19 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		objMappingPage.globalSearchRecords(apn1);
 		softAssert.assertTrue(!objMappingPage.getFieldValueFromAPAS("PUC").equals("99-RETIRED PARCEL"),
 				"SMAB-T2456 : Verify PUC of the "+apn1+" is not updated after Retire action is completed");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"Retired",
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"In Progress - To Be Expired",
 				"SMAB-T2456 : Verify Status of the "+apn1+" is updated after Retire action is completed");
 		  
 		objMappingPage.globalSearchRecords(apn2);
 		softAssert.assertTrue(!objMappingPage.getFieldValueFromAPAS("PUC").equals("99-RETIRED PARCEL"),
 				"SMAB-T2456 : Verify PUC of the "+apn2+" is not updated after Retire action is completed");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"Retired",
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"In Progress - To Be Expired",
 				"SMAB-T2456 : Verify Status of the "+apn2+" is updated after Retire action is completed");
 		
 		objMappingPage.globalSearchRecords(apn3);
 		softAssert.assertTrue(!objMappingPage.getFieldValueFromAPAS("PUC").equals("99-RETIRED PARCEL"),
 				"SMAB-T2456 : Verify PUC of the "+apn3+" is not updated after Retire action is completed");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"Retired",
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Status"),"In Progress - To Be Expired",
 				"SMAB-T2456 : Verify Status of the "+apn3+" is updated after Retire action is completed");
 		
 		//Step 8: Validate that the work item is automatically closed after the mapping action is completed

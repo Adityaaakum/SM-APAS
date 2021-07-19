@@ -383,10 +383,15 @@ public class DataProviders {
         };
     }
     
+    /**
+   	 * Below function will be used to login to application with CIO Supervisor
+   	 * @returns: Return the user CIO Supervisor
+   	 **/
     @DataProvider(name = "loginCIOSupervisor")
     public Object[][] dpCIOSupervisor() {
         return new Object[][] { { users.CIO_SUPERVISOR } };
     }
+    
     /**
 	 * Below function will be used to login to application with different users
 	 * @returns: Return the user business administrator, principal user and Bpp Auditor in an array
@@ -401,7 +406,7 @@ public class DataProviders {
     }
        
     /**
-   	 * Below function will be used to login to application with different users
+   	 * Below function will be used to login to application with CIO Staff
    	 * @returns: Return the user CIO Staff
    	 **/
        @DataProvider(name = "loginCIOStaff")
