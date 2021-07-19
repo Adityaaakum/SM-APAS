@@ -807,8 +807,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 			javascriptClick(showMoreButton);
 			WebElement editLinkUnderShowMore = waitForElementToBeClickable(10, xPathEditLinkUnderShowMore);
 			javascriptClick(editLinkUnderShowMore);
-			String xpathClearSection = "//div/button[@title='Clear Selection']";
-			Thread.sleep(3000);
+			String xpathClearSection = "//div/button[@title='Clear Selection']";			
 			WebElement clearText = waitForElementToBeClickable(10,xpathClearSection);
 			Click(clearText);
 			String apnField = "APN";

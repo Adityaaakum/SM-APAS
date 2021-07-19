@@ -289,7 +289,7 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
 				+ "Verify the Warning Msg is displayed on deleting last linked APN :" +actualWarningMsg);
     }
     
-    @Test(description = "SMAB-T2619,SMAB-T2676: Verify that the  APAS User who is assigned the RP Work Item Linkages - CRED "
+    @Test(description = "SMAB-T2619,SMAB-T2675,SMAB-T2676: Verify that the  APAS User who is assigned the RP Work Item Linkages - CRED "
     		+ "view permissions, On click on edit option user can change the related Parcel on the Work Item linkage record", 
     		dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
     		groups = {"Regression", "WorkItemAdministration","WILinkage" }, 
@@ -326,11 +326,10 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
 		softAssert.assertContains(actualErrorMsgforDuplicateAPN, expectedErrorMsgforDuplicateAPN,
 				"SMAB-T2676: Verify the Warning Msg is displayed for duplicate Linked APN :" +actualErrorMsgforDuplicateAPN);		
 		
-			//verify for APN is a required field when linking New APN
-			String xpathClearSection = "//div/button[@title='Clear Selection']";
-			Thread.sleep(3000);
-			WebElement clearText = objPage.waitForElementToBeClickable(10,xpathClearSection);
-			objPage.Click(clearText);
+		//verify for APN is a required field when linking New APN
+		String xpathClearSection = "//div/button[@title='Clear Selection']";			
+		WebElement clearText = objPage.waitForElementToBeClickable(10,xpathClearSection);
+		objPage.Click(clearText);
 		  objPage.enter(objPage.getWebElementWithLabel("APN"),"");
 		  objPage.Click(objPage.getButtonWithText("Save"));
 		  errorMsgB0x = objPage.locateElement("//div[@class='error']", 15);
