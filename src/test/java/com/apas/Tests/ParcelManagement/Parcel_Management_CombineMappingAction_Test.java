@@ -1756,31 +1756,31 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 				String childAPNNumber =gridDataHashMap.get("APN").get(0);
 
-				softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),responseNeighborhoodDetails.get("Name").get(0),
+				softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),responseNeighborhoodDetails.get("Name").get(0),
 						"SMAB-T2578: Validation that System populates District/Neighborhood from the parent parcel");
 				
 				softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue
 				  .replaceFirst("\\s", ""),
 				  "SMAB-T2578: Validation that System populates Situs from the parent parcel");
 				 
-				softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
+				softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),reasonCode,
 						"SMAB-T2578: Validation that System populates Reason code from the parent parcel");
-				softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),"",
+				softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),"",
 						"SMAB-T2578: Validation that System populates Legal Description from the parent parcel");
-				softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
+				softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),responseTRADetails.get("Name").get(0),
 						"SMAB-T2578: Validation that System populates TRA from the parent parcel");
-				softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
+				softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),responsePUCDetails.get("Name").get(0),
 						"SMAB-T2578: Validation that System populates Use Code  from the parent parcel");
 				
 		       
 				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2578: Validation that APN column is  editable");
-				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2578: Validation that Legal Description column is  editable");
-				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2578: Validation that TRA column is not editable");
+				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Legal Description*"),"SMAB-T2578: Validation that Legal Description column is  editable");
+				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA*"),"SMAB-T2578: Validation that TRA column is not editable");
 		  	    softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2578: Validation that Situs column is not editable");
-				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2578: Validation that Reason Code column is not editable");
-				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd"),"SMAB-T2578: Validation that District/Neighborhood column is not editable");
-				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2578: Validation that Use Code column is not editable");
-				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)"),"SMAB-T2578: Validation that Parcel Size column is  editable");
+				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Reason Code*"),"SMAB-T2578: Validation that Reason Code column is not editable");
+				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd*"),"SMAB-T2578: Validation that District/Neighborhood column is not editable");
+				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code*"),"SMAB-T2578: Validation that Use Code column is not editable");
+				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)*"),"SMAB-T2578: Validation that Parcel Size column is  editable");
 				
 				 objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
 					Thread.sleep(3000);
@@ -1791,9 +1791,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 						    
 			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Situs").get(0),childprimarySitus,
 						"SMAB-T2579,SMAB-T2637: Validation that System populates Situs from the parent parcel");
-			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA").get(0),hashMapCombineMappingData.get("TRA"),
+			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA*").get(0),hashMapCombineMappingData.get("TRA"),
 						"SMAB-T2579,SMAB-T2637: Validation that System populates TRA from the parent parcel");
-			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code").get(0),hashMapCombineMappingData.get("PUC"),
+			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code*").get(0),hashMapCombineMappingData.get("PUC"),
 						"SMAB-T2579,SMAB-T2637: Validation that System populates TRA from the parent parcel");
 			    ReportLogger.INFO("Click on Combine Parcel button");
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
