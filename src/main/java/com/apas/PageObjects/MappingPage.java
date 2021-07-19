@@ -425,15 +425,15 @@ public class MappingPage extends ApasGenericPage {
    */
       public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
   		
-    	    String PUC =objSalesforceAPI.select("SELECT Name FROM PUC_Code__c order by name desc limit 1").get("Name").get(0);
-    	    String TRA=objSalesforceAPI.select("SELECT Name FROM TRA__c order by name desc limit 1").get("Name").get(0);    	  
+    	    String PUC =objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
+    	    String TRA=objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);    	  
 			Click(editButtonInSeconMappingScreen);
 			if(waitForElementToBeVisible(2, clearSelectionTRA))
-		    Click(clearSelectionTRA);			
-			enter(parcelPUC, "12345");
-			selectOptionFromDropDown(parcelTRA,"123456");
+		    Click(clearSelectionTRA);
+			enter(parcelPUC, TRA);
+			selectOptionFromDropDown(parcelTRA,TRA);
 			if(waitForElementToBeVisible(2, clearSelectionPUC))
-			Click(clearSelectionPUC);			
+			Click(clearSelectionPUC);
 			enter(parcelPUC, PUC);
 			selectOptionFromDropDown(parcelPUC,PUC);
 			editSitusModalWindowFirstScreen(dataMap);
