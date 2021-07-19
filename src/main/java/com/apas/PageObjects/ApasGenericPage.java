@@ -520,26 +520,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 		}
 	}
 	
-	
-	
-	/*
-	 * public void searchModuleByNameorObject(String moduleName , String
-	 * moduleObjectName) throws IOException {
-	 * ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleName +
-	 * " tab");
-	 * 
-	 * try { //Method -1 waitForElementToBeClickable(appLauncher, 60);
-	 * Thread.sleep(5000); Click(appLauncher); //Method-2
-	 * waitForElementToBeClickable(appLauncherSearchBox, 60);
-	 * enter(appLauncherSearchBox, moduleName); Thread.sleep(2000);
-	 * clickNavOptionFromDropDown(moduleName); //This static wait statement is added
-	 * as the module title is different from the module to search
-	 * Thread.sleep(4000); } catch(Exception e ) { String moduleURL = envURL +
-	 * "/lightning/o/" + moduleObjectName; navigateTo(driver,moduleURL); }
-	 * 
-	 * }
-	 * 
-	 */
+
 	/**
 	 * Description: This method will logout the logged in user from APAS application
 	 */
@@ -1361,9 +1342,9 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
      * @return
      * @throws Exception
      */
-    public void deleteOwnershipFromParcel(String apn)
+    public void deleteOwnershipFromParcel(String apnId)
     {
-  	  String query ="SELECT  Id FROM Property_Ownership__c where parcel__c='" +apn+"'";
+  	  String query ="SELECT  Id FROM Property_Ownership__c where parcel__c='" +apnId+"'";
   	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
   	  
   	  if(!response.isEmpty())

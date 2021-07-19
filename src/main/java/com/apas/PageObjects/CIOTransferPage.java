@@ -39,8 +39,14 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String finishButtonLabel = "Finish";
 	public final String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 	public String backToWIsButtonLabel = "Back to WIs";
-	public String saveButton ="Save";
 
+	public String transferCodeLabel = "Transfer Code";
+	public String transferDescriptionLabel = "Transfer Description";
+	public String transferStatusLabel = "CIO Transfer Status";
+	public String exemptionRetainLabel = "Exemption Retain";
+	public String saveButton ="Save";
+	public String finishButton ="Finish";
+	
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
 	public WebElement relatedListTab;
 
@@ -86,8 +92,9 @@ public class CIOTransferPage extends ApasGenericPage {
 	    
 	    public void addRecordedApn(String DocId,int count) throws Exception
 	    {
-	    	String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) AND Status__c='Active' Limit "+count;
-	    	  HashMap<String, ArrayList<String>> hashMapRecordedApn= salesforceApi.select(getApnToAdd);
+
+	    	String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) Limit "+count;
+	    	HashMap<String, ArrayList<String>> hashMapRecordedApn= salesforceApi.select(getApnToAdd);
 	    	
 	    	if(count!=0) {
 	    		
@@ -242,11 +249,19 @@ public class CIOTransferPage extends ApasGenericPage {
 			
 			return salesforceApi.select("select Name from Parcel__c where Id in (SELECT Parcel__c FROM Recorded_APN__c where Recorded_document__c ='"+RecordedDocId+"'");
 		}
-
-
-	    
-	
-	
-
-	  
+		
+		/**
+	     * Description: This method will click the pencil icon edit button against the label passed as argument
+	     * @param labelName: Takes Label Name as an argument
+	     */
+		 public void editRecordedApnField(String labelName) throws Exception {
+		        ReportLogger.INFO("Edit the field : " + labelName);
+		        Thread.sleep(1000);
+		        String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//span[text() = '" + labelName + "']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]";		        
+		        WebElement fieldLocator = locateElement(xpathStr, 30);
+		        Click(fieldLocator);
+		        Thread.sleep(1000);
+		    }
+			
 }
+  
