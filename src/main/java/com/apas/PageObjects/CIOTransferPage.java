@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -39,6 +41,22 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String finishButtonLabel = "Finish";
 	public final String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 	public String backToWIsButtonLabel = "Back to WIs";
+	public String saveLabel ="Save";
+	public String newButton="New";
+	public String formattedName1Label="Formatted Name1";
+	public String startDate="Start Date";
+	public String endDate="End Date";
+	public String mailingZip="Mailing Zip";
+	public String CancelButton="Cancel";
+	public String LastNameLabel="Last Name";
+	public String OwnershipStartDate="Ownership Start Date";
+	public String OwnershipEndDate="Ownership End Date";
+	public String RecordedApnTransfer="Recorded APN Transfer";
+	public String Edit="Edit";
+	public String Status="Status";
+	public final String DOC_DEED="DE";
+	
+
 
 	public String transferCodeLabel = "Transfer Code";
 	public String transferDescriptionLabel = "Transfer Description";
@@ -84,7 +102,10 @@ public class CIOTransferPage extends ApasGenericPage {
 
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
-
+	
+	
+	
+     
 	/*
 	    * This method adds the recorded APN in Recorded-Document
 	    * 
@@ -146,7 +167,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
 	    		ReportLogger.INFO("Genrated Recorded WorkeItems."); 
 	    		counterForFailedattempts=0;
-	    		Thread.sleep(3000);
+	    		Thread.sleep(5000);
 	    		return;
 	    		}
 	    		if(ApnCount<0)
@@ -225,6 +246,7 @@ public class CIOTransferPage extends ApasGenericPage {
 			Thread.sleep(5000);
 	    	
 	    }
+	    
 	    
 	   /*
 	    * This method returns the DocId with required no of apns
