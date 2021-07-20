@@ -64,7 +64,7 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 		
 		public String puc = "PUC";
 		
-	@Test(description = "Verify Legacy field and PUC Values", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3274,SMAB-T3275:Verify Legacy field and PUC Values", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void PUCValueWithLegacyField(String loginUser) throws Exception {
       
@@ -136,7 +136,7 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 		objWorkItemHomePage.logout();
 	}
 	
-	@Test(description = "Verify user is PUC is independent of status field", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3272:Verify user is PUC is independent of status field", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement" })
 	public void PUC_UserRestrictionAndIndependentOfStatus(String loginUser) throws Exception {
 
