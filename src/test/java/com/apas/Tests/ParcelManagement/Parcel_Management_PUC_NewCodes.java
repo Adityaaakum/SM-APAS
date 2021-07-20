@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.json.JSONObject;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -93,13 +94,14 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 		//Step 6 : Fetching the current value of PUC
 		objWorkItemHomePage.getFieldValueFromAPAS("PUC");
 		Thread.sleep(1000);
-		objParcelsPage.Click(objParcelsPage.pUCEditButton);
+		objParcelsPage.Click(objApasGenericPage.editFieldButton("PUC"));
 		Thread.sleep(2000);
 		objMappingPage.clearSelectionFromLookup("PUC");
 	    Thread.sleep(2000);
 			
 	    //Step 7 : Update value of PUC field for the PUC for which value was set to Yes
-		objApasGenericPage.selectAndEnterValue("PUC", "189 - Residential Miscellaneous");
+	    Object element= "PUC";	    
+		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel((String) element), "189 - Residential Miscellaneous");
 		objApasGenericPage.Click(objApasGenericPage.getButtonWithText("Save"));
 		Thread.sleep(4000);
 	    
@@ -124,7 +126,7 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 		Thread.sleep(1000);
 		
 		//Step 12: Update the PUC value
-		objParcelsPage.Click(objParcelsPage.pUCEditButton);
+		objParcelsPage.Click(objApasGenericPage.editFieldButton("PUC"));
 		Thread.sleep(2000);
 		objMappingPage.clearSelectionFromLookup("PUC");
 	    
@@ -190,7 +192,7 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 		objMappingPage.login(MAPPING_STAFF);
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
-		boolean status = objParcelsPage.verifyElementNotVisible(objParcelsPage.statusEditButton);
+		boolean status = objParcelsPage.verifyElementNotVisible(objApasGenericPage.editFieldButton("Status"));
 
 		// Step 12: Verify that status field is non editable for current user.
 		softAssert.assertEquals(status, true, "SMAB-T3272:Validating status field is non editable for the current user");

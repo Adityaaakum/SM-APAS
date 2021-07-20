@@ -108,12 +108,6 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//a[starts-with(@title,\"RD-APN\")][@class='tabHeader slds-context-bar__label-action '][@aria-selected='true']//span[@class='title slds-truncate']")
 	public WebElement recordedDocumentApnGenerated;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit 'Status')]")
-	public WebElement statusEditButton;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit 'PUC')]")
-	public WebElement pUCEditButton;
-	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
     public String ApprovalButton="Approve";
@@ -359,6 +353,5 @@ public class ParcelsPage extends ApasGenericPage {
 			Thread.sleep(5000);
 			
 			return getElementText(recordedDocumentApnGenerated);
-		}		
-		
+		}
 }

@@ -947,6 +947,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 	 * @param rowNumber: Row Number for which data needs to be fetched
 	 * @return hashMap: Grid data in ArrayList of type ArrayList<String>
 	 */
+	
 	public HashMap<String, ArrayList<String>> getGridDataInLinkedHM(int rowNumber) {
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
@@ -1357,20 +1358,8 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 
     }
     
-    public void selectAndEnterValue(Object element, String value) throws Exception {
-		WebElement webElement;
-		String xpathDropDownOption;
-		if (element instanceof String) {
-			webElement = getWebElementWithLabel((String) element);
-			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[text()=\""
-					+ element + "\"]/..//*[(@title='" + value + "') or (text() = '" + value + "')]";
-		} else {
-			webElement = (WebElement) element;
-			// xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or
-			// contains(@class,'windowViewMode-maximized')]//*[@title='" + value + "']";
-			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='"
-					+ value + "']";
-		}
-		enter(webElement, value);
+    public WebElement editFieldButton(String fieldName)
+	{
+		return driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit " + fieldName + "')]"));
 	}
 }
