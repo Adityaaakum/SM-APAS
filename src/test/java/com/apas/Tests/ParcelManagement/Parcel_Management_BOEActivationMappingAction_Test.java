@@ -628,8 +628,105 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 			
 
 	}
+		/**
+		 * This method is to  Verify WI rejection on BOE mapping action
+		 *@param loginUser
+		 * @throws Exception
+		 */		
+		@Test(description = "SMAB-T3464:Verify the Output validations for \"BOE Activation\" mapping action for a Parcel (retired) after rejected the work item ",
+	    		dataProvider = "loginMappingUser",
+	    		dataProviderClass = DataProviders.class, 
+	    		groups = {"Regression","ParcelManagement" })
+	    public void ParcelManagement_VerifyWIRejectionAfterPerformBOEActivationMappingAction(String loginUser) throws Exception {
 
-	    
-	
+	        // Step 1: Fetching parcels that are Active with no Ownership record
+	    	String queryAPNValue = "SELECT Name,Id from Parcel__c where Status__c='Retired' Limit 1 ";
+			HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
+			System.out.println(response);
+			String retiredAPNValue= response.get("Name").get(0);		
+			objMappingPage.deleteRelationshipInstanceFromParcel(retiredAPNValue);
+	        //step 2: getting Neighborhood and tra value
+	        String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+			HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
+			String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+			HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+			String legalDescriptionValue="Legal PM 85/25-260";
+			String districtValue="District01";
+
+			jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+			jsonObject.put("District__c",districtValue);
+			jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+			jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+	        // Step 3: update  values on Parcels
+			salesforceAPI.update("Parcel__c",response.get("Id").get(0),jsonObject);
+		
+	        String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+	        Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+	                "DataToCreateWorkItemOfTypeParcelManagement");
+
+	        // Step 4: Login to the APAS application using the credentials passed through data provider
+	        objMappingPage.login(loginUser);
+
+	        // Step 5: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+	        objMappingPage.searchModule(PARCELS);
+	        objMappingPage.globalSearchRecords(retiredAPNValue);
+
+	        // Step 6: Creating Manual work item for the Parcel
+	        String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+	        //Step 7: Clicking the  details tab for the work item newly created and clicking on Related Action Link
+	        objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+	        objWorkItemHomePage.waitForElementToBeVisible(40,objWorkItemHomePage.referenceDetailsLabel);
+	        objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+	        String parentWindow = driver.getWindowHandle();
+	        objWorkItemHomePage.switchToNewWindow(parentWindow);
+	        objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+
+	         //Step 8: Selecting Action as 'Many To Many' & Taxes Paid fields value as 'N/A'
+	        objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,"BOE Activation");
+	        Thread.sleep(3000);
+			objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"123456789");
+			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+			Thread.sleep(2000);
+			//Step 9: Validating that
+			softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789 for Non-Condo Parcel.",
+							"Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
+			//Step 10: generate  new child parcels 
+	        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+
+	        //Step 11: Verify the success message after parcels are generated
+	        softAssert.assertContains(objMappingPage.getSuccessMessage(),"been successfully Activated!",
+	                "Validation that success message is displayed when Parcels are generated");
+
+	        //Step 12: Verify the grid cells are not editable after parcels are generated
+	        HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
+			
+			//Step 13: Mark the WI complete
+			String query = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
+			salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
+			driver.switchTo().window(parentWindow);
+	        objWorkItemHomePage.logout();
+	        Thread.sleep(5000);
+	        //login with supervisor
+	        objMappingPage.login(users.MAPPING_SUPERVISOR);
+	        
+	        objWorkItemHomePage.RejectWrokItem(workItemNumber,"Other","Reject Mapping action after submit for approval");
+
+			//Step 14: Verify Status of Parent & Child Parcels after WI rejected
+			HashMap<String, ArrayList<String>> parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",retiredAPNValue);
+	  		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Retired","SMAB-T3464: Verify Status of Parent Parcel: "+retiredAPNValue);
+	        
+			String childAPNNumber1 =gridDataHashMap.get("APN").get(0);
+		    query = "SELECT Id FROM Parcel__c Where Name = '"+childAPNNumber1+ "'";
+			response = salesforceAPI.select(query);
+			softAssert.assertEquals(response.size(),0,"SMAB-T3464: Validate that child apn should be deleted "+childAPNNumber1+" after BOE activation Mapping Action after performing rejection of work item");
+			String targetedApnquery="SELECT  Id, Target_Parcel__c FROM Parcel_Relationship__c where source_parcel__r.name='"+retiredAPNValue+ "' and   Parcel_Actions__c='BOE Activation'";
+		    response = salesforceAPI.select(targetedApnquery);
+			softAssert.assertEquals(response.size(),0,"SMAB-T3464: Validate that there is no parcel relationship on Parent Parcel when Rejected the Work tem after Split Mapping Action");
+			
+			Thread.sleep(3000);
+			objMappingPage.logout();
+		}
 }

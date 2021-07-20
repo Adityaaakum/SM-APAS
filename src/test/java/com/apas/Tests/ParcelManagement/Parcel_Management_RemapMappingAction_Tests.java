@@ -951,4 +951,114 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		driver.switchTo().window(parentWindow);
 		objMappingPage.logout();
 	}
+	
+	/**
+	 * This method is to  Verify WI rejection on Remap mapping action
+	 *@param loginUser
+	 * @throws Exception
+	 */	
+	@Test(description = "SMAB-T3464:Verify the Output validations for \"Remap\" mapping action for a Parcel (retired) after rejected the work item ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement" })
+	public void ParcelManagement_VerifyWIRejectionAfterPerformRemapMappingAction(String loginUser) throws Exception {
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Active' limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apn = responseAPNDetails.get("Name").get(0);
+
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select(
+				"SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+
+		String primarySitusValue = salesforceAPI.select(
+				"SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='" + apn
+						+ "')")
+				.get("Name").get(0);
+		String legalDescriptionValue = "Legal PM 85/25-260";
+		String parentdistrictValue = "01";
+
+		jsonObject.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+		jsonObject.put("Status__c", "Active");
+		jsonObject.put("Short_Legal_Description__c", legalDescriptionValue);
+		jsonObject.put("District__c", parentdistrictValue);
+		jsonObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("TRA__c", responseTRADetails.get("Id").get(0));
+
+		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), jsonObject);
+
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+
+		String mappingActionCreationData = testdata.REMAP_MAPPING_ACTION;
+		Map<String, String> hashMapRemapMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformRemapMappingAction");
+
+		// Step1: Login to the APAS application using the credentials passed through
+		objMappingPage.login(loginUser);
+
+		// Step2: Opening the PARCELS page and searching the parcel
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn);
+
+		// Step 3: Creating Manual work item for the Parcel
+		String workItem = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		// Step 4:Clicking the details tab for the work item newly created and clicking
+		// on Related Action Link
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		// Step 5: Selecting Action as 'perform parcel remap'
+		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,
+				hashMapRemapMappingData.get("Action"));
+
+		// Step 6: filling all fields in mapping action screen
+		objMappingPage.fillMappingActionForm(hashMapRemapMappingData);
+
+		// Step 7: Click generate Parcel Button
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+
+		// Step 8: Verify child parcel is visible in parcel related section
+		HashMap<String, ArrayList<String>> gridDataHashMap = objMappingPage.getGridDataInHashMap();
+		objMappingPage.waitUntilPageisReady(driver);
+		String Apn2 = gridDataHashMap.get("APN").get(0);
+		objMappingPage.Click(objMappingPage.getButtonWithText(Apn2));
+		driver.switchTo().window(parentWindow);
+		//Step 9: Mark the WI complete
+		String query = "Select Id from Work_Item__c where Name = '"+workItem+"'";
+		salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
+		
+		objMappingPage.logout();
+		Thread.sleep(4000);
+
+		// Step 10: Login as mapping supervisor
+		objWorkItemHomePage.login(users.MAPPING_SUPERVISOR);
+		
+		//step 11: rejecting work item
+		objWorkItemHomePage.RejectWrokItem(workItem,"Other","Reject Mapping action after submit for approval");
+		Thread.sleep(5000);
+		
+	    //Step 12: Verify Status of Parent & Child Parcels after WI rejected
+		String childAPNNumber1 =gridDataHashMap.get("APN").get(0);
+	    query = "SELECT Id FROM Parcel__c Where Name = '"+childAPNNumber1+ "'";
+	    String targetedApnquery="SELECT  Id, Target_Parcel__c FROM Parcel_Relationship__c where source_parcel__r.name='"+apn+ "' and Parcel_Actions__c='Perform Parcel Remap'";
+	    HashMap<String, ArrayList<String>> response = salesforceAPI.select(targetedApnquery);
+		softAssert.assertEquals(response.size(),0,"SMAB-T3464: Validate that there is no parcel relationship on Parent Parcel when Rejected the Work tem after Split Mapping Action");
+		
+        HashMap<String, ArrayList<String>> parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn);
+		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Active","SMAB-T3464: Verify Status of Parent Parcel: "+apn);
+		response = salesforceAPI.select(query);
+	    softAssert.assertEquals(response.size(),0,"SMAB-T3464: Validate that child apn should be deleted "+childAPNNumber1+" after Split Mapping Action after performing rejection of work item");
+	   // Step 18 : Switch to parent window and logout
+	    Thread.sleep(5000);
+	    objMappingPage.logout();
+	}
 }
