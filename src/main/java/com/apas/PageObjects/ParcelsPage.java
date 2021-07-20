@@ -64,6 +64,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String recordTypeDropdown = "Record Type";
 	public String typeOfAuditTrailDropdown = "Type of Audit Trail Record?";
 	public String sourceDropdown = "Source";
+	public String dateOfEventInputTextBox = "Date of Event";
 	public String dateOfValueInputTextBox = "Date of Value";
 	public String dateOfRecordingInputTextBox = "Date of Recording";
 	public String descriptionInputTextBox = "Description";
@@ -324,6 +325,34 @@ public class ParcelsPage extends ApasGenericPage {
 			return response;
 		}
 		
-		
+		/**
+		 * @Description: This method will fill all the fields in Adit Trail record to create unrecorded event
+		 * @param dataMap: A data map which contains data to create audit trail record
+		 * @throws Exception
+		 */
+		public String createUnrecordedEvent(Map<String, String> dataMap) throws Exception {
+			
+			String timeStamp = String.valueOf(System.currentTimeMillis());
+			String description = dataMap.get("Description") + "_" + timeStamp;
+			
+			waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
+			Click(getButtonWithText(componentActionsButtonText));
+			waitForElementToBeClickable(selectOptionDropdown);
+			selectOptionFromDropDown(selectOptionDropdown, "Create Audit Trail Record");
+			Click(getButtonWithText(nextButtonComponentsActionsModal));
+			waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);
+			
+			selectOptionFromDropDown(recordTypeDropdown, dataMap.get("Record Type"));
+			Thread.sleep(2000);
+			selectOptionFromDropDown(typeOfAuditTrailDropdown, dataMap.get("Type of Audit Trail Record?"));
+			selectOptionFromDropDown(sourceDropdown, dataMap.get("Source"));
+			enter(dateOfEventInputTextBox, dataMap.get("Date of Event"));
+			enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
+			enter(descriptionInputTextBox, description);
+			Click(getButtonWithText(saveAndNextButton));
+			Thread.sleep(5000);
+			
+			return getElementText(recordedDocumentApnGenerated);
+		}		
 		
 }
