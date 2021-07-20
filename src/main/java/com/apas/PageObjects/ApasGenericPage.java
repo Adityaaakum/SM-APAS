@@ -1358,6 +1358,11 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 
     }
     
+    /**
+     *  This method will edit the particular field  by clicking on pencil icon
+     * @param field name whose value needs to be edited
+     * @return webelement
+     */
     public WebElement editFieldButton(String fieldName)
 	{
 		return driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit " + fieldName + "')]"));
