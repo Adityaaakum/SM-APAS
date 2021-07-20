@@ -791,12 +791,18 @@ public class WorkItemHomePage extends ApasGenericPage {
 			Thread.sleep(3000);
 		}
 	}
-	public void RejectWrokItem(String workitem,String rejectionReason,String rejectionComments) throws Exception {
-		
-		Thread.sleep(5000);
+	/**
+	 * Description: This method will reject the Work Item Linkage
+	 * @param workItem: Name of the Parcel for which Work Item Linkage will be Edited
+	 * @param rejectionReason: rejection reason
+	 * @param rejectionComments: rejection Comments
+	 * @throws Exception 
+	 */
+	public void rejectWorkItem(String workitem,String rejectionReason,String rejectionComments) throws Exception {
+		ReportLogger.INFO("Rejecting work item "+workitem);
 		searchModule("Work Item");
 		globalSearchRecords(workitem);
-		Thread.sleep(5000);Click(editBtn);
+		Click(editBtn);
 		selectOptionFromDropDown(getWebElementWithLabel(dropDownRejected), "Yes");
 		selectOptionFromDropDown(getWebElementWithLabel(rejectedReason), rejectionReason);
 		enter(rejectedComments, rejectionComments);

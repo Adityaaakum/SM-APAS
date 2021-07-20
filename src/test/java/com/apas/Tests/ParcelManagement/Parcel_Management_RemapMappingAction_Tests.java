@@ -1043,22 +1043,25 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		objWorkItemHomePage.login(users.MAPPING_SUPERVISOR);
 		
 		//step 11: rejecting work item
-		objWorkItemHomePage.RejectWrokItem(workItem,"Other","Reject Mapping action after submit for approval");
+		objWorkItemHomePage.rejectWorkItem(workItem,"Other","Reject Mapping action after submit for approval");
 		Thread.sleep(5000);
 		
-	    //Step 12: Verify Status of Parent & Child Parcels after WI rejected
+		// Step 12: Verify Status of Parent Parcel after WI rejected
+		objMappingPage.globalSearchRecords(apn);
+		String parentAPN1Status = objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus,"Parcel Information");
+		softAssert.assertEquals(parentAPN1Status,"Active","SMAB-T3464: Verify Status of Parent Parcel: "+apn);
+	    
+		//Step 13: Verify Child Parcels should be delete after WI rejected
 		String childAPNNumber1 =gridDataHashMap.get("APN").get(0);
 	    query = "SELECT Id FROM Parcel__c Where Name = '"+childAPNNumber1+ "'";
 	    String targetedApnquery="SELECT  Id, Target_Parcel__c FROM Parcel_Relationship__c where source_parcel__r.name='"+apn+ "' and Parcel_Actions__c='Perform Parcel Remap'";
 	    HashMap<String, ArrayList<String>> response = salesforceAPI.select(targetedApnquery);
 		softAssert.assertEquals(response.size(),0,"SMAB-T3464: Validate that there is no parcel relationship on Parent Parcel when Rejected the Work tem after Split Mapping Action");
 		
-        HashMap<String, ArrayList<String>> parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn);
-		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Active","SMAB-T3464: Verify Status of Parent Parcel: "+apn);
 		response = salesforceAPI.select(query);
 	    softAssert.assertEquals(response.size(),0,"SMAB-T3464: Validate that child apn should be deleted "+childAPNNumber1+" after Split Mapping Action after performing rejection of work item");
-	   // Step 18 : Switch to parent window and logout
-	    Thread.sleep(5000);
+	   
+	    // Step 14 : Switch to parent window and logout
 	    objMappingPage.logout();
 	}
 }

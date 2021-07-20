@@ -1182,7 +1182,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		Map<String, String> hashMapSplitActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformSplitMappingActionWithoutAllFields");
 
-		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
+		// Step1: Login to the APAS application using the credentials passed through dataprovider 
 		objMappingPage.login(loginUser);
 
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform split mapping
@@ -1215,24 +1215,31 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
        for(int i=1;i<=gridDataHashMap.get("Parcel Size(SQFT)*").size();i++) {
             objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"50",i);
        }
-		//Step 7: Click Split Parcel Button
+		
+       //Step 7: Click Split Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		String childAPNNumber1 =gridDataHashMap.get("APN").get(0);
 		String childAPNNumber2 =gridDataHashMap.get("APN").get(1);
+		
 		//Step 8: Mark the WI complete
 		String   queryWI = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
 		salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Submitted for Approval");
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
-		// login with mapping supervisor
+		
+		// step 9: login with mapping supervisor
 		objMappingPage.login(users.MAPPING_SUPERVISOR);
-		//step 9: rejecting the work item
-		objWorkItemHomePage.RejectWrokItem(workItemNumber,"Other","Reject Mapping action after submit for approval");
-		//step 10: Verify Status of Parent & Child Parces after parcel is split and WI is rejected
-		HashMap<String, ArrayList<String>> parentAPNStatus = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn);
-		softAssert.assertEquals(parentAPNStatus.get("Status__c").get(0),"Active","SMAB-T3464: Verify Status of Parent Parcel: "+apn);
+		
+		//step 10: rejecting the work item
+		objWorkItemHomePage.rejectWorkItem(workItemNumber,"Other","Reject Mapping action after submit for approval");
 
+		// Step 11: Verify Status of Parent Parcel after WI rejected
+		objMappingPage.globalSearchRecords(apn);
+		String parentAPNStatus = objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus,"Parcel Information");			    
+		softAssert.assertEquals(parentAPNStatus,"Active","SMAB-T3464: Verify Status of Parent Parcel: "+apn);
+		
+		//Step 12: Verify Child Parcels should be delete after WI rejected
 		String query = "SELECT Id FROM Parcel__c Where Name = '"+childAPNNumber1+ "'";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
 		softAssert.assertEquals(response.size(),0,"SMAB-T3464: Validate that child apn should be deleted "+childAPNNumber1+" after Split Mapping Action after performing rejection of work item");
@@ -1243,7 +1250,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	    response = salesforceAPI.select(targetedApnquery);
 		softAssert.assertEquals(response.size(),0,"SMAB-T3464: Validate that there is no parcel relationship on Parent Parcel when Rejected the Work tem after Split Mapping Action");
 		
-		Thread.sleep(3000);
+	    // Step 13 : Switch to parent window and logout
 		objMappingPage.logout();	
 	}	
 
