@@ -947,6 +947,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 	 * @param rowNumber: Row Number for which data needs to be fetched
 	 * @return hashMap: Grid data in ArrayList of type ArrayList<String>
 	 */
+	
 	public HashMap<String, ArrayList<String>> getGridDataInLinkedHM(int rowNumber) {
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
@@ -1356,4 +1357,14 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
   	  }
 
     }
+    
+    /**
+     *  This method will edit the particular field  by clicking on pencil icon
+     * @param field name whose value needs to be edited
+     * @return webelement
+     */
+    public WebElement editFieldButton(String fieldName)
+	{
+		return driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit " + fieldName + "')]"));
+	}
 }
