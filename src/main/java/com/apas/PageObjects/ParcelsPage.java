@@ -353,5 +353,6 @@ public class ParcelsPage extends ApasGenericPage {
 			Thread.sleep(5000);
 			
 			return getElementText(recordedDocumentApnGenerated);
-		}
+		}		
+		
 }

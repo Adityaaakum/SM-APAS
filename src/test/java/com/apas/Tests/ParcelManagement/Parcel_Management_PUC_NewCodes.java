@@ -93,17 +93,13 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 		
 		//Step 6 : Fetching the current value of PUC
 		objWorkItemHomePage.getFieldValueFromAPAS("PUC");
-		Thread.sleep(1000);
 		objParcelsPage.Click(objApasGenericPage.editFieldButton("PUC"));
-		Thread.sleep(2000);
 		objMappingPage.clearSelectionFromLookup("PUC");
-	    Thread.sleep(2000);
 			
 	    //Step 7 : Update value of PUC field for the PUC for which value was set to Yes
 	    Object element= "PUC";	    
 		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel((String) element), "189 - Residential Miscellaneous");
 		objApasGenericPage.Click(objApasGenericPage.getButtonWithText("Save"));
-		Thread.sleep(4000);
 	    
 		//Step 8: Validating that User cannot find that particular PUC value as legacy field value was yes and error message appears
 		softAssert.assertEquals(objApasGenericPage.getIndividualFieldErrorMessage("PUC"), "Select an option from the picklist or remove the search term.", "SMAB-T3275: Validating if Legacy field value is Yes , PUC will not see the value in picklist and will show error message");
@@ -121,13 +117,10 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 		//Step 11: Navigate to Parcels page
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
-		Thread.sleep(1000);
 		objWorkItemHomePage.getFieldValueFromAPAS("PUC");
-		Thread.sleep(1000);
 		
 		//Step 12: Update the PUC value
 		objParcelsPage.Click(objApasGenericPage.editFieldButton("PUC"));
-		Thread.sleep(2000);
 		objMappingPage.clearSelectionFromLookup("PUC");
 	    
 		//Step 13: Value is now updated and click on save
@@ -139,8 +132,7 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 		//Step 14: Verify that Now Value of PUC field is updated as Legacy field value was No
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("PUC"), "189 - Residential Miscellaneous",
 				"SMAB-T3274: Verify that Now Value of PUC field is updated as Legacy field value was No");
-		
-		
+				
 		objWorkItemHomePage.logout();
 	}
 	
@@ -182,7 +174,6 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 
 		// Step 9: Reverting the status to original state
 		objApasGenericPage.editAndSelectFieldData("Status", "Active");
-		Thread.sleep(2000);
 
 		// Step 10: Logout
 		objWorkItemHomePage.logout();
@@ -197,6 +188,6 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 		// Step 12: Verify that status field is non editable for current user.
 		softAssert.assertEquals(status, true, "SMAB-T3272:Validating status field is non editable for the current user");
 		objWorkItemHomePage.logout();
-		Thread.sleep(2000);
+		Thread.sleep(1000);
 	}   
 }		
