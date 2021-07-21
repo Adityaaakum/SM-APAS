@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
@@ -36,6 +37,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	MappingPage objMappingPage;
 	JSONObject jsonObject= new JSONObject();
 	String apnPrefix=new String();
+	CIOTransferPage objtransfer;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -45,6 +47,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage= new MappingPage(driver);
+		objtransfer=new CIOTransferPage(driver);
 
 	}
 
@@ -1062,5 +1065,107 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	   
 	    // Step 14 : Switch to parent window and logout
 	    objMappingPage.logout();
+	}
+	
+	@Test(description = "SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
+			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
+			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
+			groups = {"Regression","RecorderIntegration" })
+	public void ParcelManagement_VerifyNewWICovenantsCondRestrgenratedfromRecorderIntegrationAndRemapMappingAction(String loginUser) throws Exception {
+				
+		
+		objMappingPage.login(users.SYSTEM_ADMIN);
+		objMappingPage.searchModule(PARCELS);
+
+		salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c"
+				+ " where Sub_type__c='Covenants, Cond & Restr with condo' and status__c ='In pool'", 
+				"status__c","In Progress");
+
+		//finding DOC ID
+		String queryAPN = "Select Id,Recorder_DOC_Number__c,"
+				+ "(Select parcel__c from recorded_apns__r), "
+				+ "Recorder_Doc_Type__c from recorded_document__c "
+				+ "where status__c = 'Processed' and Recorder_Doc_Type__c = 'CCR' limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String recordedDocumentId=responseAPNDetails.get("Id").get(0);
+		
+		//generating WI
+		objtransfer.generateRecorderJobWorkItems(recordedDocumentId);
+
+		String WorkItemQuery="SELECT Id,Name FROM Work_Item__c where Type__c='MAPPING'"
+				+ " AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1"; 
+		
+		HashMap<String, ArrayList<String>> responseWIDetails = salesforceAPI.select(WorkItemQuery);
+		String WorkItemNo=responseWIDetails.get("Name").get(0);		
+
+		
+		//Searching for the WI genrated
+		objMappingPage.globalSearchRecords(WorkItemNo); 
+		
+		//making all retired parcel status active
+		List<String> ApnNumber = new ArrayList<String>();
+		int totalNoOfAPNs = objMappingPage.getGridDataInHashMap(1).get("APN").size();
+		for(int i=0;i<totalNoOfAPNs;i++) {
+			String ApnfromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(i);
+			ApnNumber.add(ApnfromWIPage);
+			//updating APN details
+			String query = "Select Id from Parcel__c where Name = '"+ApnfromWIPage+"'";
+			salesforceAPI.update("Parcel__c",query,"Status__c","Active");
+		}
+		Thread.sleep(2000);
+		objMappingPage.logout();
+		
+		//Mapping user logs in and perform mapping action on the WI genrated
+		objMappingPage.login(loginUser);
+		String mappingActionCreationData = testdata.REMAP_MAPPING_ACTION;
+		Map<String, String> hashMapRemapMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformRemapMappingAction");
+		objMappingPage.globalSearchRecords(WorkItemNo);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		Thread.sleep(10000);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+
+		softAssert.assertTrue(!(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiEventId).equals(" ")),
+				"SMAB-T3513: Verfiying the Event ID of WI genrated for given Recorded Document");
+		
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS
+				(objWorkItemHomePage.wiRelatedActionDetailsPage),"Covenants, Cond & Restr with condo" ,
+				"SMAB-T3511: Verfiying the Related Action of WI genrated for given Recorded Document");
+
+		softAssert.assertTrue(!objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.editEventIdButton),
+				"SMAB-T3513-This field should not be editable.");
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();	
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		// Fill data  in mapping screen
+        objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+        objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapRemapMappingData.get("Action"));		
+		objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel, hashMapRemapMappingData.get("Reason code"));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		
+		//second screen of mapping action
+		objMappingPage.waitForElementToBeClickable(10, objMappingPage.generateParcelButton);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		Thread.sleep(3000);
+		
+		//switching to main screen
+		driver.switchTo().window(parentWindow);
+		objMappingPage.globalSearchRecords(WorkItemNo);
+		Thread.sleep(5000);
+
+		//validate that The "Return " functionality for parcel mgmt activities should work for all these work items.
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		parentWindow = driver.getWindowHandle();	
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		softAssert.assertTrue(!objMappingPage.verifyElementVisible(objMappingPage.updateParcelsButton),
+				"SMAB-T3512-validate that The Return functionality for parcel mgmt activities should work for all these work items.");
+		driver.switchTo().window(parentWindow);
+		
+		objWorkItemHomePage.logout();
+
 	}
 }

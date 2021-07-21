@@ -266,11 +266,11 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath = "//a[@data-label='Recorded APN(s)']")
 	public WebElement recordedAPNtab;
 	
-	
-	
-
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'Information')]//force-record-layout-item//button[@title = 'Edit Event ID']")
 	public WebElement editEventIdButton;
+    
+    @FindBy(xpath = "//div[contains(@class,'notify__content')]//span")
+	public WebElement parentParcelSizeErrorMsg;
     
 	public String editButton = "Edit";
 
@@ -307,6 +307,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String apnLabel ="APN";	
 	public String NewButton="New";
 	public String migrateAPN="Migrate APN(s)";
+	public String wiEventId = "Event ID";
 
 
 
