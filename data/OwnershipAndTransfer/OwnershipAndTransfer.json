@@ -1,0 +1,25 @@
+{
+
+"dataToCreateMailToRecordsWithIncompleteData":{
+"Formatted Name1":"LUKE SHAW",
+"Start Date":"7/16/2021",
+"End Date":"7/19/2021",
+"Mailing Zip":"560090"
+
+},
+"dataToCreateGranteeWithIncompleteData":{
+
+"Last Name":"LUKE SHAW",
+"Ownership Start Date":"7/16/2021",
+"Ownership End Date":"7/19/2021"
+}
+
+
+
+
+
+
+
+
+
+}

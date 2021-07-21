@@ -1094,7 +1094,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
          String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
  		 Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
  				"DataToPerformBrandNewParcelMappingActionWithoutAllFields");
- 		 objMappingPage.globalSearchRecords(WorkItemNo);
+ 		 objMappingPage.globalSearchRecords(WorkItemNo); 		 
  		 objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
  		 objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
  		 softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage),"Mapping" , "SMAB-T2946: Verfiying the type of WI genrated for given Recorded Document");

@@ -44,8 +44,10 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String reasonForTransferring= "Reason for Transferring";
 	public String dropDownType = "Type";
 	public String dropDownAction = "Action";
-
 	public String tabPoolAssignment = "Pool Assignments";
+	public String dropDownRejected = "Rejected?";
+	public String rejectedReason = "Rejection Reason";
+	public String rejectedComments = "Rejection Comments";
 
 
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
@@ -774,7 +776,8 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 */
 	public void deleteWorkItemLinkage(String ParcelName) throws Exception {
 		ReportLogger.INFO("Deleting WI Linkage");
-		String xPathShowMoreButton = "//a[text()='"+ParcelName+"']//ancestor::tr//button[contains(@class,'x-small')]";
+		String xPathShowMoreButton = "//a[text()='"+ParcelName+"']"
+				+ "//ancestor::tr//button[contains(@class,'x-small')]";
 		WebElement showMoreButton = waitForElementToBeClickable(10, xPathShowMoreButton);
 
 		String xPathDeleteLinkUnderShowMore = "//span[text()='Delete']//..";
@@ -782,12 +785,61 @@ public class WorkItemHomePage extends ApasGenericPage {
 		if (showMoreButton != null){
 			javascriptClick(showMoreButton);
 			WebElement deleteLinkUnderShowMore = waitForElementToBeClickable(10, xPathDeleteLinkUnderShowMore);
-			javascriptClick(deleteLinkUnderShowMore);
+			javascriptClick(deleteLinkUnderShowMore);			
 			Click(getButtonWithText("Ok"));
 			objPageObj.waitUntilPageisReady(driver);
 			Thread.sleep(3000);
 		}
 	}
+	/**
+	 * Description: This method will reject the Work Item Linkage
+	 * @param workItem: Name of the Parcel for which Work Item Linkage will be Edited
+	 * @param rejectionReason: rejection reason
+	 * @param rejectionComments: rejection Comments
+	 * @throws Exception 
+	 */
+	public void rejectWorkItem(String workitem,String rejectionReason,String rejectionComments) throws Exception {
+		ReportLogger.INFO("Rejecting work item "+workitem);
+		searchModule("Work Item");
+		globalSearchRecords(workitem);
+		Click(editBtn);
+		selectOptionFromDropDown(getWebElementWithLabel(dropDownRejected), "Yes");
+		selectOptionFromDropDown(getWebElementWithLabel(rejectedReason), rejectionReason);
+		enter(rejectedComments, rejectionComments);
+        Click(saveButton);
+        waitForElementToBeVisible(successAlert, 20);
+		waitForElementToDisappear(successAlert, 10);
+		
+	}
+	
+	/**
+	 * Description: This method will Edit the Work Item Linkage
+	 * @param ParcelName: Name of the Parcel for which Work Item Linkage will be Edited
+	 * @throws Exception 
+	 */
+	public void editWorkItemLinkage(String ParcelName, String updatedAPN) throws Exception {
+		ReportLogger.INFO("Editing WI Linkage");
+		String xPathShowMoreButton = "//a[text()='"+ParcelName+"']"
+				+ "//ancestor::tr//button[contains(@class,'x-small')]";
+		WebElement showMoreButton = waitForElementToBeClickable(10, xPathShowMoreButton);
+
+		String xPathEditLinkUnderShowMore = "//span[text()='Edit']//..";
+
+		if (showMoreButton != null){
+			javascriptClick(showMoreButton);
+			WebElement editLinkUnderShowMore = waitForElementToBeClickable(10, xPathEditLinkUnderShowMore);
+			javascriptClick(editLinkUnderShowMore);
+			String xpathClearSection = "//div/button[@title='Clear Selection']";			
+			WebElement clearText = waitForElementToBeClickable(10,xpathClearSection);
+			Click(clearText);
+			String apnField = "APN";
+			objApasGenericPage.searchAndSelectOptionFromDropDown(apnField,updatedAPN);
+			Click(getButtonWithText("Save"));			
+			objPageObj.waitUntilPageisReady(driver);
+			Thread.sleep(3000);
+		}
+	}
+
 	
 	/*
 	 * public boolean verifyWorkPoolName(String workPoolName) {
