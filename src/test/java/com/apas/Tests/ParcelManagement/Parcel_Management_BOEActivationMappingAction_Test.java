@@ -687,7 +687,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
 	         //Step 8: Selecting Action as 'BOE Activation' & Taxes Paid fields value as 'N/A'
 	        objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,"BOE Activation");
-	        Thread.sleep(3000);
+	        objMappingPage.waitForElementToBeVisible(60, objMappingPage.firstNonCondoTextBoxLabel);
 			objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"123456789");
 			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		

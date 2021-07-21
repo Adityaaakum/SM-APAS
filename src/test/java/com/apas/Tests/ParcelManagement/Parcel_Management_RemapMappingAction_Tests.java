@@ -1044,8 +1044,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		
 		//step 11: rejecting work item
 		objWorkItemHomePage.rejectWorkItem(workItem,"Other","Reject Mapping action after submit for approval");
-		Thread.sleep(5000);
-		
+				
 		// Step 12: Verify Status of Parent Parcel after WI rejected
 		objMappingPage.globalSearchRecords(apn);
 		String parentAPN1Status = objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus,"Parcel Information");
