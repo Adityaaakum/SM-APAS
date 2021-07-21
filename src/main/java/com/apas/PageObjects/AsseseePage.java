@@ -45,7 +45,6 @@ public class AsseseePage extends ApasGenericPage {
 	public String editButtonText = "Edit";
 	public String typeDropdownLabel = "Type";
 
-	// div[@data-aura-class = 'forceListViewPicker']//span[text() = 'Assessees']
 	@FindBy(xpath = "//div[contains(text(),'List Views')]")
 	public WebElement selectListViewButton;
 

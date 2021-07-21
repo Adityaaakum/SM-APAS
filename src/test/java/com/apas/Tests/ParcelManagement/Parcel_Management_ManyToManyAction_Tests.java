@@ -3,6 +3,7 @@ package com.apas.Tests.ParcelManagement;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
@@ -37,6 +38,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	MappingPage objMappingPage;
 	JSONObject jsonObject= new JSONObject();
 	String apnPrefix=new String();
+	CIOTransferPage objtransfer;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -46,6 +48,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage= new MappingPage(driver);
+		objtransfer=new CIOTransferPage(driver);
 
 	}
 	/**
@@ -964,16 +967,44 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 ** @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2660:Parcel Management- Verify that User is able to update a Situs of child parcel from the Parcel mapping screen for  \"Many to Many\" mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3451,SMAB-T3459,SMAB-T3452,SMAB-T2660:Parcel Management- Verify that User is able to update a Situs of child parcel from the Parcel mapping screen for  \"Many to Many\" mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_UpdateChildParcelSitus_ManyToManyMappingAction(String loginUser) throws Exception {
 		//Fetching parcels that are Active with no Ownership record
-		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and (Not Name like '%990') and (Name like '100%') and (Not Name like '134%') and Status__c = 'Active' Limit 2";
-		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c "
+				+ "FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c "
+				+ "where type__c='CIO') and (Name like '002%') and Lot_Size_SQFT__c in(0,null) "
+				+ "and Status__c = 'Active' limit 2";		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
 
 		String concatenateAPNWithSameOwnership = apn1+","+apn2;
+
+		//Fetch some other values from database
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn1 +"')").get("Name").get(0);
+
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
+		String parcelSize	= "200";	
+				
+		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonObject.put("Status__c","Active");
+		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonObject.put("District__c",districtValue);
+		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+
+		//updating PUC details
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
+		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(1));	
 
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -983,13 +1014,13 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		Map<String, String> hashMapManyToManyActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformManyToManyMappingActionWithSitusData");
 
-		String situsCityName = hashMapManyToManyActionMappingData.get("Situs City Name");
+		String cityName = hashMapManyToManyActionMappingData.get("City Name");
 		String direction = hashMapManyToManyActionMappingData.get("Direction");
 		String situsNumber = hashMapManyToManyActionMappingData.get("Situs Number");
 		String situsStreetName = hashMapManyToManyActionMappingData.get("Situs Street Name");
 		String situsType = hashMapManyToManyActionMappingData.get("Situs Type");
 		String situsUnitNumber = hashMapManyToManyActionMappingData.get("Situs Unit Number");
-		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+situsCityName;
+		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+cityName;
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -999,7 +1030,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objMappingPage.globalSearchRecords(apn1);
 
 		// Step 3: Creating Manual work item for the Parcel
-		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		//Step 4: Clicking the  details tab for the work item newly created and clicking on Related Action Link
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -1038,6 +1069,18 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 			softAssert.assertEquals(gridDataHashMap.get("Situs").get(i),childprimarySitus,
 					"SMAB-T2660: Validation that System populates primary situs on second screen for child parcel number "+i+1+" with the situs value that was added in first screen");
 
+		//updating child parcel size in second screen on mapping action 
+		for(int i=1;i<=gridDataHashMap.get("Parcel Size (SQFT)*").size();i++) {
+			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"99",i);
+		}
+
+		//validating second screen warning message
+		String parcelsizewarningmessage=objMappingPage.secondScreenParcelSizeWarning.getText();
+		softAssert.assertEquals(parcelsizewarningmessage,
+				"Parent Parcel Size = "+parcelSize+", Net Land Loss = 10, Net Land Gain = 0, "
+						+ "Total Child Parcel(s) Size = 198.",
+				"SMAB-T3451,SMAB-T3459-Verify that parent parcel size and entered net gain/loss and value is getting displayed");
+
 		//Step 9: Click generate Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -1055,6 +1098,22 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 					"SMAB-T2660: Validation that primary situs of  child parcel number "+i+" has value that was entered in first screen through situs modal window");
 		}
 		driver.switchTo().window(parentWindow);
+		//submit WI for approval
+	    String   queryWI = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
+	    salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Submitted for Approval");
+	    objWorkItemHomePage.logout();
+	    
+	    //login as supervisor 
+	    objMappingPage.login(users.MAPPING_SUPERVISOR);
+	    objMappingPage.searchModule(WORK_ITEM);
+	    objMappingPage.globalSearchRecords(workItemNumber);
+	    objWorkItemHomePage.javascriptClick(objWorkItemHomePage.dataTabCompleted);
+	    objWorkItemHomePage.javascriptClick(objWorkItemHomePage.markAsCurrentStatusButton);
+	    objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg, 20);
+	    
+	    String parcelSizeMismatchMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+	    softAssert.assertEquals(parcelSizeMismatchMsg.contains("Total Child Parcel(s) size must match the Parent's Parcel Size"),
+	    	 true,"SMAB-T3452: parent parcel validation at Work Item level");
 		objWorkItemHomePage.logout();
 	}
 	/**

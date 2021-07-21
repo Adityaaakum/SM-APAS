@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
@@ -38,6 +39,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	JSONObject jsonObject= new JSONObject();
 	MappingPage objMappingPage;
+	CIOTransferPage objtransfer;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -47,6 +49,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage= new MappingPage(driver);
+		objtransfer=new CIOTransferPage(driver);
 
 	}
 
@@ -725,5 +728,121 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 			
 		    // Step 15 : Switch to parent window and logout
 			objMappingPage.logout();
+		}
+		
+		@Test(description = "SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
+				+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
+				dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
+				groups = {"Regression","ParcelManagement","RecorderIntegration"})
+		public void ParcelManagement_VerifyNewWIDeclofCovenantsCondRestrictionsGeneratedfromRecorderIntegrationAndBOEMappingAction(String loginUser) throws Exception {
+
+
+			objMappingPage.login(users.SYSTEM_ADMIN);
+			objMappingPage.searchModule(PARCELS);
+			salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c"
+					+ " where Sub_type__c='Decl of Covenants, Cond & Restrictions' and status__c ='In pool'", 
+					"status__c","In Progress");
+
+			//generating WI
+			objtransfer.generateRecorderJobWorkItems(objMappingPage.DOC_Decl_of_Covenants_Cond_Restrictions, 1);
+
+			String WorkItemQuery="SELECT Id,Name FROM Work_Item__c where Type__c='MAPPING'"
+					+ " AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1"; 
+
+			HashMap<String, ArrayList<String>> responseWIDetails = salesforceAPI.select(WorkItemQuery);
+			String WorkItemNo=responseWIDetails.get("Name").get(0);		
+
+
+			//Searching for the WI genrated
+			objMappingPage.globalSearchRecords(WorkItemNo); 
+			String ApnfromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+
+			objMappingPage.deleteRelationshipInstanceFromParcel(ApnfromWIPage);
+
+			//Fetch some other values from database
+			HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+					+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+					+ "where Status__c='Active') limit 1");
+
+			String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+			HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+			String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+			HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+			String legalDescriptionValue="Legal PM 85/25-260";
+			String districtValue="District01";
+
+			jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+			jsonObject.put("Status__c","Retired");
+			jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+			jsonObject.put("District__c",districtValue);
+			jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+			jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+
+			//updating APN details
+			String query = "Select Id from Parcel__c where Name = '"+ApnfromWIPage+"'";
+			salesforceAPI.update("Parcel__c",query,jsonObject);
+			objMappingPage.logout();
+
+			//Mapping user logs in and perform mapping action on the WI genrated
+			objMappingPage.login(loginUser);
+			String mappingActionCreationData = testdata.BOEACtivation_MAPPING_ACTION;
+			Map<String, String> hashMapBOEMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+					"DataToPerformBOEMappingActionWithAllFields");
+			objMappingPage.globalSearchRecords(WorkItemNo);
+			Thread.sleep(10000);
+			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+			Thread.sleep(10000);
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+
+			softAssert.assertTrue(!(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiEventId).equals(" ")) ,
+					"SMAB-T3513: Verfiying the Event ID of WI genrated for given Recorded Document");
+
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS
+					(objWorkItemHomePage.wiRelatedActionDetailsPage),"Decl of Covenants, Cond & Restrictions" ,
+					"SMAB-T3511: Verfiying the Related Action of WI genrated for given Recorded Document");
+
+			softAssert.assertTrue(!objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.editEventIdButton),
+					"SMAB-T3513-This field should not be editable.");
+
+			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+			String parentWindow = driver.getWindowHandle();	
+			objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+			// Fill data  in mapping screen
+			objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+			objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapBOEMappingData.get("Action"));		
+			objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel, hashMapBOEMappingData.get("Reason code"));
+			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+
+			//second screen of mapping action
+			objMappingPage.waitForElementToBeClickable(10, objMappingPage.generateParcelButton);
+			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+			objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMsgOnSecondScreen());
+
+			
+			//second screen of mapping action
+			softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen(),
+					"is pending verification from the supervisor in order to be activated",
+					"SMAB-T3512: Validate that User is able to perform Retire action for one active parcel");
+
+			//switching to main screen
+			driver.switchTo().window(parentWindow);
+			objMappingPage.globalSearchRecords(WorkItemNo);
+
+			//validate that The "Return " functionality for parcel mgmt activities should work for all these work items.
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+			parentWindow = driver.getWindowHandle();	
+			objWorkItemHomePage.switchToNewWindow(parentWindow);
+			softAssert.assertTrue(!objMappingPage.verifyElementVisible(objMappingPage.updateParcelsButton),
+					"SMAB-T3512-validate that The Return functionality for parcel mgmt activities should work for all these work items.");
+			driver.switchTo().window(parentWindow);
+
+			objWorkItemHomePage.logout();
+
+
 		}
 }
