@@ -2,6 +2,7 @@ package com.apas.Tests.ParcelManagement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -1070,8 +1071,8 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	@Test(description = "SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
-			groups = {"Regression","RecorderIntegration" })
-	public void ParcelManagement_VerifyNewWICovenantsCondRestrgenratedfromRecorderIntegrationAndRemapMappingAction(String loginUser) throws Exception {
+			groups = {"Regression","ParcelManagement","RecorderIntegration" })
+	public void ParcelManagement_VerifyNewWICovenantsCondRestrGeneratedfromRecorderIntegrationAndRemapMappingAction(String loginUser) throws Exception {
 				
 		
 		objMappingPage.login(users.SYSTEM_ADMIN);
@@ -1112,7 +1113,6 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 			String query = "Select Id from Parcel__c where Name = '"+ApnfromWIPage+"'";
 			salesforceAPI.update("Parcel__c",query,"Status__c","Active");
 		}
-		Thread.sleep(2000);
 		objMappingPage.logout();
 		
 		//Mapping user logs in and perform mapping action on the WI genrated
@@ -1122,7 +1122,6 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 				"DataToPerformRemapMappingAction");
 		objMappingPage.globalSearchRecords(WorkItemNo);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
-		Thread.sleep(10000);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 
 		softAssert.assertTrue(!(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiEventId).equals(" ")),
@@ -1148,12 +1147,10 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		//second screen of mapping action
 		objMappingPage.waitForElementToBeClickable(10, objMappingPage.generateParcelButton);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		Thread.sleep(3000);
 		
 		//switching to main screen
 		driver.switchTo().window(parentWindow);
 		objMappingPage.globalSearchRecords(WorkItemNo);
-		Thread.sleep(5000);
 
 		//validate that The "Return " functionality for parcel mgmt activities should work for all these work items.
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);

@@ -761,7 +761,6 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
 					"SMAB-T2837: Validation that reason code field is auto populated from parent parcel work item");
 			objMappingPage.fillMappingActionForm(hashMapOneToOneParcelMappingData);
-			Thread.sleep(5000);
 			//updating child parcel size in second screen on mapping action 
 			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"99",1);
 
@@ -772,7 +771,6 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 							+ "Total Child Parcel(s) Size = 99.",
 					"SMAB-T3451,SMAB-T3459-Verify that parent parcel size and entered net gain/loss and value is getting displayed");
 			objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
-			Thread.sleep(3000);
 			objMappingPage.editActionInMappingSecondScreen(hashMapOneToOneParcelMappingData);
 			objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);
 			ReportLogger.INFO("Validate the Grid values");
@@ -805,10 +803,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		    
 		    //login as supervisor 
 		    objMappingPage.login(users.MAPPING_SUPERVISOR);
-		    Thread.sleep(5000);
 		    objMappingPage.searchModule(WORK_ITEM);
 		    objMappingPage.globalSearchRecords(workItemNumber);
-		    Thread.sleep(5000);
 		    objWorkItemHomePage.javascriptClick(objWorkItemHomePage.dataTabCompleted);
 		    objWorkItemHomePage.javascriptClick(objWorkItemHomePage.markAsCurrentStatusButton);
 		    objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg, 20);

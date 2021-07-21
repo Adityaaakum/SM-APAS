@@ -1127,7 +1127,6 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
 				"SMAB-T2838: Validation that reason code field is auto populated from parent parcel work item");
 		objMappingPage.fillMappingActionForm(hashMapSplitActionMappingData);
-		Thread.sleep(3000);
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		//updating child parcel size in second screen on mapping action 
@@ -1143,8 +1142,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 				"SMAB-T3451,SMAB-T3459-Verify that parent parcel size and entered net gain/loss and value is getting displayed");
 
 		
-		 objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
-		Thread.sleep(3000);
+		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
 		objMappingPage.editActionInMappingSecondScreen(hashMapSplitActionMappingData);
 		objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);
 		ReportLogger.INFO("Validate the Grid values");
@@ -1195,10 +1193,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	    
 	    //login as supervisor 
 	    objMappingPage.login(users.MAPPING_SUPERVISOR);
-	    Thread.sleep(5000);
 	    objMappingPage.searchModule(WORK_ITEM);
 	    objMappingPage.globalSearchRecords(workItemNumber);
-	    Thread.sleep(5000);
 	    objWorkItemHomePage.javascriptClick(objWorkItemHomePage.dataTabCompleted);
 	    objWorkItemHomePage.javascriptClick(objWorkItemHomePage.markAsCurrentStatusButton);
 	    objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg, 20);
@@ -1330,8 +1326,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	@Test(description = "SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
-			groups = {"Regression","RecorderIntegration" })
-	public void ParcelManagement_VerifyNewWICondominiumPlansgenratedfromRecorderIntegrationAndSplitMappingAction(String loginUser) throws Exception {
+			groups = {"Regression","ParcelManagement","RecorderIntegration" })
+	public void ParcelManagement_VerifyNewWICondominiumPlansGeneratedfromRecorderIntegrationAndSplitMappingAction(String loginUser) throws Exception {
 
 
 		objMappingPage.login(users.SYSTEM_ADMIN);
@@ -1381,9 +1377,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		//updating APN details
 		String query = "Select Id from Parcel__c where Name = '"+ApnfromWIPage+"'";
-		salesforceAPI.update("Parcel__c",query,jsonObject);
-		Thread.sleep(2000);
-	
+		salesforceAPI.update("Parcel__c",query,jsonObject);	
 		objMappingPage.logout();
 
 		//Mapping user logs in and perform mapping action on the WI genrated
@@ -1392,9 +1386,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		Map<String, String> hashMapSplitMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformSplitMappingActionWithoutAllFields");
 		objMappingPage.globalSearchRecords(WorkItemNo);
-		Thread.sleep(10000);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
-		Thread.sleep(10000);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 
 		softAssert.assertTrue(!(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiEventId).equals(" ")),
@@ -1428,12 +1420,10 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"100",i);
 		}		
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		Thread.sleep(3000);
 
 		//switching to main screen
 		driver.switchTo().window(parentWindow);
 		objMappingPage.globalSearchRecords(WorkItemNo);
-		Thread.sleep(10000);
 
 		//validate that The "Return " functionality for parcel mgmt activities should work for all these work items.
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);

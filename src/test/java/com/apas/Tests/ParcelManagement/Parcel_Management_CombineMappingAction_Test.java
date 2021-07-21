@@ -1249,7 +1249,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2659: Validation that User is able to update a Situs for child parcel from the Parcel mapping screen");
 		objMappingPage.fillMappingActionForm(hashMapCombineActionMappingData);
 
-		Thread.sleep(10000);
 		//updating child parcel size in second screen on mapping action 
 		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"99",1);
 
@@ -1267,7 +1266,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		//Step 8: Click Combine Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		Thread.sleep(4000);
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		//Step 9: Validation that primary situs on last screen screen is getting populated from situs entered in first screen
@@ -1287,10 +1285,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	    
 	    //login as supervisor 
 	    objMappingPage.login(users.MAPPING_SUPERVISOR);
-	    Thread.sleep(5000);
 	    objMappingPage.searchModule(WORK_ITEM);
 	    objMappingPage.globalSearchRecords(workItemNumber);
-	    Thread.sleep(5000);
 	    objWorkItemHomePage.javascriptClick(objWorkItemHomePage.dataTabCompleted);
 	    objWorkItemHomePage.javascriptClick(objWorkItemHomePage.markAsCurrentStatusButton);
 	    objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg, 20);
@@ -1989,8 +1985,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	@Test(description = "SMAB-T3511,,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
-			groups = {"Regression","RecorderIntegration" })
-	public void ParcelManagement_VerifyNewWILotLineAdjustmentsgenratedfromRecorderIntegrationAndCombineMappingAction(String loginUser) throws Exception {
+			groups = {"Regression","ParcelManagement","RecorderIntegration" })
+	public void ParcelManagement_VerifyNewWILotLineAdjustmentsGeneratedfromRecorderIntegrationAndCombineMappingAction(String loginUser) throws Exception {
 				
 		
 		objMappingPage.login(users.SYSTEM_ADMIN);
@@ -2007,7 +2003,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> responseWIDetails = salesforceAPI.select(WorkItemQuery);
 		String WorkItemNo=responseWIDetails.get("Name").get(0);		
 
-		//Searching for the WI genrated
+		//Searching for the WI generated
 		objMappingPage.globalSearchRecords(WorkItemNo); 
 		String firstApnfromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
 		String secondApnfromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(1);
@@ -2048,7 +2044,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		//updating APN details
 		String query = "Select Id from Parcel__c where Name in('"+firstApnfromWIPage+"','" +secondApnfromWIPage+"')";
 		salesforceAPI.update("Parcel__c",query,jsonParcelObject);
-		Thread.sleep(2000);
 		objMappingPage.logout();
 		
 		
@@ -2059,7 +2054,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"DataToPerformCombineMappingAction");
 		objMappingPage.globalSearchRecords(WorkItemNo);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
-		Thread.sleep(5000);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 
 		softAssert.assertTrue(!(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiEventId).equals(" ")),
@@ -2087,7 +2081,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		driver.switchTo().window(parentWindow);
 		objMappingPage.globalSearchRecords(WorkItemNo);
-		Thread.sleep(10000);
 
 		//validate that The "Return " functionality for parcel mgmt activities should work for all these work items.
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);

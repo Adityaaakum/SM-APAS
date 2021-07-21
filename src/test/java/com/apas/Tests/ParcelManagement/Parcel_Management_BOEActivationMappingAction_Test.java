@@ -733,8 +733,8 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		@Test(description = "SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 				+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 				dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
-				groups = {"Regression","RecorderIntegration"})
-		public void ParcelManagement_VerifyNewWIDeclofCovenantsCondRestrictionsgenratedfromRecorderIntegrationAndBOEMappingAction(String loginUser) throws Exception {
+				groups = {"Regression","ParcelManagement","RecorderIntegration"})
+		public void ParcelManagement_VerifyNewWIDeclofCovenantsCondRestrictionsGeneratedfromRecorderIntegrationAndBOEMappingAction(String loginUser) throws Exception {
 
 
 			objMappingPage.login(users.SYSTEM_ADMIN);
@@ -783,8 +783,6 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 			//updating APN details
 			String query = "Select Id from Parcel__c where Name = '"+ApnfromWIPage+"'";
 			salesforceAPI.update("Parcel__c",query,jsonObject);
-			Thread.sleep(2000);
-
 			objMappingPage.logout();
 
 			//Mapping user logs in and perform mapping action on the WI genrated
@@ -821,8 +819,9 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 			//second screen of mapping action
 			objMappingPage.waitForElementToBeClickable(10, objMappingPage.generateParcelButton);
 			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-			Thread.sleep(3000);
+			objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMsgOnSecondScreen());
 
+			
 			//second screen of mapping action
 			softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen(),
 					"is pending verification from the supervisor in order to be activated",
@@ -831,7 +830,6 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 			//switching to main screen
 			driver.switchTo().window(parentWindow);
 			objMappingPage.globalSearchRecords(WorkItemNo);
-			Thread.sleep(10000);
 
 			//validate that The "Return " functionality for parcel mgmt activities should work for all these work items.
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);

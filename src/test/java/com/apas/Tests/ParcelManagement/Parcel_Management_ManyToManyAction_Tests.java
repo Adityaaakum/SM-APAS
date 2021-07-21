@@ -1105,10 +1105,8 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	    
 	    //login as supervisor 
 	    objMappingPage.login(users.MAPPING_SUPERVISOR);
-	    Thread.sleep(5000);
 	    objMappingPage.searchModule(WORK_ITEM);
 	    objMappingPage.globalSearchRecords(workItemNumber);
-	    Thread.sleep(5000);
 	    objWorkItemHomePage.javascriptClick(objWorkItemHomePage.dataTabCompleted);
 	    objWorkItemHomePage.javascriptClick(objWorkItemHomePage.markAsCurrentStatusButton);
 	    objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg, 20);
