@@ -387,10 +387,10 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		String childAPN=gridDataHashMap.get("APN").get(0);
-		String legalDescription=gridDataHashMap.get("Legal Description").get(0);
-		String tra=gridDataHashMap.get("TRA").get(0);
+		String legalDescription=gridDataHashMap.get("Legal Description*").get(0);
+		String tra=gridDataHashMap.get("TRA*").get(0);
 		String situs=gridDataHashMap.get("Situs").get(0);
-		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd").get(0);
+		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd*").get(0);
 
 		//Step 7: Click generate Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
@@ -418,25 +418,25 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 				"SMAB-T2898: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
 		softAssert.assertTrue(!objMappingPage.verifyElementVisible(objMappingPage.updateParcelsButton),
 				"SMAB-T2898: Validation that  There is No \"Update Parcel(s)\" button on return to custom screen");
-		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),districtNeighborhood,
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),districtNeighborhood,
 						"SMAB-T2898: Validation that  System populates District/Neighborhood in return to custom screen  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),situs.replaceFirst("\\s+", ""),"SMAB-T2898: Validation that  System populates Situs in return to custom screen  from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescription,
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),legalDescription,
 						"SMAB-T2898: Validation that  System populates Legal Description in return to custom screen from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),tra,
+		softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),tra,
 						"SMAB-T2898: Validation that  System populates TRA in return to custom screen from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),childAPNPUC,
+		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),childAPNPUC,
 						"SMAB-T2898: Validation that  System populates Use Code that was edited in custom screen");
-		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
+		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),reasonCode,
 				"SMAB-T2898: Validation that  System populates reason code in return to custom screen from the sane reason code that was entered while perfroming mapping action");
 
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2898: Validation that APN column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2898: Validation that Legal Description column on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2898: Validation that TRA column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description*"),"SMAB-T2898: Validation that Legal Description column on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA*"),"SMAB-T2898: Validation that TRA column should not be editable on retirning to custom screen");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2898: Validation that Situs column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2898: Validation that Reason Code column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd"),"SMAB-T2898: Validation that District/Neighborhood column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2898: Validation that Use Code column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code*"),"SMAB-T2898: Validation that Reason Code column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd*"),"SMAB-T2898: Validation that District/Neighborhood column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code*"),"SMAB-T2898: Validation that Use Code column should not be editable on retirning to custom screen");
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
@@ -479,16 +479,16 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		String childAPN=gridDataHashMap.get("APN").get(0);
-		String legalDescription=gridDataHashMap.get("Legal Description").get(0);
-		String tra=gridDataHashMap.get("TRA").get(0);
+		String legalDescription=gridDataHashMap.get("Legal Description*").get(0);
+		String tra=gridDataHashMap.get("TRA*").get(0);
 		String situs=gridDataHashMap.get("Situs").get(0);
-		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd").get(0);
+		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd*").get(0);
 
 		//Step 5: Click BOEACtivation Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
 
-		softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel(s) "+parentAPN+" have been successfully Activated!",
+		softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel(s) "+parentAPN+" is pending verification from the supervisor in order to be activated.",
 	                "SMAB-T2832: Validate that User is able to perform boe activation  action from mapping actions tab");
 
 		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+parentAPN+"') limit 1");
@@ -528,14 +528,14 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 				"SMAB-T2898: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
 		softAssert.assertTrue(!objMappingPage.verifyElementVisible(objMappingPage.updateParcelsButton),
 				"SMAB-T2898: Validation that  There is No \"Update Parcel(s)\" button on return to custom screen");
-		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),districtNeighborhood,
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),districtNeighborhood,
 				"SMAB-T2898: Validation that  System populates District/Neighborhood in return to custom screen  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),situs.replaceFirst("\\s+", ""),"SMAB-T2898: Validation that  System populates Situs in return to custom screen  from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescription,
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),legalDescription,
 				"SMAB-T2898: Validation that  System populates Legal Description in return to custom screen from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),tra,
+		softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),tra,
 				"SMAB-T2898: Validation that  System populates TRA in return to custom screen from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),childAPNPUC,
+		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),childAPNPUC,
 				"SMAB-T2898: Validation that  System populates Use Code that was edited in custom screen");
 		
 		driver.switchTo().window(parentWindow);

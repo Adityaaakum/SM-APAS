@@ -402,7 +402,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		//Step 5: Click retire Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel(s) "+apn+" have been successfully retired!",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel(s) "+apn+" is pending verification from the supervisor in order to be retired.",
 				"SMAB-T2833: Validate that User is able to perform Retire action from mapping actions tab");
 		
 		//Step 6: Navigating  to the independent mapping action WI that would have been created after performing retire action 

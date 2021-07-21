@@ -102,7 +102,7 @@
   },
   "DataToCreateWorkItemOfTypeParcelManagement": {
     "Work Item Type": "Mapping",
-    "Actions": "Perform Other Mapping Work",
+    "Actions": "Other Mapping Work",
     "Audit Trail": "No",
     "Reference": "Test WI",
     "Description": "Creation of work item",
