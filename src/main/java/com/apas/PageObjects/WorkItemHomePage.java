@@ -44,8 +44,10 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String reasonForTransferring= "Reason for Transferring";
 	public String dropDownType = "Type";
 	public String dropDownAction = "Action";
-
 	public String tabPoolAssignment = "Pool Assignments";
+	public String dropDownRejected = "Rejected?";
+	public String rejectedReason = "Rejection Reason";
+	public String rejectedComments = "Rejection Comments";
 
 
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
@@ -788,6 +790,26 @@ public class WorkItemHomePage extends ApasGenericPage {
 			objPageObj.waitUntilPageisReady(driver);
 			Thread.sleep(3000);
 		}
+	}
+	/**
+	 * Description: This method will reject the Work Item Linkage
+	 * @param workItem: Name of the Parcel for which Work Item Linkage will be Edited
+	 * @param rejectionReason: rejection reason
+	 * @param rejectionComments: rejection Comments
+	 * @throws Exception 
+	 */
+	public void rejectWorkItem(String workitem,String rejectionReason,String rejectionComments) throws Exception {
+		ReportLogger.INFO("Rejecting work item "+workitem);
+		searchModule("Work Item");
+		globalSearchRecords(workitem);
+		Click(editBtn);
+		selectOptionFromDropDown(getWebElementWithLabel(dropDownRejected), "Yes");
+		selectOptionFromDropDown(getWebElementWithLabel(rejectedReason), rejectionReason);
+		enter(rejectedComments, rejectionComments);
+        Click(saveButton);
+        waitForElementToBeVisible(successAlert, 20);
+		waitForElementToDisappear(successAlert, 10);
+		
 	}
 	
 	/**
