@@ -112,6 +112,8 @@ public class BPPTrend_InflationFactor_Test extends TestBase {
 	public void BppTrend_EditApprovedCpiFactor(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
 		objBppTrendSetupPage.login(loginUser);
+		Thread.sleep(5000);
+		objBppTrendSetupPage.closeDefaultOpenTabs();
 		
 		//Step2: Opening the BPP Trend module and set All as the view option in grid
 		objBppTrendSetupPage.searchModule(modules.CPI_FACTORS);
