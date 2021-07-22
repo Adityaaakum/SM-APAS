@@ -555,6 +555,8 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 			String RetiredParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
 			objMappingPage.deleteRelationshipInstanceFromParcel(RetiredParcelToPerformMapping);
+			String PUC = salesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
+    	    String TRA=salesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0); 
 
 			String mappingActionCreationData =  testdata.BOEACtivation_MAPPING_ACTION;
 
@@ -606,13 +608,13 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 			//Verifying new situs,TRA ,use code is populated in grid table		    
 		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Situs").get(0),childprimarySitus,
 					"SMAB-T2839,SMAB-T2844: Validation that System populates Situs from the parent parcel");
-		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA").get(0),hashMapBOEParcelMappingData.get("TRA"),
+		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA*").get(0),TRA,
 					"SMAB-T2839,SMAB-T2844: Validation that System populates TRA from the parent parcel");
-		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code").get(0),hashMapBOEParcelMappingData.get("PUC"),
+		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code*").get(0),PUC,
 					"SMAB-T2839,SMAB-T2844: Validation that System populates TRA from the parent parcel");
 		    ReportLogger.INFO("Click on Combine Parcel button");
 			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-			softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen()," have been successfully Activated!",
+			softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen(),"pending verification from the supervisor",
 					"SMAB-T2839,SMAB-T2844: Validate that User is able to perform Combine action for multiple active parcels");			    
 		    
 		    driver.switchTo().window(parentWindow);

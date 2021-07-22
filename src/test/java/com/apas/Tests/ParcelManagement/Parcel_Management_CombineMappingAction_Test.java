@@ -1620,6 +1620,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> responseCondoAPNDetails = objMappingPage.getCondoApnWithNoOwner();
 		String apn3 = responseCondoAPNDetails.get("Name").get(0);
 		
+		String PUC = salesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
+	    String TRA=salesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0); 
+		
 		//Add the parcels in a Hash Map for validations later
 		Map<String,String> apnValue = new HashMap<String,String>(); 
 		apnValue.put("APN1", apn1); 
@@ -1658,7 +1661,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 		String legalDescriptionValue="Legal PM 85/25-260";
-		String primarySitusValue=salesforceAPI.select("SELECT Name FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where Id='"+ updateRecordOn +"')").get("Name").get(0);
 		
 		//Enter values in the Parcels
 		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
@@ -1764,11 +1766,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				String childAPNNumber =gridDataHashMap.get("APN").get(0);
 
 				softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),responseNeighborhoodDetails.get("Name").get(0),
-						"SMAB-T2578: Validation that System populates District/Neighborhood from the parent parcel");
-				
-				softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue
-				  .replaceFirst("\\s", ""),
-				  "SMAB-T2578: Validation that System populates Situs from the parent parcel");
+						"SMAB-T2578: Validation that System populates District/Neighborhood from the parent parcel");			
 				 
 				softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),reasonCode,
 						"SMAB-T2578: Validation that System populates Reason code from the parent parcel");
@@ -1798,9 +1796,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 						    
 			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Situs").get(0),childprimarySitus,
 						"SMAB-T2579,SMAB-T2637: Validation that System populates Situs from the parent parcel");
-			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA*").get(0),hashMapCombineMappingData.get("TRA"),
+			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA*").get(0),TRA,
 						"SMAB-T2579,SMAB-T2637: Validation that System populates TRA from the parent parcel");
-			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code*").get(0),hashMapCombineMappingData.get("PUC"),
+			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code*").get(0),PUC,
 						"SMAB-T2579,SMAB-T2637: Validation that System populates TRA from the parent parcel");
 			    ReportLogger.INFO("Click on Combine Parcel button");
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));

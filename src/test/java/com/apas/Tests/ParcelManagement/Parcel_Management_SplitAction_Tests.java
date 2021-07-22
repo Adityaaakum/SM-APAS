@@ -1060,6 +1060,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String situsUnitNumber = hashMapSplitActionMappingData.get("Situs Unit Number");
 		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+situsCityName;
 
+		String PUC = salesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
+	    String TRA=salesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0); 
 
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)

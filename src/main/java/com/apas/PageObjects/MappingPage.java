@@ -429,8 +429,9 @@ public class MappingPage extends ApasGenericPage {
     	    String TRA=objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);    	  
 			Click(editButtonInSeconMappingScreen);
 			if(waitForElementToBeVisible(2, clearSelectionTRA))
-		    Click(clearSelectionTRA);
-			enter(parcelPUC, TRA);
+		    Click(clearSelectionTRA);			
+			enter(parcelTRA, TRA);
+			Thread.sleep(5000);
 			selectOptionFromDropDown(parcelTRA,TRA);
 			if(waitForElementToBeVisible(2, clearSelectionPUC))
 			Click(clearSelectionPUC);

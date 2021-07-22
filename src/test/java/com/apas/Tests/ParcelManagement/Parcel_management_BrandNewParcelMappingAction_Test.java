@@ -975,6 +975,9 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+situsCityName;
 
 
+			String PUC =salesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
+    	    String TRA= salesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0); 
+			
 			String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 			Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 					"DataToCreateWorkItemOfTypeParcelManagement");
@@ -1012,9 +1015,9 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 					    
 		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Situs").get(0),childprimarySitus,
 					"SMAB-T2835,SMAB-T2840: Validation that System populates Situs from the parent parcel");
-		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA").get(0),hashMapBrandNewParcelMappingData.get("TRA"),
+		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA*").get(0),TRA,
 					"SMAB-T2835,SMAB-T2840: Validation that System populates TRA from the parent parcel");
-		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code").get(0),hashMapBrandNewParcelMappingData.get("PUC"),
+		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code*").get(0),PUC,
 					"SMAB-T2835,SMAB-T2840: Validation that System populates TRA from the parent parcel");
 		    ReportLogger.INFO("Click on Combine Parcel button");
 			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
