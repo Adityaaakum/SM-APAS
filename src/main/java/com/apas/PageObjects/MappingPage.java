@@ -446,8 +446,9 @@ public class MappingPage extends ApasGenericPage {
     	    String TRA=objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);    	  
 			Click(editButtonInSeconMappingScreen);
 			if(waitForElementToBeVisible(2, clearSelectionTRA))
-		    Click(clearSelectionTRA);
-			enter(parcelTRA, TRA);
+		    Click(clearSelectionTRA);			
+			enter(parcelTRA, TRA);		    
+			Thread.sleep(2000);
 			selectOptionFromDropDown(parcelTRA,TRA);
 			if(waitForElementToBeVisible(2, clearSelectionPUC))
 			Click(clearSelectionPUC);
@@ -463,22 +464,22 @@ public class MappingPage extends ApasGenericPage {
     						+ "//button | //div[contains(@class,'flowruntimeBody')]"
     						+ "//*[contains(@data-label,'" + columnNameOnGrid + "')]";
 
-    		WebElement webelement = driver.findElement(By.xpath(xPath));
-    		Click(webelement);
-   		Thread.sleep(1000);
-    		if(verifyElementVisible("//tr["+i+"]//*[contains(@data-label,'" + columnNameOnGrid + "')]"
-    				+ "//button[@data-action-edit='true']"))
-    			Click(driver.findElement(By.xpath("//tr["+i+"]//*[contains(@data-label,'"
-    				+ columnNameOnGrid + "')]//button[@data-action-edit='true']")));
-    		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
-
-    		waitForElementToBeClickable(30, webelementInput);
-    		webelementInput.clear();
-    		webelementInput.sendKeys(expectedValue);
-    		
-    		Actions objAction=new Actions(driver);
-  		objAction.sendKeys(Keys.ENTER).build().perform();
-    		Thread.sleep(2000);
+	    		 WebElement webelement = driver.findElement(By.xpath(xPath));
+	    	 	 Click(webelement);
+	   		     Thread.sleep(1000);
+	    		 if(verifyElementVisible("//tr["+i+"]//*[contains(@data-label,'" + columnNameOnGrid + "')]"
+	    				+ "//button[@data-action-edit='true']"))
+	    			Click(driver.findElement(By.xpath("//tr["+i+"]//*[contains(@data-label,'"
+	    				+ columnNameOnGrid + "')]//button[@data-action-edit='true']")));
+	    		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
+	
+	    		waitForElementToBeClickable(30, webelementInput);
+	    		webelementInput.clear();
+	    		webelementInput.sendKeys(expectedValue);
+	    		
+	    		Actions objAction=new Actions(driver);
+	  		    objAction.sendKeys(Keys.ENTER).build().perform();
+	    		Thread.sleep(2000);
     	}
   	   
 }

@@ -1516,6 +1516,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonObject);
+		
+		String PUC = salesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
+	    String TRA=salesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0); 
 
 		String concatenateAPNWithSameOwnership = apn1+","+apn2;
 
@@ -1598,9 +1601,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		//Verifying new situs,TRA ,use code is populated in grid table		    
 	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Situs").get(0),childprimarySitus,
 				"SMAB-T2836,SMAB-T2841: Validation that System populates Situs from the parent parcel");
-	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA").get(0),hashMapManyToManyActionMappingData.get("TRA"),
+	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA*").get(0),TRA,
 				"SMAB-T2836,SMAB-T2841: Validation that System populates TRA from the parent parcel");
-	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code").get(0),hashMapManyToManyActionMappingData.get("PUC"),
+	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code*").get(0),PUC,
 				"SMAB-T2836,SMAB-T2841: Validation that System populates Use Code from the parent parcel");
 	    //Clicking on 2 edit action button
 	    objMappingPage.Click(objMappingPage.secondmappingSecondScreenEditActionGridButton);
@@ -1613,9 +1616,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	//Verifying new situs,TRA ,use code is populated in grid table		    
     softAssert.assertEquals(gridDataHashMapAfterSecondEditAction.get("Situs").get(1),childprimarySitus,
 			"SMAB-T2836,SMAB-T2841: Validation that System populates Situs from the parent parcel");
-    softAssert.assertEquals(gridDataHashMapAfterSecondEditAction.get("TRA").get(1),hashMapManyToManyActionMappingData.get("TRA"),
+    softAssert.assertEquals(gridDataHashMapAfterSecondEditAction.get("TRA*").get(1),TRA,
 			"SMAB-T2836,SMAB-T2841: Validation that System populates TRA from the parent parcel");
-    softAssert.assertEquals(gridDataHashMapAfterSecondEditAction.get("Use Code").get(1),hashMapManyToManyActionMappingData.get("PUC"),
+    softAssert.assertEquals(gridDataHashMapAfterSecondEditAction.get("Use Code*").get(1),PUC,
 			"SMAB-T2836,SMAB-T2841: Validation that System populates Use Code from the parent parcel");
     
 	    

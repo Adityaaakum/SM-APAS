@@ -543,7 +543,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		jsonObject.put("District__c",districtValue);
 		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-		jsonObject.put("Lot_Size_SQFT__c",0);		
+		jsonObject.put("Lot_Size_SQFT__c",100);		
 
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
 		
@@ -610,7 +610,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	        
 	        // Validating PUC of parent parcel.
 	        
-	        softAssert.assertEquals( salesforceAPI.select(pucLookeupold).get("Name").get(0),gridDataHashMap.get("Use Code").get(0) ,"SMAB-T2718: Verifying the Puc of the source parcel");
+	        softAssert.assertEquals( salesforceAPI.select(pucLookeupold).get("Name").get(0),gridDataHashMap.get("Use Code*").get(0) ,"SMAB-T2718: Verifying the Puc of the source parcel");
 	        HashMap<String, ArrayList<String>> statusnewApns = objParcelsPage.fetchFieldValueOfParcel("Status__c",childApn);
 	        
 	        // validating status of brand new parcel  
@@ -691,7 +691,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 				"Smoke","Regression","ParcelManagement" },enabled = true)
 		public void ParcelManagement_VerifyOneToOneParcelEditAction(String loginUser) throws Exception {
 			String queryAPN = "Select name,Id From Parcel__c where Status__c='Active'and name like '0%' and "
-					+ " Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+					+ " Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";			
+			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 			String activeParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
 			objMappingPage.deleteRelationshipInstanceFromParcel(activeParcelToPerformMapping);
 
@@ -709,6 +710,9 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			String legalDescriptionValue="Legal PM 85/25-260";
 			String districtValue="District01";
 			String parcelSize	= "200";	
+			
+			String PUC = salesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
+		    String TRA=salesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0); 
 
 			jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 			jsonObject.put("Status__c","Active");
@@ -761,6 +765,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
 					"SMAB-T2837: Validation that reason code field is auto populated from parent parcel work item");
 			objMappingPage.fillMappingActionForm(hashMapOneToOneParcelMappingData);
+			Thread.sleep(2000);
 			//updating child parcel size in second screen on mapping action 
 			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"99",1);
 
@@ -779,9 +784,9 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			//Verifying new situs,TRA ,use code is populated in grid table		    
 		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Situs").get(0),childprimarySitus,
 					"SMAB-T2837,SMAB-T2842: Validation that System populates Situs from the parent parcel");
-		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA*").get(0),responseTRADetails.get("Id").get(0),
+		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA*").get(0),TRA,
 					"SMAB-T2837,SMAB-T2842: Validation that System populates TRA from the parent parcel");
-		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code*").get(0),responsePUCDetails.get("Id").get(0),
+		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code*").get(0),PUC,
 					"SMAB-T2837,SMAB-T2842: Validation that System populates TRA from the parent parcel");
 		    ReportLogger.INFO("Click on Combine Parcel button");
 			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
