@@ -34,5 +34,6 @@ public interface modules {
 	String NEIGHBORHOODS_OBJECT = "Neighborhood__c\\home";
 	String TERRITORIES = "Territories";
 	String ROUTING_ASSIGNMENTS = "Routing Assignments";
+	String PUC = "PUCs";
 }
 

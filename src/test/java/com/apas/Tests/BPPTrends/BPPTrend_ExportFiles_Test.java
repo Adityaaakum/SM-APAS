@@ -206,6 +206,9 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 		
 		//Step2: Login to the APAS application, Opening the BPP Trend module and selecting the Roll Year
 		objApasGenericPage.login(loginUser);
+		Thread.sleep(5000);
+		objBppTrendSetupPage.closeDefaultOpenTabs();
+		 
 		objBppTrend.selectRollYearOnBPPTrends(rollYear);		
 		
 		//Step3: Downloading Composite Factors Excel file by clicking Export Composite Factors button
@@ -241,6 +244,8 @@ public class BPPTrend_ExportFiles_Test extends TestBase  {
 
 		//Step1: Login to the APAS application, Opening the BPP Trend module and selecting the Roll Year
 		objApasGenericPage.login(loginUser);
+		Thread.sleep(5000);
+		objBppTrendSetupPage.closeDefaultOpenTabs();
 		
 		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		ReportLogger.INFO("Download location : " + downloadLocation);
