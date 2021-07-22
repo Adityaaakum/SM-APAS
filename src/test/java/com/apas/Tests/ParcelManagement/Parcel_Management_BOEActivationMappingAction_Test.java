@@ -793,9 +793,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 			Map<String, String> hashMapBOEMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 					"DataToPerformBOEMappingActionWithAllFields");
 			objMappingPage.globalSearchRecords(WorkItemNo);
-			Thread.sleep(10000);
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
-			Thread.sleep(10000);
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 
 			softAssert.assertTrue(!(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiEventId).equals(" ")) ,
