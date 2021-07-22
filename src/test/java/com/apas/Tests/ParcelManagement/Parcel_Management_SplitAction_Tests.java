@@ -1153,9 +1153,9 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		//Verifying new situs,TRA ,use code is populated in grid table		    
 	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Situs").get(0),childprimarySitus,
 				"SMAB-T2838,SMAB-T2843: Validation that System populates Situs from the parent parcel");
-	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA*").get(0),responseTRADetails.get("Id").get(0),
+	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA*").get(0),TRA,
 				"SMAB-T2838,SMAB-T2843: Validation that System populates TRA from the parent parcel");
-	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code*").get(0),responsePUCDetails.get("Id").get(0),
+	    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code*").get(0),PUC,
 				"SMAB-T2838,SMAB-T2843: Validation that System populates Use Code from the parent parcel");
 	    objMappingPage.Click(objMappingPage.secondmappingSecondScreenEditActionGridButton);
 		Thread.sleep(3000);
@@ -1167,9 +1167,9 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		//Verifying new situs,TRA ,use code is populated in grid table		    
 	    softAssert.assertEquals(gridDataHashMapAfterSecondEditAction.get("Situs").get(1),childprimarySitus,
 				"SMAB-T2838,SMAB-T2843: Validation that System populates Situs from the parent parcel");
-	    softAssert.assertEquals(gridDataHashMapAfterSecondEditAction.get("TRA*").get(1),responseTRADetails.get("Id").get(0),
+	    softAssert.assertEquals(gridDataHashMapAfterSecondEditAction.get("TRA*").get(1),TRA,
 				"SMAB-T2838,SMAB-T2843: Validation that System populates TRA from the parent parcel");
-	    softAssert.assertEquals(gridDataHashMapAfterSecondEditAction.get("Use Code*").get(1),responsePUCDetails.get("Id").get(0),
+	    softAssert.assertEquals(gridDataHashMapAfterSecondEditAction.get("Use Code*").get(1),PUC,
 				"SMAB-T2838,SMAB-T2843: Validation that System populates Use Code from the parent parcel");
 	    ReportLogger.INFO("Click on Combine Parcel button");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));

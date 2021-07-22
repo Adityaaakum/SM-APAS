@@ -1057,6 +1057,35 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
         //Searching for the WI genrated
          objMappingPage.globalSearchRecords(WorkItemNo); 
         String ApnfromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+        objMappingPage.deleteRelationshipInstanceFromParcel(ApnfromWIPage);
+
+		//Fetch some other values from database
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') limit 1");
+	
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
+		String parcelSize	= "200";		
+		
+
+		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonObject.put("Status__c","Active");
+		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonObject.put("District__c",districtValue);
+		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+		salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+ApnfromWIPage+"'").get("Id").get(0),jsonObject);
+
+		
+		
         Thread.sleep(2000);
         //Validating the fields on AT=C on the Recorder WI
          objMappingPage.scrollToElement(objWorkItemHomePage.firstRelatedBuisnessEvent);
@@ -1097,7 +1126,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
          String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
  		 Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
  				"DataToPerformBrandNewParcelMappingActionWithoutAllFields");
- 		 objMappingPage.globalSearchRecords(WorkItemNo); 		 
+ 		 objMappingPage.globalSearchRecords(WorkItemNo); 
+         Thread.sleep(5000);
  		 objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
  		 objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
  		 softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage),"Mapping" , "SMAB-T2946: Verfiying the type of WI genrated for given Recorded Document");
