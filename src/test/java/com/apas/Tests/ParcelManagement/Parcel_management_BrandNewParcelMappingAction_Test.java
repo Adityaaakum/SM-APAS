@@ -1144,10 +1144,22 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
  		
  		// Retriving new APN genrated
           HashMap<String, ArrayList<String>> gridParcelData = objMappingPage.getGridDataInHashMap();
-          String newCreatedApn  =   gridParcelData.get("APN").get(0);                         
+          String newCreatedApn  =   gridParcelData.get("APN").get(0);  
+          jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+  		jsonObject.put("Status__c","Active");
+  		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+  		jsonObject.put("District__c",districtValue);
+  		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+  		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+  		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+  		salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+newCreatedApn+"'").get("Id").get(0),jsonObject);
+
+  		
+          
+          
           HashMap<String, ArrayList<String>> statusnewApn = objParcelsPage.fetchFieldValueOfParcel("Status__c", newCreatedApn);
           // validating status of brand new parcel           
-          softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2643: Verifying the status of the new parcel");		                 
+          softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "Active", "SMAB-T2643: Verifying the status of the new parcel");		                 
          //Submit work item for approval
           String query = "Select Id from Work_Item__c where Name = '"+WorkItemNo+"'";
           salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");

@@ -1783,7 +1783,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.globalSearchRecords(apn1);
 		
 		// Step 3: Creating Manual work item for the Active Parcel 
-		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		String workItemNumber  = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 		
 		// Step 4: Clicking the details tab for the work item newly created and clicking on Related Action Link
 				ReportLogger.INFO("Click on the Related Action link");
