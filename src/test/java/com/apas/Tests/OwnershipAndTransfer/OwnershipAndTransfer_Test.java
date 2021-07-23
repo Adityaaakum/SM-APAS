@@ -100,11 +100,14 @@ public class OwnershipAndTransfer_Test extends TestBase implements testdata, mod
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.migrateAPN));			
 			Thread.sleep(2000);
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+			
 			//User validates the status of added recorded APN
 			softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0),"Processed", "SMAB-T3111: Validating that status of added APN is processed");
+			
 			//User tries to complete the WI
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert);
+			
 			//User validates the status of the WI 
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "Completed", "SMAB-T3111:Validating that status of WI is completed");

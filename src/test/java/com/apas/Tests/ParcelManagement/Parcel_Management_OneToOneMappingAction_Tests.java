@@ -582,7 +582,9 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, hashMapOneToOneMappingData.get("Are taxes fully paid?"));
 		objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel, hashMapOneToOneMappingData.get("Reason code"));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		
 		objMappingPage.waitForElementToBeClickable(10, objMappingPage.generateParcelButton);
+		objMappingPage.editGridCellValue("Parcel Size (SQFT)*","100");
 		
 		//Fetching the GRID data
 		
@@ -651,13 +653,13 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
         
         //Validation that  System populates neighborhood Code from the parent parcel
         
-		softAssert.assertEquals(gridDataHashMap.get( "Dist/Nbhd").get(0),responseNeighborhoodDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get( "Dist/Nbhd*").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2720,SMAB-T2721: Validation that  System populates neighborhood Code from the parent parcel");		
-		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescriptionValue,
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),legalDescriptionValue,
 				"SMAB-T2720,SMAB-T2721: Validation that  System populates Legal Description from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2720,SMAB-T2721: Validation that  System populates TRA from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),hashMapOneToOneMappingData.get("Reason code"),
+		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),hashMapOneToOneMappingData.get("Reason code"),
 				"SMAB-T2720,SMAB-T2721: Validation that  System populates Reason Code from the parent parcel");
 		
 		//Step 15: Validation that child parcel primary situs is inherited from parent parcel
