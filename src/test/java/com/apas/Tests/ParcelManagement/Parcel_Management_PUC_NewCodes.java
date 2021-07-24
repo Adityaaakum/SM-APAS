@@ -62,15 +62,11 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 		objApasGenericPage= new ApasGenericPage(driver);
 	}
 		
-		public String puc = "PUC";
-		
 	@Test(description = "SMAB-T3274,SMAB-T3275:Verify Legacy field and PUC Values", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void PUCValueWithLegacyField(String loginUser) throws Exception {
       
-
-	    
-		// Step1: Login to the APAS application using the credentials passed through dataprovider
+		// Step1: Login to the APAS application using the credentials passed through Data Provider
 		objMappingPage.login(loginUser);
         Thread.sleep(2000);
         
