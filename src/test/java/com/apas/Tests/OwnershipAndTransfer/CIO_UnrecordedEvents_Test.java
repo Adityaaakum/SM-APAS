@@ -88,6 +88,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				"SMAB-T3287: Validate the warning message on CIO Transfer screen");
 		
 		// Step4: Edit the Transfer activity and update the Transfer Code
+		ReportLogger.INFO("Add the Transfer Code");
 		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-SALE");
@@ -97,12 +98,13 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				"SMAB-T3287: Validate that CIO staff is able to update and save values on CIO Transfer Screen");
 		
 		// Step5: Update APN field with active APN and validate Warning message disappears
+		ReportLogger.INFO("Update the APN value to an Active Parcel value");
 		objParcelsPage.Click(objCIOTransferPage.editFieldButton("APN"));
 		objCIOTransferPage.clearSelectionFromLookup("APN");
 		
 		objCIOTransferPage.searchAndSelectOptionFromDropDown("APN", activeApn);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText("Save"));
-		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.transferCodeLabel);
+		Thread.sleep(2000);
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementExists(objCIOTransferPage.warningMessageArea),
 				"SMAB-T3287: Validate that no warning message is displayed on CIO Transfer screen");
 	
@@ -139,6 +141,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				"SMAB-T3287: Validate that no warning message is displayed on CIO Transfer screen");
 		
 		// Step4: Edit the Transfer activity and update the Transfer Code
+		ReportLogger.INFO("Add the Transfer Code");
 		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-SALE");
