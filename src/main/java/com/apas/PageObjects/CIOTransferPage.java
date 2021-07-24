@@ -40,6 +40,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String checkOriginalTransferListButtonLabel = "Check Original Transfer List";
 	public String finishButtonLabel = "Finish";
 	public final String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
+	public final String warningMessageArea = commonXpath + "//div[@class='slds-card slds-has-cushion flexipageRichText']//b";
 	public String backToWIsButtonLabel = "Back to WIs";
 	public String saveLabel ="Save";
 	public String newButton="New";
@@ -103,6 +104,8 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
 	
+	@FindBy(xpath = commonXpath + "//div[@class='slds-card slds-has-cushion flexipageRichText']//b")
+	public WebElement transferPageMessageArea;
 	
 	
      
