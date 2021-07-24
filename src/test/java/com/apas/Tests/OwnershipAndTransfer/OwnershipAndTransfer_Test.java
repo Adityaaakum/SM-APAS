@@ -69,6 +69,7 @@ public class OwnershipAndTransfer_Test extends TestBase implements testdata, mod
   	    String recordedAPN = hashMapRecordedApn.get("Name").get(0);
   	
 			//login with sys admin
+  	    
 		   objMappingPage.login(users.SYSTEM_ADMIN);
 		   objMappingPage.searchModule(PARCELS);
 		   salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c where Sub_type__c='NO APN - CIO' and status__c ='In pool'", "status__c","In Progress");
@@ -78,7 +79,9 @@ public class OwnershipAndTransfer_Test extends TestBase implements testdata, mod
 	        String WorkItemNo=salesforceAPI.select(WorkItemQuery).get("Name").get(0);
 	        objMappingPage.globalSearchRecords(WorkItemNo);
 	        Thread.sleep(2000);
+	        
 	        //User tries to close the WI in which no APN is added
+	        
             objWorkItemHomePage.Click(objWorkItemHomePage.dataTabCompleted);
             objWorkItemHomePage.Click(objWorkItemHomePage.markAsCurrentStatusButton);
 	        softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),"Status: Work item status cannot be completed as related recorded APN(s) are not migrated yet.", "SMAB-T3106:Verifying User is not able to close WI Before migrating APN");
@@ -97,11 +100,14 @@ public class OwnershipAndTransfer_Test extends TestBase implements testdata, mod
 			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.migrateAPN));			
 			Thread.sleep(2000);
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+			
 			//User validates the status of added recorded APN
 			softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0),"Processed", "SMAB-T3111: Validating that status of added APN is processed");
+			
 			//User tries to complete the WI
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert);
+			
 			//User validates the status of the WI 
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "Completed", "SMAB-T3111:Validating that status of WI is completed");
