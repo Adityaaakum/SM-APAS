@@ -431,7 +431,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         	try {
 	        	objMappingPage.searchModule(PARCELS);
 		        objMappingPage.globalSearchRecords(parcel);
+		        Thread.sleep(5000);
 		        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+		        Thread.sleep(5000);
 		        objParcelsPage.createOwnershipRecord(assesseeName1,hashMapCreateOwnershipRecordData);
         	}
         	catch(Exception e) {
@@ -441,7 +443,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         
         objMappingPage.searchModule(PARCELS);
         objMappingPage.globalSearchRecords(apn3);
+        Thread.sleep(5000);
         objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+        Thread.sleep(5000);
         objParcelsPage.createOwnershipRecord(assesseeName2,hashMapCreateOwnershipRecordData);
         
         objWorkItemHomePage.logout();
@@ -1165,7 +1169,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				+ " Property_Ownership__c where Owner__r.name = '" + assesseeName + "')"
 						+ " and name like '0%' and TRA__c=NULL "
 						+ " and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
-						+ " and Status__c = 'Active'";
+						+ " and Status__c = 'Active' limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
@@ -1452,11 +1456,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String  childAPNPUC;
 
 		//Fetching parcels that are Active with same Ownership record
-		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN "
-				+ "(SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990')"
-				+ " and (Not Name like '134%') and  Primary_Situs__c !=NULL and Id NOT IN "
-				+ "(SELECT APN__c FROM Work_Item__c where"
-				+ " type__c='CIO') and Status__c = 'Active' Limit 2";
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and  Primary_Situs__c !=NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
@@ -1833,7 +1833,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.globalSearchRecords(apn1);
 		
 		// Step 3: Creating Manual work item for the Active Parcel 
-		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		String workItemNumber  = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 		
 		// Step 4: Clicking the details tab for the work item newly created and clicking on Related Action Link
 				ReportLogger.INFO("Click on the Related Action link");
