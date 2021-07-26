@@ -127,7 +127,7 @@
   },
     "DataToCreateWorkItemOfTypeMappingWithActionCustomerRequestCombine": {
     "Work Item Type": "Mapping",
-    "Actions": "Perform Customer Request Combine",
+    "Actions": "Customer Request Combine",
     "Audit Trail": "No",
     "Reference": "Test WI",
     "Description": "Creation of work item",
@@ -136,7 +136,7 @@
   },
     "DataToCreateWorkItemOfTypeMappingWithActionCustomerRequestSplit": {
     "Work Item Type": "Mapping",
-    "Actions": "Perform Customer Request Split",
+    "Actions": "Customer Request Split",
     "Audit Trail": "No",
     "Reference": "Test WI",
     "Description": "Creation of work item",
@@ -145,7 +145,7 @@
   },
     "DataToCreateWorkItemOfTypeMappingWithActionInternalRequestCombine": {
     "Work Item Type": "Mapping",
-    "Actions": "Perform Internal Request Combine",
+    "Actions": "Internal Request Combine",
     "Audit Trail": "No",
     "Reference": "Test WI",
     "Description": "Creation of work item",
@@ -154,7 +154,7 @@
   },
     "DataToCreateWorkItemOfTypeMappingWithActionMobileHomeRequest": {
     "Work Item Type": "Mapping",
-    "Actions": "Perform Mobile Home Request",
+    "Actions": "Mobile Home Request",
     "Audit Trail": "No",
     "Reference": "Test WI",
     "Description": "Creation of work item",
