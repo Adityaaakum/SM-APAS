@@ -40,7 +40,9 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 
 		rollYear = "2022";
 		objBppTrendSetupPage = new BppTrendSetupPage(driver);
-		objBppTrendSetupPage.updateRollYearStatus("Open", "2020");
+		objBppTrendSetupPage.updateRollYearStatus("Open", rollYear);
+		objBppTrendSetupPage.updateRollYearStatus("Open", Integer.toString(Integer.parseInt(rollYear) + 2));
+
 	}
 
 	
@@ -55,6 +57,7 @@ public class BPPTrend_CalculateWithMissing_IndexAndFactorSettings_Test extends T
 	public void BppTrend_CompositeFactors_CalculateWithCalculationVariablesMissing(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
 		objBppTrendSetupPage.login(users.SYSTEM_ADMIN);
+		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
 		Thread.sleep(6000);
 		objBppTrendSetupPage.closeDefaultOpenTabs();
 		

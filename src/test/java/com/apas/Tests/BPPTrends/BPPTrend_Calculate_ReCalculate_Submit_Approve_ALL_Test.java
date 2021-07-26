@@ -480,6 +480,7 @@ public class BPPTrend_Calculate_ReCalculate_Submit_Approve_ALL_Test extends Test
 	public void BppTrend_Calculate_When_InputFiles_NotImported(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the given user
 		objBppTrendSetupPage.login(users.SYSTEM_ADMIN);
+		objBppTrendSetupPage.updateRollYearStatus("Open", Integer.toString(Integer.parseInt(rollYear) + 2));
 
 		//Step2: Opening the BPP Trend module
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
