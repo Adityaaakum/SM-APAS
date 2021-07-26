@@ -1367,4 +1367,23 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 	{
 		return driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit " + fieldName + "')]"));
 	}
+    
+    /**
+	 * Description: This will update the status of all open Roll Year except the current rollyear to closed
+	 */
+	public void updateAllOpenRollYearStatus() throws Exception {
+		
+		 String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy"); 
+		 String currentRollYear=ExemptionsPage.determineRollYear(currentDate);	
+		HashMap<String, ArrayList<String>> responseRollYearDetails = objSalesforceAPI.select("SELECT Name FROM Roll_Year_Settings__c where status__c ='Open'and name !='"+currentRollYear+"'");
+		responseRollYearDetails.get("Name").stream().forEach(Name->
+		{
+			try {
+				updateRollYearStatus("Closed",Name);
+			} catch (Exception e) {
+				ReportLogger.INFO("UNABLE TO UPDATE"+Name+" roll year status to Closed" );	
+			}
+		});
+			
+	}
 }
