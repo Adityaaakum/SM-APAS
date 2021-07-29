@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 {
 
 "dataToCreateMailToRecordsWithIncompleteData":{
@@ -11,15 +18,15 @@
 
 "Last Name":"LUKE SHAW",
 "Ownership Start Date":"7/16/2021",
-"Ownership End Date":"7/19/2021"
-}
+"Ownership End Date":"7/19/2021",
+"Owner Percentage":"50"
+},
 
-
-
-
-
-
-
-
+"DataToCreateOwnershipRecord": {
+    "Type": "Owner",
+    "Status": "Active",
+    "Ownership Percentage":"100",
+    "Ownership Start Date":"7/19/2000"
+  }
 
 }
