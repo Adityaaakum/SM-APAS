@@ -130,7 +130,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
 		//Step 10 :Clicking generate parcel button
 	    objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-	    softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen()," Parcel(s) have been created successfully. Please review spatial information.",
+	    softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen(),"pending verification from the supervisor in order to be activated.",
 				"SMAB-T2688: Validate that User is able to perform BOE Activation action for one retired parcel");
 	    driver.switchTo().window(parentWindow);
 		objMappingPage.logout();
@@ -149,7 +149,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
     public void ParcelManagement_VerifyBOEActivationMappingActionOutputValidations(String loginUser) throws Exception {
 
         // Step 1: Fetching parcels that are Active with no Ownership record
-    	String queryAPNValue = "SELECT Name,Id from Parcel__c where Status__c='Retired' Limit 1 ";
+    	String queryAPNValue = "SELECT Name,Id from Parcel__c where Status__c='Retired' and id in(select parcel__c from situs__c where name!=null) limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		System.out.println(response);
 		String retiredAPNValue= response.get("Name").get(0);		
@@ -206,7 +206,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
         objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
         //Step 11: Verify the success message after parcels are generated
-        softAssert.assertContains(objMappingPage.getSuccessMessage(),"been successfully Activated!",
+        softAssert.assertContains(objMappingPage.getSuccessMessage(),"is pending verification from the supervisor in order to be activated.",
                 "Validation that success message is displayed when Parcels are generated");
 
         //Step 12: Verify the grid cells are not editable after parcels are generated
@@ -478,6 +478,8 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
 		//Step 4: filling all fields in mapping action screen
 		objMappingPage.fillMappingActionForm(hashMapBOEACtivationMappingData);
+		objMappingPage.waitForElementToBeVisible(10,objMappingPage.generateParcelButton);
+
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
@@ -491,7 +493,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
 
-		softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel(s) "+parentAPN+" is pending verification from the supervisor in order to be activated.",
+		softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen(),"is pending verification from the supervisor in order to be activated.",
 	                "SMAB-T2832: Validate that User is able to perform boe activation  action from mapping actions tab");
 
 		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+parentAPN+"') limit 1");

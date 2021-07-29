@@ -667,7 +667,7 @@ public class ExemptionsPage extends ApasGenericPage {
         //This AssesseeName is temporarily hard coded for PreUAT environment as there is some code deference in preuat and qa
         String assesseeName = "SMtestPerson";
         if (!System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-            String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type = 'Person' OR Type = 'Business'";
+            String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName !=NULL";
             HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
             assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
         }

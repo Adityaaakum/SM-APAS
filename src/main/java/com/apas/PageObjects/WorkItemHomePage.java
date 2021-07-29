@@ -292,7 +292,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String SaveButton="Save";
 	public String valueTextBox = "Value";
 	public String WithdrawButton="Withdraw";
-	public String PutOnHoldButton="Put On Hold";
+	public String PutOnHoldButton="Put on Hold";
 	public String assignLevel2Approver = "Assign Level2 Approver";
 
 	public String warningOnAssignLevel2ApproverScreen = "//div[@class='warning']";

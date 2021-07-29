@@ -2,10 +2,8 @@ package com.apas.Tests.SecurityAndSharing;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.json.JSONObject;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -14,10 +12,7 @@ import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.CIOTransferPage;
-import com.apas.PageObjects.MappingPage;
-import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
-import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -42,7 +37,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		driver = BrowserDriver.getBrowserInstance();
 		objCIOTransferPage = new CIOTransferPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
-
+		objCIOTransferPage.updateAllOpenRollYearStatus();
 	}
 
 	/**
@@ -148,6 +143,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		objCIOTransferPage.login(users.CIO_SUPERVISOR);
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		driver.navigate().refresh();
 		objCIOTransferPage.waitForElementToBeVisible(10,
 				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
@@ -241,6 +237,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		objCIOTransferPage.login(users.CIO_SUPERVISOR);
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		driver.navigate().refresh();
 		objCIOTransferPage.waitForElementToBeVisible(10,
 				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
 
