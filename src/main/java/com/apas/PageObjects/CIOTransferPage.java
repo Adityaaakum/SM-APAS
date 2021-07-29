@@ -56,9 +56,6 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String Edit="Edit";
 	public String Status="Status";
 	public String ownerPercentage="Owner Percentage";
-	
-			
-	//public String mailZipCopyToMailTo="Mailing ZIP";
 	public final String DOC_DEED="DE";
 	
 
