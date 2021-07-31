@@ -44,6 +44,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String reasonForTransferring= "Reason for Transferring";
 	public String dropDownType = "Type";
 	public String dropDownAction = "Action";
+	public String selRejected = "Rejected?";
+	public String selRejectionReason = "Rejection Reason";
+	public String txtRejectionComment = "Rejection Comments";
 
 	public String tabPoolAssignment = "Pool Assignments";
 
