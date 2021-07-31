@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.bcel.generic.NEW;
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -27,9 +25,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-import android.R.string;
-
-public class OwnershipAndTransfer_RecordedEvent_Test extends TestBase implements testdata, modules, users {
+public class CIO_RecordedEvents_Test extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
