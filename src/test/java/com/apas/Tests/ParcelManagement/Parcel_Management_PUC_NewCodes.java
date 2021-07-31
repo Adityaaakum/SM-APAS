@@ -62,15 +62,11 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 		objApasGenericPage= new ApasGenericPage(driver);
 	}
 		
-		public String puc = "PUC";
-		
 	@Test(description = "SMAB-T3274,SMAB-T3275:Verify Legacy field and PUC Values", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void PUCValueWithLegacyField(String loginUser) throws Exception {
       
-
-	    
-		// Step1: Login to the APAS application using the credentials passed through dataprovider
+		// Step1: Login to the APAS application using the credentials passed through Data Provider
 		objMappingPage.login(loginUser);
         Thread.sleep(2000);
         
@@ -126,8 +122,6 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 		//Step 13: Value is now updated and click on save
 		objApasGenericPage.searchAndSelectOptionFromDropDown("PUC", "189 - Residential Miscellaneous");
 		objApasGenericPage.Click(objApasGenericPage.getButtonWithText("Save"));
-		objWorkItemHomePage.getFieldValueFromAPAS("PUC");
-		Thread.sleep(4000);
 		
 		//Step 14: Verify that Now Value of PUC field is updated as Legacy field value was No
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("PUC"), "189 - Residential Miscellaneous",
@@ -188,6 +182,6 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 		// Step 12: Verify that status field is non editable for current user.
 		softAssert.assertEquals(status, true, "SMAB-T3272:Validating status field is non editable for the current user");
 		objWorkItemHomePage.logout();
-		Thread.sleep(1000);
+		
 	}   
 }		

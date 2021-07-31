@@ -331,7 +331,7 @@ public class ParcelsPage extends ApasGenericPage {
 		 * @throws Exception
 		 */
 		public String createUnrecordedEvent(Map<String, String> dataMap) throws Exception {
-			
+			ReportLogger.INFO("Create Unrecorded Event Transfer");
 			String timeStamp = String.valueOf(System.currentTimeMillis());
 			String description = dataMap.get("Description") + "_" + timeStamp;
 			

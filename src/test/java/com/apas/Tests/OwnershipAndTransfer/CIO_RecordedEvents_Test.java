@@ -28,7 +28,7 @@ import com.apas.config.users;
 
 import android.R.string;
 
-public class OwnershipAndTransfer_Test extends TestBase implements testdata, modules, users {
+public class CIO_RecordedEvents_Test extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
