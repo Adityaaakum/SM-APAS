@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
@@ -38,6 +39,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	MappingPage objMappingPage;
 	JSONObject jsonParcelObject= new JSONObject();
+	CIOTransferPage objtransfer;
 
 
 	@BeforeMethod(alwaysRun = true)
@@ -48,6 +50,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage= new MappingPage(driver);
+		objtransfer=new CIOTransferPage(driver);
 
 	}
 
@@ -306,16 +309,16 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		
 		//Validate the fields that are editable and non-editable on second mapping action screen
 		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2568: Validation that APN column is editable");
-        softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2568: Validation that Legal Description column is editable");
-        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2568: Validation that TRA column is not editable");
+        softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Legal Description*"),"SMAB-T2568: Validation that Legal Description column is editable");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA*"),"SMAB-T2568: Validation that TRA column is not editable");
         softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2568: Validation that Situs column is not editable");
-        softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2568: Validation that Reason Code column is editable");
-        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd"),"SMAB-T2568: Validation that District/Neighborhood column is not editable");
-        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2568: Validation that Use Code column is not editable");
-        softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)"),"SMAB-T2568: Validation that Parcel Size column is editable");
+        softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Reason Code*"),"SMAB-T2568: Validation that Reason Code column is editable");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd*"),"SMAB-T2568: Validation that District/Neighborhood column is not editable");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code*"),"SMAB-T2568: Validation that Use Code column is not editable");
+        softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)*"),"SMAB-T2568: Validation that Parcel Size column is editable");
         
 		//Step 16: Validate that Legal description appears from the first parent parcel
-		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescriptionValue,
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),legalDescriptionValue,
 				"SMAB-T2356: Validate that System populates Legal Description from the parent parcel");
 		
 		//Step 17: Click PREVIOUS button and validate that Reason Code is retained and Comments are not
@@ -342,7 +345,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> gridDataMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataMap.get("APN").get(0),hashMapCombineMappingData.get("First Non-Condo Parcel Number"),
 				"SMAB-T2356: Validate that System generates APN in same Map Book and Map Page as entered in First Non-Condo field in the previous screen");
-		softAssert.assertEquals(gridDataMap.get("Legal Description").get(0),hashMapCombineMappingData.get("Legal Description"),
+		softAssert.assertEquals(gridDataMap.get("Legal Description*").get(0),hashMapCombineMappingData.get("Legal Description"),
 				"SMAB-T2356: Validate that System populates Legal Description from the previous screen");
 		
 		driver.switchTo().window(parentWindow);
@@ -377,7 +380,13 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String retiredAPNValue = salesforceAPI.select(queryRetiredAPNValue).get("Name").get(0);
 
 		//Fetching Interim parcel 
-		String interimAPN = objMappingPage.fetchInterimAPN();
+		String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' "
+		  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
+		String interimAPN = salesforceAPI.select(queryAPNValue).get("Name").get(0);
+		String interimAPNId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+		
+		// deleting the current ownership records for the APN linked with WI
+		objMappingPage.deleteOwnershipFromParcel(interimAPNId);
 		
 		//Fetching parcel that are Active different than above
 		HashMap<String, ArrayList<String>> responseAPNDetails2 = objMappingPage.getActiveApnWithNoOwner(4);
@@ -397,7 +406,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		//Fetch TRA value from database and enter it in Parcels (to show TRA warning on the screen along with ownership error message)
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
-				
+		
+		salesforceAPI.update("Parcel__c", interimAPNId, "Status__c", "Active");
 		salesforceAPI.update("Parcel__c", responseAPNDetails1.get("Id").get(0), "TRA__c",responseTRADetails.get("Id").get(0));
 		salesforceAPI.update("Parcel__c", responseAPNDetails1.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(0));
 		salesforceAPI.update("Parcel__c", responseAPNDetails2.get("Id").get(2), "TRA__c", responseTRADetails.get("Id").get(1));
@@ -931,17 +941,17 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		String childAPNNumber =gridDataHashMap.get("APN").get(0);
 
-		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),responseNeighborhoodDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2357: Validation that System populates District/Neighborhood from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue.replaceFirst("\\s", ""),
 				"SMAB-T2357: Validation that System populates Situs from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
+		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),reasonCode,
 				"SMAB-T2357: Validation that System populates Reason code from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),"",
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),"",
 				"SMAB-T2567: Validation that System populates Legal Description from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2357: Validation that System populates TRA from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),responsePUCDetails.get("Name").get(0),
 				"SMAB-T2357: Validation that System populates Use Code  from the parent parcel");
 
 		//Step 10 :Verify that User is able to update Legal Description on the Grid
@@ -962,27 +972,27 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue.replaceFirst("\\s", ""),
 				"SMAB-T2357: Validation that System populates Situs  from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),responseNeighborhoodDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2357: Validation that System populates neighborhood Code from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
+		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),reasonCode,
 				"SMAB-T2357: Validation that System populates Reason code from parent parcel work item");
-		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescriptionValue,
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),legalDescriptionValue,
 				"SMAB-T2357: Validation that System populates Legal Description which was updated in Grid");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2357: Validation that System populates TRA from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),responsePUCDetails.get("Name").get(0),
 				"SMAB-T2357: Verify that User is able to to create a Use Code for the child parcel from the custom screen ");
 		
 		//Validate that all the fields are non-editable after the parcels are generated
         softAssert.assertTrue(!actionColumn,"SMAB-T2568: Validation that Action column has disappeared after generating parcels");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2568: Validation that APN column is not editable");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2568: Validation that Legal Description column is not editable");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2568: Validation that TRA column is not editable");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description*"),"SMAB-T2568: Validation that Legal Description column is not editable");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA*"),"SMAB-T2568: Validation that TRA column is not editable");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2568: Validation that Situs column is not editable");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2568: Validation that Reason Code column is not editable");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd"),"SMAB-T2568: Validation that District/Neighborhood column is not editable");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2568: Validation that Use Code column is not editable");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)"),"SMAB-T2568: Validation that Parcel Size column is not editable");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code*"),"SMAB-T2568: Validation that Reason Code column is not editable");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd*"),"SMAB-T2568: Validation that District/Neighborhood column is not editable");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code*"),"SMAB-T2568: Validation that Use Code column is not editable");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)*"),"SMAB-T2568: Validation that Parcel Size column is not editable");
 		        
 		//Step 13: Open the child parcel and validate the attributes
 		driver.switchTo().window(parentWindow);
@@ -1141,7 +1151,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2659:Parcel Management- Verify that User is able to update Situs for child parcel from the Parcel mapping screen for \"Combine\" mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3451,SMAB-T3459,SMAB-T3452,SMAB-T2659:Parcel Management- Verify that User is able to update Situs for child parcel from the Parcel mapping screen for \"Combine\" mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_UpdateChildParcelSitusFirstScreen_CombineMappingAction(String loginUser) throws Exception {
 
@@ -1151,11 +1161,42 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String assesseeName = responseAssesseeDetails.get("Name").get(0);
 
 		//Fetching parcels that are Active 
-		String queryAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM Property_Ownership__c where Owner__r.name = '" + assesseeName + "') and name like '0%' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  and Status__c = 'Active' ";
+		String queryAPNValue = "SELECT Name, Id from parcel__c where Id in (Select parcel__c FROM"
+				+ " Property_Ownership__c where Owner__r.name = '" + assesseeName + "')"
+						+ " and name like '0%' and TRA__c=NULL and Lot_Size_SQFT__c in(0,null)"
+						+ " and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
+						+ " and Status__c = 'Active'";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
 		String concatenateAPNWithSameOwnership = apn1+","+apn2;
+		
+		//Fetch some other values from database
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn1 +"')").get("Name").get(0);
+
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
+		String parcelSize	= "200";	
+
+		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonParcelObject.put("Status__c","Active");
+		jsonParcelObject.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonParcelObject.put("District__c",districtValue);
+		jsonParcelObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonParcelObject.put("Lot_Size_SQFT__c",parcelSize);
+
+		//updating PUC details
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObject);
+		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(1));	
+
 
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -1164,13 +1205,13 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String mappingActionCreationData = testdata.COMBINE_MAPPING_ACTION;
 		Map<String, String> hashMapCombineActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformCombineMappingActionWithSitusData");
-		String situsCityName = hashMapCombineActionMappingData.get("Situs City Name");
+		String cityName = hashMapCombineActionMappingData.get("City Name");
 		String direction = hashMapCombineActionMappingData.get("Direction");
 		String situsNumber = hashMapCombineActionMappingData.get("Situs Number");
 		String situsStreetName = hashMapCombineActionMappingData.get("Situs Street Name");
 		String situsType = hashMapCombineActionMappingData.get("Situs Type");
 		String situsUnitNumber = hashMapCombineActionMappingData.get("Situs Unit Number");
-		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+situsCityName;
+		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+cityName;
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -1180,7 +1221,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.globalSearchRecords(apn1);
 
 		// Step 3: Creating Manual work item for the Parcel
-		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -1208,6 +1249,16 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2659: Validation that User is able to update a Situs for child parcel from the Parcel mapping screen");
 		objMappingPage.fillMappingActionForm(hashMapCombineActionMappingData);
 
+		//updating child parcel size in second screen on mapping action 
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"99",1);
+
+		//validating second screen warning message
+		String parcelsizewarningmessage=objMappingPage.secondScreenParcelSizeWarning.getText();
+		softAssert.assertEquals(parcelsizewarningmessage,
+				"Parent Parcel Size = "+parcelSize+", Net Land Loss = 10, Net Land Gain = 0,"
+						+ " Total Child Parcel(s) Size = 99.",
+				"SMAB-T3451,SMAB-T3459-Verify that parent parcel size and entered net gain/loss and value is getting displayed");
+
 		//Step 7: Validation that primary situs on second screen is getting populated from situs entered in first screen
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),childprimarySitus,
@@ -1215,7 +1266,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		//Step 8: Click Combine Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		Thread.sleep(4000);
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		//Step 9: Validation that primary situs on last screen screen is getting populated from situs entered in first screen
@@ -1228,6 +1278,22 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2659: Validation that primary situs of  child parcel  has value that was entered in first screen through situs modal window");
 
 		driver.switchTo().window(parentWindow);
+		//submit WI for approval
+	    String   queryWI = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
+	    salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Submitted for Approval");
+	    objWorkItemHomePage.logout();
+	    
+	    //login as supervisor 
+	    objMappingPage.login(users.MAPPING_SUPERVISOR);
+	    objMappingPage.searchModule(WORK_ITEM);
+	    objMappingPage.globalSearchRecords(workItemNumber);
+	    objWorkItemHomePage.javascriptClick(objWorkItemHomePage.dataTabCompleted);
+	    objWorkItemHomePage.javascriptClick(objWorkItemHomePage.markAsCurrentStatusButton);
+	    objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg, 20);
+	    
+	    String parcelSizeMismatchMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+	    softAssert.assertEquals(parcelSizeMismatchMsg.contains("Total Child Parcel(s) size must match the Parent's Parcel Size"),
+	    	 true,"SMAB-T3452: parent parcel validation at Work Item level");
 		objWorkItemHomePage.logout();
 		}
 	/**
@@ -1288,11 +1354,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		String apn=gridDataHashMap.get("APN").get(0);
-		String legalDescription=gridDataHashMap.get("Legal Description").get(0);
-		String tra=gridDataHashMap.get("TRA").get(0);
+		String legalDescription=gridDataHashMap.get("Legal Description*").get(0);
+		String tra=gridDataHashMap.get("TRA*").get(0);
 		String situs=gridDataHashMap.get("Situs").get(0);
-		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd").get(0);
-		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)").get(0);
+		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd*").get(0);
+		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)*").get(0);
 
 		//Step 7: Click generate Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
@@ -1318,30 +1384,30 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),apn,
 				"SMAB-T2677: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),districtNeighborhood,
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),districtNeighborhood,
 				"SMAB-T2677: Validation that  System populates District/Neighborhood in return to custom screen  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),situs.replaceFirst("\\s+", ""),"SMAB-T2677: Validation that  System populates Situs in return to custom screen  from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
+		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),reasonCode,
 				"SMAB-T2677: Validation that  System populates reason code in return to custom screen from the sane reason code that was entered while perfroming mapping action");
-		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescription,
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),legalDescription,
 				"SMAB-T2677: Validation that  System populates Legal Description in return to custom screen from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),tra,
+		softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),tra,
 				"SMAB-T2677: Validation that  System populates TRA in return to custom screen from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),childAPNPUC,
+		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),childAPNPUC,
 				"SMAB-T2677: Validation that  System populates Use Code as that was edited in custom screen");
-		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)").get(0),parcelSizeSQFT,
+		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)*").get(0),parcelSizeSQFT,
 				"SMAB-T2677: Validation that  System populates parcel size column in return to custom screen from the parcel size that was entered while performing mapping action  ");
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.updateParcelsButton),
 				"SMAB-T2677: Validation that  There is \"Update Parcel(s)\" button on return to custom screen");
 		
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2677: Validation that APN column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2677: Validation that Legal Description column on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2677: Validation that TRA column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description*"),"SMAB-T2677: Validation that Legal Description column on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA*"),"SMAB-T2677: Validation that TRA column should not be editable on retirning to custom screen");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2677: Validation that Situs column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2677: Validation that Reason Code column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd"),"SMAB-T2677: Validation that District/Neighborhood column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2677: Validation that Use Code column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)"),"SMAB-T2677: Validation that Parcel Size (SQFT) column should  be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code*"),"SMAB-T2677: Validation that Reason Code column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd*"),"SMAB-T2677: Validation that District/Neighborhood column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code*"),"SMAB-T2677: Validation that Use Code column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)*"),"SMAB-T2677: Validation that Parcel Size (SQFT) column should  be editable on retirning to custom screen");
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
@@ -1430,11 +1496,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		String apn=gridDataHashMap.get("APN").get(0);
-		String legalDescription=gridDataHashMap.get("Legal Description").get(0);
-		String tra=gridDataHashMap.get("TRA").get(0);
+		String legalDescription=gridDataHashMap.get("Legal Description*").get(0);
+		String tra=gridDataHashMap.get("TRA*").get(0);
 		String situs=gridDataHashMap.get("Situs").get(0);
-		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd").get(0);
-		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)").get(0);
+		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd*").get(0);
+		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)*").get(0);
 
 		//Step 7: Click Combine Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
@@ -1463,18 +1529,18 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),apn,
 				"SMAB-T2677: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),districtNeighborhood,
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),districtNeighborhood,
 				"SMAB-T2677: Validation that  System populates District/Neighborhood in return to custom screen  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),situs.replaceFirst("\\s+", ""),"SMAB-T2677: Validation that  System populates Situs in return to custom screen  from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
+		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),reasonCode,
 				"SMAB-T2677: Validation that  System populates reason code in return to custom screen from the sane reason code that was entered while perfroming mapping action");
-		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescription,
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),legalDescription,
 				"SMAB-T2677: Validation that  System populates Legal Description in return to custom screen from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),tra,
+		softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),tra,
 				"SMAB-T2677: Validation that  System populates TRA in return to custom screen from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),childAPNPUC,
+		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),childAPNPUC,
 				"SMAB-T2677: Validation that  System populates Use Code as that was edited in custom screen");
-		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)").get(0),parcelSizeSQFT,
+		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)*").get(0),parcelSizeSQFT,
 				"SMAB-T2677: Validation that  System populates parcel size column in return to custom screen from the parcel size that was entered while performing mapping action  ");
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.updateParcelsButton),
 				"SMAB-T2677: Validation that  There is \"Update Parcel(s)\" button on return to custom screen");
@@ -1533,12 +1599,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		String apn=gridDataHashMap.get("APN").get(0);
-		String legalDescription=gridDataHashMap.get("Legal Description").get(0);
-		String tra=gridDataHashMap.get("TRA").get(0);
+		String legalDescription=gridDataHashMap.get("Legal Description*").get(0);
+		String tra=gridDataHashMap.get("TRA*").get(0);
 		String situs=gridDataHashMap.get("Situs").get(0);
-		String reasonCode=gridDataHashMap.get("Reason Code").get(0);
-		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd").get(0);
-		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)").get(0);
+		String reasonCode=gridDataHashMap.get("Reason Code*").get(0);
+		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd*").get(0);
+		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)*").get(0);
 
 		//Step 5: Click Combine Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
@@ -1579,16 +1645,16 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),apn,
 				"SMAB-T2677: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),districtNeighborhood,
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),districtNeighborhood,
 				"SMAB-T2677: Validation that  System populates District/Neighborhood in return to custom screen  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),situs.replaceFirst("\\s+", ""),"SMAB-T2677: Validation that  System populates Situs in return to custom screen  from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),legalDescription,
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),legalDescription,
 				"SMAB-T2677: Validation that  System populates Legal Description in return to custom screen from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),tra,
+		softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),tra,
 				"SMAB-T2677: Validation that  System populates TRA in return to custom screen from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),childAPNPUC,
+		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),childAPNPUC,
 				"SMAB-T2677: Validation that  System populates Use Code that was edited in custom screen");
-		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)").get(0),parcelSizeSQFT,
+		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)*").get(0),parcelSizeSQFT,
 				"SMAB-T2677: Validation that  System populates parcel size column in return to custom screen from the parcel size that was entered while performing mapping action  ");
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.updateParcelsButton),
 				"SMAB-T2677: Validation that  There is \"Update Parcel(s)\" button on return to custom screen");
@@ -1612,6 +1678,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		//Getting an Active Condo Parcel with specific ownership record
 		HashMap<String, ArrayList<String>> responseCondoAPNDetails = objMappingPage.getCondoApnWithNoOwner();
 		String apn3 = responseCondoAPNDetails.get("Name").get(0);
+		
+		String PUC = salesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
+	    String TRA=salesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0); 
 		
 		//Add the parcels in a Hash Map for validations later
 		Map<String,String> apnValue = new HashMap<String,String>(); 
@@ -1651,7 +1720,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 		String legalDescriptionValue="Legal PM 85/25-260";
-		String primarySitusValue=salesforceAPI.select("SELECT Name FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where Id='"+ updateRecordOn +"')").get("Name").get(0);
 		
 		//Enter values in the Parcels
 		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
@@ -1715,7 +1783,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.globalSearchRecords(apn1);
 		
 		// Step 3: Creating Manual work item for the Active Parcel 
-		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		String workItemNumber  = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 		
 		// Step 4: Clicking the details tab for the work item newly created and clicking on Related Action Link
 				ReportLogger.INFO("Click on the Related Action link");
@@ -1756,31 +1824,27 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 				String childAPNNumber =gridDataHashMap.get("APN").get(0);
 
-				softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),responseNeighborhoodDetails.get("Name").get(0),
-						"SMAB-T2578: Validation that System populates District/Neighborhood from the parent parcel");
-				
-				softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue
-				  .replaceFirst("\\s", ""),
-				  "SMAB-T2578: Validation that System populates Situs from the parent parcel");
+				softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),responseNeighborhoodDetails.get("Name").get(0),
+						"SMAB-T2578: Validation that System populates District/Neighborhood from the parent parcel");			
 				 
-				softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),reasonCode,
+				softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),reasonCode,
 						"SMAB-T2578: Validation that System populates Reason code from the parent parcel");
-				softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),"",
+				softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),"",
 						"SMAB-T2578: Validation that System populates Legal Description from the parent parcel");
-				softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
+				softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),responseTRADetails.get("Name").get(0),
 						"SMAB-T2578: Validation that System populates TRA from the parent parcel");
-				softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
+				softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),responsePUCDetails.get("Name").get(0),
 						"SMAB-T2578: Validation that System populates Use Code  from the parent parcel");
 				
 		       
 				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2578: Validation that APN column is  editable");
-				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2578: Validation that Legal Description column is  editable");
-				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2578: Validation that TRA column is not editable");
+				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Legal Description*"),"SMAB-T2578: Validation that Legal Description column is  editable");
+				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA*"),"SMAB-T2578: Validation that TRA column is not editable");
 		  	    softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2578: Validation that Situs column is not editable");
-				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2578: Validation that Reason Code column is not editable");
-				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd"),"SMAB-T2578: Validation that District/Neighborhood column is not editable");
-				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2578: Validation that Use Code column is not editable");
-				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)"),"SMAB-T2578: Validation that Parcel Size column is  editable");
+				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Reason Code*"),"SMAB-T2578: Validation that Reason Code column is not editable");
+				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd*"),"SMAB-T2578: Validation that District/Neighborhood column is not editable");
+				softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code*"),"SMAB-T2578: Validation that Use Code column is not editable");
+				softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)*"),"SMAB-T2578: Validation that Parcel Size column is  editable");
 				
 				 objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
 					Thread.sleep(3000);
@@ -1791,9 +1855,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 						    
 			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Situs").get(0),childprimarySitus,
 						"SMAB-T2579,SMAB-T2637: Validation that System populates Situs from the parent parcel");
-			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA").get(0),hashMapCombineMappingData.get("TRA"),
+			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("TRA*").get(0),TRA,
 						"SMAB-T2579,SMAB-T2637: Validation that System populates TRA from the parent parcel");
-			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code").get(0),hashMapCombineMappingData.get("PUC"),
+			    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code*").get(0),PUC,
 						"SMAB-T2579,SMAB-T2637: Validation that System populates TRA from the parent parcel");
 			    ReportLogger.INFO("Click on Combine Parcel button");
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
@@ -1824,7 +1888,14 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String assesseeName = objMappingPage.getOwnerForMappingAction();
 
 		//Fetching Interim parcels that are Active with no ownership record
-		String apn1 = objParcelsPage.fetchInterimAPN();
+		String queryInterimAPNValue = "Select name,ID  From Parcel__c where name like '800%' "
+				  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
+		String apn1 = salesforceAPI.select(queryInterimAPNValue).get("Name").get(0);
+		String apn1Id = salesforceAPI.select(queryInterimAPNValue).get("Id").get(0);
+				
+		// deleting the current ownership records for the APN linked with WI
+		objMappingPage.deleteOwnershipFromParcel(apn1Id);
+		salesforceAPI.update("Parcel__c", apn1Id, "Status__c", "Active");
 		
 		//Getting an Active Non-Condo Parcel with no ownership record
 		String queryAPNValue = "Select name,ID  From Parcel__c where name like '9%'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Id NOT in (Select parcel__c FROM Property_Ownership__c) AND Status__c='Active' limit 1";
@@ -1903,4 +1974,123 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 		}
+	/**
+	 * This method is to Verify that User is able to genrate a recorded doc WI from recorderIntegration and is able to perform mapping actions on that document
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	
+	@Test(description = "SMAB-T3511,,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
+			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
+			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
+			groups = {"Regression","ParcelManagement","RecorderIntegration" })
+	public void ParcelManagement_VerifyNewWILotLineAdjustmentsGeneratedfromRecorderIntegrationAndCombineMappingAction(String loginUser) throws Exception {
+				
+		
+		objMappingPage.login(users.SYSTEM_ADMIN);
+		objMappingPage.searchModule(PARCELS);
+
+		salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c"
+				+ " where Sub_type__c='Lot Line Adjustments' and status__c ='In pool'", 
+				"status__c","In Progress");
+
+		//generating WI
+		objtransfer.generateRecorderJobWorkItems(objMappingPage.DOC_LOT_LINE_ADJUSTMENT, 2);
+		String WorkItemQuery="SELECT Id,Name FROM Work_Item__c where Type__c='MAPPING'"
+				+ " AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1"; 
+		HashMap<String, ArrayList<String>> responseWIDetails = salesforceAPI.select(WorkItemQuery);
+		String WorkItemNo=responseWIDetails.get("Name").get(0);		
+
+		//Searching for the WI generated
+		objMappingPage.globalSearchRecords(WorkItemNo); 
+		String firstApnfromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		String secondApnfromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(1);
+		
+		// deleting the current ownership records for the APN linked with WI
+		String queryAPN = "SELECT id FROM Parcel__c where name in('" + 
+				firstApnfromWIPage + "','" +secondApnfromWIPage+"')" ;
+		HashMap<String, ArrayList<String>> responseApnId= salesforceAPI.select(queryAPN);
+
+		//Delete the existing parcel relationship instances on all 2 parcels
+		objMappingPage.deleteOwnershipFromParcel(responseApnId.get("Id").get(0));
+		objMappingPage.deleteOwnershipFromParcel(responseApnId.get("Id").get(1));
+
+		
+		//Fetch some other values from database
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') limit 1");
+
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
+		String parcelSize	= "200";	
+
+		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonParcelObject.put("Status__c","Active");
+		jsonParcelObject.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonParcelObject.put("District__c",districtValue);
+		jsonParcelObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonParcelObject.put("Lot_Size_SQFT__c",parcelSize);
+
+		//updating APN details
+		String query = "Select Id from Parcel__c where Name in('"+firstApnfromWIPage+"','" +secondApnfromWIPage+"')";
+		salesforceAPI.update("Parcel__c",query,jsonParcelObject);
+		objMappingPage.logout();
+		
+		
+		//Mapping user logs in and perform mapping action on the WI genrated
+		objMappingPage.login(loginUser);
+		String mappingActionCreationData = testdata.COMBINE_MAPPING_ACTION;
+		Map<String, String> hashMapCombineMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformCombineMappingAction");
+		objMappingPage.globalSearchRecords(WorkItemNo);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+
+		softAssert.assertTrue(!(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiEventId).equals(" ")),
+				"SMAB-T3513: Verfiying the Event ID of WI genrated for given Recorded Document");
+		
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS
+				(objWorkItemHomePage.wiRelatedActionDetailsPage),"Lot Line Adjustments" ,
+				"SMAB-T3511: Verfiying the Related Action of WI genrated for given Recorded Document");
+
+		softAssert.assertTrue(!objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.editEventIdButton),
+				"SMAB-T3513-This field should not be editable.");
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();	
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		// Fill data  in mapping screen
+        objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+        objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapCombineMappingData.get("Action"));		
+		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, hashMapCombineMappingData.get("Are taxes fully paid?"));
+		objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel, hashMapCombineMappingData.get("Reason code"));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.waitForElementToBeClickable(10, objMappingPage.generateParcelButton);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+
+		driver.switchTo().window(parentWindow);
+		objMappingPage.globalSearchRecords(WorkItemNo);
+
+		//validate that The "Return " functionality for parcel mgmt activities should work for all these work items.
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		parentWindow = driver.getWindowHandle();	
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		softAssert.assertEquals(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName).getText(),"Update Parcel(s)",
+				"SMAB-T3512-validate that The Return functionality for parcel mgmt activities should work for all these work items.");
+		
+		driver.switchTo().window(parentWindow);
+		objWorkItemHomePage.logout();
+
+	}
 	}			

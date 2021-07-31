@@ -554,26 +554,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 		}
 	}
 	
-	
-	
-	/*
-	 * public void searchModuleByNameorObject(String moduleName , String
-	 * moduleObjectName) throws IOException {
-	 * ExtentTestManager.getTest().log(LogStatus.INFO, "Opening " + moduleName +
-	 * " tab");
-	 * 
-	 * try { //Method -1 waitForElementToBeClickable(appLauncher, 60);
-	 * Thread.sleep(5000); Click(appLauncher); //Method-2
-	 * waitForElementToBeClickable(appLauncherSearchBox, 60);
-	 * enter(appLauncherSearchBox, moduleName); Thread.sleep(2000);
-	 * clickNavOptionFromDropDown(moduleName); //This static wait statement is added
-	 * as the module title is different from the module to search
-	 * Thread.sleep(4000); } catch(Exception e ) { String moduleURL = envURL +
-	 * "/lightning/o/" + moduleObjectName; navigateTo(driver,moduleURL); }
-	 * 
-	 * }
-	 * 
-	 */
+
 	/**
 	 * Description: This method will logout the logged in user from APAS application
 	 */
@@ -1000,6 +981,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 	 * @param rowNumber: Row Number for which data needs to be fetched
 	 * @return hashMap: Grid data in ArrayList of type ArrayList<String>
 	 */
+	
 	public HashMap<String, ArrayList<String>> getGridDataInLinkedHM(int rowNumber) {
 
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Fetching the data from the currently displayed grid");
@@ -1395,9 +1377,9 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
      * @return
      * @throws Exception
      */
-    public void deleteOwnershipFromParcel(String apn)
+    public void deleteOwnershipFromParcel(String apnId)
     {
-  	  String query ="SELECT  Id FROM Property_Ownership__c where parcel__c='" +apn+"'";
+  	  String query ="SELECT  Id FROM Property_Ownership__c where parcel__c='" +apnId+"'";
   	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
   	  
   	  if(!response.isEmpty())
@@ -1410,10 +1392,32 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 
     }
     
+    /**
+     *  This method will edit the particular field  by clicking on pencil icon
+     * @param field name whose value needs to be edited
+     * @return webelement
+     */
     public WebElement editFieldButton(String fieldName)
-    {
-        return driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') "
-        		+ "or contains(@class,'windowViewMode-maximized')]"
-        		+ "//button[contains(.,'Edit " + fieldName + "')]"));
-    }
+	{
+		return driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit " + fieldName + "')]"));
+	}
+    
+    /**
+	 * Description: This will update the status of all open Roll Year except the current rollyear to closed
+	 */
+	public void updateAllOpenRollYearStatus() throws Exception {
+		
+		 String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy"); 
+		 String currentRollYear=ExemptionsPage.determineRollYear(currentDate);	
+		HashMap<String, ArrayList<String>> responseRollYearDetails = objSalesforceAPI.select("SELECT Name FROM Roll_Year_Settings__c where status__c ='Open'and name !='"+currentRollYear+"'");
+		responseRollYearDetails.get("Name").stream().forEach(Name->
+		{
+			try {
+				updateRollYearStatus("Closed",Name);
+			} catch (Exception e) {
+				ReportLogger.INFO("UNABLE TO UPDATE"+Name+" roll year status to Closed" );	
+			}
+		});
+			
+	}
 }

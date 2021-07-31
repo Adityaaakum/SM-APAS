@@ -1,11 +1,15 @@
 package com.apas.PageObjects;
 
+import java.awt.AWTException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -35,7 +39,7 @@ public class MappingPage extends ApasGenericPage {
 	public String situsTextBoxLabelForBrandNewParcel = "Situs";
 	public String commentsTextBoxLabel = "Comments";
 	public String parentAPNTextBoxLabel = "Parent APN(s)";
-	public String legalDescriptionColumnSecondScreen = "Legal Description";
+	public String legalDescriptionColumnSecondScreen = "Legal Description*";
 	public String districtColumnSecondScreen = "District";
 	public String apnColumnSecondScreen = "APN";
 	public String reasonCodeColumnSecondScreen = "Reason Code";
@@ -80,9 +84,19 @@ public class MappingPage extends ApasGenericPage {
 	public String CreateNewParcelButton="Create Brand New Parcel";
 	public String updateParcelsButton = "//button[text()='Update Parcel(s)']";
 	public String updateParcelButtonLabelName = "Update Parcel(s)";
-	public final String  DOC_CERTIFICATE_OF_COMPLIANCE="CC";
+	public String parcelSizeColumnSecondScreen = "Parcel Size";
+	public final String DOC_CERTIFICATE_OF_COMPLIANCE="CC";
 	public final String DOC_LOT_LINE_ADJUSTMENT="LL";
-
+	public final String DOC_Covenants_Cond_Restr_with_condo = "CCR";
+	public final String DOC_Condominium_plans = "CP";
+	public final String DOC_Decl_of_Covenants_Cond_Restrictions = "DR";
+	public final String DOC_Easements = "ES";
+	public final String DOC_Offers_of_Dedication = "IC";
+	public final String DOC_Lot_Consolidation_Certificate = "LCC";
+	public final String DOC_Notice_of_Merger = "NM";
+	public final String DOC_Property_Settlement_Agreement = "PSA";
+	public final String DOC_Sub_Divison_Map = "SDM";
+	public final String DOC_Official_Map  = "OM";
 	
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
 	public WebElement editButtonInSeconMappingScreen;
@@ -90,7 +104,7 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]/ancestor::tr/following-sibling::tr//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]")
 	public WebElement secondmappingSecondScreenEditActionGridButton;
 	
-	@FindBy(xpath = "//button[@title='Clear Selection'][1]")
+	@FindBy(xpath = "//button[@title='Clear Selection'][1]/ancestor::lightning-input-field[1]//button")
 	public WebElement clearSelectionTRA;
 	
 	@FindBy(xpath = "//button[@title='Clear Selection'][1]/ancestor::lightning-input-field/following-sibling::lightning-input-field//button")
@@ -143,6 +157,9 @@ public class MappingPage extends ApasGenericPage {
 	
 	@FindBy(xpath="//div[@class='uiOutputRichText']//span")
 	public WebElement mappingScreenError;
+	
+	@FindBy(xpath="//div[contains(@class,'error')]//li[1]")
+	public WebElement secondScreenParcelSizeWarning;
 
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
@@ -321,7 +338,7 @@ public class MappingPage extends ApasGenericPage {
 	 */
 	public String getLinkedParcelInWorkItem(String rowNum) throws Exception {
 		Thread.sleep(1000);
-		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//tr[@data-row-key-value='row-" + rowNum + "']//th";
+		String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//tr[@data-row-key-value='row-" + rowNum + "']//th/lightning-primitive-cell-factory[@data-label='APN']";
 		waitUntilElementIsPresent(xpath, 10);
 		return getElementText(driver.findElement(By.xpath(xpath)));
 	}
@@ -429,8 +446,9 @@ public class MappingPage extends ApasGenericPage {
     	    String TRA=objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);    	  
 			Click(editButtonInSeconMappingScreen);
 			if(waitForElementToBeVisible(2, clearSelectionTRA))
-		    Click(clearSelectionTRA);
-			enter(parcelPUC, TRA);
+		    Click(clearSelectionTRA);			
+			enter(parcelTRA, TRA);		    
+			Thread.sleep(2000);
 			selectOptionFromDropDown(parcelTRA,TRA);
 			if(waitForElementToBeVisible(2, clearSelectionPUC))
 			Click(clearSelectionPUC);
@@ -439,5 +457,29 @@ public class MappingPage extends ApasGenericPage {
 			editSitusModalWindowFirstScreen(dataMap);
 			
   	}
+      
+      public void updateMultipleGridCellValue(String columnNameOnGrid, String expectedValue,int i) throws IOException, AWTException, InterruptedException {
+    		String xPath =  "//lightning-tab[contains(@class,'slds-show')]//tr["+i+"]"
+    				+ "//*[contains(@data-label,'" + columnNameOnGrid + "')][@role='gridcell']"
+    						+ "//button | //div[contains(@class,'flowruntimeBody')]"
+    						+ "//*[contains(@data-label,'" + columnNameOnGrid + "')]";
+
+	    		 WebElement webelement = driver.findElement(By.xpath(xPath));
+	    	 	 Click(webelement);
+	   		     Thread.sleep(1000);
+	    		 if(verifyElementVisible("//tr["+i+"]//*[contains(@data-label,'" + columnNameOnGrid + "')]"
+	    				+ "//button[@data-action-edit='true']"))
+	    			Click(driver.findElement(By.xpath("//tr["+i+"]//*[contains(@data-label,'"
+	    				+ columnNameOnGrid + "')]//button[@data-action-edit='true']")));
+	    		WebElement webelementInput = driver.findElement(By.xpath("//input[@class='slds-input']"));
+	
+	    		waitForElementToBeClickable(30, webelementInput);
+	    		webelementInput.clear();
+	    		webelementInput.sendKeys(expectedValue);
+	    		
+	    		Actions objAction=new Actions(driver);
+	  		    objAction.sendKeys(Keys.ENTER).build().perform();
+	    		Thread.sleep(2000);
+    	}
   	   
 }

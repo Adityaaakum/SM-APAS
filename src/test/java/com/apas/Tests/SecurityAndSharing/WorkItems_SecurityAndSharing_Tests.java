@@ -75,7 +75,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2636: Work Input - verify All the required button present on WI Home page For Supervisor User", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","SecurityAndSharing","WorkItemAdministration" })
+	@Test(description = "SMAB-T3129,SMAB-T2636: Work Input - verify All the required button present on WI Home page For Supervisor User", dataProvider = "loginRpBusinessAdminAndPrincipalUsers", dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","SecurityAndSharing","WorkItemAdministration" })
 	public void WorkItems_SharingAndSecurity_ButtonPresent_WIHomePage_SupervisorUser(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
@@ -106,11 +106,15 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 		softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.reassignButton), "SMAB-T2636: Validate that reassignButton is visible in Needs My Approval  tab");
 		softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.btnApprove), "SMAB-T2636: Validate that btnApprove is visible in Needs My Approval  tab");
 		softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.returnWorkItemButton), "SMAB-T2636: Validate that returnWorkItemButton is visible in Needs My Approval  tab");
-		softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.PutOnHoldButton), "SMAB-T2636: Validate that PutOnHoldButton is visible in Needs My Approval  tab");
+		//As part of story SMAB-8061 this functionality is changed
+		softAssert.assertTrue(!objLoginPage.verifyElementVisible(objWorkItemHomePage.PutOnHoldButton), "SMAB-T3129:Validate that PutOnHoldButton is not visible in Needs My Approval  tab");//SMAB-T2636: Validate that PutOnHoldButton is visible in Needs My Approval  tab");
 		softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.assignLevel2Approver), "SMAB-T2636: Validate that assignLevel2Approver is visible in Needs My Approval  tab");
 
 		//Step5: Validate the buttons in In Progress tab
+		driver.navigate().refresh();
+		objWorkItemHomePage.waitForElementToBeVisible(10,objWorkItemHomePage.lnkTABInProgress);
 		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInProgress);
+		objWorkItemHomePage.waitForElementToBeVisible(10,objWorkItemHomePage.btnMarkComplete);
 		softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.btnMarkComplete), "SMAB-T2636: Validate that mark complete button is visible in InProgress tab");
 		softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.returnToPool), "SMAB-T2636: Validate that returnToPool button is visible in InProgress tab");
 		softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.PutOnHoldButton), "SMAB-T2033: Validate that PutOnHoldButton button is visible in InProgress tab");
@@ -118,6 +122,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 
 		//Step6: Validate the buttons in In Pool tab
 		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInPool);
+		objWorkItemHomePage.waitForElementToBeVisible(10,objWorkItemHomePage.acceptWorkItemButton);
 		softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.acceptWorkItemButton), "SMAB-T2636: Validate that accept work item button is visible in InPool tab");
 
 		//Step7: Validate the buttons in On Hold tab
@@ -137,7 +142,8 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 		driver.navigate().refresh();
 		objWorkItemHomePage.waitForElementToBeVisible(10,objWorkItemHomePage.lnkTABInProgress);
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_StaffOnHold);
-		softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.changeWorkPool), "SMAB-T2636: Validate that changeWorkPool button is present in Staff on hold tab");
+		//As part of story SMAB-8061 this functionality is changed
+		softAssert.assertTrue(!objLoginPage.verifyElementVisible(objWorkItemHomePage.changeWorkPool), "SMAB-T3129:Validate that changeWorkPool button is not present in Staff on hold tab");// "SMAB-T2636: Validate that changeWorkPool button is present in Staff on hold tab"
 		softAssert.assertTrue(objLoginPage.verifyElementVisible(objWorkItemHomePage.changeAssignee), "SMAB-T2636: Validate that changeAssignee button is present in Staff on hold tab");
 
 		//Step11: Validate the buttons in StaffInPool tab
