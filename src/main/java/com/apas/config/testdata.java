@@ -74,5 +74,7 @@ public interface testdata {
 	
 	String HOME_OWNER_EXEMPTION_DATA = "\\data\\Exemptions\\HomeOwnerData.json";
 	String UNRECORDED_EVENT_DATA = "\\data\\OwnershipAndTransfer\\AuditTrail.json";
+    String TRA_DATA = userDirectory + "\\data\\TRA\\TRA_DATA.json";
+
 	
 }

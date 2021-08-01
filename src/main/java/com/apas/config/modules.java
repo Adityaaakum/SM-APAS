@@ -35,5 +35,7 @@ public interface modules {
 	String TERRITORIES = "Territories";
 	String ROUTING_ASSIGNMENTS = "Routing Assignments";
 	String PUC = "PUCs";
+	String TRA = "TRA";
+
 }
 

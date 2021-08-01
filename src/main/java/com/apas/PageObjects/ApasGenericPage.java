@@ -1078,6 +1078,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 	public String saveRecordAndGetError() throws Exception {
 		Click(getButtonWithText("Save"));
 		waitForElementToBeClickable(pageError,90);
+		Thread.sleep(5000);
 		return getElementText(pageError);
 	}
 
@@ -1376,6 +1377,9 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		 String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy"); 
 		 String currentRollYear=ExemptionsPage.determineRollYear(currentDate);	
 		HashMap<String, ArrayList<String>> responseRollYearDetails = objSalesforceAPI.select("SELECT Name FROM Roll_Year_Settings__c where status__c ='Open'and name !='"+currentRollYear+"'");
+		
+		if (responseRollYearDetails.size()>0)
+		
 		responseRollYearDetails.get("Name").stream().forEach(Name->
 		{
 			try {
