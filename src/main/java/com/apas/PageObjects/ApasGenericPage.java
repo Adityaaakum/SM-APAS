@@ -63,7 +63,7 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title = 'New']")
 	public WebElement newButton;
 
-	@FindBy(xpath = "//a[@title = 'Edit']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@title = 'Edit']")
 	public WebElement editButton;
 
 	@FindBy(xpath = "//button[text()='Save']")
@@ -327,12 +327,21 @@ public class ApasGenericPage extends Page {
         String xpathDropDownOption;
         if (element instanceof String) {
         	webElement = getWebElementWithLabel((String) element);
-        	String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody') or contains(@class,'slds-input slds-combobox__input')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
-			xpathDropDownOption = commonPath + "//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']" ;
+        	String commonPath = "//div[contains(@class,'windowViewMode-normal') "
+        			+ "or contains(@class,'windowViewMode-maximized') "
+        			+ "or contains(@class,'slds-listbox__option_plain') "
+        			+ "or contains(@class,'flowruntimeBody') "
+        			+ "or contains(@class,'slds-input slds-combobox__input')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
+			xpathDropDownOption = commonPath + 
+					"//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']" ;
 			
         } else{
             webElement = (WebElement) element;
-            xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short') or contains(@class,'slds-listbox__option_plain') or contains(@class,'select uiInput ')or contains(@class,'slds-input slds-combobox__input') or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
+            xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short') "
+            		+ "or contains(@class,'slds-listbox__option_plain') "
+            		+ "or contains(@class,'select uiInput ')"
+            		+ "or contains(@class,'slds-input slds-combobox__input') "
+            		+ "or contains(@class,'slds-dropdown_length-with-icon')]//*[text() = '" + value + "' or @title= '" + value + "']";
             		
 		}
 
@@ -350,7 +359,32 @@ public class ApasGenericPage extends Page {
 		}
 
     }
+	
+	
+	public List<Object> getAllOptionFromDropDown(String FieldName) throws Exception {
+                WebElement webElement;
+		        List<WebElement> drpDwnOption;
+                String xpathDropDownOptions;
+         
+        	String commonPath = "//div[contains(@class,'windowViewMode-normal') "
+        			+ "or contains(@class,'windowViewMode-maximized') "
+        			+ "or contains(@class,'slds-listbox__option_plain') "
+        			+ "or contains(@class,'flowruntimeBody') "
+        			+ "or contains(@class,'slds-input slds-combobox__input')]";
+        	
+			xpathDropDownOptions = commonPath + 
+					"//label[text()='" + FieldName + "']/..//lightning-base-combobox-item/span/span" ; 			        
+			drpDwnOption = driver.findElements(By.xpath(xpathDropDownOptions));
+			
+			List<Object> pickListOptions = new ArrayList<>();
+			
+			for(WebElement el : drpDwnOption ) {
+				pickListOptions.add(el.getAttribute("title"));
+			}
+			return pickListOptions;			
+		}
 
+	
 	/**
 	 * Description: This method will fetch the current URL and process it to get the Record Id
 	 * @param driver: Driver Instance
