@@ -29,6 +29,8 @@ public class modulesObjectName {
 	    public String Neighborhoods = "/lightning/o/Neighborhood__c/home";
 		public String Territories = "/lightning/o/Territory__c/home";
 		public String RoutingAssignments = "/lightning/o/Routing_Assignment__c/list?filterName=Recent";
+		public String TRA = "/lightning/o/TRA__c/home";
+
 
 
 }
