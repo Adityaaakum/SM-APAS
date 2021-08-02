@@ -341,10 +341,9 @@ public class CIOTransferPage extends ApasGenericPage {
 		    	  HashMapOldGrantee.get("Id").stream().forEach(Id ->{
 	    		  objSalesforceAPI.delete("Transfer__c", Id);
 	    		  ReportLogger.INFO("!!Deleted grantee with id= "+Id);
-		          } );} 	  
-			    	  
-			 
+		          } );}	 
 		 }
+		 
 		 /*
 		  * This method will create one new grantee per method call in Recorded APN transfer screen.
 		  * 
