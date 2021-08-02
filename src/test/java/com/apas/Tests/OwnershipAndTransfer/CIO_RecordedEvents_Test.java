@@ -219,7 +219,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	
 	
 	/*
-	 * Verify that User is unable to add mail-to and navigate to back to WI using back button
+	 * Verify that User is able to add mail-to and navigate to back to WI using back button And able to perform partial transfer on CIO transfer screen
 	 */
 	
 	@Test(description = "SMAB-T3427,SMAB-T3306,SMAB-T3446,SMAB-T3307,SMAB-T3308:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
