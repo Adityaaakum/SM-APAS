@@ -222,7 +222,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * Verify that User is unable to add mail-to and navigate to back to WI using back button
 	 */
 	
-	@Test(description = "SMAB-T3279,SMAB-T3281:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3427,SMAB-T3306,SMAB-T3446,SMAB-T3307,SMAB-T3308:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer" })
 	public void OwnershipAndTransfer_VerifyPartialOwnershipTransfer(String loginUser) throws Exception {
 		
