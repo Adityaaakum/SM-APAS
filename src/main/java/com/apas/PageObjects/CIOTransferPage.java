@@ -12,6 +12,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.Select;
 
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
@@ -55,6 +56,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String RecordedApnTransfer="Recorded APN Transfer";
 	public String Edit="Edit";
 	public String Status="Status";
+	public String ownerPercentage="Owner Percentage";
 	public final String DOC_DEED="DE";
 	
 
@@ -65,6 +67,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String exemptionRetainLabel = "Exemption Retain";
 	public String saveButton ="Save";
 	public String finishButton ="Finish";
+	public String nextButton="Next";
 	
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
 	public WebElement relatedListTab;
@@ -104,8 +107,19 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
 	
+
+	@FindBy(xpath = "//select[@name='Formatted_Name_1']")
+	public WebElement formattedName1;
+	
+	@FindBy(xpath = "//input[@name='Mailing_ZIP']")
+	public WebElement mailZipCopyToMailTo;
+	
+	@FindBy(xpath = "//input[@name='Please_Enter_the_Retained_Ownership_Percentage_for_this_Owner']")
+	public WebElement calculateOwnershipRetainedFeld;
+
 	@FindBy(xpath = commonXpath + "//div[@class='slds-card slds-has-cushion flexipageRichText']//b")
 	public WebElement transferPageMessageArea;
+
 	
 	
      
@@ -204,7 +218,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    	salesforceApi.update("recorded_document__c" , RecordedDocumentId, "Status__c","Pending");
 		ReportLogger.INFO("Marking "+RecordedDocumentId+"in Pending state");
 		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
-		Thread.sleep(3000);
+		Thread.sleep(5000);
 		ReportLogger.INFO("-------------Generated Recorded WorkItems.------------"); 
 	    	
 	    	}
@@ -268,7 +282,12 @@ public class CIOTransferPage extends ApasGenericPage {
 		   
 		  return salesforceApi.select(fetchDocId).get("Id").get(0);
 	   }	    
-	    
+	   
+	   /*
+	    * This method will fetch recorded APN from recorded document
+	    * @param RecordedDocId: recorded document number
+	    * 
+	    */
 	    
 		public HashMap<String, ArrayList<String>>getAPNNameFromRecordedDocument(String RecordedDocId)
 		{
@@ -288,6 +307,64 @@ public class CIOTransferPage extends ApasGenericPage {
 		        Click(fieldLocator);
 		        Thread.sleep(1000);
 		    }
+		 
+		 
+		 /*
+		  * This method creates mail to record by clicking on copy to mail to action button on CIO transfer screen
+		  * 
+		  */
+		 
+		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {		 		 
+			 
+			   waitForElementToBeClickable(7, copyToMailToButtonLabel);			   
+			   Click(getButtonWithText(copyToMailToButtonLabel));
+			   waitForElementToDisappear(formattedName1, 5);
+			   Click(formattedName1);
+			   Select select= new Select(formattedName1);
+			   select.selectByVisibleText(granteeForMailTo);
+			   Click(formattedName1);		   
+			   enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
+			   Click(getButtonWithText(nextButton));
+			   ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
+		 }
+		 
+		 
+		 /*
+		  * Deleting existing Grantee from particular recorded-document .
+		  * 
+		  */
+		 
+		 public void deleteOldGranteesRecords(String recordedocId) throws IOException, Exception
+		 {      	       
+			   HashMap<String, ArrayList<String>>HashMapOldGrantee =salesforceApi.select("SELECT Id FROM Transfer__c where recorded_document__c='"+recordedocId+"'");			      
+		        if(!HashMapOldGrantee.isEmpty()) {		    	  
+		    	  HashMapOldGrantee.get("Id").stream().forEach(Id ->{
+	    		  objSalesforceAPI.delete("Transfer__c", Id);
+	    		  ReportLogger.INFO("!!Deleted grantee with id= "+Id);
+		          } );}	 
+		 }
+		 
+		 /*
+		  * This method will create one new grantee per method call in Recorded APN transfer screen.
+		  * 
+		  */
+		 
+		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
+		 {
+			   String execEnv= System.getProperty("region");			 
+			   driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");			   
+			   waitForElementToBeVisible(5,newButton);
+			   Click(getButtonWithText(newButton));
+			   enter(LastNameLabel, dataToCreateGrantee.get("Last Name"));	
+			   if(dataToCreateGrantee.get("Owner Percentage")!=null)
+			   enter(ownerPercentage,dataToCreateGrantee.get("Owner Percentage"));	   	
+			   Click(getButtonWithText(saveButton));
+			   Thread.sleep(3000);
+			   ReportLogger.INFO("GRANTEE RECORD ADDED!!");	 	   
+		 }
+		 
 			
 }
+
+
   
