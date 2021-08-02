@@ -360,8 +360,7 @@ public class CIOTransferPage extends ApasGenericPage {
 			   enter(ownerPercentage,dataToCreateGrantee.get("Owner Percentage"));	   	
 			   Click(getButtonWithText(saveButton));
 			   Thread.sleep(3000);
-			   ReportLogger.INFO("GRANTEE RECORD ADDED!!");	
-		      	   
+			   ReportLogger.INFO("GRANTEE RECORD ADDED!!");	 	   
 		 }
 		 
 			
