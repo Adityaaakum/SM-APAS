@@ -338,12 +338,11 @@ public class CIOTransferPage extends ApasGenericPage {
 		 {      	       
 			        HashMap<String, ArrayList<String>>HashMapOldGrantee =salesforceApi.select("SELECT Id FROM Transfer__c where recorded_document__c='"+recordedocId+"'");
 			      
-			        if(!HashMapOldGrantee.isEmpty()) {			    	  
-			    	  
+			        if(!HashMapOldGrantee.isEmpty()) {		    	  
 			    	  HashMapOldGrantee.get("Id").stream().forEach(Id ->{
 		    		  objSalesforceAPI.delete("Transfer__c", Id);
 		    		  ReportLogger.INFO("!!Deleted grantee with id= "+Id);
-			      } );} 	  
+			          } );} 	  
 			    	  
 			 
 		 }
@@ -354,8 +353,7 @@ public class CIOTransferPage extends ApasGenericPage {
 		 
 		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
 		 {
-			 String execEnv= System.getProperty("region");
-			 
+			 String execEnv= System.getProperty("region");			 
 			   driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");			   
 			   waitForElementToBeVisible(5,newButton);
 			   Click(getButtonWithText(newButton));
