@@ -282,7 +282,12 @@ public class CIOTransferPage extends ApasGenericPage {
 		   
 		  return salesforceApi.select(fetchDocId).get("Id").get(0);
 	   }	    
-	    
+	   
+	   /*
+	    * This method will fetch recorded APN from recorded document
+	    * @param RecordedDocId: recorded document number
+	    * 
+	    */
 	    
 		public HashMap<String, ArrayList<String>>getAPNNameFromRecordedDocument(String RecordedDocId)
 		{
@@ -302,8 +307,14 @@ public class CIOTransferPage extends ApasGenericPage {
 		        Click(fieldLocator);
 		        Thread.sleep(1000);
 		    }
-		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {
-		 		 
+		 
+		 
+		 /*
+		  * This method creates mail to record by clicking on copy to mail to action button on CIO transfer screen
+		  * 
+		  */
+		 
+		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {		 		 
 			 
 			   waitForElementToBeClickable(7, copyToMailToButtonLabel);
 			   
@@ -314,12 +325,12 @@ public class CIOTransferPage extends ApasGenericPage {
 			   select.selectByVisibleText(granteeForMailTo);
 			   Click(formattedName1);		   
 			   enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
-			   Click(getButtonWithText(nextButton));
-			   
-			 
+			   Click(getButtonWithText(nextButton));		 
 		 }
+		 
+		 
 		 /*
-		  * Deleting existing Grantee from particular recorded-document and creating a single grantee at a time.
+		  * Deleting existing Grantee from particular recorded-document .
 		  * 
 		  */
 		 
@@ -345,16 +356,14 @@ public class CIOTransferPage extends ApasGenericPage {
 		 {
 			 String execEnv= System.getProperty("region");
 			 
-			 driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");
-			   
+			   driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");			   
 			   waitForElementToBeVisible(5,newButton);
 			   Click(getButtonWithText(newButton));
 			   enter(LastNameLabel, dataToCreateGrantee.get("Last Name"));	
 			   if(dataToCreateGrantee.get("Owner Percentage")!=null)
 			   enter(ownerPercentage,dataToCreateGrantee.get("Owner Percentage"));	   	
 			   Click(getButtonWithText(saveButton));
-			   ReportLogger.INFO("GRANTEE RECORD ADDED!!");
-	 
+			   ReportLogger.INFO("GRANTEE RECORD ADDED!!");	 
 		 }
 		 
 			
