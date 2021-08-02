@@ -274,7 +274,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	        objMappingPage.globalSearchRecords(workItemNo);
 	        Thread.sleep(5000);
 	        String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + workItemNo + "'";
-			 HashMap<String, ArrayList<String>> navigationUrL = salesforceAPI.select(queryRecordedAPNTransfer);			   
+			 HashMap<String, ArrayList<String>> navigationUrL = salesforceAPI.select(queryRecordedAPNTransfer);	
+			 
+			 //Finding the recorded apn transfer id
+			 
 			 String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
 	        objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 	        objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);	        
@@ -288,7 +291,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			
 			
 			
-			//Finding the RAT ID
+			//Creating the new grantee
 			 
 			objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
 			
