@@ -316,8 +316,7 @@ public class CIOTransferPage extends ApasGenericPage {
 		 
 		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {		 		 
 			 
-			   waitForElementToBeClickable(7, copyToMailToButtonLabel);
-			   
+			   waitForElementToBeClickable(7, copyToMailToButtonLabel);			   
 			   Click(getButtonWithText(copyToMailToButtonLabel));
 			   waitForElementToDisappear(formattedName1, 5);
 			   Click(formattedName1);
@@ -325,7 +324,8 @@ public class CIOTransferPage extends ApasGenericPage {
 			   select.selectByVisibleText(granteeForMailTo);
 			   Click(formattedName1);		   
 			   enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
-			   Click(getButtonWithText(nextButton));		 
+			   Click(getButtonWithText(nextButton));
+			   ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
 		 }
 		 
 		 
@@ -336,13 +336,12 @@ public class CIOTransferPage extends ApasGenericPage {
 		 
 		 public void deleteOldGranteesRecords(String recordedocId) throws IOException, Exception
 		 {      	       
-			        HashMap<String, ArrayList<String>>HashMapOldGrantee =salesforceApi.select("SELECT Id FROM Transfer__c where recorded_document__c='"+recordedocId+"'");
-			      
-			        if(!HashMapOldGrantee.isEmpty()) {		    	  
-			    	  HashMapOldGrantee.get("Id").stream().forEach(Id ->{
-		    		  objSalesforceAPI.delete("Transfer__c", Id);
-		    		  ReportLogger.INFO("!!Deleted grantee with id= "+Id);
-			          } );} 	  
+			   HashMap<String, ArrayList<String>>HashMapOldGrantee =salesforceApi.select("SELECT Id FROM Transfer__c where recorded_document__c='"+recordedocId+"'");			      
+		        if(!HashMapOldGrantee.isEmpty()) {		    	  
+		    	  HashMapOldGrantee.get("Id").stream().forEach(Id ->{
+	    		  objSalesforceAPI.delete("Transfer__c", Id);
+	    		  ReportLogger.INFO("!!Deleted grantee with id= "+Id);
+		          } );} 	  
 			    	  
 			 
 		 }
@@ -353,7 +352,7 @@ public class CIOTransferPage extends ApasGenericPage {
 		 
 		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
 		 {
-			 String execEnv= System.getProperty("region");			 
+			   String execEnv= System.getProperty("region");			 
 			   driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");			   
 			   waitForElementToBeVisible(5,newButton);
 			   Click(getButtonWithText(newButton));
@@ -361,7 +360,9 @@ public class CIOTransferPage extends ApasGenericPage {
 			   if(dataToCreateGrantee.get("Owner Percentage")!=null)
 			   enter(ownerPercentage,dataToCreateGrantee.get("Owner Percentage"));	   	
 			   Click(getButtonWithText(saveButton));
-			   ReportLogger.INFO("GRANTEE RECORD ADDED!!");	 
+			   Thread.sleep(3000);
+			   ReportLogger.INFO("GRANTEE RECORD ADDED!!");	
+		      	   
 		 }
 		 
 			

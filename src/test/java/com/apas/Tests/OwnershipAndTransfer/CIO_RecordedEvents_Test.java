@@ -242,14 +242,14 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		   String recordedDocumentID=salesforceAPI.select(" SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1").get("Id").get(0);
   	       objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
 		   
-			//login with SYS-ADMIN
+			 //login with SYS-ADMIN
 		  
            objMappingPage.login(users.SYSTEM_ADMIN);
 		   objMappingPage.searchModule(PARCELS);
 		   salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c","In Progress");
 		   objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
 		    
-		   //Query to fetch WI
+		    //Query to fetch WI
 		   
 			String workItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";					
 	        String workItemNo=salesforceAPI.select(workItemQuery).get("Name").get(0);
@@ -257,12 +257,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	        String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
 	        objCioTransfer.deleteOwnershipFromParcel(salesforceAPI.select("Select Id from parcel__c where name='"+apnFromWIPage+"'").get("Id").get(0));
 	        
-	        // adding owner after deleting for the recorded APN 
+	         // adding owner after deleting for the recorded APN 
 	        
-	        String acesseName= objMappingPage.getOwnerForMappingAction();
-	        objMappingPage.searchModule(PARCELS);
-	        objMappingPage.globalSearchRecords(apnFromWIPage);
-	        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+	        String acesseName= objMappingPage.getOwnerForMappingAction();	        
 	        driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Parcel__c/"+salesforceAPI.select("Select Id from parcel__C where name='"+apnFromWIPage+"'").get("Id").get(0)+"/related/Property_Ownerships__r/view");
 
 	        objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
@@ -283,13 +280,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	        objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);	        
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
 			
-			//Clicking on related action link			
+			//Clicking on related action link	
+			
 			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 			String parentWindow=driver.getWindowHandle();				  				
 			objWorkItemHomePage.switchToNewWindow(parentWindow);
-			softAssert.assertContains(driver.getCurrentUrl(),navigationUrL.get("Navigation_Url__c").get(0),"SMAB-T3306:Validating that user navigates to CIo transfer screenafter clicking on related action hyperlink");
-			
-			
+			softAssert.assertContains(driver.getCurrentUrl(),navigationUrL.get("Navigation_Url__c").get(0),"SMAB-T3306:Validating that user navigates to CIo transfer screenafter clicking on related action hyperlink");			
 			
 			//Creating the new grantee
 			 
@@ -316,43 +312,44 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	         
 	         driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+recordeAPNTransferID+"/view");
 	         objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
-	         Thread.sleep(3000);
+	         objCioTransfer.waitForElementToBeVisible(5,objCioTransfer.nextButton);
 	         objCioTransfer.enter(objCioTransfer.calculateOwnershipRetainedFeld, "50");
 	         objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
 	         
 	         // Creating copy to mail to record
 	   
-	       objCioTransfer.createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferCreationData);
-	       objCioTransfer.waitForElementToBeClickable(7, objCioTransfer.copyToMailToButtonLabel);
+	         objCioTransfer.createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferCreationData);
+	         objCioTransfer.waitForElementToBeClickable(7, objCioTransfer.copyToMailToButtonLabel);
 	       
-	       //Validating mail to record created from copy to mail to
+	        //Validating mail to record created from copy to mail to
 	       
-	       driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+""+"/related/CIO_Transfer_Mail_To__r/view");
-	       objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.newButton);
+	         driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+""+"/related/CIO_Transfer_Mail_To__r/view");
+	         objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.newButton);
 	       
-	       HashMap<String, ArrayList<String>> hashMapcopyTomailTo  = objCioTransfer.getGridDataForRowString("1");
+	         HashMap<String, ArrayList<String>> hashMapcopyTomailTo  = objCioTransfer.getGridDataForRowString("1");
 	       
-	       //Validating the formatted name 1 for mail to record
+	         //Validating the formatted name 1 for mail to record
 	       
-           softAssert.assertEquals(hashMapcopyTomailTo.get(objCioTransfer.formattedName1Label).get(0),granteeForMailTo,"SMAB-T3307:Validating that CIO copyTo Mail to record is created ");
+             softAssert.assertEquals(hashMapcopyTomailTo.get(objCioTransfer.formattedName1Label).get(0),granteeForMailTo,"SMAB-T3307:Validating that CIO copyTo Mail to record is created ");
            
-           //Navigating back to RAT screen
-           driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+recordeAPNTransferID+"/view");
-           objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
-           objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
+             //Navigating back to RAT screen
            
-           // Clicking on submit for approval quick action button
+            driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+recordeAPNTransferID+"/view");
+            objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
+            objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
            
-           objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionSubmitForApproval);
-           objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
-           ReportLogger.INFO("!!CIO Transfer submitted for approval");
+             // Clicking on submit for approval quick action button
            
-           // Since new ownership records are created we are validating them 
+            objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionSubmitForApproval);
+            objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
+            ReportLogger.INFO("!!CIO Transfer submitted for approval");
            
-           driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Parcel__c/"+salesforceAPI.select("Select Id from parcel__C where name='"+apnFromWIPage+"'").get("Id").get(0)+"/related/Property_Ownerships__r/view");
+             // Since new ownership records are created we are validating them 
+           
+            driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Parcel__c/"+salesforceAPI.select("Select Id from parcel__C where name='"+apnFromWIPage+"'").get("Id").get(0)+"/related/Property_Ownerships__r/view");
             HashMap<String, ArrayList<String>>HashMapLatestOwner  = objCioTransfer.getGridDataInHashMap();
             
-            //Validating the Owners ,their status and ownership percentages
+              //Validating the Owners ,their status and ownership percentages
             
             softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(0), granteeForMailTo, "SMAB-T3446:Validating that the grantee has become  owner");
             softAssert.assertEquals(HashMapLatestOwner.get("Status").get(0), "Active", "SMAB-T3446: Validating that status of new owner is Active");
@@ -368,14 +365,15 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
             
             driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+recordeAPNTransferID+"/view");
             objCioTransfer.waitForElementToBeClickable(5,objCioTransfer.quickActionButtonDropdownIcon);	          
-           objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
-           objCioTransfer.Click(objCioTransfer.quickActionOptionBack);
-           objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+            objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
+            objCioTransfer.Click(objCioTransfer.quickActionOptionBack);
+            objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
            
            //Validating that back button has navigates the user to WI page.
            
            softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Action"),"Process Transfer & Ownership", "SMAB-T3308: Validating that Back button navigates back to WI page ");
            objCioTransfer.logout();
+           
 
 		        
 		        
