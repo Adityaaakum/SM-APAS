@@ -257,6 +257,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	        String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
 	        objCioTransfer.deleteOwnershipFromParcel(salesforceAPI.select("Select Id from parcel__c where name='"+apnFromWIPage+"'").get("Id").get(0));
 	        
+	        // adding owner after deleting for the recorded APN 
+	        
 	        String acesseName= objMappingPage.getOwnerForMappingAction();
 	        objMappingPage.searchModule(PARCELS);
 	        objMappingPage.globalSearchRecords(apnFromWIPage);
