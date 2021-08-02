@@ -289,8 +289,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			
 			//Creating the new grantee
 			 
-			objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
-			
+			objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);			
 			
 			//Validating that grantees combined cannot have ownership more than 100%
 			
