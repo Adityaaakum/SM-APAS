@@ -143,12 +143,12 @@ public class Parcel_Management_Parcel_Characteristics extends TestBase implement
 		
 		//If on creating new land characteristic the error message comes it means there was pre existing land characteristic and hence perform the validation
 		//else as the new record has been created above , on creating new one again the validation can be performed
+		
 		if (objParcelsPage.verifyElementVisible(objApasGenericPage.pageError)) {
 			String[] msg = objParcelsPage.getElementText(objApasGenericPage.pageError).split("/");
 			String ActualErrorMessage = msg[0].trim();
 
-			// Step 6: Validate that on Creating new Land characteristic it will display
-			// warning if there is pre existing land record
+			// Step 6: Validate that on Creating new Land characteristic it will display warning if there is pre existing land record
 			softAssert.assertEquals(ActualErrorMessage.toString(), ExpectedErrorMessage.trim().toString(),
 					"SMAB-T2888,SMAB-T2890: Validating that on Creating new Land characteristic it will display warning if there is pre existing land record");
 
@@ -163,12 +163,11 @@ public class Parcel_Management_Parcel_Characteristics extends TestBase implement
 			String[] msg = objParcelsPage.getElementText(objApasGenericPage.pageError).split("/");
 			String ActualErrorMessage = msg[0].trim();
 
-			// Step 6: Validate that on Creating new Land characteristic it will display
-			// warning if there is pre existing land record
+			// Step 6: Validate that on Creating new Land characteristic it will display warning if there is pre existing land record
 			softAssert.assertEquals(ActualErrorMessage.toString(), ExpectedErrorMessage.trim().toString(),
 					"SMAB-T2888,SMAB-T2890: Validating that on Creating new Land characteristic it will display warning if there is pre existing land record");
 		}
-		
+
 		// Step 7: After every validations ,click on cancel and logout
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Cancel"));
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.tabDetails);
