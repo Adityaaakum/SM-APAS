@@ -131,7 +131,8 @@ public class WorkItemWorkFlow_WorkItemRejection_Test extends TestBase implements
 		boolean flag = false ;
 		//iterator using for-each loop  
 		for(Object tempList : actualPickListOptions) {
-			flag = expectedPickListOptions.contains(tempList) ? true : false ;
+
+			flag = expectedPickListOptions.contains(tempList) ? true : false ;  
 			
 			if(flag = false) {
 				break;
@@ -141,7 +142,7 @@ public class WorkItemWorkFlow_WorkItemRejection_Test extends TestBase implements
 		softAssert.assertTrue(flag, "SMAB-T3694: Verify the Rejection Reasons in the Picklist : "+ actualPickListOptions);
 		
 		objWorkItemHomePage.Click(objWorkItemHomePage.saveButton);
-		
+
 		Thread.sleep(3000);
 		
 		String sqlQuery =  "SELECT Status__c from work_item__c where name = '"+WINumber+"'";        
@@ -149,8 +150,7 @@ public class WorkItemWorkFlow_WorkItemRejection_Test extends TestBase implements
         String expectedStatus = response_1.get("Status__c").get(0);
         
         softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),expectedStatus,
-        		"SMAB-T3271: Verify the WI Status is Completed on Saving the Rejected WI.");                                        
-		
+        		"SMAB-T3271: Verify the WI Status is Completed on Saving the Rejected WI.");                            		
 		
 	}
 

@@ -56,6 +56,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String createNewParcelButton="New";
 	public String editParcelButton="Edit";
 	
+	
 	/** Added to identify fields, dropdowns for CIO functionality **/
 	public String exemptionTypeLabel="Exemption Type(s)";
 	public String exemptionLabel="Exemption";
@@ -69,6 +70,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String dateOfRecordingInputTextBox = "Date of Recording";
 	public String descriptionInputTextBox = "Description";
 	public String saveAndNextButton="Save and Next";
+	public String ownershipPercentageTextBox="Ownership Percentage";
 	
 	
 	
@@ -289,6 +291,7 @@ public class ParcelsPage extends ApasGenericPage {
 		String status = dataMap.get("Status");
 		String bppAccount = dataMap.get("BPP Account");
 		String ownershipStartDate = dataMap.get("Ownership Start Date");
+		String ownershipPercentage=dataMap.get("Ownership Percentage");
 		
 		createRecord();
 		Click(ownershipNextButton);
@@ -299,6 +302,8 @@ public class ParcelsPage extends ApasGenericPage {
 			enter(ownershipStartTextBox, ownershipStartDate);
 		if (bppAccount != null)
 			searchAndSelectOptionFromDropDown(bppAccountDropDown, bppAccount);
+		if(ownershipPercentage!= null)
+			enter(ownershipPercentageTextBox, ownershipPercentage);
 		
 		String successMsg = saveRecord();
 		return successMsg;
@@ -331,7 +336,7 @@ public class ParcelsPage extends ApasGenericPage {
 		 * @throws Exception
 		 */
 		public String createUnrecordedEvent(Map<String, String> dataMap) throws Exception {
-			
+			ReportLogger.INFO("Create Unrecorded Event Transfer");
 			String timeStamp = String.valueOf(System.currentTimeMillis());
 			String description = dataMap.get("Description") + "_" + timeStamp;
 			

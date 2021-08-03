@@ -30,7 +30,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class HomeOwnerExemption_Test extends TestBase {
+public class CIO_HomeOwnerExemption_Test extends TestBase {
 	
 	private RemoteWebDriver driver;
 	Page objPage;
@@ -68,7 +68,7 @@ public class HomeOwnerExemption_Test extends TestBase {
 	 -Exemption value, Exemption Type and Qualification fields are not retained if a Transfer Code with 'Retain Exemption' as 'No' is selected
 	 **/
 	
-	@Test(description = "SMAB-T3479: Validate Exemption value, Exemption Type and Qualification fields are not retained if a Transfer Code with 'Retain Exemption' as 'No' is selected", groups = {"Regression","ChangeInOwnershipManagement", "HomeOwnerExemption"}, dataProvider = "loginCIOStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T3479, SMAB-T3287: Validate Exemption value, Exemption Type and Qualification fields are not retained if a Transfer Code with 'Retain Exemption' as 'No' is selected", groups = {"Regression","ChangeInOwnershipManagement", "HomeOwnerExemption"}, dataProvider = "loginCIOStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void HomeOwnerExemption_NoExemptionRetain_UnrecordedTransfer(String loginUser) throws Exception {
 		
 		String apn = objApasGenericPage.fetchActiveAPN();
@@ -102,6 +102,8 @@ public class HomeOwnerExemption_Test extends TestBase {
 		objApasGenericPage.searchModule(modules.PARCELS);
 		objApasGenericPage.globalSearchRecords(apn);
 		String transferActivityId = objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
+		softAssert.assertTrue(!objCIOTransferPage.verifyElementExists(objCIOTransferPage.warningMessageArea),
+				"SMAB-T3287: Validate that no warning message is displayed on CIO Transfer screen for Active Parcel");
 		
 		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);

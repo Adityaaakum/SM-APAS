@@ -211,7 +211,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apn1);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
-		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel (s) "+apn1+" is pending verification from the supervisor in order to be retired.",
+		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel "+apn1+" is pending verification from the supervisor in order to be retired.",
 				"SMAB-T2455: Validate that User is able to perform Retire action for one active parcel");
 		
 		//Step 23: Validate that the status and PUC of the parcel is updated to Retired
@@ -233,7 +233,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		
 		/**softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Completed","SMAB-T2672:Verify the status of Work Item is automatically updated to 'Completed'");**/
 		
-		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
+		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsWI);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		softAssert.assertEquals(objMappingPage.getLinkedParcelInWorkItem("0"), apn1,
 				"SMAB-T2672: Validate that parent parcel is displayed in the Linked Items of WI");
