@@ -722,10 +722,12 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		String childAPN=gridDataHashMap.get("APN").get(0);
-		
+		softAssert.assertTrue(objMappingPage.validateParentAPNsOnMappingScreen(apn), "SMAB-T3361 : Verify that for \" Remap \" mapping action, in custom action second screen and third screen Parent APN (s) "+apn+" is displayed");
+
 		//Step 5: Click remap Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
+		softAssert.assertTrue(objMappingPage.validateParentAPNsOnMappingScreen(apn), "SMAB-T3361 : Verify that for \" Remap \" mapping action, in custom action second screen and third screen Parent APN (s) "+apn+" is displayed");
 
 		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel(s) have been created successfully. Please review spatial information.",
 				"SMAB-T2828: Validate that User is able to perform one to one  action from mapping actions tab");			    
@@ -775,6 +777,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 				"SMAB-T2898: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
 		softAssert.assertTrue(!objMappingPage.verifyElementVisible(objMappingPage.updateParcelsButton),
 				"SMAB-T2898,SMAB-T3495: Validation that  There is No \"Update Parcel(s)\" button on return to custom screen");
+		softAssert.assertTrue(objMappingPage.validateParentAPNsOnMappingScreen(apn), "SMAB-T3361 : Verify that for \" Remap \" mapping action, in custom action second screen and third screen Parent APN (s) "+apn+" is displayed");
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();

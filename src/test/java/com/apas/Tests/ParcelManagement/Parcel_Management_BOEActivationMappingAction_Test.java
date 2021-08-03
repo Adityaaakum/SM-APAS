@@ -475,6 +475,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,parentAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapBOEACtivationMappingData.get("Action"));
+		softAssert.assertTrue(objMappingPage.validateParentAPNsOnMappingScreen(parentAPN), "SMAB-T3365 : Verify that for \"BOE Activation\" mapping action, in custom action second screen and third screen Parent APN (s) "+parentAPN+" is displayed");
 
 		//Step 4: filling all fields in mapping action screen
 		objMappingPage.fillMappingActionForm(hashMapBOEACtivationMappingData);
@@ -492,6 +493,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		//Step 5: Click BOEACtivation Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
+		softAssert.assertTrue(objMappingPage.validateParentAPNsOnMappingScreen(parentAPN), "SMAB-T3365 : Verify that for \"BOE Activation\" mapping action, in custom action second screen and third screen Parent APN (s) "+parentAPN+" is displayed");
 
 		softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen(),"is pending verification from the supervisor in order to be activated.",
 	                "SMAB-T2832: Validate that User is able to perform boe activation  action from mapping actions tab");
@@ -542,7 +544,8 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 				"SMAB-T2898: Validation that  System populates TRA in return to custom screen from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),childAPNPUC,
 				"SMAB-T2898: Validation that  System populates Use Code that was edited in custom screen");
-		
+		softAssert.assertTrue(objMappingPage.validateParentAPNsOnMappingScreen(parentAPN), "SMAB-T3365 : Verify that for \"BOE Activation\" mapping action, in custom action second screen and third screen Parent APN (s) "+parentAPN+" is displayed");
+
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 	}

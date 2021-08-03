@@ -481,5 +481,15 @@ public class MappingPage extends ApasGenericPage {
 	  		    objAction.sendKeys(Keys.ENTER).build().perform();
 	    		Thread.sleep(2000);
     	}
-  	   
+      
+      public boolean validateParentAPNsOnMappingScreen(String parentAPNs) {
+     	    String [] parentAPN=parentAPNs.split(",");
+     	    boolean flag = false;
+     	    for(int i=0;i<parentAPN.length;i++) {
+     	       String xPath="//div//*[text()='Parent APN(s): ']/following-sibling::a[text()='"+parentAPN+"']";
+     	       if( verifyElementVisible(xPath)) flag=true;
+     	       else flag = false ;
+     	    }
+     	  return flag;
+       }
 }
