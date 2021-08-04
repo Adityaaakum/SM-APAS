@@ -1,4 +1,4 @@
-package com.apas.Tests.ParcelManagement;
+package com.apas.Tests.ParcelCharacteristics;
 
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class Parcel_Management_Parcel_Characteristics extends TestBase implements testdata, modules, users {
+public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
@@ -52,7 +52,7 @@ public class Parcel_Management_Parcel_Characteristics extends TestBase implement
 	}
 
 	@Test(description = "SMAB-T2892,SMAB-T2893,SMAB-T2894:Verify Characteristic, Associated Parcel Attributes and Start date validation", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" })
+			"Regression", "ParcelManagement", "ParcelCharacteristics" })
 	public void ParcelCharacteristics_ValidationStartDate_And_AssociatedAttributes(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
@@ -94,8 +94,7 @@ public class Parcel_Management_Parcel_Characteristics extends TestBase implement
 
 		// Step 10: Clear the end date field and enter the value
 		objParcelsPage.clearFieldValue("End Date");
-		Object element = "End Date";
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel((String) element), "2/3/2021");
+		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("End Date"), "2/3/2021");
 
 		// Step 11: Click on Save
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
@@ -112,7 +111,7 @@ public class Parcel_Management_Parcel_Characteristics extends TestBase implement
 	}
 
 	@Test(description = "SMAB-T2888,SMAB-T2890:Verify Land Characteristic Validation", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" })
+			"Regression", "ParcelManagement", "ParcelCharacteristics" })
 	public void Parcel_LandCharacteristic_Validation(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
