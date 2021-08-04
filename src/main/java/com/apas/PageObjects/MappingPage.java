@@ -486,7 +486,7 @@ public class MappingPage extends ApasGenericPage {
        */
       public boolean validateParentAPNsOnMappingScreen(String parentAPNs) {
     	  boolean flag = false;
-     	    if(parentAPNs.contains("'")) {
+     	    if(parentAPNs.contains(",")) {
      	    	String [] parentAPN=parentAPNs.split(",");    	    
      	        for(int i=0;i<parentAPN.length;i++) {
      	          String xPath="//div//*[text()='Parent APN(s): ']/following-sibling::a[text()='"+parentAPN[i]+"']";
