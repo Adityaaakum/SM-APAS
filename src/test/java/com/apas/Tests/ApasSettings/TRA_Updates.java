@@ -1,4 +1,4 @@
-package com.apas.Tests.ParcelManagement;
+package com.apas.Tests.ApasSettings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ public class TRA_Updates extends TestBase implements testdata, modules, users {
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3256:Verify that system should not allow duplicate TRAs with the same name and error message and link to the existing TRA should be displayed", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" })
+			"Regression", "ParcelManagement","TRAUpdates" })
 
 	public void ParcelManagement_VerifyErrorMessagesDuplicateTRA(String loginUser) throws Exception {
 
@@ -81,7 +81,7 @@ public class TRA_Updates extends TestBase implements testdata, modules, users {
 
 		// Step 4: Clicking on view duplicates LInk
 		objTRAPage.Click(objTRAPage.viewDuplicatesLinkPageError);
-		softAssert.assertTrue(objTRAPage.verifyElementVisible(objTRAPage.viewDuplicatesLinkPopUp),
+		softAssert.assertEquals(objTRAPage.getElementText(objTRAPage.viewDuplicatesLinkPopUpMessage),"There is an existing TRA that matches the criteria entered. Duplicate TRAs are not allowed.",
 				"SMAB-T3256: Verify that link to the existing TRA should open up View Duplicates Pop Up");
 		objTRAPage.logout();
 
