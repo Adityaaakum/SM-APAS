@@ -55,6 +55,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String ownershipStartTextBox = "Ownership Start Date";
 	public String createNewParcelButton="New";
 	public String editParcelButton="Edit";
+	public String parcelCharacteristics = "Characteristics";
 	
 	
 	/** Added to identify fields, dropdowns for CIO functionality **/
