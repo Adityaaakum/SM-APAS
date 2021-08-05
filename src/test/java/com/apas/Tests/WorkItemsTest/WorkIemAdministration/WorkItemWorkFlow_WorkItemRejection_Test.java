@@ -131,6 +131,7 @@ public class WorkItemWorkFlow_WorkItemRejection_Test extends TestBase implements
 		boolean flag = false ;
 		//iterator using for-each loop  
 		for(Object tempList : actualPickListOptions) {
+
 			flag = expectedPickListOptions.contains(tempList) ? true : false ;  
 			
 			if(flag = false) {
@@ -149,8 +150,7 @@ public class WorkItemWorkFlow_WorkItemRejection_Test extends TestBase implements
         String expectedStatus = response_1.get("Status__c").get(0);
         
         softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),expectedStatus,
-        		"SMAB-T3271: Verify the WI Status is Completed on Saving the Rejected WI.");                            
-		
+        		"SMAB-T3271: Verify the WI Status is Completed on Saving the Rejected WI.");                            		
 		
 	}
 
