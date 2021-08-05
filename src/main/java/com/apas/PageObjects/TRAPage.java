@@ -30,8 +30,8 @@ public class TRAPage extends ApasGenericPage {
 	@FindBy(xpath = "//a[text()='View Duplicates']")
 	public WebElement viewDuplicatesLinkPageError;
 	
-	@FindBy(xpath = "//p[text()='There is an existing TRA that matches the criteria entered. Duplicate TRAs are not allowed.']")
-	public WebElement viewDuplicatesLinkPopUp;
+	@FindBy(xpath = "//div[contains(@class,'error strength')]//p")
+	public WebElement viewDuplicatesLinkPopUpMessage;
 
 
 	/**

@@ -1112,7 +1112,6 @@ public void searchModule(String moduleToSearch) throws Exception {
 	public String saveRecordAndGetError() throws Exception {
 		Click(getButtonWithText("Save"));
 		waitForElementToBeClickable(pageError,90);
-		Thread.sleep(5000);
 		return getElementText(pageError);
 	}
 

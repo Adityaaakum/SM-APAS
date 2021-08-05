@@ -481,5 +481,23 @@ public class MappingPage extends ApasGenericPage {
 	  		    objAction.sendKeys(Keys.ENTER).build().perform();
 	    		Thread.sleep(2000);
     	}
-  	   
+      /*
+       * this method is used to validate parent APNs on custom mapping screeen
+       */
+      public boolean validateParentAPNsOnMappingScreen(String parentAPNs) {
+    	  boolean flag = false;
+     	    if(parentAPNs.contains(",")) {
+     	    	String [] parentAPN=parentAPNs.split(",");    	    
+     	        for(int i=0;i<parentAPN.length;i++) {
+     	          String xPath="//div//*[text()='Parent APN(s): ']/following-sibling::a[text()='"+parentAPN[i]+"']";
+     	          if( verifyElementVisible(xPath)) flag=true;
+     	          else flag = false ;
+     	    }
+     	    }else {
+     	    	String xPath="//div//*[text()='Parent APN(s): ']/following-sibling::a[text()='"+parentAPNs+"']";
+   	          if( verifyElementVisible(xPath)) flag=true;
+   	          else flag = false ;
+     	    }
+     	  return flag;
+       }
 }
