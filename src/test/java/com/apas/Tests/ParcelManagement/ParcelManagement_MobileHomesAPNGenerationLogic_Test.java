@@ -58,7 +58,7 @@ public class ParcelManagement_MobileHomesAPNGenerationLogic_Test extends TestBas
 			+ "allow the user to skip the sequential numbers.", 
 			dataProvider = "loginMappingUser", 
 			dataProviderClass = DataProviders.class, 
-			groups = {"Regression","ParcelManagement","NewAPNGenMobHomes" },
+			groups = {"Regression","ParcelManagement","MobileHomes" },
 			enabled= true)
 	public void ParcelManagement_VerifyNewAPNGenerationForMobileHomes(String loginUser) throws Exception {
 		
@@ -104,7 +104,7 @@ public class ParcelManagement_MobileHomesAPNGenerationLogic_Test extends TestBas
     			
     			String nextAPNGenerated = objMappingPage.generateNextAvailableAPN(activeParcelToPerformMapping);
     			
-    			nextAPNGenerated = objMappingPage.generateNextAvailableAPN(activeParcelToPerformMapping);
+    			nextAPNGenerated = objMappingPage.generateNextAvailableAPN(nextAPNGenerated);
     			
     			objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,nextAPNGenerated);
     			
