@@ -222,7 +222,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * Verify that User is able to add mail-to and navigate to back to WI using back button And able to perform partial transfer on CIO transfer screen
 	 */
 	
-	@Test(description = "SMAB-T3427,SMAB-T3306,SMAB-T3446,SMAB-T3307,SMAB-T3308:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3427,SMAB-T3306,SMAB-T3446,SMAB-T3307,SMAB-T3308,SMAB-T3691:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer" })
 	public void OwnershipAndTransfer_VerifyPartialOwnershipTransfer(String loginUser) throws Exception {
 		
@@ -263,6 +263,16 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	        driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Parcel__c/"+salesforceAPI.select("Select Id from parcel__C where name='"+apnFromWIPage+"'").get("Id").get(0)+"/related/Property_Ownerships__r/view");
 
 	        objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
+	        String ownershipId = driver.getCurrentUrl().split("/")[6];
+	        System.out.println(ownershipId+"ownership");
+	        //String dateOfEvent= 
+	        System.out.println(	salesforceAPI.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '"+ownershipId+"'"));
+	        String dateOfEvent= salesforceAPI.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '"+ownershipId+"'").get("Ownership_Start_Date__c").get(0);
+      
+		    jsonObject.put("DOR__c",dateOfEvent);
+		    jsonObject.put("DOV_Date__c", dateOfEvent);
+			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
+			//	             
 	        objMappingPage.logout();
 	        
 	        // Login with CIO staff
@@ -306,7 +316,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			 driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");
 	          HashMap<String, ArrayList<String>> granteeHashMap  = objCioTransfer.getGridDataForRowString("1");
 	         String granteeForMailTo= granteeHashMap.get("Grantee/Retain Owner Name").get(0);
-	          
+	         String ownershipDovForNewGrantee=granteeHashMap.get("DOV").get(0);
+	         	          
 	         // Performing calculate ownership to perform partial transfer
 	         
 	         driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+recordeAPNTransferID+"/view");
@@ -315,6 +326,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	         objCioTransfer.enter(objCioTransfer.calculateOwnershipRetainedFeld, "50");
 	         objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
 	         
+	         	         
 	         // Creating copy to mail to record
 	   
 	         objCioTransfer.createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferCreationData);
@@ -359,6 +371,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
             softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(2), acesseName, "SMAB-T3446:Validating that the grantor has become active owner");
             softAssert.assertEquals(HashMapLatestOwner.get("Status").get(2), "Retired", "SMAB-T3446: Validating that status of old owner is Retired");
             softAssert.assertEquals(HashMapLatestOwner.get("Ownership Percentage").get(2), "100.0000%", "SMAB-T3446:Validating that retired owner had percentage of 100");
+            softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(0),ownershipDovForNewGrantee , "SMAB-T3691: Validating that Ownership start date of new owner is DOV of the recorded document by default.");
+            softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(1),hashMapCreateOwnershipRecordData.get("Ownership Start Date") , "SMAB-T3691: Validating that Ownership start date of old owner remains same as before the partial transfer");
             
             //Navigating back to RAT screen and clicking on back quick action button
             

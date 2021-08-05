@@ -816,6 +816,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		jsonObject.put("District__c", parentdistrictValue);
 		jsonObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c", responseTRADetails.get("Id").get(0));
+		
 
 		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), jsonObject);
 
