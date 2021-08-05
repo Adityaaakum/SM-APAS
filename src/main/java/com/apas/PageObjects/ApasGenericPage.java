@@ -1329,14 +1329,19 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 	 * @param columnNameOnGrid: Column name on which the cell needs to be updated
 	 *  
 	 */
-	public boolean verifyGridCellEditable(String columnNameOnGrid)  {
+	public boolean verifyGridCellEditable(String columnNameOnGrid, int rowNum)  {
 		boolean isCellEditable = false;
-		if(verifyElementVisible("//*[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")){
+		if(verifyElementVisible("//tr[@data-row-key-value='row-" + rowNum +"']//lightning-primitive-cell-factory[@data-label='" + columnNameOnGrid + "']//button[@data-action-edit='true']")){
 			isCellEditable = true;
 		}
 		return isCellEditable;
 	
 	}
+	
+	public boolean verifyGridCellEditable(String columnNameOnGrid)  {
+		return verifyGridCellEditable(columnNameOnGrid, 0);
+	}
+	
 	/**
      *  This method will delete existing ownership records for the Parcel
      * @param apn-Apn whose records needs to be deleted
