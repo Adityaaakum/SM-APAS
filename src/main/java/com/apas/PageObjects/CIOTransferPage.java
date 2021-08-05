@@ -108,13 +108,13 @@ public class CIOTransferPage extends ApasGenericPage {
 	public WebElement quickActionOptionBack;
 	
 
-	@FindBy(xpath = "//select[@name='Formatted_Name_1']")
+	@FindBy(xpath =commonXpath+ "//select[@name='Formatted_Name_1']")
 	public WebElement formattedName1;
 	
-	@FindBy(xpath = "//input[@name='Mailing_ZIP']")
+	@FindBy(xpath = commonXpath+"//input[@name='Mailing_ZIP']")
 	public WebElement mailZipCopyToMailTo;
 	
-	@FindBy(xpath = "//input[@name='Please_Enter_the_Retained_Ownership_Percentage_for_this_Owner']")
+	@FindBy(xpath = commonXpath+"//input[@name='Please_Enter_the_Retained_Ownership_Percentage_for_this_Owner']")
 	public WebElement calculateOwnershipRetainedFeld;
 
 	@FindBy(xpath = commonXpath + "//div[@class='slds-card slds-has-cushion flexipageRichText']//b")
@@ -315,7 +315,7 @@ public class CIOTransferPage extends ApasGenericPage {
 		  */
 		 
 		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {		 		 
-			 
+			 try {
 			   waitForElementToBeClickable(7, copyToMailToButtonLabel);			   
 			   Click(getButtonWithText(copyToMailToButtonLabel));
 			   waitForElementToDisappear(formattedName1, 5);
@@ -325,7 +325,10 @@ public class CIOTransferPage extends ApasGenericPage {
 			   Click(formattedName1);		   
 			   enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
 			   Click(getButtonWithText(nextButton));
-			   ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
+			   ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");}
+			 catch (Exception e) {
+				ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE ADDED THROUGH COPY TO MAIL TO ACTION BUTTON");
+			}
 		 }
 		 
 		 
@@ -351,6 +354,7 @@ public class CIOTransferPage extends ApasGenericPage {
 		 
 		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
 		 {
+			 try {
 			   String execEnv= System.getProperty("region");			 
 			   driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");			   
 			   waitForElementToBeVisible(5,newButton);
@@ -360,7 +364,10 @@ public class CIOTransferPage extends ApasGenericPage {
 			   enter(ownerPercentage,dataToCreateGrantee.get("Owner Percentage"));	   	
 			   Click(getButtonWithText(saveButton));
 			   Thread.sleep(3000);
-			   ReportLogger.INFO("GRANTEE RECORD ADDED!!");	 	   
+			   ReportLogger.INFO("GRANTEE RECORD ADDED!!");	}
+			   catch (Exception e) {
+				ReportLogger.INFO("SORRY!! GRANTEE RECORD CANNOT BE ADDED");
+			}
 		 }
 		 
 			
