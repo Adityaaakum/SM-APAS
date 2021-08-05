@@ -261,7 +261,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	        
 	        String acesseName= objMappingPage.getOwnerForMappingAction();	        
 	        driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Parcel__c/"+salesforceAPI.select("Select Id from parcel__C where name='"+apnFromWIPage+"'").get("Id").get(0)+"/related/Property_Ownerships__r/view");
-
 	        objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
 	        String ownershipId = driver.getCurrentUrl().split("/")[6];
 	        

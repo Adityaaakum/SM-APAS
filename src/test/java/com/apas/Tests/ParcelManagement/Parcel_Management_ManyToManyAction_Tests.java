@@ -820,7 +820,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 				"SMAB-T2730: Validation that success message is displayed when Parcels are generated");
 
 		//Step 11: Verify the grid cells are not editable after parcels are generated
-		Thread.sleep(3000);
+		
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		boolean actionColumn = gridDataHashMap.containsKey("Action");
 		softAssert.assertTrue(!actionColumn,"SMAB-T2722: Validation that columns should not be editable as Action column has disappeared after generating parcels");
@@ -1309,8 +1309,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
 
 		//Step 6: filling all fields in mapping action screen
-		objMappingPage.fillMappingActionForm(hashMapManyToManyActionMappingData);
-		Thread.sleep(3000);
+		objMappingPage.fillMappingActionForm(hashMapManyToManyActionMappingData);		
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
@@ -1418,8 +1417,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		//Step 4: filling all fields in mapping action screen
 		objMappingPage.fillMappingActionForm(hashMapManyToManyActionMappingData);
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
-		gridDataHashMap =objMappingPage.getGridDataInHashMap();
-		Thread.sleep(3000);
+		gridDataHashMap =objMappingPage.getGridDataInHashMap();		
 
 		String apn=gridDataHashMap.get("APN").get(0);
 		String legalDescription=gridDataHashMap.get("Legal Description*").get(0);

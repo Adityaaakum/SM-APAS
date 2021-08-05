@@ -767,7 +767,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
 					"SMAB-T2837: Validation that reason code field is auto populated from parent parcel work item");
 			objMappingPage.fillMappingActionForm(hashMapOneToOneParcelMappingData);
-			Thread.sleep(5000);
+			
 			//updating child parcel size in second screen on mapping action 
 			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"99",1);
 
