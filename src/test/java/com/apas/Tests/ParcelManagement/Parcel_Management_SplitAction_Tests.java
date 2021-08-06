@@ -1465,6 +1465,11 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.deleteOwnershipFromParcel(apn1Id);
 		objMappingPage.deleteOwnershipFromParcel(apn2Id);
 		
+		//Update District/Neighborhood on the Non-Condo Parcel
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+		salesforceAPI.update("Parcel__c", apn2Id, "Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
+		
 		//Updating the status of all parcels
 		salesforceAPI.update("Parcel__c", apn1Id, "Status__c", "Active");
 		salesforceAPI.update("Parcel__c", apn2Id, "Status__c", "Active");
@@ -1574,7 +1579,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
         softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA*", 2),"SMAB-T2882: Validation that TRA column is not editable");
         softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs", 2),"SMAB-T2882: Validation that Situs column is not editable");
         softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Reason Code*", 2),"SMAB-T2882: Validation that Reason Code column is editable");
-        softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Dist/Nbhd*", 2),"SMAB-T2882: Validation that District/Neighborhood column is editable");
+        softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd*", 2),"SMAB-T2882: Validation that District/Neighborhood column is not editable");
         softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code*", 2),"SMAB-T2882: Validation that Use Code column is not editable");
         softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size(SQFT)*", 2),"SMAB-T2882: Validation that Parcel Size column is editable");
         softAssert.assertTrue(objMappingPage.getAttributeValue(objMappingPage.locateElement("//tr[@data-row-key-value='row-2']//th[@data-label='APN']", 30), "class").equals("grey-out-column slds-cell-edit"), "SMAB-T2882: Validation that APN column is not editable");

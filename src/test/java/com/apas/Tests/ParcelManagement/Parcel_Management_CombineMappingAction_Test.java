@@ -2125,6 +2125,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.deleteOwnershipFromParcel(apn3Id);
 		objMappingPage.deleteOwnershipFromParcel(apn4Id);
 		
+		//Update District/Neighborhood on the Non-Condo Parcels
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+		salesforceAPI.update("Parcel__c", apn3Id, "Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c", apn4Id, "Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
+		
 		//Updating the status of all parcels
 		salesforceAPI.update("Parcel__c", apn1Id, "Status__c", "Active");
 		salesforceAPI.update("Parcel__c", apn2Id, "Status__c", "Active");
