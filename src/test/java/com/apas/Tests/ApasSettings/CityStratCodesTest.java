@@ -33,7 +33,7 @@ public class CityStratCodesTest extends TestBase {
 	/**
 	 * Below test case will validate that County record can have multiple related City Code records
 	 */
-	@Test(description = "SMAB-T396: Validation for County record can have multiple related City Code records", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression"}, alwaysRun = true)
+	@Test(description = "SMAB-T396: Validation for County record can have multiple related City Code records", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "BuildingPermit"}, alwaysRun = true)
 	public void CityStratCode_verifyCreationOfMultipleRelatedCityCodesAndEdit(String loginUser) throws Exception {
 		String strSuccessAlertMessage;
 

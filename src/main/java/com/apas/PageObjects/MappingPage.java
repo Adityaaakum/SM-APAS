@@ -160,6 +160,9 @@ public class MappingPage extends ApasGenericPage {
 	
 	@FindBy(xpath="//div[contains(@class,'error')]//li[1]")
 	public WebElement secondScreenParcelSizeWarning;
+	
+	@FindBy(xpath="//th[@data-label='APN']")
+	public WebElement apnFieldInGridOnCustomScreen;
 
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
