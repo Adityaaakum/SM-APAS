@@ -137,6 +137,9 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
 	public WebElement successAlertText;
 	
+	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
+	public WebElement d;
+	
 	public String xpathSpinner = "//lightning-spinner";
 
 	public String maxEquipmentIndexFactor = "Maximum Equipment index Factor";
@@ -190,6 +193,10 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath="//button[text()='Close All']")
 	public WebElement closeAllBtn;
+	
+	@FindBy(xpath="//div/a[@role='button']/span/span//*[@data-key='down']//*")	
+	public WebElement attachmentsDropdown;
+	
 	
 	public String SaveButton="Save";
 	public String NewButton="New";
@@ -1426,6 +1433,19 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 				ReportLogger.INFO("UNABLE TO UPDATE"+Name+" roll year status to Closed" );	
 			}
 		});
-			
+		
+	}
+	
+	public void OpenDeleteFormFromRightHandSidePanel(String objectName) throws IOException, InterruptedException {
+		/*
+		 * String xpath =
+		 * "//div/a[contains(@class,'rowActionsPlaceHolder ')]/span/span[1]//*[@data-key='down']"
+		 * ; //waitForElementToBeClickable(driver.findElement(By.xpath(xpath)));
+		 * Click(driver.findElement(By.xpath(xpath))); Thread.sleep(1000);
+		 */
+		String
+		xpath1 = "//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'Delete'][@role='button'] | //div[contains(@class, 'slds-dropdown__list slds-dropdown_length-with-icon')]//button[text()='Delete'][@type='button'] |  //div[contains(@class,'actionMenu')]//a[@title='Delete']";
+		waitForElementToBeClickable(driver.findElement(By.xpath(xpath1)),20);
+		Click(driver.findElement(By.xpath(xpath1)));
 	}
 }

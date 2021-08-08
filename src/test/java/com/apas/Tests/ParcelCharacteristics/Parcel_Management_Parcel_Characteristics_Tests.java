@@ -1,9 +1,11 @@
 package com.apas.Tests.ParcelCharacteristics;
 
 
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.List;
 
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -172,4 +174,132 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.tabDetails);
 		objParcelsPage.logout();
 	}
-}
+	
+	@Test(description = "SMAB-T3112,SMAB-T3113:Verify Land Characteristic Validation", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement", "ParcelCharacteristics" })
+	public void Parcel_Characteristics_Notes_And_Attachments(String loginUser) throws Exception {
+
+	
+	// Step1: Login to the APAS application using the credentials passed through
+			// Data Provider
+			objMappingPage.login(loginUser);
+			Thread.sleep(2000);
+
+			// Step 2: Fetch the APN
+			String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Active' limit 1";
+			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		    String apn = responseAPNDetails.get("Name").get(0);
+
+			// Step3: Opening the Parcels page and searching the Parcel
+			objMappingPage.searchModule(PARCELS);
+			objMappingPage.globalSearchRecords(apn);
+
+			// Step 4: Open the parcel characteristics tab
+			objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+			if(objParcelsPage.fetchCharacteristicsList().isEmpty())
+			{
+			// Step 5: Create New Characteristic
+			objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
+
+			// Step 9: Enter the values of required fields
+			objParcelsPage.selectOptionFromDropDown("Property Type", "Residential");
+			objParcelsPage.selectOptionFromDropDown("Characteristics Screen", "SFR");
+			objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+			Thread.sleep(10000);
+			}
+			
+				objParcelsPage.Click(objParcelsPage.fetchCharacteristicsList().get(0));		
+				objParcelsPage.openTab("Notes");
+				objParcelsPage.OpenNewEntryFormFromRightHandSidePanel("Notes");
+				objParcelsPage.Click(objParcelsPage.notes);
+				objParcelsPage.enter(objParcelsPage.notes, "TestData");
+				objParcelsPage.Click(objParcelsPage.getButtonWithTextForSidePanels("Done"));
+				softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.sidePanelNotesList("TestData")),
+						"SMAB-3112: Validating that on Creating new Notes in Characteristics , Notes are created");		
+				objParcelsPage.waitForElementToBeClickable((objParcelsPage.sidePanelNotesList("TestData")));
+				objParcelsPage.javascriptClick(objParcelsPage.sidePanelNotesList("TestData"));
+				objParcelsPage.waitForElementToBeClickable(objParcelsPage.getButtonWithTextForSidePanels("Delete"),20);
+				objParcelsPage.Click(objParcelsPage.getButtonWithTextForSidePanels("Delete"));
+				objParcelsPage.Click(objParcelsPage.getPopUpconfirmation("Delete"));
+				objParcelsPage.openTab("Attachment");
+				objParcelsPage.Click(objParcelsPage.uploadFilesButton);
+				
+				objParcelsPage.uploadFile(testdata.CHARACTERISTICS_FILE);
+				Robot robot = new Robot();
+			     robot.keyPress(KeyEvent.VK_ESCAPE);
+			     robot.keyRelease(KeyEvent.VK_ESCAPE);
+				
+				objParcelsPage.waitForElementToBeClickable((objParcelsPage.sideOptionsAttachmentList("00202")));
+				softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.sideOptionsAttachmentList("00202")),
+						"SMAB-T3113 : Validating that on Creating new Attachments,it will display Attachments created");
+				driver.navigate().refresh();			
+				objParcelsPage.openTab("Attachment");
+				objParcelsPage.Click(objParcelsPage.viewAllNotesAndAttachments);				
+				objParcelsPage.Click(objApasGenericPage.attachmentsDropdown);
+				Thread.sleep(5000);
+				objParcelsPage.OpenDeleteFormFromRightHandSidePanel("Notes & Attachments");
+				objParcelsPage.Click(objParcelsPage.getPopUpconfirmation("Delete"));
+      			objParcelsPage.logout();	                ;
+			}	
+	
+	
+	@Test(description = "SMAB-T2997,SMAB-T2998,SMAB-T2999:Verify Characteristic, Associated Parcel Attributes and Start date validation", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement", "ParcelCharacteristics" })
+	public void ParcelCharacteristics_ValidationAndReasonFieldAndUpdates(String loginUser) throws Exception {
+
+		// Step1: Login to the APAS application using the credentials passed through
+		// Data Provider
+		objMappingPage.login(loginUser);
+		Thread.sleep(2000);
+
+		// Step 2: Fetch the APN
+		/*
+		 * String queryAPN =
+		 * "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Active' limit 1"
+		 * ; HashMap<String, ArrayList<String>> responseAPNDetails =
+		 * salesforceAPI.select(queryAPN); String apn =
+		 * responseAPNDetails.get("Name").get(0);
+		 * 
+		 * // Step3: Opening the Parcels page and searching the Parcel
+		 * objParcelsPage.searchModule(HOME);
+		 */
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords("006-393-340");
+
+		// Step 4: Open the parcel characteristics tab
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+
+		// Step 5: Create New Characteristic
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
+
+		// Step 8: Verify that field name Retired Characteristics exists
+		softAssert.assertEquals(objParcelsPage.verifyElementVisible("Retired Characteristics"), true,
+				"SMAB-T2892: Validate that field name Retired Characteristics exists");
+
+		// Step 9: Enter the values of required fields
+		objParcelsPage.selectOptionFromDropDown("Property Type", "Residential");
+		objParcelsPage.selectOptionFromDropDown("Characteristics Screen", "SFR");
+
+		// Step 10: Clear the end date field and enter the value
+		objParcelsPage.clearFieldValue("End Date");
+		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("End Date"), "2/3/2022");
+		Thread.sleep(2000);
+		
+
+		// Step 11: Click on Save
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		
+		// Step 12: Verify that start date cannot be later then end date
+		softAssert.assertEquals(objParcelsPage.getIndividualFieldErrorMessage("Reason"), "Reason field is required if End Date is populated.",
+				"SMAB-T2894: Validating if validation rule exists for start date cannot be later then end date");
+
+		// Step 13: After every validations ,click on cancel and logout
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Cancel"));
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.tabDetails);
+		objParcelsPage.logout();
+	}
+
+
+	}
+
+
