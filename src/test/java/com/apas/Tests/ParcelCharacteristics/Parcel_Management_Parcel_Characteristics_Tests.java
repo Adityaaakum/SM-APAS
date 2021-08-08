@@ -253,18 +253,18 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		Thread.sleep(2000);
 
 		// Step 2: Fetch the APN
-		/*
-		 * String queryAPN =
-		 * "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Active' limit 1"
-		 * ; HashMap<String, ArrayList<String>> responseAPNDetails =
-		 * salesforceAPI.select(queryAPN); String apn =
-		 * responseAPNDetails.get("Name").get(0);
-		 * 
-		 * // Step3: Opening the Parcels page and searching the Parcel
-		 * objParcelsPage.searchModule(HOME);
-		 */
+		
+		  String queryAPN =
+		  "Select name,ID  From Parcel__c where name like '0%' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Active' limit 1"
+		  ; HashMap<String, ArrayList<String>> responseAPNDetails =
+		  salesforceAPI.select(queryAPN); String apn =
+		  responseAPNDetails.get("Name").get(0);
+		  
+		  // Step3: Opening the Parcels page and searching the Parcel
+		  objParcelsPage.searchModule(HOME);
+		 
 		objMappingPage.searchModule(PARCELS);
-		objMappingPage.globalSearchRecords("006-393-340");
+		objMappingPage.globalSearchRecords(apn);
 
 		// Step 4: Open the parcel characteristics tab
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
@@ -298,8 +298,6 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.tabDetails);
 		objParcelsPage.logout();
 	}
-
-
 	}
 
 
