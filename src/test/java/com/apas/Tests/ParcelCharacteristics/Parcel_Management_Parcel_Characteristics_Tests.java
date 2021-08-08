@@ -5,7 +5,6 @@ import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -175,75 +174,91 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		objParcelsPage.logout();
 	}
 	
-	@Test(description = "SMAB-T3112,SMAB-T3113:Verify Land Characteristic Validation", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3112,SMAB-T3113:Verify Notes and Attachments can be created for characteristics", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement", "ParcelCharacteristics" })
 	public void Parcel_Characteristics_Notes_And_Attachments(String loginUser) throws Exception {
 
-	
-	// Step1: Login to the APAS application using the credentials passed through
-			// Data Provider
-			objMappingPage.login(loginUser);
-			Thread.sleep(2000);
+		// Step1: Login to the APAS application using the credentials passed through Data Provider
+		objMappingPage.login(loginUser);
+		Thread.sleep(2000);
 
-			// Step 2: Fetch the APN
-			String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Active' limit 1";
-			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
-		    String apn = responseAPNDetails.get("Name").get(0);
+		// Step 2: Fetch the APN
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Active' limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apn = responseAPNDetails.get("Name").get(0);
 
-			// Step3: Opening the Parcels page and searching the Parcel
-			objMappingPage.searchModule(PARCELS);
-			objMappingPage.globalSearchRecords(apn);
+		// Step3: Opening the Parcels page and searching the Parcel
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn);
 
-			// Step 4: Open the parcel characteristics tab
-			objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
-			if(objParcelsPage.fetchCharacteristicsList().isEmpty())
-			{
+		// Step 4: Open the parcel characteristics tab
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+		if (objParcelsPage.fetchCharacteristicsList().isEmpty()) {
+			
 			// Step 5: Create New Characteristic
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
 
-			// Step 9: Enter the values of required fields
+			// Step 6: Enter the values of required fields
 			objParcelsPage.selectOptionFromDropDown("Property Type", "Residential");
 			objParcelsPage.selectOptionFromDropDown("Characteristics Screen", "SFR");
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
 			Thread.sleep(10000);
-			}
-			
-				objParcelsPage.Click(objParcelsPage.fetchCharacteristicsList().get(0));		
-				objParcelsPage.openTab("Notes");
-				objParcelsPage.OpenNewEntryFormFromRightHandSidePanel("Notes");
-				objParcelsPage.Click(objParcelsPage.notes);
-				objParcelsPage.enter(objParcelsPage.notes, "TestData");
-				objParcelsPage.Click(objParcelsPage.getButtonWithTextForSidePanels("Done"));
-				softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.sidePanelNotesList("TestData")),
-						"SMAB-3112: Validating that on Creating new Notes in Characteristics , Notes are created");		
-				objParcelsPage.waitForElementToBeClickable((objParcelsPage.sidePanelNotesList("TestData")));
-				objParcelsPage.javascriptClick(objParcelsPage.sidePanelNotesList("TestData"));
-				objParcelsPage.waitForElementToBeClickable(objParcelsPage.getButtonWithTextForSidePanels("Delete"),20);
-				objParcelsPage.Click(objParcelsPage.getButtonWithTextForSidePanels("Delete"));
-				objParcelsPage.Click(objParcelsPage.getPopUpconfirmation("Delete"));
-				objParcelsPage.openTab("Attachment");
-				objParcelsPage.Click(objParcelsPage.uploadFilesButton);
-				
-				objParcelsPage.uploadFile(testdata.CHARACTERISTICS_FILE);
-				Robot robot = new Robot();
-			     robot.keyPress(KeyEvent.VK_ESCAPE);
-			     robot.keyRelease(KeyEvent.VK_ESCAPE);
-				
-				objParcelsPage.waitForElementToBeClickable((objParcelsPage.sideOptionsAttachmentList("00202")));
-				softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.sideOptionsAttachmentList("00202")),
-						"SMAB-T3113 : Validating that on Creating new Attachments,it will display Attachments created");
-				driver.navigate().refresh();			
-				objParcelsPage.openTab("Attachment");
-				objParcelsPage.Click(objParcelsPage.viewAllNotesAndAttachments);				
-				objParcelsPage.Click(objApasGenericPage.attachmentsDropdown);
-				Thread.sleep(5000);
-				objParcelsPage.OpenDeleteFormFromRightHandSidePanel("Notes & Attachments");
-				objParcelsPage.Click(objParcelsPage.getPopUpconfirmation("Delete"));
-      			objParcelsPage.logout();	                ;
-			}	
-	
-	
-	@Test(description = "SMAB-T2997,SMAB-T2998,SMAB-T2999:Verify Characteristic, Associated Parcel Attributes and Start date validation", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
+		}
+
+		//Step 7: Click on first characteristic record
+		objParcelsPage.Click(objParcelsPage.fetchCharacteristicsList().get(0));
+		
+		//Step 8: open Notes tab of the characteristic
+		objParcelsPage.openTab("Notes");
+		
+		//Step 9: Create new Note and click on Done to save the note
+		objParcelsPage.OpenNewEntryFormFromRightHandSidePanel("Notes");
+		objParcelsPage.Click(objParcelsPage.notes);
+		objParcelsPage.enter(objParcelsPage.notes, "TestData");
+		objParcelsPage.Click(objParcelsPage.getButtonWithTextForSidePanels("Done"));
+		
+		//Step 10: Verify that the Note has been created
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.sidePanelNotesList("TestData")),
+				"SMAB-3112: Validating that on Creating new Notes in Characteristics , Notes are created");
+		
+		//Step 11: Delete the created note
+		objParcelsPage.waitForElementToBeClickable((objParcelsPage.sidePanelNotesList("TestData")));
+		objParcelsPage.javascriptClick(objParcelsPage.sidePanelNotesList("TestData"));
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.getButtonWithTextForSidePanels("Delete"), 20);
+		objParcelsPage.Click(objParcelsPage.getButtonWithTextForSidePanels("Delete"));
+		objParcelsPage.Click(objParcelsPage.getPopUpconfirmation("Delete"));
+		
+		//Step 12: Open the Attachment tab of a characteristic
+		objParcelsPage.openTab("Attachment");
+		
+		//Step 13: Upload the attachment
+		objParcelsPage.Click(objParcelsPage.uploadFilesButton);
+		objParcelsPage.uploadFile(testdata.CHARACTERISTICS_FILE);
+		
+		//Close the pop up window opened for attachment on windows
+		Robot robot = new Robot();
+		robot.keyPress(KeyEvent.VK_ESCAPE);
+		robot.keyRelease(KeyEvent.VK_ESCAPE);
+
+		//Step 14: Verify the attachment is Uploaded
+		objParcelsPage.waitForElementToBeClickable((objParcelsPage.sideOptionsAttachmentList("00202")));
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.sideOptionsAttachmentList("00202")),
+				"SMAB-T3113 : Validating that on Creating new Attachments,it will display Attachments created");
+		driver.navigate().refresh();
+		
+		//Step 15: Delete the uploaded attachment
+		objParcelsPage.openTab("Attachment");
+		objParcelsPage.Click(objParcelsPage.viewAllNotesAndAttachments);
+		objParcelsPage.Click(objApasGenericPage.attachmentsDropdown);
+		Thread.sleep(5000);
+		objParcelsPage.OpenDeleteFormFromRightHandSidePanel("Notes & Attachments");
+		objParcelsPage.Click(objParcelsPage.getPopUpconfirmation("Delete"));
+		
+		//Step 16: Logout of the application
+		objParcelsPage.logout();
+	}
+
+	@Test(description = "SMAB-T2997,SMAB-T2998,SMAB-T2999:Verify Characteristic End date and Reason fields and verifying the validation checks", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement", "ParcelCharacteristics" })
 	public void ParcelCharacteristics_ValidationAndReasonFieldAndUpdates(String loginUser) throws Exception {
 
@@ -253,16 +268,11 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		Thread.sleep(2000);
 
 		// Step 2: Fetch the APN
-		
-		  String queryAPN =
-		  "Select name,ID  From Parcel__c where name like '0%' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Active' limit 1"
-		  ; HashMap<String, ArrayList<String>> responseAPNDetails =
-		  salesforceAPI.select(queryAPN); String apn =
-		  responseAPNDetails.get("Name").get(0);
-		  
-		  // Step3: Opening the Parcels page and searching the Parcel
-		  objParcelsPage.searchModule(HOME);
-		 
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Active' limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apn = responseAPNDetails.get("Name").get(0);
+
+		// Step3: Opening the Parcels page and searching the Parcel
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
 
@@ -274,7 +284,7 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 
 		// Step 8: Verify that field name Retired Characteristics exists
 		softAssert.assertEquals(objParcelsPage.verifyElementVisible("Retired Characteristics"), true,
-				"SMAB-T2892: Validate that field name Retired Characteristics exists");
+				"SMAB-T2998: Validate that field name Retired Characteristics exists");
 
 		// Step 9: Enter the values of required fields
 		objParcelsPage.selectOptionFromDropDown("Property Type", "Residential");
@@ -284,20 +294,18 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		objParcelsPage.clearFieldValue("End Date");
 		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("End Date"), "2/3/2022");
 		Thread.sleep(2000);
-		
 
 		// Step 11: Click on Save
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		
-		// Step 12: Verify that start date cannot be later then end date
-		softAssert.assertEquals(objParcelsPage.getIndividualFieldErrorMessage("Reason"), "Reason field is required if End Date is populated.",
-				"SMAB-T2894: Validating if validation rule exists for start date cannot be later then end date");
+
+		// Step 12: Verify that End date can be entered manually and reason field is mandatory if end date is populated
+		softAssert.assertEquals(objParcelsPage.getIndividualFieldErrorMessage("Reason"),
+				"Reason field is required if End Date is populated.",
+				"SMAB-T2997,SMAB-T2999: Verify that End date can be entered manually and reason field is mandatory if end date is populated");
 
 		// Step 13: After every validations ,click on cancel and logout
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Cancel"));
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.tabDetails);
 		objParcelsPage.logout();
 	}
-	}
-
-
+}

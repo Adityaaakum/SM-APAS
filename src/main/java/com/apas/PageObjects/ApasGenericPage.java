@@ -1437,12 +1437,6 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 	}
 	
 	public void OpenDeleteFormFromRightHandSidePanel(String objectName) throws IOException, InterruptedException {
-		/*
-		 * String xpath =
-		 * "//div/a[contains(@class,'rowActionsPlaceHolder ')]/span/span[1]//*[@data-key='down']"
-		 * ; //waitForElementToBeClickable(driver.findElement(By.xpath(xpath)));
-		 * Click(driver.findElement(By.xpath(xpath))); Thread.sleep(1000);
-		 */
 		String
 		xpath1 = "//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'Delete'][@role='button'] | //div[contains(@class, 'slds-dropdown__list slds-dropdown_length-with-icon')]//button[text()='Delete'][@type='button'] |  //div[contains(@class,'actionMenu')]//a[@title='Delete']";
 		waitForElementToBeClickable(driver.findElement(By.xpath(xpath1)),20);
