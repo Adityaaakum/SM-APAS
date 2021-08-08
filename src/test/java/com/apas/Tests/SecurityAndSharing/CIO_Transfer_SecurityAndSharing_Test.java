@@ -2,8 +2,11 @@ package com.apas.Tests.SecurityAndSharing;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -52,6 +55,10 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 			"Regression", "ChangeInOwnershipManagement", "SecurityAndSharing" })
 	public void QuickActionButtonsValidation_CIOTransferScreen_SubmitForApproval(String loginUser) throws Exception {
 
+		String OwnershipAndTransferGranteeCreationData =  testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		  Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(OwnershipAndTransferGranteeCreationData,
+				"dataToCreateGranteeWithCompleteOwnership");
+		  
 		// step 1: executing the recorder feed batch job to generate CIO WI
 		objCIOTransferPage.generateRecorderJobWorkItems("AD", 1);
 		Thread.sleep(7000);
@@ -96,8 +103,10 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-		objCIOTransferPage.waitForElementToBeVisible(10,
+		objCIOTransferPage.waitForElementToBeVisible(20,
 				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
+
+		objCIOTransferPage.scrollToBottom();
 
 		// Step6: verifying the presence of quick action buttons visible to CIO staff
 		softAssert.assertTrue(objCIOTransferPage.verifyElementVisible(objCIOTransferPage.calculateOwnershipButtonLabel),
@@ -110,6 +119,24 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 				objCIOTransferPage.verifyElementVisible(objCIOTransferPage.checkOriginalTransferListButtonLabel),
 				"SMAB-T3390: Validation that checkOriginalTransferListButtonLabel button is visible CIO staff");
 
+		//adding below assertions to verify various table names and other labels on transfer screen  
+		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.cioTransferActivityLabel),"CIO Transfer Activity",
+				"SMAB-T3140: Validation that CIO Transfer Activity label is visible on screen ");
+				
+		List<WebElement> cioTransferScreenSectionlabels=objCIOTransferPage.locateElements(objCIOTransferPage.cioTransferScreenSectionlabels, 10);
+				
+		softAssert.assertEquals(objCIOTransferPage.getElementText(cioTransferScreenSectionlabels.get(0)),"Ownership for Parent Parcel",
+				"SMAB-T3140: Validation that Ownership for Parent Parcel section is visible on screen");
+		
+		softAssert.assertEquals(objCIOTransferPage.getElementText(cioTransferScreenSectionlabels.get(1)),"CIO Transfer Grantors",
+				"SMAB-T3140: Validation that CIO Transfer Grantors section  is visible on screen ");
+		
+		softAssert.assertEquals(objCIOTransferPage.getElementText(cioTransferScreenSectionlabels.get(2)),"CIO Transfer Grantee & New Ownership",
+				"SMAB-T3140: Validation that CIO Transfer Grantee & New Ownership section  is visible on screen ");
+		
+		softAssert.assertEquals(objCIOTransferPage.getElementText(cioTransferScreenSectionlabels.get(3)),"CIO Transfer Mail To",
+				"SMAB-T3140: Validation that CIO Transfer Mail To section is visible on screen ");
+		
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		softAssert.assertTrue(objCIOTransferPage.verifyElementVisible(objCIOTransferPage.quickActionOptionBack),
 				"SMAB-T3390: Validation that back option in dropdown  is visible to CIO staff");
@@ -130,13 +157,34 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 				"SMAB-T3390: Validation that submitforApprovalButton button is visible CIO staff");
 
 		// Step7: submitting the WI for approval
+		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-COPAL");
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+		
+		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);			
+		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
+				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCIOTransferPage.waitForElementToBeVisible(15,
+				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
+		
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
 		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
 		objCIOTransferPage.waitForElementToBeInVisible(objCIOTransferPage.xpathSpinner, 6);
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
 				"SMAB-T3467: Validation that componentActionsButtonLabel  button is not visible CIO staff after submit for approval");
-
+		
+		//adding assertion for SMAB-T3193
+		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.remarksLabel);
+		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.remarksLabel);
+		objCIOTransferPage.enter(objCIOTransferPage.remarksLabel,"test data");
+		
+		softAssert.assertContains(objCIOTransferPage.saveRecordAndGetError(),
+				"Oops...you don't have the necessary privileges to edit this record. See your administrator for help.",
+				"SMAB-T3193: Verify that after submit for approval  transfer screen  is now in read only mode for CIO staff user ");
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.CancelButton));
 		objCIOTransferPage.logout();
 
 		// Step8: CIO supervisor now logs in and navigates to the above transfer screen
@@ -149,6 +197,15 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
 				"SMAB-T3467: Validation that componentActionsButtonLabel  button is not visible CIO supervisor after submit for approval");
 
+		//adding assertion for SMAB-T3193
+		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.remarksLabel);
+		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.remarksLabel);
+		objCIOTransferPage.enter(objCIOTransferPage.remarksLabel,"test data");
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.remarksLabel, ""),"test data",
+				"SMAB-T3193: Verify that after submit for approval  transfer screen  is now in read and write only mode for CIO supervisor");
+		
 		// Step9: approving the WI for approval
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionApprove);
@@ -158,6 +215,16 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
 				"SMAB-T3467: Validation that componentActionsButtonLabel  button is not visible after WI is approved");
 
+		//adding assertion for SMAB-T3193
+		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.remarksLabel);
+		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.remarksLabel);
+		objCIOTransferPage.enter(objCIOTransferPage.remarksLabel,"test data");
+				
+		softAssert.assertContains(objCIOTransferPage.saveRecordAndGetError(),
+				"Oops...you don't have the necessary privileges to edit this record. See your administrator for help.",
+				"SMAB-T3193: Verify that after approval , transfer screen  is now in read only mode ");
+				objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.CancelButton));
+				
 		driver.switchTo().window(parentWindow);
 		objCIOTransferPage.logout();
 	}

@@ -68,6 +68,9 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String saveButton ="Save";
 	public String finishButton ="Finish";
 	public String nextButton="Next";
+	public String cioTransferScreenSectionlabels= "//*[@class='slds-card slds-card_boundary']//span[@class='slds-truncate slds-m-right--xx-small']";
+	public String remarksLabel = "Remarks";
+
 	
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
 	public WebElement relatedListTab;
@@ -119,10 +122,12 @@ public class CIOTransferPage extends ApasGenericPage {
 
 	@FindBy(xpath = commonXpath + "//div[@class='slds-card slds-has-cushion flexipageRichText']//b")
 	public WebElement transferPageMessageArea;
+	
+	@FindBy(xpath = commonXpath + "//div[text()='Recorded APN Transfer']//following::lightning-formatted-text")
+	public WebElement cioTransferActivityLabel;
+	
+	
 
-	
-	
-     
 	/*
 	    * This method adds the recorded APN in Recorded-Document
 	    * 
