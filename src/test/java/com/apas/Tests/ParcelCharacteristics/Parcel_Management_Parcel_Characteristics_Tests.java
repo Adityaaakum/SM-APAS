@@ -283,7 +283,7 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
 
 		// Step 8: Verify that field name Retired Characteristics exists
-		softAssert.assertEquals(objParcelsPage.verifyElementVisible("Retired Characteristics"), true,
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Retired Characteristics"),
 				"SMAB-T2998: Validate that field name Retired Characteristics exists");
 
 		// Step 9: Enter the values of required fields
