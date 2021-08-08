@@ -251,7 +251,7 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		objParcelsPage.Click(objParcelsPage.viewAllNotesAndAttachments);
 		objParcelsPage.Click(objApasGenericPage.attachmentsDropdown);
 		Thread.sleep(5000);
-		objParcelsPage.OpenDeleteFormFromRightHandSidePanel("Notes & Attachments");
+		objParcelsPage.OpenDeleteFromRightHandSidePanel("Notes & Attachments");
 		objParcelsPage.Click(objParcelsPage.getPopUpconfirmation("Delete"));
 		
 		//Step 16: Logout of the application

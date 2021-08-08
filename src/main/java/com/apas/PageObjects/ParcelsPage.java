@@ -4,7 +4,6 @@ import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
-import com.apas.config.testdata;
 import com.relevantcodes.extentreports.LogStatus;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -12,7 +11,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,9 +121,8 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[text() = 'Notes & Attachments']//parent::span[text() = 'View All']")
     public WebElement viewAllNotesAndAttachments;
 	
-	
-
-	
+	@FindBy(xpath = "//input[contains(@id,'input-file')]")
+    public WebElement uploadFileInputBox;
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -378,55 +375,39 @@ public class ParcelsPage extends ApasGenericPage {
 		}		
 		
 		
-		public List<WebElement> fetchCharacteristicsList()
-		{
-			String xpath= "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr/th//div//div/a";
-			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));			
+		public List<WebElement> fetchCharacteristicsList() {
+			String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr/th//div//div/a";
+			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));
 			return webElementsHeaders;
-			
 		}
 		
-		public WebElement sidePanelNotesList(String noteName)
-		{
-		String xpath = "//li[contains(@class, 'notesContentNoteRelatedListStencil ')]/a/div/div/h2/span[text()='" + noteName + "']"	;
-		return driver.findElement(By.xpath(xpath));
+		public WebElement sidePanelNotesList(String noteName) {
+			String xpath = "//li[contains(@class, 'notesContentNoteRelatedListStencil ')]/a/div/div/h2/span[text()='"
+					+ noteName + "']";
+			return driver.findElement(By.xpath(xpath));
 		}
 		
-		public WebElement getButtonWithTextForSidePanels(String name)
-		{
+		public WebElement getButtonWithTextForSidePanels(String name) {
 			String xpath = "//span[text()='" + name + "']";
 			return driver.findElement(By.xpath(xpath));
-
 		}
 		
-		public WebElement getPopUpconfirmation(String name)
-		{
+		public WebElement getPopUpconfirmation(String name) {
 			String xpath = "//div[contains(@class, 'modal-container slds-modal__container')]//div//span[text()='Delete']";
 			return driver.findElement(By.xpath(xpath));
-
 		}
-		public WebElement sideOptionsAttachmentList(String attachmentName)
-		{
-		String xpath="//div[contains(@class, 'filerow')]/div/div/span[text()='" + attachmentName + "']";
-		return driver.findElement(By.xpath(xpath));
+
+		public WebElement sideOptionsAttachmentList(String attachmentName) {
+			String xpath = "//div[contains(@class, 'filerow')]/div/div/span[text()='" + attachmentName + "']";
+			return driver.findElement(By.xpath(xpath));
 		}
 		
-		@FindBy(xpath = "//input[contains(@id,'input-file')]")
-	    public WebElement uploadFileInputBox;
-		 public void uploadFile(String absoluteFilePath) throws Exception {
-			// File dir=new File(testdata.CHARACTERISTICS_FILE);
-			//	String[] fileList = dir.list();
-				// for(String name:fileList){
-						waitForElementToBeClickable(uploadFilesButton,120);
-					//	ReportLogger.INFO("Verify invalid file format not allowed for file:"+name);
-						uploadFileInputBox.sendKeys(absoluteFilePath);
-						//waitForElementToBeClickable(objEF//ileImport.invalidFileErrorMsg,5);
-		       // waitForElementToBeVisible(uploadFilesButton,120);
-		       // uploadFilesButton.sendKeys(absoluteFilePath);
-		        Thread.sleep(2000);
-		        waitForElementToBeClickable(getButtonWithText("Done"));
-		        Click(getButtonWithText("Done"));
-		        Thread.sleep(2000);
-				// }
-		    }
+		public void uploadFile(String absoluteFilePath) throws Exception {
+			waitForElementToBeClickable(uploadFilesButton, 120);
+			uploadFileInputBox.sendKeys(absoluteFilePath);
+			Thread.sleep(2000);
+			waitForElementToBeClickable(getButtonWithText("Done"));
+			Click(getButtonWithText("Done"));
+			Thread.sleep(2000);
+		}
 }
