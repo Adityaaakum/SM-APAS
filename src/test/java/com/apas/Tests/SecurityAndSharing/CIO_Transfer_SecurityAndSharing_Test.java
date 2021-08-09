@@ -51,7 +51,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3390,SMAB-T3467 : Verify that When CIO users navigates to quick action dropdown button different CIO users are able to view different dropdown buttons", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3140,SMAB-T3193,SMAB-T3390,SMAB-T3467 : Verify that When CIO users navigates to quick action dropdown button different CIO users are able to view different dropdown buttons", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "SecurityAndSharing" })
 	public void QuickActionButtonsValidation_CIOTransferScreen_SubmitForApproval(String loginUser) throws Exception {
 
@@ -121,7 +121,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 
 		//adding below assertions to verify various table names and other labels on transfer screen  
 		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.cioTransferActivityLabel),"CIO Transfer Activity",
-				"SMAB-T3140: Validation that CIO Transfer Activity label is visible on screen ");
+				"SMAB-T3140: Validation that CIO Transfer Activity label is visible on top left of transfer screen ");
 				
 		List<WebElement> cioTransferScreenSectionlabels=objCIOTransferPage.locateElements(objCIOTransferPage.cioTransferScreenSectionlabels, 10);
 				
