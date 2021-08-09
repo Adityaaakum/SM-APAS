@@ -16,6 +16,7 @@ import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.WorkItemHomePage;
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -157,26 +158,35 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 				"SMAB-T3390: Validation that submitforApprovalButton button is visible CIO staff");
 
 		// Step7: submitting the WI for approval
+        ReportLogger.INFO("Updating the transfer code");
 		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-COPAL");
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
-		
-		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);			
+        ReportLogger.INFO("transfer code updated successfully");
+
+        ReportLogger.INFO("Creating new grantee record");
+		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);	
+        ReportLogger.INFO("Grantee record created successfully");
+        
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		objCIOTransferPage.waitForElementToBeVisible(15,
 				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
 		
+        ReportLogger.INFO("Submitting the WI for approval");
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
 		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
+        ReportLogger.INFO("WI has been Submitting for approval");
+
 		objCIOTransferPage.waitForElementToBeInVisible(objCIOTransferPage.xpathSpinner, 6);
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
 				"SMAB-T3467: Validation that componentActionsButtonLabel  button is not visible CIO staff after submit for approval");
 		
 		//adding assertion for SMAB-T3193
+        ReportLogger.INFO("CIO Staff :- Entering text in Remarks field on transfer screen");
 		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.remarksLabel);
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.remarksLabel);
 		objCIOTransferPage.enter(objCIOTransferPage.remarksLabel,"test data");
@@ -198,6 +208,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 				"SMAB-T3467: Validation that componentActionsButtonLabel  button is not visible CIO supervisor after submit for approval");
 
 		//adding assertion for SMAB-T3193
+        ReportLogger.INFO("CIO Supervisor :-Entering text in Remarks field on transfer screen after submit for approval");
 		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.remarksLabel);
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.remarksLabel);
 		objCIOTransferPage.enter(objCIOTransferPage.remarksLabel,"test data");
@@ -205,8 +216,10 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.remarksLabel, ""),"test data",
 				"SMAB-T3193: Verify that after submit for approval  transfer screen  is now in read and write only mode for CIO supervisor");
-		
+        ReportLogger.INFO("CIO Supervisor:- Text entered in Remarks field successfully after submit for approval");
+
 		// Step9: approving the WI for approval
+        ReportLogger.INFO("CIO Supervisor:- Approving the transfer screen");
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionApprove);
 		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
@@ -216,6 +229,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 				"SMAB-T3467: Validation that componentActionsButtonLabel  button is not visible after WI is approved");
 
 		//adding assertion for SMAB-T3193
+        ReportLogger.INFO("CIO Supervisor:- entering text in remarks field after approval");
 		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.remarksLabel);
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.remarksLabel);
 		objCIOTransferPage.enter(objCIOTransferPage.remarksLabel,"test data");
