@@ -179,14 +179,14 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
 		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
-        ReportLogger.INFO("WI has been Submitting for approval");
+        ReportLogger.INFO("WI Submitted  for approval successfully");
 
 		objCIOTransferPage.waitForElementToBeInVisible(objCIOTransferPage.xpathSpinner, 6);
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
 				"SMAB-T3467: Validation that componentActionsButtonLabel  button is not visible CIO staff after submit for approval");
 		
 		//adding assertion for SMAB-T3193
-        ReportLogger.INFO("CIO Staff :- Entering text in Remarks field on transfer screen");
+        ReportLogger.INFO("CIO Staff :- Entering text in Remarks field on transfer screen after WI submitted for approval ");
 		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.remarksLabel);
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.remarksLabel);
 		objCIOTransferPage.enter(objCIOTransferPage.remarksLabel,"test data");
