@@ -193,8 +193,15 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		
 		softAssert.assertContains(objCIOTransferPage.saveRecordAndGetError(),
 				"Oops...you don't have the necessary privileges to edit this record. See your administrator for help.",
-				"SMAB-T3193: Verify that after submit for approval  transfer screen  is now in read only mode for CIO staff user ");
+				"SMAB-T3193: Verify that after submit for approval  transfer screen is now in read only mode for CIO staff user ");
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.CancelButton));
+		
+		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);	
+		softAssert.assertContains(objCIOTransferPage.saveRecordAndGetError(),
+				"insufficient access rights on cross-reference id",
+				"SMAB-T3193: Verify that after submit for approval  CIO staff user can't create a new grantee record ");
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.CancelButton));
+		
 		objCIOTransferPage.logout();
 
 		// Step8: CIO supervisor now logs in and navigates to the above transfer screen
