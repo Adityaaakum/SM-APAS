@@ -118,9 +118,6 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[contains(.,'Upload Files')]")
     public WebElement uploadFilesButton;
 	
-	@FindBy(xpath = "//span[text() = 'Notes & Attachments']//parent::span[text() = 'View All']")
-    public WebElement viewAllNotesAndAttachments;
-	
 	@FindBy(xpath = "//input[contains(@id,'input-file')]")
     public WebElement uploadFileInputBox;
 	
@@ -374,34 +371,60 @@ public class ParcelsPage extends ApasGenericPage {
 			return getElementText(recordedDocumentApnGenerated);
 		}		
 		
-		
+		/**
+		 * @Description: This method will return the list of the characteristics present
+		 * @return list of web elements
+		 */
 		public List<WebElement> fetchCharacteristicsList() {
 			String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr/th//div//div/a";
 			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));
 			return webElementsHeaders;
 		}
 		
+		/**
+		 * @Description: This method will return the list of notes attached
+		 * @param absoluteName: name of the note in the list
+		 * @return web element
+		 */
 		public WebElement sidePanelNotesList(String noteName) {
 			String xpath = "//li[contains(@class, 'notesContentNoteRelatedListStencil ')]/a/div/div/h2/span[text()='"
 					+ noteName + "']";
 			return driver.findElement(By.xpath(xpath));
 		}
-		
+		/**
+		 * @Description: This method will return elements on side panel 
+		 * @param absoluteName: name of the element 
+		 * @return web element
+		 */		
 		public WebElement getButtonWithTextForSidePanels(String name) {
 			String xpath = "//span[text()='" + name + "']";
 			return driver.findElement(By.xpath(xpath));
 		}
 		
+		/**
+		 * @Description: This method will return the pop up that comes for confirmation 
+		 * @param absoluteName: name of the element on pop up dialog
+		 * @return web element
+		 */
 		public WebElement getPopUpconfirmation(String name) {
 			String xpath = "//div[contains(@class, 'modal-container slds-modal__container')]//div//span[text()='Delete']";
 			return driver.findElement(By.xpath(xpath));
 		}
 
+		/**
+		 * @Description: This method will return of attachments in side panel 
+		 * @param absoluteName: Attachment name
+		 * @return Web Element
+		 */
 		public WebElement sideOptionsAttachmentList(String attachmentName) {
 			String xpath = "//div[contains(@class, 'filerow')]/div/div/span[text()='" + attachmentName + "']";
 			return driver.findElement(By.xpath(xpath));
 		}
 		
+		/**
+		 * @Description: This method will upload the file form the given path
+		 * @param absolutePath: Path of the file location from where file has to be uploaded
+		 */
 		public void uploadFile(String absoluteFilePath) throws Exception {
 			waitForElementToBeClickable(uploadFilesButton, 120);
 			uploadFileInputBox.sendKeys(absoluteFilePath);

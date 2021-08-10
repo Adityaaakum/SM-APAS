@@ -19,6 +19,7 @@ import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.ReportsPage;
 import com.apas.PageObjects.WorkItemHomePage;
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -202,7 +203,9 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 			objParcelsPage.selectOptionFromDropDown("Property Type", "Residential");
 			objParcelsPage.selectOptionFromDropDown("Characteristics Screen", "SFR");
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-			Thread.sleep(10000);
+			objMappingPage.globalSearchRecords(apn);
+			objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+			objParcelsPage.waitForElementToBeClickable(objParcelsPage.fetchCharacteristicsList().get(0));
 		}
 
 		//Step 7: Click on first characteristic record
@@ -216,45 +219,35 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		objParcelsPage.Click(objParcelsPage.notes);
 		objParcelsPage.enter(objParcelsPage.notes, "TestData");
 		objParcelsPage.Click(objParcelsPage.getButtonWithTextForSidePanels("Done"));
-		
+		Thread.sleep(4000);
+		ReportLogger.INFO("Validate the Note is created");
 		//Step 10: Verify that the Note has been created
 		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.sidePanelNotesList("TestData")),
 				"SMAB-3112: Validating that on Creating new Notes in Characteristics , Notes are created");
 		
-		//Step 11: Delete the created note
-		objParcelsPage.waitForElementToBeClickable((objParcelsPage.sidePanelNotesList("TestData")));
-		objParcelsPage.javascriptClick(objParcelsPage.sidePanelNotesList("TestData"));
-		objParcelsPage.waitForElementToBeClickable(objParcelsPage.getButtonWithTextForSidePanels("Delete"), 20);
-		objParcelsPage.Click(objParcelsPage.getButtonWithTextForSidePanels("Delete"));
-		objParcelsPage.Click(objParcelsPage.getPopUpconfirmation("Delete"));
-		
 		//Step 12: Open the Attachment tab of a characteristic
 		objParcelsPage.openTab("Attachment");
 		
-		//Step 13: Upload the attachment
-		objParcelsPage.Click(objParcelsPage.uploadFilesButton);
-		objParcelsPage.uploadFile(testdata.CHARACTERISTICS_FILE);
 		
-		//Close the pop up window opened for attachment on windows
-		Robot robot = new Robot();
-		robot.keyPress(KeyEvent.VK_ESCAPE);
-		robot.keyRelease(KeyEvent.VK_ESCAPE);
+		//Step 13: Upload the attachment
+		objParcelsPage.ClickUploadButtonOnSidePanel("Notes & Attachments");
+		//objParcelsPage.Click(objParcelsPage.uploadFilesButton);
+		objParcelsPage.uploadFile(testdata.CHARACTERISTICS_FILE);
 
-		//Step 14: Verify the attachment is Uploaded
+		ReportLogger.INFO("Validate the Attachment is uploaded");
+		// Step 14: Verify the attachment is Uploaded
 		objParcelsPage.waitForElementToBeClickable((objParcelsPage.sideOptionsAttachmentList("00202")));
 		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.sideOptionsAttachmentList("00202")),
 				"SMAB-T3113 : Validating that on Creating new Attachments,it will display Attachments created");
+		
+		// Close the pop up window opened for attachment on windows
+		Robot robot = new Robot();
+
+		robot.keyPress(KeyEvent.VK_ESCAPE);
+		robot.keyRelease(KeyEvent.VK_ESCAPE);
 		driver.navigate().refresh();
 		
-		//Step 15: Delete the uploaded attachment
-		objParcelsPage.openTab("Attachment");
-		objParcelsPage.Click(objParcelsPage.viewAllNotesAndAttachments);
-		objParcelsPage.Click(objApasGenericPage.attachmentsDropdown);
-		Thread.sleep(5000);
-		objParcelsPage.OpenDeleteFromRightHandSidePanel("Notes & Attachments");
-		objParcelsPage.Click(objParcelsPage.getPopUpconfirmation("Delete"));
-		
-		//Step 16: Logout of the application
+		//Step 16: Logout of the application	
 		objParcelsPage.logout();
 	}
 
@@ -282,6 +275,7 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		// Step 5: Create New Characteristic
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
 
+		ReportLogger.INFO("Validate the Field Retired Characteristcs");
 		// Step 8: Verify that field name Retired Characteristics exists
 		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Retired Characteristics"),
 				"SMAB-T2998: Validate that field name Retired Characteristics exists");
@@ -293,11 +287,11 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		// Step 10: Clear the end date field and enter the value
 		objParcelsPage.clearFieldValue("End Date");
 		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("End Date"), "2/3/2022");
-		Thread.sleep(2000);
 
 		// Step 11: Click on Save
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
 
+		ReportLogger.INFO("Validate the Reason and End Date fields");
 		// Step 12: Verify that End date can be entered manually and reason field is mandatory if end date is populated
 		softAssert.assertEquals(objParcelsPage.getIndividualFieldErrorMessage("Reason"),
 				"Reason field is required if End Date is populated.",

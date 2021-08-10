@@ -1433,9 +1433,17 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		
 	}
 	
-	public void OpenDeleteFromRightHandSidePanel(String objectName) throws IOException, InterruptedException {
-		String xpath = "//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'Delete'][@role='button'] | //div[contains(@class, 'slds-dropdown__list slds-dropdown_length-with-icon')]//button[text()='Delete'][@type='button'] |  //div[contains(@class,'actionMenu')]//a[@title='Delete']";
-		waitForElementToBeClickable(driver.findElement(By.xpath(xpath)),20);
+	/**
+	 * @Description: This method will click on upload of attachments  
+	 */
+	public void ClickUploadButtonOnSidePanel(String objectName) throws IOException, InterruptedException {
+		String xpath = "//article[contains(.,'" + objectName
+				+ "')]//a[@title='Show one more action'] |  //article[contains(.,'" + objectName
+				+ "')]//*[@data-aura-class='forceDeferredDropDownAction']//a | //article[contains(.,'City Strat Codes')]//span[text()='Show more actions']";
 		Click(driver.findElement(By.xpath(xpath)));
-	}
+		Thread.sleep(2000);
+		String xpath1 = "//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'Upload Files'][@role='button'] | //div[contains(@class, 'slds-dropdown__list slds-dropdown_length-with-icon')]//button[text()='Upload Files'][@type='button'] |  //div[contains(@class,'actionMenu')]//a[@title='Upload Files']";
+		waitForElementToBeClickable(driver.findElement(By.xpath(xpath1)), 20);
+		Click(driver.findElement(By.xpath(xpath1)));
+	} 
 }
