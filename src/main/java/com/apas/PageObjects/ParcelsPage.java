@@ -74,6 +74,9 @@ public class ParcelsPage extends ApasGenericPage {
 	public String saveAndNextButton="Save and Next";
 	public String ownershipPercentageTextBox="Ownership Percentage";
 	
+	public String parcelNumber = "Parcel Number";
+	public String puc = "PUC";
+	
 	
 	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
@@ -371,6 +374,30 @@ public class ParcelsPage extends ApasGenericPage {
 			return getElementText(recordedDocumentApnGenerated);
 		}		
 		
+		//To create new parcel manually
+		public String createNewParcel(String apn,String parcelNum,String PUC) {
+	        String querySearchAPN = "Select name,id from Parcel__c where name ='"+apn+"'";
+		    HashMap<String, ArrayList<String>> responseSearchedAPN = objSalesforceAPI.select(querySearchAPN);
+		    if(responseSearchedAPN.isEmpty()) {
+		    	try {
+	    		waitForElementToBeInVisible(createNewParcelButton, 10);
+	    		Click(getButtonWithText(createNewParcelButton));
+	    	    enter(editApnField,apn);
+	    		enter(parcelNumber,parcelNum);
+	    		selectOptionFromDropDown(puc,PUC);
+	    		Click(saveButton);
+	    		ReportLogger.INFO("Successfully created parcel record : "+apn);
+		    	}
+		    	catch(Exception e) {
+	        		ReportLogger.INFO("Fail to create parcel record : "+e);
+	        	}
+		    }else {
+	    		ReportLogger.INFO("Parcel record already present in system : "+apn);
+
+		    }
+		    return apn;
+		}
+
 		/**
 		 * @Description: This method will return the list of the characteristics present
 		 * @return list of web elements

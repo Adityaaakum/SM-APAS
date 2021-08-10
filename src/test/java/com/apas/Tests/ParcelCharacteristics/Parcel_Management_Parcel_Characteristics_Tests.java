@@ -219,12 +219,13 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		objParcelsPage.Click(objParcelsPage.notes);
 		objParcelsPage.enter(objParcelsPage.notes, "TestData");
 		objParcelsPage.Click(objParcelsPage.getButtonWithTextForSidePanels("Done"));
-		//Thread.sleep(4000);
-		objParcelsPage.waitForElementToBeClickable(objParcelsPage.sidePanelNotesList("TestData"), 20);
+		driver.navigate().refresh();
+		objParcelsPage.openTab("Notes");
 		ReportLogger.INFO("Validate the Note is created");
 		//Step 10: Verify that the Note has been created
 		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.sidePanelNotesList("TestData")),
 				"SMAB-3112: Validating that on Creating new Notes in Characteristics , Notes are created");
+		driver.navigate().refresh();
 		
 		//Step 12: Open the Attachment tab of a characteristic
 		objParcelsPage.openTab("Attachment");

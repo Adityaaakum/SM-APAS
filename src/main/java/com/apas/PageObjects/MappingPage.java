@@ -42,7 +42,7 @@ public class MappingPage extends ApasGenericPage {
 	public String legalDescriptionColumnSecondScreen = "Legal Description*";
 	public String districtColumnSecondScreen = "District";
 	public String apnColumnSecondScreen = "APN";
-	public String reasonCodeColumnSecondScreen = "Reason Code";
+	public String reasonCodeColumnSecondScreen = "Reason Code*";
 	public String useCodeColumnSecondScreen = "Use Code";
 	public String districtEditTextBoxSecondScreenLabel = "District";
 	public String useCodeEditTextBoxSecondScreenLabel = "Use Code";
@@ -134,7 +134,7 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'flowRuntimeV2')]//c-org_parcel-process-brand-new-view[1]//div[contains(@class,'error')]//li")
 	public WebElement errorMessageSecondScreen;
 	
-	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Use Code']")
+	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Use Code*']")
 	public WebElement useCodeFieldSecondScreen;
 	
 	@FindBy(xpath = "//div[contains(@class,'message-font slds-align_absolute-center slds-text-color_success')]")
@@ -164,6 +164,8 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath="//th[@data-label='APN']")
 	public WebElement apnFieldInGridOnCustomScreen;
 
+	@FindBy(xpath="//div[contains(@class,'error')][1]")
+	public WebElement dividedInterestErrorMsgSecondScreen;
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
 	 * @param dataMap: A data map which contains data to perform  mapping action
