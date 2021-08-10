@@ -1146,5 +1146,114 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		objWorkItemHomePage.logout();
 	}
 	
+	 /**
+		 * This method is to  Verify  Divided Interest Parcel generation
+		 *@param loginUser
+		 * @throws Exception
+		 */
+		@Test(description = "SMAB-T3283:Verify that user is able to perform One To One mapping action "
+				+ "having Divided Interest parcel as Parent APN ", dataProvider = "loginMappingUser", 
+				dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+		public void ParcelManagement_VerifyOneToOneDividedInterestParcelGeneration(String loginUser) throws Exception {
+			
+			objMappingPage.login(users.SYSTEM_ADMIN);
+			String createNewParcel = testdata.MANUAL_PARCEL_CREATION_DATA;
+			Map<String, String> hashMapCreateNewParcel = objUtil.generateMapFromJsonFile(createNewParcel,
+						"DataToDividedInterestCreateNewParcel");
+			String parentDividedInterestAPN1 = hashMapCreateNewParcel.get("APN1");
+			String newParcelNumber1 = hashMapCreateNewParcel.get("Parcel Number1");
+			HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+					+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+					+ "where Status__c='Active') limit 1");
+			String PUC = responsePUCDetails.get("Name").get(0);
+			objMappingPage.searchModule(PARCELS);
+			objParcelsPage.createNewParcel(parentDividedInterestAPN1,newParcelNumber1,PUC);
+
+			objWorkItemHomePage.logout();	
+			
+			//Fetch some other values from database
+				
+			String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+			HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+			String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+			HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+			String legalDescriptionValue="Legal PM 85/25-260";
+			String districtValue="District01";
+			String parcelSize	= "200";	
+
+			jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+			jsonObject.put("Status__c","Active");
+			jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+			jsonObject.put("District__c",districtValue);
+			jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+			jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+			jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+
+			//updating Parcel details
+			String queryApnId = "SELECT Id FROM Parcel__c where Name in('"+
+					parentDividedInterestAPN1+"')";
+			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryApnId);
+			salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
+			
+			String mappingActionCreationData =  testdata.ONE_TO_ONE_MAPPING_ACTION;
+
+			Map<String, String> hashMapOneToOneParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+					"DataToPerformOneToOneMappingActionWithAllFields");
+			
+
+			String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+			Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+					"DataToCreateWorkItemOfTypeParcelManagement");
+			
+			// Step1: Login to the APAS application using the credentials passed through data provider (mapping staff user)
+			objMappingPage.login(loginUser);
+
+			// Step 2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+			objMappingPage.searchModule(PARCELS);
+			objMappingPage.globalSearchRecords(parentDividedInterestAPN1);
+
+			//Step 3: Creating Manual work item for the Parcel 
+			String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+			//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
+			Thread.sleep(3000);
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+			String parentWindow = driver.getWindowHandle();	
+			objWorkItemHomePage.switchToNewWindow(parentWindow);
+			
+			//Step 5: Fill mandatory fields in mapping action screen 
+			ReportLogger.INFO("Child parcel ends with 0 parent parcel is divideInterent Parcel: ");
+			objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+			objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapOneToOneParcelMappingData.get("Action"));
+			objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, hashMapOneToOneParcelMappingData.get("Are taxes fully paid?"));
+			objMappingPage.waitForElementToBeVisible(objMappingPage.reasonCodeField);
+			objMappingPage.fillMappingActionForm(hashMapOneToOneParcelMappingData);
+			objMappingPage.waitForElementToBeVisible(5, objMappingPage.generateParcelButton);
+			
+			//Step 6: Generate Parcel
+			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+			softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel(s) have been created successfully. Please review spatial information.",
+					"SMAB-T3283:Verify that user is able to perform One To One mapping action having Divided Interest parcel as Parent APN");			    
+		    
+			String parentAPNComponent[] = parentDividedInterestAPN1.split("-");
+			HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
+
+			String childAPNNumber=gridDataHashMap.get("APN").get(0);	
+			String childAPNComponents[] = childAPNNumber.split("-");
+			softAssert.assertEquals(childAPNComponents[0],parentAPNComponent[0],
+					"SMAB-T3283: Validation that MAP BOOK of parent and child parcels are same" );
+			softAssert.assertEquals(childAPNComponents[1],parentAPNComponent[1],
+					"SMAB-T3283: Validation that MAP page of parent and child parcels are same");
+			softAssert.assertTrue(childAPNNumber.endsWith("0"),
+					"SMAB-T3283: Validation that child APN number ends with 0");
+		    driver.switchTo().window(parentWindow);
+		   
+		    objWorkItemHomePage.logout();
+		   
+	}
 	
 }
