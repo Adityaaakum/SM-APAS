@@ -219,7 +219,8 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		objParcelsPage.Click(objParcelsPage.notes);
 		objParcelsPage.enter(objParcelsPage.notes, "TestData");
 		objParcelsPage.Click(objParcelsPage.getButtonWithTextForSidePanels("Done"));
-		Thread.sleep(4000);
+		//Thread.sleep(4000);
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.sidePanelNotesList("TestData"), 20);
 		ReportLogger.INFO("Validate the Note is created");
 		//Step 10: Verify that the Note has been created
 		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.sidePanelNotesList("TestData")),
