@@ -2,5 +2,14 @@
   "DataToCreateParcel": {
     "APN": "512-123-100",
     "Parcel Number": "512123100"
+  },
+  
+   "DataToDividedInterestCreateNewParcel": {
+    "APN1": "297-097-011",
+    "APN2": "297-097-012",
+    "Status": "Active",
+    "PUC": "01-SINGLE FAMILY RES",
+    "Parcel Number1":"297097011"
+    "Parcel Number2":"297097012"
   }
   }
