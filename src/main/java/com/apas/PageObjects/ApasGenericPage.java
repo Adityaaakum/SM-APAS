@@ -1414,7 +1414,7 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		
 		 String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy"); 
 		 String currentRollYear=ExemptionsPage.determineRollYear(currentDate);	
-		HashMap<String, ArrayList<String>> responseRollYearDetails = objSalesforceAPI.select("SELECT Name FROM Roll_Year_Settings__c where status__c ='Open'and name !='"+currentRollYear+"'");
+		HashMap<String, ArrayList<String>> responseRollYearDetails = objSalesforceAPI.select("SELECT Name FROM Roll_Year_Settings__c where status__c ='Open' and name !='"+currentRollYear+"'");
 		
 		if (responseRollYearDetails.size()>0)
 		
