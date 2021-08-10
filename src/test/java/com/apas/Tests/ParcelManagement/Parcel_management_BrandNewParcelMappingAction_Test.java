@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
+import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -1146,13 +1147,13 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
           HashMap<String, ArrayList<String>> gridParcelData = objMappingPage.getGridDataInHashMap();
           String newCreatedApn  =   gridParcelData.get("APN").get(0);  
           jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
-  		jsonObject.put("Status__c","Active");
-  		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
-  		jsonObject.put("District__c",districtValue);
-  		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
-  		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-  		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
-  		salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+newCreatedApn+"'").get("Id").get(0),jsonObject);
+  		  jsonObject.put("Status__c","Active");
+  		  jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+  		  jsonObject.put("District__c",districtValue);
+  		  jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+  		  jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+  		  jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+  		  salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+newCreatedApn+"'").get("Id").get(0),jsonObject);
 
   		
           
@@ -1189,8 +1190,101 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 
 		}
 		
-	}
+		@Test(description = "SMAB-T3121,SMAB-T3120:Verify that Parcel Size (SQFT) column is added to the \\\"Mapping Actions\\\" (all mapping actions) second custom screen (displaying child parcels) and can edit the same and value is updated at parcel level", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+				"Regression" , "ParcelManagement" })
+		public void ParcelManagement_VerifyParcelSizeColumn_AddedTo_BrandNewParcelAction_CustomScreen(String loginUser)
+				throws Exception {
 
+			String queryAPN = "Select name,id From Parcel__c where Status__c='Active' limit 1";
+			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+			String activeParcelToPerformMapping = responseAPNDetails.get("Name").get(0);
+			objMappingPage.deleteRelationshipInstanceFromParcel(activeParcelToPerformMapping);
+			
+			String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
+			
+			Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(
+					mappingActionCreationData, "DataToPerformBrandNewParcelMappingActionWithSitusData");
+
+			String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+			Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+					"DataToCreateWorkItemOfTypeParcelManagement");
+			
+
+			// Step1: Login to the APAS application using the credentials passed through
+			// data provider (mapping staff user)
+			objMappingPage.login(loginUser);
+
+			// Step 2: Opening the PARCELS page and searching the parcel to perform brand
+			// new parcel mapping
+			objMappingPage.searchModule(PARCELS);
+			objMappingPage.globalSearchRecords(activeParcelToPerformMapping);
+
+			// Step 3: Creating Manual work item for the Parcel
+			String workItem = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+			// Step 4:Clicking the details tab for the work item newly created and clicking
+			// on Related Action Link
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+			String parentWindow = driver.getWindowHandle();
+			objWorkItemHomePage.switchToNewWindow(parentWindow);
+			objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+			objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,
+					hashMapBrandNewParcelMappingData.get("Action"));
+
+			// Step 5: entering data in form for Brand New Parcel mapping
+			objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
+			Thread.sleep(5000);
+
+			// Step 6 : Filling few of the mandatory fields
+			objMappingPage.editGridCellValue(objMappingPage.legalDescriptionColumnSecondScreen, "Legal Discription");
+			objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+			objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
+
+			// Step 7 :Clicking generate parcel button
+			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+			objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
+
+			// Step 8 : Navigating back to the WI that was created and clicking on related
+			// action link
+			driver.switchTo().window(parentWindow);
+			objMappingPage.globalSearchRecords(workItem);
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+			parentWindow = driver.getWindowHandle();
+			objWorkItemHomePage.switchToNewWindow(parentWindow);
+			objMappingPage.waitForElementToBeVisible(10, objMappingPage.updateParcelsButton);
+
+			softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)*"),
+					"SMAB-T3121: Validation that Parcel Size (SQFT) column should  be editable on retirning to custom screen");
+			Thread.sleep(3000);
+			objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "40");
+
+			objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+			
+
+			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName));
+
+			HashMap<String, ArrayList<String>> gridDataHashMap = objMappingPage.getGridDataInHashMap();
+			String APN = gridDataHashMap.get("APN").get(0);
+
+			driver.switchTo().window(parentWindow);
+			objMappingPage.globalSearchRecords(APN);
+
+			// Verify that the parcel size(SQFT)* of second screen with the parcel size on
+			// parcel screen and also checks if the Parcel Size (SqFt)field is present on
+			// the parcel screen
+			softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)*").get(0),
+					objMappingPage.getFieldValueFromAPAS("Parcel Size (SqFt)", "Parcel Information"),
+					"SMAB-T3121:Parcel size(SQFT) matched and field is avilable on parcel screen");
+
+			driver.switchTo().window(parentWindow);
+			objWorkItemHomePage.logout();
+
+		}
+	}
 
 	
 	

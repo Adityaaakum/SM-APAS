@@ -1646,7 +1646,112 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 	}
 	
-	
+	@Test(description = "SMAB-T3121,SMAB-T3120:Verify that Parcel Size (SQFT) column is added to the \\\"Mapping Actions\\\" (all mapping actions) second custom screen (displaying child parcels) and can edit the same and value is updated at parcel level", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement" })
+	public void ParcelManagement_VerifyParcelSizeColumn_AddedTo_ManytoMany_Action_CustomScreen(String loginUser)
+			throws Exception {
 
+		// Fetching parcels that are Active with same Ownership record
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and (Not Name like '%990') and (Not Name like '134%') and  Primary_Situs__c !=NULL and Status__c = 'Active' Limit 2";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
+		String apn1 = responseAPNDetails.get("Name").get(0);
+		String apn2 = responseAPNDetails.get("Name").get(1);
+
+		String concatenateAPNWithSameOwnership = apn1 + "," + apn2;
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+		jsonObject.put("TRA__c", responseTRADetails.get("Id").get(0));
+
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+		jsonObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
+
+		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), jsonObject);
+		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), jsonObject);
+
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeMappingWithActionMobileHomeRequest");
+
+		String mappingActionCreationData = testdata.MANY_TO_MANY_MAPPING_ACTION;
+		Map<String, String> hashMapManyToManyActionMappingData = objUtil.generateMapFromJsonFile(
+				mappingActionCreationData, "DataToPerformManyToManyMappingActionWithoutAllFields");
+
+		// Step1: Login to the APAS application using the credentials passed through
+		// dataprovider (Mapping User)
+		objMappingPage.login(loginUser);
+
+		// Step2: Opening the PARCELS page and searching the parcel
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn1);
+
+		// Step 3: Creating Manual work item for the Parcel
+		String workItem = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		// Step 4:Clicking the details tab for the work item newly created and clicking
+		// on Related Action Link
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		// Step 5: Selecting Action as 'perform parcel ManyToMany'
+		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, concatenateAPNWithSameOwnership);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,
+				hashMapManyToManyActionMappingData.get("Action"));
+		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, "Yes");
+
+		// Step 6: filling all fields in mapping action screen
+		objMappingPage.fillMappingActionForm(hashMapManyToManyActionMappingData);
+		Thread.sleep(3000);
+		
+
+		// Step 7: Click ManyToMany Parcel Button
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
+
+		// Step 8: Navigating back to the WI that was created and clicking on related
+		// action link validate that The "Return " functionality for parcel mgmt activities should
+		// work for all these work items.
+		driver.switchTo().window(parentWindow);
+		objMappingPage.globalSearchRecords(workItem);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objMappingPage.waitForElementToBeVisible(10, objMappingPage.updateParcelsButton);
+
+		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)*"),
+				"SMAB-T3121: Validation that Parcel Size (SQFT) column should  be editable on retirning to custom screen");
+		Thread.sleep(3000);
+		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "40");
+
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName));
+
+		HashMap<String, ArrayList<String>> gridDataHashMap = objMappingPage.getGridDataInHashMap();
+		String APN = gridDataHashMap.get("APN").get(0);
+
+		driver.switchTo().window(parentWindow);
+		objMappingPage.globalSearchRecords(APN);
+
+		// Verify that the parcel size(SQFT)* of second screen with the parcel size on
+		// parcel screen and also checks if the Parcel Size (SqFt)field is present on
+		// the parcel screen or not
+		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)*").get(0),
+				objMappingPage.getFieldValueFromAPAS("Parcel Size (SqFt)", "Parcel Information"),
+				"SMAB-T3121:Parcel size(SQFT) matched and field is avilable on parcel screen\"");
+
+		driver.switchTo().window(parentWindow);
+		objWorkItemHomePage.logout();
+	}
 
 }
