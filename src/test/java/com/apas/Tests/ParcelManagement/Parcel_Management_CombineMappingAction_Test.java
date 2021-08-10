@@ -2311,7 +2311,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String PUC = responsePUCDetails.get("Name").get(0);
 		for(int i =1;i<=2;i++) {
 			objMappingPage.searchModule(PARCELS);
-			//String parentDividedInterestAPN = hashMapCreateNewParcel.get("APN"+i);
 			String newParcelNumber = hashMapCreateNewParcel.get("Parcel Number"+i);
 			objParcelsPage.createNewParcel("parentDividedInterestAPN"+i,newParcelNumber,PUC);
 		}
