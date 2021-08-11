@@ -1427,6 +1427,13 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		String reasonCode=gridDataHashMap.get("Reason Code*").get(0);
 		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd*").get(0);
 		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)*").get(0);
+		
+		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+		Thread.sleep(3000);
+	objMappingPage.editActionInMappingSecondScreen(hashMapManyToManyActionMappingData);
+	objMappingPage.Click(objMappingPage.secondmappingSecondScreenEditActionGridButton);
+	Thread.sleep(3000);
+    objMappingPage.editActionInMappingSecondScreen(hashMapManyToManyActionMappingData);
 
 		//Step 5: Click ManyToMany Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
