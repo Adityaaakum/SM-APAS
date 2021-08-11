@@ -321,6 +321,27 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
              // validating status of brand new parcel           
             softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2643: Verifying the status of the new parcel");
         
+          //Fetch some other values from database
+    		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+
+    		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+    		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+    		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+    		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+    		String legalDescriptionValue="Legal PM 85/25-260";
+    		String parcelSize	= "200";	
+
+    		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+    		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+    		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+    		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+    		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+
+    		//update parcel details
+    		salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+newCreatedApn+"'").get("Id").get(0),jsonObject);
+
             //Submit work item for approval
             String query = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
             salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
@@ -498,13 +519,13 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformBrandNewParcelMappingActionWithSitusData");
 
-		String situsCityName = hashMapBrandNewParcelMappingData.get("Situs City Name");
+		String cityName = hashMapBrandNewParcelMappingData.get("City Name");
 		String direction = hashMapBrandNewParcelMappingData.get("Direction");
 		String situsNumber = hashMapBrandNewParcelMappingData.get("Situs Number");
 		String situsStreetName = hashMapBrandNewParcelMappingData.get("Situs Street Name");
 		String situsType = hashMapBrandNewParcelMappingData.get("Situs Type");
 		String situsUnitNumber = hashMapBrandNewParcelMappingData.get("Situs Unit Number");
-		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+situsCityName;
+		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+cityName;
 
 		// Step1: Login to the APAS application using the credentials passed through data provider (login Mapping User)
 		objMappingPage.login(loginUser);

@@ -10,6 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,6 +74,9 @@ public class ParcelsPage extends ApasGenericPage {
 	public String saveAndNextButton="Save and Next";
 	public String ownershipPercentageTextBox="Ownership Percentage";
 	
+	public String parcelNumber = "Parcel Number";
+	public String puc = "PUC";
+	
 	
 	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
@@ -110,6 +114,15 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//a[starts-with(@title,\"RD-APN\")][@class='tabHeader slds-context-bar__label-action '][@aria-selected='true']//span[@class='title slds-truncate']")
 	public WebElement recordedDocumentApnGenerated;
+	
+	@FindBy(xpath = "//div[contains(@class, 'notesEditPanel')]/div//input[contains(@class, 'notesTitle')]")
+	public WebElement notes;
+	
+	@FindBy(xpath = "//span[contains(.,'Upload Files')]")
+    public WebElement uploadFilesButton;
+	
+	@FindBy(xpath = "//input[contains(@id,'input-file')]")
+    public WebElement uploadFileInputBox;
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -361,4 +374,90 @@ public class ParcelsPage extends ApasGenericPage {
 			return getElementText(recordedDocumentApnGenerated);
 		}		
 		
+		//To create new parcel manually
+		public String createNewParcel(String apn,String parcelNum,String PUC) {
+	        String querySearchAPN = "Select name,id from Parcel__c where name ='"+apn+"'";
+		    HashMap<String, ArrayList<String>> responseSearchedAPN = objSalesforceAPI.select(querySearchAPN);
+		    if(responseSearchedAPN.isEmpty()) {
+		    	try {
+	    		waitForElementToBeInVisible(createNewParcelButton, 10);
+	    		Click(getButtonWithText(createNewParcelButton));
+	    	    enter(editApnField,apn);
+	    		enter(parcelNumber,parcelNum);
+	    		selectOptionFromDropDown(puc,PUC);
+	    		Click(saveButton);
+	    		ReportLogger.INFO("Successfully created parcel record : "+apn);
+		    	}
+		    	catch(Exception e) {
+	        		ReportLogger.INFO("Fail to create parcel record : "+e);
+	        	}
+		    }else {
+	    		ReportLogger.INFO("Parcel record already present in system : "+apn);
+
+		    }
+		    return apn;
+		}
+
+		/**
+		 * @Description: This method will return the list of the characteristics present
+		 * @return list of web elements
+		 */
+		public List<WebElement> fetchCharacteristicsList() {
+			String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr/th//div//div/a";
+			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));
+			return webElementsHeaders;
+		}
+		
+		/**
+		 * @Description: This method will return the list of notes attached
+		 * @param absoluteName: name of the note in the list
+		 * @return web element
+		 */
+		public WebElement sidePanelNotesList(String noteName) {
+			String xpath = "//li[contains(@class, 'notesContentNoteRelatedListStencil ')]/a/div/div/h2/span[text()='"
+					+ noteName + "']";
+			return driver.findElement(By.xpath(xpath));
+		}
+		/**
+		 * @Description: This method will return elements on side panel 
+		 * @param absoluteName: name of the element 
+		 * @return web element
+		 */		
+		public WebElement getButtonWithTextForSidePanels(String name) {
+			String xpath = "//span[text()='" + name + "']";
+			return driver.findElement(By.xpath(xpath));
+		}
+		
+		/**
+		 * @Description: This method will return the pop up that comes for confirmation 
+		 * @param absoluteName: name of the element on pop up dialog
+		 * @return web element
+		 */
+		public WebElement getPopUpconfirmation(String name) {
+			String xpath = "//div[contains(@class, 'modal-container slds-modal__container')]//div//span[text()='Delete']";
+			return driver.findElement(By.xpath(xpath));
+		}
+
+		/**
+		 * @Description: This method will return of attachments in side panel 
+		 * @param absoluteName: Attachment name
+		 * @return Web Element
+		 */
+		public WebElement sideOptionsAttachmentList(String attachmentName) {
+			String xpath = "//div[contains(@class, 'filerow')]/div/div/span[text()='" + attachmentName + "']";
+			return driver.findElement(By.xpath(xpath));
+		}
+		
+		/**
+		 * @Description: This method will upload the file form the given path
+		 * @param absolutePath: Path of the file location from where file has to be uploaded
+		 */
+		public void uploadFile(String absoluteFilePath) throws Exception {
+			waitForElementToBeClickable(uploadFilesButton, 120);
+			uploadFileInputBox.sendKeys(absoluteFilePath);
+			Thread.sleep(2000);
+			waitForElementToBeClickable(getButtonWithText("Done"));
+			Click(getButtonWithText("Done"));
+			Thread.sleep(2000);
+		}
 }

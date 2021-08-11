@@ -18,7 +18,6 @@ import com.apas.config.users;
 import org.hamcrest.core.IsNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -1611,8 +1610,221 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objWorkItemHomePage.logout();
 	}
 	
-	
+	/**
+	 * This method is to  Verify  that Divided Interest Parcel generated
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T3309,SMAB-T3310,SMAB-T3311,SMAB-T3312,SMAB-T3313,SMAB-T3314,SMAB-T3282:Verify that user is able to perform Split mapping action "
+			+ "having Divided Interest parcel as Parent APN ", dataProvider = "loginMappingUser", 
+			dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+	public void  ParcelManagement_VerifySplitDividedInterestParcelGeneration(String loginUser) throws Exception {
 
+        objMappingPage.login(users.SYSTEM_ADMIN);
+        String createNewParcel = testdata.MANUAL_PARCEL_CREATION_DATA;
+		Map<String, String> hashMapCreateNewParcel = objUtil.generateMapFromJsonFile(createNewParcel,
+				"DataToDividedInterestCreateNewParcel");
+		String parentDividedInterestAPN1 = hashMapCreateNewParcel.get("APN1");
+		String newParcelNumber1 = hashMapCreateNewParcel.get("Parcel Number1");
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') limit 1");
+		String PUC = responsePUCDetails.get("Name").get(0);
+        objMappingPage.searchModule(PARCELS);
+		objParcelsPage.createNewParcel(parentDividedInterestAPN1,newParcelNumber1,PUC);
+		String nonDivideInterestAPN = objMappingPage.fetchActiveAPN();
+
+		objWorkItemHomePage.logout();
+
+	    String apnLike = parentDividedInterestAPN1.substring(0,10);
+		String queryExistingAPNValue = "Select name,status__c From Parcel__c where"
+				+ " Name like '"+apnLike+"%' and (not name like '%0') order by name desc";
+	    HashMap<String, ArrayList<String>> responseExistingAPNDetails = salesforceAPI.select(queryExistingAPNValue);
+		String apnPresentInSystem =responseExistingAPNDetails.get("Name").get(0);
+	    	
+		//Fetch some other values from database
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c where Name != NULL limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String parcelSize	= "200";	
+
+		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonObject.put("Status__c","Active");
+		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+
+		//updating Parcel details
+		String queryApnId = "SELECT Id FROM Parcel__c where Name in('"+
+				parentDividedInterestAPN1+"')";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryApnId);
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
+
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+
+		String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
+		Map<String, String> hashMapSplitActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformSplitMappingActionWithSitusData");
+		
+		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
+		objMappingPage.login(loginUser);
+
+		// Step2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(parentDividedInterestAPN1);
+
+		// Step 3: Creating Manual work item for the Parcel
+		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		Thread.sleep(3000);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		String reasonCode = objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		//Enter non divide and interest parcel as parent parcel
+		ReportLogger.INFO("Child parcel ends with 0 if first non condo parcel is dividedInteset parcel and  parent parcel is non divideInterent Parcel: "+nonDivideInterestAPN);
+		objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,nonDivideInterestAPN);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapSplitActionMappingData.get("Action"));
+		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
+		objMappingPage.waitForElementToBeVisible(objMappingPage.reasonCodeField);
+		String nextGeneratedParcel = objMappingPage.generateNextAvailableAPN(parentDividedInterestAPN1);
+        objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,nextGeneratedParcel);
+		objMappingPage.enter(objMappingPage.numberOfChildNonCondoTextBoxLabel, "2");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objMappingPage.nextButton));
+		
+		//second screen of mapping action
+		objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);
+		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
+		String childAPNNumber =gridDataHashMap.get("APN").get(0);	
+		softAssert.assertTrue(childAPNNumber.endsWith("0"),
+				"SMAB-T3310: Validation that  child parcel ending in 0 is generated when "
+				+ "divided interest parcels are used in first non condo parcel Number/first"
+				+ " condo parcel number field");
+		ReportLogger.INFO("Click PREVIOUS button");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
+		
+		//Enter DividedInterest parcel number as Parent parcel
+		ReportLogger.INFO("child parcel have same map book, map page and ends with 0 if parent parcel is divideinterest parcel : " + parentDividedInterestAPN1);
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,parentDividedInterestAPN1);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+		objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapSplitActionMappingData.get("Action"));
+		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
+		objMappingPage.waitForElementToBeVisible(objMappingPage.reasonCodeField);
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"");
+		objMappingPage.enter(objMappingPage.numberOfChildNonCondoTextBoxLabel, "2");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objMappingPage.nextButton));
+		
+		//Second screen of mapping action
+		objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);
+		gridDataHashMap =objMappingPage.getGridDataInHashMap();
+
+		// Validate child parcel have have same map book and map page no as parent parcel and
+		//ends with 0 if Parent parcel is dividedinterest parcel
+		String parentAPNComponent[] = parentDividedInterestAPN1.split("-");
+			childAPNNumber=gridDataHashMap.get("APN").get(0);	
+			String childAPNComponents[] = childAPNNumber.split("-");
+			softAssert.assertEquals(childAPNComponents[0],parentAPNComponent[0],
+					"SMAB-T3309: Validation that MAP BOOK of parent and child parcels are same" );
+			softAssert.assertEquals(childAPNComponents[1],parentAPNComponent[1],
+					"SMAB-T3309: Validation that MAP page of parent and child parcels are same");
+			softAssert.assertTrue(childAPNNumber.endsWith("0"),
+					"SMAB-T3309: Validation that child APN number ends with 0");
+		
+		//Validate dividedinterest child 1st 8 char is same as parent parcel 
+		ReportLogger.INFO("dividedinterest child 1st 8 char is same as parent parcel");
+		String firstChildAPN = gridDataHashMap.get("APN").get(0);	
+		String firstchildAPNNumber[] = firstChildAPN.split("-");
+		String updatechildlastdigit = firstchildAPNNumber[0]+firstchildAPNNumber[1]+
+				String.valueOf(Integer.parseInt(firstchildAPNNumber[2]) +101);
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.apnColumnSecondScreen,
+				updatechildlastdigit,1);
+		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		gridDataHashMap =objMappingPage.getGridDataInHashMap();
+
+		softAssert.assertContains(gridDataHashMap.get("Error Message").get(0),"To override an APN "
+				+ "with divided interest parcel, the first 8 characters must be same as the Parent APN",
+				"SMAB-T3311: Validation that any mapping action if child APN is overwritten with "
+				+ "divided interest APN such that first 8 characters of APN are not the same as "
+				+ "that of first parent parcel, error message is displayed");
+
+		//Validate child parcel cannot be parcel which is present in system 
+		ReportLogger.INFO("dividedinterest child parcel cannot be parcel which is present in system");
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.apnColumnSecondScreen,
+				apnPresentInSystem,1);
+		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		gridDataHashMap =objMappingPage.getGridDataInHashMap();
+		softAssert.assertContains(gridDataHashMap.get("Error Message").get(0)," already exist",
+				"SMAB-T3312: Validate that if child APN is "
+				+ "overwritten with a divided interest APN such that no divided interest APN is"
+				+ " available error message is displayed");
+		
+		// Validate child parcel cannot skip next available apn
+		ReportLogger.INFO("dividedinterest child parcel cannot skip next available apn");
+		String apnInSystem[] = apnPresentInSystem.split("-");
+		String updateNextApn = apnInSystem[0]+apnInSystem[1]+apnInSystem[2].substring(0,2)+
+					String.valueOf(Integer.parseInt(apnInSystem[2].substring(2)) +2);
+			objMappingPage.updateMultipleGridCellValue(objMappingPage.apnColumnSecondScreen,
+					updateNextApn,1);
+			objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
+			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+			gridDataHashMap =objMappingPage.getGridDataInHashMap();
+			softAssert.assertContains(gridDataHashMap.get("Error Message").get(0),"APN cannot be skipped",
+					"SMAB-T3313: Validate that if child APN is overwritten with divided interest APN which is not the next available"
+					+ " APN, error message is displayed");
+		
+		//Validate if First 8 digits of Child parcel is same as parent parcel, 
+		//system allow to to generate 
+			ReportLogger.INFO("Click PREVIOUS button");
+			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
+			
+			//Enter Divided Interest parcel number as Parent parcel
+			ReportLogger.INFO("Generate child parcel when Divided Interest parcel number as Parent parcel");
+			objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
+			objParcelsPage.Click(objParcelsPage.getButtonWithText(objMappingPage.nextButton));
+			objMappingPage.waitForElementToBeVisible(6, objMappingPage.generateParcelButton);
+
+			 updateNextApn = apnInSystem[0]+apnInSystem[1]+apnInSystem[2].substring(0,2)+
+					String.valueOf(Integer.parseInt(apnInSystem[2].substring(2)) +1);
+			ReportLogger.INFO(updateNextApn);
+			objMappingPage.updateMultipleGridCellValue(objMappingPage.apnColumnSecondScreen,
+					updateNextApn,2);
+			objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
+			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+			gridDataHashMap =objMappingPage.getGridDataInHashMap();
+			childAPNNumber=gridDataHashMap.get("APN").get(0);
+			softAssert.assertContains(parentDividedInterestAPN1,childAPNNumber.substring(0, 10),
+					"SMAB-T3314:Validate that child APN can be overwritten with divided interest APN only "
+					+ "when the APN has same first 8 digits of the parent APN.");
+			softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),
+					"Parcel(s) have been created successfully. Please review spatial information.",
+					"SMAB-T3282: Validate that user is able to perform Split mapping action "
+					+ "having Divided Interest parcel as Parent APN");
+	    
+	    driver.switchTo().window(parentWindow);		
+		objWorkItemHomePage.logout();
+
+	    
+	}
+	
 	@Test(description = "SMAB-T3121,SMAB-T3120:Verify that Parcel Size (SQFT) column is added to the \"Mapping Actions\" (all mapping actions) second custom screen (displaying child parcels) and can edit the same and value is updated at parcel level", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement" })
 	public void ParcelManagement_VerifyParcelSizeColumn_AddedTo_SplitParcelAction_CustomScreen(String loginUser)
@@ -1725,6 +1937,4 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objWorkItemHomePage.logout();
 
 	}
-
-
 }

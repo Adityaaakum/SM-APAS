@@ -191,6 +191,10 @@ public class ApasGenericPage extends Page {
 	@FindBy(xpath="//button[text()='Close All']")
 	public WebElement closeAllBtn;
 	
+	@FindBy(xpath="//div/a[@role='button']/span/span//*[@data-key='down']//*")	
+	public WebElement attachmentsDropdown;
+	
+	
 	public String SaveButton="Save";
 	public String NewButton="New";
 	public String EditButton="Edit";
@@ -1414,7 +1418,7 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		
 		 String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy"); 
 		 String currentRollYear=ExemptionsPage.determineRollYear(currentDate);	
-		HashMap<String, ArrayList<String>> responseRollYearDetails = objSalesforceAPI.select("SELECT Name FROM Roll_Year_Settings__c where status__c ='Open'and name !='"+currentRollYear+"'");
+		HashMap<String, ArrayList<String>> responseRollYearDetails = objSalesforceAPI.select("SELECT Name FROM Roll_Year_Settings__c where status__c ='Open' and name !='"+currentRollYear+"'");
 		
 		if (responseRollYearDetails.size()>0)
 		
@@ -1426,6 +1430,20 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 				ReportLogger.INFO("UNABLE TO UPDATE"+Name+" roll year status to Closed" );	
 			}
 		});
-			
+		
 	}
+	
+	/**
+	 * @Description: This method will click on upload of attachments  
+	 */
+	public void ClickUploadButtonOnSidePanel(String objectName) throws IOException, InterruptedException {
+		String xpath = "//article[contains(.,'" + objectName
+				+ "')]//a[@title='Show one more action'] |  //article[contains(.,'" + objectName
+				+ "')]//*[@data-aura-class='forceDeferredDropDownAction']//a | //article[contains(.,'City Strat Codes')]//span[text()='Show more actions']";
+		Click(driver.findElement(By.xpath(xpath)));
+		Thread.sleep(2000);
+		String xpath1 = "//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'Upload Files'][@role='button'] | //div[contains(@class, 'slds-dropdown__list slds-dropdown_length-with-icon')]//button[text()='Upload Files'][@type='button'] |  //div[contains(@class,'actionMenu')]//a[@title='Upload Files']";
+		waitForElementToBeClickable(driver.findElement(By.xpath(xpath1)), 20);
+		Click(driver.findElement(By.xpath(xpath1)));
+	} 
 }
