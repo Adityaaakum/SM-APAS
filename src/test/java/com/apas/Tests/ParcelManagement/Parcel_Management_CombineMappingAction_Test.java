@@ -9,6 +9,7 @@ import java.util.Map;
 import org.json.JSONObject;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.Reporter;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -2512,10 +2513,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 			throws Exception {
 
 		// Fetching parcels that are Active with same Ownership record
-		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and  Primary_Situs__c !=NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 2";
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c)and Primary_Situs__c !=NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1 = responseAPNDetails.get("Name").get(0);
 		String apn2 = responseAPNDetails.get("Name").get(1);
+		objMappingPage.deleteOwnershipFromParcel(responseAPNDetails.get("Id").get(0));
+		objMappingPage.deleteOwnershipFromParcel(responseAPNDetails.get("Id").get(1));
 
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
@@ -2574,6 +2577,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		ReportLogger.INFO("Clicked on related action under details tab for newly WI created ");
 
 		// Step 5: Selecting Action as 'perform parcel combine'
 		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
@@ -2590,10 +2594,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		// Step 7: Click Combine Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
-
+		ReportLogger.INFO(" Parcel generated successfully. ");
+		
 		// Step 8: Switching to the WI Screen
 		driver.switchTo().window(parentWindow);
-		objMappingPage.globalSearchRecords(workItem);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
@@ -2603,8 +2607,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)*"),
 				"SMAB-T2885: Validation that Parcel Size (SQFT) column should  be editable on returning to custom screen");
-		Thread.sleep(3000);
+		
+		objMappingPage.waitForElementToBeVisible(3, objMappingPage.parcelSizeColumnSecondScreenWithSpace);
 		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "40");
+		ReportLogger.INFO(" Parcel size is updated. ");
 
 		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 
@@ -2623,7 +2629,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				objMappingPage.getFieldValueFromAPAS("Parcel Size (SqFt)", "Parcel Information"),
 				"SMAB-T2883,SMAB-T2885:Parcel size(SQFT) matched and field is avilable on parcel screen\"");
 		
-		driver.switchTo().window(parentWindow);
+		
 		objWorkItemHomePage.logout();
 
 	}

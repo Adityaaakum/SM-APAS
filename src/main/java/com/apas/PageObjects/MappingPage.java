@@ -110,7 +110,10 @@ public class MappingPage extends ApasGenericPage {
 	public WebElement clearSelectionTRA;
 	
 	@FindBy(xpath = "//button[@title='Clear Selection'][1]/ancestor::lightning-input-field/following-sibling::lightning-input-field//button")
-	public WebElement clearSelectionPUC;	
+	public WebElement clearSelectionNeigh;
+	
+	@FindBy(xpath = "(//button[@title='Clear Selection'][1]/ancestor::lightning-input-field/following-sibling::lightning-input-field//button)[2]")
+	public WebElement clearSelectionPUC;
 	
 	@FindBy(xpath = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]")
 	public WebElement mappingSecondScreenEditActionGridButton;
@@ -458,15 +461,18 @@ public class MappingPage extends ApasGenericPage {
 			enter(parcelTRA, TRA);
 			Thread.sleep(2000);
 			selectOptionFromDropDown(parcelTRA, TRA);
+			
+			if (waitForElementToBeVisible(2, clearSelectionNeigh))
+			Click(clearSelectionNeigh);
+			enter(parcelDistrictNeighborhood, distNeigh);
+			selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
+				
 
 			if (waitForElementToBeVisible(2, clearSelectionPUC))
 			Click(clearSelectionPUC);
 			enter(parcelPUC, PUC);
 			selectOptionFromDropDown(parcelPUC, PUC);
-			
-			enter(parcelDistrictNeighborhood, distNeigh);
-			selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
-			
+				
 			editSitusModalWindowFirstScreen(dataMap);
 			
   	}

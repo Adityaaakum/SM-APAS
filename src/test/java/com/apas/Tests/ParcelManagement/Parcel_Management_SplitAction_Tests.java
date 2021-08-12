@@ -19,6 +19,7 @@ import org.hamcrest.core.IsNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.Reporter;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
@@ -1833,6 +1834,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn = responseAPNDetails.get("Name").get(0);
+		objMappingPage.deleteOwnershipFromParcel(responseAPNDetails.get("Id").get(0));
 
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
@@ -1865,7 +1867,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 				"DataToCreateWorkItemOfTypeParcelManagement");
 
 		String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
-		Map<String, String> hashMapSplitActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+	    Map<String, String> hashMapSplitActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformSplitMappingActionWithoutAllFields");
 
 		// Step1: Login to the APAS application using the credentials passed through
@@ -1887,6 +1889,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		ReportLogger.INFO(" Clicked on related action under details tab for newly WI created ");
 
 		// Step 5: Selecting Action & Taxes Paid fields values
 		objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
@@ -1899,11 +1902,11 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		// Step 7: Click generate Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
+		ReportLogger.INFO(" Parcel generated successfully. ");
 
 		// Step 8: Navigating back to the WI that was created and clicking on related
 		// action link
 		driver.switchTo().window(parentWindow);
-		objMappingPage.globalSearchRecords(workItem);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
@@ -1913,8 +1916,10 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size(SQFT)*"),
 				"SMAB-T3121: Validation that Parcel Size (SQFT) column should  be editable on retirning to custom screen");
-		Thread.sleep(3000);
+		
+		objMappingPage.waitForElementToBeVisible(3, objMappingPage.parcelSizeColumnSecondScreen);
 		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "40");
+		ReportLogger.INFO(" Parcel size is updated. ");
 
 		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 
@@ -1933,7 +1938,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 				objMappingPage.getFieldValueFromAPAS("Parcel Size (SqFt)", "Parcel Information"),
 				"SMAB-T3121:Parcel size(SQFT) matched and field is avilable on parcel screen");
 
-		driver.switchTo().window(parentWindow);
+		
 		objWorkItemHomePage.logout();
 
 	}

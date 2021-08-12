@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
-import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.Reporter;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -20,12 +20,12 @@ import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
-import com.apas.Utils.DateUtil;
 
 public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase implements testdata, modules, users{
 	private RemoteWebDriver driver;
@@ -1253,12 +1253,13 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
 			objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,
 					hashMapBrandNewParcelMappingData.get("Action"));
+			ReportLogger.INFO("Clicked on related action under details tab for newly WI created ");
 
 			// Step 5: entering data in form for Brand New Parcel mapping
 			objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
-			Thread.sleep(5000);
 
 			// Step 6 : Filling few of the mandatory fields
+			objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
 			objMappingPage.editGridCellValue(objMappingPage.legalDescriptionColumnSecondScreen, "Legal Discription");
 			objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
 			objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
@@ -1266,6 +1267,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			// Step 7 :Clicking generate parcel button
 			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 			objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
+			ReportLogger.INFO(" Parcel generated successfully. ");
 
 			// Step 8 : Navigating back to the WI that was created and clicking on related
 			// action link
@@ -1280,8 +1282,10 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 
 			softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)*"),
 					"SMAB-T3121: Validation that Parcel Size (SQFT) column should  be editable on retirning to custom screen");
-			Thread.sleep(3000);
+			
+			objMappingPage.waitForElementToBeVisible(3, objMappingPage.parcelSizeColumnSecondScreenWithSpace);
 			objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "40");
+			ReportLogger.INFO(" Parcel size is updated. ");
 
 			objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 			
@@ -1301,7 +1305,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 					objMappingPage.getFieldValueFromAPAS("Parcel Size (SqFt)", "Parcel Information"),
 					"SMAB-T3121:Parcel size(SQFT) matched and field is avilable on parcel screen");
 
-			driver.switchTo().window(parentWindow);
+			
 			objWorkItemHomePage.logout();
 
 		}
