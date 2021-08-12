@@ -1253,7 +1253,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		    driver.switchTo().window(parentWindow);
 		   
 		    objWorkItemHomePage.logout();
-		   
+
+		}
+
 	}
-	
-}

@@ -1792,9 +1792,6 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.logout();
 
 	}
-	
-	
-
 
 }
 }
