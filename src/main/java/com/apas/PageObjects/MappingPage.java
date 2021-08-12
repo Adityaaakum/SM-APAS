@@ -40,6 +40,7 @@ public class MappingPage extends ApasGenericPage {
 	public String commentsTextBoxLabel = "Comments";
 	public String parentAPNTextBoxLabel = "Parent APN(s)";
 	public String legalDescriptionColumnSecondScreen = "Legal Description*";
+	public String distNbhdColumnSecondScreen = "Dist/Nbhd*";
 	public String districtColumnSecondScreen = "District";
 	public String apnColumnSecondScreen = "APN";
 	public String reasonCodeColumnSecondScreen = "Reason Code*";
@@ -84,7 +85,8 @@ public class MappingPage extends ApasGenericPage {
 	public String CreateNewParcelButton="Create Brand New Parcel";
 	public String updateParcelsButton = "//button[text()='Update Parcel(s)']";
 	public String updateParcelButtonLabelName = "Update Parcel(s)";
-	public String parcelSizeColumnSecondScreen = "Parcel Size";
+	public String parcelSizeColumnSecondScreen = "Parcel Size(SQFT)*";
+	public String parcelSizeColumnSecondScreenWithSpace = "Parcel Size (SQFT)*";
 	public final String DOC_CERTIFICATE_OF_COMPLIANCE="CC";
 	public final String DOC_LOT_LINE_ADJUSTMENT="LL";
 	public final String DOC_Covenants_Cond_Restr_with_condo = "CCR";
@@ -108,7 +110,10 @@ public class MappingPage extends ApasGenericPage {
 	public WebElement clearSelectionTRA;
 	
 	@FindBy(xpath = "//button[@title='Clear Selection'][1]/ancestor::lightning-input-field/following-sibling::lightning-input-field//button")
-	public WebElement clearSelectionPUC;	
+	public WebElement clearSelectionNeigh;
+	
+	@FindBy(xpath = "(//button[@title='Clear Selection'][1]/ancestor::lightning-input-field/following-sibling::lightning-input-field//button)[2]")
+	public WebElement clearSelectionPUC;
 	
 	@FindBy(xpath = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]")
 	public WebElement mappingSecondScreenEditActionGridButton;
@@ -125,7 +130,7 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@id,'salesforce-lightning-tooltip-bubble')]")
 	public WebElement helpIconToolTipBubble;
 
-	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Legal Description']")
+	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Legal Description*']")
 	public WebElement legalDescriptionFieldSecondScreen;
 
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li[last()] |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
@@ -447,18 +452,27 @@ public class MappingPage extends ApasGenericPage {
    */
       public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
   		
-    	    String PUC =objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
-    	    String TRA=objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);    	  
+			String PUC = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
+			String TRA = objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);
+			String distNeigh = objSalesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1").get("Name").get(0);
 			Click(editButtonInSeconMappingScreen);
-			if(waitForElementToBeVisible(2, clearSelectionTRA))
-		    Click(clearSelectionTRA);			
-			enter(parcelTRA, TRA);		    
+			if (waitForElementToBeVisible(2, clearSelectionTRA))
+			Click(clearSelectionTRA);
+			enter(parcelTRA, TRA);
 			Thread.sleep(2000);
-			selectOptionFromDropDown(parcelTRA,TRA);
-			if(waitForElementToBeVisible(2, clearSelectionPUC))
+			selectOptionFromDropDown(parcelTRA, TRA);
+			
+			if (waitForElementToBeVisible(2, clearSelectionNeigh))
+			Click(clearSelectionNeigh);
+			enter(parcelDistrictNeighborhood, distNeigh);
+			selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
+				
+
+			if (waitForElementToBeVisible(2, clearSelectionPUC))
 			Click(clearSelectionPUC);
 			enter(parcelPUC, PUC);
-			selectOptionFromDropDown(parcelPUC,PUC);
+			selectOptionFromDropDown(parcelPUC, PUC);
+				
 			editSitusModalWindowFirstScreen(dataMap);
 			
   	}
