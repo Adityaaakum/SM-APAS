@@ -52,7 +52,7 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2468 : Verify that other than mapping user should not access the mapping custon screen via action link on work item", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement", "SecurityAndSharing" })
 	public void ParcelManagement_AccessValidation_MappingCustomScreen(String loginUser) throws Exception {
 		
 		//Fetching Active parcel
@@ -93,7 +93,7 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2469, SMAB-T2464, SMAB-T2465: Verify system admin and mapping user should be able to create and update parcel", dataProvider = "loginSystemAdminAndMappingStaffAndMappingSupervisor", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement", "SecurityAndSharing" })
 	public void ParcelManagement_AccessValidationOnCreationAndEdition(String loginUser) throws Exception {
 		
 		String ParcelCreationData = testdata.MANUAL_PARCEL_CREATION_DATA;
@@ -138,7 +138,7 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 		
 	}
 	
-	@Test(description = "SMAB-T2463: Validate RP Business admin and Exemption Support staff should not able to delete parcel", groups = {"Regression","ParcelManagement"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T2463: Validate RP Business admin and Exemption Support staff should not able to delete parcel", groups = {"Regression","ParcelManagement", "SecurityAndSharing"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void ParcelManagement_ValidationOnDeleteRecord(String loginUser) throws Exception {
 		String queryAPN = "Select Name From Parcel__c limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);

@@ -59,7 +59,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 */
 	
 	@Test(description = "SMAB-T3106,SMAB-T3111:Verify the type of WI system created for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ChangeInOwnershipManagement","RecorderIntegration" })
+			"Regression","ChangeInOwnershipManagement","RecorderIntegration","Smoke" })
 	public void RecorderIntegration_VerifyNewWIgeneratedfromRecorderIntegrationForNOAPNRecordedDocument(String loginUser) throws Exception {
 		
 		String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) AND Status__c='Active' Limit 1";
@@ -245,7 +245,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			 // STEP 1-login with SYS-ADMIN
 		  
            objMappingPage.login(users.SYSTEM_ADMIN);
-		   objMappingPage.searchModule(PARCELS);
+		   objMappingPage.searchModule("APAS");
 		   salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c","In Progress");
 		   objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
 		    

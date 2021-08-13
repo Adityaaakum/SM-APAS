@@ -53,7 +53,7 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 
 	@Test(description = "SMAB-T2991:Verify user is able to create, edit and update the Assessee records", groups = {
 			"Assessees",
-			"Regression" }, dataProvider = "loginCIOSupervisor", dataProviderClass = DataProviders.class, alwaysRun = true)
+			"Regression", "SecurityAndSharing" }, dataProvider = "loginCIOSupervisor", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void Assessee_VerifyCreateEditUpdateAssesseeRecords(String loginUser) throws Exception {
 
 		String asseseeCreationData = testdata.ASSESEE_DATA;
@@ -107,7 +107,7 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 	}
 
 	@Test(description = "SMAB-T2993:Verify user is not able to delete the Assessee records", groups = { "Assessee",
-			"Regression" }, dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, alwaysRun = true)
+			"Regression", "SecurityAndSharing" }, dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void Assessee_VerifyUserCannotCreateorUpdateorDeleteAssesseeRecords(String loginUser) throws Exception {
 
 		objAsseseePage.login(loginUser);
@@ -139,7 +139,7 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 
 	@Test(description = "SMAB-T2991:Verify user is able to create, edit and update the Assessee records", groups = {
 			"Assessee",
-			"Regression" }, dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
+			"Regression" , "SecurityAndSharing"}, dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void Assessee_VerifyCreateEditUpdateAgencyAssesseeRecords(String loginUser) throws Exception {
 
 		String asseseeCreationData = testdata.ASSESEE_DATA;
