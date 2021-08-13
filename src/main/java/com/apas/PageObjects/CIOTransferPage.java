@@ -277,14 +277,22 @@ public class CIOTransferPage extends ApasGenericPage {
 	    */
 	   public String getRecordedDocumentId(String type,int count)
 	   {
-		   
+		   String documentId=null;
 		   String fetchDocId ="SELECT id from recorded_document__c where recorder_doc_type__c='"+type+"'"+" and xAPN_count__c="+count;
+		   if(count!=0) {
 		   
-		   if(salesforceApi.select(fetchDocId).get("Id")==null)
-		   {
-			   return null;
+		        if(salesforceApi.select(fetchDocId)!= null)
+		        {
+		        	documentId=salesforceApi.select(fetchDocId).get("Id").get(0);
+		        	 if(salesforceApi.select("SELECT ID FROM Recorded_APN__c WHERE RECORDED_DOCUMENT__C='"+documentId+"'"+" AND PARCEL__C != NULL ").size()==0)
+		  		   {
+		  			   return null;
+		  		   }
+		        	
+		        }
 		   }
 		   
+		   	   
 		  return salesforceApi.select(fetchDocId).get("Id").get(0);
 	   }	    
 	   
