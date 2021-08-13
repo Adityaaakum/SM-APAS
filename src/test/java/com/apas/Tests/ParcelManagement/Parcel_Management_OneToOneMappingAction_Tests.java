@@ -366,6 +366,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String districtValue="District01";
+		String parcelSize	= "200";
 
 		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 		jsonObject.put("Status__c","Active");
@@ -373,6 +374,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		jsonObject.put("District__c",districtValue);
 		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
 
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
 
@@ -380,7 +382,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformOneToOneMappingActionWithAllFields");
 
-		String situsCityName = hashMapOneToOneMappingData.get("Situs City Name");
+		String situsCityName = hashMapOneToOneMappingData.get("City Name");
 		String direction = hashMapOneToOneMappingData.get("Direction");
 		String situsNumber = hashMapOneToOneMappingData.get("Situs Number");
 		String situsStreetName = hashMapOneToOneMappingData.get("Situs Street Name");
@@ -769,7 +771,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			objMappingPage.fillMappingActionForm(hashMapOneToOneParcelMappingData);
 			
 			//updating child parcel size in second screen on mapping action 
-			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"99",1);
+			objMappingPage.waitForElementToBeVisible(5,objMappingPage.parcelSizeColumnSecondScreen);
+			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace,"99",1);
 
 			//	validating second screen warning message
 			String parcelsizewarningmessage=objMappingPage.secondScreenParcelSizeWarning.getText();

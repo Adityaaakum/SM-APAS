@@ -455,6 +455,8 @@ public class MappingPage extends ApasGenericPage {
 			String PUC = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
 			String TRA = objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);
 			String distNeigh = objSalesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1").get("Name").get(0);
+		    objSalesforceAPI.update("PUC_Code__c",objSalesforceAPI.select("Select Id from PUC_Code__c where name='"+PUC+"'").get("Id").get(0), "Legacy__c", "No");
+		    
 			Click(editButtonInSeconMappingScreen);
 			if (waitForElementToBeVisible(2, clearSelectionTRA))
 			Click(clearSelectionTRA);
@@ -510,12 +512,12 @@ public class MappingPage extends ApasGenericPage {
      	        for(int i=0;i<parentAPN.length;i++) {
      	          String xPath="//div//*[text()='Parent APN(s): ']/following-sibling::a[text()='"+parentAPN[i]+"']";
      	          if( verifyElementVisible(xPath)) flag=true;
-     	          else flag = false ;
+     	         
      	    }
      	    }else {
      	    	String xPath="//div//*[text()='Parent APN(s): ']/following-sibling::a[text()='"+parentAPNs+"']";
    	          if( verifyElementVisible(xPath)) flag=true;
-   	          else flag = false ;
+   	          
      	    }
      	  return flag;
        }
