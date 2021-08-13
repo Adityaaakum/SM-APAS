@@ -223,7 +223,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 */
 	
 	@Test(description = "SMAB-T3427,SMAB-T3306,SMAB-T3446,SMAB-T3307,SMAB-T3308,SMAB-T3691:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer" })
+			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer","Smoke" })
 	public void OwnershipAndTransfer_VerifyPartialOwnershipTransfer(String loginUser) throws Exception {
 		
 		  String execEnv= System.getProperty("region");		
@@ -244,8 +244,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		   
 			 // STEP 1-login with SYS-ADMIN
 		  
-           objMappingPage.login(users.SYSTEM_ADMIN);
-		   objMappingPage.searchModule("APAS");
+           objMappingPage.login(users.SYSTEM_ADMIN);		   
 		   salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c","In Progress");
 		   objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
 		    
@@ -253,6 +252,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		   
 			String workItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";					
 	        String workItemNo=salesforceAPI.select(workItemQuery).get("Name").get(0);
+	        objMappingPage.searchModule("APAS");
 	        objMappingPage.globalSearchRecords(workItemNo);	
 	        String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
 	        objCioTransfer.deleteOwnershipFromParcel(salesforceAPI.select("Select Id from parcel__c where name='"+apnFromWIPage+"'").get("Id").get(0));
