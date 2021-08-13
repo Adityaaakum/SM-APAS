@@ -223,7 +223,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 */
 	
 	@Test(description = "SMAB-T3427,SMAB-T3306,SMAB-T3446,SMAB-T3307,SMAB-T3308,SMAB-T3691:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer" })
+			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer","Smoke" })
 	public void OwnershipAndTransfer_VerifyPartialOwnershipTransfer(String loginUser) throws Exception {
 		
 		  String execEnv= System.getProperty("region");		
