@@ -124,6 +124,9 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//input[contains(@id,'input-file')]")
     public WebElement uploadFileInputBox;
 	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='Save']")
+    public WebElement ownershipSaveButton;
+	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
     public String ApprovalButton="Approve";
@@ -319,8 +322,11 @@ public class ParcelsPage extends ApasGenericPage {
 		if(ownershipPercentage!= null)
 			enter(ownershipPercentageTextBox, ownershipPercentage);
 		
-		String successMsg = saveRecord();
-		return successMsg;
+		Click(ownershipSaveButton);
+        waitForElementToBeClickable(successAlert,25);
+        String messageOnAlert = getElementText(successAlert);
+        waitForElementToDisappear(successAlert,10);
+		return messageOnAlert;
 	}
 
 	/*
