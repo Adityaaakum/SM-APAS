@@ -72,6 +72,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		   objMappingPage.searchModule(PARCELS);
 		   salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c where Sub_type__c='NO APN - CIO' and status__c ='In pool'", "status__c","In Progress");
 		   objCioTransfer.generateRecorderJobWorkItems(objMappingPage.DOC_CERTIFICATE_OF_COMPLIANCE, 0);
+		    Thread.sleep(5000);
 			String WorkItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='NO APN' AND Sub_type__c='NO APN - MAPPING'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";
 			Thread.sleep(3000);			
 	        String WorkItemNo=salesforceAPI.select(WorkItemQuery).get("Name").get(0);
@@ -143,7 +144,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		   objCioTransfer.generateRecorderJobWorkItems(objCioTransfer.DOC_DEED, 1);
 		    
 		   //Query to fetch WI
-		   
+		    Thread.sleep(5000);
 			String workItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";					
 	        String workItemNo=salesforceAPI.select(workItemQuery).get("Name").get(0);
 	        objMappingPage.globalSearchRecords(workItemNo);	
@@ -240,11 +241,16 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	                "DataToCreateOwnershipRecord");
   	    
 		   String recordedDocumentID=salesforceAPI.select("SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1").get("Id").get(0);
+		   objCioTransfer.deleteRecordedApnFromRecordedDocument(recordedDocumentID);
+		   objCioTransfer.addRecordedApn(recordedDocumentID, 1);
   	       objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
 		   
 			 // STEP 1-login with SYS-ADMIN
 		  
-           objMappingPage.login(users.SYSTEM_ADMIN);		   
+           objMappingPage.login(users.SYSTEM_ADMIN);
+           objCioTransfer.addRecordedApn(recordedDocumentID, 1);
+  	       objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
+		   
 		   salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c","In Progress");
 		   objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
 		    
