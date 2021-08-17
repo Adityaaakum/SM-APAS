@@ -242,9 +242,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
   	    
 		   String recordedDocumentID=salesforceAPI.select("SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1").get("Id").get(0);
 		   objCioTransfer.deleteRecordedApnFromRecordedDocument(recordedDocumentID);
-		   objCioTransfer.addRecordedApn(recordedDocumentID, 1);
-  	       objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
-		   
+		  
 			 // STEP 1-login with SYS-ADMIN
 		  
            objMappingPage.login(users.SYSTEM_ADMIN);
