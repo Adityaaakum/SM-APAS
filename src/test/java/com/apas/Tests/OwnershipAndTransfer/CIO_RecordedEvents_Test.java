@@ -254,7 +254,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		    
 		    //  STEP 2-Query to fetch WI
 		   
-			String workItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";					
+			String workItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='CIO'   And status__c='In pool' order by createdDate desc limit 1";		
+			Thread.sleep(3000);
 	        String workItemNo=salesforceAPI.select(workItemQuery).get("Name").get(0);
 	        objMappingPage.searchModule("APAS");
 	        objMappingPage.globalSearchRecords(workItemNo);	
