@@ -383,6 +383,22 @@ public class CIOTransferPage extends ApasGenericPage {
 			}
 		 }
 		 
+		 public void deleteRecordedApnFromRecordedDocument(String recordedDocumentId)
+		 {
+			       HashMap<String, ArrayList<String>>HashMapRecordedDocuments = salesforceApi.select("SELECT ID FROM RECORDED_APN__C WHERE Recorded_Document__c='"+recordedDocumentId+"'");
+			     
+			       if(!HashMapRecordedDocuments.isEmpty());
+			       {
+			    	       HashMapRecordedDocuments.get("Id").stream().forEach(Id->{			    		   
+			    		   salesforceApi.delete("Recorded_APN__c", Id); 
+			    		   ReportLogger.INFO("Recorded APN Deleted "+Id);
+			    	 });
+			       }
+			 
+			 
+			 
+		 }
+		 
 			
 }
 
