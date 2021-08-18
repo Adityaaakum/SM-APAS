@@ -464,11 +464,11 @@ public class MappingPage extends ApasGenericPage {
 			Thread.sleep(2000);
 			selectOptionFromDropDown(parcelTRA, TRA);
 			
-//			if (waitForElementToBeVisible(2, clearSelectionNeigh))
-//			Click(clearSelectionNeigh);
-//			enter(parcelDistrictNeighborhood, distNeigh);
-//			selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
-//		This code is needed to be  uncommented after	pre-UAT regression	
+			if (waitForElementToBeVisible(2, clearSelectionNeigh))
+			Click(clearSelectionNeigh);
+			enter(parcelDistrictNeighborhood, distNeigh);
+			selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
+	
 
 			if (waitForElementToBeVisible(2, clearSelectionPUC))
 			Click(clearSelectionPUC);
