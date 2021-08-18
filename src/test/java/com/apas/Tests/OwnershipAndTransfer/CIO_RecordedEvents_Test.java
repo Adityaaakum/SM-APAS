@@ -59,7 +59,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 */
 	
 	@Test(description = "SMAB-T3106,SMAB-T3111:Verify the type of WI system created for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ChangeInOwnershipManagement","RecorderIntegration","Smoke" })
+			"Regression","ChangeInOwnershipManagement","RecorderIntegration","Smoke" },enabled=false)
 	public void RecorderIntegration_VerifyNewWIgeneratedfromRecorderIntegrationForNOAPNRecordedDocument(String loginUser) throws Exception {
 		
 		String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) AND Status__c='Active' Limit 1";
@@ -122,7 +122,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 */
 	
 	@Test(description = "SMAB-T3279,SMAB-T3281:Verify that User is not able to enter end date less than start date for mail to and grantee records in CIO transfer", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer" })
+			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer" },enabled=false)
 	public void OwnershipAndTransfer_VerifyValidationofMailToAndGranteeRecords(String loginUser) throws Exception {
 		
 		  String execEnv= System.getProperty("region");		
@@ -224,7 +224,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 */
 	
 	@Test(description = "SMAB-T3427,SMAB-T3306,SMAB-T3446,SMAB-T3307,SMAB-T3308,SMAB-T3691:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer","Smoke" })
+			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer","Smoke" },enabled=false)
 	public void OwnershipAndTransfer_VerifyPartialOwnershipTransfer(String loginUser) throws Exception {
 		
 		  String execEnv= System.getProperty("region");		
