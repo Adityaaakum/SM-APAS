@@ -61,7 +61,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 				"dataToCreateGranteeWithCompleteOwnership");
 		  
 		// step 1: executing the recorder feed batch job to generate CIO WI
-		objCIOTransferPage.generateRecorderJobWorkItems("AD", 1);
+		objCIOTransferPage.generateRecorderJobWorkItems("DE", 1);
 		Thread.sleep(7000);
 		String cioWorkItem = objWorkItemHomePage.getLatestWorkItemDetailsOnWorkbench(1).get("Name").get(0);
 
@@ -263,7 +263,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 	public void QuickActionButtonsValidation_CIOTransferScreen_SubmitForReview(String loginUser) throws Exception {
 
 		// step 1: executing the recorder feed batch job to generate CIO WI
-		objCIOTransferPage.generateRecorderJobWorkItems("AD", 1);
+		objCIOTransferPage.generateRecorderJobWorkItems("DE", 1);
 		Thread.sleep(7000);
 		String cioWorkItem = objWorkItemHomePage.getLatestWorkItemDetailsOnWorkbench(1).get("Name").get(0);
 
