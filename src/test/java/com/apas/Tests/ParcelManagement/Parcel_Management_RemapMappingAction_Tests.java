@@ -1075,7 +1075,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	@Test(description = "SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
-			groups = {"Regression","ParcelManagement","RecorderIntegration" })
+			groups = {"Regression","ParcelManagement","RecorderIntegration" },enabled=false)
 	public void ParcelManagement_VerifyNewWICovenantsCondRestrGeneratedfromRecorderIntegrationAndRemapMappingAction(String loginUser) throws Exception {
 				
 		

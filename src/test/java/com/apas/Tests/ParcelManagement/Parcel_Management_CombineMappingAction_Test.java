@@ -1987,7 +1987,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	@Test(description = "SMAB-T3511,,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
-			groups = {"Regression","ParcelManagement","RecorderIntegration" })
+			groups = {"Regression","ParcelManagement","RecorderIntegration" },enabled=false)
 	public void ParcelManagement_VerifyNewWILotLineAdjustmentsGeneratedfromRecorderIntegrationAndCombineMappingAction(String loginUser) throws Exception {
 				
 		
