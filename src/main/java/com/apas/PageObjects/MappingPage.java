@@ -112,7 +112,7 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//button[@title='Clear Selection'][1]/ancestor::lightning-input-field/following-sibling::lightning-input-field//button")
 	public WebElement clearSelectionNeigh;
 	
-	@FindBy(xpath = "(//button[@title='Clear Selection'][1]/ancestor::lightning-input-field/following-sibling::lightning-input-field//button)[2]")
+	@FindBy(xpath = "(//button[@title='Clear Selection'][1]/ancestor::lightning-input-field/following-sibling::lightning-input-field//button)[1]")
 	public WebElement clearSelectionPUC;
 	
 	@FindBy(xpath = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]")
