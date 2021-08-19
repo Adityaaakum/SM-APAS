@@ -1066,7 +1066,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		 * @throws Exception
 		 */
 		@Test(description = "SMAB-T2946:Verify the type of WI system creates for different recorded document types for a recorded document with one APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-				"Smoke","Regression","ChangeInOwnershipManagement","RecorderIntegration" })
+				"Smoke","Regression","ChangeInOwnershipManagement","RecorderIntegration" },enabled=false)
 		public void ParcelManagement_VerifyNewWIgenratedfromRecorderIntegrationAndBrandNewMappingAction(String loginUser) throws Exception {
 					
 			
