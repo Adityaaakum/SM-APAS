@@ -3,12 +3,40 @@
 		"Permit City Code": "LM",
 		"APN": "000002",
 		"Processing Status": "No Process",
-		"Issue Date": "11/10/2019",
-		"Completion Date": "11/10/2019",
+		"Issue Date": "08/16/2021",
+		"Completion Date": "08/16/2021",
 		"County Strat Code Description": "REPAIR ROOF",
 		"City Strat Code": "ROOFING",
 		"Work Description": "New Construction",
 		"Estimated Project Value": "500",
 		"Owner Name": "Test Owner Name"
+		}
+			"BuildingPermitManualCreationDataWithCompletionDate": {
+		"Permit City Code": "LM",
+		"APN": "000002",
+		"Processing Status": "Process",
+		"Issue Date": "08/16/2021",
+		"Completion Date": "08/16/2021",
+		"County Strat Code Description": "REPAIR ROOF",
+		"City Strat Code": "ROOFING",
+		"Work Description": "New Construction",
+		"Estimated Project Value": "500",
+		"Owner Name": "Test Owner Name"
+		}
+		"BuildingPermitManualCreationDataWithoutCompletionDate": {
+		"Permit City Code": "LM",
+		"APN": "000002",
+		"Processing Status": "Process",
+		"Issue Date": "08/16/2021",
+		"Completion Date": "",
+		"County Strat Code Description": "REPAIR ROOF",
+		"City Strat Code": "ROOFING",
+		"Work Description": "New Construction",
+		"Estimated Project Value": "500",
+		"Owner Name": "Test Owner Name",
+		"Processing Status": "Process"
+		}
+		"OnlyCompletionDate": {
+		"Completion Date": "08/16/2021"
 		}
 }
