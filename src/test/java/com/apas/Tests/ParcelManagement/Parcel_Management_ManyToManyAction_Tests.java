@@ -1662,6 +1662,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
 		jsonObject.put("Primary_Situs__c", primarySitusId);
 		
+		String PUC = salesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
+		String TRA = salesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);
+		
 		
 		if(!responseAPNDetails.isEmpty()){
 			

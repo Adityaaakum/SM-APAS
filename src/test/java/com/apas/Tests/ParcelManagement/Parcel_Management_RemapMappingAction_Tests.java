@@ -496,7 +496,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 			,groups = {"Regression","ParcelManagement"},enabled =true)
 	public void ParcelManagment_Verify_Remap_With_Duplicate_Apns_RemappingAction(String loginUser) throws Exception
 	{
-		String queryAPN = "select name from parcel__c where status__c ='Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
+		String queryAPN = "select name from parcel__c where status__c ='Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Name not like '134%' limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 		String apn1=responseAPNDetails.get("Name").get(1);
@@ -793,7 +793,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	@Test(description = "SMAB-6789:Parcel Management- Verify that User is able to perform  a \"remap\" mapping output actions for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement" })
 	public void ParcelManagement_VerifyRemapMappingActionOutput(String loginUser) throws Exception {
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND STATUS__C='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn = responseAPNDetails.get("Name").get(0);
 
