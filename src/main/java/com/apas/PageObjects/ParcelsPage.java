@@ -65,6 +65,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String exemptionRelatedTab="Exemptions";
 	public String saveParcelButton="Save";
 	public String recordTypeDropdown = "Record Type";
+	public String groupDropdown = "Group";
 	public String typeOfAuditTrailDropdown = "Type of Audit Trail Record?";
 	public String sourceDropdown = "Source";
 	public String dateOfEventInputTextBox = "Date of Event";
@@ -126,6 +127,7 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='Save']")
     public WebElement ownershipSaveButton;
+	
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -267,7 +269,7 @@ public class ParcelsPage extends ApasGenericPage {
 			Click(moretab);
 			Click(driver.findElement(By.xpath(xPath)));
 		}
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 	}
 	
 	/**
@@ -368,6 +370,7 @@ public class ParcelsPage extends ApasGenericPage {
 			waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);
 			
 			selectOptionFromDropDown(recordTypeDropdown, dataMap.get("Record Type"));
+			selectOptionFromDropDown(groupDropdown, dataMap.get("Group"));
 			Thread.sleep(2000);
 			selectOptionFromDropDown(typeOfAuditTrailDropdown, dataMap.get("Type of Audit Trail Record?"));
 			selectOptionFromDropDown(sourceDropdown, dataMap.get("Source"));

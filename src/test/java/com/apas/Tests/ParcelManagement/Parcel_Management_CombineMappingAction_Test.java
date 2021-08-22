@@ -328,8 +328,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
 				"SMAB-T2356: Validate that value of 'Reason Code' field is retained");
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.getWebElementWithLabel(objMappingPage.commentsTextBoxLabel)),"",
-				"SMAB-T2356: Validate that value entered in Comments section doesn't get retained");
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.getWebElementWithLabel(objMappingPage.commentsTextBoxLabel)),hashMapCombineMappingData.get("Comments"),
+				"SMAB-T2356: Validate that value entered in Comments section does get retained");
 		
 		//Step 18: Update the First Non-Condo and Legal Description fields & click NEXT button
 		ReportLogger.INFO("Update the First Non-Condo and Legal Description fields");

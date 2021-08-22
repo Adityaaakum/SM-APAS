@@ -58,8 +58,8 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
-		homeOwnerExemptionData = System.getProperty("user.dir") + testdata.HOME_OWNER_EXEMPTION_DATA;
-		unrecordedEventData = System.getProperty("user.dir") + testdata.UNRECORDED_EVENT_DATA;
+		homeOwnerExemptionData = testdata.HOME_OWNER_EXEMPTION_DATA;
+		unrecordedEventData = testdata.UNRECORDED_EVENT_DATA;
 		objApasGenericPage.updateRollYearStatus("Closed", "2021");
 	}
 	
