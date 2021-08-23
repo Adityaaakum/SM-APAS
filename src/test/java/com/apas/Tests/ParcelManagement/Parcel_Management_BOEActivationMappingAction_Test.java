@@ -226,15 +226,6 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
         //Step 12: Verify the grid cells are not editable after parcels are generated
         HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
-        
-      //verify that Dist/Nbhd on second screen is populated on child parcel
-        HashMap<String, ArrayList<String>> childApnNeighborhood = objParcelsPage.fetchFieldValueOfParcel
-        		("Neighborhood_Reference__c",gridDataHashMap.get("APN").get(0));
-        softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),
-        		childApnNeighborhood.get("Name").get(0),
-        		"SMAB-T3818: Parcel Management- Verify that for all relevant mapping actions the"
-        				+ " \"District/Neighborhood\" must be mandatory and should be inherited in child parcel");
-       
       	boolean actionColumn = gridDataHashMap.containsKey("Action");
         softAssert.assertTrue(!actionColumn,"Validation that columns should not be editable as Action column has disappeared after generating parcels");
         softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN")," Validation that APN column should not be editable after generating parcels");
@@ -294,6 +285,14 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		String query = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
 		salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
 		driver.switchTo().window(parentWindow);
+		objMappingPage.searchModule(PARCELS);
+		String childAPN = gridDataHashMap.get("APN").get(0);
+        objMappingPage.globalSearchRecords(childAPN);
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),
+				objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelDistrictNeighborhood, "Summary Values"),
+				"SMAB-T3818: Parcel Management- Verify that for all relevant mapping actions the"
+						+ " \"District/Neighborhood\" must be mandatory and should be inherited in child parcel");
+
         objWorkItemHomePage.logout();
         objMappingPage.login(users.MAPPING_SUPERVISOR);
         Thread.sleep(5000);
