@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.bcel.generic.NEW;
 import org.json.JSONObject;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -110,7 +111,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		
 		objCIOTransferPage.searchAndSelectOptionFromDropDown("APN", activeApn);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText("Save"));
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementExists(objCIOTransferPage.warningMessageArea),
 				"SMAB-T3287: Validate that no warning message is displayed on CIO Transfer screen");
 	
@@ -226,6 +227,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		//Step3: Create UT event and get the Transfer ID
 		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
 		String recordeAPNTransferID = driver.getCurrentUrl().split("/")[6];
+		String unrecordedEventId = objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.eventIDLabel);
 		
 		//Step4 : Validate the values on Transfer Screen
 		ReportLogger.INFO("Validate the UT values");
@@ -259,7 +261,23 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				"SMAB-T3231: Validate that DOV on CIO Transfer Screen still remains the same");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dorLabel, ""),objExemptionsPage.removeZeroInMonthAndDay(dataToCreateUnrecordedEventMap.get("Date of Recording")),
 				"SMAB-T3231: Validate that DOR on CIO Transfer Screen still remains the same");
-	
+		
+		
+		//objCIOTransferPage.Click(driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@title,'more actions')]")));
+		
+		
+		/*
+		 * String xpathStr1 =
+		 * "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@href,'\"\r\n"
+		 * + activeApnId + \"')]//span[text() = 'View All']"; WebElement fieldLocator1 =
+		 * objCIOTransferPage.locateElement(xpathStr1, 30);
+		 * objCIOTransferPage.Click(fieldLocator1);
+		 * objCIOTransferPage.waitForElementToBeVisible(10,objCIOTransferPage.
+		 * ownershipLabelOnGridForGrantee);
+		 * 
+		 */
+		
+		
 		//Step6: Navigating to mail to screen and Create mail to record 
 		ReportLogger.INFO("Navigate to Mail-To screen and create a Mail To record");
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+""+"/related/CIO_Transfer_Mail_To__r/view");
@@ -291,13 +309,36 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+recordeAPNTransferID+"/view");
 		objCIOTransferPage.waitForElementToBeVisible(10,objCIOTransferPage.numberOfGrantorLabel);
         
-		String xpathStr2 = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@href,'" + activeApnId + "')]//span[text() = 'View All']";		        
-        WebElement fieldLocator2 = objCIOTransferPage.locateElement(xpathStr2, 30);
-        objCIOTransferPage.Click(fieldLocator2);
+        String xpathStr1 = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@href,'CIO_Transfer_Grantee')]//span[text() = 'View All']";		        
+        WebElement fieldLocator1 = objCIOTransferPage.locateElement(xpathStr1, 30);
+        objCIOTransferPage.Click(fieldLocator1);
         objCIOTransferPage.waitForElementToBeVisible(10,objCIOTransferPage.ownershipLabelOnGridForGrantee);
         
-       // Step10: Navigate to RAT screen and validate the details in the grid
+        // Step10: Navigate to RAT screen and validate the details in the grid
         ReportLogger.INFO("Validate the Grantee record in Grid");
+        HashMap<String, ArrayList<String>>HashMapLatestGrantee  = objCIOTransferPage.getGridDataInHashMap();
+        softAssert.assertEquals(HashMapLatestGrantee.get("Recorded Document").get(0), unrecordedEventId, 
+    		  "SMAB-T3231: Validate the Recorded Document number on Grantee record");
+        softAssert.assertEquals(HashMapLatestGrantee.get("Status").get(0), "Active", 
+    		  "SMAB-T3231: Validate the status on Grantee record");
+        softAssert.assertEquals(HashMapLatestGrantee.get("Owner Percentage").get(0), hashMapOwnershipAndTransferGranteeCreationData.get("Owner Percentage")+".0000%", 
+    		  "SMAB-T3231: Validate the percentage on Grantee record");
+        softAssert.assertEquals(HashMapLatestGrantee.get("Grantee/Retain Owner Name").get(0),hashMapOwnershipAndTransferGranteeCreationData.get("Last Name") , 
+        		  "SMAB-T3231: Validate the Grantee Name on Grantee record");
+        
+        //Step11: Navigate to RAT screen and click View ALL to see current Ownership records in grid
+        ReportLogger.INFO("Navigate to RAT screen and click View ALL to see current Ownership records in grid");
+        driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+recordeAPNTransferID+"/view");
+        objCIOTransferPage.waitForElementToBeVisible(10,objCIOTransferPage.numberOfGrantorLabel);
+              
+		String xpathStr2 = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@href,'"+ activeApnId + "')]//span[text() = 'View All']"; 
+		WebElement fieldLocator2 = objCIOTransferPage.locateElement(xpathStr2, 30);
+		objCIOTransferPage.Click(fieldLocator2);
+		objCIOTransferPage.waitForElementToBeVisible(10,objCIOTransferPage.
+		ownershipLabelOnGridForGrantee);
+	
+        // Step12: Navigate to RAT screen and validate the details in the grid
+        ReportLogger.INFO("Validate the Current Ownership record in Grid");
         HashMap<String, ArrayList<String>>HashMapLatestOwner  = objCIOTransferPage.getGridDataInHashMap();
         softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(0), assesseeName, 
     		  "SMAB-T3231: Validate the owner name on Grantee record");
@@ -308,7 +349,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
         softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(0),hashMapCreateOwnershipRecordData.get("Ownership Start Date") , 
     		  "SMAB-T3231: Validate the start date on Grantee record");
       
-  	
+       
 		objCIOTransferPage.logout();
 	}
 
