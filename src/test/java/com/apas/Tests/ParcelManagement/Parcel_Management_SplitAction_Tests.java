@@ -206,9 +206,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		softAssert.assertContains(objMappingPage.getErrorMessage(),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is",
 				"SMAB-T2613: Validation that warning message is displayed when Parcel number generated is different from the user selection");
 
-		softAssert.assertContains(objMappingPage.getErrorMessage(),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is",
-				"SMAB-T2613: Validation that warning message is displayed when Parcel number generated is different from the user selection");
-
+		
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 
