@@ -70,6 +70,17 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String nextButton="Next";
 	public String cioTransferScreenSectionlabels= "//*[@class='slds-card slds-card_boundary']//span[@class='slds-truncate slds-m-right--xx-small']";
 	public String remarksLabel = "Remarks";
+	public static final String CIO_EVENT_CODE_COPAL="CIO-COPAL";
+	public static final String CIO_EVENT_CODE_PART="CIO-PART";
+	public static final String CIO_EVENT_CODE_ElessThan5Percent="E<5%";
+	public static final String CIO_EVENT_CODE_CIOGOVT="CIO-GOVT";
+	public static final String CIO_EVENT_CODE_BASE_YEAR_TRANSFER="CIO-P19BL";
+	public static final String CIO_EVENT_CODE_BASE_YEAR_AUTOCONFIRM_CODE="CIO-P19B6";
+	
+	
+	
+	
+	public static final String CIO_TRANSFER_STATUS_REVIEWED_ASSECESSE="Reviewed Assessee Response &amp; No Action Required";
 
 	
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
@@ -126,6 +137,14 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//div[text()='Recorded APN Transfer']//following::lightning-formatted-text")
 	public WebElement cioTransferActivityLabel;
 	
+	@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b")
+	public WebElement cioTransferSuccessMsg;
+	
+	@FindBy(xpath = "//*[contains(@data-value,'Reviewed Assessee Response')]")
+	public WebElement reviewAssecesseLink;
+	
+	@FindBy(xpath = "//label[text()='Transfer Code']/..//button[@title='Clear Selection']")
+	public WebElement clearSelectionEventCode;
 	
 
 	/*

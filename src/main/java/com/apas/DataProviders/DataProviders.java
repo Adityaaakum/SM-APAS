@@ -1,6 +1,8 @@
 package com.apas.DataProviders;
 
 import org.testng.annotations.DataProvider;
+
+import com.apas.PageObjects.CIOTransferPage;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
@@ -413,4 +415,23 @@ public class DataProviders {
        public Object[][] dpCIOStaffUser() {
            return new Object[][] { { users.CIO_STAFF } };
        }
+       
+		@DataProvider(name = "dpForCioAutoConfirm")
+		public Object[][] dpTestCioAutoConfirm() {
+			return new Object[][] { { CIOTransferPage.CIO_EVENT_CODE_COPAL, CIOTransferPage.CIO_EVENT_CODE_PART, "No Edits required" },
+					{ CIOTransferPage.CIO_EVENT_CODE_COPAL, CIOTransferPage.CIO_EVENT_CODE_PART, "Event Code needs to be changed" }
+
+			};
+		}
+       
+		@DataProvider(name = "dpForCioAutoConfirmUsingBatchJob")
+		public Object[][] dpTestCioAutoConfirmUsingBatchJob() {
+			return new Object[][] { { CIOTransferPage.CIO_EVENT_CODE_COPAL, CIOTransferPage.CIO_EVENT_CODE_PART },
+					{ CIOTransferPage.CIO_EVENT_CODE_BASE_YEAR_TRANSFER, CIOTransferPage.CIO_EVENT_CODE_BASE_YEAR_AUTOCONFIRM_CODE}
+
+			};
+		}
+       
 }
+       
+
