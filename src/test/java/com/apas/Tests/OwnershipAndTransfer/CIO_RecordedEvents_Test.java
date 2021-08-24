@@ -59,7 +59,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 */
 	
 	@Test(description = "SMAB-T3106,SMAB-T3111:Verify the type of WI system created for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ChangeInOwnershipManagement","RecorderIntegration","Smoke" })
+			"Regression","ChangeInOwnershipManagement","RecorderIntegration","Smoke" },enabled=false)
 	public void RecorderIntegration_VerifyNewWIgeneratedfromRecorderIntegrationForNOAPNRecordedDocument(String loginUser) throws Exception {
 		
 		String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) AND Status__c='Active' Limit 1";
@@ -72,6 +72,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		   objMappingPage.searchModule(PARCELS);
 		   salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c where Sub_type__c='NO APN - CIO' and status__c ='In pool'", "status__c","In Progress");
 		   objCioTransfer.generateRecorderJobWorkItems(objMappingPage.DOC_CERTIFICATE_OF_COMPLIANCE, 0);
+		    
 			String WorkItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='NO APN' AND Sub_type__c='NO APN - MAPPING'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";
 			Thread.sleep(3000);			
 	        String WorkItemNo=salesforceAPI.select(WorkItemQuery).get("Name").get(0);
@@ -121,7 +122,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 */
 	
 	@Test(description = "SMAB-T3279,SMAB-T3281:Verify that User is not able to enter end date less than start date for mail to and grantee records in CIO transfer", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer" })
+			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer" },enabled=false)
 	public void OwnershipAndTransfer_VerifyValidationofMailToAndGranteeRecords(String loginUser) throws Exception {
 		
 		  String execEnv= System.getProperty("region");		
@@ -143,7 +144,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		   objCioTransfer.generateRecorderJobWorkItems(objCioTransfer.DOC_DEED, 1);
 		    
 		   //Query to fetch WI
-		   
+		  
 			String workItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";					
 	        String workItemNo=salesforceAPI.select(workItemQuery).get("Name").get(0);
 	        objMappingPage.globalSearchRecords(workItemNo);	
@@ -223,7 +224,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 */
 	
 	@Test(description = "SMAB-T3427,SMAB-T3306,SMAB-T3446,SMAB-T3307,SMAB-T3308,SMAB-T3691:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer","Smoke" })
+			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer","Smoke" },enabled=false)
 	public void OwnershipAndTransfer_VerifyPartialOwnershipTransfer(String loginUser) throws Exception {
 		
 		  String execEnv= System.getProperty("region");		
@@ -240,17 +241,21 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	                "DataToCreateOwnershipRecord");
   	    
 		   String recordedDocumentID=salesforceAPI.select("SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1").get("Id").get(0);
-  	       objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
-		   
+		   objCioTransfer.deleteRecordedApnFromRecordedDocument(recordedDocumentID);
+		  
 			 // STEP 1-login with SYS-ADMIN
 		  
-           objMappingPage.login(users.SYSTEM_ADMIN);		   
+           objMappingPage.login(users.SYSTEM_ADMIN);
+           objCioTransfer.addRecordedApn(recordedDocumentID, 1);
+  	       objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
+		   
 		   salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c","In Progress");
 		   objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
 		    
 		    //  STEP 2-Query to fetch WI
 		   
-			String workItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";					
+			String workItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='CIO'   And status__c='In pool' order by createdDate desc limit 1";		
+			Thread.sleep(3000);
 	        String workItemNo=salesforceAPI.select(workItemQuery).get("Name").get(0);
 	        objMappingPage.searchModule("APAS");
 	        objMappingPage.globalSearchRecords(workItemNo);	
