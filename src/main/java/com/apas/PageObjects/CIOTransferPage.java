@@ -70,7 +70,14 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String nextButton="Next";
 	public String cioTransferScreenSectionlabels= "//*[@class='slds-card slds-card_boundary']//span[@class='slds-truncate slds-m-right--xx-small']";
 	public String remarksLabel = "Remarks";
-
+	public String eventIDLabel = "EventID";
+	public String situsLabel = "Situs";
+	public String shortLegalDescriptionLabel = "Short Legal Description";
+	public String pucCodeLabel = "PUC Code";
+	public String doeLabel = "DOE";
+	public String dorLabel = "DOR";
+	public String dovLabel = "DOV";
+	
 	
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
 	public WebElement relatedListTab;
@@ -110,7 +117,6 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
 	
-
 	@FindBy(xpath =commonXpath+ "//select[@name='Formatted_Name_1']")
 	public WebElement formattedName1;
 	
@@ -126,6 +132,14 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//div[text()='Recorded APN Transfer']//following::lightning-formatted-text")
 	public WebElement cioTransferActivityLabel;
 	
+	@FindBy(xpath = commonXpath + "//span[text() = 'CIO Transfer Grantors']/following-sibling::span")
+	public WebElement numberOfGrantorLabel;
+	
+	@FindBy(xpath = commonXpath + "//span[text() = 'CIO Transfer Grantee & New Ownership']/following-sibling::span")
+	public WebElement numberOfGranteeLabel;
+	
+	@FindBy(xpath = commonXpath + "//h1[text()='Ownership']")
+	public WebElement ownershipLabelOnGridForGrantee;
 	
 
 	/*
@@ -379,7 +393,7 @@ public class CIOTransferPage extends ApasGenericPage {
 			   Thread.sleep(3000);
 			   ReportLogger.INFO("GRANTEE RECORD ADDED!!");	}
 			   catch (Exception e) {
-				ReportLogger.INFO("SORRY!! GRANTEE RECORD CANNOT BE ADDED");
+			    ReportLogger.INFO("SORRY!! GRANTEE RECORD CANNOT BE ADDED");
 			}
 		 }
 		 
@@ -401,6 +415,3 @@ public class CIOTransferPage extends ApasGenericPage {
 		 
 			
 }
-
-
-  
