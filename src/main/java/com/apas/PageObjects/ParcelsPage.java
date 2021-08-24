@@ -66,9 +66,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String saveParcelButton="Save";
 	public String recordTypeDropdown = "Record Type";
 
-	public String group="Group";
-
-	public String groupDropdown = "Group";
+	public String group="Group";	
 
 	public String typeOfAuditTrailDropdown = "Type of Audit Trail Record?";
 	public String sourceDropdown = "Source";
