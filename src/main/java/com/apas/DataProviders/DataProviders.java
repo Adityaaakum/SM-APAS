@@ -418,8 +418,8 @@ public class DataProviders {
        
 		@DataProvider(name = "dpForCioAutoConfirm")
 		public Object[][] dpTestCioAutoConfirm() {
-			return new Object[][] { { CIOTransferPage.CIO_EVENT_CODE_COPAL, CIOTransferPage.CIO_EVENT_CODE_PART, "No Edits required" },
-					{ CIOTransferPage.CIO_EVENT_CODE_COPAL, CIOTransferPage.CIO_EVENT_CODE_PART, "Event Code needs to be changed" }
+			return new Object[][] { { CIOTransferPage.CIO_EVENT_CODE_COPAL, CIOTransferPage.CIO_EVENT_CODE_PART, CIOTransferPage.CIO_RESPONSE_NoChangeRequired },
+					{ CIOTransferPage.CIO_EVENT_CODE_COPAL, CIOTransferPage.CIO_EVENT_CODE_PART, CIOTransferPage.CIO_RESPONS_EventCodeChangeRequired }
 
 			};
 		}

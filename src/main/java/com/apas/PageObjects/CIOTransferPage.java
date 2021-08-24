@@ -77,6 +77,9 @@ public class CIOTransferPage extends ApasGenericPage {
 	public static final String CIO_EVENT_CODE_CIOGOVT="CIO-GOVT";
 	public static final String CIO_EVENT_CODE_BASE_YEAR_TRANSFER="CIO-P19BL";
 	public static final String CIO_EVENT_CODE_BASE_YEAR_AUTOCONFIRM_CODE="CIO-P19B6";
+	public static final String CIO_RESPONSE_NoChangeRequired="No Edits required";
+	public static final String CIO_RESPONS_EventCodeChangeRequired="Event Code needs to be changed";
+	
 	
 	
 	
