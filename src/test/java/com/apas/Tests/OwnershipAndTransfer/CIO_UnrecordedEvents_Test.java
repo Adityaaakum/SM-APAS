@@ -574,48 +574,48 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			
 			// Step 10:Login with sysadmin to start autoconfirm batch job
 			
-						objMappingPage.login(users.SYSTEM_ADMIN);
-						salesforceAPI.generateReminderWorkItems(salesforceAPI.CIO_AUTOCONFIRM_BATCH_JOB);
-						objCIOTransferPage.logout();
-						
-						//Step 11: login with cio staff to validate that auto confirm has taken place for impending transfer
-						
-						objCIOTransferPage.login(users.CIO_STAFF);
-						driver.navigate().to("https://smcacre--" + execEnv
-								+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-						
-						//STEP 12 : Verifying transfer code has changed after approval and equals to autoconfirm counterpart of the initial code
-						
-						softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferCodeLabel),
-								finalEventCode, "SMAB-T3377,SMAB-T10081: Verfyfing the status of the CIO transfer");
-						objCIOTransferPage.waitForElementToBeClickable(5, objCIOTransferPage.quickActionButtonDropdownIcon);
-						objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
-						objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionBack);
-						objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.firstRelatedBuisnessEvent);
-						String parentAuditTrailNumber = objWorkItemHomePage
-								.getElementText(objWorkItemHomePage.firstRelatedBuisnessEvent);
-						objMappingPage.scrollToElement(objWorkItemHomePage.firstRelatedBuisnessEvent);
-						objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
-						
-						// STEP 13:Verifying that AT=BE is completed
+			objMappingPage.login(users.SYSTEM_ADMIN);
+			salesforceAPI.generateReminderWorkItems(salesforceAPI.CIO_AUTOCONFIRM_BATCH_JOB);
+			objCIOTransferPage.logout();
 
-						softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
-								"SMAB-T3377,SMAB-T10081:Verifying Status of Buisnessevent AuditTrail");
-						driver.navigate().back();
-						objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-						softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "Completed",
-								"SMAB-T3377,SMAB-T10081:Verifying status of WI is completed ");
-						
-						// STEP 14:Verifying that outbound event is completed
-						
-						driver.navigate().to(urlForTransactionTrail);
-						softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
-								"SMAB-T3377,SMAB-T10081:Verifying Status of Outbound  AuditTrail");
-						softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondence), parentAuditTrailNumber,
-								"SMAB-T3377,SMAB-T10081: Verifying that outbound AT is child of parent Recorded correspondence event");
+			// Step 11: login with cio staff to validate that auto confirm has taken place
+			// for impending transfer
 
-						objCIOTransferPage.logout();
-}
+			objCIOTransferPage.login(users.CIO_STAFF);
+			driver.navigate().to("https://smcacre--" + execEnv
+					+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+
+			// STEP 12 : Verifying transfer code has changed after approval and equals to
+			// autoconfirm counterpart of the initial code
+
+			softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferCodeLabel),
+					finalEventCode, "SMAB-T3377,SMAB-T10081: Verfyfing the status of the CIO transfer");
+			objCIOTransferPage.waitForElementToBeClickable(5, objCIOTransferPage.quickActionButtonDropdownIcon);
+			objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
+			objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionBack);
+			objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.firstRelatedBuisnessEvent);
+			
+			//Clicking on AT=BE
+			objMappingPage.scrollToElement(objWorkItemHomePage.firstRelatedBuisnessEvent);
+			objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
+
+			// STEP 13:Verifying that AT=BE is completed
+
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
+					"SMAB-T3377,SMAB-T10081:Verifying Status of Buisnessevent AuditTrail");
+			driver.navigate().back();
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "Completed",
+					"SMAB-T3377,SMAB-T10081:Verifying status of WI is completed ");
+
+			// STEP 14:Verifying that outbound event is completed
+
+			driver.navigate().to(urlForTransactionTrail);
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
+					"SMAB-T3377,SMAB-T10081:Verifying Status of Outbound  AuditTrail");
+
+			objCIOTransferPage.logout();
+		}
 
 	
 	/*
