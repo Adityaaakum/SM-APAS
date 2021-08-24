@@ -1,12 +1,14 @@
 {
 	"UnrecordedEventCreation": {
     	"Record Type": "Business Event",
+
     	"Group":"CIO",
 		"Type of Audit Trail Record?": "Unrecorded Event",
 		"Source": "Unrecorded document",
-		"Date of Event": "07/05/2021",
+		"Date of Event": "07/04/2021",
 		"Date of Recording": "07/06/2021",
-		"Description": "Unrecorded Transfer"
+		"Description": "Unrecorded Transfer",		
+		"Updated DOE": "07/05/2021"
 	},
 	"DataToCreateCorrespondenceEventForAutoConfirm": {
     	"Record Type": "Correspondence",

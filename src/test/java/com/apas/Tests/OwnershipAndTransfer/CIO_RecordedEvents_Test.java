@@ -598,7 +598,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 
-		// STEP 11-Clicking on submit for approval quick action button
+		// STEP 11-Clicking on submit for Review quick action button
 
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionSubmitForReview);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForReview);

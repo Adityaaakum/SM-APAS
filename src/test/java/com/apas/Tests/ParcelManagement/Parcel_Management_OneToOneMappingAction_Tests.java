@@ -228,10 +228,11 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	 *@param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2482,SMAB-T2485,SMAB-T2484,SMAB-T2545,SMAB-T2489:Verify that the One to One Mapping Action can only be performed on Active Parcels ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3052,SMAB-T2482,SMAB-T2485,SMAB-T2484,SMAB-T2545,SMAB-T2489:Verify that the One to One Mapping Action can only be performed on Active Parcels ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyOneToOneMappingActionOnlyOnActiveParcels(String loginUser) throws Exception {
-		String queryAPN = "Select name From Parcel__c where Status__c='Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
+		String queryAPN = "Select name From Parcel__c where (not Name like '100%') and (not Name like '134%') "
+				+ "and Status__c='Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String activeParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
 		String activeParcelWithoutHyphen=activeParcelToPerformMapping.replace("-","");
@@ -336,6 +337,19 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		//Step 14: Validation that proper  error message is displayed if parcel number  not of Nine digits is entered in non condo number field
 		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"010123"),"- This parcel number is not valid, it should contain 9 digit numeric values.",
 				"SMAB-T2484: Validation that proper error message is displayed if  parcel number  not of Nine digits is entered in non condo number field");
+
+		String apn[] = activeParcelToPerformMapping.split("-");
+		String updateMapPageofChildApn= apn[0]+apn[1].substring(0,2)+
+				String.valueOf(Integer.parseInt(apn[1].substring(2)) +1)+apn[2];
+		ReportLogger.INFO(updateMapPageofChildApn);
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, updateMapPageofChildApn);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.waitForElementToBeVisible(10,objMappingPage.generateParcelButton);
+	    softAssert.assertContains(objMappingPage.getErrorMessage(), 
+				"Warning: Parcel number generated is different from the user"
+				+ " selection based on established criteria. As a reference the number provided is", 
+				"SMAB-T3052-Verify that for APN generation, If map page is changed for child parcels,"
+				+ "then it should display message(which is returned from backend) for respective parcels");
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
