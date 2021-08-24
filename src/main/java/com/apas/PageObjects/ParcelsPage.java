@@ -65,7 +65,9 @@ public class ParcelsPage extends ApasGenericPage {
 	public String exemptionRelatedTab="Exemptions";
 	public String saveParcelButton="Save";
 	public String recordTypeDropdown = "Record Type";
-	public String groupDropdown = "Group";
+
+	public String group="Group";	
+
 	public String typeOfAuditTrailDropdown = "Type of Audit Trail Record?";
 	public String sourceDropdown = "Source";
 	public String dateOfEventInputTextBox = "Date of Event";
@@ -370,15 +372,21 @@ public class ParcelsPage extends ApasGenericPage {
 			waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);
 			
 			selectOptionFromDropDown(recordTypeDropdown, dataMap.get("Record Type"));
-			selectOptionFromDropDown(groupDropdown, dataMap.get("Group"));
+
+			selectOptionFromDropDown(group,dataMap.get("Group"));
+
+			
+
 			Thread.sleep(2000);
 			selectOptionFromDropDown(typeOfAuditTrailDropdown, dataMap.get("Type of Audit Trail Record?"));
-			selectOptionFromDropDown(sourceDropdown, dataMap.get("Source"));
-			enter(dateOfEventInputTextBox, dataMap.get("Date of Event"));
+			if(dataMap.get("Source")!=null) {selectOptionFromDropDown(sourceDropdown, dataMap.get("Source"));}
+			if(dataMap.get("Date of Event")!=null) {enter(dateOfEventInputTextBox, dataMap.get("Date of Event"));}
+			if(dataMap.get("Date of Value")!=null) {enter(dateOfValueInputTextBox, dataMap.get("Date of Value"));}
 			enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
 			enter(descriptionInputTextBox, description);
 			Click(getButtonWithText(saveAndNextButton));
 			Thread.sleep(5000);
+			if(dataMap.get("Record Type").equalsIgnoreCase("Correspondence")) {return null;}				
 			
 			return getElementText(recordedDocumentApnGenerated);
 		}		
