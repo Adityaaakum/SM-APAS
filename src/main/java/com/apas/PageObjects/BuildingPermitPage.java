@@ -65,11 +65,11 @@ public class BuildingPermitPage extends ApasGenericPage {
 	@FindBy(xpath = "//button[@name = 'Edit']")
 	public WebElement editPermitButton;
 
-	@FindBy(xpath = "//input[@name = 'Completion_Date__c']")
-	public WebElement completionDateBox;
+//	@FindBy(xpath = "//input[@name = 'Completion_Date__c']")
+//	public WebElement completionDateBox;
 	
-	@FindBy(xpath = "//span[text() = 'Edit Completion Date']")
-	public WebElement editCompletionDate;
+//	@FindBy(xpath = "//span[text() = 'Edit Completion Date']")
+//	public WebElement editCompletionDate;
 
 	@FindBy(xpath = "//button[text() = 'Delete']")
 	public WebElement deleteButton;
@@ -220,7 +220,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 		return  manualBuildingPermitMap;
 	}
 
-	public Map<String, String> getBuildingPermitManualCreationTestDataWithComplitionDate() {
+	public Map<String, String> getBuildingPermitManualCreationTestDataWithComplitionDate(String CompletionDate) {
 
 		//Fetch the APN to be used to create building permit
 		String query ="SELECT Name FROM Parcel__c where status__c = 'Active' limit 1";
@@ -229,14 +229,14 @@ public class BuildingPermitPage extends ApasGenericPage {
 		ReportLogger.INFO("Active APN fetched through Salesforce API : " + activeAPN);
 
 		String manualEntryData = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_MANUAL + "\\BuildingPermitManualCreationData.json";
-		Map<String, String> manualBuildingPermitMap = objUtil.generateMapFromJsonFile(manualEntryData, "BuildingPermitManualCreationDataWithCompletionDate");
+		Map<String, String> manualBuildingPermitMap = objUtil.generateMapFromJsonFile(manualEntryData, CompletionDate);
 		String buildingPermitNumber = manualBuildingPermitMap.get("Permit City Code") + "-" + DateUtil.getCurrentDate("yyyMMdd-HHmmss");
 		manualBuildingPermitMap.put("Building Permit Number",buildingPermitNumber);
 		manualBuildingPermitMap.put("APN",activeAPN);
 
 		return  manualBuildingPermitMap;
 	}
-
+/*
 	public Map<String, String> getBuildingPermitManualCreationTestDataWithoutComplitionDate() {
 
 		//Fetch the APN to be used to create building permit
@@ -269,5 +269,5 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 		return  manualBuildingPermitMap;
 	}
-
+*/
 }

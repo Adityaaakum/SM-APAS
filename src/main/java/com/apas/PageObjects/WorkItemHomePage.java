@@ -383,6 +383,16 @@ public class WorkItemHomePage extends ApasGenericPage {
 		waitForElementToBeVisible(successAlert, 20);
 		waitForElementToDisappear(successAlert, 10);
 	}
+	
+	public void findWorkItemInProgress(String workItem) throws Exception {
+		ReportLogger.INFO("Accepting the work item: " + workItem);
+		WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//ancestor::th//preceding-sibling::td//span[@class='slds-checkbox_faux']"));
+		scrollToElement(webElementCheckBox);
+		Click(webElementCheckBox);
+		ReportLogger.INFO(workItem + ": Work Item is present in Progress Tab. " );
+		waitForElementToBeVisible(successAlert, 20);
+		waitForElementToDisappear(successAlert, 10);
+	}
 
 	/**
 	 * This method will completed the work item currently displayed on UI
