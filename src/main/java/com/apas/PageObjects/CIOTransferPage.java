@@ -80,7 +80,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	
 	
 	
-	public static final String CIO_TRANSFER_STATUS_REVIEWED_ASSECESSE="Reviewed Assessee Response &amp; No Action Required";
+	
 
 	
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
