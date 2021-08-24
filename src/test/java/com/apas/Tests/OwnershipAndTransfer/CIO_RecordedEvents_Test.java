@@ -479,8 +479,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
 				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
 
-		String dataToCreateCorrespondenceEventForAutoConfirm = System.getProperty("user.dir")
-				+ testdata.UNRECORDED_EVENT_DATA;
+		String dataToCreateCorrespondenceEventForAutoConfirm = 	testdata.UNRECORDED_EVENT_DATA;
 		Map<String, String> hashMapCorrespondenceEventForAutoConfirm = objUtil.generateMapFromJsonFile(
 				dataToCreateCorrespondenceEventForAutoConfirm, "DataToCreateCorrespondenceEventForAutoConfirm");
 
@@ -504,10 +503,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		// STEP 2-Query to fetch WI
 
-		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'   And status__c='In pool' order by createdDate desc limit 1";
-		Thread.sleep(3000);
+		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'   And status__c='In pool' order by createdDate desc limit 1";		
 		String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
-
 		objMappingPage.globalSearchRecords(workItemNo);
 		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
 		objCioTransfer.deleteOwnershipFromParcel(
@@ -538,8 +535,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 5-Login with CIO staff
 
 		objMappingPage.login(users.CIO_STAFF);
-		objMappingPage.globalSearchRecords(workItemNo);
-		Thread.sleep(5000);
+		objMappingPage.globalSearchRecords(workItemNo);		
 		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + workItemNo + "'";
 		HashMap<String, ArrayList<String>> navigationUrL = salesforceAPI.select(queryRecordedAPNTransfer);
 
@@ -778,8 +774,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			Map<String, String> hashMapCreateOwnershipRecordData = objUtil
 					.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
 
-			String dataToCreateCorrespondenceEventForAutoConfirm = System.getProperty("user.dir")
-					+ testdata.UNRECORDED_EVENT_DATA;
+			String dataToCreateCorrespondenceEventForAutoConfirm = 	testdata.UNRECORDED_EVENT_DATA;
 			Map<String, String> hashMapCorrespondenceEventForAutoConfirm = objUtil.generateMapFromJsonFile(
 					dataToCreateCorrespondenceEventForAutoConfirm, "DataToCreateCorrespondenceEventForAutoConfirm");
 
@@ -886,6 +881,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
 			objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, InitialEventCode);
 			objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+			
+			//Creating Unrecorded transfer
+			
 			objParcelsPage.createUnrecordedEvent(hashMapCorrespondenceEventForAutoConfirm);			
 			String urlForTransactionTrail = driver.getCurrentUrl();
 			driver.navigate().to("https://smcacre--" + execEnv
@@ -896,7 +894,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
 			objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 
-			// STEP 11-Clicking on submit for approval quick action button
+			// STEP 11-Clicking on submit for review quick action button
 
 			objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionSubmitForReview);
 			objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForReview);

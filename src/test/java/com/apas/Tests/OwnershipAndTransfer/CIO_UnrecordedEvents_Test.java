@@ -190,10 +190,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
 				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
 		
-		String dataToCreateCorrespondenceEventForAutoConfirm = System.getProperty("user.dir")
-				+ testdata.UNRECORDED_EVENT_DATA;
+		
 		Map<String, String> hashMapCorrespondenceEventForAutoConfirm = objUtil.generateMapFromJsonFile(
-				dataToCreateCorrespondenceEventForAutoConfirm, "DataToCreateCorrespondenceEventForAutoConfirm");
+				unrecordedEventData, "DataToCreateCorrespondenceEventForAutoConfirm");
 		
 		
 		// Step1: Login to the APAS application
@@ -233,7 +232,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objMappingPage.globalSearchRecords(activeApn);
 		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
 		String recordeAPNTransferID =driver.getCurrentUrl().split("/")[6];
-		System.out.println(recordeAPNTransferID);
+		
+		//Step 4(a):creating new grantee records
 		
 		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
@@ -262,6 +262,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, InitialEventCode);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+		
+		//Creating a new outbound event
+		
 		objParcelsPage.createUnrecordedEvent(hashMapCorrespondenceEventForAutoConfirm);		
 		String urlForTransactionTrail = driver.getCurrentUrl();
 		driver.navigate().to("https://smcacre--" + execEnv
@@ -272,15 +275,15 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 
-		// STEP 8-Clicking on submit for approval quick action button
+		// STEP 8-Clicking on submit for review quick action button
 
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionSubmitForReview);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForReview);
-		ReportLogger.INFO("CIO!! Transfer submitted for approval");
+		ReportLogger.INFO("CIO!! Transfer submitted for review");
 		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.cioTransferSuccessMsg);
 		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.cioTransferSuccessMsg),
 				"CIO transfer initial determination is submitted for review.",
-				"SMAB-T3377,SMAB-T10081:Cio trasnfer is submited for review");
+				"SMAB-T3377,SMAB-T10081:Cio transfer is submited for review");
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
 		objCIOTransferPage.logout();
 		
@@ -291,7 +294,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
-
+		
+		//Clicking on review completed quick action button
+		
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionReviewComplete);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionReviewComplete);
 		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.cioTransferSuccessMsg),
@@ -451,10 +456,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			Map<String, String> hashMapCreateOwnershipRecordData = objUtil
 					.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
 			
-			String dataToCreateCorrespondenceEventForAutoConfirm = System.getProperty("user.dir")
-					+ testdata.UNRECORDED_EVENT_DATA;
+			
 			Map<String, String> hashMapCorrespondenceEventForAutoConfirm = objUtil.generateMapFromJsonFile(
-					dataToCreateCorrespondenceEventForAutoConfirm, "DataToCreateCorrespondenceEventForAutoConfirm");
+					unrecordedEventData, "DataToCreateCorrespondenceEventForAutoConfirm");
 			
 			
 			// Step1: Login to the APAS application
