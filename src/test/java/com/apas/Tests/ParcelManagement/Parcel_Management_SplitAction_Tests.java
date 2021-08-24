@@ -18,6 +18,7 @@ import com.apas.config.users;
 import org.hamcrest.core.IsNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Reporter;
 import org.testng.annotations.BeforeMethod;
@@ -61,6 +62,10 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifySplitMappingActionUIValidations(String loginUser) throws Exception {
 		String apn = objMappingPage.fetchActiveAPN();
+
+		jsonObject.put("Neighborhood_Reference__c","");
+		String query = "Select Id from Parcel__c where Name = '"+apn+"'";
+		salesforceAPI.update("Parcel__c",query,jsonObject);
 
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -107,8 +112,13 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
 
 		//Step 8: Validating that default values of Number of Child Non-Condo Parcels and Number of Child Condo Parcels are 0
+		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.numberOfChildNonCondoTextBoxLabel),
+				"SMAB-T3050: Validate that number of non condo field is visible");
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.numberOfChildNonCondoTextBoxLabel),"value"),"0",
 				"SMAB-T2294: Validation that default value of Number of Child Non-Condo Parcels  is 0");
+		
+		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.numberOfChildCondoTextBoxLabel),
+				"SMAB-T3050: Validate that number of  condo field is visible");
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.numberOfChildCondoTextBoxLabel),"value"),"0",
 				"SMAB-T2294: Validation that default value of Number of Child Condo Parcels  is 0");
 
@@ -116,19 +126,30 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
 				"SMAB-T2613: Validation that reason code field is auto populated from parent parcel work item");
 
-		//Step 10: Validating help icons
+		//Step 10: Validating help icons and field of first non condo
+		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.firstNonCondoTextBoxLabel),
+				"SMAB-T3050: Validate that First non condo field is visible");
 		objMappingPage.Click(objMappingPage.helpIconFirstNonCondoParcelNumber);
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use system generated APN, leave as blank.",
-				"SMAB-T2481: Validation that help text is generated on clicking the help icon for First non-Condo Parcel text box");
+				"SMAB-T2481,SMAB-T3050: Validation that help text is generated on clicking the help icon for First non-Condo Parcel text box");
 
+		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.firstCondoTextBoxLabel),
+				"SMAB-T3050: Validate that First condo field is visible");
+		
+		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.legalDescriptionTextBoxLabel),
+				"SMAB-T3050: Validate that Legal description field is visible");
 		objMappingPage.Click(objMappingPage.helpIconLegalDescription);
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent legal description, leave as blank.",
-				"SMAB-T2481: Validation that help text is generated on clicking the help icon for legal description");
+				"SMAB-T2481,SMAB-T3050: Validation that help text is generated on clicking the help icon for legal description");
 
-		objMappingPage.Click(objMappingPage.helpIconSitus);
+		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.situsTextBoxLabel),
+				"SMAB-T3050: Validation that  Situs Information label");
+		Actions action = new Actions(driver);
+		action.moveToElement(objMappingPage.helpIconSitus).perform();
+		//objMappingPage.Click(objMappingPage.helpIconSitus);
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent situs, leave as blank.",
-				"SMAB-T2481: Validation that help text is generated on clicking the help icon for Situs text box");
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.closeButton));
+				"SMAB-T2481,SMAB-T3050: Validation that help text is generated on clicking the help icon for Situs text box");
+		//objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.closeButton));
 
 		//Step 11: Validating Error Message when both Number of Child Non-Condo & Condo Parcels fields contain 0
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objMappingPage.nextButton));
@@ -142,7 +163,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.fillMappingActionForm(hashMapSplitActionInvalidData);
 
 		//Step 13: Validating Error Message having incorrect map book data
-		softAssert.assertContains(objMappingPage.getErrorMessage(),"- Non Condo Parcel Number cannot start with 100, Please enter valid Parcel Number - Condo Parcel Number should start with 100 only, Please enter valid Parcel Number",
+		softAssert.assertContains(objMappingPage.getErrorMessage(),"Non Condo Parcel Number cannot start with 100, Please enter valid Parcel Number",
 				"SMAB-T2428: Validation that error message is displayed when map book of First Child Non-Condo Parcel is 100");
 		softAssert.assertContains(objMappingPage.getErrorMessage(),"Condo Parcel Number should start with 100 only, Please enter valid Parcel Number",
 				"SMAB-T2295: Validation that error message is displayed when map book of First Child Condo Parcel is any number except 100");
@@ -206,10 +227,34 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		softAssert.assertContains(objMappingPage.getErrorMessage(),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is",
 				"SMAB-T2613: Validation that warning message is displayed when Parcel number generated is different from the user selection");
 
-		softAssert.assertContains(objMappingPage.getErrorMessage(),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is",
-				"SMAB-T2613: Validation that warning message is displayed when Parcel number generated is different from the user selection");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
+		softAssert.assertContains(objMappingPage.getErrorMessage(),"The district and neighborhood is required in order to proceed",
+				"SMAB-T3737: Verify that for all mapping actions the \"District/Neighborhood\" must be mandatory "
+						+ "and error msg should be displayed on generating parcel if District/Neighborhood "
+						+ "is empty");
+		Map<String, String> hashMapSplitActionMappingDataSitus = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformSplitMappingActionWithSitusData");
+		for(int i=1;i<=gridDataHashMap.get("APN").size();i++) {
+			
+		objMappingPage.Click(objMappingPage.locateElement("//tr["+i+"]"+objMappingPage.secondScreenEditButton, 2));
+		objMappingPage.editActionInMappingSecondScreen(hashMapSplitActionMappingDataSitus);
+		objMappingPage.waitForElementToBeVisible(10, objMappingPage.generateParcelButton);
+		}
+		
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
+		gridDataHashMap =objMappingPage.getGridDataInHashMap();
+		
 		driver.switchTo().window(parentWindow);
+		objMappingPage.searchModule(PARCELS);
+		String childAPN = gridDataHashMap.get("APN").get(0);
+		objMappingPage.globalSearchRecords(childAPN);
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),
+				objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelDistrictNeighborhood, "Summary Values"),
+				"SMAB-T3818: Parcel Management- Verify that for all relevant mapping actions the"
+						+ " \"District/Neighborhood\" must be mandatory and should be inherited in child parcel");
+
 		objWorkItemHomePage.logout();
 
 	}
@@ -1332,7 +1377,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	@Test(description = "SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
-			groups = {"Regression","ParcelManagement","RecorderIntegration" })
+			groups = {"Regression","ParcelManagement","RecorderIntegration" },enabled=false)
 	public void ParcelManagement_VerifyNewWICondominiumPlansGeneratedfromRecorderIntegrationAndSplitMappingAction(String loginUser) throws Exception {
 
 

@@ -141,7 +141,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
      * @param loginUser
      * @throws Exception
      */
-    @Test(description = "SMAB-T2757,SMAB-T2758,SMAB-T2759,SMAB-T2760,SMAB-T2761,SMAB-T2687:"
+    @Test(description = "SMAB-T3818,SMAB-T3737,SMAB-T2757,SMAB-T2758,SMAB-T2759,SMAB-T2760,SMAB-T2761,SMAB-T2687:"
     		+ "Verify the Output validations for \"BOE Activation\" mapping action for a Parcel (retired) from a work item",
     		dataProvider = "loginMappingUser",
     		dataProviderClass = DataProviders.class, 
@@ -149,7 +149,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
     public void ParcelManagement_VerifyBOEActivationMappingActionOutputValidations(String loginUser) throws Exception {
 
         // Step 1: Fetching parcels that are Active with no Ownership record
-    	String queryAPNValue = "SELECT Name,Id from Parcel__c where Status__c='Retired' and id in(select parcel__c from situs__c where name!=null) limit 1";
+    	String queryAPNValue = "SELECT Name,Id from Parcel__c where Status__c='Retired' limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
 		System.out.println(response);
 		String retiredAPNValue= response.get("Name").get(0);		
@@ -166,7 +166,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
 		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
 		jsonObject.put("District__c",districtValue);
-		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("Neighborhood_Reference__c","");
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
         // Step 3: update  values on Parcels
 		salesforceAPI.update("Parcel__c",response.get("Id").get(0),jsonObject);
@@ -175,6 +175,9 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
         Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
                 "DataToCreateWorkItemOfTypeParcelManagement");
 
+        String mappingActionCreationData =  testdata.BOEACtivation_MAPPING_ACTION;
+		Map<String, String> hashMapBOEACtivationMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformBOEMappingActionWithAllFields");
         // Step 4: Login to the APAS application using the credentials passed through data provider
         objMappingPage.login(loginUser);
 
@@ -198,12 +201,24 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
         Thread.sleep(3000);
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"123456789");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		Thread.sleep(2000);
-		//Step 9: Validating that
+		objMappingPage.waitForElementToBeVisible(10, objMappingPage.generateParcelButton);
+		//Step 9: Validating that parcel generated is different 
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789 for Non-Condo Parcel.",
 						"Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
 		//Step 10: generate  new child parcels 
         objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+        
+        softAssert.assertContains(objMappingPage.getErrorMessage(),"The district and neighborhood is required in order to proceed",
+				"SMAB-T3737: Verify that for all mapping actions the \"District/Neighborhood\" must be mandatory "
+				+ "and error msg should be displayed on generating parcel if District/Neighborhood "
+				+ "is empty");
+          
+        objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+        objMappingPage.editActionInMappingSecondScreen(hashMapBOEACtivationMappingData);
+        
+		objMappingPage.waitForElementToBeVisible(10, objMappingPage.generateParcelButton);
+        objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+
 
         //Step 11: Verify the success message after parcels are generated
         softAssert.assertContains(objMappingPage.getSuccessMessage(),"is pending verification from the supervisor in order to be activated.",
@@ -211,7 +226,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 
         //Step 12: Verify the grid cells are not editable after parcels are generated
         HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
-        boolean actionColumn = gridDataHashMap.containsKey("Action");
+      	boolean actionColumn = gridDataHashMap.containsKey("Action");
         softAssert.assertTrue(!actionColumn,"Validation that columns should not be editable as Action column has disappeared after generating parcels");
         softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN")," Validation that APN column should not be editable after generating parcels");
         softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description")," Validation that Legal Description column should not be editable after generating parcels");
@@ -229,6 +244,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 				objMappingPage.waitForElementToBeVisible(60, objParcelsPage.moretab);
 				
 				objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelRelationshipsTabLabel);
+				ReportLogger.INFO("Parent Parcel: "+retiredAPNValue+"is visible under Source Parcel Relationships section");
 				softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(retiredAPNValue)), "SMAB-T2757: Verify Parent Parcel: "+retiredAPNValue+" is visible under Source Parcel Relationships section");				
 				driver.navigate().back();
         	}
@@ -238,6 +254,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
         });
         
         //Step 14: Verify Status of Parent & Child Parcels before WI completion
+        ReportLogger.INFO("validate status of parent and child parcels");
         HashMap<String, ArrayList<String>> parentAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",retiredAPNValue);
         HashMap<String, ArrayList<String>> childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
   		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2759: Verify Status of Parent Parcel: "+retiredAPNValue);
@@ -268,6 +285,14 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		String query = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
 		salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
 		driver.switchTo().window(parentWindow);
+		objMappingPage.searchModule(PARCELS);
+		String childAPN = gridDataHashMap.get("APN").get(0);
+        objMappingPage.globalSearchRecords(childAPN);
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),
+				objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelDistrictNeighborhood, "Summary Values"),
+				"SMAB-T3818: Parcel Management- Verify that for all relevant mapping actions the"
+						+ " \"District/Neighborhood\" must be mandatory and should be inherited in child parcel");
+
         objWorkItemHomePage.logout();
         objMappingPage.login(users.MAPPING_SUPERVISOR);
         Thread.sleep(5000);
@@ -740,7 +765,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		@Test(description = "SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 				+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 				dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
-				groups = {"Regression","ParcelManagement","RecorderIntegration"})
+				groups = {"Regression","ParcelManagement","RecorderIntegration"},enabled=false)
 		public void ParcelManagement_VerifyNewWIDeclofCovenantsCondRestrictionsGeneratedfromRecorderIntegrationAndBOEMappingAction(String loginUser) throws Exception {
 
 

@@ -314,7 +314,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2587, SMAB-T2594, SMAB-T2595, SMAB-T2596, SMAB-T2626, SMAB-T2582:Verify the Parent APN validations for \"Many To Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3051,SMAB-T2587, SMAB-T2594, SMAB-T2595, SMAB-T2596, SMAB-T2626, SMAB-T2582:Verify the Parent APN validations for \"Many To Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyParentAPNValidationsForManyToManyMappingAction(String loginUser) throws Exception {
 
@@ -459,7 +459,10 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithoutHyphen);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		Thread.sleep(2000);
-		softAssert.assertTrue(objMappingPage.getElementText(objMappingPage.parentAPNFieldValue).split(",")[0].contains("-"),"SMAB-T2582: Verify that when 9 digit APN is entered without hyphen, after saving hyphen is added automatically");
+		softAssert.assertTrue(objMappingPage.getElementText
+				(objMappingPage.parentAPNFieldValue).split(",")[0].contains("-"),
+				"SMAB-T2582,SMAB-T3051: Verify that when 9 digit APN is entered without hyphen, "
+				+ "after saving hyphen is added automatically");
 
 
 		driver.switchTo().window(parentWindow);
@@ -472,7 +475,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2722:Verify the Output validations for \"Many to Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3049,SMAB-T2722:Verify the Output validations for \"Many to Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyNonCondoManyToManyMappingActionOutputValidations(String loginUser) throws Exception {
 
@@ -590,7 +593,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		//Step 10: Verify the success message after parcels are generated
 		softAssert.assertContains(objMappingPage.getSuccessMessage(),"Parcel(s) have been created successfully. Please review spatial information",
-				"SMAB-T2722: Validation that success message is displayed when Parcels are generated");
+				"SMAB-T2722,SMAB-T3049: Validation that success message is displayed when Parcels are generated");
 
 		//Step 11: Verify the grid cells are not editable after parcels are generated
 		Thread.sleep(3000);
