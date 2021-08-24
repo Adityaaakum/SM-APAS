@@ -53,7 +53,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3140,SMAB-T3193,SMAB-T3390,SMAB-T3467 : Verify that When CIO users navigates to quick action dropdown button different CIO users are able to view different dropdown buttons", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "SecurityAndSharing" },enabled=false)
+			"Regression", "ChangeInOwnershipManagement", "SecurityAndSharing" },enabled=true)
 	public void QuickActionButtonsValidation_CIOTransferScreen_SubmitForApproval(String loginUser) throws Exception {
 
 		String OwnershipAndTransferGranteeCreationData =  testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
@@ -259,7 +259,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3390,SMAB-T3468 : Verify that When CIO users navigates to quick action dropdown button different CIO users are able to view different dropdown buttons", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "SecurityAndSharing" },enabled=false)
+			"Regression", "ChangeInOwnershipManagement", "SecurityAndSharing" },enabled=true)
 	public void QuickActionButtonsValidation_CIOTransferScreen_SubmitForReview(String loginUser) throws Exception {
 
 		// step 1: executing the recorder feed batch job to generate CIO WI
