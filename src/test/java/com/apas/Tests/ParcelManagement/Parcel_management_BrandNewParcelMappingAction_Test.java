@@ -273,7 +273,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @param loginUser-Mapping user
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2642,SMAB-T2643,SMAB-T2644:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2642,SMAB-T2643,SMAB-T2644,SMAB-T3243:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" },enabled =true)
 	public void ParcelManagement_Verify_Brand_NewParcel_Mapping_Action(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
@@ -309,6 +309,10 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 						
 		// entering data in form for Brand New Parcel mapping
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
+		objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
+		objMappingPage.editGridCellValue(objMappingPage.legalDescriptionColumnSecondScreen, "Legal Discription");
+		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+		objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		// Validating that Parcel has been successfully created.
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel(s) have been created successfully. Please review spatial information.",
@@ -319,7 +323,17 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
            String newCreatedApn  =   gridParcelData.get("APN").get(0);                         
            HashMap<String, ArrayList<String>> statusnewApn = objParcelsPage.fetchFieldValueOfParcel("Status__c", newCreatedApn);
              // validating status of brand new parcel           
-            softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2643: Verifying the status of the new parcel");
+            softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2643,SMAB-T3243: Verifying the status of the new parcel");
+            
+            //Fetching required Child PUC after BrandNew action
+            String childAPNPucFromGrid = gridParcelData.get("Use Code*").get(0);
+            driver.switchTo().window(parentWindow);
+            objMappingPage.searchModule(PARCELS);
+    		objMappingPage.globalSearchRecords(newCreatedApn);
+    		String childParcelPuc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+    		
+    		softAssert.assertEquals(childParcelPuc, childAPNPucFromGrid,
+    				" SMAB-T3243:Verify PUC of Child parcel"+newCreatedApn);
         
           //Fetch some other values from database
     		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
@@ -369,8 +383,13 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
      		 HashMap<String, ArrayList<String>> statusCompletedApn = objParcelsPage.fetchFieldValueOfParcel("Status__c",newCreatedApn);
              //Validating the status of parcel after completing WI
            softAssert.assertEquals(statusCompletedApn.get("Status__c").get(0), "Active",
-        		   "SMAB-T2644: Validating that the status of new APN is active");
+        		   "SMAB-T2644,SMAB-T3243: Validating that the status of new APN is active");
            // driver.switchTo().window(parentWindow);
+           
+         //Fetching Child's PUC after closing WI
+           childParcelPuc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+           softAssert.assertEquals(childParcelPuc, childAPNPucFromGrid,
+   				" SMAB-T3243: Verify PUC of Child parcel"+newCreatedApn);
 		    objMappingPage.logout();
 		   		
             		                          
