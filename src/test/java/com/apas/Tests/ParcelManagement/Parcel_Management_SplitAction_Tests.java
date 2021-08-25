@@ -514,7 +514,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3245, SMAB-T2541, SMAB-T2550, SMAB-T2551:Verify the Output Validations for Split Mapping Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2541, SMAB-T2550, SMAB-T2551,SMAB-T3245:Verify the Output Validations for Split Mapping Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifySplitMappingActionOutputValidations(String loginUser) throws Exception {
 
@@ -582,7 +582,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		Map<String, String> hashMapSplitActionValidData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformSplitMappingActionForUIValidations");
 		objMappingPage.fillMappingActionForm(hashMapSplitActionValidData);
-		Thread.sleep(3000);
+		objMappingPage.waitForElementToBeVisible(10, objMappingPage.generateParcelButton);
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
        
 		   //updating child parcels size in second screen on mapping action 
@@ -658,7 +658,6 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		//Step 14: Mark the WI complete
 		String   queryWI = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
 		salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Submitted for Approval");
-		//driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 		objMappingPage.login(users.MAPPING_SUPERVISOR);
 		Thread.sleep(5000);

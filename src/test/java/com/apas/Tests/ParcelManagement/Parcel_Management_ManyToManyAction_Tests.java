@@ -744,7 +744,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3244,SMAB-T2730,SMAB-T2903:Verify the Output validations for \"Many to Many\" mapping action and validation on lower APN value", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2730,SMAB-T2903,SMAB-T3244:Verify the Output validations for \"Many to Many\" mapping action and validation on lower APN value", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyCondoManyToManyMappingActionOutputValidations(String loginUser) throws Exception {
 

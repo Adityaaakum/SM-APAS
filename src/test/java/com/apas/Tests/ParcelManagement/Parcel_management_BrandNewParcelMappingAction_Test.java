@@ -273,7 +273,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @param loginUser-Mapping user
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3243,SMAB-T2642,SMAB-T2643,SMAB-T2644:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2642,SMAB-T2643,SMAB-T2644,SMAB-T3243:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" },enabled =true)
 	public void ParcelManagement_Verify_Brand_NewParcel_Mapping_Action(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";

@@ -141,7 +141,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
      * @param loginUser
      * @throws Exception
      */
-    @Test(description = "SMAB-T3245,SMAB-T3818,SMAB-T3737,SMAB-T2757,SMAB-T2758,SMAB-T2759,SMAB-T2760,SMAB-T2761,SMAB-T2687:"
+    @Test(description = "SMAB-T3818,SMAB-T3737,SMAB-T2757,SMAB-T2758,SMAB-T2759,SMAB-T2760,SMAB-T2761,SMAB-T2687,SMAB-T3245:"
     		+ "Verify the Output validations for \"BOE Activation\" mapping action for a Parcel (retired) from a work item",
     		dataProvider = "loginMappingUser",
     		dataProviderClass = DataProviders.class, 
@@ -300,7 +300,6 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		//Step 19: Mark the WI complete
 		String query = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
 		salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
-		//driver.switchTo().window(parentWindow);
 		objMappingPage.searchModule(PARCELS);
 		String childAPN = gridDataHashMap.get("APN").get(0);
         objMappingPage.globalSearchRecords(childAPN);
