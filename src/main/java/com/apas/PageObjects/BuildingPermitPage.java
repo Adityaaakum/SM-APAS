@@ -65,12 +65,6 @@ public class BuildingPermitPage extends ApasGenericPage {
 	@FindBy(xpath = "//button[@name = 'Edit']")
 	public WebElement editPermitButton;
 
-//	@FindBy(xpath = "//input[@name = 'Completion_Date__c']")
-//	public WebElement completionDateBox;
-	
-//	@FindBy(xpath = "//span[text() = 'Edit Completion Date']")
-//	public WebElement editCompletionDate;
-
 	@FindBy(xpath = "//button[text() = 'Delete']")
 	public WebElement deleteButton;
 
@@ -236,38 +230,4 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 		return  manualBuildingPermitMap;
 	}
-/*
-	public Map<String, String> getBuildingPermitManualCreationTestDataWithoutComplitionDate() {
-
-		//Fetch the APN to be used to create building permit
-		String query ="SELECT Name FROM Parcel__c where status__c = 'Active' limit 1";
-		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
-		String activeAPN = response.get("Name").get(0);
-		ReportLogger.INFO("Active APN fetched through Salesforce API : " + activeAPN);
-
-		String manualEntryData = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_MANUAL + "\\BuildingPermitManualCreationData.json";
-		Map<String, String> manualBuildingPermitMap = objUtil.generateMapFromJsonFile(manualEntryData, "BuildingPermitManualCreationDataWithoutCompletionDate");
-		String buildingPermitNumber = manualBuildingPermitMap.get("Permit City Code") + "-" + DateUtil.getCurrentDate("yyyMMdd-HHmmss");
-		manualBuildingPermitMap.put("Building Permit Number",buildingPermitNumber);
-		manualBuildingPermitMap.put("APN",activeAPN);
-
-		return  manualBuildingPermitMap;
-	}
-	public Map<String, String> getBuildingPermitManualCreationTestDataOnlyCompletionDate() {
-
-		//Fetch the APN to be used to create building permit
-		String query ="SELECT Name FROM Parcel__c where status__c = 'Active' limit 1";
-		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
-		String activeAPN = response.get("Name").get(0);
-		ReportLogger.INFO("Active APN fetched through Salesforce API : " + activeAPN);
-
-		String manualEntryData = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_MANUAL + "\\BuildingPermitManualCreationData.json";
-		Map<String, String> manualBuildingPermitMap = objUtil.generateMapFromJsonFile(manualEntryData, "OnlyCompletionDate");
-		String buildingPermitNumber = manualBuildingPermitMap.get("Permit City Code") + "-" + DateUtil.getCurrentDate("yyyMMdd-HHmmss");
-		manualBuildingPermitMap.put("Building Permit Number",buildingPermitNumber);
-		manualBuildingPermitMap.put("APN",activeAPN);
-
-		return  manualBuildingPermitMap;
-	}
-*/
 }

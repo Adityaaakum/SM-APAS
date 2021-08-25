@@ -341,11 +341,10 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		//Step7: Opening the Home module & Clicking on In Pool Tab
 		driver.navigate().refresh();
 		objBuildingPermitPage.searchModule(modules.HOME);
-//		Thread.sleep(10000);
+
 
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
-//		objWorkItemHomePage.Click(objWorkItemHomePage.inPoolTab);
-//		Thread.sleep(10000);
+
 
         //Step8: "Import Review" Work Item generation validation after file is imported
         String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%" + "Building Permit - Construction Completed - Manual Entry" + "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
@@ -354,7 +353,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
         
 //        Step9: Accepting the work item & Going to Tab In Progress
 
-//        Thread.sleep(10000);
+
         objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
         Thread.sleep(10000);
         
@@ -362,14 +361,13 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
         objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
         objWorkItemHomePage.findWorkItemInProgress(importReviewWorkItem);
         ReportLogger.INFO("Found Work Item! Mission Completed.");
-//        Thread.sleep(10000);
+
 
     }
         
     @Test(description = "SMAB-T3007, : Creating manual entry for Retired Parcel building permit with completion date.", dataProvider = "RPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"WorkItemWorkflow_BuildingPermit","Regression","BuildingPermit"}, alwaysRun = true)
 	public void BuildingPermit_ManualCreateNewBuildingPermitRetiredParcelWithDataValidations(String loginUser) throws Exception {
 
-    	//waitForElementToBeVisible
 
 		//Fetching the Active Parcel
 		String query ="SELECT Primary_Situs__c,Status__C,Name FROM Parcel__c where Status__C='Retired' and Primary_Situs__C !='' limit 1";
@@ -398,13 +396,12 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
 
 		//Step7: Opening the Home module & Clicking on In Pool Tab
-//		driver.navigate().refresh();
+
 		objBuildingPermitPage.searchModule(modules.HOME);
 		
 	
 		Thread.sleep(10000);
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
-//		Thread.sleep(10000);
 
         //Step8: "Import Review" Work Item generation validation after file is imported
         String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%" + "Building Permit - Construction Completed - Manual Entry" + "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
@@ -413,11 +410,9 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
         
 //        Step9: Accepting the work item & Going to Tab In Progress
 
-//        Thread.sleep(10000);
         objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
         Thread.sleep(10000);
         objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
-//        Thread.sleep(10000);
         objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
         objWorkItemHomePage.findWorkItemInProgress(importReviewWorkItem);
         ReportLogger.INFO("Found Work Item! Mission Completed.");
@@ -426,7 +421,6 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
     @Test(description = "SMAB-T2987, SMAB-T2988, SMAB-T2989 : Creating manual entry for Active Parcel building permit without complition date", dataProvider = "RPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"WorkItemWorkflow_BuildingPermit","Regression","BuildingPermit"}, alwaysRun = true)
    	public void BuildingPermit_ManualCreateNewBuildingPermitActiveParcelWithoutCompletionDate(String loginUser) throws Exception {
 
-       	//waitForElementToBeVisible
 
    		//Fetching the Active Parcel
    		String query ="SELECT Primary_Situs__c,Status__C,Name FROM Parcel__c where Status__C='Active' and Primary_Situs__C !='' limit 1";
@@ -461,7 +455,6 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
    		Thread.sleep(10000);
    		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
-//   		Thread.sleep(10000);
 
    		//	Step8: "Import Review" Work Item generation validation after file is imported
            String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%" + "Building Permit - Construction In Progress - Manual Entry" + "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
@@ -472,18 +465,12 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
            
 //           Step9: Accepting the work item
 
-//           Thread.sleep(10000);
            objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
            Thread.sleep(10000);
            objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
            Thread.sleep(10000);
            objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
            Thread.sleep(10000);
-        
-
-//           objWorkItemHomePage.findWorkItemInProgress(importReviewWorkItem);
-           
-        
            
          //Step10: Opening the building permit module
       		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
@@ -503,8 +490,6 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
        		manualBuildingPermitMapOnlyCompletionDate.put("APN",parcelToSearch);
     		System.out.println(buildingPermitNumberCompletionDate);
        
-    		Thread.sleep(10000);
-    	 		
 
     		//Step13: Editing Building Permit created before without completion date.
 
@@ -516,8 +501,6 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
     
        	//Step 15: Clicking on In the pool tab
        		Thread.sleep(10000);
-//       		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
-//       		Thread.sleep(10000);
 
         //Step16: "Import Review" Work Item generation validation after file is imported
                String editQueryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%" + "Building Permit - Construction Completed - Manual Entry" + "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
@@ -527,12 +510,10 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
                
         //Step17: Accepting the work item
                objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
-//               Thread.sleep(10000);
                objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
                Thread.sleep(10000);
          
                objWorkItemHomePage.acceptWorkItem(editImportReviewWorkItem);
-//               Thread.sleep(10000);
                objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
                objWorkItemHomePage.findWorkItemInProgress(editImportReviewWorkItem);
                ReportLogger.INFO("Found Work Item! Mission Completed.");
@@ -544,7 +525,6 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
     @Test(description = "SMAB-T3007: Creating manual entry for building permit for retired parcel without complition date", dataProvider = "RPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"WorkItemWorkflow_BuildingPermit","Regression","BuildingPermit"}, alwaysRun = true)
    	public void BuildingPermit_ManualCreateNewBuildingPermitRetiredParcelWithoutCompletionDate(String loginUser) throws Exception {
 
-       	//waitForElementToBeVisible
 
    		//Fetching the Active Parcel
    		String query ="SELECT Primary_Situs__c,Status__C,Name FROM Parcel__c where Status__C='Retired' and Primary_Situs__C !='' limit 1";
@@ -575,11 +555,9 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
    		//Step7: Opening the Home module
    		objBuildingPermitPage.searchModule(modules.HOME);
-   		System.out.println("We are on home page now...................");
 
    		Thread.sleep(10000);
    		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
-//   		Thread.sleep(10000);
 
    		//	Step8: "Import Review" Work Item generation validation after file is imported
            String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%" + "Building Permit - Construction In Progress - Manual Entry" + "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
@@ -590,13 +568,11 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
            
 //           Step9: Accepting the work item
 
-//           Thread.sleep(10000);
            objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
            Thread.sleep(10000);
            objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
            Thread.sleep(10000);
            objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
-//           objWorkItemHomePage.findWorkItemInProgress(importReviewWorkItem);
           
          //Step10: Opening the building permit module
       		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
@@ -628,8 +604,6 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
     
        	//Step 15: Clicking on In the pool tab
        		Thread.sleep(10000);
-//       		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
-//       		Thread.sleep(10000);
 
         //Step16: "Import Review" Work Item generation validation after file is imported
                String editQueryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%" + "Building Permit - Construction Completed - Manual Entry" + "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
@@ -639,20 +613,14 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
                
         //Step17: Accepting the work item
                objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
-//               Thread.sleep(10000);
                objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
 
                Thread.sleep(10000);
 
                objWorkItemHomePage.acceptWorkItem(editImportReviewWorkItem);
-
-
                objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
                objBuildingPermitPage.scrollToBottom();
-
-
                objWorkItemHomePage.findWorkItemInProgress(editImportReviewWorkItem);
-               
 
        		
        }
