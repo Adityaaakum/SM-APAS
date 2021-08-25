@@ -52,7 +52,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3140,SMAB-T3193,SMAB-T3390,SMAB-T3467 : Verify that When CIO users navigates to quick action dropdown button different CIO users are able to view different dropdown buttons", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3330,SMAB-T3140,SMAB-T3193,SMAB-T3390,SMAB-T3467 : Verify that When CIO users navigates to quick action dropdown button different CIO users are able to view different dropdown buttons", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "SecurityAndSharing" },enabled=true)
 	public void QuickActionButtonsValidation_CIOTransferScreen_SubmitForApproval(String loginUser) throws Exception {
 
@@ -73,11 +73,17 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 
 		// Step3: Opening the work items and accepting the WI created by recorder batch
 		objCIOTransferPage.searchModule(HOME);
-		objWorkItemHomePage.globalSearchRecords(cioWorkItem);
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
-		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
-		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABHome);
+	  	objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABWorkItems);
+	  	objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInPool);
+	  	Thread.sleep(4000);
+	  	objWorkItemHomePage.clickCheckBoxForSelectingWI(cioWorkItem);
+	  	objWorkItemHomePage.Click(objWorkItemHomePage.acceptWorkItemBtn);
+	  	Thread.sleep(4000);
+	  	objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInProgress);
+	  	Thread.sleep(4000);
+	  	objWorkItemHomePage.clickCheckBoxForSelectingWI(cioWorkItem);
+	  	objWorkItemHomePage.openActionLink(cioWorkItem);	  	
 
 		// step 4: fetching the recorded apn transfer object associated with the CIO WI
 		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + cioWorkItem + "'";
@@ -101,9 +107,6 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		}
 
 		// Step5: CIO staff user navigating to transfer screen by clicking on related action link
-		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
-		String parentWindow = driver.getWindowHandle();
-		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		objCIOTransferPage.waitForElementToBeVisible(20,
 				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
 
@@ -122,7 +125,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 
 		//adding below assertions to verify various table names and other labels on transfer screen  
 		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.cioTransferActivityLabel),"CIO Transfer Activity",
-				"SMAB-T3140: Validation that CIO Transfer Activity label is visible on top left of transfer screen ");
+				"SMAB-T3140,SMAB-T3330: Validation that CIO Transfer Activity label is visible on top left of transfer screen and user is landed to transfer scren after accepting WI from home page ");
 				
 		List<WebElement> cioTransferScreenSectionlabels=objCIOTransferPage.locateElements(objCIOTransferPage.cioTransferScreenSectionlabels, 10);
 				
@@ -246,7 +249,6 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 				"SMAB-T3193: Verify that after approval , transfer screen  is now in read only mode ");
 				objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.CancelButton));
 				
-		driver.switchTo().window(parentWindow);
 		objCIOTransferPage.logout();
 	}
 
