@@ -94,17 +94,8 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		String queryAPN = "SELECT Parcel__c FROM Recorded_APN_Transfer__c where id='" + recordeAPNTransferID + "'";
 		objCIOTransferPage.deleteOwnershipFromParcel(salesforceAPI.select(queryAPN).get("Parcel__c").get(0));
 
-		// update the grantee last name for recorded apn transfer object associated with
-		// the CIO WI to ensure no blank last names
-		String queryTransferId = "SELECT id FROM CIO_Transfer_Grantee_New_Ownership__c where Recorded_APN_Transfer__c='"
-				+ recordeAPNTransferID + "'";
-		HashMap<String, ArrayList<String>> responseTransferDetails = salesforceAPI.select(queryTransferId);
-
-		for (int i = 0; i < responseTransferDetails.size(); i++) {
-			jsonObject.put("Last_Name__c", "owner " + i);
-			salesforceAPI.update("CIO_Transfer_Grantee_New_Ownership__c", responseTransferDetails.get("Id").get(i),
-					jsonObject);
-		}
+		//deleting the CIO Transfer grantees for the current transfer screen
+		objCIOTransferPage.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
 
 		// Step5: CIO staff user navigating to transfer screen by clicking on related action link
 		objCIOTransferPage.waitForElementToBeVisible(20,
@@ -206,6 +197,9 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.CancelButton));
 		
 		objCIOTransferPage.logout();
+		Thread.sleep(5000);
+        driver.navigate().refresh();
+        Thread.sleep(6000);
 
 		// Step8: CIO supervisor now logs in and navigates to the above transfer screen
 		objCIOTransferPage.login(users.CIO_SUPERVISOR);
@@ -292,17 +286,8 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		String queryAPN = "SELECT Parcel__c FROM Recorded_APN_Transfer__c where id='" + recordeAPNTransferID + "'";
 		objCIOTransferPage.deleteOwnershipFromParcel(salesforceAPI.select(queryAPN).get("Parcel__c").get(0));
 
-		// update the grantee last name for recorded apn transfer object associated with
-		// the CIO WI to ensure no blank last names
-		String queryTransferId = "SELECT id FROM CIO_Transfer_Grantee_New_Ownership__c where Recorded_APN_Transfer__c='"
-				+ recordeAPNTransferID + "'";
-		HashMap<String, ArrayList<String>> responseTransferDetails = salesforceAPI.select(queryTransferId);
-
-		for (int i = 0; i < responseTransferDetails.size(); i++) {
-			jsonObject.put("Last_Name__c", "owner " + i);
-			salesforceAPI.update("CIO_Transfer_Grantee_New_Ownership__c", responseTransferDetails.get("Id").get(i),
-					jsonObject);
-		}
+		//deleting the CIO Transfer grantees for the current transfer screen
+		objCIOTransferPage.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
 
 		// Step4: CIO staff user navigating to transfer screen by clicking on related
 		// action link
@@ -322,7 +307,10 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
 				"SMAB-T3468: Validation that componentActionsButtonLabel  button is not visible CIO staff after submit for review");
 		objCIOTransferPage.logout();
-
+		Thread.sleep(5000);
+        driver.navigate().refresh();
+        Thread.sleep(6000);
+        
 		// Step6: CIO supervisor now logs in and navigates to the above transfer screen
 		objCIOTransferPage.login(users.CIO_SUPERVISOR);
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
