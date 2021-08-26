@@ -8,7 +8,11 @@ import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.DateUtil;
 import com.apas.Utils.ExcelUtils;
+import com.apas.Utils.FileUtils;
 import com.apas.Utils.SalesforceAPI;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import com.apas.Utils.Util;
 import com.apas.config.BPFileSource;
 import com.apas.config.fileTypes;
@@ -27,6 +31,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
     RemoteWebDriver driver;
     Page objPage;
+    ApasGenericPage objApasGenericPage;
     BuildingPermitPage objBuildingPermitPage;
     WorkItemHomePage objWorkItemHomePage;
     SalesforceAPI salesforceAPI;
@@ -36,8 +41,8 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
     SoftAssertion softAssert = new SoftAssertion();
     SalesforceAPI objSalesforceAPI = new SalesforceAPI();
     
-    String athertonBuildingPermitFile2;
-	String athertonBuildingPermitFile3;
+    String athertonBuildingPermitFile1;
+	String athertonBuildingPermitFile;
     
    
 
@@ -54,9 +59,10 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
         salesforceAPI =new SalesforceAPI();
         objWorkItemHomePage = new WorkItemHomePage(driver);
         objReportsPage = new ReportsPage(driver);
+        objApasGenericPage = new ApasGenericPage(driver);
         
-        athertonBuildingPermitFile2 = System.getProperty("user.dir") + testdata.EFILEIMPORT_BPDATA + "AthertonSingleRecordWithCompletiondate.txt";
-    	athertonBuildingPermitFile3 = System.getProperty("user.dir") + testdata.EFILEIMPORT_BPDATA + "AthertonSingleRecordWithOutCompletiondate.txt";
+        athertonBuildingPermitFile1 = System.getProperty("user.dir") + testdata.EFILEIMPORT_BPDATA + "AthertonSingleRecordWithCompletiondate.txt";
+    	athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.EFILEIMPORT_BPDATA + "AthertonSingleRecordWithOutCompletiondate.txt";
     	
     }
     
@@ -313,9 +319,8 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
     }
     
-    @SuppressWarnings("unlikely-arg-type")
 	@Test(description = "SMAB-T3085,SMAB-T3086:Create building permit with the E-File import process with out completion date", dataProvider = "RPAppraiser",dataProviderClass = DataProviders.class, groups = {
-			"Smoke", "Regression","EFileImport" })
+			"Regression","EFileImport","WorkItemWorkflow_BuildingPermit", "BuildingPermit"}, alwaysRun = true )
 	public void EFileIntake_ApproveImportedFileWithoutCompletionDate(String loginUser) throws Exception{
 		String period = "Adhoc";
 		String fileType="Building Permit";
@@ -327,12 +332,22 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
          	//Reverting the Approved Import logs if any in the system
 			String query = "Select id From E_File_Import_Log__c where File_type__c = '"+fileType+"' and File_Source__C = '"+source+"' and Import_Period__C='" + period + "' and Status__c in ('Approved','Imported') ";
 			salesforceAPI.update("E_File_Import_Log__c",query,"Status__c","Reverted");
+			
+			//Step1: Creating temporary file with random building permit number
+			String missingAPNBuildingPermitNumber = "123" + DateUtil.getCurrentDate("dd-hhmmss");
+			String invalidAPNBuildingPermitNumber = "123" + DateUtil.getCurrentDate("dd-hhmmss");
+			String buildingPermitFile = System.getProperty("user.dir") + testdata.EFILEIMPORT_BPDATA + "AthertonSingleRecordWithOutCompletiondate.txt";
+			String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "AthertonSingleRecordWithOutCompletiondate.txt";
+			FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",missingAPNBuildingPermitNumber,temporaryFile);
+			FileUtils.replaceString(temporaryFile,"<PERMIT-2>",invalidAPNBuildingPermitNumber,temporaryFile);
+
 		
 			//Step 2: Opening the E FILE IMPORT Module
 			objEfileImportPage.searchModule(modules.EFILE_INTAKE);
 			
 			//Step 3: Importing a file
-			objEfileImportPage.uploadFileOnEfileIntakeBP(fileType, source,"AthertonSingleRecordWithOutCompletiondate.txt",athertonBuildingPermitFile3);
+			objEfileImportPage.uploadFileOnEfileIntakeBP("Building Permit", "Atherton Building Permits", "AthertonSingleRecordWithOutCompletiondate.txt", temporaryFile);
+
 			
 			//Step 4: Waiting for Status of the imported file to be converted to "Imported"
 			ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -345,49 +360,50 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 			objPage.waitForElementToBeClickable(objEfileImportPage.approveButton, 10);
 			objPage.Click(objEfileImportPage.approveButton);
 			objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
-			System.out.println("Approval completed");
+			ReportLogger.INFO("Approval completed");
 			
 			//Step 6: Opening the Home module & Clicking on In Pool Tab
 			objBuildingPermitPage.searchModule(modules.HOME);
-	        System.out.println("We are on home page now...................");
-	        Thread.sleep(10000);
+			ReportLogger.INFO("We are on home page now...................");
 	       objWorkItemHomePage.Click(objWorkItemHomePage.inPoolTab);
-	        Thread.sleep(10000);
 
 	       //Import Review Work Item generation validation after file is imported
 	       String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%" + "Building Permit - Final Review - AthertonSingleRecordWithOutCompletiondate" + "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
 	       String importReviewWorkItem = salesforceAPI.select(queryWorkItem).get("Name").get(0);
 	       ReportLogger.INFO("Created Work Item : " + importReviewWorkItem);
-	       System.out.println("We are on home page now..................." + importReviewWorkItem);
 	    
            //Step 7: Accepting the work item & Going to Tab In Progress
 	       objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
 	       objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
 	       objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
-	       System.out.println("Found Work Item");
 	    
 	    //Step 8:Navigate to Building permits and select the building permit and editing the completion date and save
 	    objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
-	    objBuildingPermitPage.displayRecords("All Manual Building Permits");
-        objBuildingPermitPage.globalSearchRecords("<PERMITNO>");
+	    objBuildingPermitPage.displayRecords("All");
+	    objBuildingPermitPage.globalSearchRecords(missingAPNBuildingPermitNumber);
         objBuildingPermitPage.scrollToElement(objBuildingPermitPage.editPermitButton);
         objWorkItemHomePage.Click(objBuildingPermitPage.editPermitButton);
-        objBuildingPermitPage.clickCompetionboxAndEnterDate();
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy ");
+        Date date = new Date();        
+        String todayDate= dateFormat.format(date);
+        objApasGenericPage.enter("Completion Date", todayDate);
+        objPage.Click(objPage.getButtonWithText("Save"));
         
         //Step 9:Navigate back to Home-In pool and search for the work item created with Construction Completed.
         objBuildingPermitPage.searchModule(modules.HOME);
         objWorkItemHomePage.Click(objWorkItemHomePage.inPoolTab);
         String queryWorkItem2 = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%" + "Building Permit - Construction Completed - E-file Import" + "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
 	    String importReviewWorkItem2 = salesforceAPI.select(queryWorkItem2).get("Name").get(0);
-	    ReportLogger.INFO("Created Work Item : " + importReviewWorkItem2);
-	    System.out.println("We are on home page now..................." + importReviewWorkItem2);
-	    softAssert.equals(importReviewWorkItem2);
+	    ReportLogger.INFO("Created Work Item : " + importReviewWorkItem2);	
+	    objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+	    objWorkItemHomePage.acceptWorkItem(importReviewWorkItem2);
+	   
+	    
 	}
     
     
-	@SuppressWarnings("unlikely-arg-type")
 	@Test(description = "SMAB-T3087,SMAB-T3088: :Create building permit with the E-File import process with completion date", dataProvider = "RPAppraiser",dataProviderClass = DataProviders.class, groups = {
-			"Smoke", "Regression","EFileImport" })
+			"Regression","EFileImport","WorkItemWorkflow_BuildingPermit", "BuildingPermit"})
 	public void EFileIntake_ApproveImportedFileWithCompletionDate(String loginUser) throws Exception{
 		String period = "Adhoc";
 		String fileType="Building Permit";
@@ -404,7 +420,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		objEfileImportPage.searchModule(modules.EFILE_INTAKE);
 		 
 		//Step 3: importing a file
-		objEfileImportPage.uploadFileOnEfileIntakeBP(fileType, source,"AthertonSingleRecordWithCompletiondate.txt",athertonBuildingPermitFile2);
+		objEfileImportPage.uploadFileOnEfileIntakeBP(fileType, source,"AthertonSingleRecordWithCompletiondate.txt",athertonBuildingPermitFile1);
 		
 		//Step 4: Waiting for Status of the imported file to be converted to "Imported"
 		ReportLogger.INFO("Waiting for Status of the imported file to be converted to Imported");
@@ -421,7 +437,6 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
     
 		//Step 6: Opening the Home module & Clicking on In Pool Tab
 		objBuildingPermitPage.searchModule(modules.HOME);
-        System.out.println("We are on home page now...................");
         objWorkItemHomePage.Click(objWorkItemHomePage.inPoolTab);
         ReportLogger.INFO("clicked inpool tab");
 
@@ -429,15 +444,12 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
        String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%" + "Building Permit - Final Review - AthertonSingleRecordWithCompletiondate" + "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
        String importReviewWorkItem = salesforceAPI.select(queryWorkItem).get("Name").get(0);
        ReportLogger.INFO("Created Work Item : " + importReviewWorkItem);
-       System.out.println("We are on home page now..................." + importReviewWorkItem);
     
        //Step 7: Accepting the work item & Going to Tab In Progress
 
     objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
-    System.out.println("clicked on age");
     objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
     objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
-    softAssert.equals(importReviewWorkItem);
 
 	}
         

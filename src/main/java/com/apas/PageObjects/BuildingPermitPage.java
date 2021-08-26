@@ -1,6 +1,5 @@
 package com.apas.PageObjects;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -140,20 +139,6 @@ public class BuildingPermitPage extends ApasGenericPage {
               */
               public void openNewForm() throws Exception {
                              openNewForm("Manual Entry Building Permit");
-              }
-              
-              /** Edit completion date and enter the completion date 
-             * @throws Exception 
-             * @throws IOException **/
-              
-              public void clickCompetionboxAndEnterDate() throws IOException, Exception {
-            	  
-            	  Thread.sleep(5000);
-            	  completionDateBox.click();
-            	  completionDateBox.sendKeys("8/24/2021");
-            	  Thread.sleep(5000);
-            	  Click(getButtonWithText("Save"));
-            	  System.out.println("clicked save");
               }
 
               /**
