@@ -383,6 +383,11 @@ public class WorkItemHomePage extends ApasGenericPage {
 		waitForElementToBeVisible(successAlert, 20);
 		waitForElementToDisappear(successAlert, 10);
 	}
+	/**
+	 * This method will check the work item passed in the parameter on in progress page. without accepting it.
+	 *
+	 * @param workItem: Work item number to be accepted
+	 **/
 	
 	public void findWorkItemInProgress(String workItem) throws Exception {
 		ReportLogger.INFO("Accepting the work item: " + workItem);

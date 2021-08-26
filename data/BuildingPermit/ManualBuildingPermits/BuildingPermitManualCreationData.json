@@ -11,7 +11,7 @@
 		"Estimated Project Value": "500",
 		"Owner Name": "Test Owner Name"
 		}
-			"BuildingPermitManualCreationDataWithCompletionDate": {
+	"BuildingPermitManualCreationDataWithCompletionDate": {
 		"Permit City Code": "LM",
 		"APN": "000002",
 		"Processing Status": "Process",
@@ -23,7 +23,7 @@
 		"Estimated Project Value": "500",
 		"Owner Name": "Test Owner Name"
 		}
-		"BuildingPermitManualCreationDataWithoutCompletionDate": {
+	"BuildingPermitManualCreationDataWithoutCompletionDate": {
 		"Permit City Code": "LM",
 		"APN": "000002",
 		"Processing Status": "Process",
@@ -35,8 +35,5 @@
 		"Estimated Project Value": "500",
 		"Owner Name": "Test Owner Name",
 		"Processing Status": "Process"
-		}
-		"OnlyCompletionDate": {
-		"Completion Date": "08/16/2021"
 		}
 }

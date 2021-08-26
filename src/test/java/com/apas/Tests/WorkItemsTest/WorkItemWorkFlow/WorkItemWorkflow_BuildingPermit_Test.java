@@ -14,6 +14,9 @@ import com.apas.config.BPFileSource;
 import com.apas.config.fileTypes;
 import com.apas.config.modules;
 import com.apas.config.testdata;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -23,6 +26,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
@@ -52,7 +58,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
      * This test case is to validate work item creation functionality and the work item flow after file is approved
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and RP-WI Management permission configuration should exist
      **/
-   
+ 
     @Test(description = "SMAB-T1890, SMAB-T1892, SMAB-T1900, SMAB-T1901, SMAB-T1902,SMAB-T2081,SMAB-T2121,SMAB-T2122,SMAB-T1903: Validation for work item generation after building permit file import and approve", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "WorkItemWorkflow_BuildingPermit", "BuildingPermit"}, alwaysRun = true)
     public void WorkItemWorkflow_BuildingPermit_ReviewAndFinalReviewWorkItem_ImportAndApprove(String loginUser) throws Exception {
 
@@ -304,13 +310,13 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
     }
     
     
-    // Code Written for Story SMAB-8570
     
-    
+    /**
+     * This test case is to validate work item creation functionality and the work item flow after creating new building permit for active parcel
+     **/
+   
     @Test(description = "SMAB-T2989, SMAB-T3089: Creating manual entry for Active Parcel building permit With completion date", dataProvider = "RPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"WorkItemWorkflow_BuildingPermit","Regression","BuildingPermit"}, alwaysRun = true)
 	public void BuildingPermit_ManualCreateNewBuildingPermitActiveParcelWithDataValidations(String loginUser) throws Exception {
-
-    	//waitForElementToBeVisible
 
 		//Fetching the Active Parcel
 		String query ="SELECT Primary_Situs__c,Status__C,Name FROM Parcel__c where Status__C='Active' and Primary_Situs__C !='' limit 1";
@@ -331,7 +337,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
 		//Step5: Prepare a test data to create a new building permit
 		String CompletionDate = "BuildingPermitManualCreationDataWithCompletionDate";
-		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestDataWithComplitionDate(CompletionDate);
+		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestDataNoCompletionDate(CompletionDate);
 		String buildingPermitNumber = manualBuildingPermitMap.get("Building Permit Number");
 		manualBuildingPermitMap.put("APN",parcelToSearch);
 
@@ -342,7 +348,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		driver.navigate().refresh();
 		objBuildingPermitPage.searchModule(modules.HOME);
 
-
+   		objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_POOL,20);
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 
 
@@ -351,25 +357,31 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
         String importReviewWorkItem = objSalesforceAPI.select(queryWorkItem).get("Name").get(0);
         ReportLogger.INFO("Created Work Item : " + importReviewWorkItem);
         
-//        Step9: Accepting the work item & Going to Tab In Progress
-
+//        Step9: Accepting the work item & Going to Tab In Progress to verify the work item moved to in progress tab.
 
         objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
-        Thread.sleep(10000);
-        
+        objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
+        WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + importReviewWorkItem + "')]"));
+        String expectedWI=completedWorkItem.getText();
+        softAssert.assertEquals(expectedWI, importReviewWorkItem, "SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
         objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
         objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
+        objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+        objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
         objWorkItemHomePage.findWorkItemInProgress(importReviewWorkItem);
         ReportLogger.INFO("Found Work Item! Mission Completed.");
 
-
     }
         
-    @Test(description = "SMAB-T3007, : Creating manual entry for Retired Parcel building permit with completion date.", dataProvider = "RPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"WorkItemWorkflow_BuildingPermit","Regression","BuildingPermit"}, alwaysRun = true)
+    /**
+     * This test case is to validate work item creation functionality and the work item flow after creating new building permit for Retired parcel
+     **/
+      
+    @Test(description = "SMAB-T3007 : Creating manual entry for Retired Parcel building permit with completion date.", dataProvider = "RPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"WorkItemWorkflow_BuildingPermit","Regression","BuildingPermit"}, alwaysRun = true)
 	public void BuildingPermit_ManualCreateNewBuildingPermitRetiredParcelWithDataValidations(String loginUser) throws Exception {
 
 
-		//Fetching the Active Parcel
+		//Fetching the Retired Parcel
 		String query ="SELECT Primary_Situs__c,Status__C,Name FROM Parcel__c where Status__C='Retired' and Primary_Situs__C !='' limit 1";
 		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
 		String parcelToSearch = response.get("Name").get(0);
@@ -388,7 +400,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
 		//Step5: Prepare a test data to create a new building permit
 		String CompletionDate = "BuildingPermitManualCreationDataWithCompletionDate";
-		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestDataWithComplitionDate(CompletionDate);
+		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestDataNoCompletionDate(CompletionDate);
 		String buildingPermitNumber = manualBuildingPermitMap.get("Building Permit Number");
 		manualBuildingPermitMap.put("APN",parcelToSearch);
 
@@ -398,9 +410,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		//Step7: Opening the Home module & Clicking on In Pool Tab
 
 		objBuildingPermitPage.searchModule(modules.HOME);
-		
-	
-		Thread.sleep(10000);
+   		objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_POOL,20);
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 
         //Step8: "Import Review" Work Item generation validation after file is imported
@@ -411,66 +421,73 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 //        Step9: Accepting the work item & Going to Tab In Progress
 
         objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
-        Thread.sleep(10000);
+        objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
+        WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + importReviewWorkItem + "')]"));
+        String expectedWI=completedWorkItem.getText();
+        softAssert.assertEquals(expectedWI, importReviewWorkItem, "SMAB-T3007:Status of the work item should be Construction completed");
         objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
         objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
+        objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+        objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
         objWorkItemHomePage.findWorkItemInProgress(importReviewWorkItem);
         ReportLogger.INFO("Found Work Item! Mission Completed.");
+
     }
-    
+
+    /**
+     * This test case is to validate work item creation functionality and the work item flow after creating new building permit Without completion date and with completion date for Active parcel
+     **/
+
     @Test(description = "SMAB-T2987, SMAB-T2988, SMAB-T2989 : Creating manual entry for Active Parcel building permit without complition date", dataProvider = "RPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"WorkItemWorkflow_BuildingPermit","Regression","BuildingPermit"}, alwaysRun = true)
    	public void BuildingPermit_ManualCreateNewBuildingPermitActiveParcelWithoutCompletionDate(String loginUser) throws Exception {
 
 
    		//Fetching the Active Parcel
-   		String query ="SELECT Primary_Situs__c,Status__C,Name FROM Parcel__c where Status__C='Active' and Primary_Situs__C !='' limit 1";
-   		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
-   		String parcelToSearch = response.get("Name").get(0);
+   			String query ="SELECT Primary_Situs__c,Status__C,Name FROM Parcel__c where Status__C='Active' and Primary_Situs__C !='' limit 1";
+   			HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+   			String parcelToSearch = response.get("Name").get(0);
 
    		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-   		objBuildingPermitPage.login(loginUser);
+   			objBuildingPermitPage.login(loginUser);
 
    		//Step2: Opening the Parcels module
-   		objBuildingPermitPage.searchModule(modules.PARCELS);
+   			objBuildingPermitPage.searchModule(modules.PARCELS);
 
    		//Step3: Search and Open the Parcel
-   		objBuildingPermitPage.globalSearchRecords(parcelToSearch);
+   			objBuildingPermitPage.globalSearchRecords(parcelToSearch);
    		
    		//Step4: Opening the building permit module
-   		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
+   			objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
    		//Step5: Prepare a test data to create a new building permit
-   		String CompletionDate = "BuildingPermitManualCreationDataWithoutCompletionDate";
-   		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestDataWithComplitionDate(CompletionDate);
-   		String buildingPermitNumber = manualBuildingPermitMap.get("Building Permit Number");
-   		manualBuildingPermitMap.put("APN",parcelToSearch);
+   			String CompletionDate = "BuildingPermitManualCreationDataWithoutCompletionDate";
+   			Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestDataNoCompletionDate(CompletionDate);
+   			String buildingPermitNumber = manualBuildingPermitMap.get("Building Permit Number");
+   			manualBuildingPermitMap.put("APN",parcelToSearch);
 
    		//Step6: Adding a new Building Permit with the APN passed in the above steps
-   		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
-   		System.out.println("Building Pemrit Number Is :- " + buildingPermitNumber);
+   			objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
+   			System.out.println("Building Pemrit Number Is :- " + buildingPermitNumber);
 
    		//Step7: Opening the Home module
-   		objBuildingPermitPage.searchModule(modules.HOME);
+   			objBuildingPermitPage.searchModule(modules.HOME);
    		
-
-   		Thread.sleep(10000);
-   		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
+   			objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_POOL,20);
+   			objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 
    		//	Step8: "Import Review" Work Item generation validation after file is imported
            String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%" + "Building Permit - Construction In Progress - Manual Entry" + "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
-
            String importReviewWorkItem = objSalesforceAPI.select(queryWorkItem).get("Name").get(0);
            ReportLogger.INFO("Created Work Item : " + importReviewWorkItem);
-           
            
 //           Step9: Accepting the work item
 
            objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
-           Thread.sleep(10000);
+           objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
            objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
-           Thread.sleep(10000);
+           objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_PROGRESS,20);
            objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
-           Thread.sleep(10000);
+           objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_PROGRESS,20);
            
          //Step10: Opening the building permit module
       		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
@@ -481,83 +498,79 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
     		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
     		objBuildingPermitPage.scrollToElement(objBuildingPermitPage.editPermitButton);
     		objWorkItemHomePage.Click(objBuildingPermitPage.editPermitButton);
-    		Thread.sleep(10000);
 
-    		//Step12: Prepare a test data to create a new building permit
-    		String EditCompletionDate = "OnlyCompletionDate";
-    		Map<String, String> manualBuildingPermitMapOnlyCompletionDate = objBuildingPermitPage.getBuildingPermitManualCreationTestDataWithComplitionDate(EditCompletionDate);
-       		String buildingPermitNumberCompletionDate = manualBuildingPermitMapOnlyCompletionDate.get("Building Permit Number");
-       		manualBuildingPermitMapOnlyCompletionDate.put("APN",parcelToSearch);
-    		System.out.println(buildingPermitNumberCompletionDate);
-       
+    		//Step12: Editing Building Permit created before without completion date.
+    		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy ");
+    		Date date = new Date();
+    		String Todaydate= dateFormat.format(date);
+    		objWorkItemHomePage.enter("Completion Date", Todaydate);
+    		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText("Save"));
 
-    		//Step13: Editing Building Permit created before without completion date.
-
-    		objBuildingPermitPage.enterManualEntryCompletionDateOnly(manualBuildingPermitMapOnlyCompletionDate);
-
-       	//Step14: Opening the Home module
+       	//Step13: Opening the Home module
        		objBuildingPermitPage.searchModule(modules.HOME);
-       		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Second Time I am on home page.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+       		objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_PROGRESS,20);
     
-       	//Step 15: Clicking on In the pool tab
-       		Thread.sleep(10000);
-
-        //Step16: "Import Review" Work Item generation validation after file is imported
+        //Step14: "Import Review" Work Item generation validation after file is imported
                String editQueryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%" + "Building Permit - Construction Completed - Manual Entry" + "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
                String editImportReviewWorkItem = objSalesforceAPI.select(editQueryWorkItem).get("Name").get(0);
                ReportLogger.INFO("Created Work Item : " + editImportReviewWorkItem);
               
                
-        //Step17: Accepting the work item
+        //Step15: Accepting the work item & Doing assertion
                objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
                objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
-               Thread.sleep(10000);
-         
+               objBuildingPermitPage.waitForElementToBeClickable(editImportReviewWorkItem);
+			   WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + editImportReviewWorkItem + "')]"));
+        	   String expectedWI=completedWorkItem.getText();
+        	   softAssert.assertEquals(expectedWI, importReviewWorkItem, "SMAB-T2987, SMAB-T2988, SMAB-T2989:Status of the work item should be Construction completed");               
                objWorkItemHomePage.acceptWorkItem(editImportReviewWorkItem);
                objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
+               objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+               objBuildingPermitPage.waitForElementToBeClickable(editImportReviewWorkItem);
                objWorkItemHomePage.findWorkItemInProgress(editImportReviewWorkItem);
-               ReportLogger.INFO("Found Work Item! Mission Completed.");
- 		
+
        }
-       
-   
+    /**
+     * This test case is to validate work item creation functionality and the work item flow after creating new building permit Without completion date and with completion date for Retired parcel
+     **/
+
     
     @Test(description = "SMAB-T3007: Creating manual entry for building permit for retired parcel without complition date", dataProvider = "RPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"WorkItemWorkflow_BuildingPermit","Regression","BuildingPermit"}, alwaysRun = true)
    	public void BuildingPermit_ManualCreateNewBuildingPermitRetiredParcelWithoutCompletionDate(String loginUser) throws Exception {
 
 
    		//Fetching the Active Parcel
-   		String query ="SELECT Primary_Situs__c,Status__C,Name FROM Parcel__c where Status__C='Retired' and Primary_Situs__C !='' limit 1";
-   		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
-   		String parcelToSearch = response.get("Name").get(0);
+   			String query ="SELECT Primary_Situs__c,Status__C,Name FROM Parcel__c where Status__C='Retired' and Primary_Situs__C !='' limit 1";
+   			HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+   			String parcelToSearch = response.get("Name").get(0);
 
    		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
-   		objBuildingPermitPage.login(loginUser);
+   			objBuildingPermitPage.login(loginUser);
 
    		//Step2: Opening the Parcels module
-   		objBuildingPermitPage.searchModule(modules.PARCELS);
+   			objBuildingPermitPage.searchModule(modules.PARCELS);
 
    		//Step3: Search and Open the Parcel
-   		objBuildingPermitPage.globalSearchRecords(parcelToSearch);
+   			objBuildingPermitPage.globalSearchRecords(parcelToSearch);
    		
    		//Step4: Opening the building permit module
-   		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
+   			objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
    		//Step5: Prepare a test data to create a new building permit
-   		String CompletionDate = "BuildingPermitManualCreationDataWithoutCompletionDate";
-   		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestDataWithComplitionDate(CompletionDate);
-   		String buildingPermitNumber = manualBuildingPermitMap.get("Building Permit Number");
-   		manualBuildingPermitMap.put("APN",parcelToSearch);
+   			String CompletionDate = "BuildingPermitManualCreationDataWithoutCompletionDate";
+   			Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestDataNoCompletionDate(CompletionDate);
+   			String buildingPermitNumber = manualBuildingPermitMap.get("Building Permit Number");
+   			manualBuildingPermitMap.put("APN",parcelToSearch);
 
    		//Step6: Adding a new Building Permit with the APN passed in the above steps
-   		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
-   		System.out.println("Building Pemrit Number Is :- " + buildingPermitNumber);
+   			objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
+   			ReportLogger.INFO("Building Permit Number Is :- " + buildingPermitNumber);
 
    		//Step7: Opening the Home module
-   		objBuildingPermitPage.searchModule(modules.HOME);
+   			objBuildingPermitPage.searchModule(modules.HOME);
+   			objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_POOL,20);
+   			objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 
-   		Thread.sleep(10000);
-   		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 
    		//	Step8: "Import Review" Work Item generation validation after file is imported
            String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%" + "Building Permit - Construction In Progress - Manual Entry" + "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
@@ -566,15 +579,16 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
            ReportLogger.INFO("Created Work Item : " + importReviewWorkItem);
   
            
-//           Step9: Accepting the work item
+       //Step9: Accepting the work item
 
            objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
-           Thread.sleep(10000);
+           objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
            objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
-           Thread.sleep(10000);
+           objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_PROGRESS,20);
            objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
-          
-         //Step10: Opening the building permit module
+           objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_PROGRESS,20);
+            
+        //Step10: Opening the building permit module
       		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
       		
       	//Step11: Editing the existing Building Permit entering completion date
@@ -583,47 +597,38 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
     		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
     		objBuildingPermitPage.scrollToElement(objBuildingPermitPage.editPermitButton);
     		objWorkItemHomePage.Click(objBuildingPermitPage.editPermitButton);
-    		Thread.sleep(10000);
 
-    		//Step12: Prepare a test data to Update Previous building permit
-       		String EditCompletionDate = "OnlyCompletionDate";
-       		Map<String, String> manualBuildingPermitMapOnlyCompletionDate = objBuildingPermitPage.getBuildingPermitManualCreationTestDataWithComplitionDate(EditCompletionDate);
-       		String buildingPermitNumberCompletionDate = manualBuildingPermitMapOnlyCompletionDate.get("Building Permit Number");
-       		manualBuildingPermitMapOnlyCompletionDate.put("APN",parcelToSearch);
-    		System.out.println(buildingPermitNumberCompletionDate);
-       
-    		Thread.sleep(10000);
+    	//Step12: Editing Building Permit created before without completion date.
+    		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy ");
+    		Date date = new Date();
+    		String Todaydate= dateFormat.format(date);
+    		objWorkItemHomePage.enter("Completion Date", Todaydate);
+    		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText("Save"));
 
-    		//Step13: Adding a new Completion Date to the Building Permit with the APN passed in the above steps
-
-    		objBuildingPermitPage.enterManualEntryCompletionDateOnly(manualBuildingPermitMapOnlyCompletionDate);
-
-       	//Step14: Opening the Home module
+       	//Step13: Opening the Home module
        		objBuildingPermitPage.searchModule(modules.HOME);
-   
+   			objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_PROGRESS,20);
     
-       	//Step 15: Clicking on In the pool tab
-       		Thread.sleep(10000);
+    
 
-        //Step16: "Import Review" Work Item generation validation after file is imported
+        //Step14: "Import Review" Work Item generation validation after file is imported
                String editQueryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%" + "Building Permit - Construction Completed - Manual Entry" + "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
                String editImportReviewWorkItem = objSalesforceAPI.select(editQueryWorkItem).get("Name").get(0);
                ReportLogger.INFO("Created Work Item : " + editImportReviewWorkItem);
-               System.out.println("We are on home page now With Secong Work Item..................." + editImportReviewWorkItem);
+   
                
-        //Step17: Accepting the work item
+        //Step15: Accepting the work item
                objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
                objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
-
-               Thread.sleep(10000);
-
+               objBuildingPermitPage.waitForElementToBeClickable(editImportReviewWorkItem);
+               WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + editImportReviewWorkItem + "')]"));
+        	   String expectedWI=completedWorkItem.getText();
+        	   softAssert.assertEquals(expectedWI, importReviewWorkItem, "SMAB-T3007:Status of the work item should be Construction completed");
                objWorkItemHomePage.acceptWorkItem(editImportReviewWorkItem);
                objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
-               objBuildingPermitPage.scrollToBottom();
+               objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+               objBuildingPermitPage.waitForElementToBeClickable(editImportReviewWorkItem);
                objWorkItemHomePage.findWorkItemInProgress(editImportReviewWorkItem);
-
        		
        }
-
-    
 }

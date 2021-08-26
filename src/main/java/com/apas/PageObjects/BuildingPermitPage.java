@@ -161,15 +161,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 		return buildingPermitNumber;
 	}
 
-	//Only to enter one field Completion Date
-	public String enterManualEntryCompletionDateOnly(Map<String, String> dataMap) throws Exception {
 
-		String buildingPermitNumber  = dataMap.get("Building Permit Number");
-		enter(completionDateCalender, dataMap.get("Completion Date"));
-
-		Click(getButtonWithText("Save"));
-		return buildingPermitNumber;
-	}
 
 	/** @Description: This method will create a manual building permit entry in APAS
 	 */
@@ -214,7 +206,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 		return  manualBuildingPermitMap;
 	}
 
-	public Map<String, String> getBuildingPermitManualCreationTestDataWithComplitionDate(String CompletionDate) {
+	public Map<String, String> getBuildingPermitManualCreationTestDataNoCompletionDate(String CompletionDate) {
 
 		//Fetch the APN to be used to create building permit
 		String query ="SELECT Name FROM Parcel__c where status__c = 'Active' limit 1";
