@@ -375,7 +375,6 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 **/
 	public void acceptWorkItem(String workItem) throws Exception {
 		ReportLogger.INFO("Accepting the work item: " + workItem);
-		Thread.sleep(5000);
 		WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//ancestor::th//preceding-sibling::td//span[@class='slds-checkbox_faux']"));
 		scrollToElement(webElementCheckBox);
 		Click(webElementCheckBox);
