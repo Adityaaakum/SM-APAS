@@ -159,5 +159,83 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 				
 		objParcelsPage.logout();
 	}
+	/**
+	 * This method is to validate system admin and CIO user should create, edit new ownership on parcel 
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T3035,SMAB-T3036,SMAB-T3037,SMAB-T3038: Validate system admin and CIO user should be able to create, edit New ownership on parcel", groups = {"Regression","ParcelManagement"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	public void ParcelManagement_AccessValidationOnCreationAndEditionOfOwnership(String loginUser) throws Exception {
+		
+		String execEnv= System.getProperty("region");		
+		String OwnershipAndTransferCreationData =  testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		String queryAPNValue = "select Name, Id from Parcel__c where Status__c='Active' limit 1";
+		String activeApn = salesforceAPI.select(queryAPNValue).get("Name").get(0);
+		String activeApnId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+        Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(OwnershipAndTransferCreationData,
+				"DataToCreateOwnershipRecord");
+        
+
+		//Step 1: Login to the APAS application using the user passed through the data provider
+		objMappingPage.login(loginUser);
+		
+		//Step 2: Open the parcel module
+		objParcelsPage.searchModule(modules.PARCELS);
+		
+		//Step 3: Select ALL from the List view and Search active apn record
+		Thread.sleep(5000);
+		objParcelsPage.displayRecords("All Active Parcels");
+		objParcelsPage.searchRecords(activeApn);
+		
+		//Step 4: adding owner after deleting for the recorded APN 
+		objParcelsPage.deleteOwnershipFromParcel(activeApnId);
+        
+		String acesseName = objMappingPage.getOwnerForMappingAction();
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + activeApnId
+				+ "/related/Property_Ownerships__r/view");
+		// Steps 5: verify new button on parcel page
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.getButtonWithText("New")),
+				"SMAB-T3035: Create new button should be visible to system admin user");
+
+		objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
+		String ownershipId = driver.getCurrentUrl().split("/")[6];
+        String ownershipName= salesforceAPI.select("SELECT Name FROM Property_Ownership__c where id='"+ownershipId+"'").get("Name").get(0);
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.getButtonWithText("Edit")),
+				"SMAB-T3035: Edit button should be visible to system admin user");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.getButtonWithText("Delete")),
+				"SMAB-T3036: Delete button should be visible to system admin user");
+		objMappingPage.logout();
+		Thread.sleep(5000);
+		//Login with CIo staff
+        objMappingPage.login(users.CIO_STAFF);
+        //Steps 6: adding owner after deleting for the recorded APN 
+
+		acesseName = objMappingPage.getOwnerForMappingAction();
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + activeApnId
+				+ "/related/Property_Ownerships__r/view");
+		objParcelsPage.waitForElementToBeVisible(10, objParcelsPage.getButtonWithText("New"));
+		// Steps 7: verify new, edit, delete button on parcel page
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.getButtonWithText("New")),
+				"SMAB-T3035: Create new button should be visible to CIO users");
+         softAssert.assertTrue(!objParcelsPage.clickShowMoreButtonAndAct(ownershipName, "Delete"),"SMAB-T3037: Validate non system admin user is not able to view 'Delete' option to delete the existing ownership on parcel record");
+		softAssert.assertTrue(objParcelsPage.clickShowMoreButtonAndAct(ownershipName, "Edit"),"SMAB-T3038: Validate CIO user is able to view 'Edit' option to edit the existing ownership on parcel record");
+		
+		objMappingPage.logout();
+		Thread.sleep(5000);
+		// login with mapping user
+        objMappingPage.login(users.MAPPING_STAFF);
+		
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + activeApnId
+				+ "/related/Property_Ownerships__r/view"); 
+		// Steps 8: verify new, edit, delete button on parcel page
+
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.getButtonWithText("New")),
+				"SMAB-T3038: Create new button should not be visible to other user");
+
+		softAssert.assertTrue(!objParcelsPage.clickShowMoreButtonAndAct(ownershipName, "Delete"),"SMAB-T3037: Validate non system admin user is not able to view 'Delete' option to delete the existing ownership on parcel record");
+		softAssert.assertTrue(!objParcelsPage.clickShowMoreButtonAndAct(ownershipName, "Edit"),"SMAB-T3038: Validate other than system admin and CIO user is not able to view 'Edit' option to Edit the existing parcel record");
+		
+		objParcelsPage.logout();
+	}
 	
 }
