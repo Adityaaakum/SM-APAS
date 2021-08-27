@@ -64,6 +64,9 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//button[text() = 'Delete']")
 	public WebElement deleteButton;
+	
+	@FindBy(xpath = "//button[@name = 'Edit']")
+    public WebElement editPermitButton;
 
 	@FindBy(xpath = "//lightning-icon//span[text()='Show More']")
 	public WebElement showMoreButton;

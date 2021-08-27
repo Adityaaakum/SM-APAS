@@ -81,7 +81,6 @@ public class ParcelsPage extends ApasGenericPage {
 	public String puc = "PUC";
 	
 	
-	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
 
