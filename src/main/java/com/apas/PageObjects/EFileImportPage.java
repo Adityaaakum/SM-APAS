@@ -438,7 +438,7 @@ public class EFileImportPage extends ApasGenericPage {
         String xpathContinueButton = "//button[text()='Continue']";
         WebElement continueButton = locateElement(xpathContinueButton, 30);
         waitForElementToBeClickable(continueButton, 10);
-        clickAction(continueButton);
+        Click(continueButton);
         Thread.sleep(4000);
     }
 

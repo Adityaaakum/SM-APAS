@@ -235,7 +235,8 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		
 		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsWI);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		softAssert.assertEquals(objMappingPage.getLinkedParcelInWorkItem("0"), apn1,
+		objMappingPage.waitForElementToBeVisible(10,objWorkItemHomePage.linkedItemsRecord);
+		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("APN").get(0), apn1,
 				"SMAB-T2672: Validate that parent parcel is displayed in the Linked Items of WI");
 		
 		objMappingPage.logout();
@@ -402,7 +403,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		//Step 5: Click retire Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel(s) "+apn+" is pending verification from the supervisor in order to be retired.",
+		softAssert.assertContains(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"is pending verification from the supervisor in order to be retired.",
 				"SMAB-T2833: Validate that User is able to perform Retire action from mapping actions tab");
 		
 		//Step 6: Navigating  to the independent mapping action WI that would have been created after performing retire action 

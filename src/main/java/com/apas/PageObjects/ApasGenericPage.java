@@ -413,7 +413,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public void clickShowMoreButton(String modRecordName) throws Exception {		
 		Thread.sleep(1000);
-		String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//th//a[text() = '"+ modRecordName +"']//parent::span//parent::th//following-sibling::td//a[@role = 'button']";
+		String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//th//a[text() = '"+ modRecordName +"']//parent::span//parent::td//following-sibling::th//a[@role = 'button']|//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//td//a[text() = '"+ modRecordName +"']//parent::span//parent::td//following-sibling::td//a[@role = 'button']";
 		WebElement modificationsIcon = locateElement(xpathStr, 30);
 		clickAction(modificationsIcon);
 		ReportLogger.INFO(modRecordName + " record exist and user is able to click Show More button against it");

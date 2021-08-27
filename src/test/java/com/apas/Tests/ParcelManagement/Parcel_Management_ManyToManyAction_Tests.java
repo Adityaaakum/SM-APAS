@@ -314,7 +314,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2587, SMAB-T2594, SMAB-T2595, SMAB-T2596, SMAB-T2626, SMAB-T2582:Verify the Parent APN validations for \"Many To Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3051,SMAB-T2587, SMAB-T2594, SMAB-T2595, SMAB-T2596, SMAB-T2626, SMAB-T2582:Verify the Parent APN validations for \"Many To Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyParentAPNValidationsForManyToManyMappingAction(String loginUser) throws Exception {
 
@@ -459,7 +459,10 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithoutHyphen);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		Thread.sleep(2000);
-		softAssert.assertTrue(objMappingPage.getElementText(objMappingPage.parentAPNFieldValue).split(",")[0].contains("-"),"SMAB-T2582: Verify that when 9 digit APN is entered without hyphen, after saving hyphen is added automatically");
+		softAssert.assertTrue(objMappingPage.getElementText
+				(objMappingPage.parentAPNFieldValue).split(",")[0].contains("-"),
+				"SMAB-T2582,SMAB-T3051: Verify that when 9 digit APN is entered without hyphen, "
+				+ "after saving hyphen is added automatically");
 
 
 		driver.switchTo().window(parentWindow);
@@ -472,7 +475,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2722:Verify the Output validations for \"Many to Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3049,SMAB-T2722:Verify the Output validations for \"Many to Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyNonCondoManyToManyMappingActionOutputValidations(String loginUser) throws Exception {
 
@@ -590,7 +593,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		//Step 10: Verify the success message after parcels are generated
 		softAssert.assertContains(objMappingPage.getSuccessMessage(),"Parcel(s) have been created successfully. Please review spatial information",
-				"SMAB-T2722: Validation that success message is displayed when Parcels are generated");
+				"SMAB-T2722,SMAB-T3049: Validation that success message is displayed when Parcels are generated");
 
 		//Step 11: Verify the grid cells are not editable after parcels are generated
 		Thread.sleep(3000);
@@ -741,7 +744,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2730,SMAB-T2903:Verify the Output validations for \"Many to Many\" mapping action and validation on lower APN value", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2730,SMAB-T2903,SMAB-T3244:Verify the Output validations for \"Many to Many\" mapping action and validation on lower APN value", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyCondoManyToManyMappingActionOutputValidations(String loginUser) throws Exception {
 
@@ -827,9 +830,16 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		// Step 3: Login to the APAS application using the credentials passed through data provider
 		objMappingPage.login(loginUser);
 
-		// Step 4: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
-		objMappingPage.searchModule(PARCELS);
+		//Fetching the Parent's PUC before Many to Many action
+	    objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn1);
+		String parentAPNPucBeforeAction1 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+		objMappingPage.globalSearchRecords(apn2);	
+		String parentAPNPucBeforeAction2 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+
+		// Step 4: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+		objMappingPage.globalSearchRecords(apn1);
+		
 
 		// Step 5: Creating Manual work item for the Parcel
 		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
@@ -909,11 +919,25 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		HashMap<String, ArrayList<String>> parentAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn2);		
 		HashMap<String, ArrayList<String>> childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
 		HashMap<String, ArrayList<String>> childAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
-		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2730: Verify Status of Parent Parcel: "+apn1);
-		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2730: Verify Status of Parent Parcel: "+apn2);
-		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2730: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
-		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2730: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(1));
-
+		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2730,SMAB-T3244: Verify Status of Parent Parcel: "+apn1);
+		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2730,SMAB-T3244: Verify Status of Parent Parcel: "+apn2);
+		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2730,SMAB-T3244: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
+		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2730,SMAB-T3244: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(1));
+		
+		//Fetching required PUC's of parent and child after many to many Action
+	    String childAPN1PucFromGrid = gridDataHashMap.get("Use Code*").get(0);
+		String childAPN2PucFromGrid = gridDataHashMap.get("Use Code*").get(1);
+		driver.switchTo().window(parentWindow);
+        objMappingPage.searchModule(PARCELS);
+        objMappingPage.globalSearchRecords(apn1);
+		String parentAPNPuc1 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+		objMappingPage.globalSearchRecords(apn2);
+	    String parentAPNPuc2 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+				
+		softAssert.assertEquals(parentAPNPuc1,parentAPNPucBeforeAction1,"SMAB-T3244:Verify PUC of Parent1 Parcel:"+apn1);
+	    softAssert.assertEquals(parentAPNPuc2,parentAPNPucBeforeAction2,"SMAB-T3244:Verify PUC of Parent2 Parcel:"+apn2);
+		softAssert.assertEquals(childAPN1PucFromGrid,parentAPNPucBeforeAction1,"SMAB-T3244:Verify PUC of Child1 Parcel:"+nextGeneratedAPN1);
+		softAssert.assertEquals(childAPN2PucFromGrid,parentAPNPucBeforeAction1,"SMAB-T3244:Verify PUC of Child2 Parcel:"+nextGeneratedAPN2);
 
 		//Step 15: Verify Neighborhood Code value is inherited from Parent to Child Parcels
 		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",parentAPN);
@@ -974,10 +998,26 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		parentAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn2);		
 		childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
 		childAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
-		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Retired","SMAB-T2730: Verify Status of Parent Parcel: "+apn1);
-		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"Retired","SMAB-T2730: Verify Status of Parent Parcel: "+apn2);
-		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"Active","SMAB-T2730: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
-		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"Active","SMAB-T2730: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(1));
+		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Retired","SMAB-T2730,SMAB-T3244: Verify Status of Parent Parcel: "+apn1);
+		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"Retired","SMAB-T2730,SMAB-T3244: Verify Status of Parent Parcel: "+apn2);
+		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"Active","SMAB-T2730,SMAB-T3244: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
+		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"Active","SMAB-T2730,SMAB-T3244: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(1));
+		
+		//Fetching required PUC's of parent and child after closing WI
+        objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn1);
+		parentAPNPuc1 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+		objMappingPage.globalSearchRecords(apn2);
+		parentAPNPuc2 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+		objMappingPage.globalSearchRecords(nextGeneratedAPN1);
+		String childAPNPuc1 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+		objMappingPage.globalSearchRecords(nextGeneratedAPN2);
+		String childAPNPuc2 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+		
+		softAssert.assertEquals(parentAPNPuc1,parentAPNPucBeforeAction1,"SMAB-T3244:Verify PUC of Parent1 Parcel:"+apn1);
+		softAssert.assertEquals(parentAPNPuc2,parentAPNPucBeforeAction2,"SMAB-T3244:Verify PUC of Parent2 Parcel:"+apn2);
+		softAssert.assertEquals(childAPNPuc1,parentAPNPucBeforeAction1,"SMAB-T3244:Verify PUC of Child1 Parcel:"+nextGeneratedAPN1);
+		softAssert.assertEquals(childAPNPuc2,parentAPNPucBeforeAction1,"SMAB-T3244:Verify PUC of Child2 Parcel:"+nextGeneratedAPN2);
 
 		//Step 21: Verify 2 new WIs are generated and linked to Child Parcels after parcel is split and WI is completed
 		String queryToGetRequestType = "SELECT Work_Item__r.Request_Type__c FROM Work_Item_Linkage__c Where Parcel__r.Name = '"+gridDataHashMap.get("APN").get(0)+"' OR Parcel__r.Name = '"+gridDataHashMap.get("APN").get(1)+"'";
@@ -1661,6 +1701,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
 		jsonObject.put("Primary_Situs__c", primarySitusId);
+		
+		String PUC = salesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
+		String TRA = salesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);
 		
 		
 		if(!responseAPNDetails.isEmpty()){

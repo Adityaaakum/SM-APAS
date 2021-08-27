@@ -60,7 +60,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @throws Exception
 	 */
 
-	@Test(description = "SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2663,SMAB-T2263,SMAB-T2521,SMAB-T2522,SMAB-T2537,SMAB-T2547:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel (Active) of type Non Condo from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3049,SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2663,SMAB-T2263,SMAB-T2521,SMAB-T2522,SMAB-T2537,SMAB-T2547:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel (Active) of type Non Condo from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" },enabled= true)
 	public void ParcelManagement_VerifyBrandNewParcelMappingActionNonCondoParcel(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
@@ -145,7 +145,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		//Step 12: Validating that Parcel has been successfully created.
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),
 				"Parcel(s) have been created successfully. Please review spatial information.",
-				"SMAB-T2547: Validation that Parcel has been created successfully. Please Review Spatial Information");
+				"SMAB-T2547,SMAB-T3049: Validation that Parcel has been created successfully. Please Review Spatial Information");
 
 		//Step 13: Validation that child parcel primary situs is blank since  situs was not updated in first screen
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -273,7 +273,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @param loginUser-Mapping user
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2642,SMAB-T2643,SMAB-T2644:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2642,SMAB-T2643,SMAB-T2644,SMAB-T3243:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" },enabled =true)
 	public void ParcelManagement_Verify_Brand_NewParcel_Mapping_Action(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
@@ -309,6 +309,10 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 						
 		// entering data in form for Brand New Parcel mapping
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
+		objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
+		objMappingPage.editGridCellValue(objMappingPage.legalDescriptionColumnSecondScreen, "Legal Discription");
+		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+		objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		// Validating that Parcel has been successfully created.
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel(s) have been created successfully. Please review spatial information.",
@@ -319,7 +323,17 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
            String newCreatedApn  =   gridParcelData.get("APN").get(0);                         
            HashMap<String, ArrayList<String>> statusnewApn = objParcelsPage.fetchFieldValueOfParcel("Status__c", newCreatedApn);
              // validating status of brand new parcel           
-            softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2643: Verifying the status of the new parcel");
+            softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2643,SMAB-T3243: Verifying the status of the new parcel");
+            
+            //Fetching required Child PUC after BrandNew action
+            String childAPNPucFromGrid = gridParcelData.get("Use Code*").get(0);
+            driver.switchTo().window(parentWindow);
+            objMappingPage.searchModule(PARCELS);
+    		objMappingPage.globalSearchRecords(newCreatedApn);
+    		String childParcelPuc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+    		
+    		softAssert.assertEquals(childParcelPuc, childAPNPucFromGrid,
+    				" SMAB-T3243:Verify PUC of Child parcel"+newCreatedApn);
         
           //Fetch some other values from database
     		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
@@ -369,8 +383,13 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
      		 HashMap<String, ArrayList<String>> statusCompletedApn = objParcelsPage.fetchFieldValueOfParcel("Status__c",newCreatedApn);
              //Validating the status of parcel after completing WI
            softAssert.assertEquals(statusCompletedApn.get("Status__c").get(0), "Active",
-        		   "SMAB-T2644: Validating that the status of new APN is active");
+        		   "SMAB-T2644,SMAB-T3243: Validating that the status of new APN is active");
            // driver.switchTo().window(parentWindow);
+           
+         //Fetching Child's PUC after closing WI
+           childParcelPuc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+           softAssert.assertEquals(childParcelPuc, childAPNPucFromGrid,
+   				" SMAB-T3243: Verify PUC of Child parcel"+newCreatedApn);
 		    objMappingPage.logout();
 		   		
             		                          
@@ -1066,7 +1085,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		 * @throws Exception
 		 */
 		@Test(description = "SMAB-T2946:Verify the type of WI system creates for different recorded document types for a recorded document with one APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-				"Smoke","Regression","ChangeInOwnershipManagement","RecorderIntegration" },enabled=false)
+				"Smoke","Regression","ChangeInOwnershipManagement","RecorderIntegration" },enabled=true)
 		public void ParcelManagement_VerifyNewWIgenratedfromRecorderIntegrationAndBrandNewMappingAction(String loginUser) throws Exception {
 					
 			
@@ -1074,7 +1093,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.searchModule(PARCELS);
 		salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c where Sub_type__c='Certificate of Compliance' and status__c ='In pool'", "status__c","In Progress");
 		objtransfer.generateRecorderJobWorkItems(objMappingPage.DOC_CERTIFICATE_OF_COMPLIANCE, 1);
-   		String WorkItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='MAPPING'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";        
+   		String WorkItemQuery="SELECT Id,name FROM Work_Item__c where Type__c='MAPPING'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";     		
         String WorkItemNo=salesforceAPI.select(WorkItemQuery).get("Name").get(0);		         
         //Searching for the WI genrated
          objMappingPage.globalSearchRecords(WorkItemNo); 
