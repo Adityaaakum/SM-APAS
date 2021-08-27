@@ -306,7 +306,7 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		objParcelsPage.logout();
 	}
 
-	@Test(description = "SMAB-T2997,SMAB-T2998,SMAB-T2999:Verify Characteristic End date and Reason fields and verifying the validation checks", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2648,SMAB-T2649,SMAB-T2650:Verify Characteristics Security", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement", "ParcelCharacteristics" })
 	public void ParcelCharacteristics_Security(String loginUser) throws Exception {
 
@@ -572,7 +572,7 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		objParcelsPage.Click(objParcelsPage.viewAll);
 		Thread.sleep(6000);
 
-		// Step 21: Click on dropdoen action
+		// Step 21: Click on dropdown action
 		objParcelsPage.Click(objParcelsPage.charDropdown().get(0));
 		Thread.sleep(6000);
 
