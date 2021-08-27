@@ -50,6 +50,7 @@ public class ApasGenericPage extends Page {
 	public String tabDetails = "Details";
 	public String tabRelated = "Related";
 	public String tabLinkedItems = "Linked Items";
+	public String columnInGrid =commonXpath+"//a[contains(@class,'toggle')]//span[text()='columnName']";
 
 	@FindBy(xpath = "//button[@title='Close error dialog']")
 	public WebElement crossIcon;
@@ -1458,4 +1459,29 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		 return objSalesforceAPI.select(slqRecordedDocumentDetails);
 
 	}
+	/**
+	 * @Description: This method will sort a column in grid  
+	 */
+	public void sortInGrid(String columnName,boolean isAscending) throws IOException, InterruptedException  {
+		String xpath = columnInGrid.replace("columnName",columnName);
+		String xpathSorting=xpath+"//following::span";
+		Click(driver.findElement(By.xpath(xpath)));
+		Thread.sleep(3000);
+		
+		String sortStatus=getElementText(driver.findElement(By.xpath(xpathSorting)));
+		
+		if(isAscending==true && !sortStatus.equals("Sorted Ascending"))
+			{
+			Click(driver.findElement(By.xpath(xpath)));
+			waitForElementTextToBe(driver.findElement(By.xpath(xpathSorting)), "Sorted Ascending", 10);
+			}
+
+		if(isAscending==false && sortStatus.equals("Sorted Ascending"))
+			{
+			Click(driver.findElement(By.xpath(xpath)));		
+			waitForElementTextToBe(driver.findElement(By.xpath(xpathSorting)), "Sorted Descending", 10);
+			}
+
+		
+	} 
 }

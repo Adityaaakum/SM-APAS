@@ -71,6 +71,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String cioTransferScreenSectionlabels= "//*[@class='slds-card slds-card_boundary']//span[@class='slds-truncate slds-m-right--xx-small']";
 	public String remarksLabel = "Remarks";
 	public String fieldsInCalculateOwnershipModal="//*[@id='wrapper-body']//flowruntime-screen-field//p";
+	public String ownershipPercentage ="Ownership Percentage";
 
 	public static final String CIO_EVENT_CODE_COPAL="CIO-COPAL";
 	public static final String CIO_EVENT_CODE_PART="CIO-PART";
