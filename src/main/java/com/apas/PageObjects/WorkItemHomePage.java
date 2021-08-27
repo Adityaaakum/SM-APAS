@@ -158,6 +158,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[2]//input[@type='checkbox']/parent::span")
 	public List<WebElement> lowincomeSubmittedWI;
+	
+	@FindBy(xpath = "//span[@title='Age(Days)'][@class='slds-truncate']")
+    public WebElement ageDays;
 
 	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(@class,'slds-truncate') or contains(@class,'slds-hyphenate')]//a")
 	public WebElement linkedItemsRecord;
