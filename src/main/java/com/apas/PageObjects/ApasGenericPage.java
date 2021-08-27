@@ -1454,11 +1454,8 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 	Thread.sleep(1000);
 	}
 	
-	public void ClickDeleteCorrespondingDropdown()throws IOException, InterruptedException {
-		String xpath1= "//div[@title = 'Delete'][@role='button']";
-		//String xpath1= "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table//tr//td[9]//span//div//a[@role='button']";
-		//String xpath1 = "//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'Delete'][@role='button'] | //div[contains(@class, 'slds-dropdown__list slds-dropdown_length-with-icon')]//button[text()='Delete'][@type='Delete'] |  //div[contains(@class,'actionMenu')]//a[@title='Delete']";
-	Click(driver.findElement(By.xpath(xpath1)));
-		
+	public void ClickDeleteCorrespondingDropdown() throws IOException, InterruptedException {
+		String xpath1 = "//div[@title = 'Delete'][@role='button']";
+		Click(driver.findElement(By.xpath(xpath1)));
 	}
 }

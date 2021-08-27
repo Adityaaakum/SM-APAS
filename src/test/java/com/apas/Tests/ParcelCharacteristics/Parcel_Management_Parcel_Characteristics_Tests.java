@@ -294,7 +294,8 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
 
 		ReportLogger.INFO("Validate the Reason and End Date fields");
-		// Step 12: Verify that End date can be entered manually and reason field is mandatory if end date is populated
+		// Step 12: Verify that End date can be entered manually and reason field is
+		// mandatory if end date is populated
 		softAssert.assertEquals(objParcelsPage.getIndividualFieldErrorMessage("Reason"),
 				"Reason field is required if End Date is populated.",
 				"SMAB-T2997,SMAB-T2999: Verify that End date can be entered manually and reason field is mandatory if end date is populated");
@@ -304,10 +305,10 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.tabDetails);
 		objParcelsPage.logout();
 	}
-	
+
 	@Test(description = "SMAB-T2997,SMAB-T2998,SMAB-T2999:Verify Characteristic End date and Reason fields and verifying the validation checks", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement", "ParcelCharacteristics" })
-	public void ParcelCharacteristics(String loginUser) throws Exception {
+	public void ParcelCharacteristics_Security(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
 		// Data Provider
@@ -326,239 +327,92 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		// Step 4: Open the parcel characteristics tab
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
 
+		ReportLogger.INFO("Validate the creation of new characteristic");
 		softAssert.assertTrue(objParcelsPage.verifyElementVisible("New"),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		
+				"SMAB-T2649: Verify only  System Admin and other users that have rights are able to create Parcel Characteristics");
+
 		// Step 5: Create New Characteristic
-		/**objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
 
-		ReportLogger.INFO("Validate the Field Retired Characteristcs");
-		// Step 8: Verify that field name Retired Characteristics exists
-		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Retired Characteristics"),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-
-		// Step 9: Enter the values of required fields
+		// Step 6: Enter the values of required fields
 		objParcelsPage.selectOptionFromDropDown("Property Type", "Residential");
 		objParcelsPage.selectOptionFromDropDown("Characteristics Screen", "SFR");
 
+		// Step 7: Click on Save
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
 
-		// Step 11: Click on Save
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		
 		objMappingPage.globalSearchRecords(apn);
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.fetchCharacteristicsList().get(0));
-		
-		//Step 7: Click on first characteristic record
-				objParcelsPage.Click(objParcelsPage.fetchCharacteristicsList().get(0));
-		
+
+		// Step 8: Click on first characteristic record
+		objParcelsPage.Click(objParcelsPage.fetchCharacteristicsList().get(0));
+
+		// Step 9: Verify edit button is visible to users have access
+		ReportLogger.INFO("Validate the user with access can see edit nutton characteristic");
 		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Edit"),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		
+				"SMAB-T2649: Verify only  System Admin and other users that have rights are able to see edit button Parcel Characteristics");
+
+		// Step 10: click on Edit button
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Edit"));
-		
-		
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Building ID"));
-		objParcelsPage.clearFieldValue("Building ID");
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Building ID"), "20");
-		
+
+		// Step 11: Edit the field value
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Tagged Fields"));
+		objParcelsPage.clearFieldValue("Tagged Fields");
+		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Tagged Fields"), "2");
+
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		softAssert.assertEquals(objParcelsPage.getFieldValueFromAPAS("Building ID"),20,
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		
-		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Clone"),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Clone"));
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		
-		softAssert.assertTrue(!objParcelsPage.getFieldValueFromAPAS("Retired Characteristics").isEmpty(),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");**/
+
+		ReportLogger.INFO("Validate the user with access can edit the characteristic record");
+		softAssert.assertEquals(objParcelsPage.getFieldValueFromAPAS("Tagged Fields"), 2,
+				"SMAB-T2649: Verify only  System Admin and other users that have rights are able to edit Parcel Characteristics");
+
 		objMappingPage.globalSearchRecords(apn);
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.fetchCharacteristicsList().get(0));
+
+		// Step 12: Click on view all to view list of all characteristics
 		objParcelsPage.Click(objParcelsPage.viewAll);
 		Thread.sleep(6000);
-	//	objParcelsPage.waitForElementToBeClickable(objParcelsPage.fetchAllCreatedChar().get(0),30);
-		int countBefore=objParcelsPage.fetchAllCreatedChar().size();
-		
+		int countBefore = objParcelsPage.fetchAllCreatedChar().size();
+
+		// Step 13: Click on action button in characteristic dropdown
 		objParcelsPage.Click(objParcelsPage.charDropdown().get(0));
 		Thread.sleep(6000);
-		//objParcelsPage.ClickCharacteristicCorrespondingDropdown("Characteristics");
+
+		// Step 14: Click on Delete button
 		objParcelsPage.ClickDeleteCorrespondingDropdown();
-		
-	objParcelsPage.waitForElementToBeClickable(objParcelsPage.getPopUpconfirmation("Delete"),30);
-		
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.getPopUpconfirmation("Delete"), 30);
+
+		// Step 15: Click on delete confirmation pop up
 		objParcelsPage.Click(objParcelsPage.getPopUpconfirmation("Delete"));
 		driver.navigate().refresh();
 		Thread.sleep(6000);
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.fetchAllCreatedChar().get(0));
-		int countAfter=objParcelsPage.fetchAllCreatedChar().size();
-		
-		
-		softAssert.assertEquals(countAfter,countBefore-1,
-				"SMAB-T2998: Validate that field name Count Characteristics exists");
+		int countAfter = objParcelsPage.fetchAllCreatedChar().size();
+
+		ReportLogger.INFO("Validate sys admin can delete characteristics");
+		softAssert.assertEquals(countAfter, countBefore - 1,
+				"SMAB-T2648: Verify System Admin can delete Parcel Characteristics");
 		objParcelsPage.logout();
 		Thread.sleep(5000);
-		
+
+		// Step 16: login as mapping staff user
 		objMappingPage.login(MAPPING_STAFF);
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
 
-		// Step 4: Open the parcel characteristics tab
+		// Step 17: Open the parcel characteristics tab
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
 
+		ReportLogger.INFO("Verify mapping staff cannot create new characteristic");
 		softAssert.assertTrue(!objParcelsPage.verifyElementVisible("New"),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
+				"SMAB-T2650: Verify Profiles other than System Admin/RP Business Admin/RP Principal/RP Appraiser have read only access to Parcel Characteristics");
 		objParcelsPage.logout();
-	}
-	
-	
-	
-	@Test(description = "SMAB-T2997,SMAB-T2998,SMAB-T2999:Verify Characteristic End date and Reason fields and verifying the validation checks", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement", "ParcelCharacteristics" })
-	public void ParcelCharacteristics2(String loginUser) throws Exception {
 
-		// Step1: Login to the APAS application using the credentials passed through
-		// Data Provider
-		objMappingPage.login(loginUser);
-		Thread.sleep(2000);
+		Thread.sleep(4000);
 
-		// Step 2: Fetch the APN
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Active' limit 1";
-		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
-		String apn = responseAPNDetails.get("Name").get(0);
-
-		
-		// Step 2: Fetch the APN
-				String queryAPN2 = "Select name,ID  From Parcel__c where name like '0%' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Retired' limit 1";
-				HashMap<String, ArrayList<String>> responseAPNDetails2 = salesforceAPI.select(queryAPN2);
-				String apn2 = responseAPNDetails2.get("Name").get(0);
-		// Step3: Opening the Parcels page and searching the Parcel
-		objMappingPage.searchModule(PARCELS);
-		objMappingPage.globalSearchRecords(apn);
-
-		// Step 4: Open the parcel characteristics tab
-		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
-
-		softAssert.assertTrue(objParcelsPage.verifyElementVisible("New"),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		
-		// Step 5: Create New Characteristic
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
-
-		
-
-		// Step 9: Enter the values of required fields
-		objParcelsPage.selectOptionFromDropDown("Property Type", "Residential");
-		objParcelsPage.selectOptionFromDropDown("Characteristics Screen", "SFR");
-
-
-		// Step 11: Click on Save
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		
-				objMappingPage.globalSearchRecords(apn);
-		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
-		objParcelsPage.waitForElementToBeClickable(objParcelsPage.fetchCharacteristicsList().get(0));
-		
-		//Step 7: Click on first characteristic record
-				objParcelsPage.Click(objParcelsPage.fetchCharacteristicsList().get(0));
-		
-		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Edit"),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Tagged Fields"));
-		objParcelsPage.clearFieldValue("Building ID");
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Tagged Fields"), "2");
-		
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		softAssert.assertEquals(objParcelsPage.getFieldValueFromAPAS("Building ID"),2,
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Clone"),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Clone"));
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		
-		softAssert.assertTrue(!objParcelsPage.getFieldValueFromAPAS("Retired Characteristics").isEmpty(),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-	
-		
-		objMappingPage.globalSearchRecords(apn2);
-
-		// Step 4: Open the parcel characteristics tab
-		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
-
-		softAssert.assertTrue(objParcelsPage.verifyElementVisible("New"),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		
-		// Step 5: Create New Characteristic
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
-
-		
-
-		// Step 9: Enter the values of required fields
-		objParcelsPage.selectOptionFromDropDown("Property Type", "Residential");
-		objParcelsPage.selectOptionFromDropDown("Characteristics Screen", "SFR");
-
-
-		// Step 11: Click on Save
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		
-		objMappingPage.globalSearchRecords(apn2);
-		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
-		objParcelsPage.waitForElementToBeClickable(objParcelsPage.fetchCharacteristicsList().get(0));
-		
-		//Step 7: Click on first characteristic record
-				objParcelsPage.Click(objParcelsPage.fetchCharacteristicsList().get(0));
-		
-		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Edit"),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Edit"));
-		
-		
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Tagged Fields"));
-		objParcelsPage.clearFieldValue("Building ID");
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Tagged Fields"), "2");
-		
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		softAssert.assertEquals(objParcelsPage.getFieldValueFromAPAS("Building ID"),2,
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		
-		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Clone"),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Clone"));
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		
-		softAssert.assertTrue(!objParcelsPage.getFieldValueFromAPAS("Retired Characteristics").isEmpty(),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		
-
-		objParcelsPage.logout();
-		Thread.sleep(20000);
-		objMappingPage.login(MAPPING_STAFF);
-		objMappingPage.globalSearchRecords(apn);
-		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
-		objParcelsPage.waitForElementToBeClickable(objParcelsPage.fetchCharacteristicsList().get(0));
-		objParcelsPage.Click(objParcelsPage.viewAll);
-		Thread.sleep(6000);
-	
-		
-		
-		objParcelsPage.Click(objParcelsPage.charDropdown().get(0));
-		Thread.sleep(6000);
-		//objParcelsPage.ClickCharacteristicCorrespondingDropdown("Characteristics");
-		softAssert.assertTrue(!objParcelsPage.verifyElementVisible("Edit"),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		
-		softAssert.assertTrue(!objParcelsPage.verifyElementVisible("Delete"),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
-		
-		objParcelsPage.logout();
-		Thread.sleep(5000);
-		
+		// Login as rp admin
 		objMappingPage.login(RP_BUSINESS_ADMIN);
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
@@ -566,16 +420,173 @@ public class Parcel_Management_Parcel_Characteristics_Tests extends TestBase imp
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.fetchCharacteristicsList().get(0));
 		objParcelsPage.Click(objParcelsPage.viewAll);
 		Thread.sleep(6000);
-	
-		
-		
 		objParcelsPage.Click(objParcelsPage.charDropdown().get(0));
 		Thread.sleep(6000);
-		
-		
-		
+
+		ReportLogger.INFO(
+				"Validate that user having access to characteristic but cannot delete characteristic as only system admin can delete characteristic");
 		softAssert.assertTrue(!objParcelsPage.verifyElementVisible("Delete"),
-				"SMAB-T2998: Validate that field name Retired Characteristics exists");
+				"SMAB-T2648: Verify System Admin can delete Parcel Characteristics");
+		objParcelsPage.logout();
+	}
+
+	@Test(description = "SMAB-T2425,SMAB-T2426,SMAB-T2427,SMAB-T2439:Verify Characteristics foundation with SFR", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement", "ParcelCharacteristics" })
+	public void ParcelCharacteristics_Foundation_With_SFR(String loginUser) throws Exception {
+
+		// Step1: Login to the APAS application using the credentials passed through
+		// Data Provider
+		objMappingPage.login(loginUser);
+		Thread.sleep(2000);
+
+		// Step 2: Fetch the Active APN
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Active' limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apn = responseAPNDetails.get("Name").get(0);
+
+		// Step 2: Fetch the Retired APN
+		String queryAPN2 = "Select name,ID  From Parcel__c where name like '0%' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Retired' limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails2 = salesforceAPI.select(queryAPN2);
+		String apn2 = responseAPNDetails2.get("Name").get(0);
+
+		// Step3: Opening the Parcels page and searching the Parcel
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn);
+
+		// Step 4: Open the parcel characteristics tab
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+
+		ReportLogger.INFO("Validate the creation of new characteristic with active parcel");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("New"),
+				"SMAB-T2425: Verify only  System Admin and other users that have rights are able to create Parcel Characteristics for active parcel");
+
+		// Step 5: Create New Characteristic
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
+
+		// Step 6: Enter the values of required fields
+		objParcelsPage.selectOptionFromDropDown("Property Type", "Residential");
+		objParcelsPage.selectOptionFromDropDown("Characteristics Screen", "SFR");
+
+		// Step 7: Click on Save
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		objMappingPage.globalSearchRecords(apn);
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.fetchCharacteristicsList().get(0));
+
+		// Step 8: Click on first characteristic record
+		objParcelsPage.Click(objParcelsPage.fetchCharacteristicsList().get(0));
+
+		ReportLogger.INFO("Validate user can see edit button on Characteristic of active parcel");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Edit"),
+				"SMAB-T2427: Validate that user can see edit button for active parcel");
+
+		// Step 9: click on Edit button
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Edit"));
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Tagged Fields"));
+		objParcelsPage.clearFieldValue("Tagged Fields");
+		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Tagged Fields"), "2");
+
+		// Step 10: Click on save
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		ReportLogger.INFO("Validate user can edit Characteristcic of active parcel");
+		softAssert.assertEquals(objParcelsPage.getFieldValueFromAPAS("Tagged Fields"), 2,
+				"SMAB-T2427: Validate that user can edit characteristic for active parcel");
+
+		ReportLogger.INFO("Validate user can see clone button on Characteristic of active parcel");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Clone"),
+				"SMAB-T2426: Validate that user can see clone button for active parcel");
+
+		//Step 11: Click on clone and save button
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Clone"));
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		ReportLogger.INFO("Validate user can clone Characteristcic of active parcel");
+		softAssert.assertTrue(!objParcelsPage.getFieldValueFromAPAS("Retired Characteristics").isEmpty(),
+				"SMAB-T2426: Validate that user can clone the  characteristic for active parcel");
+
+		objMappingPage.globalSearchRecords(apn2);
+
+		// Step 12: Open the parcel characteristics tab
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+
+		ReportLogger.INFO("Validate the creation of new characteristic with retired parcel");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("New"),
+				"SMAB-T2425: Verify only  System Admin and other users that have rights are able to create Parcel Characteristics for retired parcel");
+
+		// Step 13: Create New Characteristic
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
+
+		// Step 14: Enter the values of required fields
+		objParcelsPage.selectOptionFromDropDown("Property Type", "Residential");
+		objParcelsPage.selectOptionFromDropDown("Characteristics Screen", "SFR");
+
+		// Step 15: Click on Save
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		objMappingPage.globalSearchRecords(apn2);
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.fetchCharacteristicsList().get(0));
+
+		// Step 16: Click on first characteristic record
+		objParcelsPage.Click(objParcelsPage.fetchCharacteristicsList().get(0));
+		ReportLogger.INFO("Validate user can see edit button on Characteristic of Retired parcel");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Edit"),
+				"SMAB-T2427: Validate that user can see edit button for Retired parcel");
+
+		// Step 17: click on edit button
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Edit"));
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Tagged Fields"));
+		objParcelsPage.clearFieldValue("Tagged Fields");
+		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Tagged Fields"), "2");
+
+		//Step 18: Click on Save button
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		ReportLogger.INFO("Validate user can edit Characteristcic of Retired parcel");
+		softAssert.assertEquals(objParcelsPage.getFieldValueFromAPAS("Tagged Fields"), 2,
+				"SMAB-T2427: Validate that user can edit characteristic for Retired parcel");
+
+		ReportLogger.INFO("Validate user can see clone button on Characteristic of Retired parcel");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Clone"),
+				"SMAB-T2426: Validate that user can see clone button for Retired parcel");
+
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Clone"));
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		ReportLogger.INFO("Validate user can clone Characteristcic of Retired parcel");
+		softAssert.assertTrue(!objParcelsPage.getFieldValueFromAPAS("Retired Characteristics").isEmpty(),
+				"SMAB-T2426: Validate that user can clone the  characteristic for Retired parcel");
+
+
+		//Step 19: Logout
+		objParcelsPage.logout();
+		Thread.sleep(20000);
+		
+		// Step 20: Login as mapping staff
+		objMappingPage.login(MAPPING_STAFF);
+		objMappingPage.globalSearchRecords(apn);
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.fetchCharacteristicsList().get(0));
+		objParcelsPage.Click(objParcelsPage.viewAll);
+		Thread.sleep(6000);
+
+		// Step 21: Click on dropdoen action
+		objParcelsPage.Click(objParcelsPage.charDropdown().get(0));
+		Thread.sleep(6000);
+
+		ReportLogger.INFO(
+				"Validate user who does not have permissions can only view the characteristic record and can't edit or make any changes");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible("Edit"),
+				"SMAB-T2439: Validate user who does not have permissions can only view the characteristic record and can't edit or make any changes");
+
+		ReportLogger.INFO(
+				"Verify user who does not have permissions can only view the characteristic record and can't Delete or make any changes");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible("Delete"),
+				"SMAB-T2439: Validate user who does not have permissions can only view the characteristic record and can't Delete or make any changes");
+
+		//Step 22: Logout
 		objParcelsPage.logout();
 	}
 }
