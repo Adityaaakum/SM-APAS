@@ -882,7 +882,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
 		String transferScreenURL=driver.getCurrentUrl();
 		String recordeAPNTransferID=transferScreenURL.split("/")[6];
-		Thread.sleep(5000);
+		
 		// STEP 9: Creating the new grantee on transfer
 
 		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);			
@@ -949,6 +949,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		driver.navigate().to(transferScreenURL);
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);          
+		
 		// STEP 19- Clicking on return quick action button
 
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionReturn);

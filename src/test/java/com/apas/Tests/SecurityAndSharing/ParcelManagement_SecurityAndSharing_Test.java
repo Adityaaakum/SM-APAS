@@ -193,7 +193,9 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 		String acesseName = objMappingPage.getOwnerForMappingAction();
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + activeApnId
 				+ "/related/Property_Ownerships__r/view");
+		
 		// Steps 5: verify new button on parcel page
+		
 		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.getButtonWithText("New")),
 				"SMAB-T3035: Create new button should be visible to system admin user");
 
@@ -206,15 +208,19 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 				"SMAB-T3036: Delete button should be visible to system admin user");
 		objMappingPage.logout();
 		Thread.sleep(5000);
+		
 		//Login with CIo staff
         objMappingPage.login(users.CIO_STAFF);
+        
         //Steps 6: adding owner after deleting for the recorded APN 
 
 		acesseName = objMappingPage.getOwnerForMappingAction();
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + activeApnId
 				+ "/related/Property_Ownerships__r/view");
 		objParcelsPage.waitForElementToBeVisible(10, objParcelsPage.getButtonWithText("New"));
+		
 		// Steps 7: verify new, edit, delete button on parcel page
+		
 		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.getButtonWithText("New")),
 				"SMAB-T3035: Create new button should be visible to CIO users");
          softAssert.assertTrue(!objParcelsPage.clickShowMoreButtonAndAct(ownershipName, "Delete"),"SMAB-T3037: Validate non system admin user is not able to view 'Delete' option to delete the existing ownership on parcel record");
@@ -222,11 +228,14 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 		
 		objMappingPage.logout();
 		Thread.sleep(5000);
+		
 		// login with mapping user
-        objMappingPage.login(users.MAPPING_STAFF);
+        
+		objMappingPage.login(users.MAPPING_STAFF);
 		
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + activeApnId
 				+ "/related/Property_Ownerships__r/view"); 
+		
 		// Steps 8: verify new, edit, delete button on parcel page
 
 		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.getButtonWithText("New")),
