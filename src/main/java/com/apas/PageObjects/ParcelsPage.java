@@ -130,6 +130,9 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='Save']")
     public WebElement ownershipSaveButton;
 	
+	@FindBy(xpath = "//span[text() = 'View All']")
+	public WebElement viewAll;
+	
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -426,6 +429,30 @@ public class ParcelsPage extends ApasGenericPage {
 		}
 		
 		/**
+		 * @Description: This method will return the list of the characteristics present
+		 * @return list of web elements
+		 */
+		public List<WebElement> fetchAllCreatedChar() {
+			String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr/th//a\r\n"
+					+ "";
+			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));
+			return webElementsHeaders;
+		}
+		
+		/**
+		 * @Description: This method will return the list of the characteristics present
+		 * @return list of web elements
+		 */
+		public List<WebElement> charDropdown() {
+			//String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr/td[4]//div//span[text()='Show Actions']";
+		//	String xpath ="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr/td[4]//button";
+			String xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table//tr//td//span//div//a[@role='button']";
+			//String xpath ="	//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr/td[4]";
+			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));
+			return webElementsHeaders;
+		}
+		
+		/**
 		 * @Description: This method will return the list of notes attached
 		 * @param absoluteName: name of the note in the list
 		 * @return web element
@@ -477,4 +504,6 @@ public class ParcelsPage extends ApasGenericPage {
 			Click(getButtonWithText("Done"));
 			Thread.sleep(2000);
 		}
+		
+		
 }

@@ -1446,4 +1446,19 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		waitForElementToBeClickable(driver.findElement(By.xpath(xpath1)), 20);
 		Click(driver.findElement(By.xpath(xpath1)));
 	} 
+	
+	
+	public void ClickCharacteristicCorrespondingDropdown(String objectName)throws IOException, InterruptedException 
+	{String xpath = "//article[contains(.,'" + objectName + "')]//a[contains(@title,'more actions')] |  //article[contains(.,'" + objectName + "')]//*[@data-aura-class='forceDeferredDropDownAction']//a | //article[contains(.,'City Strat Codes')]//span[text()='Show more actions']";
+	Click(driver.findElement(By.xpath(xpath)));
+	Thread.sleep(1000);
+	}
+	
+	public void ClickDeleteCorrespondingDropdown()throws IOException, InterruptedException {
+		String xpath1= "//div[@title = 'Delete'][@role='button']";
+		//String xpath1= "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table//tr//td[9]//span//div//a[@role='button']";
+		//String xpath1 = "//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'Delete'][@role='button'] | //div[contains(@class, 'slds-dropdown__list slds-dropdown_length-with-icon')]//button[text()='Delete'][@type='Delete'] |  //div[contains(@class,'actionMenu')]//a[@title='Delete']";
+	Click(driver.findElement(By.xpath(xpath1)));
+		
+	}
 }
