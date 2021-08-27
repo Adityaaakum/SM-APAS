@@ -809,7 +809,11 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
        
 		objCIOTransferPage.logout();
 	}
-	@Test(description = "SMAB-T3525:Verify the warning message on CIO Transfer screen when UT is created on Retired Parcel without 99 PUC", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	/*
+     * Verify that User is able to perform CIO transfer  for Unrecorded events APN and validate all status
+	 */
+
+	@Test(description = "SMAB-T3525:Verify that User is able to perform CIO transfer  for Unrecorded events APN and validate all status", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","UnrecordedEvent" })
 	public void UnrecordedEvent_VerifyStatusForUTEvents(String loginUser) throws Exception {
 		String execEnv= System.getProperty("region");		
@@ -1036,8 +1040,6 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Completed", "SMAB-T3525: Validating that audit trail status should be open after submit for approval.");
 		objCIOTransferPage.logout();	
 
-	}
-	
-	
+	}	
 
 }

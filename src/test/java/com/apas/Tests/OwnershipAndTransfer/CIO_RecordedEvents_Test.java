@@ -971,10 +971,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 	}
 	/*
-	 * Verify that User is able to add mail-to and navigate to back to WI using back button with validation on grantee ownership dates And able to perform partial transfer on CIO transfer screen
+     * Verify that User is able to perform CIO transfer  for recorded APN and validate all status
 	 */
 	
-	@Test(description = "SMAB-T3525:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3525:Verify that User is able to perform CIO transfer  for recorded APN and validate all status", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer" })
 	public void OwnershipAndTransfer_VerifyStatus(String loginUser) throws Exception {
 		
