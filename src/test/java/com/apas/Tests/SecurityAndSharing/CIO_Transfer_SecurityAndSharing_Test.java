@@ -258,6 +258,10 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 			"Regression", "ChangeInOwnershipManagement", "SecurityAndSharing" },enabled=true)
 	public void QuickActionButtonsValidation_CIOTransferScreen_SubmitForReview(String loginUser) throws Exception {
 
+		String OwnershipAndTransferGranteeCreationData =  testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		 Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(OwnershipAndTransferGranteeCreationData,
+					"dataToCreateGranteeWithCompleteOwnership");
+			  
 		// step 1: executing the recorder feed batch job to generate CIO WI
 		objCIOTransferPage.generateRecorderJobWorkItems("DE", 1);
 		Thread.sleep(7000);
@@ -298,6 +302,22 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
 
 		// Step5: submitting the WI for review
+		ReportLogger.INFO("Updating the transfer code");
+		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-COPAL");
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+        ReportLogger.INFO("transfer code updated successfully");
+
+        ReportLogger.INFO("Creating new grantee record");
+		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);	
+        ReportLogger.INFO("Grantee record created successfully");
+        
+		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
+				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCIOTransferPage.waitForElementToBeVisible(15,
+				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
+		
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForReview);
 		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
