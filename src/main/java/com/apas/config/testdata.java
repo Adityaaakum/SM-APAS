@@ -72,8 +72,8 @@ public interface testdata {
 	String PARCEL_MAPPING_ACTION=userDirectory + "\\data\\MappingActions\\MappingActions.json";
 	String WORKITEMREJECTIONREASONS = userDirectory+"\\data\\WorkItems\\WorkItemRejectionReason.json";
 	String OWNERSHIP_AND_TRANSFER_CREATION_DATA= userDirectory+"\\data\\OwnershipAndTransfer\\OwnershipAndTransfer.json";	
-	String HOME_OWNER_EXEMPTION_DATA = "\\data\\Exemptions\\HomeOwnerData.json";
-	String UNRECORDED_EVENT_DATA = "\\data\\OwnershipAndTransfer\\AuditTrail.json";
+	String HOME_OWNER_EXEMPTION_DATA = userDirectory+"\\data\\Exemptions\\HomeOwnerData.json";
+	String UNRECORDED_EVENT_DATA = userDirectory+"\\data\\OwnershipAndTransfer\\AuditTrail.json";
     String TRA_DATA = userDirectory + "\\data\\TRA\\TRA_DATA.json";
     String CHARACTERISTICS_FILE = userDirectory + "\\data\\Characteristics\\00202.tif";
 

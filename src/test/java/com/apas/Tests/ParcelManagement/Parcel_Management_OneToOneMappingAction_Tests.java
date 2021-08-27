@@ -73,6 +73,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"')").get("Name").get(0);
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String districtValue="District01";
+		String parcelSize	= "200";
 
 		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 		jsonObject.put("Status__c","Active");
@@ -80,6 +81,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		jsonObject.put("District__c",districtValue);
 		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
 
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
 
@@ -226,10 +228,11 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	 *@param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2482,SMAB-T2485,SMAB-T2484,SMAB-T2545,SMAB-T2489:Verify that the One to One Mapping Action can only be performed on Active Parcels ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3052,SMAB-T2482,SMAB-T2485,SMAB-T2484,SMAB-T2545,SMAB-T2489:Verify that the One to One Mapping Action can only be performed on Active Parcels ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyOneToOneMappingActionOnlyOnActiveParcels(String loginUser) throws Exception {
-		String queryAPN = "Select name From Parcel__c where Status__c='Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
+		String queryAPN = "Select name From Parcel__c where (not Name like '100%') and (not Name like '134%') "
+				+ "and Status__c='Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String activeParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
 		String activeParcelWithoutHyphen=activeParcelToPerformMapping.replace("-","");
@@ -334,6 +337,19 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		//Step 14: Validation that proper  error message is displayed if parcel number  not of Nine digits is entered in non condo number field
 		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"010123"),"- This parcel number is not valid, it should contain 9 digit numeric values.",
 				"SMAB-T2484: Validation that proper error message is displayed if  parcel number  not of Nine digits is entered in non condo number field");
+
+		String apn[] = activeParcelToPerformMapping.split("-");
+		String updateMapPageofChildApn= apn[0]+apn[1].substring(0,2)+
+				String.valueOf(Integer.parseInt(apn[1].substring(2)) +1)+apn[2];
+		ReportLogger.INFO(updateMapPageofChildApn);
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, updateMapPageofChildApn);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.waitForElementToBeVisible(10,objMappingPage.generateParcelButton);
+	    softAssert.assertContains(objMappingPage.getErrorMessage(), 
+				"Warning: Parcel number generated is different from the user"
+				+ " selection based on established criteria. As a reference the number provided is", 
+				"SMAB-T3052-Verify that for APN generation, If map page is changed for child parcels,"
+				+ "then it should display message(which is returned from backend) for respective parcels");
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
@@ -467,15 +483,15 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 				"SMAB-T2488: Validation that child APN number ends with 0");
 
 		//Step 9: Validation of ALL fields THAT ARE displayed on second screen
-		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),responseNeighborhoodDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates neighborhood Code from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),hashMapOneToOneMappingData.get("Reason code"),
+		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),hashMapOneToOneMappingData.get("Reason code"),
 				"SMAB-T2544: Validation that  System populates reason code from before screen");
-		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),hashMapOneToOneMappingData.get("Legal Description"),
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),hashMapOneToOneMappingData.get("Legal Description"),
 				"SMAB-T2544: Validation that  System populates Legal Description from the before screen");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates TRA from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),responsePUCDetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates Use Code  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),childprimarySitus,
 				"SMAB-T2655: Validation that System populates primary situs for child parcel on second screen with situs value that was added in first screen");
@@ -492,15 +508,15 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		//Step 13: Validation of ALL fields THAT ARE displayed AFTER PARCEL ARE GENERATED
-		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),responseNeighborhoodDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates neighborhood Code from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),"ReasonCode Test",
+		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),"ReasonCode Test",
 				"SMAB-T2544: Validation that  reason code is editable field");
-		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),"Legal Description PM/01",
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),"Legal Description PM/01",
 				"SMAB-T2544: Validation that  Legal Description is editable field");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates TRA from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),responsePUCDetails.get("Name").get(0),
 				"SMAB-T2544: Verify that System populates use code  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),childprimarySitus,
 				"SMAB-T2655: Validation that  System populates primary situs for child parcel on last screen with situs value that was added in first screen");

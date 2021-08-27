@@ -82,9 +82,6 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	@FindBy(xpath = "//a[@role='tab'][@data-label='In Pool']")
 	public WebElement inPoolTab;
-	
-	@FindBy(xpath = "//span[@title='Age(Days)'][@class='slds-truncate']")
-	public WebElement ageDays;
 
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-item[contains(.,'Related Action')]//a[@target='_blank']")
 	public WebElement reviewLink;
@@ -161,6 +158,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[2]//input[@type='checkbox']/parent::span")
 	public List<WebElement> lowincomeSubmittedWI;
+	
+	@FindBy(xpath = "//span[@title='Age(Days)'][@class='slds-truncate']")
+    public WebElement ageDays;
 
 	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(@class,'slds-truncate') or contains(@class,'slds-hyphenate')]//a")
 	public WebElement linkedItemsRecord;
@@ -380,21 +380,6 @@ public class WorkItemHomePage extends ApasGenericPage {
 		Click(webElementCheckBox);
 		scrollToElement(acceptWorkItemButton);
 		Click(acceptWorkItemButton);
-		waitForElementToBeVisible(successAlert, 20);
-		waitForElementToDisappear(successAlert, 10);
-	}
-	/**
-	 * This method will check the work item passed in the parameter on in progress page. without accepting it.
-	 *
-	 * @param workItem: Work item number to be accepted
-	 **/
-	
-	public void findWorkItemInProgress(String workItem) throws Exception {
-		ReportLogger.INFO("Accepting the work item: " + workItem);
-		WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//ancestor::th//preceding-sibling::td//span[@class='slds-checkbox_faux']"));
-		scrollToElement(webElementCheckBox);
-		Click(webElementCheckBox);
-		ReportLogger.INFO(workItem + ": Work Item is present in Progress Tab. " );
 		waitForElementToBeVisible(successAlert, 20);
 		waitForElementToDisappear(successAlert, 10);
 	}
@@ -861,6 +846,23 @@ public class WorkItemHomePage extends ApasGenericPage {
 			Thread.sleep(3000);
 		}
 	}
+	
+	/**
+	 * This method will check the work item passed in the parameter on in progress page. without accepting it.
+	 *
+	 * @param workItem: Work item number to be accepted
+	 **/
+	
+	public void findWorkItemInProgress(String workItem) throws Exception {
+		ReportLogger.INFO("Accepting the work item: " + workItem);
+		WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//ancestor::th//preceding-sibling::td//span[@class='slds-checkbox_faux']"));
+		scrollToElement(webElementCheckBox);
+		Click(webElementCheckBox);
+		ReportLogger.INFO(workItem + ": Work Item is present in Progress Tab. " );
+		waitForElementToBeVisible(successAlert, 20);
+		waitForElementToDisappear(successAlert, 10);
+	}
+
 
 	
 	/*

@@ -58,8 +58,8 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
-		homeOwnerExemptionData = System.getProperty("user.dir") + testdata.HOME_OWNER_EXEMPTION_DATA;
-		unrecordedEventData = System.getProperty("user.dir") + testdata.UNRECORDED_EVENT_DATA;
+		homeOwnerExemptionData = testdata.HOME_OWNER_EXEMPTION_DATA;
+		unrecordedEventData = testdata.UNRECORDED_EVENT_DATA;
 		objApasGenericPage.updateRollYearStatus("Closed", "2021");
 	}
 	
@@ -155,11 +155,11 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3478 : Verify that HOE Qualification and Exemption field values on Parcel are retained if a Transfer code with 'Retain Exemption' is selected as ' for Recorded Event", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "HomeOwnerExemption" })
+			"Regression", "ChangeInOwnershipManagement", "HomeOwnerExemption" },enabled=false)
 	public void HomeOwnerExemption_ExemptionRetain_RecordedEvent(String loginUser) throws Exception {
 		
 		// Step 1: Executing the recorder feed batch job to generate CIO WI
-		objCIOTransferPage.generateRecorderJobWorkItems("AD", 1);
+		objCIOTransferPage.generateRecorderJobWorkItems("DE", 1);
 		Thread.sleep(7000);
 		String cioWorkItem = objWorkItemHomePage.getLatestWorkItemDetailsOnWorkbench(1).get("Name").get(0);
 

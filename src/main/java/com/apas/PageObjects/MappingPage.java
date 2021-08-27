@@ -99,6 +99,7 @@ public class MappingPage extends ApasGenericPage {
 	public final String DOC_Property_Settlement_Agreement = "PSA";
 	public final String DOC_Sub_Divison_Map = "SDM";
 	public final String DOC_Official_Map  = "OM";
+	public String secondScreenEditButton = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]";
 	
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
 	public WebElement editButtonInSeconMappingScreen;
@@ -464,11 +465,11 @@ public class MappingPage extends ApasGenericPage {
 			Thread.sleep(2000);
 			selectOptionFromDropDown(parcelTRA, TRA);
 			
-//			if (waitForElementToBeVisible(2, clearSelectionNeigh))
-//			Click(clearSelectionNeigh);
-//			enter(parcelDistrictNeighborhood, distNeigh);
-//			selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
-//		This code is needed to be  uncommented after	pre-UAT regression	
+			if (waitForElementToBeVisible(2, clearSelectionNeigh))
+			Click(clearSelectionNeigh);
+			enter(parcelDistrictNeighborhood, distNeigh);
+			selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
+	
 
 			if (waitForElementToBeVisible(2, clearSelectionPUC))
 			Click(clearSelectionPUC);

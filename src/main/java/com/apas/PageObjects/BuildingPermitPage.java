@@ -61,12 +61,12 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//button[text() = 'Edit']")
 	public WebElement editButton;
-	
-	@FindBy(xpath = "//button[@name = 'Edit']")
-	public WebElement editPermitButton;
 
 	@FindBy(xpath = "//button[text() = 'Delete']")
 	public WebElement deleteButton;
+	
+	@FindBy(xpath = "//button[@name = 'Edit']")
+    public WebElement editPermitButton;
 
 	@FindBy(xpath = "//lightning-icon//span[text()='Show More']")
 	public WebElement showMoreButton;
@@ -162,7 +162,6 @@ public class BuildingPermitPage extends ApasGenericPage {
 	}
 
 
-
 	/** @Description: This method will create a manual building permit entry in APAS
 	 */
 	public void addAndSaveManualBuildingPermit(Map<String, String> dataMap) throws Exception {
@@ -205,7 +204,6 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 		return  manualBuildingPermitMap;
 	}
-
 	public Map<String, String> getBuildingPermitManualCreationTestDataNoCompletionDate(String CompletionDate) {
 
 		//Fetch the APN to be used to create building permit
