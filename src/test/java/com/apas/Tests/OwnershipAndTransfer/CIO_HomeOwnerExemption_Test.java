@@ -25,6 +25,7 @@ import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
@@ -43,6 +44,8 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 	WorkItemHomePage objWorkItemHomePage;
 	String homeOwnerExemptionData;
 	String unrecordedEventData;
+	SalesforceAPI salesforceAPI = new SalesforceAPI();
+	
 	
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
@@ -71,7 +74,13 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 	@Test(description = "SMAB-T3479, SMAB-T3287: Validate Exemption value, Exemption Type and Qualification fields are not retained if a Transfer Code with 'Retain Exemption' as 'No' is selected", groups = {"Regression","ChangeInOwnershipManagement", "HomeOwnerExemption"}, dataProvider = "loginCIOStaff", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void HomeOwnerExemption_NoExemptionRetain_UnrecordedTransfer(String loginUser) throws Exception {
 		
-		String apn = objApasGenericPage.fetchActiveAPN();
+		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') Limit 1";
+		String apn = salesforceAPI.select(queryForActiveAPN).get("Name").get(0);
+		String apnId = salesforceAPI.select(queryForActiveAPN).get("Id").get(0);
+		
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT id, Name FROM PUC_Code__c where Name Not in ('99-RETIRED PARCEL') limit 1");
+		salesforceAPI.update("Parcel__c", apnId, "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+		
 		Map<String, String> dataToCreateHomeOwnerExemptionMap = objUtil.generateMapFromJsonFile(homeOwnerExemptionData, "NewHOECreation");
 		Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
 		
@@ -117,6 +126,8 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 				"SMAB-T3479: Validate the Exemption Retain field on CIO Transfer screen");
 		
 		//Step5: Submit for Approval
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.quickActionOptionSubmitForApproval);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.finishButton);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));

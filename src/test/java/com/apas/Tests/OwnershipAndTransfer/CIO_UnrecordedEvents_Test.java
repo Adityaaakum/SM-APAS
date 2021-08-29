@@ -111,7 +111,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		
 		objCIOTransferPage.searchAndSelectOptionFromDropDown("APN", activeApn);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText("Save"));
-		Thread.sleep(5000);
+		Thread.sleep(5000); //Added to handle regression failure
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementExists(objCIOTransferPage.warningMessageArea),
 				"SMAB-T3287: Validate that no warning message is displayed on CIO Transfer screen");
 	

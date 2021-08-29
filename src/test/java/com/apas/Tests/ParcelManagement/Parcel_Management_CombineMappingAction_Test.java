@@ -377,11 +377,13 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> responseAPNDetails1 = salesforceAPI.select(queryApnDetails);
 		String apn1=responseAPNDetails1.get("Name").get(0);
 		String apn2=responseAPNDetails1.get("Name").get(1);
+		String apnId1=responseAPNDetails1.get("Id").get(0);
+		String apnId2=responseAPNDetails1.get("Id").get(1);
 		
-		objMappingPage.deleteOwnershipFromParcel(responseAPNDetails1.get("Id").get(0));
-		objMappingPage.deleteOwnershipFromParcel(responseAPNDetails1.get("Id").get(1));
+		objMappingPage.deleteOwnershipFromParcel(apnId1);
+		objMappingPage.deleteOwnershipFromParcel(apnId2);
 		
-		String parcelSize	= "200";	
+		String parcelSize = "200";	
 
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
@@ -397,23 +399,24 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	    String assesseeName1 = responseAssesseeDetails.get("Name").get(0);
 		String assesseeName2 = responseAssesseeDetails.get("Name").get(1);
 		
-		//Fetching parcel that is Retired
-		String queryRetiredAPNValue = "select Name from Parcel__c where Status__c='Retired'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and (Not Name like '%990') and name like '0%' limit 1";
-		String retiredAPNValue = salesforceAPI.select(queryRetiredAPNValue).get("Name").get(0);
-
 		//Fetching Interim parcel 
 		String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' "
 		  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		String interimAPN = salesforceAPI.select(queryAPNValue).get("Name").get(0);
 		String interimAPNId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
 		
+		//Fetching parcel that are Active different than above
+		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Id NOT IN ('" + apnId1 + "', '" + apnId2 + "') Limit 2";
+		HashMap<String, ArrayList<String>> responseAPNDetails2 = salesforceAPI.select(queryForActiveAPN);
+		String apn3=responseAPNDetails2.get("Name").get(0);
+		String apnId3=responseAPNDetails2.get("Id").get(0);
+		String apn4=responseAPNDetails2.get("Name").get(1);
+		String apnId4=responseAPNDetails2.get("Id").get(1);
+		
 		// deleting the current ownership records for the APN linked with WI
 		objMappingPage.deleteOwnershipFromParcel(interimAPNId);
-		
-		//Fetching parcel that are Active different than above
-		HashMap<String, ArrayList<String>> responseAPNDetails2 = objMappingPage.getActiveApnWithNoOwner(4);
-		String apn3=responseAPNDetails2.get("Name").get(2);
-		String apn4=responseAPNDetails2.get("Name").get(3);
+		objMappingPage.deleteOwnershipFromParcel(apnId3);
+		objMappingPage.deleteOwnershipFromParcel(apnId4);
 		
 		//Data Manipulation to test the overwrite scenarios
 		String concatenateAPNWithSameOwnership = apn1+","+apn2;
@@ -429,15 +432,16 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		int numbParcel2 = objMappingPage.convertAPNIntoInteger(apn2);
 		int temp = numbParcel1<numbParcel2?numbParcel1:numbParcel2;
 		String smallestAPN = (temp == numbParcel1)?apn1:apn2;
+		
 		//Fetch TRA value from database and enter it in Parcels (to show TRA warning on the screen along with ownership error message)
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 		
 		salesforceAPI.update("Parcel__c", interimAPNId, "Status__c", "Active");
-		salesforceAPI.update("Parcel__c", responseAPNDetails1.get("Id").get(0), "TRA__c",responseTRADetails.get("Id").get(0));
-		salesforceAPI.update("Parcel__c", responseAPNDetails1.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(0));
-		salesforceAPI.update("Parcel__c", responseAPNDetails2.get("Id").get(2), "TRA__c", responseTRADetails.get("Id").get(1));
-		salesforceAPI.update("Parcel__c", responseAPNDetails2.get("Id").get(3), "TRA__c", responseTRADetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c", apnId1, "TRA__c",responseTRADetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c", apnId2, "TRA__c", responseTRADetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c", apnId3, "TRA__c", responseTRADetails.get("Id").get(1));
+		salesforceAPI.update("Parcel__c", apnId4, "TRA__c", responseTRADetails.get("Id").get(0));
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -480,13 +484,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         objMappingPage.searchModule(PARCELS);
         objMappingPage.globalSearchRecords(apn3);
         objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
-        
-		String id=responseAPNDetails2.get("Id").get(2);
 
         String ownershipURL = "https://smcacre--"
         		+ execEnv
         		+ ".lightning.force.com/lightning/r/Parcel__c/"
-        		+ id
+        		+ apnId3
         		+ "/related/Property_Ownerships__r/view";
         ReportLogger.INFO(ownershipURL);
         driver.navigate().to(ownershipURL);
@@ -562,23 +564,22 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apn[] = smallestAPN.split("-");
 		String updateMapPageofChildApn= apn[0]+apn[1].substring(0,2)+
 				String.valueOf(Integer.parseInt(apn[1].substring(2)) +1)+apn[2];
-		ReportLogger.INFO(updateMapPageofChildApn);
+		
+		ReportLogger.INFO("Removed hyphen from the APN : " + updateMapPageofChildApn);
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, updateMapPageofChildApn);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(10,objMappingPage.generateParcelButton);
-		ReportLogger.INFO(objMappingPage.errorMessageSecondScreen.getText());
-		softAssert.assertContains(objMappingPage.errorMessageSecondScreen.getText(), 
+		
+		//Step 10: Validate the Warning message
+		ReportLogger.INFO(objMappingPage.secondScreenParcelSizeWarning.getText());
+		softAssert.assertContains(objMappingPage.secondScreenParcelSizeWarning.getText(), 
 				"Warning: Parcel number generated is different from the user"
 				+ " selection based on established criteria. As a reference the number provided is", 
 				"SMAB-T3052-Verify that for APN generation, If map page is changed for child parcels,"
 				+ "then it should display message(which is returned from backend) for respective parcels");
-		//Step 10: Validate that user is able to move to the next screen
-//		ReportLogger.INFO("Click NEXT button");
-//		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-//		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
-
+		
 		//Step 11 :Overwrite parcel value with existing parcel# and Click Combine parcel button
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,apn3);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + apn3);
@@ -674,15 +675,25 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	public void ParcelManagement_VerifyParcelGenerationForCombineMappingAction(String loginUser) throws Exception {
 		
 		//Getting parcels that are Active 
-		HashMap<String, ArrayList<String>> responseAPNDetails = objMappingPage.getActiveApnWithNoOwner(2);
-		String apn1=responseAPNDetails.get("Name").get(0);
-		String apn2=responseAPNDetails.get("Name").get(1);
+		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') Limit 2";
+		String apn1 = salesforceAPI.select(queryForActiveAPN).get("Name").get(0);
+		String apnId1 = salesforceAPI.select(queryForActiveAPN).get("Id").get(0);
+		String apn2 = salesforceAPI.select(queryForActiveAPN).get("Name").get(1);
+		String apnId2 = salesforceAPI.select(queryForActiveAPN).get("Id").get(1);
+		
+		//Delete existing Ownership records from the Active parcel
+		objMappingPage.deleteOwnershipFromParcel(apnId1);
+		objMappingPage.deleteOwnershipFromParcel(apnId2);
 		
 		//Fetching a Condo Active parcel
-		String queryCondoAPN = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and name like '100%' and (Not Name like '%990') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  and Status__c = 'Active' Limit 1";
+		String queryCondoAPN = "SELECT Name, Id from parcel__c where name like '100%' and (Not Name like '%990') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 1";
 		HashMap<String, ArrayList<String>> responseCondoAPNDetails = salesforceAPI.select(queryCondoAPN);
 		String condoAPN=responseCondoAPNDetails.get("Name").get(0);
+		String condoApnId=responseCondoAPNDetails.get("Id").get(0);
 		
+		//Delete existing Ownership records from the Condo parcel
+		objMappingPage.deleteOwnershipFromParcel(condoApnId);
+				
 		//Data Manipulation to test parcel generation scenarios
 		String updateSmallestAPN="";
 		String concatenateCondoWithNonCondo = condoAPN+","+apn1+","+apn2;
@@ -721,7 +732,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		Map<String, String> hashMapCombineMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformCombineMappingAction");
 
-		Actions actions = new Actions(driver);
+		//Actions actions = new Actions(driver);
 		
 		// Step1: Login to the APAS application
 		objMappingPage.login(loginUser);
@@ -790,11 +801,13 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use system generated APN, leave as blank.",
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for First non-Condo Parcel text box");
         
+        Thread.sleep(1000); //Added to avoid regression failure
         objMappingPage.Click(objMappingPage.helpIconLegalDescription);
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent legal description, leave as blank.",
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for legal description");
         
         //Enter First Non-Condo parcel which is not the next available parcel in the system
+        Thread.sleep(1000); //Added to avoid regression failure
         objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,parcelForWarningMessage);
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
@@ -868,15 +881,27 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		
 		//Getting Owner or Account records
 		String assesseeName = objMappingPage.getOwnerForMappingAction();
-
-		//Fetching parcels that are Active with specific ownership record
-		HashMap<String, ArrayList<String>> responseAPNDetails = objMappingPage.getActiveApnWithNoOwner(2);
-		String apn1=responseAPNDetails.get("Name").get(0);
-		String apn2=responseAPNDetails.get("Name").get(1);
 		
-		//Getting an Active Condo Parcel with specific ownership record
-		HashMap<String, ArrayList<String>> responseCondoAPNDetails = objMappingPage.getCondoApnWithNoOwner();
-		String apn3 = responseCondoAPNDetails.get("Name").get(0);
+		//Getting parcels that are Active 
+		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') Limit 2";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryForActiveAPN);
+		String apn1 = responseAPNDetails.get("Name").get(0);
+		String apnId1 = responseAPNDetails.get("Id").get(0);
+		String apn2 = responseAPNDetails.get("Name").get(1);
+		String apnId2 = responseAPNDetails.get("Id").get(1);
+				
+		//Delete existing Ownership records from the Active parcel
+		objMappingPage.deleteOwnershipFromParcel(apnId1);
+		objMappingPage.deleteOwnershipFromParcel(apnId2);
+		
+		//Fetching a Condo Active parcel
+		String queryCondoAPN = "SELECT Name, Id from parcel__c where name like '100%' and (Not Name like '%990') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 1";
+		HashMap<String, ArrayList<String>> responseCondoAPNDetails = salesforceAPI.select(queryCondoAPN);
+		String apn3=responseCondoAPNDetails.get("Name").get(0);
+		String condoApnId=responseCondoAPNDetails.get("Id").get(0);
+				
+		//Delete existing Ownership records from the Condo parcel
+		objMappingPage.deleteOwnershipFromParcel(condoApnId);
 		
 		//Add the parcels in a Hash Map for validations later
 		Map<String,String> apnValue = new HashMap<String,String>(); 
@@ -892,6 +917,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         //Find lowest APN of all 3 parcels
 		String updateRecordOn = "";
 		String updateSmallestAPN = "";
+		String primarySitusValue="";
 		
 		int numbParcel1 = objMappingPage.convertAPNIntoInteger(apn1);
 		int numbParcel2 = objMappingPage.convertAPNIntoInteger(apn2);
@@ -905,9 +931,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		if (smallestAPN.length() == 8) updateSmallestAPN = "0" + smallestAPN.substring(0, 2).concat("-").concat(smallestAPN.substring(2, 5)).concat("-").concat(smallestAPN.substring(5, 8));
 		if (smallestAPN.length() == 7) updateSmallestAPN = "00" + smallestAPN.substring(0, 1).concat("-").concat(smallestAPN.substring(1, 4)).concat("-").concat(smallestAPN.substring(4, 7));
 		
-		if (updateSmallestAPN.equals(apn1)) updateRecordOn = responseAPNDetails.get("Id").get(0);
-		if (updateSmallestAPN.equals(apn2)) updateRecordOn = responseAPNDetails.get("Id").get(1);
-		if (updateSmallestAPN.equals(apn3)) updateRecordOn = responseCondoAPNDetails.get("Id").get(0);
+		if (updateSmallestAPN.equals(apn1)) updateRecordOn = apnId1;
+		if (updateSmallestAPN.equals(apn2)) updateRecordOn = apnId2;
+		if (updateSmallestAPN.equals(apn3)) updateRecordOn = condoApnId;
 		
 		//Fetch some other values from database
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
@@ -916,7 +942,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 		String legalDescriptionValue="Legal PM 85/25-260";
-		String primarySitusValue=salesforceAPI.select("SELECT Name FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where Id='"+ updateRecordOn +"')").get("Name").get(0);
+		if (salesforceAPI.select("SELECT Name FROM Situs__c where id in (SELECT Primary_Situs__c FROM Parcel__c where Id='"+ updateRecordOn +"')") != null) 
+			primarySitusValue = salesforceAPI.select("SELECT Name  FROM Situs__c where id in (SELECT Primary_Situs__c FROM Parcel__c where Id='"+ updateRecordOn +"')").get("Name").get(0);
 		
 		//Enter values in the Parcels
 		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
@@ -924,8 +951,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		jsonParcelObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 		salesforceAPI.update("Parcel__c",updateRecordOn,jsonParcelObject);
-		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), "Lot_Size_SQFT__c", "0");
-		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "Lot_Size_SQFT__c", "0");
+		salesforceAPI.update("Parcel__c", apnId1, "Lot_Size_SQFT__c", "0");
+		salesforceAPI.update("Parcel__c", apnId2, "Lot_Size_SQFT__c", "0");
 		salesforceAPI.update("Parcel__c", responseCondoAPNDetails.get("Id").get(0), "Lot_Size_SQFT__c", "0");
 				
 		String concatenateMixAPNs = apn1+","+apn2+","+apn3;
@@ -2020,10 +2047,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyParcelGenerationForCombineWithInterimAsLowestParcel(String loginUser) throws Exception {
 		
-		//Getting Owner or Account records
-		String assesseeName = objMappingPage.getOwnerForMappingAction();
-
-		//Fetching Interim parcels that are Active with no ownership record
+		//Fetching Interim parcels
 		String queryInterimAPNValue = "Select name,ID  From Parcel__c where name like '800%' "
 				  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		String apn1 = salesforceAPI.select(queryInterimAPNValue).get("Name").get(0);
@@ -2033,9 +2057,26 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.deleteOwnershipFromParcel(apn1Id);
 		salesforceAPI.update("Parcel__c", apn1Id, "Status__c", "Active");
 		
-		//Getting an Active Non-Condo Parcel with no ownership record
-		String queryAPNValue = "Select name,ID  From Parcel__c where name like '9%'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Id NOT in (Select parcel__c FROM Property_Ownership__c) AND Status__c='Active' limit 1";
-		String apn2 = salesforceAPI.select(queryAPNValue).get("Name").get(0);
+		//Getting a Non-Condo Parcel starting with '9'
+		String createNewParcel = testdata.MANUAL_PARCEL_CREATION_DATA;
+		Map<String, String> hashMapCreateNewParcel = objUtil.generateMapFromJsonFile(createNewParcel,
+					"DataToCreateParcelStartingWith9");
+		String apnStartingWith9 = hashMapCreateNewParcel.get("APN");
+		String parcelNumberStartingWith9 = hashMapCreateNewParcel.get("Parcel Number");
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+					+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+					+ "where Status__c='Active') limit 1");
+		String PUC = responsePUCDetails.get("Name").get(0);
+	   
+		objMappingPage.searchModule(PARCELS);
+		String apn2 = objParcelsPage.createNewParcel(apnStartingWith9,parcelNumberStartingWith9,PUC);
+	
+	    HashMap<String, ArrayList<String>> responseSearchedApnId = salesforceAPI.select("Select id from Parcel__c where name ='"+apn2+"'");
+	    String apn2Id = responseSearchedApnId.get("Id").get(0);
+	    
+		// deleting the current ownership records for the APN linked with WI
+		objMappingPage.deleteOwnershipFromParcel(apn2Id);
+		salesforceAPI.update("Parcel__c", apn2Id, "Status__c", "Active");
 		
 		String concatenateMixAPNs = apn1+","+apn2;
 		
@@ -2046,19 +2087,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String mappingActionCreationData = testdata.COMBINE_MAPPING_ACTION;
 		Map<String, String> hashMapCombineMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformCombineMappingAction");
-		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-                "DataToCreateOwnershipRecord");
-		
-		// Add ownership records in the parcels
-        objMappingPage.login(users.SYSTEM_ADMIN);
-
-        // Opening the PARCELS page and searching the parcels to create ownership record        
-        objMappingPage.searchModule(PARCELS);
-        objParcelsPage.createOwnershipRecord(apn1, assesseeName, hashMapCreateOwnershipRecordData);
-        objParcelsPage.createOwnershipRecord(apn2, assesseeName, hashMapCreateOwnershipRecordData);
-        
-        objWorkItemHomePage.logout();
-        Thread.sleep(5000);
 		
 		// Step1: Login to the APAS application
 		objMappingPage.login(loginUser);
@@ -2068,7 +2096,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.globalSearchRecords(apn1);
 		
 		// Step 3: Creating Manual work item for the Active Parcel 
-		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		// Step 4: Clicking the details tab for the work item newly created and clicking on Related Action Link
 		ReportLogger.INFO("Click on the Related Action link");
