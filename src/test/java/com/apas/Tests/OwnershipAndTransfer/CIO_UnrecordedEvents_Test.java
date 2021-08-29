@@ -767,7 +767,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
         ReportLogger.INFO("Navigate to RAT screen and click View ALL to see current Ownership records in grid");
         driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+recordeAPNTransferID+"/view");
         objCIOTransferPage.waitForElementToBeVisible(10,objCIOTransferPage.numberOfGrantorLabel);
-        objCIOTransferPage.clickViewAll("Ownership for Parent Parcelp");
+        objCIOTransferPage.clickViewAll("Ownership for Parent Parcel");
 	
         // Step12: Validate the details in the grid
         ReportLogger.INFO("Validate the Current Ownership record in Grid");
