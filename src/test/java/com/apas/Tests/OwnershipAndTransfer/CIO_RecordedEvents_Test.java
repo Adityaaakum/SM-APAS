@@ -273,7 +273,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 1-login with SYS-ADMIN
 
 		objMappingPage.login(users.SYSTEM_ADMIN);
-		objMappingPage.searchModule(PARCELS);
+		objMappingPage.searchModule("APAS");
 		objCioTransfer.addRecordedApn(recordedDocumentID, 1);
 		objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
 
@@ -1022,17 +1022,20 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String assesseeName = responseAssesseeDetails.get("Name").get(0);
 		String assesseeFirstName = responseAssesseeDetails.get("FirstName").get(0);
 		String assesseeLastName = responseAssesseeDetails.get("LastName").get(0);
-
+		
 		//step 5 : creating two new ownership records with different DOVs but same owner
 		objCioTransfer.login(SYSTEM_ADMIN);
 		objMappingPage.searchModule(PARCELS);
 		Thread.sleep(5000);
 		objMappingPage.closeDefaultOpenTabs();
-
+		
 		for(int i=0;i<2;i++)
 		{
-			objMappingPage.globalSearchRecords(apnvalue);
-			objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+			driver.navigate()
+			.to("https://smcacre--"
+					+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apn
+					+ "/related/Property_Ownerships__r/view");
+			
 			if(i==0)
 			{	hashMapCreateOwnershipRecordData.put("Ownership Percentage", "75");
 				hashMapCreateOwnershipRecordData.put("Ownership Start Date", "5/3/2010");
@@ -1044,13 +1047,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			objParcelsPage.createOwnershipRecord(assesseeName, hashMapCreateOwnershipRecordData);
 
 			String ownershipId = driver.getCurrentUrl().split("/")[6];
-			String date = salesforceAPI
+			String dateOfOwnership = salesforceAPI
 					.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
 					.get("Ownership_Start_Date__c").get(0);
-			//  updating the ownership dates for new owners
-			jsonObject.put("DOR__c", date);
-			jsonObject.put("DOV_Date__c", date);
-			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
+			jsonObject.put("DOR__c", dateOfOwnership);
+			jsonObject.put("DOV_Date__c", dateOfOwnership);
+			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);	
+			
 		}
 
 		// Step6: Opening the work items and accepting the WI created by recorder batch
