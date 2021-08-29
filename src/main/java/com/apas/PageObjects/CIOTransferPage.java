@@ -183,8 +183,6 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath=commonXpath+"//button[text()='Finish']")
 	public WebElement finishButtonPopUp;
 	
-	public String xpathSpinner = "//lightning-spinner";
-	
 	
 	/*
 	    * This method adds the recorded APN in Recorded-Document

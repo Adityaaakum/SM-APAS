@@ -749,17 +749,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		ReportLogger.INFO("Navigate to RAT screen and click View ALL to see all Grantee records in grid");
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+recordeAPNTransferID+"/view");
 		objCIOTransferPage.waitForElementToBeVisible(10,objCIOTransferPage.numberOfGrantorLabel);
-        
 		objCIOTransferPage.clickViewAll("CIO Transfer Grantee & New Ownership");
-		/*
-		 * String xpathStr1 =
-		 * "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@href,'CIO_Transfer_Grantee')]//span[text() = 'View All']"
-		 * ; WebElement fieldLocator1 = objCIOTransferPage.locateElement(xpathStr1, 30);
-		 * objCIOTransferPage.Click(fieldLocator1);
-		 * objCIOTransferPage.waitForElementToBeVisible(10,objCIOTransferPage.
-		 * ownershipLabelOnGridForGrantee);
-		 */
-        
+		
         // Step10: Validate the details in the grid
         ReportLogger.INFO("Validate the Grantee record in Grid");
         HashMap<String, ArrayList<String>>HashMapLatestGrantee  = objCIOTransferPage.getGridDataInHashMap();
@@ -776,18 +767,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
         ReportLogger.INFO("Navigate to RAT screen and click View ALL to see current Ownership records in grid");
         driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+recordeAPNTransferID+"/view");
         objCIOTransferPage.waitForElementToBeVisible(10,objCIOTransferPage.numberOfGrantorLabel);
-        
         objCIOTransferPage.clickViewAll("Ownership for Parent Parcelp");
-        
-		/*
-		 * String xpathStr2 =
-		 * "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@href,'"
-		 * + activeApnId + "')]//span[text() = 'View All']"; WebElement fieldLocator2 =
-		 * objCIOTransferPage.locateElement(xpathStr2, 30);
-		 * objCIOTransferPage.Click(fieldLocator2);
-		 * objCIOTransferPage.waitForElementToBeVisible(10,objCIOTransferPage.
-		 * ownershipLabelOnGridForGrantee);
-		 */
 	
         // Step12: Validate the details in the grid
         ReportLogger.INFO("Validate the Current Ownership record in Grid");

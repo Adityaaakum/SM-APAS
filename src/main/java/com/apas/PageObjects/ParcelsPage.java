@@ -129,6 +129,8 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='Save']")
     public WebElement ownershipSaveButton;
 	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text() = 'Mail-To']/following-sibling::span")
+	public WebElement numberOfMailToOnParcelLabel;
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -281,6 +283,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String createOwnershipRecord(String apn, String assesseeName, Map<String, String> dataMap) throws Exception {	
 		globalSearchRecords(apn);
         openParcelRelatedTab(ownershipTabLabel);
+        scrollToBottom();
         Thread.sleep(1000);
         
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");        
@@ -313,6 +316,7 @@ public class ParcelsPage extends ApasGenericPage {
 		String ownershipStartDate = dataMap.get("Ownership Start Date");
 		String ownershipPercentage=dataMap.get("Ownership Percentage");
 		
+		scrollToBottom();
 		createRecord();
 		Click(ownershipNextButton);
 		searchAndSelectOptionFromDropDown(ownerDropDown, owner);

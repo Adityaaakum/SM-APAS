@@ -251,7 +251,7 @@ public class Util {
 	 * This method will encode the string in Base64 format
 	 * @param string: String to be converted into Base64 format
 	 */
-	public static String encodeStringToBase64(String string){
+	public String encodeStringToBase64(String string){
 		return Base64.getEncoder().encodeToString(string.getBytes());
 	}
 

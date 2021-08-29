@@ -1328,7 +1328,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.clearSelectionFromLookup(objCioTransfer.ApnLabel);
 		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.ApnLabel, retiredApn);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveLabel));
-		Thread.sleep(3000); //Allows the record saved properly
+		Thread.sleep(3000); //Allows the record to save properly
 		
 		softAssert.assertTrue(objCioTransfer.verifyElementExists(objCioTransfer.warningMessageArea),
 				"SMAB-T3232: Validate that warning message is displayed on CIO Transfer screen for Retired Parcel");
@@ -1345,7 +1345,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.clearSelectionFromLookup(objCioTransfer.ApnLabel);
 		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.ApnLabel, activeApn1);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveLabel));
-		Thread.sleep(3000); //Allows the record saved properly
+		Thread.sleep(3000); //Allows the record to save properly
 		
 		String numOfMailToRecordOnRAT = objCioTransfer.getElementText(objCioTransfer.numberOfMailToLabel);
 		softAssert.assertTrue(!objCioTransfer.verifyElementExists(objCioTransfer.warningMessageArea),
