@@ -155,7 +155,7 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3478 : Verify that HOE Qualification and Exemption field values on Parcel are retained if a Transfer code with 'Retain Exemption' is selected as ' for Recorded Event", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "HomeOwnerExemption" },enabled=false)
+			"Regression", "ChangeInOwnershipManagement", "HomeOwnerExemption" },enabled=true)
 	public void HomeOwnerExemption_ExemptionRetain_RecordedEvent(String loginUser) throws Exception {
 		
 		// Step 1: Executing the recorder feed batch job to generate CIO WI
