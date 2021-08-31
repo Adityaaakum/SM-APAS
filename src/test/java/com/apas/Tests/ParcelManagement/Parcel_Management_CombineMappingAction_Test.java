@@ -20,6 +20,7 @@ import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
+import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.DateUtil;
@@ -28,6 +29,7 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
+import com.relevantcodes.extentreports.LogStatus;
 
 public class Parcel_Management_CombineMappingAction_Test extends TestBase implements testdata, modules, users {
 
@@ -571,7 +573,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.waitForElementToBeVisible(10,objMappingPage.generateParcelButton);
 		
 		//Step 10: Validate the Warning message
-		ReportLogger.INFO(objMappingPage.secondScreenParcelSizeWarning.getText());
+		ReportLogger.INFO("Validate warning message appears - " + objMappingPage.secondScreenParcelSizeWarning.getText());
 		softAssert.assertContains(objMappingPage.secondScreenParcelSizeWarning.getText(), 
 				"Warning: Parcel number generated is different from the user"
 				+ " selection based on established criteria. As a reference the number provided is", 
@@ -625,12 +627,17 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String nextGeneratedAPN = gridDataHashMap.get("APN").get(0);
 		ReportLogger.INFO("nextGeneratedAPN :: " + nextGeneratedAPN);
 		String notNextGeneratedAPN = objMappingPage.generateNextAvailableAPN(nextGeneratedAPN);
-
+		
 		//Step 18 :Overwrite parcel value with above generated APN and Click Combine parcel button
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,notNextGeneratedAPN);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + notNextGeneratedAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		
+		//Added code to notify the reason in the Report, if it fails in regression
+		if(!objMappingPage.confirmationMsgOnSecondScreen().isEmpty() && objMappingPage.confirmationMsgOnSecondScreen().equals("Parcel(s) have been created successfully. Please review spatial information."))
+			ReportLogger.INFO("Some parcels are not taken in the Map Page and Map Book, hence test FAILED :: Map Book - " + notNextGeneratedAPN.substring(0, 3) + ", Map Page - " + notNextGeneratedAPN.substring(4, 7));
+		
 		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The parcel entered is invalid since the following parcel is available " + nextGeneratedAPN),
 				"SMAB-T2358: Validate that User is able to view error message if APN overwritten is not the next available one in the system : The parcel entered is invalid since the following parcel is available <APN>");
 	
@@ -675,7 +682,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	public void ParcelManagement_VerifyParcelGenerationForCombineMappingAction(String loginUser) throws Exception {
 		
 		//Getting parcels that are Active 
-		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') Limit 2";
+		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
+				+ "and (Not Name like '100%') and (Not Name like '800%') and (Not Name like '%990') and (Not Name like '134%') Limit 2";
 		String apn1 = salesforceAPI.select(queryForActiveAPN).get("Name").get(0);
 		String apnId1 = salesforceAPI.select(queryForActiveAPN).get("Id").get(0);
 		String apn2 = salesforceAPI.select(queryForActiveAPN).get("Name").get(1);
@@ -883,7 +891,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String assesseeName = objMappingPage.getOwnerForMappingAction();
 		
 		//Getting parcels that are Active 
-		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') Limit 2";
+		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
+				+ "and (Not Name like '100%') and (Not Name like '800%') and (Not Name like '%990') and (Not Name like '134%') Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryForActiveAPN);
 		String apn1 = responseAPNDetails.get("Name").get(0);
 		String apnId1 = responseAPNDetails.get("Id").get(0);
@@ -936,14 +945,17 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		if (updateSmallestAPN.equals(apn3)) updateRecordOn = condoApnId;
 		
 		//Fetch some other values from database
-		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,Id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 		String legalDescriptionValue="Legal PM 85/25-260";
-		if (salesforceAPI.select("SELECT Name FROM Situs__c where id in (SELECT Primary_Situs__c FROM Parcel__c where Id='"+ updateRecordOn +"')") != null) 
-			primarySitusValue = salesforceAPI.select("SELECT Name  FROM Situs__c where id in (SELECT Primary_Situs__c FROM Parcel__c where Id='"+ updateRecordOn +"')").get("Name").get(0);
+		String querySitusValue = "SELECT Name FROM Situs__c where id in (SELECT Primary_Situs__c FROM Parcel__c where Name='"+ updateSmallestAPN + "')";
+		HashMap<String, ArrayList<String>> responseSitusDetails = salesforceAPI.select(querySitusValue);
+		
+		if (responseSitusDetails != null) 
+			primarySitusValue = responseSitusDetails.get("Name").get(0);
 		
 		//Enter values in the Parcels
 		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
@@ -954,7 +966,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		salesforceAPI.update("Parcel__c", apnId1, "Lot_Size_SQFT__c", "0");
 		salesforceAPI.update("Parcel__c", apnId2, "Lot_Size_SQFT__c", "0");
 		salesforceAPI.update("Parcel__c", responseCondoAPNDetails.get("Id").get(0), "Lot_Size_SQFT__c", "0");
-				
+			System.out.println("Test");	
 		String concatenateMixAPNs = apn1+","+apn2+","+apn3;
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
@@ -2067,10 +2079,18 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 					+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
 					+ "where Status__c='Active') limit 1");
 		String PUC = responsePUCDetails.get("Name").get(0);
-	   
+		
+		//Login to the APAS application
+		objMappingPage.login(users.SYSTEM_ADMIN);
+
+		//Opening the PARCELS page and searching for the parcel - If not there, create one   
 		objMappingPage.searchModule(PARCELS);
 		String apn2 = objParcelsPage.createNewParcel(apnStartingWith9,parcelNumberStartingWith9,PUC);
+		
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
 	
+		//Get the APN Id
 	    HashMap<String, ArrayList<String>> responseSearchedApnId = salesforceAPI.select("Select id from Parcel__c where name ='"+apn2+"'");
 	    String apn2Id = responseSearchedApnId.get("Id").get(0);
 	    
@@ -2277,7 +2297,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apn2Id = salesforceAPI.select(queryInterimAPNValue).get("Id").get(1);
 		
 		//Getting Active Non-Condo Parcel
-		String queryAPNValue = "Select name,ID  From Parcel__c where name like '0%'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  limit 2";
+		String queryAPNValue = "Select name,ID  From Parcel__c where name like '0%'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and (Not Name like '%990') limit 2";
 		String apn3 = salesforceAPI.select(queryAPNValue).get("Name").get(0);
 		String apn3Id = salesforceAPI.select(queryAPNValue).get("Id").get(0);
 		String apn4 = salesforceAPI.select(queryAPNValue).get("Name").get(1);
