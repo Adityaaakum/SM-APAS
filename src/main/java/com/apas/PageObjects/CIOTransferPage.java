@@ -165,6 +165,9 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//span[text() = 'CIO Transfer Grantee & New Ownership']/following-sibling::span")
 	public WebElement numberOfGranteeLabel;
 	
+	@FindBy(xpath = commonXpath + "//span[text() = 'CIO Transfer Mail To']/following-sibling::span")
+	public WebElement numberOfMailToLabel;
+	
 	@FindBy(xpath = commonXpath + "//h1[text()='Ownership']")
 	public WebElement ownershipLabelOnGridForGrantee;
 	
@@ -180,7 +183,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath=commonXpath+"//button[text()='Finish']")
 	public WebElement finishButtonPopUp;
 	
-
+	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
 	    * 
@@ -452,5 +455,24 @@ public class CIOTransferPage extends ApasGenericPage {
 			 
 		 }
 		 
-			
+		 /*
+		  * Description : This method will click 'View All' button on RAT screen under the Grid
+		  * Param : Grid Name 
+		  *
+		  */
+		 
+		 public void clickViewAll(String gridName) throws Exception{
+			 ReportLogger.INFO("Click View ALL button under "+ gridName);
+			 String updateGridName="";
+			 if (gridName.contains("CIO Transfer Grantors"))updateGridName = "CIO_Transfer_Grantor"; 
+			 if (gridName.contains("CIO Transfer Grantee & New Ownership"))updateGridName = "CIO_Transfer_Grantee_New_Ownership";
+			 if (gridName.contains("CIO Transfer Mail To"))updateGridName = "CIO_Transfer_Mail_To";
+			 if (gridName.contains("Ownership for Parent Parcel"))updateGridName = "Property_Ownerships";
+			 
+			 String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@href,'" + updateGridName + "')]//span[text() = 'View All']";		        
+		 	 WebElement fieldLocator1 = locateElement(xpathStr, 30);
+		 	 Click(fieldLocator1);
+		 	 Thread.sleep(5000);
+		 }
+		 	
 }

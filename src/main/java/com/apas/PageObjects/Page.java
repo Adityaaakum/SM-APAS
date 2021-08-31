@@ -764,9 +764,11 @@ public class Page extends TestBase {
 	 * @param fieldName: Takes field name as an argument
 	 */
 	public void clearSelectionFromLookup(String fieldName) throws Exception {
+		Thread.sleep(1000);
 		String xpathStr = "//label[text()='" + fieldName + "']/parent::lightning-grouped-combobox//span[text()='Clear Selection']";
 		waitUntilElementIsPresent(xpathStr, 3);
 		Click(driver.findElement(By.xpath(xpathStr)));
+		Thread.sleep(1000);
 	}
 	/**
 	 * Description: This method will click element with hyperlink in the lookup field
