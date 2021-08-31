@@ -489,7 +489,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
 		//Step5: Prepare a test data to create a new building permit
 		String CompletionDate = "BuildingPermitManualCreationDataWithCompletionDate";
-		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestDataNoCompletionDate(CompletionDate);
+		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationAllTestData(CompletionDate);
 		String buildingPermitNumber = manualBuildingPermitMap.get("Building Permit Number");
 		manualBuildingPermitMap.put("APN",parcelToSearch);
 
@@ -509,13 +509,35 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
         String importReviewWorkItem = objSalesforceAPI.select(queryWorkItem).get("Name").get(0);
         ReportLogger.INFO("Created Work Item : " + importReviewWorkItem);
         
-//        Step9: Accepting the work item & Going to Tab In Progress to verify the work item moved to in progress tab.
+//        Step9: Asserting the WI in pool tab
 
         objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
         objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
         WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + importReviewWorkItem + "')]"));
         String expectedWI=completedWorkItem.getText();
         softAssert.assertEquals(expectedWI, importReviewWorkItem, "SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
+
+        //		Step 10: Going to WI page and checking the status        
+        objBuildingPermitPage.globalSearchRecords(importReviewWorkItem); 
+        
+        WebElement statusText=driver.findElement(By.xpath("//*[contains(text(),'Construction Completed')]"));
+        objBuildingPermitPage.waitForElementToBeInVisible(statusText);
+        String expectedStatus=statusText.getText();
+        
+        softAssert.assertEquals(expectedStatus, "Construction Completed", "SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
+       
+//      Step11: Going to Home Page and then In Pool Tab to Accept the work item & Going to Tab In Progress to verify the work item moved to in progress tab.
+
+        driver.navigate().refresh();
+    	    
+        objBuildingPermitPage.searchModule(modules.HOME);
+
+   		objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_POOL,20);
+		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
+		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+        objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
+        
+        
         objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
         objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
         objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
@@ -552,9 +574,9 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
 		//Step5: Prepare a test data to create a new building permit
 		String CompletionDate = "BuildingPermitManualCreationDataWithCompletionDate";
-		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestDataNoCompletionDate(CompletionDate);
+		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationAllTestData(CompletionDate);
 		String buildingPermitNumber = manualBuildingPermitMap.get("Building Permit Number");
-		manualBuildingPermitMap.put("APN",parcelToSearch);
+
 
 		//Step6: Adding a new Building Permit with the APN passed in the above steps
 		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
@@ -570,19 +592,41 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
         String importReviewWorkItem = objSalesforceAPI.select(queryWorkItem).get("Name").get(0);
         ReportLogger.INFO("Created Work Item : " + importReviewWorkItem);
         
-//        Step9: Accepting the work item & Going to Tab In Progress
+//      Step9: Asserting the WI in pool tab
 
-        objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
-        objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
-        WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + importReviewWorkItem + "')]"));
-        String expectedWI=completedWorkItem.getText();
-        softAssert.assertEquals(expectedWI, importReviewWorkItem, "SMAB-T3007:Status of the work item should be Construction completed");
-        objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
-        objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
-        objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
-        objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
-        objWorkItemHomePage.findWorkItemInProgress(importReviewWorkItem);
-        ReportLogger.INFO("Found Work Item! Mission Completed.");
+      objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+      objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
+      WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + importReviewWorkItem + "')]"));
+      String expectedWI=completedWorkItem.getText();
+      softAssert.assertEquals(expectedWI, importReviewWorkItem, "SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
+
+      //		Step 10: Going to WI page and checking the status        
+      objBuildingPermitPage.globalSearchRecords(importReviewWorkItem); 
+      
+      WebElement statusText=driver.findElement(By.xpath("//*[contains(text(),'Construction Completed')]"));
+      objBuildingPermitPage.waitForElementToBeInVisible(statusText);
+      String expectedStatus=statusText.getText();
+      
+      softAssert.assertEquals(expectedStatus, "Construction Completed", "SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
+     
+//    Step11: Going to Home Page and then In Pool Tab to Accept the work item & Going to Tab In Progress to verify the work item moved to in progress tab.
+
+      driver.navigate().refresh();
+  	    
+      objBuildingPermitPage.searchModule(modules.HOME);
+
+ 		objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_POOL,20);
+		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
+		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+      objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
+      
+      
+      objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
+      objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
+      objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+      objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
+      objWorkItemHomePage.findWorkItemInProgress(importReviewWorkItem);
+      ReportLogger.INFO("Found Work Item! Mission Completed.");
 
     }
 
@@ -613,9 +657,9 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
    		//Step5: Prepare a test data to create a new building permit
    			String CompletionDate = "BuildingPermitManualCreationDataWithoutCompletionDate";
-   			Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestDataNoCompletionDate(CompletionDate);
+   			Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationAllTestData(CompletionDate);
    			String buildingPermitNumber = manualBuildingPermitMap.get("Building Permit Number");
-   			manualBuildingPermitMap.put("APN",parcelToSearch);
+
 
    		//Step6: Adding a new Building Permit with the APN passed in the above steps
    			objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
@@ -668,19 +712,43 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
                ReportLogger.INFO("Created Work Item : " + editImportReviewWorkItem);
               
                
-        //Step15: Accepting the work item & Doing assertion
+//             Step15: Asserting the WI in pool tab
+
                objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
                objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
                objBuildingPermitPage.waitForElementToBeClickable(editImportReviewWorkItem);
-			   WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + editImportReviewWorkItem + "')]"));
-        	   String expectedWI=completedWorkItem.getText();
-        	   softAssert.assertEquals(expectedWI, importReviewWorkItem, "SMAB-T2987, SMAB-T2988, SMAB-T2989:Status of the work item should be Construction completed");               
+               WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + editImportReviewWorkItem + "')]"));
+               String expectedWI=completedWorkItem.getText();
+               softAssert.assertEquals(expectedWI, editImportReviewWorkItem, "SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
+
+               //		Step 16: Going to WI page and checking the status        
+               objBuildingPermitPage.globalSearchRecords(editImportReviewWorkItem); 
+               
+               WebElement statusText=driver.findElement(By.xpath("//*[contains(text(),'Construction Completed')]"));
+               objBuildingPermitPage.waitForElementToBeInVisible(statusText);
+               String expectedStatus=statusText.getText();
+               
+               softAssert.assertEquals(expectedStatus, "Construction Completed", "SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
+              
+//             Step17: Going to Home Page and then In Pool Tab to Accept the work item & Going to Tab In Progress to verify the work item moved to in progress tab.
+
+               driver.navigate().refresh();
+           	    
+               objBuildingPermitPage.searchModule(modules.HOME);
+
+          		objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_POOL,20);
+         		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
+         		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+               objBuildingPermitPage.waitForElementToBeClickable(editImportReviewWorkItem);
+               
+               
                objWorkItemHomePage.acceptWorkItem(editImportReviewWorkItem);
                objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
                objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
                objBuildingPermitPage.waitForElementToBeClickable(editImportReviewWorkItem);
                objWorkItemHomePage.findWorkItemInProgress(editImportReviewWorkItem);
-
+               ReportLogger.INFO("Found Work Item! Mission Completed.");
+               
        }
     /**
      * This test case is to validate work item creation functionality and the work item flow after creating new building permit Without completion date and with completion date for Retired parcel
@@ -710,9 +778,9 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
    		//Step5: Prepare a test data to create a new building permit
    			String CompletionDate = "BuildingPermitManualCreationDataWithoutCompletionDate";
-   			Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationTestDataNoCompletionDate(CompletionDate);
+   			Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationAllTestData(CompletionDate);
    			String buildingPermitNumber = manualBuildingPermitMap.get("Building Permit Number");
-   			manualBuildingPermitMap.put("APN",parcelToSearch);
+
 
    		//Step6: Adding a new Building Permit with the APN passed in the above steps
    			objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);
@@ -768,20 +836,43 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
                String editImportReviewWorkItem = objSalesforceAPI.select(editQueryWorkItem).get("Name").get(0);
                ReportLogger.INFO("Created Work Item : " + editImportReviewWorkItem);
    
-               
-        //Step15: Accepting the work item
+//             Step15: Asserting the WI in pool tab
+
                objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
                objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
                objBuildingPermitPage.waitForElementToBeClickable(editImportReviewWorkItem);
                WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + editImportReviewWorkItem + "')]"));
-        	   String expectedWI=completedWorkItem.getText();
-        	   softAssert.assertEquals(expectedWI, importReviewWorkItem, "SMAB-T3007:Status of the work item should be Construction completed");
+               String expectedWI=completedWorkItem.getText();
+               softAssert.assertEquals(expectedWI, editImportReviewWorkItem, "SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
+
+               //		Step 16: Going to WI page and checking the status        
+               objBuildingPermitPage.globalSearchRecords(editImportReviewWorkItem); 
+               
+               WebElement statusText=driver.findElement(By.xpath("//*[contains(text(),'Construction Completed')]"));
+               objBuildingPermitPage.waitForElementToBeInVisible(statusText);
+               String expectedStatus=statusText.getText();
+               
+               softAssert.assertEquals(expectedStatus, "Construction Completed", "SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
+              
+//             Step17: Going to Home Page and then In Pool Tab to Accept the work item & Going to Tab In Progress to verify the work item moved to in progress tab.
+
+               driver.navigate().refresh();
+           	    
+               objBuildingPermitPage.searchModule(modules.HOME);
+
+          		objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_POOL,20);
+         		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
+         		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+               objBuildingPermitPage.waitForElementToBeClickable(editImportReviewWorkItem);
+               
+               
                objWorkItemHomePage.acceptWorkItem(editImportReviewWorkItem);
                objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
                objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
                objBuildingPermitPage.waitForElementToBeClickable(editImportReviewWorkItem);
                objWorkItemHomePage.findWorkItemInProgress(editImportReviewWorkItem);
-       		
+               ReportLogger.INFO("Found Work Item! Mission Completed.");
+               
        }
         
 }

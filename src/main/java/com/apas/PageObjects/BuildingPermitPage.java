@@ -204,7 +204,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 		return  manualBuildingPermitMap;
 	}
-	public Map<String, String> getBuildingPermitManualCreationTestDataNoCompletionDate(String CompletionDate) {
+	public Map<String, String> getBuildingPermitManualCreationAllTestData(String CompletionDate) {
 
 		//Fetch the APN to be used to create building permit
 		String query ="SELECT Name FROM Parcel__c where status__c = 'Active' limit 1";
