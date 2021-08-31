@@ -1116,7 +1116,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		//Step 4: filling all fields in mapping action screen
 		objMappingPage.fillMappingActionForm(hashMapOneToOneMappingData);
-		Thread.sleep(4000);
+		objMappingPage.waitForElementToBeVisible(objMappingPage.generateParcelButton);
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		String childAPN=gridDataHashMap.get("APN").get(0);	
 		String legalDescription=gridDataHashMap.get("Legal Description*").get(0);
