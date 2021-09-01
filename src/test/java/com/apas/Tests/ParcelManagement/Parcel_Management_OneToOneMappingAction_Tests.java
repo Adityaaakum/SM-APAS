@@ -1191,17 +1191,18 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		query = "Select Id from Work_Item__c where Name = '" + workItem + "'";
 		salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
 		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
 		ReportLogger.INFO(" Supervisor logins to close the WI ");
 		objMappingPage.login(users.MAPPING_SUPERVISOR);
-		Thread.sleep(5000);
 		objMappingPage.searchModule(WORK_ITEM);
 		objMappingPage.globalSearchRecords(workItem);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		// refresh as the focus is getting lost
 		driver.navigate().refresh();
 		Thread.sleep(5000);
-		String workItemStatus = objWorkItemHomePage.completeWorkItem();
-		softAssert.assertTrue(workItemStatus.contains("Close"), "SMAB-T3634: Validation WI completed successfully");
+		objWorkItemHomePage.completeWorkItem();
+		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
 		objWorkItemHomePage.logout();
 	}
 	
