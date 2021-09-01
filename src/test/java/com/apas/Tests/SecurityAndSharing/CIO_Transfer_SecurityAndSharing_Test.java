@@ -326,8 +326,6 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 				"SMAB-T3468: Validation that componentActionsButtonLabel  button is not visible CIO staff after submit for review");
 		objCIOTransferPage.logout();
 		Thread.sleep(5000);
-		driver.navigate().refresh();
-		Thread.sleep(6000);
 
 		// Step6: CIO supervisor now logs in and navigates to the above transfer screen
 		objCIOTransferPage.login(users.CIO_SUPERVISOR);
