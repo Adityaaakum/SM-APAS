@@ -52,7 +52,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3330,SMAB-T3140,SMAB-T3193,SMAB-T3390,SMAB-T3467 : Verify that When CIO users navigates to quick action dropdown button different CIO users are able to view different dropdown buttons", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3140,SMAB-T3193,SMAB-T3390,SMAB-T3467 : Verify that When CIO users navigates to quick action dropdown button different CIO users are able to view different dropdown buttons", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "SecurityAndSharing" },enabled=true)
 	public void QuickActionButtonsValidation_CIOTransferScreen_SubmitForApproval(String loginUser) throws Exception {
 
@@ -73,17 +73,11 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 
 		// Step3: Opening the work items and accepting the WI created by recorder batch
 		objCIOTransferPage.searchModule(HOME);
-		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABHome);
-	  	objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABWorkItems);
-	  	objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInPool);
-	  	Thread.sleep(4000);
-	  	objWorkItemHomePage.clickCheckBoxForSelectingWI(cioWorkItem);
-	  	objWorkItemHomePage.Click(objWorkItemHomePage.acceptWorkItemBtn);
-	  	Thread.sleep(4000);
-	  	objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInProgress);
-	  	Thread.sleep(4000);
-	  	objWorkItemHomePage.clickCheckBoxForSelectingWI(cioWorkItem);
-	  	objWorkItemHomePage.openActionLink(cioWorkItem);	  	
+		objWorkItemHomePage.globalSearchRecords(cioWorkItem);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 
 		// step 4: fetching the recorded apn transfer object associated with the CIO WI
 		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + cioWorkItem + "'";
@@ -94,10 +88,22 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		String queryAPN = "SELECT Parcel__c FROM Recorded_APN_Transfer__c where id='" + recordeAPNTransferID + "'";
 		objCIOTransferPage.deleteOwnershipFromParcel(salesforceAPI.select(queryAPN).get("Parcel__c").get(0));
 
-		//deleting the CIO Transfer grantees for the current transfer screen
-		objCIOTransferPage.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
+		// update the grantee last name for recorded apn transfer object associated with
+		// the CIO WI to ensure no blank last names
+		String queryTransferId = "SELECT id FROM CIO_Transfer_Grantee_New_Ownership__c where Recorded_APN_Transfer__c='"
+				+ recordeAPNTransferID + "'";
+		HashMap<String, ArrayList<String>> responseTransferDetails = salesforceAPI.select(queryTransferId);
+
+		for (int i = 0; i < responseTransferDetails.size(); i++) {
+			jsonObject.put("Last_Name__c", "owner " + i);
+			salesforceAPI.update("CIO_Transfer_Grantee_New_Ownership__c", responseTransferDetails.get("Id").get(i),
+					jsonObject);
+		}
 
 		// Step5: CIO staff user navigating to transfer screen by clicking on related action link
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		objCIOTransferPage.waitForElementToBeVisible(20,
 				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
 
@@ -116,7 +122,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 
 		//adding below assertions to verify various table names and other labels on transfer screen  
 		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.cioTransferActivityLabel),"CIO Transfer Activity",
-				"SMAB-T3140,SMAB-T3330: Validation that CIO Transfer Activity label is visible on top left of transfer screen and user is landed to transfer scren after accepting WI from home page ");
+				"SMAB-T3140: Validation that CIO Transfer Activity label is visible on top left of transfer screen ");
 				
 		List<WebElement> cioTransferScreenSectionlabels=objCIOTransferPage.locateElements(objCIOTransferPage.cioTransferScreenSectionlabels, 10);
 				
@@ -197,8 +203,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.CancelButton));
 		
 		objCIOTransferPage.logout();
-		Thread.sleep(5000);
-       
+
 		// Step8: CIO supervisor now logs in and navigates to the above transfer screen
 		objCIOTransferPage.login(users.CIO_SUPERVISOR);
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
@@ -241,6 +246,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 				"SMAB-T3193: Verify that after approval , transfer screen  is now in read only mode ");
 				objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.CancelButton));
 				
+		driver.switchTo().window(parentWindow);
 		objCIOTransferPage.logout();
 	}
 
@@ -256,10 +262,6 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 			"Regression", "ChangeInOwnershipManagement", "SecurityAndSharing" },enabled=true)
 	public void QuickActionButtonsValidation_CIOTransferScreen_SubmitForReview(String loginUser) throws Exception {
 
-		String OwnershipAndTransferGranteeCreationData =  testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
-		 Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(OwnershipAndTransferGranteeCreationData,
-					"dataToCreateGranteeWithCompleteOwnership");
-			  
 		// step 1: executing the recorder feed batch job to generate CIO WI
 		objCIOTransferPage.generateRecorderJobWorkItems("DE", 1);
 		Thread.sleep(7000);
@@ -288,8 +290,17 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		String queryAPN = "SELECT Parcel__c FROM Recorded_APN_Transfer__c where id='" + recordeAPNTransferID + "'";
 		objCIOTransferPage.deleteOwnershipFromParcel(salesforceAPI.select(queryAPN).get("Parcel__c").get(0));
 
-		//deleting the CIO Transfer grantees for the current transfer screen
-		objCIOTransferPage.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
+		// update the grantee last name for recorded apn transfer object associated with
+		// the CIO WI to ensure no blank last names
+		String queryTransferId = "SELECT id FROM CIO_Transfer_Grantee_New_Ownership__c where Recorded_APN_Transfer__c='"
+				+ recordeAPNTransferID + "'";
+		HashMap<String, ArrayList<String>> responseTransferDetails = salesforceAPI.select(queryTransferId);
+
+		for (int i = 0; i < responseTransferDetails.size(); i++) {
+			jsonObject.put("Last_Name__c", "owner " + i);
+			salesforceAPI.update("CIO_Transfer_Grantee_New_Ownership__c", responseTransferDetails.get("Id").get(i),
+					jsonObject);
+		}
 
 		// Step4: CIO staff user navigating to transfer screen by clicking on related
 		// action link
@@ -300,22 +311,6 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
 
 		// Step5: submitting the WI for review
-		ReportLogger.INFO("Updating the transfer code");
-		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
-		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
-		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-COPAL");
-		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
-        ReportLogger.INFO("transfer code updated successfully");
-
-        ReportLogger.INFO("Creating new grantee record");
-		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);	
-        ReportLogger.INFO("Grantee record created successfully");
-        
-		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
-				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCIOTransferPage.waitForElementToBeVisible(15,
-				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
-		
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForReview);
 		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
@@ -325,8 +320,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
 				"SMAB-T3468: Validation that componentActionsButtonLabel  button is not visible CIO staff after submit for review");
 		objCIOTransferPage.logout();
-		Thread.sleep(5000);
-        
+
 		// Step6: CIO supervisor now logs in and navigates to the above transfer screen
 		objCIOTransferPage.login(users.CIO_SUPERVISOR);
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
