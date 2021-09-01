@@ -203,6 +203,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.CancelButton));
 		
 		objCIOTransferPage.logout();
+		Thread.sleep(5000);
 
 		// Step8: CIO supervisor now logs in and navigates to the above transfer screen
 		objCIOTransferPage.login(users.CIO_SUPERVISOR);
@@ -320,6 +321,8 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
 				"SMAB-T3468: Validation that componentActionsButtonLabel  button is not visible CIO staff after submit for review");
 		objCIOTransferPage.logout();
+		Thread.sleep(5000);
+
 
 		// Step6: CIO supervisor now logs in and navigates to the above transfer screen
 		objCIOTransferPage.login(users.CIO_SUPERVISOR);
