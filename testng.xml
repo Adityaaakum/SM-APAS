@@ -9,17 +9,19 @@
 	<test name="regression" annotations="">
 		<groups>
 			<run>
-				<include name="regression"/>
+				<include name="Regression"/>
 			</run>
 		</groups>
 		<classes>
 
-			 <class name="com.apas.Tests.WorkItemsTest.WorkIemAdministration.WorkItemAdministration_PoolAssignment_Test">
-				 <methods>
-					 <include name="WorkItemAdministration_UpdateNeighborhood_ValidatePoolAssignment"/>
-				 </methods>
+			 <class name="com.apas.Tests.OwnershipAndTransfer.CIO_RecordedEvents_Test">
+				<methods>
+				<include name="OwnershipAndTransfer_Calculate_Ownership_SameOwnerMultipleDOV"/>
+				</methods>
+				
 			 </class>
 
 		</classes>
+		
 	</test>
 </suite>

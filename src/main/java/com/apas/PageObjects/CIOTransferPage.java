@@ -167,6 +167,9 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//span[text() = 'CIO Transfer Grantee & New Ownership']/following-sibling::span")
 	public WebElement numberOfGranteeLabel;
 	
+	@FindBy(xpath = commonXpath + "//span[text() = 'CIO Transfer Mail To']/following-sibling::span")
+	public WebElement numberOfMailToLabel;
+	
 	@FindBy(xpath = commonXpath + "//h1[text()='Ownership']")
 	public WebElement ownershipLabelOnGridForGrantee;
 	
@@ -182,7 +185,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath=commonXpath+"//button[text()='Finish']")
 	public WebElement finishButtonPopUp;
 	
-
+	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
 	    * 
@@ -460,12 +463,32 @@ public class CIOTransferPage extends ApasGenericPage {
 		 
 		 public void deleteRecordedAPNTransferGranteesRecords(String recordedAPNTransferId) throws IOException, Exception
 		 {      	       
-			   HashMap<String, ArrayList<String>>HashMapOldGrantee =salesforceApi.select("SELECT Id FROM CIO_Transfer_Grantee_New_Ownership__c where Recorded_APN_Transfer__c ='"+recordedAPNTransferId+"'");			      
+			   HashMap<String, ArrayList<String>>HashMapOldGrantee =salesforceApi.select("SELECT Id ,Last_Name__c  FROM CIO_Transfer_Grantee_New_Ownership__c where Recorded_APN_Transfer__c ='"+recordedAPNTransferId+"'");			      
 		        if(!HashMapOldGrantee.isEmpty()) {		    	  
 		    	  HashMapOldGrantee.get("Id").stream().forEach(Id ->{
 	    		  objSalesforceAPI.delete("CIO_Transfer_Grantee_New_Ownership__c", Id);
-	    		  ReportLogger.INFO("!!Deleted RAT transfer grantee with id= "+Id);
+	    		  ReportLogger.INFO("!!Deleted RAT transfer grantee with id= "+Id + " and name "+ HashMapOldGrantee.get("Last_Name__c"));
 		          } );}	 
 		 } 
 			
+		 /*
+		  * Description : This method will click 'View All' button on RAT screen under the Grid
+		  * Param : Grid Name 
+		  *
+		  */
+		 
+		 public void clickViewAll(String gridName) throws Exception{
+			 ReportLogger.INFO("Click View ALL button under "+ gridName);
+			 String updateGridName="";
+			 if (gridName.contains("CIO Transfer Grantors"))updateGridName = "CIO_Transfer_Grantor"; 
+			 if (gridName.contains("CIO Transfer Grantee & New Ownership"))updateGridName = "CIO_Transfer_Grantee_New_Ownership";
+			 if (gridName.contains("CIO Transfer Mail To"))updateGridName = "CIO_Transfer_Mail_To";
+			 if (gridName.contains("Ownership for Parent Parcel"))updateGridName = "Property_Ownerships";
+			 
+			 String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@href,'" + updateGridName + "')]//span[text() = 'View All']";		        
+		 	 WebElement fieldLocator1 = locateElement(xpathStr, 30);
+		 	 Click(fieldLocator1);
+		 	 Thread.sleep(5000);
+		 }
+		 	
 }

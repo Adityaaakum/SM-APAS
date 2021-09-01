@@ -774,8 +774,8 @@ public class ExemptionsPage extends ApasGenericPage {
     	Click(homeOwnerExemptionRadioButton);
     	Click(exemptionRecordTypeNextButton);
     	String assesseeName = fetchAssesseeName();
-        String apnNumber = fetchActiveAPN();
         
+    	//String apnNumber = fetchActiveAPN();
         //searchAndSelectOptionFromDropDown(apn, apnNumber);
         searchAndSelectOptionFromDropDown(claimantName, assesseeName);
         selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));

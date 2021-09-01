@@ -129,6 +129,8 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='Save']")
     public WebElement ownershipSaveButton;
 	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text() = 'Mail-To']/following-sibling::span")
+	public WebElement numberOfMailToOnParcelLabel;
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -281,6 +283,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String createOwnershipRecord(String apn, String assesseeName, Map<String, String> dataMap) throws Exception {	
 		globalSearchRecords(apn);
         openParcelRelatedTab(ownershipTabLabel);
+        scrollToBottom();
         Thread.sleep(1000);
         
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");        
@@ -313,6 +316,7 @@ public class ParcelsPage extends ApasGenericPage {
 		String ownershipStartDate = dataMap.get("Ownership Start Date");
 		String ownershipPercentage=dataMap.get("Ownership Percentage");
 		
+		scrollToBottom();
 		createRecord();
 		Click(ownershipNextButton);
 		searchAndSelectOptionFromDropDown(ownerDropDown, owner);
@@ -392,10 +396,25 @@ public class ParcelsPage extends ApasGenericPage {
 		
 		//To create new parcel manually
 		public String createNewParcel(String apn,String parcelNum,String PUC) {
-	        String querySearchAPN = "Select name,id from Parcel__c where name ='"+apn+"'";
+	        String querySearchAPN = "Select id from Parcel__c where name ='"+apn+"'";
 		    HashMap<String, ArrayList<String>> responseSearchedAPN = objSalesforceAPI.select(querySearchAPN);
+		    
+		    String querySearchApnAgain = "Select name,id from Parcel__c where name ='"+apn+"' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
+		    HashMap<String, ArrayList<String>> responseSearchedApnAgain = objSalesforceAPI.select(querySearchApnAgain);
+		    
 		    if(responseSearchedAPN.isEmpty()) {
-		    	try {
+		    	createParcel(apn,parcelNum,PUC);
+		    }else if (responseSearchedApnAgain.isEmpty()) {
+		    	objSalesforceAPI.delete("Parcel__c",querySearchAPN);
+		    	createParcel(apn,parcelNum,PUC);
+		    }else {
+		    	ReportLogger.INFO("Parcel record already present in system : "+apn);
+		    }
+		    return apn;
+		}
+		
+		public void createParcel(String apn,String parcelNum,String PUC) {
+			try {
 	    		waitForElementToBeInVisible(createNewParcelButton, 10);
 	    		Click(getButtonWithText(createNewParcelButton));
 	    	    enter(editApnField,apn);
@@ -404,16 +423,12 @@ public class ParcelsPage extends ApasGenericPage {
 	    		Click(saveButton);
 	    		ReportLogger.INFO("Successfully created parcel record : "+apn);
 		    	}
-		    	catch(Exception e) {
+		    catch(Exception e) {
 	        		ReportLogger.INFO("Fail to create parcel record : "+e);
 	        	}
-		    }else {
-	    		ReportLogger.INFO("Parcel record already present in system : "+apn);
-
-		    }
-		    return apn;
 		}
-
+		
+		
 		/**
 		 * @Description: This method will return the list of the characteristics present
 		 * @return list of web elements

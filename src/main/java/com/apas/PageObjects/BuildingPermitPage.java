@@ -204,5 +204,17 @@ public class BuildingPermitPage extends ApasGenericPage {
 
 		return  manualBuildingPermitMap;
 	}
+	public Map<String, String> getBuildingPermitManualCreationAllTestData(String CompletionDate) {
 
+		//Fetch the APN to be used to create building permit
+		ReportLogger.INFO("Setting up data for manual building permit creation in the building permit form : " );
+
+		String manualEntryData = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_MANUAL + "\\BuildingPermitManualCreationData.json";
+		Map<String, String> manualBuildingPermitMap = objUtil.generateMapFromJsonFile(manualEntryData, CompletionDate);
+		String buildingPermitNumber = manualBuildingPermitMap.get("Permit City Code") + "-" + DateUtil.getCurrentDate("yyyMMdd-HHmmss");
+		manualBuildingPermitMap.put("Building Permit Number",buildingPermitNumber);
+		
+
+		return  manualBuildingPermitMap;
+	}
 }

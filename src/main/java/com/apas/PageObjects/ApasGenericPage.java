@@ -1282,7 +1282,7 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
    
    public String getErrorMessage() throws Exception {
 	   	String ErrorTxt = "";
-	   	Thread.sleep(2000);
+	   	Thread.sleep(5000);
 		List<WebElement> ErrorText = locateElements("//div[contains(@class,'color_error')] |"
 				+ "//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
 	   	if(ErrorText.get(0).getAttribute("class").contains("color_error")){
@@ -1447,18 +1447,6 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		waitForElementToBeClickable(driver.findElement(By.xpath(xpath1)), 20);
 		Click(driver.findElement(By.xpath(xpath1)));
 	} 
-	
-	/**
-	 * Description: This method will fetch the recorded document details 
-	 
-	 */
-	public HashMap<String, ArrayList<String>> getRecordedDocumentDetails(String recDocID) {
-		
-		String slqRecordedDocumentDetails = "Select Name,Recorder_Doc_Number__c,Recorder_Doc_Type__c,Status__c,DOV__c,Recording_Date__c FROM Recorded_Document__c where id='"+recDocID+"'";		  
-
-		 return objSalesforceAPI.select(slqRecordedDocumentDetails);
-
-	}
 	/**
 	 * @Description: This method will sort a column in grid  
 	 */
