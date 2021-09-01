@@ -492,6 +492,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		Map<String, String> manualBuildingPermitMap = objBuildingPermitPage.getBuildingPermitManualCreationAllTestData(CompletionDate);
 		String buildingPermitNumber = manualBuildingPermitMap.get("Building Permit Number");
 		manualBuildingPermitMap.put("APN",parcelToSearch);
+		
 
 		//Step6: Adding a new Building Permit with the APN passed in the above steps
 		objBuildingPermitPage.addAndSaveManualBuildingPermit(manualBuildingPermitMap);

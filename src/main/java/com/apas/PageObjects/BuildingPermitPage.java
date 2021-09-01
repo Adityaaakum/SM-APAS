@@ -207,16 +207,13 @@ public class BuildingPermitPage extends ApasGenericPage {
 	public Map<String, String> getBuildingPermitManualCreationAllTestData(String CompletionDate) {
 
 		//Fetch the APN to be used to create building permit
-		String query ="SELECT Name FROM Parcel__c where status__c = 'Active' limit 1";
-		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
-		String activeAPN = response.get("Name").get(0);
-		ReportLogger.INFO("Active APN fetched through Salesforce API : " + activeAPN);
+		ReportLogger.INFO("Setting up data for manual building permit creation in the building permit form : " );
 
 		String manualEntryData = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_MANUAL + "\\BuildingPermitManualCreationData.json";
 		Map<String, String> manualBuildingPermitMap = objUtil.generateMapFromJsonFile(manualEntryData, CompletionDate);
 		String buildingPermitNumber = manualBuildingPermitMap.get("Permit City Code") + "-" + DateUtil.getCurrentDate("yyyMMdd-HHmmss");
 		manualBuildingPermitMap.put("Building Permit Number",buildingPermitNumber);
-		manualBuildingPermitMap.put("APN",activeAPN);
+		
 
 		return  manualBuildingPermitMap;
 	}
