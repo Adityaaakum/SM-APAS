@@ -195,7 +195,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    public void addRecordedApn(String DocId,int count) throws Exception
 	    {
 
-	    	String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) Limit "+count;
+	    	String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) and status__c='Active' Limit "+count;
 	    	HashMap<String, ArrayList<String>> hashMapRecordedApn= salesforceApi.select(getApnToAdd);
 	    	
 	    	if(count!=0) {
