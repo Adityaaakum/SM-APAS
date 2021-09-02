@@ -1486,4 +1486,25 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		String xpath1 = "//div[@title = 'Delete'][@role='button']";
 		Click(driver.findElement(By.xpath(xpath1)));
 	}	
+	
+
+
+	/**
+	 *@Description: This method will delete situs from Parcel situs tab
+	 **/
+	public void deleteParcelSitusFromParcel(String apnId)
+	{
+		String query ="SELECT Id FROM Parcel_Situs__c where parcel__c ='" +apnId+"'";
+		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+		if(!response.isEmpty())
+		{
+			response.get("Id").stream().forEach(Id ->{
+				objSalesforceAPI.delete("Parcel_Situs__c", Id);
+
+			});      	    				  
+		}
+
+	}
 }
+

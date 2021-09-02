@@ -9,13 +9,18 @@
     "APN2": "297-097-012",
     "Status": "Active",
     "PUC": "01-SINGLE FAMILY RES",
-    "Parcel Number1":"297097011"
+    "Parcel Number1":"297097011",
     "Parcel Number2":"297097012"
   },
   
   "DataToCreateParcelStartingWith9": {
     "APN": "961-137-010",
     "Parcel Number": "961137010"
+  },
+  
+   "DataToCreateParcelSitus":{
+ 	 "isPrimary":"Yes",
+ 	 "Situs":"69 West Coast CLIFFSIDE ALLEE 56, DALY CITY"
   }
   
  }
