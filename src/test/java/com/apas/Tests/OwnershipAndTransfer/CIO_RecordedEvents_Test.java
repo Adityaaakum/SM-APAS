@@ -66,7 +66,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * 
 	 */
 
-	@Test(description = "SMAB-T3106,SMAB-T3111:Verify the type of WI system created for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3763,SMAB-T3106,SMAB-T3111:Verify the type of WI system created for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration", "Smoke" }, enabled = true)
 	public void RecorderIntegration_VerifyNewWIgeneratedfromRecorderIntegrationForNOAPNRecordedDocument(
 			String loginUser) throws Exception {
@@ -79,17 +79,31 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objMappingPage.login(users.SYSTEM_ADMIN);
 		objMappingPage.searchModule(PARCELS);
-		salesforceAPI.update("Work_Item__c",
-				"SELECT Id FROM Work_Item__c where Sub_type__c='NO APN - CIO' and status__c ='In pool'", "status__c",
-				"In Progress");
+		
 		objCioTransfer.generateRecorderJobWorkItems(objMappingPage.DOC_CERTIFICATE_OF_COMPLIANCE, 0);
-
-		String WorkItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='NO APN' AND Sub_type__c='NO APN - MAPPING'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";
+		
+		String WorkItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='NO APN' AND Sub_type__c='NO APN - MAPPING'  And status__c='In pool' order by createdDate desc limit 1";
 		Thread.sleep(3000);
 		String WorkItemNo = salesforceAPI.select(WorkItemQuery).get("Name").get(0);
 		objMappingPage.globalSearchRecords(WorkItemNo);
-		Thread.sleep(2000);
+		
+		//adding steps for SMAB-T3763
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.reviewLink),"NO APN - MAPPING",
+				"SMAB-T3763: Validation that Related action link should be visible for NO -APN Mapping WI");
+		
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.getWebElementWithLabel(objMappingPage.parentAPNTextBoxLabel)),"",
+				"SMAB-T3763: Validate the APN value in Parent APN field in mapping actions page is blank for NO APN - MAPPING scenario ");
 
+		driver.switchTo().window(parentWindow);
+		
 		// User tries to close the WI in which no APN is added
 
 		objWorkItemHomePage.Click(objWorkItemHomePage.dataTabCompleted);
