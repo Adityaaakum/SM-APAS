@@ -80,6 +80,10 @@ public class ParcelsPage extends ApasGenericPage {
 	public String parcelNumber = "Parcel Number";
 	public String puc = "PUC";
 	
+	public String parcelSitus = "Parcel Situs";
+	public String newParcelSitus="New Parcel Situs";
+	public String isPrimaryDropdown = "Is Primary?";
+	public String situsSearch = "Situs";
 	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
@@ -514,5 +518,28 @@ public class ParcelsPage extends ApasGenericPage {
 			String xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table//tr//td//span//div//a[@role='button']";
 			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));
 			return webElementsHeaders;
+		}
+		
+		/**
+		 * @Description: This method will create primary on parcel 
+		 * 
+		 */
+		public String createParcelSitus( Map<String, String> dataMap) throws Exception {
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Parcel Situs Record");        
+			String isPrimary = dataMap.get("isPrimary");
+			String situs = dataMap.get("Situs");
+
+			createRecord();
+			waitForElementToBeVisible(10,newParcelSitus);
+			selectOptionFromDropDown(isPrimaryDropdown, isPrimary);
+			searchAndSelectOptionFromDropDown(situsSearch, situs);
+			Click(saveButton);
+			waitForElementToBeClickable(successAlert,25);
+			String messageOnAlert = getElementText(successAlert);
+			waitForElementToDisappear(successAlert,10);
+			ReportLogger.INFO("Primary Situs created on parcel : "+messageOnAlert);
+			String situsCreated = getFieldValueFromAPAS("Situs","");
+			ReportLogger.INFO("Primary Situs created on parcel : "+situsCreated);
+			return situsCreated;	
 		}
 }
