@@ -132,6 +132,9 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text() = 'Mail-To']/following-sibling::span")
 	public WebElement numberOfMailToOnParcelLabel;
 	
+	@FindBy(xpath = "//span[text() = 'View All']")
+	public WebElement viewAll;
+	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
     public String ApprovalButton="Approve";
@@ -490,5 +493,26 @@ public class ParcelsPage extends ApasGenericPage {
 			waitForElementToBeClickable(getButtonWithText("Done"));
 			Click(getButtonWithText("Done"));
 			Thread.sleep(2000);
+		}
+		
+		/**
+		 * @Description: This method will return the list of the characteristics present
+		 * @return list of web elements
+		 */
+		public List<WebElement> fetchAllCreatedChar() {
+			String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr/th//a\r\n"
+					+ "";
+			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));
+			return webElementsHeaders;
+		}
+		
+		/**
+		 * @Description: This method will return the list of the characteristics present
+		 * @return list of web elements
+		 */
+		public List<WebElement> charDropdown() {
+			String xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table//tr//td//span//div//a[@role='button']";
+			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));
+			return webElementsHeaders;
 		}
 }

@@ -1476,4 +1476,14 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		
 	} 
 
+	public void ClickCharacteristicCorrespondingDropdown(String objectName)throws IOException, InterruptedException 
+	{String xpath = "//article[contains(.,'" + objectName + "')]//a[contains(@title,'more actions')] |  //article[contains(.,'" + objectName + "')]//*[@data-aura-class='forceDeferredDropDownAction']//a | //article[contains(.,'City Strat Codes')]//span[text()='Show more actions']";
+	Click(driver.findElement(By.xpath(xpath)));
+	Thread.sleep(1000);
+	}
+	
+	public void ClickDeleteCorrespondingDropdown() throws IOException, InterruptedException {
+		String xpath1 = "//div[@title = 'Delete'][@role='button']";
+		Click(driver.findElement(By.xpath(xpath1)));
+	}	
 }
