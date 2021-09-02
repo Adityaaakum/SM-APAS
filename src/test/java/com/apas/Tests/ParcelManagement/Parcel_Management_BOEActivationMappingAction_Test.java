@@ -495,7 +495,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objWorkItemHomePage.logout();
 	}
 	
-	@Test(description = "SMAB-T2832,SMAB-T2898:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"BOEACtivation\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2832,SMAB-T2898,SMAB-T3623,SMAB-T3634:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"BOEACtivation\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_BOEACtivation_MappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 		String childAPNPUC;
@@ -546,7 +546,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		softAssert.assertTrue(objMappingPage.validateParentAPNsOnMappingScreen(parentAPN), "SMAB-T3365 : Verify that for \"BOE Activation\" mapping action, in custom action second screen and third screen Parent APN (s) "+parentAPN+" is displayed");
 
 		softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen(),"is pending verification from the supervisor in order to be activated.",
-	                "SMAB-T2832: Validate that User is able to perform boe activation  action from mapping actions tab");
+	                "SMAB-T2832,SMAB-T3623: Validate that User is able to perform boe activation  action from mapping actions tab");
 
 		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+parentAPN+"') limit 1");
 		if(responsePUCDetailsChildAPN.size()==0)
@@ -597,6 +597,29 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		softAssert.assertTrue(objMappingPage.validateParentAPNsOnMappingScreen(parentAPN), "SMAB-T3365 : Verify that for \"BOE Activation\" mapping action, in custom action second screen and third screen Parent APN (s) "+parentAPN+" is displayed");
 
 		driver.switchTo().window(parentWindow);
+		
+		// Mark the WI complete
+		query = "Select Id from Work_Item__c where Name = '" + workItem + "'";
+		salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		ReportLogger.INFO(" Supervisor logins to close the WI ");
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+		objMappingPage.searchModule(WORK_ITEM);
+		objMappingPage.globalSearchRecords(workItem);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		// refresh as the focus is getting lost
+		driver.navigate().refresh();
+		Thread.sleep(5000);
+		objWorkItemHomePage.completeWorkItem();
+		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
+
+		// Checking the status of parent parcel after WI closed
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(childAPN);
+		String Status = objMappingPage.getFieldValueFromAPAS("Status", "Parcel Information");
+		softAssert.assertEquals(Status, "Active", "SMAB-T3623: Verify Status of Parcel:" + childAPN);
 		objWorkItemHomePage.logout();
 	}
 	
@@ -790,7 +813,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		@Test(description = "SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 				+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 				dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
-				groups = {"Regression","ParcelManagement","RecorderIntegration"},enabled=false)
+				groups = {"Regression","ParcelManagement","RecorderIntegration"},enabled=true)
 		public void ParcelManagement_VerifyNewWIDeclofCovenantsCondRestrictionsGeneratedfromRecorderIntegrationAndBOEMappingAction(String loginUser) throws Exception {
 
 
