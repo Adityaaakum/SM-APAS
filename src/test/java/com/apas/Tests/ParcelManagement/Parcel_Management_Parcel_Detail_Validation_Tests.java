@@ -24,7 +24,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class Parcel_Management_Parcel_Verification_Tests extends TestBase implements testdata, modules, users {
+public class Parcel_Management_Parcel_Detail_Validation_Tests extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
@@ -47,7 +47,7 @@ public class Parcel_Management_Parcel_Verification_Tests extends TestBase implem
 
 	}
 
-	@Test(description = ",SMAB-T2481: Verify that when a Parcel Situs record is created/updated,"
+	@Test(description = "SMAB-T3543: Verify that when a Parcel Situs record is created/updated,"
 			+ " the system should automatically populate the Primary Situs field on the Parcel record",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 					"Regression","ParcelManagement" })
