@@ -918,6 +918,8 @@ public void searchModule(String moduleToSearch) throws Exception {
 		WebElement editButton = driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit " + fieldName + "')]"));
 		Click(editButton);
 		selectOptionFromDropDown(fieldName,value);
+		WebElement btnSave = getButtonWithText("Save");
+		waitForElementToBeClickable(btnSave,20);
 		Click(getButtonWithText("Save"));
 		Thread.sleep(4000);
 

@@ -1,5 +1,8 @@
 package com.apas.Tests.SecurityAndSharing;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -10,6 +13,7 @@ import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.LoginPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
@@ -18,7 +22,9 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 	private RemoteWebDriver driver;
 	LoginPage objLoginPage;
 	WorkItemHomePage objWorkItemHomePage;
+	ApasGenericPage ObjApasGeneric;
 	SoftAssertion softAssert = new SoftAssertion();
+	SalesforceAPI salesforceAPI = new SalesforceAPI();
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -27,6 +33,7 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 		driver = BrowserDriver.getBrowserInstance();
 		objLoginPage = new LoginPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
+		ObjApasGeneric = new ApasGenericPage(driver);
 	}
 
 	/**
@@ -209,4 +216,68 @@ public class WorkItems_SecurityAndSharing_Tests extends TestBase implements test
 
 		objWorkItemHomePage.logout();
 	}
+	
+	
+	@Test(description = "SMAB-T2931: Work Item- Verify that when WIC is created via RP business admin BPP business admin is not able to edit the same", 
+			dataProvider = "loginRPBusinessAdmin", 
+			dataProviderClass = DataProviders.class, 
+			groups = {"Smoke","Regression","SecurityAndSharing","WorkItemAdministration","WICRPAdmin"  })	
+	public void WorkItems_RPAdminCannotEditBPPWIC(String loginUser) throws Exception {
+        
+		String query_1 = "SELECT Id FROM Work_Item_Configuration__c where Roll_Code__c='UNS'";
+        HashMap<String, ArrayList<String>> response_1 = salesforceAPI.select(query_1);   
+        String wicBPPID = response_1.get("Id").get(0);
+        
+		// Step1: Login to the APAS application using the credentials passed through dataprovider 
+		objWorkItemHomePage.login(loginUser);
+		
+		String wicURL = envURL+"/lightning/r/Work_Item_Configuration__c/"+wicBPPID+"/view";
+		
+		//Navigate to Parcel view page
+        driver.get(wicURL);
+        Thread.sleep(3000);
+        ObjApasGeneric.editAndSelectFieldData("Need Supervisor Approval?","Yes");
+        
+        String actualErrorMsg = ObjApasGeneric.saveRecordAndGetError();
+        
+        String expectedErrorMsg = "Oops...you don't have the necessary privileges to edit this record. "
+        		+ "See your administrator for help.";
+        
+        softAssert.assertContains(actualErrorMsg, expectedErrorMsg,"SMAB-T2931: Work Item- Verify that when WIC is created via BPP business admin ,\"\r\n"
+        		+ "RP business admin is not able to edit the same" );                
+
+	}
+	
+	@Test(description = "SMAB-T2932:Work Item- Verify that when WIC is created via BPP business admin "
+			+ "RP business admin is not able to edit the same.",
+			dataProvider = "loginBPPBusinessAdmin", 
+			dataProviderClass = DataProviders.class, 
+			groups = {"Smoke","Regression","SecurityAndSharing","WorkItemAdministration","WICBPPAdmin"})
+	public void WorkItems_SharingAndSecurity_BPPAdminCannotEditRPWIC(String loginUser) throws Exception {
+        
+		String query_1 = "SELECT Id FROM Work_Item_Configuration__c where Roll_Code__c='SEC'";
+        HashMap<String, ArrayList<String>> response_1 = salesforceAPI.select(query_1);   
+        String wicRPID = response_1.get("Id").get(0);
+        
+		// Step1: Login to the APAS application using the credentials passed through dataprovider 
+		objWorkItemHomePage.login(loginUser);
+		
+		String wicURL = envURL+"/lightning/r/Work_Item_Configuration__c/"+wicRPID+"/view";
+		
+		//Navigate to Parcel view page
+        driver.get(wicURL);
+        Thread.sleep(10000);
+        ObjApasGeneric.editAndSelectFieldData("Need Supervisor Approval?","Yes");
+        
+        String actualErrorMsg = ObjApasGeneric.saveRecordAndGetError();
+        
+        String expectedErrorMsg = "Oops...you don't have the necessary privileges to edit this record. "
+        		+ "See your administrator for help.";
+        
+        softAssert.assertContains(actualErrorMsg, expectedErrorMsg,"SMAB-T2932: Work Item- Verify that when WIC is created via RP business admin"
+        		+ "BPP business admin is not able to edit the same" );                
+
+	}
+
+
 }
