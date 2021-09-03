@@ -50,6 +50,8 @@ public class ApasGenericPage extends Page {
 	public String tabDetails = "Details";
 	public String tabRelated = "Related";
 	public String tabLinkedItems = "Linked Items";
+	public String columnInGrid =commonXpath+"//a[contains(@class,'toggle')]//span[text()='columnName']";
+
 
 	@FindBy(xpath = "//button[@title='Close error dialog']")
 	public WebElement crossIcon;
@@ -1283,7 +1285,7 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
    
    public String getErrorMessage() throws Exception {
 	   	String ErrorTxt = "";
-	   	Thread.sleep(2000);
+	   	Thread.sleep(5000);
 		List<WebElement> ErrorText = locateElements("//div[contains(@class,'color_error')] |"
 				+ "//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
 	   	if(ErrorText.get(0).getAttribute("class").contains("color_error")){
@@ -1447,5 +1449,64 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		String xpath1 = "//div[contains(@class, 'uiMenuList') and contains(@class,'visible positioned')]//div[@title = 'Upload Files'][@role='button'] | //div[contains(@class, 'slds-dropdown__list slds-dropdown_length-with-icon')]//button[text()='Upload Files'][@type='button'] |  //div[contains(@class,'actionMenu')]//a[@title='Upload Files']";
 		waitForElementToBeClickable(driver.findElement(By.xpath(xpath1)), 20);
 		Click(driver.findElement(By.xpath(xpath1)));
+	}
+	
+	
+	/**
+	 * @Description: This method will sort a column in grid  
+	 */
+	public void sortInGrid(String columnName,boolean isAscending) throws IOException, InterruptedException  {
+		String xpath = columnInGrid.replace("columnName",columnName);
+		String xpathSorting=xpath+"//following::span";
+		Click(driver.findElement(By.xpath(xpath)));
+		Thread.sleep(3000);
+		
+		String sortStatus=getElementText(driver.findElement(By.xpath(xpathSorting)));
+		
+		if(isAscending==true && !sortStatus.equals("Sorted Ascending"))
+			{
+			Click(driver.findElement(By.xpath(xpath)));
+			waitForElementTextToBe(driver.findElement(By.xpath(xpathSorting)), "Sorted Ascending", 10);
+			}
+
+		if(isAscending==false && sortStatus.equals("Sorted Ascending"))
+			{
+			Click(driver.findElement(By.xpath(xpath)));		
+			waitForElementTextToBe(driver.findElement(By.xpath(xpathSorting)), "Sorted Descending", 10);
+			}
+
+		
 	} 
+
+	public void ClickCharacteristicCorrespondingDropdown(String objectName)throws IOException, InterruptedException 
+	{String xpath = "//article[contains(.,'" + objectName + "')]//a[contains(@title,'more actions')] |  //article[contains(.,'" + objectName + "')]//*[@data-aura-class='forceDeferredDropDownAction']//a | //article[contains(.,'City Strat Codes')]//span[text()='Show more actions']";
+	Click(driver.findElement(By.xpath(xpath)));
+	Thread.sleep(1000);
+	}
+	
+	public void ClickDeleteCorrespondingDropdown() throws IOException, InterruptedException {
+		String xpath1 = "//div[@title = 'Delete'][@role='button']";
+		Click(driver.findElement(By.xpath(xpath1)));
+	}	
+	
+
+
+	/**
+	 *@Description: This method will delete situs from Parcel situs tab
+	 **/
+	public void deleteParcelSitusFromParcel(String apnId)
+	{
+		String query ="SELECT Id FROM Parcel_Situs__c where parcel__c ='" +apnId+"'";
+		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+		if(!response.isEmpty())
+		{
+			response.get("Id").stream().forEach(Id ->{
+				objSalesforceAPI.delete("Parcel_Situs__c", Id);
+
+			});      	    				  
+		}
+
+	}
 }
+

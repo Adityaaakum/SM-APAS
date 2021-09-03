@@ -132,7 +132,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 			}
 		});
 		objWorkItemHomePage.logout();
-		Thread.sleep(20000);
+		Thread.sleep(5000);
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -366,7 +366,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objParcelsPage.createOwnershipRecord(assesseeName, hashMapCreateOwnershipRecordData);
 
 		objWorkItemHomePage.logout();
-		Thread.sleep(20000);
+		Thread.sleep(5000);
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -555,7 +555,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
 		driver.navigate().refresh();
-		Thread.sleep(6000);
+		Thread.sleep(5000);
 
 		// Step 3: Login to the APAS application using the credentials passed through data provider
 		objMappingPage.login(loginUser);
@@ -685,7 +685,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
 		driver.navigate().refresh();
-		Thread.sleep(6000);
+		Thread.sleep(5000);
 
 		objMappingPage.login(users.MAPPING_SUPERVISOR);
 		objMappingPage.searchModule(WORK_ITEM);
@@ -825,7 +825,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
 		driver.navigate().refresh();
-		Thread.sleep(6000);
+		Thread.sleep(5000);
 
 		// Step 3: Login to the APAS application using the credentials passed through data provider
 		objMappingPage.login(loginUser);
@@ -983,7 +983,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
 		driver.navigate().refresh();
-		Thread.sleep(6000);
+		Thread.sleep(5000);
 
 		objMappingPage.login(users.MAPPING_SUPERVISOR);
 		objMappingPage.searchModule(WORK_ITEM);
@@ -1755,7 +1755,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
 		driver.navigate().refresh();
-		Thread.sleep(6000);
+		Thread.sleep(5000);
 
 		// Step 3: Login to the APAS application using the credentials passed through data provider
 		objMappingPage.login(loginUser);
