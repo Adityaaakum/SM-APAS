@@ -1042,7 +1042,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		HashMap<String, ArrayList<String>> responseAssesseeDetails = salesforceAPI.select(queryAssesseeRecord);
 		String assesseeName = responseAssesseeDetails.get("Name").get(0);
 		String assesseeFirstName = responseAssesseeDetails.get("FirstName").get(0);
+		if (assesseeFirstName.equals("null"))
+			assesseeFirstName="";
 		String assesseeLastName = responseAssesseeDetails.get("LastName").get(0);
+		if (assesseeLastName.equals("null"))
+			assesseeLastName="";
 		
 		//step 5 : creating two new ownership records with different DOVs but same owner
 		objCioTransfer.login(SYSTEM_ADMIN);
@@ -1077,9 +1081,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.login(loginUser);
 		objCioTransfer.searchModule(EFILE_INTAKE_VIEW);
 		objWorkItemHomePage.globalSearchRecords(cioWorkItem);
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab,20);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel,20);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);	  	
 
 		// Step7: CIO staff user navigating to transfer screen by clicking on related action link
@@ -1193,7 +1197,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Submitting the WI for approval");
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
-		objCioTransfer.waitForElementToBeVisible(objCioTransfer.confirmationMessageOnTranferScreen);
+		objCioTransfer.waitForElementToBeVisible(30,objCioTransfer.confirmationMessageOnTranferScreen);
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.confirmationMessageOnTranferScreen),"Work Item has been submitted for Approval.",
 				"SMAB-T3696: Validation that proper mesage is displayed after submit for approval");
 		

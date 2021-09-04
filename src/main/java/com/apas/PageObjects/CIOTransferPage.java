@@ -108,7 +108,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = "//*[@class='flexipage-tabset']//a[1]")
 	public WebElement RelatedTab;
 
-	@FindBy(xpath = "//div[contains(@class,'uiOutputRichText')]")
+	@FindBy(xpath = "//div[contains(@class,'uiOutputRichText')] | //*[@class='slds-rich-text-editor__output']//b")
 	public WebElement confirmationMessageOnTranferScreen;
 
 	@FindBy(xpath = "//div[@class='highlights slds-clearfix slds-page-header slds-page-header_record-home']//ul[@class='slds-button-group-list']//lightning-primitive-icon")
