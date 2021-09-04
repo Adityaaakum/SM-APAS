@@ -1025,7 +1025,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + cioWorkItem + "'";
 		String recordeAPNTransferID = salesforceAPI.select(queryRecordedAPNTransfer).get("Navigation_Url__c").get(0).split("/")[3];
 		
-		jsonObject.put("xDOV__c", "2007-02-03");
+		jsonObject.put("xDOV__c", "2021-02-03");
+		jsonObject.put("DOR__c", "2021-06-23");
+
 		salesforceAPI.update("Recorded_APN_Transfer__c", recordeAPNTransferID, jsonObject);
 
 		//deleting the CIO Transfer grantees for the current transfer screen
