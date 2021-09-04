@@ -101,6 +101,9 @@ public class MappingPage extends ApasGenericPage {
 	public final String DOC_Sub_Divison_Map = "SDM";
 	public final String DOC_Official_Map  = "OM";
 	public String secondScreenEditButton = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]";
+	public String errorCompleteThisField = "Complete this field.";
+	public String editParcel = "Edit Parcel";
+	public String parcelSitus ="Parcel Situs";
 	
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
 	public WebElement editButtonInSeconMappingScreen;
@@ -173,6 +176,19 @@ public class MappingPage extends ApasGenericPage {
 
 	@FindBy(xpath="//div[contains(@class,'error')][1]")
 	public WebElement dividedInterestErrorMsgSecondScreen;
+	
+	@FindBy(xpath="//div[@title='Edit']")
+	public WebElement parcelSitusEditButton;
+	
+	@FindBy(xpath = "//*[contains(@class,'forceVirtualActionMarker forceVirtualAction')]//a")
+	public WebElement parcelSitusGridEditButton;
+	
+	@FindBy(xpath = "//lightning-button//button[text()='Save']")
+	public WebElement parcelSitusEditSaveButton;
+	
+	@FindBy(xpath = "//h2[contains(text(),'Edit PS-')]")
+	public WebElement visibleParcelSitusEditpopUp;
+	
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
 	 * @param dataMap: A data map which contains data to perform  mapping action

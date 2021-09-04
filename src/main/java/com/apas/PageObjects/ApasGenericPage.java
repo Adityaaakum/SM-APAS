@@ -918,6 +918,8 @@ public void searchModule(String moduleToSearch) throws Exception {
 		WebElement editButton = driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit " + fieldName + "')]"));
 		Click(editButton);
 		selectOptionFromDropDown(fieldName,value);
+		WebElement btnSave = getButtonWithText("Save");
+		waitForElementToBeClickable(btnSave,20);
 		Click(getButtonWithText("Save"));
 		Thread.sleep(4000);
 
@@ -1476,4 +1478,35 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		
 	} 
 
+	public void ClickCharacteristicCorrespondingDropdown(String objectName)throws IOException, InterruptedException 
+	{String xpath = "//article[contains(.,'" + objectName + "')]//a[contains(@title,'more actions')] |  //article[contains(.,'" + objectName + "')]//*[@data-aura-class='forceDeferredDropDownAction']//a | //article[contains(.,'City Strat Codes')]//span[text()='Show more actions']";
+	Click(driver.findElement(By.xpath(xpath)));
+	Thread.sleep(1000);
+	}
+	
+	public void ClickDeleteCorrespondingDropdown() throws IOException, InterruptedException {
+		String xpath1 = "//div[@title = 'Delete'][@role='button']";
+		Click(driver.findElement(By.xpath(xpath1)));
+	}	
+	
+
+
+	/**
+	 *@Description: This method will delete situs from Parcel situs tab
+	 **/
+	public void deleteParcelSitusFromParcel(String apnId)
+	{
+		String query ="SELECT Id FROM Parcel_Situs__c where parcel__c ='" +apnId+"'";
+		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+		if(!response.isEmpty())
+		{
+			response.get("Id").stream().forEach(Id ->{
+				objSalesforceAPI.delete("Parcel_Situs__c", Id);
+
+			});      	    				  
+		}
+
+	}
 }
+
