@@ -466,14 +466,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
 		         
 		        HashMap<String, ArrayList<String>> responseAPNid = 
-		        		salesforceAPI.select("Select Id from parcel__C where name='"
-		        		+parcel+"'");
+		        		salesforceAPI.select("Select Id from parcel__C where name='"+parcel+"'");
 				String id=responseAPNid.get("Id").get(0);
-		        String ownershipURL = "https://smcacre--"
-		        		+ execEnv
-		        		+ ".lightning.force.com/lightning/r/Parcel__c/"
-		        		+ id
-		        		+ "/related/Property_Ownerships__r/view";
+		        String ownershipURL = "https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+		        		+ id + "/related/Property_Ownerships__r/view";
 		        ReportLogger.INFO(ownershipURL);
 		        driver.navigate().to(ownershipURL);
 		        objParcelsPage.createOwnershipRecord(assesseeName1,hashMapCreateOwnershipRecordData);
