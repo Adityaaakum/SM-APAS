@@ -1002,6 +1002,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		String  ownershipPercentage[] = {"75","25"};
 		String  ownershipStartDate[] = {"5/3/2010" ,"7/2/2018"};
+		JSONObject jsonObjectOwnership = new JSONObject();
 		
 		String execEnv = System.getProperty("region");
 		String ownershipCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
@@ -1069,9 +1070,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			String dateOfOwnership = salesforceAPI
 					.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
 					.get("Ownership_Start_Date__c").get(0);
-			jsonObject.put("DOR__c", dateOfOwnership);
-			jsonObject.put("DOV_Date__c", dateOfOwnership);
-			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);	
+			jsonObjectOwnership.put("DOR__c", dateOfOwnership);
+			jsonObjectOwnership.put("DOV_Date__c", dateOfOwnership);
+			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObjectOwnership);	
 			
 		}
 
