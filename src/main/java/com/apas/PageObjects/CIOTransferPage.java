@@ -95,7 +95,13 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String pucCodeLabel = "PUC Code";
 	public String doeLabel = "DOE";
 	public String dorLabel = "DOR";
+	public String originalTransferor = "Original Transferor";
+	public String vestingType = "Vesting Type";
+
 	public String dovLabel = "DOV";
+
+	public String xpathShowMoreLinkForEditOption = "//table//tbody/tr//td//span[text() = 'propertyName']//parent::span//parent::td//following-sibling::td//a[@role = 'button']";
+
 	
 
 	
@@ -185,6 +191,12 @@ public class CIOTransferPage extends ApasGenericPage {
 
 	@FindBy(xpath=commonXpath+"//button[text()='Finish']")
 	public WebElement finishButtonPopUp;
+	
+	@FindBy(xpath="//a[@title='Edit']")
+	public WebElement editLinkUnderShowMore;
+	
+	@FindBy(xpath="	//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//button[text()='Save']")
+	public WebElement saveButtonModalWindow;
 	
 	
 	/*
