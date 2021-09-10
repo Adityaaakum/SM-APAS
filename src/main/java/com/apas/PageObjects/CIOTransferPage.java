@@ -183,6 +183,17 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath=commonXpath+"//button[text()='Finish']")
 	public WebElement finishButtonPopUp;
 	
+	@FindBy(xpath =commonXpath+"//force-record-layout-section//div//span[text()='APN']//parent::div//following-sibling::div//a//slot//slot//span")
+	public WebElement apnOnTransferActivityLabel;
+	
+	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='Situs']/../..//slot[@slot='outputField']//lightning-formatted-text")
+	public WebElement situsOnTransferActivityLabel;
+	
+	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='Short Legal Description']/../..//slot[@slot='outputField']//lightning-formatted-text")
+	public WebElement shortLegalDescriptionOnTransferActivityLabel;
+	
+	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='PUC Code']/../..//slot[@slot='outputField']//lightning-formatted-text")
+	public WebElement pucCodeTransferActivityLabel;
 	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
@@ -421,12 +432,13 @@ public class CIOTransferPage extends ApasGenericPage {
 		  * 
 		  */
 		 
-		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
-		 {
+		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception {
+			 
+			 Thread.sleep(2000);
 			 try {
 			   String execEnv= System.getProperty("region");			 
 			   driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");			   
-			   waitForElementToBeVisible(5,newButton);
+			   Thread.sleep(5000);
 			   Click(getButtonWithText(newButton));
 			   enter(LastNameLabel, dataToCreateGrantee.get("Last Name"));	
 			   if(dataToCreateGrantee.get("Owner Percentage")!=null)

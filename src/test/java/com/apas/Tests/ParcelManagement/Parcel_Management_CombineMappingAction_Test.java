@@ -885,13 +885,13 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 */
 	@Test(description = "SMAB-T2357,SMAB-T2373,SMAB-T2376,SMAB-T2443,SMAB-2567,SMAB-2812: Verify user is able to combine as many number of parcels into one and attributes are inherited in the child parcel from the parent parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
-	public void ParcelManagement_VerifyParcelCombineMappingAction(String loginUser) throws Exception {
+	public void AParcelManagement_VerifyParcelCombineMappingAction(String loginUser) throws Exception {
 		
 		//Getting Owner or Account records
 		String assesseeName = objMappingPage.getOwnerForMappingAction();
 		
 		//Getting parcels that are Active 
-		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
+		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' AND primary_situs__c != NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
 				+ "and (Not Name like '100%') and (Not Name like '800%') and (Not Name like '%990') and (Not Name like '134%') Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryForActiveAPN);
 		String apn1 = responseAPNDetails.get("Name").get(0);
@@ -904,7 +904,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.deleteOwnershipFromParcel(apnId2);
 		
 		//Fetching a Condo Active parcel
-		String queryCondoAPN = "SELECT Name, Id from parcel__c where name like '100%' and (Not Name like '%990') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 1";
+		String queryCondoAPN = "SELECT Name, Id from parcel__c where name like '100%' and (Not Name like '%990') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and primary_situs__c != NULL and Status__c = 'Active' Limit 1";
 		HashMap<String, ArrayList<String>> responseCondoAPNDetails = salesforceAPI.select(queryCondoAPN);
 		String apn3=responseCondoAPNDetails.get("Name").get(0);
 		String condoApnId=responseCondoAPNDetails.get("Id").get(0);
@@ -952,10 +952,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String querySitusValue = "SELECT Name FROM Situs__c where id in (SELECT Primary_Situs__c FROM Parcel__c where Name='"+ updateSmallestAPN + "')";
-		HashMap<String, ArrayList<String>> responseSitusDetails = salesforceAPI.select(querySitusValue);
-		
-		if (responseSitusDetails != null) 
-			primarySitusValue = responseSitusDetails.get("Name").get(0);
+		primarySitusValue = salesforceAPI.select(querySitusValue).get("Name").get(0);
 		
 		//Enter values in the Parcels
 		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
