@@ -1378,6 +1378,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		//STEP 9-Validating present grantee			 
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+		Thread.sleep(2000);//Allow the screen to appear completely
 		HashMap<String, ArrayList<String>> granteeHashMap  = objCioTransfer.getGridDataForRowString("1");
 		String granteeForMailTo= granteeHashMap.get("Grantee/Retain Owner Name").get(0);
 		

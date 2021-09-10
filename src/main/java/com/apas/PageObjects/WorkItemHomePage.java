@@ -622,7 +622,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 		Thread.sleep(3000);
 		ReportLogger.INFO("Click on the '" + timelineTab + "' option in Timeline and mark it complete");
 		WebElement webElement = driver.findElement(By.xpath("//span[text()='" + timelineTab + "']"));
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 		javascriptClick(webElement);
 		if (waitForElementToBeVisible(5, markStatusCompleteBtn)) {
 			javascriptClick(markStatusCompleteBtn);

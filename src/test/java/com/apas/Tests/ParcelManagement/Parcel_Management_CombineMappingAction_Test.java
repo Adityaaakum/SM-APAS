@@ -402,7 +402,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String assesseeName2 = responseAssesseeDetails.get("Name").get(1);
 		
 		//Fetching Interim parcel 
-		String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' "
+		String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' and name like '%0' "
 		  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		String interimAPN = salesforceAPI.select(queryAPNValue).get("Name").get(0);
 		String interimAPNId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
@@ -624,19 +624,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		ReportLogger.INFO("nextGeneratedAPN :: " + nextGeneratedAPN);
 		String notNextGeneratedAPN = objMappingPage.generateNextAvailableAPN(nextGeneratedAPN);
 		
-		//Step 18 :Overwrite parcel value with above generated APN and Click Combine parcel button
-		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,notNextGeneratedAPN);
-		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
-		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + notNextGeneratedAPN);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		
-		//Added code to notify the reason in the Report, if it fails in regression
-		if(!objMappingPage.confirmationMsgOnSecondScreen().isEmpty() && objMappingPage.confirmationMsgOnSecondScreen().equals("Parcel(s) have been created successfully. Please review spatial information."))
-			ReportLogger.INFO("Some parcels are not taken in the Map Page and Map Book, hence test FAILED :: Map Book - " + notNextGeneratedAPN.substring(0, 3) + ", Map Page - " + notNextGeneratedAPN.substring(4, 7));
-		
-		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The parcel entered is invalid since the following parcel is available " + nextGeneratedAPN),
-				"SMAB-T2358: Validate that User is able to view error message if APN overwritten is not the next available one in the system : The parcel entered is invalid since the following parcel is available <APN>");
-	
 		//Step 19 :Overwrite parcel value with alphanumeric value and Click Combine parcel button
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,alphanumericAPN1);
 		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
@@ -661,6 +648,21 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertContains(objMappingPage.getErrorMessage(),
 				"To override an APN with divided interest parcel, the first 8 characters must be same as the Parent",
 				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with special symbol : This parcel number is not valid, it should contain 9 digit numeric values");
+		
+		//Step 22 :Overwrite parcel value with not the next available parcel in the system and Click Combine parcel button
+		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,notNextGeneratedAPN);
+		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
+		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + notNextGeneratedAPN);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+				
+		//Added code to notify the reason in the Report, if it fails in regression
+		if(!objMappingPage.confirmationMsgOnSecondScreen().isEmpty() && objMappingPage.confirmationMsgOnSecondScreen().contains("Please review spatial information")) {
+				ReportLogger.INFO("Some parcels are not taken in the Map Page and Map Book, hence test FAILED :: Map Book - " + notNextGeneratedAPN.substring(0, 3) + ", Map Page - " + notNextGeneratedAPN.substring(4, 7));
+		}
+		else {
+		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The parcel entered is invalid since the following parcel is available " + nextGeneratedAPN),
+				"SMAB-T2358: Validate that User is able to view error message if APN overwritten is not the next available one in the system : The parcel entered is invalid since the following parcel is available <APN>");
+		}	
 		
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
@@ -800,6 +802,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		 * );
 		 */
         
+        objMappingPage.scrollToBottom();
         objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
         objMappingPage.Click(objMappingPage.helpIconFirstNonCondoParcelNumber);
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use system generated APN, leave as blank.",
@@ -881,7 +884,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 */
 	@Test(description = "SMAB-T2357,SMAB-T2373,SMAB-T2376,SMAB-T2443,SMAB-2567,SMAB-2812: Verify user is able to combine as many number of parcels into one and attributes are inherited in the child parcel from the parent parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
-	public void AParcelManagement_VerifyParcelCombineMappingAction(String loginUser) throws Exception {
+	public void ParcelManagement_VerifyParcelCombineMappingAction(String loginUser) throws Exception {
 		
 		//Getting Owner or Account records
 		String assesseeName = objMappingPage.getOwnerForMappingAction();
@@ -955,7 +958,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		jsonParcelObject.put("Short_Legal_Description__c","");
 		jsonParcelObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-		salesforceAPI.update("Parcel__c",updateRecordOn,jsonParcelObject);
+		salesforceAPI.update("Parcel__c", updateRecordOn, jsonParcelObject);
+		Thread.sleep(2000);
 		salesforceAPI.update("Parcel__c", apnId1, "Lot_Size_SQFT__c", "0");
 		salesforceAPI.update("Parcel__c", apnId2, "Lot_Size_SQFT__c", "0");
 		salesforceAPI.update("Parcel__c", responseCondoAPNDetails.get("Id").get(0), "Lot_Size_SQFT__c", "0");
@@ -1103,8 +1107,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.globalSearchRecords(childAPNNumber);
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"In Progress - New Parcel",
 				"SMAB-T2373: Validate the Status of child parcel generated");
-		softAssert.assertTrue(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information").equals(""),
-				"SMAB-T2373: Validate the PUC of child parcel is not populated");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),responsePUCDetails.get("Name").get(0),
+				"SMAB-T2373: Validate the PUC of child parcel is populated");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelTRA, "Parcel Information"),responseTRADetails.get("Name").get(0),
 				"SMAB-T2373: Validate the TRA of child parcel generated");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus, "Parcel Information"),primarySitusValue.replaceFirst("\\s", ""),
@@ -1173,7 +1177,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		Thread.sleep(5000);
 		
 		//Step 18: Login from Mapping Supervisor to approve the WI
-		ReportLogger.INFO("Now logging in as RP Appraiser to approve the work item and validate that new WIs are accessible");
+		ReportLogger.INFO("Now logging in as Mapping Supervisor to approve the work item and validate that new WIs are accessible");
 		objWorkItemHomePage.login(MAPPING_SUPERVISOR);
 		
 		objMappingPage.searchModule(WORK_ITEM);

@@ -398,8 +398,9 @@ public class CIOTransferPage extends ApasGenericPage {
 		  */
 		 
 		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {		 		 
+			
 			 try {
-			   waitForElementToBeClickable(7, copyToMailToButtonLabel);			   
+			   Thread.sleep(2000);		   
 			   Click(getButtonWithText(copyToMailToButtonLabel));
 			   waitForElementToDisappear(formattedName1, 5);
 			   Click(formattedName1);
