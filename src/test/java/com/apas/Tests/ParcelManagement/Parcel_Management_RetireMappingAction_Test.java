@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
@@ -367,7 +368,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 
 	}
 
-	@Test(description = "SMAB-T2833:Parcel Management- Verify that User is able to perform retire action from mapping actions tab for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2833,SMAB-T3622,SMAB-T3634:Parcel Management- Verify that User is able to perform retire action from mapping actions tab for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_Retire_MappingAction_IndependentMappingAction(String loginUser) throws Exception {
 
@@ -404,7 +405,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
 		softAssert.assertContains(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"is pending verification from the supervisor in order to be retired.",
-				"SMAB-T2833: Validate that User is able to perform Retire action from mapping actions tab");
+				"SMAB-T2833,SMAB-T3622: Validate that User is able to perform Retire action from mapping actions tab");
 		
 		//Step 6: Navigating  to the independent mapping action WI that would have been created after performing retire action 
 		String workItemId= objWorkItemHomePage.getWorkItemIDFromParcelOnWorkbench(apn);
@@ -421,7 +422,30 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Action","Information"), "Independent Mapping Action",
 				"SMAB-T2833: Validation that  A new WI of action Independent Mapping Action is created after performing retire from mapping action tab");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Date", "Information"),DateUtil.removeZeroInMonthAndDay(DateUtil.getCurrentDate("MM/dd/yyyy")), "SMAB-T2831: Validation that 'Date' fields is equal to date when this WI was created");
-	
+		
+		// Mark the WI complete
+		query = "Select Id from Work_Item__c where Name = '" + workItem + "'";
+		salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		ReportLogger.INFO(" Supervisor logins to close the WI ");
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+		objMappingPage.searchModule(WORK_ITEM);
+		objMappingPage.globalSearchRecords(workItem);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		// refresh as the focus is getting lost
+		driver.navigate().refresh();
+		Thread.sleep(5000);
+		objWorkItemHomePage.completeWorkItem();
+		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
+
+		// Checking the status of parcel after WI closed
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn);
+		String Status = objMappingPage.getFieldValueFromAPAS("Status", "Parcel Information");
+		softAssert.assertEquals(Status, "Retired", "SMAB-T3622: Verify Status of Parcel:" + apn);
+
 		objWorkItemHomePage.logout();
 	}
 

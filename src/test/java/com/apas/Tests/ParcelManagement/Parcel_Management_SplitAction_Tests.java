@@ -717,14 +717,22 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
 		Map<String, String> hashMapSplitActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformSplitMappingActionWithSitusData");
-
-		String situsCityName = hashMapSplitActionMappingData.get("Situs City Name");
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+		
+		String parcelSize	= "200";
+		
+		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
+		
+		String cityName = hashMapSplitActionMappingData.get("City Name");
 		String direction = hashMapSplitActionMappingData.get("Direction");
 		String situsNumber = hashMapSplitActionMappingData.get("Situs Number");
 		String situsStreetName = hashMapSplitActionMappingData.get("Situs Street Name");
 		String situsType = hashMapSplitActionMappingData.get("Situs Type");
 		String situsUnitNumber = hashMapSplitActionMappingData.get("Situs Unit Number");
-		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+situsCityName;
+		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+cityName;
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -755,28 +763,50 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 				"SMAB-T2661: Validation that Edit Situs label is displayed as heading of situs modal window in first screen");
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.situsInformationLabelSitusModal),
 				"SMAB-T2661: Validation that  Situs Information label is displayed in  situs modal window in first screen");
+		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabel));
 		objMappingPage.editSitusModalWindowFirstScreen(hashMapSplitActionMappingData);
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabel),"value"),childprimarySitus,
 				"SMAB-T2661: Validation that User is able to update a Situs for child parcel from the Parcel mapping screen");
+		
+		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.situsTextBoxLabel));
+		objMappingPage.enter(objMappingPage.situsUnitNumberLabel,"");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.errorCompleteThisField),
+				"SMAB-T3429:  Verify that while creating a Situs via a mapping action, the required fields should be enforced by the system at first custom page");
+		
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.closeButton));
+		objMappingPage.waitForElementToBeVisible(10, objMappingPage.nextButton);
 
+		
 		objMappingPage.fillMappingActionForm(hashMapSplitActionMappingData);
+		objMappingPage.waitForElementToBeVisible(10, objMappingPage.generateParcelButton);
 
 		//Step 7: Validation that primary situs on second screen is getting populated from situs entered in first screen
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
-		for(int i=0;i<gridDataHashMap.get("Situs").size();i++)
+		for(int i=0;i<gridDataHashMap.get("Situs").size();i++) {
 			softAssert.assertEquals(gridDataHashMap.get("Situs").get(i),childprimarySitus,
 					"SMAB-T2661: Validation that System populates primary situs on second screen for child parcel number "+i+1+" with the situs value that was added in first screen");
-
+		}
+		objMappingPage.Click(objMappingPage.locateElement("//tr[1]"+objMappingPage.secondScreenEditButton, 2));
+        objMappingPage.Click(objMappingPage.editButtonInSeconMappingScreen);
+		objMappingPage.waitForElementToBeVisible(10,objMappingPage.editParcel);
+		objMappingPage.enter(objMappingPage.situsUnitNumberLabel,"");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.errorCompleteThisField),
+			"SMAB-T3429:  Verify that while creating a Situs via a mapping action, the required fields should be enforced by the system at first custom page");
+		objMappingPage.Click(objMappingPage.cancelButton);
+		objMappingPage.waitForElementToBeVisible(10, objMappingPage.generateParcelButton);
+		
 		//Step 8: Click Split Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		//Step 9: Validation that primary situs on last screen screen is getting populated from situs entered in first screen
-		for(int i=0;i<gridDataHashMap.get("Situs").size();i++)
+		for(int i=0;i<gridDataHashMap.get("Situs").size();i++) {
 			softAssert.assertEquals(gridDataHashMap.get("Situs").get(i),childprimarySitus,
 					"SMAB-T2661: Validation that System populates primary situs on last screen for child parcel number "+i+" with the situs value that was added in first screen");
-
+		}
 		//Step 10: Validation that primary situs of child parcel is the situs value that was added in first screen from situs modal window
 		for(int i=0;i<gridDataHashMap.get("Situs").size();i++)
 		{

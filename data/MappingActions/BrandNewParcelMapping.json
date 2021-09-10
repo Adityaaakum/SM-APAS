@@ -21,7 +21,7 @@
     "Reason code": "PM 85/25-26",
     "First non-Condo Parcel Number": "123456789",
     "Comments": "Perform Brand New Parcel mapping",
-      "Situs City Description": "Daly City",
+    "Situs City Description": "Daly City",
     "Situs City Code": "DC",    
     "City Name": "DALY CITY",
     "Direction": "West Coast",
@@ -30,7 +30,8 @@
     "Situs Type": "ALLEE",
     "Situs Unit Number": "56",
     "TRA":"12345",
-    "PUC": "01-SINGLE FAMILY RES"
+    "PUC": "01-SINGLE FAMILY RES",
+    "Legal Descriptions": "legal Description"
   
   }
 }

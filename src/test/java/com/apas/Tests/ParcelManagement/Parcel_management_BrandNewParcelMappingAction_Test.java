@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.Reporter;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -894,7 +893,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 	}
-	@Test(description = "SMAB-T2831,SMAB-T2716:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"brand new parcel\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2831,SMAB-T2716,SMAB-T3633,SMAB-T3634,SMAB-T3635:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"brand new parcel\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_BrandNewParcel_MappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 
@@ -926,9 +925,12 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 
 		//Step 4: filling all fields in mapping action screen
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
-		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
-		gridDataHashMap =objMappingPage.getGridDataInHashMap();
+		objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
+		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+		objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
 
+		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
+	
 		String childAPN=gridDataHashMap.get("APN").get(0);
 		String legalDescription=gridDataHashMap.get("Legal Description*").get(0);
 		String tra=gridDataHashMap.get("TRA*").get(0);
@@ -942,7 +944,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
 
 		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel(s) have been created successfully. Please review spatial information.",
-				"SMAB-T2831: Validate that User is able to perform one to one  action from mapping actions tab");			    
+				"SMAB-T2831: Validate that User is able to perform one to one  action from mapping actions tab");
 
 		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+childAPN+"') limit 1");
 		if(responsePUCDetailsChildAPN.size()==0)
@@ -967,7 +969,11 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		objMappingPage.waitForElementToBeVisible(10, objMappingPage.updateParcelsButton);
-
+		objMappingPage.waitForElementToBeVisible(3, objMappingPage.parcelSizeColumnSecondScreenWithSpace);
+		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "100");
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName));
+		
 		//Step 9: Validation that User is navigated to a screen with following fields:APN,Legal Description,Parcel Size(SQFT),TRA,Situs,Reason Code,District/Neighborhood,Use Code
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),childAPN,
@@ -987,8 +993,31 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 				"SMAB-T2716: Validation that  There is \"Update Parcel(s)\" button on return to custom screen");
 
 		driver.switchTo().window(parentWindow);
+		
+		objMappingPage.globalSearchRecords(gridDataHashMap.get("APN").get(0));
+		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)*").get(0),
+				objMappingPage.getFieldValueFromAPAS("Parcel Size (SqFt)", "Parcel Information"),
+				"SMAB-T3633,SMAB-T3635:Parcel size(SQFT) was updated successfully and user was able to go to update screen");
+
+		// Mark the WI complete
+		String query = "Select Id from Work_Item__c where Name = '" + workItem + "'";
+		salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		ReportLogger.INFO(" Supervisor logins to close the WI ");
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+		objMappingPage.searchModule(WORK_ITEM);
+		objMappingPage.globalSearchRecords(workItem);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		// refresh as the focus is getting lost
+		driver.navigate().refresh();
+		Thread.sleep(5000);
+		objWorkItemHomePage.completeWorkItem();
+		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
 		objWorkItemHomePage.logout();
 	}
+	
 	
 	 /**
 		 * This method is to  Verify  the custom edit on mapping page

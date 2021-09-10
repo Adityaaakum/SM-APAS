@@ -71,6 +71,7 @@ public class MappingPage extends ApasGenericPage {
 	public String parcelShortLegalDescription = "Short Legal Description";
 	public String firstNonCondoTextBoxLabel2 = "First Non-Condo Parcel Number";
 	public String legalDescriptionTextBoxLabel2 = "Legal Description Auto-Populate Field for Child Parcels";
+	public String legalDescriptionBrandNewTextBoxLabel = "Legal Description";
 	public String parcelLotSize = "Lot Size (SQFT)";
 	public String situsCityDescriptionLabel = "Situs City Description";
 	public String cityNameLabel = "City Name";
@@ -100,6 +101,9 @@ public class MappingPage extends ApasGenericPage {
 	public final String DOC_Sub_Divison_Map = "SDM";
 	public final String DOC_Official_Map  = "OM";
 	public String secondScreenEditButton = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]";
+	public String errorCompleteThisField = "Complete this field.";
+	public String editParcel = "Edit Parcel";
+	public String parcelSitus ="Parcel Situs";
 	
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
 	public WebElement editButtonInSeconMappingScreen;
@@ -172,6 +176,19 @@ public class MappingPage extends ApasGenericPage {
 
 	@FindBy(xpath="//div[contains(@class,'error')][1]")
 	public WebElement dividedInterestErrorMsgSecondScreen;
+	
+	@FindBy(xpath="//div[@title='Edit']")
+	public WebElement parcelSitusEditButton;
+	
+	@FindBy(xpath = "//*[contains(@class,'forceVirtualActionMarker forceVirtualAction')]//a")
+	public WebElement parcelSitusGridEditButton;
+	
+	@FindBy(xpath = "//lightning-button//button[text()='Save']")
+	public WebElement parcelSitusEditSaveButton;
+	
+	@FindBy(xpath = "//h2[contains(text(),'Edit PS-')]")
+	public WebElement visibleParcelSitusEditpopUp;
+	
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
 	 * @param dataMap: A data map which contains data to perform  mapping action
@@ -186,6 +203,7 @@ public class MappingPage extends ApasGenericPage {
 		String netLandGain = dataMap.get("Net Land Gain");
 		String firstnonCondoParcelNumber = dataMap.get("First non-Condo Parcel Number");
 		String legalDescription = dataMap.get("Legal Description");
+		String legalDescriptionBrandNewAction = dataMap.get("Legal Descriptions");
 		String comments= dataMap.get("Comments");
 		String numberOfChildNonCondoParcels= dataMap.get("Number of Child Non-Condo Parcels");
 		String numberOfChildCondoParcels= dataMap.get("Number of Child Condo Parcels");
@@ -207,6 +225,9 @@ public class MappingPage extends ApasGenericPage {
 			enter(firstCondoTextBoxLabel, firstCondoParcelNumber);
 		if (legalDescription != null)
 			enter(legalDescriptionTextBoxLabel, legalDescription);
+		// Below check added exclusively for Brand New action form
+		if (legalDescriptionBrandNewAction != null)
+			enter(legalDescriptionBrandNewTextBoxLabel, legalDescriptionBrandNewAction);
 		if (comments != null)
 			enter(commentsTextBoxLabel, comments);
 		Click(getButtonWithText(nextButton));

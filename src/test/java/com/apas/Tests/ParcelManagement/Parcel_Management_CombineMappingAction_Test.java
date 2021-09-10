@@ -466,14 +466,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
 		         
 		        HashMap<String, ArrayList<String>> responseAPNid = 
-		        		salesforceAPI.select("Select Id from parcel__C where name='"
-		        		+parcel+"'");
+		        		salesforceAPI.select("Select Id from parcel__C where name='"+parcel+"'");
 				String id=responseAPNid.get("Id").get(0);
-		        String ownershipURL = "https://smcacre--"
-		        		+ execEnv
-		        		+ ".lightning.force.com/lightning/r/Parcel__c/"
-		        		+ id
-		        		+ "/related/Property_Ownerships__r/view";
+		        String ownershipURL = "https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+		        		+ id + "/related/Property_Ownerships__r/view";
 		        ReportLogger.INFO(ownershipURL);
 		        driver.navigate().to(ownershipURL);
 		        objParcelsPage.createOwnershipRecord(assesseeName1,hashMapCreateOwnershipRecordData);
@@ -1709,7 +1705,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 	}
-	@Test(description = "SMAB-T2829,SMAB-T2677:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Combine\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2829,SMAB-T2677,SMAB-T3634,SMAB-T3633,SMAB-T3635:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Combine\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_CombineMappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 
@@ -1728,13 +1724,13 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
 		
-		String parcelSize	= "200";	
-		
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
         HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
-		
+        String legalDescriptionValue = "Legal PM 85/25-260";
+        jsonParcelObject.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+        jsonParcelObject.put("Short_Legal_Description__c", legalDescriptionValue);
         jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-		jsonParcelObject.put("Lot_Size_SQFT__c",parcelSize);
+		jsonParcelObject.put("Lot_Size_SQFT__c",200);
 		jsonParcelObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
 		
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObject);
@@ -1812,6 +1808,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		objMappingPage.waitForElementToBeVisible(10, objMappingPage.updateParcelsButton);
 		softAssert.assertTrue(objMappingPage.validateParentAPNsOnMappingScreen(concatenateAPNWithSameOwnership), "SMAB-T3363 : Verify that for \" Combine \" mapping action, in custom action second screen and third screen Parent APN (s) "+concatenateAPNWithSameOwnership+" is displayed");
+		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "390");
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName));
+		
 
 		//Step 9: Validation that User is navigated to a screen with following fields:APN,Legal Description,Parcel Size(SQFT),TRA,Situs,Reason Code,District/Neighborhood,Use Code
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -1832,6 +1832,27 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2677: Validation that  There is \"Update Parcel(s)\" button on return to custom screen");
 
 		driver.switchTo().window(parentWindow);
+		objMappingPage.globalSearchRecords(gridDataHashMap.get("APN").get(0));
+		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)*").get(0),
+				objMappingPage.getFieldValueFromAPAS("Parcel Size (SqFt)", "Parcel Information"),
+				"SMAB-T3633,SMAB-T3635:Parcel size(SQFT) was updated successfully and user was able to go to update screen");
+		
+		// Mark the WI complete
+		query = "Select Id from Work_Item__c where Name = '" + workItem + "'";
+		salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		ReportLogger.INFO(" Supervisor logins to close the WI ");
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+		objMappingPage.searchModule(WORK_ITEM);
+		objMappingPage.globalSearchRecords(workItem);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		// refresh as the focus is getting lost
+		driver.navigate().refresh();
+		Thread.sleep(5000);
+		objWorkItemHomePage.completeWorkItem();
+		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
 		objWorkItemHomePage.logout();
 	}
 	

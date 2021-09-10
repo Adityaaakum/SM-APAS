@@ -70,6 +70,9 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String nextButton="Next";
 	public String cioTransferScreenSectionlabels= "//*[@class='slds-card slds-card_boundary']//span[@class='slds-truncate slds-m-right--xx-small']";
 	public String remarksLabel = "Remarks";
+	public String fieldsInCalculateOwnershipModal="//*[@id='wrapper-body']//flowruntime-screen-field//p";
+	public String ownershipPercentage ="Ownership Percentage";
+
 
 	public static final String CIO_EVENT_CODE_COPAL="CIO-COPAL";
 	public static final String CIO_EVENT_CODE_PART="CIO-PART";
@@ -486,5 +489,17 @@ public class CIOTransferPage extends ApasGenericPage {
 		 	 Click(fieldLocator1);
 		 	 Thread.sleep(5000);
 		 }
+		 
+		 public void deleteRecordedAPNTransferGranteesRecords(String recordedAPNTransferId) throws IOException, Exception
+		 {      	       
+			   HashMap<String, ArrayList<String>>HashMapOldGrantee =salesforceApi.select("SELECT Id ,Last_Name__c  FROM CIO_Transfer_Grantee_New_Ownership__c where Recorded_APN_Transfer__c ='"+recordedAPNTransferId+"'");			      
+		        if(!HashMapOldGrantee.isEmpty()) {		    	  
+		    	  HashMapOldGrantee.get("Id").stream().forEach(Id ->{
+	    		  objSalesforceAPI.delete("CIO_Transfer_Grantee_New_Ownership__c", Id);
+	    		  ReportLogger.INFO("!!Deleted RAT transfer grantee with id= "+Id + " and grantee name "+HashMapOldGrantee.get("Last_Name__c"));
+		          } );}	 
+		 } 
+			
+
 		 	
 }
