@@ -743,7 +743,8 @@ public void searchModule(String moduleToSearch) throws Exception {
 				fieldPath + "//lightning-formatted-number | " +
 				fieldPath + "//lightning-formatted-rich-text | " +
 				fieldPath + "//force-record-type//span | " +
-				fieldPath + "//lightning-formatted-name";
+				fieldPath + "//lightning-formatted-name |" +
+				fieldPath + "//a";
 		
 		waitForElementToBeVisible(20,fieldXpath);
 		try{
