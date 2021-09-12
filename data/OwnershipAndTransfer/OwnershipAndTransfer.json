@@ -1,7 +1,6 @@
 {
-
 "dataToCreateMailToRecordsWithIncompleteData":{
-"Formatted Name1":"LUKE SHAW",
+"Formatted Name1" : "LUKE SHAW",
 "Start Date":"7/16/2021",
 "End Date":"7/19/2021",
 "Mailing Zip":"560090"
@@ -25,7 +24,16 @@
 "dataToCreateGranteeWithCompleteOwnership":{
 
 "Last Name":"Will Smith",
+"First Name":"Jhones",
 "Ownership Start Date":"7/16/2021",
 "Owner Percentage":"100"
+},
+
+"dataToUpdateOrignalTransferList":{
+
+"Grantor":"WILL SMITH",
+"Grantee":"ERIKSEN"
+
+
 }
 }
