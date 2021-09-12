@@ -775,7 +775,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 */
 
 	@Test(description = "SMAB-T3377,SMAB-T10081:Verify that User is able to perform CIO transfer autoconfirm using a batch job (Fully automated) ", dataProvider = "dpForCioAutoConfirmUsingBatchJob", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "OwnershipAndTransfer", "Smoke" })
+			"Regression", "ChangeInOwnershipManagement", "OwnershipAndTransfer", "Smoke" } ,enabled = false)
 	public void OwnershipAndTransfer_VerifyCioTransferAutoConfirmUsingBatchJob(String InitialEventCode,
 			String finalEventCode) throws Exception {
 
