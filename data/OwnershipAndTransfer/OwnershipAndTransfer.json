@@ -1,39 +1,39 @@
-{
-"dataToCreateMailToRecordsWithIncompleteData":{
-"Formatted Name1" : "LUKE SHAW",
-"Start Date":"7/16/2021",
-"End Date":"7/19/2021",
-"Mailing Zip":"560090"
-
-},
-"dataToCreateGranteeWithIncompleteData":{
-
-"Last Name":"LUKE SHAW",
-"Ownership Start Date":"7/16/2021",
-"Ownership End Date":"7/19/2021",
-"Owner Percentage":"50"
-},
-
-"DataToCreateOwnershipRecord": {
-    "Type": "Owner",
-    "Status": "Active",
-    "Ownership Percentage":"100",
-    "Ownership Start Date":"7/19/2000"
-  },
-  
-"dataToCreateGranteeWithCompleteOwnership":{
-
-"Last Name":"Will Smith",
-"First Name":"Jhones",
-"Ownership Start Date":"7/16/2021",
-"Owner Percentage":"100"
-},
-
-"dataToUpdateOrignalTransferList":{
-
-"Grantor":"WILL SMITH",
-"Grantee":"ERIKSEN"
-
-
-}
-}
+	{
+	"dataToCreateMailToRecordsWithIncompleteData":{
+	"Formatted Name1" : "LUKE SHAW",
+	"Start Date":"7/16/2021",
+	"End Date":"7/19/2021",
+	"Mailing Zip":"560090"
+	
+	},
+	"dataToCreateGranteeWithIncompleteData":{
+	
+	"Last Name":"LUKE SHAW",
+	"Ownership Start Date":"7/16/2021",
+	"Ownership End Date":"7/19/2021",
+	"Owner Percentage":"50"
+	},
+	
+	"DataToCreateOwnershipRecord": {
+	    "Type": "Owner",
+	    "Status": "Active",
+	    "Ownership Percentage":"100",
+	    "Ownership Start Date":"7/19/2000"
+	  },
+	  
+	"dataToCreateGranteeWithCompleteOwnership":{
+	
+	"Last Name":"Will Smith",
+	"First Name":"Jhones",
+	"Ownership Start Date":"7/16/2021",
+	"Owner Percentage":"100"
+	},
+	
+	"dataToUpdateOrignalTransferList":{
+	
+	"Grantor":"WILL SMITH",
+	"Grantee":"ERIKSEN"
+	
+	
+	}
+	}

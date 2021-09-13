@@ -261,7 +261,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
 	    		ReportLogger.INFO("-------------Generated Recorded WorkItems.------------------"); 
 	    		counterForFailedattempts=0;
-	    		Thread.sleep(5000);
+	    		Thread.sleep(10000);
 	    		return;
 	    		}
 	    		if(ApnCount<0)
