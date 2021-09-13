@@ -745,6 +745,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 				fieldPath + "//force-record-type//span | " +
 				fieldPath + "//lightning-formatted-name |" +
 				fieldPath + "//a";
+		
 		waitForElementToBeVisible(20,fieldXpath);
 		try{
 			fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();

@@ -68,7 +68,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 	 * Verify the warning message on CIO Transfer screen when UT is created on Retired Parcel With 99 PUC
 	 */
 	
-	@Test(description = "SMAB-T3287:Verify the warning message on CIO Transfer screen when UT is created on Retired Parcel with 99 PUC", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3287, SMAB-T3286:Verify the warning message on CIO Transfer screen when UT is created on Retired Parcel with 99 PUC", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","UnrecordedEvent" })
 	public void UnrecordedEvent_WarningMessageForRetiredParcelWith99PUC(String loginUser) throws Exception {
 		
@@ -92,7 +92,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		// Step3: Create UT event and validate warning message on CIO Transfer screen
 		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
 		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.transferPageMessageArea),"Please select an active APN before performing any action related to CIO Transfer",
-				"SMAB-T3287: Validate the warning message on CIO Transfer screen");
+				"SMAB-T3287, SMAB-T3286: Validate the warning message on CIO Transfer screen");
 		
 		// Step4: Edit the Transfer activity and update the Transfer Code
 		ReportLogger.INFO("Add the Transfer Code");
