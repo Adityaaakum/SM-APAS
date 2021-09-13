@@ -188,6 +188,17 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath=commonXpath+"//button[text()='Finish']")
 	public WebElement finishButtonPopUp;
 	
+	@FindBy(xpath =commonXpath+"//force-record-layout-section//div//span[text()='APN']//parent::div//following-sibling::div//a//slot//slot//span")
+	public WebElement apnOnTransferActivityLabel;
+	
+	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='Situs']/../..//slot[@slot='outputField']//lightning-formatted-text")
+	public WebElement situsOnTransferActivityLabel;
+	
+	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='Short Legal Description']/../..//slot[@slot='outputField']//lightning-formatted-text")
+	public WebElement shortLegalDescriptionOnTransferActivityLabel;
+	
+	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='PUC Code']/../..//slot[@slot='outputField']//lightning-formatted-text")
+	public WebElement pucCodeTransferActivityLabel;
 	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
@@ -389,8 +400,9 @@ public class CIOTransferPage extends ApasGenericPage {
 		  */
 		 
 		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {		 		 
+			
 			 try {
-			   waitForElementToBeClickable(7, copyToMailToButtonLabel);			   
+			   Thread.sleep(2000);		   
 			   Click(getButtonWithText(copyToMailToButtonLabel));
 			   waitForElementToDisappear(formattedName1, 5);
 			   Click(formattedName1);
@@ -424,8 +436,8 @@ public class CIOTransferPage extends ApasGenericPage {
 		 /*
 		  * This method will create one new grantee per method call in Recorded APN transfer screen.
 		  * 
-		  */
-		 
+		  */		 
+
 		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
 		 {
 				try {
@@ -445,6 +457,7 @@ public class CIOTransferPage extends ApasGenericPage {
 				} catch (Exception e) {
 					ReportLogger.INFO("SORRY!! GRANTEE RECORD CANNOT BE ADDED");
 				}
+
 			}
 		 
 		 public void deleteRecordedApnFromRecordedDocument(String recordedDocumentId)

@@ -21,6 +21,11 @@
    "DataToCreateParcelSitus":{
  	 "isPrimary":"Yes",
  	 "Situs":"69 West Coast CLIFFSIDE ALLEE 56, DALY CITY"
+  },
+  
+  "DataToCreateParcelStartingWith134": {
+    "APN": "134-568-010",
+    "Parcel Number": "134568010"
   }
   
  }
