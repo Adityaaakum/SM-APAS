@@ -68,6 +68,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 	 * Verify the warning message on CIO Transfer screen when UT is created on Retired Parcel With 99 PUC
 	 */
 	
+
 	@Test(description = "SMAB-T3287, SMAB-T3286:Verify the warning message on CIO Transfer screen when UT is created on Retired Parcel with 99 PUC", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","UnrecordedEvent" })
 	public void UnrecordedEvent_WarningMessageForRetiredParcelWith99PUC(String loginUser) throws Exception {
@@ -86,6 +87,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objMappingPage.login(loginUser);
 
 		// Step2: Opening the PARCELS page 
+		
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(retiredApn);
 		
@@ -93,6 +95,10 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
 		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.transferPageMessageArea),"Please select an active APN before performing any action related to CIO Transfer",
 				"SMAB-T3287, SMAB-T3286: Validate the warning message on CIO Transfer screen");
+		
+		//Step 3(a): Verifying that orignal transfer list quick action button is not visible for unrecorded document
+		
+		softAssert.assertEquals(objCIOTransferPage.verifyElementVisible(objCIOTransferPage.checkOriginalTransferListButtonLabel),false, "SMAB-T3630:Verify that check Orignal Transfer List quick action button is not available for unrecorded transfer.");
 		
 		// Step4: Edit the Transfer activity and update the Transfer Code
 		ReportLogger.INFO("Add the Transfer Code");
