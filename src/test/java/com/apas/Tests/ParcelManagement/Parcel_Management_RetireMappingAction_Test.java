@@ -264,9 +264,30 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		String apn2=responseAPNDetails2.get("Name").get(0);
 		
 		//Fetching Active Mobile home parcel
-		String queryAPN3 = "Select Name, ID From Parcel__c where name like '134%' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Status__c='Active' limit 1";
+		String apn3 = "";
+		String createNewParcel = testdata.MANUAL_PARCEL_CREATION_DATA;
+		Map<String, String> hashMapCreateNewParcel = objUtil.generateMapFromJsonFile(createNewParcel,
+				"DataToCreateParcelStartingWith134");
+		String apnStartingWith134 = hashMapCreateNewParcel.get("APN");
+		String parcelNumberStartingWith134 = hashMapCreateNewParcel.get("Parcel Number");
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') limit 1");
+		String PUC = responsePUCDetails.get("Name").get(0);
+				
+		String queryAPN3 = "Select Name, ID From Parcel__c where name like '134%' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails3 = salesforceAPI.select(queryAPN3);
-		String apn3=responseAPNDetails3.get("Name").get(0);
+		
+		if (responseAPNDetails3 != null) {
+			apn3=responseAPNDetails3.get("Name").get(0);
+			salesforceAPI.update("Parcel__c",responseAPNDetails3.get("Id").get(0),"Status__c","Active");
+		}
+		else {
+			objMappingPage.login(users.SYSTEM_ADMIN);
+			apn3 = objParcelsPage.createNewParcel(apnStartingWith134,parcelNumberStartingWith134,PUC);
+	        objWorkItemHomePage.logout();
+	        Thread.sleep(5000);	
+		}
 		
 		//Add the parcels in a Hash Map for validations later
 		Map<String,String> apnValue = new HashMap<String,String>(); 
