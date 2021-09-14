@@ -40,6 +40,7 @@ public class MappingPage extends ApasGenericPage {
 	public String commentsTextBoxLabel = "Comments";
 	public String parentAPNTextBoxLabel = "Parent APN(s)";
 	public String legalDescriptionColumnSecondScreen = "Legal Description*";
+	public String distNbhdColumnSecondScreen = "Dist/Nbhd*";
 	public String districtColumnSecondScreen = "District";
 	public String apnColumnSecondScreen = "APN";
 	public String reasonCodeColumnSecondScreen = "Reason Code*";
@@ -70,6 +71,7 @@ public class MappingPage extends ApasGenericPage {
 	public String parcelShortLegalDescription = "Short Legal Description";
 	public String firstNonCondoTextBoxLabel2 = "First Non-Condo Parcel Number";
 	public String legalDescriptionTextBoxLabel2 = "Legal Description Auto-Populate Field for Child Parcels";
+	public String legalDescriptionBrandNewTextBoxLabel = "Legal Description";
 	public String parcelLotSize = "Lot Size (SQFT)";
 	public String situsCityDescriptionLabel = "Situs City Description";
 	public String cityNameLabel = "City Name";
@@ -84,7 +86,8 @@ public class MappingPage extends ApasGenericPage {
 	public String CreateNewParcelButton="Create Brand New Parcel";
 	public String updateParcelsButton = "//button[text()='Update Parcel(s)']";
 	public String updateParcelButtonLabelName = "Update Parcel(s)";
-	public String parcelSizeColumnSecondScreen = "Parcel Size";
+	public String parcelSizeColumnSecondScreen = "Parcel Size(SQFT)*";
+	public String parcelSizeColumnSecondScreenWithSpace = "Parcel Size (SQFT)*";
 	public final String DOC_CERTIFICATE_OF_COMPLIANCE="CC";
 	public final String DOC_LOT_LINE_ADJUSTMENT="LL";
 	public final String DOC_Covenants_Cond_Restr_with_condo = "CCR";
@@ -97,6 +100,10 @@ public class MappingPage extends ApasGenericPage {
 	public final String DOC_Property_Settlement_Agreement = "PSA";
 	public final String DOC_Sub_Divison_Map = "SDM";
 	public final String DOC_Official_Map  = "OM";
+	public String secondScreenEditButton = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]";
+	public String errorCompleteThisField = "Complete this field.";
+	public String editParcel = "Edit Parcel";
+	public String parcelSitus ="Parcel Situs";
 	
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
 	public WebElement editButtonInSeconMappingScreen;
@@ -108,7 +115,10 @@ public class MappingPage extends ApasGenericPage {
 	public WebElement clearSelectionTRA;
 	
 	@FindBy(xpath = "//button[@title='Clear Selection'][1]/ancestor::lightning-input-field/following-sibling::lightning-input-field//button")
-	public WebElement clearSelectionPUC;	
+	public WebElement clearSelectionNeigh;
+	
+	@FindBy(xpath = "(//button[@title='Clear Selection'][1]/ancestor::lightning-input-field/following-sibling::lightning-input-field//button)[2]")
+	public WebElement clearSelectionPUC;
 	
 	@FindBy(xpath = "//button[contains(@class,'slds-button_icon-border slds-button_icon-x-small')]")
 	public WebElement mappingSecondScreenEditActionGridButton;
@@ -125,7 +135,7 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@id,'salesforce-lightning-tooltip-bubble')]")
 	public WebElement helpIconToolTipBubble;
 
-	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Legal Description']")
+	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Legal Description*']")
 	public WebElement legalDescriptionFieldSecondScreen;
 
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li[last()] |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
@@ -166,6 +176,19 @@ public class MappingPage extends ApasGenericPage {
 
 	@FindBy(xpath="//div[contains(@class,'error')][1]")
 	public WebElement dividedInterestErrorMsgSecondScreen;
+	
+	@FindBy(xpath="//div[@title='Edit']")
+	public WebElement parcelSitusEditButton;
+	
+	@FindBy(xpath = "//*[contains(@class,'forceVirtualActionMarker forceVirtualAction')]//a")
+	public WebElement parcelSitusGridEditButton;
+	
+	@FindBy(xpath = "//lightning-button//button[text()='Save']")
+	public WebElement parcelSitusEditSaveButton;
+	
+	@FindBy(xpath = "//h2[contains(text(),'Edit PS-')]")
+	public WebElement visibleParcelSitusEditpopUp;
+	
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
 	 * @param dataMap: A data map which contains data to perform  mapping action
@@ -180,6 +203,7 @@ public class MappingPage extends ApasGenericPage {
 		String netLandGain = dataMap.get("Net Land Gain");
 		String firstnonCondoParcelNumber = dataMap.get("First non-Condo Parcel Number");
 		String legalDescription = dataMap.get("Legal Description");
+		String legalDescriptionBrandNewAction = dataMap.get("Legal Descriptions");
 		String comments= dataMap.get("Comments");
 		String numberOfChildNonCondoParcels= dataMap.get("Number of Child Non-Condo Parcels");
 		String numberOfChildCondoParcels= dataMap.get("Number of Child Condo Parcels");
@@ -201,6 +225,9 @@ public class MappingPage extends ApasGenericPage {
 			enter(firstCondoTextBoxLabel, firstCondoParcelNumber);
 		if (legalDescription != null)
 			enter(legalDescriptionTextBoxLabel, legalDescription);
+		// Below check added exclusively for Brand New action form
+		if (legalDescriptionBrandNewAction != null)
+			enter(legalDescriptionBrandNewTextBoxLabel, legalDescriptionBrandNewAction);
 		if (comments != null)
 			enter(commentsTextBoxLabel, comments);
 		Click(getButtonWithText(nextButton));
@@ -392,7 +419,7 @@ public class MappingPage extends ApasGenericPage {
     
      public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner(int numberofRecords) throws Exception {
         
-    	 String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and (Not Name like '800%') "
+    	 String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '1%') and (Not Name like '800%') "
     	 		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
     	 		+ "and Status__c = 'Active' Limit " + numberofRecords;   	    
      	return objSalesforceAPI.select(queryActiveAPNValue);
@@ -408,7 +435,7 @@ public class MappingPage extends ApasGenericPage {
         }
         
       public HashMap<String, ArrayList<String>> getCondoApnWithNoOwner(int numberofRecords) throws Exception {
-        	String queryCondoAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  and (Not Name like '%990') and name like '100%' and Status__c = 'Active' Limit " + numberofRecords;
+        	String queryCondoAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  and (Not Name like '%990') and name like '1%' and Status__c = 'Active' Limit " + numberofRecords;
         	return objSalesforceAPI.select(queryCondoAPNValue);
         }
      
@@ -447,18 +474,29 @@ public class MappingPage extends ApasGenericPage {
    */
       public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
   		
-    	    String PUC =objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
-    	    String TRA=objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);    	  
+			String PUC = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
+			String TRA = objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);
+			String distNeigh = objSalesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1").get("Name").get(0);
+		    objSalesforceAPI.update("PUC_Code__c",objSalesforceAPI.select("Select Id from PUC_Code__c where name='"+PUC+"'").get("Id").get(0), "Legacy__c", "No");
+		    
 			Click(editButtonInSeconMappingScreen);
-			if(waitForElementToBeVisible(2, clearSelectionTRA))
-		    Click(clearSelectionTRA);			
-			enter(parcelTRA, TRA);		    
+			if (waitForElementToBeVisible(2, clearSelectionTRA))
+			Click(clearSelectionTRA);
+			enter(parcelTRA, TRA);
 			Thread.sleep(2000);
-			selectOptionFromDropDown(parcelTRA,TRA);
-			if(waitForElementToBeVisible(2, clearSelectionPUC))
+			selectOptionFromDropDown(parcelTRA, TRA);
+			
+			if (waitForElementToBeVisible(2, clearSelectionNeigh))
+			Click(clearSelectionNeigh);
+			enter(parcelDistrictNeighborhood, distNeigh);
+			selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
+	
+
+			if (waitForElementToBeVisible(2, clearSelectionPUC))
 			Click(clearSelectionPUC);
 			enter(parcelPUC, PUC);
-			selectOptionFromDropDown(parcelPUC,PUC);
+			selectOptionFromDropDown(parcelPUC, PUC);
+				
 			editSitusModalWindowFirstScreen(dataMap);
 			
   	}
@@ -496,12 +534,12 @@ public class MappingPage extends ApasGenericPage {
      	        for(int i=0;i<parentAPN.length;i++) {
      	          String xPath="//div//*[text()='Parent APN(s): ']/following-sibling::a[text()='"+parentAPN[i]+"']";
      	          if( verifyElementVisible(xPath)) flag=true;
-     	          else flag = false ;
+     	         
      	    }
      	    }else {
      	    	String xPath="//div//*[text()='Parent APN(s): ']/following-sibling::a[text()='"+parentAPNs+"']";
    	          if( verifyElementVisible(xPath)) flag=true;
-   	          else flag = false ;
+   	          
      	    }
      	  return flag;
        }

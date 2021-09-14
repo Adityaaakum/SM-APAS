@@ -124,7 +124,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2490,SMAB-T2493,SMAB-T2532,SMAB-T2535,SMAB-T2531,SMAB-T2533:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3051,SMAB-T2490,SMAB-T2493,SMAB-T2532,SMAB-T2535,SMAB-T2531,SMAB-T2533:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyRemapMappingAction(String loginUser) throws Exception {
 		String activeParcelToPerformMapping=objMappingPage.fetchActiveAPN();
@@ -144,7 +144,11 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		else
 		{
 			inProgressAPNValue= objMappingPage.fetchActiveAPN();
-			jsonObject.put("PUC_Code_Lookup__c","In Progress - To Be Expired");
+			HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select(
+					"SELECT Name,id  FROM PUC_Code__c where id in "
+					+ "(Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+
+			jsonObject.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 			jsonObject.put("Status__c","In Progress - To Be Expired");
 			salesforceAPI.update("Parcel__c",objMappingPage.fetchActiveAPN(),jsonObject);
 		}
@@ -237,7 +241,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, activeParcelWithoutHyphen);
 		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));	
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.firstNonCondoTextBoxLabel),"value"),activeParcelToPerformMapping,
-				"SMAB-T2535: Validation that User should be allowed to enter the 9 digit APN without the \"-\" in First Non Condo Parcel Field");
+				"SMAB-T2535, SMAB-T3051: Validation that User should be allowed to enter the 9 digit APN without the \"-\" in First Non Condo Parcel Field");
 
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, " ");
 		//Step 14: entering data in form for remap 
@@ -496,7 +500,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 			,groups = {"Regression","ParcelManagement"},enabled =true)
 	public void ParcelManagment_Verify_Remap_With_Duplicate_Apns_RemappingAction(String loginUser) throws Exception
 	{
-		String queryAPN = "select name from parcel__c where status__c ='Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
+		String queryAPN = "select name from parcel__c where status__c ='Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Name not like '134%' limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 		String apn1=responseAPNDetails.get("Name").get(1);
@@ -793,7 +797,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	@Test(description = "SMAB-6789:Parcel Management- Verify that User is able to perform  a \"remap\" mapping output actions for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement" })
 	public void ParcelManagement_VerifyRemapMappingActionOutput(String loginUser) throws Exception {
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND STATUS__C='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn = responseAPNDetails.get("Name").get(0);
 
@@ -1075,7 +1079,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	@Test(description = "SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
-			groups = {"Regression","ParcelManagement","RecorderIntegration" })
+			groups = {"Regression","ParcelManagement","RecorderIntegration" },enabled=true)
 	public void ParcelManagement_VerifyNewWICovenantsCondRestrGeneratedfromRecorderIntegrationAndRemapMappingAction(String loginUser) throws Exception {
 				
 		

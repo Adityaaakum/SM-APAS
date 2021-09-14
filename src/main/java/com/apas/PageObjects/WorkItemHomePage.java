@@ -619,9 +619,10 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 **/
 
 	public void clickOnTimelineAndMarkComplete(String timelineTab) throws Exception {
+		Thread.sleep(3000);
 		ReportLogger.INFO("Click on the '" + timelineTab + "' option in Timeline and mark it complete");
 		WebElement webElement = driver.findElement(By.xpath("//span[text()='" + timelineTab + "']"));
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 		javascriptClick(webElement);
 		if (waitForElementToBeVisible(5, markStatusCompleteBtn)) {
 			javascriptClick(markStatusCompleteBtn);
@@ -846,6 +847,23 @@ public class WorkItemHomePage extends ApasGenericPage {
 			Thread.sleep(3000);
 		}
 	}
+	
+	/**
+	 * This method will check the work item passed in the parameter on in progress page. without accepting it.
+	 *
+	 * @param workItem: Work item number to be accepted
+	 **/
+	
+	public void findWorkItemInProgress(String workItem) throws Exception {
+		ReportLogger.INFO("Accepting the work item: " + workItem);
+		WebElement webElementCheckBox = driver.findElement(By.xpath("//table//tr[contains(.,'" + workItem + "')]//ancestor::th//preceding-sibling::td//span[@class='slds-checkbox_faux']"));
+		scrollToElement(webElementCheckBox);
+		Click(webElementCheckBox);
+		ReportLogger.INFO(workItem + ": Work Item is present in Progress Tab. " );
+		waitForElementToBeVisible(successAlert, 20);
+		waitForElementToDisappear(successAlert, 10);
+	}
+
 
 	
 	/*

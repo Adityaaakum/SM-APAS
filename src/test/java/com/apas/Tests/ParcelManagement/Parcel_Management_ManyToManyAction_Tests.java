@@ -69,32 +69,43 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
-
-		//Fetch some other values from database
-		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
-		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn1 +"')").get("Name").get(0);
-
+		String concatenateAPNWithSameOwnership = apn1+","+apn2;   
+		
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') limit 1");
+	
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+		
+		String primarySitusId=salesforceAPI.select("SELECT Id FROM Situs__c").get("Id").get(0);		
 
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String districtValue="District01";
+		String parcelSize	= "200";		
 
-		String concatenateAPNWithSameOwnership = apn1+","+apn2;        
-
-		//Enter values in the Parcels
 		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 		jsonObject.put("Status__c","Active");
 		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
 		jsonObject.put("District__c",districtValue);
 		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
-		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(1));	
-
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+		jsonObject.put("Primary_Situs__c", primarySitusId);
+		
+		
+		if(!responseAPNDetails.isEmpty()){
+			
+			responseAPNDetails.get("Name").stream().forEach(Apn ->{				
+			salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+Apn+"'").get("Id").get(0),jsonObject);
+			});	
+			
+		}			
+		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn1 +"')").get("Name").get(0);
+		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
@@ -121,7 +132,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 			}
 		});
 		objWorkItemHomePage.logout();
-		Thread.sleep(20000);
+		Thread.sleep(5000);
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -303,7 +314,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2587, SMAB-T2594, SMAB-T2595, SMAB-T2596, SMAB-T2626, SMAB-T2582:Verify the Parent APN validations for \"Many To Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3051,SMAB-T2587, SMAB-T2594, SMAB-T2595, SMAB-T2596, SMAB-T2626, SMAB-T2582:Verify the Parent APN validations for \"Many To Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyParentAPNValidationsForManyToManyMappingAction(String loginUser) throws Exception {
 
@@ -355,7 +366,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objParcelsPage.createOwnershipRecord(assesseeName, hashMapCreateOwnershipRecordData);
 
 		objWorkItemHomePage.logout();
-		Thread.sleep(20000);
+		Thread.sleep(5000);
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -448,7 +459,10 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithoutHyphen);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		Thread.sleep(2000);
-		softAssert.assertTrue(objMappingPage.getElementText(objMappingPage.parentAPNFieldValue).split(",")[0].contains("-"),"SMAB-T2582: Verify that when 9 digit APN is entered without hyphen, after saving hyphen is added automatically");
+		softAssert.assertTrue(objMappingPage.getElementText
+				(objMappingPage.parentAPNFieldValue).split(",")[0].contains("-"),
+				"SMAB-T2582,SMAB-T3051: Verify that when 9 digit APN is entered without hyphen, "
+				+ "after saving hyphen is added automatically");
 
 
 		driver.switchTo().window(parentWindow);
@@ -461,7 +475,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2722:Verify the Output validations for \"Many to Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3049,SMAB-T2722:Verify the Output validations for \"Many to Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyNonCondoManyToManyMappingActionOutputValidations(String loginUser) throws Exception {
 
@@ -473,17 +487,22 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		String parentAPN=apn1;
         if (Integer.parseInt(apn1.replace("-",""))>Integer.parseInt(apn2.replace("-","")))
         	parentAPN=apn2;
- 
+        
+        HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') limit 1");
+	
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
-		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
-
-		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+		
+		String primarySitusId=salesforceAPI.select("SELECT Id FROM Situs__c").get("Id").get(0);		
 
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String districtValue="District01";
+		String parcelSize	= "200";		
 
 		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 		jsonObject.put("Status__c","Active");
@@ -491,10 +510,17 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		jsonObject.put("District__c",districtValue);
 		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonObject);
-
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+		jsonObject.put("Primary_Situs__c", primarySitusId);
+		
+		
+		if(!responseAPNDetails.isEmpty()){
+			
+			responseAPNDetails.get("Name").stream().forEach(Apn ->{				
+			salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+Apn+"'").get("Id").get(0),jsonObject);
+			});	
+		}
+		
 		String concatenateAPNWithSameOwnership = apn1+","+apn2;
 
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
@@ -529,7 +555,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
 		driver.navigate().refresh();
-		Thread.sleep(6000);
+		Thread.sleep(5000);
 
 		// Step 3: Login to the APAS application using the credentials passed through data provider
 		objMappingPage.login(loginUser);
@@ -567,7 +593,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		//Step 10: Verify the success message after parcels are generated
 		softAssert.assertContains(objMappingPage.getSuccessMessage(),"Parcel(s) have been created successfully. Please review spatial information",
-				"SMAB-T2722: Validation that success message is displayed when Parcels are generated");
+				"SMAB-T2722,SMAB-T3049: Validation that success message is displayed when Parcels are generated");
 
 		//Step 11: Verify the grid cells are not editable after parcels are generated
 		Thread.sleep(3000);
@@ -643,6 +669,13 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN1PrimarySitus.get("Name").get(0),"SMAB-T2722: Verify Primary Situs of Child Parcel is inheritted from first Parent Parcel");
 		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN2PrimarySitus.get("Name").get(0),"SMAB-T2722: Verify Primary Situs of Child Parcel is inheritted from first Parent Parcel");
 
+		
+		 if(!gridDataHashMap.isEmpty()){
+				
+				gridDataHashMap.get("APN").stream().forEach(Apn ->{				
+				salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+Apn+"'").get("Id").get(0),jsonObject);
+				});	
+			 }
 
 		//Step 19: Mark the WI complete
 		String query = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
@@ -652,7 +685,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
 		driver.navigate().refresh();
-		Thread.sleep(6000);
+		Thread.sleep(5000);
 
 		objMappingPage.login(users.MAPPING_SUPERVISOR);
 		objMappingPage.searchModule(WORK_ITEM);
@@ -711,7 +744,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2730,SMAB-T2903:Verify the Output validations for \"Many to Many\" mapping action and validation on lower APN value", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2730,SMAB-T2903,SMAB-T3244:Verify the Output validations for \"Many to Many\" mapping action and validation on lower APN value", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyCondoManyToManyMappingActionOutputValidations(String loginUser) throws Exception {
 
@@ -726,16 +759,21 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		if (Integer.parseInt(apn1.replace("-",""))>Integer.parseInt(apn2.replace("-","")))
         	parentAPN=apn2;
         
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') limit 1");
+	
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
-		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
-
-		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+		
+		String primarySitusId=salesforceAPI.select("SELECT Id FROM Situs__c").get("Id").get(0);		
 
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String districtValue="District01";
+		String parcelSize	= "200";		
 
 		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 		jsonObject.put("Status__c","Active");
@@ -743,9 +781,16 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		jsonObject.put("District__c",districtValue);
 		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonObject);
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+		jsonObject.put("Primary_Situs__c", primarySitusId);
+		
+		
+		if(!responseAPNDetails.isEmpty()){
+			
+			responseAPNDetails.get("Name").stream().forEach(Apn ->{				
+			salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+Apn+"'").get("Id").get(0),jsonObject);
+			});	
+		}
 
 		String concatenateAPNWithSameOwnership = apn1+","+apn2;
 
@@ -780,21 +825,28 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
 		driver.navigate().refresh();
-		Thread.sleep(6000);
+		Thread.sleep(5000);
 
 		// Step 3: Login to the APAS application using the credentials passed through data provider
 		objMappingPage.login(loginUser);
 
-		// Step 4: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
-		objMappingPage.searchModule(PARCELS);
+		//Fetching the Parent's PUC before Many to Many action
+	    objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn1);
+		String parentAPNPucBeforeAction1 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+		objMappingPage.globalSearchRecords(apn2);	
+		String parentAPNPucBeforeAction2 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+
+		// Step 4: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
+		objMappingPage.globalSearchRecords(apn1);
+		
 
 		// Step 5: Creating Manual work item for the Parcel
 		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		//Step 6: Clicking the  details tab for the work item newly created and clicking on Related Action Link
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-		objWorkItemHomePage.waitForElementToBeVisible(40,objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.waitForElementToBeVisible(10,objWorkItemHomePage.referenceDetailsLabel);
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -867,11 +919,25 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		HashMap<String, ArrayList<String>> parentAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn2);		
 		HashMap<String, ArrayList<String>> childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
 		HashMap<String, ArrayList<String>> childAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
-		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2730: Verify Status of Parent Parcel: "+apn1);
-		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2730: Verify Status of Parent Parcel: "+apn2);
-		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2730: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
-		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2730: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(1));
-
+		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2730,SMAB-T3244: Verify Status of Parent Parcel: "+apn1);
+		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"In Progress - To Be Expired","SMAB-T2730,SMAB-T3244: Verify Status of Parent Parcel: "+apn2);
+		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2730,SMAB-T3244: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
+		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"In Progress - New Parcel","SMAB-T2730,SMAB-T3244: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(1));
+		
+		//Fetching required PUC's of parent and child after many to many Action
+	    String childAPN1PucFromGrid = gridDataHashMap.get("Use Code*").get(0);
+		String childAPN2PucFromGrid = gridDataHashMap.get("Use Code*").get(1);
+		driver.switchTo().window(parentWindow);
+        objMappingPage.searchModule(PARCELS);
+        objMappingPage.globalSearchRecords(apn1);
+		String parentAPNPuc1 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+		objMappingPage.globalSearchRecords(apn2);
+	    String parentAPNPuc2 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+				
+		softAssert.assertEquals(parentAPNPuc1,parentAPNPucBeforeAction1,"SMAB-T3244:Verify PUC of Parent1 Parcel:"+apn1);
+	    softAssert.assertEquals(parentAPNPuc2,parentAPNPucBeforeAction2,"SMAB-T3244:Verify PUC of Parent2 Parcel:"+apn2);
+		softAssert.assertEquals(childAPN1PucFromGrid,parentAPNPucBeforeAction1,"SMAB-T3244:Verify PUC of Child1 Parcel:"+nextGeneratedAPN1);
+		softAssert.assertEquals(childAPN2PucFromGrid,parentAPNPucBeforeAction1,"SMAB-T3244:Verify PUC of Child2 Parcel:"+nextGeneratedAPN2);
 
 		//Step 15: Verify Neighborhood Code value is inherited from Parent to Child Parcels
 		HashMap<String, ArrayList<String>> parentAPNNeighborhoodCode = objParcelsPage.fetchFieldValueOfParcel("Neighborhood_Reference__c",parentAPN);
@@ -902,6 +968,13 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		softAssert.assertEquals(parentAPNPrimarySitus.get("Name").get(0),childAPN2PrimarySitus.get("Name").get(0),"SMAB-T2730: Verify Primary Situs of Child Parcel is inheritted from first Parent Parcel");
 
 
+          if(!gridDataHashMap.isEmpty()){
+			
+			gridDataHashMap.get("APN").stream().forEach(Apn ->{				
+			salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+Apn+"'").get("Id").get(0),jsonObject);
+			});	
+		   }
+		
 		//Step 19: Mark the WI complete
 		String query = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
 		salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
@@ -910,7 +983,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
 		driver.navigate().refresh();
-		Thread.sleep(6000);
+		Thread.sleep(5000);
 
 		objMappingPage.login(users.MAPPING_SUPERVISOR);
 		objMappingPage.searchModule(WORK_ITEM);
@@ -925,10 +998,26 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		parentAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",apn2);		
 		childAPN1Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(0));
 		childAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
-		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Retired","SMAB-T2730: Verify Status of Parent Parcel: "+apn1);
-		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"Retired","SMAB-T2730: Verify Status of Parent Parcel: "+apn2);
-		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"Active","SMAB-T2730: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
-		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"Active","SMAB-T2730: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(1));
+		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Retired","SMAB-T2730,SMAB-T3244: Verify Status of Parent Parcel: "+apn1);
+		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"Retired","SMAB-T2730,SMAB-T3244: Verify Status of Parent Parcel: "+apn2);
+		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"Active","SMAB-T2730,SMAB-T3244: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
+		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"Active","SMAB-T2730,SMAB-T3244: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(1));
+		
+		//Fetching required PUC's of parent and child after closing WI
+        objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn1);
+		parentAPNPuc1 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+		objMappingPage.globalSearchRecords(apn2);
+		parentAPNPuc2 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+		objMappingPage.globalSearchRecords(nextGeneratedAPN1);
+		String childAPNPuc1 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+		objMappingPage.globalSearchRecords(nextGeneratedAPN2);
+		String childAPNPuc2 = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+		
+		softAssert.assertEquals(parentAPNPuc1,parentAPNPucBeforeAction1,"SMAB-T3244:Verify PUC of Parent1 Parcel:"+apn1);
+		softAssert.assertEquals(parentAPNPuc2,parentAPNPucBeforeAction2,"SMAB-T3244:Verify PUC of Parent2 Parcel:"+apn2);
+		softAssert.assertEquals(childAPNPuc1,parentAPNPucBeforeAction1,"SMAB-T3244:Verify PUC of Child1 Parcel:"+nextGeneratedAPN1);
+		softAssert.assertEquals(childAPNPuc2,parentAPNPucBeforeAction1,"SMAB-T3244:Verify PUC of Child2 Parcel:"+nextGeneratedAPN2);
 
 		//Step 21: Verify 2 new WIs are generated and linked to Child Parcels after parcel is split and WI is completed
 		String queryToGetRequestType = "SELECT Work_Item__r.Request_Type__c FROM Work_Item_Linkage__c Where Parcel__r.Name = '"+gridDataHashMap.get("APN").get(0)+"' OR Parcel__r.Name = '"+gridDataHashMap.get("APN").get(1)+"'";
@@ -978,13 +1067,11 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 				+ "and Status__c = 'Active' limit 2";		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
-
-		String concatenateAPNWithSameOwnership = apn1+","+apn2;
-
-		//Fetch some other values from database
-		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
-		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn1 +"')").get("Name").get(0);
-
+		
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') limit 1");
+	
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
@@ -993,8 +1080,8 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String districtValue="District01";
-		String parcelSize	= "200";	
-				
+		String parcelSize	= "200";		
+
 		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 		jsonObject.put("Status__c","Active");
 		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
@@ -1002,11 +1089,19 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+		
+		
+		if(!responseAPNDetails.isEmpty()){			
+			responseAPNDetails.get("Name").stream().forEach(Apn ->{				
+			salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+Apn+"'").get("Id").get(0),jsonObject);
+			});		
+		  }				
 
+		String concatenateAPNWithSameOwnership = apn1+","+apn2;
+
+		
 		//updating PUC details
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
-		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(1));	
-
+		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
@@ -1078,8 +1173,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		//validating second screen warning message
 		String parcelsizewarningmessage=objMappingPage.secondScreenParcelSizeWarning.getText();
 		softAssert.assertEquals(parcelsizewarningmessage,
-				"Parent Parcel Size = "+parcelSize+", Net Land Loss = 10, Net Land Gain = 0, "
-						+ "Total Child Parcel(s) Size = 198.",
+				"Parent Parcel Size = 400, Net Land Loss = 0, Net Land Gain = 0, Total Child Parcel(s) Size = 198.",
 				"SMAB-T3451,SMAB-T3459-Verify that parent parcel size and entered net gain/loss and value is getting displayed");
 
 		//Step 9: Click generate Parcel Button
@@ -1128,10 +1222,41 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		String  childAPNPUC;
 		//Fetching parcels that are Active with no Ownership record, no  tra and no primary situs
-		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and (Not Name like '%990') and (Not Name like '134%') and TRA__c=NULL and Primary_Situs__c=NULL and Status__c='Active' Limit 2";
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  and TRA__c=NULL and Primary_Situs__c=NULL and Status__c='Active' Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
+		
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') limit 1");
+	
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
+		String parcelSize	= "200";		
+
+		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonObject.put("Status__c","Active");
+		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonObject.put("District__c",districtValue);
+		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+		
+		
+		if(!responseAPNDetails.isEmpty()){
+			
+			responseAPNDetails.get("Name").stream().forEach(Apn ->{				
+			salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+Apn+"'").get("Id").get(0),jsonObject);
+			});	
+			
+		}		
 
 		String concatenateAPNWithSameOwnership = apn1+","+apn2;
 
@@ -1249,17 +1374,42 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
+		
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') limit 1");
+	
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
+		String parcelSize	= "200";		
+		
+
+		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonObject.put("Status__c","Active");
+		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonObject.put("District__c",districtValue);
+		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+		
+		
+		if(!responseAPNDetails.isEmpty()){
+			
+			responseAPNDetails.get("Name").stream().forEach(Apn ->{				
+			salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+Apn+"'").get("Id").get(0),jsonObject);
+			});	
+			
+		}
 
 		String concatenateAPNWithSameOwnership = apn1+","+apn2;
 
-		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
-		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
-
-		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonObject);
-
+		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeMappingWithActionMobileHomeRequest");
@@ -1383,16 +1533,41 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		String apn2=responseAPNDetails.get("Name").get(1);
 
 		String concatenateAPNWithSameOwnership = apn1+","+apn2;
-
-		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
-		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
-
-		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
 		
-		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') limit 1");
+	
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonObject);
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+		
+		String primarySitusId=salesforceAPI.select("SELECT Id FROM Situs__c").get("Id").get(0);		
+
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
+		String parcelSize	= "200";		
+
+		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonObject.put("Status__c","Active");
+		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonObject.put("District__c",districtValue);
+		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+		jsonObject.put("Primary_Situs__c", primarySitusId);
+		
+		
+		if(!responseAPNDetails.isEmpty()){
+			
+			responseAPNDetails.get("Name").stream().forEach(Apn ->{				
+			salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+Apn+"'").get("Id").get(0),jsonObject);
+			});	}
+			
+
+		
 
 		String mappingActionCreationData = testdata.MANY_TO_MANY_MAPPING_ACTION;
 		Map<String, String> hashMapManyToManyActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
@@ -1427,6 +1602,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		String reasonCode=gridDataHashMap.get("Reason Code*").get(0);
 		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd*").get(0);
 		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)*").get(0);
+		
 
 		//Step 5: Click ManyToMany Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
@@ -1485,6 +1661,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.logout();
 	}
 	
+	
 	/**
 	 *This method is to  Verify  the custom edit on mapping page
 	 * @param loginUser
@@ -1500,16 +1677,21 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);		
         
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') limit 1");
+	
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
-		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
-
-		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+		
+		String primarySitusId=salesforceAPI.select("SELECT Id FROM Situs__c").get("Id").get(0);		
 
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String districtValue="District01";
+		String parcelSize	= "200";		
 
 		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 		jsonObject.put("Status__c","Active");
@@ -1517,13 +1699,21 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		jsonObject.put("District__c",districtValue);
 		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonObject);
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+		jsonObject.put("Primary_Situs__c", primarySitusId);
 		
 		String PUC = salesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
-	    String TRA=salesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0); 
-
+		String TRA = salesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);
+		
+		
+		if(!responseAPNDetails.isEmpty()){
+			
+			responseAPNDetails.get("Name").stream().forEach(Apn ->{				
+			salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+Apn+"'").get("Id").get(0),jsonObject);
+			});	
+			
+		
+		
 		String concatenateAPNWithSameOwnership = apn1+","+apn2;
 
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
@@ -1565,7 +1755,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
 		driver.navigate().refresh();
-		Thread.sleep(6000);
+		Thread.sleep(5000);
 
 		// Step 3: Login to the APAS application using the credentials passed through data provider
 		objMappingPage.login(loginUser);
@@ -1649,4 +1839,5 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	
 
 
+}
 }

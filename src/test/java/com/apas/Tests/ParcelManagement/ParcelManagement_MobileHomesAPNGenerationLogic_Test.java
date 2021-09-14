@@ -111,7 +111,8 @@ public class ParcelManagement_MobileHomesAPNGenerationLogic_Test extends TestBas
     			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
     			Thread.sleep(2000);
     			
-    			objMappingPage.editGridCellValue("Dist/Nbhd*","06/06");
+    			objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+                objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
     			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
     			
     			softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel(s) have been created successfully. Please review spatial information.",

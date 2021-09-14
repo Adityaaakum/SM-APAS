@@ -65,6 +65,9 @@ public class ParcelsPage extends ApasGenericPage {
 	public String exemptionRelatedTab="Exemptions";
 	public String saveParcelButton="Save";
 	public String recordTypeDropdown = "Record Type";
+
+	public String group="Group";	
+
 	public String typeOfAuditTrailDropdown = "Type of Audit Trail Record?";
 	public String sourceDropdown = "Source";
 	public String dateOfEventInputTextBox = "Date of Event";
@@ -77,7 +80,10 @@ public class ParcelsPage extends ApasGenericPage {
 	public String parcelNumber = "Parcel Number";
 	public String puc = "PUC";
 	
-	
+	public String parcelSitus = "Parcel Situs";
+	public String newParcelSitus="New Parcel Situs";
+	public String isPrimaryDropdown = "Is Primary?";
+	public String situsSearch = "Situs";
 	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
@@ -123,6 +129,15 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//input[contains(@id,'input-file')]")
     public WebElement uploadFileInputBox;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[text()='Save']")
+    public WebElement ownershipSaveButton;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text() = 'Mail-To']/following-sibling::span")
+	public WebElement numberOfMailToOnParcelLabel;
+	
+	@FindBy(xpath = "//span[text() = 'View All']")
+	public WebElement viewAll;
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -264,7 +279,7 @@ public class ParcelsPage extends ApasGenericPage {
 			Click(moretab);
 			Click(driver.findElement(By.xpath(xPath)));
 		}
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 	}
 	
 	/**
@@ -275,6 +290,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String createOwnershipRecord(String apn, String assesseeName, Map<String, String> dataMap) throws Exception {	
 		globalSearchRecords(apn);
         openParcelRelatedTab(ownershipTabLabel);
+        scrollToBottom();
         Thread.sleep(1000);
         
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");        
@@ -307,6 +323,7 @@ public class ParcelsPage extends ApasGenericPage {
 		String ownershipStartDate = dataMap.get("Ownership Start Date");
 		String ownershipPercentage=dataMap.get("Ownership Percentage");
 		
+		scrollToBottom();
 		createRecord();
 		Click(ownershipNextButton);
 		searchAndSelectOptionFromDropDown(ownerDropDown, owner);
@@ -319,8 +336,11 @@ public class ParcelsPage extends ApasGenericPage {
 		if(ownershipPercentage!= null)
 			enter(ownershipPercentageTextBox, ownershipPercentage);
 		
-		String successMsg = saveRecord();
-		return successMsg;
+		Click(ownershipSaveButton);
+        waitForElementToBeClickable(successAlert,25);
+        String messageOnAlert = getElementText(successAlert);
+        waitForElementToDisappear(successAlert,10);
+		return messageOnAlert;
 	}
 
 	/*
@@ -362,24 +382,46 @@ public class ParcelsPage extends ApasGenericPage {
 			waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);
 			
 			selectOptionFromDropDown(recordTypeDropdown, dataMap.get("Record Type"));
+
+			selectOptionFromDropDown(group,dataMap.get("Group"));
+
+			
+
 			Thread.sleep(2000);
 			selectOptionFromDropDown(typeOfAuditTrailDropdown, dataMap.get("Type of Audit Trail Record?"));
-			selectOptionFromDropDown(sourceDropdown, dataMap.get("Source"));
-			enter(dateOfEventInputTextBox, dataMap.get("Date of Event"));
+			if(dataMap.get("Source")!=null) {selectOptionFromDropDown(sourceDropdown, dataMap.get("Source"));}
+			if(dataMap.get("Date of Event")!=null) {enter(dateOfEventInputTextBox, dataMap.get("Date of Event"));}
+			if(dataMap.get("Date of Value")!=null) {enter(dateOfValueInputTextBox, dataMap.get("Date of Value"));}
 			enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
 			enter(descriptionInputTextBox, description);
 			Click(getButtonWithText(saveAndNextButton));
 			Thread.sleep(5000);
+			if(dataMap.get("Record Type").equalsIgnoreCase("Correspondence")) {return null;}				
 			
 			return getElementText(recordedDocumentApnGenerated);
 		}		
 		
 		//To create new parcel manually
 		public String createNewParcel(String apn,String parcelNum,String PUC) {
-	        String querySearchAPN = "Select name,id from Parcel__c where name ='"+apn+"'";
+	        String querySearchAPN = "Select id from Parcel__c where name ='"+apn+"'";
 		    HashMap<String, ArrayList<String>> responseSearchedAPN = objSalesforceAPI.select(querySearchAPN);
+		    
+		    String querySearchApnAgain = "Select name,id from Parcel__c where name ='"+apn+"' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
+		    HashMap<String, ArrayList<String>> responseSearchedApnAgain = objSalesforceAPI.select(querySearchApnAgain);
+		    
 		    if(responseSearchedAPN.isEmpty()) {
-		    	try {
+		    	createParcel(apn,parcelNum,PUC);
+		    }else if (responseSearchedApnAgain.isEmpty()) {
+		    	objSalesforceAPI.delete("Parcel__c",querySearchAPN);
+		    	createParcel(apn,parcelNum,PUC);
+		    }else {
+		    	ReportLogger.INFO("Parcel record already present in system : "+apn);
+		    }
+		    return apn;
+		}
+		
+		public void createParcel(String apn,String parcelNum,String PUC) {
+			try {
 	    		waitForElementToBeInVisible(createNewParcelButton, 10);
 	    		Click(getButtonWithText(createNewParcelButton));
 	    	    enter(editApnField,apn);
@@ -388,16 +430,12 @@ public class ParcelsPage extends ApasGenericPage {
 	    		Click(saveButton);
 	    		ReportLogger.INFO("Successfully created parcel record : "+apn);
 		    	}
-		    	catch(Exception e) {
+		    catch(Exception e) {
 	        		ReportLogger.INFO("Fail to create parcel record : "+e);
 	        	}
-		    }else {
-	    		ReportLogger.INFO("Parcel record already present in system : "+apn);
-
-		    }
-		    return apn;
 		}
-
+		
+		
 		/**
 		 * @Description: This method will return the list of the characteristics present
 		 * @return list of web elements
@@ -459,5 +497,49 @@ public class ParcelsPage extends ApasGenericPage {
 			waitForElementToBeClickable(getButtonWithText("Done"));
 			Click(getButtonWithText("Done"));
 			Thread.sleep(2000);
+		}
+		
+		/**
+		 * @Description: This method will return the list of the characteristics present
+		 * @return list of web elements
+		 */
+		public List<WebElement> fetchAllCreatedChar() {
+			String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr/th//a\r\n"
+					+ "";
+			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));
+			return webElementsHeaders;
+		}
+		
+		/**
+		 * @Description: This method will return the list of the characteristics present
+		 * @return list of web elements
+		 */
+		public List<WebElement> charDropdown() {
+			String xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table//tr//td//span//div//a[@role='button']";
+			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));
+			return webElementsHeaders;
+		}
+		
+		/**
+		 * @Description: This method will create primary on parcel 
+		 * 
+		 */
+		public String createParcelSitus( Map<String, String> dataMap) throws Exception {
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Parcel Situs Record");        
+			String isPrimary = dataMap.get("isPrimary");
+			String situs = dataMap.get("Situs");
+
+			createRecord();
+			waitForElementToBeVisible(10,newParcelSitus);
+			selectOptionFromDropDown(isPrimaryDropdown, isPrimary);
+			searchAndSelectOptionFromDropDown(situsSearch, situs);
+			Click(saveButton);
+			waitForElementToBeClickable(successAlert,25);
+			String messageOnAlert = getElementText(successAlert);
+			waitForElementToDisappear(successAlert,10);
+			ReportLogger.INFO("Primary Situs created on parcel : "+messageOnAlert);
+			String situsCreated = getFieldValueFromAPAS("Situs","");
+			ReportLogger.INFO("Primary Situs created on parcel : "+situsCreated);
+			return situsCreated;	
 		}
 }

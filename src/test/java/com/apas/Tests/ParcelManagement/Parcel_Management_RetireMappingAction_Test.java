@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
@@ -235,7 +236,8 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		
 		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsWI);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		softAssert.assertEquals(objMappingPage.getLinkedParcelInWorkItem("0"), apn1,
+		objMappingPage.waitForElementToBeVisible(10,objWorkItemHomePage.linkedItemsRecord);
+		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("APN").get(0), apn1,
 				"SMAB-T2672: Validate that parent parcel is displayed in the Linked Items of WI");
 		
 		objMappingPage.logout();
@@ -262,9 +264,30 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		String apn2=responseAPNDetails2.get("Name").get(0);
 		
 		//Fetching Active Mobile home parcel
-		String queryAPN3 = "Select Name, ID From Parcel__c where name like '134%' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Status__c='Active' limit 1";
+		String apn3 = "";
+		String createNewParcel = testdata.MANUAL_PARCEL_CREATION_DATA;
+		Map<String, String> hashMapCreateNewParcel = objUtil.generateMapFromJsonFile(createNewParcel,
+				"DataToCreateParcelStartingWith134");
+		String apnStartingWith134 = hashMapCreateNewParcel.get("APN");
+		String parcelNumberStartingWith134 = hashMapCreateNewParcel.get("Parcel Number");
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') limit 1");
+		String PUC = responsePUCDetails.get("Name").get(0);
+				
+		String queryAPN3 = "Select Name, ID From Parcel__c where name like '134%' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails3 = salesforceAPI.select(queryAPN3);
-		String apn3=responseAPNDetails3.get("Name").get(0);
+		
+		if (responseAPNDetails3 != null) {
+			apn3=responseAPNDetails3.get("Name").get(0);
+			salesforceAPI.update("Parcel__c",responseAPNDetails3.get("Id").get(0),"Status__c","Active");
+		}
+		else {
+			objMappingPage.login(users.SYSTEM_ADMIN);
+			apn3 = objParcelsPage.createNewParcel(apnStartingWith134,parcelNumberStartingWith134,PUC);
+	        objWorkItemHomePage.logout();
+	        Thread.sleep(5000);	
+		}
 		
 		//Add the parcels in a Hash Map for validations later
 		Map<String,String> apnValue = new HashMap<String,String>(); 
@@ -366,7 +389,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 
 	}
 
-	@Test(description = "SMAB-T2833:Parcel Management- Verify that User is able to perform retire action from mapping actions tab for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2833,SMAB-T3622,SMAB-T3634:Parcel Management- Verify that User is able to perform retire action from mapping actions tab for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_Retire_MappingAction_IndependentMappingAction(String loginUser) throws Exception {
 
@@ -402,8 +425,8 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		//Step 5: Click retire Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel(s) "+apn+" is pending verification from the supervisor in order to be retired.",
-				"SMAB-T2833: Validate that User is able to perform Retire action from mapping actions tab");
+		softAssert.assertContains(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"is pending verification from the supervisor in order to be retired.",
+				"SMAB-T2833,SMAB-T3622: Validate that User is able to perform Retire action from mapping actions tab");
 		
 		//Step 6: Navigating  to the independent mapping action WI that would have been created after performing retire action 
 		String workItemId= objWorkItemHomePage.getWorkItemIDFromParcelOnWorkbench(apn);
@@ -420,7 +443,30 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Action","Information"), "Independent Mapping Action",
 				"SMAB-T2833: Validation that  A new WI of action Independent Mapping Action is created after performing retire from mapping action tab");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Date", "Information"),DateUtil.removeZeroInMonthAndDay(DateUtil.getCurrentDate("MM/dd/yyyy")), "SMAB-T2831: Validation that 'Date' fields is equal to date when this WI was created");
-	
+		
+		// Mark the WI complete
+		query = "Select Id from Work_Item__c where Name = '" + workItem + "'";
+		salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		ReportLogger.INFO(" Supervisor logins to close the WI ");
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+		objMappingPage.searchModule(WORK_ITEM);
+		objMappingPage.globalSearchRecords(workItem);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		// refresh as the focus is getting lost
+		driver.navigate().refresh();
+		Thread.sleep(5000);
+		objWorkItemHomePage.completeWorkItem();
+		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
+
+		// Checking the status of parcel after WI closed
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn);
+		String Status = objMappingPage.getFieldValueFromAPAS("Status", "Parcel Information");
+		softAssert.assertEquals(Status, "Retired", "SMAB-T3622: Verify Status of Parcel:" + apn);
+
 		objWorkItemHomePage.logout();
 	}
 

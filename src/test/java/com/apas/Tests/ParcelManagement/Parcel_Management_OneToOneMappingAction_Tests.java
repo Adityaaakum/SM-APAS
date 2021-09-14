@@ -73,6 +73,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"')").get("Name").get(0);
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String districtValue="District01";
+		String parcelSize	= "200";
 
 		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 		jsonObject.put("Status__c","Active");
@@ -80,6 +81,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		jsonObject.put("District__c",districtValue);
 		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
 
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
 
@@ -226,10 +228,11 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	 *@param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2482,SMAB-T2485,SMAB-T2484,SMAB-T2545,SMAB-T2489:Verify that the One to One Mapping Action can only be performed on Active Parcels ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3052,SMAB-T2482,SMAB-T2485,SMAB-T2484,SMAB-T2545,SMAB-T2489:Verify that the One to One Mapping Action can only be performed on Active Parcels ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyOneToOneMappingActionOnlyOnActiveParcels(String loginUser) throws Exception {
-		String queryAPN = "Select name From Parcel__c where Status__c='Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
+		String queryAPN = "Select name From Parcel__c where (not Name like '100%') and (not Name like '134%') "
+				+ "and Status__c='Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String activeParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
 		String activeParcelWithoutHyphen=activeParcelToPerformMapping.replace("-","");
@@ -335,6 +338,19 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage(objMappingPage.firstNonCondoTextBoxLabel,"010123"),"- This parcel number is not valid, it should contain 9 digit numeric values.",
 				"SMAB-T2484: Validation that proper error message is displayed if  parcel number  not of Nine digits is entered in non condo number field");
 
+		String apn[] = activeParcelToPerformMapping.split("-");
+		String updateMapPageofChildApn= apn[0]+apn[1].substring(0,2)+
+				String.valueOf(Integer.parseInt(apn[1].substring(2)) +1)+apn[2];
+		ReportLogger.INFO(updateMapPageofChildApn);
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, updateMapPageofChildApn);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.waitForElementToBeVisible(10,objMappingPage.generateParcelButton);
+	    softAssert.assertContains(objMappingPage.getErrorMessage(), 
+				"Warning: Parcel number generated is different from the user"
+				+ " selection based on established criteria. As a reference the number provided is", 
+				"SMAB-T3052-Verify that for APN generation, If map page is changed for child parcels,"
+				+ "then it should display message(which is returned from backend) for respective parcels");
+
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 
@@ -366,6 +382,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String districtValue="District01";
+		String parcelSize	= "200";
 
 		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 		jsonObject.put("Status__c","Active");
@@ -373,6 +390,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		jsonObject.put("District__c",districtValue);
 		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
 
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
 
@@ -380,7 +398,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformOneToOneMappingActionWithAllFields");
 
-		String situsCityName = hashMapOneToOneMappingData.get("Situs City Name");
+		String situsCityName = hashMapOneToOneMappingData.get("City Name");
 		String direction = hashMapOneToOneMappingData.get("Direction");
 		String situsNumber = hashMapOneToOneMappingData.get("Situs Number");
 		String situsStreetName = hashMapOneToOneMappingData.get("Situs Street Name");
@@ -465,15 +483,15 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 				"SMAB-T2488: Validation that child APN number ends with 0");
 
 		//Step 9: Validation of ALL fields THAT ARE displayed on second screen
-		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),responseNeighborhoodDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates neighborhood Code from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),hashMapOneToOneMappingData.get("Reason code"),
+		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),hashMapOneToOneMappingData.get("Reason code"),
 				"SMAB-T2544: Validation that  System populates reason code from before screen");
-		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),hashMapOneToOneMappingData.get("Legal Description"),
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),hashMapOneToOneMappingData.get("Legal Description"),
 				"SMAB-T2544: Validation that  System populates Legal Description from the before screen");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates TRA from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),responsePUCDetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates Use Code  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),childprimarySitus,
 				"SMAB-T2655: Validation that System populates primary situs for child parcel on second screen with situs value that was added in first screen");
@@ -490,15 +508,15 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
 		//Step 13: Validation of ALL fields THAT ARE displayed AFTER PARCEL ARE GENERATED
-		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd").get(0),responseNeighborhoodDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates neighborhood Code from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Reason Code").get(0),"ReasonCode Test",
+		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),"ReasonCode Test",
 				"SMAB-T2544: Validation that  reason code is editable field");
-		softAssert.assertEquals(gridDataHashMap.get("Legal Description").get(0),"Legal Description PM/01",
+		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),"Legal Description PM/01",
 				"SMAB-T2544: Validation that  Legal Description is editable field");
-		softAssert.assertEquals(gridDataHashMap.get("TRA").get(0),responseTRADetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),responseTRADetails.get("Name").get(0),
 				"SMAB-T2544: Validation that  System populates TRA from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Use Code").get(0),responsePUCDetails.get("Name").get(0),
+		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),responsePUCDetails.get("Name").get(0),
 				"SMAB-T2544: Verify that System populates use code  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),childprimarySitus,
 				"SMAB-T2655: Validation that  System populates primary situs for child parcel on last screen with situs value that was added in first screen");
@@ -769,7 +787,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			objMappingPage.fillMappingActionForm(hashMapOneToOneParcelMappingData);
 			
 			//updating child parcel size in second screen on mapping action 
-			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"99",1);
+			objMappingPage.waitForElementToBeVisible(5,objMappingPage.parcelSizeColumnSecondScreen);
+			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace,"99",1);
 
 			//	validating second screen warning message
 			String parcelsizewarningmessage=objMappingPage.secondScreenParcelSizeWarning.getText();
@@ -1046,7 +1065,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 	}
-	@Test(description = "SMAB-T2652,SMAB-T2681:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"one to one\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2652,SMAB-T2681,SMAB-T3634,SMAB-T3633,SMAB-T3635:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"one to one\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_OneToOne_MappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 
@@ -1055,6 +1074,24 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
+		
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+		
+		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonObject.put("Status__c","Active");
+		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonObject.put("District__c",districtValue);
+		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonObject.put("Lot_Size_SQFT__c", 100);
+		jsonObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), jsonObject);
 
 		String mappingActionCreationData =  testdata.ONE_TO_ONE_MAPPING_ACTION;
 		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
@@ -1079,10 +1116,9 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		//Step 4: filling all fields in mapping action screen
 		objMappingPage.fillMappingActionForm(hashMapOneToOneMappingData);
+		objMappingPage.waitForElementToBeVisible(objMappingPage.generateParcelButton);
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
-		gridDataHashMap =objMappingPage.getGridDataInHashMap();
-
-		String childAPN=gridDataHashMap.get("APN").get(0);
+		String childAPN=gridDataHashMap.get("APN").get(0);	
 		String legalDescription=gridDataHashMap.get("Legal Description*").get(0);
 		String tra=gridDataHashMap.get("TRA*").get(0);
 		String situs=gridDataHashMap.get("Situs").get(0);
@@ -1094,7 +1130,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
 		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel(s) have been created successfully. Please review spatial information.",
-				"SMAB-T2652: Validate that User is able to perform one to one  action from mapping actions tab");			    
+				"SMAB-T2652: Validate that User is able to perform one to one  action from mapping actions tab");
 
 		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+apn+"') limit 1");
 		if(responsePUCDetailsChildAPN.size()==0)
@@ -1123,6 +1159,9 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		objMappingPage.waitForElementToBeVisible(10, objMappingPage.updateParcelsButton);
+		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "90");
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName));
 
 		//Step 9: Validation that User is navigated to a screen with following fields:APN,Legal Description,Parcel Size(SQFT),TRA,Situs,Reason Code,District/Neighborhood,Use Code
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -1143,6 +1182,27 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 				"SMAB-T2681: Validation that  There is \"Update Parcel(s)\" button on return to custom screen");
 
 		driver.switchTo().window(parentWindow);
+		objMappingPage.globalSearchRecords(gridDataHashMap.get("APN").get(0));
+		softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)*").get(0),
+				objMappingPage.getFieldValueFromAPAS("Parcel Size (SqFt)", "Parcel Information"),
+				"SMAB-T3633,SMAB-T3635:Parcel size(SQFT) was updated successfully and user was able to go to update screen");
+
+		// Mark the WI complete
+		query = "Select Id from Work_Item__c where Name = '" + workItem + "'";
+		salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		ReportLogger.INFO(" Supervisor logins to close the WI ");
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+		objMappingPage.searchModule(WORK_ITEM);
+		objMappingPage.globalSearchRecords(workItem);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		// refresh as the focus is getting lost
+		driver.navigate().refresh();
+		Thread.sleep(5000);
+		objWorkItemHomePage.completeWorkItem();
+		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
 		objWorkItemHomePage.logout();
 	}
 	
@@ -1253,7 +1313,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		    driver.switchTo().window(parentWindow);
 		   
 		    objWorkItemHomePage.logout();
-		   
+
+		}
+
 	}
-	
-}
