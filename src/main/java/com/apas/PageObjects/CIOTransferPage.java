@@ -390,11 +390,11 @@ public class CIOTransferPage extends ApasGenericPage {
 			public void clickQuickActionButtonOnTransferActivity(String enterButtonText) throws Exception {
 				try {
 					getButtonWithText(enterButtonText).click();
-					ReportLogger.INFO("CIO Transfer submitted for approval");
+					ReportLogger.INFO("Transfer submitted for approval");
 				} catch (Exception e) {
 					Click(clickShowMoreActions);
 					getButtonWithText(enterButtonText).click();
-					ReportLogger.INFO("CIO Transfer submitted for approval");
+					ReportLogger.INFO("Transfer submitted for approval");
 				}
 			}
 	
