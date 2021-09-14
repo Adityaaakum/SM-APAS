@@ -18,6 +18,7 @@ import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ExtentTestManager;
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
@@ -1173,4 +1174,338 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		objWorkItemHomePage.logout();
 
 	}
+	
+	/**
+	 * This method is to Parcel Management- Verify that User is able to view other parcels getting added in the associated work item after Remap Action is completed
+	 * @param loginUser
+	 * @throws Exception
+	 */
+@Test(description = "SMAB-T2667:Parcel Management- Verify that User is able to view other parcels getting added in the associated work item after Remap Action is completed", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+		"Regression","ParcelManagement" })
+public void ParcelManagement_verifyLinkedAPN_OnDiffMapBookAndMapPageParentParcelAdditions_RemapMappingAction(String loginUser) throws Exception {
+
+	String execEnv= System.getProperty("region");
+	//Fetching parcels that are Active 
+	String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990') and Status__c = 'Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
+	HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
+	String apn1=responseAPNDetails.get("Name").get(0);
+	String apn2=responseAPNDetails.get("Name").get(1);
+	String apnId1=responseAPNDetails.get("Id").get(0);
+	String apnId2=responseAPNDetails.get("Id").get(1);
+	
+	//Fetching parcels that are Active with different map book and map page
+	String mapBookForAPN1 = apn1.split("-")[0];
+	String mapPageForAPN1 = apn1.split("-")[1];
+	String mapBookForAPN2 = apn2.split("-")[0];
+	String mapPageForAPN2 = apn2.split("-")[1];		
+	queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990') and (Not Name like '134%') and (Not Name like '"+mapBookForAPN1+"%') and (Not Name like '"+mapBookForAPN1+"-"+mapPageForAPN1+"%') and (Not Name like '"+mapBookForAPN2+"%') and (Not Name like '"+mapBookForAPN2+"-"+mapPageForAPN2+"%') and  Primary_Situs__c !=NULL and Status__c = 'Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') Limit 1";
+	HashMap<String, ArrayList<String>> responseAPN3Details = salesforceAPI.select(queryAPNValue);
+	String apn3=responseAPN3Details.get("Name").get(0);
+	String apnId3=responseAPN3Details.get("Id").get(0);
+
+	// Adding APN Ids in ArrayList for use in Updating Parcel Situs
+	List<String> apnIDLists = new ArrayList<>();
+	apnIDLists.add(apnId1);
+	apnIDLists.add(apnId2);
+	apnIDLists.add(apnId3);
+	
+	// Deleting ownership from parcels
+	objMappingPage.deleteOwnershipFromParcel(apnId1);
+	objMappingPage.deleteOwnershipFromParcel(apnId1);
+	objMappingPage.deleteOwnershipFromParcel(apnId1);
+
+	String concatenateAPNWithDifferentMapBookMapPage = apn1+","+apn2+","+apn3;
+		
+	//Add the parcels in a Hash Map for validations later
+	Map<String,String> apnValue = new HashMap<String,String>(); 
+	apnValue.put("APN1", apn1); 
+	apnValue.put("APN2", apn2); 
+	apnValue.put("APN3", apn3); 
+	
+	//Fetch some other values from database
+	HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+	String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+	HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+	String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+	HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+	String legalDescriptionValue="Legal PM 85/25-260";
+	String districtValue="District01";
+	String parcelSize	= "200";	
+
+	jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+	jsonObject.put("Status__c","Active");
+	jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+	jsonObject.put("District__c",districtValue);
+	jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+	jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+	jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+
+	//updating details
+	salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
+	salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonObject);
+	salesforceAPI.update("Parcel__c",responseAPN3Details.get("Id").get(0),jsonObject);
+	salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(1));
+	salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(1));	
+	salesforceAPI.update("Parcel__c", responseAPN3Details.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(1));
+
+	String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+	Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+			"DataToCreateWorkItemOfTypeParcelManagement");
+
+	String mappingActionCreationData = testdata.REMAP_MAPPING_ACTION;
+	Map<String, String> hashMapRemapActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+			"DataToPerformRemapMappingAction");
+	
+	String DataToCreateParcelSitus = testdata.MANUAL_PARCEL_CREATION_DATA;
+	Map<String, String> hashMapmanualParcelSitusData = objUtil.generateMapFromJsonFile(DataToCreateParcelSitus,
+			"DataToCreateParcelSitus");
+
+	// Step1: Login to the APAS application 
+	objMappingPage.login(loginUser);
+
+	// User navigate to parcel situs tab
+	for (String ids : apnIDLists) {
+		//Deleting Parcel Situs if already present
+		objMappingPage.deleteParcelSitusFromParcel(ids);
+		
+		String parcelSitusURL = "https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + ids
+				+ "/related/Parcel_Situs__r/view";
+		ReportLogger.INFO("Navigate to situs URL: " + parcelSitusURL);
+		driver.navigate().to(parcelSitusURL);
+		objParcelsPage.createParcelSitus(hashMapmanualParcelSitusData);
+
+	}
+	
+	// Step2: Opening the PARCELS page  and searching the  parcel 
+	objMappingPage.searchModule(PARCELS);
+	objMappingPage.globalSearchRecords(apn1);
+
+	// Step 3: Creating Manual work item for the Parcel
+	String workItemNumber=objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+	//Step 4:Clicking the details tab for the work item newly created and clicking on Related Action Link
+	objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+	objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+	objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+	String parentWindow = driver.getWindowHandle();
+	objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+	//Step 5: Selecting Action as 'perform parcel Remap'
+	String mappingActionWindow = driver.getWindowHandle();
+	objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
+	objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+	ReportLogger.INFO("Add a parcel with different Map Book and Map Page in Parent APN field :: " + concatenateAPNWithDifferentMapBookMapPage);
+	objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPNWithDifferentMapBookMapPage);
+	objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+	
+	//Step 6: filling all fields in mapping action screen
+	objMappingPage.fillMappingActionForm(hashMapRemapActionMappingData);
+	
+	//Step 7: Verify Linked Items on WI before Remap Mapping Action is performed
+	ReportLogger.INFO("validate that new APNs added are not lnked to WI before Remap Mapping Action is performed");
+	driver.switchTo().window(parentWindow);
+	objMappingPage.waitUntilPageisReady(driver);
+	
+	objMappingPage.searchModule(WORK_ITEM);
+	objMappingPage.globalSearchRecords(workItemNumber);
+	objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+	driver.navigate().refresh();
+	Thread.sleep(5000);
+	objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+	objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
+	ReportLogger.INFO("validate that new APNs added are not lnked to WI before Remap Mapping Action is performed");
+	softAssert.assertEquals(1,objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI,10).size(),
+			"SMAB-T2667: Validate that only 1 APN is linked to Work Item");
+	softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
+			"SMAB-T2667: Validate that first Parent APN is displayed in the linked item");
+	
+	//Step 8: Click Remap Parcel Button
+	driver.switchTo().window(mappingActionWindow);
+	objMappingPage.waitUntilPageisReady(driver);
+	ReportLogger.INFO("Clicking on Generate Parcels button");
+	objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+	objMappingPage.getSuccessMessage();
+	
+	//Step 9: Submit the WI for approval and validate the linked parcels to the WI
+	driver.switchTo().window(parentWindow);
+	objMappingPage.waitUntilPageisReady(driver);
+	objMappingPage.searchModule(WORK_ITEM);
+	objMappingPage.globalSearchRecords(workItemNumber);
+	objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+	driver.navigate().refresh();
+	objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
+	objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+	softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T2667:Verify user is able to submit the Work Item for approval");
+	
+	objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+	objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
+	
+	softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
+			"SMAB-T2667: Validate that first Parent APN is displayed in the linked item");
+	softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
+			"SMAB-T2667: Validate that second Parent APN is displayed in the linked item");
+	softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("2")),
+			"SMAB-T2667: Validate that third Parent APN is displayed in the linked item");
+	
+	objWorkItemHomePage.logout();
+	Thread.sleep(5000);
+	
+	//Step 10: Login from Mapping Supervisor to approve the WI
+	ReportLogger.INFO("Now logging in as supervisor to approve the work item");
+	objWorkItemHomePage.login(MAPPING_SUPERVISOR);
+	
+	objMappingPage.searchModule(WORK_ITEM);
+	objMappingPage.globalSearchRecords(workItemNumber);
+	objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+	driver.navigate().refresh();
+	Thread.sleep(5000);
+	objWorkItemHomePage.completeWorkItem();
+	softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Completed","SMAB-T2667:Verify user is able to complete the Work Item");
+	
+	objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+	objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
+	
+	softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
+			"SMAB-T2667: Validate that first Parent APN is displayed in the linked item");
+	softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
+			"SMAB-T2667: Validate that second Parent APN is displayed in the linked item");
+	softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("2")),
+			"SMAB-T2667: Validate that third Parent APN is displayed in the linked item");
+
+	objWorkItemHomePage.logout();
+}
+
+@Test(description = "SMAB-T2766:Parcel Management- Verify that User is able to view other parcels getting added in the associated work item after Remap Action is completed", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+		"Regression", "ParcelManagement" })
+public void ParcelManagement_verifyLinkedAPN_OnParentParcelAdditions_RemapMappingAction(String loginUser) throws Exception {
+
+	String execEnv= System.getProperty("region");
+	// Fetching parcels that are Active
+	String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990') and Status__c = 'Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 3";
+	HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
+	String apn1 = responseAPNDetails.get("Name").get(0);
+	String apn2 = responseAPNDetails.get("Name").get(1);
+	String apn3 = responseAPNDetails.get("Name").get(2);
+	String apnId1 = responseAPNDetails.get("Id").get(0);
+	String apnId2 = responseAPNDetails.get("Id").get(1);
+	String apnId3 = responseAPNDetails.get("Id").get(2);
+    
+	// Storing APN's ids and deleting parcel situs if exists
+	List<String> apnIDLists = new ArrayList<>();
+	apnIDLists.add(apnId1);
+	apnIDLists.add(apnId2);
+	apnIDLists.add(apnId3);
+
+	String DataToCreateParcelSitus = testdata.MANUAL_PARCEL_CREATION_DATA;
+	Map<String, String> hashMapmanualParcelSitusData = objUtil.generateMapFromJsonFile(DataToCreateParcelSitus,
+			"DataToCreateParcelSitus");
+
+	String concatenateOtherTwoAPN = apn2 + "," + apn3;
+
+	// Add the parcels in a Hash Map for validations later
+	Map<String, String> apnValue = new HashMap<String, String>();
+	apnValue.put("APN2", apn2);
+	apnValue.put("APN3", apn3);
+
+	// Fetch some other values from database
+	HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select(
+			"SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+	String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+	HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+	String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+	HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+	String legalDescriptionValue = "Legal PM 85/25-260";
+	String districtValue = "District01";
+	String parcelSize = "200";
+
+	jsonObject.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+	jsonObject.put("Status__c", "Active");
+	jsonObject.put("Short_Legal_Description__c", legalDescriptionValue);
+	jsonObject.put("District__c", districtValue);
+	jsonObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
+	jsonObject.put("TRA__c", responseTRADetails.get("Id").get(0));
+	jsonObject.put("Lot_Size_SQFT__c", parcelSize);
+
+	// updating details
+	salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), jsonObject);
+	salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(2), jsonObject);
+	salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c",
+			responseTRADetails.get("Id").get(1));
+	salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(2), "TRA__c",
+			responseTRADetails.get("Id").get(1));
+
+	String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+	Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+			"DataToCreateWorkItemOfTypeParcelManagement");
+
+	String mappingActionCreationData = testdata.REMAP_MAPPING_ACTION;
+	Map<String, String> hashMapRemapActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+			"DataToPerformRemapMappingAction");
+
+	// Step1: Login to the APAS application
+	objMappingPage.login(loginUser);
+
+	// User navigate to parcel situs tab
+	for (String ids : apnIDLists) {
+		// Deleting parcel situs if exists
+		objMappingPage.deleteParcelSitusFromParcel(ids);
+
+		String parcelSitusURL = "https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + ids
+				+ "/related/Parcel_Situs__r/view";
+		ReportLogger.INFO("Navigate to situs URL: " + parcelSitusURL);
+		driver.navigate().to(parcelSitusURL);
+		Thread.sleep(3000);
+		objParcelsPage.createParcelSitus(hashMapmanualParcelSitusData);
+
+	}
+
+	// Step2: Opening the PARCELS page and searching the parcel
+	objMappingPage.searchModule(PARCELS);
+	objMappingPage.globalSearchRecords(apn1);
+	
+	// Step 3: Creating Manual work item for the Parcel
+	String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+	// Step 4:Clicking the details tab for the work item newly created and clicking
+	// on Related Action Link
+	objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+	objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+	objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+	String parentWindow = driver.getWindowHandle();
+	objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+	// Step 5: Selecting Action as 'perform parcel Remap'
+	objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
+	objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+	ReportLogger.INFO("Add other two parcels :: " + concatenateOtherTwoAPN);
+	objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, concatenateOtherTwoAPN);
+	objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+
+	// Step 6: filling all fields in mapping action screen
+	objMappingPage.fillMappingActionForm(hashMapRemapActionMappingData);
+	Thread.sleep(3000);
+
+	// Step 7: Click Remap Parcel Button
+	ReportLogger.INFO("Clicking on Generate Parcels button");
+	objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+
+	// Step 8: Goto the WI and validate the linked parcels to the WI
+	driver.switchTo().window(parentWindow);
+	objMappingPage.waitUntilPageisReady(driver);
+	driver.navigate().refresh();
+	objMappingPage.waitForElementToBeVisible(20, objWorkItemHomePage.NoOfLinkedParcelsInWI);
+	
+	softAssert.assertEquals(2, objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI, 10).size(),
+			"SMAB-T2766: Validate that 2 APNs are linked to Work Item");
+	softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
+			"SMAB-T2766: Validate that first Parent APN is displayed in the linked item");
+	softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
+			"SMAB-T2766: Validate that second Parent APN is displayed in the linked item");
+
+	objWorkItemHomePage.logout();
+}
 }

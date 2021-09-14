@@ -473,33 +473,30 @@ public class MappingPage extends ApasGenericPage {
    *     
    */
       public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
-  		
+    		
 			String PUC = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
 			String TRA = objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);
 			String distNeigh = objSalesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1").get("Name").get(0);
 		    objSalesforceAPI.update("PUC_Code__c",objSalesforceAPI.select("Select Id from PUC_Code__c where name='"+PUC+"'").get("Id").get(0), "Legacy__c", "No");
-		    
+
 			Click(editButtonInSeconMappingScreen);
-			if (waitForElementToBeVisible(2, clearSelectionTRA))
-			Click(clearSelectionTRA);
+
+			clearSelectionFromLookup("TRA");
 			enter(parcelTRA, TRA);
 			Thread.sleep(2000);
 			selectOptionFromDropDown(parcelTRA, TRA);
-			
-			if (waitForElementToBeVisible(2, clearSelectionNeigh))
-			Click(clearSelectionNeigh);
+
+			clearSelectionFromLookup("District / Neighborhood Code");
 			enter(parcelDistrictNeighborhood, distNeigh);
 			selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
-	
 
-			if (waitForElementToBeVisible(2, clearSelectionPUC))
-			Click(clearSelectionPUC);
+			clearSelectionFromLookup("PUC");
 			enter(parcelPUC, PUC);
 			selectOptionFromDropDown(parcelPUC, PUC);
-				
+
 			editSitusModalWindowFirstScreen(dataMap);
 			
-  	}
+	}
       
       public void updateMultipleGridCellValue(String columnNameOnGrid, String expectedValue,int i) throws IOException, AWTException, InterruptedException {
     		String xPath =  "//lightning-tab[contains(@class,'slds-show')]//tr["+i+"]"

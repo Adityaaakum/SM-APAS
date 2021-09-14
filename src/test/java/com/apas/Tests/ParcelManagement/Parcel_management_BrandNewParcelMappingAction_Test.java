@@ -127,7 +127,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
 		
 		Thread.sleep(1000);
-
+        
+		//Below Validation is failing due to recent change in APN rules for Condo and Non-Condo parcels
 		//Step 10: Validating warning message on second screen
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageSecondScreen),
 			"Warning: Parcel number generated is different from the user selection based on "
@@ -139,6 +140,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		softAssert.assertTrue(gridDataHashMap.get("Situs").get(0).isEmpty(),"SMAB-T2663: Validation that primary situs of child parcel on second screen is blank as situs was not updated in first screen");
 
 		//Step 11 :Clicking generate parcel button
+		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+		objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
 		//Step 12: Validating that Parcel has been successfully created.
@@ -218,7 +221,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 				"SMAB-T2527: Validation that reason code is a mandatory field");
 		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel), "Performing Brand New Parcel mapping action");
 		objMappingPage.scrollToBottomOfPage();
-
+        
+		//Below assertion failing due to change in rules for Condo and Non-Condo parcels APN
 		//Step 6: Validation that proper error message is displayed if a parcel number starting from 100 is entered in non condo number field
 		softAssert.assertEquals(objMappingPage.getMappingActionsFieldsErrorMessage
 				(objMappingPage.firstNonCondoTextBoxLabel,"100-234-561"),
@@ -253,10 +257,13 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,activeParcelToPerformMapping);
 		objMappingPage.editGridCellValue(objMappingPage.reasonCodeColumnSecondScreen,"001vacant");
 		objMappingPage.editGridCellValue(objMappingPage.legalDescriptionColumnSecondScreen,"Legal Discription");
+		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+		objMappingPage.editActionInMappingSecondScreen(hashMapmanualWorkItemData);
 
 		//Step 13 :Clicking generate parcel button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		
+		//Below assertion failing due to change in rules for Condo and Non-Condo parcels APN
 		//Step 14: Validating the warning message
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789",
 				"SMAB-T2524: Validation that Warning: Parcel number generated is different from the user selection based on established criteria. As a reference the number provided is 123-456-789");
@@ -410,14 +417,9 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		String apn=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
 		
-	
-
-	
-
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
-
 
 		String mappingActionCreationData =  testdata.Brand_New_Parcel_MAPPING_ACTION;
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
@@ -441,21 +443,24 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();	
 		objWorkItemHomePage.switchToNewWindow(parentWindow);	
-	     // entering data in form for Brand New Parcel mapping
+		// entering data in form for Brand New Parcel mapping
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));		
-		 HashMap<String, ArrayList<String>> gridParcelData = objMappingPage.getGridDataInHashMap();
-         String newCreatedApn  =   gridParcelData.get("APN").get(0);
-          driver.switchTo().window(parentWindow);         
-          objMappingPage.searchModule(PARCELS);         
- 		  objMappingPage.globalSearchRecords(newCreatedApn);
+		objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
+		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+		objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		HashMap<String, ArrayList<String>> gridParcelData = objMappingPage.getGridDataInHashMap();
+		String newCreatedApn = gridParcelData.get("APN").get(0);
+		driver.switchTo().window(parentWindow);
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(newCreatedApn);
  		
  		//clicking on edit button in parcels page
  		 objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditButton));
  		  objParcelsPage.scrollToElement(objParcelsPage.getWebElementWithLabel(objParcelsPage.editApnField)); 		                   
  		 //Entering new apn value 		 
- 		 objParcelsPage.enter(objParcelsPage.getWebElementWithLabel(objParcelsPage.editApnField), apn2); 		         
- 		 softAssert.assertEquals(objParcelsPage.saveRecordAndGetError().contains("You can't save this record because a duplicate record already exists"),true ,"SMAB-T2646: Verifying that new APN cannot be reupdated."); 	         
+ 		 objParcelsPage.enter(objParcelsPage.getWebElementWithLabel(objParcelsPage.editApnField), apn2); 
+ 		 softAssert.assertEquals(objParcelsPage.saveRecordAndGetError().contains("duplicate record already exists"),true ,"SMAB-T2646: Verifying that new APN cannot be reupdated."); 	         
  		 objParcelsPage.cancelRecord();
  		 objParcelsPage.logout(); 
  		       
@@ -1357,7 +1362,151 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			objWorkItemHomePage.logout();
 
 		}
+		
+		 /**
+		 * This method is to Parcel Management- Verify that User is able to view other parcels getting added in the associated work item after Brand New Parcel Action is completed
+		 * @param loginUser
+		 * @throws Exception
+		 */
+	@Test(description = "SMAB-T2669:Parcel Management- Verify that User is able to view other parcels getting added in the associated work item after Brand New Parcel Action is completed", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression","ParcelManagement" })
+	public void ParcelManagement_verifyLinkedAPN_OnDiffMapBookAndMapPageParentParcelAdditions_BrandNewParcelMappingAction(String loginUser) throws Exception {
+
+		// Fetching parcels that are Active
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990') and (Not Name like '134%') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and  Status__c = 'Active' Limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
+		String apn1 = responseAPNDetails.get("Name").get(0);
+
+		// Fetching parcels that are Active with different map book and map page
+		String mapBookForAPN1 = apn1.split("-")[0];
+		String mapPageForAPN1 = apn1.split("-")[1];
+		queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990') and (Not Name like '134%') and (Not Name like '"
+				+ mapBookForAPN1 + "%') and (Not Name like '" + mapBookForAPN1 + "-" + mapPageForAPN1
+				+ "%') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 1";
+		HashMap<String, ArrayList<String>> responseAPN2Details = salesforceAPI.select(queryAPNValue);
+		String apn2 = responseAPN2Details.get("Name").get(0);
+
+		String concatenateAPNWithDifferentMapBookMapPage = apn1 + "," + apn2;
+
+		// Add the parcels in a Hash Map for validations later
+		Map<String, String> apnValue = new HashMap<String, String>();
+		apnValue.put("APN1", apn1);
+		apnValue.put("APN2", apn2);
+
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+
+		String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
+		Map<String, String> hashMapBrandNewParcelActionMappingData = objUtil.generateMapFromJsonFile(
+				mappingActionCreationData, "DataToPerformBrandNewParcelMappingActionWithSitusData");
+
+		// Step1: Login to the APAS application
+		objMappingPage.login(loginUser);
+
+		// Step2: Opening the PARCELS page and searching the parcel
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn1);
+
+		// Step 3: Creating Manual work item for the Parcel
+		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		// Step 4:Clicking the details tab for the work item newly created and clicking
+		// on Related Action Link
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		// Step 5: Selecting Action as 'perform Brand New Parcel'
+		String mappingActionWindow = driver.getWindowHandle();
+		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		ReportLogger.INFO("Add a parcel with different Map Book and Map Page in Parent APN field :: "
+				+ concatenateAPNWithDifferentMapBookMapPage);
+		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, concatenateAPNWithDifferentMapBookMapPage);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+
+		// Step 6: filling all fields in mapping action screen
+		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelActionMappingData);
+		objMappingPage.waitForElementToBeVisible(3, objMappingPage.parcelSizeColumnSecondScreenWithSpace);
+		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+		objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelActionMappingData);
+		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "100");
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+
+		// Step 7: Verify Linked Items on WI before Brand New Parcel Mapping Action is
+		// performed
+		ReportLogger.INFO("validate that new APNs added are not linked to WI before Brand New Parcel Mapping Action is performed");
+		driver.switchTo().window(parentWindow);
+		objMappingPage.waitUntilPageisReady(driver);
+		objMappingPage.searchModule(WORK_ITEM);
+		objMappingPage.globalSearchRecords(workItemNumber);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		driver.navigate().refresh();
+		Thread.sleep(5000);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
+
+		softAssert.assertEquals(1, objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI, 10).size(),
+				"SMAB-T2669: Validate that only 1 APN is linked to Work Item and No new parcel is added in Work Item as Parent APN field is not considered in Brand New Parcel Mapping action");
+		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
+				"SMAB-T2669: Validate that only 1 APN is linked to Work Item and No new parcel is added in Work Item as Parent APN field is not considered in Brand New Parcel Mapping action");
+
+		// Step 8: Click Brand New Parcel Parcel Button
+		driver.switchTo().window(mappingActionWindow);
+		objMappingPage.waitUntilPageisReady(driver);
+		ReportLogger.INFO("Clicking on Generate Parcels button");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+
+		// Step 9: Submit the WI for approval and validate the linked parcels to the WI
+		driver.switchTo().window(parentWindow);
+		objMappingPage.waitUntilPageisReady(driver);
+		objMappingPage.searchModule(WORK_ITEM);
+		objMappingPage.globalSearchRecords(workItemNumber);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		driver.navigate().refresh();
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),
+				"Submitted for Approval", "SMAB-T2669:Verify user is able to submit the Work Item for approval");
+
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
+
+		softAssert.assertEquals(1, objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI, 10).size(),
+				"SMAB-T2669: Validate that only 1 APN is linked to Work Item and No new parcel is added in Work Item as Parent APN field is not considered in Brand New Parcel Mapping action");
+		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
+				"SMAB-T2669: Validate that only 1 APN is linked to Work Item and No new parcel is added in Work Item as Parent APN field is not considered in Brand New Parcel Mapping action");
+
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+
+		// Step 10: Login from Mapping Supervisor to approve the WI
+		ReportLogger.INFO(
+				"Now logging in as RP Appraiser to approve the work item and validate that new WIs are accessible");
+		objWorkItemHomePage.login(MAPPING_SUPERVISOR);
+
+		objMappingPage.searchModule(WORK_ITEM);
+		objMappingPage.globalSearchRecords(workItemNumber);
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		driver.navigate().refresh();
+		Thread.sleep(5000);
+		objWorkItemHomePage.completeWorkItem();
+		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),
+				"Completed", "SMAB-T2669:Verify user is able to complete the Work Item");
+
+		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
+		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
+
+		softAssert.assertEquals(1, objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI, 10).size(),
+				"SMAB-T2669: Validate that only 1 APN is linked to Work Item and No new parcel is added in Work Item as Parent APN field is not considered in Brand New Parcel Mapping action");
+		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
+				"SMAB-T2669: Validate that only 1 APN is linked to Work Item and No new parcel is added in Work Item as Parent APN field is not considered in Brand New Parcel Mapping action");
+
+		objWorkItemHomePage.logout();
 	}
 
-	
+}
 	

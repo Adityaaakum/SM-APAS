@@ -96,6 +96,13 @@
   "DataToCreateOwnershipRecord": {
     "Type": "Owner",
     "Status": "Active"
-  }
+   },
+  "DataToPerformManyToManyMappingActionForLinkedParcelsValidations": {
+    "Action": "Many To Many",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Many To Many",
+    "Number of Child Non-Condo Parcels": "3",
+    "Comments": "Perform Many To Many Mapping Action"
+  }  
   
 }
