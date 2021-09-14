@@ -1,20 +1,28 @@
 package com.apas.Tests.OwnershipAndTransfer;
 
+import static org.testng.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.AuditTrailPage;
 import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.MappingPage;
+import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
@@ -39,6 +47,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	String apnPrefix=new String();
 	CIOTransferPage objCioTransfer;
 	AuditTrailPage trail;
+	ApasGenericPage objApasGenericPage;
+	//Page objPage;
 
 
 	@BeforeMethod(alwaysRun = true)
@@ -51,6 +61,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objMappingPage= new MappingPage(driver);
 		objCioTransfer = new CIOTransferPage(driver);
 		trail= new AuditTrailPage(driver);
+		objApasGenericPage = new ApasGenericPage(driver);
 
 	}
 	/*
@@ -357,6 +368,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
            
             driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Parcel__c/"+salesforceAPI.select("Select Id from parcel__C where name='"+apnFromWIPage+"'").get("Id").get(0)+"/related/Property_Ownerships__r/view");
             HashMap<String, ArrayList<String>>HashMapLatestOwner  = objCioTransfer.getGridDataInHashMap();
+            System.out.println("HashMapLatestOwner" +HashMapLatestOwner);
             
               //STEP 18-Validating the Owners ,their status and ownership percentages
             
@@ -385,16 +397,162 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
            softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Action"),"Process Transfer & Ownership", "SMAB-T3308: Validating that Back button navigates back to WI page ");
            objCioTransfer.logout();
            
-
-		        
-		        
-
 			   
 	}
-			
-	        
 	
-		
+	@Test(description = "SMAB-T3765,SMAB-T3832:Verify that User is not able to submit the records if the ownership percentage is lessthan 100%", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression","ChangeInOwnershipManagement","OwnershipAndTransfer" })
+	public void OwnershipAndTransfer_VerifyValidationofMailToAndGranteeRecord(String loginUser) throws Exception {
+
+		String execEnv = System.getProperty("region");
+
+		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferCreationData, "dataToCreateMailToRecordsWithIncompleteData");
+
+		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithIncompleteData");
+
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
+
+		String recordedDocumentID = salesforceAPI
+				.select(" SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1")
+				.get("Id").get(0);
+		objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
+
+		// STEP 1-login with SYS-ADMIN
+
+		objMappingPage.login(users.SYSTEM_ADMIN);
+		objMappingPage.searchModule(PARCELS);
+		salesforceAPI.update("Work_Item__c",
+				"SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c",
+				"In Progress");
+		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
+
+		// STEP 2-Query to fetch WI
+
+		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";
+		String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
+		objMappingPage.globalSearchRecords(workItemNo);
+		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		objCioTransfer.deleteOwnershipFromParcel(
+				salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0));
+
+		// STEP 3- adding owner after deleting for the recorded APN
+
+		String acesseName = objMappingPage.getOwnerForMappingAction();
+		driver.navigate()
+				.to("https://smcacre--"
+						+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
+								.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
+						+ "/related/Property_Ownerships__r/view");
+		objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
+		String ownershipId = driver.getCurrentUrl().split("/")[6];
+
+		// STEP 4- updating the ownership date for current owners
+
+		String dateOfEvent = salesforceAPI
+				.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
+				.get("Ownership_Start_Date__c").get(0);
+		jsonObject.put("DOR__c", dateOfEvent);
+		jsonObject.put("DOV_Date__c", dateOfEvent);
+		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
+
+		objMappingPage.logout();
+
+		// STEP 5-Login with CIO staff
+
+		objMappingPage.login(loginUser);
+		objMappingPage.globalSearchRecords(workItemNo);
+		Thread.sleep(5000);
+		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + workItemNo + "'";
+		HashMap<String, ArrayList<String>> navigationUrL = salesforceAPI.select(queryRecordedAPNTransfer);
+
+		// STEP 6-Finding the recorded apn transfer id
+
+		String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+
+		// STEP 7-Clicking on related action link
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		softAssert.assertContains(driver.getCurrentUrl(), navigationUrL.get("Navigation_Url__c").get(0),
+				"SMAB-T3306:Validating that user navigates to CIo transfer screenafter clicking on related action hyperlink");
+
+		// STEP 8-Creating the new grantee
+		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
+				+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+		HashMap<String, ArrayList<String>> granteeHashMap = objCioTransfer.getGridDataInHashMap();
+		softAssert.assertEquals(granteeHashMap.containsKey("Recorded Document"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap.containsKey("DOR"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap.containsKey("DOV"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap.containsKey("Owner"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap.containsKey("Status"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap.containsKey("Ownership Percentage"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap.containsKey("Ownership Start Date"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap.containsKey("Ownership End Date"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap.containsKey("Ownership Id"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap.containsKey("Remarks"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+
+		driver.navigate().to("https://smcacre--qa.lightning.force.com/lightning/r/Parcel__c/" + recordeAPNTransferID
+				+ "/related/Property_Ownerships__r/view");
+		HashMap<String, ArrayList<String>> granteeHashMap1 = objCioTransfer.getGridDataInHashMap();
+		softAssert.assertEquals(granteeHashMap1.containsKey("Recorded Document"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap1.containsKey("DOR"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap1.containsKey("DOV"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap1.containsKey("Owner"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap1.containsKey("Status"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap1.containsKey("Ownership Percentage"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap1.containsKey("Ownership Start Date"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap1.containsKey("Ownership End Date"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap1.containsKey("Ownership Id"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+		softAssert.assertEquals(granteeHashMap1.containsKey("Remarks"), "true",
+				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+
+		// STEP 9-Validating that grantees combined cannot have ownership more than 100%
+		driver.navigate().to("https://smcacre--" + execEnv
+				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCioTransfer.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.validateAlert);
+		String errorMessage = objCioTransfer.validateAlert.getText();
+		ReportLogger.INFO("Alert Message Captured");
+		softAssert.assertEquals(errorMessage,
+				"The sum of all grantee ownership percentage is less than 100. Please check and make necessary corrections",
+				"SMAB-T3765: Validate the error message ");
+		// STEP 10- Click Finish and calculate owner ship
+		objCioTransfer.Click(objCioTransfer.getButtonWithText("Finish"));
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.nextButton);
+		objCioTransfer.enter(objCioTransfer.calculateOwnershipRetainedFeld, "50");
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		ReportLogger.INFO("Calculated Ownership%");
+	}
 	
 
 }

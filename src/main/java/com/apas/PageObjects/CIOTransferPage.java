@@ -106,11 +106,16 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath
 			+ "//*[@class='slds-truncate' and text()='Submit for Approval'] | //button[text()='Submit for Approval']")
 	public WebElement quickActionOptionSubmitForApproval;
+	
+	@FindBy(xpath = "//span[text()='Show more actions']")
+	public WebElement clickShowMoreActions;
 
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
 	
-
+	@FindBy(xpath = "//b[contains(text(),'The sum of all grantee ownership percentage is less than 100. Please check and make necessary corrections')]")
+	public WebElement validateAlert;
+	
 	@FindBy(xpath =commonXpath+ "//select[@name='Formatted_Name_1']")
 	public WebElement formattedName1;
 	
@@ -375,7 +380,24 @@ public class CIOTransferPage extends ApasGenericPage {
 			}
 		 }
 		 
-			
+			/*
+			 * This method will click on show more actions on transfer activity screen and
+			 * takes an argument of the button name .
+			 * 
+			 * @Param : Button text inside show more actions
+			 */
+
+			public void clickQuickActionButtonOnTransferActivity(String enterButtonText) throws Exception {
+				try {
+					getButtonWithText(enterButtonText).click();
+					ReportLogger.INFO("CIO Transfer submitted for approval");
+				} catch (Exception e) {
+					Click(clickShowMoreActions);
+					getButtonWithText(enterButtonText).click();
+					ReportLogger.INFO("CIO Transfer submitted for approval");
+				}
+			}
+	
 }
 
 
