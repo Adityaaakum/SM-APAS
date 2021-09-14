@@ -146,10 +146,10 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 				"SMAB-T3050: Validation that  Situs Information label");
 		Actions action = new Actions(driver);
 		action.moveToElement(objMappingPage.helpIconSitus).perform();
-		objMappingPage.Click(objMappingPage.helpIconSitus);
+		//objMappingPage.Click(objMappingPage.helpIconSitus);
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent situs, leave as blank.",
 				"SMAB-T2481,SMAB-T3050: Validation that help text is generated on clicking the help icon for Situs text box");
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.closeButton));
+		//objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.closeButton));
 
 		//Step 11: Validating Error Message when both Number of Child Non-Condo & Condo Parcels fields contain 0
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objMappingPage.nextButton));
@@ -831,7 +831,6 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c =NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')and TRA__c=NULL and Status__c = 'Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
-		
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
