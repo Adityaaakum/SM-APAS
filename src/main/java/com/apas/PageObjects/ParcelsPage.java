@@ -545,14 +545,5 @@ public class ParcelsPage extends ApasGenericPage {
 			return situsCreated;	
 		}
 		
-		/*
-		 * @Description - This method returns a new JSON object everytime it is  called.
-		 * 
-		 *  	
-		 */
-		public JSONObject getJsonObject()
-		{
-			return new JSONObject();
-		}
 		
 }
