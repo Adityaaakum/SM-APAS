@@ -207,7 +207,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "123-45*-78&");
 
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.firstCondoTextBoxLabel),
-				"SMAB-T3373: Validation that User should be able to add and clear text in First Condo Text Box Feild");
+				"SMAB-T3373: Validation that First Condo Text Box Feild should be visible to the user.");
 		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- This parcel number is not valid, it should contain 9 digit numeric values.",
