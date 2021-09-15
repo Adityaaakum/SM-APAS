@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.apas.TestBase.TestBase;
 import org.apache.commons.lang.RandomStringUtils;
+import org.json.JSONObject;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -781,5 +782,15 @@ public class Page extends TestBase {
 		Click(driver.findElement(By.xpath(xpathStr)));
 		Thread.sleep(1000);
 	}
+	/*
+	 * @Description - This method returns a new JSON object everytime it is  called.
+	 * 
+	 *  	
+	 */
+	public JSONObject getJsonObject()
+	{
+		return new JSONObject();
+	}
+	
 
 }

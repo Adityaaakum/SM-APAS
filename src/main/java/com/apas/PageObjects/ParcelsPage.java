@@ -6,7 +6,7 @@ import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.relevantcodes.extentreports.LogStatus;
 
-import org.json.JSONObject;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -545,14 +545,5 @@ public class ParcelsPage extends ApasGenericPage {
 			return situsCreated;	
 		}
 		
-		/*
-		 * @Description - This method returns a new JSON object everytime it is  called.
-		 * 
-		 *  	
-		 */
-		public JSONObject getJsonObject()
-		{
-			return new JSONObject();
-		}
 		
 }
