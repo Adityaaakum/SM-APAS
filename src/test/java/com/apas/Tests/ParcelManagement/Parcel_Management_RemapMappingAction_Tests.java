@@ -205,10 +205,9 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 
 		//Step 9: Verifying that proper error message is displayed if alphanumeric value  is entered in First non condo parcel field
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "123-45*-78&");
-		objMappingPage.enter(objMappingPage.firstCondoTextBoxLabel, "123-454-786");
-		objMappingPage.clearFieldValue(objMappingPage.firstCondoTextBoxLabel);
+
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.firstCondoTextBoxLabel),
-				",SMAB-T3373: Validation that User should be able to add and clear text in First Condo Text Box Feild");
+				"SMAB-T3373: Validation that User should be able to add and clear text in First Condo Text Box Feild");
 		objMappingPage.Click(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		softAssert.assertEquals(objMappingPage.getErrorMessage(),"- This parcel number is not valid, it should contain 9 digit numeric values.",
