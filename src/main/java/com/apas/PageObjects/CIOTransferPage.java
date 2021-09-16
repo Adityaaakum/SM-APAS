@@ -58,6 +58,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String Status="Status";
 	public String ownerPercentage="Owner Percentage";
 	public final String DOC_DEED="DE";
+	public String firstNameLabel="First Name";
 	
 
 
@@ -156,6 +157,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b")
 	public WebElement cioTransferSuccessMsg;
 	
+	
 	@FindBy(xpath = "//*[contains(@data-value,'Reviewed Assessee Response')]")
 	public WebElement reviewAssecesseLink;
 	
@@ -186,6 +188,17 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath=commonXpath+"//button[text()='Finish']")
 	public WebElement finishButtonPopUp;
 	
+	@FindBy(xpath =commonXpath+"//force-record-layout-section//div//span[text()='APN']//parent::div//following-sibling::div//a//slot//slot//span")
+	public WebElement apnOnTransferActivityLabel;
+	
+	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='Situs']/../..//slot[@slot='outputField']//lightning-formatted-text")
+	public WebElement situsOnTransferActivityLabel;
+	
+	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='Short Legal Description']/../..//slot[@slot='outputField']//lightning-formatted-text")
+	public WebElement shortLegalDescriptionOnTransferActivityLabel;
+	
+	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='PUC Code']/../..//slot[@slot='outputField']//lightning-formatted-text")
+	public WebElement pucCodeTransferActivityLabel;
 	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
@@ -248,7 +261,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
 	    		ReportLogger.INFO("-------------Generated Recorded WorkItems.------------------"); 
 	    		counterForFailedattempts=0;
-	    		Thread.sleep(5000);
+	    		Thread.sleep(10000);
 	    		return;
 	    		}
 	    		if(ApnCount<0)
@@ -387,8 +400,9 @@ public class CIOTransferPage extends ApasGenericPage {
 		  */
 		 
 		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {		 		 
+			
 			 try {
-			   waitForElementToBeClickable(7, copyToMailToButtonLabel);			   
+			   Thread.sleep(2000);		   
 			   Click(getButtonWithText(copyToMailToButtonLabel));
 			   waitForElementToDisappear(formattedName1, 5);
 			   Click(formattedName1);
@@ -422,25 +436,29 @@ public class CIOTransferPage extends ApasGenericPage {
 		 /*
 		  * This method will create one new grantee per method call in Recorded APN transfer screen.
 		  * 
-		  */
-		 
+		  */		 
+
 		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
 		 {
-			 try {
-			   String execEnv= System.getProperty("region");			 
-			   driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");			   
-			   waitForElementToBeVisible(5,newButton);
-			   Click(getButtonWithText(newButton));
-			   enter(LastNameLabel, dataToCreateGrantee.get("Last Name"));	
-			   if(dataToCreateGrantee.get("Owner Percentage")!=null)
-			   enter(ownerPercentage,dataToCreateGrantee.get("Owner Percentage"));	   	
-			   Click(getButtonWithText(saveButton));
-			   Thread.sleep(3000);
-			   ReportLogger.INFO("GRANTEE RECORD ADDED!!");	}
-			   catch (Exception e) {
-			    ReportLogger.INFO("SORRY!! GRANTEE RECORD CANNOT BE ADDED");
+				try {
+					String execEnv = System.getProperty("region");
+					driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/"
+							+ recordeAPNTransferID + "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+					waitForElementToBeVisible(5, newButton);
+					Click(getButtonWithText(newButton));
+					enter(LastNameLabel, dataToCreateGrantee.get("Last Name"));
+					if (dataToCreateGrantee.get("Owner Percentage") != null)
+						enter(ownerPercentage, dataToCreateGrantee.get("Owner Percentage"));
+					if (dataToCreateGrantee.get("First Name") != null)
+						enter(firstNameLabel, dataToCreateGrantee.get("First Name"));
+					Click(getButtonWithText(saveButton));
+					Thread.sleep(3000);
+					ReportLogger.INFO("GRANTEE RECORD ADDED!!");
+				} catch (Exception e) {
+					ReportLogger.INFO("SORRY!! GRANTEE RECORD CANNOT BE ADDED");
+				}
+
 			}
-		 }
 		 
 		 public void deleteRecordedApnFromRecordedDocument(String recordedDocumentId)
 		 {
@@ -489,5 +507,23 @@ public class CIOTransferPage extends ApasGenericPage {
 		 } 
 			
 
+		 public void createNewGrantorRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
+		 {
+				try {
+					String execEnv = System.getProperty("region");
+					driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/"
+							+ recordeAPNTransferID + "/related/CIO_Transfer_Grantors__r/view");
+					waitForElementToBeVisible(5, newButton);
+					Click(getButtonWithText(newButton));
+					enter(LastNameLabel, dataToCreateGrantee.get("Last Name"));
+					if (dataToCreateGrantee.get("First Name") != null)
+						enter(firstNameLabel, dataToCreateGrantee.get("First Name"));
+					Click(getButtonWithText(saveButton));
+					Thread.sleep(3000);
+					ReportLogger.INFO("GRANTOR RECORD ADDED!!");
+				} catch (Exception e) {
+					ReportLogger.INFO("SORRY!! GRANTOR RECORD CANNOT BE ADDED");
+				}
+		 }
 		 	
 }
