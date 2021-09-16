@@ -1930,6 +1930,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		
 		//login with mapping user
 		objMappingPage.login(loginUser);
+		driver.navigate().refresh(); 
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objParcelsPage.createNewParcelButton));
 		
@@ -1974,13 +1975,13 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
         
         //login with supervisor
         objMappingPage.login(users.MAPPING_SUPERVISOR);
+        driver.navigate().refresh(); 
         objMappingPage.searchModule(WORK_ITEM);
         objMappingPage.globalSearchRecords(WorkItemNo);
         
         //Completing the workItem
         objWorkItemHomePage.completeWorkItem(); 
-        driver.navigate().refresh(); 
-        Thread.sleep(5000); 		
+        driver.navigate().refresh(); 		
 		objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsWI);
         
         //navigating to business event audit trail

@@ -2928,6 +2928,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		
 		//login with mapping user
 		objMappingPage.login(loginUser);
+		driver.navigate().refresh(); 
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn1);
 
@@ -2964,13 +2965,14 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         
         //login with supervisor
         objMappingPage.login(users.MAPPING_SUPERVISOR);
+        driver.navigate().refresh(); 
         objMappingPage.searchModule(WORK_ITEM);
         objMappingPage.globalSearchRecords(WorkItemNo);
         
         //Completing the workItem
         objWorkItemHomePage.completeWorkItem(); 
         driver.navigate().refresh(); 
-        Thread.sleep(5000); 		
+       		
 		objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsWI);
         
         //navigating to business event audit trail
