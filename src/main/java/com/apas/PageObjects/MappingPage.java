@@ -104,6 +104,7 @@ public class MappingPage extends ApasGenericPage {
 	public String errorCompleteThisField = "Complete this field.";
 	public String editParcel = "Edit Parcel";
 	public String parcelSitus ="Parcel Situs";
+	public String performAdditionalMappingButton = "Perform Additional Mapping Action";
 	
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
 	public WebElement editButtonInSeconMappingScreen;
@@ -188,6 +189,9 @@ public class MappingPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//h2[contains(text(),'Edit PS-')]")
 	public WebElement visibleParcelSitusEditpopUp;
+	
+	@FindBy(xpath = "//*[contains(@class,'NewButtonForParcel')]//div[@class='override_error']")
+	public WebElement createNewParcelErrorMessage;
 	
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
