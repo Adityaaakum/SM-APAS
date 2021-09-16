@@ -540,4 +540,17 @@ public class MappingPage extends ApasGenericPage {
      	    }
      	  return flag;
        }
+      
+      /*
+       * this method is used to validate parent APNs on custom mapping first screen
+       */
+		public boolean validateParentAPNsOnMappingFirstScreen(String parentAPNs) {
+			boolean flag = false;
+
+			String xPath = "//label[text()='Parent APN(s)']/following::span[text()='" + parentAPNs + "']";
+			if (verifyElementVisible(xPath))
+				flag = true;
+
+			return flag;
+		}
 }
