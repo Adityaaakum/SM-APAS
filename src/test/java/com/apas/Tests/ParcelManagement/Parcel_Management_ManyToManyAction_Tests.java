@@ -1851,7 +1851,8 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 	public void ParcelManagement_VerifyAuditTrailForManyToManyMappingAction(String loginUser) throws Exception {
 
-		
+		JSONObject jsonObjectNew = objMappingPage.getJsonObject();
+
 		//Fetching parcels that are Active with different Ownership record
 		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE "
 				+ " (Not Name like '134%') and (Not Name like '8%')"
@@ -1880,15 +1881,15 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String parcelSize	= "200";		
-		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
-		jsonObject.put("Status__c","Active");
-		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
-		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
-		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+		jsonObjectNew.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonObjectNew.put("Status__c","Active");
+		jsonObjectNew.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonObjectNew.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObjectNew.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonObjectNew.put("Lot_Size_SQFT__c",parcelSize);
 
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonObject);
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObjectNew);
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonObjectNew);
 		
 		String concatenateAPN = apn1+","+apn2;
 		ReportLogger.INFO("Apns : " + concatenateAPN);

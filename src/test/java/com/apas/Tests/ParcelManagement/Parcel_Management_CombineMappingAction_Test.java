@@ -2848,6 +2848,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 	public void ParcelManagement_VerifyAuditTrailForCombineMappingAction(String loginUser) throws Exception {
 
+		JSONObject jsonParcelObjectNew = objMappingPage.getJsonObject();
 		//Fetching parcels that are Active with different Ownership record
 		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE "
 				+ " (Not Name like '134%')"
@@ -2879,15 +2880,15 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String parcelSize	= "200";		
 
-		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
-		jsonParcelObject.put("Status__c","Active");
-		jsonParcelObject.put("Short_Legal_Description__c",legalDescriptionValue);
-		jsonParcelObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
-		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-		jsonParcelObject.put("Lot_Size_SQFT__c",parcelSize);
+		jsonParcelObjectNew.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonParcelObjectNew.put("Status__c","Active");
+		jsonParcelObjectNew.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonParcelObjectNew.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonParcelObjectNew.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonParcelObjectNew.put("Lot_Size_SQFT__c",parcelSize);
 
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObject);
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonParcelObject);
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObjectNew);
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonParcelObjectNew);
 		
 		String concatenateAPN = apn1+","+apn2;
 		ReportLogger.INFO("Apns : " + concatenateAPN);
