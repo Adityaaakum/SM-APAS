@@ -138,13 +138,8 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
 	
-
-	@FindBy(xpath = "//span[text()='Show more actions']")
-	public WebElement clickShowMoreActions;
-
-	@FindBy(xpath = "//b[contains(text(),'The sum of all grantee ownership percentage is less than 100. Please check and make necessary corrections')]")
-	public WebElement validateAlert;
-	
+	@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']")
+	public WebElement validateErrorText;	
 	
 	@FindBy(xpath =commonXpath+ "//select[@name='Formatted_Name_1']")
 	public WebElement formattedName1;
@@ -160,11 +155,9 @@ public class CIOTransferPage extends ApasGenericPage {
 	
 	@FindBy(xpath = commonXpath + "//div[text()='Recorded APN Transfer']//following::lightning-formatted-text")
 	public WebElement cioTransferActivityLabel;
-	
-
+		
 	@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b")
-	public WebElement cioTransferSuccessMsg;
-	
+	public WebElement cioTransferSuccessMsg;	
 	
 	@FindBy(xpath = "//*[contains(@data-value,'Reviewed Assessee Response')]")
 	public WebElement reviewAssecesseLink;
@@ -543,12 +536,13 @@ public class CIOTransferPage extends ApasGenericPage {
 
 			public void clickQuickActionButtonOnTransferActivity(String enterButtonText) throws Exception {
 				try {
-					getButtonWithText(enterButtonText).click();
-					ReportLogger.INFO("Transfer submitted for approval");
+					
+					Click(getButtonWithText(enterButtonText));
+					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
 				} catch (Exception e) {
-					Click(clickShowMoreActions);
-					getButtonWithText(enterButtonText).click();
-					ReportLogger.INFO("Transfer submitted for approval");
+					Click(quickActionButtonDropdownIcon);
+					Click(getButtonWithText(enterButtonText));
+					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
 				}
 			}
 	
