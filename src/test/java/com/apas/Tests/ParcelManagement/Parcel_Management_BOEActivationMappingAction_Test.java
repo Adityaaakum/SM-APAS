@@ -6,8 +6,6 @@ import java.util.Map;
 
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -41,8 +39,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 	JSONObject jsonObject= new JSONObject();
 	MappingPage objMappingPage;
 	CIOTransferPage objtransfer;
-	//WebDriverWait wait = new WebDriverWait(driver,20);
-	WebDriverWait wait;
+
 	
 
 	@BeforeMethod(alwaysRun = true)
