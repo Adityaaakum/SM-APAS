@@ -40,8 +40,6 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 	MappingPage objMappingPage;
 	CIOTransferPage objtransfer;
 
-	
-
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
 		driver = null;
