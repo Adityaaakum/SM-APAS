@@ -2851,19 +2851,16 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		JSONObject jsonParcelObjectNew = objMappingPage.getJsonObject();
 		//Fetching parcels that are Active with different Ownership record
 		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE "
-				+ " (Not Name like '134%')"
-				+ " and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')"
-				+ " and Status__c = 'Active' Limit 2";
+				+ " (Not Name like '134%') and Id NOT IN (SELECT APN__c FROM Work_Item__c "
+				+ "where type__c='CIO') and Status__c = 'Active' Limit 2";
 
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
-		
 
 		String apnId1=responseAPNDetails.get("Id").get(0);
 		String apnId2=responseAPNDetails.get("Id").get(1);
-		
-		
+
 		objMappingPage.deleteOwnershipFromParcel(apnId1);
 		objMappingPage.deleteOwnershipFromParcel(apnId2);
 		
@@ -2891,7 +2888,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonParcelObjectNew);
 		
 		String concatenateAPN = apn1+","+apn2;
-		ReportLogger.INFO("Apns : " + concatenateAPN);
+		ReportLogger.INFO("Parent APNs : " + concatenateAPN);
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -2899,36 +2896,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		String mappingActionCreationData = testdata.COMBINE_MAPPING_ACTION;
 		Map<String, String> hashMapCombineActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformCombineMappingActionWithoutAllFields");
-		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToCreateOwnershipRecord");
-
-		//login using system admin
-		objMappingPage.login(users.SYSTEM_ADMIN);
-		String queryAssesseeRecord = "SELECT Id, Name FROM Account Limit 1";
-		HashMap<String, ArrayList<String>> responseAssesseeDetails = salesforceAPI.select(queryAssesseeRecord);
-		String assesseeName = responseAssesseeDetails.get("Name").get(0);
-		String execEnv= System.getProperty("region");	
-		
-		//creating ownership on parcesl
-		objMappingPage.searchModule(PARCELS);
-		String ownershipURL = "https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/"
-		        		+apnId1+ "/related/Property_Ownerships__r/view";
-		ReportLogger.INFO(ownershipURL);
-		driver.navigate().to(ownershipURL);
-		objParcelsPage.createOwnershipRecord(assesseeName, hashMapCreateOwnershipRecordData);
-		
-		objMappingPage.searchModule(PARCELS);
-		ownershipURL = "https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/"
-		        		+apnId2+ "/related/Property_Ownerships__r/view";
-		ReportLogger.INFO(ownershipURL);
-		driver.navigate().to(ownershipURL);
-		objParcelsPage.createOwnershipRecord(assesseeName, hashMapCreateOwnershipRecordData);
-		objMappingPage.logout();
+				"DataToPerformCombineMappingAction");
 		
 		//login with mapping user
 		objMappingPage.login(loginUser);
-		driver.navigate().refresh(); 
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn1);
 
@@ -2950,30 +2921,24 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		objMappingPage.fillMappingActionForm(hashMapCombineActionMappingData);
 		objMappingPage.waitForElementToBeVisible(10,objMappingPage.generateParcelButton);
-		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 	       
-		   //updating child parcels size in second screen on mapping action 
-	       for(int i=1;i<=gridDataHashMap.get("APN").size();i++) {
-	            objMappingPage.updateMultipleGridCellValue
-	            (objMappingPage.parcelSizeColumnSecondScreenWithSpace,"200",i);
-	       }
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(10,objMappingPage.performAdditionalMappingButton);
 
 		driver.switchTo().window(parentWindow);
         objWorkItemHomePage.logout();
+        Thread.sleep(3000);
         
         //login with supervisor
         objMappingPage.login(users.MAPPING_SUPERVISOR);
-        driver.navigate().refresh(); 
         objMappingPage.searchModule(WORK_ITEM);
         objMappingPage.globalSearchRecords(WorkItemNo);
         
         //Completing the workItem
         objWorkItemHomePage.completeWorkItem(); 
         driver.navigate().refresh(); 
-       		
-		objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsWI);
+        objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.linkedItemsWI, 10);
+        objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsWI);
         
         //navigating to business event audit trail
         objWorkItemHomePage.scrollToElement(objWorkItemHomePage.secondRelatedBuisnessEvent);
@@ -2981,17 +2946,15 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String auditTrailNo = objWorkItemHomePage.getFieldValueFromAPAS("Name", "");
 		ReportLogger.INFO("Audit Trail no:" +auditTrailNo);
 		
-        String description= objWorkItemHomePage.getFieldValueFromAPAS(trail.description);
+		String description= objWorkItemHomePage.getFieldValueFromAPAS(trail.description);
 		String comments= hashMapCombineActionMappingData.get("Comments");
 		reasonCode= hashMapCombineActionMappingData.get("Reason code");
-		String wiDescription = hashMapmanualWorkItemData.get("Description");
-		
-        softAssert.assertContains(description,comments,
-        		"SMAB-T3816: Verify that comment provided during mapping actionis present in description field of the audit trail");
-        softAssert.assertContains(description,wiDescription,
-        		"SMAB-T3728: Verify that after mapping action completion validate description field in the audit trail");
-        softAssert.assertContains(description,reasonCode,
-        		"SMAB-T3816: Verify that Reason code provided during mapping actionis present in description field of the audit trail");
+			
+		String queryWIDescription = "SELECT Id,Description__c FROM Work_Item__c where Name='" + WorkItemNo+"'";
+		HashMap<String, ArrayList<String>> responseWIdesc = salesforceAPI.select(queryWIDescription);
+		String wiDescription=responseWIdesc.get("Description__c").get(0);
+		softAssert.assertContains(description,comments+" "+wiDescription+" "+reasonCode,
+				"SMAB-T3816,SMAB-T3728: Verify that comment,description,reason code provided during mapping actionis present in description field of the audit trail");		
 		objWorkItemHomePage.logout();
 		}
 }			

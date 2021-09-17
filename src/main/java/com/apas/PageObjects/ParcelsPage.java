@@ -141,6 +141,10 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[text() = 'View All']")
 	public WebElement viewAll;
 	
+	@FindBy(xpath = "//span[@title='Target Parcel Relationships']")
+	public WebElement targetParcelLabel;
+	
+	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
     public String ApprovalButton="Approve";
