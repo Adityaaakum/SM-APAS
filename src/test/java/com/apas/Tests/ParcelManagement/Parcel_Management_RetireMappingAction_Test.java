@@ -539,10 +539,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 
 		// Step 6: filling all fields in mapping action screen
-		//objMappingPage.fillMappingActionForm(hashMapRetireParcelActionMappingData);
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapRetireParcelActionMappingData.get("Action"));
-
-		//Step 4: filling all fields in mapping action screen
 		objMappingPage.enter(objMappingPage.commentsTextBoxLabel, hashMapRetireParcelActionMappingData.get("Comments"));
 		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel), "For Testing");
 
@@ -557,7 +554,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		objMappingPage.globalSearchRecords(workItemNumber);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		driver.navigate().refresh();
-		Thread.sleep(10000);
+		objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.linkedItemsWI);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
 
