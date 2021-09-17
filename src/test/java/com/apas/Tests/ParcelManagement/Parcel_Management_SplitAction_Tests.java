@@ -3,6 +3,7 @@ package com.apas.Tests.ParcelManagement;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.AuditTrailPage;
 import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
@@ -41,6 +42,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	JSONObject jsonObject= new JSONObject();
 	String apnPrefix=new String();
 	CIOTransferPage objtransfer;
+	AuditTrailPage trail;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -51,6 +53,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage= new MappingPage(driver);
 		objtransfer=new CIOTransferPage(driver);
+		trail= new AuditTrailPage(driver);
 
 	}
 	/**
@@ -2053,4 +2056,135 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objWorkItemHomePage.logout();
 
 	}
+	
+	/**
+	 *This method is to  Verify  the Audit trail 
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T3728,SMAB-T3816,SMAB-T3727: Verify many to many audit trail", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+
+
+	public void ParcelManagement_VerifyAuditTrailForSplitMappingAction(String loginUser) throws Exception {
+
+		JSONObject jsonObjectNew = objMappingPage.getJsonObject();
+
+		//Fetching parcels that are Active 
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE "
+				+ " (Not Name like '134%') and Id NOT IN (SELECT APN__c FROM Work_Item__c"
+				+ " where type__c='CIO') and Status__c = 'Active' Limit 1";
+
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
+		String apn1=responseAPNDetails.get("Name").get(0);
+		
+		//updating fields of parcels
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,Id FROM PUC_Code__c "
+				+ "where Legacy__c = 'NO' limit 1");
+	
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+		
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String parcelSize	= "200";		
+		jsonObjectNew.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonObjectNew.put("Status__c","Active");
+		jsonObjectNew.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonObjectNew.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObjectNew.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonObjectNew.put("Lot_Size_SQFT__c",parcelSize);
+
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObjectNew);
+		
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+
+		String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
+		Map<String, String> hashMapSplitActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformSplitMappingActionWithoutAllFields");
+					
+		//login with mapping user
+		objMappingPage.login(loginUser);
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objParcelsPage.createNewParcelButton));
+		
+		objMappingPage.waitForElementToBeVisible(objMappingPage.createNewParcelErrorMessage,10);
+		
+		softAssert.assertEquals(objMappingPage.createNewParcelErrorMessage.getText(),
+				"In order to create a new parcel, leverage the \"Mapping Action\" feature",
+				"SMAB-T3727:Verify that mapping staff is not able to create new apn");
+	
+		objMappingPage.globalSearchRecords(apn1);
+
+		//creating WI on parcel
+		String WorkItemNo=objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(10,objWorkItemHomePage.referenceDetailsLabel);
+		String reasonCode = objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
+		ReportLogger.INFO("Reference : " + reasonCode);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		//populating fields on mapping action screen
+		objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+		ReportLogger.INFO("Fill Mapping data for Split action");
+		objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapSplitActionMappingData.get("Action"));		
+		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, hashMapSplitActionMappingData.get("Are taxes fully paid?"));
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
+		objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel, hashMapSplitActionMappingData.get("Reason code"));
+		objMappingPage.enter(objMappingPage.numberOfChildNonCondoTextBoxLabel,"1");
+		objMappingPage.enter(objMappingPage.numberOfChildCondoTextBoxLabel,"1");
+		objMappingPage.enter(objMappingPage.commentsTextBoxLabel,"Perform Parcel Split");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+
+
+//		objMappingPage.fillMappingActionForm(hashMapSplitActionMappingData);
+		objMappingPage.waitForElementToBeVisible(10,objMappingPage.generateParcelButton);
+		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
+	       
+		   //updating child parcels size in second screen on mapping action 
+	       for(int i=1;i<=gridDataHashMap.get("APN").size();i++) {
+	            objMappingPage.updateMultipleGridCellValue
+	            (objMappingPage.parcelSizeColumnSecondScreen,"200",i);
+	       }
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		objMappingPage.waitForElementToBeVisible(10,objMappingPage.performAdditionalMappingButton);
+
+		driver.switchTo().window(parentWindow);
+        objWorkItemHomePage.logout();
+        Thread.sleep(5000);
+        
+        //login with supervisor
+        objMappingPage.login(users.MAPPING_SUPERVISOR);
+        objMappingPage.searchModule(WORK_ITEM);
+        objMappingPage.globalSearchRecords(WorkItemNo);
+        
+        //Completing the workItem
+        objWorkItemHomePage.completeWorkItem(); 
+        driver.navigate().refresh(); 
+        objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.linkedItemsWI, 10);
+		objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsWI);
+        
+        //navigating to business event audit trail
+        objWorkItemHomePage.scrollToElement(objWorkItemHomePage.secondRelatedBuisnessEvent);
+        objWorkItemHomePage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
+		String auditTrailNo = objWorkItemHomePage.getFieldValueFromAPAS("Name", "");
+		ReportLogger.INFO("Audit Trail no:" +auditTrailNo);
+		
+        String description= objWorkItemHomePage.getFieldValueFromAPAS(trail.description);
+		String comments= hashMapSplitActionMappingData.get("Comments");
+		reasonCode= hashMapSplitActionMappingData.get("Reason code");
+			
+		String queryWIDescription = "SELECT Id,Description__c FROM Work_Item__c where Name='" + WorkItemNo+"'";
+		HashMap<String, ArrayList<String>> responseWIdesc = salesforceAPI.select(queryWIDescription);
+		String wiDescription=responseWIdesc.get("Description__c").get(0);
+		softAssert.assertContains(description,comments+" "+wiDescription+" "+reasonCode,
+				"SMAB-T3816,SMAB-T3728: Verify that comment,description,reason code provided during mapping actionis present in description field of the audit trail");		
+		objWorkItemHomePage.logout();
+		}
 }
