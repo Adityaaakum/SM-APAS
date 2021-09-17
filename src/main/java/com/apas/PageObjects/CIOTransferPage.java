@@ -138,6 +138,9 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
 	
+	@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']")
+	public WebElement validateErrorText;	
+	
 	@FindBy(xpath =commonXpath+ "//select[@name='Formatted_Name_1']")
 	public WebElement formattedName1;
 	
@@ -152,11 +155,9 @@ public class CIOTransferPage extends ApasGenericPage {
 	
 	@FindBy(xpath = commonXpath + "//div[text()='Recorded APN Transfer']//following::lightning-formatted-text")
 	public WebElement cioTransferActivityLabel;
-	
-
+		
 	@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b")
-	public WebElement cioTransferSuccessMsg;
-	
+	public WebElement cioTransferSuccessMsg;	
 	
 	@FindBy(xpath = "//*[contains(@data-value,'Reviewed Assessee Response')]")
 	public WebElement reviewAssecesseLink;
@@ -525,5 +526,25 @@ public class CIOTransferPage extends ApasGenericPage {
 					ReportLogger.INFO("SORRY!! GRANTOR RECORD CANNOT BE ADDED");
 				}
 		 }
-		 	
+		 
+		 /*
+			 * This method will click on show more actions on transfer activity screen and
+			 * takes an argument of the button name .
+			 * 
+			 * @Param : Button text inside show more actions
+			 */
+
+			public void clickQuickActionButtonOnTransferActivity(String enterButtonText) throws Exception {
+				try {
+					
+					Click(getButtonWithText(enterButtonText));
+					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
+				} catch (Exception e) {
+					Click(quickActionButtonDropdownIcon);
+					Click(getButtonWithText(enterButtonText));
+					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
+				}
+			}
+	
 }
+		 	
