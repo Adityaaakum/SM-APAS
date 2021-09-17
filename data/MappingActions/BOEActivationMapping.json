@@ -17,13 +17,6 @@
     "TRA":"123456",
     "PUC": "01-SINGLE FAMILY RES"
           
-},
-  
-"DataToPerformBOEActivationParcelMappingAction": {
-    "Action": "BOE Activation",
-    "Reason code": "PM 85/25-26",
-    "Comments": "Perform BOE Activation",
-    "First non-Condo Parcel Number" : "546789123"          
   }
 
 

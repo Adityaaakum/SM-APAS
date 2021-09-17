@@ -702,7 +702,6 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		childAPN2Status = objParcelsPage.fetchFieldValueOfParcel("Status__c",gridDataHashMap.get("APN").get(1));
 		softAssert.assertEquals(parentAPN1Status.get("Status__c").get(0),"Retired","SMAB-T2722: Verify Status of Parent Parcel: "+apn1);
 		softAssert.assertEquals(parentAPN2Status.get("Status__c").get(0),"Retired","SMAB-T2722: Verify Status of Parent Parcel: "+apn2);
-		softAssert.assertEquals(childAPN1Status.get("Status__c").get(0),"Active","SMAB-T2722: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(0));
 		softAssert.assertEquals(childAPN2Status.get("Status__c").get(0),"Active","SMAB-T2722: Verify Status of Child Parcel: "+gridDataHashMap.get("APN").get(1));
 
 		//Step 21: Verify 2 new WIs are generated and linked to Child Parcels after parcel is split and WI is completed
@@ -1509,7 +1508,6 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		objMappingPage.searchModule(WORK_ITEM);
 		objMappingPage.globalSearchRecords(workItem);
-		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		driver.navigate().refresh();
 		Thread.sleep(5000);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
@@ -1606,8 +1604,6 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objMappingPage.searchModule(WORK_ITEM);
 		objMappingPage.globalSearchRecords(workItem);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		driver.navigate().refresh();
-		Thread.sleep(5000);
 		objWorkItemHomePage.completeWorkItem();
 		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),
 				"Completed", "SMAB-T2668:Verify user is able to complete the Work Item");

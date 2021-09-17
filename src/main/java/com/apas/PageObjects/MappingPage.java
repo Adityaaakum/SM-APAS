@@ -522,7 +522,7 @@ public class MappingPage extends ApasGenericPage {
 	    		Thread.sleep(2000);
     	}
       /*
-       * this method is used to validate parent APNs on custom mapping screeen
+       * this method is used to validate parent APNs on custom mapping Second screen
        */
       public boolean validateParentAPNsOnMappingScreen(String parentAPNs) {
     	  boolean flag = false;

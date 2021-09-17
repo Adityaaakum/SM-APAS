@@ -608,9 +608,6 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 
 		objMappingPage.searchModule(WORK_ITEM);
 		objMappingPage.globalSearchRecords(workItemNumber);
-		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		driver.navigate().refresh();
-		Thread.sleep(5000);
 		objWorkItemHomePage.completeWorkItem();
 		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),
 				"Completed", "SMAB-T2670:Verify user is able to complete the Work Item");

@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -20,13 +21,13 @@ import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 import com.relevantcodes.extentreports.LogStatus;
-import com.apas.Utils.DateUtil;
 
 
 public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase implements testdata, modules, users {
@@ -40,6 +41,9 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 	JSONObject jsonObject= new JSONObject();
 	MappingPage objMappingPage;
 	CIOTransferPage objtransfer;
+	//WebDriverWait wait = new WebDriverWait(driver,20);
+	WebDriverWait wait;
+	
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -647,6 +651,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
     	   	String apn2=responseAPN2Details.get("Name").get(0);
     	   	String apn3=responseAPN2Details.get("Name").get(1);
     	   	
+
     	   	//Deleting Relationship Instance
     	   	objMappingPage.deleteRelationshipInstanceFromParcel(apn2);
     	   	objMappingPage.deleteRelationshipInstanceFromParcel(apn3);
@@ -706,9 +711,15 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 					"SMAB-T2839: Validation that reason code field is auto populated from parent parcel work item");
 			
 			objMappingPage.fillMappingActionForm(hashMapBOEParcelMappingData);
-			objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+			HashMap<String,ArrayList<String>> gridDataHashMap = objMappingPage.getGridDataInHashMap();
 			Thread.sleep(3000);
-			objMappingPage.editActionInMappingSecondScreen(hashMapBOEParcelMappingData);
+			for (int i = 1; i <= gridDataHashMap.get("APN").size(); i++) {
+
+				objMappingPage.Click(
+						objMappingPage.locateElement("//tr[" + i + "]" + objMappingPage.secondScreenEditButton, 2));
+				objMappingPage.editActionInMappingSecondScreen(hashMapBOEParcelMappingData);
+				objMappingPage.waitForElementToBeVisible(10, objMappingPage.generateParcelButton);
+			}
 			objMappingPage.waitForElementToBeClickable(5, objMappingPage.generateParcelButton);
 			
 			String MappingScreen = driver.getWindowHandle();
@@ -727,8 +738,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		    driver.switchTo().window(parentWindow);
 		    objMappingPage.searchModule(WORK_ITEM);
 		   	objMappingPage.globalSearchRecords(workItem);
-		   	objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		   	driver.navigate().refresh();
+		   	driver.navigate().refresh();//refresh as the focus is getting lost
 		   	Thread.sleep(5000);
 		   	objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		   	objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
@@ -740,6 +750,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		   	
 		   	driver.switchTo().window(MappingScreen);
 			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+			Thread.sleep(3000);
 			softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen(),"pending verification from the supervisor",
 					"SMAB-T2839,SMAB-T2844: Validate that User is able to perform Combine action for multiple active parcels");			    
 		    
@@ -778,12 +789,8 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		   	//Step 10: Login from Mapping Supervisor to approve the WI
 		   	ReportLogger.INFO("Now logging in as RP Appraiser to approve the work item and validate that new WIs are accessible");
 		   	objWorkItemHomePage.login(MAPPING_SUPERVISOR);
-		   	
 		   	objMappingPage.searchModule(WORK_ITEM);
 		   	objMappingPage.globalSearchRecords(workItem);
-		   	objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		   	driver.navigate().refresh();
-		   	Thread.sleep(5000);
 		   	objWorkItemHomePage.completeWorkItem();
 		   	softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Completed","SMAB-T2669:Verify user is able to complete the Work Item");
 		   	

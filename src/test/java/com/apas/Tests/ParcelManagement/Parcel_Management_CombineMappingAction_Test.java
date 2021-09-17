@@ -1616,7 +1616,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 		
 		//Creating Json Object
-		JSONObject jsonObject = objMappingPage.getJsonObject();
+		JSONObject jsonParcelObject = objMappingPage.getJsonObject();
 		
 		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
 		jsonParcelObject.put("Status__c","Active");
@@ -1800,8 +1800,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.searchModule(WORK_ITEM);
 		objMappingPage.globalSearchRecords(workItem);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		driver.navigate().refresh();
-		Thread.sleep(5000);
 		objWorkItemHomePage.completeWorkItem();
 		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),
 				"Completed", "SMAB-T2664:Verify user is able to complete the Work Item");

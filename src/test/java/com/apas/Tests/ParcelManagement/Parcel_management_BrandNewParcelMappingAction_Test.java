@@ -1186,8 +1186,6 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			objMappingPage.searchModule(WORK_ITEM);
 			objMappingPage.globalSearchRecords(workItemNumber);
 			objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-			driver.navigate().refresh();
-			Thread.sleep(5000);
 			objWorkItemHomePage.completeWorkItem();
 			softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),
 					"Completed", "SMAB-T2669:Verify user is able to complete the Work Item");
