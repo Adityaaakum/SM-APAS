@@ -60,6 +60,8 @@ public class CIOTransferPage extends ApasGenericPage {
 	public final String DOC_DEED="DE";
 	public String firstNameLabel="First Name";
 	
+	
+	
 
 
 	public String transferCodeLabel = "Transfer Code";
@@ -97,6 +99,16 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String doeLabel = "DOE";
 	public String dorLabel = "DOR";
 	public String dovLabel = "DOV";
+	public String documentTypeLabel = "Document Type";
+	public String apnCountLabel = "APN Count";
+	public String transferTaxLabel = "Transfer Tax";
+	public String valueFromDocTaxLabel = "Value from Doc Tax";
+	public String cityOfSmTaxLabel = "City of SM Tax";
+	public String valueFromDocTaxCityLabel = "Value from Doc Tax(City)";
+	public String pcorLable = "PCOR?";
+	public String createdByLabel = "Created By";
+	public String lastModifiedByLabel = "Last Modified By";
+	
 	
 
 	
@@ -199,6 +211,12 @@ public class CIOTransferPage extends ApasGenericPage {
 	
 	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='PUC Code']/../..//slot[@slot='outputField']//lightning-formatted-text")
 	public WebElement pucCodeTransferActivityLabel;
+	
+	@FindBy(xpath =commonXpath+"//*[@class='slds-form-element__help']")
+	public WebElement errorMessageOnTransferScreen;
+	
+	@FindBy(xpath =commonXpath+ "//select[@name='States']")
+	public WebElement mailingState;
 	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
@@ -401,21 +419,26 @@ public class CIOTransferPage extends ApasGenericPage {
 		 
 		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {		 		 
 			
-			 try {
-			   Thread.sleep(2000);		   
-			   Click(getButtonWithText(copyToMailToButtonLabel));
-			   waitForElementToDisappear(formattedName1, 5);
-			   Click(formattedName1);
-			   Select select= new Select(formattedName1);
-			   select.selectByVisibleText(granteeForMailTo);
-			   Click(formattedName1);		   
-			   enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
-			   Click(getButtonWithText(nextButton));
-			   ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");}
-			 catch (Exception e) {
-				ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE ADDED THROUGH COPY TO MAIL TO ACTION BUTTON");
+				try {
+					Thread.sleep(2000);
+					Click(getButtonWithText(copyToMailToButtonLabel));
+					waitForElementToDisappear(formattedName1, 5);
+					Click(formattedName1);
+					Select select = new Select(formattedName1);
+					select.selectByVisibleText(granteeForMailTo);
+					Click(formattedName1);
+					Click(mailingState);
+					Select selectMailingState = new Select(mailingState);
+					selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"));
+					Click(mailingState);
+					enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
+					Click(getButtonWithText(nextButton));
+					ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
+				} catch (Exception e) {
+					ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE ADDED THROUGH COPY TO MAIL TO ACTION BUTTON");
+				}
 			}
-		 }
+
 		 
 		 
 		 /*
