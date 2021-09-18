@@ -5,6 +5,8 @@ import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.relevantcodes.extentreports.LogStatus;
+
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -138,6 +140,10 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//span[text() = 'View All']")
 	public WebElement viewAll;
+	
+	@FindBy(xpath = "//span[@title='Target Parcel Relationships']")
+	public WebElement targetParcelLabel;
+	
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -542,4 +548,6 @@ public class ParcelsPage extends ApasGenericPage {
 			ReportLogger.INFO("Primary Situs created on parcel : "+situsCreated);
 			return situsCreated;	
 		}
+		
+		
 }

@@ -104,6 +104,7 @@ public class MappingPage extends ApasGenericPage {
 	public String errorCompleteThisField = "Complete this field.";
 	public String editParcel = "Edit Parcel";
 	public String parcelSitus ="Parcel Situs";
+	public String performAdditionalMappingButton = "Perform Additional Mapping Action";
 	
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
 	public WebElement editButtonInSeconMappingScreen;
@@ -188,6 +189,9 @@ public class MappingPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//h2[contains(text(),'Edit PS-')]")
 	public WebElement visibleParcelSitusEditpopUp;
+	
+	@FindBy(xpath = "//*[contains(@class,'NewButtonForParcel')]//div[@class='override_error']")
+	public WebElement createNewParcelErrorMessage;
 	
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
@@ -419,7 +423,7 @@ public class MappingPage extends ApasGenericPage {
     
      public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner(int numberofRecords) throws Exception {
         
-    	 String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and (Not Name like '800%') "
+    	 String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '1%') and (Not Name like '800%') "
     	 		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
     	 		+ "and Status__c = 'Active' Limit " + numberofRecords;   	    
      	return objSalesforceAPI.select(queryActiveAPNValue);
@@ -435,7 +439,7 @@ public class MappingPage extends ApasGenericPage {
         }
         
       public HashMap<String, ArrayList<String>> getCondoApnWithNoOwner(int numberofRecords) throws Exception {
-        	String queryCondoAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  and (Not Name like '%990') and name like '100%' and Status__c = 'Active' Limit " + numberofRecords;
+        	String queryCondoAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  and (Not Name like '%990') and name like '1%' and Status__c = 'Active' Limit " + numberofRecords;
         	return objSalesforceAPI.select(queryCondoAPNValue);
         }
      
@@ -473,33 +477,30 @@ public class MappingPage extends ApasGenericPage {
    *     
    */
       public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
-  		
+    		
 			String PUC = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
 			String TRA = objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);
 			String distNeigh = objSalesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1").get("Name").get(0);
 		    objSalesforceAPI.update("PUC_Code__c",objSalesforceAPI.select("Select Id from PUC_Code__c where name='"+PUC+"'").get("Id").get(0), "Legacy__c", "No");
-		    
+
 			Click(editButtonInSeconMappingScreen);
-			if (waitForElementToBeVisible(2, clearSelectionTRA))
-			Click(clearSelectionTRA);
+
+			clearSelectionFromLookup("TRA");
 			enter(parcelTRA, TRA);
 			Thread.sleep(2000);
 			selectOptionFromDropDown(parcelTRA, TRA);
-			
-			if (waitForElementToBeVisible(2, clearSelectionNeigh))
-			Click(clearSelectionNeigh);
+
+			clearSelectionFromLookup("District / Neighborhood Code");
 			enter(parcelDistrictNeighborhood, distNeigh);
 			selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
-	
 
-			if (waitForElementToBeVisible(2, clearSelectionPUC))
-			Click(clearSelectionPUC);
+			clearSelectionFromLookup("PUC");
 			enter(parcelPUC, PUC);
 			selectOptionFromDropDown(parcelPUC, PUC);
-				
+
 			editSitusModalWindowFirstScreen(dataMap);
 			
-  	}
+	}
       
       public void updateMultipleGridCellValue(String columnNameOnGrid, String expectedValue,int i) throws IOException, AWTException, InterruptedException {
     		String xPath =  "//lightning-tab[contains(@class,'slds-show')]//tr["+i+"]"
@@ -525,7 +526,7 @@ public class MappingPage extends ApasGenericPage {
 	    		Thread.sleep(2000);
     	}
       /*
-       * this method is used to validate parent APNs on custom mapping screeen
+       * this method is used to validate parent APNs on custom mapping Second screen
        */
       public boolean validateParentAPNsOnMappingScreen(String parentAPNs) {
     	  boolean flag = false;
@@ -543,4 +544,17 @@ public class MappingPage extends ApasGenericPage {
      	    }
      	  return flag;
        }
+      
+      /*
+       * this method is used to validate parent APNs on custom mapping first screen
+       */
+		public boolean validateParentAPNsOnMappingFirstScreen(String parentAPNs) {
+			boolean flag = false;
+
+			String xPath = "//label[text()='Parent APN(s)']/following::span[text()='" + parentAPNs + "']";
+			if (verifyElementVisible(xPath))
+				flag = true;
+
+			return flag;
+		}
 }

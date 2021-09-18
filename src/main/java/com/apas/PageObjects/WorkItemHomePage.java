@@ -314,6 +314,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String NewButton="New";
 	public String migrateAPN="Migrate APN(s)";
 	public String wiEventId = "Event ID";
+	public final String NoOfLinkedParcelsInWI = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//thead//th[@aria-label='APN']//ancestor::thead//following-sibling::tbody//tr";
 
 
 
@@ -619,9 +620,10 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 **/
 
 	public void clickOnTimelineAndMarkComplete(String timelineTab) throws Exception {
+		Thread.sleep(3000);
 		ReportLogger.INFO("Click on the '" + timelineTab + "' option in Timeline and mark it complete");
 		WebElement webElement = driver.findElement(By.xpath("//span[text()='" + timelineTab + "']"));
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 		javascriptClick(webElement);
 		if (waitForElementToBeVisible(5, markStatusCompleteBtn)) {
 			javascriptClick(markStatusCompleteBtn);

@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.apas.TestBase.TestBase;
 import org.apache.commons.lang.RandomStringUtils;
+import org.json.JSONObject;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -766,8 +767,8 @@ public class Page extends TestBase {
 	public void clearSelectionFromLookup(String fieldName) throws Exception {
 		Thread.sleep(1000);
 		String xpathStr = "//label[text()='" + fieldName + "']/parent::lightning-grouped-combobox//span[text()='Clear Selection']";
-		waitUntilElementIsPresent(xpathStr, 3);
-		Click(driver.findElement(By.xpath(xpathStr)));
+		if (waitForElementToBeVisible(5, xpathStr))
+			Click(driver.findElement(By.xpath(xpathStr)));
 		Thread.sleep(1000);
 	}
 	/**
@@ -780,6 +781,15 @@ public class Page extends TestBase {
 		waitUntilElementIsPresent(xpathStr, 3);
 		Click(driver.findElement(By.xpath(xpathStr)));
 		Thread.sleep(1000);
+	}
+	/*
+	 * @Description - This method returns a new JSON object everytime it is  called.
+	 * 
+	 *  	
+	 */
+	public JSONObject getJsonObject()
+	{
+		return new JSONObject();
 	}
 
 }

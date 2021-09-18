@@ -1,7 +1,7 @@
 {
   "DataToPerformBrandNewParcelMappingActionWithoutAllFields": {
     "Action": "Brand New Parcel",
-    "First non-Condo Parcel Number": "123456789",
+    "First non-Condo Parcel Number": "456789123",
     "Comments": "Perform Brand New Parcel mapping"  
   },
   
@@ -19,7 +19,7 @@
   "DataToPerformBrandNewParcelMappingActionWithSitusData": {
     "Action": "Brand New Parcel",
     "Reason code": "PM 85/25-26",
-    "First non-Condo Parcel Number": "123456789",
+    "First non-Condo Parcel Number": "456789123",
     "Comments": "Perform Brand New Parcel mapping",
     "Situs City Description": "Daly City",
     "Situs City Code": "DC",    
