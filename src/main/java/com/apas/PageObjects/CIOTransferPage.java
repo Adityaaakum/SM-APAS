@@ -293,7 +293,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    	salesforceApi.update("recorded_document__c" , RecordedDocumentId, "Status__c","Pending");
 		ReportLogger.INFO("Marking "+RecordedDocumentId+"in Pending state");
 		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
-		Thread.sleep(5000);
+		Thread.sleep(10000);
 		ReportLogger.INFO("-------------Generated Recorded WorkItems.------------"); 
 	    	
 	    	}
