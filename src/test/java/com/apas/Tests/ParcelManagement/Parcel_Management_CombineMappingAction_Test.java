@@ -16,6 +16,7 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.AuditTrailPage;
 import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
@@ -43,6 +44,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	MappingPage objMappingPage;
 	JSONObject jsonParcelObject= new JSONObject();
 	CIOTransferPage objtransfer;
+	AuditTrailPage trail;
 
 
 	@BeforeMethod(alwaysRun = true)
@@ -54,6 +56,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage= new MappingPage(driver);
 		objtransfer=new CIOTransferPage(driver);
+		trail= new AuditTrailPage(driver);
+
 
 	}
 
@@ -2833,4 +2837,124 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.logout();
 
 	}
+	
+	/**
+	 *This method is to  Verify  the Audit trail 
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T3728,SMAB-T3816: Verify many to many audit trail", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+
+
+	public void ParcelManagement_VerifyAuditTrailForCombineMappingAction(String loginUser) throws Exception {
+
+		JSONObject jsonParcelObjectNew = objMappingPage.getJsonObject();
+		//Fetching parcels that are Active with different Ownership record
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE "
+				+ " (Not Name like '134%') and Id NOT IN (SELECT APN__c FROM Work_Item__c "
+				+ "where type__c='CIO') and Status__c = 'Active' Limit 2";
+
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
+		String apn1=responseAPNDetails.get("Name").get(0);
+		String apn2=responseAPNDetails.get("Name").get(1);
+
+		String apnId1=responseAPNDetails.get("Id").get(0);
+		String apnId2=responseAPNDetails.get("Id").get(1);
+
+		objMappingPage.deleteOwnershipFromParcel(apnId1);
+		objMappingPage.deleteOwnershipFromParcel(apnId2);
+		
+		//updating fields of parcels
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,Id FROM PUC_Code__c "
+				+ "where Legacy__c = 'NO' limit 1");
+	
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+		
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String parcelSize	= "200";		
+
+		jsonParcelObjectNew.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonParcelObjectNew.put("Status__c","Active");
+		jsonParcelObjectNew.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonParcelObjectNew.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonParcelObjectNew.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonParcelObjectNew.put("Lot_Size_SQFT__c",parcelSize);
+
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObjectNew);
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonParcelObjectNew);
+		
+		String concatenateAPN = apn1+","+apn2;
+		ReportLogger.INFO("Parent APNs : " + concatenateAPN);
+		
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+
+		String mappingActionCreationData = testdata.COMBINE_MAPPING_ACTION;
+		Map<String, String> hashMapCombineActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformCombineMappingAction");
+		
+		//login with mapping user
+		objMappingPage.login(loginUser);
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn1);
+
+		//creating WI on parcel
+		String WorkItemNo=objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(10,objWorkItemHomePage.referenceDetailsLabel);
+		String reasonCode = objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
+		ReportLogger.INFO("Reference : " + reasonCode);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		//populating fields on mapping action screen
+		objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPN);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+
+		objMappingPage.fillMappingActionForm(hashMapCombineActionMappingData);
+		objMappingPage.waitForElementToBeVisible(10,objMappingPage.generateParcelButton);
+	       
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		objMappingPage.waitForElementToBeVisible(10,objMappingPage.performAdditionalMappingButton);
+
+		driver.switchTo().window(parentWindow);
+        objWorkItemHomePage.logout();
+        Thread.sleep(3000);
+        
+        //login with supervisor
+        objMappingPage.login(users.MAPPING_SUPERVISOR);
+        objMappingPage.searchModule(WORK_ITEM);
+        objMappingPage.globalSearchRecords(WorkItemNo);
+        
+        //Completing the workItem
+        objWorkItemHomePage.completeWorkItem(); 
+        driver.navigate().refresh(); 
+        objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.linkedItemsWI, 10);
+        objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsWI);
+        
+        //navigating to business event audit trail
+        objWorkItemHomePage.scrollToElement(objWorkItemHomePage.secondRelatedBuisnessEvent);
+        objWorkItemHomePage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
+		String auditTrailNo = objWorkItemHomePage.getFieldValueFromAPAS("Name", "");
+		ReportLogger.INFO("Audit Trail no:" +auditTrailNo);
+		
+		String description= objWorkItemHomePage.getFieldValueFromAPAS(trail.description);
+		String comments= hashMapCombineActionMappingData.get("Comments");
+		reasonCode= hashMapCombineActionMappingData.get("Reason code");
+			
+		String queryWIDescription = "SELECT Id,Description__c FROM Work_Item__c where Name='" + WorkItemNo+"'";
+		HashMap<String, ArrayList<String>> responseWIdesc = salesforceAPI.select(queryWIDescription);
+		String wiDescription=responseWIdesc.get("Description__c").get(0);
+		softAssert.assertContains(description,comments+" "+wiDescription+" "+reasonCode,
+				"SMAB-T3816,SMAB-T3728: Verify that comment,description,reason code provided during mapping actionis present in description field of the audit trail");		
+		objWorkItemHomePage.logout();
+		}
 }			

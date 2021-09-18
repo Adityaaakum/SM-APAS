@@ -767,8 +767,8 @@ public class Page extends TestBase {
 	public void clearSelectionFromLookup(String fieldName) throws Exception {
 		Thread.sleep(1000);
 		String xpathStr = "//label[text()='" + fieldName + "']/parent::lightning-grouped-combobox//span[text()='Clear Selection']";
-		waitUntilElementIsPresent(xpathStr, 3);
-		Click(driver.findElement(By.xpath(xpathStr)));
+		if (waitForElementToBeVisible(5, xpathStr))
+			Click(driver.findElement(By.xpath(xpathStr)));
 		Thread.sleep(1000);
 	}
 	/**
@@ -791,6 +791,5 @@ public class Page extends TestBase {
 	{
 		return new JSONObject();
 	}
-	
 
 }

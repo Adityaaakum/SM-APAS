@@ -204,6 +204,8 @@ public class SalesforceAPI extends TestBase {
         sqlQuery = sqlQuery.replace("!", "%21");
         sqlQuery = sqlQuery.replace("<", "%3C");
         sqlQuery = sqlQuery.replace(">", "%3E");
+        sqlQuery = sqlQuery.replace("&", "%26");
+        
         System.out.println("Modified query for URI : " + sqlQuery);
 
         String jsonData = "";
