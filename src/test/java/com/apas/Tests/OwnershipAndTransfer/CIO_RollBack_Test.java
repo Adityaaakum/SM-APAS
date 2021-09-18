@@ -169,12 +169,14 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 
 		hashMapOwnershipAndTransferGranteeCreationData.put("Owner Percentage", "50");
 		hashMapOwnershipAndTransferGranteeCreationData.put("First Name", "");
+		hashMapOwnershipAndTransferGranteeCreationData.put("Ownership Start Date", "");
 
 		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
 
 		hashMapOwnershipAndTransferGranteeCreationData1.put("Owner Percentage", "50");
 		hashMapOwnershipAndTransferGranteeCreationData1.put("Last Name", "Johnathon Johnson");
 		hashMapOwnershipAndTransferGranteeCreationData1.put("First Name", "");
+		hashMapOwnershipAndTransferGranteeCreationData1.put("Ownership Start Date", "");
 
 		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData1);
 
@@ -247,6 +249,7 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		hashMapOwnershipAndTransferGranteeCreationData2.put("Owner Percentage", "25");
 		hashMapOwnershipAndTransferGranteeCreationData2.put("Last Name", "Sandra Jacob");
 		hashMapOwnershipAndTransferGranteeCreationData2.put("First Name", "");
+		hashMapOwnershipAndTransferGranteeCreationData2.put("Ownership Start Date", "");
 
 		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID1, hashMapOwnershipAndTransferGranteeCreationData2);
 
