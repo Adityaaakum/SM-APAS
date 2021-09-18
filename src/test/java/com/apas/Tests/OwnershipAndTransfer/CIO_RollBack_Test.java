@@ -168,10 +168,14 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		// STEP 8-Creating the new grantee
 
 		hashMapOwnershipAndTransferGranteeCreationData.put("Owner Percentage", "50");
+		hashMapOwnershipAndTransferGranteeCreationData.put("First Name", "");
+
 		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
 
 		hashMapOwnershipAndTransferGranteeCreationData1.put("Owner Percentage", "50");
 		hashMapOwnershipAndTransferGranteeCreationData1.put("Last Name", "Johnathon Johnson");
+		hashMapOwnershipAndTransferGranteeCreationData1.put("First Name", "");
+
 		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData1);
 
 		// STEP 9-Navigating back to RAT screen and updatiung transfer code
@@ -242,6 +246,8 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 
 		hashMapOwnershipAndTransferGranteeCreationData2.put("Owner Percentage", "25");
 		hashMapOwnershipAndTransferGranteeCreationData2.put("Last Name", "Sandra Jacob");
+		hashMapOwnershipAndTransferGranteeCreationData2.put("First Name", "");
+
 		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID1, hashMapOwnershipAndTransferGranteeCreationData2);
 
 		// Step 15: CIO staff user navigating to second transfer screen by clicking on

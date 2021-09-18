@@ -1121,6 +1121,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// step 8: creating new grantee with 10 % ownership
 		ReportLogger.INFO("Creating new grantee record");
 		hashMapOwnershipAndTransferGranteeCreationData.put("Owner Percentage", "10");
+		hashMapOwnershipAndTransferGranteeCreationData.put("First Name", "");
+		hashMapOwnershipAndTransferGranteeCreationData.put("Ownership Start Date", "");
 		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
 		ReportLogger.INFO("Grantee record created successfully");
 
