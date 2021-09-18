@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.json.JSONObject;
 import com.apas.TestBase.TestBase;
 import org.apache.commons.lang.RandomStringUtils;
 import org.json.JSONObject;
