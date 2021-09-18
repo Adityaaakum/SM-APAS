@@ -1,18 +1,16 @@
 package com.apas.Tests.OwnershipAndTransfer;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.json.JSONObject;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.FindBy;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
