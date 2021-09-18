@@ -485,7 +485,7 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		softAssert.assertEquals(objWorkItemHomePage.getElementText(objCioTransfer.CIOstatus), "Approved",
 				"SMAB-T3510: Validating CIO Transfer activity status on transfer activity screen after approved by supervisor.");
 
-		// objCioTransfer.logout();
+		objCioTransfer.logout();
 
 	}
 
