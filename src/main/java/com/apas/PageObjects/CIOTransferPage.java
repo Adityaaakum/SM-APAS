@@ -58,6 +58,9 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String Status="Status";
 	public String ownerPercentage="Owner Percentage";
 	public final String DOC_DEED="DE";
+	public String firstNameLabel="First Name";
+	
+	
 	
 
 
@@ -96,6 +99,16 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String doeLabel = "DOE";
 	public String dorLabel = "DOR";
 	public String dovLabel = "DOV";
+	public String documentTypeLabel = "Document Type";
+	public String apnCountLabel = "APN Count";
+	public String transferTaxLabel = "Transfer Tax";
+	public String valueFromDocTaxLabel = "Value from Doc Tax";
+	public String cityOfSmTaxLabel = "City of SM Tax";
+	public String valueFromDocTaxCityLabel = "Value from Doc Tax(City)";
+	public String pcorLable = "PCOR?";
+	public String createdByLabel = "Created By";
+	public String lastModifiedByLabel = "Last Modified By";
+	
 	
 
 	
@@ -137,6 +150,9 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
 	
+	@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']")
+	public WebElement validateErrorText;	
+	
 	@FindBy(xpath =commonXpath+ "//select[@name='Formatted_Name_1']")
 	public WebElement formattedName1;
 	
@@ -151,10 +167,9 @@ public class CIOTransferPage extends ApasGenericPage {
 	
 	@FindBy(xpath = commonXpath + "//div[text()='Recorded APN Transfer']//following::lightning-formatted-text")
 	public WebElement cioTransferActivityLabel;
-	
-
+		
 	@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b")
-	public WebElement cioTransferSuccessMsg;
+	public WebElement cioTransferSuccessMsg;	
 	
 	@FindBy(xpath = "//*[contains(@data-value,'Reviewed Assessee Response')]")
 	public WebElement reviewAssecesseLink;
@@ -197,6 +212,12 @@ public class CIOTransferPage extends ApasGenericPage {
 	
 	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='PUC Code']/../..//slot[@slot='outputField']//lightning-formatted-text")
 	public WebElement pucCodeTransferActivityLabel;
+	
+	@FindBy(xpath =commonXpath+"//*[@class='slds-form-element__help']")
+	public WebElement errorMessageOnTransferScreen;
+	
+	@FindBy(xpath =commonXpath+ "//select[@name='States']")
+	public WebElement mailingState;
 	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
@@ -259,7 +280,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
 	    		ReportLogger.INFO("-------------Generated Recorded WorkItems.------------------"); 
 	    		counterForFailedattempts=0;
-	    		Thread.sleep(5000);
+	    		Thread.sleep(10000);
 	    		return;
 	    		}
 	    		if(ApnCount<0)
@@ -399,21 +420,26 @@ public class CIOTransferPage extends ApasGenericPage {
 		 
 		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {		 		 
 			
-			 try {
-			   Thread.sleep(2000);		   
-			   Click(getButtonWithText(copyToMailToButtonLabel));
-			   waitForElementToDisappear(formattedName1, 5);
-			   Click(formattedName1);
-			   Select select= new Select(formattedName1);
-			   select.selectByVisibleText(granteeForMailTo);
-			   Click(formattedName1);		   
-			   enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
-			   Click(getButtonWithText(nextButton));
-			   ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");}
-			 catch (Exception e) {
-				ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE ADDED THROUGH COPY TO MAIL TO ACTION BUTTON");
+				try {
+					Thread.sleep(2000);
+					Click(getButtonWithText(copyToMailToButtonLabel));
+					waitForElementToDisappear(formattedName1, 5);
+					Click(formattedName1);
+					Select select = new Select(formattedName1);
+					select.selectByVisibleText(granteeForMailTo);
+					Click(formattedName1);
+					Click(mailingState);
+					Select selectMailingState = new Select(mailingState);
+					selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"));
+					Click(mailingState);
+					enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
+					Click(getButtonWithText(nextButton));
+					ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
+				} catch (Exception e) {
+					ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE ADDED THROUGH COPY TO MAIL TO ACTION BUTTON");
+				}
 			}
-		 }
+
 		 
 		 
 		 /*
@@ -434,26 +460,29 @@ public class CIOTransferPage extends ApasGenericPage {
 		 /*
 		  * This method will create one new grantee per method call in Recorded APN transfer screen.
 		  * 
-		  */
-		 
-		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception {
-			 
-			 Thread.sleep(2000);
-			 try {
-			   String execEnv= System.getProperty("region");			 
-			   driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");			   
-			   Thread.sleep(5000);
-			   Click(getButtonWithText(newButton));
-			   enter(LastNameLabel, dataToCreateGrantee.get("Last Name"));	
-			   if(dataToCreateGrantee.get("Owner Percentage")!=null)
-			   enter(ownerPercentage,dataToCreateGrantee.get("Owner Percentage"));	   	
-			   Click(getButtonWithText(saveButton));
-			   Thread.sleep(3000);
-			   ReportLogger.INFO("GRANTEE RECORD ADDED!!");	}
-			   catch (Exception e) {
-			    ReportLogger.INFO("SORRY!! GRANTEE RECORD CANNOT BE ADDED");
+		  */		 
+
+		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
+		 {
+				try {
+					String execEnv = System.getProperty("region");
+					driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/"
+							+ recordeAPNTransferID + "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+					waitForElementToBeVisible(5, newButton);
+					Click(getButtonWithText(newButton));
+					enter(LastNameLabel, dataToCreateGrantee.get("Last Name"));
+					if (dataToCreateGrantee.get("Owner Percentage") != null)
+						enter(ownerPercentage, dataToCreateGrantee.get("Owner Percentage"));
+					if (dataToCreateGrantee.get("First Name") != null)
+						enter(firstNameLabel, dataToCreateGrantee.get("First Name"));
+					Click(getButtonWithText(saveButton));
+					Thread.sleep(3000);
+					ReportLogger.INFO("GRANTEE RECORD ADDED!!");
+				} catch (Exception e) {
+					ReportLogger.INFO("SORRY!! GRANTEE RECORD CANNOT BE ADDED");
+				}
+
 			}
-		 }
 		 
 		 public void deleteRecordedApnFromRecordedDocument(String recordedDocumentId)
 		 {
@@ -502,5 +531,43 @@ public class CIOTransferPage extends ApasGenericPage {
 		 } 
 			
 
-		 	
+		 public void createNewGrantorRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
+		 {
+				try {
+					String execEnv = System.getProperty("region");
+					driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/"
+							+ recordeAPNTransferID + "/related/CIO_Transfer_Grantors__r/view");
+					waitForElementToBeVisible(5, newButton);
+					Click(getButtonWithText(newButton));
+					enter(LastNameLabel, dataToCreateGrantee.get("Last Name"));
+					if (dataToCreateGrantee.get("First Name") != null)
+						enter(firstNameLabel, dataToCreateGrantee.get("First Name"));
+					Click(getButtonWithText(saveButton));
+					Thread.sleep(3000);
+					ReportLogger.INFO("GRANTOR RECORD ADDED!!");
+				} catch (Exception e) {
+					ReportLogger.INFO("SORRY!! GRANTOR RECORD CANNOT BE ADDED");
+				}
+		 }
+		 
+		 /*
+			 * This method will click on show more actions on transfer activity screen and
+			 * takes an argument of the button name .
+			 * 
+			 * @Param : Button text inside show more actions
+			 */
+
+			public void clickQuickActionButtonOnTransferActivity(String enterButtonText) throws Exception {
+				try {
+					
+					Click(getButtonWithText(enterButtonText));
+					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
+				} catch (Exception e) {
+					Click(quickActionButtonDropdownIcon);
+					Click(getButtonWithText(enterButtonText));
+					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
+				}
+			}
+	
 }
+		 	

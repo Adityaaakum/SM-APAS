@@ -314,6 +314,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String NewButton="New";
 	public String migrateAPN="Migrate APN(s)";
 	public String wiEventId = "Event ID";
+	public final String NoOfLinkedParcelsInWI = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//thead//th[@aria-label='APN']//ancestor::thead//following-sibling::tbody//tr";
 
 
 
