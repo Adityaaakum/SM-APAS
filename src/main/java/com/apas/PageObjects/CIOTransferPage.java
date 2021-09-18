@@ -74,6 +74,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String ownershipPercentage ="Ownership Percentage";
 
 
+
 	public static final String CIO_EVENT_CODE_COPAL="CIO-COPAL";
 	public static final String CIO_EVENT_CODE_PART="CIO-PART";
 	public static final String CIO_EVENT_CODE_ElessThan5Percent="E<5%";
