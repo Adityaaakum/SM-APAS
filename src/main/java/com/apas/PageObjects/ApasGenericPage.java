@@ -337,10 +337,11 @@ public class ApasGenericPage extends Page {
         			+ "or contains(@class,'windowViewMode-maximized') "
         			+ "or contains(@class,'slds-listbox__option_plain') "
         			+ "or contains(@class,'flowruntimeBody') "
+        			+ "or contains(@class,'slds-form-element__label') "
         			+ "or contains(@class,'slds-input slds-combobox__input')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
 			xpathDropDownOption = commonPath + 
 					"//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']" ;
-			
+		
         } else{
             webElement = (WebElement) element;
             xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short') "
