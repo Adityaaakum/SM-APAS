@@ -3,7 +3,8 @@
 	"Formatted Name1" : "LUKE SHAW",
 	"Start Date":"7/16/2021",
 	"End Date":"7/19/2021",
-	"Mailing Zip":"560090"
+	"Mailing Zip":"560090",
+	"Mailing State": "WY"
 	
 	},
 	"dataToCreateGranteeWithIncompleteData":{
@@ -11,7 +12,9 @@
 	"Last Name":"LUKE SHAW",
 	"Ownership Start Date":"7/16/2021",
 	"Ownership End Date":"7/19/2021",
-	"Owner Percentage":"50"
+	"Owner Percentage":"50",
+	"IncorrectDOV" : "7/20/2021"
+	
 	},
 	
 	"DataToCreateOwnershipRecord": {
