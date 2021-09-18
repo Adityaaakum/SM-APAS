@@ -1993,8 +1993,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * from transfer feed that displays set of data is predefined format and also in
 	 * this test method we try to validate that CIO staff can  add and edit grantor and grantee,
 	 * new record and the full name of metioned records is cancatination of last
-	 * name first name in the same order.s
-	 */
+	 * name first name in the same order.s	 */
 
 	@Test(description = "SMAB-T3342,SMAB-T3343,SMAB-T3629,SMAB-T3630: Verify that User is able validate that orignal transfer list  data fetched from transfer feed that display set of data is predefined format", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" }, enabled = true)
