@@ -87,6 +87,22 @@ public class ParcelsPage extends ApasGenericPage {
 	public String isPrimaryDropdown = "Is Primary?";
 	public String situsSearch = "Situs";
 	
+	public String assessedValueType = "Assessed Value Type";
+	public String effectiveEndDate = "Effective End Date";
+	public String landCashValue = "Land Cash Value";
+	public String improvementCashValue = "Improvement Cash Value";
+	public String typeOfDecline = "Type of Decline";
+	public String land = "Land";
+	public String improvements = "Improvements";
+	public String additionalDeclines = "Additional Declines";
+	public String factoredBaseYearValue = "Factored Base Year Value";
+	public String hpiValueAllowance = "HPI Value Allowance";
+	public String originDov = "Origin DOV";
+	public String originImprovementValue = "Origin Improvement Value";
+	public String originLandValue = "Origin Land Value";
+	public String originFcv = "Origin FCV";
+
+	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
 
@@ -144,6 +160,26 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[@title='Target Parcel Relationships']")
 	public WebElement targetParcelLabel;
 	
+	@FindBy(xpath = "//*[@role='menuitem' and contains(.,'Assessed Values')]")
+	public WebElement assessedValue;
+	
+	@FindBy(xpath = "//button[@name='New' and contains(.,'New')]")
+	public WebElement addNewAssessedValue;
+	
+	@FindBy(xpath = "//h2[contains(text(),'New Assessed Values')]")
+	public WebElement newAssessedValuePopUp;
+	
+	@FindBy(xpath = "//slot/slot/flexipage-column2[2]/div/slot/flexipage-field[6]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")
+	public WebElement objFactoredBYV;
+	
+	@FindBy(xpath = "//*[@class='inline-edit-trigger-icon slds-button__icon slds-button__icon_hint']")
+	public WebElement inlineEditIcon;
+	
+	@FindBy(xpath = "//div/div/one-record-home-flexipage2/forcegenerated-adg-rollup_component___force-generated__flexipage_-record-page___-assessed_-values_-lightning_-record_-page___-assessed_-b-y_-values__c___-v-i-e-w/forcegenerated-flexipage_assessed_values_lightning_record_page_assessed_by_values__c__view_js/record_flexipage-record-page-decorator/div[1]/records-record-layout-event-broker/slot/slot/flexipage-record-home-template-desktop2/div/div[1]/slot/slot/flexipage-component2/slot/records-lwc-highlights-panel/records-lwc-record-layout/forcegenerated-highlightspanel_assessed_by_values__c___012000000000000aaa___compact___view___recordlayout2/force-highlights2/div[1]/div[2]/slot/slot/force-highlights-details-item[4]/div/p[2]/slot/records-formula-output/slot/lightning-formatted-number")
+	public WebElement landValue;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Details']")
+	public WebElement detailsTab;
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -549,5 +585,16 @@ public class ParcelsPage extends ApasGenericPage {
 			return situsCreated;	
 		}
 		
+		public void openNewAssessedValueForm() throws Exception {
+			openNewAssessedValueForm("New Assessed Values");
+		}
+		public void openNewAssessedValueForm(String newAssessedValue) throws Exception {
+			//Select one of the following values for Building Permit Type "E-File Building Permit" or "Manual Entry Building Permit"
+			javascriptClick(waitForElementToBeClickable(addNewAssessedValue));
+			waitForElementToBeVisible(newAssessedValuePopUp,30);
+			waitForElementToBeClickable(newAssessedValuePopUp,20);
+
+				}
+
 		
 }
