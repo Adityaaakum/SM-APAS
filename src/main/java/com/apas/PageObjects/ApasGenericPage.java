@@ -1286,7 +1286,7 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
    
    public String getErrorMessage() throws Exception {
 	   	String ErrorTxt = "";
-	   	Thread.sleep(5000);
+	   	Thread.sleep(7000);
 		List<WebElement> ErrorText = locateElements("//div[contains(@class,'color_error')] |"
 				+ "//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
 	   	if(ErrorText.get(0).getAttribute("class").contains("color_error")){
