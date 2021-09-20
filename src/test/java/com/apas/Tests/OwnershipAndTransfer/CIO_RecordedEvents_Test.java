@@ -85,7 +85,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.generateRecorderJobWorkItems(objMappingPage.DOC_CERTIFICATE_OF_COMPLIANCE, 0);
 
 		String WorkItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='NO APN' AND Sub_type__c='NO APN - MAPPING'  And status__c='In pool' order by createdDate desc limit 1";
-		Thread.sleep(3000);
 		String WorkItemNo = salesforceAPI.select(WorkItemQuery).get("Name").get(0);
 		objMappingPage.globalSearchRecords(WorkItemNo);
 
@@ -1160,7 +1159,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		
 		// step 1: executing the recorder feed batch job to generate CIO WI
 		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
-		Thread.sleep(7000);
 		String cioWorkItem = objWorkItemHomePage.getLatestWorkItemDetailsOnWorkbench(1).get("Name").get(0);
 
 		// step 2: fetching the recorded apn transfer object associated with the CIO WI and updating the DOV
@@ -1524,6 +1522,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objMappingPage.searchModule(WORK_ITEM);
 		objMappingPage.globalSearchRecords(workItemNo);
 		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		//String auditTrailFromWIPage = objMappingPage.getGridDataInHashMap(1).get("Name").get(1);
 		objCioTransfer.deleteOwnershipFromParcel(
 				salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0));
 
@@ -1841,7 +1840,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// Step 1: Executing the recorder feed batch job to generate CIO WI & Add
 		// ownership records in the parcels
 		objCioTransfer.generateRecorderJobWorkItems("DE", 1);
-		Thread.sleep(7000);
 		String cioWorkItem = objWorkItemHomePage.getLatestWorkItemDetailsOnWorkbench(1).get("Name").get(0);
 
 		objMappingPage.login(users.SYSTEM_ADMIN);
