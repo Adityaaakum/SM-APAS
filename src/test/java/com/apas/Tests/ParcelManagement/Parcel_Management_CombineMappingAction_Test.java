@@ -123,9 +123,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 		
 		//Enter values in the Parcels
-		jsonParcelObject.put("Short_Legal_Description__c",legalDescriptionValue);
-		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-		salesforceAPI.update("Parcel__c", apnId1, jsonParcelObject);
+		JSONObject jsonForCombineError = objMappingPage.getJsonObject();
+		jsonForCombineError.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonForCombineError.put("TRA__c",responseTRADetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c", apnId1, jsonForCombineError);
 		salesforceAPI.update("Parcel__c", apnId2, "TRA__c", responseTRADetails.get("Id").get(1));
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
@@ -380,10 +381,16 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyParcelOverwriteForCombineMappingAction(String loginUser) throws Exception {
 		
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') and Legacy__c = 'No' limit 1");
+		String PUC = responsePUCDetails.get("Name").get(0);
+		String PucId = responsePUCDetails.get("Id").get(0);	
+		
 		//Fetching parcel that are Active
 		String queryApnDetails ="SELECT Id,Name FROM Parcel__c where primary_situs__c != NULL and "
 				+ "Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where "
-				+ "type__c='CIO') and (Not Name like '1%') and (Not Name like '800%') "
+				+ "type__c='CIO') and (Not Name like '1%') and (Not Name like '8%') "
 				+ "and (Not Name like '%990') Limit 2";
 		
 		HashMap<String, ArrayList<String>> responseAPNDetails1 = salesforceAPI.select(queryApnDetails);
@@ -392,6 +399,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apnId1=responseAPNDetails1.get("Id").get(0);
 		String apnId2=responseAPNDetails1.get("Id").get(1);
 		
+		salesforceAPI.update("Parcel__c", apnId1, "PUC_Code_Lookup__c", PucId);
+		salesforceAPI.update("Parcel__c", apnId2, "PUC_Code_Lookup__c", PucId);
+		
 		objMappingPage.deleteOwnershipFromParcel(apnId1);
 		objMappingPage.deleteOwnershipFromParcel(apnId2);
 		
@@ -399,12 +409,13 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+		
+		JSONObject jsonForCombineOverwrite = objMappingPage.getJsonObject();
+		jsonForCombineOverwrite.put("Lot_Size_SQFT__c",parcelSize);
+		jsonForCombineOverwrite.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
 
-		jsonParcelObject.put("Lot_Size_SQFT__c",parcelSize);
-		jsonParcelObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
-
-		salesforceAPI.update("Parcel__c",responseAPNDetails1.get("Id").get(0),jsonParcelObject);
-		salesforceAPI.update("Parcel__c",responseAPNDetails1.get("Id").get(1),jsonParcelObject);
+		salesforceAPI.update("Parcel__c",responseAPNDetails1.get("Id").get(0),jsonForCombineOverwrite);
+		salesforceAPI.update("Parcel__c",responseAPNDetails1.get("Id").get(1),jsonForCombineOverwrite);
 		
 		//Getting Owner or Account records
 		HashMap<String, ArrayList<String>> responseAssesseeDetails = objMappingPage.getOwnerForMappingAction(2);
@@ -412,18 +423,23 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String assesseeName2 = responseAssesseeDetails.get("Name").get(1);
 		
 		//Fetching Interim parcel 
-		String queryAPNValue = "Select name,ID  From Parcel__c where name like '800%' and name like '%0' "
+		String queryAPNValue = "Select name,ID  From Parcel__c where name like '8%' and name like '%0' "
 		  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		String interimAPN = salesforceAPI.select(queryAPNValue).get("Name").get(0);
 		String interimAPNId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+		salesforceAPI.update("Parcel__c", interimAPNId, "PUC_Code_Lookup__c", PucId);
+		salesforceAPI.update("Parcel__c", interimAPNId, "Status__c", "Active");
 		
 		//Fetching parcel that are Active different than above
-		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Id NOT IN ('" + apnId1 + "', '" + apnId2 + "') and (Not Name like '1%') and (Not Name like '800%') and (Not Name like '%990') Limit 2";
+		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Id NOT IN ('" + apnId1 + "', '" + apnId2 + "') and (Not Name like '1%') and (Not Name like '8%') and (Not Name like '%990') Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails2 = salesforceAPI.select(queryForActiveAPN);
 		String apn3=responseAPNDetails2.get("Name").get(0);
 		String apnId3=responseAPNDetails2.get("Id").get(0);
 		String apn4=responseAPNDetails2.get("Name").get(1);
 		String apnId4=responseAPNDetails2.get("Id").get(1);
+		
+		salesforceAPI.update("Parcel__c", apnId3, "PUC_Code_Lookup__c", PucId);
+		salesforceAPI.update("Parcel__c", apnId4, "PUC_Code_Lookup__c", PucId);
 		
 		// deleting the current ownership records for the APN linked with WI
 		objMappingPage.deleteOwnershipFromParcel(interimAPNId);
@@ -449,7 +465,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 		
-		salesforceAPI.update("Parcel__c", interimAPNId, "Status__c", "Active");
 		salesforceAPI.update("Parcel__c", apnId1, "TRA__c",responseTRADetails.get("Id").get(0));
 		salesforceAPI.update("Parcel__c", apnId2, "TRA__c", responseTRADetails.get("Id").get(0));
 		salesforceAPI.update("Parcel__c", apnId3, "TRA__c", responseTRADetails.get("Id").get(1));
@@ -680,7 +695,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		
 		//Getting parcels that are Active 
 		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
-				+ "and (Not Name like '1%') and (Not Name like '800%') and (Not Name like '%990') Limit 2";
+				+ "and (Not Name like '1%') and (Not Name like '8%') and (Not Name like '%990') Limit 2";
 		String apn1 = salesforceAPI.select(queryForActiveAPN).get("Name").get(0);
 		String apnId1 = salesforceAPI.select(queryForActiveAPN).get("Id").get(0);
 		String apn2 = salesforceAPI.select(queryForActiveAPN).get("Name").get(1);
@@ -890,7 +905,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		
 		//Getting parcels that are Active 
 		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' AND primary_situs__c != NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
-				+ "and (Not Name like '1%') and (Not Name like '800%') and (Not Name like '%990') Limit 2";
+				+ "and (Not Name like '1%') and (Not Name like '8%') and (Not Name like '%990') Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryForActiveAPN);
 		String apn1 = responseAPNDetails.get("Name").get(0);
 		String apnId1 = responseAPNDetails.get("Id").get(0);
@@ -943,7 +958,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		if (updateSmallestAPN.equals(apn3)) updateRecordOn = condoApnId;
 		
 		//Fetch some other values from database
-		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,Id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,Id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') and Legacy__c = 'No' limit 1");
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
@@ -953,11 +968,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		primarySitusValue = salesforceAPI.select(querySitusValue).get("Name").get(0);
 		
 		//Enter values in the Parcels
-		jsonParcelObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
-		jsonParcelObject.put("Short_Legal_Description__c","");
-		jsonParcelObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
-		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-		salesforceAPI.update("Parcel__c", updateRecordOn, jsonParcelObject);
+		JSONObject jsonForCombineAction = objMappingPage.getJsonObject();
+		jsonForCombineAction.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonForCombineAction.put("Short_Legal_Description__c","");
+		jsonForCombineAction.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonForCombineAction.put("TRA__c",responseTRADetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c", updateRecordOn, jsonForCombineAction);
 		
 		Thread.sleep(1000); //Allows parcel update
 		salesforceAPI.update("Parcel__c", apnId1, "Lot_Size_SQFT__c", "1000");
@@ -1049,7 +1065,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2357: Validation that System populates District/Neighborhood from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue.replaceFirst("\\s", ""),
+		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s", ""),primarySitusValue.replaceFirst("\\s", ""),
 				"SMAB-T2357: Validation that System populates Situs from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),reasonCode,
 				"SMAB-T2357: Validation that System populates Reason code from the parent parcel");
@@ -1076,7 +1092,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		boolean actionColumn = gridDataHashMap.containsKey("Action");
 		
-		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue.replaceFirst("\\s", ""),
+		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s", ""),primarySitusValue.replaceFirst("\\s", ""),
 				"SMAB-T2357: Validation that System populates Situs  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2357: Validation that System populates neighborhood Code from the parent parcel");
@@ -1111,7 +1127,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2373: Validate the PUC of child parcel is populated");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelTRA, "Parcel Information"),responseTRADetails.get("Name").get(0),
 				"SMAB-T2373: Validate the TRA of child parcel generated");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus, "Parcel Information"),primarySitusValue.replaceFirst("\\s", ""),
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus, "Parcel Information").replaceFirst("\\s", ""),primarySitusValue.replaceFirst("\\s", ""),
 				"SMAB-T2373: Validate the Situs of child parcel generated");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelDistrictNeighborhood, "Summary Values"),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2373: Validate the District/Neighborhood of child parcel generated");
@@ -1159,7 +1175,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.globalSearchRecords(workItemNumber);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		driver.navigate().refresh(); //refresh as the focus is getting lost
-		Thread.sleep(10000);
+		Thread.sleep(5000);
 		objMappingPage.waitForElementToBeVisible(10, objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
@@ -1185,7 +1201,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.globalSearchRecords(workItemNumber);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		driver.navigate().refresh(); //refresh as the focus is getting lost
-		Thread.sleep(10000);
+		Thread.sleep(5000);
 		objMappingPage.waitForElementToBeVisible(10, objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		objWorkItemHomePage.completeWorkItem();
 		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Completed","SMAB-T1838:Verify user is able to complete the Work Item");
@@ -2083,14 +2099,21 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyParcelGenerationForCombineWithInterimAsLowestParcel(String loginUser) throws Exception {
 		
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') and Legacy__c = 'No' limit 1");
+		String PUC = responsePUCDetails.get("Name").get(0);
+		String PucId = responsePUCDetails.get("Id").get(0);
+		
 		//Fetching Interim parcels
-		String queryInterimAPNValue = "Select name,ID  From Parcel__c where name like '800%' "
+		String queryInterimAPNValue = "Select name,ID  From Parcel__c where name like '8%' "
 				  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		String apn1 = salesforceAPI.select(queryInterimAPNValue).get("Name").get(0);
 		String apn1Id = salesforceAPI.select(queryInterimAPNValue).get("Id").get(0);
 				
 		// deleting the current ownership records for the APN linked with WI
 		objMappingPage.deleteOwnershipFromParcel(apn1Id);
+		salesforceAPI.update("Parcel__c", apn1Id, "PUC_Code_Lookup__c", PucId);
 		salesforceAPI.update("Parcel__c", apn1Id, "Status__c", "Active");
 		
 		//Getting a Non-Condo Parcel starting with '9'
@@ -2099,10 +2122,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 					"DataToCreateParcelStartingWith9");
 		String apnStartingWith9 = hashMapCreateNewParcel.get("APN");
 		String parcelNumberStartingWith9 = hashMapCreateNewParcel.get("Parcel Number");
-		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
-					+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
-					+ "where Status__c='Active') limit 1");
-		String PUC = responsePUCDetails.get("Name").get(0);
 		
 		//Login to the APAS application
 		objMappingPage.login(users.SYSTEM_ADMIN);
@@ -2119,7 +2138,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	    String apn2Id = responseSearchedApnId.get("Id").get(0);
 	    
 		// deleting the current ownership records for the APN linked with WI
-		objMappingPage.deleteOwnershipFromParcel(apn2Id);
+		objMappingPage.deleteOwnershipFromParcel(apn2Id);	
 		salesforceAPI.update("Parcel__c", apn2Id, "Status__c", "Active");
 		
 		String concatenateMixAPNs = apn1+","+apn2;
@@ -2180,10 +2199,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2904: Validate system doesn't consider Interim parcel as lower parcel if other parcel is higher than that in series");
 		
 		driver.switchTo().window(parentWindow);
+		salesforceAPI.delete("Parcel__c",apn2Id);
+		
 		objWorkItemHomePage.logout();
 		}
 	/**
-	 * This method is to Verify that User is able to genrate a recorded doc WI from recorderIntegration and is able to perform mapping actions on that document
+	 * This method is to Verify that User is able to generate a recorded doc WI from recorderIntegration and is able to perform mapping actions on that document
 	 * @param loginUser
 	 * @throws Exception
 	 */
@@ -2311,14 +2332,23 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyGenerationOfInterimParcelForCombineMappingAction(String loginUser) throws Exception {
 		
-		//Fetching Interim parcels
-		String queryInterimAPNValue = "Select name,ID  From Parcel__c where name like '800%' "
-				  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
+				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') and Legacy__c = 'No' limit 1");
+		String PUC = responsePUCDetails.get("Name").get(0);
+		String PucId = responsePUCDetails.get("Id").get(0);	
 		
+		//Fetching Interim parcels
+		String queryInterimAPNValue = "Select name,ID  From Parcel__c where name like '8%' "
+				  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
+				
 		String apn1 = salesforceAPI.select(queryInterimAPNValue).get("Name").get(0);
 		String apn1Id = salesforceAPI.select(queryInterimAPNValue).get("Id").get(0);
 		String apn2 = salesforceAPI.select(queryInterimAPNValue).get("Name").get(1);
 		String apn2Id = salesforceAPI.select(queryInterimAPNValue).get("Id").get(1);
+		
+		salesforceAPI.update("Parcel__c", apn1Id, "PUC_Code_Lookup__c", PucId);
+		salesforceAPI.update("Parcel__c", apn2Id, "PUC_Code_Lookup__c", PucId);
 		
 		//Getting Active Non-Condo Parcel
 		String queryAPNValue = "Select name,ID  From Parcel__c where name like '0%'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and (Not Name like '%990') limit 2";
@@ -2326,6 +2356,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apn3Id = salesforceAPI.select(queryAPNValue).get("Id").get(0);
 		String apn4 = salesforceAPI.select(queryAPNValue).get("Name").get(1);
 		String apn4Id = salesforceAPI.select(queryAPNValue).get("Id").get(1);
+		
+		salesforceAPI.update("Parcel__c", apn3Id, "PUC_Code_Lookup__c", PucId);
+		salesforceAPI.update("Parcel__c", apn4Id, "PUC_Code_Lookup__c", PucId);
 		
 		//Deleting the current ownership records for all the Parcel records
 		objMappingPage.deleteOwnershipFromParcel(apn1Id);

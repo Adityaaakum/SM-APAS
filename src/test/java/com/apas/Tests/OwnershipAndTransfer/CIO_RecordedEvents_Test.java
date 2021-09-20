@@ -85,7 +85,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.generateRecorderJobWorkItems(objMappingPage.DOC_CERTIFICATE_OF_COMPLIANCE, 0);
 
 		String WorkItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='NO APN' AND Sub_type__c='NO APN - MAPPING'  And status__c='In pool' order by createdDate desc limit 1";
-		Thread.sleep(3000);
 		String WorkItemNo = salesforceAPI.select(WorkItemQuery).get("Name").get(0);
 		objMappingPage.globalSearchRecords(WorkItemNo);
 
@@ -1142,37 +1141,38 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
 	public void OwnershipAndTransfer_Calculate_Ownership_SameOwnerMultipleDOV(String loginUser) throws Exception {
 
-		String ownershipPercentage[] = { "75", "25" };
-		String ownershipStartDate[] = { "5/3/2010", "7/2/2018" };
-
+		String  ownershipPercentage[] = {"75","25"};
+		String  ownershipStartDate[] = {"5/3/2010" ,"7/2/2018"};
+		JSONObject jsonObjectOwnership = new JSONObject();
+		
 		String execEnv = System.getProperty("region");
 		String ownershipCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(ownershipCreationData,
 				"DataToCreateOwnershipRecord");
 
-		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil
-				.generateMapFromJsonFile(ownershipCreationData, "dataToCreateGranteeWithCompleteOwnership");
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(ownershipCreationData,
+				"dataToCreateGranteeWithCompleteOwnership");
 
 		String recordedDocumentID = salesforceAPI
 				.select("SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1")
 				.get("Id").get(0);
-
+		
 		// step 1: executing the recorder feed batch job to generate CIO WI
 		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
-		Thread.sleep(7000);
 		String cioWorkItem = objWorkItemHomePage.getLatestWorkItemDetailsOnWorkbench(1).get("Name").get(0);
 
-		// step 2: fetching the recorded apn transfer object associated with the CIO WI
-		// and updating the DOV
+		// step 2: fetching the recorded apn transfer object associated with the CIO WI and updating the DOV
 		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + cioWorkItem + "'";
-		String recordeAPNTransferID = salesforceAPI.select(queryRecordedAPNTransfer).get("Navigation_Url__c").get(0)
-				.split("/")[3];
+		String recordeAPNTransferID = salesforceAPI.select(queryRecordedAPNTransfer).get("Navigation_Url__c").get(0).split("/")[3];
+		
+		jsonObject.put("xDOV__c", "2021-02-03");
+		jsonObject.put("DOR__c", "2021-06-23");
 
-		jsonObject.put("xDOV__c", "2007-02-03");
 		salesforceAPI.update("Recorded_APN_Transfer__c", recordeAPNTransferID, jsonObject);
 
-		// deleting the CIO Transfer grantees for the current transfer screen
+		//deleting the CIO Transfer grantees for the current transfer screen
 		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
+
 
 		// step 3: deleting the current ownership records for the APN linked with CIO WI
 		String queryAPN = "SELECT Parcel__c FROM Recorded_APN_Transfer__c where id='" + recordeAPNTransferID + "'";
@@ -1186,10 +1186,14 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		HashMap<String, ArrayList<String>> responseAssesseeDetails = salesforceAPI.select(queryAssesseeRecord);
 		String assesseeName = responseAssesseeDetails.get("Name").get(0);
 		String assesseeFirstName = responseAssesseeDetails.get("FirstName").get(0);
+		if (assesseeFirstName.equals("null"))
+			assesseeFirstName="";
 		String assesseeLastName = responseAssesseeDetails.get("LastName").get(0);
+		if (assesseeLastName.equals("null"))
+			assesseeLastName="";
+		
+		//step 5 : creating two new ownership records with different DOVs but same owner
 
-		// step 5 : creating two new ownership records with different DOVs but same
-		// owner
 		objCioTransfer.login(SYSTEM_ADMIN);
 		objMappingPage.searchModule(EFILE_INTAKE_VIEW);
 		Thread.sleep(5000);
@@ -1207,9 +1211,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			String dateOfOwnership = salesforceAPI.select(
 					"Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
 					.get("Ownership_Start_Date__c").get(0);
-			jsonObject.put("DOR__c", dateOfOwnership);
-			jsonObject.put("DOV_Date__c", dateOfOwnership);
-			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
+			jsonObjectOwnership.put("DOR__c", dateOfOwnership);
+			jsonObjectOwnership.put("DOV_Date__c", dateOfOwnership);
+			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObjectOwnership);	
+			
 
 		}
 
@@ -1219,10 +1224,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.login(loginUser);
 		objCioTransfer.searchModule(EFILE_INTAKE_VIEW);
 		objWorkItemHomePage.globalSearchRecords(cioWorkItem);
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab,20);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
-		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel,20);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);	  	
+
 
 		// Step7: CIO staff user navigating to transfer screen by clicking on related
 		// action link
@@ -1238,6 +1244,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// step 8: creating new grantee with 10 % ownership
 		ReportLogger.INFO("Creating new grantee record");
 		hashMapOwnershipAndTransferGranteeCreationData.put("Owner Percentage", "10");
+		hashMapOwnershipAndTransferGranteeCreationData.put("First Name", "");
+		hashMapOwnershipAndTransferGranteeCreationData.put("Ownership Start Date", "");
 		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
 		ReportLogger.INFO("Grantee record created successfully");
 
@@ -1352,10 +1360,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Submitting the WI for approval");
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
-		objCioTransfer.waitForElementToBeVisible(objCioTransfer.confirmationMessageOnTranferScreen);
-		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.confirmationMessageOnTranferScreen),
-				"Work Item has been submitted for Approval.",
-				"SMAB-T3696: Validation that proper mesage is displayed after submit for approval");
+		objCioTransfer.waitForElementToBeVisible(30,objCioTransfer.confirmationMessageOnTranferScreen);
+		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.confirmationMessageOnTranferScreen),"Work Item has been submitted for Approval.","SMAB-T3696: Validation that proper mesage is displayed after submit for approval");
 
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButtonLabel));
 		ReportLogger.INFO("WI Submitted  for approval successfully");
@@ -1516,6 +1522,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objMappingPage.searchModule(WORK_ITEM);
 		objMappingPage.globalSearchRecords(workItemNo);
 		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		//String auditTrailFromWIPage = objMappingPage.getGridDataInHashMap(1).get("Name").get(1);
 		objCioTransfer.deleteOwnershipFromParcel(
 				salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0));
 
@@ -1833,7 +1840,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// Step 1: Executing the recorder feed batch job to generate CIO WI & Add
 		// ownership records in the parcels
 		objCioTransfer.generateRecorderJobWorkItems("DE", 1);
-		Thread.sleep(7000);
 		String cioWorkItem = objWorkItemHomePage.getLatestWorkItemDetailsOnWorkbench(1).get("Name").get(0);
 
 		objMappingPage.login(users.SYSTEM_ADMIN);

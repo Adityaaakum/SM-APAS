@@ -340,7 +340,7 @@ public class ApasGenericPage extends Page {
         			+ "or contains(@class,'slds-input slds-combobox__input')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
 			xpathDropDownOption = commonPath + 
 					"//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']" ;
-			
+		
         } else{
             webElement = (WebElement) element;
             xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short') "
@@ -1286,7 +1286,7 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
    
    public String getErrorMessage() throws Exception {
 	   	String ErrorTxt = "";
-	   	Thread.sleep(5000);
+	   	Thread.sleep(7000);
 		List<WebElement> ErrorText = locateElements("//div[contains(@class,'color_error')] |"
 				+ "//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
 	   	if(ErrorText.get(0).getAttribute("class").contains("color_error")){
@@ -1393,7 +1393,7 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
      */
     public void deleteOwnershipFromParcel(String apnId)
     {
-  	  String query ="SELECT  Id FROM Property_Ownership__c where parcel__c='" +apnId+"'";
+  	  String query ="SELECT  Id FROM Property_Ownership__c where parcel__c='" +apnId+"' or Ownership_Roll_Back__c='" +apnId+"'";
   	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
   	  
   	  if(!response.isEmpty())

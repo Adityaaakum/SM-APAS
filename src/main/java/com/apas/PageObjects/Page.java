@@ -782,6 +782,7 @@ public class Page extends TestBase {
 		Click(driver.findElement(By.xpath(xpathStr)));
 		Thread.sleep(1000);
 	}
+
 	/*
 	 * @Description - This method returns a new JSON object everytime it is  called.
 	 * 
@@ -791,5 +792,4 @@ public class Page extends TestBase {
 	{
 		return new JSONObject();
 	}
-
 }
