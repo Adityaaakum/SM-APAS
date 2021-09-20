@@ -671,7 +671,8 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 			String situsType = hashMapBOEParcelMappingData.get("Situs Type");
 			String situsUnitNumber = hashMapBOEParcelMappingData.get("Situs Unit Number");
 			String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+situsCityName;
-		
+
+
 			String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 			Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 					"DataToCreateWorkItemOfTypeParcelManagement");
