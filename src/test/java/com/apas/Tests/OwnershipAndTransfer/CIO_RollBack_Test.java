@@ -36,7 +36,6 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 	SoftAssertion softAssert = new SoftAssertion();
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	MappingPage objMappingPage;
-	JSONObject jsonObject = new JSONObject();
 	String apnPrefix = new String();
 	CIOTransferPage objCioTransfer;
 	AuditTrailPage trail;
@@ -126,6 +125,7 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		String dateOfEvent = salesforceAPI
 				.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
 				.get("Ownership_Start_Date__c").get(0);
+		JSONObject jsonObject = objCioTransfer.getJsonObject();
 		jsonObject.put("DOR__c", dateOfEvent);
 		jsonObject.put("DOV_Date__c", dateOfEvent);
 		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
@@ -153,7 +153,7 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID1);
 
 		objMappingPage.globalSearchRecords(workItemNo1);
-		Thread.sleep(5000);
+		objMappingPage.waitForElementToBeVisible(30, objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
@@ -233,7 +233,7 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		// Step 12: CIO staff Navigating to second transfer screen for same APN
 		objCioTransfer.login(users.CIO_STAFF);
 		objMappingPage.globalSearchRecords(workItemNo2);
-		Thread.sleep(5000);
+		objMappingPage.waitForElementToBeVisible(30, objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
