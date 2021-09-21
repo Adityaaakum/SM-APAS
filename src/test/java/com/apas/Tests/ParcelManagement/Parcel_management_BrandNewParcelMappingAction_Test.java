@@ -1186,8 +1186,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 					"SMAB-T3121: Validation that Parcel Size (SQFT) column should  be editable on retirning to custom screen");
 			
 			objMappingPage.waitForElementToBeVisible(3, objMappingPage.parcelSizeColumnSecondScreenWithSpace);
-			objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "40");
-            
+			objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "40");    
 			objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName));
 
