@@ -58,7 +58,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3196,SMAB-T3184:Verify the UI validations for the fields mentioned on 'Assessed value' object on the Parcel.Parcel record should exist containing Assessed Value records.", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3196,SMAB-T3184,SMAB-T3221, SMAB-3198:Verify the UI validations for the fields mentioned on 'Assessed value' object on the Parcel.Parcel record should exist containing Assessed Value records.", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement" })
 	public void ParcelManagement_VerifyAssessedValuesObjectUIValidationsForProp19(String loginUser) throws Exception {
 
@@ -86,11 +86,9 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 				"SMAB-T3196,SMAB-T3184: Validation that  Full Cash Value text is visible.");
 		objParcelsPage.selectOptionFromDropDown(objParcelsPage.assessedValueType, "Prop 19");
 
-		
 		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.differenceValue), "Difference",
 				"SMAB-T3196,SMAB-T3184: Validation that  Difference text is visible for Prop 19");
 
-		
 		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.totalValueOnForm), "Total",
 				"SMAB-T3196,SMAB-T3184: Validation that  Total text is visible for Prop 19");
 
@@ -100,7 +98,8 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.originFcvText), "Origin FCV",
 				"SMAB-T3196,SMAB-T3184: Validation that  Origin FCV text is visible for Prop 19");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.combinedFbyvAndHpi), "Combined FBYV and HPI",
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.combinedFbyvAndHpi),
+				"Combined FBYV and HPI",
 				"SMAB-T3196,SMAB-T3184: Validation that  Combined FBYV and HPI text is visible for Prop 19");
 		/*
 		 * Following lines written for a field which one got changed but I wrote code
@@ -116,7 +115,6 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		objParcelsPage.enter(objParcelsPage.originLandValue, "112021");
 		objParcelsPage.enter(objParcelsPage.originImprovementValue, "112021");
 		objParcelsPage.enter(objParcelsPage.hpiValueAllowance, "112021");
-
 
 		// Asserting those fields shouldn't be visible on Prop 60
 
@@ -201,45 +199,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objFactoredBYV)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (Factored BYV) are nor visible when Assessed Type is not 'Prop 19'");
 
-	}
-
-	/**
-	 * This method is to Verify the fields mentioned on 'Assessed value' object on
-	 * the Parcel for Admin User.
-	 * 
-	 * @param loginUser
-	 * @throws Exception
-	 */
-	@Test(description = "SMAB-T3221, SMAB-3198:Verify the UI validations for the fields mentioned on 'Assessed value' object on the Parcel.Parcel record should exist containing Assessed Value records.", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" })
-	public void ParcelManagement_VerifyAssessedValuesObjectUIValidationsTemporaryValues(String loginUser)
-			throws Exception {
-
-		// Fetching the Active Parcel
-		String query ="SELECT name from Parcel__c where Status__c='Active' Limit 1";
-		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
-		String parcelToSearch = response.get("Name").get(0);
-
-		// Step1: Login to the APAS application using the credentials passed through
-		
-		objParcelsPage.login(loginUser);
-
-		// Step2: Opening the Parcels module
-		objParcelsPage.searchModule(modules.PARCELS);
-		objParcelsPage.waitForElementToBeClickable(objParcelsPage.inlineEditIcon);
-		objParcelsPage.waitForElementToBeInVisible(parcelToSearch, 0);
-
-		// Step3: Search and Open the Parcel then clicks on more tab and then clicks on
-		// Assessed Values
-		objParcelsPage.globalSearchRecords(parcelToSearch);
-		objParcelsPage.Click(objParcelsPage.moretab);
-		objParcelsPage.Click(objParcelsPage.assessedValue);
-
-		// Step4: Clicks on New button and validate first type of decline should be
-		// Decline and additional decline should be Calamity.
-
-//		objParcelsPage.openNewAssessedValueForm();
-		driver.navigate().to("https://smcacre--qa.lightning.force.com/lightning/o/Assessed_BY_Values__c/new?count=1");
+		driver.navigate().refresh();
 		objParcelsPage.searchAndSelectOptionFromDropDown(objParcelsPage.apn, parcelToSearch);
 		objParcelsPage.selectOptionFromDropDown(objParcelsPage.assessedValueType, "Temporary Value");
 		objParcelsPage.selectOptionFromDropDown(objParcelsPage.typeOfDecline, "Decline");
@@ -260,7 +220,6 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		objParcelsPage.waitForElementToBeClickable(xpathDropDownOption, 8);
 
 		objParcelsPage.javascriptClick(xpathDropDownOption);
-
 
 		String landValueSmall = "200,000";
 		String improvementValueSmall = "100,000";
@@ -289,7 +248,6 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 
 		objParcelsPage.waitForElementToBeVisible(objParcelsPage.landValue, 8);
 
-
 		String landValueText = objParcelsPage.landValue.getText();
 		String improvementValueText = objParcelsPage.improvementValue.getText();
 		String totalValueText = objParcelsPage.totalValue.getText();
@@ -307,7 +265,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 //
 //		objParcelsPage.waitForElementToBeClickable(objParcelsPage.addNewAssessedValue, 8);
 //		objParcelsPage.Click(objParcelsPage.addNewAssessedValue);
-		
+
 		driver.navigate().to("https://smcacre--qa.lightning.force.com/lightning/o/Assessed_BY_Values__c/new?count=1");
 		objParcelsPage.searchAndSelectOptionFromDropDown(objParcelsPage.apn, parcelToSearch);
 		String landCashValueNumber = "200,000";
@@ -327,6 +285,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 				"SMAB-T3198: Validation that Land Value should be the Land Cash Value.");
 		softAssert.assertEquals("300,000", totalCashValueText,
 				"SMAB-T3198: Validation that Total Value should be the total of land cash Value and improvement cash value.");
+		objParcelsPage.logout();
 
 	}
 
@@ -343,7 +302,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 			throws Exception {
 
 		// Fetching the Active Parcel
-		String query ="SELECT name from Parcel__c where Status__c='Active' Limit 1";
+		String query = "SELECT name from Parcel__c where Status__c='Active' Limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
 		String parcelToSearch = response.get("Name").get(0);
 
