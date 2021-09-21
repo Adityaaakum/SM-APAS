@@ -60,6 +60,8 @@ public class CIOTransferPage extends ApasGenericPage {
 	public final String DOC_DEED="DE";
 	public String firstNameLabel="First Name";
 	
+	
+	
 
 
 	public String transferCodeLabel = "Transfer Code";
@@ -73,6 +75,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String remarksLabel = "Remarks";
 	public String fieldsInCalculateOwnershipModal="//*[@id='wrapper-body']//flowruntime-screen-field//p";
 	public String ownershipPercentage ="Ownership Percentage";
+
 
 
 	public static final String CIO_EVENT_CODE_COPAL="CIO-COPAL";
@@ -96,8 +99,23 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String pucCodeLabel = "PUC Code";
 	public String doeLabel = "DOE";
 	public String dorLabel = "DOR";
+	public String originalTransferor = "Original Transferor";
+	public String vestingType = "Vesting Type";
+
 	public String dovLabel = "DOV";
-	
+
+	public String xpathShowMoreLinkForEditOption = "//table//tbody/tr//td//span[text() = 'propertyName']//parent::span//parent::td//following-sibling::td//a[@role = 'button']";
+
+	public String documentTypeLabel = "Document Type";
+	public String apnCountLabel = "APN Count";
+	public String transferTaxLabel = "Transfer Tax";
+	public String valueFromDocTaxLabel = "Value from Doc Tax";
+	public String cityOfSmTaxLabel = "City of SM Tax";
+	public String valueFromDocTaxCityLabel = "Value from Doc Tax(City)";
+	public String pcorLable = "PCOR?";
+	public String createdByLabel = "Created By";
+	public String lastModifiedByLabel = "Last Modified By";
+
 
 	
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
@@ -109,7 +127,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = "//*[@class='flexipage-tabset']//a[1]")
 	public WebElement RelatedTab;
 
-	@FindBy(xpath = "//div[contains(@class,'uiOutputRichText')]")
+	@FindBy(xpath = "//div[contains(@class,'uiOutputRichText')] | //*[@class='slds-rich-text-editor__output']//b")
 	public WebElement confirmationMessageOnTranferScreen;
 
 	@FindBy(xpath = "//div[@class='highlights slds-clearfix slds-page-header slds-page-header_record-home']//ul[@class='slds-button-group-list']//lightning-primitive-icon")
@@ -189,6 +207,12 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath=commonXpath+"//button[text()='Finish']")
 	public WebElement finishButtonPopUp;
 	
+	@FindBy(xpath="//a[@title='Edit']")
+	public WebElement editLinkUnderShowMore;
+	
+	@FindBy(xpath="	//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//button[text()='Save']")
+	public WebElement saveButtonModalWindow;
+	
 	@FindBy(xpath =commonXpath+"//force-record-layout-section//div//span[text()='APN']//parent::div//following-sibling::div//a//slot//slot//span")
 	public WebElement apnOnTransferActivityLabel;
 	
@@ -200,6 +224,13 @@ public class CIOTransferPage extends ApasGenericPage {
 	
 	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='PUC Code']/../..//slot[@slot='outputField']//lightning-formatted-text")
 	public WebElement pucCodeTransferActivityLabel;
+
+	
+	@FindBy(xpath =commonXpath+"//*[@class='slds-form-element__help']")
+	public WebElement errorMessageOnTransferScreen;
+	
+	@FindBy(xpath =commonXpath+ "//select[@name='States']")
+	public WebElement mailingState;
 	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
@@ -209,7 +240,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    public void addRecordedApn(String DocId,int count) throws Exception
 	    {
 
-	    	String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) Limit "+count;
+	    	String getApnToAdd="Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) and status__c='Active' Limit "+count;
 	    	HashMap<String, ArrayList<String>> hashMapRecordedApn= salesforceApi.select(getApnToAdd);
 	    	
 	    	if(count!=0) {
@@ -296,7 +327,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	    	salesforceApi.update("recorded_document__c" , RecordedDocumentId, "Status__c","Pending");
 		ReportLogger.INFO("Marking "+RecordedDocumentId+"in Pending state");
 		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
-		Thread.sleep(5000);
+		Thread.sleep(10000);
 		ReportLogger.INFO("-------------Generated Recorded WorkItems.------------"); 
 	    	
 	    	}
@@ -402,21 +433,26 @@ public class CIOTransferPage extends ApasGenericPage {
 		 
 		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {		 		 
 			
-			 try {
-			   Thread.sleep(2000);		   
-			   Click(getButtonWithText(copyToMailToButtonLabel));
-			   waitForElementToDisappear(formattedName1, 5);
-			   Click(formattedName1);
-			   Select select= new Select(formattedName1);
-			   select.selectByVisibleText(granteeForMailTo);
-			   Click(formattedName1);		   
-			   enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
-			   Click(getButtonWithText(nextButton));
-			   ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");}
-			 catch (Exception e) {
-				ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE ADDED THROUGH COPY TO MAIL TO ACTION BUTTON");
+				try {
+					Thread.sleep(2000);
+					Click(getButtonWithText(copyToMailToButtonLabel));
+					waitForElementToDisappear(formattedName1, 5);
+					Click(formattedName1);
+					Select select = new Select(formattedName1);
+					select.selectByVisibleText(granteeForMailTo);
+					Click(formattedName1);
+					Click(mailingState);
+					Select selectMailingState = new Select(mailingState);
+					selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"));
+					Click(mailingState);
+					enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
+					Click(getButtonWithText(nextButton));
+					ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
+				} catch (Exception e) {
+					ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE ADDED THROUGH COPY TO MAIL TO ACTION BUTTON");
+				}
 			}
-		 }
+
 		 
 		 
 		 /*

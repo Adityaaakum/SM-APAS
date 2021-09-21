@@ -1563,19 +1563,19 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2882, SMAB-T2895: Verify generation of Interim Parcels for Split Mapping Action and validation around it", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2882, SMAB-T2895, SMAB-T3826: Verify generation of Interim Parcels for Split Mapping Action and validation around it", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyGenerationOfInterimParcelForSplitMappingAction(String loginUser) throws Exception {
 		
 		//Fetching Interim parcels
-		String queryInterimAPNValue = "Select name,ID  From Parcel__c where name like '800%' "
+		String queryInterimAPNValue = "Select name,ID  From Parcel__c where name like '8%' "
 				  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		
 		String apn1 = salesforceAPI.select(queryInterimAPNValue).get("Name").get(0);
 		String apn1Id = salesforceAPI.select(queryInterimAPNValue).get("Id").get(0);
 		
 		//Getting Active Non-Condo Parcel
-		String queryAPNValue = "Select name,ID  From Parcel__c where name like '0%'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  limit 1";
+		String queryAPNValue = "Select name,ID  From Parcel__c where Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and (Not Name like '1%') and (Not Name like '8%') and (Not Name like '%990') limit 1";
 		String apn2 = salesforceAPI.select(queryAPNValue).get("Name").get(0);
 		String apn2Id = salesforceAPI.select(queryAPNValue).get("Id").get(0);
 		
@@ -1607,7 +1607,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn1);
 		
-		// Step 3: Creating Manual work item for the Active Parcel 
+		// Step 3: Creating Manual work item for the Interim Parcel 
 		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		// Step 4: Clicking the details tab for the work item newly created and clicking on Related Action Link
@@ -1632,36 +1632,28 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel, hashMapSplitMappingData.get("Reason code"));
 		objMappingPage.enter(objMappingPage.numberOfChildNonCondoTextBoxLabel,"2");
 		
-		ReportLogger.INFO("Update Interim Parcel count to 1");
-		objMappingPage.enter(objMappingPage.numberOfIntermiParcelLabel,"1");
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-
-		//Step 7: Validate that user is not able to move to the next screen
-		ReportLogger.INFO("Click NEXT button");
-		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		softAssert.assertContains(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel(s) cannot start with 800.",
-				"SMAB-T2895: Validate that user is not able to move to the next screen as parent parcel(s) cannot start with 800");
-		
-		//Step 8: Update Interim Parcel count to 0
-		ReportLogger.INFO("Update Interim Parcel count to 0 and click NEXT button");
+		//Step 7: Update Interim Parcel count to 0
+		ReportLogger.INFO("Update Interim Parcel count to 0 and click NEXT button to navigate to next screen");
 		objMappingPage.enter(objMappingPage.numberOfIntermiParcelLabel,"0");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
-		softAssert.assertContains(objMappingPage.getErrorMessage(),"- In order to proceed with this action, the parent parcel(s) cannot start with 800.",
-				"SMAB-T2895: Validate that user is not able to move to the next screen as parent parcel(s) cannot start with 800");
-				
-		// Step 9: Update the Parent APN field to add Non-Interim parcel
-		ReportLogger.INFO("Update Non-Condo APN in Parent APN field:: " + apn2);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
-		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apn2);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
-		objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel, hashMapSplitMappingData.get("Reason code"));
-		objMappingPage.enter(objMappingPage.numberOfChildNonCondoTextBoxLabel,"2");
 		
-		// Step 10: Update Interim Parcel count to -1
+		//Step 8: Validate that ALL fields THAT ARE displayed on second screen
+		ReportLogger.INFO("Validate the Grid values");
+		objMappingPage.waitForElementToBeClickable(10, objMappingPage.generateParcelButton);
+		HashMap<String, ArrayList<String>> gridDataInterimParcelHashMap =objMappingPage.getGridDataInHashMap();
+	
+		softAssert.assertTrue(gridDataInterimParcelHashMap.get("APN").get(0).startsWith("8"),
+				"SMAB-T3826: Validate system generates the first Parcel as Interim : " + gridDataInterimParcelHashMap.get("APN").get(0));
+		softAssert.assertTrue(gridDataInterimParcelHashMap.get("APN").get(1).startsWith("8"),
+				"SMAB-T3826: Validate system generates the second Parcel as Interim : " + gridDataInterimParcelHashMap.get("APN").get(1));		
+		
+		ReportLogger.INFO("Click PREVIOUS button");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
+		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
+		
+		// Step 9: Update Interim Parcel count to -1
 		ReportLogger.INFO("Update Interim Parcel count to -1 and click NEXT button");
 		objMappingPage.enter(objMappingPage.numberOfIntermiParcelLabel,"-1");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
@@ -1669,13 +1661,13 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		softAssert.assertContains(objMappingPage.getErrorMessage(),"- Number of Interim Parcel can not be less than 0",
 				"SMAB-T2895: Validate that user is not able to move to the next screen as number of Interim Parcel can not be less than 0");
 		
-		// Step 11: Update Interim Parcel count to 1
+		// Step 10: Update Interim Parcel count to 1
 		ReportLogger.INFO("Update Interim Parcel count to 1 and click NEXT button");
 		objMappingPage.enter(objMappingPage.numberOfIntermiParcelLabel,"1");
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,apn2);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		
-		//Step 12: Validate that ALL fields THAT ARE displayed on second screen
+		//Step 11: Validate that ALL fields THAT ARE displayed on second screen
 		ReportLogger.INFO("Validate the Grid values");
 		objMappingPage.waitForElementToBeClickable(10, objMappingPage.generateParcelButton);
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -1684,14 +1676,14 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String childAPNNumber2 =gridDataHashMap.get("APN").get(1);
 		String childAPNNumber3 =gridDataHashMap.get("APN").get(2);
 		
-		softAssert.assertTrue(!childAPNNumber1.startsWith("800"),
+		softAssert.assertTrue(!childAPNNumber1.startsWith("8"),
 				"SMAB-T2882: Validate system generates the first Parcel as Non-Condo : " + childAPNNumber1);
-		softAssert.assertTrue(!childAPNNumber2.startsWith("800"),
+		softAssert.assertTrue(!childAPNNumber2.startsWith("8"),
 				"SMAB-T2882: Validate system generates the second Parcel as Non-Condo : " + childAPNNumber2);
-		softAssert.assertTrue(childAPNNumber3.startsWith("800"),
+		softAssert.assertTrue(childAPNNumber3.startsWith("8"),
 				"SMAB-T2882: Validate system generates the third Parcel as Interim : " + childAPNNumber3);
 		
-		//Step 13: Validate the columns that are enabled/disabled for Interim parcel generated
+		//Step 12: Validate the columns that are enabled/disabled for Interim parcel generated
 		ReportLogger.INFO("Validate the columns that are enabled or disabled in the grid for Interim parcel");
 		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Legal Description*", 2),"SMAB-T2882: Validation that Legal Description column is editable");
         softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA*", 2),"SMAB-T2882: Validation that TRA column is not editable");
@@ -1702,24 +1694,30 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
         softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size(SQFT)*", 2),"SMAB-T2882: Validation that Parcel Size column is editable");
         softAssert.assertTrue(objMappingPage.getAttributeValue(objMappingPage.locateElement("//tr[@data-row-key-value='row-2']//th[@data-label='APN']", 30), "class").equals("grey-out-column slds-cell-edit"), "SMAB-T2882: Validation that APN column is not editable");
      
-        //Step 14: Validate the interim parcel
+        //Step 13: Validate the generation interim parcel, non-condo parcel and status of parent interim parcel
         ReportLogger.INFO("Generate the Parcels");
+        objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
         objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
         
+        Thread.sleep(1000);//To avoid regression failure
         objMappingPage.Click(objMappingPage.getButtonWithText(childAPNNumber1));
         objMappingPage.waitForElementToBeVisible(6, objParcelsPage.LongLegalDescriptionLabel);
         softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("APN", "Parcel Information"),childAPNNumber1,
-				"SMAB-T2882: Validate that first parcel generated in the system is Non-Condo parcel");
+				"SMAB-T3826: Validate that first parcel generated in the system is Non-Condo parcel");
         
         objMappingPage.globalSearchRecords(childAPNNumber2);
         objMappingPage.waitForElementToBeVisible(6, objParcelsPage.LongLegalDescriptionLabel);
         softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("APN", "Parcel Information"),childAPNNumber2,
-				"SMAB-T2882: Validate that second parcel generated in the system is Non-Condo parcel");
+				"SMAB-T3826: Validate that second parcel generated in the system is Non-Condo parcel");
         
         objMappingPage.globalSearchRecords(childAPNNumber3);
         objMappingPage.waitForElementToBeVisible(6, objParcelsPage.LongLegalDescriptionLabel);
         softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("APN", "Parcel Information"),childAPNNumber3,
-				"SMAB-T2882: Validate that third parcel generated in the system is Interim parcel");
+				"SMAB-T3826: Validate that third parcel generated in the system is Interim parcel");
+        
+        objMappingPage.globalSearchRecords(apn1);
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),"In Progress - To Be Expired",
+				"SMAB-T3826: Validate the Status of parent interim parcel : " + apn1);
         
         driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();

@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.apas.PageObjects.*;
+
+import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -145,8 +147,8 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
 
 		//Step19: Retrieving the minimum equipment index factor value for Agricultural before editing
-		if(objBppTrendSetupPage.waitForElementToBeClickable(10,objBppTrendSetupPage.moreTabRightSection) != null) {
-			objPage.Click(objBppTrendSetupPage.moreTabRightSection);
+		if(objBppTrendSetupPage.waitForElementToBeClickable(10,objBppTrendSetupPage.moreTabCompositeFactorSettings) != null) {
+			objPage.Click(driver.findElement(By.xpath(objBppTrendSetupPage.moreTabCompositeFactorSettings)));
 			objPage.Click(objBppTrendSetupPage.bppCompositeFactorOption);
 		}
 		objBppTrendPage.scrollToElement(objBppTrendSetupPage.viewAllBppCompositeFactorSettings);
