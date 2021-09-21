@@ -101,6 +101,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String originImprovementValue = "Origin Improvement Value";
 	public String originLandValue = "Origin Land Value";
 	public String originFcv = "Origin FCV";
+	public String apn = "APN";
 
 	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
@@ -177,9 +178,40 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//div/div/one-record-home-flexipage2/forcegenerated-adg-rollup_component___force-generated__flexipage_-record-page___-assessed_-values_-lightning_-record_-page___-assessed_-b-y_-values__c___-v-i-e-w/forcegenerated-flexipage_assessed_values_lightning_record_page_assessed_by_values__c__view_js/record_flexipage-record-page-decorator/div[1]/records-record-layout-event-broker/slot/slot/flexipage-record-home-template-desktop2/div/div[1]/slot/slot/flexipage-component2/slot/records-lwc-highlights-panel/records-lwc-record-layout/forcegenerated-highlightspanel_assessed_by_values__c___012000000000000aaa___compact___view___recordlayout2/force-highlights2/div[1]/div[2]/slot/slot/force-highlights-details-item[4]/div/p[2]/slot/records-formula-output/slot/lightning-formatted-number")
 	public WebElement landValue;
+
+	@FindBy(xpath = "//div/div/one-record-home-flexipage2/forcegenerated-adg-rollup_component___force-generated__flexipage_-record-page___-assessed_-values_-lightning_-record_-page___-assessed_-b-y_-values__c___-v-i-e-w/forcegenerated-flexipage_assessed_values_lightning_record_page_assessed_by_values__c__view_js/record_flexipage-record-page-decorator/div[1]/records-record-layout-event-broker/slot/slot/flexipage-record-home-template-desktop2/div/div[1]/slot/slot/flexipage-component2/slot/records-lwc-highlights-panel/records-lwc-record-layout/forcegenerated-highlightspanel_assessed_by_values__c___012000000000000aaa___compact___view___recordlayout2/force-highlights2/div[1]/div[2]/slot/slot/force-highlights-details-item[5]/div/p[2]/slot/records-formula-output/slot/lightning-formatted-number")
+	public WebElement improvementValue;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Details']")
-	public WebElement detailsTab;
+	@FindBy(xpath = "//div/div/one-record-home-flexipage2/forcegenerated-adg-rollup_component___force-generated__flexipage_-record-page___-assessed_-values_-lightning_-record_-page___-assessed_-b-y_-values__c___-v-i-e-w/forcegenerated-flexipage_assessed_values_lightning_record_page_assessed_by_values__c__view_js/record_flexipage-record-page-decorator/div[1]/records-record-layout-event-broker/slot/slot/flexipage-record-home-template-desktop2/div/div[1]/slot/slot/flexipage-component2/slot/records-lwc-highlights-panel/records-lwc-record-layout/forcegenerated-highlightspanel_assessed_by_values__c___012000000000000aaa___compact___view___recordlayout2/force-highlights2/div[1]/div[2]/slot/slot/force-highlights-details-item[6]/div/p[2]/slot/records-formula-output/slot/lightning-formatted-number")
+	public WebElement totalValue;
+	
+	@FindBy(xpath = "//*[@name=\"Additional_Land_Value__c\"]")
+	public WebElement additionalLand;
+	
+	@FindBy(xpath = "//*[@name=\"Additional_Improvement_Value__c\"]")
+	public WebElement additionalImprovement;
+	
+	@FindBy(xpath = "//slot/slot/flexipage-column2[2]/div/slot/flexipage-field[3]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")
+	public WebElement fullCashValue;
+	
+	@FindBy(xpath = "//slot/slot/flexipage-column2[2]/div/slot/flexipage-field[4]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")
+	public WebElement differenceValue;
+	
+	@FindBy(xpath = "//slot/slot/flexipage-column2[1]/div/slot/flexipage-field[2]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")
+	public WebElement totalValueOnForm;
+	
+	@FindBy(xpath = "//slot/slot/flexipage-column2[1]/div/slot/flexipage-field[3]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")
+	public WebElement newTaxableValueText;
+	
+	@FindBy(xpath = "//slot/slot/flexipage-column2[1]/div/slot/flexipage-field[7]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")
+	public WebElement originFcvText;
+	
+	@FindBy(xpath = "//slot/slot/flexipage-column2[1]/div/slot/flexipage-field[9]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")
+	public WebElement combinedFbyvAndHpi;
+	
+	@FindBy(xpath = "//*[@name='HPI_Value_Allowance__c']")
+	public WebElement objHpiValueAllowance;
+
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
