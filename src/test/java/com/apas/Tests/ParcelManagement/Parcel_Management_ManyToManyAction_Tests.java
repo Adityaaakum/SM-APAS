@@ -679,10 +679,12 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		boolean actionColumn = gridDataHashMap.containsKey("Action");
 		softAssert.assertTrue(!actionColumn,"SMAB-T2722: Validation that columns should not be editable as Action column has disappeared after generating parcels");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2722: Validation that APN column should not be editable after generating parcels");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2722: Validation that Legal Description column should not be editable after generating parcels");
+		// Legal Description and Reason code are editable as part of SMAB-12026
+		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Legal Description"),"SMAB-T2722: Validation that Legal Description column should not be editable after generating parcels");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA"),"SMAB-T2722: Validation that TRA column should not be editable after generating parcels");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2722: Validation that Situs column should not be editable after generating parcels");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2722: Validation that Reason Code column should not be editable after generating parcels");
+		// Legal Description and Reason code are editable as part of SMAB-12026
+		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Reason Code"),"SMAB-T2722: Validation that Reason Code column should not be editable after generating parcels");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("District/Neighborhood"),"SMAB-T2722: Validation that District/Neighborhood column should not be editable after generating parcels");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code"),"SMAB-T2722: Validation that Use Code column should not be editable after generating parcels");
 
