@@ -1842,7 +1842,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String APN = gridDataHashMap.get("APN").get(0);
 
 		//Step 9: Validation that User is navigated to a screen with following fields:APN,Legal Description,Parcel Size(SQFT),TRA,Situs,Reason Code,District/Neighborhood,Use Code
-		//gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),apn,
 				"SMAB-T2677: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),districtNeighborhood,
