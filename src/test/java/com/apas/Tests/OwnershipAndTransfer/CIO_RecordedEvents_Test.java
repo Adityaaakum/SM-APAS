@@ -69,7 +69,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 */
 
 	@Test(description = "SMAB-T3763,SMAB-T3106,SMAB-T3111:Verify the type of WI system created for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration", "Smoke" }, enabled = true)
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration", "Smoke" }, enabled = false)
 	public void RecorderIntegration_VerifyNewWIgeneratedfromRecorderIntegrationForNOAPNRecordedDocument(
 			String loginUser) throws Exception {
 
@@ -612,6 +612,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void OwnershipAndTransfer_VerifyCioTransferAutoConfirm(String InitialEventCode, String finalEventCode,
 			String response) throws Exception {
+		
+		JSONObject jsonForAutoConfirm = objCioTransfer.getJsonObject();
 
 		String execEnv = System.getProperty("region");
 
@@ -673,9 +675,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String dateOfEvent = salesforceAPI
 				.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
 				.get("Ownership_Start_Date__c").get(0);
-		jsonObject.put("DOR__c", dateOfEvent);
-		jsonObject.put("DOV_Date__c", dateOfEvent);
-		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
+		jsonForAutoConfirm.put("DOR__c", dateOfEvent);
+		jsonForAutoConfirm.put("DOV_Date__c", dateOfEvent);
+		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForAutoConfirm);
 
 		objMappingPage.logout();
 
@@ -917,6 +919,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			String finalEventCode) throws Exception {
 
 		{
+			JSONObject jsonForAutoConfirm = objCioTransfer.getJsonObject();
+			
 			String execEnv = System.getProperty("region");
 
 			String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
@@ -977,9 +981,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			String dateOfEvent = salesforceAPI.select(
 					"Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
 					.get("Ownership_Start_Date__c").get(0);
-			jsonObject.put("DOR__c", dateOfEvent);
-			jsonObject.put("DOV_Date__c", dateOfEvent);
-			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
+			jsonForAutoConfirm.put("DOR__c", dateOfEvent);
+			jsonForAutoConfirm.put("DOV_Date__c", dateOfEvent);
+			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForAutoConfirm);
 
 			objMappingPage.logout();
 
@@ -1141,6 +1145,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
 	public void OwnershipAndTransfer_Calculate_Ownership_SameOwnerMultipleDOV(String loginUser) throws Exception {
 
+		JSONObject jsonForCalculateOwnership = objCioTransfer.getJsonObject();
+		
 		String  ownershipPercentage[] = {"75","25"};
 		String  ownershipStartDate[] = {"5/3/2010" ,"7/2/2018"};
 		JSONObject jsonObjectOwnership = new JSONObject();
@@ -1165,10 +1171,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + cioWorkItem + "'";
 		String recordeAPNTransferID = salesforceAPI.select(queryRecordedAPNTransfer).get("Navigation_Url__c").get(0).split("/")[3];
 		
-		jsonObject.put("xDOV__c", "2021-02-03");
-		jsonObject.put("DOR__c", "2021-06-23");
+		jsonForCalculateOwnership.put("xDOV__c", "2021-02-03");
+		jsonForCalculateOwnership.put("DOR__c", "2021-06-23");
 
-		salesforceAPI.update("Recorded_APN_Transfer__c", recordeAPNTransferID, jsonObject);
+		salesforceAPI.update("Recorded_APN_Transfer__c", recordeAPNTransferID, jsonForCalculateOwnership);
 
 		//deleting the CIO Transfer grantees for the current transfer screen
 		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
@@ -1489,7 +1495,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void OwnershipAndTransfer_VerifyTransferActivityStatus_ReturnedAndCompleted(String loginUser)
 			throws Exception {
-
+		
+		JSONObject jsonForTransferActivityStatus = objCioTransfer.getJsonObject();
+		
 		String execEnv = System.getProperty("region");
 
 		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
@@ -1535,9 +1543,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String dateOfEvent = salesforceAPI
 				.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
 				.get("Ownership_Start_Date__c").get(0);
-		jsonObject.put("DOR__c", dateOfEvent);
-		jsonObject.put("DOV_Date__c", dateOfEvent);
-		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
+		jsonForTransferActivityStatus.put("DOR__c", dateOfEvent);
+		jsonForTransferActivityStatus.put("DOV_Date__c", dateOfEvent);
+		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForTransferActivityStatus);
 
 		objMappingPage.logout();
 
@@ -2246,7 +2254,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	@Test(description = "SMAB-T3765,SMAB-T3832:Verify that User is not able to submit the records if the ownership percentage is lessthan 100%", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","RecorderIntegration" })
 	public void RecorderIntegration_VerifyValidationofMailToAndGranteeRecord(String loginUser) throws Exception {
-
+ 
+			
 		String execEnv = System.getProperty("region");		
 		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
 		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
