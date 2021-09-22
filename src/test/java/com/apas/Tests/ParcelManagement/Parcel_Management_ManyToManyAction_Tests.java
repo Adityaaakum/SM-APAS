@@ -1464,7 +1464,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2683:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"ManyToMany\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2683,SMAB-T2668,SMAB-T2765:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"ManyToMany\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_ManyToManyMappingAction_WithPrimarySitusTRA(String loginUser) throws Exception {
 
