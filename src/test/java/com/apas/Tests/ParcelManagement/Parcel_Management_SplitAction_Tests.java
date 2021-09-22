@@ -361,8 +361,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		// Fetch some other values from database
 		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI
-				.select("SELECT Name,id" + "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
-						+ "where Status__c='Active') limit 1");
+				.select("SELECT Name,Id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') and Legacy__c = 'No' limit 1");
 		
 
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
