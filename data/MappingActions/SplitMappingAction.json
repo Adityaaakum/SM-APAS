@@ -90,6 +90,13 @@
     "TRA":"0010009",
     "PUC": "01-SINGLE FAMILY RES"
           
-}
+},
+ "DataToPerformSplitMappingActionForWorkItemRollBack": {
+    "Action": "Perform Parcel Split",
+    "Are taxes fully paid?": "Yes",
+    "Reason code": "Testing Split",
+    "Number of Child Non-Condo Parcels": "2",   
+    "Comments": "Perform Split Mapping Action"
+  }
   
 }
