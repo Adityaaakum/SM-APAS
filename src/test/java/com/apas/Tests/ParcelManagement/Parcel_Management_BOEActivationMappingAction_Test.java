@@ -499,12 +499,10 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 	public void ParcelManagement_ReturnToCustomScreen_BOEACtivation_MappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 		String childAPNPUC;
 
-		String execEnv= System.getProperty("region");
 		//Fetching parcel that is Retired 		
-		String queryAPN = "Select name,id From Parcel__c where Status__c='Retired' limit 1";
+		String queryAPN = "Select name From Parcel__c where Status__c='Retired' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String parentAPN=responseAPNDetails.get("Name").get(0);
-		String parentAPNId =responseAPNDetails.get("Id").get(0);
 		objMappingPage.deleteRelationshipInstanceFromParcel(parentAPN);  
 		objMappingPage.deleteCharacteristicInstanceFromParcel(parentAPN);
 		
@@ -638,9 +636,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 			String queryAPN = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and  Status__c = 'Retired' Limit 1";
 			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 			String apn1=responseAPNDetails.get("Name").get(0);
-			
-			String execEnv= System.getProperty("region");
-				
+					
 			String PUC = salesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
     	    String TRA=salesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0); 
     	    
