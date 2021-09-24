@@ -715,6 +715,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.deleteOwnershipFromParcel(apnId1);
 		objMappingPage.deleteOwnershipFromParcel(apnId2);
 		
+		//Deleting charecteristics records from parcel
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
+		
+		
 		//Fetching a Condo Active parcel
 		String queryCondoAPN = "SELECT Name, Id from parcel__c where name like '1%' and (Not Name like '%990') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' and (Not Name like '134%') Limit 1";
 		HashMap<String, ArrayList<String>> responseCondoAPNDetails = salesforceAPI.select(queryCondoAPN);
@@ -926,11 +931,19 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.deleteOwnershipFromParcel(apnId1);
 		objMappingPage.deleteOwnershipFromParcel(apnId2);
 		
+		//Deleting charecteristics record from parcel
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
+		
 		//Fetching a Condo Active parcel
 		String queryCondoAPN = "SELECT Name, Id from parcel__c where name like '1%' and (Not Name like '%990') and (Not Name like '134%') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and primary_situs__c != NULL and Status__c = 'Active' Limit 1";
 		HashMap<String, ArrayList<String>> responseCondoAPNDetails = salesforceAPI.select(queryCondoAPN);
 		String apn3=responseCondoAPNDetails.get("Name").get(0);
 		String condoApnId=responseCondoAPNDetails.get("Id").get(0);
+		
+		//Deleting charecteristics record from parcel
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn3);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(condoApnId);
 				
 		//Delete existing Ownership records from the Condo parcel
 		objMappingPage.deleteOwnershipFromParcel(condoApnId);
@@ -2272,6 +2285,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		salesforceAPI.update("Parcel__c", apn2Id, "Status__c", "Active");
 		
 		String concatenateMixAPNs = apn1+","+apn2;
+		
+		//Deleting charecteristics instance from parcel
+		
+        objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+        objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,

@@ -70,6 +70,11 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
 		
+		//Deleting charecteristic record from parcels
+		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
+		
 		String activeParcelWithoutHyphen=apn2.replace("-","");
 		String accessorMapParcel = apn1.replace("-", "").substring(0, 5);
 		String expectedIndividualFieldMessage = "Complete this field.";
