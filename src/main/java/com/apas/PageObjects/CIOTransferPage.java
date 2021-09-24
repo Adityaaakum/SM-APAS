@@ -488,7 +488,7 @@ public class CIOTransferPage extends ApasGenericPage {
 						enter(ownerPercentage, dataToCreateGrantee.get("Owner Percentage"));
 					if (dataToCreateGrantee.get("First Name") != null)
 						enter(firstNameLabel, dataToCreateGrantee.get("First Name"));					
-						enter("Legacy_System_Id", "12345");
+						//enter("Legacy_System_Id", "12345");
 					
 					Click(getButtonWithText(saveButton));
 					Thread.sleep(3000);
