@@ -642,11 +642,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 						+ id+ "/related/Parcel_Situs__r/view";
 				ReportLogger.INFO("Navigate to situs URL: " +parcelSitusURL);
 				driver.navigate().to(parcelSitusURL);
-
-				String createNewParcelSitus = testdata.MANUAL_PARCEL_CREATION_DATA;
-				Map<String, String> hashMapCreateNewParcelSitus = objUtil.generateMapFromJsonFile(createNewParcelSitus,
-						"DataToCreateParcelSitus");
-				String primarySitus = objParcelsPage.createParcelSitus(parcel);
+				objParcelsPage.createParcelSitus(parcel);
 			}
 			catch(Exception e) {
 				ExtentTestManager.getTest().log(LogStatus.ERROR, "Fail to create ownership record"+e);
@@ -945,10 +941,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 				ReportLogger.INFO("Navigate to situs URL: " +parcelSitusURL);
 				driver.navigate().to(parcelSitusURL);
 
-				String createNewParcelSitus = testdata.MANUAL_PARCEL_CREATION_DATA;
-				Map<String, String> hashMapCreateNewParcelSitus = objUtil.generateMapFromJsonFile(createNewParcelSitus,
-						"DataToCreateParcelSitus");
-				String primarySitus = objParcelsPage.createParcelSitus(parcel);
+				objParcelsPage.createParcelSitus(parcel);
 			}
 			catch(Exception e) {
 				ExtentTestManager.getTest().log(LogStatus.ERROR, "Fail to create ownership record"+e);
