@@ -278,6 +278,7 @@ public class WorkItemHomePage extends ApasGenericPage {
     @FindBy(xpath = "//div[contains(@class,'notify__content')]//span")
 	public WebElement parentParcelSizeErrorMsg;
     
+  
 	public String editButton = "Edit";
 
 	public String wiActionDetailsPage = "Action";

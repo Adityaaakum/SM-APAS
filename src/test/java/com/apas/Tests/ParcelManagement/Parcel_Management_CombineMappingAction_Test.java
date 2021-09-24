@@ -1,15 +1,11 @@
 package com.apas.Tests.ParcelManagement;
 
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.Reporter;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -21,7 +17,6 @@ import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
-import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.DateUtil;
@@ -30,7 +25,6 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class Parcel_Management_CombineMappingAction_Test extends TestBase implements testdata, modules, users {
 
@@ -2005,6 +1999,39 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.completeWorkItem();
 		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
 		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
+		
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		ReportLogger.INFO(" Appraiser logins ");
+		objMappingPage.login(users.RP_APPRAISER);
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn);
+		objParcelsPage.Click(objParcelsPage.workItems);
+		objParcelsPage.Click(objParcelsPage.updateCharacteristicsVerifyPUC);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(40, objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objParcelsPage.Click(objMappingPage.parcelAllocationNextButton);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
+
+		driver.switchTo().window(parentWindow);
+		driver.navigate().refresh();
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn);
+		objParcelsPage.Click(objParcelsPage.workItems);
+		objParcelsPage.Click(objParcelsPage.allocateValue);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
+		String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
+		softAssert.assertEquals(assignedTo, "rp appraiserAUT", "Assiged to matched ...!!!!!!!");
+		softAssert.assertEquals(workPool, "Appraiser", "Assiged to matched ...!!!!!!!");
+
 		objWorkItemHomePage.logout();
 	}
 	
