@@ -38,7 +38,7 @@ public class Parcel_Management_Reports_Test extends TestBase {
 	}
 
 	@Test(description = "SMAB-T3444: Validation of parcel management reports", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "WorkItemWorkflow_Reports" }, alwaysRun = true)
+			"Regression", "WorkItemWorkflow_Reports","ParcelManagement_Reports" }, alwaysRun = true)
 	public void Reports_ParcelManagementReports(String loginUser) throws Exception {
 		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		String reportName;
@@ -48,8 +48,7 @@ public class Parcel_Management_Reports_Test extends TestBase {
 		Map<String, String> ParcelReportsName = objUtil.generateMapFromJsonFile(Parcelreports, "VerifyReportsName");
 		Map<String, String> ParcelReportsfileData = objUtil.generateMapFromJsonFile(Parcelreports,
 				"VerifyReportsColumns");
-		// Step1: Login to the APAS application using the credentials passed through
-		// data provider
+		// Step1: Login to the APAS application using the credentials passed through data provider
 
 		objReportsPage.login(loginUser);
 		// Step2: Opening parcel management reports and validate

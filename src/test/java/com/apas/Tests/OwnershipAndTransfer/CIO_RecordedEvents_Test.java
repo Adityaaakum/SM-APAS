@@ -1,15 +1,19 @@
 package com.apas.Tests.OwnershipAndTransfer;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import org.json.JSONObject;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
@@ -20,6 +24,7 @@ import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
@@ -64,7 +69,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 */
 
 	@Test(description = "SMAB-T3763,SMAB-T3106,SMAB-T3111:Verify the type of WI system created for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration", "Smoke" }, enabled = true)
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration", "Smoke" }, enabled = false)
 	public void RecorderIntegration_VerifyNewWIgeneratedfromRecorderIntegrationForNOAPNRecordedDocument(
 			String loginUser) throws Exception {
 
@@ -311,7 +316,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objMappingPage.login(users.SYSTEM_ADMIN);
 		objCioTransfer.addRecordedApn(recordedDocumentID, 1);
-		objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
+		
 
 		// Step 1a -Updating transfer and SM tax for the recorded document
 
@@ -369,6 +374,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 6-Finding the recorded apn transfer id
 
 		String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
 		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -607,6 +613,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void OwnershipAndTransfer_VerifyCioTransferAutoConfirm(String InitialEventCode, String finalEventCode,
 			String response) throws Exception {
+		
+		JSONObject jsonForAutoConfirm = objCioTransfer.getJsonObject();
 
 		String execEnv = System.getProperty("region");
 
@@ -636,7 +644,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		// objMappingPage.searchModule("APAS");
 		objCioTransfer.addRecordedApn(recordedDocumentID, 1);
-		objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
+		
 
 		salesforceAPI.update("Work_Item__c",
 				"SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c",
@@ -668,9 +676,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String dateOfEvent = salesforceAPI
 				.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
 				.get("Ownership_Start_Date__c").get(0);
-		jsonObject.put("DOR__c", dateOfEvent);
-		jsonObject.put("DOV_Date__c", dateOfEvent);
-		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
+		jsonForAutoConfirm.put("DOR__c", dateOfEvent);
+		jsonForAutoConfirm.put("DOV_Date__c", dateOfEvent);
+		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForAutoConfirm);
 
 		objMappingPage.logout();
 
@@ -684,6 +692,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 6-Finding the recorded apn transfer id
 
 		String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
@@ -912,6 +921,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			String finalEventCode) throws Exception {
 
 		{
+			JSONObject jsonForAutoConfirm = objCioTransfer.getJsonObject();
+			
 			String execEnv = System.getProperty("region");
 
 			String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
@@ -939,7 +950,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			objMappingPage.login(users.SYSTEM_ADMIN);
 			// objMappingPage.searchModule("APAS");
 			objCioTransfer.addRecordedApn(recordedDocumentID, 1);
-			objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
+			
 
 			salesforceAPI.update("Work_Item__c",
 					"SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'",
@@ -972,9 +983,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			String dateOfEvent = salesforceAPI.select(
 					"Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
 					.get("Ownership_Start_Date__c").get(0);
-			jsonObject.put("DOR__c", dateOfEvent);
-			jsonObject.put("DOV_Date__c", dateOfEvent);
-			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
+			jsonForAutoConfirm.put("DOR__c", dateOfEvent);
+			jsonForAutoConfirm.put("DOV_Date__c", dateOfEvent);
+			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForAutoConfirm);
 
 			objMappingPage.logout();
 
@@ -990,6 +1001,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			// STEP 6-Finding the recorded apn transfer id
 
 			String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+			objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
@@ -1136,39 +1148,40 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
 	public void OwnershipAndTransfer_Calculate_Ownership_SameOwnerMultipleDOV(String loginUser) throws Exception {
 
-		String ownershipPercentage[] = { "75", "25" };
-		String ownershipStartDate[] = { "5/3/2010", "7/2/2018" };
+		JSONObject jsonForCalculateOwnership = objCioTransfer.getJsonObject();
+		
+		String  ownershipPercentage[] = {"75","25"};
+		String  ownershipStartDate[] = {"5/3/2010" ,"7/2/2018"};
 		JSONObject jsonObjectOwnership = new JSONObject();
-
+		
 		String execEnv = System.getProperty("region");
 		String ownershipCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(ownershipCreationData,
 				"DataToCreateOwnershipRecord");
 
-		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil
-				.generateMapFromJsonFile(ownershipCreationData, "dataToCreateGranteeWithCompleteOwnership");
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(ownershipCreationData,
+				"dataToCreateGranteeWithCompleteOwnership");
 
 		String recordedDocumentID = salesforceAPI
 				.select("SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1")
 				.get("Id").get(0);
-
+		
 		// step 1: executing the recorder feed batch job to generate CIO WI
 		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
 		String cioWorkItem = objWorkItemHomePage.getLatestWorkItemDetailsOnWorkbench(1).get("Name").get(0);
 
-		// step 2: fetching the recorded apn transfer object associated with the CIO WI
-		// and updating the DOV
+		// step 2: fetching the recorded apn transfer object associated with the CIO WI and updating the DOV
 		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + cioWorkItem + "'";
-		String recordeAPNTransferID = salesforceAPI.select(queryRecordedAPNTransfer).get("Navigation_Url__c").get(0)
-				.split("/")[3];
+		String recordeAPNTransferID = salesforceAPI.select(queryRecordedAPNTransfer).get("Navigation_Url__c").get(0).split("/")[3];
+		
+		jsonForCalculateOwnership.put("xDOV__c", "2021-02-03");
+		jsonForCalculateOwnership.put("DOR__c", "2021-06-23");
 
-		jsonObject.put("xDOV__c", "2021-02-03");
-		jsonObject.put("DOR__c", "2021-06-23");
+		salesforceAPI.update("Recorded_APN_Transfer__c", recordeAPNTransferID, jsonForCalculateOwnership);
 
-		salesforceAPI.update("Recorded_APN_Transfer__c", recordeAPNTransferID, jsonObject);
-
-		// deleting the CIO Transfer grantees for the current transfer screen
+		//deleting the CIO Transfer grantees for the current transfer screen
 		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
+
 
 		// step 3: deleting the current ownership records for the APN linked with CIO WI
 		String queryAPN = "SELECT Parcel__c FROM Recorded_APN_Transfer__c where id='" + recordeAPNTransferID + "'";
@@ -1183,13 +1196,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String assesseeName = responseAssesseeDetails.get("Name").get(0);
 		String assesseeFirstName = responseAssesseeDetails.get("FirstName").get(0);
 		if (assesseeFirstName.equals("null"))
-			assesseeFirstName = "";
+			assesseeFirstName="";
 		String assesseeLastName = responseAssesseeDetails.get("LastName").get(0);
 		if (assesseeLastName.equals("null"))
-			assesseeLastName = "";
-
-		// step 5 : creating two new ownership records with different DOVs but same
-		// owner
+			assesseeLastName="";
+		
+		//step 5 : creating two new ownership records with different DOVs but same owner
 
 		objCioTransfer.login(SYSTEM_ADMIN);
 		objMappingPage.searchModule(EFILE_INTAKE_VIEW);
@@ -1210,7 +1222,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 					.get("Ownership_Start_Date__c").get(0);
 			jsonObjectOwnership.put("DOR__c", dateOfOwnership);
 			jsonObjectOwnership.put("DOV_Date__c", dateOfOwnership);
-			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObjectOwnership);
+			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObjectOwnership);	
+			
 
 		}
 
@@ -1220,10 +1233,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.login(loginUser);
 		objCioTransfer.searchModule(EFILE_INTAKE_VIEW);
 		objWorkItemHomePage.globalSearchRecords(cioWorkItem);
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab, 20);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab,20);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 20);
-		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel,20);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);	  	
+
 
 		// Step7: CIO staff user navigating to transfer screen by clicking on related
 		// action link
@@ -1355,10 +1369,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Submitting the WI for approval");
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
-		objCioTransfer.waitForElementToBeVisible(30, objCioTransfer.confirmationMessageOnTranferScreen);
-		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.confirmationMessageOnTranferScreen),
-				"Work Item has been submitted for Approval.",
-				"SMAB-T3696: Validation that proper mesage is displayed after submit for approval");
+		objCioTransfer.waitForElementToBeVisible(30,objCioTransfer.confirmationMessageOnTranferScreen);
+		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.confirmationMessageOnTranferScreen),"Work Item has been submitted for Approval.","SMAB-T3696: Validation that proper mesage is displayed after submit for approval");
 
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButtonLabel));
 		ReportLogger.INFO("WI Submitted  for approval successfully");
@@ -1486,7 +1498,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void OwnershipAndTransfer_VerifyTransferActivityStatus_ReturnedAndCompleted(String loginUser)
 			throws Exception {
-
+		
+		JSONObject jsonForTransferActivityStatus = objCioTransfer.getJsonObject();
+		
 		String execEnv = System.getProperty("region");
 
 		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
@@ -1519,8 +1533,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objMappingPage.searchModule(WORK_ITEM);
 		objMappingPage.globalSearchRecords(workItemNo);
 		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
-		// String auditTrailFromWIPage =
-		// objMappingPage.getGridDataInHashMap(1).get("Name").get(1);
+		//String auditTrailFromWIPage = objMappingPage.getGridDataInHashMap(1).get("Name").get(1);
 		objCioTransfer.deleteOwnershipFromParcel(
 				salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0));
 
@@ -1533,9 +1546,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String dateOfEvent = salesforceAPI
 				.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
 				.get("Ownership_Start_Date__c").get(0);
-		jsonObject.put("DOR__c", dateOfEvent);
-		jsonObject.put("DOV_Date__c", dateOfEvent);
-		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
+		jsonForTransferActivityStatus.put("DOR__c", dateOfEvent);
+		jsonForTransferActivityStatus.put("DOV_Date__c", dateOfEvent);
+		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForTransferActivityStatus);
 
 		objMappingPage.logout();
 
@@ -2014,12 +2027,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	}
 
 	/*
-	 * Verify that User is able validate that orignal transfer list data is being
-	 * fetched from transfer feed that displays set of data is predefined format and
-	 * also in this test method we try to validate that CIO staff can add and edit
-	 * grantor and grantee, new record and the full name of metioned records is
-	 * cancatination of last name first name in the same order.s
-	 */
+	 * Verify that User is able validate that orignal transfer list data is being fetched
+	 * from transfer feed that displays set of data is predefined format and also in
+	 * this test method we try to validate that CIO staff can  add and edit grantor and grantee,
+	 * new record and the full name of metioned records is cancatination of last
+	 * name first name in the same order.s	 */
 
 	@Test(description = "SMAB-T3342,SMAB-T3343,SMAB-T3629,SMAB-T3630: Verify that User is able validate that orignal transfer list  data fetched from transfer feed that display set of data is predefined format", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" }, enabled = true)
@@ -2064,7 +2076,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		// STEP 2-Query to fetch WI
 
-		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'   And status__c='In pool' order by createdDate desc limit 1";
+		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'   And status__c='In pool' order by createdDate desc limit 1";		
 		String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
 		// objMappingPage.searchModule("APAS");
 		objMappingPage.globalSearchRecords(workItemNo);
@@ -2173,7 +2185,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.checkOriginalTransferListButtonLabel);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.checkOriginalTransferListButtonLabel));
-		Thread.sleep(5000);// Wait to load the modal screen completely
+		Thread.sleep(5000);//Wait to load the modal screen completely
 		List<WebElement> listOfElementsOnOrignalTransferList = objCioTransfer
 				.locateElements("//*[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']/div/p", 5);
 		softAssert.assertEquals(listOfElementsOnOrignalTransferList.get(0).getText(), "Recorded Document",
@@ -2207,7 +2219,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.checkOriginalTransferListButtonLabel);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.checkOriginalTransferListButtonLabel));
-		Thread.sleep(5000);// Wait to load the modal screen completely
+		Thread.sleep(5000);//Wait to load the modal screen completely
 
 		// STEP 13-Validating the sequence and name of orignal grantors and granteee
 		// from CIO supervisor
@@ -2239,12 +2251,15 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.logout();
 
 	}
-
+	
+	
+	
 	@Test(description = "SMAB-T3765,SMAB-T3832:Verify that User is not able to submit the records if the ownership percentage is lessthan 100%", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
+			"Regression","ChangeInOwnershipManagement","RecorderIntegration" })
 	public void RecorderIntegration_VerifyValidationofMailToAndGranteeRecord(String loginUser) throws Exception {
-
-		String execEnv = System.getProperty("region");
+ 
+			
+		String execEnv = System.getProperty("region");		
 		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
 		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
 				OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithIncompleteData");
@@ -2307,12 +2322,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-
+		
 		// STEP 7-Creating the new grantee
 		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
-
-		// STEP 8-Validating order of the columns in CIO Transfer Grantee & New
-		// Ownership
+		
+		// STEP 8-Validating order of the columns in CIO Transfer Grantee & New Ownership
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
 				+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
 		HashMap<String, ArrayList<String>> granteeHashMap = objCioTransfer.getGridDataInHashMap();
@@ -2338,16 +2352,15 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
 
 		// STEP 9-Validating that grantees combined cannot have ownership more than 100%
-		driver.navigate().to("https://smcacre--" + execEnv
-				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		driver.navigate().to("https://smcacre--"+ execEnv+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		objCioTransfer.clickQuickActionButtonOnTransferActivity("Submit for Approval");
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.validateErrorText);
-		String errorMessage = objCioTransfer.getElementText(objCioTransfer.validateErrorText);
+		String errorMessage=objCioTransfer.getElementText(objCioTransfer.validateErrorText);
 		ReportLogger.INFO("Alert Message Captured");
 		softAssert.assertEquals(errorMessage,
 				"The sum of all grantee ownership percentage is less than 100. Please check and make necessary corrections",
 				"SMAB-T3765: Validate the error message ");
-
+		
 		// STEP 10- Click Finish and calculate owner ship
 		objCioTransfer.Click(objCioTransfer.getButtonWithText("Finish"));
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
@@ -2355,14 +2368,14 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.enter(objCioTransfer.calculateOwnershipRetainedFeld, "50");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
 		ReportLogger.INFO("Successfully calculated Ownership % ");
-
-		// Step 11- Validating Order of the columns under ownership details
+		
+		 //Step 11- Validating Order of the columns under ownership details
 		driver.navigate()
 				.to("https://smcacre--"
 						+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
 								.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
 						+ "/related/Property_Ownerships__r/view");
-		HashMap<String, ArrayList<String>> granteeHashMap1 = objCioTransfer.getGridDataInHashMap();
+       	HashMap<String, ArrayList<String>> granteeHashMap1 = objCioTransfer.getGridDataInHashMap();
 		softAssert.assertEquals(granteeHashMap1.containsKey("Recorded Document"), "true",
 				"SMAB-T3832:Verifying The order of the OwnerShip details");
 		softAssert.assertEquals(granteeHashMap1.containsKey("DOR"), "true",
@@ -2383,9 +2396,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3832:Verifying The order of the OwnerShip details");
 		softAssert.assertEquals(granteeHashMap1.containsKey("Remarks"), "true",
 				"SMAB-T3832:Verifying The order of the OwnerShip details");
-		objCioTransfer.logout();
-
+	     objCioTransfer.logout();
+		
 	}
+
 
 	/*
 	 * Verify that NO APN WI is genrated for document without APN and user has the
@@ -2402,7 +2416,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		HashMap<String, ArrayList<String>> hashMapRecordedApn = salesforceAPI.select(getApnToAdd);
 		String recordedAPN = hashMapRecordedApn.get("Name").get(0);
 
-		// login with sys admin
+		// login with CIO user
 
 		objMappingPage.login(users.CIO_STAFF);
 		objMappingPage.searchModule(PARCELS);
@@ -2413,7 +2427,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String WorkItemNo = salesforceAPI.select(WorkItemQuery).get("Name").get(0);
 		objMappingPage.globalSearchRecords(WorkItemNo);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
-		Thread.sleep(2000);
+		
 		// User tries to close the WI in which no APN is added
 
 		objWorkItemHomePage.Click(objWorkItemHomePage.dataTabCompleted);
@@ -2422,11 +2436,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"Status: Work item status cannot be completed as related recorded APN(s) are not migrated yet.",
 				"SMAB-T3288:Verifying User is not able to close WI Before migrating APN");
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+		
 		// User tries to add the Recorded APN
-		Thread.sleep(2000);
+		
 		objMappingPage.Click(objWorkItemHomePage.recordedAPNtab);
-
-		// objWorkItemHomePage.scrollToBottomOfPage();
 
 		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.NewButton));
 		objWorkItemHomePage.enter(objWorkItemHomePage.apnLabel, recordedAPN);
@@ -2436,10 +2449,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Thread.sleep(2000);
 		driver.navigate().back();
 		driver.navigate().back();
+		
 		// User clicks on Migrate button
 		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.migrateAPN));
-		Thread.sleep(2000);
-		// objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 
 		// User validates the status of added recorded APN
 		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0), "Processed",
@@ -2475,7 +2487,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * 
 	 */
 
-	@Test(description = "SMAB-T3564,SMAB-T3566 :Verify the type of WI system created for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3564 :Verify the type of WI system created for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" }, enabled = true)
 	public void RecorderIntegration_VerifyNewWIForNOAPNRecordedDocumentforEnvalidAPN(String loginUser)
 			throws Exception {
@@ -2485,7 +2497,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String recordedAPN = hashMapRecordedApn.get("Name").get(0);
 
 		// Step 1: getting recorded document type CIO and recorded apn from recorded
-		// document
+		
 		String documentId = objCioTransfer.getRecordedDocumentId("DE", 1);
 		hashMapRecordedApn = salesforceAPI
 				.select("SELECT ID,Name FROM Recorded_APN__c WHERE RECORDED_DOCUMENT__C='" + documentId + "'");
@@ -2493,10 +2505,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String recordedAPNName = hashMapRecordedApn.get("Name").get(0);
 
 		// Step 2: updating recorder_apn and parcel value in recorded apn
-		jsonObject.put("Parcel__c", "");
-		jsonObject.put("Recorder_APN__c", "000000000");
-		jsonObject.put("Status__c", "Pending");
-		salesforceAPI.update("Recorded_APN__c", recordedAPNID, jsonObject);
+		JSONObject jsonToUpdateRecordedAPN = new JSONObject();
+		jsonToUpdateRecordedAPN.put("Parcel__c", "");
+		jsonToUpdateRecordedAPN.put("Recorder_APN__c", "000000000");
+		jsonToUpdateRecordedAPN.put("Status__c", "Pending");
+		salesforceAPI.update("Recorded_APN__c", recordedAPNID, jsonToUpdateRecordedAPN);
+		
 		objMappingPage.login(users.CIO_STAFF);
 		objMappingPage.searchModule(PARCELS);
 
@@ -2507,27 +2521,24 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String WorkItemNo = salesforceAPI.select(WorkItemQuery).get("Name").get(0);
 		objMappingPage.globalSearchRecords(WorkItemNo);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
-		Thread.sleep(2000);
+	
 		// Step 4: User tries to close the WI in which no APN is added
-
-		objWorkItemHomePage.Click(objWorkItemHomePage.dataTabCompleted);
-		objWorkItemHomePage.Click(objWorkItemHomePage.markAsCurrentStatusButton);
-		softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+        softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),
 				"Status: Work item status cannot be completed as related recorded APN(s) are not migrated yet.",
 				"SMAB-T3564:Verifying User is not able to close WI Before migrating APN");
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
 
 		// Step 5: User tries to edit the Recorded APN
-		Thread.sleep(2000);
 		objMappingPage.Click(objWorkItemHomePage.recordedAPNtab);
 		objCioTransfer.editRecordedApn(recordedAPNName, recordedAPN);
-		Thread.sleep(2000);
+		
 		driver.navigate().back();
 		driver.navigate().back();
 
 		// Step 6: User clicks on Migrate button
 		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.migrateAPN));
-		Thread.sleep(2000);
+		
 
 		// Step 7: User validates the status of added recorded APN
 		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0), "Processed",
@@ -2566,7 +2577,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 	@Test(description = "SMAB-T3566 :Verify the type of WI system created for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" }, enabled = true)
-	public void RecorderIntegration_VerifyNewWIForNOAPNRecordedDocumentforEnvalidAPNwith(String loginUser)
+	public void RecorderIntegration_VerifyNewWIForNOAPNforEnvalidAPNwithValidAPN(String loginUser)
 			throws Exception {
 
 		String getApnToAdd = "Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) AND Status__c='Active' Limit 1";
@@ -2574,7 +2585,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String recordedAPN = hashMapRecordedApn.get("Name").get(0);
 
 		// Step 1: getting recorded document type CIO and recorded apn from recorded
-		// document
+		
 		String documentId = objCioTransfer.getRecordedDocumentId("DE", 2);
 		System.out.println("documentId ==" + documentId);
 		hashMapRecordedApn = salesforceAPI.select(
@@ -2585,10 +2596,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String recordedAPN2 = hashMapRecordedApn.get("Parcel__c").get(0);
 
 		// Step 2: updating recorder_apn and parcel value in recorded apn
-		jsonObject.put("Parcel__c", "");
-		jsonObject.put("Recorder_APN__c", "000000000");
-		jsonObject.put("Status__c", "Pending");
-		salesforceAPI.update("Recorded_APN__c", recordedAPNId1, jsonObject);
+		JSONObject jsonToUpdateRecordedAPN = new JSONObject();
+		jsonToUpdateRecordedAPN.put("Parcel__c", "");
+		jsonToUpdateRecordedAPN.put("Recorder_APN__c", "000000000");
+		jsonToUpdateRecordedAPN.put("Status__c", "Pending");
+		salesforceAPI.update("Recorded_APN__c", recordedAPNId1, jsonToUpdateRecordedAPN);
 		salesforceAPI.update("Recorded_APN__c", recordedAPNId2, "Status__c", "Pending");
 
 		objMappingPage.login(users.CIO_STAFF);
@@ -2601,12 +2613,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String WorkItemNo = salesforceAPI.select(WorkItemQuery).get("Name").get(0);
 		objMappingPage.globalSearchRecords(WorkItemNo);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
-		Thread.sleep(5000);
 
 		// Step 4: User tries to close the WI in which no APN is added
-		objWorkItemHomePage.Click(objWorkItemHomePage.dataTabCompleted);
-		objWorkItemHomePage.Click(objWorkItemHomePage.markAsCurrentStatusButton);
-		softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+        softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),
 				"Status: Work item status cannot be completed as related recorded APN(s) are not migrated yet.",
 				"SMAB-T3566:Verifying User is not able to close WI Before migrating APN");
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
@@ -2618,7 +2628,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		// Step 6: User clicks on Migrate button
 		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.migrateAPN));
-		Thread.sleep(2000);
+		
 
 		// Step 7: User validates the status of added recorded APN
 		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0), "Processed",

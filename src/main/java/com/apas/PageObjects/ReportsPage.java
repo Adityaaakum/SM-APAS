@@ -94,10 +94,9 @@ public class ReportsPage extends ApasGenericPage {
 		
 		Thread.sleep(10000);
 		driver.manage().window().maximize();
-	    //driver.manage().timeouts().implicitlyWait(100, TimeUnit.SECONDS);
 	    int size = driver.findElements(By.tagName("iframe")).size();
-         System.out.println("frame size = "+size);
-		//Switching the frame as the generated report is in different frame
+		
+         //Switching the frame as the generated report is in different frame
 		driver.switchTo().frame(size-1);
 		Click(arrowButton);
 		Click(linkExport);
