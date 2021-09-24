@@ -76,6 +76,7 @@ public interface testdata {
 	String UNRECORDED_EVENT_DATA = userDirectory+"\\data\\OwnershipAndTransfer\\AuditTrail.json";
     String TRA_DATA = userDirectory + "\\data\\TRA\\TRA_DATA.json";
     String CHARACTERISTICS_FILE = userDirectory + "\\data\\Characteristics\\00202.tif";
+    String PARCEL_MANAGEMENT_REPORTS=userDirectory+"\\data\\MappingActions\\ParcelManagementReports.json";
 
 	
 }
