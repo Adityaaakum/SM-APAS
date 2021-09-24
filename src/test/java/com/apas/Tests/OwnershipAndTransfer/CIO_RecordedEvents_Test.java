@@ -316,7 +316,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objMappingPage.login(users.SYSTEM_ADMIN);
 		objCioTransfer.addRecordedApn(recordedDocumentID, 1);
-		objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
+		
 
 		// Step 1a -Updating transfer and SM tax for the recorded document
 
@@ -374,6 +374,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 6-Finding the recorded apn transfer id
 
 		String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
 		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -641,7 +642,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		// objMappingPage.searchModule("APAS");
 		objCioTransfer.addRecordedApn(recordedDocumentID, 1);
-		objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
+		
 
 		salesforceAPI.update("Work_Item__c",
 				"SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c",
@@ -689,6 +690,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 6-Finding the recorded apn transfer id
 
 		String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
@@ -944,7 +946,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			objMappingPage.login(users.SYSTEM_ADMIN);
 			// objMappingPage.searchModule("APAS");
 			objCioTransfer.addRecordedApn(recordedDocumentID, 1);
-			objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
+			
 
 			salesforceAPI.update("Work_Item__c",
 					"SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'",
@@ -995,6 +997,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			// STEP 6-Finding the recorded apn transfer id
 
 			String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+			objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
