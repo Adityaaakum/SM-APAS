@@ -358,6 +358,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		
 		objMappingPage.deleteRelationshipInstanceFromParcel(apn);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
 
 		// Fetch some other values from database
 		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI
@@ -402,6 +403,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.globalSearchRecords(apn);
 
 		// Step 3: Creating Manual work item for the Parcel
+		objMappingPage.waitForElementToBeClickable(10, objParcelsPage.componentActionsButtonText);
 		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		// Step 4:Clicking the details tab for the work item newly created and clicking
@@ -575,6 +577,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
+		objMappingPage.deleteRelationshipInstanceFromParcel(apn);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
 		
 		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), "Lot_Size_SQFT__c", "100");
 
@@ -613,8 +617,10 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform split mapping
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
+		objParcelsPage.createParcelSitus(apn);
 		
 		//Fetching the PUC of parent before Split Action
+		objMappingPage.waitForElementToBeClickable(10, objParcelsPage.componentActionsButtonText);
 	    String parentAPNPucBeforeAction = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
 
 		// Step 3: Creating Manual work item for the Parcel
@@ -767,6 +773,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String apn = responseAPNDetails.get("Name").get(0);
 
 		objMappingPage.deleteRelationshipInstanceFromParcel(apn);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
+		
 
 		// Fetch some other values from database
 		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI
@@ -821,6 +829,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		// mapping
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
+		objMappingPage.waitForElementToBeClickable(objParcelsPage.componentActionsButtonText);
+        objParcelsPage.createParcelSitus(apn);
 
 		// Step 3: Creating Manual work item for the Parcel
 		objMappingPage.waitForElementToBeClickable(10, objParcelsPage.componentActionsButtonText);
@@ -1264,6 +1274,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	    HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn=responseAPNDetails.get("Name").get(0);
 		objMappingPage.deleteRelationshipInstanceFromParcel(apn);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
+		
 		
 		//Fetch some other values from database
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,Id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') and Legacy__c = 'No' limit 1");
@@ -1315,9 +1327,12 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
+		objMappingPage.waitForElementToBeClickable(10, objParcelsPage.componentActionsButtonText);
+		  String situsBeforeEdit= objParcelsPage.createParcelSitus(apn) ;
 
 		// Step 3: Creating Manual work item for the Parcel
 		driver.navigate().refresh();
+		objMappingPage.waitForElementToBeClickable(10, objParcelsPage.componentActionsButtonText);
 		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
@@ -1388,6 +1403,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	    objMappingPage.searchModule(PARCELS);
 		
 		objMappingPage.globalSearchRecords(childAPNNumber);
+		objMappingPage.waitForElementToBeVisible(objParcelsPage.puc);
 		//Validate the Situs of child parcel generated
 	    softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus, "Parcel Information"),childprimarySitus,
 				"SMAB-T2843,SMAB-T2838: Validate the Situs of child parcel generated");
