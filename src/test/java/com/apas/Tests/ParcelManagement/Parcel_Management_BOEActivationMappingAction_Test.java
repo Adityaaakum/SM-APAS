@@ -499,11 +499,14 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 	public void ParcelManagement_ReturnToCustomScreen_BOEACtivation_MappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 		String childAPNPUC;
 
+		String execEnv= System.getProperty("region");
 		//Fetching parcel that is Retired 		
-		String queryAPN = "Select name From Parcel__c where Status__c='Retired' limit 1";
+		String queryAPN = "Select name,id From Parcel__c where Status__c='Retired' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String parentAPN=responseAPNDetails.get("Name").get(0);
+		String parentAPNId =responseAPNDetails.get("Id").get(0);
 		objMappingPage.deleteRelationshipInstanceFromParcel(parentAPN);  
+		objMappingPage.deleteCharacteristicInstanceFromParcel(parentAPN);
 		
 		String mappingActionCreationData =  testdata.BOEACtivation_MAPPING_ACTION;
 		Map<String, String> hashMapBOEACtivationMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
@@ -513,8 +516,9 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objMappingPage.login(loginUser);
 		Thread.sleep(7000);
 		objMappingPage.closeDefaultOpenTabs();
-
-		// Step2: Opening the PARCELS page  and searching the  parcel 
+		objParcelsPage.createParcelSitus(parentAPN);
+				
+		// Step2: Opening the PARCELS page  and searching the  parcel 		
 		objMappingPage.searchModule("APAS");
 		objMappingPage.searchModule("Mapping Action");
 		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
@@ -635,6 +639,8 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 			String apn1=responseAPNDetails.get("Name").get(0);
 			
+			String execEnv= System.getProperty("region");
+				
 			String PUC = salesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
     	    String TRA=salesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0); 
     	    
@@ -651,6 +657,11 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
     	   	objMappingPage.deleteRelationshipInstanceFromParcel(apn2);
     	   	objMappingPage.deleteRelationshipInstanceFromParcel(apn3);
     	   	objMappingPage.deleteRelationshipInstanceFromParcel(apn1);
+    	   	
+    	   	objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
+    	   	objMappingPage.deleteCharacteristicInstanceFromParcel(apn3);
+    	   	objParcelsPage.createParcelSitus(apn2);
+    	   	objParcelsPage.createParcelSitus(apn3);
     	   	
     	   	String concatenateAPNWithDifferentMapBookMapPage = apn2+","+apn3;
     	   	
@@ -682,7 +693,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 			// Step 2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
 			objMappingPage.searchModule(PARCELS);
 			objMappingPage.globalSearchRecords(apn1);
-
+			
 			//Step 3: Creating Manual work item for the Parcel 
 			String workItem = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
@@ -930,6 +941,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 			String ApnfromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
 
 			objMappingPage.deleteRelationshipInstanceFromParcel(ApnfromWIPage);
+			objMappingPage.deleteCharacteristicInstanceFromParcel(ApnfromWIPage);
 
 			//Fetch some other values from database
 			HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"

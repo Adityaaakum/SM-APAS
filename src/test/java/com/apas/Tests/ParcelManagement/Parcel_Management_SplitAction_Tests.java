@@ -1675,6 +1675,9 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.deleteOwnershipFromParcel(apn1Id);
 		objMappingPage.deleteOwnershipFromParcel(apn2Id);
 		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
+		
 		//Update District/Neighborhood on the Non-Condo Parcel
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
