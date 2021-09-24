@@ -59,6 +59,8 @@ public class ParcelsPage extends ApasGenericPage {
 	public String createNewParcelButton="New";
 	public String editParcelButton="Edit";
 	public String parcelCharacteristics = "Characteristics";
+	public String parcel = "Parcel";
+	
 	
 	
 	/** Added to identify fields, dropdowns for CIO functionality **/
@@ -531,13 +533,17 @@ public class ParcelsPage extends ApasGenericPage {
 		 * 
 		 */
 		public String createParcelSitus( String APN) throws Exception {
+			
+			String excEnv= System.getProperty("region");
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Parcel Situs Record");        
 			 
 			deleteParcelSitusFromParcel(APN);
+			
 
-			createRecord();
-			waitForElementToBeVisible(10,newParcelSitus);
+		    driver.navigate().to("https://smcacre--"+excEnv+".lightning.force.com/lightning/o/Parcel_Situs__c/new?count=1");
+		    waitForElementToBeVisible(10,isPrimaryDropdown);
 			selectOptionFromDropDown(isPrimaryDropdown, "Yes");
+			selectOptionFromDropDown(parcel, APN);
 			searchAndSelectOptionFromDropDown(situsSearch, objSalesforceAPI.select("Select Name from Situs__c where name != null limit 1").get("Name").get(0));
 			Click(saveButton);
 			waitForElementToBeClickable(successAlert,25);
@@ -546,6 +552,8 @@ public class ParcelsPage extends ApasGenericPage {
 			ReportLogger.INFO("Primary Situs created on parcel : "+messageOnAlert);
 			String situsCreated = getFieldValueFromAPAS("Situs","");
 			ReportLogger.INFO("Primary Situs created on parcel : "+APN);
+			globalSearchRecords(APN);
+			Thread.sleep(5000);
 			return situsCreated;	
 		}
 		
