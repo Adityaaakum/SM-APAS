@@ -60,7 +60,7 @@ public class Parcel_Management_Parcel_Detail_Validation_Tests extends TestBase i
 
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String id=responseAPNDetails.get("Id").get(0);
-		objMappingPage.deleteParcelSitusFromParcel(id);
+		objMappingPage.deleteParcelSitusFromParcel(apn);
 		
 		//  user login to APAS application
 		objMappingPage.login(loginUser);
@@ -78,7 +78,7 @@ public class Parcel_Management_Parcel_Detail_Validation_Tests extends TestBase i
 		String createNewParcelSitus = testdata.MANUAL_PARCEL_CREATION_DATA;
 		Map<String, String> hashMapCreateNewParcelSitus = objUtil.generateMapFromJsonFile(createNewParcelSitus,
 				"DataToCreateParcelSitus");
-		String primarySitus = objParcelsPage.createParcelSitus(hashMapCreateNewParcelSitus);
+		String primarySitus = objParcelsPage.createParcelSitus(apn);
 
 		objMappingPage.globalSearchRecords(apn);
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS
