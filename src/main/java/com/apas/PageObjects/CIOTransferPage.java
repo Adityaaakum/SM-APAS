@@ -583,10 +583,10 @@ public class CIOTransferPage extends ApasGenericPage {
 			}
 			
 			/**
-		     * Description: This method will click the pencil icon edit button against the label passed as argument
+		     * Description: This method will edit recorded apn on work item page
 		     * @param labelName: Takes Label Name as an argument
 		     */
-			 public void editRecordedApn(String recordedAPNName, String recordedAPN) throws Exception {
+			 public void editRecordedApnOnWorkitem(String recordedAPNName, String recordedAPN) throws Exception {
 			        ReportLogger.INFO("Edit the field : " + recordedAPNName);
 			        waitForElementToBeClickable(objWorkItemHomePage.recordedAPNtab);
 					objMappingPage.Click(objWorkItemHomePage.recordedAPNtab);

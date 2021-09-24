@@ -2430,9 +2430,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		
 		// User tries to close the WI in which no APN is added
 
-		objWorkItemHomePage.Click(objWorkItemHomePage.dataTabCompleted);
-		objWorkItemHomePage.Click(objWorkItemHomePage.markAsCurrentStatusButton);
-		softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+        softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),
 				"Status: Work item status cannot be completed as related recorded APN(s) are not migrated yet.",
 				"SMAB-T3288:Verifying User is not able to close WI Before migrating APN");
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
@@ -2531,7 +2530,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		// Step 5: User tries to edit the Recorded APN
 		objMappingPage.Click(objWorkItemHomePage.recordedAPNtab);
-		objCioTransfer.editRecordedApn(recordedAPNName, recordedAPN);
+		objCioTransfer.editRecordedApnOnWorkitem(recordedAPNName, recordedAPN);
 		
 		driver.navigate().back();
 		driver.navigate().back();
@@ -2622,7 +2621,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
 
 		// Step 5: User tries to add the Recorded APN
-		objCioTransfer.editRecordedApn(recordedAPNName1, recordedAPN);
+		objCioTransfer.editRecordedApnOnWorkitem(recordedAPNName1, recordedAPN);
 		driver.navigate().back();
 		driver.navigate().back();
 
