@@ -82,6 +82,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objMappingPage.deleteOwnershipFromParcel(apnId1);
 		objMappingPage.deleteOwnershipFromParcel(apnId2);
 		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
+		
 		String concatenateAPNWithSameOwnership = apn1+","+apn2;   
 		
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
@@ -358,6 +361,10 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objMappingPage.deleteOwnershipFromParcel(apnId2);
 		objMappingPage.deleteOwnershipFromParcel(apnId3);
 		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn3);
+		
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,Id FROM PUC_Code__c "
 				+ "where Legacy__c = 'NO' limit 1");
 	
@@ -554,6 +561,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		
 		objMappingPage.deleteOwnershipFromParcel(apnId1);
 		objMappingPage.deleteOwnershipFromParcel(apnId2);
+		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
 
 		String parentAPN=apn1;
         if (Integer.parseInt(apn1.replace("-",""))>Integer.parseInt(apn2.replace("-","")))
@@ -626,6 +636,17 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 				ReportLogger.INFO(ownershipURL);
 				driver.navigate().to(ownershipURL);
 				objParcelsPage.createOwnershipRecord(assesseeName, hashMapCreateOwnershipRecordData);
+				
+				//User navigate to parcel situs tab
+				String parcelSitusURL = "https://smcacre--"+ execEnv+ ".lightning.force.com/lightning/r/Parcel__c/"
+						+ id+ "/related/Parcel_Situs__r/view";
+				ReportLogger.INFO("Navigate to situs URL: " +parcelSitusURL);
+				driver.navigate().to(parcelSitusURL);
+
+				String createNewParcelSitus = testdata.MANUAL_PARCEL_CREATION_DATA;
+				Map<String, String> hashMapCreateNewParcelSitus = objUtil.generateMapFromJsonFile(createNewParcelSitus,
+						"DataToCreateParcelSitus");
+				String primarySitus = objParcelsPage.createParcelSitus(parcel);
 			}
 			catch(Exception e) {
 				ExtentTestManager.getTest().log(LogStatus.ERROR, "Fail to create ownership record"+e);
@@ -844,6 +865,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objMappingPage.deleteOwnershipFromParcel(apnId1);
 		objMappingPage.deleteOwnershipFromParcel(apnId2);
 		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
+		
 		String parentAPN=apn1;
 		if (Integer.parseInt(apn1.replace("-",""))>Integer.parseInt(apn2.replace("-","")))
         	parentAPN=apn2;
@@ -914,6 +938,17 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 				ReportLogger.INFO(ownershipURL);
 				driver.navigate().to(ownershipURL);
 				objParcelsPage.createOwnershipRecord(assesseeName, hashMapCreateOwnershipRecordData);
+				
+				//User navigate to parcel situs tab
+				String parcelSitusURL = "https://smcacre--"+ execEnv+ ".lightning.force.com/lightning/r/Parcel__c/"
+						+ id+ "/related/Parcel_Situs__r/view";
+				ReportLogger.INFO("Navigate to situs URL: " +parcelSitusURL);
+				driver.navigate().to(parcelSitusURL);
+
+				String createNewParcelSitus = testdata.MANUAL_PARCEL_CREATION_DATA;
+				Map<String, String> hashMapCreateNewParcelSitus = objUtil.generateMapFromJsonFile(createNewParcelSitus,
+						"DataToCreateParcelSitus");
+				String primarySitus = objParcelsPage.createParcelSitus(parcel);
 			}
 			catch(Exception e) {
 				ExtentTestManager.getTest().log(LogStatus.ERROR, "Fail to create ownership record"+e);
@@ -1166,6 +1201,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
 		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
+
 		String apnId1=responseAPNDetails.get("Id").get(0);
 		String apnId2=responseAPNDetails.get("Id").get(1);
 		
@@ -1741,6 +1779,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		
 		objMappingPage.deleteOwnershipFromParcel(apnId1);
 		objMappingPage.deleteOwnershipFromParcel(apnId2);
+		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
 
 		String concatenateAPNWithSameOwnership = apn1+","+apn2;
 		
