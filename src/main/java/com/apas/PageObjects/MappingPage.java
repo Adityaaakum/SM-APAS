@@ -577,4 +577,5 @@ public class MappingPage extends ApasGenericPage {
 					});
 				}
 			}
+
 }

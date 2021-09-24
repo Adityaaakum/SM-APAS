@@ -1495,9 +1495,9 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 	/**
 	 *@Description: This method will delete situs from Parcel situs tab
 	 **/
-	public void deleteParcelSitusFromParcel(String apnId)
+	public void deleteParcelSitusFromParcel(String apn)
 	{
-		String query ="SELECT Id FROM Parcel_Situs__c where parcel__c ='" +apnId+"'";
+		String query ="SELECT Id FROM Parcel_Situs__c where parcel__c ='" +objSalesforceAPI.select("Select Id from parcel__c where name='"+apn+"'").get("Id").get(0)+"'";
 		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
 
 		if(!response.isEmpty())
