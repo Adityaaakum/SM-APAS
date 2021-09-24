@@ -2400,4 +2400,273 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		
 	}
 
+
+	/*
+	 * Verify that NO APN WI is genrated for document without APN and user has the
+	 * ability to add recorded APN on it to create a WI for CIO
+	 * 
+	 */
+
+	@Test(description = "SMAB-T3288,SMAB-T3769 :Verify the type of WI system created for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" }, enabled = true)
+	public void RecorderIntegration_VerifyNewWIgeneratedfromRecorderIntegrationForNOAPNRecordedDocumentforCIO(
+			String loginUser) throws Exception {
+
+		String getApnToAdd = "Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) AND Status__c='Active' Limit 1";
+		HashMap<String, ArrayList<String>> hashMapRecordedApn = salesforceAPI.select(getApnToAdd);
+		String recordedAPN = hashMapRecordedApn.get("Name").get(0);
+
+		// login with CIO user
+
+		objMappingPage.login(users.CIO_STAFF);
+		objMappingPage.searchModule(PARCELS);
+
+		objCioTransfer.generateRecorderJobWorkItems("DE", 0);
+
+		String WorkItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='NO APN' AND Sub_type__c='NO APN - CIO'  And status__c='In pool' order by createdDate desc limit 1";
+		String WorkItemNo = salesforceAPI.select(WorkItemQuery).get("Name").get(0);
+		objMappingPage.globalSearchRecords(WorkItemNo);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		
+		// User tries to close the WI in which no APN is added
+
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+        softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),
+				"Status: Work item status cannot be completed as related recorded APN(s) are not migrated yet.",
+				"SMAB-T3288:Verifying User is not able to close WI Before migrating APN");
+		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+		
+		// User tries to add the Recorded APN
+		
+		objMappingPage.Click(objWorkItemHomePage.recordedAPNtab);
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.NewButton));
+		objWorkItemHomePage.enter(objWorkItemHomePage.apnLabel, recordedAPN);
+		objWorkItemHomePage.selectOptionFromDropDown(objWorkItemHomePage.apnLabel, recordedAPN);
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.SaveButton));
+		Thread.sleep(2000);
+		driver.navigate().back();
+		driver.navigate().back();
+		
+		// User clicks on Migrate button
+		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.migrateAPN));
+
+		// User validates the status of added recorded APN
+		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0), "Processed",
+				"SMAB-T3769,SMAB-T3288: Validating that status of added APN is processed");
+
+		// User tries to complete the WI
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert);
+		objWorkItemHomePage.waitForElementToBeInVisible(objWorkItemHomePage.successAlert);
+
+		// User validates the status of the WI
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "Completed",
+				"SMAB-T3769,SMAB-T3288:Validating that status of WI is completed");
+		String createdWorkItem = salesforceAPI.select(
+				"SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 AND APN__C='" + recordedAPN + "' ")
+				.get("Name").get(0);
+		objMappingPage.globalSearchRecords(createdWorkItem);
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Assigned To", "Information"), "CIO StaffAUT",
+				"SMAB-T3769: Validate user is able to validate the value of 'Assigned To' field");
+
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus, "Information"),
+				"In Progress", "SMAB-T3769: Validate user is able to validate the value of 'Status' field");
+
+		objWorkItemHomePage.logout();
+
+	}
+
+	/*
+	 * Verify that NO APN WI is genrated for document with Invalid APN(recorder apn
+	 * is 000000000 and apn is blank) and user has the ability to add recorded APN
+	 * on it to create a WI for CIO
+	 * 
+	 */
+
+	@Test(description = "SMAB-T3564 :Verify the type of WI system created for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" }, enabled = true)
+	public void RecorderIntegration_VerifyNewWIForNOAPNRecordedDocumentforEnvalidAPN(String loginUser)
+			throws Exception {
+
+		String getApnToAdd = "Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) AND Status__c='Active' Limit 1";
+		HashMap<String, ArrayList<String>> hashMapRecordedApn = salesforceAPI.select(getApnToAdd);
+		String recordedAPN = hashMapRecordedApn.get("Name").get(0);
+
+		// Step 1: getting recorded document type CIO and recorded apn from recorded
+		
+		String documentId = objCioTransfer.getRecordedDocumentId("DE", 1);
+		hashMapRecordedApn = salesforceAPI
+				.select("SELECT ID,Name FROM Recorded_APN__c WHERE RECORDED_DOCUMENT__C='" + documentId + "'");
+		String recordedAPNID = hashMapRecordedApn.get("Id").get(0);
+		String recordedAPNName = hashMapRecordedApn.get("Name").get(0);
+
+		// Step 2: updating recorder_apn and parcel value in recorded apn
+		JSONObject jsonToUpdateRecordedAPN = new JSONObject();
+		jsonToUpdateRecordedAPN.put("Parcel__c", "");
+		jsonToUpdateRecordedAPN.put("Recorder_APN__c", "000000000");
+		jsonToUpdateRecordedAPN.put("Status__c", "Pending");
+		salesforceAPI.update("Recorded_APN__c", recordedAPNID, jsonToUpdateRecordedAPN);
+		
+		objMappingPage.login(users.CIO_STAFF);
+		objMappingPage.searchModule(PARCELS);
+
+		// Step 3: generating recorded work items from job
+		objCioTransfer.generateRecorderJobWorkItems(documentId);
+
+		String WorkItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='NO APN' AND Sub_type__c='NO APN - CIO'  And status__c='In pool' order by createdDate desc limit 1";
+		String WorkItemNo = salesforceAPI.select(WorkItemQuery).get("Name").get(0);
+		objMappingPage.globalSearchRecords(WorkItemNo);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+	
+		// Step 4: User tries to close the WI in which no APN is added
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+        softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),
+				"Status: Work item status cannot be completed as related recorded APN(s) are not migrated yet.",
+				"SMAB-T3564:Verifying User is not able to close WI Before migrating APN");
+		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+
+		// Step 5: User tries to edit the Recorded APN
+		objMappingPage.Click(objWorkItemHomePage.recordedAPNtab);
+		objCioTransfer.editRecordedApnOnWorkitem(recordedAPNName, recordedAPN);
+		
+		driver.navigate().back();
+		driver.navigate().back();
+
+		// Step 6: User clicks on Migrate button
+		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.migrateAPN));
+		
+
+		// Step 7: User validates the status of added recorded APN
+		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0), "Processed",
+				"SMAB-T3564: Validating that status of added APN is processed");
+
+		// Step 8: User tries to complete the WI
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert);
+		objWorkItemHomePage.waitForElementToBeInVisible(objWorkItemHomePage.successAlert);
+
+		// Step 9: User validates the status of the WI
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "Completed",
+				"SMAB-T3564:Validating that status of WI is completed");
+		String createdWorkItem = salesforceAPI.select(
+				"SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 AND APN__C='" + recordedAPN + "' ")
+				.get("Name").get(0);
+		objMappingPage.globalSearchRecords(createdWorkItem);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Assigned To", "Information"), "CIO StaffAUT",
+				"SMAB-T3564: Validate user is able to validate the value of 'Assigned To' field");
+
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus, "Information"),
+				"In Progress",
+				"SMAB-T3564: Validate that status of newly created Workitem should be 'In Progress' in  'Status' field");
+
+		objWorkItemHomePage.logout();
+
+	}
+	/*
+	 * Verify system creates a NO APN WI for a recorded document which has two
+	 * recorded APNs ,one with APN" 000000000" and other with a valid APN ,when SF
+	 * batch job is executed and user is not able to close it add recorded APN on it
+	 * to create a WI for CIO
+	 * 
+	 */
+
+	@Test(description = "SMAB-T3566 :Verify the type of WI system created for a recorded document with no APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" }, enabled = true)
+	public void RecorderIntegration_VerifyNewWIForNOAPNforEnvalidAPNwithValidAPN(String loginUser)
+			throws Exception {
+
+		String getApnToAdd = "Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) AND Status__c='Active' Limit 1";
+		HashMap<String, ArrayList<String>> hashMapRecordedApn = salesforceAPI.select(getApnToAdd);
+		String recordedAPN = hashMapRecordedApn.get("Name").get(0);
+
+		// Step 1: getting recorded document type CIO and recorded apn from recorded
+		
+		String documentId = objCioTransfer.getRecordedDocumentId("DE", 2);
+		System.out.println("documentId ==" + documentId);
+		hashMapRecordedApn = salesforceAPI.select(
+				"SELECT ID,Name,Parcel__c FROM Recorded_APN__c WHERE RECORDED_DOCUMENT__C='" + documentId + "'");
+		String recordedAPNId1 = hashMapRecordedApn.get("Id").get(0);
+		String recordedAPNName1 = hashMapRecordedApn.get("Name").get(0);
+		String recordedAPNId2 = hashMapRecordedApn.get("Id").get(0);
+		String recordedAPN2 = hashMapRecordedApn.get("Parcel__c").get(0);
+
+		// Step 2: updating recorder_apn and parcel value in recorded apn
+		JSONObject jsonToUpdateRecordedAPN = new JSONObject();
+		jsonToUpdateRecordedAPN.put("Parcel__c", "");
+		jsonToUpdateRecordedAPN.put("Recorder_APN__c", "000000000");
+		jsonToUpdateRecordedAPN.put("Status__c", "Pending");
+		salesforceAPI.update("Recorded_APN__c", recordedAPNId1, jsonToUpdateRecordedAPN);
+		salesforceAPI.update("Recorded_APN__c", recordedAPNId2, "Status__c", "Pending");
+
+		objMappingPage.login(users.CIO_STAFF);
+		objMappingPage.searchModule(PARCELS);
+
+		// Step 3: generating recorded work items from job
+		objCioTransfer.generateRecorderJobWorkItems(documentId);
+
+		String WorkItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='NO APN' AND Sub_type__c='NO APN - CIO'  And status__c='In pool' order by createdDate desc limit 1";
+		String WorkItemNo = salesforceAPI.select(WorkItemQuery).get("Name").get(0);
+		objMappingPage.globalSearchRecords(WorkItemNo);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+
+		// Step 4: User tries to close the WI in which no APN is added
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+        softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(),
+				"Status: Work item status cannot be completed as related recorded APN(s) are not migrated yet.",
+				"SMAB-T3566:Verifying User is not able to close WI Before migrating APN");
+		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+
+		// Step 5: User tries to add the Recorded APN
+		objCioTransfer.editRecordedApnOnWorkitem(recordedAPNName1, recordedAPN);
+		driver.navigate().back();
+		driver.navigate().back();
+
+		// Step 6: User clicks on Migrate button
+		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.migrateAPN));
+		
+
+		// Step 7: User validates the status of added recorded APN
+		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0), "Processed",
+				"SMAB-T3566: Validating that status of added APN is processed");
+
+		// Step 8: User tries to complete the WI
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert);
+		objWorkItemHomePage.waitForElementToBeInVisible(objWorkItemHomePage.successAlert);
+
+		// Step 9: User validates the status of the WI
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "Completed",
+				"SMAB-T3566:Validating that status of WI is completed");
+		String createdWorkItem = salesforceAPI.select(
+				"SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 AND APN__C='" + recordedAPN + "' ")
+				.get("Name").get(0);
+		objMappingPage.globalSearchRecords(createdWorkItem);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Assigned To", "Information"), "CIO StaffAUT",
+				"SMAB-T3566: Validate user is able to validate the value of 'Assigned To' field");
+
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus, "Information"),
+				"In Progress",
+				"SMAB-T3566: Validate that status of newly created Workitem should be 'In Progress' in  'Status' field");
+
+		String createdWorkItem2 = salesforceAPI.select(
+				"SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 AND APN__C='" + recordedAPN2 + "' ")
+				.get("Name").get(0);
+		objMappingPage.globalSearchRecords(createdWorkItem2);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Assigned To", "Information"), "CIO StaffAUT",
+				"SMAB-T3566: Validate user is able to validate the value of 'Assigned To' field");
+
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus, "Information"),
+				"In Progress",
+				"SMAB-T3566: Validate that status of newly created Workitem should be 'In Progress' in  'Status' field");
+
+		objWorkItemHomePage.logout();
+
+	}
+
 }

@@ -583,6 +583,27 @@ public class CIOTransferPage extends ApasGenericPage {
 					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
 				}
 			}
+			
+			/**
+		     * Description: This method will edit recorded apn on work item page
+		     * @param labelName: Takes Label Name as an argument
+		     */
+			 public void editRecordedApnOnWorkitem(String recordedAPNName, String recordedAPN) throws Exception {
+			        ReportLogger.INFO("Edit the field : " + recordedAPNName);
+			        waitForElementToBeClickable(objWorkItemHomePage.recordedAPNtab);
+					objMappingPage.Click(objWorkItemHomePage.recordedAPNtab);
+			        Thread.sleep(2000);
+			        String xpathStr = "//span[text() = '"+recordedAPNName+"']/ancestor::th/following-sibling::td//a[@title='Show 2 more actions']";		        
+			        WebElement showMoreButton =driver.findElement(By.xpath(xpathStr));
+			        scrollToElement(showMoreButton);
+			        Click(showMoreButton);
+			        Click(editLinkUnderShowMore);
+			        
+			        objWorkItemHomePage.enter(objWorkItemHomePage.apnLabel, recordedAPN);
+					objWorkItemHomePage.selectOptionFromDropDown(objWorkItemHomePage.apnLabel, recordedAPN);
+					objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.SaveButton));					
+			        Thread.sleep(2000);
+			    }
 	
 }
 		 	
