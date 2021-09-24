@@ -65,6 +65,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		String queryAPN = "Select name,ID  From Parcel__c where (Not Name like '1%') and (Not Name like '8%')AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
 
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -183,6 +184,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String activeParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
 		objMappingPage.deleteRelationshipInstanceFromParcel(activeParcelToPerformMapping);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(activeParcelToPerformMapping);
 
 		String mappingActionCreationData =  testdata.Brand_New_Parcel_MAPPING_ACTION;
 
@@ -283,6 +285,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
@@ -414,6 +417,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
+		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,

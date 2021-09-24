@@ -86,6 +86,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apnId2 = activeAPN.get("Id").get(1);
 		String apn3 = activeAPN.get("Name").get(2);
 		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn3);
+		
 		String queryMobileHomeAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Name like '134%' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 1";
 		HashMap<String, ArrayList<String>> responseDetails = salesforceAPI.select(queryMobileHomeAPNValue);
 		String mobileHomeApn=responseDetails.get("Name").get(0);
@@ -386,7 +390,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				+ "where Status__c='Active') and Legacy__c = 'No' limit 1");
 		String PUC = responsePUCDetails.get("Name").get(0);
 		String PucId = responsePUCDetails.get("Id").get(0);	
-		
+			
 		//Fetching parcel that are Active
 		String queryApnDetails ="SELECT Id,Name FROM Parcel__c where primary_situs__c != NULL and "
 				+ "Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where "
@@ -398,6 +402,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apn2=responseAPNDetails1.get("Name").get(1);
 		String apnId1=responseAPNDetails1.get("Id").get(0);
 		String apnId2=responseAPNDetails1.get("Id").get(1);
+		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
 		
 		salesforceAPI.update("Parcel__c", apnId1, "PUC_Code_Lookup__c", PucId);
 		salesforceAPI.update("Parcel__c", apnId2, "PUC_Code_Lookup__c", PucId);
@@ -437,6 +444,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apnId3=responseAPNDetails2.get("Id").get(0);
 		String apn4=responseAPNDetails2.get("Name").get(1);
 		String apnId4=responseAPNDetails2.get("Id").get(1);
+		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn3);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn4);
 		
 		salesforceAPI.update("Parcel__c", apnId3, "PUC_Code_Lookup__c", PucId);
 		salesforceAPI.update("Parcel__c", apnId4, "PUC_Code_Lookup__c", PucId);
@@ -1603,6 +1613,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
 		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+		
 		//Fetching parcels that are Active with different map book and map page
 		String mapBookForAPN1 = apn1.split("-")[0];
 		String mapPageForAPN1 = apn1.split("-")[1];
@@ -2475,6 +2487,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apn4 = salesforceAPI.select(queryAPNValue).get("Name").get(1);
 		String apn4Id = salesforceAPI.select(queryAPNValue).get("Id").get(1);
 		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn3);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn4);
+			
 		salesforceAPI.update("Parcel__c", apn3Id, "PUC_Code_Lookup__c", PucId);
 		salesforceAPI.update("Parcel__c", apn4Id, "PUC_Code_Lookup__c", PucId);
 		
