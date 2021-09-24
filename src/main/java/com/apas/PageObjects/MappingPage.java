@@ -14,6 +14,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 
@@ -557,4 +558,23 @@ public class MappingPage extends ApasGenericPage {
 
 			return flag;
 		}
+		
+		 /**
+	       *  This method will delete existing characteristic instances  from the Parcel
+	       * @param apn-Apn whose records needs to be deleted
+	       * @return
+	       * @throws Exception
+	       */
+			public void deleteCharacteristicInstanceFromParcel(String apn) {
+				String query = "SELECT Id FROM Characteristics__c where APN__c in( SELECT id FROM Parcel__c where name='"
+						+ apn + "')";
+				HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+				if (!response.isEmpty()) {
+					response.get("Id").stream().forEach(Id -> {
+						objSalesforceAPI.delete("Characteristics__c", Id);
+						ReportLogger.INFO("Characteristics deleted for Id ::"+Id);
+					});
+				}
+			}
 }
