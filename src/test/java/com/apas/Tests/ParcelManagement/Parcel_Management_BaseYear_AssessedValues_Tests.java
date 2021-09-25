@@ -38,7 +38,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	MappingPage objMappingPage;
 	JSONObject jsonObject = new JSONObject();
-	
+
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
 		driver = null;
@@ -57,12 +57,12 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3196,SMAB-T3184,SMAB-T3221, SMAB-3198:Verify the UI validations for the fields mentioned on 'Assessed value' object on the Parcel.Parcel record should exist containing Assessed Value records.", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement","BaseYearManagement" })
+	@Test(description = "SMAB-T3196,SMAB-T3184,SMAB-T3221, SMAB-T3198:Verify the UI validations for the fields mentioned on 'Assessed value' object on the Parcel.Parcel record should exist containing Assessed Value records.", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement", "BaseYearManagement" })
 	public void ParcelManagement_VerifyAssessedValuesObjectUIValidationsForProp19(String loginUser) throws Exception {
 
 		// Fetching the Active Parcel
-		String query = "SELECT Primary_Situs__c,Status__C,Name FROM Parcel__c where Status__C='Active' and Primary_Situs__C !='' limit 1";
+		String query = "SELECT name from Parcel__c where Status__c='Active' Limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
 		String parcelToSearch = response.get("Name").get(0);
 
@@ -78,26 +78,31 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		objParcelsPage.Click(objParcelsPage.moretab);
 		objParcelsPage.Click(objParcelsPage.assessedValue);
 
-		objParcelsPage.openNewAssessedValueForm();
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.landCashValue);
 		objParcelsPage.enter(objParcelsPage.landCashValue, "400000");
 		objParcelsPage.enter(objParcelsPage.improvementCashValue, "300000");
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.fullCashValue), "Full Cash Value",
-				"SMAB-T3196,SMAB-T3184: Validation that  Full Cash Value text is visible.");
+
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.xpathSearchOnAVPage("2", "3")),
+				"Full Cash Value", "SMAB-T3196,SMAB-T3184: Validation that  Full Cash Value text is visible.");
+
 		objParcelsPage.selectOptionFromDropDown(objParcelsPage.assessedValueType, "Prop 19");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.differenceValue), "Difference",
-				"SMAB-T3196,SMAB-T3184: Validation that  Difference text is visible for Prop 19");
+		objParcelsPage.waitForElementToBeVisible(objParcelsPage.xpathSearchOnAVPage("2", "4"));
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.xpathSearchOnAVPage("2", "4")),
+				"Difference", "SMAB-T3196,SMAB-T3184: Validation that  Difference text is visible for Prop 19");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.totalValueOnForm), "Total",
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.xpathSearchOnAVPage("1", "2")), "Total",
 				"SMAB-T3196,SMAB-T3184: Validation that  Total text is visible for Prop 19");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.newTaxableValueText), "New Taxable Value",
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.xpathSearchOnAVPage("1", "3")),
+				"New Taxable Value",
 				"SMAB-T3196,SMAB-T3184: Validation that  New Taxable Value text is visible for Prop 19");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.originFcvText), "Origin FCV",
-				"SMAB-T3196,SMAB-T3184: Validation that  Origin FCV text is visible for Prop 19");
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.xpathSearchOnAVPage("1", "7")),
+				"Origin FCV", "SMAB-T3196,SMAB-T3184: Validation that  Origin FCV text is visible for Prop 19");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.combinedFbyvAndHpi),
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.xpathSearchOnAVPage("1", "9")),
 				"Combined FBYV and HPI",
 				"SMAB-T3196,SMAB-T3184: Validation that  Combined FBYV and HPI text is visible for Prop 19");
 
@@ -106,88 +111,81 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		objParcelsPage.enter(objParcelsPage.originImprovementValue, "112021");
 		objParcelsPage.enter(objParcelsPage.hpiValueAllowance, "112021");
 
+		WebElement differenceValue = objParcelsPage.xpathSearchOnAVPage("2", "4");
+		WebElement newTaxableValueText = objParcelsPage.xpathSearchOnAVPage("1", "3");
+		WebElement combinedFbyvAndHpi = objParcelsPage.xpathSearchOnAVPage("1", "9");
+
 		// Asserting those fields shouldn't be visible on Prop 60
 
 		objParcelsPage.selectOptionFromDropDown(objParcelsPage.assessedValueType, "Prop 60");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objHpiValueAllowance)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.differenceValue)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields(differenceValue) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.newTaxableValueText)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxableValueText) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.combinedFbyvAndHpi)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objFactoredBYV)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (Factored BYV) are nor visible when Assessed Type is not 'Prop 19'");
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(differenceValue)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields(difference Value) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValueText)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(combinedFbyvAndHpi)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
 
 		// Asserting those fields shouldn't be visible on Prop 90
 
 		objParcelsPage.selectOptionFromDropDown(objParcelsPage.assessedValueType, "Prop 90");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objHpiValueAllowance)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.differenceValue)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields(differenceValue) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.newTaxableValueText)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxableValueText) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.combinedFbyvAndHpi)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objFactoredBYV)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (Factored BYV) are nor visible when Assessed Type is not 'Prop 19'");
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(differenceValue)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields(difference Value) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValueText)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(combinedFbyvAndHpi)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
 
 		// Asserting those fields shouldn't be visible on Prop 110
 
 		objParcelsPage.selectOptionFromDropDown(objParcelsPage.assessedValueType, "Prop 110");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objHpiValueAllowance)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.differenceValue)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields(differenceValue) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.newTaxableValueText)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxableValueText) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.combinedFbyvAndHpi)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objFactoredBYV)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (Factored BYV) are nor visible when Assessed Type is not 'Prop 19'");
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(differenceValue)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields(difference Value) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValueText)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(combinedFbyvAndHpi)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
 
 		// Asserting those fields shouldn't be visible on Temporary Value
 
 		objParcelsPage.selectOptionFromDropDown(objParcelsPage.assessedValueType, "Temporary Value");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objHpiValueAllowance)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.differenceValue)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields(differenceValue) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.newTaxableValueText)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxableValueText) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.combinedFbyvAndHpi)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objFactoredBYV)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (Factored BYV) are nor visible when Assessed Type is not 'Prop 19'");
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(differenceValue)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields(difference Value) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValueText)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(combinedFbyvAndHpi)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
 
 		// Asserting those fields shouldn't be visible on CIP
 
 		objParcelsPage.selectOptionFromDropDown(objParcelsPage.assessedValueType, "CIP");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objHpiValueAllowance)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.differenceValue)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields(differenceValue) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.newTaxableValueText)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxableValueText) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.combinedFbyvAndHpi)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objFactoredBYV)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (Factored BYV) are nor visible when Assessed Type is not 'Prop 19'");
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(differenceValue)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields(difference Value) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValueText)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(combinedFbyvAndHpi)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
+
 		// Asserting those fields shouldn't be visible on Assessed Value
 
 		objParcelsPage.selectOptionFromDropDown(objParcelsPage.assessedValueType, "Assessed Value");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objHpiValueAllowance)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.differenceValue)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields(differenceValue) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.newTaxableValueText)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxableValueText) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.combinedFbyvAndHpi)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are nor visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objFactoredBYV)),
-				"SMAB-T3196,SMAB-T3184: Validation that all fields (Factored BYV) are nor visible when Assessed Type is not 'Prop 19'");
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(differenceValue)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields(difference Value) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValueText)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(combinedFbyvAndHpi)),
+				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
 
 		driver.navigate().refresh();
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.apn, 8);
@@ -239,19 +237,16 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 
 		// Step6: After clicking Save Button user is on new created assessed Value page.
 		// User is validating the land, improvement & total value here.
-		
-		String firstPartValue="//div/div/one-record-home-flexipage2/forcegenerated-adg-rollup_component___force-generated__flexipage_-record-page___-assessed_-values_-lightning_-record_-page___-assessed_-b-y_-values__c___-v-i-e-w/forcegenerated-flexipage_assessed_values_lightning_record_page_assessed_by_values__c__view_js/record_flexipage-record-page-decorator/div[1]/records-record-layout-event-broker/slot/slot/flexipage-record-home-template-desktop2/div/div[1]/slot/slot/flexipage-component2/slot/records-lwc-highlights-panel/records-lwc-record-layout/forcegenerated-highlightspanel_assessed_by_values__c___012000000000000aaa___compact___view___recordlayout2/force-highlights2/div[1]/div[2]/slot/slot/force-highlights-details-item";
-	String lastPartValue="/div/p[2]/slot/records-formula-output/slot/lightning-formatted-number";
-	WebElement landValue= driver.findElement(By.xpath(firstPartValue+"[4]"+lastPartValue));
-	WebElement improvementValue= driver.findElement(By.xpath(firstPartValue+"[5]"+lastPartValue));
-	WebElement totalValue= driver.findElement(By.xpath(firstPartValue+"[6]"+lastPartValue));
-		
 
+		WebElement landValue = objParcelsPage.xpathSearchOnAVHeader("4");
+
+		// GetFieldValueFromAPAS funtion to be used
+
+		String landValueText = objParcelsPage.getFieldValueFromAPAS("Land Value");
+		String improvementValueText = objParcelsPage.getFieldValueFromAPAS("Improvement Value");
+		String totalValueText = objParcelsPage.getFieldValueFromAPAS("Land Value");
 		objParcelsPage.waitForElementToBeVisible(landValue, 8);
 
-		String landValueText = landValue.getText();
-		String improvementValueText = improvementValue.getText();
-		String totalValueText = totalValue.getText();
 		softAssert.assertEquals(improvementValueSmall, improvementValueText,
 				"SMAB-T3198: Validation that Improvement Value should be the smallest value from Calamity or Decline.");
 		softAssert.assertEquals(landValueSmall, landValueText,
@@ -261,7 +256,6 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 
 		// Step 7: User going to create new Assessed Value with the Assessed Value type
 		// to verify the Land Cash Value and Improvement Cash Value
-
 
 		driver.navigate().to("https://smcacre--qa.lightning.force.com/lightning/o/Assessed_BY_Values__c/new?count=1");
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.apn);
@@ -274,8 +268,8 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 
 		objParcelsPage.javascriptClick(objParcelsPage.saveButton);
 		Thread.sleep(2000);
-//		Verify Land, Improvement& total value is avaialble in header only not on detail page. 
-		
+//		Verify Land, Improvement& total value is available in header only not on detail page. 
+
 		softAssert.assertEquals(improvementValueSmall, improvementValueText,
 				"SMAB-T3198: Validation that Improvement Value should be the smallest value from Calamity or Decline.");
 		softAssert.assertEquals(landValueSmall, landValueText,
@@ -283,13 +277,15 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		softAssert.assertEquals("300,000", totalValueText,
 				"SMAB-T3198: Validation that Total Value should be the total of land and improvement value.");
 
-		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.detailPagelandValue),"SMAB-T3198: Validation that Land Value should not be visible.");
-		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.detailPageImprovementValue),"SMAB-T3198: Validation that Improvement Value should not be visible.");
-		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.detailPageTotalValue),"SMAB-T3198: Validation that Total Value should not be visible.");
-		
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.detailPagelandValue),
+				"SMAB-T3198: Validation that Land Value should not be visible.");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.detailPageImprovementValue),
+				"SMAB-T3198: Validation that Improvement Value should not be visible.");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.detailPageTotalValue),
+				"SMAB-T3198: Validation that Total Value should not be visible.");
+
 		objParcelsPage.logout();
 
 	}
 
-	
 }

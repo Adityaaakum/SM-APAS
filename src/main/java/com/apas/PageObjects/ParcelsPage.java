@@ -104,6 +104,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String apn = "APN";
 
 	
+	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
 
@@ -169,48 +170,29 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//h2[contains(text(),'New Assessed Values')]")
 	public WebElement newAssessedValuePopUp;
-	
-	@FindBy(xpath = "//slot/slot/flexipage-column2[2]/div/slot/flexipage-field[6]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")
-	public WebElement objFactoredBYV;
-	
+		
 	@FindBy(xpath = "//*[@class='inline-edit-trigger-icon slds-button__icon slds-button__icon_hint']")
 	public WebElement inlineEditIcon;
-	
-	@FindBy(xpath = "//div/div/one-record-home-flexipage2/forcegenerated-adg-rollup_component___force-generated__flexipage_-record-page___-assessed_-values_-lightning_-record_-page___-assessed_-b-y_-values__c___-v-i-e-w/forcegenerated-flexipage_assessed_values_lightning_record_page_assessed_by_values__c__view_js/record_flexipage-record-page-decorator/div[1]/records-record-layout-event-broker/slot/slot/flexipage-record-home-template-desktop2/div/div[1]/slot/slot/flexipage-component2/slot/records-lwc-highlights-panel/records-lwc-record-layout/forcegenerated-highlightspanel_assessed_by_values__c___012000000000000aaa___compact___view___recordlayout2/force-highlights2/div[1]/div[2]/slot/slot/force-highlights-details-item[4]/div/p[2]/slot/records-formula-output/slot/lightning-formatted-number")
-	public WebElement landValue;
-
-	@FindBy(xpath = "//div/div/one-record-home-flexipage2/forcegenerated-adg-rollup_component___force-generated__flexipage_-record-page___-assessed_-values_-lightning_-record_-page___-assessed_-b-y_-values__c___-v-i-e-w/forcegenerated-flexipage_assessed_values_lightning_record_page_assessed_by_values__c__view_js/record_flexipage-record-page-decorator/div[1]/records-record-layout-event-broker/slot/slot/flexipage-record-home-template-desktop2/div/div[1]/slot/slot/flexipage-component2/slot/records-lwc-highlights-panel/records-lwc-record-layout/forcegenerated-highlightspanel_assessed_by_values__c___012000000000000aaa___compact___view___recordlayout2/force-highlights2/div[1]/div[2]/slot/slot/force-highlights-details-item[5]/div/p[2]/slot/records-formula-output/slot/lightning-formatted-number")
-	public WebElement improvementValue;
-	
-	@FindBy(xpath = "//div/div/one-record-home-flexipage2/forcegenerated-adg-rollup_component___force-generated__flexipage_-record-page___-assessed_-values_-lightning_-record_-page___-assessed_-b-y_-values__c___-v-i-e-w/forcegenerated-flexipage_assessed_values_lightning_record_page_assessed_by_values__c__view_js/record_flexipage-record-page-decorator/div[1]/records-record-layout-event-broker/slot/slot/flexipage-record-home-template-desktop2/div/div[1]/slot/slot/flexipage-component2/slot/records-lwc-highlights-panel/records-lwc-record-layout/forcegenerated-highlightspanel_assessed_by_values__c___012000000000000aaa___compact___view___recordlayout2/force-highlights2/div[1]/div[2]/slot/slot/force-highlights-details-item[6]/div/p[2]/slot/records-formula-output/slot/lightning-formatted-number")
-	public WebElement totalValue;
 	
 	@FindBy(xpath = "//*[@name=\"Additional_Land_Value__c\"]")
 	public WebElement additionalLand;
 	
 	@FindBy(xpath = "//*[@name=\"Additional_Improvement_Value__c\"]")
 	public WebElement additionalImprovement;
-	
-	@FindBy(xpath = "//slot/slot/flexipage-column2[2]/div/slot/flexipage-field[3]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")
-	public WebElement fullCashValue;
-	
-	@FindBy(xpath = "//slot/slot/flexipage-column2[2]/div/slot/flexipage-field[4]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")
-	public WebElement differenceValue;
-	
-	@FindBy(xpath = "//slot/slot/flexipage-column2[1]/div/slot/flexipage-field[2]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")
-	public WebElement totalValueOnForm;
-	
-	@FindBy(xpath = "//slot/slot/flexipage-column2[1]/div/slot/flexipage-field[3]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")
-	public WebElement newTaxableValueText;
-	
-	@FindBy(xpath = "//slot/slot/flexipage-column2[1]/div/slot/flexipage-field[7]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")
-	public WebElement originFcvText;
-	
-	@FindBy(xpath = "//slot/slot/flexipage-column2[1]/div/slot/flexipage-field[9]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")
-	public WebElement combinedFbyvAndHpi;
-	
+
 	@FindBy(xpath = "//*[@name='HPI_Value_Allowance__c']")
 	public WebElement objHpiValueAllowance;
+
+	@FindBy(xpath = "//div[@class='slds-tabs_card']//*[text()='Land Value']")
+	public WebElement detailPagelandValue;
+	
+	@FindBy(xpath = "//div[@class='slds-tabs_card']//*[text()='Improvement Value']")
+	public WebElement detailPageImprovementValue;
+	
+	@FindBy(xpath = "//div[@class='slds-tabs_card']//*[text()='Total Value']")
+	public WebElement detailPageTotalValue;
+	
+	
 
 	
     public String SubmittedForApprovalButton="Submit for Approval";
@@ -247,6 +229,7 @@ public class ParcelsPage extends ApasGenericPage {
 		String dov = dataMap.get("DOV");
 		String workItemOwner= dataMap.get("Work Item Owner");
 		String workItemNumber;
+		String auditTrailRecord=dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?");
 		
 		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
@@ -276,7 +259,51 @@ public class ParcelsPage extends ApasGenericPage {
 		
 		return workItemNumber;
 	}
-	 
+
+	public String createWorkItemRollManagement(Map<String, String> dataMap) throws Exception {
+		String timeStamp = String.valueOf(System.currentTimeMillis());
+		String workItemType = dataMap.get("Work Item Type");
+		String actions = dataMap.get("Actions");
+		String auditTrail = dataMap.get("Audit Trail");
+		String reference = dataMap.get("Reference");
+		String description = dataMap.get("Description") + "_" + timeStamp;
+		String priority = dataMap.get("Priority");
+		String workItemRouting = dataMap.get("Work Item Routing");
+		String dueDate = dataMap.get("Due Date");
+		String dov = dataMap.get("DOV");
+		String workItemOwner= dataMap.get("Work Item Owner");
+		String workItemNumber;
+		String auditTrailRecord=dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?");
+		
+		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
+		Click(getButtonWithText(componentActionsButtonText));
+		//waitForElementToBeClickable(selectOptionDropDownComponentsActionsModal);
+		//selectOptionFromDropDown(selectOptionDropDownComponentsActionsModal, "Create Work Item");
+		Click(getButtonWithText(nextButtonComponentsActionsModal));
+		waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);
+		
+		selectOptionFromDropDown(workItemTypeDropDownComponentsActionsModal, workItemType);
+		selectOptionFromDropDown(actionsDropDownLabel, actions);
+	
+		if(verifyElementExists(auditTrailElementPath)) selectOptionFromDropDown(auditTrailRecordDropDownComponentsActionsModal, auditTrailRecord);
+
+		if (reference != null)enter(referenceInputTextBoxComponentActionModal, reference);
+		enter(descriptionInputTextBoxComponentActionModal, description);
+		//selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);
+		//selectOptionFromDropDown(workItemRoutingDropDownComponentsActionsModal, workItemRouting);
+		if (dueDate != null) enter(dueDateInputTextBox, dueDate);
+		if (dov != null) enter(dovInputTextBox, dov);
+		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
+		Click(getButtonWithText(nextButtonComponentsActionsModal));
+		Thread.sleep(5000);
+
+		String workItemQuery = "SELECT Name FROM Work_Item__c where Description__c = '" + description + "' order by Name desc limit 1";
+		workItemNumber = objSalesforceAPI.select(workItemQuery).get("Name").get(0);
+		ReportLogger.INFO("Work item created is " + workItemNumber  );
+		
+		return workItemNumber;
+	}
+
     
     /**
 	 * Description: This method will save the table data in hashmap for the Target/Source Parcel relationship
@@ -616,17 +643,20 @@ public class ParcelsPage extends ApasGenericPage {
 			ReportLogger.INFO("Primary Situs created on parcel : "+situsCreated);
 			return situsCreated;	
 		}
-		
-		public void openNewAssessedValueForm() throws Exception {
-			openNewAssessedValueForm("New Assessed Values");
+
+		public WebElement xpathSearchOnAVPage( String index1, String index2) throws Exception {
+			String xpath="//slot/slot/flexipage-column2["+index1+"]/div/slot/flexipage-field["+index2+"]/slot/record_flexipage-record-field/div/div/div[1]/span[1]";
+			waitUntilElementIsPresent(xpath,20); 
+			WebElement webelement = driver.findElement(By.xpath(xpath));
+			
+			return webelement;
 		}
-		public void openNewAssessedValueForm(String newAssessedValue) throws Exception {
-			//Select one of the following values for Building Permit Type "E-File Building Permit" or "Manual Entry Building Permit"
-			javascriptClick(waitForElementToBeClickable(addNewAssessedValue));
-			waitForElementToBeVisible(newAssessedValuePopUp,30);
-			waitForElementToBeClickable(newAssessedValuePopUp,20);
+		public WebElement xpathSearchOnAVHeader( String index) throws Exception {
+			String xpath="//div/div/one-record-home-flexipage2/forcegenerated-adg-rollup_component___force-generated__flexipage_-record-page___-assessed_-values_-lightning_-record_-page___-assessed_-b-y_-values__c___-v-i-e-w/forcegenerated-flexipage_assessed_values_lightning_record_page_assessed_by_values__c__view_js/record_flexipage-record-page-decorator/div[1]/records-record-layout-event-broker/slot/slot/flexipage-record-home-template-desktop2/div/div[1]/slot/slot/flexipage-component2/slot/records-lwc-highlights-panel/records-lwc-record-layout/forcegenerated-highlightspanel_assessed_by_values__c___012000000000000aaa___compact___view___recordlayout2/force-highlights2/div[1]/div[2]/slot/slot/force-highlights-details-item["+index+"]/div/p[2]/slot/records-formula-output/slot/lightning-formatted-number";
+			waitUntilElementIsPresent(xpath,20); 
+			WebElement webelement = driver.findElement(By.xpath(xpath));
+			
+			return webelement;
+		}
 
-				}
-
-		
 }
