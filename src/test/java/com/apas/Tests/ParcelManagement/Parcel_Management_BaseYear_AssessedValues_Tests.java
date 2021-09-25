@@ -187,6 +187,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(combinedFbyvAndHpi)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
 
+		//Validating when we use temporary Value as type and adding additional declines then it should display smallest value of land and improvement on detail page. 
 		driver.navigate().refresh();
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.apn, 8);
 
@@ -238,15 +239,11 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		// Step6: After clicking Save Button user is on new created assessed Value page.
 		// User is validating the land, improvement & total value here.
 
-		WebElement landValue = objParcelsPage.xpathSearchOnAVHeader("4");
-
-		// GetFieldValueFromAPAS funtion to be used
-
-		String landValueText = objParcelsPage.getFieldValueFromAPAS("Land Value");
-		String improvementValueText = objParcelsPage.getFieldValueFromAPAS("Improvement Value");
-		String totalValueText = objParcelsPage.getFieldValueFromAPAS("Land Value");
-		objParcelsPage.waitForElementToBeVisible(landValue, 8);
-
+		String landValueText = objParcelsPage.xpathSearchOnAVHeader("4").getText();
+		String improvementValueText = objParcelsPage.xpathSearchOnAVHeader("5").getText();
+		String totalValueText = objParcelsPage.xpathSearchOnAVHeader("6").getText();
+		objParcelsPage.waitForElementToBeVisible(objParcelsPage.moretab, 8);
+	
 		softAssert.assertEquals(improvementValueSmall, improvementValueText,
 				"SMAB-T3198: Validation that Improvement Value should be the smallest value from Calamity or Decline.");
 		softAssert.assertEquals(landValueSmall, landValueText,
