@@ -199,12 +199,7 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		//Step5: Open the Parcel module and add values for Exemption fields
 		Map<String, String> dataToCreateHomeOwnerExemptionMap = objUtil.generateMapFromJsonFile(homeOwnerExemptionData, "NewHOECreation");
 		objApasGenericPage.searchModule(modules.PARCELS);
-		
-		String executionEnv = System.getProperty("region");
-		driver.navigate().to("https://smcacre--"+executionEnv+
-				 ".lightning.force.com/lightning/r/Parcel__c/" + apnId + "/view");
-		
-		objCIOTransferPage.waitForElementToBeVisible(6, objParcelsPage.getButtonWithText(objParcelsPage.editParcelButton));
+		objApasGenericPage.globalSearchRecords(apn);
 		
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.editParcelButton));
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.saveButton);
