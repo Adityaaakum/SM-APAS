@@ -87,6 +87,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String isPrimaryDropdown = "Is Primary?";
 	public String situsSearch = "Situs";
 	
+	public String assessedValueLable = "Assessed Values";
 	public String assessedValueType = "Assessed Value Type";
 	public String effectiveEndDate = "Effective End Date";
 	public String landCashValue = "Land Cash Value";
@@ -611,11 +612,10 @@ public class ParcelsPage extends ApasGenericPage {
 		/*
 		 * This method return dynamic xpath with single index value on AV Header.
 		 */
-		public WebElement returnElementXpathOnAVHeader( String index) throws Exception {
-			String xpath="//div/div/one-record-home-flexipage2/forcegenerated-adg-rollup_component___force-generated__flexipage_-record-page___-assessed_-values_-lightning_-record_-page___-assessed_-b-y_-values__c___-v-i-e-w/forcegenerated-flexipage_assessed_values_lightning_record_page_assessed_by_values__c__view_js/record_flexipage-record-page-decorator/div[1]/records-record-layout-event-broker/slot/slot/flexipage-record-home-template-desktop2/div/div[1]/slot/slot/flexipage-component2/slot/records-lwc-highlights-panel/records-lwc-record-layout/forcegenerated-highlightspanel_assessed_by_values__c___012000000000000aaa___compact___view___recordlayout2/force-highlights2/div[1]/div[2]/slot/slot/force-highlights-details-item["+index+"]/div/p[2]/slot/records-formula-output/slot/lightning-formatted-number";
-			waitUntilElementIsPresent(xpath,20); 
+		public WebElement returnElementXpathOnAVHeader(String title) throws Exception {
+			String xpath = "//*[contains(@class,'slds-text-title slds-truncate')and contains(@title,'" + title
+					+ "')]/../*[contains(@class,'fieldComponent slds-text-body--regular slds-show_inline-block slds-truncate')]";
 			WebElement webelement = driver.findElement(By.xpath(xpath));
-			
 			return webelement;
 		}
 

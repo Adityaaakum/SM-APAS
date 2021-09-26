@@ -76,8 +76,9 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		// Step3: Search and Open the Parcel then clicks on more tab and then clicks on Assessed Values
 
 		objParcelsPage.globalSearchRecords(parcelToSearch);
-		objParcelsPage.Click(objParcelsPage.moretab);
-		objParcelsPage.Click(objParcelsPage.assessedValue);
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.assessedValueLable);
+		
+//		objParcelsPage.Click(objParcelsPage.assessedValue);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.landCashValue);
 		objParcelsPage.enter(objParcelsPage.landCashValue, "400000");
@@ -238,9 +239,9 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 
 		// Step6: After clicking Save Button user is on new created assessed Value page. User is validating the land, improvement & total value here.
 		
-		String landValueText = objParcelsPage.returnElementXpathOnAVHeader("4").getText();
-		String improvementValueText = objParcelsPage.returnElementXpathOnAVHeader("5").getText();
-		String totalValueText = objParcelsPage.returnElementXpathOnAVHeader("6").getText();
+		String landValueText = objParcelsPage.returnElementXpathOnAVHeader("Land Value").getText();
+		String improvementValueText = objParcelsPage.returnElementXpathOnAVHeader("Improvement Value").getText();
+		String totalValueText = objParcelsPage.returnElementXpathOnAVHeader("Total Value").getText();
 		objParcelsPage.waitForElementToBeVisible(objParcelsPage.moretab, 8);
 	
 		softAssert.assertEquals(improvementValueSmall, improvementValueText,
@@ -266,9 +267,9 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		Thread.sleep(2000);
 //		Verify Land, Improvement& total value is available in header only not on detail page. 
 
-		softAssert.assertEquals(improvementValueSmall, improvementValueText,
+		softAssert.assertEquals(improvementCashValueNumber, improvementValueText,
 				"SMAB-T3198: Validation that Improvement Value should be the smallest value from Calamity or Decline.");
-		softAssert.assertEquals(landValueSmall, landValueText,
+		softAssert.assertEquals(landCashValueNumber, landValueText,
 				"SMAB-T3198: Validation that Land Value should be the smallest value from Calamity or Decline.");
 		softAssert.assertEquals("300,000", totalValueText,
 				"SMAB-T3198: Validation that Total Value should be the total of land and improvement value.");
