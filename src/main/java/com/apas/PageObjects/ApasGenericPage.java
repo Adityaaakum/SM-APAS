@@ -637,7 +637,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 			Click(driver.findElement(By.xpath(xpath)));
 			
 			}
-			Thread.sleep(7000);
+			Thread.sleep(5000);
 		}
 			
 			catch (Exception e) {
@@ -662,7 +662,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 								 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
 						ReportLogger.INFO("https://smcacre--"+executionEnv+
 								 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
-						Thread.sleep(7000);
+						Thread.sleep(5000);
 					}
 					// for work item search
 					else if(searchString.startsWith("WI-")){
@@ -673,7 +673,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 								 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
 						ReportLogger.INFO("https://smcacre--"+executionEnv+
 								 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
-						Thread.sleep(7000);
+						Thread.sleep(5000);
 					}
 					 else {
 						  ReportLogger.INFO("Unable to search string: " + searchString + e);
