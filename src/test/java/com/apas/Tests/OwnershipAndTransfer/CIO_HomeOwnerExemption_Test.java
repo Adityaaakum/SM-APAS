@@ -171,12 +171,11 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		
 		// Step 1: Executing the recorder feed batch job to generate CIO WI
 		objCIOTransferPage.generateRecorderJobWorkItems("DE", 1);
-		Thread.sleep(7000);
 		String cioWorkItem = objWorkItemHomePage.getLatestWorkItemDetailsOnWorkbench(1).get("Name").get(0);
 
 		// Step2: Login to the APAS application 
 		objCIOTransferPage.login(loginUser);
-		Thread.sleep(5000);
+		Thread.sleep(2000);
 		objCIOTransferPage.closeDefaultOpenTabs();
 
 		// Step3: Opening the work items and accepting the WI created by recorder batch
@@ -185,7 +184,10 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objApasGenericPage.scrollToElement(objApasGenericPage.getWebElementWithLabel(objParcelsPage.editApnField));
 		String apn = objCIOTransferPage.getFieldValueFromAPAS(objWorkItemHomePage.wiAPNDetailsPage, "Information");
+		String apnQuery = "SELECT Id FROM Parcel__c where Name ='" + apn + "'";
+		String apnId = salesforceAPI.select(apnQuery).get("Id").get(0);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		
 		objApasGenericPage.logout();
@@ -193,11 +195,17 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 
 		//Step4: Login to the APAS application
 		objApasGenericPage.login(users.SYSTEM_ADMIN);
-				
+		
 		//Step5: Open the Parcel module and add values for Exemption fields
 		Map<String, String> dataToCreateHomeOwnerExemptionMap = objUtil.generateMapFromJsonFile(homeOwnerExemptionData, "NewHOECreation");
 		objApasGenericPage.searchModule(modules.PARCELS);
-		objApasGenericPage.globalSearchRecords(apn);
+		
+		String executionEnv = System.getProperty("region");
+		driver.navigate().to("https://smcacre--"+executionEnv+
+				 ".lightning.force.com/lightning/r/Parcel__c/" + apnId + "/view");
+		
+		objCIOTransferPage.waitForElementToBeVisible(6, objParcelsPage.getButtonWithText(objParcelsPage.editParcelButton));
+		
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.editParcelButton));
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.saveButton);
 		objApasGenericPage.scrollToElement(objApasGenericPage.getWebElementWithLabel(objParcelsPage.exemptionLabel));

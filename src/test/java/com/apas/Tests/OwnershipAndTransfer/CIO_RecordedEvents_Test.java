@@ -1653,10 +1653,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 18 - Clicking on return quick action button
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionReturn);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionReturn);
-		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.returnReasonTextBox);
+		objCioTransfer.waitForElementToBeVisible(20, objCioTransfer.returnReasonTextBox);
 		objCioTransfer.enter(objCioTransfer.returnReasonTextBox, "Returned by CIO Supervisor");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
-		objCioTransfer.waitForElementToBeVisible(6, objCioTransfer.finishButtonPopUp);
+		objCioTransfer.waitForElementToBeVisible(20, objCioTransfer.finishButtonPopUp);
 		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
 
 		Thread.sleep(2000); // Allow the screen to appear completely
