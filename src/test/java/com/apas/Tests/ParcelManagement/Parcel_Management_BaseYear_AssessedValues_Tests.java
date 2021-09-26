@@ -73,12 +73,11 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		// Step2: Opening the Parcels module
 		objParcelsPage.searchModule(modules.PARCELS);
 
-		// Step3: Search and Open the Parcel then clicks on more tab and then clicks on
-		// Assessed Values
+		// Step3: Search and Open the Parcel then clicks on more tab and then clicks on Assessed Values
+
 		objParcelsPage.globalSearchRecords(parcelToSearch);
 		objParcelsPage.Click(objParcelsPage.moretab);
 		objParcelsPage.Click(objParcelsPage.assessedValue);
-
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.landCashValue);
 		objParcelsPage.enter(objParcelsPage.landCashValue, "400000");
@@ -219,9 +218,8 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		objParcelsPage.enter(objParcelsPage.additionalLand, landValueSmall);
 		objParcelsPage.enter(objParcelsPage.additionalImprovement, improvementValueSmall);
 
-		// Step5: Clicks on New button and validate first type of decline should be
-		// Calamity and additional decline should be Decline.
-
+		// Step5: Clicks on New button and validate first type of decline should be Calamity and additional decline should be Decline.
+		
 		objParcelsPage.selectOptionFromDropDown(objParcelsPage.typeOfDecline, "Calamity");
 		objParcelsPage.scrollToElement(webElement);
 		objParcelsPage.javascriptClick(webElement);
@@ -238,9 +236,8 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 
 		Thread.sleep(2000);
 
-		// Step6: After clicking Save Button user is on new created assessed Value page.
-		// User is validating the land, improvement & total value here.
-
+		// Step6: After clicking Save Button user is on new created assessed Value page. User is validating the land, improvement & total value here.
+		
 		String landValueText = objParcelsPage.returnElementXpathOnAVHeader("4").getText();
 		String improvementValueText = objParcelsPage.returnElementXpathOnAVHeader("5").getText();
 		String totalValueText = objParcelsPage.returnElementXpathOnAVHeader("6").getText();
@@ -254,8 +251,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 				"SMAB-T3198: Validation that Total Value should be the total of land and improvement value.");
 		ReportLogger.INFO("Verification has been completed for Land Value, Improvement Value and Total Value fields ");
 
-		// Step 7: User going to create new Assessed Value with the Assessed Value type
-		// to verify the Land Cash Value and Improvement Cash Value
+		// Step 7: User going to create new Assessed Value with the Assessed Value type to verify the Land Cash Value and Improvement Cash Value
 
 		driver.navigate().to("https://smcacre--qa.lightning.force.com/lightning/o/Assessed_BY_Values__c/new");
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.apn);
