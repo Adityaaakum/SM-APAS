@@ -165,9 +165,6 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//*[@role='menuitem' and contains(.,'Assessed Values')]")
 	public WebElement assessedValue;
 	
-	@FindBy(xpath = "//button[@name='New' and contains(.,'New')]")
-	public WebElement addNewAssessedValue;
-	
 	@FindBy(xpath = "//h2[contains(text(),'New Assessed Values')]")
 	public WebElement newAssessedValuePopUp;
 		
@@ -260,50 +257,7 @@ public class ParcelsPage extends ApasGenericPage {
 		return workItemNumber;
 	}
 
-	public String createWorkItemRollManagement(Map<String, String> dataMap) throws Exception {
-		String timeStamp = String.valueOf(System.currentTimeMillis());
-		String workItemType = dataMap.get("Work Item Type");
-		String actions = dataMap.get("Actions");
-		String auditTrail = dataMap.get("Audit Trail");
-		String reference = dataMap.get("Reference");
-		String description = dataMap.get("Description") + "_" + timeStamp;
-		String priority = dataMap.get("Priority");
-		String workItemRouting = dataMap.get("Work Item Routing");
-		String dueDate = dataMap.get("Due Date");
-		String dov = dataMap.get("DOV");
-		String workItemOwner= dataMap.get("Work Item Owner");
-		String workItemNumber;
-		String auditTrailRecord=dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?");
-		
-		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
-		Click(getButtonWithText(componentActionsButtonText));
-		//waitForElementToBeClickable(selectOptionDropDownComponentsActionsModal);
-		//selectOptionFromDropDown(selectOptionDropDownComponentsActionsModal, "Create Work Item");
-		Click(getButtonWithText(nextButtonComponentsActionsModal));
-		waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);
-		
-		selectOptionFromDropDown(workItemTypeDropDownComponentsActionsModal, workItemType);
-		selectOptionFromDropDown(actionsDropDownLabel, actions);
 	
-		if(verifyElementExists(auditTrailElementPath)) selectOptionFromDropDown(auditTrailRecordDropDownComponentsActionsModal, auditTrailRecord);
-
-		if (reference != null)enter(referenceInputTextBoxComponentActionModal, reference);
-		enter(descriptionInputTextBoxComponentActionModal, description);
-		//selectOptionFromDropDown(priorityDropDownComponentsActionsModal, priority);
-		//selectOptionFromDropDown(workItemRoutingDropDownComponentsActionsModal, workItemRouting);
-		if (dueDate != null) enter(dueDateInputTextBox, dueDate);
-		if (dov != null) enter(dovInputTextBox, dov);
-		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
-		Click(getButtonWithText(nextButtonComponentsActionsModal));
-		Thread.sleep(5000);
-
-		String workItemQuery = "SELECT Name FROM Work_Item__c where Description__c = '" + description + "' order by Name desc limit 1";
-		workItemNumber = objSalesforceAPI.select(workItemQuery).get("Name").get(0);
-		ReportLogger.INFO("Work item created is " + workItemNumber  );
-		
-		return workItemNumber;
-	}
-
     
     /**
 	 * Description: This method will save the table data in hashmap for the Target/Source Parcel relationship
@@ -644,14 +598,20 @@ public class ParcelsPage extends ApasGenericPage {
 			return situsCreated;	
 		}
 
-		public WebElement xpathSearchOnAVPage( String index1, String index2) throws Exception {
+		/*
+		 * This method return dynamic xpath with double index value on AV Form.
+		 */
+		public WebElement returnElementXpathOnAVForm( String index1, String index2) throws Exception {
 			String xpath="//slot/slot/flexipage-column2["+index1+"]/div/slot/flexipage-field["+index2+"]/slot/record_flexipage-record-field/div/div/div[1]/span[1]";
 			waitUntilElementIsPresent(xpath,20); 
 			WebElement webelement = driver.findElement(By.xpath(xpath));
 			
 			return webelement;
 		}
-		public WebElement xpathSearchOnAVHeader( String index) throws Exception {
+		/*
+		 * This method return dynamic xpath with single index value on AV Header.
+		 */
+		public WebElement returnElementXpathOnAVHeader( String index) throws Exception {
 			String xpath="//div/div/one-record-home-flexipage2/forcegenerated-adg-rollup_component___force-generated__flexipage_-record-page___-assessed_-values_-lightning_-record_-page___-assessed_-b-y_-values__c___-v-i-e-w/forcegenerated-flexipage_assessed_values_lightning_record_page_assessed_by_values__c__view_js/record_flexipage-record-page-decorator/div[1]/records-record-layout-event-broker/slot/slot/flexipage-record-home-template-desktop2/div/div[1]/slot/slot/flexipage-component2/slot/records-lwc-highlights-panel/records-lwc-record-layout/forcegenerated-highlightspanel_assessed_by_values__c___012000000000000aaa___compact___view___recordlayout2/force-highlights2/div[1]/div[2]/slot/slot/force-highlights-details-item["+index+"]/div/p[2]/slot/records-formula-output/slot/lightning-formatted-number";
 			waitUntilElementIsPresent(xpath,20); 
 			WebElement webelement = driver.findElement(By.xpath(xpath));

@@ -20,6 +20,7 @@ import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -59,7 +60,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 	 */
 	@Test(description = "SMAB-T3196,SMAB-T3184,SMAB-T3221, SMAB-T3198:Verify the UI validations for the fields mentioned on 'Assessed value' object on the Parcel.Parcel record should exist containing Assessed Value records.", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement", "BaseYearManagement" })
-	public void ParcelManagement_VerifyAssessedValuesObjectUIValidationsForProp19(String loginUser) throws Exception {
+	public void ParcelManagement_VerifyAssessedValuesObjectUIValidations(String loginUser) throws Exception {
 
 		// Fetching the Active Parcel
 		String query = "SELECT name from Parcel__c where Status__c='Active' Limit 1";
@@ -83,26 +84,26 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		objParcelsPage.enter(objParcelsPage.landCashValue, "400000");
 		objParcelsPage.enter(objParcelsPage.improvementCashValue, "300000");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.xpathSearchOnAVPage("2", "3")),
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.returnElementXpathOnAVForm("2", "3")),
 				"Full Cash Value", "SMAB-T3196,SMAB-T3184: Validation that  Full Cash Value text is visible.");
 
 		objParcelsPage.selectOptionFromDropDown(objParcelsPage.assessedValueType, "Prop 19");
 
-		objParcelsPage.waitForElementToBeVisible(objParcelsPage.xpathSearchOnAVPage("2", "4"));
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.xpathSearchOnAVPage("2", "4")),
+		objParcelsPage.waitForElementToBeVisible(objParcelsPage.returnElementXpathOnAVForm("2", "4"));
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.returnElementXpathOnAVForm("2", "4")),
 				"Difference", "SMAB-T3196,SMAB-T3184: Validation that  Difference text is visible for Prop 19");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.xpathSearchOnAVPage("1", "2")), "Total",
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.returnElementXpathOnAVForm("1", "2")), "Total",
 				"SMAB-T3196,SMAB-T3184: Validation that  Total text is visible for Prop 19");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.xpathSearchOnAVPage("1", "3")),
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.returnElementXpathOnAVForm("1", "3")),
 				"New Taxable Value",
 				"SMAB-T3196,SMAB-T3184: Validation that  New Taxable Value text is visible for Prop 19");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.xpathSearchOnAVPage("1", "7")),
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.returnElementXpathOnAVForm("1", "7")),
 				"Origin FCV", "SMAB-T3196,SMAB-T3184: Validation that  Origin FCV text is visible for Prop 19");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.xpathSearchOnAVPage("1", "9")),
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.returnElementXpathOnAVForm("1", "9")),
 				"Combined FBYV and HPI",
 				"SMAB-T3196,SMAB-T3184: Validation that  Combined FBYV and HPI text is visible for Prop 19");
 
@@ -111,9 +112,9 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		objParcelsPage.enter(objParcelsPage.originImprovementValue, "112021");
 		objParcelsPage.enter(objParcelsPage.hpiValueAllowance, "112021");
 
-		WebElement differenceValue = objParcelsPage.xpathSearchOnAVPage("2", "4");
-		WebElement newTaxableValueText = objParcelsPage.xpathSearchOnAVPage("1", "3");
-		WebElement combinedFbyvAndHpi = objParcelsPage.xpathSearchOnAVPage("1", "9");
+		WebElement differenceValue = objParcelsPage.returnElementXpathOnAVForm("2", "4");
+		WebElement newTaxableValueText = objParcelsPage.returnElementXpathOnAVForm("1", "3");
+		WebElement combinedFbyvAndHpi = objParcelsPage.returnElementXpathOnAVForm("1", "9");
 
 		// Asserting those fields shouldn't be visible on Prop 60
 
@@ -186,6 +187,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(combinedFbyvAndHpi)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
+		ReportLogger.INFO("Verification has been completed for Prop 19 only fields ");
 
 		//Validating when we use temporary Value as type and adding additional declines then it should display smallest value of land and improvement on detail page. 
 		driver.navigate().refresh();
@@ -239,9 +241,9 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		// Step6: After clicking Save Button user is on new created assessed Value page.
 		// User is validating the land, improvement & total value here.
 
-		String landValueText = objParcelsPage.xpathSearchOnAVHeader("4").getText();
-		String improvementValueText = objParcelsPage.xpathSearchOnAVHeader("5").getText();
-		String totalValueText = objParcelsPage.xpathSearchOnAVHeader("6").getText();
+		String landValueText = objParcelsPage.returnElementXpathOnAVHeader("4").getText();
+		String improvementValueText = objParcelsPage.returnElementXpathOnAVHeader("5").getText();
+		String totalValueText = objParcelsPage.returnElementXpathOnAVHeader("6").getText();
 		objParcelsPage.waitForElementToBeVisible(objParcelsPage.moretab, 8);
 	
 		softAssert.assertEquals(improvementValueSmall, improvementValueText,
@@ -250,11 +252,12 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 				"SMAB-T3198: Validation that Land Value should be the smallest value from Calamity or Decline.");
 		softAssert.assertEquals("300,000", totalValueText,
 				"SMAB-T3198: Validation that Total Value should be the total of land and improvement value.");
+		ReportLogger.INFO("Verification has been completed for Land Value, Improvement Value and Total Value fields ");
 
 		// Step 7: User going to create new Assessed Value with the Assessed Value type
 		// to verify the Land Cash Value and Improvement Cash Value
 
-		driver.navigate().to("https://smcacre--qa.lightning.force.com/lightning/o/Assessed_BY_Values__c/new?count=1");
+		driver.navigate().to("https://smcacre--qa.lightning.force.com/lightning/o/Assessed_BY_Values__c/new");
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.apn);
 		objParcelsPage.searchAndSelectOptionFromDropDown(objParcelsPage.apn, parcelToSearch);
 		String landCashValueNumber = "200,000";
@@ -273,6 +276,8 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 				"SMAB-T3198: Validation that Land Value should be the smallest value from Calamity or Decline.");
 		softAssert.assertEquals("300,000", totalValueText,
 				"SMAB-T3198: Validation that Total Value should be the total of land and improvement value.");
+		ReportLogger.INFO("Verification has been completed for Land Value, Improvement Value and Total Value fields for Assessed Value Type");
+		ReportLogger.INFO("All the validations completed successfully");
 
 		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.detailPagelandValue),
 				"SMAB-T3198: Validation that Land Value should not be visible.");
