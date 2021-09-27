@@ -195,7 +195,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//h1[text()='Ownership']")
 	public WebElement ownershipLabelOnGridForGrantee;
 	
-	@FindBy(xpath = commonXpath+"//div[text()='Return Reason']/ancestor:: div[@class='bBody']//textarea")
+	@FindBy(xpath = commonXpath+"//*[text()='Return Reason']//ancestor:: div[contains(@class,'slds-modal__content slds-p-around--medium')]//textarea")
 	public WebElement returnReasonTextBox;
 	
 	@FindBy(xpath ="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section//force-record-layout-item//*[text()='CIO Transfer Status']/../..//slot[@slot='outputField']//lightning-formatted-text")
