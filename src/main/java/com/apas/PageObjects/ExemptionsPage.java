@@ -775,16 +775,13 @@ public class ExemptionsPage extends ApasGenericPage {
     	Click(exemptionRecordTypeNextButton);
     	
     	//String assesseeName = fetchAssesseeName();
-    	//Commented above code temporarily till current HOE implementation is completed
-    	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'Global'";
+    	//Commented above code temporarily and added below code till current HOE implementation is completed 
+    	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'DoNot'";
         HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
         String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
         
-    	//String apnNumber = fetchActiveAPN();
-        //searchAndSelectOptionFromDropDown(apn, apnNumber);
-    	
-        //selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
         searchAndSelectOptionFromDropDown(claimantName, assesseeName);
+        selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
         scrollToElement(getWebElementWithLabel(dateApplicationReceived));
         enter(dateApplicationReceived, dataMap.get("Date Application Received"));
         Thread.sleep(1000);

@@ -577,10 +577,12 @@ public class CIOTransferPage extends ApasGenericPage {
 					
 					Click(getButtonWithText(enterButtonText));
 					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
+					Thread.sleep(1000);
 				} catch (Exception e) {
 					Click(quickActionButtonDropdownIcon);
 					Click(getButtonWithText(enterButtonText));
 					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
+					Thread.sleep(1000);
 				}
 			}
 			

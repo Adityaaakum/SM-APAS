@@ -738,13 +738,13 @@ public void searchModule(String moduleToSearch) throws Exception {
 		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'" + sectionName + "')]";
 		String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName + "']/../..//slot[@slot='outputField']";
 
-		String fieldXpath = fieldPath + "//force-hoverable-link//a | " +
+		String fieldXpath = fieldPath + "//force-hoverable-link//a//span | " +
 				fieldPath + "//lightning-formatted-text | " +
 				fieldPath + "//lightning-formatted-number | " +
 				fieldPath + "//lightning-formatted-rich-text | " +
 				fieldPath + "//force-record-type//span | " +
 				fieldPath + "//lightning-formatted-name |" +
-				fieldPath + "//a";
+				fieldPath + "//a//span";
 		
 		waitForElementToBeVisible(20,fieldXpath);
 		try{

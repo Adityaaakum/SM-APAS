@@ -319,6 +319,7 @@ public class ParcelsPage extends ApasGenericPage {
 			searchAndSelectOptionFromDropDown(bppAccountDropDown, bppAccount);
 		
 		String successMsg = saveRecord();
+		Thread.sleep(2000);
 		return successMsg;
 	}
 	

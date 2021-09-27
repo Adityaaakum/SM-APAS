@@ -83,13 +83,10 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT id FROM PUC_Code__c where Name = '99-RETIRED PARCEL' limit 1");
 		salesforceAPI.update("Parcel__c", retiredApnId, "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 		
-		String transferCodeId = salesforceAPI.select("SELECT Id FROM Event_Library__c where Name = 'CIO-SALE' Limit 1").get("Id").get(0);
-		
 		// Step1: Login to the APAS application
 		objMappingPage.login(loginUser);
 
 		// Step2: Opening the PARCELS page 
-		
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(retiredApn);
 		
@@ -99,7 +96,6 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				"SMAB-T3287, SMAB-T3286: Validate the warning message on CIO Transfer screen");
 		
 		//Step 3(a): Verifying that orignal transfer list quick action button is not visible for unrecorded document
-		
 		softAssert.assertEquals(objCIOTransferPage.verifyElementVisible(objCIOTransferPage.checkOriginalTransferListButtonLabel),false, "SMAB-T3630:Verify that check Orignal Transfer List quick action button is not available for unrecorded transfer.");
 		
 		// Step4: Edit the Transfer activity and update the Transfer Code
@@ -110,10 +106,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
 		
 		//Added below code to handle regression failure
-		Thread.sleep(5000);
-		String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//div[@class='slds-form-element__control']//a[contains(@href,'" + transferCodeId + "')]//span"; 
-		objCIOTransferPage.waitForElementToBeVisible(10,driver.findElement(By.xpath(xpathStr)));
-		softAssert.assertEquals(objCIOTransferPage.getElementText(driver.findElement(By.xpath(xpathStr))),"CIO-SALE",
+		Thread.sleep(2000);
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferCodeLabel, ""),"CIO-SALE",
 				"SMAB-T3287: Validate that CIO staff is able to update and save values on CIO Transfer Screen");
 		
 		// Step5: Update APN field with active APN and validate Warning message disappears
@@ -147,8 +141,6 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT id FROM PUC_Code__c where Name in ('101- Single Family Home','105 - Apartment') limit 1");
 		salesforceAPI.update("Parcel__c", retiredApnId, "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 		
-		String transferCodeId = salesforceAPI.select("SELECT Id FROM Event_Library__c where Name = 'CIO-SALE' Limit 1").get("Id").get(0);
-		
 		// Step1: Login to the APAS application
 		objMappingPage.login(loginUser);
 
@@ -169,12 +161,10 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
 		
 		//Added below code to handle regression failure
-		Thread.sleep(5000);
-		String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//div[@class='slds-form-element__control']//a[contains(@href,'" + transferCodeId + "')]//span"; 
-		objCIOTransferPage.waitForElementToBeVisible(10,driver.findElement(By.xpath(xpathStr)));
-		softAssert.assertEquals(objCIOTransferPage.getElementText(driver.findElement(By.xpath(xpathStr))),"CIO-SALE",
-				"SMAB-T3287: Validate that CIO staff is able to update and save values on CIO Transfer Screen");
-				
+		Thread.sleep(2000);
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferCodeLabel, ""),"CIO-SALE",
+						"SMAB-T3287: Validate that CIO staff is able to update and save values on CIO Transfer Screen");
+					
 		objCIOTransferPage.logout();
 	}
 	
