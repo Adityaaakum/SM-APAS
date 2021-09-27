@@ -1429,7 +1429,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.fillMappingActionForm(hashMapCombineActionMappingData);
 		objMappingPage.waitForElementToBeVisible(10, objMappingPage.generateParcelButton);
 		//updating child parcel size in second screen on mapping action 
-		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"99",1);
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace,"99",1);
 
 		//validating second screen warning message
 		String parcelsizewarningmessage=objMappingPage.secondScreenParcelSizeWarning.getText();
@@ -1757,7 +1757,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2664: Validate that only 1 APN is linked to Work Item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
 				"SMAB-T2664: Validate that first Parent APN is displayed in the linked item");
-
+		
 		driver.switchTo().window(MappingScreen);
 		//Step 7: Click Combine Parcel Button
 		Thread.sleep(2000);
@@ -1828,6 +1828,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2664,SMAB-T2651: Validate that first Parent APN is displayed in the linked item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
 				"SMAB-T2664,SMAB-T2651: Validate that second Parent APN is displayed in the linked item");
+		objMappingPage.Click(objWorkItemHomePage.detailsTab);
+		String referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
+		softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
+				"SMAB-T2668,SMAB-T2765: Validate that Parent APNs are present in the reference Link");
 		objWorkItemHomePage.logout();
 
 		Thread.sleep(5000);
@@ -1853,6 +1857,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2664: Validate that first Parent APN is displayed in the linked item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
 				"SMAB-T2664: Validate that second Parent APN is displayed in the linked item");
+		objMappingPage.Click(objWorkItemHomePage.detailsTab);
+		referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
+		softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
+				"SMAB-T2668,SMAB-T2765: Validate that Parent APNs are present in the reference Link");
 
 		objWorkItemHomePage.logout();
 
@@ -2020,6 +2028,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
 		objParcelsPage.Click(objParcelsPage.workItems);
+		
+		//Moving to the Update Characteristics Verify PUC WI
 		objParcelsPage.Click(objParcelsPage.updateCharacteristicsVerifyPUC);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -2028,6 +2038,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		objParcelsPage.Click(objMappingPage.parcelAllocationNextButton);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
+		ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
 
 		driver.switchTo().window(parentWindow);
 		driver.navigate().refresh();
@@ -2037,13 +2048,15 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
+		
+		//Moving to Allocate Values WI
 		objParcelsPage.Click(objParcelsPage.workItems);
 		objParcelsPage.Click(objParcelsPage.allocateValue);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
 		String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
 		softAssert.assertEquals(assignedTo, "rp appraiserAUT", "Assiged to matched ...!!!!!!!");
-		softAssert.assertEquals(workPool, "Appraiser", "Assiged to matched ...!!!!!!!");
+		softAssert.assertEquals(workPool, "Appraiser", "workPool to matched ...!!!!!!!");
 
 		objWorkItemHomePage.logout();
 	}

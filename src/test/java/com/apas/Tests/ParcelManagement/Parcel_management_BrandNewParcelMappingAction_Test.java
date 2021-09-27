@@ -398,6 +398,44 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
            softAssert.assertEquals(childParcelPuc, childAPNPucFromGrid,
    				" SMAB-T3243: Verify PUC of Child parcel"+newCreatedApn);
 		    objMappingPage.logout();
+		    
+		    Thread.sleep(5000);
+			ReportLogger.INFO(" Appraiser logins ");
+			objMappingPage.login(users.RP_APPRAISER);
+			objMappingPage.searchModule(PARCELS);
+			objMappingPage.globalSearchRecords(newCreatedApn);
+			objParcelsPage.Click(objParcelsPage.workItems);
+			
+			//Moving to the Update Characteristics Verify PUC WI
+			objParcelsPage.Click(objParcelsPage.updateCharacteristicsVerifyPUC);
+			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			objWorkItemHomePage.waitForElementToBeVisible(40, objWorkItemHomePage.referenceDetailsLabel);
+			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+			objWorkItemHomePage.switchToNewWindow(parentWindow);
+			objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
+			ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
+
+			driver.switchTo().window(parentWindow);
+			driver.navigate().refresh();
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+			softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
+			objMappingPage.searchModule(PARCELS);
+			objMappingPage.globalSearchRecords(newCreatedApn);
+			
+			//Moving to Allocate Values WI
+			objParcelsPage.Click(objParcelsPage.workItems);
+			objParcelsPage.Click(objParcelsPage.allocateValue);
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
+			String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
+			softAssert.assertEquals(assignedTo, "rp appraiserAUT", "Assiged to matched ...!!!!!!!");
+			softAssert.assertEquals(workPool, "Appraiser", "workPool to matched ...!!!!!!!");
+
+			objWorkItemHomePage.logout();
+
 		   		
             		                          
 		   

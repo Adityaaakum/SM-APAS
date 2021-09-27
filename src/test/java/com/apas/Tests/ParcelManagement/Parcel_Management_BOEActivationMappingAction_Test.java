@@ -622,6 +622,44 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		String Status = objMappingPage.getFieldValueFromAPAS("Status", "Parcel Information");
 		softAssert.assertEquals(Status, "Active", "SMAB-T3623: Verify Status of Parcel:" + childAPN);
 		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		ReportLogger.INFO(" Appraiser logins ");
+		objMappingPage.login(users.RP_APPRAISER);
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(childAPN);
+		objParcelsPage.Click(objParcelsPage.workItems);
+		
+		//Moving to the Update Characteristics Verify PUC WI
+		objParcelsPage.Click(objParcelsPage.updateCharacteristicsVerifyPUC);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(40, objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objParcelsPage.Click(objMappingPage.parcelAllocationNextButton);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
+		ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
+
+		driver.switchTo().window(parentWindow);
+		driver.navigate().refresh();
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(childAPN);
+		
+		//Moving to Allocate Values WI
+		objParcelsPage.Click(objParcelsPage.workItems);
+		objParcelsPage.Click(objParcelsPage.allocateValue);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
+		String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
+		softAssert.assertEquals(assignedTo, "rp appraiserAUT", "Assiged to matched ...!!!!!!!");
+		softAssert.assertEquals(workPool, "Appraiser", "workPool to matched ...!!!!!!!");
+
+		objWorkItemHomePage.logout();
+
 	}
 	
 	
@@ -656,8 +694,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
     	   	
     	   	objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
     	   	objMappingPage.deleteCharacteristicInstanceFromParcel(apn3);
-    	   	objParcelsPage.createParcelSitus(apn2);
-    	   	objParcelsPage.createParcelSitus(apn3);
+    	   	
     	   	
     	   	String concatenateAPNWithDifferentMapBookMapPage = apn2+","+apn3;
     	   	
@@ -783,6 +820,10 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 					"SMAB-T2733,SMAB-T2767: Validate that first Parent APN is displayed in the linked item");
 			softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
 					"SMAB-T2733,SMAB-T2767: Validate that second Parent APN is displayed in the linked item");
+			objMappingPage.Click(objWorkItemHomePage.detailsTab);
+			String referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
+			softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
+					"SMAB-T2668,SMAB-T2765: Validate that Parent APNs are present in the reference Link");
 
 		   	
 		   	objWorkItemHomePage.logout();
@@ -805,6 +846,10 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 					"SMAB-T2733: Validate that first Parent APN is displayed in the linked item");
 			softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
 					"SMAB-T2733: Validate that second Parent APN is displayed in the linked item");
+			objMappingPage.Click(objWorkItemHomePage.detailsTab);
+			referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
+			softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
+					"SMAB-T2668,SMAB-T2765: Validate that Parent APNs are present in the reference Link");
 
 			objWorkItemHomePage.logout();
 

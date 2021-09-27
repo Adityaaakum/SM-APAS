@@ -1723,6 +1723,11 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 				"SMAB-T2668,SMAB-T2765: Validate that first Parent APN is displayed in the linked item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
 				"SMAB-T2668,SMAB-T2765: Validate that second Parent APN is displayed in the linked item");
+		objMappingPage.Click(objWorkItemHomePage.detailsTab);
+		String referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
+		softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
+				"SMAB-T2668,SMAB-T2765: Validate that Parent APNs are present in the reference Link");
+		
 
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
@@ -1746,6 +1751,10 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 				"SMAB-T2668: Validate that first Parent APN is displayed in the linked item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
 				"SMAB-T2668: Validate that second Parent APN is displayed in the linked item");
+		objMappingPage.Click(objWorkItemHomePage.detailsTab);
+		referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
+		softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
+				"SMAB-T2668,SMAB-T2765: Validate that Parent APNs are present in the reference Link");
 
 		objWorkItemHomePage.logout();
 

@@ -626,7 +626,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	@Test(description = "SMAB-T2898,SMAB-T2667,SMAB-T2766:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"remap\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_RemapMappingAction_NoPrimarySitusTRA(String loginUser) throws Exception {
-		String queryAPN = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990') and Status__c = 'Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
+		String queryAPN = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990')and (not Name like '134%') and Status__c = 'Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
@@ -768,6 +768,10 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 				"SMAB-T2667,SMAB-T2766: Validate that first Parent APN is displayed in the linked item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
 				"SMAB-T2667,SMAB-T2766: Validate that second Parent APN is displayed in the linked item");
+		objMappingPage.Click(objWorkItemHomePage.detailsTab);
+		String referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
+		softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
+				"SMAB-T2668,SMAB-T2765: Validate that Parent APNs are present in the reference Link");
 		
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
@@ -804,6 +808,10 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 				"SMAB-T2667: Validate that first Parent APN is displayed in the linked item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
 				"SMAB-T2667: Validate that second Parent APN is displayed in the linked item");
+		objMappingPage.Click(objWorkItemHomePage.detailsTab);
+		referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
+		softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
+				"SMAB-T2668,SMAB-T2765: Validate that Parent APNs are present in the reference Link");
 
 		objWorkItemHomePage.logout();
 	}
