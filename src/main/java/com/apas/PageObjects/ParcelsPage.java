@@ -89,6 +89,25 @@ public class ParcelsPage extends ApasGenericPage {
 	public String isPrimaryDropdown = "Is Primary?";
 	public String situsSearch = "Situs";
 	
+	public String assessedValueLable = "Assessed Values";
+	public String assessedValueType = "Assessed Value Type";
+	public String effectiveEndDate = "Effective End Date";
+	public String landCashValue = "Land Cash Value";
+	public String improvementCashValue = "Improvement Cash Value";
+	public String typeOfDecline = "Type of Decline";
+	public String land = "Land";
+	public String improvements = "Improvements";
+	public String additionalDeclines = "Additional Declines";
+	public String factoredBaseYearValue = "Factored Base Year Value";
+	public String hpiValueAllowance = "HPI Value Allowance";
+	public String originDov = "Origin DOV";
+	public String originImprovementValue = "Origin Improvement Value";
+	public String originLandValue = "Origin Land Value";
+	public String originFcv = "Origin FCV";
+	public String apn = "APN";
+
+	
+	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
 
@@ -146,6 +165,35 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[@title='Target Parcel Relationships']")
 	public WebElement targetParcelLabel;
 	
+	@FindBy(xpath = "//*[@role='menuitem' and contains(.,'Assessed Values')]")
+	public WebElement assessedValue;
+	
+	@FindBy(xpath = "//h2[contains(text(),'New Assessed Values')]")
+	public WebElement newAssessedValuePopUp;
+		
+	@FindBy(xpath = "//*[@class='inline-edit-trigger-icon slds-button__icon slds-button__icon_hint']")
+	public WebElement inlineEditIcon;
+	
+	@FindBy(xpath = "//*[@name=\"Additional_Land_Value__c\"]")
+	public WebElement additionalLand;
+	
+	@FindBy(xpath = "//*[@name=\"Additional_Improvement_Value__c\"]")
+	public WebElement additionalImprovement;
+
+	@FindBy(xpath = "//*[@name='HPI_Value_Allowance__c']")
+	public WebElement objHpiValueAllowance;
+
+	@FindBy(xpath = "//div[@class='slds-tabs_card']//*[text()='Land Value']")
+	public WebElement detailPagelandValue;
+	
+	@FindBy(xpath = "//div[@class='slds-tabs_card']//*[text()='Improvement Value']")
+	public WebElement detailPageImprovementValue;
+	
+	@FindBy(xpath = "//div[@class='slds-tabs_card']//*[text()='Total Value']")
+	public WebElement detailPageTotalValue;
+	
+	
+
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -181,6 +229,7 @@ public class ParcelsPage extends ApasGenericPage {
 		String dov = dataMap.get("DOV");
 		String workItemOwner= dataMap.get("Work Item Owner");
 		String workItemNumber;
+		String auditTrailRecord=dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?");
 		
 		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
@@ -210,7 +259,8 @@ public class ParcelsPage extends ApasGenericPage {
 		
 		return workItemNumber;
 	}
-	 
+
+	
     
     /**
 	 * Description: This method will save the table data in hashmap for the Target/Source Parcel relationship
@@ -557,6 +607,25 @@ public class ParcelsPage extends ApasGenericPage {
 			Thread.sleep(5000);
 			return situsCreated;
 		}
-		
-		
+
+		/*
+		 * This method return dynamic xpath with double index value on AV Form.
+		 */
+		public WebElement returnElementXpathOnAVForm( String index1, String index2) throws Exception {
+			String xpath="//slot/slot/flexipage-column2["+index1+"]/div/slot/flexipage-field["+index2+"]/slot/record_flexipage-record-field/div/div/div[1]/span[1]";
+			waitUntilElementIsPresent(xpath,20); 
+			WebElement webelement = driver.findElement(By.xpath(xpath));
+			
+			return webelement;
+		}
+		/*
+		 * This method return dynamic xpath with single index value on AV Header.
+		 */
+		public WebElement returnElementXpathOnAVHeader(String title) throws Exception {
+			String xpath = "//*[contains(@class,'slds-text-title slds-truncate')and contains(@title,'" + title
+					+ "')]/../*[contains(@class,'fieldComponent slds-text-body--regular slds-show_inline-block slds-truncate')]";
+			WebElement webelement = driver.findElement(By.xpath(xpath));
+			return webelement;
+		}
+
 }
