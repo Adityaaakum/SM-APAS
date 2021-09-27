@@ -27,6 +27,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public final String TAB_StaffOnHold = "Staff - On Hold";
 	public final String TAB_StaffInPool = "Staff - In Pool";
 	public final String Tab_WorkItems_ON_parcel="Work Items";
+	public final String Tab_Details="Details";
 
 	ApasGenericPage objApasGenericPage;
 	Page objPageObj;
