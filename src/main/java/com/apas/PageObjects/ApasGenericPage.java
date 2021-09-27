@@ -734,23 +734,31 @@ public void searchModule(String moduleToSearch) throws Exception {
 	 * @description: This method will return the value of the field passed in the parameter from the currently open page
 	 */
 	public String getFieldValueFromAPAS(String fieldName, String sectionName) {
-		String fieldValue;
-		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'" + sectionName + "')]";
-		String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName + "']/../..//slot[@slot='outputField']";
-
-		String fieldXpath = fieldPath + "//force-hoverable-link//a//span | " +
-				fieldPath + "//lightning-formatted-text | " +
-				fieldPath + "//lightning-formatted-number | " +
-				fieldPath + "//lightning-formatted-rich-text | " +
-				fieldPath + "//force-record-type//span | " +
-				fieldPath + "//lightning-formatted-name |" +
-				fieldPath + "//a//span";
 		
-		waitForElementToBeVisible(20,fieldXpath);
-		try{
+		String excEnv = System.getProperty("region");
+		String fieldValue;
+		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'"
+				+ sectionName + "')]";
+		String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName
+				+ "']/../..//slot[@slot='outputField']";
+		String fieldXpath;
+		if (!excEnv.equalsIgnoreCase("QA")) {
+			fieldXpath = fieldPath + "//force-hoverable-link//a//span | " + fieldPath + "//lightning-formatted-text | "
+					+ fieldPath + "//lightning-formatted-number | " + fieldPath + "//lightning-formatted-rich-text | "
+					+ fieldPath + "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
+					+ fieldPath + "//a//span";
+		} else {
+			fieldXpath = fieldPath + "//force-hoverable-link//a | " + fieldPath + "//lightning-formatted-text | "
+					+ fieldPath + "//lightning-formatted-number | " + fieldPath + "//lightning-formatted-rich-text | "
+					+ fieldPath + "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
+					+ fieldPath + "//a";
+		}
+
+		waitForElementToBeVisible(20, fieldXpath);
+		try {
 			fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();
-		}catch (Exception ex){
-			fieldValue= "";
+		} catch (Exception ex) {
+			fieldValue = "";
 		}
 
 		System.out.println(fieldName + " : " + fieldValue);

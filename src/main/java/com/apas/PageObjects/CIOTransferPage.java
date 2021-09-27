@@ -115,6 +115,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String pcorLable = "PCOR?";
 	public String createdByLabel = "Created By";
 	public String lastModifiedByLabel = "Last Modified By";
+	public String transferSucessMessage="//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b | //div[@class='slds-card__body slds-p-horizontal_small flowruntimeBody']//b";
 
 
 	
@@ -174,8 +175,8 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//div[text()='Recorded APN Transfer']//following::lightning-formatted-text")
 	public WebElement cioTransferActivityLabel;
 		
-	@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b")
-	public WebElement cioTransferSuccessMsg;	
+	//@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b or  //div[@class='slds-card__body slds-p-horizontal_small flowruntimeBody']//b")
+	///public WebElement cioTransferSuccessMsg;	
 	
 	@FindBy(xpath = "//*[contains(@data-value,'Reviewed Assessee Response')]")
 	public WebElement reviewAssecesseLink;
@@ -195,7 +196,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//h1[text()='Ownership']")
 	public WebElement ownershipLabelOnGridForGrantee;
 	
-	@FindBy(xpath = commonXpath+"//div[@class='body']//textarea")
+	@FindBy(xpath = commonXpath+"//*[text()='Return Reason']//ancestor:: div[contains(@class,'slds-modal__content slds-p-around--medium')]//textarea")
 	public WebElement returnReasonTextBox;
 	
 	@FindBy(xpath ="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section//force-record-layout-item//*[text()='CIO Transfer Status']/../..//slot[@slot='outputField']//lightning-formatted-text")
