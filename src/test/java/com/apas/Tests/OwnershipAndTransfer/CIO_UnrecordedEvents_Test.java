@@ -286,8 +286,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionSubmitForReview);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForReview);
 		ReportLogger.INFO("CIO!! Transfer submitted for review");
-		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.cioTransferSuccessMsg);
-		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.cioTransferSuccessMsg),
+		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5));
+		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5)),
 				"CIO transfer initial determination is submitted for review.",
 				"SMAB-T3377,SMAB-T10081:Cio transfer is submited for review");
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
@@ -305,7 +305,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionReviewComplete);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionReviewComplete);
-		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.cioTransferSuccessMsg),
+		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5)),
 				"CIO transfer initial determination review completed.", "SMAB-T3377,SMAB-T10081:Cio transfer review is completed");
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
 		objCIOTransferPage.logout();
@@ -387,8 +387,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionSubmitForApproval);
 			objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
 			ReportLogger.INFO("CIO!! Transfer submitted for approval");
-			objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.cioTransferSuccessMsg);
-			softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.cioTransferSuccessMsg),
+			objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5));
+			softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5)),
 					"Work Item has been submitted for Approval.", "SMAB-T3377,SMAB-T10081:Cio transfer is submited for approval");
 			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
 			objCIOTransferPage.logout();
@@ -402,7 +402,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			
 			objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionApprove);
 			ReportLogger.INFO("CIO!! Transfer is approved");
-			softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.cioTransferSuccessMsg),
+			softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5)),
 					"Work Item has been approved successfully.", "SMABT123:Cio transfer is approved successfully");
 			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
 
@@ -554,8 +554,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionSubmitForReview);
 			objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForReview);
 			ReportLogger.INFO("CIO!! Transfer submitted for review");
-			objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.cioTransferSuccessMsg);
-			softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.cioTransferSuccessMsg),
+			objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5));
+			softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5)),
 					"CIO transfer initial determination is submitted for review.",
 					"SMAB-T3377,SMAB-T10081:Cio transfer is submited for review");
 			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
@@ -573,7 +573,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			
 			objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionReviewComplete);
 			objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionReviewComplete);
-			softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.cioTransferSuccessMsg),
+			softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5)),
 					"CIO transfer initial determination review completed.", "SMAB-T3377,SMAB-T10081:Cio trasnfer review is completed");
 			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
 			objCIOTransferPage.logout();

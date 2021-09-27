@@ -115,6 +115,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String pcorLable = "PCOR?";
 	public String createdByLabel = "Created By";
 	public String lastModifiedByLabel = "Last Modified By";
+	public String transferSucessMessage="//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b | //div[@class='slds-card__body slds-p-horizontal_small flowruntimeBody']//b";
 
 
 	
@@ -174,8 +175,8 @@ public class CIOTransferPage extends ApasGenericPage {
 	@FindBy(xpath = commonXpath + "//div[text()='Recorded APN Transfer']//following::lightning-formatted-text")
 	public WebElement cioTransferActivityLabel;
 		
-	@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b")
-	public WebElement cioTransferSuccessMsg;	
+	//@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b or  //div[@class='slds-card__body slds-p-horizontal_small flowruntimeBody']//b")
+	///public WebElement cioTransferSuccessMsg;	
 	
 	@FindBy(xpath = "//*[contains(@data-value,'Reviewed Assessee Response')]")
 	public WebElement reviewAssecesseLink;
