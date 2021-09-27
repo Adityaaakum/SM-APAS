@@ -59,6 +59,8 @@ public class ParcelsPage extends ApasGenericPage {
 	public String createNewParcelButton="New";
 	public String editParcelButton="Edit";
 	public String parcelCharacteristics = "Characteristics";
+
+	
 	
 	
 	/** Added to identify fields, dropdowns for CIO functionality **/
@@ -530,23 +532,30 @@ public class ParcelsPage extends ApasGenericPage {
 		 * @Description: This method will create primary on parcel 
 		 * 
 		 */
-		public String createParcelSitus( Map<String, String> dataMap) throws Exception {
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Parcel Situs Record");        
-			String isPrimary = dataMap.get("isPrimary");
-			String situs = dataMap.get("Situs");
+		public String createParcelSitus( String APN) throws Exception {
+			
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Parcel Situs Record");
 
+			deleteParcelSitusFromParcel(APN);
+
+			openParcelRelatedTab(parcelSitus);
+			waitForElementToBeVisible(10, newButton);
 			createRecord();
-			waitForElementToBeVisible(10,newParcelSitus);
-			selectOptionFromDropDown(isPrimaryDropdown, isPrimary);
-			searchAndSelectOptionFromDropDown(situsSearch, situs);
+			waitForElementToBeVisible(10, isPrimaryDropdown);
+			selectOptionFromDropDown(isPrimaryDropdown, "Yes");
+
+			searchAndSelectOptionFromDropDown(situsSearch,
+					objSalesforceAPI.select("Select Name from Situs__c where name != null limit 1").get("Name").get(0));
 			Click(saveButton);
-			waitForElementToBeClickable(successAlert,25);
+			waitForElementToBeClickable(successAlert, 25);
 			String messageOnAlert = getElementText(successAlert);
-			waitForElementToDisappear(successAlert,10);
-			ReportLogger.INFO("Primary Situs created on parcel : "+messageOnAlert);
-			String situsCreated = getFieldValueFromAPAS("Situs","");
-			ReportLogger.INFO("Primary Situs created on parcel : "+situsCreated);
-			return situsCreated;	
+			waitForElementToDisappear(successAlert, 10);
+			ReportLogger.INFO("Primary Situs created on parcel : " + messageOnAlert);
+			String situsCreated = getFieldValueFromAPAS("Situs", "");
+			ReportLogger.INFO("Primary Situs created on parcel : " + APN);
+			globalSearchRecords(APN);
+			Thread.sleep(5000);
+			return situsCreated;
 		}
 		
 		

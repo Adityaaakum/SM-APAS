@@ -65,6 +65,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		String queryAPN = "Select name,ID  From Parcel__c where (Not Name like '1%') and (Not Name like '8%')AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
 
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -183,6 +184,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String activeParcelToPerformMapping=responseAPNDetails.get("Name").get(0);
 		objMappingPage.deleteRelationshipInstanceFromParcel(activeParcelToPerformMapping);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(activeParcelToPerformMapping);
 
 		String mappingActionCreationData =  testdata.Brand_New_Parcel_MAPPING_ACTION;
 
@@ -283,6 +285,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
@@ -414,6 +417,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
+		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -776,11 +781,12 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.updateParcelsButton),
 				"SMAB-T2716: Validation that  There is \"Update Parcel(s)\" button on return to custom screen");
 		
+		// Legal Description and Reason code are editable as part of SMAB-12026
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN"),"SMAB-T2716: Validation that APN column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Legal Description*"),"SMAB-T2716: Validation that Legal Description column on retirning to custom screen");
+		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Legal Description*"),"SMAB-T2716: Validation that Legal Description column on retirning to custom screen");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA*"),"SMAB-T2716: Validation that TRA column should not be editable on retirning to custom screen");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),"SMAB-T2716: Validation that Situs column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Reason Code*"),"SMAB-T2716: Validation that Reason Code column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Reason Code*"),"SMAB-T2716: Validation that Reason Code column should not be editable on retirning to custom screen");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd*"),"SMAB-T2716: Validation that District/Neighborhood column should not be editable on retirning to custom screen");
 		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code*"),"SMAB-T2716: Validation that Use Code column should not be editable on retirning to custom screen");
 		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)*"),"SMAB-T2716: Validation that Parcel Size (SQFT) column should  be editable on retirning to custom screen");
@@ -1025,7 +1031,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		 *@param loginUser
 		 * @throws Exception
 		 */
-		@Test(description = "SMAB-T2835,SMAB-T2840,SMAB-T2669: I need to have the ability to select specific fields from the mapping custom screen, so that the correct values can be assigned to the parcels. ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+		@Test(description = "SMAB-T2835,SMAB-T2840,SMAB-T2669,SMAB-T3121: I need to have the ability to select specific fields from the mapping custom screen, so that the correct values can be assigned to the parcels. ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 				"Smoke","Regression","ParcelManagement" },enabled = true)
 		public void ParcelManagement_VerifyBrandNewParcelEditAction(String loginUser) throws Exception {
 			String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990') and (Not Name like '134%') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and  Status__c = 'Active' Limit 1";
@@ -1174,7 +1180,35 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 					"SMAB-T2669: Validate that only 1 APN is linked to Work Item and No new parcel is added in Work Item as Parent APN field is not considered in Brand New Parcel Mapping action");
 			softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
 					"SMAB-T2669: Validate that only 1 APN is linked to Work Item and No new parcel is added in Work Item as Parent APN field is not considered in Brand New Parcel Mapping action");
+			
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+			parentWindow = driver.getWindowHandle();
+			objWorkItemHomePage.switchToNewWindow(parentWindow);
+			objMappingPage.waitForElementToBeVisible(10, objMappingPage.updateParcelsButton);
 
+			softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)*"),
+					"SMAB-T3121: Validation that Parcel Size (SQFT) column should  be editable on retirning to custom screen");
+			
+			objMappingPage.waitForElementToBeVisible(3, objMappingPage.parcelSizeColumnSecondScreenWithSpace);
+			objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "40");    
+			objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName));
+
+			HashMap<String, ArrayList<String>> gridDataHashMap = objMappingPage.getGridDataInHashMap();
+			String APN = gridDataHashMap.get("APN").get(0);
+
+			driver.switchTo().window(parentWindow);
+			objMappingPage.globalSearchRecords(APN);
+
+			// Verify that the parcel size(SQFT)* of second screen with the parcel size on
+			// parcel screen and also checks if the Parcel Size (SqFt)field is present on
+			// the parcel screen
+			softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)*").get(0),
+					objMappingPage.getFieldValueFromAPAS("Parcel Size (SqFt)", "Parcel Information"),
+					"SMAB-T3121:Parcel size(SQFT) matched and field is avilable on parcel screen");
+			
 			objWorkItemHomePage.logout();
 			Thread.sleep(5000);
 			
@@ -1352,106 +1386,6 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	     objMappingPage.logout();
 
 		}
-		
-		@Test(description = "SMAB-T3121,SMAB-T3120:Verify that Parcel Size (SQFT) column is added to the \\\"Mapping Actions\\\" (all mapping actions) second custom screen (displaying child parcels) and can edit the same and value is updated at parcel level", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-				"Regression" , "ParcelManagement" })
-		public void ParcelManagement_VerifyParcelSizeColumn_AddedTo_BrandNewParcelAction_CustomScreen(String loginUser)
-				throws Exception {
 
-			String queryAPN = "Select name,id From Parcel__c where Status__c='Active' limit 1";
-			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
-			String activeParcelToPerformMapping = responseAPNDetails.get("Name").get(0);
-			objMappingPage.deleteRelationshipInstanceFromParcel(activeParcelToPerformMapping);
-			
-			String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
-			
-			Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(
-					mappingActionCreationData, "DataToPerformBrandNewParcelMappingActionWithSitusData");
-
-			String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
-			Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
-					"DataToCreateWorkItemOfTypeParcelManagement");
-			
-
-			// Step1: Login to the APAS application using the credentials passed through
-			// data provider (mapping staff user)
-			objMappingPage.login(loginUser);
-
-			// Step 2: Opening the PARCELS page and searching the parcel to perform brand
-			// new parcel mapping
-			objMappingPage.searchModule(PARCELS);
-			objMappingPage.globalSearchRecords(activeParcelToPerformMapping);
-
-			// Step 3: Creating Manual work item for the Parcel
-			String workItem = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
-
-			// Step 4:Clicking the details tab for the work item newly created and clicking
-			// on Related Action Link
-			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
-			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
-			String parentWindow = driver.getWindowHandle();
-			objWorkItemHomePage.switchToNewWindow(parentWindow);
-			objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
-			objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,
-					hashMapBrandNewParcelMappingData.get("Action"));
-			ReportLogger.INFO("Clicked on related action under details tab for newly WI created ");
-
-			// Step 5: entering data in form for Brand New Parcel mapping
-			objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
-
-			// Step 6 : Filling few of the mandatory fields
-			objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
-			objMappingPage.editGridCellValue(objMappingPage.legalDescriptionColumnSecondScreen, "Legal Discription");
-			objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
-			objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
-
-			// Step 7 :Clicking generate parcel button
-			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-			objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
-			ReportLogger.INFO(" Parcel generated successfully. ");
-
-			// Step 8 : Navigating back to the WI that was created and clicking on related
-			// action link
-			driver.switchTo().window(parentWindow);
-			objMappingPage.globalSearchRecords(workItem);
-			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
-			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
-			parentWindow = driver.getWindowHandle();
-			objWorkItemHomePage.switchToNewWindow(parentWindow);
-			objMappingPage.waitForElementToBeVisible(10, objMappingPage.updateParcelsButton);
-
-			softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size (SQFT)*"),
-					"SMAB-T3121: Validation that Parcel Size (SQFT) column should  be editable on retirning to custom screen");
-			
-			objMappingPage.waitForElementToBeVisible(3, objMappingPage.parcelSizeColumnSecondScreenWithSpace);
-			objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "40");
-			ReportLogger.INFO(" Parcel size is updated. ");
-
-			objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
-			
-
-			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName));
-
-			HashMap<String, ArrayList<String>> gridDataHashMap = objMappingPage.getGridDataInHashMap();
-			String APN = gridDataHashMap.get("APN").get(0);
-
-			driver.switchTo().window(parentWindow);
-			objMappingPage.globalSearchRecords(APN);
-
-			// Verify that the parcel size(SQFT)* of second screen with the parcel size on
-			// parcel screen and also checks if the Parcel Size (SqFt)field is present on
-			// the parcel screen
-			softAssert.assertEquals(gridDataHashMap.get("Parcel Size (SQFT)*").get(0),
-					objMappingPage.getFieldValueFromAPAS("Parcel Size (SqFt)", "Parcel Information"),
-					"SMAB-T3121:Parcel size(SQFT) matched and field is avilable on parcel screen");
-
-			
-			objWorkItemHomePage.logout();
-
-		}
-
-
-}
+	}
 	
