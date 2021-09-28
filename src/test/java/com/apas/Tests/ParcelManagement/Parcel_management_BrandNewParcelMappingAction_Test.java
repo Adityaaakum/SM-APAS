@@ -279,7 +279,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @param loginUser-Mapping user
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2642,SMAB-T2643,SMAB-T2644,SMAB-T3243:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2642,SMAB-T2643,SMAB-T2644,SMAB-T3243,SMAB-T3771:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" },enabled =true)
 	public void ParcelManagement_Verify_Brand_NewParcel_Mapping_Action(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
@@ -421,7 +421,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 			String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
-			softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
+			softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3771: Validation WI completed successfully");
 			objMappingPage.searchModule(PARCELS);
 			objMappingPage.globalSearchRecords(newCreatedApn);
 			
@@ -431,8 +431,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 			String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
 			String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
-			softAssert.assertEquals(assignedTo, "rp appraiserAUT", "Assiged to matched ...!!!!!!!");
-			softAssert.assertEquals(workPool, "Appraiser", "workPool to matched ...!!!!!!!");
+			softAssert.assertEquals(assignedTo, "rp appraiserAUT", "SMAB-T3771:Assiged to is matched successfully");
+			softAssert.assertEquals(workPool, "Appraiser", "SMAB-T3771:workPool is matched successfully");
 
 			objWorkItemHomePage.logout();
 

@@ -536,7 +536,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	 * login user-Mapping user
 	 * 
 	 */
-	@Test(description = "SMAB-T2717,SMAB-T2718,SMAB-T2719,SMAB-T2720,SMAB-T2721:Verify the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel is changed ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2717,SMAB-T2718,SMAB-T2719,SMAB-T2720,SMAB-T2721,SMAB-T3771:Verify the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel is changed ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyOneToOneMappingActionChildInheritanceafterwI_Completion(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
@@ -721,7 +721,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
-		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3771: Validation WI completed successfully");
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(childApn);
 		
@@ -731,8 +731,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
 		String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
-		softAssert.assertEquals(assignedTo, "rp appraiserAUT", "Assiged to matched ...!!!!!!!");
-		softAssert.assertEquals(workPool, "Appraiser", "workPool to matched ...!!!!!!!");
+		softAssert.assertEquals(assignedTo, "rp appraiserAUT", "SMAB-T3771:Assiged to matched successfully");
+		softAssert.assertEquals(workPool, "Appraiser", "SMAB-T3771:workPool is matched successfully");
 
 		objWorkItemHomePage.logout();
 

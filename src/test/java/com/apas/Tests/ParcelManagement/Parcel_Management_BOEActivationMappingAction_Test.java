@@ -494,7 +494,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objWorkItemHomePage.logout();
 	}
 	
-	@Test(description = "SMAB-T2832,SMAB-T2898,SMAB-T3623,SMAB-T3634:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"BOEACtivation\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2832,SMAB-T2898,SMAB-T3623,SMAB-T3634,SMAB-T3771:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"BOEACtivation\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_BOEACtivation_MappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 		String childAPNPUC;
@@ -645,7 +645,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
-		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3771: Validation WI completed successfully");
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(childAPN);
 		
@@ -655,8 +655,8 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
 		String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
-		softAssert.assertEquals(assignedTo, "rp appraiserAUT", "Assiged to matched ...!!!!!!!");
-		softAssert.assertEquals(workPool, "Appraiser", "workPool to matched ...!!!!!!!");
+		softAssert.assertEquals(assignedTo, "rp appraiserAUT", "SMAB-T3771:Assiged to is matched successfully");
+		softAssert.assertEquals(workPool, "Appraiser", "SMAB-T3771:WorkPool is matched successfully");
 
 		objWorkItemHomePage.logout();
 
@@ -668,7 +668,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		 *@param loginUser
 		 * @throws Exception
 		 */
-		@Test(description = "SMAB-T2839,SMAB-T2844,SMAB-T2733,SMAB-T2767: I need to have the ability to select specific fields from the mapping custom screen, so that the correct values can be assigned to the parcels. ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+		@Test(description = "SMAB-T2839,SMAB-T2844,SMAB-T2733,SMAB-T2767,SMAB-T2910,SMAB-T3473,SMAB-T2909,SMAB-T3474,SMAB-T3475: I need to have the ability to select specific fields from the mapping custom screen, so that the correct values can be assigned to the parcels. ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 				"Smoke","Regression","ParcelManagement" },enabled = true)
 		public void ParcelManagement_VerifyBOEParcelEditAction(String loginUser) throws Exception {
 			String queryAPN = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and  Status__c = 'Retired' Limit 1";
@@ -783,9 +783,9 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		   	objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
 		   	
 		   	softAssert.assertEquals(1,objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI,10).size(),
-		   			"SMAB-T2733: Validate that only 1 APN is linked to Work Item");
+		   			"SMAB-T2733,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that only 1 APN is linked to Work Item");
 		   	softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
-		   			"SMAB-T2733: Validate that first Parent APN is displayed in the linked item");
+		   			"SMAB-T2733,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that first Parent APN is displayed in the linked item");
 		   	
 		   	driver.switchTo().window(MappingScreen);
 			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
@@ -815,15 +815,15 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		   	objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
 		   	ReportLogger.INFO("validate that new APNs added are linked to WI after Mapping Action is performed");
 		   	softAssert.assertEquals(2,objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI,10).size(),
-					"SMAB-T2733,SMAB-T2767: Validate that 2 APNs are linked to Work Item");
+					"SMAB-T2733,SMAB-T2767,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that 2 APNs are linked to Work Item");
 			softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
-					"SMAB-T2733,SMAB-T2767: Validate that first Parent APN is displayed in the linked item");
+					"SMAB-T2733,SMAB-T2767,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that first Parent APN is displayed in the linked item");
 			softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
-					"SMAB-T2733,SMAB-T2767: Validate that second Parent APN is displayed in the linked item");
+					"SMAB-T2733,SMAB-T2767,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that second Parent APN is displayed in the linked item");
 			objMappingPage.Click(objWorkItemHomePage.detailsTab);
 			String referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
 			softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
-					"SMAB-T2668,SMAB-T2765: Validate that Parent APNs are present in the reference Link");
+					"SMAB-T2910,SMAB-T3473: Validate that Parent APNs are present in the reference Link");
 
 		   	
 		   	objWorkItemHomePage.logout();
@@ -841,15 +841,15 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		   	objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
 		   	
 		   	softAssert.assertEquals(2,objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI,10).size(),
-					"SMAB-T2733: Validate that 2 APNs are linked to Work Item");
+					"SMAB-T2733,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that 2 APNs are linked to Work Item");
 			softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
-					"SMAB-T2733: Validate that first Parent APN is displayed in the linked item");
+					"SMAB-T2733,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that first Parent APN is displayed in the linked item");
 			softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
-					"SMAB-T2733: Validate that second Parent APN is displayed in the linked item");
+					"SMAB-T2733,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that second Parent APN is displayed in the linked item");
 			objMappingPage.Click(objWorkItemHomePage.detailsTab);
 			referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
 			softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
-					"SMAB-T2668,SMAB-T2765: Validate that Parent APNs are present in the reference Link");
+					"SMAB-T2910,SMAB-T3473: Validate that all Parent APNs are present in the reference Link");
 
 			objWorkItemHomePage.logout();
 

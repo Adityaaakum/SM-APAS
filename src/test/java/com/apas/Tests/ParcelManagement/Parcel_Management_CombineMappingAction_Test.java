@@ -1608,7 +1608,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2677,SMAB-T2664,SMAB-T2651:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Combine\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2677,SMAB-T2664,SMAB-T2651,SMAB-T2910,SMAB-T3473,SMAB-T2909,SMAB-T3474,SMAB-T3475:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Combine\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_CombineMappingAction_WithPrimarySitusTRA(String loginUser) throws Exception {
 
@@ -1754,9 +1754,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
 
 		softAssert.assertEquals(1, objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI, 10).size(),
-				"SMAB-T2664: Validate that only 1 APN is linked to Work Item");
+				"SMAB-T2664,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that only 1 APN is linked to Work Item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
-				"SMAB-T2664: Validate that first Parent APN is displayed in the linked item");
+				"SMAB-T2664,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that first Parent APN is displayed in the linked item");
 		
 		driver.switchTo().window(MappingScreen);
 		//Step 7: Click Combine Parcel Button
@@ -1823,15 +1823,15 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
 		ReportLogger.INFO("validate that new APNs added are linked to WI after Mapping Action is performed");
 		softAssert.assertEquals(2, objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI, 10).size(),
-				"SMAB-T2664,SMAB-T2651: Validate that 2 APNs are linked to Work Item");
+				"SMAB-T2664,SMAB-T2651,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that 2 APNs are linked to Work Item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
-				"SMAB-T2664,SMAB-T2651: Validate that first Parent APN is displayed in the linked item");
+				"SMAB-T2664,SMAB-T2651,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that first Parent APN is displayed in the linked item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
-				"SMAB-T2664,SMAB-T2651: Validate that second Parent APN is displayed in the linked item");
+				"SMAB-T2664,SMAB-T2651,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that second Parent APN is displayed in the linked item");
 		objMappingPage.Click(objWorkItemHomePage.detailsTab);
 		String referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
 		softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
-				"SMAB-T2668,SMAB-T2765: Validate that Parent APNs are present in the reference Link");
+				"SMAB-T2910,SMAB-T3473: Validate that Parent APNs are present in the reference Link");
 		objWorkItemHomePage.logout();
 
 		Thread.sleep(5000);
@@ -1860,12 +1860,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objWorkItemHomePage.detailsTab);
 		referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
 		softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
-				"SMAB-T2668,SMAB-T2765: Validate that Parent APNs are present in the reference Link");
+				"SMAB-T2910,SMAB-T3473: Validate that Parent APNs are present in the reference Link");
 
 		objWorkItemHomePage.logout();
 
 	}
-	@Test(description = "SMAB-T2829,SMAB-T2677,SMAB-T3634,SMAB-T3633,SMAB-T3635,SMAB-T2883,SMAB-T2885:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Combine\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2829,SMAB-T2677,SMAB-T3634,SMAB-T3633,SMAB-T3635,SMAB-T2883,SMAB-T2885,SMAB-T3771:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Combine\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_CombineMappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 
@@ -2045,7 +2045,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
-		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3771: Validation WI completed successfully");
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
 		
@@ -2055,8 +2055,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
 		String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
-		softAssert.assertEquals(assignedTo, "rp appraiserAUT", "Assiged to matched ...!!!!!!!");
-		softAssert.assertEquals(workPool, "Appraiser", "workPool to matched ...!!!!!!!");
+		softAssert.assertEquals(assignedTo, "rp appraiserAUT", "SMAB-T3771:Assiged to is matched successfully");
+		softAssert.assertEquals(workPool, "Appraiser", "SMAB-T3771:workPool is matched successfully");
 
 		objWorkItemHomePage.logout();
 	}
