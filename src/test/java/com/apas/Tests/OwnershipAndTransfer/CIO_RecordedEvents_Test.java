@@ -1501,7 +1501,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 	@Test(description = "SMAB-T3525, SMAB-T3341:Verify that User is able to perform CIO transfer  for recorded APN and validate all status", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
-	public void AOwnershipAndTransfer_VerifyTransferActivityStatus_ReturnedAndCompleted(String loginUser)
+	public void OwnershipAndTransfer_VerifyTransferActivityStatus_ReturnedAndCompleted(String loginUser)
 			throws Exception {
 		
 		JSONObject jsonForTransferActivityStatus = objCioTransfer.getJsonObject();
@@ -1568,6 +1568,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		// STEP 6-Finding the recorded apn transfer id
 		String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.wiStatusDetailsPage);
@@ -1712,8 +1713,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Validate the Current & New Ownership record in Grid after transfer activity is submitted for approval");
 		objCioTransfer.clickViewAll("Ownership for Parent Parcel");
 		HashMap<String, ArrayList<String>> HashMapLatestOwner = objCioTransfer.getGridDataInHashMap();
-		Thread.sleep(2000);
-		if(HashMapLatestOwner.get("Staus").get(0).equals("Active")) i=0;
+		if(HashMapLatestOwner.get("Status").get(0).equals("Active")) i=0;
 		softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(i), hashMapOwnershipAndTransferGranteeCreationData.get("First Name") + " " +
 				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"),
 				"SMAB-T3341: Validate the owner name on New Ownership record");
@@ -1766,7 +1766,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Validate the Current & New Ownership record in Grid after transfer activity is Approved");
 		objCioTransfer.clickViewAll("Ownership for Parent Parcel");
 		HashMap<String, ArrayList<String>> HashMapLatestOwner1 = objCioTransfer.getGridDataInHashMap();
-		if(HashMapLatestOwner1.get("Staus").get(0).equals("Active")) j=0;
+		if(HashMapLatestOwner1.get("Status").get(0).equals("Active")) j=0;
 		softAssert.assertEquals(HashMapLatestOwner1.get("Owner").get(j), hashMapOwnershipAndTransferGranteeCreationData.get("First Name") + " " +
 				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"),
 				"SMAB-T3341: Validate the owner name on New Ownership record");
