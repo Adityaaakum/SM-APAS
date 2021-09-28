@@ -632,7 +632,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 	
 	@Test(description = "SMAB-T3231:Verify details on the Unrecorded Transfer event", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","UnrecordedEvent" })
-	public void UnrecordedEvent_TransferScreenConfiguration(String loginUser) throws Exception {
+	public void AUnrecordedEvent_TransferScreenConfiguration(String loginUser) throws Exception {
 		
 		//Getting Owner or Account records
 		String assesseeName = objMappingPage.getOwnerForMappingAction();
@@ -700,7 +700,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				"SMAB-T3231: Validate that CIO staff is able to verify the prefix of Event ID");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.eventIDLabel, "").length(),"10",
 				"SMAB-T3231: Validate that CIO staff is able to verify the length of Event ID");
-		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.situsLabel, "").replaceFirst("\\s", ""),primarySitusValue,
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.situsLabel, ""),primarySitusValue.replaceFirst("\\s", ""),
 				"SMAB-T3231: Validate that CIO staff is able to verify the Situs value on UT");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.shortLegalDescriptionLabel, ""),legalDescriptionValue,
 				"SMAB-T3231: Validate that CIO staff is able to verify the Short Legal Description value on UT");
@@ -761,15 +761,16 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		
         // Step10: Validate the details in the grid
         ReportLogger.INFO("Validate the Grantee record in Grid");
-        HashMap<String, ArrayList<String>>HashMapLatestGrantee  = objCIOTransferPage.getGridDataInHashMap();
-        softAssert.assertEquals(HashMapLatestGrantee.get("Recorded Document").get(0), unrecordedEventId, 
-    		  "SMAB-T3231: Validate the Recorded Document number on Grantee record");
+        HashMap<String, ArrayList<String>> HashMapLatestGrantee  = objCIOTransferPage.getGridDataInHashMap();
+        //objCIOTransferPage.Click(objCIOTransferPage.cioGranteeNameDetailTab);
         softAssert.assertEquals(HashMapLatestGrantee.get("Status").get(0), "Active", 
-    		  "SMAB-T3231: Validate the status on Grantee record");
+      		  "SMAB-T3231: Validate the status on Grantee record");
         softAssert.assertEquals(HashMapLatestGrantee.get("Owner Percentage").get(0), hashMapOwnershipAndTransferGranteeCreationData.get("Owner Percentage")+".0000%", 
     		  "SMAB-T3231: Validate the percentage on Grantee record");
         softAssert.assertEquals(HashMapLatestGrantee.get("Grantee/Retain Owner Name").get(0),hashMapOwnershipAndTransferGranteeCreationData.get("Last Name") , 
         		  "SMAB-T3231: Validate the Grantee Name on Grantee record");
+        softAssert.assertEquals(HashMapLatestGrantee.get("Recorded Document").get(0), unrecordedEventId, 
+      		  "SMAB-T3231: Validate the Recorded Document number on Grantee record");
         
         //Step11: Navigate to RAT screen and click View ALL to see current Ownership records in grid
         ReportLogger.INFO("Navigate to RAT screen and click View ALL to see current Ownership records in grid");
@@ -780,6 +781,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
         // Step12: Validate the details in the grid
         ReportLogger.INFO("Validate the Current Ownership record in Grid");
         HashMap<String, ArrayList<String>>HashMapLatestOwner  = objCIOTransferPage.getGridDataInHashMap();
+       // objCIOTransferPage.Click(objCIOTransferPage.cioOwnershipIdTab);
         softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(0), assesseeName, 
     		  "SMAB-T3231: Validate the owner name on Grantee record");
         softAssert.assertEquals(HashMapLatestOwner.get("Status").get(0), "Active", 
