@@ -161,10 +161,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	public WebElement transferPageMessageArea;
 	
 	@FindBy(xpath = commonXpath + "//div[text()='Recorded APN Transfer']//following::lightning-formatted-text")
-	public WebElement cioTransferActivityLabel;
-		
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//span[text()='Name Detail']")
-	public WebElement cioGranteeNameDetailTab;	
+	public WebElement cioTransferActivityLabel;	
 	
 	@FindBy(xpath = "//*[contains(@data-value,'Reviewed Assessee Response')]")
 	public WebElement reviewAssecesseLink;
@@ -213,9 +210,6 @@ public class CIOTransferPage extends ApasGenericPage {
 	
 	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='PUC Code']/../..//slot[@slot='outputField']//lightning-formatted-text")
 	public WebElement pucCodeTransferActivityLabel;
-	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//span[text()='Ownership Id']")
-	public WebElement cioOwnershipIdTab;
 	
 	@FindBy(xpath =commonXpath+"//*[@class='slds-form-element__help']")
 	public WebElement errorMessageOnTransferScreen;
