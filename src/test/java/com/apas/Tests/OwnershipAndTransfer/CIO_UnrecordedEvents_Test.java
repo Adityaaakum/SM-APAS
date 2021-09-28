@@ -632,7 +632,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 	
 	@Test(description = "SMAB-T3231:Verify details on the Unrecorded Transfer event", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","UnrecordedEvent" })
-	public void AUnrecordedEvent_TransferScreenConfiguration(String loginUser) throws Exception {
+	public void UnrecordedEvent_TransferScreenConfiguration(String loginUser) throws Exception {
 		
 		//Getting Owner or Account records
 		String assesseeName = objMappingPage.getOwnerForMappingAction();
