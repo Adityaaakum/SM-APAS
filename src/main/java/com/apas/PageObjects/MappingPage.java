@@ -196,10 +196,7 @@ public class MappingPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//button[@title='Next']")
 	public WebElement parcelAllocationNextButton;
-	
-	@FindBy(xpath = "//button[@title='Done']")
-	public WebElement parcelAllocationDoneButton;
-		
+			
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
 	 * @param dataMap: A data map which contains data to perform  mapping action
