@@ -31,7 +31,7 @@ public class AsseseePage extends ApasGenericPage {
 	public String assesseeNameLabel = "Assessee Name";
 	public String newAssesseeLabel = "New Assessee";
 	public String firstNameLabel = "First Name";
-	public String lastNameLabel = "Last Name or Name";
+	public String lastNameLabel = "Last Name";
 	public String ssnLabel = "SSN";
 	public String emailLabel = "Email";
 	public String emailOptOutLabel = "Email Opt Out";

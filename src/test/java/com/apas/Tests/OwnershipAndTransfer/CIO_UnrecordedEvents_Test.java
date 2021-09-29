@@ -1,13 +1,11 @@
 package com.apas.Tests.OwnershipAndTransfer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.bcel.generic.NEW;
 import org.json.JSONObject;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -23,13 +21,12 @@ import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
-
-import android.R.string;
 
 public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
@@ -636,7 +633,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		String assesseeName = objMappingPage.getOwnerForMappingAction();
 		
 		//Getting Active APN
-		String queryAPNValue = "select Name, Id from Parcel__c where Status__c='Active' limit 1";
+		String queryAPNValue = "select Name, Id from Parcel__c where Status__c='Active' and id in ( select parcel__c from mail_to__c where statuslimit 1";
 		String activeApn = salesforceAPI.select(queryAPNValue).get("Name").get(0);
 		String activeApnId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
 		
@@ -1023,5 +1020,154 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.logout();	
 
 	}	
+	
+	/*
+	 * Ownership And Transfers - Verify user is able to create an Unrecorded Transfer Event and corresponding WI for Mobile Home Parcel from Component Action
+	 */
+	
+	@Test(description = "SMAB-T3127:Verify user is able to create an Unrecorded Transfer Event and corresponding WI for Mobile Home Parcel from Component Action", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression","ChangeInOwnershipManagement","UnrecordedEvent" })
+	public void UnrecordedEvent_MobileHomeParcel(String loginUser) throws Exception {
+				
+		String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
+		
+		//Getting Active APN
+		String queryAPNValue = "select Name, Id from Parcel__c where Status__c='Active' and name like '134%' and id in ( select parcel__c from mail_to__c where Status__c='Active')";
+		String activeApn = salesforceAPI.select(queryAPNValue).get("Name").get(0);
+		String activeApnId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+		
+		Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
+		
+		//Step1: Login to the APAS application
+		objMappingPage.login(loginUser);
+
+		//Step2: Opening the PARCELS page 
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(activeApn);
+		
+		//Step3: Create UT event perform validations
+		ReportLogger.INFO("Create Unrecorded Event Transfer");
+		String timeStamp = String.valueOf(System.currentTimeMillis());
+		String description = dataToCreateUnrecordedEventMap.get("Description") + "_" + timeStamp;
+		
+		objMappingPage.waitForElementToBeClickable(objMappingPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.selectOptionDropdown);
+		objParcelsPage.selectOptionFromDropDown(objParcelsPage.selectOptionDropdown, "Create Audit Trail Record");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.nextButtonComponentsActionsModal));
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.workItemTypeDropDownComponentsActionsModal);
+		
+		objParcelsPage.selectOptionFromDropDown("Record Type", dataToCreateUnrecordedEventMap.get("Record Type"));
+		objParcelsPage.selectOptionFromDropDown("Group",dataToCreateUnrecordedEventMap.get("Group"));
+
+		Thread.sleep(2000);
+		objParcelsPage.selectOptionFromDropDown("Type of Audit Trail Record?", dataToCreateUnrecordedEventMap.get("Type of Audit Trail Record?"));
+		objParcelsPage.Click(objParcelsPage.getWebElementWithLabel("Source"));
+		Object[] sourceFieldOptions =objParcelsPage.getAllOptionFromDropDown("Source").toArray();
+		String[] expectedSourceFieldOptions= {"--None--", "Unrecorded document", "Property owner death document", "Verification of document", "Indirect discovery", "HCD Report - MH packet"};
+		softAssert.assertTrue(Arrays.equals(sourceFieldOptions, expectedSourceFieldOptions),"SMAB-T3127 : Validation of picklist values in  Source field while creating UT from Parcel Component action button");		
+ 
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save and Next"));
+	    softAssert.assertEquals(objParcelsPage.getElementText(objParcelsPage.sourceFieldComponentActionError),"Complete this field.","SMAB-T3127 : Validation that Source is a mandatory field while creating UT from Parcel Component action button");		
+	    objParcelsPage.Click(objParcelsPage.getWebElementWithLabel("Source"));
+
+        if(dataToCreateUnrecordedEventMap.get("Source")!=null) {objParcelsPage.selectOptionFromDropDown("Source", dataToCreateUnrecordedEventMap.get("Source"));}
+		if(dataToCreateUnrecordedEventMap.get("Date of Event")!=null) {objParcelsPage.enter("Date of Event", dataToCreateUnrecordedEventMap.get("Date of Event"));}
+		objParcelsPage.enter("Date of Recording", dataToCreateUnrecordedEventMap.get("Date of Recording"));
+		objParcelsPage.enter("Description", description);
+		
+		String utEventNumber= objParcelsPage.getAttributeValue(objParcelsPage.getWebElementWithLabel(objParcelsPage.eventNumberComponentAction),"value");
+		
+		//Step4: Verify the UT event ID generated
+
+		softAssert.assertEquals(utEventNumber.substring(0, 2),"UT",
+				"SMAB-T3127: Validate that CIO staff is able to verify the prefix of Event ID is UT");
+		softAssert.assertEquals(utEventNumber.length(),"10",
+				"SMAB-T3127: Validate that CIO staff is able to verify the length of Unrecorded Event ID is 10");
+		softAssert.assertTrue(!utEventNumber.substring(2, 8).contains("[a-zA-Z]+"),
+				"SMAB-T3127: Validate that CIO staff is able to verify the  Unrecorded Event ID contains all digits after UT prefix");
+		softAssert.assertTrue(!objParcelsPage.getWebElementWithLabel(objParcelsPage.eventNumberComponentAction).isEnabled(),
+				"SMAB-T3127: Validate that CIO staff is able to verify the  Unrecorded Event ID field is disabled");
+		
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save and Next"));
+		Thread.sleep(5000);
+		String recordeAPNTransferID = driver.getCurrentUrl().split("/")[6];
+		
+		//Step5 : Validate the values on Transfer Screen
+		ReportLogger.INFO("Validate the UT values");
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dovLabel, ""),objExemptionsPage.removeZeroInMonthAndDay(dataToCreateUnrecordedEventMap.get("Date of Event")),
+				"SMAB-T3139: Validate that in case DOV value is not entered through component action, then DOV should be same as DOE");
+		
+		//Step6 : Validate the values on CIO UT WI
+
+		String workPoolIdQuery="SELECT Id FROM Work_Pool__c where name='CIO' ";
+		String workPoolId = salesforceAPI.select(workPoolIdQuery).get("Id").get(0);
+
+		String workItemQuery = "SELECT Id,name,Assigned_To__c  FROM Work_Item__c where Type__c='CIO' And Sub_Type__c ='UT Activity' and Work_Pool__c ='"+workPoolId+"' and  status__c='In Progress' and APN__c ='"+activeApnId+"'order by createdDate desc limit 1";
+		String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
+		String assignedToUSerIdUTWorkItem = salesforceAPI.select(workItemQuery).get("Assigned_To__c").get(0);
+		String expectedAssignedToUSernameUTWorkItem=CONFIG.getProperty(loginUser + "UserName");
+		
+		String expectedAssignedToUSerIdUTWorkItem = "SELECT Id FROM User where Username ='"+expectedAssignedToUSernameUTWorkItem+"'";
+
+		softAssert.assertEquals(assignedToUSerIdUTWorkItem,salesforceAPI.select(expectedAssignedToUSerIdUTWorkItem).get("Id").get(0),
+				"SMAB-T3127: Validate that UT WI created is assigned to the user who created the unrecorded event");
+		
+		//Step7 : Seraching the  UT WI on APAS
+
+		objMappingPage.globalSearchRecords(workItemNo);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Date", "Information"),DateUtil.removeZeroInMonthAndDay(currentDate),
+				"SMAB-T3127: Validation that 'Date' fields in CIO UT WI is the date when the WI was created");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("DOV", "Information"),DateUtil.removeZeroInMonthAndDay(dataToCreateUnrecordedEventMap.get("Date of Event")),
+				"SMAB-T3127: Validation that 'DOV' fields in CIO UT WI is DOV of audit trail");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information"),utEventNumber,
+				"SMAB-T3127: Validation that 'Reference' fields in CIO UT WI is UT event number  ");
+
+		//Step8 : Validate the Audit Trails created for CIO UT WI
+
+		String auditTrailsQuery = "SELECT Business_EVENT__r.NAME,BUSINESS_EVENT__r.type__c,BUSINESS_EVENT__r.event_type__c,BUSINESS_EVENT__r.status__c,BUSINESS_EVENT__r.Request_Origin__c ,BUSINESS_EVENT__r.Date_of_Event__c ,BUSINESS_EVENT__r.Date_of_Value__c,BUSINESS_EVENT__r.Recording_Date__c  ,BUSINESS_EVENT__r.Event_Number__c  from work_item_linkage__c where work_item__r.name='"+workItemNo+"'";
+		String responseAuditTrailDetails = salesforceAPI.select(auditTrailsQuery).toString().replace("{Business_Event__r=[", "").replace("}]", "");
+		
+		JSONObject responseAuditTrailDetailsJson = new JSONObject(responseAuditTrailDetails);  
+		softAssert.assertEquals(responseAuditTrailDetailsJson.get("Request_Origin__c").toString(),dataToCreateUnrecordedEventMap.get("Source"),
+				"SMAB-T3127: Validation that Request Origin of  UT event should be the source field value selecting while creating UT event");
+		
+		softAssert.assertEquals(responseAuditTrailDetailsJson.get("Event_Number__c").toString(),utEventNumber,
+				"SMAB-T3127: Validation that Event_Number__c field value of  UT event should be the UT event number generated at the time of creating UT event");
+		
+		softAssert.assertEquals(responseAuditTrailDetailsJson.get("Type__c").toString(),"Business Events",
+				"SMAB-T3127: Validation that type of  UT event should be Business Events");
+		
+		softAssert.assertEquals(responseAuditTrailDetailsJson.get("Date_of_Value__c").toString(),DateUtil.getDateInRequiredFormat(dataToCreateUnrecordedEventMap.get("Date of Event"),"MM/dd/yyyy","yyyy-MM-dd"),
+				"SMAB-T3127: Validation that Date_of_Value__c of  UT event should be DOV entered while creating UT event");
+		
+		softAssert.assertEquals(responseAuditTrailDetailsJson.get("Recording_Date__c").toString(),DateUtil.getDateInRequiredFormat(dataToCreateUnrecordedEventMap.get("Date of Recording"),"MM/dd/yyyy","yyyy-MM-dd"),
+				"SMAB-T3127: Validation that Recording_Date__c of  UT event should be DOR entered while creating UT event");
+		
+		softAssert.assertEquals(responseAuditTrailDetailsJson.get("Date_of_Event__c").toString(),DateUtil.getDateInRequiredFormat(dataToCreateUnrecordedEventMap.get("Date of Event"),"MM/dd/yyyy","yyyy-MM-dd"),
+				"SMAB-T3127: Validation that Date_of_Event__c of  UT event should be DOE entered while creating UT event");
+		
+		softAssert.assertEquals(responseAuditTrailDetailsJson.get("Status__c").toString(),"Open",
+				"SMAB-T3127: Validation that Status__c of  UT event should be the Open");
+		
+		softAssert.assertEquals(responseAuditTrailDetailsJson.get("Event_Type__c").toString(),"Unrecorded Event",
+				"SMAB-T3127: Validation that Event_Type__c of  UT event should be the Unrecorded Event"); 
+		
+		//Step9 : Validate that the related action link of CIO UT WI should direct to CIO transfer screen. 
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objCIOTransferPage.waitForElementToBeVisible(35,objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
+		
+		String recordeAPNTransferIDFromUTWI = driver.getCurrentUrl().split("/")[6];
+		softAssert.assertEquals(recordeAPNTransferIDFromUTWI,recordeAPNTransferID,
+				"SMAB-T3127: Validation that the related action link of CIO UT WI should direct to CIO transfer screen.");
+		
+		objCIOTransferPage.logout();
+	}
 
 }

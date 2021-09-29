@@ -122,6 +122,9 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 
 		HashMap<String, ArrayList<String>> responseAPNDetails = objSalesforceAPI.select(queryAPN);
 		String firstName = responseAPNDetails.get("FirstName").get(0);
+		if (firstName.equals("null"))
+			firstName="";
+
 		String lastName = responseAPNDetails.get("LastName").get(0);
 		String name = firstName + " " + lastName;
 		objAsseseePage.searchRecords(name);
