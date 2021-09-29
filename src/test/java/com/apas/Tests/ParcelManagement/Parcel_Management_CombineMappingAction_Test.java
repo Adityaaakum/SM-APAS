@@ -2036,7 +2036,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.waitForElementToBeVisible(40, objWorkItemHomePage.referenceDetailsLabel);
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-		objParcelsPage.Click(objMappingPage.parcelAllocationNextButton);
+		objParcelsPage.Click(objMappingPage.getButtonWithText("Next"));
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
 		ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
 

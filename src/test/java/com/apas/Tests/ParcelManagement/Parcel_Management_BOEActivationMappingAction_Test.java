@@ -514,7 +514,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objMappingPage.login(loginUser);
 		Thread.sleep(7000);
 		objMappingPage.closeDefaultOpenTabs();
-		objParcelsPage.createParcelSitus(parentAPN);
+		//objParcelsPage.createParcelSitus(parentAPN);
 				
 		// Step2: Opening the PARCELS page  and searching the  parcel 		
 		objMappingPage.searchModule("APAS");
@@ -636,7 +636,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objWorkItemHomePage.waitForElementToBeVisible(40, objWorkItemHomePage.referenceDetailsLabel);
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-		objParcelsPage.Click(objMappingPage.parcelAllocationNextButton);
+		objParcelsPage.Click(objMappingPage.getButtonWithText("Next"));
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
 		ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
 
