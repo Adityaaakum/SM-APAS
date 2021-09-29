@@ -633,7 +633,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		String assesseeName = objMappingPage.getOwnerForMappingAction();
 		
 		//Getting Active APN
-		String queryAPNValue = "select Name, Id from Parcel__c where Status__c='Active' and id in ( select parcel__c from mail_to__c where statuslimit 1";
+		String queryAPNValue = "select Name, Id from Parcel__c where Status__c='Active' limit 1";
 		String activeApn = salesforceAPI.select(queryAPNValue).get("Name").get(0);
 		String activeApnId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
 		
@@ -1068,7 +1068,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		softAssert.assertTrue(Arrays.equals(sourceFieldOptions, expectedSourceFieldOptions),"SMAB-T3127 : Validation of picklist values in  Source field while creating UT from Parcel Component action button");		
  
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save and Next"));
-	    softAssert.assertEquals(objParcelsPage.getElementText(objParcelsPage.sourceFieldComponentActionError),"Complete this field.","SMAB-T3127 : Validation that Source is a mandatory field while creating UT from Parcel Component action button");		
+	    softAssert.assertEquals(objParcelsPage.getElementText(objParcelsPage.sourceFieldComponentActionErrorMessage),"Complete this field.","SMAB-T3127 : Validation that Source is a mandatory field while creating UT from Parcel Component action button");		
 	    objParcelsPage.Click(objParcelsPage.getWebElementWithLabel("Source"));
 
         if(dataToCreateUnrecordedEventMap.get("Source")!=null) {objParcelsPage.selectOptionFromDropDown("Source", dataToCreateUnrecordedEventMap.get("Source"));}

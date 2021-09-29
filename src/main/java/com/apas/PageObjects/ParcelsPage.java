@@ -89,7 +89,6 @@ public class ParcelsPage extends ApasGenericPage {
 	public String newParcelSitus="New Parcel Situs";
 	public String isPrimaryDropdown = "Is Primary?";
 	public String situsSearch = "Situs";
-	public String unrecordedEventIdComponentActionView;
 	
 	public String assessedValueLable = "Assessed Values";
 	public String assessedValueType = "Assessed Value Type";
@@ -126,7 +125,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public WebElement workItemTypeAndSubTypeError;
 	
 	@FindBy(xpath = "//div[contains(@class,'slds-form-element__help')]")
-	public WebElement sourceFieldComponentActionError;
+	public WebElement sourceFieldComponentActionErrorMessage;
 
 	@FindBy (xpath= "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]//li[1]//button[@title='Toggle details for work item']")
 	public WebElement ExpendWIOnParcels;
