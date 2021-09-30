@@ -59,6 +59,11 @@ public class ParcelsPage extends ApasGenericPage {
 	public String createNewParcelButton="New";
 	public String editParcelButton="Edit";
 	public String parcelCharacteristics = "Characteristics";
+	public String newButtonText = "New";	
+	public String propertyOwner = "Property Owner";
+	public String startDate = "Start Date";
+	public String ownershipPercentageTextBoxForAVO="Ownership %";
+	
 
 	
 	
@@ -105,6 +110,8 @@ public class ParcelsPage extends ApasGenericPage {
 	public String originLandValue = "Origin Land Value";
 	public String originFcv = "Origin FCV";
 	public String apn = "APN";
+	public String dov = "DOV";
+	
 
 	
 	
@@ -191,6 +198,10 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//div[@class='slds-tabs_card']//*[text()='Total Value']")
 	public WebElement detailPageTotalValue;
+	
+	@FindBy(xpath = "//a[text()='Assessed Values Ownership']")
+	public WebElement assessedValueOwnershipTab;
+	
 	
 	
 
@@ -627,5 +638,78 @@ public class ParcelsPage extends ApasGenericPage {
 			WebElement webelement = driver.findElement(By.xpath(xpath));
 			return webelement;
 		}
+		
+		/*
+		 * This method deletes old assessed value if any and creates new ownership record based on 
+		 * Hashmap provided by it.
+		 * 
+		 */
+		public void deleteOldAndCreateNewAssessedValuesRecords(Map<String, String>hashMapToCreateAssessedValueRecords,String APN) throws Exception
+		{
+		 String excEnv =System.getProperty("region");
+		 
+		 // Navigating to Parcel
+		 
+		 String apnId = objSalesforceAPI.select("Select Id from parcel__c where name= '"+APN+"'").get("Id").get(0);	
+		 driver.navigate().to("https://smcacre--"+excEnv+".lightning.force.com/lightning/r/Parcel__c/"+apnId+"/view");
+		 
+		 //Finding the owner name that will later used while creating AVO record
+		 
+		 String ownerName = objSalesforceAPI.select("SELECT id ,name  FROM Property_Ownership__c where Parcel__c='"+apnId+"'"+" and status__c='Active' order by dov_date__c ").get("Name").get(0);
+	     HashMap<String, ArrayList<String>> hashMapParcelAcessedValueRecord =objSalesforceAPI.select("Select id from Assessed_BY_Values__c where APN__c='"+apnId+"'");
+	     
+			if (!hashMapParcelAcessedValueRecord.isEmpty()) {
+				hashMapParcelAcessedValueRecord.get("Id").stream().forEach(Id -> {
+					objSalesforceAPI.delete("Assessed_BY_Values__c", Id);
+					ReportLogger.INFO("AV Records  deleted for Id ::" + Id);
+				});}
+				ReportLogger.INFO("Adding AV Records for APN= "+APN  );			
+				
+				Thread.sleep(4000);
+				openParcelRelatedTab(assessedValueLable);
+				waitForElementToBeClickable(NewButton,10);
+				Click(getButtonWithText(NewButton));
+				//Entering DOV
+				
+				waitForElementToBeVisible(getWebElementWithLabel(dovInputTextBox),10);
+	            enter(dovInputTextBox, hashMapToCreateAssessedValueRecords.get("DOV"));
+	            
+	            //Entering AV type
+	            
+	            waitForElementToBeVisible(getWebElementWithLabel(assessedValueType),5);
+	            selectOptionFromDropDown(assessedValueType, hashMapToCreateAssessedValueRecords.get("Assessed Value Type"));
+	            waitForElementToBeVisible(10, landCashValue);
+	            enter(landCashValue, hashMapToCreateAssessedValueRecords.get("Land Cash Value"));
+	            waitForElementToBeVisible(10, improvementCashValue);
+	            enter(improvementCashValue, hashMapToCreateAssessedValueRecords.get("Improvement Cash Value"));
+	            waitForElementToBeClickable(5, SaveButton);
+	            Click(getButtonWithText(SaveButton));
+	            Thread.sleep(4000);            
+	            ReportLogger.INFO(" AV Records added for APN= "+APN  );
+	            
+	            ReportLogger.INFO("Adding AV0 Records for APN= "+APN  );
+	            
+	            waitForElementToBeClickable(5, assessedValueOwnershipTab);
+	            Click(assessedValueOwnershipTab);
+	            waitForElementToBeClickable(5, newButton);
+	            Click(getButtonWithText(NewButton));
+	          
+	            //Entering Owner name
+	            
+	            searchAndSelectOptionFromDropDown(propertyOwner, ownerName);
+	            enter(startDate, hashMapToCreateAssessedValueRecords.get("Start Date"));
+	            enter(ownershipPercentageTextBoxForAVO ,hashMapToCreateAssessedValueRecords.get("Ownership Percentage"));
+	            enter(dov, hashMapToCreateAssessedValueRecords.get("DOV"));
+	            
+	            waitForElementToBeClickable(10, SaveButton);           
+	            Click(getButtonWithText(SaveButton));
+	            ReportLogger.INFO("Added AV0 Records for APN= "+APN  );
+	            Thread.sleep(4000);
+			}
+			
+	                       
+	            
+	            
+	            
 
 }
