@@ -25,11 +25,10 @@
 	  },
 	  
 	"dataToCreateGranteeWithCompleteOwnership":{
-	
-	"Last Name":"Will Smith",
-	"First Name":"Jhones",
-	"Ownership Start Date":"7/16/2021",
-	"Owner Percentage":"100"
+		"Last Name":"Will Smith",
+		"First Name":"Jhones",
+		"Ownership Start Date":"7/16/2021",
+		"Owner Percentage":"100"
 	},
 	
 	"dataToUpdateOrignalTransferList":{

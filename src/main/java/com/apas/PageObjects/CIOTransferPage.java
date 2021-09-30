@@ -60,10 +60,6 @@ public class CIOTransferPage extends ApasGenericPage {
 	public final String DOC_DEED="DE";
 	public String firstNameLabel="First Name";
 	
-	
-	
-
-
 	public String transferCodeLabel = "Transfer Code";
 	public String transferDescriptionLabel = "Transfer Description";
 	public String transferStatusLabel = "CIO Transfer Status";
@@ -76,8 +72,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String fieldsInCalculateOwnershipModal="//*[@id='wrapper-body']//flowruntime-screen-field//p";
 	public String ownershipPercentage ="Ownership Percentage";
 
-
-
+	
 	public static final String CIO_EVENT_CODE_COPAL="CIO-COPAL";
 	public static final String CIO_EVENT_CODE_PART="CIO-PART";
 	public static final String CIO_EVENT_CODE_ElessThan5Percent="E<5%";
@@ -88,11 +83,6 @@ public class CIOTransferPage extends ApasGenericPage {
 	public static final String CIO_RESPONS_EventCodeChangeRequired="Event Code needs to be changed";
 	
 	
-	
-	
-	
-	
-
 	public String eventIDLabel = "EventID";
 	public String situsLabel = "Situs";
 	public String shortLegalDescriptionLabel = "Short Legal Description";
@@ -116,8 +106,6 @@ public class CIOTransferPage extends ApasGenericPage {
 	public String createdByLabel = "Created By";
 	public String lastModifiedByLabel = "Last Modified By";
 	public String transferSucessMessage="//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b | //div[@class='slds-card__body slds-p-horizontal_small flowruntimeBody']//b";
-
-
 	
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
 	public WebElement relatedListTab;
@@ -173,10 +161,7 @@ public class CIOTransferPage extends ApasGenericPage {
 	public WebElement transferPageMessageArea;
 	
 	@FindBy(xpath = commonXpath + "//div[text()='Recorded APN Transfer']//following::lightning-formatted-text")
-	public WebElement cioTransferActivityLabel;
-		
-	//@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b or  //div[@class='slds-card__body slds-p-horizontal_small flowruntimeBody']//b")
-	///public WebElement cioTransferSuccessMsg;	
+	public WebElement cioTransferActivityLabel;	
 	
 	@FindBy(xpath = "//*[contains(@data-value,'Reviewed Assessee Response')]")
 	public WebElement reviewAssecesseLink;
@@ -225,7 +210,6 @@ public class CIOTransferPage extends ApasGenericPage {
 	
 	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='PUC Code']/../..//slot[@slot='outputField']//lightning-formatted-text")
 	public WebElement pucCodeTransferActivityLabel;
-
 	
 	@FindBy(xpath =commonXpath+"//*[@class='slds-form-element__help']")
 	public WebElement errorMessageOnTransferScreen;
@@ -532,6 +516,8 @@ public class CIOTransferPage extends ApasGenericPage {
 			 
 			 String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@href,'" + updateGridName + "')]//span[text() = 'View All']";		        
 		 	 WebElement fieldLocator1 = locateElement(xpathStr, 30);
+		 	 scrollToElement(fieldLocator1);
+		 	 Thread.sleep(2000);
 		 	 Click(fieldLocator1);
 		 	 Thread.sleep(5000);
 		 }
@@ -578,10 +564,12 @@ public class CIOTransferPage extends ApasGenericPage {
 					
 					Click(getButtonWithText(enterButtonText));
 					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
+					Thread.sleep(1000);
 				} catch (Exception e) {
 					Click(quickActionButtonDropdownIcon);
 					Click(getButtonWithText(enterButtonText));
 					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
+					Thread.sleep(1000);
 				}
 			}
 			

@@ -84,7 +84,6 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objMappingPage.login(loginUser);
 
 		// Step2: Opening the PARCELS page 
-		
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(retiredApn);
 		
@@ -94,7 +93,6 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				"SMAB-T3287, SMAB-T3286: Validate the warning message on CIO Transfer screen");
 		
 		//Step 3(a): Verifying that orignal transfer list quick action button is not visible for unrecorded document
-		
 		softAssert.assertEquals(objCIOTransferPage.verifyElementVisible(objCIOTransferPage.checkOriginalTransferListButtonLabel),false, "SMAB-T3630:Verify that check Orignal Transfer List quick action button is not available for unrecorded transfer.");
 		
 		// Step4: Edit the Transfer activity and update the Transfer Code
@@ -103,7 +101,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-SALE");
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
-		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.transferCodeLabel);
+		
+		//Added below code to handle regression failure
+		Thread.sleep(2000);
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferCodeLabel, ""),"CIO-SALE",
 				"SMAB-T3287: Validate that CIO staff is able to update and save values on CIO Transfer Screen");
 		
@@ -156,10 +156,12 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-SALE");
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
-		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
-		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferCodeLabel, ""),"CIO-SALE",
-				"SMAB-T3287: Validate that CIO staff is able to update and save values on CIO Transfer Screen");
 		
+		//Added below code to handle regression failure
+		Thread.sleep(2000);
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferCodeLabel, ""),"CIO-SALE",
+						"SMAB-T3287: Validate that CIO staff is able to update and save values on CIO Transfer Screen");
+					
 		objCIOTransferPage.logout();
 	}
 	
@@ -640,6 +642,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		//Setup the data for the validations
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String execEnv= System.getProperty("region");	
+		JSONObject jsonForParcelUpdate = objMappingPage.getJsonObject();
 		
 		Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(ownershipCreationData, "DataToCreateOwnershipRecord");
@@ -658,10 +661,10 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		String primarySitusId=responseSitusDetails.get("Id").get(0);
 		String primarySitusValue=responseSitusDetails.get("Name").get(0);
 		
-		jsonObject.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
-		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
-		jsonObject.put("Primary_Situs__c",primarySitusId);
-		salesforceAPI.update("Parcel__c", activeApnId, jsonObject);
+		jsonForParcelUpdate.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+		jsonForParcelUpdate.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonForParcelUpdate.put("Primary_Situs__c",primarySitusId);
+		salesforceAPI.update("Parcel__c", activeApnId, jsonForParcelUpdate);
 		
 		//Delete Ownership records on the Parcel
 		objMappingPage.deleteOwnershipFromParcel(activeApnId);
@@ -695,7 +698,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				"SMAB-T3231: Validate that CIO staff is able to verify the prefix of Event ID");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.eventIDLabel, "").length(),"10",
 				"SMAB-T3231: Validate that CIO staff is able to verify the length of Event ID");
-		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.situsLabel, ""),primarySitusValue,
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.situsLabel, ""),primarySitusValue.replaceFirst("\\s", ""),
 				"SMAB-T3231: Validate that CIO staff is able to verify the Situs value on UT");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.shortLegalDescriptionLabel, ""),legalDescriptionValue,
 				"SMAB-T3231: Validate that CIO staff is able to verify the Short Legal Description value on UT");
@@ -756,15 +759,21 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		
         // Step10: Validate the details in the grid
         ReportLogger.INFO("Validate the Grantee record in Grid");
-        HashMap<String, ArrayList<String>>HashMapLatestGrantee  = objCIOTransferPage.getGridDataInHashMap();
-        softAssert.assertEquals(HashMapLatestGrantee.get("Recorded Document").get(0), unrecordedEventId, 
-    		  "SMAB-T3231: Validate the Recorded Document number on Grantee record");
+        HashMap<String, ArrayList<String>> HashMapLatestGrantee  = objCIOTransferPage.getGridDataInHashMap();
         softAssert.assertEquals(HashMapLatestGrantee.get("Status").get(0), "Active", 
-    		  "SMAB-T3231: Validate the status on Grantee record");
+      		  "SMAB-T3231: Validate the status on Grantee record");
         softAssert.assertEquals(HashMapLatestGrantee.get("Owner Percentage").get(0), hashMapOwnershipAndTransferGranteeCreationData.get("Owner Percentage")+".0000%", 
     		  "SMAB-T3231: Validate the percentage on Grantee record");
         softAssert.assertEquals(HashMapLatestGrantee.get("Grantee/Retain Owner Name").get(0),hashMapOwnershipAndTransferGranteeCreationData.get("Last Name") , 
         		  "SMAB-T3231: Validate the Grantee Name on Grantee record");
+        if (HashMapLatestGrantee.containsKey("Recorded Document")) {
+        	softAssert.assertEquals(HashMapLatestGrantee.get("Recorded Document").get(0), unrecordedEventId,
+       			 "SMAB-T3231: Validate the Recorded Document number on Grantee record");
+        }
+        if (HashMapLatestGrantee.containsKey("Recorded Document Number")) {
+        	softAssert.assertEquals(HashMapLatestGrantee.get("Recorded Document Number").get(0), unrecordedEventId,
+       			 "SMAB-T3231: Validate the Recorded Document number on Grantee record");
+        }
         
         //Step11: Navigate to RAT screen and click View ALL to see current Ownership records in grid
         ReportLogger.INFO("Navigate to RAT screen and click View ALL to see current Ownership records in grid");

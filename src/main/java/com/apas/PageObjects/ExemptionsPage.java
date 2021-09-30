@@ -773,10 +773,13 @@ public class ExemptionsPage extends ApasGenericPage {
     public void enterHomeOwnerExemptionData(Map<String, String> dataMap) throws Exception {
     	Click(homeOwnerExemptionRadioButton);
     	Click(exemptionRecordTypeNextButton);
-    	String assesseeName = fetchAssesseeName();
+    	
+    	//String assesseeName = fetchAssesseeName();
+    	//Commented above code temporarily and added below code till current HOE implementation is completed 
+    	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'DoNot'";
+        HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
+        String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
         
-    	//String apnNumber = fetchActiveAPN();
-        //searchAndSelectOptionFromDropDown(apn, apnNumber);
         searchAndSelectOptionFromDropDown(claimantName, assesseeName);
         selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
         scrollToElement(getWebElementWithLabel(dateApplicationReceived));
