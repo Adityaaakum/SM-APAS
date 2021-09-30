@@ -645,6 +645,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		//Setup the data for the validations
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String execEnv= System.getProperty("region");	
+		JSONObject jsonForParcelUpdate = objMappingPage.getJsonObject();
 		
 		Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(ownershipCreationData, "DataToCreateOwnershipRecord");
@@ -663,10 +664,10 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		String primarySitusId=responseSitusDetails.get("Id").get(0);
 		String primarySitusValue=responseSitusDetails.get("Name").get(0);
 		
-		jsonObject.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
-		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
-		jsonObject.put("Primary_Situs__c",primarySitusId);
-		salesforceAPI.update("Parcel__c", activeApnId, jsonObject);
+		jsonForParcelUpdate.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+		jsonForParcelUpdate.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonForParcelUpdate.put("Primary_Situs__c",primarySitusId);
+		salesforceAPI.update("Parcel__c", activeApnId, jsonForParcelUpdate);
 		
 		//Delete Ownership records on the Parcel
 		objMappingPage.deleteOwnershipFromParcel(activeApnId);
@@ -768,8 +769,14 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
     		  "SMAB-T3231: Validate the percentage on Grantee record");
         softAssert.assertEquals(HashMapLatestGrantee.get("Grantee/Retain Owner Name").get(0),hashMapOwnershipAndTransferGranteeCreationData.get("Last Name") , 
         		  "SMAB-T3231: Validate the Grantee Name on Grantee record");
-        softAssert.assertEquals(HashMapLatestGrantee.get("Recorded Document Number").get(0), unrecordedEventId, 
-      		  "SMAB-T3231: Validate the Recorded Document number on Grantee record");
+        if (HashMapLatestGrantee.containsKey("Recorded Document")) {
+        	softAssert.assertEquals(HashMapLatestGrantee.get("Recorded Document").get(0), unrecordedEventId,
+       			 "SMAB-T3231: Validate the Recorded Document number on Grantee record");
+        }
+        if (HashMapLatestGrantee.containsKey("Recorded Document Number")) {
+        	softAssert.assertEquals(HashMapLatestGrantee.get("Recorded Document Number").get(0), unrecordedEventId,
+       			 "SMAB-T3231: Validate the Recorded Document number on Grantee record");
+        }
         
         //Step11: Navigate to RAT screen and click View ALL to see current Ownership records in grid
         ReportLogger.INFO("Navigate to RAT screen and click View ALL to see current Ownership records in grid");

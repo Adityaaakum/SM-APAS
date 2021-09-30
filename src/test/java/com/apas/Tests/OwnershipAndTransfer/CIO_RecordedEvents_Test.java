@@ -1808,9 +1808,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	@Test(description = "SMAB-T3232 : Verify that APN related details are updated when APN is updated on Recorded Event", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" }, enabled = true)
 	public void RecorderIntegration_VerifyAPNDetailsOnTransferActivityScreen(String loginUser) throws Exception {
-
-		JSONObject jsonObject1 = new JSONObject();
-		JSONObject jsonObject2 = new JSONObject();
+		
+		JSONObject jsonObject1 = objMappingPage.getJsonObject();
+		JSONObject jsonObject2 = objMappingPage.getJsonObject();
 		String execEnv = System.getProperty("region");
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(ownershipCreationData,
 				"DataToCreateOwnershipRecord");
@@ -1990,6 +1990,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String numOfMailToRecordOnParcel = objCioTransfer.getElementText(objParcelsPage.numberOfMailToOnParcelLabel);
 
 		if (!numOfMailToRecordOnParcel.equals("(0)")) {
+			ReportLogger.INFO("There is/are Mail-To record(s) present on the parcel");
 			HashMap<String, ArrayList<String>> mailToTableDataHashMap = objParcelsPage
 					.getParcelTableDataInHashMap("Mail-To");
 			String status = mailToTableDataHashMap.get("Status").get(0);

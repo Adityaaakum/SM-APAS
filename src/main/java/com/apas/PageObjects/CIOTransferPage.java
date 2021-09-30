@@ -516,6 +516,8 @@ public class CIOTransferPage extends ApasGenericPage {
 			 
 			 String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@href,'" + updateGridName + "')]//span[text() = 'View All']";		        
 		 	 WebElement fieldLocator1 = locateElement(xpathStr, 30);
+		 	 scrollToElement(fieldLocator1);
+		 	 Thread.sleep(2000);
 		 	 Click(fieldLocator1);
 		 	 Thread.sleep(5000);
 		 }
