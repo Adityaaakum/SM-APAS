@@ -78,7 +78,6 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		objParcelsPage.globalSearchRecords(parcelToSearch);
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.assessedValueLable);
 		
-//		objParcelsPage.Click(objParcelsPage.assessedValue);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.landCashValue);
 		objParcelsPage.enter(objParcelsPage.landCashValue, "400000");
@@ -253,8 +252,18 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		ReportLogger.INFO("Verification has been completed for Land Value, Improvement Value and Total Value fields ");
 
 		// Step 7: User going to create new Assessed Value with the Assessed Value type to verify the Land Cash Value and Improvement Cash Value
-
-		driver.navigate().to("https://smcacre--qa.lightning.force.com/lightning/o/Assessed_BY_Values__c/new");
+		String executionEnv = "";
+		
+		if (System.getProperty("region").toUpperCase().equals("QA"))
+			executionEnv = "qa";
+		if (System.getProperty("region").toUpperCase().equals("E2E"))
+			executionEnv = "e2e";
+		if (System.getProperty("region").toUpperCase().equals("PREUAT"))
+			executionEnv = "preuat";
+		if (System.getProperty("region").toUpperCase().equals("STAGING"))
+			executionEnv = "staging";
+		
+		driver.navigate().to("https://smcacre--"+executionEnv+".lightning.force.com/lightning/o/Assessed_BY_Values__c/new");
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.apn);
 		objParcelsPage.searchAndSelectOptionFromDropDown(objParcelsPage.apn, parcelToSearch);
 		String landCashValueNumber = "200,000";
