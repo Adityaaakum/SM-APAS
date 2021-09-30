@@ -1697,11 +1697,12 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		//Update District/Neighborhood on the Non-Condo Parcel
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
-		salesforceAPI.update("Parcel__c", apn2Id, "Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
 		
 		//Updating the status of all parcels
 		salesforceAPI.update("Parcel__c", apn1Id, "Status__c", "Active");
 		salesforceAPI.update("Parcel__c", apn2Id, "Status__c", "Active");
+		salesforceAPI.update("Parcel__c", apn1Id, "Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c", apn2Id, "Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
