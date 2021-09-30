@@ -670,6 +670,7 @@ public class ParcelsPage extends ApasGenericPage {
 				openParcelRelatedTab(assessedValueLable);
 				waitForElementToBeClickable(NewButton,10);
 				Click(getButtonWithText(NewButton));
+				
 				//Entering DOV
 				
 				waitForElementToBeVisible(getWebElementWithLabel(dovInputTextBox),10);

@@ -3,15 +3,12 @@ package com.apas.Tests.OwnershipAndTransfer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.apas.Assertions.SoftAssertion;
@@ -19,14 +16,12 @@ import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.AppraisalActivityPage;
-import com.apas.PageObjects.AssessedValuesPage;
+
 import com.apas.PageObjects.CIOTransferPage;
-import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
-import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
@@ -44,8 +39,7 @@ public class CIO_AppraisalActivity_NormalEnrollement extends TestBase implements
 	CIOTransferPage objCIOTransferPage;
 	Util objUtil;
 	SoftAssertion softAssert;
-	WorkItemHomePage objWorkItemHomePage;
-	AssessedValuesPage objAssessedValuePage;
+	WorkItemHomePage objWorkItemHomePage;	
 	MappingPage objMappingPage;
 	AppraisalActivityPage objAppraisalActivity;
 
@@ -64,7 +58,6 @@ public class CIO_AppraisalActivity_NormalEnrollement extends TestBase implements
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
-		objAssessedValuePage= new AssessedValuesPage(driver);
 		objMappingPage =  new MappingPage(driver);
 		objAppraisalActivity= new AppraisalActivityPage(driver);
 		
