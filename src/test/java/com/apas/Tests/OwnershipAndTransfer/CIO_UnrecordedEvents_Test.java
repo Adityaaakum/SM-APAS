@@ -1029,8 +1029,6 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			"Regression","ChangeInOwnershipManagement","UnrecordedEvent" })
 	public void UnrecordedEvent_MobileHomeParcel(String loginUser) throws Exception {
 				
-		String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
-		
 		//Getting Active APN
 		String queryAPNValue = "select Name, Id from Parcel__c where Status__c='Active' and name like '134%' and id in ( select parcel__c from mail_to__c where Status__c='Active')";
 		String activeApn = salesforceAPI.select(queryAPNValue).get("Name").get(0);
@@ -1120,7 +1118,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
 		
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Date", "Information"),DateUtil.removeZeroInMonthAndDay(currentDate),
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Date", "Information"),DateUtil.removeZeroInMonthAndDay(objUtil.convertCurrentDateISTtoPST("Asia/Kolkata", "America/Los_Angeles","MM/dd/yyyy")),
 				"SMAB-T3127: Validation that 'Date' fields in CIO UT WI is the date when the WI was created");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("DOV", "Information"),DateUtil.removeZeroInMonthAndDay(dataToCreateUnrecordedEventMap.get("Date of Event")),
 				"SMAB-T3127: Validation that 'DOV' fields in CIO UT WI is DOV of audit trail");
@@ -1133,6 +1131,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		String responseAuditTrailDetails = salesforceAPI.select(auditTrailsQuery).toString().replace("{Business_Event__r=[", "").replace("}]", "");
 		
 		JSONObject responseAuditTrailDetailsJson = new JSONObject(responseAuditTrailDetails);  
+		
+		String auditTrailName=responseAuditTrailDetailsJson.get("Name").toString();
+		
 		softAssert.assertEquals(responseAuditTrailDetailsJson.get("Request_Origin__c").toString(),dataToCreateUnrecordedEventMap.get("Source"),
 				"SMAB-T3127: Validation that Request Origin of  UT event should be the source field value selecting while creating UT event");
 		
@@ -1156,6 +1157,11 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		
 		softAssert.assertEquals(responseAuditTrailDetailsJson.get("Event_Type__c").toString(),"Unrecorded Event",
 				"SMAB-T3127: Validation that Event_Type__c of  UT event should be the Unrecorded Event"); 
+		
+		String auditTrailsParcelLinkage= "SELECT Associated_APNs__c FROM Transaction_Trail__c where Name='"+auditTrailName+"'";
+		
+		softAssert.assertEquals(salesforceAPI.select(auditTrailsParcelLinkage).get("Associated_APNs__c").get(0),activeApnId,
+				"SMAB-T3127: Validation that  UT event created is linked to the parcel for which UT event was created from component action button");
 		
 		//Step9 : Validate that the related action link of CIO UT WI should direct to CIO transfer screen. 
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
