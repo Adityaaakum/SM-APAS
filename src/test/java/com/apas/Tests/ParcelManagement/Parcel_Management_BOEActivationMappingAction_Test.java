@@ -514,9 +514,11 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		objMappingPage.login(loginUser);
 		Thread.sleep(7000);
 		objMappingPage.closeDefaultOpenTabs();
-		//objParcelsPage.createParcelSitus(parentAPN);
+		
 				
-		// Step2: Opening the PARCELS page  and searching the  parcel 		
+		// Step2: Opening the PARCELS page  and searching the  parcel 	
+		objMappingPage.globalSearchRecords(parentAPN);
+		objParcelsPage.createParcelSitus(parentAPN);
 		objMappingPage.searchModule("APAS");
 		objMappingPage.searchModule("Mapping Action");
 		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
