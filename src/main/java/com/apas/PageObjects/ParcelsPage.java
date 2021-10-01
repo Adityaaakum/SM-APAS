@@ -393,6 +393,7 @@ public class ParcelsPage extends ApasGenericPage {
 		String ownershipStartDate = dataMap.get("Ownership Start Date");
 		String ownershipPercentage=dataMap.get("Ownership Percentage");
 		
+		Thread.sleep(5000);
 		scrollToBottom();
 		createRecord();
 		Click(ownershipNextButton);

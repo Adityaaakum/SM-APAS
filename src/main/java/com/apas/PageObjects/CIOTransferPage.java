@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
+import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -14,15 +13,22 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
+import com.apas.Assertions.SoftAssertion;
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
+import com.apas.config.modules;
+import com.apas.config.testdata;
+import com.apas.config.users;
 
-public class CIOTransferPage extends ApasGenericPage {
+public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	Util objUtil;
 	SalesforceAPI salesforceApi;
 	MappingPage objMappingPage;
 	WorkItemHomePage objWorkItemHomePage;
+    ParcelsPage	objParcelsPage;
+    SoftAssertion softAssert;
+   
 
 	public CIOTransferPage(RemoteWebDriver driver) {
 		super(driver);
@@ -30,7 +36,10 @@ public class CIOTransferPage extends ApasGenericPage {
 		objUtil = new Util();
 		salesforceApi = new SalesforceAPI();
 		objMappingPage = new MappingPage(driver);
-
+        objParcelsPage = new ParcelsPage(driver);
+        softAssert = new SoftAssertion();
+        objWorkItemHomePage= new WorkItemHomePage(driver);
+        
 	}
 
 	public String ApnLabel = "APN";
@@ -419,7 +428,7 @@ public class CIOTransferPage extends ApasGenericPage {
 		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {		 		 
 			
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(4000);
 					Click(getButtonWithText(copyToMailToButtonLabel));
 					waitForElementToDisappear(formattedName1, 5);
 					Click(formattedName1);
@@ -463,6 +472,7 @@ public class CIOTransferPage extends ApasGenericPage {
 		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
 		 {
 				try {
+					Thread.sleep(4000);
 					String execEnv = System.getProperty("region");
 					driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/"
 							+ recordeAPNTransferID + "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
@@ -488,7 +498,7 @@ public class CIOTransferPage extends ApasGenericPage {
 		 {
 			       HashMap<String, ArrayList<String>>HashMapRecordedDocuments = salesforceApi.select("SELECT ID FROM RECORDED_APN__C WHERE Recorded_Document__c='"+recordedDocumentId+"'");
 			     
-			       if(!HashMapRecordedDocuments.isEmpty());
+			       if(!HashMapRecordedDocuments.isEmpty())
 			       {
 			    	       HashMapRecordedDocuments.get("Id").stream().forEach(Id->{			    		   
 			    		   salesforceApi.delete("Recorded_APN__c", Id); 
@@ -594,5 +604,222 @@ public class CIOTransferPage extends ApasGenericPage {
 			        Thread.sleep(2000);
 			    }
 	
+			 /*
+			  * @Description :This method will perform end to end step to create and approve CIO WI based on Enrollement type 
+			  * 
+			  * @Return : Returns a String array for all the related WI generated after approval for the given enrollment type
+			  * 			  
+			  * @param enrollementType : Enrollement Type -Direct or Normal enrollment type
+			  * @param Transfer code : Event Code in RecordedAPNTransfer screen
+			  * @param hashMapOwnershipAndTransferMailToCreationData : Data to create mail to record
+			  * @param hashMapOwnershipAndTransferGranteeCreationData : Data to create Grantee records
+			  * @param hashMapCreateOwnershipRecordData : Data to create ownership record
+			  * @param hashMapCreateAssessedValueRecord : Data to create acessed value record
+			  */
+	
+			 public String[] OwnershipAndTransfer_CreateAppraisalActivityWorkItemForRecordedCIOTransfer(String enrollementType,String transferCode,Map<String, String> hashMapOwnershipAndTransferMailToCreationData,Map<String, String> hashMapOwnershipAndTransferGranteeCreationData,Map<String, String> hashMapCreateOwnershipRecordData,Map<String, String> hashMapCreateAssessedValueRecord) throws Exception {
+
+					String excEnv = System.getProperty("region");
+
+					JSONObject jsonForAppraiserActivity = getJsonObject();	
+					
+					login(SYSTEM_ADMIN);
+
+					String recordedDocumentID = salesforceApi
+							.select("SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=0")
+							.get("Id").get(0);
+
+					deleteRecordedApnFromRecordedDocument(recordedDocumentID);
+					Thread.sleep(3000);
+					addRecordedApn(recordedDocumentID, 1);
+
+					generateRecorderJobWorkItems(recordedDocumentID);
+
+					// STEP 2-Query to fetch WI
+
+					String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'   And status__c='In pool' order by createdDate desc limit 1";
+					String workItemNo = salesforceApi.select(workItemQuery).get("Name").get(0);
+
+					objMappingPage.globalSearchRecords(workItemNo);
+
+					waitForElementToBeInVisible(ApnLabel, 5);
+					String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+
+					// Updating neighborhood code of parcel so Normal enrollement WI is generated
+                      if(enrollementType.equalsIgnoreCase("Normal Enrollment")) {
+					        salesforceApi.update("Parcel__C",
+							salesforceApi.select("Select Id from parcel__c where name ='" + apnFromWIPage + "'").get("Id").get(0),
+							"Neighborhood_Reference__c",
+							salesforceApi.select("Select Id from Neighborhood__c where name like '03%'").get("Id").get(0));}
+                      else {
+                    	  salesforceApi.update("Parcel__C",
+      							salesforceApi.select("Select Id from parcel__c where name ='" + apnFromWIPage + "'").get("Id").get(0),
+      							"Neighborhood_Reference__c",
+      							salesforceApi.select("Select Id from Neighborhood__c where name = '01/011E'").get("Id").get(0));
+                    	  salesforceApi.update("Parcel__C",
+        							salesforceApi.select("Select Id from parcel__c where name ='" + apnFromWIPage + "'").get("Id").get(0),
+        							"PUC_Code__c",
+        							salesforceApi.select("Select Id from PUC_Code__c where name = '105- Apartment (Migrated)'").get("Id").get(0));
+                      }
+
+					// Deleting existing ownership from parcel
+					
+					 deleteOwnershipFromParcel(
+							salesforceApi.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0));
+
+					// STEP 3- adding owner after deleting for the recorded APN
+
+					String acesseName = objMappingPage.getOwnerForMappingAction();
+					driver.navigate()
+							.to("https://smcacre--"
+									+ excEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceApi
+											.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
+									+ "/related/Property_Ownerships__r/view");
+					objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
+					String ownershipId = driver.getCurrentUrl().split("/")[6];
+					objParcelsPage.deleteOldAndCreateNewAssessedValuesRecords(hashMapCreateAssessedValueRecord, apnFromWIPage);
+
+					// STEP 4- updating the ownership date for current owners
+
+					String dateOfEvent = salesforceApi
+							.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
+							.get("Ownership_Start_Date__c").get(0);
+					jsonForAppraiserActivity.put("DOR__c", dateOfEvent);
+					jsonForAppraiserActivity.put("DOV_Date__c", dateOfEvent);
+
+					salesforceApi.update("Property_Ownership__c", ownershipId, jsonForAppraiserActivity);
+
+					objMappingPage.logout();
+
+					objMappingPage.login(CIO_STAFF);
+					objMappingPage.waitForElementToBeClickable(objMappingPage.appLauncher, 10);
+					searchModule(modules.EFILE_INTAKE);
+					objMappingPage.globalSearchRecords(workItemNo);
+					Thread.sleep(5000);
+					String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + workItemNo + "'";
+					HashMap<String, ArrayList<String>> navigationUrL = salesforceApi.select(queryRecordedAPNTransfer);
+
+					// STEP 6-Finding the recorded apn transfer id
+
+					String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+					deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
+					waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+					objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+					objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+					objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel,10);
+
+					// STEP 7-Clicking on related action link
+
+					objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+					String parentWindow = driver.getWindowHandle();
+					objWorkItemHomePage.switchToNewWindow(parentWindow);
+					softAssert.assertContains(driver.getCurrentUrl(), navigationUrL.get("Navigation_Url__c").get(0),
+							"SMAB-T3306:Validating that user navigates to CIo transfer screenafter clicking on related action hyperlink");
+
+					waitForElementToBeClickable(quickActionButtonDropdownIcon, 10);
+					ReportLogger.INFO("Add the Transfer Code");
+
+					editRecordedApnField(transferCodeLabel);
+					waitForElementToBeVisible(10, transferCodeLabel);
+					searchAndSelectOptionFromDropDown(transferCodeLabel,
+							transferCode);
+					Click(getButtonWithText(saveButton));
+
+					// STEP 8-Creating the new grantee
+
+					createNewGranteeRecords(recordeAPNTransferID,
+							hashMapOwnershipAndTransferGranteeCreationData);
+					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
+							+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+					HashMap<String, ArrayList<String>> granteeHashMap = getGridDataForRowString("1");
+					String granteeForMailTo = granteeHashMap.get("Grantee/Retain Owner Name").get(0);
+
+					// STEP 11- Performing calculate ownership to perform partial transfer
+
+					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+							+ recordeAPNTransferID + "/view");
+					waitForElementToBeClickable(10, calculateOwnershipButtonLabel);
+					
+					Click(getButtonWithText(calculateOwnershipButtonLabel));
+					waitForElementToBeVisible(5, nextButton);
+					enter(calculateOwnershipRetainedFeld, "50");
+					Click(getButtonWithText(nextButton));
+
+					// STEP 12-Creating copy to mail to record
+
+					createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferMailToCreationData);
+					waitForElementToBeClickable(7, copyToMailToButtonLabel);
+
+					// STEP 15-Navigating back to RAT screen
+
+					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+							+ recordeAPNTransferID + "/view");
+					waitForElementToBeClickable(quickActionButtonDropdownIcon);
+					Click(quickActionButtonDropdownIcon);
+
+					// STEP 16-Clicking on submit for approval quick action button
+
+					waitForElementToBeClickable(quickActionOptionSubmitForApproval,5);
+					Click(quickActionOptionSubmitForApproval);
+					ReportLogger.INFO("CIO!! Transfer submitted for approval");
+					waitForElementToBeClickable(10, finishButton);
+					Click(getButtonWithText(finishButton));
+
+					logout();
+
+					login(CIO_SUPERVISOR);
+					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+							+ recordeAPNTransferID + "/view");
+					if(verifyElementVisible(quickActionOptionApprove))
+					{
+						waitForElementToBeClickable(quickActionOptionApprove,10);
+						Click(quickActionOptionApprove);
+					}
+					else {
+					waitForElementToBeClickable(quickActionButtonDropdownIcon,10);
+					Click(quickActionButtonDropdownIcon);
+					waitForElementToBeClickable(quickActionOptionApprove,10);
+					Click(quickActionOptionApprove);}
+					
+					waitForElementToBeClickable(10, finishButton);
+					Click(getButtonWithText(finishButton));
+					
+					//Fetching appraiser WI genrated on approval of CIO WI
+					if(enrollementType.equalsIgnoreCase("Normal Enrollment")) {
+					String workItemNoForAppraiser = salesforceApi.select(
+							"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Appraisal Activity' order by createdDate desc")
+							.get("Name").get(0);
+					System.out.println(workItemNoForAppraiser);
+					String workItemNoForQuestionnaireCorrespondence = salesforceApi.select(
+							"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Questionnaire Correspondence' order by createdDate desc")
+							.get("Name").get(0);
+					System.out.println(workItemNoForQuestionnaireCorrespondence);
+					 String[] arrayForWorkItemAfterCIOSupervisorApproval= {workItemNoForAppraiser,workItemNoForQuestionnaireCorrespondence};
+					 logout();
+					 return arrayForWorkItemAfterCIOSupervisorApproval;	
+					}
+					if(transferCode.equals(CIO_EVENT_CODE_CIOGOVT))
+					{
+						String workItemNoForGovtCIOAppraisal = salesforceApi.select(
+								"Select Id ,Name from Work_Item__c where type__c='Govt CIO Appraisal' and sub_type__c='Appraisal Activity' order by createdDate desc")
+								.get("Name").get(0);					
+					 String[] arrayForWorkItemAfterCIOSupervisorApproval= {workItemNoForGovtCIOAppraisal};
+					 logout();
+					 return arrayForWorkItemAfterCIOSupervisorApproval;					 
+					}
+						
+					else
+					{
+						String workItemNoForDirectEnrollement = salesforceApi.select(
+								"Select Id ,Name from Work_Item__c where type__c='Direct Enrollment' and sub_type__c='Verify DE' order by createdDate desc")
+								.get("Name").get(0);					
+					 String[] arrayForWorkItemAfterCIOSupervisorApproval= {workItemNoForDirectEnrollement};
+					 logout();
+					 return arrayForWorkItemAfterCIOSupervisorApproval;	
+					
+					}
+
+					
+			 }
 }
 		 	
