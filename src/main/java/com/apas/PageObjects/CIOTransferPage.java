@@ -621,12 +621,12 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 					String excEnv = System.getProperty("region");
 
-					JSONObject jsonForAppraiserActivity = getJsonObject();	
-					
+					JSONObject jsonForAppraiserActivity = getJsonObject();
+
 					login(SYSTEM_ADMIN);
 
-					String recordedDocumentID = salesforceApi
-							.select("SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=0")
+					String recordedDocumentID = salesforceApi.select(
+							"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=0")
 							.get("Id").get(0);
 
 					deleteRecordedApnFromRecordedDocument(recordedDocumentID);
@@ -646,43 +646,53 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
 
 					// Updating neighborhood code of parcel so Normal enrollement WI is generated
-                      if(enrollementType.equalsIgnoreCase("Normal Enrollment")) {
-					        salesforceApi.update("Parcel__C",
-							salesforceApi.select("Select Id from parcel__c where name ='" + apnFromWIPage + "'").get("Id").get(0),
-							"Neighborhood_Reference__c",
-							salesforceApi.select("Select Id from Neighborhood__c where name like '03%'").get("Id").get(0));}
-                      else {
-                    	  salesforceApi.update("Parcel__C",
-      							salesforceApi.select("Select Id from parcel__c where name ='" + apnFromWIPage + "'").get("Id").get(0),
-      							"Neighborhood_Reference__c",
-      							salesforceApi.select("Select Id from Neighborhood__c where name = '01/011E'").get("Id").get(0));
-                    	  salesforceApi.update("Parcel__C",
-        							salesforceApi.select("Select Id from parcel__c where name ='" + apnFromWIPage + "'").get("Id").get(0),
-        							"PUC_Code__c",
-        							salesforceApi.select("Select Id from PUC_Code__c where name = '105- Apartment (Migrated)'").get("Id").get(0));
-                      }
+					if (enrollementType.equalsIgnoreCase("Normal Enrollment")) {
+						salesforceApi.update("Parcel__C",
+								salesforceApi.select("Select Id from parcel__c where name ='" + apnFromWIPage + "'")
+										.get("Id").get(0),
+								"Neighborhood_Reference__c",
+								salesforceApi.select("Select Id from Neighborhood__c where name like '03%'").get("Id")
+										.get(0));
+					} else {
+						salesforceApi.update("Parcel__C",
+								salesforceApi.select("Select Id from parcel__c where name ='" + apnFromWIPage + "'")
+										.get("Id").get(0),
+								"Neighborhood_Reference__c",
+								salesforceApi.select("Select Id from Neighborhood__c where name = '01/011E'").get("Id")
+										.get(0));
+						salesforceApi.update("Parcel__C",
+								salesforceApi.select("Select Id from parcel__c where name ='" + apnFromWIPage + "'")
+										.get("Id").get(0),
+								"PUC_Code__c",
+								salesforceApi
+										.select("Select Id from PUC_Code__c where name = '105- Apartment (Migrated)'")
+										.get("Id").get(0));
+					}
 
 					// Deleting existing ownership from parcel
-					
-					 deleteOwnershipFromParcel(
-							salesforceApi.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0));
+
+					deleteOwnershipFromParcel(salesforceApi
+							.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0));
 
 					// STEP 3- adding owner after deleting for the recorded APN
 
 					String acesseName = objMappingPage.getOwnerForMappingAction();
 					driver.navigate()
-							.to("https://smcacre--"
-									+ excEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceApi
-											.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
+							.to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+									+ salesforceApi
+											.select("Select Id from parcel__C where name='" + apnFromWIPage + "'")
+											.get("Id").get(0)
 									+ "/related/Property_Ownerships__r/view");
 					objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
 					String ownershipId = driver.getCurrentUrl().split("/")[6];
-					objParcelsPage.deleteOldAndCreateNewAssessedValuesRecords(hashMapCreateAssessedValueRecord, apnFromWIPage);
+					objParcelsPage.deleteOldAndCreateNewAssessedValuesRecords(hashMapCreateAssessedValueRecord,
+							apnFromWIPage);
 
 					// STEP 4- updating the ownership date for current owners
 
 					String dateOfEvent = salesforceApi
-							.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
+							.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '"
+									+ ownershipId + "'")
 							.get("Ownership_Start_Date__c").get(0);
 					jsonForAppraiserActivity.put("DOR__c", dateOfEvent);
 					jsonForAppraiserActivity.put("DOV_Date__c", dateOfEvent);
@@ -696,7 +706,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					searchModule(modules.EFILE_INTAKE);
 					objMappingPage.globalSearchRecords(workItemNo);
 					Thread.sleep(5000);
-					String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + workItemNo + "'";
+					String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='"
+							+ workItemNo + "'";
 					HashMap<String, ArrayList<String>> navigationUrL = salesforceApi.select(queryRecordedAPNTransfer);
 
 					// STEP 6-Finding the recorded apn transfer id
@@ -706,7 +717,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
 					objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 					objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-					objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel,10);
+					objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
 
 					// STEP 7-Clicking on related action link
 
@@ -721,25 +732,25 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 					editRecordedApnField(transferCodeLabel);
 					waitForElementToBeVisible(10, transferCodeLabel);
-					searchAndSelectOptionFromDropDown(transferCodeLabel,
-							transferCode);
+					searchAndSelectOptionFromDropDown(transferCodeLabel, transferCode);
 					Click(getButtonWithText(saveButton));
 
 					// STEP 8-Creating the new grantee
 
-					createNewGranteeRecords(recordeAPNTransferID,
-							hashMapOwnershipAndTransferGranteeCreationData);
-					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
-							+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+					createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
+					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/"
+							+ recordeAPNTransferID + "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
 					HashMap<String, ArrayList<String>> granteeHashMap = getGridDataForRowString("1");
 					String granteeForMailTo = granteeHashMap.get("Grantee/Retain Owner Name").get(0);
 
 					// STEP 11- Performing calculate ownership to perform partial transfer
 
-					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
-							+ recordeAPNTransferID + "/view");
+					driver.navigate()
+							.to("https://smcacre--" + excEnv
+									+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+									+ recordeAPNTransferID + "/view");
 					waitForElementToBeClickable(10, calculateOwnershipButtonLabel);
-					
+
 					Click(getButtonWithText(calculateOwnershipButtonLabel));
 					waitForElementToBeVisible(5, nextButton);
 					enter(calculateOwnershipRetainedFeld, "50");
@@ -752,14 +763,16 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 					// STEP 15-Navigating back to RAT screen
 
-					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
-							+ recordeAPNTransferID + "/view");
+					driver.navigate()
+							.to("https://smcacre--" + excEnv
+									+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+									+ recordeAPNTransferID + "/view");
 					waitForElementToBeClickable(quickActionButtonDropdownIcon);
 					Click(quickActionButtonDropdownIcon);
 
 					// STEP 16-Clicking on submit for approval quick action button
 
-					waitForElementToBeClickable(quickActionOptionSubmitForApproval,5);
+					waitForElementToBeClickable(quickActionOptionSubmitForApproval, 5);
 					Click(quickActionOptionSubmitForApproval);
 					ReportLogger.INFO("CIO!! Transfer submitted for approval");
 					waitForElementToBeClickable(10, finishButton);
@@ -768,57 +781,56 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					logout();
 
 					login(CIO_SUPERVISOR);
-					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
-							+ recordeAPNTransferID + "/view");
-					if(verifyElementVisible(quickActionOptionApprove))
-					{
-						waitForElementToBeClickable(quickActionOptionApprove,10);
+					driver.navigate()
+							.to("https://smcacre--" + excEnv
+									+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+									+ recordeAPNTransferID + "/view");
+					if (verifyElementVisible(quickActionOptionApprove)) {
+						waitForElementToBeClickable(quickActionOptionApprove, 10);
+						Click(quickActionOptionApprove);
+					} else {
+						waitForElementToBeClickable(quickActionButtonDropdownIcon, 10);
+						Click(quickActionButtonDropdownIcon);
+						waitForElementToBeClickable(quickActionOptionApprove, 10);
 						Click(quickActionOptionApprove);
 					}
-					else {
-					waitForElementToBeClickable(quickActionButtonDropdownIcon,10);
-					Click(quickActionButtonDropdownIcon);
-					waitForElementToBeClickable(quickActionOptionApprove,10);
-					Click(quickActionOptionApprove);}
-					
+
 					waitForElementToBeClickable(10, finishButton);
 					Click(getButtonWithText(finishButton));
-					
-					//Fetching appraiser WI genrated on approval of CIO WI
-					if(enrollementType.equalsIgnoreCase("Normal Enrollment")) {
-					String workItemNoForAppraiser = salesforceApi.select(
-							"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Appraisal Activity' order by createdDate desc")
-							.get("Name").get(0);
-					System.out.println(workItemNoForAppraiser);
-					String workItemNoForQuestionnaireCorrespondence = salesforceApi.select(
-							"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Questionnaire Correspondence' order by createdDate desc")
-							.get("Name").get(0);
-					System.out.println(workItemNoForQuestionnaireCorrespondence);
-					 String[] arrayForWorkItemAfterCIOSupervisorApproval= {workItemNoForAppraiser,workItemNoForQuestionnaireCorrespondence};
-					 logout();
-					 return arrayForWorkItemAfterCIOSupervisorApproval;	
+
+					// Fetching appraiser WI genrated on approval of CIO WI
+					if (enrollementType.equalsIgnoreCase("Normal Enrollment")) {
+						String workItemNoForAppraiser = salesforceApi.select(
+								"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Appraisal Activity' order by createdDate desc")
+								.get("Name").get(0);
+						System.out.println(workItemNoForAppraiser);
+						String workItemNoForQuestionnaireCorrespondence = salesforceApi.select(
+								"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Questionnaire Correspondence' order by createdDate desc")
+								.get("Name").get(0);
+						System.out.println(workItemNoForQuestionnaireCorrespondence);
+						String[] arrayForWorkItemAfterCIOSupervisorApproval = { workItemNoForAppraiser,
+								workItemNoForQuestionnaireCorrespondence };
+						logout();
+						return arrayForWorkItemAfterCIOSupervisorApproval;
 					}
-					if(transferCode.equals(CIO_EVENT_CODE_CIOGOVT))
-					{
+					if (transferCode.equals(CIO_EVENT_CODE_CIOGOVT)) {
 						String workItemNoForGovtCIOAppraisal = salesforceApi.select(
 								"Select Id ,Name from Work_Item__c where type__c='Govt CIO Appraisal' and sub_type__c='Appraisal Activity' order by createdDate desc")
-								.get("Name").get(0);					
-					 String[] arrayForWorkItemAfterCIOSupervisorApproval= {workItemNoForGovtCIOAppraisal};
-					 logout();
-					 return arrayForWorkItemAfterCIOSupervisorApproval;					 
-					}
-						
-					else
-					{
-						String workItemNoForDirectEnrollement = salesforceApi.select(
-								"Select Id ,Name from Work_Item__c where type__c='Direct Enrollment' and sub_type__c='Verify DE' order by createdDate desc")
-								.get("Name").get(0);					
-					 String[] arrayForWorkItemAfterCIOSupervisorApproval= {workItemNoForDirectEnrollement};
-					 logout();
-					 return arrayForWorkItemAfterCIOSupervisorApproval;	
-					
+								.get("Name").get(0);
+						String[] arrayForWorkItemAfterCIOSupervisorApproval = { workItemNoForGovtCIOAppraisal };
+						logout();
+						return arrayForWorkItemAfterCIOSupervisorApproval;
 					}
 
+					else {
+						String workItemNoForDirectEnrollement = salesforceApi.select(
+								"Select Id ,Name from Work_Item__c where type__c='Direct Enrollment' and sub_type__c='Verify DE' order by createdDate desc")
+								.get("Name").get(0);
+						String[] arrayForWorkItemAfterCIOSupervisorApproval = { workItemNoForDirectEnrollement };
+						logout();
+						return arrayForWorkItemAfterCIOSupervisorApproval;
+
+					}
 					
 			 }
 }
