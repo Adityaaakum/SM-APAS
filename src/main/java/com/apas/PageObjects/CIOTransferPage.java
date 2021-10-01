@@ -618,7 +618,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			  * @param hashMapCreateAssessedValueRecord : Data to create acessed value record
 			  */
 	
-			 public String[] CreateAppraisalActivityWorkItemForRecordedCIOTransfer(String enrollmentType,String transferCode,Map<String, String> hashMapOwnershipAndTransferMailToCreationData,Map<String, String> hashMapOwnershipAndTransferGranteeCreationData,Map<String, String> hashMapCreateOwnershipRecordData,Map<String, String> hashMapCreateAssessedValueRecord) throws Exception {
+			 public String[] createAppraisalActivityWorkItemForRecordedCIOTransfer(String enrollmentType,String transferCode,Map<String, String> hashMapOwnershipAndTransferMailToCreationData,Map<String, String> hashMapOwnershipAndTransferGranteeCreationData,Map<String, String> hashMapCreateOwnershipRecordData,Map<String, String> hashMapCreateAssessedValueRecord) throws Exception {
 
 					String excEnv = System.getProperty("region");
 
