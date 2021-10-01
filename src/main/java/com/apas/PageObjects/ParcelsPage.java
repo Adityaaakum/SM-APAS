@@ -59,10 +59,6 @@ public class ParcelsPage extends ApasGenericPage {
 	public String createNewParcelButton="New";
 	public String editParcelButton="Edit";
 	public String parcelCharacteristics = "Characteristics";
-	public String newButtonText = "New";	
-	public String propertyOwner = "Property Owner";
-	public String startDate = "Start Date";
-	public String ownershipPercentageTextBoxForAVO="Ownership %";
 	
 
 	
@@ -110,9 +106,15 @@ public class ParcelsPage extends ApasGenericPage {
 	public String originLandValue = "Origin Land Value";
 	public String originFcv = "Origin FCV";
 	public String apn = "APN";
+
+	/** Added to identify fields, dropdowns for Assessed value and AVO functionality **/	
+
+	public String newButtonText = "New";	
+	public String propertyOwner = "Property Owner";
+	public String startDate = "Start Date";
+	public String ownershipPercentageTextBoxForAVO="Ownership %";
 	public String dov = "DOV";
 	
-
 	
 	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")

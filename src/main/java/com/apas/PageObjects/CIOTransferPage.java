@@ -90,6 +90,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public static final String CIO_EVENT_CODE_BASE_YEAR_AUTOCONFIRM_CODE="CIO-P19B6";
 	public static final String CIO_RESPONSE_NoChangeRequired="No Edits required";
 	public static final String CIO_RESPONS_EventCodeChangeRequired="Event Code needs to be changed";
+	public static final String APPRAISAL_NORMAL_ENROLLMENT="Normal Enrollment";
 	
 	
 	public String eventIDLabel = "EventID";
@@ -617,7 +618,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			  * @param hashMapCreateAssessedValueRecord : Data to create acessed value record
 			  */
 	
-			 public String[] OwnershipAndTransfer_CreateAppraisalActivityWorkItemForRecordedCIOTransfer(String enrollementType,String transferCode,Map<String, String> hashMapOwnershipAndTransferMailToCreationData,Map<String, String> hashMapOwnershipAndTransferGranteeCreationData,Map<String, String> hashMapCreateOwnershipRecordData,Map<String, String> hashMapCreateAssessedValueRecord) throws Exception {
+			 public String[] CreateAppraisalActivityWorkItemForRecordedCIOTransfer(String enrollmentType,String transferCode,Map<String, String> hashMapOwnershipAndTransferMailToCreationData,Map<String, String> hashMapOwnershipAndTransferGranteeCreationData,Map<String, String> hashMapCreateOwnershipRecordData,Map<String, String> hashMapCreateAssessedValueRecord) throws Exception {
 
 					String excEnv = System.getProperty("region");
 
@@ -625,6 +626,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 					login(SYSTEM_ADMIN);
 
+					Thread.sleep(4000);
 					String recordedDocumentID = salesforceApi.select(
 							"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=0")
 							.get("Id").get(0);
@@ -646,7 +648,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
 
 					// Updating neighborhood code of parcel so Normal enrollement WI is generated
-					if (enrollementType.equalsIgnoreCase("Normal Enrollment")) {
+					if (enrollmentType.equalsIgnoreCase(APPRAISAL_NORMAL_ENROLLMENT)) {
 						salesforceApi.update("Parcel__C",
 								salesforceApi.select("Select Id from parcel__c where name ='" + apnFromWIPage + "'")
 										.get("Id").get(0),
@@ -703,6 +705,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 					objMappingPage.login(CIO_STAFF);
 					objMappingPage.waitForElementToBeClickable(objMappingPage.appLauncher, 10);
+					
+					// Selecting E-FILE intake as CIO works best with E-FILE AND APAS and there are some issues with navigation on APAS
+					
 					searchModule(modules.EFILE_INTAKE);
 					objMappingPage.globalSearchRecords(workItemNo);
 					Thread.sleep(5000);
@@ -799,28 +804,31 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					Click(getButtonWithText(finishButton));
 
 					// Fetching appraiser WI genrated on approval of CIO WI
-					if (enrollementType.equalsIgnoreCase("Normal Enrollment")) {
+					if (enrollmentType.equalsIgnoreCase("Normal Enrollment")) {
+						
+						//Filtering that if type is normal enrollement and Event code is CIO-GOVT
+						
+						if (transferCode.equals(CIO_EVENT_CODE_CIOGOVT)) {
+							String workItemNoForGovtCIOAppraisal = salesforceApi.select(
+									"Select Id ,Name from Work_Item__c where type__c='Govt CIO Appraisal' and sub_type__c='Appraisal Activity' order by createdDate desc")
+									.get("Name").get(0);
+							String[] arrayForWorkItemAfterCIOSupervisorApproval = { workItemNoForGovtCIOAppraisal };
+							logout();
+							return arrayForWorkItemAfterCIOSupervisorApproval;
+						}					
+						
 						String workItemNoForAppraiser = salesforceApi.select(
 								"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Appraisal Activity' order by createdDate desc")
-								.get("Name").get(0);
-						System.out.println(workItemNoForAppraiser);
+								.get("Name").get(0);						
 						String workItemNoForQuestionnaireCorrespondence = salesforceApi.select(
 								"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Questionnaire Correspondence' order by createdDate desc")
-								.get("Name").get(0);
-						System.out.println(workItemNoForQuestionnaireCorrespondence);
+								.get("Name").get(0);						
 						String[] arrayForWorkItemAfterCIOSupervisorApproval = { workItemNoForAppraiser,
 								workItemNoForQuestionnaireCorrespondence };
 						logout();
 						return arrayForWorkItemAfterCIOSupervisorApproval;
-					}
-					if (transferCode.equals(CIO_EVENT_CODE_CIOGOVT)) {
-						String workItemNoForGovtCIOAppraisal = salesforceApi.select(
-								"Select Id ,Name from Work_Item__c where type__c='Govt CIO Appraisal' and sub_type__c='Appraisal Activity' order by createdDate desc")
-								.get("Name").get(0);
-						String[] arrayForWorkItemAfterCIOSupervisorApproval = { workItemNoForGovtCIOAppraisal };
-						logout();
-						return arrayForWorkItemAfterCIOSupervisorApproval;
-					}
+					}					
+					
 
 					else {
 						String workItemNoForDirectEnrollement = salesforceApi.select(
