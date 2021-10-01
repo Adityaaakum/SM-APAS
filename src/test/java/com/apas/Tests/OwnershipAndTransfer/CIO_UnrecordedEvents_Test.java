@@ -627,7 +627,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 	 * Verify details on the Unrecorded Transfer event
 	 */
 	
-	@Test(description = "SMAB-T3231:Verify details on the Unrecorded Transfer event", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3139,SMAB-T3231:Verify details on the Unrecorded Transfer event", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","UnrecordedEvent" })
 	public void UnrecordedEvent_TransferScreenConfiguration(String loginUser) throws Exception {
 		
@@ -695,21 +695,21 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		//Step4 : Validate the values on Transfer Screen
 		ReportLogger.INFO("Validate the UT values");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.eventIDLabel, "").substring(0, 2),"UT",
-				"SMAB-T3231: Validate that CIO staff is able to verify the prefix of Event ID");
+				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the prefix of Event ID");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.eventIDLabel, "").length(),"10",
-				"SMAB-T3231: Validate that CIO staff is able to verify the length of Event ID");
+				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the length of Event ID");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.situsLabel, ""),primarySitusValue.replaceFirst("\\s", ""),
-				"SMAB-T3231: Validate that CIO staff is able to verify the Situs value on UT");
+				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the Situs value on UT");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.shortLegalDescriptionLabel, ""),legalDescriptionValue,
-				"SMAB-T3231: Validate that CIO staff is able to verify the Short Legal Description value on UT");
+				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the Short Legal Description value on UT");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.pucCodeLabel, ""),responsePUCDetails.get("Name").get(0),
-				"SMAB-T3231: Validate that CIO staff is able to verify the PUC value on UT");
+				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the PUC value on UT");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.doeLabel, ""),objExemptionsPage.removeZeroInMonthAndDay(dataToCreateUnrecordedEventMap.get("Date of Event")),
-				"SMAB-T3231: Validate that CIO staff is able to verify the DOE on UT");
+				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the DOE on UT");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dovLabel, ""),objExemptionsPage.removeZeroInMonthAndDay(dataToCreateUnrecordedEventMap.get("Date of Event")),
-				"SMAB-T3231: Validate that CIO staff is able to verify the DOV on UT");
+				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the DOV on UT");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dorLabel, ""),objExemptionsPage.removeZeroInMonthAndDay(dataToCreateUnrecordedEventMap.get("Date of Recording")),
-				"SMAB-T3231: Validate that CIO staff is able to verify the DOR on UT");
+				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the DOR on UT");
 		
 		//Step5: Edit the Transfer activity and update the DOE
 		ReportLogger.INFO("Update the DOE");
@@ -736,16 +736,16 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
 		objCIOTransferPage.waitForElementToBeVisible(3,objCIOTransferPage.formattedName1Label );		  
 		softAssert.assertContains( objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.formattedName1Label),hashMapOwnershipAndTransferCreationData.get("Formatted Name1"),
-				"SMAB-T3231: Verify user is  able to save mail to record");
+				"SMAB-T3139,SMAB-T3231: Verify user is  able to save mail to record");
 		
 		//Step7: Navigate to RAT screen and validate number of Grantors/Grantee on the UT activity 
 		ReportLogger.INFO("Navigate back to RAT and validate number of Grantors/Grantee on the UT activity");
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+recordeAPNTransferID+"/view");
 		objCIOTransferPage.waitForElementToBeVisible(10,objCIOTransferPage.numberOfGrantorLabel);
 		softAssert.assertContains( objCIOTransferPage.getElementText(objCIOTransferPage.numberOfGrantorLabel),"0",
-				"SMAB-T3231: Verify user is  able to validate number of Grantors on the UT activity");
+				"SMAB-T3139,SMAB-T3231: Verify user is  able to validate number of Grantors on the UT activity");
 		softAssert.assertContains( objCIOTransferPage.getElementText(objCIOTransferPage.numberOfGranteeLabel),"0",
-				"SMAB-T3231: Verify user is  able to validate number of Grantee on the UT activity");
+				"SMAB-T3139,SMAB-T3231: Verify user is  able to validate number of Grantee on the UT activity");
 		
 		//Step8 :Create the new Grantee
 		ReportLogger.INFO("Create New Grantee record");
@@ -761,11 +761,11 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
         ReportLogger.INFO("Validate the Grantee record in Grid");
         HashMap<String, ArrayList<String>> HashMapLatestGrantee  = objCIOTransferPage.getGridDataInHashMap();
         softAssert.assertEquals(HashMapLatestGrantee.get("Status").get(0), "Active", 
-      		  "SMAB-T3231: Validate the status on Grantee record");
+      		  "SMAB-T3139,SMAB-T3231: Validate the status on Grantee record");
         softAssert.assertEquals(HashMapLatestGrantee.get("Owner Percentage").get(0), hashMapOwnershipAndTransferGranteeCreationData.get("Owner Percentage")+".0000%", 
-    		  "SMAB-T3231: Validate the percentage on Grantee record");
+    		  "SMAB-T3139,SMAB-T3231: Validate the percentage on Grantee record");
         softAssert.assertEquals(HashMapLatestGrantee.get("Grantee/Retain Owner Name").get(0),hashMapOwnershipAndTransferGranteeCreationData.get("Last Name") , 
-        		  "SMAB-T3231: Validate the Grantee Name on Grantee record");
+        		  "SMAB-T3139,SMAB-T3231: Validate the Grantee Name on Grantee record");
         if (HashMapLatestGrantee.containsKey("Recorded Document")) {
         	softAssert.assertEquals(HashMapLatestGrantee.get("Recorded Document").get(0), unrecordedEventId,
        			 "SMAB-T3231: Validate the Recorded Document number on Grantee record");
@@ -785,13 +785,13 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
         ReportLogger.INFO("Validate the Current Ownership record in Grid");
         HashMap<String, ArrayList<String>>HashMapLatestOwner  = objCIOTransferPage.getGridDataInHashMap();
         softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(0), assesseeName, 
-    		  "SMAB-T3231: Validate the owner name on Grantee record");
+    		  "SMAB-T3139,SMAB-T3231: Validate the owner name on Grantee record");
         softAssert.assertEquals(HashMapLatestOwner.get("Status").get(0), "Active", 
-    		  "SMAB-T3231: Validate the status on Grantee record");
+    		  "SMAB-T3139,SMAB-T3231: Validate the status on Grantee record");
         softAssert.assertEquals(HashMapLatestOwner.get("Ownership Percentage").get(0), "100.0000%", 
-    		  "SMAB-T3231: Validate the percentage on Grantee record");
+    		  "SMAB-T3139,SMAB-T3231: Validate the percentage on Grantee record");
         softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(0),hashMapCreateOwnershipRecordData.get("Ownership Start Date") , 
-    		  "SMAB-T3231: Validate the start date on Grantee record");
+    		  "SMAB-T3139,SMAB-T3231: Validate the start date on Grantee record");
       
        
 		objCIOTransferPage.logout();
@@ -800,7 +800,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
      * Verify that User is able to perform CIO transfer  for Unrecorded events APN and validate all status
 	 */
 
-	@Test(description = "SMAB-T3525:Verify that User is able to perform CIO transfer  for Unrecorded events APN and validate all status", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3139,SMAB-T3525:Verify that User is able to perform CIO transfer  for Unrecorded events APN and validate all status", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","UnrecordedEvent" })
 	public void UnrecordedEvent_VerifyStatusForUTEvents(String loginUser) throws Exception {
 		String execEnv= System.getProperty("region");		
@@ -907,7 +907,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		ReportLogger.INFO("CIO!! Transfer submitted for approval");
 		objCIOTransferPage.waitForElementToBeVisible(20, objCIOTransferPage.CIOstatus);
 		objCIOTransferPage.scrollToElement(objCIOTransferPage.CIOstatus);
-		softAssert.assertEquals(objWorkItemHomePage.getElementText(objCIOTransferPage.CIOstatus),"Submitted for Approval", "SMAB-T3525: Validating CIO Transfer activity status on transfer activity screen after submit for approval.");
+		softAssert.assertEquals(objWorkItemHomePage.getElementText(objCIOTransferPage.CIOstatus),"Submitted for Approval", "SMAB-T3139,SMAB-T3525: Validating CIO Transfer activity status on transfer activity screen after submit for approval. for UT transfer");
 
 		//STEP 15- Get audit trail Value from transfer screen and validate the status
 		String auditTrailName =objWorkItemHomePage.getElementText(objCIOTransferPage.CIOAuditTrail);
@@ -1034,7 +1034,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 	 * Ownership And Transfers - Verify user is able to create an Unrecorded Transfer Event and corresponding WI for Mobile Home Parcel from Component Action
 	 */
 	
-	@Test(description = "SMAB-T3127:Verify user is able to create an Unrecorded Transfer Event and corresponding WI for Mobile Home Parcel from Component Action", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3139,SMAB-T3127:Verify user is able to create an Unrecorded Transfer Event and corresponding WI for Mobile Home Parcel from Component Action", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","UnrecordedEvent" })
 	public void UnrecordedEvent_MobileHomeParcel(String loginUser) throws Exception {
 				
@@ -1042,6 +1042,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		String queryAPNValue = "select Name, Id from Parcel__c where Status__c='Active' and name like '134%' and id in ( select parcel__c from mail_to__c where Status__c='Active')";
 		String activeApn = salesforceAPI.select(queryAPNValue).get("Name").get(0);
 		String activeApnId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+		
+		String queryCountMailTORecords = "SELECT count(id) FROM Mail_To__c where parcel__c='"+activeApnId+"' and status__c='active'";
+		String countActiveMaiToRecords=salesforceAPI.select(queryCountMailTORecords).get("expr0").get(0);;
 		
 		Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
 		
@@ -1102,6 +1105,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		
 		//Step5 : Validate the values on Transfer Screen
 		ReportLogger.INFO("Validate the UT values");
+		objCIOTransferPage.waitForElementToBeVisible(35,objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dovLabel, ""),objExemptionsPage.removeZeroInMonthAndDay(dataToCreateUnrecordedEventMap.get("Date of Event")),
 				"SMAB-T3139: Validate that in case DOV value is not entered through component action, then DOV should be same as DOE");
 		
@@ -1182,6 +1186,43 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		softAssert.assertEquals(recordeAPNTransferIDFromUTWI,recordeAPNTransferID,
 				"SMAB-T3127: Validation that the related action link of CIO UT WI should direct to CIO transfer screen.");
 		
+		//Step10 : Validate of different fields in UT CIO transfer screen. 
+
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.documentTypeLabel, ""),"",
+				"SMAB-T3139: Validate that CIO staff is able to verify the document type on UT");
+		
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferTaxLabel, ""),"$0.00",
+				"SMAB-T3139: Validate that CIO staff is able to verify the transfer tax on UT");
+		
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.valueFromDocTaxLabel, ""),"$0.00",
+				"SMAB-T3139: Validate that CIO staff is able to verify the value from doc tax on UT");
+		
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.cityOfSmTaxLabel, ""),"$0.00",
+				"SMAB-T3139: Validate that CIO staff is able to verify the city of SM tax on UT");
+		
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.valueFromDocTaxCityLabel, ""),"$0.00",
+				"SMAB-T3139: Validate that CIO staff is able to verify the value from doc tax on UT");
+		
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.pcorLable, ""),"No",
+				"SMAB-T3139: Validate that pcorLable is NO for UT transfer screen");
+		
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.eventIDLabel, ""),utEventNumber,
+				"SMAB-T3139: Validate that event ID in UT transfer is UT event number ");
+		
+		objCIOTransferPage.scrollToBottom();
+		objCIOTransferPage.waitForElementToBeVisible(10,objCIOTransferPage.numberOfMailToLabel);
+		softAssert.assertContains( objCIOTransferPage.getElementText(objCIOTransferPage.numberOfMailToLabel),countActiveMaiToRecords,
+				"SMAB-T3139: Verify that "
+				+ "only the active mail to records for a parcel are shown on UT transfer screen ");
+		
+		//Step11 : Validate clicking of UT event number form UT CIO transfer scree
+
+		objCIOTransferPage.Click(objCIOTransferPage.eventIDOnTransferActivityLabel);
+		 parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(trail.nameField), auditTrailName,
+				"SMAB-T3139: Verifying that click on UT business event  directs to the buisness event audit trail recordt");
+
 		objCIOTransferPage.logout();
 	}
 

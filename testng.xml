@@ -9,14 +9,17 @@
 	<test name="regression" annotations="">
 		<groups>
 			<run>
-				<include name="regression"/>
+				<include name="Regression"/>
 			</run>
 		</groups>
 		<classes>
 
-			 <class name="com.apas.Tests.WorkItemsTest.WorkIemAdministration.WorkItemAdministration_PoolAssignment_Test">
+			 <class name="com.apas.Tests.OwnershipAndTransfer.CIO_UnrecordedEvents_Test">
+				 
 				 <methods>
-					 <include name="WorkItemAdministration_UpdateNeighborhood_ValidatePoolAssignment"/>
+				 
+				 
+				 <include name="UnrecordedEvent_MobileHomeParcel"/>
 				 </methods>
 			 </class>
 

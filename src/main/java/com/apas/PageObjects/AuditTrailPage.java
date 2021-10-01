@@ -32,6 +32,8 @@ public class AuditTrailPage extends ApasGenericPage {
 	public String relatedCorrespondence="Related Correspondence";
 	public String relatedBuisnessEvent="Related Business Event";
 	public String description = "Description";
+	public String nameField = "Name";
+
 		
 	
 		             

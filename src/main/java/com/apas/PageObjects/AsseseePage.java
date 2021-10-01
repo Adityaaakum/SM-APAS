@@ -45,6 +45,7 @@ public class AsseseePage extends ApasGenericPage {
 	public String editButtonText = "Edit";
 	public String typeDropdownLabel = "Type";
 
+
 	@FindBy(xpath = "//div[contains(text(),'List Views')]")
 	public WebElement selectListViewButton;
 
@@ -62,6 +63,11 @@ public class AsseseePage extends ApasGenericPage {
 
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]//span[text()='Type']/../following-sibling::div")
 	public WebElement typeDropdown;
+	
+	@FindBy(xpath = "//div[contains(@class,'test-listViewManager slds-card')]//a[@role = 'button'][contains(@class,'slds-button--icon-x-small slds-button--icon')]")
+	public WebElement showMoreDropdownAssessesPage;
+	
+	
 
 	public void createNewAssesee(Map<String, String> dataMap) throws Exception {
 
