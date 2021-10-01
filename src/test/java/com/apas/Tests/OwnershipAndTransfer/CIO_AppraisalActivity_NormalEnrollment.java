@@ -92,7 +92,7 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
 				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecord");
 		
-		String[]arrayForWorkItemAfterCIOSupervisorApproval    =  objCIOTransferPage.CreateAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment", objCIOTransferPage.CIO_EVENT_CODE_COPAL, hashMapOwnershipAndTransferCreationData, hashMapOwnershipAndTransferGranteeCreationData, hashMapCreateOwnershipRecordData, hashMapCreateAssessedValueRecord);
+		String[]arrayForWorkItemAfterCIOSupervisorApproval    =  objCIOTransferPage.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment", objCIOTransferPage.CIO_EVENT_CODE_COPAL, hashMapOwnershipAndTransferCreationData, hashMapOwnershipAndTransferGranteeCreationData, hashMapCreateOwnershipRecordData, hashMapCreateAssessedValueRecord);
 
 		      objAppraisalActivity.login(APPRAISAL_SUPPORT);
 		      objAppraisalActivity.globalSearchRecords(arrayForWorkItemAfterCIOSupervisorApproval[0]);
