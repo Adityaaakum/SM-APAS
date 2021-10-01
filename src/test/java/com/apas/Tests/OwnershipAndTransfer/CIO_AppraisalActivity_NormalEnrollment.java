@@ -69,7 +69,7 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 	 * 
 	 */
 	
-	@Test(description = "SMAB-T3786 : Verify user is able to CIO supervisor on approval is able to create Appraisal WI for non exempted CIO transfers ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3786 : Verify that CIO supervisor on approval is able to create Appraisal WI for non exempted CIO transfers ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
 	public void OwnershipAndTransfer_CreateAppraisalActivityWorkItem(String loginUser) throws Exception {
 
