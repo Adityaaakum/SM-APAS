@@ -2022,7 +2022,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
 		
 		objWorkItemHomePage.logout();
-		Thread.sleep(5000);
 		ReportLogger.INFO(" Appraiser logins ");
 		objMappingPage.login(users.RP_APPRAISER);
 		objMappingPage.searchModule(PARCELS);

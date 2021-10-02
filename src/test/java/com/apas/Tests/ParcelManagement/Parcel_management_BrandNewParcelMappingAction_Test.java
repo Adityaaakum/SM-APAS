@@ -399,7 +399,6 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
    				" SMAB-T3243: Verify PUC of Child parcel"+newCreatedApn);
 		    objMappingPage.logout();
 		    
-		    Thread.sleep(5000);
 			ReportLogger.INFO(" Appraiser logins ");
 			objMappingPage.login(users.RP_APPRAISER);
 			objMappingPage.searchModule(PARCELS);

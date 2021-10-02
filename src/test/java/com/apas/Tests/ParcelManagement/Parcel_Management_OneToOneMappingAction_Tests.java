@@ -698,7 +698,6 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
  	    softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(apn)), "SMAB-T2720,SMAB-T2721: Verify Parent Parcel: "+apn+" is visible under Source Parcel Relationships section");
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(WorkItemNo)), "SMAB-T2720,SMAB-T2721: Verify WI : "+WorkItemNo+" is visible under  Parcel Relationships section");
 		objWorkItemHomePage.logout();
-		Thread.sleep(5000);
 		ReportLogger.INFO(" Appraiser logins ");
 		objMappingPage.login(users.RP_APPRAISER);
 		objMappingPage.searchModule(PARCELS);

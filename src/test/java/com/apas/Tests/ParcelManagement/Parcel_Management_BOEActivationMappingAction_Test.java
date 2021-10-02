@@ -624,7 +624,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		String Status = objMappingPage.getFieldValueFromAPAS("Status", "Parcel Information");
 		softAssert.assertEquals(Status, "Active", "SMAB-T3623: Verify Status of Parcel:" + childAPN);
 		objWorkItemHomePage.logout();
-		Thread.sleep(5000);
+
 		ReportLogger.INFO(" Appraiser logins ");
 		objMappingPage.login(users.RP_APPRAISER);
 		objMappingPage.searchModule(PARCELS);
