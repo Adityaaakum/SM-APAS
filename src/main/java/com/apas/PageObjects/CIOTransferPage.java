@@ -80,7 +80,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String remarksLabel = "Remarks";
 	public String fieldsInCalculateOwnershipModal="//*[@id='wrapper-body']//flowruntime-screen-field//p";
 	public String ownershipPercentage ="Ownership Percentage";
-
+	public String approveButton ="Approve";
 	
 	public static final String CIO_EVENT_CODE_COPAL="CIO-COPAL";
 	public static final String CIO_EVENT_CODE_PART="CIO-PART";
@@ -101,7 +101,6 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String dorLabel = "DOR";
 	public String originalTransferor = "Original Transferor";
 	public String vestingType = "Vesting Type";
-
 	public String dovLabel = "DOV";
 
 	public String xpathShowMoreLinkForEditOption = "//table//tbody/tr//td//span[text() = 'propertyName']//parent::span//parent::td//following-sibling::td//a[@role = 'button']";
@@ -322,7 +321,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	    	salesforceApi.update("recorded_document__c" , RecordedDocumentId, "Status__c","Pending");
 		ReportLogger.INFO("Marking "+RecordedDocumentId+"in Pending state");
 		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
-		Thread.sleep(10000);
+		Thread.sleep(12000);
 		ReportLogger.INFO("-------------Generated Recorded WorkItems.------------"); 
 	    	
 	    	}
