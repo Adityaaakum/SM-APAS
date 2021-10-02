@@ -14,10 +14,9 @@
 		</groups>
 		<classes>
 
-			  <class name="com.apas.Tests.WorkItemsTest.WorkIemAdministration.WorkItemAdministration_PoolAssignment_Test">
-				 
+			 <class name="com.apas.Tests.WorkItemsTest.WorkIemAdministration.WorkItemAdministration_PoolAssignment_Test">
 				 <methods>
-				 <include name="WorkItemAdministration_UpdateNeighborhood_ValidatePoolAssignment"/>
+					 <include name="WorkItemAdministration_UpdateNeighborhood_ValidatePoolAssignment"/>
 				 </methods>
 			 </class>
 
