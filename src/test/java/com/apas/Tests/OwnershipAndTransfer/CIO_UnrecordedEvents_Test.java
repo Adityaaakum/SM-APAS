@@ -901,6 +901,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionSubmitForApproval);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
+		objCIOTransferPage.waitForElementToBeVisible(20,objCIOTransferPage.confirmationMessageOnTranferScreen);
+		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.confirmationMessageOnTranferScreen),"Work Item has been submitted for Approval.","SMAB-T3139: Validation that transfer activity is performed successfully for Unrecorded events");
+		
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.finishButtonPopUp);
 		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
 		Thread.sleep(2000);
