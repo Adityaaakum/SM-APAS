@@ -80,6 +80,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String remarksLabel = "Remarks";
 	public String fieldsInCalculateOwnershipModal="//*[@id='wrapper-body']//flowruntime-screen-field//p";
 	public String ownershipPercentage ="Ownership Percentage";
+	public String auditTrailLabel ="Audit Trail";
 
 	
 	public static final String CIO_EVENT_CODE_COPAL="CIO-COPAL";
@@ -570,17 +571,30 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			 * @Param : Button text inside show more actions
 			 */
 
-			public void clickQuickActionButtonOnTransferActivity(String enterButtonText) throws Exception {
+			public void clickQuickActionButtonOnTransferActivity(String enterButtonText ,WebElement...others) throws Exception {
 				try {
-					
+					if(others.length==0) {
+					waitForElementToBeVisible(getButtonWithText(enterButtonText),10);
 					Click(getButtonWithText(enterButtonText));
 					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
+					Thread.sleep(1000);
+					return;}
+					waitForElementToBeVisible(others[0],10);
+					Click(others[0]);
 					Thread.sleep(1000);
 				} catch (Exception e) {
+					waitForElementToBeVisible(quickActionButtonDropdownIcon,10);
 					Click(quickActionButtonDropdownIcon);
+					if(others.length==0) {
+					waitForElementToBeVisible(getButtonWithText(enterButtonText),10);
 					Click(getButtonWithText(enterButtonText));
 					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
 					Thread.sleep(1000);
+					return;}
+					waitForElementToBeVisible(others[0],10);
+					Click(others[0]);
+					Thread.sleep(1000);
+					
 				}
 			}
 			
@@ -766,19 +780,16 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferMailToCreationData);
 					waitForElementToBeClickable(7, copyToMailToButtonLabel);
 
-					// STEP 15-Navigating back to RAT screen
+					// STEP 13-Navigating back to RAT screen
 
 					driver.navigate()
 							.to("https://smcacre--" + excEnv
 									+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
 									+ recordeAPNTransferID + "/view");
-					waitForElementToBeClickable(quickActionButtonDropdownIcon);
-					Click(quickActionButtonDropdownIcon);
-
-					// STEP 16-Clicking on submit for approval quick action button
-
-					waitForElementToBeClickable(quickActionOptionSubmitForApproval, 5);
-					Click(quickActionOptionSubmitForApproval);
+					
+					//STEP 14 - Click on submit for approval button
+					 clickQuickActionButtonOnTransferActivity(null,quickActionOptionSubmitForApproval);
+					
 					ReportLogger.INFO("CIO!! Transfer submitted for approval");
 					waitForElementToBeClickable(10, finishButton);
 					Click(getButtonWithText(finishButton));
@@ -790,21 +801,15 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 							.to("https://smcacre--" + excEnv
 									+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
 									+ recordeAPNTransferID + "/view");
-					if (verifyElementVisible(quickActionOptionApprove)) {
-						waitForElementToBeClickable(quickActionOptionApprove, 10);
-						Click(quickActionOptionApprove);
-					} else {
-						waitForElementToBeClickable(quickActionButtonDropdownIcon, 10);
-						Click(quickActionButtonDropdownIcon);
-						waitForElementToBeClickable(quickActionOptionApprove, 10);
-						Click(quickActionOptionApprove);
-					}
+					//STEP 14 - Click on submit for approval button
+					 clickQuickActionButtonOnTransferActivity(null,quickActionOptionApprove);
+					
 
 					waitForElementToBeClickable(10, finishButton);
 					Click(getButtonWithText(finishButton));
 
 					// Fetching appraiser WI genrated on approval of CIO WI
-					if (enrollmentType.equalsIgnoreCase("Normal Enrollment")) {
+					if (enrollmentType.equalsIgnoreCase(APPRAISAL_NORMAL_ENROLLMENT)) {
 						
 						//Filtering that if type is normal enrollement and Event code is CIO-GOVT
 						

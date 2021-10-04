@@ -30,6 +30,7 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
+import com.google.gson.JsonObject;
 
 public class CIO_RecordedEvents_Test extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
@@ -280,6 +281,14 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String pcorExit;
 
 		JSONObject jsonForPartialTransfer = objCioTransfer.getJsonObject();
+		
+		      String situsId = salesforceAPI.select("SELECT id FROM Situs__c where name !=null").get("Id").get(0);
+		      String pucId  = salesforceAPI.select("SELECT Id FROM PUC_Code__c where Legacy__c='No' AND  NAME !='99-RETIRED PARCEL'").get("Id").get(0);
+		      JSONObject jsonForParcelValidation =objCioTransfer.getJsonObject();
+		      jsonForParcelValidation.put("Primary_Situs__c", situsId);
+		      jsonForParcelValidation.put("PUC_Code_Lookup__c", pucId);
+		      jsonForParcelValidation.put("Short_Legal_Description__c", "Test Legal Description");
+		      
 
 		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
 		Map<String, String> hashMapOwnershipAndTransferCreationData = objUtil.generateMapFromJsonFile(
@@ -361,6 +370,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		jsonForPartialTransfer.put("DOV_Date__c", dateOfEvent);
 
 		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForPartialTransfer);
+		salesforceAPI.update("Parcel__c",salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0), jsonForParcelValidation);
 
 		objMappingPage.logout();
 
@@ -492,6 +502,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3206: Verifying that Last Modified By field is visible on CIO transfer screen");
 		softAssert.assertEquals(objCioTransfer.verifyElementVisible(objCioTransfer.transferStatusLabel), true,
 				"SMAB-T3206: Verifying that CIO Transfer Status field is visible on CIO transfer screen");
+		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.situsLabel), salesforceAPI.select("Select name from Situs__C where id ='"+situsId+"'").get("Name").get(0),
+				"SMAB-T3206: Verifying that correct situs field value of parcel is getting reflected in RAT screen");
+		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.pucCodeLabel), salesforceAPI.select("Select name from PUC_Code__c where id ='"+pucId+"'").get("Name").get(0),
+				"SMAB-T3206: Verifying that correct PUC field value of parcel is getting reflected in RAT screen");
+		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.shortLegalDescriptionLabel), salesforceAPI.select("Select Short_Legal_Description__c from Parcel__c where id ='"+salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0)+"'").get("Short_Legal_Description__c").get(0),
+				"SMAB-T3206: Verifying that correct Short Legal description field value of parcel is getting reflected in RAT screen");
 
 		// STEP 8-Creating the new grantee
 
