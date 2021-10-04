@@ -55,11 +55,15 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String saveLabel ="Save";
 	public String newButton="New";
 	public String formattedName1Label="Formatted Name1";
+	public String formattedName1LabelForParcelMailTo="Formatted Name 1";
+	public String formattedName1LabelForParcel="Formatted Name 1";
 	public String startDate="Start Date";
 	public String endDate="End Date";
+	public String emailId="Email";
 	public String mailingZip="Mailing Zip";
 	public String CancelButton="Cancel";
 	public String LastNameLabel="Last Name";
+	public String careOfLabel="Care Of";
 	public String OwnershipStartDate="Ownership Start Date";
 	public String OwnershipEndDate="Ownership End Date";
 	public String RecordedApnTransfer="Recorded APN Transfer";

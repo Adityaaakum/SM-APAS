@@ -19,6 +19,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	public final String TAB_IN_PROGRESS = "In Progress";
 	public final String TAB_IN_POOL = "In Pool";
+	public final String TAB_MAIL_TO = "Mail-To";	
 	public final String TAB_MY_SUBMITTED_FOR_APPROVAL = "Submitted for Approval";
 	public final String TAB_NEED_MY_APPROVAL = "Needs My Approval";
 	public final String TAB_COMPLETED = "Completed";
