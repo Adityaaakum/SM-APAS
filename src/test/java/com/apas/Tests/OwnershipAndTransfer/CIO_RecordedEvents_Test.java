@@ -21,6 +21,7 @@ import com.apas.PageObjects.AuditTrailPage;
 import com.apas.PageObjects.BuildingPermitPage;
 import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.MappingPage;
+import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
@@ -43,6 +44,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	MappingPage objMappingPage;
 	JSONObject jsonObject = new JSONObject();
+	Page objPage;
 	String apnPrefix = new String();
 	CIOTransferPage objCioTransfer;
 	AuditTrailPage trail;
@@ -58,6 +60,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage = new MappingPage(driver);
+		objPage= new Page(driver);
 		objCioTransfer = new CIOTransferPage(driver);
 		objBuildingPermitPage = new BuildingPermitPage(driver) ;
 		trail = new AuditTrailPage(driver);
@@ -2684,9 +2687,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 
 	@Test(description = "SMAB-T4112-Verify CIO Staff and Appriasal Able to edit Mail-To records", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ChangeInOwnershipManagement","RecorderIntegration" })
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void RecorderIntegration_VerifyValidationofMailToRecordOnParcel(String loginUser) throws Exception {
-	
+
 		String execEnv = System.getProperty("region");
 		String mailToRecordFromParcel = "SELECT Parcel__c,Id FROM Mail_To__c where status__c = 'Active' Limit 1";
 		HashMap<String, ArrayList<String>> hashMapRecordedApn = salesforceAPI.select(mailToRecordFromParcel);
@@ -2716,6 +2719,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.enter(objCioTransfer.careOfLabel, hashMapMailToData.get("Care Of"));
 		objCioTransfer.enter(objCioTransfer.mailingZip, hashMapMailToData.get("Mailing Zip"));
 		objCioTransfer.Click(objCioTransfer.getButtonWithText("Save"));
+
+		// STEP 3: Validate Startdate and End date fields are disabled
+		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.startDateInParcelMaito, "class"),
+				"read-only", "SMAB-T4112-Start date is not editable");
+		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"), "read-only",
+				"SMAB-T4112-End date is not editable");
+
 		objCioTransfer.Click(objCioTransfer.getButtonWithText("Clone"));
 		objCioTransfer.enter(objCioTransfer.formattedName1LabelForParcelMailTo,
 				hashMapMailToData.get("Formatted Name1"));
@@ -2724,7 +2734,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Thread.sleep(4000);
 		objWorkItemHomePage.logout();
 
-		// STEP 3:login with appraisal staff and validate Appraisal support is able to
+		// STEP 4:login with appraisal staff and validate Appraisal support is able to
 		// Edit the record
 
 		objMappingPage.login(users.APPRAISAL_SUPPORT);
@@ -2735,13 +2745,19 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"createMailToDataForAppraisalData");
 		objCioTransfer.enter(objCioTransfer.formattedName1LabelForParcelMailTo,
 				hashMapMailToDataForAppraisal.get("Formatted Name1"));
+		objCioTransfer.enter(objCioTransfer.emailId, hashMapMailToDataForAppraisal.get("Email"));
+		objCioTransfer.enter(objCioTransfer.remarksLabel, hashMapMailToDataForAppraisal.get("Remarks"));
+		objCioTransfer.enter(objCioTransfer.careOfLabel, hashMapMailToDataForAppraisal.get("Care Of"));
 		objCioTransfer.enter(objCioTransfer.mailingZip, hashMapMailToDataForAppraisal.get("Mailing Zip"));
 		softAssert.assertContains(objCioTransfer.saveRecordAndGetError(),
 				"Please clone this record if you want to update any information except Email, Remarks and Mailing Address",
 				"T4112: Verify Error message");
+		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.startDateInParcelMaito, "class"),
+				"read-only", "SMAB-T4112-Start date is not editable");
+		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"), "read-only",
+				"SMAB-T4112-End date is not editable");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.CancelButton));
 
 	}
-	
 
 }

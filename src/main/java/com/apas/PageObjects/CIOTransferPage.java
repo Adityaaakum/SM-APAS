@@ -155,6 +155,12 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath = commonXpath
 			+ "//*[@class='slds-truncate' and text()='Submit for Approval'] | //button[text()='Submit for Approval']")
 	public WebElement quickActionOptionSubmitForApproval;
+	
+	@FindBy(xpath = "//span[text()='Start Date']//parent::div//following-sibling::div//span")
+	public WebElement startDateInParcelMaito;
+	
+	@FindBy(xpath = "//span[text()='End Date']//parent::div//following-sibling::div//span")
+	public WebElement endDateInParcelMaito;
 
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
