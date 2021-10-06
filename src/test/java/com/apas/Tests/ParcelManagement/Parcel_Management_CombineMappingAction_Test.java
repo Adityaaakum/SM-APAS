@@ -1,15 +1,11 @@
 package com.apas.Tests.ParcelManagement;
 
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.Reporter;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -21,7 +17,6 @@ import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
-import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.DateUtil;
@@ -30,7 +25,6 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
-import com.relevantcodes.extentreports.LogStatus;
 
 public class Parcel_Management_CombineMappingAction_Test extends TestBase implements testdata, modules, users {
 
@@ -1435,7 +1429,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.fillMappingActionForm(hashMapCombineActionMappingData);
 		objMappingPage.waitForElementToBeVisible(10, objMappingPage.generateParcelButton);
 		//updating child parcel size in second screen on mapping action 
-		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"99",1);
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace,"99",1);
 
 		//validating second screen warning message
 		String parcelsizewarningmessage=objMappingPage.secondScreenParcelSizeWarning.getText();
@@ -1614,7 +1608,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2677,SMAB-T2664,SMAB-T2651:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Combine\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2677,SMAB-T2664,SMAB-T2651,SMAB-T2910,SMAB-T3473,SMAB-T2909,SMAB-T3474,SMAB-T3475:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Combine\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_CombineMappingAction_WithPrimarySitusTRA(String loginUser) throws Exception {
 
@@ -1760,10 +1754,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
 
 		softAssert.assertEquals(1, objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI, 10).size(),
-				"SMAB-T2664: Validate that only 1 APN is linked to Work Item");
+				"SMAB-T2664,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that only 1 APN is linked to Work Item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
-				"SMAB-T2664: Validate that first Parent APN is displayed in the linked item");
-
+				"SMAB-T2664,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that first Parent APN is displayed in the linked item");
+		
 		driver.switchTo().window(MappingScreen);
 		//Step 7: Click Combine Parcel Button
 		Thread.sleep(2000);
@@ -1829,11 +1823,15 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
 		ReportLogger.INFO("validate that new APNs added are linked to WI after Mapping Action is performed");
 		softAssert.assertEquals(2, objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI, 10).size(),
-				"SMAB-T2664,SMAB-T2651: Validate that 2 APNs are linked to Work Item");
+				"SMAB-T2664,SMAB-T2651,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that 2 APNs are linked to Work Item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
-				"SMAB-T2664,SMAB-T2651: Validate that first Parent APN is displayed in the linked item");
+				"SMAB-T2664,SMAB-T2651,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that first Parent APN is displayed in the linked item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
-				"SMAB-T2664,SMAB-T2651: Validate that second Parent APN is displayed in the linked item");
+				"SMAB-T2664,SMAB-T2651,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that second Parent APN is displayed in the linked item");
+		objMappingPage.Click(objWorkItemHomePage.detailsTab);
+		String referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
+		softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
+				"SMAB-T2910,SMAB-T3473: Validate that Parent APNs are present in the reference Link");
 		objWorkItemHomePage.logout();
 
 		Thread.sleep(5000);
@@ -1859,11 +1857,15 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2664: Validate that first Parent APN is displayed in the linked item");
 		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
 				"SMAB-T2664: Validate that second Parent APN is displayed in the linked item");
+		objMappingPage.Click(objWorkItemHomePage.detailsTab);
+		referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
+		softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
+				"SMAB-T2910,SMAB-T3473: Validate that Parent APNs are present in the reference Link");
 
 		objWorkItemHomePage.logout();
 
 	}
-	@Test(description = "SMAB-T2829,SMAB-T2677,SMAB-T3634,SMAB-T3633,SMAB-T3635,SMAB-T2883,SMAB-T2885:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Combine\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2829,SMAB-T2677,SMAB-T3634,SMAB-T3633,SMAB-T3635,SMAB-T2883,SMAB-T2885,SMAB-T3771:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Combine\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_CombineMappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 
@@ -2018,6 +2020,43 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.completeWorkItem();
 		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
 		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3634: Validation WI completed successfully");
+		
+		objWorkItemHomePage.logout();
+		ReportLogger.INFO(" Appraiser logins ");
+		objMappingPage.login(users.RP_APPRAISER);
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn);
+		objParcelsPage.Click(objParcelsPage.workItems);
+		
+		//Moving to the Update Characteristics Verify PUC WI
+		objParcelsPage.Click(objParcelsPage.updateCharacteristicsVerifyPUC);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(40, objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objParcelsPage.Click(objMappingPage.getButtonWithText("Next"));
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
+		ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
+
+		driver.switchTo().window(parentWindow);
+		driver.navigate().refresh();
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3771: Validation WI completed successfully");
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn);
+		
+		//Moving to Allocate Values WI
+		objParcelsPage.Click(objParcelsPage.workItems);
+		objParcelsPage.Click(objParcelsPage.allocateValue);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
+		String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
+		softAssert.assertEquals(assignedTo, salesforceAPI.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'").get("Name").get(0), "SMAB-T3771:Assiged to is matched successfully");
+		softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool, "SMAB-T3771:workPool is matched successfully");
+
 		objWorkItemHomePage.logout();
 	}
 	

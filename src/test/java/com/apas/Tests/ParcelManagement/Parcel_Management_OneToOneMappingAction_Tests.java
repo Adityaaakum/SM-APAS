@@ -536,7 +536,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	 * login user-Mapping user
 	 * 
 	 */
-	@Test(description = "SMAB-T2717,SMAB-T2718,SMAB-T2719,SMAB-T2720,SMAB-T2721:Verify the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel is changed ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2717,SMAB-T2718,SMAB-T2719,SMAB-T2720,SMAB-T2721,SMAB-T3771:Verify the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel is changed ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyOneToOneMappingActionChildInheritanceafterwI_Completion(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
@@ -697,6 +697,42 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
  	     
  	    softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(apn)), "SMAB-T2720,SMAB-T2721: Verify Parent Parcel: "+apn+" is visible under Source Parcel Relationships section");
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText(WorkItemNo)), "SMAB-T2720,SMAB-T2721: Verify WI : "+WorkItemNo+" is visible under  Parcel Relationships section");
+		objWorkItemHomePage.logout();
+		ReportLogger.INFO(" Appraiser logins ");
+		objMappingPage.login(users.RP_APPRAISER);
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(childApn);
+		objParcelsPage.Click(objParcelsPage.workItems);
+		
+		//Moving to the Update Characteristics Verify PUC WI
+		objParcelsPage.Click(objParcelsPage.updateCharacteristicsVerifyPUC);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(40, objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objParcelsPage.Click(objMappingPage.getButtonWithText("Next"));
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
+		ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
+
+		driver.switchTo().window(parentWindow);
+		driver.navigate().refresh();
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3771: Validation WI completed successfully");
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(childApn);
+		
+		//Moving to Allocate Values WI
+		objParcelsPage.Click(objParcelsPage.workItems);
+		objParcelsPage.Click(objParcelsPage.allocateValue);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
+		String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
+		softAssert.assertEquals(assignedTo, salesforceAPI.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'").get("Name").get(0), "SMAB-T3771:Assiged to matched successfully");
+		softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool, "SMAB-T3771:workPool is matched successfully");
+
 		objWorkItemHomePage.logout();
 
       
@@ -1256,7 +1292,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			jsonObject.put("Lot_Size_SQFT__c",parcelSize);
 
 			//updating Parcel details
-			String queryApnId = "SELECT Id FROM Parcel__c where Name in('"+
+			String queryApnId = "SELECT Name,Id FROM Parcel__c where Name in('"+
 					parentDividedInterestAPN1+"')";
 			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryApnId);
 			salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
@@ -1314,9 +1350,9 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 					"SMAB-T3283: Validation that MAP page of parent and child parcels are same");
 			softAssert.assertTrue(childAPNNumber.endsWith("0"),
 					"SMAB-T3283: Validation that child APN number ends with 0");
-		    driver.switchTo().window(parentWindow);
-		   
-		    objWorkItemHomePage.logout();
+			driver.switchTo().window(parentWindow);
+
+			objWorkItemHomePage.logout();
 
 		}
 

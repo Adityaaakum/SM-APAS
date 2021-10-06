@@ -17,6 +17,7 @@ import org.openqa.selenium.support.PageFactory;
 import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
+import com.apas.config.users;
 
 public class MappingPage extends ApasGenericPage {
 	Util objUtil;
@@ -106,7 +107,9 @@ public class MappingPage extends ApasGenericPage {
 	public String editParcel = "Edit Parcel";
 	public String parcelSitus ="Parcel Situs";
 	public String performAdditionalMappingButton = "Perform Additional Mapping Action";
-	
+	public String userNameForRpAppraiser = CONFIG.getProperty(users.RP_APPRAISER + "UserName");
+	public String appraiserwWorkPool = "Appraiser";
+
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
 	public WebElement editButtonInSeconMappingScreen;
 	

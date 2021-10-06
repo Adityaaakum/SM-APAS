@@ -392,7 +392,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String completeWorkItem() throws Exception {
 		ReportLogger.INFO("Completing the work item");
 		Click(detailsWI);
-		waitForElementToBeVisible(10, wiValueDetailsPage);
+		waitForElementToBeVisible(20, wiValueDetailsPage);
 		Click(editBtn);
 		enter(wiValueDetailsPage, "-1");
 		saveRecord();
