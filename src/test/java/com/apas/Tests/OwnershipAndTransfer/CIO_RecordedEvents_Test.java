@@ -559,7 +559,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		// STEP 14-Validating the formatted name 1 for mail to record
 
-		softAssert.assertEquals(hashMapcopyTomailTo.get(objCioTransfer.formattedName1Label).get(0), granteeForMailTo,
+		softAssert.assertTrue(hashMapcopyTomailTo.get(objCioTransfer.formattedName1Label).contains(granteeForMailTo),
 				"SMAB-T3307:Validating that CIO copyTo Mail to record is created ");
 
 		// STEP 15-Navigating back to RAT screen
