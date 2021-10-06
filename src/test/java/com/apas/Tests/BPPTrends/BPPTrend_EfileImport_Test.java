@@ -169,7 +169,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Validating revert functionality of error records
 	 * 3. Validating status post reverting error records on history page
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
+	@Test(description = "SMAB-T955: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
 	public void BppTrend_BOEIndexFileImportAndRevert(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);
@@ -211,15 +211,15 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Index and Percent Good Factors");
 
 		//Step11: Status of the imported file should be changed to Reverted as the whole file is reverted
-		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Reverted", "SMAB-T111: Validation if status of imported file is reverted.");
+		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Reverted", "SMAB-T955: Validation if status of imported file is reverted.");
 
 		//Step12: Checking the status on import logs page
 		objEfileHomePage.searchModule(modules.EFILE_IMPORT_LOGS);
 		
 		HashMap<String, ArrayList<String>> importLogsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
-		softAssert.assertEquals(importLogsGridData.get("Name").get(0),"BPP Trend Factors :BOE - Index and Percent Good Factors :" + rollYearForImport,"SMAB-T111: Validation for name of imported file on import logs page");
-		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Reverted", "SMAB-T111: Validation if status of imported file is reverted on import logs page");
+		softAssert.assertEquals(importLogsGridData.get("Name").get(0),"BPP Trend Factors :BOE - Index and Percent Good Factors :" + rollYearForImport,"SMAB-T955: Validation for name of imported file on import logs page");
+		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Reverted", "SMAB-T955: Validation if status of imported file is reverted on import logs page");
 				
 		objEfileHomePage.logout();
 	}
@@ -498,7 +498,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Validating revert functionality of error records
 	 * 3. Validating status post reverting error records on history page
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
+	@Test(description = "SMAB-T955: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
 	public void BppTrend_BOEValFileImportAndRevert(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);
@@ -540,15 +540,15 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "BOE - Valuation Factors");
 
 		//Step11: Status of the imported file should be changed to Reverted as the whole file is reverted
-		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Reverted", "SMAB-T111: Validation if status of imported file is reverted.");
+		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Reverted", "SMAB-T955: Validation if status of imported file is reverted.");
 
 		//Step12: Checking the status on import logs page
 		objEfileHomePage.searchModule(modules.EFILE_IMPORT_LOGS);
 		
 		HashMap<String, ArrayList<String>> importLogsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
-		softAssert.assertEquals(importLogsGridData.get("Name").get(0),"BPP Trend Factors :BOE - Valuation Factors :" + rollYearForImport,"SMAB-T111: Validation for name of imported file on import logs page");
-		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Reverted", "SMAB-T111: Validation if status of imported file is reverted on import logs page");
+		softAssert.assertEquals(importLogsGridData.get("Name").get(0),"BPP Trend Factors :BOE - Valuation Factors :" + rollYearForImport,"SMAB-T955: Validation for name of imported file on import logs page");
+		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Reverted", "SMAB-T955: Validation if status of imported file is reverted on import logs page");
 				
 		objEfileHomePage.logout();
 	}
@@ -836,7 +836,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 	 * 2. Validating revert functionality of error records
 	 * 3. Validating status post reverting error records on history page
 	 */
-	@Test(description = "SMAB-T106,SMAB-T111,SMAB-T79,SMAB-T956: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
+	@Test(description = "SMAB-T955: Discarding error records and reverting import for BOE Index file", dataProvider = "loginBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","BPPTrend"})
 	public void BppTrend_CAAValFileImportAndRevert(String loginUser) throws Exception {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		objEfileHomePage.login(loginUser);
@@ -878,15 +878,15 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEfileHomePage.selectFileAndSource("BPP Trend Factors", "CAA - Valuation Factors");
 
 		//Step11: Status of the imported file should be changed to Reverted as the whole file is reverted
-		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Reverted", "SMAB-T955,SMAB-T956,SMAB-T111: Validation if status of imported file is reverted.");
+		softAssert.assertEquals(objPage.getElementText(objEfileHomePage.statusImportedFile), "Reverted", "SMAB-T955: Validation if status of imported file is reverted.");
 
 		//Step12: Checking the status on import logs page
 		objEfileHomePage.searchModule(modules.EFILE_IMPORT_LOGS);
 		
 		HashMap<String, ArrayList<String>> importLogsGridData = objEfileHomePage.getGridDataInHashMap(1, 1);
 		
-		softAssert.assertEquals(importLogsGridData.get("Name").get(0),"BPP Trend Factors :CAA - Valuation Factors :" + rollYearForImport,"SMAB-T111: Validation for name of imported file on import logs page");
-		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Reverted", "SMAB-T955,SMAB-T956,SMAB-T111: Validation if status of imported file is reverted on import logs page");
+		softAssert.assertEquals(importLogsGridData.get("Name").get(0),"BPP Trend Factors :CAA - Valuation Factors :" + rollYearForImport,"SMAB-T955: Validation for name of imported file on import logs page");
+		softAssert.assertEquals(importLogsGridData.get("Status").get(0),"Reverted", "SMAB-T955: Validation if status of imported file is reverted on import logs page");
 				
 		objEfileHomePage.logout();
 	}
