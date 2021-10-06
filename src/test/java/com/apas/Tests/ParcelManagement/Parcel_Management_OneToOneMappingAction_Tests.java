@@ -730,8 +730,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
 		String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
-		softAssert.assertEquals(assignedTo, "rp appraiserAUT", "SMAB-T3771:Assiged to matched successfully");
-		softAssert.assertEquals(workPool, "Appraiser", "SMAB-T3771:workPool is matched successfully");
+		softAssert.assertEquals(assignedTo, salesforceAPI.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'").get("Name").get(0), "SMAB-T3771:Assiged to matched successfully");
+		softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool, "SMAB-T3771:workPool is matched successfully");
 
 		objWorkItemHomePage.logout();
 
@@ -1292,7 +1292,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			jsonObject.put("Lot_Size_SQFT__c",parcelSize);
 
 			//updating Parcel details
-			String queryApnId = "SELECT Id FROM Parcel__c where Name in('"+
+			String queryApnId = "SELECT Name,Id FROM Parcel__c where Name in('"+
 					parentDividedInterestAPN1+"')";
 			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryApnId);
 			salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
@@ -1350,9 +1350,35 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 					"SMAB-T3283: Validation that MAP page of parent and child parcels are same");
 			softAssert.assertTrue(childAPNNumber.endsWith("0"),
 					"SMAB-T3283: Validation that child APN number ends with 0");
-		    driver.switchTo().window(parentWindow);
-		   
-		    objWorkItemHomePage.logout();
+			driver.switchTo().window(parentWindow);
+
+			objParcelsPage.addParcelDetails("", "", "", "", "", "", gridDataHashMap, "APN");
+            objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
+			String msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+			objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+			softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description, Parcel Size (SqFt), TRA, District / Neighborhood Code, PUC. Please navigate to the mapping custom screen to provide the necessary information.",
+					"matched");
+
+			objParcelsPage.addParcelDetails("", "Legal", districtValue, responseNeighborhoodDetails.get("Id").get(0),
+					responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
+			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
+			msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+			objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+			softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : PUC. Please navigate to the mapping custom screen to provide the necessary information.",
+					"matched");
+			
+			objParcelsPage.addParcelDetails(responsePUCDetails.get("Id").get(0), "", districtValue, responseNeighborhoodDetails.get("Id").get(0),
+					responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
+			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
+			msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+			objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+			softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description. Please navigate to the mapping custom screen to provide the necessary information.",
+					"matched");
+			
+			objWorkItemHomePage.logout();
 
 		}
 

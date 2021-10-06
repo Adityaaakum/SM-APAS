@@ -753,8 +753,7 @@ public class Page extends TestBase {
 				commonxPath + "//div[text()='" + text + "']//.. | " +
 				commonxPath + "//*[contains(@class,'slds-is-open')]//button[text()='" + text + "'] | " +
 				commonxPath + "//a[text()='" + text + "'] |" +
-				commonxPath + "//span[text()='" + text + "'] | "+ 
-				commonxPath + "//button[@title='"+ text +"']";
+				commonxPath + "//span[text()='" + text + "']";
 		waitUntilElementIsPresent(xpath, 10);
 		return driver.findElement(By.xpath(xpath));
 	}

@@ -2054,8 +2054,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
 		String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
-		softAssert.assertEquals(assignedTo, "rp appraiserAUT", "SMAB-T3771:Assiged to is matched successfully");
-		softAssert.assertEquals(workPool, "Appraiser", "SMAB-T3771:workPool is matched successfully");
+		softAssert.assertEquals(assignedTo, salesforceAPI.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'").get("Name").get(0), "SMAB-T3771:Assiged to is matched successfully");
+		softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool, "SMAB-T3771:workPool is matched successfully");
 
 		objWorkItemHomePage.logout();
 	}
