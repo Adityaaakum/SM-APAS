@@ -178,6 +178,15 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[@title='Target Parcel Relationships']")
 	public WebElement targetParcelLabel;
 	
+	@FindBy(xpath = "//strong[normalize-space()='New APN - Update Characteristics & Verify PUC']")
+	public WebElement updateCharacteristicsVerifyPUC;
+
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Work Items']")
+	public WebElement workItems;
+
+	@FindBy(xpath = "//strong[normalize-space()='New APN - Allocate Value']")
+	public WebElement allocateValue;
+	
 	@FindBy(xpath = "//*[@role='menuitem' and contains(.,'Assessed Values')]")
 	public WebElement assessedValue;
 	
@@ -207,11 +216,7 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//a[text()='Assessed Values Ownership']")
 	public WebElement assessedValueOwnershipTab;
-	
-	
-	
 
-	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
     public String ApprovalButton="Approve";
