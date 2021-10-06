@@ -202,6 +202,7 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 						.get("Name").get(0);
 
 				objAppraisalActivity.logout();
+				Thread.sleep(3000);
 
 				objCIOTransferPage.login(CIO_STAFF);
 				
@@ -218,6 +219,7 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 						+ "/view");
 				
 				// STEP 10- Validating the status of AT for REVIEW CIO-SALE WI after rejection
+				objCIOTransferPage.waitForElementToBeVisible(10, objAuditTrail.Status);
 				
 				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.Status), "Open",
 						"SMAB-T3637: Verify the status of AT is open");
@@ -328,6 +330,7 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
     		softAssert.assertTrue(objCIOTransferPage.getGridDataInHashMap().get("Remarks").contains("New Active record Record after Rolled back Active") ,"SMAB-T3736: Verified that new record is generated when remarks and others fields were updated and rolled back the existing one");
             
             objCIOTransferPage.logout();
+            Thread.sleep(3000);
             
             objCIOTransferPage.login(CIO_SUPERVISOR);
             
@@ -382,6 +385,7 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 					.get("Name").get(0);
 			
 			objCIOTransferPage.logout();
+			Thread.sleep(3000);
 			
 			objAppraisalActivity.login(APPRAISAL_SUPPORT);
 			Thread.sleep(5000);
