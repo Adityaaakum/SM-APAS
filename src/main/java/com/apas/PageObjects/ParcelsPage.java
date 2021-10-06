@@ -75,6 +75,7 @@ public class ParcelsPage extends ApasGenericPage {
 
 	public String typeOfAuditTrailDropdown = "Type of Audit Trail Record?";
 	public String sourceDropdown = "Source";
+	public String eventNumberComponentAction = "Event Number";
 	public String dateOfEventInputTextBox = "Date of Event";
 	public String dateOfValueInputTextBox = "Date of Value";
 	public String dateOfRecordingInputTextBox = "Date of Recording";
@@ -131,6 +132,9 @@ public class ParcelsPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//div[contains(@class,'ErrorText')]")
 	public WebElement workItemTypeAndSubTypeError;
+	
+	@FindBy(xpath = "//div[contains(@class,'slds-form-element__help')]")
+	public WebElement sourceFieldComponentActionErrorMessage;
 
 	@FindBy (xpath= "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]//li[1]//button[@title='Toggle details for work item']")
 	public WebElement ExpendWIOnParcels;
@@ -472,6 +476,7 @@ public class ParcelsPage extends ApasGenericPage {
 			if(dataMap.get("Date of Value")!=null) {enter(dateOfValueInputTextBox, dataMap.get("Date of Value"));}
 			enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
 			enter(descriptionInputTextBox, description);
+			
 			Click(getButtonWithText(saveAndNextButton));
 			Thread.sleep(5000);
 			if(dataMap.get("Record Type").equalsIgnoreCase("Correspondence")) {return null;}				
