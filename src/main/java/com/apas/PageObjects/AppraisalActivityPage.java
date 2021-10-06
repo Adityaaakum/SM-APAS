@@ -37,5 +37,17 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 	
 	public String returnButton ="Return";
 	public String appraisalActivityStatus ="Appraiser Activity Status";
+	public String rejectButton ="Reject";
+	public String rejectionReasonForIncorrectCioDetermination ="CIO - Incorrect Transfer Work & Determination";
+	public String nextButton ="Next";
+	public String eventCodeLabel ="Event Code";
+	public String dorLabel ="DOR";
+	public String dovLabel ="DOV";
+	public String apnLabel ="APN";
+	
+	
+	@FindBy(xpath = "//select[@name='Rejection_Reason_PickList']")
+	public WebElement rejectionReasonList;
+	
 
 }

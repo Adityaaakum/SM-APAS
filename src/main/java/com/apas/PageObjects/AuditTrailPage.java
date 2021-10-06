@@ -32,6 +32,12 @@ public class AuditTrailPage extends ApasGenericPage {
 	public String relatedCorrespondence="Related Correspondence";
 	public String relatedBuisnessEvent="Related Business Event";
 	public String description = "Description";
+	public String dovLabel ="Date of Value";
+	public String dorLabel ="Date of Recording";
+	public String rollYearLabel ="Applicable To Roll Year";
+	public String recordTypeLabel ="Record Type";
+			
+			
 		
 	
 		             
