@@ -329,7 +329,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		String period = "Adhoc";
 		String fileType="Building Permit";
 		String source="Atherton Building Permits";
-		
+		String execEnv = System.getProperty("region");
 		    // Step 1:Login as Appraiser user 
 		    objEfileImportPage.login(loginUser);
 
@@ -378,15 +378,20 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 	    
             //Step 7: Accepting the work item & Going to Tab In Progress
 	        objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+	        objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
 	        objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
-	        objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
-	    
+	        objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);	
+	        
 	        //Step 8:Navigate to Building permits and select the building permit and editing the completion date and save
-	        objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
-	        objBuildingPermitPage.displayRecords("All");
-	        objBuildingPermitPage.globalSearchRecords(missingAPNBuildingPermitNumber);
-            objBuildingPermitPage.scrollToElement(objBuildingPermitPage.editPermitButton);
-            objWorkItemHomePage.Click(objBuildingPermitPage.editPermitButton);
+	       
+	        System.out.println("BuildingPermitNumber" + missingAPNBuildingPermitNumber);	        
+	        String buildingPermitNameQuery = "SELECT Id FROM Building_Permit__c where Name = '"+missingAPNBuildingPermitNumber+"'";
+			HashMap<String, ArrayList<String>> hashMapBuildingPermitName = salesforceAPI.select(buildingPermitNameQuery);
+			String buildingPermitName = hashMapBuildingPermitName.get("Id").get(0);
+			System.out.println("buildingPermitName"+buildingPermitName);
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Building_Permit__c/"
+					+ buildingPermitName + "/view");
+	        objWorkItemHomePage.Click(objBuildingPermitPage.editPermitButton);
             DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy ");
             Date date = new Date();        
             String todayDate= dateFormat.format(date);
