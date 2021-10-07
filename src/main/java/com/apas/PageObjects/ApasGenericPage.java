@@ -51,6 +51,7 @@ public class ApasGenericPage extends Page {
 	public String tabRelated = "Related";
 	public String tabLinkedItems = "Linked Items";
 	public String columnInGrid =commonXpath+"//a[contains(@class,'toggle')]//span[text()='columnName']";
+	public String deleteButtonText ="Delete";
 
 
 	@FindBy(xpath = "//button[@title='Close error dialog']")
@@ -637,7 +638,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 			Click(driver.findElement(By.xpath(xpath)));
 			
 			}
-			Thread.sleep(5000);
+			Thread.sleep(8000);
 		}
 			
 			catch (Exception e) {
@@ -662,7 +663,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 								 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
 						ReportLogger.INFO("https://smcacre--"+executionEnv+
 								 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
-						Thread.sleep(5000);
+						Thread.sleep(8000);
 					}
 					// for work item search
 					else if(searchString.startsWith("WI-")){
@@ -673,7 +674,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 								 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
 						ReportLogger.INFO("https://smcacre--"+executionEnv+
 								 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
-						Thread.sleep(5000);
+						Thread.sleep(8000);
 					}
 					 else {
 						  ReportLogger.INFO("Unable to search string: " + searchString + e);

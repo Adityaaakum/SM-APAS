@@ -393,7 +393,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String completeWorkItem() throws Exception {
 		ReportLogger.INFO("Completing the work item");
 		Click(detailsWI);
-		waitForElementToBeVisible(10, wiValueDetailsPage);
+		waitForElementToBeVisible(20, wiValueDetailsPage);
 		Click(editBtn);
 		enter(wiValueDetailsPage, "-1");
 		saveRecord();
@@ -622,7 +622,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 **/
 
 	public void clickOnTimelineAndMarkComplete(String timelineTab) throws Exception {
-		Thread.sleep(3000);
+		Thread.sleep(5000);
 		ReportLogger.INFO("Click on the '" + timelineTab + "' option in Timeline and mark it complete");
 		WebElement webElement = driver.findElement(By.xpath("//span[text()='" + timelineTab + "']"));
 		Thread.sleep(2000);
@@ -633,7 +633,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 		else {
 			javascriptClick(markStatusAsCompleteBtn);
 		}
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 	}
 
 
