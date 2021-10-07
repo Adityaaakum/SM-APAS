@@ -16,28 +16,6 @@
 	"Mailing State": "WY"
 	"Remarks":"Testing Mailto object"
 	
-	},
+	}	
 	
-	"DataToCreateOwnershipRecord": {
-	    "Type": "Owner",
-	    "Status": "Active",
-	    "Ownership Percentage":"100",
-	    "Ownership Start Date":"7/19/2000"
-	  },
-	  
-	"dataToCreateGranteeWithCompleteOwnership":{
-	
-	"Last Name":"Will Smith",
-	"First Name":"Jhones",
-	"Ownership Start Date":"7/16/2021",
-	"Owner Percentage":"100"
-	},
-	
-	"dataToUpdateOrignalTransferList":{
-	
-	"Grantor":"WILL SMITH",
-	"Grantee":"ERIKSEN"
-	
-	
-	}
 	}

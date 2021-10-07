@@ -56,7 +56,6 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String newButton="New";
 	public String formattedName1Label="Formatted Name1";
 	public String formattedName1LabelForParcelMailTo="Formatted Name 1";
-	public String formattedName1LabelForParcel="Formatted Name 1";
 	public String startDate="Start Date";
 	public String endDate="End Date";
 	public String emailId="Email";
