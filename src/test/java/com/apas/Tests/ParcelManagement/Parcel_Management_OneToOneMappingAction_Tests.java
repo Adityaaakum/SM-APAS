@@ -1351,6 +1351,34 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			softAssert.assertTrue(childAPNNumber.endsWith("0"),
 					"SMAB-T3283: Validation that child APN number ends with 0");
 			driver.switchTo().window(parentWindow);
+			
+			objParcelsPage.addParcelDetails("", "", "", "", "", "", gridDataHashMap, "APN");
+			driver.navigate().refresh();
+			Thread.sleep(5000);
+            objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
+			String msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+			objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+			softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description, Parcel Size (SqFt), TRA, District / Neighborhood Code, PUC. Please navigate to the mapping custom screen to provide the necessary information.",
+					"matched");
+
+			objParcelsPage.addParcelDetails("", "Legal", districtValue, responseNeighborhoodDetails.get("Id").get(0),
+					responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
+			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
+			msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+			objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+			softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : PUC. Please navigate to the mapping custom screen to provide the necessary information.",
+					"matched");
+			
+			objParcelsPage.addParcelDetails(responsePUCDetails.get("Id").get(0), "", districtValue, responseNeighborhoodDetails.get("Id").get(0),
+					responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
+			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
+			msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+			objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+			softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description. Please navigate to the mapping custom screen to provide the necessary information.",
+					"matched");
 
 			objWorkItemHomePage.logout();
 

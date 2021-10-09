@@ -2576,6 +2576,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String concatenateInterimAPNs = apn1+","+apn2;
 		String concatenateNonCondoAPNs = apn3+","+apn4;
 		
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+		
+		String districtValue="District01";
+		String parcelSize	= "200";
+		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
@@ -2706,9 +2712,38 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("APN", "Parcel Information"),childAPNNumber1,
 				"SMAB-T2884: Validate that Interim Parcel in the system");
         
-        
         driver.switchTo().window(parentWindow);
+ 
+		objParcelsPage.addParcelDetails("", "", "", "", "", "", gridDataHashMap, "APN");
+		driver.navigate().refresh();
+		Thread.sleep(5000);
+        objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
+		String msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+		softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description, Parcel Size (SqFt), TRA, District / Neighborhood Code, PUC. Please navigate to the mapping custom screen to provide the necessary information.",
+				"matched");
+
+		objParcelsPage.addParcelDetails("", "Legal", districtValue, responseNeighborhoodDetails.get("Id").get(0),
+				responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
+		msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+		softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : PUC. Please navigate to the mapping custom screen to provide the necessary information.",
+				"matched");
+		
+		objParcelsPage.addParcelDetails(responsePUCDetails.get("Id").get(0), "", districtValue, responseNeighborhoodDetails.get("Id").get(0),
+				responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
+		msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+		softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description. Please navigate to the mapping custom screen to provide the necessary information.",
+				"matched");
+
 		objWorkItemHomePage.logout();
+	
 	}
 	
 	/**
