@@ -55,11 +55,14 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String saveLabel ="Save";
 	public String newButton="New";
 	public String formattedName1Label="Formatted Name1";
+	public String formattedName1LabelForParcelMailTo="Formatted Name 1";
 	public String startDate="Start Date";
 	public String endDate="End Date";
+	public String emailId="Email";
 	public String mailingZip="Mailing Zip";
 	public String CancelButton="Cancel";
 	public String LastNameLabel="Last Name";
+	public String careOfLabel="Care Of";
 	public String OwnershipStartDate="Ownership Start Date";
 	public String OwnershipEndDate="Ownership End Date";
 	public String RecordedApnTransfer="Recorded APN Transfer";
@@ -154,6 +157,12 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath = commonXpath
 			+ "//*[@class='slds-truncate' and text()='Submit for Approval'] | //button[text()='Submit for Approval']")
 	public WebElement quickActionOptionSubmitForApproval;
+	
+	@FindBy(xpath = "//span[text()='Start Date']//parent::div//following-sibling::div//span")
+	public WebElement startDateInParcelMaito;
+	
+	@FindBy(xpath = "//span[text()='End Date']//parent::div//following-sibling::div//span")
+	public WebElement endDateInParcelMaito;
 
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
