@@ -637,22 +637,13 @@ public void searchModule(String moduleToSearch) throws Exception {
 			Click(driver.findElement(By.xpath(xpath)));
 			
 			}
-			Thread.sleep(8000);
+			Thread.sleep(10000);
 		}
 			
 			catch (Exception e) {
 				
-				String executionEnv = "";
-				
-				if (System.getProperty("region").toUpperCase().equals("QA"))
-					executionEnv = "qa";
-				if (System.getProperty("region").toUpperCase().equals("E2E"))
-					executionEnv = "e2e";
-				if (System.getProperty("region").toUpperCase().equals("PREUAT"))
-					executionEnv = "preuat";
-				if (System.getProperty("region").toUpperCase().equals("STAGING"))
-					executionEnv = "staging";
-				
+				String executionEnv = System.getProperty("region");
+		
 				// for parcel search
 					if(searchString.length()== 11 && isSearchStringParcel(searchString)) {
 						ReportLogger.INFO("Opening parcel record: " + searchString);
@@ -660,9 +651,9 @@ public void searchModule(String moduleToSearch) throws Exception {
 						HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);	
 						driver.navigate().to("https://smcacre--"+executionEnv+
 								 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
-						ReportLogger.INFO("https://smcacre--"+executionEnv+
+						ReportLogger.INFO("Navigating to Parcel Record - https://smcacre--"+executionEnv+
 								 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
-						Thread.sleep(8000);
+						Thread.sleep(15000);
 					}
 					// for work item search
 					else if(searchString.startsWith("WI-")){
@@ -671,9 +662,9 @@ public void searchModule(String moduleToSearch) throws Exception {
 						HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);	
 						driver.navigate().to("https://smcacre--"+executionEnv+
 								 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
-						ReportLogger.INFO("https://smcacre--"+executionEnv+
+						ReportLogger.INFO("Navigating to Work Item Record - https://smcacre--"+executionEnv+
 								 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
-						Thread.sleep(8000);
+						Thread.sleep(15000);
 					}
 					 else {
 						  ReportLogger.INFO("Unable to search string: " + searchString + e);
