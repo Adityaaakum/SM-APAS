@@ -279,10 +279,13 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @param loginUser-Mapping user
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2642,SMAB-T2643,SMAB-T2644,SMAB-T3243,SMAB-T3771:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3620,SMAB-T2642,SMAB-T2643,SMAB-T2644,SMAB-T3243,SMAB-T3771:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" },enabled =true)
 	public void ParcelManagement_Verify_Brand_NewParcel_Mapping_Action(String loginUser) throws Exception {
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
+		
+		JSONObject jsonObject = objMappingPage.getJsonObject();
+		
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
@@ -318,6 +321,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
 		objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
 		objMappingPage.editGridCellValue(objMappingPage.legalDescriptionColumnSecondScreen, "Legal Discription");
+		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "100");
+
 		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
 		objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
@@ -330,39 +335,45 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
            String newCreatedApn  =   gridParcelData.get("APN").get(0);                         
            HashMap<String, ArrayList<String>> statusnewApn = objParcelsPage.fetchFieldValueOfParcel("Status__c", newCreatedApn);
              // validating status of brand new parcel           
-            softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel", "SMAB-T2643,SMAB-T3243: Verifying the status of the new parcel");
+            softAssert.assertEquals(statusnewApn.get("Status__c").get(0), "In Progress - New Parcel",
+            		"SMAB-T3620,SMAB-T2643,SMAB-T3243: Verifying the status of the new parcel");
             
             //Fetching required Child PUC after BrandNew action
             String childAPNPucFromGrid = gridParcelData.get("Use Code*").get(0);
+            String childAPNLegalFromGrid = gridParcelData.get("Legal Description*").get(0);
+            String childAPNParcelSizeFromGrid = gridParcelData.get("Parcel Size (SQFT)*").get(0);
+            String childAPNDisNeighFromGrid = gridParcelData.get("Dist/Nbhd*").get(0);
+            String childAPNTraFromGrid = gridParcelData.get("TRA*").get(0);
+            String childAPNSitusFromGrid = gridParcelData.get("Situs").get(0);
+            
             driver.switchTo().window(parentWindow);
             objMappingPage.searchModule(PARCELS);
     		objMappingPage.globalSearchRecords(newCreatedApn);
     		String childParcelPuc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
     		
     		softAssert.assertEquals(childParcelPuc, childAPNPucFromGrid,
-    				" SMAB-T3243:Verify PUC of Child parcel"+newCreatedApn);
+    				"SMAB-T3620,SMAB-T3243:Verify PUC of Child parcel"+newCreatedApn);
         
-          //Fetch some other values from database
-    		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
-
-    		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
-    		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
-
-    		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
-    		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
-
-    		String legalDescriptionValue="Legal PM 85/25-260";
-    		String parcelSize	= "200";	
-
-    		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
-    		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
-    		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
-    		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-    		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
-
-    		//update parcel details
-    		salesforceAPI.update("Parcel__c",salesforceAPI.select("select Id from parcel__c where name='"+newCreatedApn+"'").get("Id").get(0),jsonObject);
-
+    		String childParcelLegal = objMappingPage.getFieldValueFromAPAS("Short Legal Description", "Legal Description");
+    		softAssert.assertEquals(childParcelLegal, childAPNLegalFromGrid,
+    				" SMAB-T3620:Verify Legal of Child parcel"+newCreatedApn);
+    		
+    		String childParcelSize = objMappingPage.getFieldValueFromAPAS("Parcel Size (SqFt)", "Parcel Information");
+    		softAssert.assertEquals(childParcelSize, childAPNParcelSizeFromGrid,
+    				" SMAB-T3620:Verify parcel size of Child parcel"+newCreatedApn);
+    		
+    		String childParcelDisNeigh = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code", "Summary Values");
+    		softAssert.assertEquals(childParcelDisNeigh, childAPNDisNeighFromGrid,
+    				" SMAB-T3620:Verify neighborhood of Child parcel"+newCreatedApn);
+    		
+    		String childParcelTra = objMappingPage.getFieldValueFromAPAS("TRA", "Summary Values");
+    		softAssert.assertEquals(childParcelTra, childAPNTraFromGrid,
+    				" SMAB-T3620:Verify Tra of Child parcel"+newCreatedApn);
+    		
+    		String childParcelSitus = objMappingPage.getFieldValueFromAPAS("Primary Situs", "Summary Values");
+    		softAssert.assertEquals(childParcelSitus, childAPNSitusFromGrid,
+    				" SMAB-T3620:Verify Situs of Child parcel"+newCreatedApn);
+    		
             //Submit work item for approval
             String query = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
             salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
@@ -370,10 +381,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
              driver.switchTo().window(parentWindow);
             objWorkItemHomePage.logout();
             Thread.sleep(5000);
-            driver.navigate().refresh();
-            Thread.sleep(6000);
-
-             objMappingPage.login(users.MAPPING_SUPERVISOR);
+            
+            objMappingPage.login(users.MAPPING_SUPERVISOR);
             objMappingPage.searchModule(WORK_ITEM);
             objMappingPage.globalSearchRecords(workItemNumber);
             objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
@@ -383,21 +392,36 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 
             //Completing the workItem
            objWorkItemHomePage.completeWorkItem();             	   
-     	   objMappingPage.searchModule(PARCELS);
-		   objMappingPage.globalSearchRecords(newCreatedApn);
+     	   
+           objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.linkedItemsWI, 10);
+			objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsWI);
+	        
+	        //navigating to business event audit trail
+	        objWorkItemHomePage.scrollToElement(objWorkItemHomePage.secondRelatedBuisnessEvent);
+	        objWorkItemHomePage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
+			String auditTrailNo = objWorkItemHomePage.getFieldValueFromAPAS("Name", "");
+			ReportLogger.INFO("Audit Trail no:" +auditTrailNo);
+			softAssert.assertContains(objMappingPage.getFieldValueFromAPAS("Event Library"),
+					"Brand New"," SMAB-T3620: Verify event library updated from draft to Brand New");
 		   
      		//Validating the status of the workItem 
      		 HashMap<String, ArrayList<String>> statusCompletedApn = objParcelsPage.fetchFieldValueOfParcel("Status__c",newCreatedApn);
              //Validating the status of parcel after completing WI
            softAssert.assertEquals(statusCompletedApn.get("Status__c").get(0), "Active",
-        		   "SMAB-T2644,SMAB-T3243: Validating that the status of new APN is active");
+        		   "SMAB-T2644,SMAB-T3243,SMAB-T3619: Validating that the status of new APN is active");
            // driver.switchTo().window(parentWindow);
            
          //Fetching Child's PUC after closing WI
            childParcelPuc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
            softAssert.assertEquals(childParcelPuc, childAPNPucFromGrid,
    				" SMAB-T3243: Verify PUC of Child parcel"+newCreatedApn);
+           
+           String queryToGetRequestType = "SELECT Work_Item__r.Request_Type__c FROM Work_Item_Linkage__c Where Parcel__r.Name = '"+newCreatedApn+"' ";
+			HashMap<String, ArrayList<String>> responseRequestType = salesforceAPI.select(queryToGetRequestType);
+			softAssert.assertContains(responseRequestType,"New APN - Update Characteristics & Verify PUC",
+					"SMAB-T2717: Verify Request Type of 1 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
 		    objMappingPage.logout();
+		    Thread.sleep(3000);
 		    
 			ReportLogger.INFO(" Appraiser logins ");
 			objMappingPage.login(users.RP_APPRAISER);

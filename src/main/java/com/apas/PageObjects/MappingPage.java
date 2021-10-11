@@ -580,5 +580,46 @@ public class MappingPage extends ApasGenericPage {
 					});
 				}
 			}
+			
+			
+			/**
+			 *  This method will delete existing mailTo instances  from the Parcel
+			 * @param apn-Apn whose records needs to be deleted
+			 * @return
+			 * @throws Exception
+			 */
+			public void deleteMailToInstanceFromParcel(String apn) {
+				String query = "SELECT Id FROM Mail_To__C where Parcel__c in( SELECT id FROM Parcel__c where name='"
+						+ apn + "')";
+				HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+				if (!response.isEmpty()) {
+					response.get("Id").stream().forEach(Id -> {
+						objSalesforceAPI.delete("Mail_To__C", Id);
+						ReportLogger.INFO("Mail To deleted for Id ::"+Id);
+					});
+				}
+			}
+			
+			/**
+			 *  This method will delete existing mailTo instances  from the Parcel
+			 * @param apn-Apn whose records needs to be deleted
+			 * @return
+			 * @throws Exception
+			 */
+			public void deleteExistingWIFromParcel(String apn) {
+				String query ="Select id, name , parcel__c, work_item__r.Name from"
+						+ " work_item_linkage__c where parcel__r.Name = '"+ apn 
+						+"' and work_item__r.status__c != 'completed'";
+				
+				HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+				if (!response.isEmpty()) {
+					response.get("Id").stream().forEach(Id -> {
+						objSalesforceAPI.delete("work_item_linkage__c", Id);
+						ReportLogger.INFO("work_item_linkage__c  deleted for Id ::"+Id);
+					});
+				}
+			}
 
 }
