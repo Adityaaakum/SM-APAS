@@ -637,7 +637,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 			Click(driver.findElement(By.xpath(xpath)));
 			
 			}
-			Thread.sleep(10000);
+			Thread.sleep(5000);
 		}
 			
 			catch (Exception e) {

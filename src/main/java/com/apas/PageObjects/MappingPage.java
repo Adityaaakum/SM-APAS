@@ -137,12 +137,6 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@id,'salesforce-lightning-tooltip-bubble')]")
 	public WebElement helpIconToolTipBubble;
 	
-	//@FindBy(xpath = "//label[text()='First Non-Condo Parcel Number']//parent::lightning-input//button[contains(@aria-describedby,'salesforce-lightning-tooltip-bubble')]")
-	//public WebElement helpIconToolTipBubbleForNonCondoParcelField;
-	
-	//@FindBy(xpath = "//label[text()='Legal Description Auto-Populate Field for Child Parcels']//parent::lightning-input//button[contains(@aria-describedby,'salesforce-lightning-tooltip-bubble')]")
-	//public WebElement helpIconToolTipBubbleForLegalDescField;
-
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Legal Description*']")
 	public WebElement legalDescriptionFieldSecondScreen;
 
