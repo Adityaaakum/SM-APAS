@@ -19,6 +19,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	public final String TAB_IN_PROGRESS = "In Progress";
 	public final String TAB_IN_POOL = "In Pool";
+	public final String TAB_MAIL_TO = "Mail-To";	
 	public final String TAB_MY_SUBMITTED_FOR_APPROVAL = "Submitted for Approval";
 	public final String TAB_NEED_MY_APPROVAL = "Needs My Approval";
 	public final String TAB_COMPLETED = "Completed";
@@ -392,7 +393,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String completeWorkItem() throws Exception {
 		ReportLogger.INFO("Completing the work item");
 		Click(detailsWI);
-		waitForElementToBeVisible(10, wiValueDetailsPage);
+		waitForElementToBeVisible(20, wiValueDetailsPage);
 		Click(editBtn);
 		enter(wiValueDetailsPage, "-1");
 		saveRecord();

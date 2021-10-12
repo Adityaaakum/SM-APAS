@@ -55,11 +55,14 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String saveLabel ="Save";
 	public String newButton="New";
 	public String formattedName1Label="Formatted Name1";
+	public String formattedName1LabelForParcelMailTo="Formatted Name 1";
 	public String startDate="Start Date";
 	public String endDate="End Date";
+	public String emailId="Email";
 	public String mailingZip="Mailing Zip";
 	public String CancelButton="Cancel";
 	public String LastNameLabel="Last Name";
+	public String careOfLabel="Care Of";
 	public String OwnershipStartDate="Ownership Start Date";
 	public String OwnershipEndDate="Ownership End Date";
 	public String RecordedApnTransfer="Recorded APN Transfer";
@@ -80,7 +83,11 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String remarksLabel = "Remarks";
 	public String fieldsInCalculateOwnershipModal="//*[@id='wrapper-body']//flowruntime-screen-field//p";
 	public String ownershipPercentage ="Ownership Percentage";
+	public String auditTrailLabel ="Audit Trail";
+
+
 	public String approveButton ="Approve";
+
 	
 	public static final String CIO_EVENT_CODE_COPAL="CIO-COPAL";
 	public static final String CIO_EVENT_CODE_PART="CIO-PART";
@@ -128,7 +135,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath = "//div[contains(@class,'uiOutputRichText')] | //*[@class='slds-rich-text-editor__output']//b")
 	public WebElement confirmationMessageOnTranferScreen;
 
-	@FindBy(xpath = "//div[@class='highlights slds-clearfix slds-page-header slds-page-header_record-home']//ul[@class='slds-button-group-list']//lightning-primitive-icon")
+	@FindBy(xpath = commonXpath+"//div[@class='highlights slds-clearfix slds-page-header slds-page-header_record-home']//ul[@class='slds-button-group-list']//lightning-primitive-icon")
 	public WebElement quickActionButtonDropdownIcon;
 
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Approve']")
@@ -150,6 +157,12 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath = commonXpath
 			+ "//*[@class='slds-truncate' and text()='Submit for Approval'] | //button[text()='Submit for Approval']")
 	public WebElement quickActionOptionSubmitForApproval;
+	
+	@FindBy(xpath = "//span[text()='Start Date']//parent::div//following-sibling::div//span")
+	public WebElement startDateInParcelMaito;
+	
+	@FindBy(xpath = "//span[text()='End Date']//parent::div//following-sibling::div//span")
+	public WebElement endDateInParcelMaito;
 
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
@@ -225,6 +238,10 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	
 	@FindBy(xpath =commonXpath+ "//select[@name='States']")
 	public WebElement mailingState;
+	
+	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='EventID']//following::a[@target='_blank']")
+	public WebElement eventIDOnTransferActivityLabel;
+	
 	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
@@ -569,17 +586,30 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			 * @Param : Button text inside show more actions
 			 */
 
-			public void clickQuickActionButtonOnTransferActivity(String enterButtonText) throws Exception {
+			public void clickQuickActionButtonOnTransferActivity(String enterButtonText ,WebElement...others) throws Exception {
 				try {
-					
+					if(others.length==0) {
+					waitForElementToBeVisible(getButtonWithText(enterButtonText),10);
 					Click(getButtonWithText(enterButtonText));
 					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
+					Thread.sleep(1000);
+					return;}
+					waitForElementToBeVisible(others[0],10);
+					Click(others[0]);
 					Thread.sleep(1000);
 				} catch (Exception e) {
+					waitForElementToBeVisible(quickActionButtonDropdownIcon,10);
 					Click(quickActionButtonDropdownIcon);
+					if(others.length==0) {
+					waitForElementToBeVisible(getButtonWithText(enterButtonText),10);
 					Click(getButtonWithText(enterButtonText));
 					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
 					Thread.sleep(1000);
+					return;}
+					waitForElementToBeVisible(others[0],10);
+					Click(others[0]);
+					Thread.sleep(1000);
+					
 				}
 			}
 			
@@ -765,19 +795,16 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferMailToCreationData);
 					waitForElementToBeClickable(7, copyToMailToButtonLabel);
 
-					// STEP 15-Navigating back to RAT screen
+					// STEP 13-Navigating back to RAT screen
 
 					driver.navigate()
 							.to("https://smcacre--" + excEnv
 									+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
 									+ recordeAPNTransferID + "/view");
-					waitForElementToBeClickable(quickActionButtonDropdownIcon);
-					Click(quickActionButtonDropdownIcon);
-
-					// STEP 16-Clicking on submit for approval quick action button
-
-					waitForElementToBeClickable(quickActionOptionSubmitForApproval, 5);
-					Click(quickActionOptionSubmitForApproval);
+					
+					//STEP 14 - Click on submit for approval button
+					 clickQuickActionButtonOnTransferActivity(null,quickActionOptionSubmitForApproval);
+					
 					ReportLogger.INFO("CIO!! Transfer submitted for approval");
 					waitForElementToBeClickable(10, finishButton);
 					Click(getButtonWithText(finishButton));
@@ -789,21 +816,15 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 							.to("https://smcacre--" + excEnv
 									+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
 									+ recordeAPNTransferID + "/view");
-					if (verifyElementVisible(quickActionOptionApprove)) {
-						waitForElementToBeClickable(quickActionOptionApprove, 10);
-						Click(quickActionOptionApprove);
-					} else {
-						waitForElementToBeClickable(quickActionButtonDropdownIcon, 10);
-						Click(quickActionButtonDropdownIcon);
-						waitForElementToBeClickable(quickActionOptionApprove, 10);
-						Click(quickActionOptionApprove);
-					}
+					//STEP 14 - Click on submit for approval button
+					 clickQuickActionButtonOnTransferActivity(null,quickActionOptionApprove);
+					
 
 					waitForElementToBeClickable(10, finishButton);
 					Click(getButtonWithText(finishButton));
 
 					// Fetching appraiser WI genrated on approval of CIO WI
-					if (enrollmentType.equalsIgnoreCase("Normal Enrollment")) {
+					if (enrollmentType.equalsIgnoreCase(APPRAISAL_NORMAL_ENROLLMENT)) {
 						
 						//Filtering that if type is normal enrollement and Event code is CIO-GOVT
 						

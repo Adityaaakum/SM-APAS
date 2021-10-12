@@ -51,6 +51,7 @@ public class ApasGenericPage extends Page {
 	public String tabRelated = "Related";
 	public String tabLinkedItems = "Linked Items";
 	public String columnInGrid =commonXpath+"//a[contains(@class,'toggle')]//span[text()='columnName']";
+	public String deleteButtonText ="Delete";
 
 
 	@FindBy(xpath = "//button[@title='Close error dialog']")
