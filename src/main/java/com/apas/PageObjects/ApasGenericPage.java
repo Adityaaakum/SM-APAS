@@ -527,7 +527,7 @@ public class ApasGenericPage extends Page {
 		
 		if(verifyElementVisible(closeAllBtn))
 		{Click(closeAllBtn);}
-		Thread.sleep(3000);
+		Thread.sleep(5000);
 
 	}
 
