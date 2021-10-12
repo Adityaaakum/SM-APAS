@@ -18,8 +18,10 @@ import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.AuditTrailPage;
+import com.apas.PageObjects.BuildingPermitPage;
 import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.MappingPage;
+import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
@@ -37,16 +39,19 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 	ParcelsPage objParcelsPage;
 	WorkItemHomePage objWorkItemHomePage;
+	BuildingPermitPage objBuildingPermitPage;
 	Util objUtil = new Util();
 	SoftAssertion softAssert = new SoftAssertion();
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	MappingPage objMappingPage;
 	JSONObject jsonObject = new JSONObject();
+	Page objPage;
 	String apnPrefix = new String();
 	CIOTransferPage objCioTransfer;
 	AuditTrailPage trail;
 	String ownershipCreationData;
 	String OwnershipAndTransferCreationData;
+	String MailtoData;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -56,10 +61,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage = new MappingPage(driver);
+		objPage= new Page(driver);
 		objCioTransfer = new CIOTransferPage(driver);
+		objBuildingPermitPage = new BuildingPermitPage(driver) ;
 		trail = new AuditTrailPage(driver);
 		ownershipCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
 		OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		MailtoData = testdata.MAILTO_RECORD_DATA_PARCEL;
 		driver.manage().timeouts().pageLoadTimeout(15, TimeUnit.SECONDS);
 
 	}
@@ -2765,5 +2773,75 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.logout();
 
 	}
+
+	@Test(description = "SMAB-T4112-Verify CIO Staff and Appriasal Able to edit Mail-To records", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
+	public void RecorderIntegration_VerifyValidationofMailToRecordOnParcel(String loginUser) throws Exception {
+
+		String execEnv = System.getProperty("region");
+		String mailToRecordFromParcel = "SELECT Parcel__c,Id FROM Mail_To__c where status__c = 'Active' Limit 1";
+		HashMap<String, ArrayList<String>> hashMapRecordedApn = salesforceAPI.select(mailToRecordFromParcel);
+		String mailToID = hashMapRecordedApn.get("Id").get(0);
+
+		// STEP 1:login with CIOSTAFF and navigate to Mail-To tab for active parcel
+
+		objMappingPage.login(loginUser);
+		driver.navigate().to(
+				"https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Mail_To__c/" + mailToID + "/view");
+		objCioTransfer.waitForElementToBeClickable(5, objBuildingPermitPage.editPermitButton);
+		objWorkItemHomePage.Click(objBuildingPermitPage.editPermitButton);
+
+		// STEP 2:Edit the Mail-To record
+		Map<String, String> hashMapMailToData = objUtil.generateMapFromJsonFile(MailtoData, "createMailToData");
+		objCioTransfer.enter(objCioTransfer.formattedName1LabelForParcelMailTo,
+				hashMapMailToData.get("Formatted Name1"));
+		objCioTransfer.enter(objCioTransfer.emailId, hashMapMailToData.get("Email"));
+		objCioTransfer.enter(objCioTransfer.remarksLabel, hashMapMailToData.get("Remarks"));
+		objCioTransfer.enter(objCioTransfer.careOfLabel, hashMapMailToData.get("Care Of"));
+		objCioTransfer.enter(objCioTransfer.mailingZip, hashMapMailToData.get("Mailing Zip"));
+		objCioTransfer.Click(objCioTransfer.getButtonWithText("Save"));
+		Thread.sleep(2000);
+		// STEP 3: Validate Startdate and End date fields are disabled
+		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.startDateInParcelMaito, "class"),
+				"is-read-only", "SMAB-T4112-Start date is not editable");
+		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"), "is-read-only",
+				"SMAB-T4112-End date is not editable");
+
+		objCioTransfer.Click(objCioTransfer.getButtonWithText("Clone"));
+		objCioTransfer.enter(objCioTransfer.formattedName1LabelForParcelMailTo,
+				hashMapMailToData.get("Formatted Name1"));
+		objCioTransfer.enter(objCioTransfer.mailingZip, hashMapMailToData.get("Mailing Zip"));
+		objCioTransfer.Click(objCioTransfer.getButtonWithText("Save"));
+		Thread.sleep(2000);
+		objWorkItemHomePage.logout();
+		Thread.sleep(2000);
+
+		// STEP 4:login with appraisal staff and validate Appraisal support is able to
+		// Edit the record
+
+		objMappingPage.login(users.APPRAISAL_SUPPORT);
+		driver.navigate().to(
+				"https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Mail_To__c/" + mailToID + "/view");
+		objCioTransfer.waitForElementToBeClickable(5, objBuildingPermitPage.editPermitButton);
+		objWorkItemHomePage.Click(objBuildingPermitPage.editPermitButton);
+		Map<String, String> hashMapMailToDataForAppraisal = objUtil.generateMapFromJsonFile(MailtoData,
+				"createMailToDataForAppraisalData");
+		objCioTransfer.enter(objCioTransfer.formattedName1LabelForParcelMailTo,
+				hashMapMailToDataForAppraisal.get("Formatted Name1"));
+		objCioTransfer.enter(objCioTransfer.emailId, hashMapMailToDataForAppraisal.get("Email"));
+		objCioTransfer.enter(objCioTransfer.remarksLabel, hashMapMailToDataForAppraisal.get("Remarks"));
+		objCioTransfer.enter(objCioTransfer.careOfLabel, hashMapMailToDataForAppraisal.get("Care Of"));
+		objCioTransfer.enter(objCioTransfer.mailingZip, hashMapMailToDataForAppraisal.get("Mailing Zip"));
+		softAssert.assertContains(objCioTransfer.saveRecordAndGetError(),
+				"Please clone this record if you want to update any information except Email, Remarks and Mailing Address",
+				"T4112: Verify Error message");
+		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.startDateInParcelMaito, "class"),
+				"is-read-only", "SMAB-T4112-Start date is not editable");
+		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"), "is-read-only",
+				"SMAB-T4112-End date is not editable");
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.CancelButton));
+
+	}
+
 
 }

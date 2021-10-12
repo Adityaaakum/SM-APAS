@@ -1,0 +1,21 @@
+	{
+	"createMailToData":{
+	"Formatted Name1" : "LUKE SHAW",
+	"Email":"sushma.sankineni@publicissapient.com"
+	"Care Of":"Luke Shaw2"
+	"Mailing Zip":"560090",
+	"Mailing State": "WY"
+	"Remarks":"Testing Mailto object"
+	
+	},
+	"createMailToDataForAppraisalData":{
+	
+	"Formatted Name1" : "SHAW LUKE",
+	"Email":"sushma.sankineni@publicissapient.com"
+	"Mailing Zip":"560090",
+	"Mailing State": "WY"
+	"Remarks":"Testing Mailto object"
+	
+	}	
+	
+	}
