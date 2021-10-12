@@ -560,7 +560,6 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,Id FROM PUC_Code__c "
 				+ "where Legacy__c = 'NO' limit 1");
 
-//		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"')").get("Name").get(0);
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String districtValue="District01";
 
@@ -582,7 +581,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
 		
-		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+		String ownershipCreationData = testdata.MANUAL_PARCEL_CREATION_DATA;
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(ownershipCreationData,
 				"DataToCreateOwnershipRecord");
 
 		String mailToRecordCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
@@ -734,11 +734,11 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 					hashMapLandCharacteristicsData.get("Characteristics Screen"),
 					"SMAB-T3548: Verify Characteristics Screen of Child Parcel is inheritted from first Parent Parcel");
 
-//			objParcelsPage.openParcelRelatedTab(objParcelsPage.mailTo);
-//			HashMap<String, ArrayList<String>>	gridMailToDataHashMap = objMappingPage.getGridDataInHashMap();
-//			softAssert.assertContains(gridMailToDataHashMap.get("Formatted Name 1").get(0),
-//					hashMapMailToRecordData.get("Formatted Name1"),
-//					"SMAB-T3548: Verify Characteristics Screen of Child Parcel is inheritted from first Parent Parcel");
+			objParcelsPage.openParcelRelatedTab(objParcelsPage.mailTo);
+			HashMap<String, ArrayList<String>>	gridMailToDataHashMap = objMappingPage.getGridDataInHashMap();
+			softAssert.assertContains(gridMailToDataHashMap.get("Formatted Name 1").get(0),
+					hashMapMailToRecordData.get("Formatted Name1"),
+					"SMAB-T3548: Verify mail to of Child Parcel is inheritted from first Parent Parcel");
 			
 	        
 		   // Completing the work Item	

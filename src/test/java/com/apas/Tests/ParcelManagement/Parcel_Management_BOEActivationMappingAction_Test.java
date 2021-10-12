@@ -193,7 +193,8 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		Map<String, String> hashMapBOEACtivationMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformBOEMappingActionWithAllFields");
 		
-		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+		String ownershipCreationData = testdata.MANUAL_PARCEL_CREATION_DATA;
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(ownershipCreationData,
                 "DataToCreateOwnershipRecord");
 		
 		String mailToRecordCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
@@ -207,8 +208,8 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 				"DataToCreateLandCharacteristics");
 		
 		objMappingPage.login(users.SYSTEM_ADMIN);
-		objMappingPage.searchModule(PARCELS);
 		objMappingPage.closeDefaultOpenTabs();
+		objMappingPage.searchModule(PARCELS);
 		objMappingPage.waitForElementToBeVisible(10, objMappingPage.appLauncher);
 		
 		objMappingPage.globalSearchRecords(retiredAPNValue);
@@ -1046,7 +1047,6 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		    response = salesforceAPI.select(targetedApnquery);
 			softAssert.assertEquals(response.size(),0,"SMAB-T3464: Validate that there is no parcel relationship on Parent Parcel when Rejected the Work tem after Split Mapping Action");
 			
-		    // Step 15 : Switch to parent window and logout
 			objMappingPage.logout();
 		}
 		
@@ -1077,7 +1077,8 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 			Map<String, String> hashMapBOEMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 					"DataToPerformBOEMappingActionWithAllFields");
 			
-			Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+			String ownershipCreationData = testdata.MANUAL_PARCEL_CREATION_DATA;
+			Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(ownershipCreationData,
 	                "DataToCreateOwnershipRecord");
 			
 			String mailToRecordCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;

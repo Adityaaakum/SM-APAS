@@ -4,11 +4,5 @@
     "Reason code": "PM 85/25-26",
     "First non-Condo Parcel Number":"234-567-980",
     "Comments": "Perform Remap"         
-  },
-  
-  "DataToCreateOwnershipRecord": {
-    "Type": "Owner",
-    "Status": "Active",
-    "Ownership Percentage": "100"
   }
 }

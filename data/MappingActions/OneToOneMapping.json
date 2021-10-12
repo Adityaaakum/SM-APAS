@@ -24,10 +24,5 @@
     "Situs Unit Number": "56",
     "TRA":"0010009",
     "PUC": "01-SINGLE FAMILY RES"          
-  },
-  "DataToCreateOwnershipRecord": {
-    "Type": "Owner",
-    "Status": "Active",
-    "Ownership Percentage": "100"
   }
 }

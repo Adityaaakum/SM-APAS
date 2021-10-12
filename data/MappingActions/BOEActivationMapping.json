@@ -17,11 +17,6 @@
     "TRA":"123456",
     "PUC": "01-SINGLE FAMILY RES"
           
-  },
-  "DataToCreateOwnershipRecord": {
-    "Type": "Owner",
-    "Status": "Active",
-    "Ownership Percentage": "100"
   }
 
 

@@ -602,7 +602,7 @@ public class MappingPage extends ApasGenericPage {
 			}
 			
 			/**
-			 *  This method will delete existing mailTo instances  from the Parcel
+			 *  This method will delete existing Work item instances  from the Parcel
 			 * @param apn-Apn whose records needs to be deleted
 			 * @return
 			 * @throws Exception
