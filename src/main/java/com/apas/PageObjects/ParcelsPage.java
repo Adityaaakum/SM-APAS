@@ -34,7 +34,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String parcelMapInGISPortal = "Parcel Map in GIS Portal";
 
 	public String workItemTypeDropDownComponentsActionsModal = "Work Item Type";
-	public String referencaddParcelDetailseInputTextBoxComponentActionModal = "Reference";
+	public String referenceInputTextBoxComponentActionModal = "Reference";
 	public String descriptionInputTextBoxComponentActionModal = "Description";
 	public String dueDateInputTextBox = "Due_Date";
 	public String dovInputTextBox = "DOV";
@@ -721,7 +721,7 @@ public class ParcelsPage extends ApasGenericPage {
 	            ReportLogger.INFO("Added AV0 Records for APN= "+APN  );
 	            Thread.sleep(4000);
 			}
-		
+			
 			/*
 			 * This method is used to add few details on the parcel using the salesforce API
 			 * 
@@ -730,7 +730,7 @@ public class ParcelsPage extends ApasGenericPage {
 
 			public void addParcelDetails(String PUC, String shortLegalDescription, String district,
 					String neighborhoodReferencec, String TRA, String parcelSize,
-					HashMap<String, ArrayList<String>> listofParcels, String hashmapAPNfieldname) throws JSONException {
+					HashMap<String, ArrayList<String>> listofParcels, String hashmapAPNfieldname) throws JSONException{
 
 				jsonObject.put("PUC_Code_Lookup__c", PUC);
 				jsonObject.put("Short_Legal_Description__c", shortLegalDescription);
@@ -748,9 +748,6 @@ public class ParcelsPage extends ApasGenericPage {
 					});
 
 				}
-			}	                   
-	            
-	            
-	            
+			}
 
-}
+		}
