@@ -258,6 +258,7 @@ public class ParcelsPage extends ApasGenericPage {
 		
 		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
+		Thread.sleep(2000);
 		//waitForElementToBeClickable(selectOptionDropDownComponentsActionsModal);
 		//selectOptionFromDropDown(selectOptionDropDownComponentsActionsModal, "Create Work Item");
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
@@ -276,7 +277,7 @@ public class ParcelsPage extends ApasGenericPage {
 		if (dov != null) enter(dovInputTextBox, dov);
 		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
-		Thread.sleep(5000);
+		Thread.sleep(10000);
 
 		String workItemQuery = "SELECT Name FROM Work_Item__c where Description__c = '" + description + "' order by Name desc limit 1";
 		workItemNumber = objSalesforceAPI.select(workItemQuery).get("Name").get(0);
@@ -362,7 +363,7 @@ public class ParcelsPage extends ApasGenericPage {
 			Click(moretab);
 			Click(driver.findElement(By.xpath(xPath)));
 		}
-		Thread.sleep(5000);
+		Thread.sleep(8000);
 	}
 	
 	/**
@@ -463,6 +464,7 @@ public class ParcelsPage extends ApasGenericPage {
 			String timeStamp = String.valueOf(System.currentTimeMillis());
 			String description = dataMap.get("Description") + "_" + timeStamp;
 			
+			Thread.sleep(2000);
 			waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 			Click(getButtonWithText(componentActionsButtonText));
 			waitForElementToBeClickable(selectOptionDropdown);

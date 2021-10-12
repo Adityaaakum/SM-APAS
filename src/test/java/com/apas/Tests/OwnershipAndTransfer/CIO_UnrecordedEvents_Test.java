@@ -913,7 +913,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		String auditTrailName =objWorkItemHomePage.getElementText(objCIOTransferPage.CIOAuditTrail);
 		String auditTrailID=salesforceAPI.select("SELECT Id,Status__c,Name FROM Transaction_Trail__c where Name='"+auditTrailName+"'").get("Id").get(0);
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Transaction_Trail__c/"+auditTrailID+"/view");
-		objCIOTransferPage.waitUntilPageisReady(driver);
+		Thread.sleep(2000); //Added to handle regression failure
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Open", "SMAB-T3525: Validating that audit trail status should be open after submit for approval.");
 
 		//STEP 16-Navigating back to RAT screen and clicking on back quick action button
@@ -957,6 +957,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		//STEP 20-Validating WI and AUDIT Trail status after returned by supervisor.
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Returned", "SMAB-T3525: Validating that Back button navigates back to WI page ");
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Transaction_Trail__c/"+auditTrailID+"/view");
+		Thread.sleep(2000); //Added to handle regression failure
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Open", "SMAB-T3525: Validating that audit trail status should be open after submit for approval.");
 		objCIOTransferPage.logout();
 		Thread.sleep(5000);
@@ -1014,8 +1015,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		//STEP 24-Validating that WI and audit trail status after approving the transfer activity.
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Completed", "SMAB-T3525: Validating that WI status should be completed after approval by supervisor.");
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Transaction_Trail__c/"+auditTrailID+"/view");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Completed", "SMAB-T3525: Validating that audit trail status should be open after submit for approval.");
-		
+		Thread.sleep(2000); //Added to handle regression failure
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Completed", 
+				"SMAB-T3525: Validating that audit trail status should be open after submit for approval.");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Processed By", "Additional Information"), salesforceAPI.select("SELECT Name FROM User where Username ='" + userNameForCioStaff + "'").get("Name").get(0),
 				"SMAB-T3929: Validating the 'Processed By' field value in Audit Trail record");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Final Approver", "Additional Information"), salesforceAPI.select("SELECT Name FROM User where Username ='" + userNameForCioSupervisor + "'").get("Name").get(0),

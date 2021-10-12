@@ -139,7 +139,7 @@ public class MappingPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//div[contains(@id,'salesforce-lightning-tooltip-bubble')]")
 	public WebElement helpIconToolTipBubble;
-
+	
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Legal Description*']")
 	public WebElement legalDescriptionFieldSecondScreen;
 

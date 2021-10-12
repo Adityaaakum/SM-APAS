@@ -1763,7 +1763,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3341: Validate the status on New Ownership record");
 		softAssert.assertEquals(HashMapLatestOwner.get("Status").get(i==0?i+1:i-1), "Retired",
 				"SMAB-T3341: Validate the status on Old Ownership record");
-		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(i==0?i+1:i-1), "7/19/2000",
+		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(i==0?i+1:i-1), "7/19/1950",
 				"SMAB-T3764: Validate the status on Old Ownership record");
 		
 		String activeOwnershipStartDate = HashMapLatestOwner.get("Ownership Start Date").get(i);
