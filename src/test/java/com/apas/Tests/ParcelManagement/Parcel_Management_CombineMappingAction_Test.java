@@ -6,7 +6,6 @@ package com.apas.Tests.ParcelManagement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
