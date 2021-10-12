@@ -592,7 +592,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					Click(getButtonWithText(enterButtonText));
 					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
 					Thread.sleep(1000);
-					return;}
+					return ;}
 					waitForElementToBeVisible(others[0],10);
 					Click(others[0]);
 					Thread.sleep(1000);
