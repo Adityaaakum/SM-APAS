@@ -780,8 +780,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 			//updating PUC details
 			salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
-			String mappingActionCreationData =  testdata.ONE_TO_ONE_MAPPING_ACTION;
 
+			String mappingActionCreationData =  testdata.ONE_TO_ONE_MAPPING_ACTION;
 			Map<String, String> hashMapOneToOneParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 					"DataToPerformOneToOneMappingActionWithAllFields");
 			String situsCityName = hashMapOneToOneParcelMappingData.get("City Name");
@@ -1251,7 +1251,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		 *@param loginUser
 		 * @throws Exception
 		 */
-		@Test(description = "SMAB-T3283:Verify that user is able to perform One To One mapping action "
+		@Test(description = "SMAB-T3283,SMAB-T3669:Verify that user is able to perform One To One mapping action "
 				+ "having Divided Interest parcel as Parent APN ", dataProvider = "loginMappingUser", 
 				dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
 		public void ParcelManagement_VerifyOneToOneDividedInterestParcelGeneration(String loginUser) throws Exception {
@@ -1354,31 +1354,31 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			
 			objParcelsPage.addParcelDetails("", "", "", "", "", "", gridDataHashMap, "APN");
 			driver.navigate().refresh();
-			Thread.sleep(5000);
+			objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.submittedForApprovalOptionInTimeline);
             objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
-			String msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+			String errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 			objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-			softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description, Parcel Size (SqFt), TRA, District / Neighborhood Code, PUC. Please navigate to the mapping custom screen to provide the necessary information.",
-					"matched");
+			softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description, Parcel Size (SqFt), TRA, District / Neighborhood Code, PUC. Please navigate to the mapping custom screen to provide the necessary information.",
+					"SMAB-T3669 :Expected error message is displayed successfully");
 
 			objParcelsPage.addParcelDetails("", "Legal", districtValue, responseNeighborhoodDetails.get("Id").get(0),
 					responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
-			msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+			errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 			objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-			softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : PUC. Please navigate to the mapping custom screen to provide the necessary information.",
-					"matched");
+			softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : PUC. Please navigate to the mapping custom screen to provide the necessary information.",
+					"SMAB-T3669 :Expected error message is displayed successfully");
 			
 			objParcelsPage.addParcelDetails(responsePUCDetails.get("Id").get(0), "", districtValue, responseNeighborhoodDetails.get("Id").get(0),
 					responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
-			msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+			errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 			objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-			softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description. Please navigate to the mapping custom screen to provide the necessary information.",
-					"matched");
+			softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description. Please navigate to the mapping custom screen to provide the necessary information.",
+					"SMAB-T3669 :Expected error message is displayed successfully");
 
 			objWorkItemHomePage.logout();
 

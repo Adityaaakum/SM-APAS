@@ -2055,7 +2055,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3728,SMAB-T3816,SMAB-T3727: Verify many to many audit trail", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+	@Test(description = "SMAB-T3728,SMAB-T3816,SMAB-T3727,SMAB-T3647: Verify many to many audit trail", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
 
 	public void ParcelManagement_VerifyAuditTrailForSplitMappingAction(String loginUser) throws Exception {
 
@@ -2146,6 +2146,14 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	       }
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(10,objMappingPage.performAdditionalMappingButton);
+			
+		gridDataHashMap =objMappingPage.getGridDataInHashMap();
+		String childAPNNumber =gridDataHashMap.get("APN").get(1);
+		String childmap = childAPNNumber.substring(0,3);
+		Boolean childMapBook = childmap.matches("(10[0-9]|1[1-9][0-9])");
+		softAssert.assertTrue(childMapBook,"SMAB-T3647:Child Map page is between 100-199");
+		int totalChildSize =Integer.parseInt(gridDataHashMap.get("Parcel Size(SQFT)*").get(0))+Integer.parseInt(gridDataHashMap.get("Parcel Size(SQFT)*").get(1));
+		softAssert.assertTrue(totalChildSize!=Integer.parseInt(parcelSize), "SMAB-T3647: Total parent size is not equal to total child parcel size");
 
 		driver.switchTo().window(parentWindow);
         objWorkItemHomePage.logout();
@@ -2158,6 +2166,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
         
         //Completing the workItem
         objWorkItemHomePage.completeWorkItem(); 
+        String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+		softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3647: Validation WI completed successfully");
         driver.navigate().refresh(); 
         objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.linkedItemsWI, 10);
 		objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsWI);

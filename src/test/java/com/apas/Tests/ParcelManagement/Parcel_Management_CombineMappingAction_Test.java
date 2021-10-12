@@ -6,6 +6,7 @@ package com.apas.Tests.ParcelManagement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -2518,7 +2519,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2884, SMAB-T2896: Verify generation of Interim Parcels for Combine Mapping Action and validation around it", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2884, SMAB-T2896,SMAB-T3669: Verify generation of Interim Parcels for Combine Mapping Action and validation around it", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyGenerationOfInterimParcelForCombineMappingAction(String loginUser) throws Exception {
 		
@@ -2716,31 +2717,31 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
  
 		objParcelsPage.addParcelDetails("", "", "", "", "", "", gridDataHashMap, "APN");
 		driver.navigate().refresh();
-		Thread.sleep(5000);
+		objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.submittedForApprovalOptionInTimeline);
         objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
-		String msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+		String errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-		softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description, Parcel Size (SqFt), TRA, District / Neighborhood Code, PUC. Please navigate to the mapping custom screen to provide the necessary information.",
-				"matched");
+		softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description, Parcel Size (SqFt), TRA, District / Neighborhood Code, PUC. Please navigate to the mapping custom screen to provide the necessary information.",
+				"SMAB-T3669 :Expected error message is displayed successfully");
 
 		objParcelsPage.addParcelDetails("", "Legal", districtValue, responseNeighborhoodDetails.get("Id").get(0),
 				responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
-		msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+		errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-		softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : PUC. Please navigate to the mapping custom screen to provide the necessary information.",
-				"matched");
+		softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : PUC. Please navigate to the mapping custom screen to provide the necessary information.",
+				"SMAB-T3669 :Expected error message is displayed successfully");
 		
 		objParcelsPage.addParcelDetails(responsePUCDetails.get("Id").get(0), "", districtValue, responseNeighborhoodDetails.get("Id").get(0),
 				responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
-		msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+		errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-		softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description. Please navigate to the mapping custom screen to provide the necessary information.",
-				"matched");
+		softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description. Please navigate to the mapping custom screen to provide the necessary information.",
+				"SMAB-T3669 :Expected error message is displayed successfully");
 
 		objWorkItemHomePage.logout();
 	
@@ -2978,7 +2979,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3728,SMAB-T3816: Verify many to many audit trail", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+	@Test(description = "SMAB-T3728,SMAB-T3816,SMAB-T3647: Verify many to many audit trail", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
 
 	public void ParcelManagement_VerifyAuditTrailForCombineMappingAction(String loginUser) throws Exception {
 
@@ -2991,6 +2992,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
+		
+		int parentParcelcount = responseAPNDetails.get("Name").size();
 
 		String apnId1=responseAPNDetails.get("Id").get(0);
 		String apnId2=responseAPNDetails.get("Id").get(1);
@@ -3020,6 +3023,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObjectNew);
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonParcelObjectNew);
+		
+		HashMap<String, ArrayList<String>> GeneratedAPN = salesforceAPI.select("SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and (Name like '1%') and Status__c = 'Active' ORDER BY Name DESC Limit 1");
+		String apn=GeneratedAPN.get("Name").get(0);
+		String apnInSystem[] = apn.split("-");
+		String updateNextApn = apnInSystem[0]+apnInSystem[1]+apnInSystem[2].substring(0,2)+
+					String.valueOf(Integer.parseInt(apnInSystem[2].substring(2)) +2);
 		
 		String concatenateAPN = apn1+","+apn2;
 		ReportLogger.INFO("Parent APNs : " + concatenateAPN);
@@ -3055,6 +3064,20 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		objMappingPage.fillMappingActionForm(hashMapCombineActionMappingData);
 		objMappingPage.waitForElementToBeVisible(10,objMappingPage.generateParcelButton);
+		objMappingPage.editGridCellValue(objMappingPage.apn,updateNextApn );
+		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace,"100" );
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+		objMappingPage.editActionInMappingSecondScreen(hashMapCombineActionMappingData);
+		objMappingPage.waitForElementToBeVisible(10,objMappingPage.generateParcelButton);
+		
+		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
+		String childAPNNumber =gridDataHashMap.get("APN").get(0);
+		String childmap = childAPNNumber.substring(0,3);
+		Boolean childMapBook = childmap.matches("(10[0-9]|1[1-9][0-9])");
+		softAssert.assertTrue(childMapBook,"SMAB-T3647:Child Map page is between 100-199");
+		int totalChildSize =Integer.parseInt(gridDataHashMap.get("Parcel Size (SQFT)*").get(0));
+		softAssert.assertTrue(totalChildSize!=Integer.parseInt(parcelSize)*parentParcelcount, "SMAB-T3647: Total parent size is not equal to total child parcel size");
 	       
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(10,objMappingPage.performAdditionalMappingButton);
@@ -3070,6 +3093,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         
         //Completing the workItem
         objWorkItemHomePage.completeWorkItem(); 
+		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+	    softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3647: Validation WI completed successfully");
         driver.navigate().refresh(); 
         objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.linkedItemsWI, 10);
         objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsWI);

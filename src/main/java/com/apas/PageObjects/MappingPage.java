@@ -89,6 +89,7 @@ public class MappingPage extends ApasGenericPage {
 	public String updateParcelsButton = "//button[text()='Update Parcel(s)']";
 	public String updateParcelButtonLabelName = "Update Parcel(s)";
 	public String parcelSizeColumnSecondScreen = "Parcel Size(SQFT)*";
+	public String apn = "APN";
 	public String parcelSizeColumnSecondScreenWithSpace = "Parcel Size (SQFT)*";
 	public final String DOC_CERTIFICATE_OF_COMPLIANCE="CC";
 	public final String DOC_LOT_LINE_ADJUSTMENT="LL";

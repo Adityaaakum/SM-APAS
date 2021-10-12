@@ -725,7 +725,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2716:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"brand new parcel\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2716,SMAB-T3669:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"brand new parcel\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_ReturnToCustomScreen_BrandNewParcelMappingAction_NoPrimarySitusTRA(String loginUser) throws Exception {
 		String childAPNPUC;
@@ -815,13 +815,16 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),childAPN,
 				"SMAB-T2716: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
+		//Below validation is no longer valid as Dist/Nbhd is not inherited
 		//softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),districtNeighborhood,
 				//"SMAB-T2716: Validation that  System populates District/Neighborhood in return to custom screen  from the parent parcel");
+		//Below validation is no longer valid as Situs is not inherited
 		//softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),situs.replaceFirst("\\s+", ""),"SMAB-T2716: Validation that  System populates Situs in return to custom screen  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),reasonCode,
 				"SMAB-T2716: Validation that  System populates reason code in return to custom screen from the sane reason code that was entered while perfroming mapping action");
 		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),legalDescription,
 				"SMAB-T2716: Validation that  System populates Legal Description in return to custom screen from the parent parcel");
+		//Below validation is no longer valid as TRA is not inherited
 		//softAssert.assertEquals(gridDataHashMap.get("TRA*").get(0),tra,
 				//"SMAB-T2716: Validation that  System populates TRA in return to custom screen from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),childAPNPUC,
@@ -843,7 +846,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		
 		driver.switchTo().window(parentWindow);
 		driver.navigate().refresh();
-		Thread.sleep(5000);
+		objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		objParcelsPage.addParcelDetails(responsePUCDetails.get("Id").get(0), legalDescriptionValue, districtValue, responseNeighborhoodDetails.get("Id").get(0),
 				responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
@@ -859,28 +862,28 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objParcelsPage.addParcelDetails("", "", "", "", "", "", gridDataHashMap, "APN");
         objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
-		String msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+		String errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-		softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description, Parcel Size (SqFt), TRA, District / Neighborhood Code, PUC. Please navigate to the mapping custom screen to provide the necessary information.",
-				"matched");
+		softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description, Parcel Size (SqFt), TRA, District / Neighborhood Code, PUC. Please navigate to the mapping custom screen to provide the necessary information.",
+				"SMAB-T3669 :Expected error message is displayed successfully");
 		
 		objParcelsPage.addParcelDetails("", "Legal", districtValue, responseNeighborhoodDetails.get("Id").get(0),
 				responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
-		msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+		errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-		softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : PUC. Please navigate to the mapping custom screen to provide the necessary information.",
-				"matched");
+		softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : PUC. Please navigate to the mapping custom screen to provide the necessary information.",
+				"SMAB-T3669 :Expected error message is displayed successfully");
 		
 		objParcelsPage.addParcelDetails(responsePUCDetails.get("Id").get(0), "", districtValue, responseNeighborhoodDetails.get("Id").get(0),
 				responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
-		msg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+		errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-		softAssert.assertEquals(msg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description. Please navigate to the mapping custom screen to provide the necessary information.",
-				"matched");
+		softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description. Please navigate to the mapping custom screen to provide the necessary information.",
+				"SMAB-T3669 :Expected error message is displayed successfully");
 		
 		objWorkItemHomePage.logout();
 	}
