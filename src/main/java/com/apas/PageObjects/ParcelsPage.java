@@ -34,7 +34,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String parcelMapInGISPortal = "Parcel Map in GIS Portal";
 
 	public String workItemTypeDropDownComponentsActionsModal = "Work Item Type";
-	public String referenceInputTextBoxComponentActionModal = "Reference";
+	public String referencaddParcelDetailseInputTextBoxComponentActionModal = "Reference";
 	public String descriptionInputTextBoxComponentActionModal = "Description";
 	public String dueDateInputTextBox = "Due_Date";
 	public String dovInputTextBox = "DOV";
@@ -721,6 +721,12 @@ public class ParcelsPage extends ApasGenericPage {
 	            ReportLogger.INFO("Added AV0 Records for APN= "+APN  );
 	            Thread.sleep(4000);
 			}
+		
+		/*
+		 * This method is used to add few details on the parcel using the salesforce API 
+		 * 
+		 * 
+		 */
 			
 		public void addParcelDetails(String PUC, String shortLegalDescription, String district,
 				String neighborhoodReferencec, String TRA, String parcelSize,
