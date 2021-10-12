@@ -6,7 +6,7 @@ import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.relevantcodes.extentreports.LogStatus;
 
-
+import org.json.JSONException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -732,8 +732,35 @@ public class ParcelsPage extends ApasGenericPage {
 	            Thread.sleep(4000);
 			}
 			
-//This method will create mail to record on parcel
-		
+			/*
+			 * This method is used to add few details on the parcel using the salesforce API
+			 * 
+			 * 
+			 */
+
+			public void addParcelDetails(String PUC, String shortLegalDescription, String district,
+					String neighborhoodReferencec, String TRA, String parcelSize,
+					HashMap<String, ArrayList<String>> listofParcels, String hashmapAPNfieldname) throws JSONException{
+
+				jsonObject.put("PUC_Code_Lookup__c", PUC);
+				jsonObject.put("Short_Legal_Description__c", shortLegalDescription);
+				jsonObject.put("District__c", district);
+				jsonObject.put("Neighborhood_Reference__c", neighborhoodReferencec);
+				jsonObject.put("TRA__c", TRA);
+				jsonObject.put("Lot_Size_SQFT__c", parcelSize);
+
+				if (!listofParcels.isEmpty()) {
+					listofParcels.get(hashmapAPNfieldname).stream().forEach(Apn -> {
+						objSalesforceAPI.update(
+								"Parcel__c", objSalesforceAPI
+										.select("select Id from parcel__c where name='" + Apn + "'").get("Id").get(0),
+								jsonObject);
+					});
+
+				}
+			}
+			
+		//This method will create mail to record on parcel
 		public void createMailToRecord(Map<String, String> dataToCreateMailTo,String apn) throws  Exception {		 		 
 
 			try {
@@ -778,9 +805,6 @@ public class ParcelsPage extends ApasGenericPage {
 			} catch (Exception e) {
 				ReportLogger.INFO("SORRY!! CHARACTERISTICS RECORD CANNOT BE GENERATED");
 			}
-		}	                       
-	            
-	            
-	            
+		}
 
-}
+	}
