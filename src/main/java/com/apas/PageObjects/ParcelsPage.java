@@ -759,7 +759,8 @@ public class ParcelsPage extends ApasGenericPage {
 
 				}
 			}
-
+			
+		//This method will create mail to record on parcel
 		public void createMailToRecord(Map<String, String> dataToCreateMailTo,String apn) throws  Exception {		 		 
 
 			try {
