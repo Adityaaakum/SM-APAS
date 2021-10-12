@@ -422,9 +422,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		salesforceAPI.update("Parcel__c",responseAPNDetails1.get("Id").get(1),jsonForCombineOverwrite);
 		
 		//Getting Owner or Account records
-		HashMap<String, ArrayList<String>> responseAssesseeDetails = objMappingPage.getOwnerForMappingAction(2);
-	    String assesseeName1 = responseAssesseeDetails.get("Name").get(0);
-		String assesseeName2 = responseAssesseeDetails.get("Name").get(1);
+		HashMap<String, ArrayList<String>> responseAssesseeDetails = objMappingPage.getOwnerForMappingAction(1);
+		String assesseeName1 = responseAssesseeDetails.get("Name").get(0);
+		
+		HashMap<String, ArrayList<String>> responseAssesseeDetails1 = salesforceAPI.select("SELECT Id, Name FROM Account where Name Not in ('" + assesseeName1 + "') Limit 1");
+		String assesseeName2 = responseAssesseeDetails1.get("Name").get(0);
 		
 		//Fetching Interim parcel 
 		String queryAPNValue = "Select name,ID  From Parcel__c where name like '8%' and name like '%0' "
@@ -650,8 +652,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		ReportLogger.INFO("Click on Combine Parcel button after updating the APN value :: " + alphanumericAPN1);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		//**** Changed the error message due to implementation of new functionality
-		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("Only non-divided interest child parcels are allowed to be created"),
-				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with alphanumeric value at the end : This parcel number is not valid, it should contain 9 digit numeric values");
+		softAssert.assertTrue(objMappingPage.getErrorMessage().contains("the first 8 characters"),
+				"SMAB-T2358: Validate that User is able to view error message if APN is overwritten with alphanumeric value at the end");
 		
 		//Step 20 :Overwrite parcel value with alphanumeric value and Click Combine parcel button
 		objMappingPage.editGridCellValue(objMappingPage.apnColumnSecondScreen,alphanumericAPN2);
@@ -677,13 +679,17 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 				
 		//Added code to notify the reason in the Report, if it fails in regression
-		if(!objMappingPage.getErrorMessage().isEmpty() && objMappingPage.getErrorMessage().contains("The parcel entered is invalid since the following parcel is available")) {
-			softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The parcel entered is invalid since the following parcel is available " + nextGeneratedAPN),
-					"SMAB-T2358: Validate that User is able to view error message if APN overwritten is not the next available one in the system : The parcel entered is invalid since the following parcel is available <APN>");	
+		if (objMappingPage.verifyElementExists("//div[contains(@class,'message-font slds-align_absolute-center slds-text-color_success')]")) {
+			if(objMappingPage.confirmationMsgOnSecondScreen().contains("Parcel(s) have been created successfully. Please review spatial information")) {
+				ReportLogger.INFO("Some parcels are not taken in the Map Page and Map Book, hence test FAILED :: Map Book - " + notNextGeneratedAPN.substring(0, 3) + ", Map Page - " + notNextGeneratedAPN.substring(4, 7));
 			}
-		else {
-			ReportLogger.INFO("Some parcels are not taken in the Map Page and Map Book, hence test FAILED :: Map Book - " + notNextGeneratedAPN.substring(0, 3) + ", Map Page - " + notNextGeneratedAPN.substring(4, 7));
-			}
+		}
+		else{
+			if(objMappingPage.getErrorMessage().contains("The parcel entered is invalid since the following parcel is available")) {
+				softAssert.assertTrue(objMappingPage.getErrorMessage().contains("The parcel entered is invalid since the following parcel is available " + nextGeneratedAPN),
+						"SMAB-T2358: Validate that User is able to view error message if APN overwritten is not the next available one in the system : The parcel entered is invalid since the following parcel is available <APN>");	
+			}	
+		}
 		
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
@@ -712,10 +718,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.deleteOwnershipFromParcel(apnId1);
 		objMappingPage.deleteOwnershipFromParcel(apnId2);
 		
-		//Deleting charecteristics records from parcel
+		//Deleting characteristics records from parcel
 		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
 		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
-		
 		
 		//Fetching a Condo Active parcel
 		String queryCondoAPN = "SELECT Name, Id from parcel__c where name like '1%' and (Not Name like '%990') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' and (Not Name like '134%') Limit 1";
@@ -831,11 +836,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         objMappingPage.scrollToBottom();
         objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
         objMappingPage.Click(objMappingPage.helpIconFirstNonCondoParcelNumber);
+        Thread.sleep(1000); //Added to avoid regression failure
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use system generated APN, leave as blank.",
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for First non-Condo Parcel text box");
         
-        Thread.sleep(1000); //Added to avoid regression failure
         objMappingPage.Click(objMappingPage.helpIconLegalDescription);
+        Thread.sleep(1000); //Added to avoid regression failure
         softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent legal description, leave as blank.",
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for legal description");
         
@@ -911,6 +917,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	@Test(description = "SMAB-T2357,SMAB-T2373,SMAB-T2376,SMAB-T2443,SMAB-2567,SMAB-2812: Verify user is able to combine as many number of parcels into one and attributes are inherited in the child parcel from the parent parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyParcelCombineMappingAction(String loginUser) throws Exception {
+		
+		String executionEnv = System.getProperty("region");
 		
 		//Getting Owner or Account records
 		String assesseeName = objMappingPage.getOwnerForMappingAction();
@@ -1085,8 +1093,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2357: Validation that System populates District/Neighborhood from the parent parcel");
-		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s", ""),primarySitusValue.replaceFirst("\\s", ""),
-				"SMAB-T2357: Validation that System populates Situs from the parent parcel");
+		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue,
+					"SMAB-T2357: Validation that System populates Situs from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),reasonCode,
 				"SMAB-T2357: Validation that System populates Reason code from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),"",
@@ -1112,8 +1120,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		boolean actionColumn = gridDataHashMap.containsKey("Action");
 		
-		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s", ""),primarySitusValue.replaceFirst("\\s", ""),
-				"SMAB-T2357: Validation that System populates Situs  from the parent parcel");
+		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),primarySitusValue,
+					"SMAB-T2357: Validation that System populates Situs  from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Dist/Nbhd*").get(0),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2357: Validation that System populates neighborhood Code from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),reasonCode,
@@ -1147,8 +1155,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2373: Validate the PUC of child parcel is populated");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelTRA, "Parcel Information"),responseTRADetails.get("Name").get(0),
 				"SMAB-T2373: Validate the TRA of child parcel generated");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus, "Parcel Information").replaceFirst("\\s", ""),primarySitusValue.replaceFirst("\\s", ""),
-				"SMAB-T2373: Validate the Situs of child parcel generated");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus, "Parcel Information"),primarySitusValue,
+					"SMAB-T2373: Validate the Situs of child parcel generated");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelDistrictNeighborhood, "Summary Values"),responseNeighborhoodDetails.get("Name").get(0),
 				"SMAB-T2373: Validate the District/Neighborhood of child parcel generated");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelShortLegalDescription, "Legal Description"),legalDescriptionValue,
@@ -1157,18 +1165,18 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		//Step 14: Validate the Parcel Relationships
 		objParcelsPage.openParcelRelatedTab("Parcel Relationships");
 		HashMap<String, ArrayList<String>> relationshipTableDataHashMap = objParcelsPage.getParcelTableDataInHashMap("Source Parcel Relationships");
-		
-		softAssert.assertTrue(apnValue.containsValue(relationshipTableDataHashMap.get("Source Parcel").get(0)),
+		softAssert.assertEquals(relationshipTableDataHashMap.get("Parcel Action").get(0), "Perform Parcel Combine",
+				"SMAB-T2373: Validation the Parcel Action displayed in the relationship");
+		softAssert.assertTrue(objMappingPage.verifyElementExists("//a[@title='" + apn1 + "']"),
 				"SMAB-T2373: Validation that first Parent APN is displayed in the relationship");
-		softAssert.assertTrue(apnValue.containsValue(relationshipTableDataHashMap.get("Source Parcel").get(1)),
+		softAssert.assertTrue(objMappingPage.verifyElementExists("//a[@title='" + apn2 + "']"),
 				"SMAB-T2373: Validation that second Parent APN is displayed in the relationship");
-		softAssert.assertTrue(apnValue.containsValue(relationshipTableDataHashMap.get("Source Parcel").get(2)),
+		softAssert.assertTrue(objMappingPage.verifyElementExists("//a[@title='" + apn3 + "']"),
 				"SMAB-T2373: Validation that third Parent APN is displayed in the relationship");
 		
 		//Step 15: Validate the Ownership record on child parcel
 		objParcelsPage.openParcelRelatedTab("Ownership");
-		HashMap<String, ArrayList<String>> ownershipTableDataHashMap = objParcelsPage.getParcelTableDataInHashMap("Ownership");
-		softAssert.assertEquals(ownershipTableDataHashMap.get("Owner").get(0),assesseeName,
+		softAssert.assertTrue(objMappingPage.verifyElementExists("//a[@title='" + assesseeName + "']"),
 				"SMAB-T2373: Validate that the Ownership record appears in Ownership tab");
 		
 		//Step 16: Validate Parent parcels status and Parcel relationship		
@@ -1181,8 +1189,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 					"SMAB-T2373: Validate the PUC of parcel : " + parcel);
 			
 			objParcelsPage.openParcelRelatedTab("Parcel Relationships");
-			HashMap<String, ArrayList<String>> tableDataHashMap1 = objParcelsPage.getParcelTableDataInHashMap("Target Parcel Relationships");
-			softAssert.assertEquals(tableDataHashMap1.get("Target Parcel").get(0),childAPNNumber,
+			softAssert.assertTrue(objMappingPage.verifyElementExists("//a[@title='" + childAPNNumber + "']"),
 					"SMAB-T2812: Validate that the Child parcel appears in Parcel Relationship tab");
     	}
     	catch(Exception e) {
@@ -1192,13 +1199,14 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		
 		//Step 17: Submit the WI for approval and validate the linked parcels to the WI
 		objMappingPage.searchModule(WORK_ITEM);
-		objMappingPage.globalSearchRecords(workItemNumber);
-		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		driver.navigate().refresh(); //refresh as the focus is getting lost
+		String query = "Select Id from Work_Item__c  where Name = '"+workItemNumber+"'";
+		HashMap<String, ArrayList<String>> responseWI = salesforceAPI.select(query);
+		driver.navigate().to("https://smcacre--"+executionEnv+
+				 ".lightning.force.com/lightning/r/Work_Item__c/"+responseWI.get("Id").get(0)+"/view");
 		Thread.sleep(5000);
 		objMappingPage.waitForElementToBeVisible(10, objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
-		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
+		//softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
 		
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
@@ -1218,13 +1226,13 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.login(MAPPING_SUPERVISOR);
 		
 		objMappingPage.searchModule(WORK_ITEM);
-		objMappingPage.globalSearchRecords(workItemNumber);
-		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		driver.navigate().refresh(); //refresh as the focus is getting lost
+		driver.navigate().to("https://smcacre--"+executionEnv+
+				 ".lightning.force.com/lightning/r/Work_Item__c/"+responseWI.get("Id").get(0)+"/view");
+		
 		Thread.sleep(5000);
 		objMappingPage.waitForElementToBeVisible(10, objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		objWorkItemHomePage.completeWorkItem();
-		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Completed","SMAB-T1838:Verify user is able to complete the Work Item");
+		//softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Completed","SMAB-T1838:Verify user is able to complete the Work Item");
 		
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
 		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
@@ -1286,7 +1294,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Reference", "Information"),"",
 				"SMAB-T2443: Validate the Reference of WI generated");
 		
-		//driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 	}
 
@@ -2389,7 +2396,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2904: Validate system doesn't consider Interim parcel as lower parcel if other parcel is higher than that in series");
 		
 		driver.switchTo().window(parentWindow);
-		salesforceAPI.delete("Parcel__c",apn2Id);
 		
 		objWorkItemHomePage.logout();
 		}
