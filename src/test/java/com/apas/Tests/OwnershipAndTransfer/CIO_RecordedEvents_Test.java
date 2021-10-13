@@ -180,19 +180,15 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		// login with CIO STAFF
 
-		objMappingPage.login(loginUser);
-		Thread.sleep(3000);
-		salesforceAPI.update("Work_Item__c",
-				"SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c",
-				"In Progress");
+		objMappingPage.login(loginUser);			
 		objCioTransfer.generateRecorderJobWorkItems(objCioTransfer.DOC_DEED, 1);
 
 		// Query to fetch WI
 
-		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";
+		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'   order by createdDate desc limit 1";
 		String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
 		objMappingPage.globalSearchRecords(workItemNo);
-		Thread.sleep(5000);
+		objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.inProgressOptionInTimeline,10);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
@@ -226,6 +222,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.newButton));
+		objCioTransfer.waitForElementToBeVisible(10,objCioTransfer.formattedName1Label);
 		objCioTransfer.enter(objCioTransfer.formattedName1Label,
 				hashMapOwnershipAndTransferCreationData.get("Formatted Name1"));
 		objCioTransfer.enter(objCioTransfer.startDate, hashMapOwnershipAndTransferCreationData.get("Start Date"));
@@ -245,24 +242,25 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.newButton);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.newButton));
 		objCioTransfer.enter(objCioTransfer.LastNameLabel,
-				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
-		objCioTransfer.enter(objCioTransfer.OwnershipStartDate,
-				hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"));
-		objCioTransfer.enter(objCioTransfer.OwnershipEndDate, "7/15/2021");
+				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));		
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+		objCioTransfer.waitForElementToBeVisible(10,objCioTransfer.LastNameLabel);
 		softAssert.assertContains(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.LastNameLabel),
 				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"),
-				"SMAB-T3281: Verify user is  able to save mail to record with enddate greater than start date,as by default DOR is taken as a ownership start date");
+				"SMAB-T3281: Verify user is  able to save grantee record with enddate greater than start date,as by default DOR is taken as a ownership start date");
 		softAssert.assertContains(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.Status), "Active",
 				"SMAB-T3281: Verifying that status of grantee is active");
 
 		// Editing the grantee record to make ownership end date lesser than ownership
 		// start date
 
-		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.Edit);
+		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.getButtonWithText(objCioTransfer.Edit));
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.Edit));
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.OwnershipEndDate);
 		objCioTransfer.enter(objCioTransfer.OwnershipStartDate,
 				hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"));
+		objCioTransfer.enter(objCioTransfer.OwnershipEndDate,
+				"7/15/2021");
 
 		softAssert.assertContains(objCioTransfer.saveRecordAndGetError(), "Start Date",
 				"SMAB-T3281: Verify user is not able to save grantee  record with ownership enddate less than ownership start date");
@@ -547,6 +545,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		driver.navigate().to("https://smcacre--" + execEnv
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.nextButton);
 		objCioTransfer.enter(objCioTransfer.calculateOwnershipRetainedFeld, "50");
@@ -563,7 +562,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ "" + "/related/CIO_Transfer_Mail_To__r/view");
 		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.newButton);
 
-		HashMap<String, ArrayList<String>> hashMapcopyTomailTo = objCioTransfer.getGridDataForRowString("1");
+		HashMap<String, ArrayList<String>> hashMapcopyTomailTo = objCioTransfer.getGridDataInHashMap();
 
 		// STEP 14-Validating the formatted name 1 for mail to record
 
@@ -2381,14 +2380,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objMappingPage.login(users.SYSTEM_ADMIN);
 		objMappingPage.searchModule(PARCELS);
-		salesforceAPI.update("Work_Item__c",
-				"SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c",
-				"In Progress");
+		
 		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
 
 		// STEP 2-Query to fetch WI
 
-		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";
+		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'  And status__c='In pool' order by createdDate desc limit 1";
 		String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
 		objMappingPage.globalSearchRecords(workItemNo);
 		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
