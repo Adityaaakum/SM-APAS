@@ -241,7 +241,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	
 	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='EventID']//following::a[@target='_blank']")
 	public WebElement eventIDOnTransferActivityLabel;
-	
+		
 	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
