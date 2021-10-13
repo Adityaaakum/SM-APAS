@@ -446,7 +446,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {		 		 
 			
 				try {
-					Thread.sleep(4000);
+					Thread.sleep(5000);
 					Click(getButtonWithText(copyToMailToButtonLabel));
 					waitForElementToDisappear(formattedName1, 5);
 					Click(formattedName1);
@@ -506,7 +506,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
 		 {
 				try {
-					Thread.sleep(4000);
+					Thread.sleep(6000);
 					String execEnv = System.getProperty("region");
 					driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/"
 							+ recordeAPNTransferID + "/related/CIO_Transfer_Grantee_New_Ownership__r/view");

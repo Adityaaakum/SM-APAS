@@ -737,7 +737,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 
 		// STEP 8-Creating the new grantee
-
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,10);
 		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
 				+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
@@ -747,6 +747,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		driver.navigate().to("https://smcacre--" + execEnv
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,10);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.nextButton);
 		objCioTransfer.enter(objCioTransfer.calculateOwnershipRetainedFeld, "50");
@@ -831,7 +832,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.transferCodeLabel),
 					finalEventCode, "SMAB-T3377,SMAB-T10081: Verfyfing the status of the CIO transfer");
 			objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.quickActionButtonDropdownIcon);
-			objCioTransfer.clickQuickActionButtonOnTransferActivity(null,objCioTransfer.quickActionButtonDropdownIcon);
+			objCioTransfer.clickQuickActionButtonOnTransferActivity(null,objCioTransfer.quickActionOptionBack);
 
 			// Navigating to WI from back button
 			objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
@@ -1054,8 +1055,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 			driver.navigate().to("https://smcacre--" + execEnv
 					+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+			objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.calculateOwnershipButtonLabel);
 			objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
-			objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.nextButton);
+			objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.nextButton);
 			objCioTransfer.enter(objCioTransfer.calculateOwnershipRetainedFeld, "50");
 			objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
 
@@ -1140,6 +1142,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 			// STEP 14 : Verifying transfer code has changed after approval and equals to
 			// autoconfirm counterpart of the initial code
+			objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.quickActionButtonDropdownIcon);
 
 			softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.transferCodeLabel),
 					finalEventCode, "SMAB-T3377,SMAB-T10081: Verfyfing the status of the CIO transfer");
@@ -1153,6 +1156,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			objMappingPage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
 
 			// STEP 15:Verifying that AT=BE is completed
+			objCioTransfer.waitForElementToBeVisible(10, trail.Status);
 
 			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
 					"SMAB-T3377,SMAB-T10081:Verifying Status of Buisnessevent AuditTrail");
@@ -1164,6 +1168,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			// STEP 16:Verifying that outbound event is completed
 
 			driver.navigate().to(urlForTransactionTrail);
+			objCioTransfer.waitForElementToBeVisible(10, trail.Status);
 			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
 					"SMAB-T3377,SMAB-T10081:Verifying Status of Outbound  AuditTrail");
 			softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondence), parentAuditTrailNumber,
@@ -1172,8 +1177,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
 							+ newBusinessEventATRecordId + "/view");
 			Thread.sleep(2000); //Added to handle regression failure
-			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Open",
-							"SMAB-T3632: Validating that audit trail status should be open after submit for approval.");
+			objCioTransfer.waitForElementToBeVisible(10, trail.Status);
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Completed",
+							"SMAB-T3632: Validating that audit trail status should be Completed after submit for approval.");
 			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),finalEventCode,
 							"SMAB-T3632: Validating the 'Event Library' field after update transer code value in Audit Trail record.");
 				
