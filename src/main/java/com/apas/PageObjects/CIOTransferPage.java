@@ -287,8 +287,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	     * This method triggers the job to get the desired WI for given document type and APN count
 	     */
 	    
-	    public void generateRecorderJobWorkItems(String DocType,int ApnCount) throws IOException
-	    {
+	    public void generateRecorderJobWorkItems(String DocType,int ApnCount) throws IOException, InterruptedException
+	    {    
+	    	Thread.sleep(4000);
 	    	   	
 	    	String fetchDocId ="SELECT id from recorded_document__c where recorder_doc_type__c='"+DocType+"'"+" and xAPN_count__c="+ApnCount;
 	    	try
@@ -445,7 +446,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {		 		 
 			
 				try {
-					Thread.sleep(4000);
+					Thread.sleep(5000);
 					Click(getButtonWithText(copyToMailToButtonLabel));
 					waitForElementToDisappear(formattedName1, 5);
 					Click(formattedName1);
@@ -471,14 +472,30 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		  * 
 		  */
 		 
-		 public void deleteOldGranteesRecords(String recordedocId) throws IOException, Exception
-		 {      	       
-			   HashMap<String, ArrayList<String>>HashMapOldGrantee =salesforceApi.select("SELECT Id FROM Transfer__c where recorded_document__c='"+recordedocId+"'");			      
-		        if(!HashMapOldGrantee.isEmpty()) {		    	  
-		    	  HashMapOldGrantee.get("Id").stream().forEach(Id ->{
-	    		  objSalesforceAPI.delete("Transfer__c", Id);
-	    		  ReportLogger.INFO("!!Deleted grantee with id= "+Id);
-		          } );}	 
+			public void deleteOldGranteesRecords(String recordedocId) throws IOException, Exception {
+				HashMap<String, ArrayList<String>> HashMapOldGrantee = salesforceApi
+						.select("SELECT Id FROM Transfer__c where recorded_document__c='" + recordedocId + "'");
+				if (!HashMapOldGrantee.isEmpty()) {
+					HashMapOldGrantee.get("Id").stream().forEach(Id -> {
+						objSalesforceAPI.delete("Transfer__c", Id);
+						ReportLogger.INFO("!!Deleted grantee with id= " + Id);
+					});}
+				}
+			/*
+			 * This method deletes Old mail to records from CIO Transfer mail to object
+			 * @param : Recorded APN Transfer Id of the CIO WI
+			 */
+				
+			public void deleteOldMailToRecords(String recordedApnTransferId) throws IOException, Exception {
+				HashMap<String, ArrayList<String>> HashMapOldGrantee = salesforceApi
+						.select("SELECT Id FROM CIO_Transfer_Mail_To__c where Recorded_APN_Transfer__c='"
+								+ recordedApnTransferId + "'");
+				if (!HashMapOldGrantee.isEmpty()) {
+					HashMapOldGrantee.get("Id").stream().forEach(Id -> {
+						objSalesforceAPI.delete("CIO_Transfer_Mail_To__c", Id);
+						ReportLogger.INFO("!!Deleted mail to record with id= " + Id);
+					});
+				}
 		 }
 		 
 		 /*
@@ -489,7 +506,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
 		 {
 				try {
-					Thread.sleep(4000);
+					Thread.sleep(6000);
 					String execEnv = System.getProperty("region");
 					driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/"
 							+ recordeAPNTransferID + "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
@@ -605,7 +622,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					Click(getButtonWithText(enterButtonText));
 					ReportLogger.INFO("Successfully clicked on "+ enterButtonText +" button");
 					Thread.sleep(1000);
-					return;}
+					return ;}
 					waitForElementToBeVisible(others[0],10);
 					Click(others[0]);
 					Thread.sleep(1000);
