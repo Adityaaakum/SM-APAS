@@ -1096,6 +1096,17 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 					"CIO transfer initial determination is submitted for review.",
 					"SMAB-T3377,SMAB-T10081:Cio trasnfer is submited for review");
 			objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
+			String newBusinessEventATRecordId = salesforceAPI.select("SELECT Id, Name FROM Transaction_Trail__c order by Name desc limit 1").get("Id").get(0);
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
+					+ newBusinessEventATRecordId + "/view");
+	
+			Thread.sleep(2000); //Added to handle regression failure
+	
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Open",
+					"SMAB-T3632: Validating that audit trail status should be open after submit for approval.");
+	        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),finalEventCode,
+					"SMAB-T3632: Validating the 'Event Library' field after update transer code value in Audit Trail record.");
+	
 			objCioTransfer.logout();
 
 			// Login with superviosr to complete reviews
@@ -1157,7 +1168,15 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 					"SMAB-T3377,SMAB-T10081:Verifying Status of Outbound  AuditTrail");
 			softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondence), parentAuditTrailNumber,
 					"SMAB-T3377,SMAB-T10081: Verifying that outbound AT is child of parent Recorded correspondence event");
-
+			//Navigate to the new Audit Trail record created after resubmitting the RAT for approval and validating that updated transfer code should be present in event library field
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
+							+ newBusinessEventATRecordId + "/view");
+			Thread.sleep(2000); //Added to handle regression failure
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Open",
+							"SMAB-T3632: Validating that audit trail status should be open after submit for approval.");
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),finalEventCode,
+							"SMAB-T3632: Validating the 'Event Library' field after update transer code value in Audit Trail record.");
+				
 			objCioTransfer.logout();
 
 		}
@@ -1672,7 +1691,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3881: Validating the 'Processed By' field value is blank in Audit Trail record.");
 		softAssert.assertTrue(objWorkItemHomePage.getFieldValueFromAPAS("Final Approver", "Additional Information").equals(""),
 				"SMAB-T3881: Validating the 'Final Approver' field value is blank in Audit Trail record.");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),"CIO-GLEASM",
+				"SMAB-T3631: Validating the 'Event Library' field value in Audit Trail record.");
 		
+
 		// STEP 15-Navigating back to RAT screen and clicking on back quick action button
 		driver.navigate().to("https://smcacre--" + execEnv
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
@@ -1731,6 +1753,14 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objMappingPage.login(loginUser);
 		driver.navigate().to(transferScreenURL);
+		
+		ReportLogger.INFO("Edit the Transfer Code");
+		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);	
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
+		objCioTransfer.clearSelectionFromLookup("Transfer Code");;
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel,objCioTransfer.CIO_EVENT_CODE_COPAL );
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 
@@ -1781,6 +1811,16 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Thread.sleep(2000); // Allow the screen to appear completely
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Open",
 				"SMAB-T3525: Validating that audit trail status should be open after resubmit for approval.");
+		
+		//Navigate to the new Audit Trail record created after resubmitting the RAT for approval and validating that updated transfer code should be present in event library field
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
+						+ newBusinessEventATRecordId + "/view");
+		Thread.sleep(2000); //Added to handle regression failure
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Open",
+						"SMAB-T3631: Validating that audit trail status should be open after submit for approval.");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),objCioTransfer.CIO_EVENT_CODE_COPAL,
+						"SMAB-T3631: Validating the 'Event Library' field after update transer code value in Audit Trail record.");
+				
 
 		objCioTransfer.logout();
 		Thread.sleep(5000);
@@ -1860,7 +1900,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Thread.sleep(2000); //Added to handle regression failure
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Open",
 				"SMAB-T3764: Validating that audit trail status should be open after submit for approval.");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"), "CIO-GLEASM",
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"), objCioTransfer.CIO_EVENT_CODE_COPAL,
 				"SMAB-T3764: Validating the 'Event Library' field value in Audit Trail record");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Applicable To Roll Year", "Additional Information"), rollYear,
 				"SMAB-T3764: Validating the 'Applicable To Roll Year' field value in Audit Trail record.");
@@ -2840,5 +2880,5 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 	}
 
-
+	
 }
