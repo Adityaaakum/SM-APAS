@@ -6,7 +6,7 @@ import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.relevantcodes.extentreports.LogStatus;
 
-
+import org.json.JSONException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -116,6 +116,9 @@ public class ParcelsPage extends ApasGenericPage {
 	public String ownershipPercentageTextBoxForAVO="Ownership %";
 	public String dov = "DOV";
 	
+	public String mailTo = "Mail-To";
+	public String formattedName1 = "Formatted Name 1";
+	public String mailZipCopyToMailTo ="Mailing Zip";
 	
 	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
@@ -255,6 +258,7 @@ public class ParcelsPage extends ApasGenericPage {
 		
 		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
+		Thread.sleep(2000);
 		//waitForElementToBeClickable(selectOptionDropDownComponentsActionsModal);
 		//selectOptionFromDropDown(selectOptionDropDownComponentsActionsModal, "Create Work Item");
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
@@ -273,7 +277,7 @@ public class ParcelsPage extends ApasGenericPage {
 		if (dov != null) enter(dovInputTextBox, dov);
 		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
-		Thread.sleep(5000);
+		Thread.sleep(10000);
 
 		String workItemQuery = "SELECT Name FROM Work_Item__c where Description__c = '" + description + "' order by Name desc limit 1";
 		workItemNumber = objSalesforceAPI.select(workItemQuery).get("Name").get(0);
@@ -359,7 +363,7 @@ public class ParcelsPage extends ApasGenericPage {
 			Click(moretab);
 			Click(driver.findElement(By.xpath(xPath)));
 		}
-		Thread.sleep(5000);
+		Thread.sleep(8000);
 	}
 	
 	/**
@@ -422,6 +426,10 @@ public class ParcelsPage extends ApasGenericPage {
         waitForElementToBeClickable(successAlert,25);
         String messageOnAlert = getElementText(successAlert);
         waitForElementToDisappear(successAlert,10);
+        ReportLogger.INFO("Owner created on parcel : " + messageOnAlert);
+		owner = getFieldValueFromAPAS("Owner", "General Information");
+		String parcel = getFieldValueFromAPAS("Parcel", "General Information");
+		ReportLogger.INFO("Owner created on parcel "+parcel+" : " + owner);
 		return messageOnAlert;
 	}
 
@@ -456,6 +464,7 @@ public class ParcelsPage extends ApasGenericPage {
 			String timeStamp = String.valueOf(System.currentTimeMillis());
 			String description = dataMap.get("Description") + "_" + timeStamp;
 			
+			Thread.sleep(2000);
 			waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 			Click(getButtonWithText(componentActionsButtonText));
 			waitForElementToBeClickable(selectOptionDropdown);
@@ -614,7 +623,8 @@ public class ParcelsPage extends ApasGenericPage {
 			deleteParcelSitusFromParcel(APN);
 
 			openParcelRelatedTab(parcelSitus);
-			waitForElementToBeVisible(10, newButton);
+			scrollToElement(getButtonWithText("New"));
+			waitForElementToBeVisible(10, getButtonWithText("New"));
 			createRecord();
 			waitForElementToBeVisible(10, isPrimaryDropdown);
 			selectOptionFromDropDown(isPrimaryDropdown, "Yes");
@@ -722,9 +732,79 @@ public class ParcelsPage extends ApasGenericPage {
 	            Thread.sleep(4000);
 			}
 			
-	                       
-	            
-	            
-	            
+			/*
+			 * This method is used to add few details on the parcel using the salesforce API
+			 * 
+			 * 
+			 */
 
-}
+			public void addParcelDetails(String PUC, String shortLegalDescription, String district,
+					String neighborhoodReferencec, String TRA, String parcelSize,
+					HashMap<String, ArrayList<String>> listofParcels, String hashmapAPNfieldname) throws JSONException{
+
+				jsonObject.put("PUC_Code_Lookup__c", PUC);
+				jsonObject.put("Short_Legal_Description__c", shortLegalDescription);
+				jsonObject.put("District__c", district);
+				jsonObject.put("Neighborhood_Reference__c", neighborhoodReferencec);
+				jsonObject.put("TRA__c", TRA);
+				jsonObject.put("Lot_Size_SQFT__c", parcelSize);
+
+				if (!listofParcels.isEmpty()) {
+					listofParcels.get(hashmapAPNfieldname).stream().forEach(Apn -> {
+						objSalesforceAPI.update(
+								"Parcel__c", objSalesforceAPI
+										.select("select Id from parcel__c where name='" + Apn + "'").get("Id").get(0),
+								jsonObject);
+					});
+
+				}
+			}
+			
+		//This method will create mail to record on parcel
+		public void createMailToRecord(Map<String, String> dataToCreateMailTo,String apn) throws  Exception {		 		 
+
+			try {
+				waitForElementToBeVisible(10,getButtonWithText(newButtonText));
+				Click(getButtonWithText(newButtonText));
+				waitForElementToBeVisible(10,formattedName1);
+				enter(formattedName1, dataToCreateMailTo.get("Formatted Name1"));
+				enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
+				Click(getButtonWithText(SaveButton));
+				waitForElementToBeClickable(successAlert, 25);
+				String messageOnAlert = getElementText(successAlert);
+				waitForElementToDisappear(successAlert, 10);
+				ReportLogger.INFO("Mail To record created on parcel : " + messageOnAlert);
+				ReportLogger.INFO("Mail To created on parcel : " + apn);
+				ReportLogger.INFO("Generated mail to record ");
+				globalSearchRecords(apn);
+				Thread.sleep(5000);
+			} catch (Exception e) {
+				ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE GENERATED");
+			}
+		}
+		
+//		This method will create characteristics on parcel
+		public void createCharacteristicsOnParcel (Map<String, String> dataToCreateCharacteristics,String apn) throws IOException, Exception {		 		 
+
+			try {
+				waitForElementToBeVisible(10,getButtonWithText(newButtonText));
+				Click(getButtonWithText(newButtonText));
+				waitForElementToBeVisible(10,"Property Type");
+				selectOptionFromDropDown("Property Type",dataToCreateCharacteristics.get("Property Type"));
+				selectOptionFromDropDown("Characteristics Screen", dataToCreateCharacteristics.get("Characteristics Screen"));
+				Click(getButtonWithText("Save"));
+				waitForElementToBeClickable(successAlert, 25);
+				String messageOnAlert = getElementText(successAlert);
+				waitForElementToDisappear(successAlert, 10);
+				ReportLogger.INFO("Characteristics record created on parcel : " + messageOnAlert);
+				String characteristicsScreen = getFieldValueFromAPAS("Characteristics Screen", "Characteristics Screen Information");
+				ReportLogger.INFO("Characteristics created on parcel "+apn+" : " + characteristicsScreen);
+				ReportLogger.INFO("Generated Characteristics record ");
+				globalSearchRecords(apn);
+				Thread.sleep(5000);
+			} catch (Exception e) {
+				ReportLogger.INFO("SORRY!! CHARACTERISTICS RECORD CANNOT BE GENERATED");
+			}
+		}
+
+	}

@@ -79,6 +79,6 @@ public interface testdata {
     String CHARACTERISTICS_FILE = userDirectory + "\\data\\Characteristics\\00202.tif";
     String PARCEL_MANAGEMENT_REPORTS=userDirectory+"\\data\\MappingActions\\ParcelManagementReports.json";
     String ASSESSED_VALUE_CREATION_DATA= userDirectory+"\\data\\OwnershipAndTransfer\\AssessedValue.json";	
-
+    String CHARACTERISTICS = userDirectory + "\\data\\Characteristics\\CharacteristicsCreationData.json";
 	
 }

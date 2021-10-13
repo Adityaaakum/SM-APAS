@@ -26,6 +26,12 @@
   "DataToCreateParcelStartingWith134": {
     "APN": "134-568-010",
     "Parcel Number": "134568010"
+  },
+  
+  "DataToCreateOwnershipRecord": {
+    "Type": "Owner",
+    "Status": "Active",
+    "Ownership Percentage": "100"
   }
   
  }
