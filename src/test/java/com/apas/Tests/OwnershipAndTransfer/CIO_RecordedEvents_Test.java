@@ -202,10 +202,16 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + workItemNo + "'";
 		HashMap<String, ArrayList<String>> navigationUrL = salesforceAPI.select(queryRecordedAPNTransfer);
 		String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+		
+		//Deleting old mail to records
+		
+		objCioTransfer.deleteOldMailToRecords(recordeAPNTransferID);
 
 		// Navigating to mail to screen
+		
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
 				+ "" + "/related/CIO_Transfer_Mail_To__r/view");
+		
 		// Creating mail to record
 
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.newButton));
@@ -773,12 +779,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// Step 10 : Submitting for review
 
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
-		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
+		objCioTransfer.clickQuickActionButtonOnTransferActivity(null,objCioTransfer.quickActionOptionSubmitForReview);
 
 		// STEP 11-Clicking on submit for Review quick action button
 
-		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionSubmitForReview);
-		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForReview);
+		
 		ReportLogger.INFO("CIO!! Transfer submitted for Review");
 		objCioTransfer.waitForElementToBeVisible(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5),5);
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5)),
@@ -792,11 +797,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.login(users.CIO_SUPERVISOR);
 		driver.navigate().to("https://smcacre--" + execEnv
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
-		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
-
-		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionReviewComplete);
-		objCioTransfer.Click(objCioTransfer.quickActionOptionReviewComplete);
+		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon,10);
+		
+		objCioTransfer.clickQuickActionButtonOnTransferActivity(null,objCioTransfer.quickActionOptionReviewComplete);
 		ReportLogger.INFO("CIO!! Transfer Review Completed");
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5)),
 				"CIO transfer initial determination review completed.",
@@ -811,7 +814,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			objCioTransfer.login(users.CIO_STAFF);
 			driver.navigate().to("https://smcacre--" + execEnv
 					+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-
+			objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferStatusLabel);
 			objCioTransfer.editRecordedApnField(objCioTransfer.transferStatusLabel);
 			objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferStatusLabel);
 			objCioTransfer.Click(objCioTransfer.getWebElementWithLabel(objCioTransfer.transferStatusLabel));
@@ -822,17 +825,17 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 
 			// Verifying the status of transfer
-
+			objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferStatusLabel);
 			softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.transferStatusLabel),
 					"Approved", "SMAB-T3377,SMAB-T10081: Verfyfing the status of the CIO transfer");
 			softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.transferCodeLabel),
 					finalEventCode, "SMAB-T3377,SMAB-T10081: Verfyfing the status of the CIO transfer");
-			objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.quickActionButtonDropdownIcon);
-			objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
+			objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.quickActionButtonDropdownIcon);
+			objCioTransfer.clickQuickActionButtonOnTransferActivity(null,objCioTransfer.quickActionButtonDropdownIcon);
 
 			// Navigating to WI from back button
-
-			objCioTransfer.Click(objCioTransfer.quickActionOptionBack);
+			objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+			objCioTransfer.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
 			objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
 			String parentAuditTrailNumber = objWorkItemHomePage
 					.getElementText(objWorkItemHomePage.firstRelatedBuisnessEvent);
@@ -863,7 +866,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			objCioTransfer.login(users.CIO_STAFF);
 			driver.navigate().to("https://smcacre--" + execEnv
 					+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-
+			
+			objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
 			ReportLogger.INFO("Changing  the Transfer Code Based on acessor response");
 			objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
 			objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
@@ -878,12 +882,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			// Step 15 : Submitting for approval
 
 			objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
-			objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
+			objCioTransfer.clickQuickActionButtonOnTransferActivity(null,objCioTransfer.quickActionOptionSubmitForApproval);
 
 			// STEP 16-Clicking on submit for approval quick action button
-
-			objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionSubmitForApproval);
-			objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
+			
 			ReportLogger.INFO("CIO!! Transfer submitted for approval");
 			objCioTransfer.waitForElementToBeVisible(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5));
 			softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5)),
@@ -897,11 +899,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			objCioTransfer.login(users.CIO_SUPERVISOR);
 			driver.navigate().to("https://smcacre--" + execEnv
 					+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-			objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
-			objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
-
-			objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionApprove);
-			objCioTransfer.Click(objCioTransfer.quickActionOptionApprove);
+			objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon,10);
+			objCioTransfer.clickQuickActionButtonOnTransferActivity(null,objCioTransfer.quickActionOptionApprove);
+			
 			softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5)),
 					"Work Item has been approved successfully.",
 					"SMAB-T3377,SMAB-T10081:Cio transfer is approved successfully");
