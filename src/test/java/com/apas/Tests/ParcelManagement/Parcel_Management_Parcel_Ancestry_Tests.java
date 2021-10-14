@@ -35,7 +35,6 @@ public class Parcel_Management_Parcel_Ancestry_Tests extends TestBase implements
 	SoftAssertion softAssert = new SoftAssertion();
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	MappingPage objMappingPage;
-	JSONObject jsonObject = new JSONObject();
 	String apnPrefix = new String();
 	ReportsPage objReportsPage;
 	ApasGenericPage objApasGenericPage;
