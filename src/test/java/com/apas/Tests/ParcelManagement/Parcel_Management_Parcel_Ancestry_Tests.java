@@ -53,13 +53,12 @@ public class Parcel_Management_Parcel_Ancestry_Tests extends TestBase implements
 	}
 
 	@Test(description = "SMAB-T3704,SMAB-T3705,SMAB-T3706:Verify Parcel Ancestry Setup", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" })
+			"Regression", "ParcelManagement" ,"ParcelAncestry" })
 	public void ParcelAncestry_SetUp(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
 		// Data Provider
 		objMappingPage.login(loginUser);
-		Thread.sleep(2000);
 
 		// Step 2: Fetch the APN
 		String apn = objApasGenericPage.fetchInProgressAPN();
@@ -69,7 +68,7 @@ public class Parcel_Management_Parcel_Ancestry_Tests extends TestBase implements
 		objMappingPage.globalSearchRecords(apn);
 
 		// Step 4: Verify that tab parcel ancestry exists
-				softAssert.assertEquals(objParcelsPage.verifyElementVisible(objParcelsPage.parcelAncestry), true,
+				softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.parcelAncestry),
 						"SMAB-T3704: Validate that tab parcel ancestry exists");
 				
 		// Step 5: Open the parcel Ancestry tab
@@ -79,19 +78,19 @@ public class Parcel_Management_Parcel_Ancestry_Tests extends TestBase implements
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelAncestry);
 
 		// Step 6: Verify that header of parcel ancestry exists
-		softAssert.assertEquals(objParcelsPage.verifyElementVisible(objParcelsPage.parcelAncestoryHeader), true,
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.parcelAncestoryHeader),
 				"SMAB-T3705: Validate that header of parcel ancestry exists");
 
 		// Step 7: Verify that ancestry hierarchy field name APN exists
-		softAssert.assertEquals(objParcelsPage.verifyElementVisible(objParcelsPage.ancestoryAPN), true,
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.ancestoryAPN), 
 				"SMAB-T3706: Validate that ancestry hierarchy field name APN exists");
 
 		// Step 8: Verify that ancestry hierarchy field name Reason Code exists
-		softAssert.assertEquals(objParcelsPage.verifyElementVisible(objParcelsPage.ancestoryReasonCode), true,
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.ancestoryReasonCode),
 				"SMAB-T3706: Validate that ancestry hierarchy field name Reason Code exists");
 
 		// Step 9: Verify that ancestry hierarchy field name Sqft exists
-		softAssert.assertEquals(objParcelsPage.verifyElementVisible(objParcelsPage.ancestorySqft), true,
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.ancestorySqft),
 				"SMAB-T3706: Validate that ancestry hierarchy field name Sqft exists");
 
 		objParcelsPage.logout();
