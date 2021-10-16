@@ -160,5 +160,15 @@
     "Description": "Creation of work item",
     "Priority": "Urgent",
     "Work Item Routing": "Give Work Item to Me"
+  },
+  
+  "DataToCreateWorkItemOfTypeCIOWithActionAPNLegalDescription": {
+    "Work Item Type": "CIO",
+    "Actions": "APN & Legal Description Validation",
+    "Audit Trail": "No",
+    "Reference": "Test WI",
+    "Description": "Creation of work item",
+    "Priority": "Urgent",
+    "Work Item Routing": "Give Work Item to Me"
   }
 }
