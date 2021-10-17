@@ -1,17 +1,13 @@
 package com.apas.Tests.OwnershipAndTransfer;
 
-import java.awt.Robot;
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONObject;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
+
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.interactions.Actions;
+
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.BeforeMethod;
@@ -28,15 +24,15 @@ import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
-import com.apas.Reports.ReportLogger;
+
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
-import com.apas.config.modules;
+
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-import android.view.KeyEvent;
+
 
 public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements users {
 

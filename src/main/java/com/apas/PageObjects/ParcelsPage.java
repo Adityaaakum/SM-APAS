@@ -100,6 +100,8 @@ public class ParcelsPage extends ApasGenericPage {
 	public String land = "Land";
 	public String improvements = "Improvements";
 	public String additionalDeclines = "Additional Declines";
+	
+	/**Adding fields for layout on assessed values*/
 	public String factoredBaseYearValue = "Factored BYV";
 	public String hpiValueAllowance = "HPI Value Allowance";
 	public String originDov = "Origin DOV";
