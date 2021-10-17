@@ -15,6 +15,10 @@ import org.openqa.selenium.support.ui.Select;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.Reports.ReportLogger;
+//import com.apas.Tests.OwnershipAndTransfer.FROM;
+//import com.apas.Tests.OwnershipAndTransfer.Recorded_APN__c;
+//import com.apas.Tests.OwnershipAndTransfer.SELECT;
+//import com.apas.Tests.OwnershipAndTransfer.where;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
@@ -84,12 +88,11 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String fieldsInCalculateOwnershipModal="//*[@id='wrapper-body']//flowruntime-screen-field//p";
 	public String ownershipPercentage ="Ownership Percentage";
 	public String auditTrailLabel ="Audit Trail";
-
-
 	public String approveButton ="Approve";
-
+	public String documentSummaryButton ="COS Document Summary";
 	
 	public static final String CIO_EVENT_CODE_COPAL="CIO-COPAL";
+	public static final String CIO_EVENT_CODE_GLEASM="CIO-GLEASM";
 	public static final String CIO_EVENT_CODE_PART="CIO-PART";
 	public static final String CIO_EVENT_CODE_ElessThan5Percent="E<5%";
 	public static final String CIO_EVENT_CODE_CIOGOVT="CIO-GOVT";
@@ -98,7 +101,6 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public static final String CIO_RESPONSE_NoChangeRequired="No Edits required";
 	public static final String CIO_RESPONS_EventCodeChangeRequired="Event Code needs to be changed";
 	public static final String APPRAISAL_NORMAL_ENROLLMENT="Normal Enrollment";
-	
 	
 	public String eventIDLabel = "EventID";
 	public String situsLabel = "Situs";
@@ -241,6 +243,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	
 	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='EventID']//following::a[@target='_blank']")
 	public WebElement eventIDOnTransferActivityLabel;
+	
+	@FindBy(xpath =commonXpath+"//span[@title='Recorded APNs']//ancestor::lst-list-view-manager-header//following-sibling::div[@class='slds-grid listDisplays']//table//a[contains(@class,'displayLabel')]")
+	public WebElement apnFromRecordedDocument;
 	
 	
 	/*
@@ -541,6 +546,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			 if (gridName.contains("CIO Transfer Mail To"))updateGridName = "CIO_Transfer_Mail_To";
 			 if (gridName.contains("Ownership for Parent Parcel"))updateGridName = "Property_Ownerships";
 			 
+			 Thread.sleep(1000);
 			 String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@href,'" + updateGridName + "')]//span[text() = 'View All']";		        
 		 	 WebElement fieldLocator1 = locateElement(xpathStr, 30);
 		 	 scrollToElement(fieldLocator1);
@@ -639,7 +645,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			  * 
 			  * @Return : Returns a String array for all the related WI generated after approval for the given enrollment type
 			  * 			  
-			  * @param enrollementType : Enrollement Type -Direct or Normal enrollment type
+			  * @param enrollementType : Enrollment Type -Direct or Normal enrollment type
 			  * @param Transfer code : Event Code in RecordedAPNTransfer screen
 			  * @param hashMapOwnershipAndTransferMailToCreationData : Data to create mail to record
 			  * @param hashMapOwnershipAndTransferGranteeCreationData : Data to create Grantee records
@@ -861,5 +867,17 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					}
 					
 			 }
+		
+			 
+		//This method will delete all the transfer activity records on the Parcel	 
+		public void deleteTransferActivityRecords(String apn) throws Exception
+			 {      	       
+				   HashMap<String, ArrayList<String>>HashMapTransferRecord =salesforceApi.select("SELECT Id, Name, Recorder_Doc_Number__c FROM Recorded_APN__c where Parcel__c in (SELECT Id FROM Parcel__c where Name = '"+apn+"'");			      
+			        if(!HashMapTransferRecord.isEmpty()) {		    	  
+			        	HashMapTransferRecord.get("Id").stream().forEach(Id ->{
+			        		objSalesforceAPI.delete("Recorded_APN_Transfer__c", Id);
+			        		ReportLogger.INFO("!!Deleted Transfer Activity Record with id= "+Id + " and Transfer Activity Record Name "+HashMapTransferRecord.get("Name"));
+			          } );}	 
+			 } 		 
 }
 		 	

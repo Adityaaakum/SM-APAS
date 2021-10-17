@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.json.JSONObject;
 import org.openqa.selenium.WebElement;
@@ -24,6 +25,7 @@ import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
+import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 
@@ -33,6 +35,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 import com.google.gson.JsonObject;
+import com.relevantcodes.extentreports.LogStatus;
 
 public class CIO_RecordedEvents_Test extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
@@ -1525,7 +1528,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 	@Test(description = "SMAB-T3525, SMAB-T3341, SMAB-T3881, SMAB-T3764:Verify that User is able to perform CIO transfer  for recorded APN and validate all status and values in Audit Trail record", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
-	public void OwnershipAndTransfer_VerifyTransferActivityStatus_ReturnedAndCompleted(String loginUser)
+	public void AOwnershipAndTransfer_VerifyTransferActivityStatus_ReturnedAndCompleted(String loginUser)
 			throws Exception {
 		
 		int i=1; int j=1;
@@ -1550,12 +1553,20 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String recordedDocumentName = salesforceAPI.select(" SELECT Name from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1").get("Name").get(0);
 		objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
 
-		// STEP 1-login with SYS-ADMIN
+		// STEP 1-login with SYS-ADMIN, delete transfer activity records rom the APN and generated WI
 		objMappingPage.login(users.SYSTEM_ADMIN);
 		objMappingPage.searchModule(PARCELS);
+		
 		salesforceAPI.update("Work_Item__c",
 				"SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c",
 				"In Progress");
+		
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_Document__c/"+recordedDocumentID+"/view");
+		Thread.sleep(2000);
+		objCioTransfer.Click(objCioTransfer.relatedListTab);
+		String apn = objCioTransfer.getAttributeValue(objCioTransfer.apnFromRecordedDocument, "title");
+		objCioTransfer.deleteTransferActivityRecords(apn);
+		
 		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
 
 		// STEP 2-Query to fetch WI
@@ -1581,6 +1592,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForTransferActivityStatus);
 
 		objMappingPage.logout();
+		Thread.sleep(5000);
 
 		// STEP 5-Login with CIO staff
 		objMappingPage.login(loginUser);
@@ -1595,7 +1607,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.wiStatusDetailsPage);
-
+		
 		// STEP 7-Clicking on related action link
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
@@ -1603,11 +1615,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertContains(driver.getCurrentUrl(), navigationUrL.get("Navigation_Url__c").get(0),
 				"SMAB-T3306:Validating that user navigates to CIo transfer screenafter clicking on related action hyperlink");
 		String transferScreenURL = driver.getCurrentUrl();
-
+		String recordedDocumentNumber = objWorkItemHomePage.getFieldValueFromAPAS("EventID");
+		
 		ReportLogger.INFO("Add the Transfer Code");
 		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
-		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, "CIO-GLEASM");
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, objCioTransfer.CIO_EVENT_CODE_GLEASM);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 
 		// STEP 8-Creating the new grantee
@@ -1861,7 +1874,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Thread.sleep(2000); //Added to handle regression failure
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Open",
 				"SMAB-T3764: Validating that audit trail status should be open after submit for approval.");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"), "CIO-GLEASM",
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"), objCioTransfer.CIO_EVENT_CODE_GLEASM,
 				"SMAB-T3764: Validating the 'Event Library' field value in Audit Trail record");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Applicable To Roll Year", "Additional Information"), rollYear,
 				"SMAB-T3764: Validating the 'Applicable To Roll Year' field value in Audit Trail record.");
@@ -1892,7 +1905,28 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3764: Validating the Reference field value in Work Item");
 		
 		objCioTransfer.logout();
-	
+		Thread.sleep(5000);
+
+		//STEP 29- Validate the WI details for Type 'Govt CIO Appraisal'
+		objMappingPage.login(users.CIO_STAFF);
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apnFromWIPage);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.documentSummaryButton));
+		Thread.sleep(2000); //Allows the grid to load completely
+		
+		HashMap<String, ArrayList<String>> HashMapDocumentDetails = objCioTransfer.getGridDataInHashMap();	
+		softAssert.assertEquals(HashMapDocumentDetails.get("Recorded Document Number").get(0), recordedDocumentNumber,
+				"SMAB-T3341: Validate the status on New Ownership record");
+		softAssert.assertEquals(HashMapDocumentDetails.get("Status").get(0), "Approved",
+				"SMAB-T3341: Validate the status on New Ownership record");
+		softAssert.assertEquals(HashMapDocumentDetails.get("Transfer Code").get(0), objCioTransfer.CIO_EVENT_CODE_GLEASM,
+				"SMAB-T3341: Validate the status on New Ownership record");	
+		softAssert.assertEquals(HashMapDocumentDetails.get("Event Date").get(0), objCioTransfer.CIO_EVENT_CODE_GLEASM,
+				"SMAB-T3341: Validate the status on New Ownership record");	
+		softAssert.assertEquals(HashMapDocumentDetails.get("Value Date").get(0), objCioTransfer.CIO_EVENT_CODE_GLEASM,
+				"SMAB-T3341: Validate the status on New Ownership record");	
+		objCioTransfer.logout();
+		
 	}
 
 	/**
@@ -2017,7 +2051,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.pucCodeTransferActivityLabel), pucValue,
 				"SMAB-T3232: Validate the PUC on CIO Transfer screen for " + activeApn2);
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.situsOnTransferActivityLabel),
-				primarySitusValue.replaceFirst("\\s", ""),
+				primarySitusValue,
 				"SMAB-T3232: Validate the Situs on CIO Transfer screen for " + activeApn2);
 
 		// Step6: Update the APN value to Retired APN value and validate values
@@ -2036,7 +2070,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				responsePUCDetails2.get("Name").get(0),
 				"SMAB-T3232: Validate the PUC on CIO Transfer screen for " + retiredApn);
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.situsOnTransferActivityLabel),
-				primarySitusValue2.replaceFirst("\\s", ""),
+				primarySitusValue2,
 				"SMAB-T3232: Validate the Situs on CIO Transfer screen for " + retiredApn);
 		softAssert.assertTrue(objCioTransfer.verifyElementExists(objCioTransfer.warningMessageArea),
 				"SMAB-T3232: Validate that warning message is displayed on CIO Transfer screen for Retired Parcel");
@@ -2064,7 +2098,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				responsePUCDetails1.get("Name").get(0),
 				"SMAB-T3232: Validate the PUC on CIO Transfer screen for " + activeApn1);
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.situsOnTransferActivityLabel),
-				primarySitusValue1.replaceFirst("\\s", ""),
+				primarySitusValue1,
 				"SMAB-T3232: Validate the Situs on CIO Transfer screen for " + activeApn1);
 
 		// Step8: Validate the Ownership record on the parcel
@@ -2092,11 +2126,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 					.getParcelTableDataInHashMap("Mail-To");
 			String status = mailToTableDataHashMap.get("Status").get(0);
 			String formattedName1 = mailToTableDataHashMap.get("Formatted Name 1").get(0);
-			String formattedName2 = mailToTableDataHashMap.get("Formatted Name 2").get(0);
 
 			driver.navigate().to("https://smcacre--" + execEnv
 					+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 			objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.numberOfGrantorLabel);
+			objCioTransfer.scrollToBottom();
 			objCioTransfer.clickViewAll("CIO Transfer Mail To");
 
 			// Step9a: Validate the details in the grid
@@ -2105,8 +2139,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 					"SMAB-T3232: Validate the Status of Mail-To record");
 			softAssert.assertEquals(HashMapMailTo.get("Formatted Name1").get(0), formattedName1,
 					"SMAB-T3232: Validate the Formatted Name1 of Mail-To record");
-			softAssert.assertEquals(HashMapMailTo.get("Formatted Name2").get(0), formattedName2,
-					"SMAB-T3232: Validate the Formatted Name2 of Mail-To record");
 		} else {
 			ReportLogger.INFO("Validate if there is no Mail-To record on the parcel");
 			softAssert.assertTrue(numOfMailToRecordOnRAT.contains("0"),

@@ -698,7 +698,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the prefix of Event ID");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.eventIDLabel, "").length(),"10",
 				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the length of Event ID");
-		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.situsLabel, ""),primarySitusValue.replaceFirst("\\s", ""),
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.situsLabel, ""),primarySitusValue,
 				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the Situs value on UT");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.shortLegalDescriptionLabel, ""),legalDescriptionValue,
 				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the Short Legal Description value on UT");
