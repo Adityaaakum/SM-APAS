@@ -461,7 +461,9 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 		      
 			objAppraisalActivity.logout();
 	}
-	
+	/*
+	 * This test methodes validates the fields on the layout of assessed value records for CIO transfer codes like CIO-P19D,CIO-P19B,CIO-P19 Exclusion
+	 */
 
 	@Test(description = "SMAB-T3768,SMAB-T3782,SMAB-T3812 : Verify the fileds and calculations on those fields on the layout of different type of assesssed value records  ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
