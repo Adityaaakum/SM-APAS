@@ -749,7 +749,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 		waitForElementToBeVisible(20, fieldXpath);
 		
 		try {
-			fieldValue = new MappingPage(driver).locateElement(fieldXpath, 5).getText();			
+			fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();			
 		} catch (Exception ex) {
 			fieldValue = "";
 		}
