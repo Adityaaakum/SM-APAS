@@ -100,7 +100,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String land = "Land";
 	public String improvements = "Improvements";
 	public String additionalDeclines = "Additional Declines";
-	public String factoredBaseYearValue = "Factored Base Year Value";
+	public String factoredBaseYearValue = "Factored BYV";
 	public String hpiValueAllowance = "HPI Value Allowance";
 	public String originDov = "Origin DOV";
 	public String originImprovementValue = "Origin Improvement Value";
@@ -119,6 +119,22 @@ public class ParcelsPage extends ApasGenericPage {
 	public String mailTo = "Mail-To";
 	public String formattedName1 = "Formatted Name 1";
 	public String mailZipCopyToMailTo ="Mailing Zip";
+	public String salesPrice ="Sales Price";
+	public String purchasePrice ="Purchase Price";
+	public String landFactoredBaseYearValue ="Land Factored Base Year Value";
+	public String improvementsFactoredBaseYearValue ="Improvement Factored Base Year Value";
+	public String difference ="Difference";
+	public String differenceApportionedToLand ="Difference Apportioned to Land";
+	public String differenceApportionedToImprovement ="Difference Apportioned to Improvement";
+	public String improvement = "Improvement";
+	public String total = "Total";
+	public String fullCashValue = "Full Cash Value";
+	public String combinedFactoredandHPI = "Combined FBYV and HPI";
+	
+	
+	
+	
+	
 	
 	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
@@ -679,7 +695,7 @@ public class ParcelsPage extends ApasGenericPage {
 		 
 		 //Finding the owner name that will later used while creating AVO record
 		 
-		 String ownerName = objSalesforceAPI.select("SELECT id ,name  FROM Property_Ownership__c where Parcel__c='"+apnId+"'"+" and status__c='Active' order by dov_date__c ").get("Name").get(0);
+		 
 	     HashMap<String, ArrayList<String>> hashMapParcelAcessedValueRecord =objSalesforceAPI.select("Select id from Assessed_BY_Values__c where APN__c='"+apnId+"'");
 	     
 			if (!hashMapParcelAcessedValueRecord.isEmpty()) {
@@ -704,13 +720,22 @@ public class ParcelsPage extends ApasGenericPage {
 	            waitForElementToBeVisible(getWebElementWithLabel(assessedValueType),5);
 	            selectOptionFromDropDown(assessedValueType, hashMapToCreateAssessedValueRecords.get("Assessed Value Type"));
 	            waitForElementToBeVisible(10, landCashValue);
-	            enter(landCashValue, hashMapToCreateAssessedValueRecords.get("Land Cash Value"));
+	            if(hashMapToCreateAssessedValueRecords.get("Land Cash Value")!=null) {
+	            enter(landCashValue, hashMapToCreateAssessedValueRecords.get("Land Cash Value"));}
 	            waitForElementToBeVisible(10, improvementCashValue);
-	            enter(improvementCashValue, hashMapToCreateAssessedValueRecords.get("Improvement Cash Value"));
-	            waitForElementToBeClickable(5, SaveButton);
+	            if( hashMapToCreateAssessedValueRecords.get("Improvement Cash Value")!=null) {
+	            enter(improvementCashValue, hashMapToCreateAssessedValueRecords.get("Improvement Cash Value"));}
+	            if( hashMapToCreateAssessedValueRecords.get("Sales Price")!=null) {
+		            enter(salesPrice, hashMapToCreateAssessedValueRecords.get("Sales Price"));}
+	            if( hashMapToCreateAssessedValueRecords.get("Purchase Price")!=null) {
+		            enter(purchasePrice, hashMapToCreateAssessedValueRecords.get("Purchase Price"));}
+	            waitForElementToBeClickable(10, SaveButton);
 	            Click(getButtonWithText(SaveButton));
 	            Thread.sleep(4000);            
 	            ReportLogger.INFO(" AV Records added for APN= "+APN  );
+	            if(hashMapToCreateAssessedValueRecords.get("Ownership Percentage")!=null) {
+	            	
+	            String ownerName = objSalesforceAPI.select("SELECT id ,name  FROM Property_Ownership__c where Parcel__c='"+apnId+"'"+" and status__c='Active' order by dov_date__c ").get("Name").get(0);
 	            
 	            ReportLogger.INFO("Adding AV0 Records for APN= "+APN  );
 	            
@@ -729,7 +754,7 @@ public class ParcelsPage extends ApasGenericPage {
 	            waitForElementToBeClickable(10, SaveButton);           
 	            Click(getButtonWithText(SaveButton));
 	            ReportLogger.INFO("Added AV0 Records for APN= "+APN  );
-	            Thread.sleep(4000);
+	            Thread.sleep(4000);}
 			}
 			
 			/*

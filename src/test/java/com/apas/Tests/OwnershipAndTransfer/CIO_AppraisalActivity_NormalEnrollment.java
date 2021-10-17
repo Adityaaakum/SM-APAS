@@ -1,5 +1,6 @@
 package com.apas.Tests.OwnershipAndTransfer;
 
+import java.awt.Robot;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +8,10 @@ import java.util.Map;
 
 import org.json.JSONObject;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.BeforeMethod;
@@ -31,6 +36,8 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
+import android.view.KeyEvent;
+
 public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements users {
 
 	private RemoteWebDriver driver;
@@ -44,6 +51,7 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 	MappingPage objMappingPage;
 	AppraisalActivityPage objAppraisalActivity;
 	AuditTrailPage objAuditTrail;
+	JavascriptExecutor javascriptexecutor;
 
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 
@@ -63,6 +71,7 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 		objMappingPage =  new MappingPage(driver);
 		objAppraisalActivity= new AppraisalActivityPage(driver);
 		objAuditTrail = new AuditTrailPage(driver);
+		 javascriptexecutor = (JavascriptExecutor) driver;
 		
 	}
 	/*
@@ -456,6 +465,200 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 		      
 			objAppraisalActivity.logout();
 	}
+	
+
+	@Test(description = "SMAB-T3768,SMAB-T3782,SMAB-T3812 : Verify the fileds and calculations on those fields on the layout of different type of assesssed value records  ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
+	public void OwnershipAndTransfer_Verify_assessedValueRecords(String loginUser) throws Exception {
+		
+		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
+		Map<String, String> hashMapCreateAssessedValueRecordForP19D = objUtil
+				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecordForP19D");
+
+		Map<String, String> hashMapCreateAssessedValueRecordForP19B = objUtil
+				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecordForP19B");
+		Map<String, String> hashMapCreateAssessedValueRecordForP19E = objUtil
+				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecordForP19E");
+
+		objAppraisalActivity.login(users.SYSTEM_ADMIN);
+		Thread.sleep(3000);
+
+		objParcelsPage.closeDefaultOpenTabs();
+
+		// Step1 -Creating a new acessed value record of type P19D
+
+		objParcelsPage.deleteOldAndCreateNewAssessedValuesRecords(hashMapCreateAssessedValueRecordForP19D,
+				salesforceAPI.select("Select Name from Parcel__c where status__c='Active' limit 1").get("Name").get(0));
+		objParcelsPage.waitForElementToBeClickable(10, objParcelsPage.EditButton);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditButton));
+
+		objParcelsPage.enter(objParcelsPage.landFactoredBaseYearValue, "200,000");
+		objParcelsPage.waitForElementToBeVisible(10, objParcelsPage.improvementsFactoredBaseYearValue);
+		objParcelsPage.enter(objParcelsPage.improvementsFactoredBaseYearValue, "100,000");
+		objParcelsPage.waitForElementToBeClickable(10, objParcelsPage.SaveButton);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.SaveButton));
+
+		// Scrolling to the middle of page
+
+		objParcelsPage.waitForElementToBeVisible(10, objParcelsPage.difference);
+		javascriptexecutor.executeScript("window.scrollBy(0,800)");
+
+		// Step 2- Fetching field values from the layout
+
+		String difference = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.difference);
+
+		String land = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.land);
+		String improvement = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.improvement);
+		String total = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.total);
+		String fullcashValue = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.fullCashValue);
+
+		String differenceApportionedToLand = objParcelsPage
+				.getFieldValueFromAPAS(objParcelsPage.differenceApportionedToLand);
+		String differenceApportionedToImprovement = objParcelsPage
+				.getFieldValueFromAPAS(objParcelsPage.differenceApportionedToImprovement);
+		String factoredBaseYearValue = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.factoredBaseYearValue);
+
+		// Step 3-Asserting that field values on the layout
+
+		softAssert.assertEquals(difference.replace(",", ""),
+				String.valueOf(Integer.parseInt(fullcashValue.replace(",", "")) - Integer
+						.parseInt(hashMapCreateAssessedValueRecordForP19D.get("Sales Price").replace(",", ""))),
+				"SMAB-T3768:Verifying that difference is subtraction of Full cash value -Sales Price for P19D");
+		softAssert.assertEquals(factoredBaseYearValue, "300,000.00",
+				"SMAB-T3768:Verifying that Factored Base Year value  is addition of Land Factored base Year value and Improvement Factored base year value");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.hpiValueAllowance),
+				"SMAB-T3768:Verifying that HPI value allowance is not visible on P19D Layout");
+		softAssert.assertEquals(land.replace(",", ""),
+				String.valueOf(
+						Integer.parseInt(differenceApportionedToLand.replace(",", "")) + Integer.parseInt("200000")),
+				"SMAB-T3768:Verify that Land is sum of LandFactored base year value + Difference apportioned to land");
+		softAssert.assertEquals(improvement.replace(",", ""),
+				String.valueOf(Integer.parseInt(differenceApportionedToImprovement.replace(",", ""))
+						+ Integer.parseInt("100000")),
+				"SMAB-T3768:Verify that Improvement is sum of ImprovementFactored base year value + Difference apportioned to Improvement");
+		softAssert.assertEquals(Integer.parseInt(total.replace(",", "")),
+				Math.round(
+						Double.parseDouble(land.replace(",", "")) + Double.parseDouble(improvement.replace(",", ""))),
+				"SMAB-T3768:Verify that total is sum of Land and Improvement");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.combinedFactoredandHPI),
+				"SMAB-T3768:Verifying that combined Factored and HPI value allowance is not visible on P19D Layout");
+
+		// Creating another assessed value for P19B
+
+		objParcelsPage.deleteOldAndCreateNewAssessedValuesRecords(hashMapCreateAssessedValueRecordForP19B,
+				salesforceAPI.select("Select Name from Parcel__c where status__c='Active' limit 1").get("Name").get(0));
+
+		objParcelsPage.waitForElementToBeClickable(10, objParcelsPage.EditButton);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditButton));
+		objParcelsPage.enter(objParcelsPage.landFactoredBaseYearValue, "200,000");
+		objParcelsPage.waitForElementToBeVisible(10, objParcelsPage.improvementsFactoredBaseYearValue);
+		objParcelsPage.enter(objParcelsPage.improvementsFactoredBaseYearValue, "100,000");
+		objParcelsPage.waitForElementToBeClickable(10, objParcelsPage.SaveButton);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.SaveButton));
+
+		// fetching field values from layout
+
+		objParcelsPage.waitForElementToBeVisible(10, objParcelsPage.difference);
+		javascriptexecutor.executeScript("window.scrollBy(0,1000)");
+		difference = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.difference);
+
+		land = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.land);
+		improvement = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.improvement);
+		total = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.total);
+		fullcashValue = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.fullCashValue);
+
+		differenceApportionedToLand = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.differenceApportionedToLand);
+		differenceApportionedToImprovement = objParcelsPage
+				.getFieldValueFromAPAS(objParcelsPage.differenceApportionedToImprovement);
+		factoredBaseYearValue = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.factoredBaseYearValue);
+
+		objParcelsPage.waitForElementToBeVisible(10, objParcelsPage.difference);
+
+		// Asserting that field values on the layout
+
+		softAssert.assertEquals(difference.replace(",", ""),
+				String.valueOf(Integer.parseInt(fullcashValue.replace(",", "")) - Integer
+						.parseInt(hashMapCreateAssessedValueRecordForP19D.get("Sales Price").replace(",", ""))),
+				"SMAB-T3782:Verifying that difference is subtraction of Full cash value -Sales Price for P19B");
+		softAssert.assertEquals(factoredBaseYearValue, "300,000.00",
+				"SMAB-T3782:Verifying that Factored Base Year value  is addition of Land Factored base Year value and Improvement Factored base year value");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.hpiValueAllowance),
+				"SMAB-T3782:Verifying that HPI value allowance is not visible on P19B Layout");
+		softAssert.assertEquals(land.replace(",", ""),
+				String.valueOf(
+						Integer.parseInt(differenceApportionedToLand.replace(",", "")) + Integer.parseInt("200000")),
+				"SMAB-T3782:Verify that Land is sum of LandFactored base year value + Difference apportioned to land");
+		softAssert.assertEquals(improvement.replace(",", ""),
+				String.valueOf(Integer.parseInt(differenceApportionedToImprovement.replace(",", ""))
+						+ Integer.parseInt("100000")),
+				"SMAB-T3782:Verify that Improvement is sum of ImprovementFactored base year value + Difference apportioned to Improvement");
+		softAssert.assertEquals(Integer.parseInt(total.replace(",", "")),
+				Math.round(
+						Double.parseDouble(land.replace(",", "")) + Double.parseDouble(improvement.replace(",", ""))),
+				"SMAB-T3782:Verify that total is sum of Land and Improvement");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.combinedFactoredandHPI),
+				"SMAB-T3782:Verifying that combined Factored and HPI value allowance is not visible on P19B Layout");
+
+		// Creating another assessed value for P19E
+
+		objParcelsPage.deleteOldAndCreateNewAssessedValuesRecords(hashMapCreateAssessedValueRecordForP19E,
+				salesforceAPI.select("Select Name from Parcel__c where status__c='Active' limit 1").get("Name").get(0));
+
+		objParcelsPage.waitForElementToBeClickable(10, objParcelsPage.EditButton);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditButton));
+		objParcelsPage.enter(objParcelsPage.landFactoredBaseYearValue, "200,000");
+		objParcelsPage.waitForElementToBeVisible(10, objParcelsPage.improvementsFactoredBaseYearValue);
+		objParcelsPage.enter(objParcelsPage.improvementsFactoredBaseYearValue, "100,000");
+		objParcelsPage.waitForElementToBeClickable(10, objParcelsPage.SaveButton);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.SaveButton));
+
+		// fetching field values from layout
+
+		objParcelsPage.waitForElementToBeVisible(10, objParcelsPage.difference);
+		javascriptexecutor.executeScript("window.scrollBy(0,1000)");
+		difference = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.difference);
+
+		land = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.land);
+		improvement = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.improvement);
+		total = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.total);
+		fullcashValue = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.fullCashValue);
+
+		differenceApportionedToLand = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.differenceApportionedToLand);
+		differenceApportionedToImprovement = objParcelsPage
+				.getFieldValueFromAPAS(objParcelsPage.differenceApportionedToImprovement);
+		factoredBaseYearValue = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.factoredBaseYearValue);
+		String hpiValueAllowance = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.hpiValueAllowance);
+
+		// Asserting that field values on the layout
+
+		softAssert.assertEquals(difference.replace(",", ""),
+				String.valueOf(Integer.parseInt(fullcashValue.replace(",", ""))
+						- (int) Double.parseDouble(factoredBaseYearValue.replace(",", ""))
+						- Integer.parseInt(hpiValueAllowance.replace(",", ""))),
+				"SMAB-T3812:Verifying that difference is subtraction of Full cash value -Factored BYV -HPI value allowance for P19E");
+		softAssert.assertEquals(factoredBaseYearValue, "300,000.00",
+				"SMAB-T3812:Verifying that Factored Base Year value  is addition of Land Factored base Year value and Improvement Factored base year value");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.hpiValueAllowance),
+				"SMAB-T3812:Verifying that HPI value allowance is visible on P19E Layout");
+		softAssert.assertEquals(land.replace(",", ""),
+				String.valueOf(
+						Integer.parseInt(differenceApportionedToLand.replace(",", "")) + Integer.parseInt("200000")),
+				"SMAB-T3812:Verify that Land is sum of LandFactored base year value + Difference apportioned to land");
+		softAssert.assertEquals(improvement.replace(",", ""),
+				String.valueOf(Integer.parseInt(differenceApportionedToImprovement.replace(",", ""))
+						+ Integer.parseInt("100000")),
+				"SMAB-T3812:Verify that Improvement is sum of ImprovementFactored base year value + Difference apportioned to Improvement");
+		softAssert.assertEquals(Integer.parseInt(total.replace(",", "")),
+				Math.round(
+						Double.parseDouble(land.replace(",", "")) + Double.parseDouble(improvement.replace(",", ""))),
+				"SMAB-T3812:Verify that total is sum of Land and Improvement");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.combinedFactoredandHPI),
+				"SMAB-T3812:Verifying that combined Factored and HPI value allowance is not visible on P19E Layout");
+
+		objAppraisalActivity.logout();
+
+	}
+	
 	
 
 }
