@@ -1377,7 +1377,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		String queryCountMailTORecords = "SELECT count(id) FROM Mail_To__c where parcel__c='"+responseAPNDetails.get("Id").get(0)+"' and status__c='active'";
 		String countActiveMaiToRecords=salesforceAPI.select(queryCountMailTORecords).get("expr0").get(0);;
 
-		HashMap<String, ArrayList<String>> responseMailToDetails=salesforceAPI.select("SELECT Formatted_Name_2__c ,Formatted_Name_of_Second_Recipient__c ,Care_Of__c ,Mailing_Country__c   FROM Mail_To__c where parcel__c='"+responseAPNDetails.get("Id").get(0)+"' and status__c='Active' ");
+		HashMap<String, ArrayList<String>> responseMailToDetails=salesforceAPI.select("SELECT Formatted_Name_2__c ,Name,Care_Of__c,Country__c FROM Mail_To__c where parcel__c='"+responseAPNDetails.get("Id").get(0)+"' and status__c='Active'");
 
 		String ownershipCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(ownershipCreationData,
@@ -1477,9 +1477,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		// STEP 9-Updating The APN from transfer screen 
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		//objCioTransfer.waitForElementToBeVisible(20,
-				//objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
-		Thread.sleep(8000);
+		objCIOTransferPage.waitForElementToBeVisible(30,
+				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
 		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.ApnLabel);
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.ApnLabel);
 		objCIOTransferPage.Click(objCIOTransferPage.crossIconAPNEditField);
@@ -1491,7 +1490,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 
 		// fetch the new CIO transfer mail  to record details for updated APN 
 		Thread.sleep(5000);
-		HashMap<String, ArrayList<String>> responseCIOTransferMailToDetails=salesforceAPI.select("SELECT Formatted_Name1__c ,Formatted_Name2__c ,Care_of__c, Mailing_Country__c  FROM CIO_Transfer_Mail_To__c where Recorded_APN_Transfer__c ='"+recordeAPNTransferID+"'");
+		HashMap<String, ArrayList<String>> responseCIOTransferMailToDetails=salesforceAPI.select("SELECT Formatted_Name1__c ,Formatted_Name2__c ,Care_of__c, Country__c  FROM CIO_Transfer_Mail_To__c where Recorded_APN_Transfer__c ='"+recordeAPNTransferID+"'");
 
 		// STEP 10-Verify the updated details on screen as per new APN
 
@@ -1510,11 +1509,11 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				"SMAB-T3822: Verify that "
 				+ "only the active mail to records for a parcel are shown on  transfer screen after APN update ");
 		
-		softAssert.assertEquals( responseMailToDetails.get("Formatted_Name_of_Second_Recipient__c").get(0),responseCIOTransferMailToDetails.get("Formatted_Name2__c").get(0),
+		softAssert.assertEquals( responseMailToDetails.get("Name").get(0),responseCIOTransferMailToDetails.get("Formatted_Name1__c").get(0),
 				"SMAB-T3822: Verify that "
 				+ "formatted name 2 in CIO mail to is that of updated APN 's mail to record ");
 		
-		softAssert.assertEquals( responseMailToDetails.get("Formatted_Name_2__c").get(0),responseCIOTransferMailToDetails.get("Formatted_Name1__c").get(0),
+		softAssert.assertEquals( responseMailToDetails.get("Formatted_Name_2__c").get(0),responseCIOTransferMailToDetails.get("Formatted_Name2__c").get(0),
 				"SMAB-T3822: Verify that "
 				+ "formatted name 1 in CIO mail to is that of updated APN 's mail to record ");
 		
@@ -1522,7 +1521,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				"SMAB-T3822: Verify that "
 				+ "Care_Of__c in CIO mail to is that of updated APN 's mail to record ");
 		
-		softAssert.assertEquals( responseMailToDetails.get("Mailing_Country__c").get(0),responseCIOTransferMailToDetails.get("Mailing_Country__c").get(0),
+		softAssert.assertEquals( responseMailToDetails.get("Country__c").get(0),responseCIOTransferMailToDetails.get("Country__c").get(0),
 				"SMAB-T3822: Verify that "
 				+ "Mailing_Country__c in CIO mail to is that of updated APN 's mail to record ");
 		
@@ -1550,7 +1549,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		String urlForTransactionTrail = driver.getCurrentUrl();
 		driver.navigate().to("https://smcacre--" + execEnv
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-Thread.sleep(7000);
+		objCIOTransferPage.waitForElementToBeVisible(30,
+				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
 		String  auditTrailId=urlForTransactionTrail.split("/")[6];
 		
 		String auditTrailName =salesforceAPI.select("SELECT Name FROM Transaction_Trail__c where id='"+auditTrailId+"'").get("Name").get(0);
@@ -1693,10 +1693,7 @@ Thread.sleep(7000);
 		
 		//Step 18 : Validate the Appraisal WIs created  
 
-		String workPoolIdQuery="SELECT Id FROM Work_Pool__c where name='Normal Enrollment' ";
-		String workPoolId = salesforceAPI.select(workPoolIdQuery).get("Id").get(0);
-
-		workItemQuery = "SELECT Id,name,APN__c   FROM Work_Item__c where Type__c='Appraiser' And Sub_Type__c ='Appraisal Activity' and Work_Pool__c ='"+workPoolId+"' and  status__c='In Pool' order by createdDate desc limit 1";
+		workItemQuery = "SELECT Id,name,APN__c   FROM Work_Item__c where Type__c='Appraiser' And Sub_Type__c ='Appraisal Activity'  and  status__c='In Pool' order by createdDate desc limit 1";
 		 workItemNumber = salesforceAPI.select(workItemQuery).get("Name").get(0);
 
 		workItemId=salesforceAPI.select(workItemQuery).get("Id").get(0);
@@ -1727,7 +1724,7 @@ Thread.sleep(7000);
 					"SMAB-T3822: Validation that  business event created for  Appraisal WI is linked to only the updated APN and not the old APN");
 			
 		
-		workItemQuery = "SELECT Id,name  FROM Work_Item__c where Type__c='Appraiser' And Sub_Type__c ='Questionnaire Correspondence' and Work_Pool__c ='"+workPoolId+"' and  status__c='In Pool' order by createdDate desc limit 1";
+		workItemQuery = "SELECT Id,name  FROM Work_Item__c where Type__c='Appraiser' And Sub_Type__c ='Questionnaire Correspondence'  and  status__c='In Pool' order by createdDate desc limit 1";
 		workItemId=salesforceAPI.select(workItemQuery).get("Id").get(0);
 
 		apnWorkItemQuery = "SELECT parcel__c FROM Work_Item_Linkage__c where Work_Item__c ='"+workItemId+"' ";
@@ -1737,7 +1734,7 @@ Thread.sleep(7000);
 						
 		softAssert.assertEquals(salesforceAPI.select(countAPNWorkItemQuery).get("expr0").get(0),1,"SMAB-T3822: Validation that Appraisal Questionnaire Correspondence WI created after approval by supervisor is linked to only new APN and not the old APN");
 			
-		//objCioTransfer.logout();
+		objCIOTransferPage.logout();
 
 }
 }
