@@ -623,4 +623,28 @@ public class MappingPage extends ApasGenericPage {
 				}
 			}
 
+			public void fillMappingActionForSitus(Map<String, String> dataMap) throws Exception {
+				String action = dataMap.get("Action");
+				String taxesPaid = dataMap.get("Are taxes fully paid?");
+				String reasonCode = dataMap.get("Reason code");
+				String firstnonCondoParcelNumber = dataMap.get("First non-Condo Parcel Number");
+				String legalDescription = dataMap.get("Legal Description");
+				String legalDescriptionBrandNewAction = dataMap.get("Legal Descriptions");
+				String comments= dataMap.get("Comments");
+				
+			
+				selectOptionFromDropDown(actionDropDownLabel, action);
+				if (taxesPaid != null)selectOptionFromDropDown(taxesPaidDropDownLabel, taxesPaid);
+				if (reasonCode != null)enter(reasonCodeTextBoxLabel, reasonCode);
+				
+				if (firstnonCondoParcelNumber != null)
+					enter(firstNonCondoTextBoxLabel, firstnonCondoParcelNumber);
+				if (legalDescription != null)
+					enter(legalDescriptionTextBoxLabel, legalDescription);
+				// Below check added exclusively for Brand New action form
+				if (legalDescriptionBrandNewAction != null)
+					enter(legalDescriptionBrandNewTextBoxLabel, legalDescriptionBrandNewAction);
+				if (comments != null)
+					enter(commentsTextBoxLabel, comments);
+			}
 }

@@ -632,7 +632,7 @@ public class ParcelsPage extends ApasGenericPage {
 		public String createParcelSitus( String APN) throws Exception {
 			
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Parcel Situs Record");
-
+ 
 			deleteParcelSitusFromParcel(APN);
 
 			openParcelRelatedTab(parcelSitus);
@@ -820,4 +820,9 @@ public class ParcelsPage extends ApasGenericPage {
 			}
 		}
 
+		public List<WebElement> fetchSitusList() {
+			String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr/th//div//div/a";
+			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));
+			return webElementsHeaders;
+		}
 	}

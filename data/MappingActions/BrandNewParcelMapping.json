@@ -34,4 +34,22 @@
     "Legal Descriptions": "legal Description"
   
   }
+   "DataToPerformBrandNewParcelMappingActionWithSitusDataNew": {
+    "Action": "Brand New Parcel",
+    "Reason code": "PM 85/25-26",
+    "First non-Condo Parcel Number": "456789123",
+    "Comments": "Perform Brand New Parcel mapping",
+    "Situs City Description": "",
+    "Situs City Code": "AT",    
+    "City Name": "ATHERTON",
+    "Direction": "",
+    "Situs Number": "111",
+    "Situs Street Name": "ST",
+    "Situs Type": "DR",
+    "Situs Unit Number": "102",
+    "TRA":"12345",
+    "PUC": "01-SINGLE FAMILY RES",
+    "Legal Descriptions": "legal Description"
+  
+  }
 }
