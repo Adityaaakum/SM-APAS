@@ -110,6 +110,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String originFcv = "Origin FCV";
 	public String apn = "APN";
 	public String parcelAncestry = "Parcel Ancestry";
+	
 
 	/** Added to identify fields, dropdowns for Assessed value and AVO functionality **/	
 
