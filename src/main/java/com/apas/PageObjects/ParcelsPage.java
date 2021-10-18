@@ -109,6 +109,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String originLandValue = "Origin Land Value";
 	public String originFcv = "Origin FCV";
 	public String apn = "APN";
+	public String parcelAncestry = "Parcel Ancestry";
 
 	/** Added to identify fields, dropdowns for Assessed value and AVO functionality **/	
 
@@ -237,6 +238,18 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//a[text()='Assessed Values Ownership']")
 	public WebElement assessedValueOwnershipTab;
+	
+	@FindBy(xpath = "//div[contains(@class,'slds-text-heading_small')]")
+	public WebElement parcelAncestoryHeader;	
+	
+	@FindBy(xpath = "//slot//div[contains(@class,'slds-text-heading_small')]/ancestor::c-org_parcel-ancestry-graph//div[2]/*[name()='svg']/*[name()='svg']/*[name()='text'][2]/*[name()='tspan'][1]")
+	public WebElement ancestoryAPN;
+	
+	@FindBy(xpath = "//slot//div[contains(@class,'slds-text-heading_small')]/ancestor::c-org_parcel-ancestry-graph//div[2]/*[name()='svg']/*[name()='svg']/*[name()='text'][2]/*[name()='tspan'][2]")
+	public WebElement ancestoryReasonCode;
+	
+	@FindBy(xpath = "//slot//div[contains(@class,'slds-text-heading_small')]/ancestor::c-org_parcel-ancestry-graph//div[2]/*[name()='svg']/*[name()='svg']/*[name()='text'][2]/*[name()='tspan'][3]")
+	public WebElement ancestorySqft;
 
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
