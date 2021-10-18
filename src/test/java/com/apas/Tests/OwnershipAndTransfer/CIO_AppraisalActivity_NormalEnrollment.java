@@ -638,6 +638,8 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 				"SMAB-T3812:Verifying that Factored Base Year value  is addition of Land Factored base Year value and Improvement Factored base year value");
 		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objParcelsPage.hpiValueAllowance),
 				"SMAB-T3812:Verifying that HPI value allowance is visible on P19E Layout");
+		softAssert.assertEquals(hpiValueAllowance,"1,000,000",
+				"SMAB-T3812:Verifying that HPI value allowance is defaulted to 1,000,000 on P19E Layout");
 		softAssert.assertEquals(land.replace(",", ""),
 				String.valueOf(
 						Integer.parseInt(differenceApportionedToLand.replace(",", "")) + Integer.parseInt("200000")),
@@ -652,6 +654,11 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 				"SMAB-T3812:Verify that total is sum of Land and Improvement");
 		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.combinedFactoredandHPI),
 				"SMAB-T3812:Verifying that combined Factored and HPI value allowance is not visible on P19E Layout");
+
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.salesPrice),
+				"SMAB-T3812:Verifying that sales price field value allowance is not visible on P19E Layout");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.purchasePrice),
+				"SMAB-T3812:Verifying that purchase price field value allowance is not visible on P19E Layout");
 
 		objAppraisalActivity.logout();
 
