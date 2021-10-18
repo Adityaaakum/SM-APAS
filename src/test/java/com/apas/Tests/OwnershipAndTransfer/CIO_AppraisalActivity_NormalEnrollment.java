@@ -656,9 +656,9 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 				"SMAB-T3812:Verifying that combined Factored and HPI value allowance is not visible on P19E Layout");
 
 		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.salesPrice),
-				"SMAB-T3812:Verifying that sales price field value allowance is not visible on P19E Layout");
+				"SMAB-T3812:Verifying that sales price field value  is not visible on P19E Layout");
 		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.purchasePrice),
-				"SMAB-T3812:Verifying that purchase price field value allowance is not visible on P19E Layout");
+				"SMAB-T3812:Verifying that purchase price field value  is not visible on P19E Layout");
 
 		objAppraisalActivity.logout();
 
