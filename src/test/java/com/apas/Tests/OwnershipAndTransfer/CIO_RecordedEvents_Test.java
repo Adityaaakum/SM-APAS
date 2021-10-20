@@ -283,7 +283,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * transfer on CIO transfer screen
 	 */
 
-	@Test(description = "SMAB-T3427,SMAB-T3306,SMAB-T3446,SMAB-T3307,SMAB-T3308,SMAB-T3691,SMAB-T3162,SMAB-T3164,SMAB-T3165,SMAB-T3166,SMAB-T3207,SMAB-T3567,SMAB-T3568:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3427,SMAB-T3306,SMAB-T3446,SMAB-T3307,SMAB-T3308,SMAB-T3691,SMAB-T3162,SMAB-T3164,SMAB-T3165,SMAB-T3166,SMAB-T3207,SMAB-T3567:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration", "Smoke" }, enabled = true)
 	public void OwnershipAndTransfer_VerifyPartialOwnershipTransfer(String loginUser) throws Exception {
 
@@ -477,7 +477,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.valueFromDocTaxCityLabel),
 				"$2,375,000.00", "SMAB-T3206: Verifying that Doc Tax(City) equals (City of SM Tax / 0.005) ");
-		objCioTransfer.getFieldValueFromAPAS(objCioTransfer.valueFromDocTaxCityLabel);
 
 		ReportLogger.INFO("Add the Transfer Code");
 		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
@@ -547,9 +546,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		HashMap<String, ArrayList<String>> granteeHashMap = objCioTransfer.getGridDataForRowString("1");
 		String granteeForMailTo = granteeHashMap.get("Grantee/Retain Owner Name").get(0);
 		String ownershipDovForNewGrantee = granteeHashMap.get("DOV").get(0);
-		softAssert.assertEquals(granteeHashMap.get("Recorded Document").get(0),hashMapRecordedDocumentData.get("Name").get(0),
-				"SMAB-T3568: Verifying that Recorded Document field of new ownership  is same as document name of recorded document for CIO tranfer");
-
+		
 		// STEP 11- Performing calculate ownership to perform partial transfer
 
 		driver.navigate().to("https://smcacre--" + execEnv
@@ -952,7 +949,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * period
 	 */
 
-	@Test(description = "SMAB-T3377,SMAB-T10081:Verify that User is able to perform CIO transfer autoconfirm using a batch job (Fully automated) ", dataProvider = "dpForCioAutoConfirmUsingBatchJob", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3377,SMAB-T10081,SMAB-T3632:Verify that User is able to perform CIO transfer autoconfirm using a batch job (Fully automated) ", dataProvider = "dpForCioAutoConfirmUsingBatchJob", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration", "Smoke" })
 	public void OwnershipAndTransfer_VerifyCioTransferAutoConfirmUsingBatchJob(String InitialEventCode,
 			String finalEventCode) throws Exception {
@@ -1111,7 +1108,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
 					+ newBusinessEventATRecordId + "/view");
 	
-			Thread.sleep(2000); //Added to handle regression failure
+			Thread.sleep(2000); 
 	
 			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Open",
 					"SMAB-T3632: Validating that audit trail status should be open after submit for approval.");
@@ -1556,7 +1553,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * validate all status
 	 */
 
-	@Test(description = "SMAB-T3525, SMAB-T3341, SMAB-T3881, SMAB-T3764:Verify that User is able to perform CIO transfer  for recorded APN and validate all status and values in Audit Trail record", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3525, SMAB-T3341, SMAB-T3881, SMAB-T3764,SMAB-T3631:Verify that User is able to perform CIO transfer  for recorded APN and validate all status and values in Audit Trail record", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void OwnershipAndTransfer_VerifyTransferActivityStatus_ReturnedAndCompleted(String loginUser)
 			throws Exception {
@@ -2900,12 +2897,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * period
 	 */
 
-	@Test(description = "SMAB-T3377,SMAB-T10081:Verify that User is able to perform CIO transfer autoconfirm using a batch job (Fully automated) ", dataProvider = "dpForCioAutoConfirmUsingBatchJob", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration", "Smoke" })
+	@Test(description = "SMAB-T3759,SMAB-T3568:Verify a new AT Record of type Business Event is created when a Transfer code (Not Auto- Conformable to another Transfer code) is added in the transfer activity and it is submitted to CIO Supervisor for review ", dataProvider = "dpForCioAutoConfirmUsingBatchJob", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void OwnershipAndTransfer_VerifyCioTransferAutoConfirmUsingBatch(String InitialEventCode,
 			String finalEventCode) throws Exception {
 
-		{
 			JSONObject jsonForAutoConfirm = objCioTransfer.getJsonObject();
 			
 			String execEnv = System.getProperty("region");
@@ -2970,7 +2966,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 					.get("Ownership_Start_Date__c").get(0);
 			jsonForAutoConfirm.put("DOR__c", dateOfEvent);
 			jsonForAutoConfirm.put("DOV_Date__c", dateOfEvent);
-			jsonForAutoConfirm.put("Recorded_Document__c", recordedDocumentID);
 			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForAutoConfirm);
 
 			objMappingPage.logout();
@@ -3007,9 +3002,15 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 					+ recordeAPNTransferID + "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
 			HashMap<String, ArrayList<String>> granteeHashMap = objCioTransfer.getGridDataForRowString("1");
 			String granteeForMailTo = granteeHashMap.get("Grantee/Retain Owner Name").get(0);
+			softAssert.assertEquals(granteeHashMap.get("Recorded Document").get(0),"",
+					"SMAB-T3568: Verifying that Recorded Document field of new ownership  is same as document name of recorded document for CIO tranfer");
+			ReportLogger.INFO("Putting Auto confirm date prior to 45 days ");
 			salesforceAPI.update("Recorded_APN_Transfer__c", recordeAPNTransferID, "Auto_Confirm_Start_Date__c",
 					"2021-04-07");
-			ReportLogger.INFO("Putting Auto confirm date prior to 45 days ");
+						
+			
+			//updating recorder document on current ownership on parcel record 
+			salesforceAPI.update("Property_Ownership__c", ownershipId,"Recorded_Document__c", recordedDocumentID);
 
 			driver.navigate().to("https://smcacre--" + execEnv
 					+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
@@ -3018,6 +3019,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.nextButton);
 			objCioTransfer.enter(objCioTransfer.calculateOwnershipRetainedFeld, "50");
 			objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+			String eventID=objCioTransfer.getFieldValueFromAPAS(objCioTransfer.eventIDLabel);
+			softAssert.assertEquals(granteeHashMap.get("Recorded Document").get(0),eventID,
+					"SMAB-T3568: Verifying that Recorded Document field of new ownership  is same as document name of recorded document for CIO tranfer");
 
 			// Step 9: create new mail to record
 
@@ -3031,7 +3035,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			ReportLogger.INFO("Add the Transfer Code");
 			objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
 			objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
-			objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, InitialEventCode);
+			objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, "CIO-DIVIDM");
 			objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 
 			// Creating Unrecorded transfer
@@ -3052,9 +3056,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForReview);
 			ReportLogger.INFO("CIO!! Transfer submitted for review");
 			objCioTransfer.waitForElementToBeVisible(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5),5);
-			softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5)),
-					"CIO transfer initial determination is submitted for review.",
-					"SMAB-T3377,SMAB-T10081:Cio trasnfer is submited for review");
 			objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
 			String newBusinessEventATRecordId = salesforceAPI.select("SELECT Id, Name FROM Transaction_Trail__c order by Name desc limit 1").get("Id").get(0);
 			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
@@ -3063,7 +3064,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	
 			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Open",
 					"SMAB-T3632: Validating that audit trail status should be open after submit for approval.");
-	        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),finalEventCode,
+	        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),"CIO-DIVIDM",
 					"SMAB-T3632: Validating the 'Event Library' field after update transer code value in Audit Trail record.");
 	
 			objCioTransfer.logout();
@@ -3094,55 +3095,19 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			// for impending transfer
 
 			objCioTransfer.login(users.CIO_STAFF);
-			driver.navigate().to("https://smcacre--" + execEnv
-					+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-
-			// STEP 14 : Verifying transfer code has changed after approval and equals to
-			// autoconfirm counterpart of the initial code
-			objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.quickActionButtonDropdownIcon);
-
-			softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.transferCodeLabel),
-					finalEventCode, "SMAB-T3377,SMAB-T10081: Verfyfing the status of the CIO transfer");
-			objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.quickActionButtonDropdownIcon);
-			objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
-			objCioTransfer.Click(objCioTransfer.quickActionOptionBack);
-			objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
-			String parentAuditTrailNumber = objWorkItemHomePage
-					.getElementText(objWorkItemHomePage.firstRelatedBuisnessEvent);
-			objMappingPage.scrollToElement(objWorkItemHomePage.secondRelatedBuisnessEvent);
-			objMappingPage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
-
-			// STEP 15:Verifying that AT=BE is completed
-			objCioTransfer.waitForElementToBeVisible(10, trail.Status);
-
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
-					"SMAB-T3377,SMAB-T10081:Verifying Status of Buisnessevent AuditTrail");
-			driver.navigate().back();
-			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "Completed",
-					"SMAB-T3377,SMAB-T10081:Verifying status of WI is completed ");
-
-			// STEP 16:Verifying that outbound event is completed
-
-			driver.navigate().to(urlForTransactionTrail);
-			objCioTransfer.waitForElementToBeVisible(10, trail.Status);
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
-					"SMAB-T3377,SMAB-T10081:Verifying Status of Outbound  AuditTrail");
-			softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondence), parentAuditTrailNumber,
-					"SMAB-T3377,SMAB-T10081: Verifying that outbound AT is child of parent Recorded correspondence event");
-			//Navigate to the new Audit Trail record created after resubmitting the RAT for approval and validating that updated transfer code should be present in event library field
+			
+			//Step 14 :Navigate to the new Audit Trail record created after resubmitting the RAT for approval and validating that updated transfer code should be present in event library field
 			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
 							+ newBusinessEventATRecordId + "/view");
 			Thread.sleep(2000); //Added to handle regression failure
 			objCioTransfer.waitForElementToBeVisible(10, trail.Status);
 			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Completed",
-							"SMAB-T3632: Validating that audit trail status should be Completed after submit for approval.");
-			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),finalEventCode,
-							"SMAB-T3632: Validating the 'Event Library' field after update transer code value in Audit Trail record.");
+							"SMAB-T3759: Validating that audit trail status should be Completed after submit for approval.");
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),"CIO-DIVIDM",
+							"SMAB-T3759: Validating the 'Event Library' field after update transer code value in Audit Trail record.");
 				
 			objCioTransfer.logout();
 
 		}
-
-	}
+	
 }

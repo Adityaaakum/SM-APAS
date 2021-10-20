@@ -206,7 +206,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		// Step2: Opening the PARCELS page 
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(activeApn);
-		
+		String recordedDocumentID = salesforceAPI
+				.select("SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1")
+				.get("Id").get(0);
 		objCIOTransferPage.deleteOwnershipFromParcel(
 				salesforceAPI.select("Select Id from parcel__c where name='" + activeApn + "'").get("Id").get(0));
 
@@ -227,6 +229,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				.get("Ownership_Start_Date__c").get(0);
 		jsonObject.put("DOR__c", dateOfEvent);
 		jsonObject.put("DOV_Date__c", dateOfEvent);
+		jsonObject.put("Recorded_Document__c", recordedDocumentID);
 		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
 
 		objMappingPage.logout();
