@@ -3128,7 +3128,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 	public void ParcelManagement_VerifyIndependentlCombineMappingAction(String loginUser) throws Exception {
 
-		JSONObject jsonParcelObjectNew = objMappingPage.getJsonObject();
+		JSONObject jsonCombineIndependent = objMappingPage.getJsonObject();
 		//Fetching parcels that are Active with different Ownership record
 		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE "
 				+ " (Not Name like '134%') and Id NOT IN (SELECT APN__c FROM Work_Item__c "
@@ -3138,8 +3138,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
 		int parentParcelcount = responseAPNDetails.get("Name").size();
-		System.out.println("count-----------------:"+ parentParcelcount);
-
+		
 		String apnId1=responseAPNDetails.get("Id").get(0);
 		String apnId2=responseAPNDetails.get("Id").get(1);
 
@@ -3165,15 +3164,15 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String parcelSize	= "200";		
 
-		jsonParcelObjectNew.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
-		jsonParcelObjectNew.put("Status__c","Active");
-		jsonParcelObjectNew.put("Short_Legal_Description__c",legalDescriptionValue);
-		jsonParcelObjectNew.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
-		jsonParcelObjectNew.put("TRA__c",responseTRADetails.get("Id").get(0));
-		jsonParcelObjectNew.put("Lot_Size_SQFT__c",parcelSize);
+		jsonCombineIndependent.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonCombineIndependent.put("Status__c","Active");
+		jsonCombineIndependent.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonCombineIndependent.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonCombineIndependent.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonCombineIndependent.put("Lot_Size_SQFT__c",parcelSize);
 
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObjectNew);
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonParcelObjectNew);
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonCombineIndependent);
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonCombineIndependent);
 		
 		String concatenateAPN = apn1+","+apn2;
 		ReportLogger.INFO("Parent APNs : " + concatenateAPN);
@@ -3261,7 +3260,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		
 		//populating fields on mapping action screen
-		objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+		objMappingPage.waitForElementToBeVisible(10, objMappingPage.actionDropDownLabel);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));

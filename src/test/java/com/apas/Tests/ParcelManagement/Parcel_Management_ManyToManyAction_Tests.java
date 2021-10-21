@@ -2104,7 +2104,6 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
 		int parentParcelcount = responseAPNDetails.get("Name").size();
-		System.out.println("count-----------------:"+ parentParcelcount);
 
 		String apnId1=responseAPNDetails.get("Id").get(0);
 		String apnId2=responseAPNDetails.get("Id").get(1);
