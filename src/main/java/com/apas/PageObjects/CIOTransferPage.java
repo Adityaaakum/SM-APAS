@@ -241,6 +241,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	
 	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='EventID']//following::a[@target='_blank']")
 	public WebElement eventIDOnTransferActivityLabel;
+	
+	@FindBy(xpath = commonXpath + "//div[@class='slds-card__body slds-p-horizontal_small flowruntimeBody']//b")
+	public WebElement calculateOwnershipPageMessage;
 		
 	
 	/*
