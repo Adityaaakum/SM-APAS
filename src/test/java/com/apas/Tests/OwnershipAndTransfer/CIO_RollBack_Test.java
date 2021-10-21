@@ -210,10 +210,10 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		driver.navigate().refresh();
-		objCioTransfer.waitForElementToBeVisible(30,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
-
-		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
+		//objCioTransfer.waitForElementToBeVisible(30,
+			//	objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+Thread.sleep(7000);	
+objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionReturn);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionReturn);
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.returnReasonTextBox);

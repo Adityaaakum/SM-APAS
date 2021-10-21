@@ -728,7 +728,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 	 */
 	public String getFieldValueFromAPAS(String fieldName, String sectionName) {
 		
-		String excEnv = System.getProperty("region");
+		String excEnv = System.getProperty("region");		
 		String fieldValue;
 		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'"
 				+ sectionName + "')]";
@@ -739,17 +739,18 @@ public void searchModule(String moduleToSearch) throws Exception {
 			fieldXpath = fieldPath + "//force-hoverable-link//a//span | " + fieldPath + "//lightning-formatted-text | "
 					+ fieldPath + "//lightning-formatted-number | " + fieldPath + "//lightning-formatted-rich-text | "
 					+ fieldPath + "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
-					+ fieldPath + "//a//span";
+					+ fieldPath + "//a//span | "+"//*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-number | //*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-text";
 		} else {
 			fieldXpath = fieldPath + "//force-hoverable-link//a | " + fieldPath + "//lightning-formatted-text | "
 					+ fieldPath + "//lightning-formatted-number | " + fieldPath + "//lightning-formatted-rich-text | "
 					+ fieldPath + "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
-					+ fieldPath + "//a";
-		}
+					+ fieldPath + "//a | "+"//*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-number|//*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-text";	}
+		
 
 		waitForElementToBeVisible(20, fieldXpath);
+		
 		try {
-			fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();
+			fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();			
 		} catch (Exception ex) {
 			fieldValue = "";
 		}

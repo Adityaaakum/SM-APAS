@@ -494,14 +494,17 @@ public class MappingPage extends ApasGenericPage {
 			enter(parcelTRA, TRA);
 			Thread.sleep(2000);
 			selectOptionFromDropDown(parcelTRA, TRA);
+			ReportLogger.INFO("TRA:" +TRA);
 
 			clearSelectionFromLookup("District / Neighborhood Code");
 			enter(parcelDistrictNeighborhood, distNeigh);
 			selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
+			ReportLogger.INFO("District / Neighborhood Code:" +distNeigh);
 
 			clearSelectionFromLookup("PUC");
 			enter(parcelPUC, PUC);
 			selectOptionFromDropDown(parcelPUC, PUC);
+			ReportLogger.INFO("PUC:" + PUC);
 
 			editSitusModalWindowFirstScreen(dataMap);
 			
@@ -611,7 +614,7 @@ public class MappingPage extends ApasGenericPage {
 			public void deleteExistingWIFromParcel(String apn) {
 				String query ="Select id, name , parcel__c, work_item__r.Name from"
 						+ " work_item_linkage__c where parcel__r.Name = '"+ apn 
-						+"' and work_item__r.status__c != 'completed'";
+						+"' and work_item__r.status__c != 'completed' and  Work_Item__r.type__c = 'CIO'";
 				
 				HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
 
