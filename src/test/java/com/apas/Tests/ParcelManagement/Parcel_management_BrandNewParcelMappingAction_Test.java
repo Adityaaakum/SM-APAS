@@ -294,7 +294,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 				"DataToCreateWorkItemOfTypeParcelManagement");
 		String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformBrandNewParcelMappingActionWithoutAllFields");
+				"DataToPerformBrandNewParcelMappingActionWithSitusData");
 
 		//  Login to the APAS application using the credentials passed through data provider (login Mapping User)
 		objMappingPage.login(loginUser);
@@ -366,11 +366,11 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
     		softAssert.assertEquals(childParcelDisNeigh, childAPNDisNeighFromGrid,
     				" SMAB-T3620:Verify neighborhood of Child parcel"+newCreatedApn);
     		
-    		String childParcelTra = objMappingPage.getFieldValueFromAPAS("TRA", "Summary Values");
+    		String childParcelTra = objMappingPage.getFieldValueFromAPAS("TRA", "Parcel Information");
     		softAssert.assertEquals(childParcelTra, childAPNTraFromGrid,
     				" SMAB-T3620:Verify Tra of Child parcel"+newCreatedApn);
     		
-    		String childParcelSitus = objMappingPage.getFieldValueFromAPAS("Primary Situs", "Summary Values");
+    		String childParcelSitus = objMappingPage.getFieldValueFromAPAS("Primary Situs", "Parcel Information");
     		softAssert.assertEquals(childParcelSitus, childAPNSitusFromGrid,
     				" SMAB-T3620:Verify Situs of Child parcel"+newCreatedApn);
     		
@@ -411,6 +411,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
         		   "SMAB-T2644,SMAB-T3243,SMAB-T3619: Validating that the status of new APN is active");
            // driver.switchTo().window(parentWindow);
            
+           objMappingPage.searchModule(PARCELS);
+           objMappingPage.globalSearchRecords(newCreatedApn);
          //Fetching Child's PUC after closing WI
            childParcelPuc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
            softAssert.assertEquals(childParcelPuc, childAPNPucFromGrid,
@@ -423,41 +425,41 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		    objMappingPage.logout();
 		    Thread.sleep(3000);
 		    
-			ReportLogger.INFO(" Appraiser logins ");
-			objMappingPage.login(users.RP_APPRAISER);
-			objMappingPage.searchModule(PARCELS);
-			objMappingPage.globalSearchRecords(newCreatedApn);
-			objParcelsPage.Click(objParcelsPage.workItems);
-			
-			//Moving to the Update Characteristics Verify PUC WI
-			objParcelsPage.Click(objParcelsPage.updateCharacteristicsVerifyPUC);
-			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
-			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-			objWorkItemHomePage.waitForElementToBeVisible(40, objWorkItemHomePage.referenceDetailsLabel);
-			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
-			objWorkItemHomePage.switchToNewWindow(parentWindow);
-			objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
-			ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
-
-			driver.switchTo().window(parentWindow);
-			driver.navigate().refresh();
-			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
-			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-			String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
-			softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3771: Validation WI completed successfully");
-			objMappingPage.searchModule(PARCELS);
-			objMappingPage.globalSearchRecords(newCreatedApn);
-			
-			//Moving to Allocate Values WI
-			objParcelsPage.Click(objParcelsPage.workItems);
-			objParcelsPage.Click(objParcelsPage.allocateValue);
-			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-			String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
-			String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
-			softAssert.assertEquals(assignedTo, salesforceAPI.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'").get("Name").get(0), "SMAB-T3771:Assiged to is matched successfully");
-			softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool, "SMAB-T3771:workPool is matched successfully");
-
-			objWorkItemHomePage.logout();
+//			ReportLogger.INFO(" Appraiser logins ");
+//			objMappingPage.login(users.RP_APPRAISER);
+//			objMappingPage.searchModule(PARCELS);
+//			objMappingPage.globalSearchRecords(newCreatedApn);
+//			objParcelsPage.Click(objParcelsPage.workItems);
+//			
+//			//Moving to the Update Characteristics Verify PUC WI
+//			objParcelsPage.Click(objParcelsPage.updateCharacteristicsVerifyPUC);
+//			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+//			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+//			objWorkItemHomePage.waitForElementToBeVisible(40, objWorkItemHomePage.referenceDetailsLabel);
+//			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+//			objWorkItemHomePage.switchToNewWindow(parentWindow);
+//			objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
+//			ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
+//
+//			driver.switchTo().window(parentWindow);
+//			driver.navigate().refresh();
+//			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
+//			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+//			String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+//			softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3771: Validation WI completed successfully");
+//			objMappingPage.searchModule(PARCELS);
+//			objMappingPage.globalSearchRecords(newCreatedApn);
+//			
+//			//Moving to Allocate Values WI
+//			objParcelsPage.Click(objParcelsPage.workItems);
+//			objParcelsPage.Click(objParcelsPage.allocateValue);
+//			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+//			String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
+//			String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
+//			softAssert.assertEquals(assignedTo, salesforceAPI.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'").get("Name").get(0), "SMAB-T3771:Assiged to is matched successfully");
+//			softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool, "SMAB-T3771:workPool is matched successfully");
+//
+//			objWorkItemHomePage.logout();
 
 		   		
             		                          

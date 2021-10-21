@@ -16,6 +16,8 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.hamcrest.core.IsNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,6 +31,7 @@ import org.testng.util.Strings;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class Parcel_Management_SplitAction_Tests extends TestBase implements testdata, modules, users {
 	  private RemoteWebDriver driver;
@@ -574,11 +577,16 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		JSONObject jsonForOutputValidations = objMappingPage.getJsonObject();
 		
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Primary_Situs__c !=NULL limit 1";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%'and"
+				+ " Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and status__c = 'Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
+		String apnId=responseAPNDetails.get("Id").get(0);
+		
 		objMappingPage.deleteRelationshipInstanceFromParcel(apn);
 		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
+		objMappingPage.deleteParcelSitusFromParcel(apn);
+		objMappingPage.deleteOwnershipFromParcel(apnId);
 		
 		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), "Lot_Size_SQFT__c", "100");
 
@@ -590,7 +598,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,Id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') and Legacy__c = 'No' limit 1");
 
-		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"')").get("Name").get(0);
+//		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apn +"')").get("Name").get(0);
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String districtValue="District01";
 
@@ -610,14 +618,58 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
 		Map<String, String> hashMapSplitActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformSplitMappingActionWithoutAllFields");
+		
+		String ownershipCreationData = testdata.MANUAL_PARCEL_CREATION_DATA;
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(ownershipCreationData,
+                "DataToCreateOwnershipRecord");
+		
+		String mailToRecordCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapMailToRecordData = objUtil.generateMapFromJsonFile(mailToRecordCreationData,
+				"dataToCreateMailToRecordsWithIncompleteData");
+		
+		String characteristicsRecordCreationData = testdata.CHARACTERISTICS;
+		Map<String, String> hashMapImprovementCharacteristicsData = objUtil.generateMapFromJsonFile(characteristicsRecordCreationData,
+				"DataToCreateImprovementCharacteristics");
+		Map<String, String> hashMapLandCharacteristicsData = objUtil.generateMapFromJsonFile(characteristicsRecordCreationData,
+				"DataToCreateLandCharacteristics");
+		
+		objMappingPage.login(users.SYSTEM_ADMIN);
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.closeDefaultOpenTabs();
+
+		objMappingPage.waitForElementToBeVisible(10, objMappingPage.appLauncher);
+		
+		objMappingPage.globalSearchRecords(apn);
+		String primarySitusValue = objParcelsPage.createParcelSitus(apn);
+		
+		HashMap<String, ArrayList<String>> responseAssesseeDetails = objMappingPage.getOwnerForMappingAction(2);
+	    String assesseeName1 = responseAssesseeDetails.get("Name").get(0);
+
+		try {
+			objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+			objParcelsPage.createOwnershipRecord(assesseeName1, hashMapCreateOwnershipRecordData);
+		}
+		catch(Exception e) {
+			ReportLogger.INFO("Fail to create ownership record : "+e);
+		}
+
+		objMappingPage.globalSearchRecords(apn);
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+		objParcelsPage.createCharacteristicsOnParcel(hashMapImprovementCharacteristicsData,apn);
+
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+		objParcelsPage.createCharacteristicsOnParcel(hashMapLandCharacteristicsData,apn);
+		objMappingPage.logout();
+		Thread.sleep(5000);
 
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
 
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform split mapping
 		objMappingPage.searchModule(PARCELS);
+		objMappingPage.closeDefaultOpenTabs();
+		
 		objMappingPage.globalSearchRecords(apn);
-		objParcelsPage.createParcelSitus(apn);
 		
 		//Fetching the PUC of parent before Split Action
 		objMappingPage.waitForElementToBeClickable(10, objParcelsPage.componentActionsButtonText);
@@ -754,8 +806,10 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		response = salesforceAPI.select(queryToGetRequestType);
 		int expectedWorkItemsGenerated = response.get("Work_Item__r").size();
 		softAssert.assertEquals(expectedWorkItemsGenerated,2,"SMAB-T2551: Verify 2 new Work Items are generated and linked to each child parcel after parcel is split and WI is completed");
+		for(int i =0;i<expectedWorkItemsGenerated;i++) {
+			softAssert.assertContains(response.get("Work_Item__r").get(i),"New APN - Update Characteristics & Verify PUC","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
 
-		softAssert.assertContains(response.get("Work_Item__r").get(0),"New APN - Update Characteristics & Verify PUC","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
+		}
 
 	}
 	/**
@@ -1551,35 +1605,14 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.logout();	
 	}	
 	
-	@Test(description = "SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
+	@Test(description = "SMAB-T3601,SMAB-T3465,SMAB-T3469,SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
 			groups = {"Regression","ParcelManagement","RecorderIntegration" },enabled=true)
 	public void ParcelManagement_VerifyNewWICondominiumPlansGeneratedfromRecorderIntegrationAndSplitMappingAction(String loginUser) throws Exception {
 
-
-		objMappingPage.login(users.SYSTEM_ADMIN);
-		objMappingPage.searchModule(PARCELS);
-
-		salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c"
-				+ " where Sub_type__c='Condominium plans' and status__c ='In pool'", 
-				"status__c","In Progress");
-
-		//generating WI
-		objtransfer.generateRecorderJobWorkItems(objMappingPage.DOC_Condominium_plans, 1);
-
-		String WorkItemQuery="SELECT Id,Name FROM Work_Item__c where Type__c='MAPPING'"
-				+ " AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1"; 
-
-		HashMap<String, ArrayList<String>> responseWIDetails = salesforceAPI.select(WorkItemQuery);
-		String WorkItemNo=responseWIDetails.get("Name").get(0);		
-
-
-		//Searching for the WI genrated
-		objMappingPage.globalSearchRecords(WorkItemNo); 
-		String ApnfromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
-	
-		
+		JSONObject jsonObject = objMappingPage.getJsonObject();
+				
 		//Fetch some other values from database
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
 				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
@@ -1602,17 +1635,89 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
-
-		//updating APN details
-		String query = "Select Id from Parcel__c where Name = '"+ApnfromWIPage+"'";
-		salesforceAPI.update("Parcel__c",query,jsonObject);	
-		objMappingPage.logout();
-
-		//Mapping user logs in and perform mapping action on the WI genrated
-		objMappingPage.login(loginUser);
+		
 		String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
 		Map<String, String> hashMapSplitMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformSplitMappingActionWithoutAllFields");
+		String ownershipCreationData = testdata.MANUAL_PARCEL_CREATION_DATA;
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(ownershipCreationData,
+                "DataToCreateOwnershipRecord");
+		
+		String characteristicsRecordCreationData = testdata.CHARACTERISTICS;
+		Map<String, String> hashMapImprovementCharacteristicsData = objUtil.generateMapFromJsonFile(characteristicsRecordCreationData,
+				"DataToCreateImprovementCharacteristics");
+		Map<String, String> hashMapLandCharacteristicsData = objUtil.generateMapFromJsonFile(characteristicsRecordCreationData,
+				"DataToCreateLandCharacteristics");
+		
+		HashMap<String, ArrayList<String>> responseAssesseeDetails = objMappingPage.getOwnerForMappingAction(2);
+	    String assesseeName1 = responseAssesseeDetails.get("Name").get(0);
+
+		objMappingPage.login(users.SYSTEM_ADMIN);
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.closeDefaultOpenTabs();
+		
+		salesforceAPI.update("Work_Item__c", "SELECT Id FROM Work_Item__c"
+				+ " where Sub_type__c='Condominium plans' and status__c ='In pool'", 
+				"status__c","In Progress");
+
+		//generating WI
+		objtransfer.generateRecorderJobWorkItems(objMappingPage.DOC_Condominium_plans, 1);
+
+		String WorkItemQuery="SELECT Id,Name FROM Work_Item__c where Type__c='MAPPING'"
+				+ "order by createdDate desc limit 1"; 
+
+		HashMap<String, ArrayList<String>> responseWIDetails = salesforceAPI.select(WorkItemQuery);
+		String WorkItemNo=responseWIDetails.get("Name").get(0);
+			
+		//Searching for the WI genrated
+		objMappingPage.globalSearchRecords(WorkItemNo); 
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%'and"
+				+ " Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and status__c = 'Active' limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apn = responseAPNDetails.get("Name").get(0);
+		String apnId = responseAPNDetails.get("Id").get(0);
+		
+		String ApnfromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		
+		//updating APN details
+		String query = "Select Id from Parcel__c where Name = '"+ApnfromWIPage+"'";
+		salesforceAPI.update("Parcel__c",query,jsonObject);	
+		
+		query = "Select Id from Parcel__c where Name = '"+apn+"'";
+		salesforceAPI.update("Parcel__c",query,jsonObject);	
+		
+		ReportLogger.INFO("Updating details on parcel : " + apn);
+		objMappingPage.deleteOwnershipFromParcel(apnId);
+		objMappingPage.deleteRelationshipInstanceFromParcel(apn);
+		objMappingPage.deleteParcelSitusFromParcel(apn);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
+		objMappingPage.deleteExistingWIFromParcel(apn);
+		
+		objMappingPage.globalSearchRecords(apn);
+		String primarySitusValue = objParcelsPage.createParcelSitus(apn);
+
+		try {
+			objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+			objParcelsPage.createOwnershipRecord(assesseeName1, hashMapCreateOwnershipRecordData);
+		}
+		catch(Exception e) {
+			ReportLogger.INFO("Fail to create ownership record : "+e);
+		}
+
+		objMappingPage.globalSearchRecords(apn);
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+		objParcelsPage.createCharacteristicsOnParcel(hashMapImprovementCharacteristicsData,apn);
+
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+		objParcelsPage.createCharacteristicsOnParcel(hashMapLandCharacteristicsData,apn);
+		
+		objMappingPage.logout();
+		Thread.sleep(5000);
+
+		//Mapping user logs in and perform mapping action on the WI genrated
+		objMappingPage.login(loginUser);
+		objMappingPage.waitForElementToBeVisible(10, objMappingPage.appLauncher);
+		objMappingPage.closeDefaultOpenTabs();
 		objMappingPage.globalSearchRecords(WorkItemNo);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -1633,6 +1738,9 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		// Fill data  in mapping screen
 		objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,apn);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapSplitMappingData.get("Action"));		
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, hashMapSplitMappingData.get("Are taxes fully paid?"));
 		objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel, hashMapSplitMappingData.get("Reason code"));
@@ -1648,6 +1756,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"100",i);
 		}		
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		HashMap<String, ArrayList<String>> gridChildApnHashMap = objMappingPage.getGridDataInHashMap(1);
 
 		//switching to main screen
 		driver.switchTo().window(parentWindow);
@@ -1662,7 +1771,84 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		softAssert.assertEquals(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName).getText(),"Update Parcel(s)",
 				"SMAB-T3512-validate that The Return functionality for parcel mgmt activities should work for all these work items.");
 		driver.switchTo().window(parentWindow);
+		
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.closeDefaultOpenTabs();
+		objMappingPage.globalSearchRecords(gridChildApnHashMap.get("APN").get(0));
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 
+		//		Verify Neighborhood Code value is inherited from Parent to Child Parcels
+		softAssert.assertEquals(
+				objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelDistrictNeighborhood, "Summary Values"),
+				responseNeighborhoodDetails.get("Name").get(0),
+				"SMAB-T3601: Verify District/Neighborhood Code of Child Parcel is inheritted from first Parent Parcel");
+
+		// Step 10: Verify TRA value is inherited from Parent to Child Parcels
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelTRA, "Parcel Information"),
+				responseTRADetails.get("Name").get(0),
+				"SMAB-T3601: Verify TRA of Child Parcel is inheritted from first Parent Parcel");
+
+		// Step 11: Validation that child parcel primary situs is inherited from parent parcel
+		String childPrimarySitusValue = objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus,
+				"Parcel Information");
+		softAssert.assertEquals(childPrimarySitusValue,primarySitusValue,
+				"SMAB-T3601: Validation that primary situs of child parcel is same as primary sitrus of parent parcel");
+
+
+		//Verify PUC is inherited from Parent to Child Parcels
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),
+				responsePUCDetails.get("Name").get(0),
+				"SMAB-T3601: Verify PUC of Child Parcel is inheritted from first Parent Parcel");
+
+		String childApnstatus = objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information");
+
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+		HashMap<String, ArrayList<String>> gridownershipDataHashMap = objMappingPage.getGridDataInHashMap();
+		softAssert.assertEquals(gridownershipDataHashMap.get("Owner").get(0),assesseeName1,
+				"SMAB-T3465: Verify Owner of Child Parcel is inheritted from first Parent Parcel");
+		softAssert.assertContains(gridownershipDataHashMap.get("Ownership Percentage").get(0),hashMapCreateOwnershipRecordData.get("Ownership Percentage"),
+				"SMAB-T3465: Verify Ownership Percentage of Child Parcel is inheritted from first Parent Parcel");
+		softAssert.assertEquals(gridownershipDataHashMap.get("Status").get(0),hashMapCreateOwnershipRecordData.get("Status"),
+				"SMAB-T3465: Verify Status of Child Parcel is inheritted from first Parent Parcel");
+
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+		HashMap<String, ArrayList<String>> gridCharacteristicsDataHashMap = objMappingPage.getGridDataInHashMap();
+		softAssert.assertEquals(gridCharacteristicsDataHashMap.get("Characteristics Screen").get(0),
+				hashMapImprovementCharacteristicsData.get("Characteristics Screen"),
+				"SMAB-T3465: Verify Characteristics Screen of Child Parcel is inheritted from first Parent Parcel");
+		softAssert.assertEquals(gridCharacteristicsDataHashMap.get("Characteristics Screen").get(1),
+				hashMapLandCharacteristicsData.get("Characteristics Screen"),
+				"SMAB-T3465: Verify Characteristics Screen of Child Parcel is inheritted from first Parent Parcel");
+
+		// Step 13: Verify Status of Parent & Child Parcels before WI completion
+		objMappingPage.globalSearchRecords(apn);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),
+				"In Progress - To Be Expired","SMAB-T3465: Verify Status of Parent Parcel: ");
+		softAssert.assertEquals(childApnstatus, "In Progress - New Parcel","SMAB-T2574, SMAB-T3573: Verify Status of Child Parcel: ");
+
+		objMappingPage.globalSearchRecords(WorkItemNo);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+		objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.appLauncher, 10);
+		objMappingPage.closeDefaultOpenTabs();
+		objMappingPage.globalSearchRecords(WorkItemNo);
+        objWorkItemHomePage.completeWorkItem(); 
+        driver.navigate().refresh();
+       
+		objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.linkedItemsWI, 10);
+		objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsWI);
+        
+        //navigating to business event audit trail
+        objWorkItemHomePage.scrollToElement(objWorkItemHomePage.secondRelatedBuisnessEvent);
+        objWorkItemHomePage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
+		String auditTrailNo = objWorkItemHomePage.getFieldValueFromAPAS("Name", "");
+		ReportLogger.INFO("Audit Trail no:" +auditTrailNo);
+		softAssert.assertContains(objMappingPage.getFieldValueFromAPAS("Event Library"),
+				"Split","SMAB-T3469: Verify event library updated from draft to Split");
 		objWorkItemHomePage.logout();
 	}
 	
@@ -2055,7 +2241,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3728,SMAB-T3816,SMAB-T3727,SMAB-T3647: Verify many to many audit trail", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+	@Test(description = "SMAB-T3975,SMAB-T3974,SMAB-T3728,SMAB-T3816,SMAB-T3727,SMAB-T3647: Verify many to many audit trail", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
 
 	public void ParcelManagement_VerifyAuditTrailForSplitMappingAction(String loginUser) throws Exception {
 
@@ -2130,10 +2316,26 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.reasonCodeField);
 		objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel, hashMapSplitActionMappingData.get("Reason code"));
 		objMappingPage.enter(objMappingPage.numberOfChildNonCondoTextBoxLabel,"1");
+		
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel2,"101-090-800");
 		objMappingPage.enter(objMappingPage.numberOfChildCondoTextBoxLabel,"1");
 		objMappingPage.enter(objMappingPage.commentsTextBoxLabel,"Perform Parcel Split");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-
+		
+		softAssert.assertContains(objMappingPage.getErrorMessage(),"Non Condo Parcel Number cannot start with 100-199, Please enter valid Parcel Number",
+				"SMAB-T3974: Verify the APNs allowed in '\"First Non Condo Parcel Number\"' field while performing mapping actions is: - (parcels below 100),133, 134,"
+				+ " and range between 200 - 999, excluding the 800 map book");
+		
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel2,"133-090-800");
+		objMappingPage.enter(objMappingPage.firstCondoTextBoxLabel,"002-090-800");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		
+		softAssert.assertContains(objMappingPage.getErrorMessage(),"Condo Parcel Number should start with 100-199 only, Please enter valid Parcel Number",
+				"SMAB-T3975: Verify the APNs allowed in '\"First Non Condo Parcel Number\"' field while performing mapping actions is: - (parcels below 100),133, 134,"
+				+ " and range between 200 - 999, excluding the 800 map book");
+		
+		objMappingPage.enter(objMappingPage.firstCondoTextBoxLabel,"102-090-800");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 
 //		objMappingPage.fillMappingActionForm(hashMapSplitActionMappingData);
 		objMappingPage.waitForElementToBeVisible(10,objMappingPage.generateParcelButton);
