@@ -294,7 +294,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 				"DataToCreateWorkItemOfTypeParcelManagement");
 		String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformBrandNewParcelMappingActionWithoutAllFields");
+				"DataToPerformBrandNewParcelMappingActionWithSitusData");
 
 		//  Login to the APAS application using the credentials passed through data provider (login Mapping User)
 		objMappingPage.login(loginUser);
@@ -366,11 +366,11 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
     		softAssert.assertEquals(childParcelDisNeigh, childAPNDisNeighFromGrid,
     				" SMAB-T3620:Verify neighborhood of Child parcel"+newCreatedApn);
     		
-    		String childParcelTra = objMappingPage.getFieldValueFromAPAS("TRA", "Summary Values");
+    		String childParcelTra = objMappingPage.getFieldValueFromAPAS("TRA", "Parcel Information");
     		softAssert.assertEquals(childParcelTra, childAPNTraFromGrid,
     				" SMAB-T3620:Verify Tra of Child parcel"+newCreatedApn);
     		
-    		String childParcelSitus = objMappingPage.getFieldValueFromAPAS("Primary Situs", "Summary Values");
+    		String childParcelSitus = objMappingPage.getFieldValueFromAPAS("Primary Situs", "Parcel Information");
     		softAssert.assertEquals(childParcelSitus, childAPNSitusFromGrid,
     				" SMAB-T3620:Verify Situs of Child parcel"+newCreatedApn);
     		
@@ -411,6 +411,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
         		   "SMAB-T2644,SMAB-T3243,SMAB-T3619: Validating that the status of new APN is active");
            // driver.switchTo().window(parentWindow);
            
+           objMappingPage.searchModule(PARCELS);
+           objMappingPage.globalSearchRecords(newCreatedApn);
          //Fetching Child's PUC after closing WI
            childParcelPuc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
            softAssert.assertEquals(childParcelPuc, childAPNPucFromGrid,

@@ -774,7 +774,10 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
     		String queryToGetRequestType = "SELECT Work_Item__r.Request_Type__c FROM Work_Item_Linkage__c Where Parcel__r.Name = '"+gridDataHashMap.get("APN").get(0)+"' ";
     		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryToGetRequestType);
     		int expectedWorkItemsGenerated = response.get("Work_Item__r").size();
-    		softAssert.assertEquals(expectedWorkItemsGenerated,1,"SMAB-T2717: Verify 2 new Work Items are generated and linked to each child parcel after one to one mapping action is performed and WI is completed");
+    		String requestType = response.get("Work_Item__r.Request_Type__c").get(0);
+    		softAssert.assertTrue(!requestType.equals("New APN - Allocate Value"),
+    				"SMAB-T2373: Validate system should not automatically create the work item Allocate Value when mapping action is completed");
+    		softAssert.assertEquals(expectedWorkItemsGenerated,1,"SMAB-T2717: Verify 1 new Work Items are generated and linked to each child parcel after one to one mapping action is performed and WI is completed");
            // currently Allocate value is not genrated as part of new story so removed asseration for that
     		softAssert.assertContains(response,"New APN - Update Characteristics & Verify PUC",
     				"SMAB-T2717,SMAB-T3548: Verify Request Type of 1 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");

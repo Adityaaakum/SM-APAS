@@ -208,8 +208,9 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 				"DataToCreateLandCharacteristics");
 		
 		objMappingPage.login(users.SYSTEM_ADMIN);
-		objMappingPage.closeDefaultOpenTabs();
 		objMappingPage.searchModule(PARCELS);
+		objMappingPage.closeDefaultOpenTabs();
+
 		objMappingPage.waitForElementToBeVisible(10, objMappingPage.appLauncher);
 		
 		objMappingPage.globalSearchRecords(retiredAPNValue);
@@ -227,9 +228,6 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		}
 
 		objMappingPage.globalSearchRecords(retiredAPNValue);
-		objParcelsPage.openParcelRelatedTab(objParcelsPage.mailTo);
-		objParcelsPage.createMailToRecord(hashMapMailToRecordData,retiredAPNValue);
-
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
 		objParcelsPage.createCharacteristicsOnParcel(hashMapImprovementCharacteristicsData,retiredAPNValue);
 
