@@ -653,7 +653,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * 
 	 */
 
-	@Test(description = "SMAB-T3377,SMAB-T10081:Verify that User is able to perform CIO transfer autoconfirm when some response do come back with in 45 days wait period", dataProvider = "dpForCioAutoConfirm", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3384,SMAB-T3377,SMAB-T10081:Verify that User is able to perform CIO transfer autoconfirm when some response do come back with in 45 days wait period", dataProvider = "dpForCioAutoConfirm", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void OwnershipAndTransfer_VerifyCioTransferAutoConfirm(String InitialEventCode, String finalEventCode,
 			String response) throws Exception {
@@ -848,6 +848,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			String parentAuditTrailNumber = objWorkItemHomePage
 					.getElementText(objWorkItemHomePage.firstRelatedBuisnessEvent);
 			objMappingPage.scrollToElement(objWorkItemHomePage.secondRelatedBuisnessEvent);
+			
+			objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
+			String eventId=objMappingPage.getFieldValueFromAPAS(trail.EventId);
+			String requestOrigin=objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin);
+			
+			driver.navigate().back();
+			objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
 			objMappingPage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
 
 			// Verifying that AT,WI statuses are completed after manual approval
@@ -862,8 +869,18 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
 					"SMAB-T3377,SMAB-T10081:Verifying Status of Outbound  AuditTrail");
 			softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondence), parentAuditTrailNumber,
-					"SMAB-T3377,SMAB-T10081: Verifying that outbound AT is child of parent Recorded correspondence event");
+					"SMAB-T3384,SMAB-T3377,SMAB-T10081: Verifying that outbound AT is child of parent Recorded correspondence event");
 
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedBuisnessEvent), "",
+					"SMAB-T3384:Verifying that related business event field in that outbound AT  is blank");
+			
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.EventId), eventId,
+					"SMAB-T3384:Verifying that Event ID field in the correspondence event detail page should be inherited from parent correspondence event");
+			
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), requestOrigin,
+					"SMAB-T3384:Verifying that  child correspondence event created from CIO screen inherits the Request Origin from parent event");
+			
+			
 			objCioTransfer.logout();
 		}
 		// Step 14:If response comes back and transfer code is required to be changed as
@@ -2899,7 +2916,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3821,SMAB-T3430 : Ownership And Transfers - Verify AT Event and WI are transferred  to new APN when APN# is edited in RAT/CIO Transfer Screen", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3384,SMAB-T3821,SMAB-T3430 : Ownership And Transfers - Verify AT Event and WI are transferred  to new APN when APN# is edited in RAT/CIO Transfer Screen", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement","RecorderIntegration" }, enabled = true)
 	public void CIO_TransferScreen_UpdateAPN(String loginUser) throws Exception {
 
@@ -3024,6 +3041,16 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objMappingPage.waitForElementToBeVisible(30, objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 
+		String parentAuditTrailNumber = objWorkItemHomePage
+				.getElementText(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		
+		objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		String eventId=objMappingPage.getFieldValueFromAPAS(trail.EventId);
+		String requestOrigin=objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin);
+		
+		driver.navigate().back();
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+		
 		// STEP 7-Clicking on buisness event genertaed by recorder feed 
 
 		objCioTransfer.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
@@ -3174,6 +3201,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		JSONObject responseAuditTrailDetailsJson = new JSONObject(responseAuditTrailDetails);  
 		
 		 auditTrailName=responseAuditTrailDetailsJson.get("Name").toString();
+
 		 auditTrailsParcelLinkage= "SELECT Associated_APNs__c FROM Transaction_Trail__c where Name='"+auditTrailName+"'";
 		countAuditTrailsParcelLinkage= "SELECT count(id) FROM Transaction_Trail__c where Name='"+auditTrailName+"'";
 
@@ -3183,6 +3211,24 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertEquals(salesforceAPI.select(countAuditTrailsParcelLinkage).get("expr0").get(0),1,
 					"SMAB-T3821: Validation that  business event created from APN & legal description WI after APN update is linked to only the updated APN and not the old APN");
 			
+		String auditTrailIdLegalDescriptionWI =salesforceAPI.select("SELECT id FROM Transaction_Trail__c where name='"+auditTrailName+"'").get("Id").get(0);
+		 
+		driver.navigate().to("https://smcacre--" + execEnv
+					+ ".lightning.force.com/lightning/r/Transaction_Trail__c/" + auditTrailIdLegalDescriptionWI + "/view");
+		
+		objMappingPage.scrollToBottom();
+		softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondence), parentAuditTrailNumber,
+				"SMAB-T3384: Verifying that business event created for  APN & Legal description WI  is child of parent Recorded correspondence event");
+
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedBuisnessEvent), "",
+				"SMAB-T3384:Verifying that related business event field in business event created for  APN & Legal description WI  is blank");
+		
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.EventId), eventId,
+				"SMAB-T3384:Verifying that Event ID field in the business event created for  APN & Legal description WI detail page should be inherited from parent correspondence event");
+		
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), requestOrigin,
+				"SMAB-T3384:Verifying that business event created for  APN & Legal description WI inherits the Request Origin from parent event");
+		
 		// STEP 13-verifying the original CIO WI and Recorder feed Audit trails  created are linked to the updated APN
 
 		 workItemIdQuery = "SELECT id,APN__c FROM Work_Item__c where name ='"+workItemNo1+"' ";
@@ -3219,6 +3265,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			
 		// STEP 14-Clicking on submit for approval quick action button
 		
+		driver.navigate().back();
+		objCioTransfer.waitForElementToBeVisible(20,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
 		objCioTransfer.waitForElementToBeVisible(objCioTransfer.confirmationMessageOnTranferScreen);
