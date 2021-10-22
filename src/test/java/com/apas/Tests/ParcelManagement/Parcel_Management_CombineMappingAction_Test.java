@@ -63,7 +63,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2356, SMAB-2570, SMAB-2568: Verify user is able to view error messages on the Mapping screen during combine process", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2356, SMAB-2570, SMAB-2568,SMAB-T2955: Verify user is able to view error messages on the Mapping screen during combine process", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyErrorMessageOnFirstScreenForParcelCombineMappingAction(String loginUser) throws Exception {
 		
@@ -183,7 +183,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"- Please provide more than one APN to combine",
-				"SMAB-T2356: Validate that user is able to view error message as there is only one APN in parent APN field");
+				"SMAB-T2356,SMAB-T2955: Validate that user is able to view error message as there is only one APN in parent APN field");
 
 		//Step 7: Validate the reason code and assessor's map fields are auto populated from parent parcel work item
 		softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
