@@ -1749,6 +1749,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			
 		// STEP 14-Clicking on submit for approval quick action button
 		
+		driver.navigate().back();
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.calculateOwnershipButtonLabel);
+
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
 		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
@@ -1816,12 +1819,6 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			
 			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.dorLabel), dorCIOScreen,
 					"SMAB-T3384:Verifying that business event created by transfer code update inherits the inherits the DOR from recorded document");
-			
-			
-			
-			
-			
-			
 			
 		// Step 17: CIO supervisor now logs in and navigates to the  transfe screen and approves it
 		objCIOTransferPage.logout();

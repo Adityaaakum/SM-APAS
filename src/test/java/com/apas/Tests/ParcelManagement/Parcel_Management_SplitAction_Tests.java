@@ -1604,7 +1604,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.logout();	
 	}	
 	
-	@Test(description = "SMAB-T3601,SMAB-T3465,SMAB-T3469,SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
+	@Test(description = "SMAB-T3385,SMAB-T3601,SMAB-T3465,SMAB-T3469,SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
 			groups = {"Regression","ParcelManagement","RecorderIntegration" },enabled=true)
