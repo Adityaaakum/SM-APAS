@@ -1692,6 +1692,34 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
 		objMappingPage.deleteExistingWIFromParcel(apn);
 		
+		
+		String parentAuditTrailNumber = objWorkItemHomePage
+				.getElementText(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		
+		objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		String eventId=objMappingPage.getFieldValueFromAPAS(trail.EventId);
+		String requestOrigin=objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin);
+		
+		driver.navigate().back();
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+	
+		objMappingPage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+		objWorkItemHomePage.scrollToBottom();
+		
+		softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondence), parentAuditTrailNumber,
+				"SMAB-T3385: Verifying that business event created by Recorder feed for Mapping WI is child of parent Recorded correspondence event");
+
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedBuisnessEvent), "",
+				"SMAB-T3385:Verifying that related business event field in business event created by Recorder feed for Mapping WI  is blank");
+		
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.EventId), eventId,
+				"SMAB-T3385:Verifying that Event ID field in the business event created by Recorder feed for Mapping WI should be inherited from parent correspondence event");
+		
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), requestOrigin,
+				"SMAB-T3385:Verifying that business event created by Recorder feed for Mapping WI inherits the Request Origin from parent event");
+		
+		driver.navigate().back();
 		objMappingPage.globalSearchRecords(apn);
 		String primarySitusValue = objParcelsPage.createParcelSitus(apn);
 

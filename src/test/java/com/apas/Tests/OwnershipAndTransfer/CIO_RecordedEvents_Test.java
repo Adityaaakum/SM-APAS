@@ -1221,7 +1221,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3696 : Verify user is able to use the Calculate Ownership where ownership is acquired over multiple DOV's for the same owner and owner with one DOV is completely retained", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3385,SMAB-T3696 : Verify user is able to use the Calculate Ownership where ownership is acquired over multiple DOV's for the same owner and owner with one DOV is completely retained", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
 	public void OwnershipAndTransfer_Calculate_Ownership_SameOwnerMultipleDOV(String loginUser) throws Exception {
 
@@ -1315,9 +1315,38 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel,20);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);	  	
 
+		String parentAuditTrailNumber = objWorkItemHomePage
+				.getElementText(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		
+		objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		String eventId=objMappingPage.getFieldValueFromAPAS(trail.EventId);
+		String requestOrigin=objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin);
+		
+		driver.navigate().back();
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+	
+		objCioTransfer.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+		objWorkItemHomePage.scrollToBottom();
+		
+		softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondence), parentAuditTrailNumber,
+				"SMAB-T3385: Verifying that business event created by Recorder feed for CIO WI is child of parent Recorded correspondence event");
+
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedBuisnessEvent), "",
+				"SMAB-T3385:Verifying that related business event field in business event created by Recorder feed for CIO WI  is blank");
+		
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.EventId), eventId,
+				"SMAB-T3385:Verifying that Event ID field in the business event created by Recorder feed for CIO WI should be inherited from parent correspondence event");
+		
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), requestOrigin,
+				"SMAB-T3385:Verifying that business event created by Recorder feed for CIO WI inherits the Request Origin from parent event");
+		
 
 		// Step7: CIO staff user navigating to transfer screen by clicking on related
 		// action link
+		driver.navigate().back();
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+	
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
