@@ -146,7 +146,13 @@ public class MappingPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li[last()] |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
 	public WebElement errorMessageFirstScreen;
-
+	
+	@FindBy(xpath = "//div[contains(@id,'help-message')]")
+	public WebElement errormessage;
+	
+	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li[1]")
+	public WebElement errormessageonSecondScreen;
+	
 	@FindBy(xpath = "//div[contains(@class,'flowRuntimeV2')]//c-org_parcel-process-brand-new-view[1]//div[contains(@class,'error')]//li")
 	public WebElement errorMessageSecondScreen;
 	
