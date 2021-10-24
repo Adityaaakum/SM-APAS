@@ -445,7 +445,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		 * This test method is used to assert that CIO auto confirm using batch job is able to autoconfirm transfer after no response came within 45 days of wait period
 		 */
 		
-		@Test(description = "SMAB-T3377,SMAB-T10081:Verify that User is able to perform CIO transfer autoconfirm using a batch job (Fully automated)", dataProvider = "dpForCioAutoConfirmUsingBatchJob" ,dataProviderClass = DataProviders.class, groups = {
+		@Test(description = "SMAB-T3377,SMAB-T10081,SMAB-T3690:Verify that User is able to perform CIO transfer autoconfirm using a batch job (Fully automated)", dataProvider = "dpForCioAutoConfirmUsingBatchJob" ,dataProviderClass = DataProviders.class, groups = {
 				"Regression","ChangeInOwnershipManagement","UnrecordedEvent" })
 		public void UnrecordedEvent_VerifyCioTransferAutoConfirmUsingBatchJob(String InitialEventCode, String finalEventCode) throws Exception {
 			
@@ -480,6 +480,10 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			objMappingPage.searchModule(PARCELS);
 			objMappingPage.globalSearchRecords(activeApn);
 			
+			HashMap<String,ArrayList<String>> recordedDocumentMap= salesforceAPI.select("SELECT id,Name from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1");
+					String recordedDocumentID = recordedDocumentMap.get("Id").get(0);
+					String recordedDocumentName = recordedDocumentMap.get("Name").get(0);
+
 			objCIOTransferPage.deleteOwnershipFromParcel(
 					salesforceAPI.select("Select Id from parcel__c where name='" + activeApn + "'").get("Id").get(0));
 
@@ -499,6 +503,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 					.get("Ownership_Start_Date__c").get(0);
 			jsonObject.put("DOR__c", dateOfEvent);
 			jsonObject.put("DOV_Date__c", dateOfEvent);
+			jsonObject.put("Recorded_Document__c", recordedDocumentID);
 			salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
 
 			objMappingPage.logout();
@@ -518,7 +523,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.newButton);
 			HashMap<String, ArrayList<String>> granteeHashMap = objCIOTransferPage.getGridDataInHashMap();
 			String granteeForMailTo = granteeHashMap.get("Grantee/Retain Owner Name").get(0);
-			
+		
+			softAssert.assertEquals(granteeHashMap.get("Recorded Document").get(0),recordedDocumentName,
+					"SMAB-T3690: Verifying that Recorded Document field of new ownership  is same as document name of recorded document for CIO tranfer");
 			//Updating auto confirm date for auto approval
 			salesforceAPI.update("Recorded_APN_Transfer__c",recordeAPNTransferID, "Auto_Confirm_Start_Date__c","2021-04-07" );
 			ReportLogger.INFO("Putting Auto confirm date prior to 45 days");

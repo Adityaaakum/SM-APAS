@@ -1293,7 +1293,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 		objtransfer.generateRecorderJobWorkItems(recordedDocumentId);
 
 		String WorkItemQuery="SELECT Id,Name FROM Work_Item__c where Type__c='MAPPING'"
-				+ " AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1"; 
+				+ " And status__c='In pool' order by createdDate desc limit 1"; 
 		
 		HashMap<String, ArrayList<String>> responseWIDetails = salesforceAPI.select(WorkItemQuery);
 		String WorkItemNo=responseWIDetails.get("Name").get(0);	
@@ -1336,9 +1336,6 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 			}
 
 			objMappingPage.globalSearchRecords(apn);
-			objParcelsPage.openParcelRelatedTab(objParcelsPage.mailTo);
-			objParcelsPage.createMailToRecord(hashMapMailToRecordData,apn);
-
 			objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
 			objParcelsPage.createCharacteristicsOnParcel(hashMapImprovementCharacteristicsData,apn);
 
@@ -1432,12 +1429,6 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 					"SMAB-T3575,SMAB-T3645: Verify Characteristics Screen of Child Parcel is inheritted from first Parent Parcel");
 			softAssert.assertEquals(gridCharacteristicsDataHashMap.get("Characteristics Screen").get(1),
 					hashMapLandCharacteristicsData.get("Characteristics Screen"),
-					"SMAB-T3575,SMAB-T3645: Verify Characteristics Screen of Child Parcel is inheritted from first Parent Parcel");
-
-			objParcelsPage.openParcelRelatedTab(objParcelsPage.mailTo);
-			HashMap<String, ArrayList<String>> gridmailToDataHashMap = objMappingPage.getGridDataInHashMap();
-			softAssert.assertContains(gridmailToDataHashMap.get("Formatted Name 1").get(0),
-					hashMapMailToRecordData.get("Formatted Name1"),
 					"SMAB-T3575,SMAB-T3645: Verify Characteristics Screen of Child Parcel is inheritted from first Parent Parcel");
 			
 			// Step 13: Verify Status of Parent & Child Parcels before WI completion
