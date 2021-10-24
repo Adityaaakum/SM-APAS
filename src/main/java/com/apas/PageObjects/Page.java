@@ -118,6 +118,7 @@ public class Page extends TestBase {
 
 			if (webElement.isDisplayed()) return true;
 		} catch (Exception ignored) {
+			
 		}
 		return false;
 	}

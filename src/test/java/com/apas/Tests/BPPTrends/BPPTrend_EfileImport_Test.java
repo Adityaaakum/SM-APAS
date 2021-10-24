@@ -318,7 +318,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 			//Step18: Clicking on the given table name
 			String tableName = allTables.get(i);
 			objBppTrend.clickOnTableOnBppTrendPage(tableName);
-			
+			Thread.sleep(4000);
 			//Step13: Validate that correct no.of records are remain in Error row section after retry
 			String actualErrorRowsAfterRetrying = objEfileHomePage.getCountOfRowsFromErrorOrImportedRowsSection("ERROR");
 			String expectedErrorRowCountAfterRetry = Integer.toString(expectedErrorRowsCountBeforeRetry.get(tableName)-1);

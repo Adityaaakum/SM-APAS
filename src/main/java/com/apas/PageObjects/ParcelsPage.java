@@ -6,7 +6,7 @@ import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.relevantcodes.extentreports.LogStatus;
 
-
+import org.json.JSONException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -100,13 +100,17 @@ public class ParcelsPage extends ApasGenericPage {
 	public String land = "Land";
 	public String improvements = "Improvements";
 	public String additionalDeclines = "Additional Declines";
-	public String factoredBaseYearValue = "Factored Base Year Value";
+	
+	/**Adding fields for layout on assessed values*/
+	public String factoredBaseYearValue = "Factored BYV";
 	public String hpiValueAllowance = "HPI Value Allowance";
 	public String originDov = "Origin DOV";
 	public String originImprovementValue = "Origin Improvement Value";
 	public String originLandValue = "Origin Land Value";
 	public String originFcv = "Origin FCV";
 	public String apn = "APN";
+	public String parcelAncestry = "Parcel Ancestry";
+	
 
 	/** Added to identify fields, dropdowns for Assessed value and AVO functionality **/	
 
@@ -115,6 +119,25 @@ public class ParcelsPage extends ApasGenericPage {
 	public String startDate = "Start Date";
 	public String ownershipPercentageTextBoxForAVO="Ownership %";
 	public String dov = "DOV";
+	
+	public String mailTo = "Mail-To";
+	public String formattedName1 = "Formatted Name 1";
+	public String mailZipCopyToMailTo ="Mailing Zip";
+	public String salesPrice ="Sales Price";
+	public String purchasePrice ="Purchase Price";
+	public String landFactoredBaseYearValue ="Land Factored Base Year Value";
+	public String improvementsFactoredBaseYearValue ="Improvement Factored Base Year Value";
+	public String difference ="Difference";
+	public String differenceApportionedToLand ="Difference Apportioned to Land";
+	public String differenceApportionedToImprovement ="Difference Apportioned to Improvement";
+	public String improvement = "Improvement";
+	public String total = "Total";
+	public String fullCashValue = "Full Cash Value";
+	public String combinedFactoredandHPI = "Combined FBYV and HPI";
+	
+	
+	
+	
 	
 	
 	
@@ -216,6 +239,18 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//a[text()='Assessed Values Ownership']")
 	public WebElement assessedValueOwnershipTab;
+	
+	@FindBy(xpath = "//div[contains(@class,'slds-text-heading_small')]")
+	public WebElement parcelAncestoryHeader;	
+	
+	@FindBy(xpath = "//slot//div[contains(@class,'slds-text-heading_small')]/ancestor::c-org_parcel-ancestry-graph//div[2]/*[name()='svg']/*[name()='svg']/*[name()='text'][2]/*[name()='tspan'][1]")
+	public WebElement ancestoryAPN;
+	
+	@FindBy(xpath = "//slot//div[contains(@class,'slds-text-heading_small')]/ancestor::c-org_parcel-ancestry-graph//div[2]/*[name()='svg']/*[name()='svg']/*[name()='text'][2]/*[name()='tspan'][2]")
+	public WebElement ancestoryReasonCode;
+	
+	@FindBy(xpath = "//slot//div[contains(@class,'slds-text-heading_small')]/ancestor::c-org_parcel-ancestry-graph//div[2]/*[name()='svg']/*[name()='svg']/*[name()='text'][2]/*[name()='tspan'][3]")
+	public WebElement ancestorySqft;
 
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -423,6 +458,10 @@ public class ParcelsPage extends ApasGenericPage {
         waitForElementToBeClickable(successAlert,25);
         String messageOnAlert = getElementText(successAlert);
         waitForElementToDisappear(successAlert,10);
+        ReportLogger.INFO("Owner created on parcel : " + messageOnAlert);
+		owner = getFieldValueFromAPAS("Owner", "General Information");
+		String parcel = getFieldValueFromAPAS("Parcel", "General Information");
+		ReportLogger.INFO("Owner created on parcel "+parcel+" : " + owner);
 		return messageOnAlert;
 	}
 
@@ -616,7 +655,8 @@ public class ParcelsPage extends ApasGenericPage {
 			deleteParcelSitusFromParcel(APN);
 
 			openParcelRelatedTab(parcelSitus);
-			waitForElementToBeVisible(10, newButton);
+			scrollToElement(getButtonWithText("New"));
+			waitForElementToBeVisible(10, getButtonWithText("New"));
 			createRecord();
 			waitForElementToBeVisible(10, isPrimaryDropdown);
 			selectOptionFromDropDown(isPrimaryDropdown, "Yes");
@@ -671,7 +711,7 @@ public class ParcelsPage extends ApasGenericPage {
 		 
 		 //Finding the owner name that will later used while creating AVO record
 		 
-		 String ownerName = objSalesforceAPI.select("SELECT id ,name  FROM Property_Ownership__c where Parcel__c='"+apnId+"'"+" and status__c='Active' order by dov_date__c ").get("Name").get(0);
+		 
 	     HashMap<String, ArrayList<String>> hashMapParcelAcessedValueRecord =objSalesforceAPI.select("Select id from Assessed_BY_Values__c where APN__c='"+apnId+"'");
 	     
 			if (!hashMapParcelAcessedValueRecord.isEmpty()) {
@@ -696,13 +736,22 @@ public class ParcelsPage extends ApasGenericPage {
 	            waitForElementToBeVisible(getWebElementWithLabel(assessedValueType),5);
 	            selectOptionFromDropDown(assessedValueType, hashMapToCreateAssessedValueRecords.get("Assessed Value Type"));
 	            waitForElementToBeVisible(10, landCashValue);
-	            enter(landCashValue, hashMapToCreateAssessedValueRecords.get("Land Cash Value"));
+	            if(hashMapToCreateAssessedValueRecords.get("Land Cash Value")!=null) {
+	            enter(landCashValue, hashMapToCreateAssessedValueRecords.get("Land Cash Value"));}
 	            waitForElementToBeVisible(10, improvementCashValue);
-	            enter(improvementCashValue, hashMapToCreateAssessedValueRecords.get("Improvement Cash Value"));
-	            waitForElementToBeClickable(5, SaveButton);
+	            if( hashMapToCreateAssessedValueRecords.get("Improvement Cash Value")!=null) {
+	            enter(improvementCashValue, hashMapToCreateAssessedValueRecords.get("Improvement Cash Value"));}
+	            if( hashMapToCreateAssessedValueRecords.get("Sales Price")!=null) {
+		            enter(salesPrice, hashMapToCreateAssessedValueRecords.get("Sales Price"));}
+	            if( hashMapToCreateAssessedValueRecords.get("Purchase Price")!=null) {
+		            enter(purchasePrice, hashMapToCreateAssessedValueRecords.get("Purchase Price"));}
+	            waitForElementToBeClickable(10, SaveButton);
 	            Click(getButtonWithText(SaveButton));
 	            Thread.sleep(4000);            
 	            ReportLogger.INFO(" AV Records added for APN= "+APN  );
+	            if(hashMapToCreateAssessedValueRecords.get("Ownership Percentage")!=null) {
+	            	
+	            String ownerName = objSalesforceAPI.select("SELECT id ,name  FROM Property_Ownership__c where Parcel__c='"+apnId+"'"+" and status__c='Active' order by dov_date__c ").get("Name").get(0);
 	            
 	            ReportLogger.INFO("Adding AV0 Records for APN= "+APN  );
 	            
@@ -721,12 +770,82 @@ public class ParcelsPage extends ApasGenericPage {
 	            waitForElementToBeClickable(10, SaveButton);           
 	            Click(getButtonWithText(SaveButton));
 	            ReportLogger.INFO("Added AV0 Records for APN= "+APN  );
-	            Thread.sleep(4000);
+	            Thread.sleep(4000);}
 			}
 			
-	                       
-	            
-	            
-	            
+			/*
+			 * This method is used to add few details on the parcel using the salesforce API
+			 * 
+			 * 
+			 */
 
-}
+			public void addParcelDetails(String PUC, String shortLegalDescription, String district,
+					String neighborhoodReferencec, String TRA, String parcelSize,
+					HashMap<String, ArrayList<String>> listofParcels, String hashmapAPNfieldname) throws JSONException{
+
+				jsonObject.put("PUC_Code_Lookup__c", PUC);
+				jsonObject.put("Short_Legal_Description__c", shortLegalDescription);
+				jsonObject.put("District__c", district);
+				jsonObject.put("Neighborhood_Reference__c", neighborhoodReferencec);
+				jsonObject.put("TRA__c", TRA);
+				jsonObject.put("Lot_Size_SQFT__c", parcelSize);
+
+				if (!listofParcels.isEmpty()) {
+					listofParcels.get(hashmapAPNfieldname).stream().forEach(Apn -> {
+						objSalesforceAPI.update(
+								"Parcel__c", objSalesforceAPI
+										.select("select Id from parcel__c where name='" + Apn + "'").get("Id").get(0),
+								jsonObject);
+					});
+
+				}
+			}
+			
+		//This method will create mail to record on parcel
+		public void createMailToRecord(Map<String, String> dataToCreateMailTo,String apn) throws  Exception {		 		 
+
+			try {
+				waitForElementToBeVisible(10,getButtonWithText(newButtonText));
+				Click(getButtonWithText(newButtonText));
+				waitForElementToBeVisible(10,formattedName1);
+				enter(formattedName1, dataToCreateMailTo.get("Formatted Name1"));
+				enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
+				Click(getButtonWithText(SaveButton));
+				waitForElementToBeClickable(successAlert, 25);
+				String messageOnAlert = getElementText(successAlert);
+				waitForElementToDisappear(successAlert, 10);
+				ReportLogger.INFO("Mail To record created on parcel : " + messageOnAlert);
+				ReportLogger.INFO("Mail To created on parcel : " + apn);
+				ReportLogger.INFO("Generated mail to record ");
+				globalSearchRecords(apn);
+				Thread.sleep(5000);
+			} catch (Exception e) {
+				ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE GENERATED");
+			}
+		}
+		
+//		This method will create characteristics on parcel
+		public void createCharacteristicsOnParcel (Map<String, String> dataToCreateCharacteristics,String apn) throws IOException, Exception {		 		 
+
+			try {
+				waitForElementToBeVisible(10,getButtonWithText(newButtonText));
+				Click(getButtonWithText(newButtonText));
+				waitForElementToBeVisible(10,"Property Type");
+				selectOptionFromDropDown("Property Type",dataToCreateCharacteristics.get("Property Type"));
+				selectOptionFromDropDown("Characteristics Screen", dataToCreateCharacteristics.get("Characteristics Screen"));
+				Click(getButtonWithText("Save"));
+				waitForElementToBeClickable(successAlert, 25);
+				String messageOnAlert = getElementText(successAlert);
+				waitForElementToDisappear(successAlert, 10);
+				ReportLogger.INFO("Characteristics record created on parcel : " + messageOnAlert);
+				String characteristicsScreen = getFieldValueFromAPAS("Characteristics Screen", "Characteristics Screen Information");
+				ReportLogger.INFO("Characteristics created on parcel "+apn+" : " + characteristicsScreen);
+				ReportLogger.INFO("Generated Characteristics record ");
+				globalSearchRecords(apn);
+				Thread.sleep(5000);
+			} catch (Exception e) {
+				ReportLogger.INFO("SORRY!! CHARACTERISTICS RECORD CANNOT BE GENERATED");
+			}
+		}
+
+	}

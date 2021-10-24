@@ -89,6 +89,7 @@ public class MappingPage extends ApasGenericPage {
 	public String updateParcelsButton = "//button[text()='Update Parcel(s)']";
 	public String updateParcelButtonLabelName = "Update Parcel(s)";
 	public String parcelSizeColumnSecondScreen = "Parcel Size(SQFT)*";
+	public String apn = "APN";
 	public String parcelSizeColumnSecondScreenWithSpace = "Parcel Size (SQFT)*";
 	public final String DOC_CERTIFICATE_OF_COMPLIANCE="CC";
 	public final String DOC_LOT_LINE_ADJUSTMENT="LL";
@@ -493,14 +494,17 @@ public class MappingPage extends ApasGenericPage {
 			enter(parcelTRA, TRA);
 			Thread.sleep(2000);
 			selectOptionFromDropDown(parcelTRA, TRA);
+			ReportLogger.INFO("TRA:" +TRA);
 
 			clearSelectionFromLookup("District / Neighborhood Code");
 			enter(parcelDistrictNeighborhood, distNeigh);
 			selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
+			ReportLogger.INFO("District / Neighborhood Code:" +distNeigh);
 
 			clearSelectionFromLookup("PUC");
 			enter(parcelPUC, PUC);
 			selectOptionFromDropDown(parcelPUC, PUC);
+			ReportLogger.INFO("PUC:" + PUC);
 
 			editSitusModalWindowFirstScreen(dataMap);
 			
@@ -577,6 +581,47 @@ public class MappingPage extends ApasGenericPage {
 					response.get("Id").stream().forEach(Id -> {
 						objSalesforceAPI.delete("Characteristics__c", Id);
 						ReportLogger.INFO("Characteristics deleted for Id ::"+Id);
+					});
+				}
+			}
+			
+			
+			/**
+			 *  This method will delete existing mailTo instances  from the Parcel
+			 * @param apn-Apn whose records needs to be deleted
+			 * @return
+			 * @throws Exception
+			 */
+			public void deleteMailToInstanceFromParcel(String apn) {
+				String query = "SELECT Id FROM Mail_To__C where Parcel__c in( SELECT id FROM Parcel__c where name='"
+						+ apn + "')";
+				HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+				if (!response.isEmpty()) {
+					response.get("Id").stream().forEach(Id -> {
+						objSalesforceAPI.delete("Mail_To__C", Id);
+						ReportLogger.INFO("Mail To deleted for Id ::"+Id);
+					});
+				}
+			}
+			
+			/**
+			 *  This method will delete existing Work item instances  from the Parcel
+			 * @param apn-Apn whose records needs to be deleted
+			 * @return
+			 * @throws Exception
+			 */
+			public void deleteExistingWIFromParcel(String apn) {
+				String query ="Select id, name , parcel__c, work_item__r.Name from"
+						+ " work_item_linkage__c where parcel__r.Name = '"+ apn 
+						+"' and work_item__r.status__c != 'completed' and  Work_Item__r.type__c = 'CIO'";
+				
+				HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+
+				if (!response.isEmpty()) {
+					response.get("Id").stream().forEach(Id -> {
+						objSalesforceAPI.delete("work_item_linkage__c", Id);
+						ReportLogger.INFO("work_item_linkage__c  deleted for Id ::"+Id);
 					});
 				}
 			}
