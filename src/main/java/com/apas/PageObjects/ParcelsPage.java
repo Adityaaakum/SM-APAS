@@ -849,8 +849,22 @@ public class ParcelsPage extends ApasGenericPage {
 		}
 
 		public List<WebElement> fetchSitusList() {
-			String xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr/th//div//div/a";
+			String xpath = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table)[' 2 ']//tbody/tr/td[3]";
 			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));
 			return webElementsHeaders;
+		}
+		
+		
+		public void situsCreation() throws Exception
+		{
+			enter(getWebElementWithLabel("Situs Number"), "101");
+			enter(getWebElementWithLabel("Situs Street Name"), "ST");
+			enter(getWebElementWithLabel("Situs Unit Number"), "102");
+			clearFieldValue("Situs Type");
+			selectOptionFromDropDown("Situs Type", "DR");
+			clearFieldValue("City Name");
+			selectOptionFromDropDown("City Name", "ATHERTON");
+			enter(getWebElementWithLabel("Situs Name"), "102");
+			Click(getButtonWithText("Save"));
 		}
 	}

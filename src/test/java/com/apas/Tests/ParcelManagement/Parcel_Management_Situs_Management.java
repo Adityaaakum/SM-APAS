@@ -53,40 +53,26 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 			"Regression", "ParcelManagement", "ParcelSitusManagement" })
 	public void Situs_Management_DuplicateSitus(String loginUser) throws Exception {
 
+		
 		String situsNameDeleteQuery = "SELECT Id FROM Situs__c where Name='101 ST DR #102, ATHERTON'";
+		if(!situsNameDeleteQuery.isEmpty()) {
 		salesforceAPI.delete("Situs__c", situsNameDeleteQuery);
+		}
+		
 
+		
 		// Step1: Login to the APAS application using the credentials passed through
 		objMappingPage.login(loginUser);
 
 		// Step3: Opening the Situs page and Clicking on New Button
 		objMappingPage.searchModule(SITUS);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
-
-		// Step 4: Creating new Situs
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Number"), "101");
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Street Name"), "ST");
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Unit Number"), "102");
-		objParcelsPage.clearFieldValue("Situs Type");
-		objApasGenericPage.selectOptionFromDropDown("Situs Type", "DR");
-		objParcelsPage.clearFieldValue("City Name");
-		objApasGenericPage.selectOptionFromDropDown("City Name", "ATHERTON");
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Name"), "102");
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		objParcelsPage.situsCreation();
 
 		// Step 5: Creating the duplicate situs
 		objMappingPage.searchModule(SITUS);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
-
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Number"), "101");
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Street Name"), "ST");
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Unit Number"), "102");
-		objParcelsPage.clearFieldValue("Situs Type");
-		objApasGenericPage.selectOptionFromDropDown("Situs Type", "DR");
-		objParcelsPage.clearFieldValue("City Name");
-		objApasGenericPage.selectOptionFromDropDown("City Name", "ATHERTON");
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Name"), "102");
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		objParcelsPage.situsCreation();
 
 		// Step 6: Verify that Error message is thrown at creation of duplicate situs
 		String ExpectedErrorMessage = "duplicate value found";
@@ -133,21 +119,11 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(
 				mappingActionCreationData, "DataToPerformBrandNewParcelMappingActionWithoutAllFields");
 
-		String count = "SELECT Id FROM Situs__c where Name='101 ST DR #102, ATHERTON'";
-		if (count.isEmpty()) {
+		String situsCount = "SELECT Id FROM Situs__c where Name='101 ST DR #102, ATHERTON'";
+		if (situsCount.isEmpty()) {
 			objMappingPage.searchModule(SITUS);
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
-
-			objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Number"), "101");
-			objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Street Name"), "ST");
-			objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Unit Number"), "102");
-			objParcelsPage.clearFieldValue("Situs Type");
-			objApasGenericPage.selectOptionFromDropDown("Situs Type", "DR");
-			objParcelsPage.clearFieldValue("City Name");
-			objApasGenericPage.selectOptionFromDropDown("City Name", "ATHERTON");
-			objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Name"), "102");
-			objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-
+			objParcelsPage.situsCreation();
 		}
 
 		// Step1: Login to the APAS application using the credentials passed through
@@ -177,24 +153,15 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 		objMappingPage.scrollToBottomOfPage();
 
 		// Step 8: entering data in form for Brand New Parcel mapping
-		objMappingPage.fillMappingActionForSitus(hashMapBrandNewParcelMappingData);
-		objParcelsPage.clearFieldValue("Situs");
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Number"), "101");
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Street Name"), "ST");
-		objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Unit Number"), "102");
-		objParcelsPage.clearFieldValue("Situs Type");
-		objApasGenericPage.selectOptionFromDropDown("Situs Type", "DR");
-		objParcelsPage.clearFieldValue("City Name");
-		objApasGenericPage.selectOptionFromDropDown("City Name", "ATHERTON");
-		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-
+		objMappingPage.fillMappingActionFormWithSitus(hashMapBrandNewParcelMappingData);
+		
 		// Step 9: Verify that after creating situs via mapping action First screen it
 		// does not create duplicate
 		String countAfter = "SELECT Id FROM Situs__c where Name='101 ST DR #102, ATHERTON'";
 		softAssert.assertEquals(countAfter, 1,
 				"SMAB-T3487: Verify that while creating a Situs via a mapping action at first custom page when user mentions already existing Situs,"
 						+ " it gets selected and new duplicate Situs is not created");
-		Thread.sleep(1000);
+		
 
 		// Step 10: Logout
 		objParcelsPage.logout();
@@ -218,21 +185,11 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 		Map<String, String> hashMapBrandNewParcelMappingDataWithSitus = objUtil.generateMapFromJsonFile(
 				mappingActionCreationData, "DataToPerformBrandNewParcelMappingActionWithSitusDataNew");
 
-		String count = "SELECT Id FROM Situs__c where Name='101 ST DR #102, ATHERTON'";
-		if (count.isEmpty()) {
+		String situsCount = "SELECT Id FROM Situs__c where Name='101 ST DR #102, ATHERTON'";
+		if (situsCount.isEmpty()) {
 			objMappingPage.searchModule(SITUS);
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
-
-			objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Number"), "101");
-			objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Street Name"), "ST");
-			objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Unit Number"), "102");
-			objParcelsPage.clearFieldValue("Situs Type");
-			objApasGenericPage.selectOptionFromDropDown("Situs Type", "DR");
-			objParcelsPage.clearFieldValue("City Name");
-			objApasGenericPage.selectOptionFromDropDown("City Name", "ATHERTON");
-			objApasGenericPage.enter(objApasGenericPage.getWebElementWithLabel("Situs Name"), "102");
-			objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-
+			objParcelsPage.situsCreation();
 		}
 
 		objMappingPage.login(loginUser);
@@ -267,8 +224,7 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 		softAssert.assertEquals(countAfter, 1,
 				"SMAB-T3488: Verify that while creating a Situs via a mapping action at second custom page, when user mentions already existing Situs,"
 						+ " it gets selected and new duplicate Situs is not created");
-		Thread.sleep(1000);
-
+	
 		// Logout
 		objParcelsPage.logout();
 
@@ -300,6 +256,8 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 
 		objParcelsPage.searchAndSelectOptionFromDropDown(objParcelsPage.situsSearch,
 				salesforceAPI.select("Select Name from Situs__c where name != null limit 1").get("Name").get(0));
+		
+		String situsName1 =salesforceAPI.select("Select Name from Situs__c where name != null limit 1").get("Name").get(0);
 		objParcelsPage.Click(objParcelsPage.saveButton);
 		// Creating another situs
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
@@ -308,6 +266,7 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 
 		objParcelsPage.searchAndSelectOptionFromDropDown(objParcelsPage.situsSearch,
 				salesforceAPI.select("Select Name from Situs__c where name != null limit 1").get("Name").get(0));
+		String situsName2 =salesforceAPI.select("Select Name from Situs__c where name != null limit 1").get("Name").get(0);
 		objParcelsPage.Click(objParcelsPage.saveButton);
 
 		int count = objParcelsPage.fetchSitusList().size();
@@ -316,6 +275,12 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 		// Verify that corresponding to one parcel more than one situs can exists
 		softAssert.assertTrue(condition,
 				"SMAB-T3481, SMAB-T3482: Verify that system should allow an APN to have multiple Situses associated to it while selecting a Situs");
+		softAssert.assertEquals(situsName1,objParcelsPage.fetchSitusList().get(0),
+				"SMAB-T3481, SMAB-T3482: Verify that system should allow an APN to have multiple Situses with their name associated to it while selecting a Situs");
+		softAssert.assertEquals(situsName2,objParcelsPage.fetchSitusList().get(1),
+				"SMAB-T3481, SMAB-T3482: Verify that system should allow an APN to have multiple Situses with their name associated to it while selecting a Situs");
 
+		
+		objParcelsPage.logout();
 	}
 }
