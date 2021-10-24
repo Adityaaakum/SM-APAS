@@ -626,22 +626,40 @@ public class MappingPage extends ApasGenericPage {
 				}
 			}
 
-			public void fillMappingActionForSitus(Map<String, String> dataMap) throws Exception {
+			/**
+			 * @Description: This method will fill  the fields in Mapping Action Page mapping action
+			 * @param dataMap: A data map which contains data to perform  mapping action
+			 * @throws Exception
+			 */
+			public void fillMappingActionFormWithSitus(Map<String, String> dataMap) throws Exception {
 				String action = dataMap.get("Action");
 				String taxesPaid = dataMap.get("Are taxes fully paid?");
 				String reasonCode = dataMap.get("Reason code");
+				String parcelSizeValidation = dataMap.get("Parcel Size Validation");
+				String netLandLoss = dataMap.get("Net Land Loss");
+				String netLandGain = dataMap.get("Net Land Gain");
 				String firstnonCondoParcelNumber = dataMap.get("First non-Condo Parcel Number");
 				String legalDescription = dataMap.get("Legal Description");
 				String legalDescriptionBrandNewAction = dataMap.get("Legal Descriptions");
 				String comments= dataMap.get("Comments");
-				
-			
+				String numberOfChildNonCondoParcels= dataMap.get("Number of Child Non-Condo Parcels");
+				String numberOfChildCondoParcels= dataMap.get("Number of Child Condo Parcels");
+				String firstCondoParcelNumber= dataMap.get("First Condo Parcel Number");
+
 				selectOptionFromDropDown(actionDropDownLabel, action);
 				if (taxesPaid != null)selectOptionFromDropDown(taxesPaidDropDownLabel, taxesPaid);
 				if (reasonCode != null)enter(reasonCodeTextBoxLabel, reasonCode);
-				
+				if (parcelSizeValidation != null)selectOptionFromDropDown(parcelSizeDropDownLabel, parcelSizeValidation);
+				if (netLandLoss != null)enter(netLandLossTextBoxLabel, netLandLoss);
+				if (netLandGain != null)enter(netLandGainTextBoxLabel, netLandGain);
+				if (numberOfChildNonCondoParcels != null)
+					enter(numberOfChildNonCondoTextBoxLabel, numberOfChildNonCondoParcels);
 				if (firstnonCondoParcelNumber != null)
 					enter(firstNonCondoTextBoxLabel, firstnonCondoParcelNumber);
+				if (numberOfChildCondoParcels != null)
+					enter(numberOfChildCondoTextBoxLabel, numberOfChildCondoParcels);
+				if (firstCondoParcelNumber != null)
+					enter(firstCondoTextBoxLabel, firstCondoParcelNumber);
 				if (legalDescription != null)
 					enter(legalDescriptionTextBoxLabel, legalDescription);
 				// Below check added exclusively for Brand New action form
@@ -649,5 +667,18 @@ public class MappingPage extends ApasGenericPage {
 					enter(legalDescriptionBrandNewTextBoxLabel, legalDescriptionBrandNewAction);
 				if (comments != null)
 					enter(commentsTextBoxLabel, comments);
+				
+				clearFieldValue("Situs");
+				enter(getWebElementWithLabel("Situs Number"), "101");
+				enter(getWebElementWithLabel("Situs Street Name"), "ST");
+				enter(getWebElementWithLabel("Situs Unit Number"), "102");
+				clearFieldValue("Situs Type");
+				selectOptionFromDropDown("Situs Type", "DR");
+				clearFieldValue("City Name");
+				selectOptionFromDropDown("City Name", "ATHERTON");
+				Click(getButtonWithText("Save"));
+
+				
 			}
+
 }
