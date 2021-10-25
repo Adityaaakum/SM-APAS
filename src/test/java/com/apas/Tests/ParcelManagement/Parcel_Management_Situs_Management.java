@@ -183,7 +183,7 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(
 				mappingActionCreationData, "DataToPerformBrandNewParcelMappingActionWithoutAllFields");
 		Map<String, String> hashMapBrandNewParcelMappingDataWithSitus = objUtil.generateMapFromJsonFile(
-				mappingActionCreationData, "DataToPerformBrandNewParcelMappingActionWithSitusDataNew");
+				mappingActionCreationData, "DataToPerformBrandNewParcelMappingActionWithSitusDataForDuplicateSitus");
 
 		String situsCount = "SELECT Id FROM Situs__c where Name='101 ST DR #102, ATHERTON'";
 		if (situsCount.isEmpty()) {

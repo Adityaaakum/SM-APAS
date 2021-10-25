@@ -651,7 +651,7 @@ public class ParcelsPage extends ApasGenericPage {
 		public String createParcelSitus( String APN) throws Exception {
 			
 			ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Parcel Situs Record");
- 
+
 			deleteParcelSitusFromParcel(APN);
 
 			openParcelRelatedTab(parcelSitus);
@@ -848,13 +848,23 @@ public class ParcelsPage extends ApasGenericPage {
 			}
 		}
 
+		
+		/**
+		 * This method will return list of situses Name on situses linked to parcel
+		 * 
+		 * @throws Exception
+		 **/
 		public List<WebElement> fetchSitusList() {
 			String xpath = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table)[' 2 ']//tbody/tr/td[3]";
 			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));
 			return webElementsHeaders;
 		}
 		
-		
+		/**
+		 * This method will create situs
+		 * 
+		 * @throws Exception
+		 **/
 		public void situsCreation() throws Exception
 		{
 			enter(getWebElementWithLabel("Situs Number"), "101");
