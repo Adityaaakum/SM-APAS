@@ -2755,7 +2755,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
 		softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Parcel Size (SqFt). Please navigate to the mapping custom screen to provide the necessary information.",
-				"SMAB-T2956 :Expected error message is displayed successfully");
+				"SMAB-T2956,SMAB-T2881 :Expected error message is displayed successfully");
 
 		objWorkItemHomePage.logout();
 	
@@ -3418,63 +3418,82 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"- Please provide valid field value: Net Land Loss (SQ FT)","SMAB-T2955");
-		
-		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel,"");
-		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel,"-10");
-		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel,"");
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"- Please provide valid field value: Net Land Loss (SQ FT)", "SMAB-T2955,SMAB-T2880");
+
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "-10");
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"- Please provide valid field value: Net Land Gain (SQ FT)","SMAB-T2955");
-		
-		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel,"-10");
-		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"");
+
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"- Please provide valid field value: Net Land Gain (SQ FT)", "SMAB-T2955,SMAB-T2880");
+
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "-10");
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		
-		
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"- Please populate either \"Net Land Loss (SQ FT)\" or \"Net Land Gain (SQ FT)\"","SMAB-T2955");
-		
-		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel,"b1");
-		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel,"");
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessage),"Enter a valid value.","SMAB-T2955");
-		
-		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel,"");
-		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel,"b1");
-		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"");
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessage),"Enter a valid value.","SMAB-T2955");
-		
-		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel,"100");
-		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel,"100");
-		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,"");
+
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"- Please populate either \"Net Land Loss (SQ FT)\" or \"Net Land Gain (SQ FT)\"", "SMAB-T2955,SMAB-T2878");
+
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "b1");
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessage), "Enter a valid value.",
+				"SMAB-T2955");
+
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "b1");
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "");
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessage), "Enter a valid value.",
+				"SMAB-T2955");
+
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "100");
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "100");
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"- Please populate either \"Net Land Loss (SQ FT)\" or \"Net Land Gain (SQ FT)\"","SMAB-T2953");
-		
-	
-		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel,"020");
-		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel,"");
-		
+
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"- Please populate either \"Net Land Loss (SQ FT)\" or \"Net Land Gain (SQ FT)\"", "SMAB-T2953");
+
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "020");
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
+
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.legalDescriptionFieldSecondScreen);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessageonSecondScreen),"Parent Parcel Size = 400, Net Land Loss = 0, Net Land Gain = 020, Total Child Parcel(s) Size = 420.","SMAB-T2952");
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Total Child Parcel (s) size currently match the Parent's Parcel Size!","SMAB-T2954,SMAB-T2952");
-		
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessageonSecondScreen),
+				"Parent Parcel Size = 400, Net Land Loss = 0, Net Land Gain = 020, Total Child Parcel(s) Size = 420.",
+				"SMAB-T2952,SMAB-T2877");
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"Total Child Parcel (s) size currently match the Parent's Parcel Size!", "SMAB-T2954,SMAB-T2952,SMAB-T2879");
+
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
-		
-		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel,"20");
-		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel,"");
-		
+
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "20");
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
+
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.legalDescriptionFieldSecondScreen);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessageonSecondScreen),"Parent Parcel Size = 400, Net Land Loss = 20, Net Land Gain = 0, Total Child Parcel(s) Size = 380.","SMAB-T2951");
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"Total Child Parcel (s) size currently match the Parent's Parcel Size!","SMAB-T2951");
-		
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessageonSecondScreen),
+				"Parent Parcel Size = 400, Net Land Loss = 20, Net Land Gain = 0, Total Child Parcel(s) Size = 380.",
+				"SMAB-T2951,SMAB-T2876 ");
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"Total Child Parcel (s) size currently match the Parent's Parcel Size!", "SMAB-T2951,SMAB-T2879");
+
 		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "-100");
 		objMappingPage.clickAction(objMappingPage.legalDescriptionFieldSecondScreen);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),"- Please provide valid field value: Parcel Size","SMAB-T2955 ");
-		
-		
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"- Please provide valid field value: Parcel Size", "SMAB-T2955 ");
+
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
+
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessageonSecondScreen),
+				"Parent Parcel Size = 400, Net Land Loss = 0, Net Land Gain = 0, Total Child Parcel(s) Size = 400.",
+				"SMAB-T2950,SMAB-T2814");
 		
 
 	}
