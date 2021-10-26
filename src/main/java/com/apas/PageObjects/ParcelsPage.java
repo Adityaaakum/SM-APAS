@@ -100,6 +100,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String land = "Land";
 	public String improvements = "Improvements";
 	public String additionalDeclines = "Additional Declines";
+	public String linkExistingAuditTrail="Is this Audit Trail Record linked to any Existing Audit Trail Record?";
 	
 	/**Adding fields for layout on assessed values*/
 	public String factoredBaseYearValue = "Factored BYV";
@@ -134,6 +135,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String total = "Total";
 	public String fullCashValue = "Full Cash Value";
 	public String combinedFactoredandHPI = "Combined FBYV and HPI";
+	
 	
 	
 	
@@ -848,4 +850,65 @@ public class ParcelsPage extends ApasGenericPage {
 			}
 		}
 
+		/**
+		 * @Description: This method will fill all the fields in Audit Trail record to create audt trail record
+		 * @param dataMap: A data map which contains data to create audit trail record
+		 * @throws Exception
+		 */
+		public void createAuditTrail(Map<String, String> dataMap) throws Exception {
+			ReportLogger.INFO("Create AuditTrail");
+			String timeStamp = String.valueOf(System.currentTimeMillis());
+			String description = dataMap.get("Description") + "_" + timeStamp;
+			
+			Thread.sleep(2000);
+			waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
+			Click(getButtonWithText(componentActionsButtonText));
+			waitForElementToBeClickable(selectOptionDropdown);
+			selectOptionFromDropDown(selectOptionDropdown, "Create Audit Trail Record");
+			Click(getButtonWithText(nextButtonComponentsActionsModal));
+			waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);			
+			selectOptionFromDropDown(recordTypeDropdown, dataMap.get("Record Type"));
+			selectOptionFromDropDown(group,dataMap.get("Group"));
+			Thread.sleep(2000);
+			selectOptionFromDropDown(typeOfAuditTrailDropdown, dataMap.get("Type of Audit Trail Record?"));
+			if(dataMap.get("Date of Value")!=null) {enter(dateOfValueInputTextBox, dataMap.get("Date of Value"));}
+			enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
+			enter(descriptionInputTextBox, description);
+			
+			Click(getButtonWithText(saveAndNextButton));
+			Thread.sleep(5000);
+
+		}
+		
+		/**
+		 * @Description: This method will fill all the fields in Audit Trail record to create audit trail record and link
+		 * with parent audit trail
+		 * @param dataMap: A data map which contains data to create audit trail record
+		 * @throws Exception
+		 */
+		public void createAuditTrailToLinkWithParentAuditTrail(Map<String, String> dataMap, String element,String value) throws Exception {
+			ReportLogger.INFO("Create AuditTrail");
+			String timeStamp = String.valueOf(System.currentTimeMillis());
+			String description = dataMap.get("Description") + "_" + timeStamp;
+			
+			Thread.sleep(2000);
+			waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
+			Click(getButtonWithText(componentActionsButtonText));
+			waitForElementToBeClickable(selectOptionDropdown);
+			selectOptionFromDropDown(selectOptionDropdown, "Create Audit Trail Record");
+			Click(getButtonWithText(nextButtonComponentsActionsModal));
+			waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);			
+			selectOptionFromDropDown(recordTypeDropdown, dataMap.get("Record Type"));
+			selectOptionFromDropDown(group,dataMap.get("Group"));
+			Thread.sleep(2000);
+			selectOptionFromDropDown(typeOfAuditTrailDropdown, dataMap.get("Type of Audit Trail Record?"));
+			if(dataMap.get("Date of Value")!=null) {enter(dateOfValueInputTextBox, dataMap.get("Date of Value"));}
+			enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
+			enter(descriptionInputTextBox, description);
+			selectOptionFromDropDown(linkExistingAuditTrail, "Yes");
+			selectOptionFromDropDown(element,value);
+			Click(getButtonWithText(saveAndNextButton));
+			Thread.sleep(5000);
+
+		}
 	}

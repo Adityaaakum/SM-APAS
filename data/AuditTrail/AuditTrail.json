@@ -1,0 +1,10 @@
+{
+	"DataToCreateAuditTrail": {
+    	"Record Type": "Correspondence",
+    	"Group":"Mapping",
+		"Type of Audit Trail Record?": "Correspondence Received - Mapping",		
+		"Date of Value": "11/07/2021",
+		"Date of Recording": "11/07/2021",
+		"Description": "test"
+	}
+}
