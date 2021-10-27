@@ -3345,11 +3345,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(childApnstatus, "In Progress - New Parcel","SMAB-T3561: Verify Status of Child Parcel: ");
 	}
 	
-	@Test(description = "SMAB-T3569: Verify independent o/p for combine mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+	@Test(description = "SMAB-T2955,SMAB-T2880,SMAB-T2878,SMAB-T2953,SMAB-T2952,SMAB-T2877,SMAB-T2954,SMAB-T2879,SMAB-T2951,SMAB-T2876 ,SMAB-T2950,SMAB-T2814: Verify Parcel size validations for combine mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
 
-	public void demo(String loginUser) throws Exception {
+	public void ParcelManagement_VerifyParcelSizeValidationsForCombineMappingAction(String loginUser) throws Exception {
 
-		
 		// Fetching parcels that are Active with same Ownership record
 		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and  Primary_Situs__c !=NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
@@ -3415,11 +3414,11 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, "Yes");
 		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "-10");
 		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
-
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
-				"- Please provide valid field value: Net Land Loss (SQ FT)", "SMAB-T2955,SMAB-T2880");
+				"- Please provide valid field value: Net Land Loss (SQ FT)",
+				"SMAB-T2955,SMAB-T2880:Verify error message successfully when there is negative value for Net Loss field");
 
 		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
 		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "-10");
@@ -3427,25 +3426,20 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
-				"- Please provide valid field value: Net Land Gain (SQ FT)", "SMAB-T2955,SMAB-T2880");
-
-		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "-10");
-		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "");
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
-				"- Please populate either \"Net Land Loss (SQ FT)\" or \"Net Land Gain (SQ FT)\"", "SMAB-T2955,SMAB-T2878");
+				"- Please provide valid field value: Net Land Gain (SQ FT)",
+				"SMAB-T2955,SMAB-T2880:Verify error message successfully when there is negative value for Net Gain field");
 
 		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "b1");
 		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessage), "Enter a valid value.",
-				"SMAB-T2955");
+				"SMAB-T2955:Verify error message successfully when there is invalid value for Net Loss field");
 
 		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
 		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "b1");
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "");
+
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessage), "Enter a valid value.",
-				"SMAB-T2955");
+				"SMAB-T2955:Verify error message successfully when there is invalid value for Net Gain field");
 
 		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "100");
 		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "100");
@@ -3453,7 +3447,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
-				"- Please populate either \"Net Land Loss (SQ FT)\" or \"Net Land Gain (SQ FT)\"", "SMAB-T2953");
+				"- Please populate either \"Net Land Loss (SQ FT)\" or \"Net Land Gain (SQ FT)\"",
+				"SMAB-T2953,SMAB-T2955,SMAB-T2878:Verify error message successfully when both Net Loss and Net Gain field are populated");
 
 		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "020");
 		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
@@ -3462,9 +3457,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.waitForElementToBeVisible(objMappingPage.legalDescriptionFieldSecondScreen);
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessageonSecondScreen),
 				"Parent Parcel Size = 400, Net Land Loss = 0, Net Land Gain = 020, Total Child Parcel(s) Size = 420.",
-				"SMAB-T2952,SMAB-T2877");
+				"SMAB-T2952,SMAB-T2877:Verify message on Second custom screen when user enter Net Gain value");
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
-				"Total Child Parcel (s) size currently match the Parent's Parcel Size!", "SMAB-T2954,SMAB-T2952,SMAB-T2879");
+				"Total Child Parcel (s) size currently match the Parent's Parcel Size!",
+				"SMAB-T2954,SMAB-T2952,SMAB-T2879:Verify message when parent parcel size matches the child's parcel size when there is Net Gain");
 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
 
@@ -3475,15 +3471,17 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.waitForElementToBeVisible(objMappingPage.legalDescriptionFieldSecondScreen);
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessageonSecondScreen),
 				"Parent Parcel Size = 400, Net Land Loss = 20, Net Land Gain = 0, Total Child Parcel(s) Size = 380.",
-				"SMAB-T2951,SMAB-T2876 ");
+				"SMAB-T2951,SMAB-T2876;Verify message on Second custom screen when user enter Net Loss value ");
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
-				"Total Child Parcel (s) size currently match the Parent's Parcel Size!", "SMAB-T2951,SMAB-T2879");
+				"Total Child Parcel (s) size currently match the Parent's Parcel Size!",
+				"SMAB-T2951,SMAB-T2879;Verify message when parent parcel size matches the child's parcel size when there is Net Loss");
 
 		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "-100");
 		objMappingPage.clickAction(objMappingPage.legalDescriptionFieldSecondScreen);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
-				"- Please provide valid field value: Parcel Size", "SMAB-T2955 ");
+				"- Please provide valid field value: Parcel Size",
+				"SMAB-T2955: Verify error message on negative parcel size value");
 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
 
@@ -3493,9 +3491,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessageonSecondScreen),
 				"Parent Parcel Size = 400, Net Land Loss = 0, Net Land Gain = 0, Total Child Parcel(s) Size = 400.",
-				"SMAB-T2950,SMAB-T2814");
-		
+				"SMAB-T2950,SMAB-T2814:verify message on second custom screen when there is no Net Loss and Net Gain");
 
 	}
-}			
-	
+}
