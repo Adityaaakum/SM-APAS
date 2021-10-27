@@ -2524,7 +2524,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2884, SMAB-T2896,SMAB-T3669: Verify generation of Interim Parcels for Combine Mapping Action and validation around it", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2884, SMAB-T2896,SMAB-T3669,SMAB-T2956,SMAB-T2881: Verify generation of Interim Parcels for Combine Mapping Action and validation around it", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyGenerationOfInterimParcelForCombineMappingAction(String loginUser) throws Exception {
 		
@@ -2755,7 +2755,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
 		softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Parcel Size (SqFt). Please navigate to the mapping custom screen to provide the necessary information.",
-				"SMAB-T2956,SMAB-T2881 :Expected error message is displayed successfully");
+				"SMAB-T2956,SMAB-T2881 :Expected error message is displayed when parcel size is missing successfully");
 
 		objWorkItemHomePage.logout();
 	
