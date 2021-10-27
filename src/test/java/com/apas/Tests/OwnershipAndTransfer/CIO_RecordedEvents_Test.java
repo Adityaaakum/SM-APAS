@@ -3624,5 +3624,97 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			objCioTransfer.logout();
 
 		}
+	@Test(description = "SMAB-T3345, SMAB-T3392- Verify User is able to create WI from CIO transfer activity screen and Verify Event ID and APN should be displayed in WI and AT Business Event linked to WI", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement" })
+	public void CIOTransfer_CreateWiFromCioTransferActivityScreen(String loginUser) throws Exception {
+
+		// Creating work item
+		String execEnv = System.getProperty("region");
+		objCioTransfer.getJsonObject();
+		CONFIG.getProperty(users.CIO_STAFF + "UserName");
+		CONFIG.getProperty(users.CIO_SUPERVISOR + "UserName");
+
+		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		objUtil.generateMapFromJsonFile(OwnershipAndTransferCreationData,
+				"dataToCreateMailToRecordsWithIncompleteData");
+
+		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		objUtil.generateMapFromJsonFile(OwnershipAndTransferGranteeCreationData,
+				"dataToCreateGranteeWithCompleteOwnership");
+
+		objUtil.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
+
+		String recordedDocumentID = salesforceAPI
+				.select(" SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1")
+				.get("Id").get(0);
+		objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
+
+		salesforceAPI.update("Work_Item__c",
+				"SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c",
+				"In Progress");
+		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
+
+		// Step1: Login to the APAS application using the credentials passed through
+		objParcelsPage.login(loginUser);
+
+		driver.navigate().refresh();
+
+		// Query to fetch WI
+		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO' order by createdDate desc limit 1";
+		String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
+
+		// Step 2:Opening the Work Item module
+		objParcelsPage.globalSearchRecords(workItemNo);
+
+		// Step 3: Clicking the details tab for the work item newly created and clicking
+		// on Related Action Link
+		ReportLogger.INFO("Click on the Related Action link");
+		objWorkItemHomePage.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		String firstBussinessEventName = objWorkItemHomePage.firstRelatedBuisnessEvent.getText();
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+
+		ReportLogger.INFO("Switch to the Appraisal Activity Screen.");
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objWorkItemHomePage.waitForElementToBeClickable(50, objCioTransfer.componentActionsButtonLabel);
+
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"CioApnAndLegalDescriptionValidation");
+
+		// Step 4: Creating Manual work item for the Parcel
+		String workItemSecond = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		System.out.println("Created First Work Item Number:- " + workItemNo);
+		System.out.println("Created Second Work Item Number:- " + workItemSecond);
+		objParcelsPage.globalSearchRecords(workItemSecond);
+
+		// Step5: Clicking the details tab for the work item newly created and clicking
+		// on Related Action Link
+		ReportLogger.INFO("Click on the Related Action link");
+		objWorkItemHomePage.waitForElementToBeClickable(10, objWorkItemHomePage.completedOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.markStatusAsCompleteBtn);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		String newFirstBussinessEventName = objWorkItemHomePage.firstRelatedBuisnessEvent.getText();
+		String newSecondAuditTrailID = salesforceAPI.select(
+				"SELECT Id,Status__c,Name FROM Transaction_Trail__c where Name='" + newFirstBussinessEventName + "'")
+				.get("Id").get(0);
+		// Step 6: Navigating to the Audit trail page and verifying the details.
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
+				+ newSecondAuditTrailID + "/view");
+		objCioTransfer.waitUntilPageisReady(driver);
+		String relatedCorrespondenceOnNewScreen = objParcelsPage.getFieldValueFromAPAS("Related Correspondence");
+		String statusOnNewScreen = objParcelsPage.getFieldValueFromAPAS("Status");
+		softAssert.assertEquals(firstBussinessEventName, relatedCorrespondenceOnNewScreen,
+				"SMAB-T3345, SMAB-T3392-Verify that the Event ID is same on Child Audit Trail");
+		softAssert.assertEquals(statusOnNewScreen, "Completed",
+				"SMAB-T3345, SMAB-T3392-Verify that the status should be completed.");
+		ReportLogger.INFO("Completed the validation!");
+		objWorkItemHomePage.logout();
+	}
 	
 }
