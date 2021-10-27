@@ -100,6 +100,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String land = "Land";
 	public String improvements = "Improvements";
 	public String additionalDeclines = "Additional Declines";
+	public String linkExistingAuditTrail="Please select the Parent Audit Trail Record";
 	
 	/**Adding fields for layout on assessed values*/
 	public String factoredBaseYearValue = "Factored BYV";
@@ -134,6 +135,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String total = "Total";
 	public String fullCashValue = "Full Cash Value";
 	public String combinedFactoredandHPI = "Combined FBYV and HPI";
+	
 	
 	
 	
@@ -517,7 +519,8 @@ public class ParcelsPage extends ApasGenericPage {
 			if(dataMap.get("Date of Value")!=null) {enter(dateOfValueInputTextBox, dataMap.get("Date of Value"));}
 			enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
 			enter(descriptionInputTextBox, description);
-			
+			if(dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?")!=null) {enter(auditTrailRecordDropDownComponentsActionsModal, dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?"));}
+			if(dataMap.get("Please select the Parent Audit Trail Record")!=null) {enter(linkExistingAuditTrail, dataMap.get("Please select the Parent Audit Trail Record"));}
 			Click(getButtonWithText(saveAndNextButton));
 			Thread.sleep(5000);
 			if(dataMap.get("Record Type").equalsIgnoreCase("Correspondence")) {return null;}				
@@ -847,34 +850,22 @@ public class ParcelsPage extends ApasGenericPage {
 				ReportLogger.INFO("SORRY!! CHARACTERISTICS RECORD CANNOT BE GENERATED");
 			}
 		}
-
-		
-		/**
-		 * This method will return list of situses Name on situses linked to parcel
-		 * 
-		 * @throws Exception
-		 **/
-		public List<WebElement> fetchSitusList() {
-			String xpath = "(//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table)[' 2 ']//tbody/tr/td[3]";
-			List<WebElement> webElementsHeaders = driver.findElements(By.xpath(xpath));
-			return webElementsHeaders;
-		}
 		
 		/**
 		 * This method will create situs
 		 * 
 		 * @throws Exception
 		 **/
-		public void situsCreation() throws Exception
+		public void createSitus(Map<String, String> dataMap) throws Exception
 		{
-			enter(getWebElementWithLabel("Situs Number"), "101");
-			enter(getWebElementWithLabel("Situs Street Name"), "ST");
-			enter(getWebElementWithLabel("Situs Unit Number"), "102");
+			enter(getWebElementWithLabel("Situs Number"), dataMap.get("Situs Number"));
+			enter(getWebElementWithLabel("Situs Street Name"), dataMap.get("Situs Street Name"));
+			enter(getWebElementWithLabel("Situs Unit Number"), dataMap.get("Situs Unit Number"));
 			clearFieldValue("Situs Type");
-			selectOptionFromDropDown("Situs Type", "DR");
+			selectOptionFromDropDown("Situs Type", dataMap.get("Situs Type"));
 			clearFieldValue("City Name");
-			selectOptionFromDropDown("City Name", "ATHERTON");
-			enter(getWebElementWithLabel("Situs Name"), "102");
+			selectOptionFromDropDown("City Name", dataMap.get("City Name"));
+			enter(getWebElementWithLabel("Situs Name"), dataMap.get("Situs Name"));
 			Click(getButtonWithText("Save"));
 		}
 	}

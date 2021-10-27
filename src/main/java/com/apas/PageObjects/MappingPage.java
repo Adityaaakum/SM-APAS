@@ -662,9 +662,6 @@ public class MappingPage extends ApasGenericPage {
 					enter(firstCondoTextBoxLabel, firstCondoParcelNumber);
 				if (legalDescription != null)
 					enter(legalDescriptionTextBoxLabel, legalDescription);
-				// Below check added exclusively for Brand New action form
-				if (legalDescriptionBrandNewAction != null)
-					enter(legalDescriptionBrandNewTextBoxLabel, legalDescriptionBrandNewAction);
 				if (comments != null)
 					enter(commentsTextBoxLabel, comments);
 				

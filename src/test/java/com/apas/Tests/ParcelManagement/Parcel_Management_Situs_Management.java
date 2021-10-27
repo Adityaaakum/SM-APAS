@@ -36,6 +36,7 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 	String apnPrefix = new String();
 	ReportsPage objReportsPage;
 	ApasGenericPage objApasGenericPage;
+	String situsData;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -47,14 +48,19 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 		objMappingPage = new MappingPage(driver);
 		objReportsPage = new ReportsPage(driver);
 		objApasGenericPage = new ApasGenericPage(driver);
+		situsData = testdata.SITUS_DATA;
 	}
 
 	@Test(description = "SMAB-T3824,SMAB-T3825,Verify Duplicate Situs", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement", "ParcelSitusManagement" })
 	public void Situs_Management_DuplicateSitus(String loginUser) throws Exception {
+		
+		Map<String, String> dataToCreateSitusRecord = objUtil.generateMapFromJsonFile(situsData,
+				"NewSitusCreationData");
 
 		
 		String situsNameDeleteQuery = "SELECT Id FROM Situs__c where Name='101 ST DR #102, ATHERTON'";
+		objMappingPage.login(loginUser);
 		if(!situsNameDeleteQuery.isEmpty()) {
 		salesforceAPI.delete("Situs__c", situsNameDeleteQuery);
 		}
@@ -62,17 +68,17 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 
 		
 		// Step1: Login to the APAS application using the credentials passed through
-		objMappingPage.login(loginUser);
+		
 
 		// Step3: Opening the Situs page and Clicking on New Button
 		objMappingPage.searchModule(SITUS);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
-		objParcelsPage.situsCreation();
+		objParcelsPage.createSitus(dataToCreateSitusRecord);
 
 		// Step 5: Creating the duplicate situs
 		objMappingPage.searchModule(SITUS);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
-		objParcelsPage.situsCreation();
+		objParcelsPage.createSitus(dataToCreateSitusRecord);
 
 		// Step 6: Verify that Error message is thrown at creation of duplicate situs
 		String ExpectedErrorMessage = "duplicate value found";
@@ -118,17 +124,19 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 		String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(
 				mappingActionCreationData, "DataToPerformBrandNewParcelMappingActionWithoutAllFields");
-
+		Map<String, String> dataToCreateSitusRecord = objUtil.generateMapFromJsonFile(situsData,
+				"NewSitusCreationData");
+		
 		String situsCount = "SELECT Id FROM Situs__c where Name='101 ST DR #102, ATHERTON'";
+		
+		// Step1: Login to the APAS application using the credentials passed through
+		// data provider (login Mapping User)
+				objMappingPage.login(loginUser);
 		if (situsCount.isEmpty()) {
 			objMappingPage.searchModule(SITUS);
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
-			objParcelsPage.situsCreation();
+			objParcelsPage.createSitus(dataToCreateSitusRecord);
 		}
-
-		// Step1: Login to the APAS application using the credentials passed through
-		// data provider (login Mapping User)
-		objMappingPage.login(loginUser);
 
 		// Step2: Opening the PARCELS page and searching the parcel to perform brand new
 		// parcel mapping
@@ -185,14 +193,18 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 		Map<String, String> hashMapBrandNewParcelMappingDataWithSitus = objUtil.generateMapFromJsonFile(
 				mappingActionCreationData, "DataToPerformBrandNewParcelMappingActionWithSitusDataForDuplicateSitus");
 
+		Map<String, String> dataToCreateSitusRecord = objUtil.generateMapFromJsonFile(situsData,
+				"NewSitusCreationData");
+		
 		String situsCount = "SELECT Id FROM Situs__c where Name='101 ST DR #102, ATHERTON'";
+		objMappingPage.login(loginUser);
 		if (situsCount.isEmpty()) {
 			objMappingPage.searchModule(SITUS);
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("New"));
-			objParcelsPage.situsCreation();
+			objParcelsPage.createSitus(dataToCreateSitusRecord);
 		}
 
-		objMappingPage.login(loginUser);
+		
 
 		// Opening the PARCELS page and searching the parcel to perform brand new parcel
 		// mapping
@@ -269,15 +281,17 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 		String situsName2 =salesforceAPI.select("Select Name from Situs__c where name != null limit 1").get("Name").get(0);
 		objParcelsPage.Click(objParcelsPage.saveButton);
 
-		int count = objParcelsPage.fetchSitusList().size();
+		HashMap<String, ArrayList<String>> parcelSitusDataHashMap = objParcelsPage
+				.getParcelTableDataInHashMap("Parcel Situs");
+		int count = parcelSitusDataHashMap.size();
 		boolean condition = count >= 2;
 
 		// Verify that corresponding to one parcel more than one situs can exists
 		softAssert.assertTrue(condition,
 				"SMAB-T3481, SMAB-T3482: Verify that system should allow an APN to have multiple Situses associated to it while selecting a Situs");
-		softAssert.assertEquals(situsName1,objParcelsPage.fetchSitusList().get(0),
+		softAssert.assertEquals(situsName1,parcelSitusDataHashMap.get("Situs Name").get(0),
 				"SMAB-T3481, SMAB-T3482: Verify that system should allow an APN to have multiple Situses with their name associated to it while selecting a Situs");
-		softAssert.assertEquals(situsName2,objParcelsPage.fetchSitusList().get(1),
+		softAssert.assertEquals(situsName2,parcelSitusDataHashMap.get("Situs Name").get(1),
 				"SMAB-T3481, SMAB-T3482: Verify that system should allow an APN to have multiple Situses with their name associated to it while selecting a Situs");
 
 		
