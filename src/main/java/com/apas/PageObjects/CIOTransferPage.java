@@ -200,6 +200,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath = commonXpath + "//span[text() = 'CIO Transfer Mail To']/following-sibling::span")
 	public WebElement numberOfMailToLabel;
 	
+	@FindBy(xpath = commonXpath + "//span[text() = 'Ownership for Parent Parcel']/following-sibling::span")
+	public WebElement numberOfOwnershipParentParcelLabel;
+	
 	@FindBy(xpath = commonXpath + "//h1[text()='Ownership']")
 	public WebElement ownershipLabelOnGridForGrantee;
 	
@@ -245,6 +248,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath = commonXpath + "//div[@class='slds-card__body slds-p-horizontal_small flowruntimeBody']//b")
 	public WebElement calculateOwnershipPageMessage;
 		
+	@FindBy(xpath ="//label[text()='APN']/..//button[@title='Clear Selection']")
+	public WebElement crossIconAPNEditField;
+	
 	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
@@ -437,7 +443,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		        String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//span[text() = '" + labelName + "']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]";		        
 		        WebElement fieldLocator = locateElement(xpathStr, 30);
 		        Click(fieldLocator);
-		        Thread.sleep(1000);
+	        	Thread.sleep(1000);
+
 		    }
 		 
 		 

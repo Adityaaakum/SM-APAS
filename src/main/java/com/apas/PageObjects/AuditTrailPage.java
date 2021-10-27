@@ -37,11 +37,18 @@ public class AuditTrailPage extends ApasGenericPage {
 	public String dovLabel ="Date of Value";
 	public String dorLabel ="Date of Recording";
 	public String rollYearLabel ="Applicable To Roll Year";
+<<<<<<< HEAD
 
 	
 	
 	@FindBy(xpath="//li[@title='Related Business Records']//a[@data-label='Related Business Records']")
 	public WebElement relatedBusinessRecords;
+=======
+	public String relatedActionLabel ="Related Action";
+
+
+			
+>>>>>>> 3e1e1f55fa238b777600be686b4a40d0fc2e334b
 		
 	
 		             
