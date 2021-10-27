@@ -57,6 +57,9 @@ public class Parcel_ComponentACtion_AuditTrail_Tests extends TestBase implements
 		String activeApn = objParcelsPage.fetchActiveAPN();
 		Map<String, String> dataToCreateAuditTrailRecord = objUtil.generateMapFromJsonFile(auditTrailData,
 				"DataToCreateAuditTrail");
+		
+		Map<String, String> dataToCreateAuditTrailRecordToLinkWithParent = objUtil.generateMapFromJsonFile(auditTrailData,
+				"DataToCreateAuditTrailToLinkWithParent");
 
 		// Step 1: Login to the APAS application
 		objMappingPage.login(loginUser);
@@ -66,25 +69,26 @@ public class Parcel_ComponentACtion_AuditTrail_Tests extends TestBase implements
 		objMappingPage.globalSearchRecords(activeApn);
 
 		// Step 3: Create audit Trail
-		objParcelsPage.createAuditTrail(dataToCreateAuditTrailRecord);
+		objParcelsPage.createUnrecordedEvent(dataToCreateAuditTrailRecord);
 
 		//Step 4: Add the Event Id and get Event Title value
-		objParcelsPage.enter(objParcelsPage.getWebElementWithLabel("Event ID"), "1234Test");
+		String eventID = "1234Test";
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Event ID"));
+		objParcelsPage.enter(objParcelsPage.getWebElementWithLabel("Event ID"), eventID);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		String eventTitle = objParcelsPage.getFieldValueFromAPAS("Event Title");
+		
 
 		// Step 5: Opening the PARCELS page
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(activeApn);
 
 		// Step 6: Create audit trail to link with parent audit trail
-		objParcelsPage.createAuditTrailToLinkWithParentAuditTrail(dataToCreateAuditTrailRecord,
-				"Please select the Parent Audit Trail Record", eventTitle);
+		objParcelsPage.createUnrecordedEvent(dataToCreateAuditTrailRecordToLinkWithParent);
 
 		String eventIdChild = objParcelsPage.getFieldValueFromAPAS("Event ID");
 
 		//Step 7: Verify that the audit trail is linked to parent audit trail as Event Id would be auto populated
-		softAssert.assertEquals(eventIdChild, "1234Test",
+		softAssert.assertEquals(eventIdChild, eventID,
 				"SMAB-T3700: Verify that user is able to create audit trail and linkage relationship should be created having EventID populated");
 
 		//Step 8 : Logout
