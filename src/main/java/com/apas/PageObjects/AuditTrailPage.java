@@ -37,6 +37,9 @@ public class AuditTrailPage extends ApasGenericPage {
 	public String dovLabel ="Date of Value";
 	public String dorLabel ="Date of Recording";
 	public String rollYearLabel ="Applicable To Roll Year";
+	public String relatedActionLabel ="Related Action";
+
+
 			
 		
 	
