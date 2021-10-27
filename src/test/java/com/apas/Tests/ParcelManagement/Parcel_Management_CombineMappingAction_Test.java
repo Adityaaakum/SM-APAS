@@ -1471,7 +1471,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	    String   queryWI = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
 	    salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Submitted for Approval");
 	    objWorkItemHomePage.logout();
-	    objWorkItemHomePage.enter(queryWI, primarySitusValueChildParcel);	    
+	    	    
 	    //login as supervisor 
 	    objMappingPage.login(users.MAPPING_SUPERVISOR);
 	    objMappingPage.searchModule(WORK_ITEM);
