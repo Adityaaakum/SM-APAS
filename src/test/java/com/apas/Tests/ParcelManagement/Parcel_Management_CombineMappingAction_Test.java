@@ -3431,14 +3431,14 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "b1");
 		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessage), "Enter a valid value.",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageOnFirstCustomScreen), "Enter a valid value.",
 				"SMAB-T2955:Verify error message successfully when there is invalid value for Net Loss field");
 
 		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
 		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "b1");
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessage), "Enter a valid value.",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageOnFirstCustomScreen), "Enter a valid value.",
 				"SMAB-T2955:Verify error message successfully when there is invalid value for Net Gain field");
 
 		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "100");
@@ -3455,7 +3455,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.legalDescriptionFieldSecondScreen);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessageonSecondScreen),
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageonSecondCustomScreen),
 				"Parent Parcel Size = 400, Net Land Loss = 0, Net Land Gain = 020, Total Child Parcel(s) Size = 420.",
 				"SMAB-T2952,SMAB-T2877:Verify message on Second custom screen when user enter Net Gain value");
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
@@ -3469,7 +3469,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.legalDescriptionFieldSecondScreen);
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessageonSecondScreen),
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageonSecondCustomScreen),
 				"Parent Parcel Size = 400, Net Land Loss = 20, Net Land Gain = 0, Total Child Parcel(s) Size = 380.",
 				"SMAB-T2951,SMAB-T2876;Verify message on Second custom screen when user enter Net Loss value ");
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
@@ -3489,9 +3489,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errormessageonSecondScreen),
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageonSecondCustomScreen),
 				"Parent Parcel Size = 400, Net Land Loss = 0, Net Land Gain = 0, Total Child Parcel(s) Size = 400.",
 				"SMAB-T2950,SMAB-T2814:verify message on second custom screen when there is no Net Loss and Net Gain");
+		
+		driver.switchTo().window(parentWindow);
+		objWorkItemHomePage.logout();
 
 	}
 }

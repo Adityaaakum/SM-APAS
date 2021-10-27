@@ -148,10 +148,10 @@ public class MappingPage extends ApasGenericPage {
 	public WebElement errorMessageFirstScreen;
 	
 	@FindBy(xpath = "//div[contains(@id,'help-message')]")
-	public WebElement errormessage;
+	public WebElement errorMessageOnFirstCustomScreen;
 	
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li[1]")
-	public WebElement errormessageonSecondScreen;
+	public WebElement errorMessageonSecondCustomScreen;
 	
 	@FindBy(xpath = "//div[contains(@class,'flowRuntimeV2')]//c-org_parcel-process-brand-new-view[1]//div[contains(@class,'error')]//li")
 	public WebElement errorMessageSecondScreen;
