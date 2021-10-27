@@ -2312,8 +2312,8 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objMappingPage.login(users.MAPPING_SUPERVISOR);
 		objMappingPage.closeDefaultOpenTabs();
 		objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.appLauncher, 10);
-		objMappingPage.globalSearchRecords("WI-00306392");
-//        objWorkItemHomePage.completeWorkItem(); 
+		objMappingPage.globalSearchRecords(workItemNumber);
+        objWorkItemHomePage.completeWorkItem(); 
         driver.navigate().refresh();
        
 		objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.linkedItemsWI, 10);
