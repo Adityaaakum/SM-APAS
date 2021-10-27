@@ -536,7 +536,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	 * login user-Mapping user
 	 * 
 	 */
-	@Test(description = "SMAB-T3548,SMAB-T2717,SMAB-T2718,SMAB-T2719,SMAB-T2720,SMAB-T2721,SMAB-T3771:Verify the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel is changed ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3453,SMAB-T3548,SMAB-T2717,SMAB-T2718,SMAB-T2719,SMAB-T2720,SMAB-T2721,SMAB-T3771:Verify the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel is changed ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyOneToOneMappingActionChildInheritanceafterwI_Completion(String loginUser) throws Exception {
 		
@@ -781,7 +781,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
            // currently Allocate value is not genrated as part of new story so removed asseration for that
     		softAssert.assertContains(response,"New APN - Update Characteristics & Verify PUC",
     				"SMAB-T2717,SMAB-T3548: Verify Request Type of 1 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
-    		
+    		softAssert.assertTrue(!response.get("Work_Item__r").get(0).contains("New APN - Allocate Value"),
+					"SMAB-T3453:When a mapping action is completed the system should not automatically create the work item \"Allocate Value\"");
         //Validation that  System populates Situs  from the parent parcel      
         softAssert.assertEquals(gridDataHashMap.get("Situs").get(0).replaceFirst("\\s+", ""),primarySitusValue.replaceFirst("\\s+", ""),
 				"SMAB-T2720,SMAB-T2721: Validation that  System populates Situs  from the parent parcel");

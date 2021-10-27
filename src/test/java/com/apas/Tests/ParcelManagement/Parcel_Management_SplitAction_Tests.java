@@ -571,7 +571,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2541, SMAB-T2550, SMAB-T2551,SMAB-T3245:Verify the Output Validations for Split Mapping Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3453,SMAB-T2541, SMAB-T2550, SMAB-T2551,SMAB-T3245:Verify the Output Validations for Split Mapping Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifySplitMappingActionOutputValidations(String loginUser) throws Exception {
 
@@ -807,6 +807,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		softAssert.assertEquals(expectedWorkItemsGenerated,2,"SMAB-T2551: Verify 2 new Work Items are generated and linked to each child parcel after parcel is split and WI is completed");
 		for(int i =0;i<expectedWorkItemsGenerated;i++) {
 			softAssert.assertContains(response.get("Work_Item__r").get(i),"New APN - Update Characteristics & Verify PUC","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
+			softAssert.assertTrue(!response.get("Work_Item__r").get(i).contains("New APN - Allocate Value"),
+					"SMAB-T3453:When a mapping action is completed the system should not automatically create the work item \"Allocate Value\"");
 
 		}
 
@@ -1827,6 +1829,9 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		softAssert.assertEquals(childApnstatus, "In Progress - New Parcel","SMAB-T2574, SMAB-T3573: Verify Status of Child Parcel: ");
 
 		objMappingPage.globalSearchRecords(WorkItemNo);
+		String newApnfromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		softAssert.assertEquals(newApnfromWIPage,apn,"SMAB-T3601:Verify parent parcel updated on WI");
+
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
@@ -2333,7 +2338,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 				"SMAB-T3975: Verify the APNs allowed in '\"First Non Condo Parcel Number\"' field while performing mapping actions is: - (parcels below 100),133, 134,"
 				+ " and range between 200 - 999, excluding the 800 map book");
 		
-		objMappingPage.enter(objMappingPage.firstCondoTextBoxLabel,"102-090-800");
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel2,"");
+		objMappingPage.enter(objMappingPage.firstCondoTextBoxLabel,"");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 
 //		objMappingPage.fillMappingActionForm(hashMapSplitActionMappingData);
