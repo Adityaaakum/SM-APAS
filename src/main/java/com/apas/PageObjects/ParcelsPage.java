@@ -850,6 +850,7 @@ public class ParcelsPage extends ApasGenericPage {
 				ReportLogger.INFO("SORRY!! CHARACTERISTICS RECORD CANNOT BE GENERATED");
 			}
 		}
+
 		
 		/**
 		 * This method will create situs
