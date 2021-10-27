@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.json.JSONObject;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -652,7 +653,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * 
 	 */
 
-	@Test(description = "SMAB-T3377,SMAB-T10081:Verify that User is able to perform CIO transfer autoconfirm when some response do come back with in 45 days wait period", dataProvider = "dpForCioAutoConfirm", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3384,SMAB-T3377,SMAB-T10081:Verify that User is able to perform CIO transfer autoconfirm when some response do come back with in 45 days wait period", dataProvider = "dpForCioAutoConfirm", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void OwnershipAndTransfer_VerifyCioTransferAutoConfirm(String InitialEventCode, String finalEventCode,
 			String response) throws Exception {
@@ -847,6 +848,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			String parentAuditTrailNumber = objWorkItemHomePage
 					.getElementText(objWorkItemHomePage.firstRelatedBuisnessEvent);
 			objMappingPage.scrollToElement(objWorkItemHomePage.secondRelatedBuisnessEvent);
+			
+			objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
+			String eventId=objMappingPage.getFieldValueFromAPAS(trail.EventId);
+			String requestOrigin=objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin);
+			
+			driver.navigate().back();
+			objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
 			objMappingPage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
 
 			// Verifying that AT,WI statuses are completed after manual approval
@@ -861,8 +869,18 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
 					"SMAB-T3377,SMAB-T10081:Verifying Status of Outbound  AuditTrail");
 			softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondence), parentAuditTrailNumber,
-					"SMAB-T3377,SMAB-T10081: Verifying that outbound AT is child of parent Recorded correspondence event");
+					"SMAB-T3384,SMAB-T3377,SMAB-T10081: Verifying that outbound AT is child of parent Recorded correspondence event");
 
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedBuisnessEvent), "",
+					"SMAB-T3384:Verifying that related business event field in that outbound AT  is blank");
+			
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.EventId), eventId,
+					"SMAB-T3384:Verifying that Event ID field in the correspondence event detail page should be inherited from parent correspondence event");
+			
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), requestOrigin,
+					"SMAB-T3384:Verifying that  child correspondence event created from CIO screen inherits the Request Origin from parent event");
+			
+			
 			objCioTransfer.logout();
 		}
 		// Step 14:If response comes back and transfer code is required to be changed as
@@ -1203,7 +1221,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3696 : Verify user is able to use the Calculate Ownership where ownership is acquired over multiple DOV's for the same owner and owner with one DOV is completely retained", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3385,SMAB-T3696 : Verify user is able to use the Calculate Ownership where ownership is acquired over multiple DOV's for the same owner and owner with one DOV is completely retained", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
 	public void OwnershipAndTransfer_Calculate_Ownership_SameOwnerMultipleDOV(String loginUser) throws Exception {
 
@@ -1297,9 +1315,38 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel,20);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);	  	
 
+		String parentAuditTrailNumber = objWorkItemHomePage
+				.getElementText(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		
+		objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		String eventId=objMappingPage.getFieldValueFromAPAS(trail.EventId);
+		String requestOrigin=objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin);
+		
+		driver.navigate().back();
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+	
+		objCioTransfer.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+		objWorkItemHomePage.scrollToBottom();
+		
+		softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondence), parentAuditTrailNumber,
+				"SMAB-T3385: Verifying that business event created by Recorder feed for CIO WI is child of parent Recorded correspondence event");
+
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedBuisnessEvent), "",
+				"SMAB-T3385:Verifying that related business event field in business event created by Recorder feed for CIO WI  is blank");
+		
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.EventId), eventId,
+				"SMAB-T3385:Verifying that Event ID field in the business event created by Recorder feed for CIO WI should be inherited from parent correspondence event");
+		
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), requestOrigin,
+				"SMAB-T3385:Verifying that business event created by Recorder feed for CIO WI inherits the Request Origin from parent event");
+		
 
 		// Step7: CIO staff user navigating to transfer screen by clicking on related
 		// action link
+		driver.navigate().back();
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+	
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -2891,7 +2938,475 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.CancelButton));
 
 	}
-		/*
+
+	/**
+	 Ownership And Transfers - Verify AT Event and WI are transferred  to new APN when APN# is edited in RAT/CIO Transfer Screen
+	 * 
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T3384,SMAB-T3821,SMAB-T3430 : Ownership And Transfers - Verify AT Event and WI are transferred  to new APN when APN# is edited in RAT/CIO Transfer Screen", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement","RecorderIntegration" }, enabled = true)
+	public void CIO_TransferScreen_UpdateAPN(String loginUser) throws Exception {
+
+		JSONObject jsonObjectAPN = objCioTransfer.getJsonObject();
+		
+		String execEnv = System.getProperty("region");
+
+		String queryAPN = "select Name, Id from Parcel__c where Status__c='Active' and Primary_Situs__c !=NULL  and  id in ( select parcel__c from mail_to__c where Status__c='Active')";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apnToUpdate=responseAPNDetails.get("Name").get(0);
+	
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+
+		String primarySitusValue=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ apnToUpdate +"')").get("Name").get(0);
+
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
+
+		jsonObjectAPN.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonObjectAPN.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonObjectAPN.put("District__c",districtValue);
+		jsonObjectAPN.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
+		
+		String queryCountMailTORecords = "SELECT count(id) FROM Mail_To__c where parcel__c='"+responseAPNDetails.get("Id").get(0)+"' and status__c='active'";
+		String countActiveMaiToRecords=salesforceAPI.select(queryCountMailTORecords).get("expr0").get(0);;
+
+		HashMap<String, ArrayList<String>> responseMailToDetails=salesforceAPI.select("SELECT Formatted_Name_2__c ,Name,Care_Of__c,Country__c FROM Mail_To__c where parcel__c='"+responseAPNDetails.get("Id").get(0)+"' and status__c='Active'");
+
+		String ownershipCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(ownershipCreationData,
+				"DataToCreateOwnershipRecord");
+
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil
+				.generateMapFromJsonFile(ownershipCreationData, "dataToCreateGranteeWithCompleteOwnership");
+
+		
+		String dataToCreateCorrespondenceEventForAutoConfirm = testdata.UNRECORDED_EVENT_DATA;
+		Map<String, String> hashMapCorrespondenceEventForAutoConfirm = objUtil.generateMapFromJsonFile(
+				dataToCreateCorrespondenceEventForAutoConfirm, "DataToCreateCorrespondenceEventForAutoConfirm");
+	
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeCIOWithActionAPNLegalDescription");
+
+		String recordedDocumentID = salesforceAPI
+				.select("SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1")
+				.get("Id").get(0);
+
+		objCioTransfer.deleteRecordedApnFromRecordedDocument(recordedDocumentID);
+
+		// STEP 1-login with SYS-ADMIN
+
+		objMappingPage.login(users.SYSTEM_ADMIN);
+		objMappingPage.searchModule(EFILE_INTAKE_VIEW);
+		objCioTransfer.addRecordedApn(recordedDocumentID, 1);
+
+		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
+
+		// STEP 2-Query to fetch WI
+
+		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'   And status__c='In pool' order by createdDate desc limit 2";
+		String workItemNo1 = salesforceAPI.select(workItemQuery).get("Name").get(0);
+
+		objMappingPage.globalSearchRecords(workItemNo1);
+		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		String apnIDFromWIPage=salesforceAPI.select("SElect id from parcel__c where name='"+apnFromWIPage+"'").get("Id").get(0);
+		
+		objCioTransfer.deleteOwnershipFromParcel(
+				salesforceAPI.select("Select Id from parcel__c where name='" + apnToUpdate + "'").get("Id").get(0));
+
+		// STEP 3- adding owner after deleting for the recorded APN
+
+		String acesseName = objMappingPage.getOwnerForMappingAction();
+		driver.navigate()
+				.to("https://smcacre--"
+						+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
+								.select("Select Id from parcel__C where name='" + apnToUpdate + "'").get("Id").get(0)
+						+ "/related/Property_Ownerships__r/view");
+		objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
+		String ownershipId = driver.getCurrentUrl().split("/")[6];
+
+		// STEP 4- updating the ownership date for current owners
+
+		String dateOfEvent = salesforceAPI
+				.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
+				.get("Ownership_Start_Date__c").get(0);
+		JSONObject jsonObject = objCioTransfer.getJsonObject();
+		jsonObject.put("DOR__c", dateOfEvent);
+		jsonObject.put("DOV_Date__c", dateOfEvent);
+		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
+
+		HashMap<String, ArrayList<String>> responseAPNOwnershipDetails=salesforceAPI.select("SELECT Name FROM Property_Ownership__c where parcel__c='"+responseAPNDetails.get("Id").get(0)+"'");
+
+		objMappingPage.logout();
+		Thread.sleep(4000);
+
+		// STEP 5-Login with CIO staff
+
+		objMappingPage.login(loginUser);
+		
+		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + workItemNo1 + "'";
+		HashMap<String, ArrayList<String>> navigationUrL = salesforceAPI.select(queryRecordedAPNTransfer);
+
+		// STEP 6-Finding the  recorded apn transfer id
+		String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+		JSONObject jsonForUpdateAPN = objCioTransfer.getJsonObject();
+
+		jsonForUpdateAPN.put("xDOV__c", "2021-02-03");
+		jsonForUpdateAPN.put("DOR__c", "2021-06-23");
+
+		salesforceAPI.update("Recorded_APN_Transfer__c", recordeAPNTransferID, jsonForUpdateAPN);
+
+		// deleting the CIO Transfer grantees for the transfer screen
+		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
+
+		objMappingPage.globalSearchRecords(workItemNo1);
+		objMappingPage.waitForElementToBeVisible(30, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+
+		String parentAuditTrailNumber = objWorkItemHomePage
+				.getElementText(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		
+		objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		String eventId=objMappingPage.getFieldValueFromAPAS(trail.EventId);
+		String requestOrigin=objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin);
+		
+		driver.navigate().back();
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+		
+		// STEP 7-Clicking on buisness event genertaed by recorder feed 
+
+		objCioTransfer.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+		objWorkItemHomePage.scrollToBottom();
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(trail.relatedActionLabel),"Click Here",
+				"SMAB-T3430: Verify related action link name on Business event page generated by recorder feed for CIO is 'Click Here' ");
+		
+		objCioTransfer.Click(objWorkItemHomePage.reviewLink);
+
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objCioTransfer.waitForElementToBeVisible(30,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		
+		String urlForRATScreen = driver.getCurrentUrl();
+		String  RATId=urlForRATScreen.split("/")[6];
+
+		softAssert.assertEquals(RATId,recordeAPNTransferID,
+				"SMAB-T3430: Verify that User is able to launch CIO Transfer Activity from Original BE (associated with the Transfer Record)");
+		
+		// STEP 8-Creating the new grantee
+
+		hashMapOwnershipAndTransferGranteeCreationData.put("Owner Percentage", "100");
+		hashMapOwnershipAndTransferGranteeCreationData.put("First Name", "");
+		hashMapOwnershipAndTransferGranteeCreationData.put("Ownership Start Date", "");
+
+		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
+
+		// STEP 9-Updating The APN from transfer screen 
+		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
+				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCioTransfer.waitForElementToBeVisible(30,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+
+		objCioTransfer.editRecordedApnField(objCioTransfer.ApnLabel);
+		objCioTransfer.waitForElementToBeVisible(6, objCioTransfer.ApnLabel);
+		objCioTransfer.Click(objCioTransfer.crossIconAPNEditField);
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.ApnLabel, apnToUpdate);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+		ReportLogger.INFO("APN   updated successfully");
+		
+		// fetch the new CIO transfer mail  to record details for updated APN 
+		Thread.sleep(6000);
+		HashMap<String, ArrayList<String>> responseCIOTransferMailToDetails=salesforceAPI.select("SELECT Formatted_Name1__c ,Formatted_Name2__c ,Care_of__c, Country__c  FROM CIO_Transfer_Mail_To__c where Recorded_APN_Transfer__c ='"+recordeAPNTransferID+"'");
+
+		// STEP 10-Verify the updated details on screen as per new APN
+
+		String updatedAPN_ON_TransferScreen=objCioTransfer.getElementText(objCioTransfer.apnOnTransferActivityLabel);
+		
+		String queryAPNIdFromTransferSCreen = "select  Id from Parcel__c where name='"+updatedAPN_ON_TransferScreen+"'";
+		String APNIdFromTransferSCreen=salesforceAPI.select(queryAPNIdFromTransferSCreen).get("Id").get(0);
+		
+		
+		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.situsLabel, ""),primarySitusValue,
+				"SMAB-T3821: Validate that primary situs in CIO screen is now that of new APN that was entered in APN field ");
+		
+		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.pucCodeLabel, ""),responsePUCDetails.get("Name").get(0),
+				"SMAB-T3821: Validate that PUC   in CIO screen is now that of new APN that was entered in APN field ");
+		
+		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.shortLegalDescriptionLabel, ""),legalDescriptionValue,
+				"SMAB-T3821: Validate that legal description on CIO  screen is now that of new APN that was entered in APN field ");
+		
+		objCioTransfer.scrollToBottom();
+		objCioTransfer.waitForElementToBeVisible(10,objCioTransfer.numberOfMailToLabel);
+		softAssert.assertContains( objCioTransfer.getElementText(objCioTransfer.numberOfMailToLabel),countActiveMaiToRecords,
+				"SMAB-T3821: Verify that "
+				+ "only the active mail to records for a parcel are shown on  transfer screen after APN update ");
+		
+		softAssert.assertEquals( responseMailToDetails.get("Name").get(0),responseCIOTransferMailToDetails.get("Formatted_Name1__c").get(0),
+				"SMAB-T3821: Verify that "
+				+ "formatted name 2 in CIO mail to is that of updated APN 's mail to record ");
+		
+		softAssert.assertEquals( responseMailToDetails.get("Formatted_Name_2__c").get(0),responseCIOTransferMailToDetails.get("Formatted_Name2__c").get(0),
+				"SMAB-T3821: Verify that "
+				+ "formatted name 1 in CIO mail to is that of updated APN 's mail to record ");
+		
+		softAssert.assertEquals( responseMailToDetails.get("Care_Of__c").get(0),responseCIOTransferMailToDetails.get("Care_of__c").get(0),
+				"SMAB-T3821: Verify that "
+				+ "Care_Of__c in CIO mail to is that of updated APN 's mail to record ");
+		
+		softAssert.assertEquals( responseMailToDetails.get("Country__c").get(0),responseCIOTransferMailToDetails.get("Country__c").get(0),
+				"SMAB-T3821: Verify that "
+				+ "Mailing_Country__c in CIO mail to is that of updated APN 's mail to record ");
+		
+		objCioTransfer.clickViewAll("Ownership for Parent Parcel");
+		HashMap<String, ArrayList<String>> HashMapLatestOwner = objCioTransfer.getGridDataInHashMap();
+
+		softAssert.assertTrue( responseAPNOwnershipDetails.get("Name").contains(HashMapLatestOwner.get("Ownership Id").get(0)),
+				"SMAB-T3821: Verify that "
+				+ "current ownership records  on transfer screen is that of new APN ");
+		
+		//navigating back to transfer screen	
+		
+		driver.navigate().to("https://smcacre--" + execEnv
+				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		ReportLogger.INFO("Updating the transfer code");
+		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
+		objCioTransfer.waitForElementToBeVisible(6, objCioTransfer.transferCodeLabel);
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, "CIO-COPAL");
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+		ReportLogger.INFO("transfer code updated successfully");
+
+		// STEP 11-verifying the correspondence event created after creating correspondence AT from component action
+		
+		objParcelsPage.createUnrecordedEvent(hashMapCorrespondenceEventForAutoConfirm);
+		String urlForTransactionTrail = driver.getCurrentUrl();
+		driver.navigate().to("https://smcacre--" + execEnv
+				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCioTransfer.waitForElementToBeVisible(20,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+
+		String  auditTrailId=urlForTransactionTrail.split("/")[6];
+		
+		String auditTrailName =salesforceAPI.select("SELECT Name FROM Transaction_Trail__c where id='"+auditTrailId+"'").get("Name").get(0);
+		
+		String auditTrailsParcelLinkage= "SELECT Associated_APNs__c FROM Transaction_Trail__c where Name='"+auditTrailName+"'";
+		
+		String countAuditTrailsParcelLinkage= "SELECT count(id) FROM Transaction_Trail__c where Name='"+auditTrailName+"'";
+		
+		
+		softAssert.assertEquals(salesforceAPI.select(auditTrailsParcelLinkage).get("Associated_APNs__c").get(0),APNIdFromTransferSCreen,
+				"SMAB-T3821: Validation that  correspondence event created after APN update is linked to the update APN");
+		
+		softAssert.assertEquals(salesforceAPI.select(countAuditTrailsParcelLinkage).get("expr0").get(0),1,
+				"SMAB-T3821: Validation that  correspondence event created after APN update is linked to only the updated APN and not the old APN");
+		
+
+		// STEP 12-verifying the WI and business event created after creating APN & legal description WI from component action
+		
+		String workItemNumber=objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		String workItemIdQuery = "SELECT id FROM Work_Item__c where name ='"+workItemNumber+"' ";
+		
+		String workItemId=salesforceAPI.select(workItemIdQuery).get("Id").get(0);
+		
+		String apnWorkItemQuery = "SELECT parcel__c FROM Work_Item_Linkage__c where Work_Item__c ='"+workItemId+"' ";
+		String countAPNWorkItemQuery = "SELECT count(id) FROM Work_Item_Linkage__c where Work_Item__c  ='"+workItemId+"' ";
+
+		softAssert.assertEquals(salesforceAPI.select(apnWorkItemQuery).get("Parcel__c").get(0),APNIdFromTransferSCreen,
+				"SMAB-T3821: Validation that APN & legal description WI created is linked to only new APN");
+		
+		softAssert.assertEquals(salesforceAPI.select(countAPNWorkItemQuery).get("expr0").get(0),1,
+				"SMAB-T3821: Validation that APN & legal description WI created is linked to only new APN and not the old APN");
+		
+		String auditTrailsQuery = "SELECT Business_EVENT__r.NAME from work_item_linkage__c where work_item__r.name='"+workItemNumber+"'";
+		String responseAuditTrailDetails = salesforceAPI.select(auditTrailsQuery).toString().replace("{Business_Event__r=[", "").replace("}]", "");
+		
+		JSONObject responseAuditTrailDetailsJson = new JSONObject(responseAuditTrailDetails);  
+		
+		 auditTrailName=responseAuditTrailDetailsJson.get("Name").toString();
+
+		 auditTrailsParcelLinkage= "SELECT Associated_APNs__c FROM Transaction_Trail__c where Name='"+auditTrailName+"'";
+		countAuditTrailsParcelLinkage= "SELECT count(id) FROM Transaction_Trail__c where Name='"+auditTrailName+"'";
+
+		 softAssert.assertEquals(salesforceAPI.select(auditTrailsParcelLinkage).get("Associated_APNs__c").get(0),APNIdFromTransferSCreen,
+					"SMAB-T3821: Validation that  business event created from APN & legal description WI after APN update is linked to the update APN");
+			
+		softAssert.assertEquals(salesforceAPI.select(countAuditTrailsParcelLinkage).get("expr0").get(0),1,
+					"SMAB-T3821: Validation that  business event created from APN & legal description WI after APN update is linked to only the updated APN and not the old APN");
+			
+		String auditTrailIdLegalDescriptionWI =salesforceAPI.select("SELECT id FROM Transaction_Trail__c where name='"+auditTrailName+"'").get("Id").get(0);
+		 
+		driver.navigate().to("https://smcacre--" + execEnv
+					+ ".lightning.force.com/lightning/r/Transaction_Trail__c/" + auditTrailIdLegalDescriptionWI + "/view");
+		
+		objMappingPage.scrollToBottom();
+		softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondence), parentAuditTrailNumber,
+				"SMAB-T3384: Verifying that business event created for  APN & Legal description WI  is child of parent Recorded correspondence event");
+
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedBuisnessEvent), "",
+				"SMAB-T3384:Verifying that related business event field in business event created for  APN & Legal description WI  is blank");
+		
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.EventId), eventId,
+				"SMAB-T3384:Verifying that Event ID field in the business event created for  APN & Legal description WI detail page should be inherited from parent correspondence event");
+		
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), requestOrigin,
+				"SMAB-T3384:Verifying that business event created for  APN & Legal description WI inherits the Request Origin from parent event");
+		
+		// STEP 13-verifying the original CIO WI and Recorder feed Audit trails  created are linked to the updated APN
+
+		 workItemIdQuery = "SELECT id,APN__c FROM Work_Item__c where name ='"+workItemNo1+"' ";
+		
+		 workItemId=salesforceAPI.select(workItemIdQuery).get("Id").get(0);
+		
+	     String  apnOnWorkItemDetailspage=salesforceAPI.select(workItemIdQuery).get("APN__c").get(0);
+
+		 apnWorkItemQuery = "SELECT parcel__c FROM Work_Item_Linkage__c where Work_Item__c ='"+workItemId+"' ";
+		 countAPNWorkItemQuery = "SELECT count(id) FROM Work_Item_Linkage__c where Work_Item__c  ='"+workItemId+"' and parcel__c='"+apnIDFromWIPage+"' ";
+
+		softAssert.assertEquals(salesforceAPI.select(apnWorkItemQuery).get("Parcel__c").get(0),APNIdFromTransferSCreen,
+				"SMAB-T3821: Validation that CIO  WI created by recorder feed is linked to only new APN");
+		
+		softAssert.assertEquals(salesforceAPI.select(countAPNWorkItemQuery).get("expr0").get(0),0,
+				"SMAB-T3821: Validation that CIO WI created by recorder feed is linked to only new APN and not the old APN");
+		
+		softAssert.assertEquals(apnOnWorkItemDetailspage,APNIdFromTransferSCreen,"SMAB-T3821: Validation that CIO WI that was created by recorder feed has  the new APN In details tab  ");
+
+		 auditTrailsQuery = "SELECT Business_EVENT__r.NAME from work_item_linkage__c where work_item__r.name='"+workItemNumber+"'";
+		 responseAuditTrailDetails = salesforceAPI.select(auditTrailsQuery).toString().replace("{Business_Event__r=[", "").replace("}]", "");
+		
+		 responseAuditTrailDetailsJson = new JSONObject(responseAuditTrailDetails);  
+		
+		 auditTrailName=responseAuditTrailDetailsJson.get("Name").toString();
+		 auditTrailsParcelLinkage= "SELECT Associated_APNs__c FROM Transaction_Trail__c where Name='"+auditTrailName+"'";
+		countAuditTrailsParcelLinkage= "SELECT count(id) FROM Transaction_Trail__c where Name='"+auditTrailName+"'";
+
+		 softAssert.assertEquals(salesforceAPI.select(auditTrailsParcelLinkage).get("Associated_APNs__c").get(0),APNIdFromTransferSCreen,
+					"SMAB-T3821: Validation that  business event created for  CIO WI by recorder feed , is linked to the update APN");
+			
+		softAssert.assertEquals(salesforceAPI.select(countAuditTrailsParcelLinkage).get("expr0").get(0),1,
+					"SMAB-T3821: Validation that  business event created for  CIO WI by recorder feed is linked to only the updated APN and not the old APN");
+			
+		// STEP 14-Clicking on submit for approval quick action button
+		
+		driver.navigate().back();
+		objCioTransfer.waitForElementToBeVisible(20,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+
+		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
+		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.confirmationMessageOnTranferScreen);
+		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5)),
+				"Work Item has been submitted for Approval.",
+				"SMAB-T3821:Cio trasnfer is submited for approval afterAPN Update");
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButtonLabel));
+		ReportLogger.INFO("WI Submitted  for approval successfully");
+		
+
+		// STEP 15-validating that The new ownership  record gets created  for the new APN
+
+		driver.navigate()
+		.to("https://smcacre--"
+				+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + responseAPNDetails.get("Id").get(0)
+				+ "/related/Property_Ownerships__r/view");
+		objCioTransfer.waitForElementToBeVisible(10,
+		objCioTransfer.columnInGrid.replace("columnName", objCioTransfer.Status));
+		objCioTransfer.sortInGrid("Status", true);
+
+		HashMapLatestOwner = objCioTransfer.getGridDataInHashMap();
+
+		softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(0),
+		hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"),
+		"SMAB-T3821:The new ownership  record gets created  for the new APN");
+		
+		// STEP 16-validating that Business event created due to change in transfer code is linked to new APN and not to old APN
+
+		 auditTrailId =salesforceAPI.select("SELECT id FROM Transaction_Trail__c where Event_Library__c in (select id from Event_Library__c  where name='CIO-COPAL') order by createddate desc limit 1").get("Id").get(0);
+		 auditTrailsParcelLinkage= "SELECT Associated_APNs__c FROM Transaction_Trail__c where id='"+auditTrailId+"'";
+		countAuditTrailsParcelLinkage= "SELECT count(id) FROM Transaction_Trail__c where id='"+auditTrailId+"'";
+
+		softAssert.assertEquals(salesforceAPI.select(auditTrailsParcelLinkage).get("Associated_APNs__c").get(0),APNIdFromTransferSCreen,
+						"SMAB-T3821: Validation that  business event created after transfer code update is linked to the update APN");
+				
+		softAssert.assertEquals(salesforceAPI.select(countAuditTrailsParcelLinkage).get("expr0").get(0),1,
+						"SMAB-T3821: Validation that  business event created after transfer code update is linked to only the updated APN and not the old APN");
+				
+			
+		// Step 17: CIO supervisor now logs in and navigates to the  transfe screen and approves it
+		objCioTransfer.logout();
+		Thread.sleep(4000);
+		objCioTransfer.login(users.CIO_SUPERVISOR);
+		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
+				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		driver.navigate().refresh();
+		objCioTransfer.waitForElementToBeVisible(30,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+
+		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
+		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionApprove);
+		objCioTransfer.Click(objCioTransfer.quickActionOptionApprove);
+		objCioTransfer.waitForElementTextToBe(objCioTransfer.confirmationMessageOnTranferScreen,
+				"Work Item has been approved successfully.", 30);
+		
+		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
+		objCioTransfer.waitForElementToBeInVisible(objCioTransfer.xpathSpinner, 6);
+		ReportLogger.INFO("CIO!! Transfer approved by Supervisor");
+		
+		
+		//Step 18 : Validate the Appraisal WIs created  
+
+		workItemQuery = "SELECT Id,name,APN__c   FROM Work_Item__c where Type__c='Appraiser' And Sub_Type__c ='Appraisal Activity' and  status__c='In Pool' order by createdDate desc limit 1";
+		 workItemNumber = salesforceAPI.select(workItemQuery).get("Name").get(0);
+
+		workItemId=salesforceAPI.select(workItemQuery).get("Id").get(0);
+        apnOnWorkItemDetailspage=salesforceAPI.select(workItemQuery).get("APN__c").get(0);
+       
+		apnWorkItemQuery = "SELECT parcel__c FROM Work_Item_Linkage__c where Work_Item__c ='"+workItemId+"' ";
+		countAPNWorkItemQuery = "SELECT count(id) FROM Work_Item_Linkage__c where Work_Item__c  ='"+workItemId+"' ";
+
+		softAssert.assertEquals(salesforceAPI.select(apnWorkItemQuery).get("Parcel__c").get(0),APNIdFromTransferSCreen,
+				"SMAB-T3821: Validation that Appraisal  WI created after approval by supervisor is linked to only new APN");
+						
+		softAssert.assertEquals(salesforceAPI.select(countAPNWorkItemQuery).get("expr0").get(0),1,"SMAB-T3821: Validation that Appraisal WI created after approval by supervisor is linked to only new APN and not the old APN");
+			
+		softAssert.assertEquals(apnOnWorkItemDetailspage,responseAPNDetails.get("Id").get(0),
+				"SMAB-T3821: Validation that Appraisal WI created after approval by supervisor has new APN in APN look up field on WI details page");
+		
+		 auditTrailsQuery = "SELECT Business_EVENT__r.NAME from work_item_linkage__c where work_item__r.name='"+workItemNumber+"'";
+		 responseAuditTrailDetails = salesforceAPI.select(auditTrailsQuery).toString().replace("{Business_Event__r=[", "").replace("}]", "");
+		
+		 responseAuditTrailDetailsJson = new JSONObject(responseAuditTrailDetails);  
+		
+		 auditTrailName=responseAuditTrailDetailsJson.get("Name").toString();
+		 auditTrailsParcelLinkage= "SELECT Associated_APNs__c FROM Transaction_Trail__c where Name='"+auditTrailName+"'";
+		countAuditTrailsParcelLinkage= "SELECT count(id) FROM Transaction_Trail__c where Name='"+auditTrailName+"'";
+
+		 softAssert.assertEquals(salesforceAPI.select(auditTrailsParcelLinkage).get("Associated_APNs__c").get(0),APNIdFromTransferSCreen,
+					"SMAB-T3821: Validation that  business event created for  Appraisal WI  , is linked to the update APN");
+			
+		softAssert.assertEquals(salesforceAPI.select(countAuditTrailsParcelLinkage).get("expr0").get(0),1,
+					"SMAB-T3821: Validation that  business event created for  Appraisal WI is linked to only the updated APN and not the old APN");
+			
+		
+		workItemQuery = "SELECT Id,name  FROM Work_Item__c where Type__c='Appraiser' And Sub_Type__c ='Questionnaire Correspondence' and  status__c='In Pool' order by createdDate desc limit 1";
+		workItemId=salesforceAPI.select(workItemQuery).get("Id").get(0);
+
+		apnWorkItemQuery = "SELECT parcel__c FROM Work_Item_Linkage__c where Work_Item__c ='"+workItemId+"' ";
+		countAPNWorkItemQuery = "SELECT count(id) FROM Work_Item_Linkage__c where Work_Item__c  ='"+workItemId+"' ";
+
+		softAssert.assertEquals(salesforceAPI.select(apnWorkItemQuery).get("Parcel__c").get(0),APNIdFromTransferSCreen,"SMAB-T3821: Validation that Appraisal  Questionnaire Correspondence WI created after approval by supervisor is linked to only new APN");
+						
+		softAssert.assertEquals(salesforceAPI.select(countAPNWorkItemQuery).get("expr0").get(0),1,"SMAB-T3821: Validation that Appraisal Questionnaire Correspondence WI created after approval by supervisor is linked to only new APN and not the old APN");
+			
+		objCioTransfer.logout(); 
+	}
+
+	/*
 	 * This test method is used to assert that CIO auto confirm using batch job is
 	 * able to autoconfirm transfer after no response came within 45 days of wait
 	 * period

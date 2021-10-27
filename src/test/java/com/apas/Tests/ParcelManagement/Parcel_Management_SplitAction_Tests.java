@@ -1604,7 +1604,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.logout();	
 	}	
 	
-	@Test(description = "SMAB-T3601,SMAB-T3465,SMAB-T3469,SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
+	@Test(description = "SMAB-T3385,SMAB-T3601,SMAB-T3465,SMAB-T3469,SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
 			groups = {"Regression","ParcelManagement","RecorderIntegration" },enabled=true)
@@ -1692,6 +1692,34 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
 		objMappingPage.deleteExistingWIFromParcel(apn);
 		
+		
+		String parentAuditTrailNumber = objWorkItemHomePage
+				.getElementText(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		
+		objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		String eventId=objMappingPage.getFieldValueFromAPAS(trail.EventId);
+		String requestOrigin=objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin);
+		
+		driver.navigate().back();
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+	
+		objMappingPage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+		objWorkItemHomePage.scrollToBottom();
+		
+		softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondence), parentAuditTrailNumber,
+				"SMAB-T3385: Verifying that business event created by Recorder feed for Mapping WI is child of parent Recorded correspondence event");
+
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedBuisnessEvent), "",
+				"SMAB-T3385:Verifying that related business event field in business event created by Recorder feed for Mapping WI  is blank");
+		
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.EventId), eventId,
+				"SMAB-T3385:Verifying that Event ID field in the business event created by Recorder feed for Mapping WI should be inherited from parent correspondence event");
+		
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), requestOrigin,
+				"SMAB-T3385:Verifying that business event created by Recorder feed for Mapping WI inherits the Request Origin from parent event");
+		
+		driver.navigate().back();
 		objMappingPage.globalSearchRecords(apn);
 		String primarySitusValue = objParcelsPage.createParcelSitus(apn);
 
