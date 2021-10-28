@@ -161,7 +161,7 @@
     "Priority": "Urgent",
     "Work Item Routing": "Give Work Item to Me"
   },
-  "CioApnAndLegalDescriptionValidation": {
+  "DataToCreateCioApnAndLegalDescriptionWorkItem": {
     "Work Item Type": "CIO",
     "Actions": "APN & Legal Description Validation",
     "Audit Trail": "No",
