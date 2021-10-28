@@ -3022,13 +3022,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			softAssert.assertEquals(granteeHashMap.get("Recorded Document").get(0),eventID,
 					"SMAB-T3568: Verifying that Recorded Document field of new ownership  is same as document name of recorded document for CIO tranfer");
 
-			// Step 9: create new mail to record
+			// Step 9: adding transfer code 
 
-			driver.navigate().to("https://smcacre--" + execEnv
-					+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-			objCioTransfer.createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferCreationData);
-			objCioTransfer.waitForElementToBeClickable(7, objCioTransfer.copyToMailToButtonLabel);
-
+			
 			driver.navigate().to("https://smcacre--" + execEnv
 					+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 			ReportLogger.INFO("Add the Transfer Code");
