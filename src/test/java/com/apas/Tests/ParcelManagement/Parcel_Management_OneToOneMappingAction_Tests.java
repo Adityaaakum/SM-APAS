@@ -1508,7 +1508,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 			objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
 			softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Parcel Size (SqFt). Please navigate to the mapping custom screen to provide the necessary information.",
-					"SMAB-T2956,SMAB-T2881 :Expected error message is displayed when parcel size is missing successfully");
+					"SMAB-T2956,SMAB-T2881 :Expected error message is displayed when parcel size is missing");
 
 			objWorkItemHomePage.logout();
 

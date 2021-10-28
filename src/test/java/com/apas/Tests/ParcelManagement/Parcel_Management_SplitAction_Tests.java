@@ -1483,6 +1483,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	    String parcelSizeMismatchMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 	    softAssert.assertEquals(parcelSizeMismatchMsg.contains("Total Child Parcel(s) size must match the Parent's Parcel Size"),
 	    	 true,"SMAB-T3452: parent parcel validation at Work Item level");
+	    
 		objWorkItemHomePage.logout();
 
 	    
@@ -2426,7 +2427,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		}
 	
 
-	@Test(description = "SMAB-T2955,SMAB-T2880,SMAB-T2878,SMAB-T2953,SMAB-T2952,SMAB-T2877,SMAB-T2954,SMAB-T2879,SMAB-T2951,SMAB-T2876 ,SMAB-T2950,SMAB-T2814: Verify Parcel size validations for Split mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+	@Test(description = "SMAB-T2955,SMAB-T2880,SMAB-T2878,SMAB-T2953,SMAB-T2952,SMAB-T2877,SMAB-T2954,SMAB-T2879,SMAB-T2951,SMAB-T2876,SMAB-T2950,SMAB-T2814SMAB-T2956,SMAB-T2881: Verify Parcel size validations for Split mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
 
 	public void ParcelManagement_VerifyParcelSizeValidationsForSplitMappingAction(String loginUser) throws Exception {
 
@@ -2450,17 +2451,18 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 		String legalDescriptionValue = "Legal PM 85/25-260";
-
+		String districtValue="District01";
+		
 		JSONObject jsonParcelObject = objMappingPage.getJsonObject();
 		jsonParcelObject.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 		jsonParcelObject.put("Short_Legal_Description__c", legalDescriptionValue);
 		jsonParcelObject.put("TRA__c", responseTRADetails.get("Id").get(0));
 		jsonParcelObject.put("Lot_Size_SQFT__c", "200");
+		jsonObject.put("District__c",districtValue);
 		jsonParcelObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
 
 		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), jsonParcelObject);
 		
-
 		String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
 		Map<String, String> hashMapCombineActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformSplitMappingActionWithoutAllFields");
@@ -2591,8 +2593,28 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageonSecondCustomScreen),
 				"Parent Parcel Size = 200, Net Land Loss = 0, Net Land Gain = 0, Total Child Parcel(s) Size = 200.",
 				"SMAB-T2950,SMAB-T2814:verify message on second custom screen when there is no Net Loss and Net Gain");
-
+		
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "", 1);
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		ReportLogger.INFO("Parcels are generated");
+		
+		HashMap<String, ArrayList<String>> gridDataHashMap = objMappingPage.getGridDataInHashMap();
+		objParcelsPage.addParcelDetails(responsePUCDetails.get("Id").get(0), "Legal", districtValue,
+				responseNeighborhoodDetails.get("Id").get(0), responseTRADetails.get("Id").get(0), "", gridDataHashMap,
+				"APN");
 		driver.switchTo().window(parentWindow);
+		driver.navigate().refresh();
+		objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
+		String errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+		softAssert.assertEquals(errorMsg,
+				"Status: In order to submit or close the work item, the following field needs to be populated : Parcel Size (SqFt). Please navigate to the mapping custom screen to provide the necessary information.",
+				"SMAB-T2956,SMAB-T2881:Expected error message is displayed when parcel size is missing");
+		
+		
 		objWorkItemHomePage.logout();
 
 	}
