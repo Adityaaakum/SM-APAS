@@ -56,6 +56,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String newButton="New";
 	public String formattedName1Label="Formatted Name1";
 	public String formattedName1LabelForParcelMailTo="Formatted Name 1";
+	public String formattedName2LabelForParcelMailTo="Formatted Name 2";
 	public String startDate="Start Date";
 	public String endDate="End Date";
 	public String emailId="Email";
@@ -66,6 +67,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String OwnershipStartDate="Ownership Start Date";
 	public String OwnershipEndDate="Ownership End Date";
 	public String RecordedApnTransfer="Recorded APN Transfer";
+	public String viewDocument ="View Document";
+	public String viewRATScreenButton ="View RAT Screen";
+	public String returnButton ="Return";
 	public String Edit="Edit";
 	public String Status="Status";
 	public String ownerPercentage="Owner Percentage";
