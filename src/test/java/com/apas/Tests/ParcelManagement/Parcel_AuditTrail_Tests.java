@@ -28,7 +28,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class Parcel_ComponentACtion_AuditTrail_Tests extends TestBase implements testdata, modules, users {
+public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;

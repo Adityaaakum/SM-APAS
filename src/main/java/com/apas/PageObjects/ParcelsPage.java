@@ -850,4 +850,24 @@ public class ParcelsPage extends ApasGenericPage {
 				ReportLogger.INFO("SORRY!! CHARACTERISTICS RECORD CANNOT BE GENERATED");
 			}
 		}
+
+		
+		/**
+		 * This method will create situs
+		 * 
+		 * @throws Exception
+		 **/
+		public void createSitus(Map<String, String> dataMap) throws Exception
+		{
+			Click(getButtonWithText("New"));
+			enter(getWebElementWithLabel("Situs Number"), dataMap.get("Situs Number"));
+			enter(getWebElementWithLabel("Situs Street Name"), dataMap.get("Situs Street Name"));
+			enter(getWebElementWithLabel("Situs Unit Number"), dataMap.get("Situs Unit Number"));
+			clearFieldValue("Situs Type");
+			selectOptionFromDropDown("Situs Type", dataMap.get("Situs Type"));
+			clearFieldValue("City Name");
+			selectOptionFromDropDown("City Name", dataMap.get("City Name"));
+			enter(getWebElementWithLabel("Situs Name"), dataMap.get("Situs Name"));
+			Click(getButtonWithText("Save"));
+		}
 	}
