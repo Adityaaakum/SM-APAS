@@ -63,40 +63,41 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 
 		
 		String situsNameDeleteQuery = "SELECT Id FROM Situs__c where Name='101 ST DR #102, ATHERTON'";
+		
+		// Step1: Login to the APAS application using the credentials passed through
 		objMappingPage.login(loginUser);
 		if(!situsNameDeleteQuery.isEmpty()) {
 		salesforceAPI.delete("Situs__c", situsNameDeleteQuery);
 		}
 		
-		// Step1: Login to the APAS application using the credentials passed through
 		
 
-		// Step3: Opening the Situs page and Clicking on New Button
+		// Step2: Opening the Situs page and Clicking on New Button
 		objMappingPage.searchModule(SITUS);
 		objParcelsPage.createSitus(dataToCreateSitusRecord);
 
-		// Step 5: Creating the duplicate situs
+		// Step 3: Creating the duplicate situs
 		objMappingPage.searchModule(SITUS);
 		objParcelsPage.createSitus(dataToCreateSitusRecord);
 
-		// Step 6: Verify that Error message is thrown at creation of duplicate situs
+		// Step 4: Verify that Error message is thrown at creation of duplicate situs
 		String ExpectedErrorMessage = "duplicate value found";
 		softAssert.assertTrue(
 				objParcelsPage.getElementText(objApasGenericPage.pageError).contains(ExpectedErrorMessage),
 				"SMAB-T3824: Verify the system should not allow duplicate Situses in the system");
 
-		// Step 7: Creating situs with different situs name to verify duplicate
+		// Step 5: Creating situs with different situs name to verify duplicate
 		// validation
 		objMappingPage.searchModule(SITUS);
 		objParcelsPage.createSitus(dataToCreateSitusRecordWithDifferentSitusName);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
 
-		// Step 8: validation on situs name
+		// Step 6: validation on situs name
 		softAssert.assertTrue(
 				objParcelsPage.getElementText(objApasGenericPage.pageError).contains(ExpectedErrorMessage),
 				"SMAB-T3825: Verify the system should not allow duplicate Situses in the system and validation should be on the Situs Name");
 
-		// Step 9: Logout
+		// Step 7: Logout
 		objParcelsPage.logout();
 	}
 
@@ -119,6 +120,7 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 		
 		String situsCount = "SELECT Id FROM Situs__c where Name='101 ST DR #102, ATHERTON'";
 
+		//Step 1 : Login
 	    objMappingPage.login(loginUser);
 		if (situsCount.isEmpty()) {
 			objMappingPage.searchModule(SITUS);
@@ -189,8 +191,6 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 			objMappingPage.searchModule(SITUS);
 			objParcelsPage.createSitus(dataToCreateSitusRecord);
 		}
-
-		
 
 		// Opening the PARCELS page and searching the parcel to perform brand new parcel
 		// mapping
