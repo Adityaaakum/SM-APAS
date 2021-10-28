@@ -2512,14 +2512,16 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "b1");
 		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageOnFirstCustomScreen), "Enter a valid value.",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageOnFirstCustomScreen),
+				"Enter a valid value.",
 				"SMAB-T2955:Verify error message successfully when there is invalid value for Net Loss field");
 
 		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
 		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "b1");
 		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageOnFirstCustomScreen), "Enter a valid value.",
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageOnFirstCustomScreen),
+				"Enter a valid value.",
 				"SMAB-T2955:Verify error message successfully when there is invalid value for Net Gain field");
 
 		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "100");
@@ -2536,12 +2538,10 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.legalDescriptionFieldSecondScreen);
-		
 
-		//updating child parcel size in second screen on mapping action 
-			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"100",1);
-			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"120",2);
-		
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "100", 1);
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "120", 2);
+
 		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageonSecondCustomScreen),
 				"Parent Parcel Size = 200, Net Land Loss = 0, Net Land Gain = 020, Total Child Parcel(s) Size = 220.",
@@ -2556,13 +2556,12 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		
+
 		objMappingPage.waitForElementToBeVisible(objMappingPage.legalDescriptionFieldSecondScreen);
 
-		//updating child parcel size in second screen on mapping action 
-			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"100",1);
-			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"80",2);
-			objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "100", 1);
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "80", 2);
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageonSecondCustomScreen),
 				"Parent Parcel Size = 200, Net Land Loss = 20, Net Land Gain = 0, Total Child Parcel(s) Size = 180.",
 				"SMAB-T2951,SMAB-T2876;Verify message on Second custom screen when user enter Net Loss value ");
@@ -2582,18 +2581,17 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
 		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-		
+
 		objMappingPage.waitForElementToBeVisible(objMappingPage.legalDescriptionFieldSecondScreen);
 
-		//updating child parcel size in second screen on mapping action 
-			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"100",1);
-			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen,"100",2);
-			objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "100", 1);
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "100", 2);
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageonSecondCustomScreen),
 				"Parent Parcel Size = 200, Net Land Loss = 0, Net Land Gain = 0, Total Child Parcel(s) Size = 200.",
 				"SMAB-T2950,SMAB-T2814:verify message on second custom screen when there is no Net Loss and Net Gain");
-		
+
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 

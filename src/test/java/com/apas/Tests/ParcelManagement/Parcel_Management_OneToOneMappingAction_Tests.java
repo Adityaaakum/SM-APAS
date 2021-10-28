@@ -1369,7 +1369,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		 *@param loginUser
 		 * @throws Exception
 		 */
-		@Test(description = "SMAB-T3283,SMAB-T3669:Verify that user is able to perform One To One mapping action "
+		@Test(description = "SMAB-T3283,SMAB-T3669,SMAB-T2956,SMAB-T2881:Verify that user is able to perform One To One mapping action "
 				+ "having Divided Interest parcel as Parent APN ", dataProvider = "loginMappingUser", 
 				dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
 		public void ParcelManagement_VerifyOneToOneDividedInterestParcelGeneration(String loginUser) throws Exception {
@@ -1386,8 +1386,11 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			String PUC = responsePUCDetails.get("Name").get(0);
 			objMappingPage.searchModule(PARCELS);
 			objParcelsPage.createNewParcel(parentDividedInterestAPN1,newParcelNumber1,PUC);
+			objParcelsPage.Click(objParcelsPage.getButtonWithText("Cancel"));
+			
 
 			objWorkItemHomePage.logout();	
+			
 			
 			//Fetch some other values from database
 				
@@ -1497,6 +1500,15 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
 			softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description. Please navigate to the mapping custom screen to provide the necessary information.",
 					"SMAB-T3669 :Expected error message is displayed successfully");
+			
+			objParcelsPage.addParcelDetails(responsePUCDetails.get("Id").get(0), "Legal", districtValue, responseNeighborhoodDetails.get("Id").get(0),
+					responseTRADetails.get("Id").get(0),"", gridDataHashMap, "APN");
+			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
+			errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+			objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+			softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Parcel Size (SqFt). Please navigate to the mapping custom screen to provide the necessary information.",
+					"SMAB-T2956,SMAB-T2881 :Expected error message is displayed when parcel size is missing successfully");
 
 			objWorkItemHomePage.logout();
 
