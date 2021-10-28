@@ -181,6 +181,9 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 				mappingActionCreationData, "DataToPerformBrandNewParcelMappingActionWithoutAllFields");
 		Map<String, String> hashMapBrandNewParcelMappingDataWithSitus = objUtil.generateMapFromJsonFile(
 				mappingActionCreationData, "DataToPerformBrandNewParcelMappingActionWithSitusDataForDuplicateSitus");
+	
+
+	
 
 		Map<String, String> dataToCreateSitusRecord = objUtil.generateMapFromJsonFile(situsData,
 				"NewSitusCreationData");
@@ -239,6 +242,12 @@ public class Parcel_Management_Situs_Management extends TestBase implements test
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn = responseAPNDetails.get("Name").get(0);
+		String apnId=responseAPNDetails.get("ID").get(0);
+		
+		String parcelSitusQuery="SELECT Id FROM Parcel_Situs__c where Parcel__c='"+ apnId+ "'";
+		if(!parcelSitusQuery.isEmpty()) {
+		salesforceAPI.delete("Parcel_Situs__c", parcelSitusQuery);
+		}
 
 		// Step3: Opening the Parcels page and searching the Parcel
 		objMappingPage.searchModule(PARCELS);
