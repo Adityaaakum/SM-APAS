@@ -247,6 +247,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	
 	@FindBy(xpath = commonXpath + "//div[@class='slds-card__body slds-p-horizontal_small flowruntimeBody']//b")
 	public WebElement calculateOwnershipPageMessage;
+	@FindBy(xpath= commonXpath+"//span[text()='Mailing State']")
+	public WebElement mailingStatefield;
 		
 	@FindBy(xpath ="//label[text()='APN']/..//button[@title='Clear Selection']")
 	public WebElement crossIconAPNEditField;
