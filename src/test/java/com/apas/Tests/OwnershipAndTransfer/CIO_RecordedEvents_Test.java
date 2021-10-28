@@ -2823,7 +2823,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 	}
 
-	@Test(description = "SMAB-T4112,SMAB-T3461 -Verify CIO Staff and Appriasal Able to edit Mail-To records", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T4112,SMAB-T3461,SMAB-T3462 -Verify CIO Staff and Appriasal Able to edit Mail-To records", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void RecorderIntegration_VerifyValidationofMailToRecordOnParcel(String loginUser) throws Exception {
 
@@ -2855,9 +2855,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"is-read-only", "SMAB-T4112-Start date is not editable");
 		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"), "is-read-only",
 				"SMAB-T4112-End date is not editable");
-		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"), "is-read-only",
-				"SMAB-T4112-End date is not editable");
-        softAssert.assertTrue(objCioTransfer.verifyElementVisible(objCioTransfer.mailingStatefield), "SMAB-T3461: Verify that Mailing state field is present on mail to record on CIO transfer screen");
+		softAssert.assertTrue(objCioTransfer.verifyElementVisible(objCioTransfer.mailingStatefield), "SMAB-T3461,SMAB-T3462: Verify that Mailing state field is present on mail to record on CIO transfer screen");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText("Clone"));
 		objCioTransfer.enter(objCioTransfer.formattedName1LabelForParcelMailTo,
 				hashMapMailToData.get("Formatted Name1"));
@@ -2899,7 +2897,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * period
 	 */
 
-	@Test(description = "SMAB-T3759,SMAB-T3568:Verify a new AT Record of type Business Event is created when a Transfer code (Not Auto- Conformable to another Transfer code) is added in the transfer activity and it is submitted to CIO Supervisor for review ", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3759,SMAB-T3568,SMAB-T3636:Verify a new AT Record of type Business Event is created when a Transfer code (Not Auto- Conformable to another Transfer code) is added in the transfer activity and it is submitted to CIO Supervisor for review ", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void OwnershipAndTransfer_VerifyCioTransferAutoConfirmUsingBatch(String loginSystemAdmin) throws Exception {
 
@@ -3104,7 +3102,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 							"SMAB-T3759: Validating that audit trail status should be Completed after submit for approval.");
 			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),"CIO-DIVIDM",
 							"SMAB-T3759: Validating the 'Event Library' field after update transer code value in Audit Trail record.");
-				
+			// STEP 15 : navigate to Mail-To record 
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/related/CIO_Transfer_Mail_To__r/view");
+			softAssert.assertEquals(objMappingPage.getGridDataInHashMap(0).get("End Date").get(0), "",
+					"SMAB-T3636: Validating that end date should not be populated on mailTo");
+			softAssert.assertEquals(objMappingPage.getGridDataInHashMap(0).get("Formatted Name1").get(0), acesseName,
+					"SMAB-T3636: Validating that end date should not be populated on mailTo");
+			
 			objCioTransfer.logout();
 
 		}
