@@ -1388,10 +1388,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			objParcelsPage.createNewParcel(parentDividedInterestAPN1,newParcelNumber1,PUC);
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("Cancel"));
 			
-
 			objWorkItemHomePage.logout();	
-			
-			
+				
 			//Fetch some other values from database
 				
 			String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
