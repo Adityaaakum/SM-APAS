@@ -100,6 +100,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String land = "Land";
 	public String improvements = "Improvements";
 	public String additionalDeclines = "Additional Declines";
+	public String linkExistingAuditTrail="Please select the Parent Audit Trail Record";
 	
 	/**Adding fields for layout on assessed values*/
 	public String factoredBaseYearValue = "Factored BYV";
@@ -134,6 +135,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String total = "Total";
 	public String fullCashValue = "Full Cash Value";
 	public String combinedFactoredandHPI = "Combined FBYV and HPI";
+	
 	
 	
 	
@@ -517,7 +519,8 @@ public class ParcelsPage extends ApasGenericPage {
 			if(dataMap.get("Date of Value")!=null) {enter(dateOfValueInputTextBox, dataMap.get("Date of Value"));}
 			enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
 			enter(descriptionInputTextBox, description);
-			
+			if(dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?")!=null) {enter(auditTrailRecordDropDownComponentsActionsModal, dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?"));}
+			if(dataMap.get("Please select the Parent Audit Trail Record")!=null) {enter(linkExistingAuditTrail, dataMap.get("Please select the Parent Audit Trail Record"));}
 			Click(getButtonWithText(saveAndNextButton));
 			Thread.sleep(5000);
 			if(dataMap.get("Record Type").equalsIgnoreCase("Correspondence")) {return null;}				
@@ -847,5 +850,4 @@ public class ParcelsPage extends ApasGenericPage {
 				ReportLogger.INFO("SORRY!! CHARACTERISTICS RECORD CANNOT BE GENERATED");
 			}
 		}
-
 	}
