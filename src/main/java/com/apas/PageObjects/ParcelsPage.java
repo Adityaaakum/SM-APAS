@@ -859,6 +859,7 @@ public class ParcelsPage extends ApasGenericPage {
 		 **/
 		public void createSitus(Map<String, String> dataMap) throws Exception
 		{
+			Click(getButtonWithText("New"));
 			enter(getWebElementWithLabel("Situs Number"), dataMap.get("Situs Number"));
 			enter(getWebElementWithLabel("Situs Street Name"), dataMap.get("Situs Street Name"));
 			enter(getWebElementWithLabel("Situs Unit Number"), dataMap.get("Situs Unit Number"));
