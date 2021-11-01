@@ -1,7 +1,9 @@
 package com.apas.Tests.OwnershipAndTransfer;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1552,18 +1554,20 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	}
 
 	/*
-	 * Verify that User is able to perform CIO transfer for recorded APN and
-	 * validate all status
+	 * Verify that user is able to view COS Document Summary for a parcel record
 	 */
 
-	@Test(description = "SMAB-T3525, SMAB-T3341, SMAB-T3881, SMAB-T3764,SMAB-T3631:Verify that User is able to perform CIO transfer  for recorded APN and validate all status and values in Audit Trail record", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
-	public void AOwnershipAndTransfer_COS_DocumentSummmary(String loginUser)
-			throws Exception {
+	@Test(description = "SMAB-T3760, SMAB-T3761, SMAB-T3790 : Verify that user is able to view COS Document Summary for a parcel record", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration", "UnrecordedEvent" })
+	public void AOwnershipAndTransfer_COS_DocumentSummmary(String loginUser) throws Exception {
 		
+		int i=1;
 		String execEnv = System.getProperty("region");
+		String unrecordedEventData=testdata.UNRECORDED_EVENT_DATA;
 		JSONObject jsonForTransferActivityStatus = objCioTransfer.getJsonObject();
 		
+		Map<String, String> dataToCreateUnrecordedEventMap = objUtil
+				.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
 				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
 		
@@ -1628,8 +1632,16 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		softAssert.assertContains(driver.getCurrentUrl(), navigationUrL.get("Navigation_Url__c").get(0),
 				"SMAB-T3306:Validating that user navigates to CIo transfer screenafter clicking on related action hyperlink");
-		String transferScreenURL = driver.getCurrentUrl();
+		//String transferScreenURL = driver.getCurrentUrl();
 		String recordedDocumentNumber = objWorkItemHomePage.getFieldValueFromAPAS("EventID");
+		String dovOnTransferActivity = objWorkItemHomePage.getFieldValueFromAPAS("DOV");
+		String doeOnTransferActivity = objWorkItemHomePage.getFieldValueFromAPAS("DOE");
+		
+		//String dob = "05/02/1989";  //its in MM/dd/yyyy
+		//String newDate = null;
+		Date dtDob = new Date(dovOnTransferActivity);
+		SimpleDateFormat dovOnTransferRecord = new SimpleDateFormat("yyyy-MM-dd");
+
 		
 		ReportLogger.INFO("Add the Transfer Code");
 		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
@@ -1731,13 +1743,49 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		HashMap<String, ArrayList<String>> HashMapDocumentDetails4 = objCioTransfer.getGridDataInHashMap();	
 		softAssert.assertEquals(HashMapDocumentDetails4.get("Recorded Document Number").get(0), recordedDocumentNumber,
 				"SMAB-T3341: Validate the status on New Ownership record");
-		softAssert.assertEquals(HashMapDocumentDetails4.get("Status").get(0), "ReApproved",
+		softAssert.assertEquals(HashMapDocumentDetails4.get("Status").get(0), "Approved",
 				"SMAB-T3341: Validate the status on New Ownership record");
 		softAssert.assertEquals(HashMapDocumentDetails4.get("Transfer Code").get(0), objCioTransfer.CIO_EVENT_CODE_COPAL,
 				"SMAB-T3341: Validate the status on New Ownership record");	
 		softAssert.assertEquals(HashMapDocumentDetails4.get("Event Date").get(0), dateOfEvent,
 				"SMAB-T3341: Validate the status on New Ownership record");	
 		softAssert.assertEquals(HashMapDocumentDetails4.get("Value Date").get(0), dateOfEvent,
+				"SMAB-T3341: Validate the status on New Ownership record");
+		
+		objCioTransfer.Click(objCioTransfer.crossButton);
+		
+		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
+		String unRecordedDocumentNumber = objWorkItemHomePage.getFieldValueFromAPAS("EventID");
+		
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apnFromWIPage);
+		//objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.documentSummaryButton));
+		objCioTransfer.clickQuickActionButtonOnTransferActivity(objCioTransfer.documentSummaryButton);
+		Thread.sleep(2000); //Allows the grid to load completely
+		
+		HashMap<String, ArrayList<String>> HashMapDocumentDetails5 = objCioTransfer.getGridDataInHashMap();	
+		if(HashMapDocumentDetails5.get("Status").get(0).equals("In Progress")) i=0;
+		softAssert.assertEquals(HashMapDocumentDetails5.get("Recorded Document Number").get(i), unRecordedDocumentNumber,
+				"SMAB-T3341: Validate the status on New Ownership record");
+		softAssert.assertEquals(HashMapDocumentDetails5.get("Status").get(i), "In Progress",
+				"SMAB-T3341: Validate the status on New Ownership record");
+		softAssert.assertEquals(HashMapDocumentDetails5.get("Transfer Code").get(i), "",
+				"SMAB-T3341: Validate the status on New Ownership record");	
+		softAssert.assertEquals(HashMapDocumentDetails5.get("Event Date").get(i), "07/04/2021",
+				"SMAB-T3341: Validate the status on New Ownership record");	
+		softAssert.assertEquals(HashMapDocumentDetails5.get("Value Date").get(i), "07/04/2021",
+				"SMAB-T3341: Validate the status on New Ownership record");
+		
+		
+		softAssert.assertEquals(HashMapDocumentDetails4.get("Recorded Document Number").get(i==0?i+1:i-1), recordedDocumentNumber,
+				"SMAB-T3341: Validate the status on New Ownership record");
+		softAssert.assertEquals(HashMapDocumentDetails4.get("Status").get(i==0?i+1:i-1), "Approved",
+				"SMAB-T3341: Validate the status on New Ownership record");
+		softAssert.assertEquals(HashMapDocumentDetails4.get("Transfer Code").get(i==0?i+1:i-1), objCioTransfer.CIO_EVENT_CODE_COPAL,
+				"SMAB-T3341: Validate the status on New Ownership record");	
+		softAssert.assertEquals(HashMapDocumentDetails4.get("Event Date").get(i==0?i+1:i-1), dateOfEvent,
+				"SMAB-T3341: Validate the status on New Ownership record");	
+		softAssert.assertEquals(HashMapDocumentDetails4.get("Value Date").get(i==0?i+1:i-1), dateOfEvent,
 				"SMAB-T3341: Validate the status on New Ownership record");
 		
 		objCioTransfer.logout();

@@ -727,25 +727,42 @@ public void searchModule(String moduleToSearch) throws Exception {
 	 */
 	public String getFieldValueFromAPAS(String fieldName, String sectionName) {
 		
-		String excEnv = System.getProperty("region");		
+		//String excEnv = System.getProperty("region");		
 		String fieldValue;
 		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'"
 				+ sectionName + "')]";
 		String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName
 				+ "']/../..//slot[@slot='outputField']";
 		String fieldXpath;
-		if (!excEnv.equalsIgnoreCase("QA")) {
-			fieldXpath = fieldPath + "//force-hoverable-link//a//span | " + fieldPath + "//lightning-formatted-text | "
-					+ fieldPath + "//lightning-formatted-number | " + fieldPath + "//lightning-formatted-rich-text | "
-					+ fieldPath + "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
-					+ fieldPath + "//a//span | "+"//*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-number | //*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-text";
-		} else {
-			fieldXpath = fieldPath + "//force-hoverable-link//a//span | " + fieldPath + "//lightning-formatted-text | "
-					+ fieldPath + "//lightning-formatted-number | " + fieldPath + "//lightning-formatted-rich-text | "
-					+ fieldPath + "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
-					+ fieldPath + "//a//span | "+"//*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-number | //*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-text";	}
 		
-
+		/*
+		 * if (!excEnv.equalsIgnoreCase("QA")) { fieldXpath = fieldPath +
+		 * "//force-hoverable-link//a//span | " + fieldPath +
+		 * "//lightning-formatted-text | " + fieldPath +
+		 * "//lightning-formatted-number | " + fieldPath +
+		 * "//lightning-formatted-rich-text | " + fieldPath +
+		 * "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
+		 * + fieldPath + "//a//span | "+"//*[text()='"+
+		 * fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-number | //*[text()='"
+		 * +fieldName+
+		 * "']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-text";
+		 * } else { fieldXpath = fieldPath + "//force-hoverable-link//a//span | " +
+		 * fieldPath + "//lightning-formatted-text | " + fieldPath +
+		 * "//lightning-formatted-number | " + fieldPath +
+		 * "//lightning-formatted-rich-text | " + fieldPath +
+		 * "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
+		 * + fieldPath + "//a//span | "+"//*[text()='"+
+		 * fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-number | //*[text()='"
+		 * +fieldName+
+		 * "']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-text";
+		 * }
+		 */
+		
+		fieldXpath = fieldPath + "//force-hoverable-link//a//span | " + fieldPath + "//lightning-formatted-text | "
+				+ fieldPath + "//lightning-formatted-number | " + fieldPath + "//lightning-formatted-rich-text | "
+				+ fieldPath + "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
+				+ fieldPath + "//a//span | "+"//*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-number | //*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-text";
+	
 		waitForElementToBeVisible(20, fieldXpath);
 		
 		try {

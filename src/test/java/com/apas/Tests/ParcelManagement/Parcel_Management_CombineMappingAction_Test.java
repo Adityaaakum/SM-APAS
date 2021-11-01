@@ -843,6 +843,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for legal description");
 		 */
         
+        
         //Enter First Non-Condo parcel which is not the next available parcel in the system
         objMappingPage.scrollToBottom();
         objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
