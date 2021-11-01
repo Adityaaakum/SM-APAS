@@ -384,7 +384,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 	        
 	        //Step 8:Navigate to Building permits and select the building permit and editing the completion date and save
 	       
-	        System.out.println("BuildingPermitNumber" + missingAPNBuildingPermitNumber);	        
+	        //("BuildingPermitNumber" + missingAPNBuildingPermitNumber);	        
 	        String buildingPermitNameQuery = "SELECT Id FROM Building_Permit__c where Name = '"+missingAPNBuildingPermitNumber+"'";
 			HashMap<String, ArrayList<String>> hashMapBuildingPermitName = salesforceAPI.select(buildingPermitNameQuery);
 			String buildingPermitName = hashMapBuildingPermitName.get("Id").get(0);

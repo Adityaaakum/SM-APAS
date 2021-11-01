@@ -155,6 +155,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Step1: Creating temporary file with random building permit number
 		String missingAPNBuildingPermitNumber = "T" + DateUtil.getCurrentDate("dd-hhmmss");
+		String execEnv = System.getProperty("region");
 		Thread.sleep(1000);
 		String invalidAPNBuildingPermitNumber = "T" + DateUtil.getCurrentDate("dd-hhmmss");
 		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "WrongParcelAndSitusTypePopulation.txt";
@@ -187,7 +188,12 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Opening the Building Permit with the Building Permit Number imported through Efile import
-		objBuildingPermitPage.globalSearchRecords(missingAPNBuildingPermitNumber);
+		String buildingPermitNameQuery = "SELECT Id FROM Building_Permit__c where Name = '"+missingAPNBuildingPermitNumber+"'";
+		HashMap<String, ArrayList<String>> hashMapBuildingPermitName = salesforceAPI.select(buildingPermitNameQuery);
+		String buildingPermitName = hashMapBuildingPermitName.get("Id").get(0);
+		System.out.println("buildingPermitName"+buildingPermitName);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Building_Permit__c/"
+				+ buildingPermitName + "/view");
 
 		//Step4: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
 		String expectedMessage = "Invalid APN.";
@@ -202,11 +208,18 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Step5: Opening the Building Permit with the Building Permit Number imported through Efile import
 		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
-		objBuildingPermitPage.globalSearchRecords(invalidAPNBuildingPermitNumber);
+		//objBuildingPermitPage.globalSearchRecords(invalidAPNBuildingPermitNumber);
+		
+		String buildingPermitNameQueryForInvalidAPN = "SELECT Id FROM Building_Permit__c where Name = '"+invalidAPNBuildingPermitNumber+"'";
+		HashMap<String, ArrayList<String>> hashMapBuildingPermitNameInvalidAPN = salesforceAPI.select(buildingPermitNameQueryForInvalidAPN);
+		String buildingPermitNameInvalidAPN = hashMapBuildingPermitNameInvalidAPN.get("Id").get(0);
+		System.out.println("buildingPermitName"+buildingPermitName);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Building_Permit__c/"
+				+ buildingPermitNameInvalidAPN + "/view");
+		Thread.sleep(10000);
 
 		//Step6: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
-		expectedMessage = "Invalid APN.";
-		softAssert.assertEquals(objBuildingPermitPage.warningMessageWithPriorityFlag.getText().trim(), expectedMessage, "SMAB-T451: Warning message validation for building permit(Imported through E-File Intake module) with wrong APN");
+		softAssert.assertEquals(objBuildingPermitPage.warningMessageWithPriorityFlag.getText().trim(), "Invalid APN.", "SMAB-T451: Warning message validation for building permit(Imported through E-File Intake module) with wrong APN");
 
 		//Logout at the end of the test
 		objBuildingPermitPage.logout();
@@ -562,6 +575,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Step1: Creating temporary file with building permit number with existing city apn and parcel
 		String buildingPermitNumber = "T" + DateUtil.getCurrentDate("dd-hhmmss");
+		String execEnv = System.getProperty("region");
 		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "DuplicateRecordUpsertValidation_AT.txt";
 		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "DuplicateRecordUpsertValidation_AT.txt";
 		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",buildingPermitNumber,temporaryFile);
@@ -607,7 +621,13 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step9: Open the building permit record created through above efile intake functionality
-		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
+		//objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
+		 String buildingPermitNameQuery = "SELECT Id FROM Building_Permit__c where Name = '"+buildingPermitNumber+"'";
+			HashMap<String, ArrayList<String>> hashMapBuildingPermitName = salesforceAPI.select(buildingPermitNameQuery);
+			String buildingPermitName = hashMapBuildingPermitName.get("Id").get(0);
+			System.out.println("buildingPermitName"+buildingPermitName);
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Building_Permit__c/"
+					+ buildingPermitName + "/view");
 
 		//Step10: Validation that value of upserted records are reflected in the building permit
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Issue Date", "Building Permit Information"), "6/3/2018", "SMAB-T549,SMAB-T623: 'Issue Date' Field Validation in 'Building Permit Information' section for upsert record");
@@ -721,7 +741,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		String secondBuildingPermitFileName  = "SingleValidRecordNewName.xlsx";
 		String firstBuildingPermitFilePath = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + firstBuildingPermitFileName;
 		String secondBuildingPermitFilePath = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_SAN_MATEO + secondBuildingPermitFileName;
-
+		String execEnv = System.getProperty("region");
 		File firstBuildingPermitFile = objBuildingPermitPage.createTempFile(firstBuildingPermitFilePath);
 		File secondBuildingPermitFile = objBuildingPermitPage.createTempFile(secondBuildingPermitFilePath);
 
@@ -760,8 +780,13 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objPage.Click(objEfileImportPage.sourceDetails);
 
 		//Step6: Validate the import file name in the newly processed file. Below building permit is processed in the file uploaded in previous steps
-		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
-		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
+		String buildingPermitNameQuery = "SELECT Id FROM Building_Permit__c where Name = '"+buildingPermitNumber+"'";
+		HashMap<String, ArrayList<String>> hashMapBuildingPermitName = salesforceAPI.select(buildingPermitNameQuery);
+		String buildingPermitName = hashMapBuildingPermitName.get("Id").get(0);
+		System.out.println("buildingPermitName"+buildingPermitName);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Building_Permit__c/"
+				+ buildingPermitName + "/view");	
+		
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name", "Building Permit Information"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation in 'Building Permit Information' section on Building Permit Screen");
 		objBuildingPermitPage.searchModule(modules.EFILE_IMPORT_LOGS);
 		objEFileImportLogsPage.openImportLog("Building Permit :San Mateo Building permits :Adhoc");
@@ -776,8 +801,8 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objPage.waitForElementTextToBe(objEfileImportPage.statusImportedFile, "Imported", 120);
 
 		//Step9: Validate the import file name in the newly processed file. Below building permit is processed in the file uploaded in previous steps
-		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
-		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Building_Permit__c/"
+				+ buildingPermitName + "/view");
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name", "Building Permit Information"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation in 'Building Permit Information' section for the file name update once the same record is processed in the new file");
 		objBuildingPermitPage.searchModule(modules.EFILE_IMPORT_LOGS);
 		objEFileImportLogsPage.openImportLog("Building Permit :San Mateo Building permits :Adhoc");
