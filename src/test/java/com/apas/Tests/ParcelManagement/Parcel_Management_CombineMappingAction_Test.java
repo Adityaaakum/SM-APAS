@@ -2766,7 +2766,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3309,SMAB-T3310,SMAB-T3311,SMAB-T3312,SMAB-T3313,SMAB-T3314:Verify that user is able to perform Split mapping action "
+	@Test(description = "SMAB-T4035,SMAB-T3309,SMAB-T3310,SMAB-T3311,SMAB-T3312,SMAB-T3313,SMAB-T3314:Verify that user is able to perform Split mapping action "
 			+ "having Divided Interest parcel as Parent APN ", dataProvider = "loginMappingUser", 
 			dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
 	public void  ParcelManagement_VerifyCombineDividedInterestParcelGeneration(String loginUser) throws Exception {
@@ -2887,6 +2887,15 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T3310: Validation that  child parcel ending in 0 is generated when "
 				+ "divided interest parcels are used in first non condo parcel Number/first"
 				+ " condo parcel number field");
+		
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.apnColumnSecondScreen,
+				nextGeneratedParcel,1);
+		objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		softAssert.assertContains(objMappingPage.getErrorMessage(),"Only non-divided interest"
+				+ " child parcels are allowed to be created",
+				"SMAB-T4035: Validate error msg is thrown if user tries to generate divided interest child parcel");
+		
 		ReportLogger.INFO("Click PREVIOUS button");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
 		
@@ -2962,25 +2971,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 					"SMAB-T3313: Validate that if child APN is overwritten with divided interest APN which is not the next available"
 					+ " APN, error message is displayed");
 		
-		//Validate if First 8 digits of Child parcel is same as parent parcel, 
-		//system allow to to generate 
-			ReportLogger.INFO("Generate child parcel when Divided Interest parcel number as Parent parcel");
-			 updateNextApn = apnInSystem[0]+apnInSystem[1]+apnInSystem[2].substring(0,2)+
-					String.valueOf(Integer.parseInt(apnInSystem[2].substring(2)) +1);
-			ReportLogger.INFO(updateNextApn);
-			objMappingPage.updateMultipleGridCellValue(objMappingPage.apnColumnSecondScreen,
-					updateNextApn,1);
-			objMappingPage.Click(objMappingPage.useCodeFieldSecondScreen);
-			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-			gridDataHashMap =objMappingPage.getGridDataInHashMap();
-			childAPNNumber=gridDataHashMap.get("APN").get(0);
-			softAssert.assertContains(smallestAPN,childAPNNumber.substring(0,10),
-					"SMAB-T3314:Validate that child APN can be overwritten with divided interest APN only "
-					+ "when the APN has same first 8 digits of the parent APN.");
-			softAssert.assertContains(objMappingPage.confirmationMsgOnSecondScreen(),
-					"created successfully. Please review spatial information.",
-					"SMAB-T3314: Validate that user is able to perform Split mapping action "
-					+ "having Divided Interest parcel as Parent APN");
 	    driver.switchTo().window(parentWindow);
 	    
 		objWorkItemHomePage.logout();
