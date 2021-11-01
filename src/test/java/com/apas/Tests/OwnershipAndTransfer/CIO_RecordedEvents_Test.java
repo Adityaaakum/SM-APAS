@@ -1433,7 +1433,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3696: Validation that Ownership Start Date of grantee that was created is the DOV of recorded document");
 
 		softAssert.assertEquals(granteeHashMap.get("Grantee/Retain Owner Name").get(1),
-				assesseeLastName + " " + assesseeFirstName,
+				(assesseeLastName + " " + assesseeFirstName).trim(),
 				"SMAB-T3696: Validation that current owner name (that was retained partially )in grantee table  after calculate ownership is correct ");
 		softAssert.assertEquals(granteeHashMap.get("Status").get(1), "Active",
 				"SMAB-T3696: Validation that current owner  (that was retained partially ) in Grantee table has active status");
@@ -1447,7 +1447,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3696: Validation that Ownership Start Date of owner that was partially retained is Ownership Start Date of original ownership record");
 
 		softAssert.assertEquals(granteeHashMap.get("Grantee/Retain Owner Name").get(2),
-				assesseeLastName + " " + assesseeFirstName,
+				(assesseeLastName + " " + assesseeFirstName).trim(),
 				"SMAB-T3696: Validation that current owner name (that was retained fully )in grantee table  after calculate ownership is correct ");
 		softAssert.assertEquals(granteeHashMap.get("Status").get(2), "Retained",
 				"SMAB-T3696: Validation that current owner  (that was retained fully ) in Grantee table has active status");
