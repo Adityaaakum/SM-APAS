@@ -247,7 +247,7 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 		objParcelsPage.logout();
 	}
 	
-	@Test(description = "SMAB-T3010 Validate New Botton on MailTo record on parcel for BPP_Admin,Mapping staff,RP Admin and CIO Staff,", dataProvider = "usersRestrictedToNewandEditButtonOnParcelMailto", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3010: Validate New Botton on MailTo record on parcel for BPP_Admin,Mapping staff,RP Admin and CIO Staff,", dataProvider = "usersRestrictedToNewandEditButtonOnParcelMailto", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement", "SecurityAndSharing" })
 	public void validateNewButtonOnMailToRecordForAllUsers(String loginUser) throws Exception {
 

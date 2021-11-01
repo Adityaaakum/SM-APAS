@@ -2907,9 +2907,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"), "is-read-only",
 				"SMAB-T4112-End date is not editable");
 		softAssert.assertTrue(objCioTransfer.verifyElementVisible(objCioTransfer.mailingStatefield), "SMAB-T3461,SMAB-T3462: Verify that Mailing state field is present on mail to record on CIO transfer screen");
-		objCioTransfer.Click(objCioTransfer.getButtonWithText("Clone"));
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.Clone));
 		objCioTransfer.enter(objCioTransfer.formattedName1LabelForParcelMailTo,
-				hashMapMailToData.get("Formatted Name1"));
+		hashMapMailToData.get("Formatted Name1"));
 		objCioTransfer.enter(objCioTransfer.mailingZip, hashMapMailToData.get("Mailing Zip"));
 		objCioTransfer.Click(objCioTransfer.getButtonWithText("Save"));
 		Thread.sleep(2000);
@@ -3706,7 +3706,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.logout();
 	}
 	
-	@Test(description = "SMAB-T3668,SMAB-T3626,SMAB-T3627,SMAB-T3628-Validate that user is able to update the status of Appraisal activity and related Work item to Return using the 'Return' option using Quick Action button", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3668, SMAB-T3626, SMAB-T3627, SMAB-T3628: Validate that user is able to update the status of Appraisal activity and related Work item to Return using the 'Return' option using Quick Action button", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void RecorderIntegration_TestCIOAppraisalActivity(String loginUser) throws Exception {
 
@@ -3846,7 +3846,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 	}
 
-	@Test(description = "SMAB-T3252,SMAB-T3246,SMAB-T3259,SMAB-T3249,SMAB-T3247,SMAB-T3251,SMAB-T3289-Validate that user is able to update the status of Appraisal activity and related Work item to Return using the 'Return' option using Quick Action button", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {
+
+	@Test(description = "SMAB-T3252, SMAB-T3246, SMAB-T3259, SMAB-T3249, SMAB-T3247, SMAB-T3251, SMAB-T3289: Validate that user is able to update the status of Appraisal activity and related Work item to Return using the 'Return' option using Quick Action button", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 		public void RecorderIntegration_ValidateStartdateAndEndDateFieldsOnParcelMailtorec(String loginUser)
 			throws Exception {
@@ -3921,9 +3922,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 	}
 
-	@Test(description = "SMAB-T2995 Validate startdate and enddate on Mailto record of parcel", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
-	public void validateStartDateAndEnddateOnMailtoRecordOfPacel(String loginUser) throws Exception {
+	@Test(description = "SMAB-T2995: Validate startdate and enddate on Mailto record of parcel", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "RecorderIntegration" })
+	public void validateStartDateAndEnddateOnMailtoRecordOfParcel(String loginUser) throws Exception {
 
 		String execEnv = System.getProperty("region");
 		String mailToRecordFromParcel = "SELECT Parcel__c,Id FROM Mail_To__c where status__c = 'Active' Limit 1";

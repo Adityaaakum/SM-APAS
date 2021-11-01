@@ -71,6 +71,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String viewRATScreenButton ="View RAT Screen";
 	public String returnButton ="Return";
 	public String Edit="Edit";
+	public String Clone="Clone";
 	public String Status="Status";
 	public String ownerPercentage="Owner Percentage";
 	public final String DOC_DEED="DE";
