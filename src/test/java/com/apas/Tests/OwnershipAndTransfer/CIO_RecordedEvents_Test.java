@@ -3705,6 +3705,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Completed the validation!");
 		objWorkItemHomePage.logout();
 	}
+	/*
+	 * This method is used to Validate that user is able to update the status of Appraisal activity and related Work item to 'Submit for approval', 'Return','Approve' option using Quick Action button
+	 * Users: RP Appraiser, RP Supervisor 
+	 */
 	
 	@Test(description = "SMAB-T3668, SMAB-T3626, SMAB-T3627, SMAB-T3628: Validate that user is able to update the status of Appraisal activity and related Work item to Return using the 'Return' option using Quick Action button", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
@@ -3726,6 +3730,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment", "CIO-SALE",
 						hashMapMailToData, hashMapOwnershipAndTransferGranteeCreationData,
 						hashMapCreateOwnershipRecordData, hashMapCreateAssessedValueRecord);
+		
 		// STEP 2 : Login as Appriaser user
 		ReportLogger.INFO("Login as Appriaser user");
 		objMappingPage.login(users.RP_APPRAISER);
@@ -3738,6 +3743,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String workItemOfAppraisalActivity = driver.getCurrentUrl();
 		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		
 		// STEP 3 - Navigating to Appraisal Activity Screen
 		ReportLogger.INFO("Navigating to Appraisal Activity Screen");
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
@@ -3754,6 +3760,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
 		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.finishButton);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
+		Thread.sleep(3000);
 		String EventID = objCioTransfer.getFieldValueFromAPAS("EventID");
 		String APN = objCioTransfer.getFieldValueFromAPAS("APN");
 		String DOR = objCioTransfer.getFieldValueFromAPAS("DOR");
@@ -3761,7 +3768,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String DOV = objCioTransfer.getFieldValueFromAPAS("DOV");
 		String PUCCode = objCioTransfer.getFieldValueFromAPAS("PUCCode");
 		String EventCode = objCioTransfer.getFieldValueFromAPAS("Event Code");
-		Thread.sleep(3000);
 		softAssert.assertContains(objCioTransfer.getFieldValueFromAPAS("Appraiser Activity Status"),
 				"Submit for Approval", "SMAB-T3668Status of the Appraisal activity is submitted for approval");
 		objCioTransfer.Click(objCioTransfer.quickActionOptionBack);
@@ -3772,22 +3778,22 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3668-Status of the work Item is Submitted for approval");
 		Thread.sleep(2000);
 		objWorkItemHomePage.logout();
-		// STEP 6: Login as Appraiser supervisor
+		
+		// STEP 3: Login as Appraiser supervisor
 		ReportLogger.INFO("Login as Appraiser supervisor");
-
 		objMappingPage.login(users.APPRAISAL_SUPERVISOR);
 		objCioTransfer.globalSearchRecords(workItemForAppraiser);
 		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 
-		// STEP 7 -Navigating to appraisal activity screen
+		// STEP 4 -Navigating to appraisal activity screen
 		ReportLogger.INFO("Navigating to appraisal activity screen");
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow2 = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow2);
 
-		// STEP 8 - Click on Approve button
+		// STEP 5 - Click on Approve button
 		ReportLogger.INFO("Click on Approve button");
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.approveButton);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.approveButton));
@@ -3796,7 +3802,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Thread.sleep(3000);
 		softAssert.assertContains(objCioTransfer.getFieldValueFromAPAS("Appraiser Activity Status"), "Approved",
 				"SMAB-T3693-Status of the Appraisal activity is submitted for approval");
-		// STEP 9 - Click Return button and validate
+
+		// STEP 6 - Click Return button and validate
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.returnButton);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.returnButton));
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.returnReasonTextBox);
@@ -3822,7 +3829,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow3 = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow3);
-		// STEP 10 - Click View RAT Screen button
+		
+		// STEP 7 - Click View RAT Screen button	
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.viewRATScreenButton));
 		softAssert.assertContains(objCioTransfer.getFieldValueFromAPAS("EventID"), EventID,
 				"SMAB-T3677:Event ID from CIO and App Activity is Matching");
@@ -3846,6 +3854,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 	}
 
+	/**
+	 * This method is to Validate that user is able to check the labels on the story
+	 * 	 * @param loginUsers:System Admin
+	 * @throws Exception
+	 */
 
 	@Test(description = "SMAB-T3252, SMAB-T3246, SMAB-T3259, SMAB-T3249, SMAB-T3247, SMAB-T3251, SMAB-T3289: Validate that user is able to update the status of Appraisal activity and related Work item to Return using the 'Return' option using Quick Action button", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
@@ -3858,14 +3871,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String mailToID = hashMapRecordedApn.get("Id").get(0);
 		String viewAllParcel = hashMapRecordedApn.get("Parcel__c").get(0);
 
-		// STEP 1:login with Appraisal Staff and navigate to Mail-To tab for active
-		// record
-
+		// STEP 1:login with Appraisal Staff and navigate to Mail-To tab for active record
 		objMappingPage.login(loginUser);
 		driver.navigate().to(
 				"https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Mail_To__c/" + mailToID + "/view");
-		// STEP 2: Validate lables on the Mail-To record
-
+		
+		// STEP 2: Validate labels on the Mail-To record
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.formattedName1LabelForParcelMailTo);
 		softAssert.assertEquals(objParcelsPage.verifyElementVisible(objCioTransfer.formattedName1LabelForParcelMailTo),
 				"true", "SMAB-T3252-Formatted name1 lable validation");
@@ -3889,8 +3900,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"),
 				"is-read-only", "SMAB-T3246,SMAB-T3249-End date is not editable");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText("Save"));
-		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText("Clone"));
-		objCioTransfer.Click(objCioTransfer.getButtonWithText("Clone"));
+		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText(objCioTransfer.Clone));
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.Clone));
 		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"),
 				"is-read-only", "SMAB-T3246,SMAB-T3249-End date is not editable");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText("Save"));
@@ -3914,13 +3925,19 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ mailToIDforRetired + "/view");
 		softAssert.assertContains(objCioTransfer.getFieldValueFromAPAS("End Date"), "/",
 				"SMAB-T3249-End date is not Empty");
-		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText("Clone"));
-		objCioTransfer.Click(objCioTransfer.getButtonWithText("Clone"));
+		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText(objCioTransfer.Clone));
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.Clone));
 		softAssert.assertContains(objCioTransfer.saveRecordAndGetError(), "cloned",
 				"SMAB-T3289: Retired record cannot be cloned");
 		objWorkItemHomePage.logout();
 
 	}
+
+	/**
+	 * This method is to Validate start-date and end-date on Mail-to record of Active parcel
+	 * @param loginUsers:System Admin
+	 * @throws Exception
+	 */
 
 	@Test(description = "SMAB-T2995: Validate startdate and enddate on Mailto record of parcel", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "RecorderIntegration" })
@@ -3948,7 +3965,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.Edit));
 		objCioTransfer.enter(objCioTransfer.endDate, endDate);
 		objCioTransfer.enter(objCioTransfer.mailingZip, hashMapOwnershipAndTransferCreationData.get("Mailing Zip"));
-		softAssert.assertContains(objCioTransfer.saveRecordAndGetError(), "end-date",
+		softAssert.assertContains(objCioTransfer.saveRecordAndGetError(), "Future end-date cannot be entered",
 				"SMAB-T2995:Future Enddate cannot be entered");
 		objCioTransfer.enter(objCioTransfer.endDate, hashMapOwnershipAndTransferCreationData.get("End Date"));
 		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.SaveButton));

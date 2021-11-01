@@ -247,6 +247,12 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 		objParcelsPage.logout();
 	}
 	
+	/**
+	 * This method is to Validate New Button on MailTo record on parcel for BPP_Admin,Mapping staff,RP Admin and CIO Staff
+	 * @param loginUsers:BPP_Admin,Mapping staff,RP Admin and CIO Staff,System Admin
+	 * @throws Exception
+	 */	
+	
 	@Test(description = "SMAB-T3010: Validate New Botton on MailTo record on parcel for BPP_Admin,Mapping staff,RP Admin and CIO Staff,", dataProvider = "usersRestrictedToNewandEditButtonOnParcelMailto", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement", "SecurityAndSharing" })
 	public void validateNewButtonOnMailToRecordForAllUsers(String loginUser) throws Exception {
@@ -264,7 +270,7 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 			softAssert.assertEquals(objParcelsPage.verifyElementVisible("New"), "false",
 					"SMAB-T3010: New button is not present for" + loginUser + "User");
 			softAssert.assertEquals(objParcelsPage.verifyElementVisible("Edit"), "false",
-					"SMAB-T3010: Edit button is not present for" + loginUser + "User");
+					"SMAB-T3284: Edit button is not present for" + loginUser + "User");
 			objWorkItemHomePage.logout();
 		} else {
 			objMappingPage.login(loginUser);

@@ -191,7 +191,6 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		String buildingPermitNameQuery = "SELECT Id FROM Building_Permit__c where Name = '"+missingAPNBuildingPermitNumber+"'";
 		HashMap<String, ArrayList<String>> hashMapBuildingPermitName = salesforceAPI.select(buildingPermitNameQuery);
 		String buildingPermitName = hashMapBuildingPermitName.get("Id").get(0);
-		System.out.println("buildingPermitName"+buildingPermitName);
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Building_Permit__c/"
 				+ buildingPermitName + "/view");
 
@@ -213,7 +212,6 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		String buildingPermitNameQueryForInvalidAPN = "SELECT Id FROM Building_Permit__c where Name = '"+invalidAPNBuildingPermitNumber+"'";
 		HashMap<String, ArrayList<String>> hashMapBuildingPermitNameInvalidAPN = salesforceAPI.select(buildingPermitNameQueryForInvalidAPN);
 		String buildingPermitNameInvalidAPN = hashMapBuildingPermitNameInvalidAPN.get("Id").get(0);
-		System.out.println("buildingPermitName"+buildingPermitName);
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Building_Permit__c/"
 				+ buildingPermitNameInvalidAPN + "/view");
 		Thread.sleep(10000);
@@ -625,7 +623,6 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		 String buildingPermitNameQuery = "SELECT Id FROM Building_Permit__c where Name = '"+buildingPermitNumber+"'";
 			HashMap<String, ArrayList<String>> hashMapBuildingPermitName = salesforceAPI.select(buildingPermitNameQuery);
 			String buildingPermitName = hashMapBuildingPermitName.get("Id").get(0);
-			System.out.println("buildingPermitName"+buildingPermitName);
 			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Building_Permit__c/"
 					+ buildingPermitName + "/view");
 
@@ -783,7 +780,6 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		String buildingPermitNameQuery = "SELECT Id FROM Building_Permit__c where Name = '"+buildingPermitNumber+"'";
 		HashMap<String, ArrayList<String>> hashMapBuildingPermitName = salesforceAPI.select(buildingPermitNameQuery);
 		String buildingPermitName = hashMapBuildingPermitName.get("Id").get(0);
-		System.out.println("buildingPermitName"+buildingPermitName);
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Building_Permit__c/"
 				+ buildingPermitName + "/view");	
 		
