@@ -571,7 +571,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2541, SMAB-T2550, SMAB-T2551,SMAB-T3245:Verify the Output Validations for Split Mapping Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3453,SMAB-T2541, SMAB-T2550, SMAB-T2551,SMAB-T3245:Verify the Output Validations for Split Mapping Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifySplitMappingActionOutputValidations(String loginUser) throws Exception {
 
@@ -807,6 +807,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		softAssert.assertEquals(expectedWorkItemsGenerated,2,"SMAB-T2551: Verify 2 new Work Items are generated and linked to each child parcel after parcel is split and WI is completed");
 		for(int i =0;i<expectedWorkItemsGenerated;i++) {
 			softAssert.assertContains(response.get("Work_Item__r").get(i),"New APN - Update Characteristics & Verify PUC","SMAB-T2551: Verify Request Type of 2 new Work Items generated that are linked to each child parcel after parcel is split and WI is completed");
+			softAssert.assertTrue(!response.get("Work_Item__r").get(i).contains("New APN - Allocate Value"),
+					"SMAB-T3453:When a mapping action is completed the system should not automatically create the work item \"Allocate Value\"");
 
 		}
 
@@ -1481,6 +1483,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	    String parcelSizeMismatchMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 	    softAssert.assertEquals(parcelSizeMismatchMsg.contains("Total Child Parcel(s) size must match the Parent's Parcel Size"),
 	    	 true,"SMAB-T3452: parent parcel validation at Work Item level");
+	    
 		objWorkItemHomePage.logout();
 
 	    
@@ -1604,7 +1607,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.logout();	
 	}	
 	
-	@Test(description = "SMAB-T3601,SMAB-T3465,SMAB-T3469,SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
+	@Test(description = "SMAB-T3385,SMAB-T3601,SMAB-T3465,SMAB-T3469,SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
 			groups = {"Regression","ParcelManagement","RecorderIntegration" },enabled=true)
@@ -1692,6 +1695,34 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
 		objMappingPage.deleteExistingWIFromParcel(apn);
 		
+		
+		String parentAuditTrailNumber = objWorkItemHomePage
+				.getElementText(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		
+		objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		String eventId=objMappingPage.getFieldValueFromAPAS(trail.EventId);
+		String requestOrigin=objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin);
+		
+		driver.navigate().back();
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+	
+		objMappingPage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
+		objWorkItemHomePage.scrollToBottom();
+		
+		softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondence), parentAuditTrailNumber,
+				"SMAB-T3385: Verifying that business event created by Recorder feed for Mapping WI is child of parent Recorded correspondence event");
+
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedBuisnessEvent), "",
+				"SMAB-T3385:Verifying that related business event field in business event created by Recorder feed for Mapping WI  is blank");
+		
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.EventId), eventId,
+				"SMAB-T3385:Verifying that Event ID field in the business event created by Recorder feed for Mapping WI should be inherited from parent correspondence event");
+		
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), requestOrigin,
+				"SMAB-T3385:Verifying that business event created by Recorder feed for Mapping WI inherits the Request Origin from parent event");
+		
+		driver.navigate().back();
 		objMappingPage.globalSearchRecords(apn);
 		String primarySitusValue = objParcelsPage.createParcelSitus(apn);
 
@@ -1827,6 +1858,9 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		softAssert.assertEquals(childApnstatus, "In Progress - New Parcel","SMAB-T2574, SMAB-T3573: Verify Status of Child Parcel: ");
 
 		objMappingPage.globalSearchRecords(WorkItemNo);
+		String newApnfromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		softAssert.assertEquals(newApnfromWIPage,apn,"SMAB-T3601:Verify parent parcel updated on WI");
+
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
@@ -2333,7 +2367,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 				"SMAB-T3975: Verify the APNs allowed in '\"First Non Condo Parcel Number\"' field while performing mapping actions is: - (parcels below 100),133, 134,"
 				+ " and range between 200 - 999, excluding the 800 map book");
 		
-		objMappingPage.enter(objMappingPage.firstCondoTextBoxLabel,"102-090-800");
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel2,"");
+		objMappingPage.enter(objMappingPage.firstCondoTextBoxLabel,"");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 
 //		objMappingPage.fillMappingActionForm(hashMapSplitActionMappingData);
@@ -2390,4 +2425,197 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 				"SMAB-T3816,SMAB-T3728: Verify that comment,description,reason code provided during mapping actionis present in description field of the audit trail");		
 		objWorkItemHomePage.logout();
 		}
+	
+
+	@Test(description = "SMAB-T2955,SMAB-T2880,SMAB-T2878,SMAB-T2953,SMAB-T2952,SMAB-T2877,SMAB-T2954,SMAB-T2879,SMAB-T2951,SMAB-T2876,SMAB-T2950,SMAB-T2814SMAB-T2956,SMAB-T2881: Verify Parcel size validations for Split mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+
+	public void ParcelManagement_VerifyParcelSizeValidationsForSplitMappingAction(String loginUser) throws Exception {
+
+		// Fetching parcels that are Active with same Ownership record
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT Parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and  Primary_Situs__c !=NULL and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
+		String apn1 = responseAPNDetails.get("Name").get(0);
+
+
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select(
+				"SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+		String legalDescriptionValue = "Legal PM 85/25-260";
+		String districtValue="District01";
+		
+		JSONObject jsonParcelObject = objMappingPage.getJsonObject();
+		jsonParcelObject.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+		jsonParcelObject.put("Short_Legal_Description__c", legalDescriptionValue);
+		jsonParcelObject.put("TRA__c", responseTRADetails.get("Id").get(0));
+		jsonParcelObject.put("Lot_Size_SQFT__c", "200");
+		jsonObject.put("District__c",districtValue);
+		jsonParcelObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
+
+		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), jsonParcelObject);
+		
+		String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
+		Map<String, String> hashMapCombineActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformSplitMappingActionWithoutAllFields");
+		// Step1: Login to the APAS application
+		objMappingPage.login(loginUser);
+
+		// Step2: Opening the PARCELS page and searching the parcel to perform Combine
+		// Action
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apn1);
+
+		// Step 3: Creating Manual work item for the Parcel
+		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		// Step 4:Clicking the details tab for the work item newly created and clicking
+		// on Related Action Link
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		String reasonCode = objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		// populating fields on mapping action screen
+		objMappingPage.waitForElementToBeVisible(10, objMappingPage.actionDropDownLabel);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, apn1);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel, "Perform Parcel Split");
+		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, "Yes");
+		objMappingPage.enter(objMappingPage.numberOfChildCondoTextBoxLabel, "2");
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "-10");
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"- Please provide valid field value: Net Land Loss (SQ FT)",
+				"SMAB-T2955,SMAB-T2880:Verify error message successfully when there is negative value for Net Loss field");
+
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "-10");
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"- Please provide valid field value: Net Land Gain (SQ FT)",
+				"SMAB-T2955,SMAB-T2880:Verify error message successfully when there is negative value for Net Gain field");
+
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "b1");
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageOnFirstCustomScreen),
+				"Enter a valid value.",
+				"SMAB-T2955:Verify error message successfully when there is invalid value for Net Loss field");
+
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "b1");
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "");
+
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageOnFirstCustomScreen),
+				"Enter a valid value.",
+				"SMAB-T2955:Verify error message successfully when there is invalid value for Net Gain field");
+
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "100");
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "100");
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel, "");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"- Please populate either \"Net Land Loss (SQ FT)\" or \"Net Land Gain (SQ FT)\"",
+				"SMAB-T2953,SMAB-T2955,SMAB-T2878:Verify error message successfully when both Net Loss and Net Gain field are populated");
+
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "020");
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
+
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.waitForElementToBeVisible(objMappingPage.legalDescriptionFieldSecondScreen);
+
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "100", 1);
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "120", 2);
+
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageonSecondCustomScreen),
+				"Parent Parcel Size = 200, Net Land Loss = 0, Net Land Gain = 020, Total Child Parcel(s) Size = 220.",
+				"SMAB-T2952,SMAB-T2877:Verify message on Second custom screen when user enter Net Gain value");
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"Total Child Parcel (s) size currently match the Parent's Parcel Size!",
+				"SMAB-T2954,SMAB-T2952,SMAB-T2879:Verify message when parent parcel size matches the child's parcel size when there is Net Gain");
+
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
+
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "20");
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
+
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+
+		objMappingPage.waitForElementToBeVisible(objMappingPage.legalDescriptionFieldSecondScreen);
+
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "100", 1);
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "80", 2);
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageonSecondCustomScreen),
+				"Parent Parcel Size = 200, Net Land Loss = 20, Net Land Gain = 0, Total Child Parcel(s) Size = 180.",
+				"SMAB-T2951,SMAB-T2876;Verify message on Second custom screen when user enter Net Loss value ");
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"Total Child Parcel (s) size currently match the Parent's Parcel Size!",
+				"SMAB-T2951,SMAB-T2879;Verify message when parent parcel size matches the child's parcel size when there is Net Loss");
+
+		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "-100");
+		objMappingPage.clickAction(objMappingPage.legalDescriptionFieldSecondScreen);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"- Please provide valid field value: Parcel Size (SQFT)",
+				"SMAB-T2955: Verify error message on negative parcel size value");
+
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
+
+		objMappingPage.enter(objMappingPage.netLandLossTextBoxLabel, "");
+		objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+
+		objMappingPage.waitForElementToBeVisible(objMappingPage.legalDescriptionFieldSecondScreen);
+
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "100", 1);
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "100", 2);
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageonSecondCustomScreen),
+				"Parent Parcel Size = 200, Net Land Loss = 0, Net Land Gain = 0, Total Child Parcel(s) Size = 200.",
+				"SMAB-T2950,SMAB-T2814:verify message on second custom screen when there is no Net Loss and Net Gain");
+		
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "", 1);
+		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		ReportLogger.INFO("Parcels are generated");
+		
+		HashMap<String, ArrayList<String>> gridDataHashMap = objMappingPage.getGridDataInHashMap();
+		objParcelsPage.addParcelDetails(responsePUCDetails.get("Id").get(0), "Legal", districtValue,
+				responseNeighborhoodDetails.get("Id").get(0), responseTRADetails.get("Id").get(0), "", gridDataHashMap,
+				"APN");
+		driver.switchTo().window(parentWindow);
+		driver.navigate().refresh();
+		objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
+		String errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
+		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
+		softAssert.assertEquals(errorMsg,
+				"Status: In order to submit or close the work item, the following field needs to be populated : Parcel Size (SqFt). Please navigate to the mapping custom screen to provide the necessary information.",
+				"SMAB-T2956,SMAB-T2881:Expected error message is displayed when parcel size is missing");
+		
+		
+		objWorkItemHomePage.logout();
+
+	}
 }

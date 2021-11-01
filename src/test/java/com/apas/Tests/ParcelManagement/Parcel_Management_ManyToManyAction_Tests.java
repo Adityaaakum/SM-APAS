@@ -2090,11 +2090,11 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	}
 }
 
-	@Test(description = "SMAB-T3569: Verify independent o/p for Many to many mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+	@Test(description = "SMAB-T3471,SMAB-T3472,SMAB-T3602: Verify independent o/p for Many to many mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
 
 	public void ParcelManagement_VerifyIndependentlManyToManyMappingAction(String loginUser) throws Exception {
 
-		JSONObject jsonParcelObjectNew = objMappingPage.getJsonObject();
+		JSONObject jsonIndependentManyToMany = objMappingPage.getJsonObject();
 		//Fetching parcels that are Active with different Ownership record
 		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE "
 				+ " (Not Name like '134%') and Id NOT IN (SELECT APN__c FROM Work_Item__c "
@@ -2130,15 +2130,15 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String parcelSize	= "200";		
 
-		jsonParcelObjectNew.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
-		jsonParcelObjectNew.put("Status__c","Active");
-		jsonParcelObjectNew.put("Short_Legal_Description__c",legalDescriptionValue);
-		jsonParcelObjectNew.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
-		jsonParcelObjectNew.put("TRA__c",responseTRADetails.get("Id").get(0));
-		jsonParcelObjectNew.put("Lot_Size_SQFT__c",parcelSize);
+		jsonIndependentManyToMany.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonIndependentManyToMany.put("Status__c","Active");
+		jsonIndependentManyToMany.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonIndependentManyToMany.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonIndependentManyToMany.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonIndependentManyToMany.put("Lot_Size_SQFT__c",parcelSize);
 
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObjectNew);
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonParcelObjectNew);
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonIndependentManyToMany);
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonIndependentManyToMany);
 		
 		String concatenateAPN = apn1+","+apn2;
 		ReportLogger.INFO("Parent APNs : " + concatenateAPN);
@@ -2242,7 +2242,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objMappingPage.waitForElementToBeVisible(10,objMappingPage.performAdditionalMappingButton);
 
 		String childAPNNumber =gridDataHashMap.get("APN").get(0);
-		
+		int childSize = gridDataHashMap.get("APN").size();
 		driver.switchTo().window(parentWindow);
 		
 		objMappingPage.searchModule(PARCELS);
@@ -2255,53 +2255,53 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		softAssert.assertEquals(
 				objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelDistrictNeighborhood, "Summary Values"),
 				responseNeighborhoodDetails.get("Name").get(0),
-				"SMAB-T3569: Verify District/Neighborhood Code of Child Parcel is inheritted from first Parent Parcel");
+				"SMAB-T3602: Verify District/Neighborhood Code of Child Parcel is inheritted from first Parent Parcel");
 
 		// Step 10: Verify TRA value is inherited from Parent to Child Parcels
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelTRA, "Parcel Information"),
 				responseTRADetails.get("Name").get(0),
-				"SMAB-T3569: Verify TRA of Child Parcel is inheritted from first Parent Parcel");
+				"SMAB-T3602: Verify TRA of Child Parcel is inheritted from first Parent Parcel");
 
 		// Step 11: Validation that child parcel primary situs is inherited from parent parcel
 		String childPrimarySitusValue = objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPrimarySitus,
 				"Parcel Information");
 		softAssert.assertEquals(childPrimarySitusValue,primarySitusValue,
-				"SMAB-T3561: Validation that primary situs of child parcel is same as primary sitrus of parent parcel");
+				"SMAB-T3602: Validation that primary situs of child parcel is same as primary sitrus of parent parcel");
 
 
 		//Verify PUC is inherited from Parent to Child Parcels
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelPUC, "Parcel Information"),
 				responsePUCDetails.get("Name").get(0),
-				"SMAB-T3569: Verify PUC of Child Parcel is inheritted from first Parent Parcel");
+				"SMAB-T3602: Verify PUC of Child Parcel is inheritted from first Parent Parcel");
 
 		String childApnstatus = objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information");
 
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
 		HashMap<String, ArrayList<String>> gridownershipDataHashMap = objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridownershipDataHashMap.get("Owner").get(0),assesseeName1,
-				"SMAB-T3569: Verify Owner of Child Parcel is inheritted from first Parent Parcel");
+				"SMAB-T3471: Verify Owner of Child Parcel is inheritted from first Parent Parcel");
 		softAssert.assertContains(gridownershipDataHashMap.get("Ownership Percentage").get(0),hashMapCreateOwnershipRecordData.get("Ownership Percentage"),
-				"SMAB-T35691: Verify Ownership Percentage of Child Parcel is inheritted from first Parent Parcel");
+				"SMAB-T34711: Verify Ownership Percentage of Child Parcel is inheritted from first Parent Parcel");
 		softAssert.assertEquals(gridownershipDataHashMap.get("Status").get(0),hashMapCreateOwnershipRecordData.get("Status"),
-				"SMAB-T3569: Verify Status of Child Parcel is inheritted from first Parent Parcel");
+				"SMAB-T3471: Verify Status of Child Parcel is inheritted from first Parent Parcel");
 
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
 		HashMap<String, ArrayList<String>> gridCharacteristicsDataHashMap = objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridCharacteristicsDataHashMap.get("Characteristics Screen").get(0),
 				hashMapImprovementCharacteristicsData.get("Characteristics Screen"),
-				"SMAB-T3569: Verify Characteristics Screen of Child Parcel is inheritted from first Parent Parcel");
+				"SMAB-T3471: Verify Characteristics Screen of Child Parcel is inheritted from first Parent Parcel");
 		softAssert.assertEquals(gridCharacteristicsDataHashMap.get("Characteristics Screen").get(1),
 				hashMapImprovementCharacteristicsData.get("Characteristics Screen"),
-				"SMAB-T3569: Verify Characteristics Screen of Child Parcel is inheritted from first Parent Parcel");		
+				"SMAB-T3471: Verify Characteristics Screen of Child Parcel is inheritted from first Parent Parcel");		
 		softAssert.assertEquals(gridCharacteristicsDataHashMap.get("Characteristics Screen").get(2),
 				hashMapLandCharacteristicsData.get("Characteristics Screen"),
-				"SMAB-T3569: Verify Characteristics Screen of Child Parcel is inheritted from first Parent Parcel");
+				"SMAB-T3471: Verify Characteristics Screen of Child Parcel is inheritted from first Parent Parcel");
 
 		// Step 13: Verify Status of Parent & Child Parcels before WI completion
 		objMappingPage.globalSearchRecords(apn1);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objMappingPage.parcelStatus, "Parcel Information"),
-				"In Progress - To Be Expired","SMAB-T3569: Verify Status of Parent Parcel: ");
+				"In Progress - To Be Expired","SMAB-T3602: Verify Status of Parent Parcel: ");
 		softAssert.assertEquals(childApnstatus, "In Progress - New Parcel","SMAB-T3561: Verify Status of Child Parcel: ");
 
 		objMappingPage.globalSearchRecords(workItemNumber);
@@ -2325,7 +2325,13 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		String auditTrailNo = objWorkItemHomePage.getFieldValueFromAPAS("Name", "");
 		ReportLogger.INFO("Audit Trail no:" +auditTrailNo);
 		softAssert.assertContains(objMappingPage.getFieldValueFromAPAS("Event Library"),
-				"Many","SMAB-T3469: Verify event library updated from draft to Many to many");
+				"Many","SMAB-T3472: Verify event library updated from draft to Many to many");
+		trail.Click(trail.relatedBusinessRecords);
+		HashMap<String, ArrayList<String>> gridBusinessAuditTailDataHashMap = objMappingPage.getGridDataInHashMap();
+		int auditTrailRecordsize = gridBusinessAuditTailDataHashMap.get("Related To").size();
+		softAssert.assertEquals(auditTrailRecordsize,parentParcelcount+childSize,
+				"SMAB-T3472: audit trail The Event linkage will be updated");
+
 		objWorkItemHomePage.logout();
 	}
 }

@@ -1,7 +1,6 @@
 {
 	"UnrecordedEventCreation": {
     	"Record Type": "Business Event",
-
     	"Group":"CIO",
 		"Type of Audit Trail Record?": "Unrecorded Event",
 		"Source": "Unrecorded document",
