@@ -49,5 +49,16 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 	@FindBy(xpath = "//select[@name='Rejection_Reason_PickList']")
 	public WebElement rejectionReasonList;
 	
-
+	@FindBy(xpath ="//*[@class='slds-modal__footer']//*[text()='Save']")
+	public WebElement calculatePenaltySaveButton;
+	
+	/*
+	 * This method is to find the xpath of the edit pencil icon.
+	 */
+	 public WebElement appraisalActivityEditValueButton(String feildName) {
+		 
+		 String xpath="//*[@class='base-record-form-header-container slds-card__body slds-card__body_inner']//*[@title='Edit "+ feildName+"']";
+		 WebElement xPath = driver.findElement(By.xpath(xpath));
+		 return xPath;
+	 }
 }

@@ -1,5 +1,7 @@
 package com.apas.Tests.ParcelManagement;
 
+import static org.junit.Assert.assertNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,9 +14,11 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -33,6 +37,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 	MappingPage objMappingPage;
 	JSONObject jsonObject= new JSONObject();
 	String apnPrefix=new String();
+	ApasGenericPage objApasGenericPage;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -42,6 +47,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage= new MappingPage(driver);
+		objApasGenericPage = new ApasGenericPage(driver);
 
 	}
 	/**
@@ -225,4 +231,375 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 	    }	    
 	}
 	
+	/*
+	 * Parcel Management Retrofit - Verify that when user performs multiple mapping
+	 * actions, the work item gets rejected then all the WI's will be deleted.
+	 */
+
+	@Test(description = "SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124:Parcel Management Retrofit - Verify that when user performs multiple mapping actions, the work item gets rejected then all the WI's will be deleted.", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement" })
+	public void ParcelManagement_VerifyMultipleChildWorkItemsForMappingActions(String loginUser) throws Exception {
+
+		JSONObject jsonParcelObject = objMappingPage.getJsonObject();
+
+		// Fetching the Active Parcel
+		String query = "SELECT Name, Id FROM Parcel__c WHERE Status__c = 'Active' AND (Not Name like '134%') AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+
+		String parcelToSearch = response.get("Name").get(0);
+		String parcelToSearch1 = response.get("Name").get(1);
+
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+
+		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select(
+				"SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+
+		String legalDescriptionValue = "Legal PM 85/25-260";
+		String districtValue = "District01";
+		String parcelSize = "1000";
+
+		jsonParcelObject.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+		jsonParcelObject.put("Status__c", "Active");
+		jsonParcelObject.put("Short_Legal_Description__c", legalDescriptionValue);
+		jsonParcelObject.put("District__c", districtValue);
+		jsonParcelObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
+		jsonParcelObject.put("TRA__c", responseTRADetails.get("Id").get(0));
+		jsonParcelObject.put("Lot_Size_SQFT__c", parcelSize);
+
+		salesforceAPI.update("Parcel__c", response.get("Id").get(0), jsonParcelObject);
+		salesforceAPI.update("Parcel__c", response.get("Id").get(1), jsonParcelObject);
+
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+
+		String mappingActionCreationData = testdata.SPLIT_MAPPING_ACTION;
+		Map<String, String> hashMapSplitActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformSplitMappingActionForWorkItemRollBack");
+
+		// Step1: Login to the APAS application using the credentials passed through
+		objParcelsPage.login(loginUser);
+
+		// Step2: Opening the Parcels module and searching for the parcel
+		driver.navigate().refresh();
+		objParcelsPage.searchModule(modules.PARCELS);
+		objParcelsPage.globalSearchRecords(parcelToSearch);
+
+		// Step 3: Creating Manual work item for the Active Parcel
+		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		String findWorkItemNumber = "SELECT Name FROM Work_Item__c WHERE Type__c = 'Mapping' AND Sub_Type__c = 'Other Mapping Work' order by createdDate desc limit 1";
+		HashMap<String, ArrayList<String>> workItemResponse = salesforceAPI.select(findWorkItemNumber);
+
+		String firstWorkItemNumber = workItemResponse.get("Name").get(0);
+
+		// Step 4: Clicking the details tab for the work item newly created and clicking on Related Action Link
+		ReportLogger.INFO("Click on the Related Action link");
+		String workItemLink1 = driver.getCurrentUrl();
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		ReportLogger.INFO("Switch to the Mapping Action screen");
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		// Step 5: Selecting Action as 'Split' & Taxes Paid fields value as 'Yes'
+		objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,
+				hashMapSplitActionMappingData.get("Action"));
+		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, "Yes");
+		objMappingPage.fillMappingActionForm(hashMapSplitActionMappingData);
+
+		// Legal Description and Reason code are editable as part of story
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN"),
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that APN column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Legal Description*"),
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that Legal Description column on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA*"),
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that TRA column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that Situs column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Reason Code*"),
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that Reason Code column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd*"),
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that District/Neighborhood column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code*"),
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that Use Code column should not be editable on retirning to custom screen");
+		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size(SQFT)*"),
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that Parcel Size (SQFT) column should  be editable on retirning to custom screen");
+
+		HashMap<String, ArrayList<String>> gridDataHashMap = objMappingPage.getGridDataInHashMap();
+
+		// Step 6: updating child parcel size in second screen on mapping action
+		for (int i = 1; i <= gridDataHashMap.get("APN").size(); i++) {
+			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "99", i);
+		}
+
+		// Step 7: validating second screen warning message
+		String parcelsizewarningmessage = objMappingPage.secondScreenParcelSizeWarning.getText();
+		softAssert.assertEquals(parcelsizewarningmessage,
+				"Parent Parcel Size = 1000, Net Land Loss = 0, Net Land Gain = 0, Total Child Parcel(s) Size = 198.",
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 :-Verify that parent parcel size and entered net gain/loss and value is getting displayed");
+
+		HashMap<String, ArrayList<String>> gridDataHashMap1 = objMappingPage.getGridDataInHashMap();
+
+		// updating child parcel size in second screen on mapping action
+		for (int i = 1; i <= gridDataHashMap1.get("APN").size(); i++) {
+			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "500", i);
+		}
+
+		objMappingPage.waitForElementToBeVisible(10, objMappingPage.updateParcelsButton);
+
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		Thread.sleep(2000);
+		objMappingPage.waitForElementToBeVisible(objMappingPage.createNewParcelSuccessMessage);
+		String parcelsuccessgmessage = objMappingPage.createNewParcelSuccessMessage.getText();
+		softAssert.assertEquals(parcelsuccessgmessage,
+				"Parcel(s) have been created successfully. Please review spatial information.",
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 :-Verify that parent parcel size and entered net gain/loss and value is getting displayed");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.performAdditionalMappingButton));
+		Thread.sleep(2000);
+
+		// Step 8: Going back to the work item and checking the new created WI has been attached to this work Item
+		
+		driver.navigate().to(workItemLink1);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Completed",
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validating the status of work item should be Completed.");
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentWorkItemLink);
+
+		String findSecondWorkItemNumber = "SELECT Name FROM Work_Item__c WHERE Type__c = 'Mapping' AND Sub_Type__c = 'Other Mapping Work' order by createdDate desc limit 1";
+		HashMap<String, ArrayList<String>> workItemResponse1 = salesforceAPI.select(findSecondWorkItemNumber);
+
+		String secondWorkItemNumber = workItemResponse1.get("Name").get(0);
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.parentWorkItemLink);
+
+		String workItemLink2 = driver.getCurrentUrl();
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		Thread.sleep(2000);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.reviewLink);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow1 = driver.getWindowHandle();
+		ReportLogger.INFO("Switch to the Mapping Action screen");
+		objWorkItemHomePage.switchToNewWindow(parentWindow1);
+
+		// Step 9: Now on the Mapping action page from second WI and here user will perform One to One Mapping action
+		objMappingPage.waitForElementToBeVisible(60, objMappingPage.getButtonWithText(objMappingPage.EditButton));
+		objApasGenericPage.Click(objMappingPage.getButtonWithText(objMappingPage.EditButton));
+		objApasGenericPage.enter("Parent APN(s)", parcelToSearch1);
+		objApasGenericPage.Click(objMappingPage.getButtonWithText(objMappingPage.SaveButton));
+		objApasGenericPage.selectOptionFromDropDown("Action", "One To One");
+		objApasGenericPage.selectOptionFromDropDown("Are Taxes Fully Paid?", "Yes");
+		objApasGenericPage.Click(objApasGenericPage.getButtonWithText(objParcelsPage.nextButtonComponentsActionsModal));
+
+		// updating child parcel size in second screen on mapping action
+		objMappingPage.waitForElementToBeVisible(5, objMappingPage.parcelSizeColumnSecondScreen);
+		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "1000", 1);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		objMappingPage.waitForElementToBeVisible(objMappingPage.createNewParcelSuccessMessage);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.performAdditionalMappingButton));
+		Thread.sleep(2000);
+
+		// Step 10: User came back to second WI and checking here that it created another WI
+		driver.navigate().to(workItemLink2);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Completed",
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validating the status of work item should be Completed.");
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentWorkItemLink);
+
+		String findThirdWorkItemNumber = "SELECT Name FROM Work_Item__c WHERE Type__c = 'Mapping' AND Sub_Type__c = 'Other Mapping Work' order by createdDate desc limit 1";
+		HashMap<String, ArrayList<String>> workItemResponse2 = salesforceAPI.select(findThirdWorkItemNumber);
+
+		String thirdWorkItemNumber = workItemResponse2.get("Name").get(0);
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.parentWorkItemLink);
+
+		String workItemLink3 = driver.getCurrentUrl();
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.reviewLink);
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow2 = driver.getWindowHandle();
+		ReportLogger.INFO("Switch to the Mapping Action screen");
+		objWorkItemHomePage.switchToNewWindow(parentWindow2);
+
+		// Fetching parcels that are Active with same Ownership record
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990') and (Not Name like '134%') and Status__c = 'Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') Limit 2";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
+		String apn1 = responseAPNDetails.get("Name").get(0);
+		String apn2 = responseAPNDetails.get("Name").get(1);
+
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
+
+		// Fetching parcels that are Active with different map book and map page
+		String mapBookForAPN1 = apn1.split("-")[0];
+		String mapPageForAPN1 = apn1.split("-")[1];
+		String mapBookForAPN2 = apn2.split("-")[0];
+		String mapPageForAPN2 = apn2.split("-")[1];
+		queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990') and (Not Name like '134%') and (Not Name like '"
+				+ mapBookForAPN1 + "%') and (Not Name like '" + mapBookForAPN1 + "-" + mapPageForAPN1
+				+ "%') and (Not Name like '" + mapBookForAPN2 + "%') and (Not Name like '" + mapBookForAPN2 + "-"
+				+ mapPageForAPN2
+				+ "%') and Status__c = 'Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') Limit 1";
+		HashMap<String, ArrayList<String>> responseAPN3Details = salesforceAPI.select(queryAPNValue);
+		String apn3 = responseAPN3Details.get("Name").get(0);
+
+		// Deleting ownerships from parcels
+		objMappingPage.deleteOwnershipFromParcel(responseAPNDetails.get("Id").get(0));
+		objMappingPage.deleteOwnershipFromParcel(responseAPNDetails.get("Id").get(1));
+		objMappingPage.deleteOwnershipFromParcel(responseAPN3Details.get("Id").get(0));
+
+		// Add the parcels in a Hash Map for validations later
+		Map<String, String> apnValue = new HashMap<String, String>();
+		apnValue.put("APN1", apn1);
+		apnValue.put("APN2", apn2);
+		apnValue.put("APN3", apn3);
+
+		String concatenateAPNWithDifferentMapBookMapPage = apn2 + "," + apn3;
+
+		String legalDescriptionValue2 = "Legal PM 85/25-260";
+		String districtValue2 = "District01";
+		String parcelSize1 = "200";
+
+		String queryTRAValue1 = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails1 = salesforceAPI.select(queryTRAValue1);
+
+		HashMap<String, ArrayList<String>> responsePUCDetails1 = salesforceAPI.select(
+				"SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active')and  Legacy__c = 'NO' limit 1");
+		String queryNeighborhoodValue1 = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails1 = salesforceAPI.select(queryNeighborhoodValue1);
+
+		// Creating Json Object
+
+		jsonParcelObject.put("PUC_Code_Lookup__c", responsePUCDetails1.get("Id").get(0));
+		jsonParcelObject.put("Status__c", "Active");
+		jsonParcelObject.put("Short_Legal_Description__c", legalDescriptionValue2);
+		jsonParcelObject.put("District__c", districtValue2);
+		jsonParcelObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails1.get("Id").get(0));
+		jsonParcelObject.put("TRA__c", responseTRADetails1.get("Id").get(0));
+		jsonParcelObject.put("Lot_Size_SQFT__c", parcelSize1);
+
+		// updating PUC details
+		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), jsonParcelObject);
+		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), jsonParcelObject);
+		salesforceAPI.update("Parcel__c", responseAPN3Details.get("Id").get(0), jsonParcelObject);
+		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), "TRA__c",
+				responseTRADetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c",
+				responseTRADetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c", responseAPN3Details.get("Id").get(0), "TRA__c",
+				responseTRADetails.get("Id").get(0));
+
+		String mappingActionCreationData1 = testdata.COMBINE_MAPPING_ACTION;
+		Map<String, String> hashMapCombineActionMappingData = objUtil
+				.generateMapFromJsonFile(mappingActionCreationData1, "DataToPerformCombineMappingActionWithSitusData");
+
+		// Step 11: Selecting Action as 'perform parcel combine'
+		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, concatenateAPNWithDifferentMapBookMapPage);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,
+				hashMapCombineActionMappingData.get("Action"));
+		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, "Yes");
+
+		// Step 12: filling all fields in mapping action screen
+		objMappingPage.fillMappingActionForm(hashMapCombineActionMappingData);
+		HashMap<String, ArrayList<String>> gridDataHashMap2 = objMappingPage.getGridDataInHashMap();
+		gridDataHashMap2 = objMappingPage.getGridDataInHashMap();
+
+		String apn = gridDataHashMap2.get("APN").get(0);
+		String situs = gridDataHashMap2.get("Situs").get(0);
+
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		objMappingPage.waitForElementToBeVisible(objMappingPage.createNewParcelSuccessMessage);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.performAdditionalMappingButton));
+		Thread.sleep(2000);
+		driver.navigate().to(workItemLink3);
+
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Completed",
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validating the status of work item should be Completed.");
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentWorkItemLink);
+
+		String findFourthWorkItemNumber = "SELECT Name FROM Work_Item__c WHERE Type__c = 'Mapping' AND Sub_Type__c = 'Other Mapping Work' order by createdDate desc limit 1";
+		HashMap<String, ArrayList<String>> workItemResponse3 = salesforceAPI.select(findFourthWorkItemNumber);
+
+		String fourthWorkItemNumber = workItemResponse3.get("Name").get(0);
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.parentWorkItemLink);
+
+		// Step 12: User is on the 4th WI and will submit it for the approval
+		String workItemLink4 = driver.getCurrentUrl();
+		objMappingPage.globalSearchRecords(fourthWorkItemNumber);
+		driver.navigate().refresh();
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+
+		ReportLogger.INFO("Work Item Numbers : " + firstWorkItemNumber + ", " + secondWorkItemNumber + ", "
+				+ thirdWorkItemNumber + ", " + fourthWorkItemNumber);
+		objWorkItemHomePage.logout();
+
+		Thread.sleep(5000);
+
+		// Step 11: Login from Mapping Supervisor to approve the WI
+		ReportLogger.INFO(
+				"Now logging in as Mapping Supervisor to reject the work item and validate that child WIs and releated data has been deleted");
+		objWorkItemHomePage.login(MAPPING_SUPERVISOR);
+
+		objMappingPage.globalSearchRecords(fourthWorkItemNumber);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.editRejected);
+		objWorkItemHomePage.Click(objWorkItemHomePage.editRejected);
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.SaveButton);
+		objApasGenericPage.selectOptionFromDropDown("Rejected?", "Yes");
+		objApasGenericPage.selectOptionFromDropDown("Rejection Reason", "Other");
+		objApasGenericPage.enter("Rejection Comments", "Please review it again and work on it.");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.SaveButton));
+
+		Thread.sleep(2000);
+		driver.navigate().to(workItemLink4);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.pageNotExist);
+		String actualPageText = objWorkItemHomePage.pageNotExist.getText();
+		ReportLogger.INFO("Text of the WI page after deleting it :- " + actualPageText);
+		String expectedPageText = "Looks like there's a problem.";
+		softAssert.assertEquals(actualPageText, expectedPageText,
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : WI Page should not be existed after rejection");
+
+		String queryWorkItemId = "SELECT Id FROM Work_Item__c where Name = '" + fourthWorkItemNumber + "'";
+		HashMap<String, ArrayList<String>> workItemNameNull = salesforceAPI.select(queryWorkItemId);
+		boolean workItemNameText = workItemNameNull.get("Id") == null;
+
+		String queryApnId = "SELECT Id FROM Work_Item__c where Name = '" + apn + "'";
+		HashMap<String, ArrayList<String>> apnNameNull = salesforceAPI.select(queryApnId);
+		boolean apnNameNullValue = apnNameNull.get("Id") == null;
+
+		String querySitusId = "SELECT Id FROM Work_Item__c where Name = '" + situs + "'";
+		HashMap<String, ArrayList<String>> situsNameNull = salesforceAPI.select(querySitusId);
+		boolean situsNullValue = situsNameNull.get("Id") == null;
+
+		softAssert.assertTrue(workItemNameText,
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Work Item should be Null");
+		softAssert.assertTrue(apnNameNullValue,
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : APN should be Null");
+		softAssert.assertTrue(situsNullValue,
+				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Situs should be Null");
+		ReportLogger.INFO("Story Completed. Validation Done.");
+	}
+
 }

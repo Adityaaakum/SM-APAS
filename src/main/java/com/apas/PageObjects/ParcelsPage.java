@@ -253,6 +253,9 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//slot//div[contains(@class,'slds-text-heading_small')]/ancestor::c-org_parcel-ancestry-graph//div[2]/*[name()='svg']/*[name()='svg']/*[name()='text'][2]/*[name()='tspan'][3]")
 	public WebElement ancestorySqft;
+	
+	@FindBy(xpath ="//*[@class='actionBody']//*[text()='RP']")
+	public WebElement rpRadioButton;
 
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -445,6 +448,14 @@ public class ParcelsPage extends ApasGenericPage {
 		Thread.sleep(5000);
 		scrollToBottom();
 		createRecord();
+		if(dataMap.containsKey("RP Account")) {
+			Click(rpRadioButton);
+		}
+		else {
+			System.out.println("Continue for BPP ownership");
+		}
+		
+		Thread.sleep(10000);
 		Click(ownershipNextButton);
 		searchAndSelectOptionFromDropDown(ownerDropDown, owner);
 		selectOptionFromDropDown(typeDropDown, type);

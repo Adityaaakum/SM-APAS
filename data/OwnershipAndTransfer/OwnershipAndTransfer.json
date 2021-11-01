@@ -30,7 +30,20 @@
 		"Ownership Start Date":"7/16/2021",
 		"Owner Percentage":"100"
 	},
-	
+	"DataToCreateRpOwnership":{
+		"RP Account":"",
+ 		"Type": "Owner",
+	    "Status": "Active",
+	    "Ownership Percentage":"100",
+	    "Ownership Start Date":"7/19/1950"
+	},
+	"DataToCreatePenaltyRecord": {
+	    "Penalty Code": "PEN-LEOP",
+	    "Letter Code": "LEOPU",
+	    "Calculator Switch":"1",
+	    "Active":"Yes",
+	    "Release Indicator":"Yes"
+	  },
 	"dataToUpdateOrignalTransferList":{
 	
 	"Grantor":"WILL SMITH",

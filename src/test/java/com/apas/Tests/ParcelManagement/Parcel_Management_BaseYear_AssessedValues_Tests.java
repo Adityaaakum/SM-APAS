@@ -38,7 +38,6 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 	SoftAssertion softAssert = new SoftAssertion();
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	MappingPage objMappingPage;
-	JSONObject jsonObject = new JSONObject();
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -48,6 +47,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage = new MappingPage(driver);
+		salesforceAPI = new SalesforceAPI();
 
 	}
 
@@ -95,11 +95,12 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.returnElementXpathOnAVForm("1", "2")), "Total",
 				"SMAB-T3196,SMAB-T3184: Validation that  Total text is visible for Prop 19");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.returnElementXpathOnAVForm("1", "3")),
-				"New Taxable Value",
+		WebElement newTaxableValue = driver.findElements(By.xpath("//slot/slot/flexipage-column2[1]/div/slot/flexipage-field[4]/slot/record_flexipage-record-field/div/div/div[1]/span[1]")).get(1);
+		softAssert.assertEquals(newTaxableValue.getText(), 
+		"New Taxable Value",
 				"SMAB-T3196,SMAB-T3184: Validation that  New Taxable Value text is visible for Prop 19");
 
-		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.returnElementXpathOnAVForm("1", "7")),
+		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.returnElementXpathOnAVForm("1", "8")),
 				"Origin FCV", "SMAB-T3196,SMAB-T3184: Validation that  Origin FCV text is visible for Prop 19");
 
 		softAssert.assertEquals(objMappingPage.getElementText(objParcelsPage.returnElementXpathOnAVForm("1", "9")),
@@ -112,7 +113,6 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		objParcelsPage.enter(objParcelsPage.hpiValueAllowance, "112021");
 
 		WebElement differenceValue = objParcelsPage.returnElementXpathOnAVForm("2", "4");
-		WebElement newTaxableValueText = objParcelsPage.returnElementXpathOnAVForm("1", "3");
 		WebElement combinedFbyvAndHpi = objParcelsPage.returnElementXpathOnAVForm("1", "9");
 
 		// Asserting those fields shouldn't be visible on Prop 60
@@ -122,7 +122,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are not visible when Assessed Type is not 'Prop 19'");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(differenceValue)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields(difference Value) are not visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValueText)),
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValue)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(combinedFbyvAndHpi)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
@@ -134,7 +134,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are not visible when Assessed Type is not 'Prop 19'");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(differenceValue)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields(difference Value) are not visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValueText)),
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValue)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(combinedFbyvAndHpi)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
@@ -146,7 +146,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are not visible when Assessed Type is not 'Prop 19'");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(differenceValue)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields(difference Value) are not visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValueText)),
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValue)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(combinedFbyvAndHpi)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
@@ -158,7 +158,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are not visible when Assessed Type is not 'Prop 19'");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(differenceValue)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields(difference Value) are not visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValueText)),
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValue)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(combinedFbyvAndHpi)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
@@ -170,7 +170,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are not visible when Assessed Type is not 'Prop 19'");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(differenceValue)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields(difference Value) are not visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValueText)),
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValue)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(combinedFbyvAndHpi)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
@@ -182,7 +182,7 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (HPI Value Allowance) are not visible when Assessed Type is not 'Prop 19'");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(differenceValue)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields(difference Value) are not visible when Assessed Type is not 'Prop 19'");
-		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValueText)),
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(newTaxableValue)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
 		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(combinedFbyvAndHpi)),
 				"SMAB-T3196,SMAB-T3184: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
@@ -252,17 +252,8 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		ReportLogger.INFO("Verification has been completed for Land Value, Improvement Value and Total Value fields ");
 
 		// Step 7: User going to create new Assessed Value with the Assessed Value type to verify the Land Cash Value and Improvement Cash Value
-		String executionEnv = "";
-		
-		if (System.getProperty("region").toUpperCase().equals("QA"))
-			executionEnv = "qa";
-		if (System.getProperty("region").toUpperCase().equals("E2E"))
-			executionEnv = "e2e";
-		if (System.getProperty("region").toUpperCase().equals("PREUAT"))
-			executionEnv = "preuat";
-		if (System.getProperty("region").toUpperCase().equals("STAGING"))
-			executionEnv = "staging";
-		
+
+		String executionEnv = System.getProperty("region");
 		driver.navigate().to("https://smcacre--"+executionEnv+".lightning.force.com/lightning/o/Assessed_BY_Values__c/new");
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.apn);
 		objParcelsPage.searchAndSelectOptionFromDropDown(objParcelsPage.apn, parcelToSearch);
