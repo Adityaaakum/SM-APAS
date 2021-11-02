@@ -1,4 +1,4 @@
-package com.apas.Tests.ParcelManagement;
+package com.apas.Tests.OwnershipAndTransfer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -22,7 +22,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class Parcel_Management_RollEntry_Test  extends TestBase implements testdata, modules, users {
+public class CIO_RollEntry_Test  extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
@@ -64,11 +64,11 @@ public class Parcel_Management_RollEntry_Test  extends TestBase implements testd
 		// Step1: Login to the APAS application using the credentials passed through
 		objParcelsPage.login(loginUser);
 
-		// Step2: Opening the Parcels module
+		// Step2: Navigating to the Roll Entry Record
 		String url = "https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Roll_Entry__c/" + rollEntryToSearch + "/view";
 		driver.navigate().to(url);
 
-		//Step 3 : Clicking on the edit parcel button and verifying all the fields
+		//Step 3 : Clicking on the edit button and verifying all the fields
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.editButton);
 
 

@@ -61,4 +61,29 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 		 WebElement xPath = driver.findElement(By.xpath(xpath));
 		 return xPath;
 	 }
+	 
+		
+		/*
+		 * This method is only for the calculate penalty form. This button can be found
+		 * on LEOP Appraisal Activity Screen. It's xpaths are different from another
+		 * drop down forms.
+		 */
+
+		public void selectDropDownValueForCalculatePenalty(String element, String value) throws Exception {
+			String commonFirstPath = "//*[@class='slds-grid slds-col slds-is-editing slds-has-flexi-truncate mdp forcePageBlockItem forcePageBlockItemEdit']";
+			String firstXpath = commonFirstPath + "//*[text()='" + element + "']//following::a";
+			
+			WebElement webElement=driver.findElement(By.xpath(firstXpath));
+			WebElement drpDwnOption;
+			String commonPath = "//*[contains(@class,'select-options')]";
+			String xpathDropDownOption = commonPath + "//*[@title='" + value + "']";
+
+			scrollToElement(webElement);
+			javascriptClick(webElement);
+			waitUntilElementIsPresent(xpathDropDownOption, 10);
+			drpDwnOption = driver.findElement(By.xpath(xpathDropDownOption));
+			scrollToElement(drpDwnOption);
+			waitForElementToBeClickable(drpDwnOption, 8);
+			javascriptClick(drpDwnOption);
+		}
 }

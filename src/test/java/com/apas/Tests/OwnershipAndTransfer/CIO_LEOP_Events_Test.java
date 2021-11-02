@@ -36,7 +36,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class CIO_LEOPEvent_Calculate_Penalty_Test extends TestBase implements testdata, modules, users {
+public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
@@ -85,13 +85,13 @@ public class CIO_LEOPEvent_Calculate_Penalty_Test extends TestBase implements te
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3918:Verify that User is able to perform LEOP event on component actions and calculate penalty on appraisal activity screen.", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent", "LEOPEvent" })
+			"Regression", "LEOPEvent" })
 	public void OwnershipAndTransfer_Penalty_CalculatePenalty_Test(String loginUser) throws Exception {
 		String execEnv = System.getProperty("region");
 		JSONObject jsonObject = objMappingPage.getJsonObject();
 		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
 		Map<String, String> hashMapOwnershipAndTransferCreationData = objUtil.generateMapFromJsonFile(
-				OwnershipAndTransferCreationData, "dataToCreateMailToRecordsWithIncompleteData");
+				OwnershipAndTransferCreationData, "dataToCreateMailToRecordsWithCompleteData");
 
 		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
 		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
@@ -99,12 +99,6 @@ public class CIO_LEOPEvent_Calculate_Penalty_Test extends TestBase implements te
 
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
 				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateRpOwnership");
-		
-
-		String recordedDocumentID = salesforceAPI
-				.select(" SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1")
-				.get("Id").get(0);
-		objCIOTransferPage.deleteOldGranteesRecords(recordedDocumentID);
 
 		String queryAPNValue = "select Name, Id from Parcel__c where Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(queryAPNValue);
@@ -123,20 +117,15 @@ public class CIO_LEOPEvent_Calculate_Penalty_Test extends TestBase implements te
 		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select(
 				"SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
 
-		String legalDescriptionValue = "Legal PM 85/25-260";
 		String districtValue = "District01";
-		String parcelSize = "1000";
 
 		jsonObject.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 		jsonObject.put("Status__c", "Active");
-		jsonObject.put("Short_Legal_Description__c", legalDescriptionValue);
 		jsonObject.put("District__c", districtValue);
 		jsonObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c", responseTRADetails.get("Id").get(0));
-		jsonObject.put("Lot_Size_SQFT__c", parcelSize);
 
 		salesforceAPI.update("Parcel__c", response.get("Id").get(0), jsonObject);
-
 		
 		// STEP 1-login with SYS-ADMIN
 
@@ -151,7 +140,6 @@ public class CIO_LEOPEvent_Calculate_Penalty_Test extends TestBase implements te
 		String acesseName = objMappingPage.getOwnerForMappingAction();
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + activeApnId
 				+ "/related/Property_Ownerships__r/view");
-		System.out.print("Activated APN Id:- "+activeApnId);
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.getButtonWithText("New"));
 		objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
 		String ownershipId = driver.getCurrentUrl().split("/")[6];
@@ -290,7 +278,6 @@ public class CIO_LEOPEvent_Calculate_Penalty_Test extends TestBase implements te
 				+ auditTrailID + "/view");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Completed",
 				"SMAB-T3918: Validating that audit trail status should be open after submit for approval.");
-
 		objCIOTransferPage.logout();
 		Thread.sleep(5000);
 
@@ -381,13 +368,14 @@ public class CIO_LEOPEvent_Calculate_Penalty_Test extends TestBase implements te
 		softAssert.assertEquals(actualAssessedValuePenaltyPage, expectedAssessedValue,
 				"SMAB-T3918:Assessed value should be equal to sum of Land and Improvement Value which one is expected, according to the input, is 20000");
 		softAssert.assertEquals(actualAPNPenaltyPage, expectedApn,
-				"SMAB-T3918:Assessed value should be equal to sum of Land and Improvement Value which one is expected, according to the input, is 20000");
+				"SMAB-T3918:APN should be same as mentioned on the appraisal activity page.");
 		softAssert.assertEquals(actualDOVPenaltyPage, expectedDov,
-				"SMAB-T3918:Assessed value should be equal to sum of Land and Improvement Value which one is expected, according to the input, is 20000");
+				"SMAB-T3918:DOV should be same as mentioned on the appraisal activity page.");
 		softAssert.assertEquals(actualPenaltyCodePenaltyPage, "PEN-LEOP",
-				"SMAB-T3918:Assessed value should be equal to sum of Land and Improvement Value which one is expected, according to the input, is 20000");
-		objCIOTransferPage.logout();		
+				"SMAB-T3918:Penalty Code should be same as mentioned on the appraisal activity page.");
 		ReportLogger.INFO("Penalty Details Validation Completed.");
+		objCIOTransferPage.logout();		
+		
 		
 	}
 

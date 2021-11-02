@@ -450,9 +450,10 @@ public class ParcelsPage extends ApasGenericPage {
 		createRecord();
 		if(dataMap.containsKey("RP Account")) {
 			Click(rpRadioButton);
+			ReportLogger.INFO("Creating RP Owner.");
 		}
 		else {
-			System.out.println("Continue for BPP ownership");
+			ReportLogger.INFO("Creating BPP Owner.");
 		}
 		
 		Thread.sleep(10000);

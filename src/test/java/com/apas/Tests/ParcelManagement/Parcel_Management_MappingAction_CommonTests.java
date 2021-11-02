@@ -285,7 +285,6 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		objParcelsPage.login(loginUser);
 
 		// Step2: Opening the Parcels module and searching for the parcel
-		driver.navigate().refresh();
 		objParcelsPage.searchModule(modules.PARCELS);
 		objParcelsPage.globalSearchRecords(parcelToSearch);
 
@@ -315,36 +314,6 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, "Yes");
 		objMappingPage.fillMappingActionForm(hashMapSplitActionMappingData);
 
-		// Legal Description and Reason code are editable as part of story
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("APN"),
-				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that APN column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Legal Description*"),
-				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that Legal Description column on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("TRA*"),
-				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that TRA column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Situs"),
-				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that Situs column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Reason Code*"),
-				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that Reason Code column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Dist/Nbhd*"),
-				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that District/Neighborhood column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(!objMappingPage.verifyGridCellEditable("Use Code*"),
-				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that Use Code column should not be editable on retirning to custom screen");
-		softAssert.assertTrue(objMappingPage.verifyGridCellEditable("Parcel Size(SQFT)*"),
-				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validation that Parcel Size (SQFT) column should  be editable on retirning to custom screen");
-
-		HashMap<String, ArrayList<String>> gridDataHashMap = objMappingPage.getGridDataInHashMap();
-
-		// Step 6: updating child parcel size in second screen on mapping action
-		for (int i = 1; i <= gridDataHashMap.get("APN").size(); i++) {
-			objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreen, "99", i);
-		}
-
-		// Step 7: validating second screen warning message
-		String parcelsizewarningmessage = objMappingPage.secondScreenParcelSizeWarning.getText();
-		softAssert.assertEquals(parcelsizewarningmessage,
-				"Parent Parcel Size = 1000, Net Land Loss = 0, Net Land Gain = 0, Total Child Parcel(s) Size = 198.",
-				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 :-Verify that parent parcel size and entered net gain/loss and value is getting displayed");
 
 		HashMap<String, ArrayList<String>> gridDataHashMap1 = objMappingPage.getGridDataInHashMap();
 
@@ -358,10 +327,6 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		Thread.sleep(2000);
 		objMappingPage.waitForElementToBeVisible(objMappingPage.createNewParcelSuccessMessage);
-		String parcelsuccessgmessage = objMappingPage.createNewParcelSuccessMessage.getText();
-		softAssert.assertEquals(parcelsuccessgmessage,
-				"Parcel(s) have been created successfully. Please review spatial information.",
-				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 :-Verify that parent parcel size and entered net gain/loss and value is getting displayed");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.performAdditionalMappingButton));
 		Thread.sleep(2000);
 
@@ -371,8 +336,6 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Completed",
-				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validating the status of work item should be Completed.");
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentWorkItemLink);
 
 		String findSecondWorkItemNumber = "SELECT Name FROM Work_Item__c WHERE Type__c = 'Mapping' AND Sub_Type__c = 'Other Mapping Work' order by createdDate desc limit 1";
@@ -414,8 +377,6 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Completed",
-				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validating the status of work item should be Completed.");
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentWorkItemLink);
 
 		String findThirdWorkItemNumber = "SELECT Name FROM Work_Item__c WHERE Type__c = 'Mapping' AND Sub_Type__c = 'Other Mapping Work' order by createdDate desc limit 1";
@@ -461,7 +422,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		objMappingPage.deleteOwnershipFromParcel(responseAPNDetails.get("Id").get(1));
 		objMappingPage.deleteOwnershipFromParcel(responseAPN3Details.get("Id").get(0));
 
-		// Add the parcels in a Hash Map for validations later
+		// Add the parcels in a Hash Map for later use in the combine action. Those parcels will be combined.
 		Map<String, String> apnValue = new HashMap<String, String>();
 		apnValue.put("APN1", apn1);
 		apnValue.put("APN2", apn2);
@@ -526,14 +487,12 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.createNewParcelSuccessMessage);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.performAdditionalMappingButton));
-		Thread.sleep(2000);
+				Thread.sleep(2000);
 		driver.navigate().to(workItemLink3);
 
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Completed",
-				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Validating the status of work item should be Completed.");
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentWorkItemLink);
 
 		String findFourthWorkItemNumber = "SELECT Name FROM Work_Item__c WHERE Type__c = 'Mapping' AND Sub_Type__c = 'Other Mapping Work' order by createdDate desc limit 1";

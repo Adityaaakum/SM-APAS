@@ -7,6 +7,13 @@
 	"Mailing State": "WY"
 	
 	},
+	"dataToCreateMailToRecordsWithCompleteData":{
+	"Formatted Name1" : "LUKE SHAW",
+	"Start Date":"7/16/2021",
+	"Mailing Zip":"95377",
+	"Mailing State": "CA"
+	
+	},
 	"dataToCreateGranteeWithIncompleteData":{
 	
 	"Last Name":"LUKE SHAW",

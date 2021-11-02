@@ -982,39 +982,16 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					objMappingPage.waitForElementToBeVisible(driver.findElements(By.xpath("//a[@title='"+releaseIndicatorLabelText+"']")).get(1));
 					Click(driver.findElements(By.xpath("//a[@title='"+releaseIndicatorLabelText+"']")).get(1));
 					
-					selectDropDownValueForCalculatePenalty(penaltyCodeLabel, penaltyCode);
-					selectDropDownValueForCalculatePenalty(letterCodeLabel, letterCode);
-					selectDropDownValueForCalculatePenalty(calculatorSwitchLabel, calculatorSwitch);
+					objAppraisalActivity.selectDropDownValueForCalculatePenalty(penaltyCodeLabel, penaltyCode);
+					objAppraisalActivity.selectDropDownValueForCalculatePenalty(letterCodeLabel, letterCode);
+					objAppraisalActivity.selectDropDownValueForCalculatePenalty(calculatorSwitchLabel, calculatorSwitch);
 					Thread.sleep(50000);
 					Click(objAppraisalActivity.calculatePenaltySaveButton);
 					Thread.sleep(2000);
 					ReportLogger.INFO("Penalty Calculation form filled.");
 					return penaltyCode;
 				}
-				
-				/*
-				 * This method is only for the calculate penalty form. This button can be found
-				 * on LEOP Appraisal Activity Screen. It's xpaths are different from another
-				 * drop down forms.
-				 */
 
-				public void selectDropDownValueForCalculatePenalty(String element, String value) throws Exception {
-					String commonFirstPath = "//*[@class='slds-grid slds-col slds-is-editing slds-has-flexi-truncate mdp forcePageBlockItem forcePageBlockItemEdit']";
-					String firstXpath = commonFirstPath + "//*[text()='" + element + "']//following::a";
-					
-					WebElement webElement=driver.findElement(By.xpath(firstXpath));
-					WebElement drpDwnOption;
-					String commonPath = "//*[contains(@class,'select-options')]";
-					String xpathDropDownOption = commonPath + "//*[@title='" + value + "']";
-
-					scrollToElement(webElement);
-					javascriptClick(webElement);
-					waitUntilElementIsPresent(xpathDropDownOption, 10);
-					drpDwnOption = driver.findElement(By.xpath(xpathDropDownOption));
-					scrollToElement(drpDwnOption);
-					waitForElementToBeClickable(drpDwnOption, 8);
-					javascriptClick(drpDwnOption);
-				}
 				
 }
 		 	
