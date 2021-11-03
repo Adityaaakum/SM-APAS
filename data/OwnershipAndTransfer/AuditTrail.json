@@ -18,7 +18,17 @@
 		"Date of Recording": "07/06/2021",
 		"Description": "test_CIO_AUTOCONFIRM"
 	},
-	
+	"DataToCreateLeopEventCreation": {
+    	"Record Type": "Business Event",
+    	"Group":"CIO",
+		"Type of Audit Trail Record?": "LEOP Activity",
+		"Source": "Unrecorded document",
+		"LEOP Received By BOE": "Yes",
+		"Penalty Required Per BOE": "Yes",
+		"Date of Event": "10/04/2021",
+		"Date of Recording": "10/04/2021",
+		"Description": "Unrecorded LEOP Transfer"
+},	
 	"ExistingMHTransferventCreation": {
     	"Record Type": "Business Event",
     	"Group":"CIO",
