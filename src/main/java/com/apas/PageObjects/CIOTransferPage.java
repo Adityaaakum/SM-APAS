@@ -1,10 +1,7 @@
 package com.apas.PageObjects;
 
 import java.io.IOException;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,14 +15,9 @@ import org.openqa.selenium.support.ui.Select;
 
 import com.apas.Assertions.SoftAssertion;
 import com.apas.Reports.ReportLogger;
-//import com.apas.Tests.OwnershipAndTransfer.FROM;
-//import com.apas.Tests.OwnershipAndTransfer.Recorded_APN__c;
-//import com.apas.Tests.OwnershipAndTransfer.SELECT;
-//import com.apas.Tests.OwnershipAndTransfer.where;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
-import com.apas.config.testdata;
 import com.apas.config.users;
 
 public class CIOTransferPage extends ApasGenericPage  implements modules,users{

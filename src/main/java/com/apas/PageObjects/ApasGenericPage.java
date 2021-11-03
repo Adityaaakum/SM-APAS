@@ -4,10 +4,8 @@ import com.apas.Utils.DateUtil;
 import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
-import com.apas.config.modules;
 import com.apas.config.modulesObjectName;
 
-import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
@@ -29,7 +27,6 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.Clock;
 import java.util.*;
 import java.util.List;
 
@@ -728,7 +725,6 @@ public void searchModule(String moduleToSearch) throws Exception {
 	 */
 	public String getFieldValueFromAPAS(String fieldName, String sectionName) {
 		
-		//String excEnv = System.getProperty("region");		
 		String fieldValue;
 		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'"
 				+ sectionName + "')]";

@@ -29,7 +29,6 @@ import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
-import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 
@@ -38,8 +37,7 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
-import com.google.gson.JsonObject;
-import com.relevantcodes.extentreports.LogStatus;
+
 
 public class CIO_RecordedEvents_Test extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
@@ -1767,7 +1765,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3881: Validating the 'Processed By' field value is blank in Audit Trail record.");
 		softAssert.assertTrue(objWorkItemHomePage.getFieldValueFromAPAS("Final Approver", "Additional Information").equals(""),
 				"SMAB-T3881: Validating the 'Final Approver' field value is blank in Audit Trail record.");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),"CIO-GLEASM",
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"), objCioTransfer.CIO_EVENT_CODE_GLEASM,
 				"SMAB-T3631: Validating the 'Event Library' field value in Audit Trail record.");
 		
 
@@ -1808,7 +1806,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.waitForElementToBeVisible(20, objCioTransfer.CIOstatus);
 		objCioTransfer.scrollToElement(objCioTransfer.CIOstatus);
 		softAssert.assertEquals(objWorkItemHomePage.getElementText(objCioTransfer.CIOstatus), "Returned",
-				"SMAB-T3525, SMAB-T3341: Validating CIO Transfer activity status on transfer activity screen after returned by supervisor.");
+				"SMAB-T3525, SMAB-T3341, SMAB-T3433: Validating CIO Transfer activity status on transfer activity screen after returned by supervisor.");
 
 		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
@@ -1818,7 +1816,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 19-Validating WI and AUDIT Trail status after returned by supervisor.
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.wiStatusDetailsPage);
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Returned",
-				"SMAB-T3525, SMAB-T3341: Validating that Back button navigates back to WI page ");
+				"SMAB-T3525, SMAB-T3341, SMAB-T3433: Validating that Back button navigates back to WI page ");
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
 				+ auditTrailID + "/view");
 		Thread.sleep(2000); // Allow the screen to appear completely
@@ -1947,7 +1945,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 25-Validating that WI and audit trail status after approving the transfer activity.
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.wiStatusDetailsPage);
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Completed",
-				"SMAB-T3525, SMAB-T3341: Validating that WI status should be completed after approval by supervisor.");
+				"SMAB-T3525, SMAB-T3341, SMAB-T3433: Validating that WI status should be completed after approval by supervisor.");
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
 				+ auditTrailID + "/view");
 		Thread.sleep(2000);// Allow the screen to appear completely
