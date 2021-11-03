@@ -423,10 +423,6 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		objMappingPage.deleteOwnershipFromParcel(responseAPN3Details.get("Id").get(0));
 
 		// Add the parcels in a Hash Map for later use in the combine action. Those parcels will be combined.
-		Map<String, String> apnValue = new HashMap<String, String>();
-		apnValue.put("APN1", apn1);
-		apnValue.put("APN2", apn2);
-		apnValue.put("APN3", apn3);
 
 		String concatenateAPNWithDifferentMapBookMapPage = apn2 + "," + apn3;
 
@@ -434,34 +430,17 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		String districtValue2 = "District01";
 		String parcelSize1 = "200";
 
-		String queryTRAValue1 = "SELECT Name,Id FROM TRA__c limit 1";
-		HashMap<String, ArrayList<String>> responseTRADetails1 = salesforceAPI.select(queryTRAValue1);
-
-		HashMap<String, ArrayList<String>> responsePUCDetails1 = salesforceAPI.select(
-				"SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active')and  Legacy__c = 'NO' limit 1");
-		String queryNeighborhoodValue1 = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
-		HashMap<String, ArrayList<String>> responseNeighborhoodDetails1 = salesforceAPI.select(queryNeighborhoodValue1);
-
 		// Creating Json Object
 
-		jsonParcelObject.put("PUC_Code_Lookup__c", responsePUCDetails1.get("Id").get(0));
 		jsonParcelObject.put("Status__c", "Active");
 		jsonParcelObject.put("Short_Legal_Description__c", legalDescriptionValue2);
 		jsonParcelObject.put("District__c", districtValue2);
-		jsonParcelObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails1.get("Id").get(0));
-		jsonParcelObject.put("TRA__c", responseTRADetails1.get("Id").get(0));
 		jsonParcelObject.put("Lot_Size_SQFT__c", parcelSize1);
 
 		// updating PUC details
 		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), jsonParcelObject);
 		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), jsonParcelObject);
 		salesforceAPI.update("Parcel__c", responseAPN3Details.get("Id").get(0), jsonParcelObject);
-		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), "TRA__c",
-				responseTRADetails.get("Id").get(0));
-		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c",
-				responseTRADetails.get("Id").get(0));
-		salesforceAPI.update("Parcel__c", responseAPN3Details.get("Id").get(0), "TRA__c",
-				responseTRADetails.get("Id").get(0));
 
 		String mappingActionCreationData1 = testdata.COMBINE_MAPPING_ACTION;
 		Map<String, String> hashMapCombineActionMappingData = objUtil

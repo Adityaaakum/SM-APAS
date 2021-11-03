@@ -881,7 +881,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 				.findElement(By.xpath("//a[contains(text(),'" + editImportReviewWorkItem + "')]"));
 		String expectedWI = completedWorkItem.getText();
 		softAssert.assertEquals(expectedWI, editImportReviewWorkItem,
-				"SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
+				"SMAB-T3007:Status of the work item should be Construction completed");
 
 		// Step 16: Going to WI page and checking the status
 		objBuildingPermitPage.globalSearchRecords(editImportReviewWorkItem);
@@ -890,7 +890,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		objBuildingPermitPage.waitForElementToBeVisible(statusText);
 		String expectedStatus=driver.findElement(By.xpath("//*[contains(@class,'slds-text-title slds-truncate') and contains(@title,'Action')]/../*[contains(@class,'fieldComponent slds-text-body--regular slds-show_inline-block slds-truncate')]")).getText();
 		softAssert.assertEquals(expectedStatus, "Construction Completed",
-				"SMAB-T2989, SMAB-T3089, SMAB-T3007:Status of the work item should be Construction completed");
+				"SMAB-T3007:Status of the work item should be Construction completed");
 
 //             Step17: Going to Home Page and then In Pool Tab to Accept the work item & Going to Tab In Progress to verify the work item moved to in progress tab.
 

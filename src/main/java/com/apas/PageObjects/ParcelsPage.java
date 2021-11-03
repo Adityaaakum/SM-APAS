@@ -456,7 +456,7 @@ public class ParcelsPage extends ApasGenericPage {
 			ReportLogger.INFO("Creating BPP Owner.");
 		}
 		
-		Thread.sleep(10000);
+		Thread.sleep(2000);
 		Click(ownershipNextButton);
 		searchAndSelectOptionFromDropDown(ownerDropDown, owner);
 		selectOptionFromDropDown(typeDropDown, type);

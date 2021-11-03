@@ -52,8 +52,8 @@ public class CIO_RollEntry_Test  extends TestBase implements testdata, modules, 
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3766:Verify the UI validations for the fields mentioned on 'Roll Entry' details page & user should be able to edit those fields.", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement", "RollEntry" })
-	public void ParcelManagement_VerifyRollEntryObjectUIValidations(String loginUser) throws Exception {
+			"Regression", "ChangeInOwnershipManagement", "RollEntry" })
+	public void CIO_VerifyRollEntryObjectUIValidations(String loginUser) throws Exception {
 
 		String execEnv = System.getProperty("region");
 		// Fetching the Active Parcel
