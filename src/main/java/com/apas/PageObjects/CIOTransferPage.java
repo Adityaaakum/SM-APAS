@@ -3,6 +3,7 @@ package com.apas.PageObjects;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -27,6 +28,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	WorkItemHomePage objWorkItemHomePage;
     ParcelsPage	objParcelsPage;
     SoftAssertion softAssert;
+    AppraisalActivityPage objAppraisalActivity;
    
 
 	public CIOTransferPage(RemoteWebDriver driver) {
@@ -38,7 +40,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
         objParcelsPage = new ParcelsPage(driver);
         softAssert = new SoftAssertion();
         objWorkItemHomePage= new WorkItemHomePage(driver);
-        
+        objAppraisalActivity= new AppraisalActivityPage(driver);
 	}
 
 	public String ApnLabel = "APN";
@@ -75,7 +77,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String ownerPercentage="Owner Percentage";
 	public final String DOC_DEED="DE";
 	public String firstNameLabel="First Name";
-	
+	public String nextButtonComponentsActionsModal = "Next";
 	public String transferCodeLabel = "Transfer Code";
 	public String transferDescriptionLabel = "Transfer Description";
 	public String transferStatusLabel = "CIO Transfer Status";
@@ -88,11 +90,13 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String fieldsInCalculateOwnershipModal="//*[@id='wrapper-body']//flowruntime-screen-field//p";
 	public String ownershipPercentage ="Ownership Percentage";
 	public String auditTrailLabel ="Audit Trail";
+
 	public String approveButton ="Approve";
 	public String documentSummaryButton ="COS Document Summary";
 	public String transferStatus ="CIO Transfer Status";
-	
-	
+	public String componentActionsButtonText = "Component Actions";
+	public String workItemTypeDropDownComponentsActionsModal = "Work Item Type";
+
 	public static final String CIO_EVENT_CODE_COPAL="CIO-COPAL";
 	public static final String CIO_EVENT_CODE_GLEASM="CIO-GLEASM";
 	public static final String CIO_EVENT_CODE_PART="CIO-PART";
@@ -126,6 +130,22 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String createdByLabel = "Created By";
 	public String lastModifiedByLabel = "Last Modified By";
 	public String transferSucessMessage="//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b | //div[@class='slds-card__body slds-p-horizontal_small flowruntimeBody']//b";
+	public String recordTypeDropdown = "Record Type";
+	public String group = "Group";
+	public String typeOfAuditTrailDropdown = "Type of Audit Trail Record?";
+	public String leopReceivedByBOE = "LEOP Received By BOE";
+	public String penaltyRequiredPerBOE = "Penalty Required Per BOE";
+	public String sourceDropdown = "Source";
+	public String dateOfEventInputTextBox = "Date of Event";
+	public String dateOfValueInputTextBox = "Date of Value";
+	public String dateOfRecordingInputTextBox = "Date of Recording";
+	public String descriptionInputTextBox = "Description";
+	public String saveAndNextButton = "Save and Next";
+	public String penaltyCodeLabel = "Penalty Code";
+	public String letterCodeLabel = "Letter Code";
+	public String calculatorSwitchLabel = "Calculator Switch";
+	public String activeLabel ="Active";
+	public String releaseIndicatorLabel = "Release Indicator";
 	
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
 	public WebElement relatedListTab;
@@ -264,6 +284,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath ="//h2[text()='COS Document Summary']")
 	public WebElement documentSummaryCaption;
 	
+	@FindBy(xpath = "//a[starts-with(@title,\"RD-APN\")][@class='tabHeader slds-context-bar__label-action '][@aria-selected='true']//span[@class='title slds-truncate']")
+	public WebElement recordedDocumentApnGenerated;
 	
 	
 	/*
@@ -902,8 +924,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 					}
 					
-			 }
-		
+			 }	
 			 
 		//This method will delete all the transfer activity records on the Parcel	 
 		public void deleteTransferActivityRecords(String apn) throws Exception
@@ -947,5 +968,87 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			return formattedDate;
 		}
 		
+
+				/**
+				 * @Description: This method will fill all the fields in Audit Trail record to
+				 *               create LEOP event
+				 * @param dataMap: A data map which contains data to create audit trail record
+				 * @throws Exception
+				 */
+				public String createLeopUnrecordedEvent(Map<String, String> dataMap) throws Exception {
+					ReportLogger.INFO("Create Leop Unrecorded Event Transfer");
+					String timeStamp = String.valueOf(System.currentTimeMillis());
+					String description = dataMap.get("Description") + "_" + timeStamp;
+
+					waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
+					Click(getButtonWithText(componentActionsButtonText));
+					waitForElementToBeClickable(objParcelsPage.selectOptionDropdown);
+					selectOptionFromDropDown(objParcelsPage.selectOptionDropdown, "Create Audit Trail Record");
+					Click(getButtonWithText(nextButtonComponentsActionsModal));
+					waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);
+					selectOptionFromDropDown(recordTypeDropdown, dataMap.get("Record Type"));
+					selectOptionFromDropDown(group, dataMap.get("Group"));
+
+					Thread.sleep(2000);
+					selectOptionFromDropDown(typeOfAuditTrailDropdown, dataMap.get("Type of Audit Trail Record?"));
+					selectOptionFromDropDown(leopReceivedByBOE, dataMap.get("LEOP Received By BOE"));
+					selectOptionFromDropDown(penaltyRequiredPerBOE, dataMap.get("Penalty Required Per BOE"));
+					if (dataMap.get("Source") != null) {
+						selectOptionFromDropDown(sourceDropdown, dataMap.get("Source"));
+					}
+					if (dataMap.get("Date of Event") != null) {
+						enter(dateOfEventInputTextBox, dataMap.get("Date of Event"));
+					}
+					if (dataMap.get("Date of Value") != null) {
+						enter(dateOfValueInputTextBox, dataMap.get("Date of Value"));
+					}
+					enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
+					enter(descriptionInputTextBox, description);
+					Click(getButtonWithText(saveAndNextButton));
+					Thread.sleep(5000);
+					if (dataMap.get("Record Type").equalsIgnoreCase("Correspondence")) {
+						return null;
+					}
+
+					return getElementText(recordedDocumentApnGenerated);
+				}
+				/**
+				 * @Description: This method will fill all the fields in Calculate Penalty
+				 * @param dataMap: A data map which contains data to fill form
+				 * @throws Exception
+				 */
+				public String fillCalculatePenaltyForm(Map<String, String> dataMap) throws Exception {
+					String penaltyCode = dataMap.get("Penalty Code");
+					String letterCode = dataMap.get("Letter Code");
+					String calculatorSwitch = dataMap.get("Calculator Switch");
+					String activeLabelText= dataMap.get("Active");
+					String releaseIndicatorLabelText=dataMap.get("Release Indicator");
+					
+					String commonFirstPath = "//*[@class='slds-grid slds-col slds-is-editing slds-has-flexi-truncate mdp forcePageBlockItem forcePageBlockItemEdit']";
+					String activeXpath = commonFirstPath + "//*[text()='" + activeLabel + "']//following::a";
+					String releaseIndicatorXpath = commonFirstPath + "//*[text()='" + releaseIndicatorLabel + "']//following::a";
+					WebElement activeLabelXpath= driver.findElement(By.xpath(activeXpath));
+					WebElement releaseIndicatorLabelXpath = driver.findElement(By.xpath(releaseIndicatorXpath));
+
+
+					Click(activeLabelXpath);		
+					objMappingPage.waitForElementToBeVisible(driver.findElements(By.xpath("//a[@title='"+activeLabelText+"']")).get(0));
+					List<WebElement> active = driver.findElements(By.xpath("//a[@title='"+activeLabelText+"']"));
+					
+					Click(active.get(0));
+					Click(releaseIndicatorLabelXpath);
+					objMappingPage.waitForElementToBeVisible(driver.findElements(By.xpath("//a[@title='"+releaseIndicatorLabelText+"']")).get(1));
+					Click(driver.findElements(By.xpath("//a[@title='"+releaseIndicatorLabelText+"']")).get(1));
+					
+					objAppraisalActivity.selectDropDownValueForCalculatePenalty(penaltyCodeLabel, penaltyCode);
+					objAppraisalActivity.selectDropDownValueForCalculatePenalty(letterCodeLabel, letterCode);
+					objAppraisalActivity.selectDropDownValueForCalculatePenalty(calculatorSwitchLabel, calculatorSwitch);
+					Thread.sleep(50000);
+					Click(objAppraisalActivity.calculatePenaltySaveButton);
+					Thread.sleep(2000);
+					ReportLogger.INFO("Penalty Calculation form filled.");
+					return penaltyCode;
+				}
+
 }
 		 	

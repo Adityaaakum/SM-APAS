@@ -280,6 +280,15 @@ public class WorkItemHomePage extends ApasGenericPage {
     @FindBy(xpath = "//div[contains(@class,'notify__content')]//span")
 	public WebElement parentParcelSizeErrorMsg;
     
+    @FindBy(xpath="//*[@class='test-id__field-label'][text()='Parent Work Item']/parent::div/following-sibling::div//a")
+	public WebElement parentWorkItemLink;
+	
+	@FindBy(xpath="//div[@class='slds-grid slds-size_1-of-1 label-inline']//button[@title='Edit Rejected?']")
+	public WebElement editRejected;
+	
+	@FindBy(xpath="//*[@class='slds-text-title_bold slds-p-bottom_small']")
+	public WebElement pageNotExist;
+    
    
   
 	public String editButton = "Edit";
