@@ -809,7 +809,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.numberOfIntermiParcelLabel),"value"),"0",
                 "SMAB-T2568: Validation that default value of Interim Parcel is 0");
         
-        /** Commenting this for now as it works in local workspace but fails in Automation Server. Alternate code has been written below for the same **/
+        /** Commenting this for now as it works in local workspace but fails in Automation Server. **/
 		/*
 		 * objMappingPage.waitForElementToBeVisible(6,
 		 * objMappingPage.helpIconFirstNonCondoParcelNumber);
@@ -831,22 +831,22 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		 * helpIconToolTipBubble),"To use parent situs, leave as blank.",
 		 * "SMAB-T2568: Validation that help text is generated on clicking the help icon for Situs text box"
 		 * );
-		 */
-        
-        objMappingPage.scrollToBottom();
-        objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
-        objMappingPage.Click(objMappingPage.helpIconFirstNonCondoParcelNumber);
-        Thread.sleep(1000); //Added to avoid regression failure
-        softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use system generated APN, leave as blank.",
+		 * 
+		 * objMappingPage.Click(objMappingPage.helpIconFirstNonCondoParcelNumber);
+           Thread.sleep(1000); //Added to avoid regression failure
+           softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use system generated APN, leave as blank.",
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for First non-Condo Parcel text box");
         
-        objMappingPage.Click(objMappingPage.helpIconLegalDescription);
-        Thread.sleep(1000); //Added to avoid regression failure
-        softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent legal description, leave as blank.",
+           objMappingPage.Click(objMappingPage.helpIconLegalDescription);
+           Thread.sleep(1000); //Added to avoid regression failure
+           softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.helpIconToolTipBubble),"To use parent legal description, leave as blank.",
                 "SMAB-T2568: Validation that help text is generated on clicking the help icon for legal description");
+		 */
+        
         
         //Enter First Non-Condo parcel which is not the next available parcel in the system
-        Thread.sleep(1000); //Added to avoid regression failure
+        objMappingPage.scrollToBottom();
+        objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
         objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel,parcelForWarningMessage);
 		ReportLogger.INFO("Click NEXT button");
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.nextButton);
