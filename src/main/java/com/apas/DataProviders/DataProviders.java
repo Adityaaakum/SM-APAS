@@ -431,6 +431,13 @@ public class DataProviders {
 
 			};
 		}
+		@DataProvider(name = "usersRestrictedToNewandEditButtonOnParcelMailto")
+	    public Object[][] validateUsersToNotHaveEditpermissionsOrCreateNewonMailToParcel() {
+	        return new Object[][] { { users.BPP_BUSINESS_ADMIN}, { users.RP_APPRAISER },{ users.CIO_STAFF }, { users.MAPPING_STAFF},{ users.SYSTEM_ADMIN} 
+	        };
+	        
+		}
+
        
 }
        

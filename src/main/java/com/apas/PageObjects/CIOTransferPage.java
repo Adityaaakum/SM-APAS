@@ -1,7 +1,10 @@
 package com.apas.PageObjects;
 
 import java.io.IOException;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,6 +63,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String newButton="New";
 	public String formattedName1Label="Formatted Name1";
 	public String formattedName1LabelForParcelMailTo="Formatted Name 1";
+	public String formattedName2LabelForParcelMailTo="Formatted Name 2";
 	public String startDate="Start Date";
 	public String endDate="End Date";
 	public String emailId="Email";
@@ -70,7 +74,11 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String OwnershipStartDate="Ownership Start Date";
 	public String OwnershipEndDate="Ownership End Date";
 	public String RecordedApnTransfer="Recorded APN Transfer";
+	public String viewDocument ="View Document";
+	public String viewRATScreenButton ="View RAT Screen";
+	public String returnButton ="Return";
 	public String Edit="Edit";
+	public String Clone="Clone";
 	public String Status="Status";
 	public String ownerPercentage="Owner Percentage";
 	public final String DOC_DEED="DE";
@@ -254,11 +262,16 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	
 	@FindBy(xpath = commonXpath + "//div[@class='slds-card__body slds-p-horizontal_small flowruntimeBody']//b")
 	public WebElement calculateOwnershipPageMessage;
+	
 	@FindBy(xpath= commonXpath+"//span[text()='Mailing State']")
 	public WebElement mailingStatefield;
 		
 	@FindBy(xpath ="//label[text()='APN']/..//button[@title='Clear Selection']")
 	public WebElement crossIconAPNEditField;
+	
+	@FindBy(xpath ="//h2[text()='COS Document Summary']")
+	public WebElement documentSummaryCaption;
+	
 	
 	
 	/*
@@ -448,7 +461,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	     */
 		 public void editRecordedApnField(String labelName) throws Exception {
 		        ReportLogger.INFO("Edit the field : " + labelName);
-		        Thread.sleep(1000);
+		        Thread.sleep(2000);
 		        String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//span[text() = '" + labelName + "']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]";		        
 		        WebElement fieldLocator = locateElement(xpathStr, 30);
 		        Click(fieldLocator);
@@ -909,6 +922,38 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			        		objSalesforceAPI.delete("Recorded_APN_Transfer__c", Id);
 			        		ReportLogger.INFO("!!Deleted Transfer Activity Record with id= "+Id + " and Transfer Activity Record Name "+HashMapTransferRecord.get("Name"));
 			          } );}	 
-			 } 		 
+			 } 	
+		
+		/* 
+		 * Description - This method will change the date format
+		 * Param - mm/dd/yyyy
+		 * Return - YYYY/MM/DD
+		 */
+		
+		public String updateDateFormat(String dateValue ) throws Exception {
+			System.out.println(dateValue);
+			String formattedDate = "";
+			
+			if (!dateValue.equals("")) {
+					String dateSplit[] = dateValue.split("/");
+					formattedDate = dateSplit[2];
+					
+					if (dateSplit[0].length()==1) {
+						formattedDate = formattedDate + "-0" + dateSplit[0].substring(0, 1);
+					}
+					else {
+						formattedDate = formattedDate + "-" + dateSplit[0].substring(0, 2);
+					}
+					
+					if (dateSplit[1].length()==1) {
+						formattedDate = formattedDate + "-0" + dateSplit[1].substring(0, 1);
+					}
+					else {
+						formattedDate = formattedDate + "-" + dateSplit[1].substring(0, 2);
+					}
+			}
+			return formattedDate;
+		}
+		
 }
 		 	

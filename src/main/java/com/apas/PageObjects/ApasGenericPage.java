@@ -736,29 +736,6 @@ public void searchModule(String moduleToSearch) throws Exception {
 				+ "']/../..//slot[@slot='outputField']";
 		String fieldXpath;
 		
-		/*
-		 * if (!excEnv.equalsIgnoreCase("QA")) { fieldXpath = fieldPath +
-		 * "//force-hoverable-link//a//span | " + fieldPath +
-		 * "//lightning-formatted-text | " + fieldPath +
-		 * "//lightning-formatted-number | " + fieldPath +
-		 * "//lightning-formatted-rich-text | " + fieldPath +
-		 * "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
-		 * + fieldPath + "//a//span | "+"//*[text()='"+
-		 * fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-number | //*[text()='"
-		 * +fieldName+
-		 * "']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-text";
-		 * } else { fieldXpath = fieldPath + "//force-hoverable-link//a//span | " +
-		 * fieldPath + "//lightning-formatted-text | " + fieldPath +
-		 * "//lightning-formatted-number | " + fieldPath +
-		 * "//lightning-formatted-rich-text | " + fieldPath +
-		 * "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
-		 * + fieldPath + "//a//span | "+"//*[text()='"+
-		 * fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-number | //*[text()='"
-		 * +fieldName+
-		 * "']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-text";
-		 * }
-		 */
-		
 		fieldXpath = fieldPath + "//force-hoverable-link//a//span | " + fieldPath + "//lightning-formatted-text | "
 				+ fieldPath + "//lightning-formatted-number | " + fieldPath + "//lightning-formatted-rich-text | "
 				+ fieldPath + "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
