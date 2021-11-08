@@ -819,6 +819,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 									+ recordeAPNTransferID + "/view");
 					waitForElementToBeClickable(10, calculateOwnershipButtonLabel);
 
+					
 					Click(getButtonWithText(calculateOwnershipButtonLabel));
 					waitForElementToBeVisible(5, nextButton);
 					enter(calculateOwnershipRetainedFeld, "50");
